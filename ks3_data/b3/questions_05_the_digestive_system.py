@@ -356,4 +356,165 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # Six further rows, two per band, appended at bank_position 12+ so the
+    # original twelve remain the auto-composition window.
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-05-e05",
+        "band": "easier",
+        "text": "What does the stomach add to a meal, and what does it begin "
+                "to break down?",
+        "options": [
+            {"text": "Bile from the gall bladder, and it begins to break down "
+                     "lipid.", "correct": False,
+             "why": "Bile is made by the liver, stored in the gall bladder and "
+                    "released into the small intestine. None of it is added in "
+                    "the stomach."},
+            {"text": "Hydrochloric acid at about pH 2, and it begins to break "
+                     "down protein.", "correct": True},
+            {"text": "Amylase from the salivary glands, and it begins to "
+                     "break down starch.", "correct": False,
+             "why": "Amylase comes from the salivary glands and the pancreas. "
+                    "Stomach acid is what stops the mouth's amylase working."},
+            {"text": "An alkali at about pH 8, and it finishes breaking down "
+                     "every nutrient.", "correct": False,
+             "why": "The alkali comes from the pancreas, into the small "
+                    "intestine, and it is the small intestine that finishes "
+                    "every nutrient."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-05-e06",
+        "band": "easier",
+        "text": "What does the word digestion mean?",
+        "options": [
+            {"text": "Breaking food into smaller and smaller pieces.",
+             "correct": False,
+             "why": "That is mechanical breakdown, and it changes no "
+                    "molecules. A crumb a thousand times smaller is still made "
+                    "of the same molecules."},
+            {"text": "Small soluble molecules moving out of the gut into the "
+                     "blood.", "correct": False,
+             "why": "That is absorption. It happens after digestion, and it "
+                    "needs digestion to have happened first."},
+            {"text": "Removing material that passed through the gut and was "
+                     "never absorbed.", "correct": False,
+             "why": "That is egestion — the last stop of the system rather "
+                    "than the whole process."},
+            {"text": "Breaking large insoluble molecules into small soluble "
+                     "ones.", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b3-05-s05",
+        "band": "standard",
+        "text": "The pancreas sends an alkali into the small intestine "
+                "alongside its enzymes. Why is the alkali needed?",
+        "options": [
+            {"text": "The meal arrives acidic, and the enzymes here work at "
+                     "about pH 8.", "correct": True},
+            {"text": "It kills any bacteria that the stomach acid did not.",
+             "correct": False,
+             "why": "Killing swallowed bacteria is the stomach acid's own "
+                    "job. The alkali is there to change the pH for the "
+                    "enzymes."},
+            {"text": "It digests the fat that the stomach could not break "
+                     "down.", "correct": False,
+             "why": "An alkali is not an enzyme and digests nothing. Fat is "
+                    "broken down by lipase, with bile spreading it into small "
+                    "droplets first."},
+            {"text": "It neutralises the food so that it can cross the gut "
+                     "wall into the blood.", "correct": False,
+             "why": "What crosses the wall is decided by molecule size and "
+                    "solubility, not by pH. The pH matters to the enzymes "
+                    "doing the cutting."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-05-s06",
+        "band": "standard",
+        "text": "A meal spends about 4 hours in the stomach, about 16 in the "
+                "small intestine and 12 to 30 hours in the large intestine. "
+                "Why does the large intestine hold it longest of all, when it "
+                "breaks nothing down?",
+        "options": [
+            {"text": "Because the nutrients are still being absorbed there, "
+                     "and that takes a long time.", "correct": False,
+             "why": "By the time material arrives the nutrients have already "
+                    "gone. What the large intestine takes back is water."},
+            {"text": "Because it is the longest part of the gut, so the "
+                     "journey through it takes longer.", "correct": False,
+             "why": "It is wider and shorter than the small intestine, not "
+                    "longer. Six or seven metres of narrow tube comes before "
+                    "it."},
+            {"text": "Because it is absorbing water back out of what is left, "
+                     "and that is slow work.", "correct": True},
+            {"text": "Because peristalsis stops there, so material moves only "
+                     "when something pushes it.", "correct": False,
+             "why": "Peristalsis happens the whole length of the gut. Nothing "
+                    "about the muscle wave stops at the large intestine."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-05-h05",
+        "band": "harder",
+        "text": "Carbon dioxide breathed out and the solid material leaving "
+                "the anus are both being got rid of. Only one of them is "
+                "excretion. Which, and why?",
+        "options": [
+            {"text": "The solid material, because it leaves as waste at the "
+                     "end of the gut.", "correct": False,
+             "why": "It was never absorbed, so your own chemistry never made "
+                    "it. Getting rid of what you never took in is egestion."},
+            {"text": "The carbon dioxide — your own cells made it, so it is "
+                     "your own waste.", "correct": True},
+            {"text": "Both of them, because excretion is any waste leaving "
+                     "the body at all.", "correct": False,
+             "why": "Excretion is specifically waste your own cells produced. "
+                    "Material that passed straight through is egested "
+                    "instead."},
+            {"text": "Neither, because excretion covers only urine leaving "
+                     "the kidneys.", "correct": False,
+             "why": "Urea in urine is excretion, and so is the carbon dioxide "
+                    "you breathe out. Both were made by your own cells."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-05-h06",
+        "band": "harder",
+        "text": "A person's pancreas stops producing its secretions "
+                "altogether. Predict what changes about digestion, and name "
+                "something that does not change.",
+        "options": [
+            {"text": "Nothing changes, because the small intestine makes all "
+                     "its own enzymes.", "correct": False,
+             "why": "The intestine wall supplies some enzymes, but the "
+                    "pancreas supplies amylase, protease and lipase into it, "
+                    "along with the alkali."},
+            {"text": "Nothing is digested at all, and chewing stops working "
+                     "as well.", "correct": False,
+             "why": "Chewing and the stomach are untouched — the pancreas "
+                    "sits off the tube. Digestion becomes far less complete "
+                    "rather than stopping."},
+            {"text": "Absorption stops but digestion carries on, because the "
+                     "villi are unaffected.", "correct": False,
+             "why": "That is the wrong way round. The villi are intact, so "
+                    "the absorbing surface is fine; what is lost is what cuts "
+                    "molecules small enough to cross it."},
+            {"text": "Digestion becomes far less complete, while chewing, "
+                     "swallowing and stomach acid carry on.", "correct": True},
+        ],
+        "figure": None,
+    },
 ]

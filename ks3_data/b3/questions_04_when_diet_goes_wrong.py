@@ -384,4 +384,245 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # Nine further rows, three per band, appended at bank_position 12+ so the
+    # original twelve remain the auto-composition window.
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-04-e05",
+        "band": "easier",
+        "text": "Which of these names a deficiency disease together with the "
+                "nutrient behind it?",
+        "options": [
+            {"text": "Scurvy — vitamin C is missing.", "correct": True},
+            {"text": "Obesity — lipid is missing.", "correct": False,
+             "why": "Obesity follows a long-term energy surplus, which is too "
+                    "much rather than too little. It is not a deficiency "
+                    "disease at all."},
+            {"text": "Anaemia — vitamin C is missing.", "correct": False,
+             "why": "Anaemia is a deficiency disease, but the missing "
+                    "nutrient is iron, which is built into haemoglobin."},
+            {"text": "Rickets — iron is missing.", "correct": False,
+             "why": "Rickets is a deficiency disease, and the missing "
+                    "nutrient is vitamin D. Without it calcium cannot be "
+                    "absorbed properly and the bones stay soft."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-04-e06",
+        "band": "easier",
+        "text": "What is adipose tissue?",
+        "options": [
+            {"text": "The tissue that breaks stored lipid down when energy "
+                     "runs short.", "correct": False,
+             "why": "Adipose tissue is where the lipid sits. Breaking the "
+                    "store down is something that happens to it, not what it "
+                    "is."},
+            {"text": "The tissue that carries oxygen round the body in the "
+                     "blood.", "correct": False,
+             "why": "That is the job of haemoglobin in red blood cells, and "
+                    "it needs iron. Going short of iron gives anaemia."},
+            {"text": "The body tissue in which surplus energy is stored as "
+                     "lipid.", "correct": True},
+            {"text": "The tissue lining the gut that absorbs nutrients out of "
+                     "a meal.", "correct": False,
+             "why": "That is the wall of the small intestine. Adipose tissue "
+                    "is a store, not an absorbing surface."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-04-e07",
+        "band": "easier",
+        "text": "Obesity raises the risk of several conditions. Which list is "
+                "the right one?",
+        "options": [
+            {"text": "Scurvy, rickets, anaemia and beriberi — the deficiency "
+                     "diseases.", "correct": False,
+             "why": "Those are deficiency diseases, each caused by one "
+                    "missing nutrient. Obesity is a long-term energy surplus, "
+                    "which is a different imbalance altogether."},
+            {"text": "Goitre, weak bones, constipation and wounds that heal "
+                     "slowly.", "correct": False,
+             "why": "Those follow shortages of iodine, calcium, fibre and "
+                    "protein. None of them is a consequence of an energy "
+                    "surplus."},
+            {"text": "Kwashiorkor, severe muscle loss, arrested growth and a "
+                     "weakened immune system.", "correct": False,
+             "why": "Those follow a shortage of protein and a prolonged "
+                    "energy shortfall — the opposite imbalance to this one."},
+            {"text": "Type 2 diabetes, high blood pressure, heart disease and "
+                     "joint damage.", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b3-04-s05",
+        "band": "standard",
+        "text": "A student says someone at a healthy body mass cannot be "
+                "malnourished. Which reply is right?",
+        "options": [
+            {"text": "They are right, because malnutrition means not having "
+                     "enough to eat.", "correct": False,
+             "why": "The word means badly nourished, not under-nourished. A "
+                    "diet can be generous in energy and still miss a nutrient "
+                    "entirely."},
+            {"text": "They are wrong — a nutrient can be missing at any level "
+                     "of energy intake.", "correct": True},
+            {"text": "They are right, as long as the person is eating three "
+                     "meals a day.", "correct": False,
+             "why": "How many meals arrive says nothing about which nutrients "
+                    "are in them. Rickets was widespread among children who "
+                    "were fed enough."},
+            {"text": "They are wrong, because a healthy body mass always "
+                     "hides an energy surplus.", "correct": False,
+             "why": "A healthy mass means intake is matching what is "
+                    "transferred. The point is that a deficiency is a "
+                    "separate question from energy, not a hidden surplus."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-04-s06",
+        "band": "standard",
+        "text": "A doctor treating someone who has been severely short of food "
+                "for months is particularly worried about their heart. Why?",
+        "options": [
+            {"text": "The heart needs more energy than any other organ, and "
+                     "there is none left to give it.", "correct": False,
+             "why": "The worry is about what the body is breaking down, not "
+                    "about which organ is hungriest. Prolonged shortfall costs "
+                    "the body its own protein."},
+            {"text": "A shortfall stops the blood carrying oxygen, and that "
+                     "strain falls on the heart.", "correct": False,
+             "why": "Blood failing to carry oxygen is anaemia, a shortage of "
+                    "iron. This case is an energy shortfall, and the danger to "
+                    "the heart comes from elsewhere."},
+            {"text": "The heart stores lipid, and lipid stores are the first "
+                     "thing to be broken down.", "correct": False,
+             "why": "Lipid stores do go first, but they sit in adipose "
+                    "tissue. The heart is at risk at the next stage, when "
+                    "protein starts to go."},
+            {"text": "The body starts breaking down its own protein, and the "
+                     "heart is muscle.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-04-s07",
+        "band": "standard",
+        "text": "An adult has gained mass steadily for ten years, eats large "
+                "portions, has a desk job and a car commute, and has just been "
+                "diagnosed with type 2 diabetes. Which imbalance is this, and "
+                "what would change it?",
+        "options": [
+            {"text": "A long-term energy surplus, changed by a lasting shift "
+                     "in intake and activity.", "correct": True},
+            {"text": "A nutrient missing, changed by supplying whichever "
+                     "nutrient is absent.", "correct": False,
+             "why": "Nothing here names a missing nutrient. The evidence is "
+                    "ten years of intake above requirement, which is the "
+                    "surplus."},
+            {"text": "An energy shortfall, because the raised glucose shows "
+                     "energy is not reaching the cells.", "correct": False,
+             "why": "Ten years of gaining mass rules a shortfall out. The "
+                    "raised blood glucose here is one of the risks that "
+                    "follows the surplus."},
+            {"text": "Both a surplus and a deficiency, and the deficiency has "
+                     "to be treated first.", "correct": False,
+             "why": "Only one imbalance is in evidence. Ticking a second with "
+                    "no sign of it is as much a mistake as refusing to tick "
+                    "two when both are really there."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-04-h05",
+        "band": "harder",
+        "text": "Two regions both have widespread rickets. In one, food is "
+                "scarce. In the other, there is plenty of food and nobody is "
+                "thin. How can the same disease appear in both?",
+        "options": [
+            {"text": "It cannot — one of the two diagnoses has to be wrong.",
+             "correct": False,
+             "why": "Both can be right. A deficiency occurs at any level of "
+                    "energy intake, which is precisely why it can turn up in "
+                    "either region."},
+            {"text": "The well-fed region's cases must have some other cause, "
+                     "since a fed child cannot be deficient.", "correct": False,
+             "why": "A deficiency in a fed child is the classic case of "
+                    "rickets: enough food, enough energy, and no vitamin D "
+                    "reaching the child at all."},
+            {"text": "A missing nutrient is a separate question from energy, "
+                     "so it happens at either intake.", "correct": True},
+            {"text": "In the well-fed region it will be far milder, because "
+                     "energy intake protects against deficiency.",
+             "correct": False,
+             "why": "No amount of any other nutrient substitutes for vitamin "
+                    "D. A generous energy intake does not soften the "
+                    "deficiency at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-04-h06",
+        "band": "harder",
+        "text": "A newspaper writes: “Obesity causes type 2 diabetes — anyone "
+                "above a healthy weight will get it, and you can see who is at "
+                "risk just by looking.” Which pair of corrections is the "
+                "right one?",
+        "options": [
+            {"text": "Both halves are right, and the sentence is a fair "
+                     "summary of the science.", "correct": False,
+             "why": "Neither half is right. Obesity raises the risk rather "
+                    "than making it certain, and body mass alone is not "
+                    "evidence about anybody's diet."},
+            {"text": "Obesity raises the risk rather than making it certain, "
+                     "and appearance is not evidence.", "correct": True},
+            {"text": "The disease named is the wrong one, and appearance is "
+                     "not evidence.", "correct": False,
+             "why": "Type 2 diabetes really is one of the risks obesity "
+                    "raises. What is wrong is “will get it” — a raised risk "
+                    "is a probability, not a verdict."},
+            {"text": "Obesity raises the risk rather than making it certain, "
+                     "and the risk is visible on sight.", "correct": False,
+             "why": "The first half is right. The second is exactly wrong: "
+                    "body mass is affected by genetics, illness, medication, "
+                    "movement and sleep as well as by diet."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-04-h07",
+        "band": "harder",
+        "text": "In 1900 a toddler in a smoky northern city, fed bread, "
+                "potatoes, tea and a little meat, develops rickets. A toddler "
+                "in a sunny country eating the same diet does not. What "
+                "explains the difference?",
+        "options": [
+            {"text": "The second child's food must supply more calcium, and "
+                     "calcium is what prevents rickets.", "correct": False,
+             "why": "The diets are the same, so the calcium is the same. And "
+                    "without vitamin D calcium cannot be absorbed properly, "
+                    "however much of it is eaten."},
+            {"text": "The first child is short of energy as well, and the "
+                     "second child is not.", "correct": False,
+             "why": "The city child is not thin and the intake is roughly at "
+                    "requirement. Energy is not what is missing here."},
+            {"text": "Vitamin D comes from oily fish or from sunlight on "
+                     "skin, and one child has sunlight.", "correct": True},
+            {"text": "Rickets is an infection that spreads in crowded cities, "
+                     "and sunlight kills what causes it.", "correct": False,
+             "why": "Rickets is a deficiency disease rather than an "
+                    "infection. Sunlight matters because skin makes vitamin D "
+                    "in it, not because it kills anything."},
+        ],
+        "figure": None,
+    },
 ]

@@ -358,4 +358,248 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # Nine further rows, three per band, appended at bank_position 12+ so the
+    # original twelve remain the auto-composition window.
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-01-e05",
+        "band": "easier",
+        "text": "Which nutrient is broken down to glucose and respired first "
+                "for energy?",
+        "options": [
+            {"text": "Lipid", "correct": False,
+             "why": "Lipid is an energy store, and the body does respire it — "
+                    "but only once carbohydrate has run short. Carbohydrate "
+                    "is the one it reaches for first."},
+            {"text": "Protein", "correct": False,
+             "why": "Protein is for growth and repair. The body falls back on "
+                    "burning it when the other fuels run out, which is not the "
+                    "same as reaching for it first."},
+            {"text": "Carbohydrate", "correct": True},
+            {"text": "Vitamins", "correct": False,
+             "why": "Vitamins release no energy at all. They let the reactions "
+                    "that do release energy actually run, which is a different "
+                    "job."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-01-e06",
+        "band": "easier",
+        "text": "For four months a sailor eats salted meat, ship's biscuit and "
+                "water — plenty of energy, and no fruit or vegetables at all. "
+                "Which deficiency disease follows?",
+        "options": [
+            {"text": "Scurvy, because the diet supplies no vitamin C",
+             "correct": True},
+            {"text": "Rickets, because the diet supplies no vitamin D",
+             "correct": False,
+             "why": "Rickets follows a shortage of vitamin D, which comes from "
+                    "oily fish or from sunlight on skin rather than from fruit "
+                    "and vegetables."},
+            {"text": "Anaemia, because the diet supplies no iron",
+             "correct": False,
+             "why": "Anaemia follows a shortage of iron, and salted meat "
+                    "supplies iron. The nutrient this diet has none of is "
+                    "vitamin C."},
+            {"text": "Goitre, because the diet supplies no iodine",
+             "correct": False,
+             "why": "Goitre follows a shortage of iodine, the mineral built "
+                    "into thyroid hormone. Every deficiency has its own "
+                    "missing nutrient, and this one is vitamin C."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-01-e07",
+        "band": "easier",
+        "text": "Apart from being an energy store, what else does lipid do in "
+                "the body?",
+        "options": [
+            {"text": "It is broken into amino acids and rebuilt into muscle "
+                     "and enzymes.", "correct": False,
+             "why": "That is protein's job. Lipid supplies no amino acids at "
+                    "all, so nothing can be rebuilt from it."},
+            {"text": "It adds bulk so the gut muscles have something to push "
+                     "against.", "correct": False,
+             "why": "That is dietary fibre, which is never digested and never "
+                    "absorbed. Lipid is digested and absorbed."},
+            {"text": "It is built into bone and into haemoglobin as the body "
+                     "needs it.", "correct": False,
+             "why": "Those are minerals — calcium into bone, iron into "
+                    "haemoglobin. Lipid is built into neither."},
+            {"text": "It builds every cell membrane, and it insulates the "
+                     "body.", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b3-01-s05",
+        "band": "standard",
+        "text": "Someone eats plenty of every nutrient except fibre and is "
+                "constipated. They decide to drink more water rather than "
+                "change what they eat. Will that fix it?",
+        "options": [
+            {"text": "Yes — water and fibre do the same job, and water is the "
+                     "easier of the two to get.", "correct": False,
+             "why": "They do different jobs. Water is the solvent every "
+                    "reaction happens in; fibre is bulk for the gut muscles to "
+                    "grip and push."},
+            {"text": "No — the gut muscles need bulk to push against, and "
+                     "water is not bulk.", "correct": True},
+            {"text": "Yes, because fibre works only by soaking up the water "
+                     "you drink alongside it.", "correct": False,
+             "why": "Fibre is not a sponge. It is plant material your body "
+                    "never digests, and its job is to give the gut muscles "
+                    "something solid to move."},
+            {"text": "No — the real problem is a shortage of minerals, which "
+                     "water cannot supply either.", "correct": False,
+             "why": "Nothing here points at minerals. Constipation is what "
+                    "follows a shortage of dietary fibre, and no other "
+                    "nutrient stands in for it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-01-s06",
+        "band": "standard",
+        "text": "A teenager's day supplies about 300 g of carbohydrate, 70 g "
+                "of lipid, 45 g of protein, 25 g of fibre, 2000 g of water and "
+                "all thirteen vitamins. They eat no dairy, no red meat and no "
+                "leafy greens. Which of the seven is at risk?",
+        "options": [
+            {"text": "Protein, because dairy and red meat are the only "
+                     "sources of it.", "correct": False,
+             "why": "Protein is at 45 g, which is the target, and eggs, fish, "
+                    "beans and lentils all supply it. Dairy and meat are not "
+                    "the only sources."},
+            {"text": "None — six of the seven are met, and six out of seven "
+                     "is balanced enough.", "correct": False,
+             "why": "Leave one of the seven out and the diet fails, however "
+                    "good the rest of it is. Six targets met is still a diet "
+                    "with one target missed."},
+            {"text": "Vitamins, because they come mainly from dairy and "
+                     "liver.", "correct": False,
+             "why": "The day supplies all thirteen vitamins, and fruit and "
+                    "vegetables supply most of them in any case."},
+            {"text": "Minerals — dairy, red meat and leafy greens are where "
+                     "most of them come from.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-01-s07",
+        "band": "standard",
+        "text": "Breakfast A is white toast and jam. Breakfast B is wholegrain "
+                "toast, a boiled egg and an orange. Both supply about the same "
+                "energy. Using the seven nutrients, why is B the "
+                "better-balanced meal?",
+        "options": [
+            {"text": "Because A supplies far too much energy, and B supplies "
+                     "the right amount.", "correct": False,
+             "why": "Both supply about the same energy — that is stated. What "
+                    "separates them is which of the seven turn up, not how "
+                    "much energy does."},
+            {"text": "Because B contains no fat, and a healthy diet keeps fat "
+                     "as low as it can.", "correct": False,
+             "why": "An egg contains lipid, and lipid is one of the seven. A "
+                    "meal is not improved by removing one of the targets it "
+                    "has to meet."},
+            {"text": "Because B adds protein, fibre and vitamin C for the "
+                     "same energy.", "correct": True},
+            {"text": "Because A is unbalanced — a balanced meal holds equal "
+                     "amounts of each nutrient.", "correct": False,
+             "why": "Balanced never means equal amounts. A 13-year-old needs "
+                    "about 2000 g of water and about 0.2 g of vitamins on the "
+                    "same day."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-01-h05",
+        "band": "harder",
+        "text": "A tablet supplies all thirteen vitamins and every mineral, in "
+                "the amounts a 13-year-old needs in a day. An advert says one "
+                "tablet can replace a meal. What is the strongest objection?",
+        "options": [
+            {"text": "Vitamins and minerals can only be absorbed from food, "
+                     "never from a tablet.", "correct": False,
+             "why": "There is nothing wrong with absorbing them from a "
+                    "tablet. The objection is about the nutrients the tablet "
+                    "contains none of."},
+            {"text": "It supplies none of the other five nutrients, including "
+                     "all of the energy.", "correct": True},
+            {"text": "It supplies too much of the two it does contain, so it "
+                     "would do harm.", "correct": False,
+             "why": "It supplies the amounts a 13-year-old needs — that is "
+                    "stated. The problem is the five nutrients it supplies "
+                    "nothing of."},
+            {"text": "There is no objection — vitamins and minerals are the "
+                     "two that matter most.", "correct": False,
+             "why": "None of the seven is optional, and vitamins and minerals "
+                    "release no energy at all. A day of tablets supplies no "
+                    "fuel, no building material, no bulk and no water."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-01-h06",
+        "band": "harder",
+        "text": "A child's diet supplies plenty of energy from cassava, which "
+                "is almost entirely carbohydrate, and very little protein. The "
+                "child stops growing. Why does more cassava not fix it?",
+        "options": [
+            {"text": "Protein is the only nutrient that supplies the nitrogen "
+                     "for building tissue.", "correct": True},
+            {"text": "Cassava is not digested, so almost nothing it holds "
+                     "ever reaches the child.", "correct": False,
+             "why": "Cassava is carbohydrate and is digested and absorbed "
+                    "normally. The energy is arriving; the building material "
+                    "is not."},
+            {"text": "The child is still short of energy, and growth will "
+                     "restart once intake rises.", "correct": False,
+             "why": "Energy is already plentiful. More of a nutrient the "
+                    "child is not short of changes nothing about the one they "
+                    "are."},
+            {"text": "Carbohydrate can be rebuilt into muscle once enough of "
+                     "it has been eaten.", "correct": False,
+             "why": "It cannot. Carbohydrate is broken to glucose and "
+                    "respired; only protein supplies the amino acids muscle is "
+                    "built from."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-01-h07",
+        "band": "harder",
+        "text": "Going without water kills in days. Going without vitamin C "
+                "takes about four months. Both are essential. Why does one "
+                "failure show so much faster than the other?",
+        "options": [
+            {"text": "Vitamin C is not truly essential, since the body "
+                     "manages without it for months.", "correct": False,
+             "why": "It is essential. Four months without it is fatal, and a "
+                    "diet that is right in every other way does not save "
+                    "you."},
+            {"text": "Water is essential and vitamin C is merely useful, "
+                     "which is why one kills faster.", "correct": False,
+             "why": "Both are on the list of seven and neither is optional. "
+                    "How fast a shortage shows is not a measure of how "
+                    "important the nutrient is."},
+            {"text": "Every reaction in the body happens in water, so the "
+                     "failure starts within hours.", "correct": True},
+            {"text": "Vitamin C is needed in milligrams, and a nutrient "
+                     "needed in milligrams matters less.", "correct": False,
+             "why": "Amount is not what decides it. About 50 mg of vitamin C "
+                    "is as essential as about 2000 g of water, and going "
+                    "without either one is fatal."},
+        ],
+        "figure": None,
+    },
 ]

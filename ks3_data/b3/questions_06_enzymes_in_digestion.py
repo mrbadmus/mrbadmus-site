@@ -389,4 +389,165 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # Six further rows, two per band, appended at bank_position 12+ so the
+    # original twelve remain the auto-composition window.
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-06-e05",
+        "band": "easier",
+        "text": "Carbohydrase, also called amylase, fits one substrate. Which "
+                "reaction does it speed up?",
+        "options": [
+            {"text": "Starch to glucose.", "correct": True},
+            {"text": "Protein to amino acids.", "correct": False,
+             "why": "That reaction belongs to protease. One enzyme has a "
+                    "shape that fits one substrate, and carbohydrase cannot "
+                    "touch protein."},
+            {"text": "Lipid to fatty acids and glycerol.", "correct": False,
+             "why": "That reaction belongs to lipase, made in the pancreas. "
+                    "Carbohydrase has no effect on lipid at all."},
+            {"text": "Glucose to starch.", "correct": False,
+             "why": "Digestion runs the other way. Long chains are cut into "
+                    "short molecules so that they can be absorbed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-06-e06",
+        "band": "easier",
+        "text": "Which of the three digestive enzymes is made in the stomach "
+                "as well as in the pancreas?",
+        "options": [
+            {"text": "Carbohydrase — it follows the food the whole way down.",
+             "correct": False,
+             "why": "Carbohydrase is made in the salivary glands and the "
+                    "pancreas, and stomach acid is what stops the mouth's "
+                    "supply working."},
+            {"text": "Lipase — the stomach is where fat digestion begins.",
+             "correct": False,
+             "why": "Lipase is made in the pancreas only, and fat digestion "
+                    "is done in the small intestine."},
+            {"text": "Protease — the stomach version is built to work in "
+                     "acid.", "correct": True},
+            {"text": "None of them — the stomach makes acid and no enzymes at "
+                     "all.", "correct": False,
+             "why": "The stomach makes protease as well as acid, which is why "
+                    "protein digestion begins there."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b3-06-s05",
+        "band": "standard",
+        "text": "A tube holds lipase and lipid at 37 °C, with the pH set to "
+                "2. What would the counters show, and what one change would "
+                "put it right?",
+        "options": [
+            {"text": "Full rate, because 37 °C is the temperature every "
+                     "enzyme works fastest at.", "correct": False,
+             "why": "Temperature is only half of it. Lipase works best at "
+                    "about pH 8, and pH 2 is a long way from that."},
+            {"text": "Nothing made, and nothing will fix it, because the acid "
+                     "has ruined the enzyme.", "correct": False,
+             "why": "Ruining an enzyme permanently is what heat above about "
+                    "50 °C does. Here every lipase molecule is intact and "
+                    "would work at pH 8."},
+            {"text": "A little made, put right by raising the temperature to "
+                     "50 °C instead.", "correct": False,
+             "why": "50 °C is the threshold above which the shape is "
+                    "destroyed for good. The problem in this tube is the pH, "
+                    "not the temperature."},
+            {"text": "Little or nothing made, put right by moving the pH to "
+                     "8.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-06-s06",
+        "band": "standard",
+        "text": "The same food spoils far more slowly in a fridge than in a "
+                "warm room, and nothing has been added to either sample. "
+                "Explain that using enzymes.",
+        "options": [
+            {"text": "The cold has denatured the enzymes in the food, so "
+                     "spoiling has stopped altogether.", "correct": False,
+             "why": "Cold damages nothing. Denaturing is what heat above "
+                    "about 50 °C does, and it would be permanent — food out of "
+                    "a fridge spoils perfectly well."},
+            {"text": "Cold slows the reactions without damaging anything, so "
+                     "spoiling is slower rather than stopped.", "correct": True},
+            {"text": "The fridge kills the enzymes, and a dead enzyme cannot "
+                     "spoil food.", "correct": False,
+             "why": "An enzyme is a molecule and was never alive, so nothing "
+                    "about it can be killed. It is slowed, and it recovers "
+                    "completely on warming."},
+            {"text": "Cold makes the enzymes work faster, so the spoiling is "
+                     "over before anybody notices it.", "correct": False,
+             "why": "Molecules collide less often when they are cold, so the "
+                    "rate is low. That is why the fridge buys you time."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-06-h05",
+        "band": "harder",
+        "text": "The same mass of amylase goes into two identical tubes of "
+                "starch solution, one held at 20 °C and one at 37 °C. Both are "
+                "left until no starch remains. What differs, and what does "
+                "not?",
+        "options": [
+            {"text": "The 20 °C tube ends with less glucose, because a cold "
+                     "enzyme makes less product.", "correct": False,
+             "why": "Both tubes started with the same starch and both "
+                    "finished it, so both made the same glucose. What differs "
+                    "is how long it took."},
+            {"text": "The 20 °C tube ends with less amylase, because a slow "
+                     "reaction consumes more of it.", "correct": False,
+             "why": "An enzyme is not used up by the reaction it catalyses, "
+                    "at any temperature. Both tubes end with all their "
+                    "amylase."},
+            {"text": "The 20 °C tube takes far longer, and both end with the "
+                     "starch gone and the amylase unchanged.", "correct": True},
+            {"text": "Nothing differs — both are below 50 °C, so both run at "
+                     "exactly the same rate.", "correct": False,
+             "why": "Below the optimum the rate falls as it gets colder. "
+                    "50 °C is where the damage begins, not where temperature "
+                    "starts to matter."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-06-h06",
+        "band": "harder",
+        "text": "A student argues that stomach acid must be what digests "
+                "protein, since protein digestion begins in the stomach and "
+                "the stomach is full of acid. What is the strongest "
+                "correction?",
+        "options": [
+            {"text": "Protease does the digesting; the acid supplies the pH "
+                     "protease works best at.", "correct": True},
+            {"text": "The acid does digest the protein, and protease only "
+                     "finishes off what is left.", "correct": False,
+             "why": "The acid digests nothing. What it does is hold the "
+                    "stomach at about pH 2 and kill most of the bacteria that "
+                    "arrived with the meal."},
+            {"text": "Protein digestion does not begin in the stomach, so the "
+                     "whole argument falls.", "correct": False,
+             "why": "It does begin there, and that is the one part of the "
+                    "reasoning that is right. What is wrong is which molecule "
+                    "does the cutting."},
+            {"text": "Acid denatures any protein, so no protein digestion can "
+                     "happen in the stomach at all.", "correct": False,
+             "why": "Stomach protease is a genuinely specialised molecule "
+                    "built to work at pH 2, which is unusual for a protein. "
+                    "Digestion happens there."},
+        ],
+        "figure": None,
+    },
 ]

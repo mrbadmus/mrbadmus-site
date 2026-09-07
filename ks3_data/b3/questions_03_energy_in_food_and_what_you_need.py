@@ -401,4 +401,244 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # Nine further rows, three per band, appended at bank_position 12+ so the
+    # original twelve remain the auto-composition window. The harder band is
+    # where this lesson's calculation rows belong; all three state units.
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-03-e05",
+        "band": "easier",
+        "text": "A recipe book gives energy in kilocalories and a food packet "
+                "gives it in kilojoules. How do those two units compare?",
+        "options": [
+            {"text": "They are the same size, so the two words are simply "
+                     "different names for one unit.", "correct": False,
+             "why": "They are different sizes. One kilocalorie is about "
+                    "4.2 kJ, so the same food carries a much larger number of "
+                    "kilojoules than of kilocalories."},
+            {"text": "One kilocalorie is about 4.2 kJ, so it is the larger of "
+                     "the two units.", "correct": True},
+            {"text": "One kilocalorie is about a thousandth of a kilojoule, "
+                     "so it is much the smaller.", "correct": False,
+             "why": "That is the wrong way round, and by a long way. A "
+                    "kilocalorie is bigger than a kilojoule, not a thousand "
+                    "times smaller."},
+            {"text": "A kilocalorie measures heat, and a kilojoule measures "
+                     "the energy in food.", "correct": False,
+             "why": "Both measure energy, and it is the same quantity. A "
+                    "kilojoule is used for heat, movement and food alike."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-03-e06",
+        "band": "easier",
+        "text": "Someone takes in more energy in a day than they transfer. "
+                "What is the extra called, and what happens to it?",
+        "options": [
+            {"text": "A shortfall, and stores are broken down to make up the "
+                     "difference.", "correct": False,
+             "why": "That is what happens when intake is less than what is "
+                    "transferred. This person is taking in more, not less."},
+            {"text": "An intake, and the extra is passed out of the body as "
+                     "waste.", "correct": False,
+             "why": "Intake is the total of everything eaten and drunk, not "
+                    "the extra. Extra energy is stored rather than passed "
+                    "out."},
+            {"text": "A requirement, and it raises the amount that person "
+                     "needs the next day.", "correct": False,
+             "why": "A requirement belongs to the person and is set by their "
+                    "size, age, growth and activity. Eating more does not "
+                    "raise it."},
+            {"text": "A surplus, and the extra is stored rather than lost.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-03-e07",
+        "band": "easier",
+        "text": "A glass of water is listed at 0 kJ. Why is water on a list of "
+                "things a body needs if it carries no energy?",
+        "options": [
+            {"text": "It is one of the seven nutrients, and a day needs about "
+                     "2000 g of it.", "correct": True},
+            {"text": "It is a mistake in the list — something carrying no "
+                     "energy is not really food.", "correct": False,
+             "why": "Water is one of the seven nutrients and the largest "
+                    "requirement of all of them. Carrying no energy is not "
+                    "the same as not being needed."},
+            {"text": "It does carry energy, but too little for a list like "
+                     "this one to print a figure for.", "correct": False,
+             "why": "The energy in water is zero rather than small, which is "
+                    "why the label reads 0 kJ and not a small number."},
+            {"text": "It is there so a day can be made to add up to the "
+                     "requirement exactly.", "correct": False,
+             "why": "Adding water changes a day's energy total by nothing at "
+                    "all, so it can never close a gap."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b3-03-s05",
+        "band": "standard",
+        "text": "A 4-year-old needing 5800 kJ and an Olympic rower needing "
+                "25 000 kJ are each given the same day's food, totalling "
+                "9500 kJ. What is that day for each of them?",
+        "options": [
+            {"text": "A shortfall of about 3700 kJ for the child and a "
+                     "surplus for the rower.", "correct": False,
+             "why": "That is the right arithmetic on the wrong people. 9500 "
+                    "is above the child's 5800 and far below the rower's "
+                    "25 000."},
+            {"text": "Balanced for both of them, because 9500 kJ is a normal "
+                     "day's food for anybody.", "correct": False,
+             "why": "9500 kJ is the 13-year-old's requirement and nobody "
+                    "else's. A requirement belongs to the person, so there is "
+                    "no normal day."},
+            {"text": "A surplus of about 3700 kJ for the child and a large "
+                     "shortfall for the rower.", "correct": True},
+            {"text": "The same for both, because the food carries the same "
+                     "energy whoever happens to eat it.", "correct": False,
+             "why": "The food does carry the same energy — that is why it is "
+                    "the same 9500 kJ. What differs is the requirement it is "
+                    "being compared with."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-03-s06",
+        "band": "standard",
+        "text": "A person's intake matches their requirement exactly, every "
+                "day for a month. What happens to their body mass?",
+        "options": [
+            {"text": "It stays about the same — nothing is stored, and no "
+                     "stores are drawn on.", "correct": True},
+            {"text": "It falls, because energy is used up by the body as the "
+                     "month goes on.", "correct": False,
+             "why": "Energy is transferred rather than used up, and with "
+                    "intake matching requirement nothing has to come out of "
+                    "store to pay for it."},
+            {"text": "It rises, because everything eaten over a month has to "
+                     "be stored somewhere.", "correct": False,
+             "why": "Only a surplus is stored. Energy that matches the "
+                    "requirement is transferred as it arrives, so there is "
+                    "nothing left over to keep."},
+            {"text": "You cannot say, because it depends which foods made up "
+                     "the intake.", "correct": False,
+             "why": "The comparison is between total energy in and total "
+                    "energy transferred. Which foods supplied the total does "
+                    "not change that sum."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-03-s07",
+        "band": "standard",
+        "text": "A day built for the 4-year-old totals 5800 kJ and balances "
+                "exactly. Without taking anything away, a handful of nuts "
+                "(1250 kJ) is added. What is that day now?",
+        "options": [
+            {"text": "Still balanced — a handful is far too small a portion "
+                     "to change a whole day.", "correct": False,
+             "why": "1250 kJ is more than a fifth of this child's entire day. "
+                    "A small mass is not a small amount of energy — nuts are "
+                    "mostly lipid."},
+            {"text": "A shortfall of 1250 kJ, because the extra food has to "
+                     "be digested first.", "correct": False,
+             "why": "Digesting food does not cost a day 1250 kJ. Adding "
+                    "energy to a balanced day makes a surplus, not a "
+                    "shortfall."},
+            {"text": "Balanced again, once the requirement rises to 7050 kJ "
+                     "to match the food.", "correct": False,
+             "why": "A requirement is set by the person's size, age, growth "
+                    "and activity. Eating more does not move it up to meet "
+                    "what was eaten."},
+            {"text": "A surplus of 1250 kJ over the child's requirement, and "
+                     "the extra is stored.", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-03-h05",
+        "band": "harder",
+        "text": "A pot of yoghurt is 520 kJ. A 4-year-old's requirement is "
+                "5800 kJ a day. What share of that child's day is one pot, to "
+                "the nearest whole per cent?",
+        "options": [
+            {"text": "About 6%", "correct": False,
+             "why": "That is 520 divided by 9000, an adult desk worker's "
+                    "requirement. Use the requirement of the person actually "
+                    "eating it: 520 ÷ 5800 × 100."},
+            {"text": "About 9%", "correct": True},
+            {"text": "About 11%", "correct": False,
+             "why": "That is 5800 divided by 520 — the division the wrong way "
+                    "round. The share is the portion divided by the "
+                    "requirement, not the other way about."},
+            {"text": "About 0.09%", "correct": False,
+             "why": "That is 520 ÷ 5800 with the × 100 left off. A share as a "
+                    "percentage always needs that last step."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-03-h06",
+        "band": "harder",
+        "text": "A 4-year-old needs 5800 kJ. So far today they have had "
+                "cereal (1100 kJ), a banana (450 kJ), two chapatis with dal "
+                "(1750 kJ) and an apple (320 kJ). What is left, and which "
+                "single item comes closest to filling it — pasta and sauce at "
+                "2400 kJ, or jollof rice and chicken at 2100 kJ?",
+        "options": [
+            {"text": "2180 kJ still to find, and the pasta at 2400 kJ comes "
+                     "closest.", "correct": False,
+             "why": "The total is right and the choice is not. 2400 kJ "
+                    "overshoots by 220 kJ, while 2100 kJ is only 80 kJ "
+                    "away."},
+            {"text": "3620 kJ still to find, and the pasta at 2400 kJ comes "
+                     "closest.", "correct": False,
+             "why": "3620 kJ is what has already been eaten, not what is "
+                    "left. Subtract it from 5800 kJ to get the gap."},
+            {"text": "2180 kJ still to find, and the jollof rice and chicken "
+                     "at 2100 kJ comes closest.", "correct": True},
+            {"text": "A surplus of 2180 kJ, so nothing more should be added "
+                     "at all.", "correct": False,
+             "why": "3620 kJ is well below 5800 kJ, so the day is short "
+                    "rather than over. A surplus needs intake above "
+                    "requirement."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-03-h07",
+        "band": "harder",
+        "text": "A label prints “2000 kcal — your daily needs” as a reference "
+                "figure. Take 1 kcal as 4.2 kJ. What is that reference in kJ, "
+                "and what does it say about a bricklayer needing 13 500 kJ?",
+        "options": [
+            {"text": "About 8400 kJ — well below his 13 500 kJ, so the "
+                     "reference does not describe him.", "correct": True},
+            {"text": "About 8400 kJ, which is close enough to 13 500 kJ to be "
+                     "a fair guide for him.", "correct": False,
+             "why": "The conversion is right and the judgement is not. He "
+                    "would be about 5100 kJ short, which is more than a third "
+                    "of his day."},
+            {"text": "About 480 kJ, which is far below anything a person "
+                     "could live on for a day.", "correct": False,
+             "why": "That is 2000 divided by 4.2 instead of multiplied. A "
+                    "kilocalorie is the bigger unit, so the number of "
+                    "kilojoules must come out larger."},
+            {"text": "About 2000 kJ, because a kilocalorie and a kilojoule "
+                     "are two names for one unit.", "correct": False,
+             "why": "They are different sizes: one kilocalorie is about "
+                    "4.2 kJ, so 2000 kcal is about 8400 kJ."},
+        ],
+        "figure": None,
+    },
 ]

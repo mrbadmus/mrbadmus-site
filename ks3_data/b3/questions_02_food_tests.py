@@ -402,4 +402,252 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # Nine further rows, three per band, appended at bank_position 12+ so the
+    # original twelve remain the auto-composition window.
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-02-e05",
+        "band": "easier",
+        "text": "Which reagent detects protein, and what colour change shows "
+                "a positive result?",
+        "options": [
+            {"text": "Benedict's solution — blue to brick red.",
+             "correct": False,
+             "why": "That is the reducing-sugar test. Benedict's says nothing "
+                    "about protein, because one test answers one question."},
+            {"text": "Iodine solution — orange-brown to blue-black.",
+             "correct": False,
+             "why": "That is the starch test. A blue-black spot tells you "
+                    "starch was detected and nothing at all about protein."},
+            {"text": "Biuret solution — blue to lilac purple.",
+             "correct": True},
+            {"text": "Ethanol then water — clear to cloudy white.",
+             "correct": False,
+             "why": "That is the emulsion test, which detects lipid. Egg "
+                    "white is almost pure protein and gives nothing on it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-02-e06",
+        "band": "easier",
+        "text": "The four food tests all give their answer as a colour. What "
+                "does a colour change tell you, and what does it never tell "
+                "you?",
+        "options": [
+            {"text": "Which nutrient was detected — never how much of it is "
+                     "there.", "correct": True},
+            {"text": "How much of the nutrient is there — never which "
+                     "nutrient it is.", "correct": False,
+             "why": "That is the wrong way round. The reagent is chosen "
+                    "because it answers about one named nutrient, and it "
+                    "reports present or not detected."},
+            {"text": "Whether the food is healthy — never which nutrient is "
+                     "in it.", "correct": False,
+             "why": "Nothing in a colour change is about health. Olive oil is "
+                    "one positive out of four and is a required nutrient."},
+            {"text": "Which nutrient is there, and roughly how much from the "
+                     "depth of the colour.", "correct": False,
+             "why": "Depth of colour also changes with heating time, volume "
+                    "and concentration, none of which you controlled. A "
+                    "deeper colour is not evidence of more nutrient."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-02-e07",
+        "band": "easier",
+        "text": "Benedict's needs five minutes at 80 °C. Why does the method "
+                "say to use a water bath rather than a Bunsen flame?",
+        "options": [
+            {"text": "A flame would take the tube far past 80 °C and destroy "
+                     "the sugar in it.", "correct": False,
+             "why": "The sugar is not destroyed by warming. The reason for "
+                    "the water bath is a steady temperature and a bench with "
+                    "no naked flame on it."},
+            {"text": "Benedict's solution only reacts when it is surrounded "
+                     "by water rather than air.", "correct": False,
+             "why": "The reaction happens inside the tube and does not care "
+                    "what is outside it. The water bath is there to hold the "
+                    "temperature and to keep a flame off the bench."},
+            {"text": "A Bunsen flame heats a test tube far too slowly ever to "
+                     "reach 80 °C.", "correct": False,
+             "why": "A Bunsen heats a tube quickly, and that is part of the "
+                    "problem — it is hard to hold at 80 °C, and it is an open "
+                    "flame beside ethanol."},
+            {"text": "A water bath holds a steady 80 °C, and a naked flame is "
+                     "a hazard on this bench.", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b3-02-s05",
+        "band": "standard",
+        "text": "Raw potato tested with Benedict's gives a blue tube. The same "
+                "potato, left in a warm cupboard for a fortnight, now gives a "
+                "brick red. What has changed?",
+        "options": [
+            {"text": "Nothing about the potato — the second tube must have "
+                     "been heated for longer.", "correct": False,
+             "why": "Heating longer deepens a colour that was already "
+                    "changing. It cannot turn a blue tube red, because it "
+                    "cannot create reducing sugar that was not there."},
+            {"text": "Some of the potato's starch has been broken down into "
+                     "reducing sugar.", "correct": True},
+            {"text": "The potato has taken in sugar from the air in the "
+                     "cupboard while it sat there.", "correct": False,
+             "why": "There is no sugar in air to take in. The sugar came from "
+                    "the potato's own starch, which is what a fortnight in the "
+                    "warm does to it."},
+            {"text": "The first result was a false negative, and the sugar "
+                     "was there all along.", "correct": False,
+             "why": "A false negative means the substance is present but too "
+                    "dilute to show. Here the food itself changed: raw potato "
+                    "stores its carbohydrate as starch, not as free sugar."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-02-s06",
+        "band": "standard",
+        "text": "Egg white tested with Benedict's stays blue. Potato tested "
+                "with Biuret stays blue. Only one of those is a true negative. "
+                "Which one, and how can you tell?",
+        "options": [
+            {"text": "The potato one — potato is a solid, and solids give the "
+                     "more reliable negatives.", "correct": False,
+             "why": "Being solid has nothing to do with it. Potato is about "
+                    "2% protein, so its blue tube is a false negative: the "
+                    "protein is there and Biuret cannot see it."},
+            {"text": "Both of them — each tube was run correctly, so both "
+                     "results must be true.", "correct": False,
+             "why": "Following the method correctly is exactly how a false "
+                    "negative is produced. Whether a negative is true depends "
+                    "on the food, not on the care taken."},
+            {"text": "Neither of them — a negative result can never be called "
+                     "a true one.", "correct": False,
+             "why": "True negatives are real: milk genuinely contains no "
+                    "starch. A negative is only doubtful when the substance "
+                    "is present but too dilute to show."},
+            {"text": "The egg white one — it really has no sugar, while "
+                     "potato really has protein.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-02-s07",
+        "band": "standard",
+        "text": "Benedict's and Biuret are both run on a food solution rather "
+                "than on the food itself. Why is a solid food crushed and "
+                "mixed with water first?",
+        "options": [
+            {"text": "So the reagent reaches the whole sample — a lump can "
+                     "test negative because nothing got inside it.",
+             "correct": True},
+            {"text": "Because a reagent can only work on a liquid, so a solid "
+                     "food cannot be tested at all.", "correct": False,
+             "why": "Solids are tested: iodine goes straight onto the food. "
+                    "Crushing is about the reagent reaching the inside, not "
+                    "about the food having to be liquid."},
+            {"text": "Because crushing breaks the food molecules apart, and "
+                     "that is what the reagent detects.", "correct": False,
+             "why": "Crushing makes pieces smaller and leaves the molecules "
+                    "exactly as they were. The reagent detects the molecules "
+                    "that were already there."},
+            {"text": "Because water dilutes the sample, and a diluted sample "
+                     "gives a stronger colour.", "correct": False,
+             "why": "Diluting a sample makes a colour weaker, not stronger, "
+                    "and can push a real result below what the test can "
+                    "detect."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-02-h05",
+        "band": "harder",
+        "text": "Two unlabelled white powders sit on the bench. One is starch "
+                "and one is dried egg white. Which single test separates them, "
+                "and what would you see?",
+        "options": [
+            {"text": "Biuret — the starch goes lilac purple and the egg white "
+                     "stays blue.", "correct": False,
+             "why": "That is the right test read backwards. Egg white is "
+                    "almost pure protein and would go lilac; starch holds no "
+                    "protein and would stay blue."},
+            {"text": "Benedict's — both go brick red, and the shade tells the "
+                     "two apart.", "correct": False,
+             "why": "Neither is a reducing sugar, so both tubes stay blue. "
+                    "And a shade is never evidence of an amount on a school "
+                    "bench."},
+            {"text": "Iodine — the starch goes blue-black and the egg white "
+                     "stays orange-brown.", "correct": True},
+            {"text": "The emulsion test — the starch goes cloudy white and "
+                     "the egg white does not.", "correct": False,
+             "why": "Neither powder holds lipid, so both would give a clear "
+                    "tube. The emulsion test cannot separate two foods that "
+                    "are both negative on it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-02-h06",
+        "band": "harder",
+        "text": "Apple juice is under 0.3% protein. Group A tests it with "
+                "Biuret and gets blue. Group B boils it down to a tenth of its "
+                "volume first and gets a faint lilac. What has happened?",
+        "options": [
+            {"text": "Boiling has created protein in the juice, which is why "
+                     "the second tube changed colour.", "correct": False,
+             "why": "Boiling removes water and creates nothing. The same "
+                    "protein is present in both tubes; only its concentration "
+                    "differs."},
+            {"text": "Concentrating the sample lifted the protein above the "
+                     "level Biuret is able to detect.", "correct": True},
+            {"text": "Group A must have made a mistake, because the correct "
+                     "method always finds what is present.", "correct": False,
+             "why": "Group A's method was correct and still gave a negative. "
+                    "That is what a false negative is, and it is why a "
+                    "negative is a fact about the test."},
+            {"text": "The two groups tested different things, so their "
+                     "results cannot be compared at all.", "correct": False,
+             "why": "It is the same juice in both tubes. What changed is how "
+                    "much water was in with the protein, which is the whole "
+                    "point of the comparison."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-02-h07",
+        "band": "harder",
+        "text": "A student runs all four food tests on one sample and every "
+                "tube is negative. They conclude the food contains no "
+                "nutrients at all. What are the two things wrong with that?",
+        "options": [
+            {"text": "The tests were run badly, and four negatives in a row "
+                     "never happen on a real food.", "correct": False,
+             "why": "Four negatives are perfectly possible — a glass of water "
+                    "would give them. Nothing here says the method was done "
+                    "wrongly."},
+            {"text": "The tests measure amounts, and four small amounts can "
+                     "still add up to a nutritious food.", "correct": False,
+             "why": "These tests measure no amounts at all. They report "
+                    "present or not detected, which is the first half of what "
+                    "went wrong here."},
+            {"text": "The food must contain energy, and energy is the "
+                     "nutrient the four tests are looking for.", "correct": False,
+             "why": "Energy is not a nutrient, and no test on this bench "
+                    "detects it — olive oil gives a blue Benedict's tube and "
+                    "carries more energy per gram than anything else here."},
+            {"text": "Only four nutrients are tested for at all, and a "
+                     "negative means not detected rather than absent.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

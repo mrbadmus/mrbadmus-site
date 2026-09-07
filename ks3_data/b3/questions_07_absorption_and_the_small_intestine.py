@@ -402,4 +402,165 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # Six further rows, two per band, appended at bank_position 12+ so the
+    # original twelve remain the auto-composition window.
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-07-e05",
+        "band": "easier",
+        "text": "How thick is the wall of a villus, and what is immediately on "
+                "the other side of it?",
+        "options": [
+            {"text": "One cell thick, with a capillary on the other side.",
+             "correct": True},
+            {"text": "Ten cells thick, with a capillary on the other side.",
+             "correct": False,
+             "why": "A wall ten cells thick would absorb about a tenth as "
+                    "fast for the same area. A real villus wall is a single "
+                    "cell."},
+            {"text": "One cell thick, with the large intestine on the other "
+                     "side.", "correct": False,
+             "why": "On the far side of a villus wall is blood in a "
+                    "capillary. The large intestine is further along the same "
+                    "tube, not behind the wall."},
+            {"text": "Several cells thick, with a layer of muscle behind it.",
+             "correct": False,
+             "why": "Muscle in the gut wall moves food along the tube. What "
+                    "sits behind the absorbing surface is a capillary "
+                    "network."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-07-e06",
+        "band": "easier",
+        "text": "Four features make a good exchange surface. Which one keeps "
+                "the concentration difference going?",
+        "options": [
+            {"text": "A very large surface area.", "correct": False,
+             "why": "Area sets how many molecules can cross at once. It does "
+                    "nothing to stop the blood side filling up."},
+            {"text": "A wall one cell thick.", "correct": False,
+             "why": "A short distance makes each crossing fast. It does not "
+                    "keep the two sides unequal."},
+            {"text": "A dense blood supply.", "correct": True},
+            {"text": "A moist surface.", "correct": False,
+             "why": "Molecules can only diffuse through a membrane while "
+                    "dissolved in water. That is a condition for crossing, "
+                    "not what maintains the difference."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b3-07-s05",
+        "band": "standard",
+        "text": "About 30 m² of absorbing surface is packed into a tube six "
+                "metres long. Why is folding a better answer than simply "
+                "growing a longer intestine?",
+        "options": [
+            {"text": "Because a longer tube would fill more slowly, so food "
+                     "would reach the villi too late.", "correct": False,
+             "why": "How long the journey takes is not the problem. The "
+                    "problem is where sixty metres of tube would go."},
+            {"text": "Sixty times the area would need sixty metres of tube, "
+                     "and no body has room for it.", "correct": True},
+            {"text": "Because folding also makes the wall thinner, which "
+                     "extra length would not do.", "correct": False,
+             "why": "Folding changes area, not thickness. The wall being one "
+                    "cell thick is a separate feature altogether."},
+            {"text": "Because a longer tube would carry fewer villi, so the "
+                     "area would not grow anyway.", "correct": False,
+             "why": "Length and folding are independent. A longer tube would "
+                    "carry more villi — it simply would not fit inside the "
+                    "animal."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-07-s06",
+        "band": "standard",
+        "text": "A starch molecule in a mouthful of bread has to be digested "
+                "before it can be absorbed. Why can those two never happen the "
+                "other way round?",
+        "options": [
+            {"text": "Because absorption happens in the large intestine, "
+                     "after all digestion has finished.", "correct": False,
+             "why": "Almost all absorption happens in the small intestine, "
+                    "alongside the last of the digestion. The order is set by "
+                    "molecule size, not by which organ."},
+            {"text": "Because the blood would end up digesting the starch, "
+                     "which the body cannot allow.", "correct": False,
+             "why": "Blood does not digest starch. The real reason is that a "
+                    "starch molecule cannot cross the wall in the first "
+                    "place."},
+            {"text": "Because peristalsis pushes food past the villi before "
+                     "the enzymes can reach it.", "correct": False,
+             "why": "Peristalsis moves food along the tube and decides "
+                    "nothing about what crosses the wall. Nothing pushes "
+                    "molecules through it."},
+            {"text": "A starch molecule is far too large to cross the wall "
+                     "until it is cut to glucose.", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-07-h05",
+        "band": "harder",
+        "text": "A model gut is a length of artificial membrane tubing holding "
+                "starch and amylase, standing in a beaker of still water. An "
+                "hour later there is glucose in the beaker and no starch. "
+                "Which features of a real small intestine does the model have, "
+                "and which does it lack?",
+        "options": [
+            {"text": "It has the folding, but lacks a wall thin enough for "
+                     "glucose to cross.", "correct": False,
+             "why": "Glucose did cross, so the membrane is thin enough. What "
+                    "smooth tubing has no trace of is the folding."},
+            {"text": "It has all four features, which is why glucose appears "
+                     "in the beaker at all.", "correct": False,
+             "why": "The tubing is smooth — no folds, no villi, no "
+                    "microvilli — and still water carries nothing away."},
+            {"text": "It has a thin membrane only small molecules cross, and "
+                     "lacks folding and blood flow.", "correct": True},
+            {"text": "It has the blood supply, because the beaker water "
+                     "carries glucose away as fast as it arrives.",
+             "correct": False,
+             "why": "The water is still, so glucose builds up in it. Blood "
+                    "flows past constantly, which is what keeps the "
+                    "concentration low on the far side."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-07-h06",
+        "band": "harder",
+        "text": "Fish gills are folded into thousands of thin filaments, each "
+                "with blood flowing through it, and they sit in water. Which "
+                "of the four features is supplied by the fish's surroundings "
+                "rather than by its own body?",
+        "options": [
+            {"text": "The moist surface — the water the fish lives in "
+                     "provides it.", "correct": True},
+            {"text": "The large surface area — water flowing past spreads the "
+                     "filaments out.", "correct": False,
+             "why": "The folding into filaments is the fish's own structure, "
+                    "exactly as villi are yours. Water does not create the "
+                    "area."},
+            {"text": "The thin wall — the pressure of the water keeps each "
+                     "filament squashed thin.", "correct": False,
+             "why": "A filament is thin because it is built that way. Nothing "
+                    "outside the fish sets the thickness of its own tissue."},
+            {"text": "The dense blood supply — the water carries the blood "
+                     "past the filaments.", "correct": False,
+             "why": "The fish's own heart moves its blood. What the water "
+                    "carries is the oxygen, on the other side of the wall."},
+        ],
+        "figure": None,
+    },
 ]

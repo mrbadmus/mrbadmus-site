@@ -379,4 +379,171 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # Six further rows, two per band, appended at bank_position 12+ so the
+    # original twelve remain the auto-composition window.
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-08-e05",
+        "band": "easier",
+        "text": "A human gut holds about thirty trillion bacteria. Where in "
+                "the digestive system do they live?",
+        "options": [
+            {"text": "The stomach, because that is where a meal is churned "
+                     "and held longest.", "correct": False,
+             "why": "The stomach holds acid at about pH 2, which kills most "
+                    "of the bacteria that arrive with a meal. Very few live "
+                    "there."},
+            {"text": "The large intestine, on the fibre and water left after "
+                     "absorption.", "correct": True},
+            {"text": "The small intestine, because that is where almost all "
+                     "the nutrients are.", "correct": False,
+             "why": "The nutrients are absorbed there and have gone by the "
+                    "time material moves on. The community lives further "
+                    "along, on the fibre nobody else can use."},
+            {"text": "The mouth, because that is where food and air both come "
+                     "in.", "correct": False,
+             "why": "Bacteria do live in the mouth, but nothing like thirty "
+                    "trillion of them. That community is in the large "
+                    "intestine, fermenting fibre."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-08-e06",
+        "band": "easier",
+        "text": "What is cellulose, and why does it matter that gut bacteria "
+                "can break it down?",
+        "options": [
+            {"text": "It is the sugar plants store, and bacteria release it "
+                     "faster than your own enzymes do.", "correct": False,
+             "why": "Cellulose is not a store of sugar. It is the tough "
+                    "material plant cell walls are built from, and your own "
+                    "enzymes cannot touch it at all."},
+            {"text": "It is a vitamin that plants make, and bacteria are how "
+                     "you take it in.", "correct": False,
+             "why": "Cellulose is not a vitamin. The vitamins your gut "
+                    "bacteria supply are vitamin K and several B vitamins."},
+            {"text": "It is the material bacteria themselves are built from, "
+                     "which is why they can digest it.", "correct": False,
+             "why": "Cellulose is plant material. What matters is that your "
+                    "own enzymes cannot break it and theirs can."},
+            {"text": "It is what plant cell walls are built from, and your "
+                     "own enzymes cannot break it.", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b3-08-s05",
+        "band": "standard",
+        "text": "Why does a developing immune system need to meet harmless "
+                "bacteria early on?",
+        "options": [
+            {"text": "That is how it learns what to attack and what to leave "
+                     "alone.", "correct": True},
+            {"text": "It needs practice at fighting something before it meets "
+                     "a real threat.", "correct": False,
+             "why": "The harmless species are not fought. They are what the "
+                    "system learns to leave alone, and that half is the one "
+                    "most people miss."},
+            {"text": "Because bacteria supply the vitamins an immune system "
+                     "is built out of.", "correct": False,
+             "why": "Gut bacteria do make vitamin K and B vitamins, but that "
+                    "is a separate job. This one is about calibration."},
+            {"text": "Because a system that meets no bacteria attacks the gut "
+                     "lining instead.", "correct": False,
+             "why": "The germ-free mouse's immune system is underdeveloped "
+                    "rather than turned on its own gut — slower against real "
+                    "threats, readier to react to things that are not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-08-s06",
+        "band": "standard",
+        "text": "Your immune system knows the gut bacteria are there and "
+                "leaves them alone. Why is that not a failure of the immune "
+                "system?",
+        "options": [
+            {"text": "Because they hide behind the mucus layer where the "
+                     "immune system cannot reach them.", "correct": False,
+             "why": "This is not a case of the system being unable to reach "
+                    "them. It is that attacking them would cost you five jobs "
+                    "you cannot do yourself."},
+            {"text": "Because there are far too many of them for any immune "
+                     "system to deal with.", "correct": False,
+             "why": "Numbers are not the reason. Leaving them alone is the "
+                    "arrangement, because they are running chemistry your own "
+                    "cells have no genes for."},
+            {"text": "They are doing five jobs your own cells cannot, so "
+                     "attacking them would cost you.", "correct": True},
+            {"text": "Because bacteria from the large intestine are harmless "
+                     "wherever in the body they end up.", "correct": False,
+             "why": "The same species in the blood can kill you. What makes a "
+                    "bacterium dangerous is usually its location and "
+                    "abundance, not its identity."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b3-08-h05",
+        "band": "harder",
+        "text": "Two patients are given the same broad-spectrum antibiotic. "
+                "One develops a serious gut infection two weeks later and the "
+                "other does not. What is the most likely difference between "
+                "them?",
+        "options": [
+            {"text": "One was given a stronger dose, which made the harmful "
+                     "species tougher than before.", "correct": False,
+             "why": "An antibiotic does not improve the organism it fails to "
+                    "kill. What changes is its situation — whether anything "
+                    "is left competing with it."},
+            {"text": "How much of each one's gut community survived, and so "
+                     "how much space was left.", "correct": True},
+            {"text": "One of them swallowed the harmful species afterwards "
+                     "and the other did not.", "correct": False,
+             "why": "The organism is usually already present in small numbers "
+                    "and held in check by everything around it. Nothing has to "
+                    "arrive from outside."},
+            {"text": "One of them has an immune system that was never trained "
+                     "by gut bacteria at all.", "correct": False,
+             "why": "Both are patients with established communities, so both "
+                    "were trained years ago. What the antibiotic changes is "
+                    "space and competition."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b3-08-h06",
+        "band": "harder",
+        "text": "A study finds that children raised on farms, in daily contact "
+                "with many harmless bacteria, have fewer allergies than "
+                "children raised in very clean homes. Which of the five jobs "
+                "does that point to?",
+        "options": [
+            {"text": "Fermenting fibre — farm children eat more plants, so "
+                     "they get more energy from them.", "correct": False,
+             "why": "The study is about contact with bacteria rather than "
+                    "about diet, and extracting energy from fibre has nothing "
+                    "to do with allergy."},
+            {"text": "Making vitamins — vitamin K and the B vitamins protect "
+                     "against allergic reactions.", "correct": False,
+             "why": "Those vitamins are for clotting and for the body's own "
+                    "chemistry. Neither has anything to do with an allergic "
+                    "reaction."},
+            {"text": "Occupying the space — harmless species crowd out "
+                     "whatever it is that causes allergy.", "correct": False,
+             "why": "An allergy is the immune system reacting to something "
+                    "that is not a threat. There is no harmful species here "
+                    "to be crowded out."},
+            {"text": "Training the immune system — an untrained one reacts to "
+                     "things that are not threats.", "correct": True},
+        ],
+        "figure": None,
+    },
 ]
