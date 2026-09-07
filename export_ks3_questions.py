@@ -7,6 +7,7 @@
     python3 export_ks3_questions.py --check    # counts only, write nothing
     python3 export_ks3_questions.py --verify   # ⭐ THE GATE: does the database still
                                                #   match Python, row for row?
+    python3 export_ks3_questions.py --verify --project test    # …on TEST instead
 
 ── Why this exists ──────────────────────────────────────────────────────
 
@@ -34,9 +35,18 @@ lesson template changes a class name.
 
 ── The three pools are not the same shape ───────────────────────────────
 
-**The bank** (`ks3_data/<unit>/questions_*.py`) is twelve questions per lesson,
-four per band, each option carrying a `why` for every wrong answer. It is what a
-weekly assignment is drawn from.
+**The bank** (`ks3_data/<unit>/questions_*.py`) is AT LEAST twelve questions per
+lesson and at least four per band, each option carrying a `why` for every wrong
+answer. It is what a weekly assignment is drawn from — and, since MRB-335, what
+Set work lets a teacher choose from by hand.
+
+⊕ It used to be EXACTLY twelve, and the difference is load-bearing rather than
+cosmetic. `bank_position` 0–11 still hold the original four per band, in the
+order they have always had, because that window is all AUTO composition reads
+(`compose_assignment` here, `bankFor()` in the backend). Everything a top-up
+adds lands at position ≥ 12, where only Set work can see it. That is what makes
+growing the bank safe: an assignment auto-composed before a top-up and one
+composed after it are the same fifteen questions.
 
 **The ladder** (`LESSON["ladder"]`) is the four rungs at the foot of each lesson
 page. Only `recall` and `apply` are exported: they are multiple choice and have
@@ -94,6 +104,52 @@ NOT_A_RUNG = {"retry_note", "sub"}
 MARKED_RUNGS = ("recall", "apply")
 
 
+def checksum(rows, columns):
+    """One SHA-256 over a whole pool, computed identically on both sides.
+
+    ⊕ MRB-335 (7 Sep 2026). KS4's exporter has had this since MRB-332; KS3's
+    had only the row-by-row comparison. The comparison is still the check —
+    it names the rows and the fields that differ. The checksum is the thing you
+    can WRITE DOWN: one value a report, a commit message or a person three
+    months from now can hold against another run without re-reading 2,220
+    rows. It matters most on the run that FAILS, because it is what tells you
+    whether you are looking at the same wrong database or a different one.
+
+    ⚠️ It only earns that by being canonical about CONTENT rather than about
+    transport:
+
+      · rows sorted by their key, so page order cannot change the answer;
+      · every column including the key, so a renamed question checksums
+        differently even with identical wording;
+      · `bank_position` included — the whole of RISKS D7 is a statement about
+        position, so a row that moved must not checksum the same;
+      · `options` walked IN ORDER and never sorted, because the correct answer
+        is identified by its place in that sequence;
+      · every scalar through `str()` and None through a single sentinel,
+        because PostgREST hands back JSON types where Python holds native
+        ones, and a checksum that changed with the wire format would be a
+        checksum of the wire format.
+    """
+    import hashlib
+    key = columns[0]
+    h = hashlib.sha256()
+    for r in sorted(rows, key=lambda r: str(r[key])):
+        for f in columns:
+            v = r.get(f)
+            if isinstance(v, list):
+                v = "\u001f".join(
+                    json.dumps(o, sort_keys=True, ensure_ascii=False)
+                    if isinstance(o, dict) else str(o)
+                    for o in v)
+            elif v is None:
+                v = "null"
+            elif isinstance(v, bool):
+                v = "1" if v else "0"
+            h.update(("%s=%s" % (f, v)).encode("utf-8"))
+        h.update(b"\x02")
+    return h.hexdigest()
+
+
 def sql_str(v):
     """A Postgres string literal, or NULL."""
     if v is None:
@@ -114,11 +170,37 @@ def bank_rows():
     ordering is what makes `compose_assignment` deterministic — it takes
     questions in bank order — so it has to survive the trip into the database
     or the producer would compose a different assignment from the same inputs.
+
+    ⊕ MRB-335 — A LESSON MAY NOW BE ANY LENGTH, AND POSITION BECAME LOAD-
+    BEARING RATHER THAN MERELY DETERMINISTIC. `enumerate` already exported
+    every row at whatever index it sat at, so nothing here had to change to
+    carry a top-up; what changed is what a position MEANS. `bank_position < 12`
+    is the auto-composition window in both mirrors — `compose_assignment` here
+    and `bankFor()` in the Node backend — and Set work reads every position.
+    So the shape of the first twelve is now checked ON THE WAY OUT as well as
+    by the gate: the database must never be able to hold a bank the gate would
+    have refused, because the database is what a class is actually served
+    from and it outlives any one run of `verify_questions.py`.
     """
     import ks3_data.question_bank as qb
 
     rows = []
     by_lesson = qb.bank_by_lesson()
+
+    bad = []
+    for record in qb.load_bank():
+        for check, qid, message in qb.validate_lesson(record):
+            bad.append("%s%s: %s"
+                       % (record["module"],
+                          " [%s]" % qid if qid else "", message))
+    if bad:
+        raise SystemExit(
+            "export_ks3_questions: the bank does not satisfy "
+            "question_bank.validate_lesson, so it must not be mirrored:\n"
+            + "\n".join("  · " + b for b in bad[:20])
+            + ("\n  … and %d more" % (len(bad) - 20) if len(bad) > 20 else "")
+            + "\n\nRun `python3 -m ks3_data.question_bank` for the full list.")
+
     for (unit_code, lesson_slug) in sorted(by_lesson):
         for pos, q in enumerate(by_lesson[(unit_code, lesson_slug)]):
             opts = q.get("options") or []
@@ -572,6 +654,12 @@ def main():
                     help="write bank.json / ladder.json / cards.json for ks3_pools_ingest")
     ap.add_argument("--verify", action="store_true",
                     help="compare the live tables against Python, row for row")
+    # ⊕ MRB-335. The project used to be a hardcoded production URL, which made
+    # `--verify` unusable for a TEST rehearsal — the one thing you want to do
+    # BEFORE loading production. Default unchanged, so every existing caller
+    # and the gate registry keep pointing where they did.
+    ap.add_argument("--project", choices=("prod", "test"), default="prod",
+                    help="which Supabase project --verify reads (default prod)")
     args = ap.parse_args()
 
     bank = bank_rows()
@@ -623,12 +711,22 @@ def main():
           % (len(cards), lessons_carded,
              ", ".join("%d %s" % (by_kind[k], k) for k in CARD_KINDS)))
 
+    # ⊕ MRB-335 — printed on EVERY run, not only on --verify, so the value in
+    # a report and the value on the machine that made it are the same
+    # sentence. `topped` is the count of lessons that have grown past the
+    # original twelve; it is the one number that says whether a top-up landed.
+    topped = len({(r["unit_code"], r["lesson_slug"]) for r in bank
+                  if r["bank_position"] >= 12})
+    print("\n     bank sha256  %s" % checksum(bank, BANK_COLUMNS))
+    print("     %d of %d lesson(s) topped up beyond bank_position 11; auto "
+          "composition still reads 0–11 only" % (topped, lessons_banked))
+
     if args.check:
         print("\n     --check: nothing written.\n")
         return
 
     if args.verify:
-        sys.exit(verify(bank, ladder, cards))
+        sys.exit(verify(bank, ladder, cards, args.project))
 
     if args.json:
         os.makedirs(OUT_DIR, exist_ok=True)
@@ -668,7 +766,17 @@ def main():
 
 # ── the gate ─────────────────────────────────────────────────────────────
 
-def verify(bank, ladder, cards):
+# ⊕ MRB-335. Both projects, named rather than typed at the one call site, so
+# `--project test` is a rehearsal and `--project prod` is the gate. The anon
+# key for whichever is chosen is still resolved out of shared/config.js by
+# matching the key's own `ref` claim — see below.
+PROJECTS = {
+    "prod": "https://urklkrwevjtlfbwnipjn.supabase.co",
+    "test": "https://qeppkiswvclkkwbxmlok.supabase.co",
+}
+
+
+def verify(bank, ladder, cards, project="prod"):
     """Does the database still match Python, row for row?
 
     The tables are a mirror. A mirror nobody checks is just a second copy, and
@@ -687,7 +795,8 @@ def verify(bank, ladder, cards):
 
     pw = os.environ.get("MRB_TEST_STUDENT_PASSWORD")
     if not pw:
-        print("\n     ⏭️  --verify SKIPPED: MRB_TEST_STUDENT_PASSWORD is not set,")
+        print("\n     ⏭️  --verify SKIPPED (%s): MRB_TEST_STUDENT_PASSWORD is"
+              " not set," % project)
         print("        so the live tables cannot be read. This is the only check")
         print("        that the database still matches these files.\n")
         # ⊕ MRB-282. This used to `return 0`, three lines under a docstring
@@ -698,7 +807,7 @@ def verify(bank, ladder, cards):
         # reports the missing password as a SKIP by name and never sees a 3.
         return 3
 
-    url = "https://urklkrwevjtlfbwnipjn.supabase.co"
+    url = PROJECTS[project]
 
     # ⊕ 1 Sep 2026 (MRB-306 WS-0). The key used to be scraped out of
     # leaderboard.html. MRB-290 made that page GENERATED and derive-everything,
@@ -735,8 +844,12 @@ def verify(bank, ladder, cards):
         with urllib.request.urlopen(req, timeout=90, context=ctx) as r:
             return json.loads(r.read().decode())
 
+    # ⊕ MRB-335 — the account is overridable. On TEST the production owner's
+    # address may not exist, and a rehearsal that cannot sign in is a
+    # rehearsal that proves nothing.
+    email = os.environ.get("MRB_VERIFY_EMAIL", "midebolabadmus@gmail.com")
     tok = api("/auth/v1/token?grant_type=password", {"apikey": key},
-              {"email": "midebolabadmus@gmail.com", "password": pw})
+              {"email": email, "password": pw})
     del pw
     auth = {"apikey": key, "Authorization": "Bearer " + tok["access_token"]}
 
@@ -782,14 +895,32 @@ def verify(bank, ladder, cards):
               % ("❌" if (missing or extra or differing) else "✅", name,
                  len(w), len(g), len(missing), len(extra), len(differing)))
 
-    print("\n     comparing the live tables against Python\n")
+    print("\n     comparing %s against Python\n" % url)
+    live_bank = fetch("ks3_assignment_bank",
+                      "id,unit_code,lesson_slug,band,bank_position,text,figure,options")
     compare("bank",
             bank,
-            fetch("ks3_assignment_bank",
-                  "id,unit_code,lesson_slug,band,bank_position,text,figure,options"),
+            live_bank,
             "id",
             ["unit_code", "lesson_slug", "band", "bank_position", "text",
              "figure", "options"])
+
+    # ⚠️ Printed whether or not the comparison passed. A checksum is most
+    # useful on the run that FAILS — it is what tells you, next time, whether
+    # you are looking at the same wrong database or a different one. And if
+    # these two ever disagree with the row-by-row verdict above, one of the
+    # two is not reading what it claims to; say so rather than pick a winner.
+    py_sum = checksum(bank, BANK_COLUMNS)
+    db_sum = checksum(live_bank, BANK_COLUMNS)
+    print("        bank python   sha256 %s" % py_sum)
+    print("        bank database sha256 %s   %s"
+          % (db_sum, "✅ equal" if py_sum == db_sum else "❌ DIFFERENT"))
+    bank_clean = not problems
+    if (py_sum == db_sum) != bank_clean:
+        problems.append(
+            "the bank's row-by-row comparison and its checksum DISAGREE. One "
+            "of them is not reading what it says it is — do not trust either "
+            "until that is explained.")
     compare("ladder",
             ladder,
             fetch("ks3_ladder_questions",

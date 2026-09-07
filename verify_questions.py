@@ -12,7 +12,15 @@ is either valid or it is not.
 
 ── The nine checks ──────────────────────────────────────────────────────
 
-1. A lesson with fewer than twelve questions, or a band with fewer than four.
+1. The shape of one lesson's bank, delegated whole to
+   :func:`ks3_data.question_bank.validate_lesson`. ⊕ MRB-335 RELAXED IT: a
+   lesson used to be exactly twelve and exactly four per band; it is now AT
+   LEAST twelve and AT LEAST four per band, with the original twelve pinned to
+   ``bank_position`` 0–11 so that a top-up cannot move an auto-composed
+   assignment (RISKS D7), band id suffixes running 01..N with no gap, no
+   duplicate stem inside a lesson, no two questions sharing both their four
+   options and their correct answer, no ``why`` on a correct option, and no
+   HTML markup in text a child is shown as text.
 2. A question with other than exactly four options, or other than exactly one
    correct.
 3. A wrong option with no ``why``, or an empty one.
@@ -285,15 +293,19 @@ def verify():
         figure_ids = set(figures)
         ladder = _ladder_texts(lesson)
 
-        # ── check 1 — twelve per lesson, four per band ──────────────────
-        if len(questions) != qb.QUESTIONS_PER_LESSON:
-            fail(1, where, "%d questions, expected %d"
-                 % (len(questions), qb.QUESTIONS_PER_LESSON))
-        for band in qb.BANDS:
-            n = sum(1 for q in questions if q.get("band") == band)
-            if n != qb.PER_BAND:
-                fail(1, where, "band %r has %d questions, expected %d"
-                     % (band, n, qb.PER_BAND))
+        # ── check 1 — the shape of one lesson's bank ────────────────────
+        #
+        # ⊕ MRB-335 (7 Sep 2026). This block used to BE the check, and it read
+        # "exactly 12 questions, exactly 4 per band". Set work needs a much
+        # bigger pool, so the rule relaxed to "at least twelve, at least four
+        # per band, with the original twelve still at bank_position 0–11" and
+        # gained the duplicate-stem and duplicate-answer checks a fifty-row
+        # lesson needs. The rule now lives in
+        # :func:`ks3_data.question_bank.validate_lesson` — one home for the
+        # rule and the data, and a content lane can run it on its own file
+        # with `python3 -m ks3_data.question_bank` without running this gate.
+        for check, qid, message in qb.validate_lesson(record):
+            fail(check, where + (" [%s]" % qid if qid else ""), message)
 
         for q in questions:
             qid = q.get("id", "<no id>")
