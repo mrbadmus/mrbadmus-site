@@ -293,6 +293,22 @@
     .muted { color: var(--st-muted); }
     .empty { color: var(--st-muted); font: 400 16px/1.5 var(--st-ui); }
 
+    /* ⊕ MRB-335 — the tier and pathway selectors on a KS4 class row.
+       Quiet by construction: they sit in the row's right-hand group beside
+       the roster count, in the page's own mono face, and carry no label —
+       an empty selector reads as "not set" and a filled one reads as itself.
+       `.bad` is the only feedback a refused write gets; see `setClassTier`. */
+    .tp {
+      font: 400 13.5px/1.2 var(--st-mono);
+      color: var(--st-ink);
+      background: var(--st-paper);
+      border: 1px solid var(--st-btn-border);
+      border-radius: 8px;
+      padding: 4px 6px;
+      max-width: 100%;
+    }
+    .tp:disabled { opacity: .5; }
+    .tp.bad { border-color: var(--st-accent-text); }
     a.classlink { color: var(--st-ink); text-decoration: none; font-weight: 600; }
     a.classlink:hover { color: var(--st-accent-text); text-decoration: underline; }
 
@@ -589,6 +605,130 @@ function envQ() {
   return (window.MrBadmusConfig && window.MrBadmusConfig.environment === 'test')
     ? 'env=test' : '';
 }
+/* ── ⊕ MRB-335 · TIER AND PATHWAY, ON A KS4 ROW ─────────────────────────
+
+   Set work scopes a question pool by (key stage, pathway, subject) and picks
+   a tier, and all three of those live on `classes`. A trigger fills them from
+   the class NAME on insert — `/Sc` is combined, `/Bi` `/Ph` `/Ch` are triple
+   plus that science, and a name ending Sc4/Sc5/Bi4/Bi5/… is foundation — and
+   a name outside that shape leaves all three NULL. On production today that
+   is 36 of 38 KS4 classes, and a class with no tier and no pathway can be
+   offered no questions at all. This is where a person fixes one.
+
+   ⚠️ KS3 ROWS GET NOTHING. KS3 has no tier and no pathway — its three
+   difficulty bands are chosen per assignment, not per class — so a selector
+   there would be a control with nothing behind it.
+
+   ⚠️ PATHWAY AND SUBJECT ARE ONE CONTROL, because they are one fact. "Triple"
+   on its own is not a cohort: a triple class is a triple BIOLOGY class or a
+   triple CHEMISTRY class, and the tree it is offered holds one science. Two
+   selects would let an admin save "triple" with no subject, which is a state
+   the scope model has no answer for.
+
+   ⛔ NO EXPLANATORY TEXT, anywhere in here. An empty selector says "not set"
+   by being empty; a refused write says so by snapping back to the value the
+   database still holds. */
+var TIER_OPTS = [['', ''], ['foundation', 'Foundation'], ['higher', 'Higher']];
+var PATH_OPTS = [
+  ['', ''],
+  ['combined', 'Combined'],
+  ['triple:biology', 'Triple Biology'],
+  ['triple:chemistry', 'Triple Chemistry'],
+  ['triple:physics', 'Triple Physics'],
+];
+
+function pathValue(tp) {
+  if (!tp || !tp.pathway) { return ''; }
+  if (tp.pathway === 'triple') { return tp.subject ? 'triple:' + tp.subject : ''; }
+  return tp.pathway;
+}
+
+function selectHtml(cls, kind, opts, value) {
+  var out = '<select class="tp" data-tp="' + kind + '" data-class="' +
+            escapeHtml(cls) + '" aria-label="' +
+            (kind === 'tier' ? 'Tier' : 'Pathway') + '">';
+  opts.forEach(function (o) {
+    out += '<option value="' + escapeHtml(o[0]) + '"' +
+           (o[0] === value ? ' selected' : '') + '>' +
+           escapeHtml(o[1]) + '</option>';
+  });
+  return out + '</select>';
+}
+
+function tierControls(c, tp) {
+  /* No row for this class in the tolerant read — the migration has not landed
+     — and no selectors. See the note on `tierBy`. */
+  if (c.key_stage !== 'KS4' || !tp) { return ''; }
+  return selectHtml(c.id, 'tier', TIER_OPTS, tp.tier || '') +
+         selectHtml(c.id, 'pathway', PATH_OPTS, pathValue(tp));
+}
+
+/* Every change on either selector, one listener on the section.
+
+   ⚠️ THE ROW IS REPAINTED FROM THE SERVER'S ANSWER, NEVER FROM THE PRESS.
+   The same rule the auto-assignments toggle follows: a control that repaints
+   from what was clicked shows the new value whether or not anything was
+   stored. On a refusal both selectors are put back to what the database still
+   holds and the one that was touched is outlined — which is the whole of the
+   feedback, and is why there is no sentence.
+
+   ⚠️ IN PLACE. Only the two `<select>`s in this row are touched; nothing
+   re-renders the Classes section, so an admin part-way down a list of
+   sixty-nine classes stays where they were. */
+async function setClassTier(row, touched) {
+  var classId = row.getAttribute('data-class');
+  var tierSel = row.querySelector('.tp[data-tp="tier"]');
+  var pathSel = row.querySelector('.tp[data-tp="pathway"]');
+  if (!classId || !tierSel || !pathSel) { return; }
+
+  var pathRaw = pathSel.value;
+  var bits = pathRaw.split(':');
+  var payload = {
+    class_id: classId,
+    tier: tierSel.value || null,
+    pathway: bits[0] || null,
+    subject: bits[1] || null,
+  };
+
+  var before = classTierState[classId] || { tier: '', pathway: '', subject: '' };
+  [tierSel, pathSel].forEach(function (el) { el.disabled = true; el.classList.remove('bad'); });
+
+  try {
+    var sess = await sb.auth.getSession();
+    var token = sess.data && sess.data.session && sess.data.session.access_token;
+    if (!token) { throw new Error('no access token on the current session'); }
+    var cfg = window.MrBadmusConfig || {};
+    var base = cfg.BACKEND_URL || 'https://mrbadmus-backend.onrender.com';
+    var res = await fetch(base + '/api/admin/class-tier', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    var body = null;
+    try { body = await res.json(); } catch (e) { body = null; }
+    if (!res.ok) { throw new Error('class-tier ' + res.status); }
+
+    /* What the row now holds is what came back, not what was chosen. */
+    var next = {
+      tier: (body && body.tier) || '',
+      pathway: (body && body.pathway) || '',
+      subject: (body && body.subject) || '',
+    };
+    classTierState[classId] = next;
+    tierSel.value = next.tier;
+    pathSel.value = pathValue(next);
+  } catch (e) {
+    console.error('[admin] class tier', e);
+    tierSel.value = before.tier;
+    pathSel.value = pathValue(before);
+    touched.classList.add('bad');
+  } finally {
+    [tierSel, pathSel].forEach(function (el) { el.disabled = false; });
+  }
+}
+
+var classTierState = {};
+
 function classHref(id) {
   var q = ['class=' + encodeURIComponent(id)];
   if (envQ()) { q.push(envQ()); }
@@ -1197,6 +1337,42 @@ async function render(ctx) {
   var classes = clsRes.data || [];
   var classIds = classes.map(function (c) { return c.id; });
 
+  /* ── ⊕ MRB-335 · tier, pathway and subject, READ SEPARATELY AND
+       TOLERANTLY ──────────────────────────────────────────────────────────
+
+     ⚠️ NOT ADDED TO THE `classes` SELECT ABOVE, and that is the ruling rather
+     than a style choice. It is the same call `teacher-live.js` makes for
+     `auto_assignments`, in its own words: naming a column that a database
+     which has not yet taken this ticket's migration does not have would turn
+     a missing column into AN EMPTY CLASS LIST FOR EVERY ADMIN. That query is
+     the one the whole page depends on. `classes.science_subject` and
+     `classes.tier_pathway_source` arrive in
+     `20260908_mrb335_classes_tier_rule.sql`, and until it is applied this
+     read fails and the page loses two selectors rather than its Classes
+     section.
+
+     Failing to `{}` is what makes that true: a row with no entry draws no
+     selectors at all, exactly as a KS3 row does. */
+  var tierBy = {};
+  if (classIds.length) {
+    try {
+      var tpRows = await inChunks(classIds, async function (chunk) {
+        var r = await sb.from('classes')
+          .select('id, tier, science_pathway, science_subject')
+          .in('id', chunk);
+        if (r.error) { throw r.error; }
+        return r.data || [];
+      });
+      tpRows.forEach(function (r) {
+        tierBy[r.id] = { tier: r.tier || '', pathway: r.science_pathway || '',
+                         subject: r.science_subject || '' };
+      });
+    } catch (e) {
+      console.error('[admin] class tier/pathway', e);
+      tierBy = {};
+    }
+  }
+
   // ── who teaches what, school-wide (RLS: class_teachers_admin_read) ─────
   var links = classIds.length ? await inChunks(classIds, async function (chunk) {
     var r = await sb.from('class_teachers')
@@ -1401,11 +1577,12 @@ async function render(ctx) {
 
       var right = '<span class="count">' + (n == null ? 0 : n) + '</span> ' +
                   '<span class="meta">' + (n === 1 ? 'student' : 'students') + '</span>' +
+                  tierControls(c, tierBy[c.id]) +
                   '<span class="classlist">' +
                   (who.length ? escapeHtml(who.join(', ')) : 'No teacher assigned') +
                   '</span>';
 
-      return '<div class="row">' + left +
+      return '<div class="row" data-class="' + escapeHtml(c.id) + '">' + left +
              '<span class="right">' + right + '</span></div>';
     });
 
@@ -1418,7 +1595,19 @@ async function render(ctx) {
   if (!classes.length) {
     document.getElementById('classes-empty').style.display = 'block';
   } else {
-    document.getElementById('classes').innerHTML = yearGroupsHtml.join('');
+    var classesHost = document.getElementById('classes');
+    classesHost.innerHTML = yearGroupsHtml.join('');
+    /* ⊕ MRB-335 — ONE listener for every selector on the section, rather than
+       one per control. Sixty-nine classes is up to a hundred and thirty-eight
+       selects, and delegation is also what keeps this correct if the section
+       is ever repainted: the listener is on a host that survives. */
+    classTierState = tierBy;
+    classesHost.addEventListener('change', function (e) {
+      var el = e.target;
+      if (!el || !el.classList || !el.classList.contains('tp')) { return; }
+      var row = el.closest('.row');
+      if (row) { setClassTier(row, el); }
+    });
   }
 
   document.getElementById('main').style.display = 'block';
