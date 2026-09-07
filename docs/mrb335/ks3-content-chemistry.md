@@ -404,3 +404,29 @@ Gates at commit: chemistry-only `validate_lesson` clean, `verify_answer_position
 OK, `verify_answer_lengths` green on `bank/C4`.
 
 ---
+## Retro sweep — the detector run back over C1, C2, C3 and C6
+
+The near-duplicate detector was written during C4, so the four units committed
+before it had never been through it. Running it back over them found five more
+rows that repeated a question their own unit already asked. All five are fixed
+here, in one commit, because a fix that spans three units is not a top-up and
+splitting it three ways would only hide what it is.
+
+| unit · row | duplicated | what was repeated |
+|---|---|---|
+| `c2-03-e09` | `c2-03-h04` | the Red Sea being saltier than the Baltic, and what that establishes |
+| `c3-02-e06` | `c3-02-h04` | the nail-varnish-and-remover scenario |
+| `c6-04-h08` | `c6-04-s02` | whether warming could make copper react with acid |
+| `c6-06-h08` | `c6-06-e02` | reading a salt's name backwards to its acid and its metal |
+| `c6-06-s06` | `c6-06-e03` | leftover solid on the bottom meaning the acid is used up |
+
+`c3-02-e06` is the interesting one: the question was genuinely different — the
+original asks what the word *insoluble* is worth, the new one asks what the
+remover is CALLED — but both were set in nail varnish, so an assignment drawing
+both would read as one question asked twice. Moved to grease and white spirit.
+Same concept, different bench.
+
+C1 came back clean at the threshold, which is worth recording: it was the unit
+authored most slowly, before either calibration pass existed.
+
+---

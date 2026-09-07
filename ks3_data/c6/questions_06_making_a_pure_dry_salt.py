@@ -433,26 +433,29 @@ QUESTIONS = [
     {
         "id": "c6-06-s06",
         "band": "standard",
-        "text": "Black copper oxide is stirred into blue-free acid until "
-                "black powder stays on the bottom and will not go in. What "
-                "does that tell you?",
+        "text": "A student filters the blue solution and leaves it on a "
+                "windowsill to cool, without heating it first. What do they "
+                "get?",
         "options": [
-            {"text": "That too much has been added, so some of the salt has "
-                     "been used up again by the excess and the yield will now "
-                     "be lower than it should be",
+            {"text": "Large crystals, and more of them than heating would "
+                     "have given, because nothing has been lost to the air as "
+                     "steam along the way",
              "correct": False,
-             "why": "Excess is deliberate, and the salt is not attacked by "
-                    "it. The yield is set by the acid"},
-            {"text": "That every last bit of acid has been used up",
+             "why": "Nothing is lost by heating either — the salt cannot "
+                    "leave the beaker. The problem is that the solution is "
+                    "too dilute"},
+            {"text": "Very little, because the solution is too dilute for "
+                     "crystals to come out of it",
              "correct": True},
-            {"text": "That the reaction has failed",
+            {"text": "A white powder instead of blue crystals",
              "correct": False,
-             "why": "It has finished, which is the opposite. The leftover "
-                    "solid is the signal"},
-            {"text": "That the acid was too weak to react at all",
+             "why": "White powder is what over-heating gives. Under-heating "
+                    "gives almost nothing at all"},
+            {"text": "The same crystals, a few days later",
              "correct": False,
-             "why": "The solution has gone blue, which means it reacted. What "
-                    "has run out is the acid"},
+             "why": "Some water does evaporate from an open beaker, and a "
+                    "windowsill is a slow way to reach a concentration that "
+                    "heating reaches in minutes"},
         ],
         "figure": None,
     },
@@ -594,24 +597,25 @@ QUESTIONS = [
     {
         "id": "c6-06-h08",
         "band": "harder",
-        "text": "The name of a salt is said to give the recipe backwards. "
-                "What must have made magnesium nitrate?",
+        "text": "A jar of sodium sulfate is handed to you. The acid that made "
+                "it can be named for certain; the base cannot. Why not?",
         "options": [
-            {"text": "Nitrogen in some form, and an acid containing "
-                     "magnesium, since the first word of a salt always names "
-                     "the acid it came from",
+            {"text": "Because the base is used up completely in the reaction "
+                     "and leaves nothing of itself behind in the salt for "
+                     "anybody to identify afterwards",
              "correct": False,
-             "why": "Exactly the wrong way round. The metal comes first and "
-                    "the acid supplies the ending"},
-            {"text": "Magnesium and hydrochloric acid",
+             "why": "The metal from the base is in the salt and names it. "
+                    "What is missing is which sodium compound supplied it"},
+            {"text": "Because sulfates can be made without a base at all",
              "correct": False,
-             "why": "Hydrochloric acid gives chlorides. A nitrate needs "
-                    "nitric acid"},
-            {"text": "Any metal at all with nitric acid",
+             "why": "A salt needs a metal from somewhere, and that somewhere "
+                    "is a base or a metal itself"},
+            {"text": "Because sodium is not a base",
              "correct": False,
-             "why": "The first word names the metal, and it is magnesium. No "
-                    "other metal would give this salt"},
-            {"text": "Magnesium in some form, and nitric acid",
+             "why": "Sodium hydroxide and sodium carbonate are both bases. "
+                    "That is exactly the difficulty — there is more than one"},
+            {"text": "Because the acid gives the ending and the base only "
+                     "gives the metal, and several sodium compounds are bases",
              "correct": True},
         ],
         "figure": None,

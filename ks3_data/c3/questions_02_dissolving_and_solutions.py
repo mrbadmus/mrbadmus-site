@@ -367,24 +367,24 @@ QUESTIONS = [
     {
         "id": "c3-02-e06",
         "band": "easier",
-        "text": "Nail varnish will not dissolve in water, but it dissolves "
-                "easily in nail varnish remover. What is the remover called?",
+        "text": "Grease will not dissolve in water, but it dissolves easily "
+                "in white spirit. What is the white spirit called?",
         "options": [
             {"text": "The solute, because it is the substance doing the work "
-                     "of breaking the varnish up and spreading it out",
+                     "of breaking the grease up and carrying it away",
              "correct": False,
              "why": "The solute is the thing that dissolves — here, the "
-                    "varnish. The liquid it dissolves in is the solvent"},
+                    "grease. The liquid it dissolves in is the solvent"},
             {"text": "The solvent",
              "correct": True},
             {"text": "The solution",
              "correct": False,
              "why": "The solution is the two of them together, once the "
-                    "varnish has dissolved in the remover"},
-            {"text": "The residue",
+                    "grease has dissolved in the spirit"},
+            {"text": "The filtrate",
              "correct": False,
-             "why": "That word belongs to filtering. It is the solid left "
-                    "behind in the paper"},
+             "why": "That word belongs to filtering. It is the liquid that "
+                    "passes through the paper"},
         ],
         "figure": None,
     },

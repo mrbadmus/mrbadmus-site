@@ -604,25 +604,27 @@ QUESTIONS = [
     {
         "id": "c6-04-h08",
         "band": "harder",
-        "text": "Copper does not react with dilute hydrochloric acid. Which "
-                "change would make it react?",
+        "text": "A tube of magnesium and acid is stoppered tightly while it "
+                "is still fizzing hard. What happens inside, and why does it "
+                "matter?",
         "options": [
-            {"text": "Warming the acid to just below boiling, since heating "
-                     "speeds up any reaction between an acid and a metal by a "
-                     "large factor",
+            {"text": "The reaction stops at once, because a sealed tube runs "
+                     "out of air and the hydrogen cannot be made without it",
              "correct": False,
-             "why": "Heating speeds up a reaction that can happen. This one "
-                    "cannot, at any temperature"},
-            {"text": "Using a more concentrated dilute acid",
+             "why": "The hydrogen comes out of the acid, not the air. The "
+                    "reaction carries on"},
+            {"text": "The hydrogen dissolves back into the acid, so nothing "
+                     "builds up",
              "correct": False,
-             "why": "Concentration changes how fast a possible reaction goes. "
-                    "It cannot make an impossible one start"},
-            {"text": "Leaving it for a year rather than a week",
+             "why": "Hydrogen is barely soluble, which is why it bubbles out "
+                    "in the first place"},
+            {"text": "Nothing changes, because the tube was open for only a "
+                     "few seconds before it was stoppered",
              "correct": False,
-             "why": "Time cannot make an impossible reaction happen. A year "
-                    "gives exactly what a week gave"},
-            {"text": "None of these — copper sits below hydrogen and cannot "
-                     "displace it",
+             "why": "The gas is produced fastest at the start, and it goes on "
+                    "being produced after the stopper is in"},
+            {"text": "Hydrogen keeps being made with nowhere to go, so the "
+                     "pressure climbs until the stopper or the glass gives",
              "correct": True},
         ],
         "figure": None,

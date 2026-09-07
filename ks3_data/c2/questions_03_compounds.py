@@ -451,25 +451,24 @@ QUESTIONS = [
     {
         "id": "c2-03-e09",
         "band": "easier",
-        "text": "Sea water from the Red Sea is saltier than sea water from "
-                "the Baltic. Which word describes sea water?",
+        "text": "Two elements are stirred together in a dish. What has to "
+                "happen before they become a compound?",
         "options": [
-            {"text": "A compound, because salt and water are chemically "
-                     "joined together everywhere that sea water is found",
+            {"text": "They have to be stirred for long enough that no part of "
+                     "the dish is any different from any other part of it",
              "correct": False,
-             "why": "The salt is dissolved, not joined. Boil the water off "
-                    "and the salt comes back unchanged"},
-            {"text": "An element, because it is one substance with one name",
+             "why": "However evenly a mixture is spread, nothing in it is "
+                    "joined. Stirring never makes a compound"},
+            {"text": "One of them has to dissolve in the other",
              "correct": False,
-             "why": "One name is not one substance. Sea water holds water, "
-                    "salt and a good deal else"},
-            {"text": "A mixture",
+             "why": "Dissolving spreads one substance through another and "
+                    "joins nothing. Evaporate it and both come back"},
+            {"text": "Their atoms have to be joined, in a chemical reaction",
              "correct": True},
-            {"text": "A compound, because it has its own properties",
+            {"text": "They have to be heated until they melt",
              "correct": False,
-             "why": "Its properties change with how salty it is, and a "
-                    "compound's cannot. That is what varying proportions "
-                    "mean"},
+             "why": "Melting is a change of state. Two melted elements poured "
+                    "together are still a mixture"},
         ],
         "figure": None,
     },
