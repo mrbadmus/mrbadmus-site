@@ -483,7 +483,9 @@ QUESTIONS = [
         "band": "standard",
         "text": "Why would a large grain of sand be a poor choice for a smoke "
                 "cell?",
-        "options": [            {"text": "Because it is too heavy to be seen under a microscope",
+        "options": [
+            {"text": "Because it would be far too heavy to be seen under the "
+                     "microscope",
              "correct": False,
              "why": "It is easy to see; the problem is that it does not "
                     "move."},
@@ -495,7 +497,7 @@ QUESTIONS = [
              "why": "It is struck constantly; the strikes simply balance out "
                     "on something that big."},
             {"text": "Because so many molecules strike it that the pushes "
-                     "cancel almost exactly",
+                     "cancel",
              "correct": True},
         ],
         "figure": None,
@@ -504,10 +506,11 @@ QUESTIONS = [
         "id": "p11-02-s06",
         "band": "standard",
         "text": "Why does a speck keep changing direction?",
-        "options": [            {"text": "Because the leftover imbalance points a different way "
-                     "each instant",
+        "options": [
+            {"text": "Because the leftover imbalance keeps changing direction",
              "correct": True},
-            {"text": "Because it bounces off the walls of the cell",
+            {"text": "Because it keeps bouncing off the walls of the cell as "
+                     "it goes",
              "correct": False,
              "why": "It changes direction constantly in the middle of the "
                     "cell, far from any wall."},
@@ -529,12 +532,12 @@ QUESTIONS = [
             {"text": "The specks are very small", "correct": False,
              "why": "A draught moves small things most easily, so this "
                     "supports the student rather than refuting them."},
-            {"text": "The motion is faster when the cell is warmed",
+            {"text": "The motion becomes much faster when the cell is warmed "
+                     "up",
              "correct": False,
              "why": "A warm cell could have stronger currents, so this does "
                     "not settle it on its own."},
-            {"text": "Neighbouring specks move in different directions at the "
-                     "same moment",
+            {"text": "Neighbouring specks move different ways at once",
              "correct": True},
             {"text": "The specks are visible as bright points",
              "correct": False,
@@ -569,8 +572,8 @@ QUESTIONS = [
         "id": "p11-02-s09",
         "band": "standard",
         "text": "Why is the light shone into a smoke cell from the side?",
-        "options": [            {"text": "So the specks show up brightly against a dark "
-                     "background",
+        "options": [
+            {"text": "So the specks show up brightly against the dark",
              "correct": True},
             {"text": "To warm the air and start the motion", "correct": False,
              "why": "The motion is there before the lamp is on; warming would "
@@ -578,7 +581,8 @@ QUESTIONS = [
             {"text": "So the molecules can be seen as well", "correct": False,
              "why": "No arrangement of light makes molecules visible in a "
                     "light microscope."},
-            {"text": "To stop the smoke escaping from the cell",
+            {"text": "To stop the smoke escaping from the cell while it is "
+                     "watched",
              "correct": False,
              "why": "Light does not seal anything; the cell's walls do that."},
         ],
@@ -611,7 +615,8 @@ QUESTIONS = [
         "band": "standard",
         "text": "Why is the motion described as random rather than just "
                 "complicated?",
-        "options": [            {"text": "Because it is too fast to follow with the eye",
+        "options": [
+            {"text": "Because it is too fast to follow with the eye",
              "correct": False,
              "why": "It is slow enough to watch and to trace; speed is not "
                     "the point."},
@@ -624,8 +629,8 @@ QUESTIONS = [
              "correct": False,
              "why": "A better microscope shows the same randomness in more "
                     "detail."},
-            {"text": "Because nothing chooses the direction, and each step is "
-                     "unrelated to the last",
+            {"text": "Because nothing chooses the direction of each fresh "
+                     "step",
              "correct": True},
         ],
         "figure": None,
@@ -687,8 +692,9 @@ QUESTIONS = [
         "band": "harder",
         "text": "Why does a larger speck jiggle less than a smaller one at "
                 "the same temperature?",
-        "options": [            {"text": "Because more strikes arrive and cancel, and there is "
-                     "more mass to shift",
+        "options": [
+            {"text": "Because more strikes cancel, and there is more mass to "
+                     "shift",
              "correct": True},
             {"text": "Because fewer molecules reach it", "correct": False,
              "why": "Far more reach it; the point is that so many arrive that "
@@ -697,8 +703,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Nothing steers the molecules; they arrive from every "
                     "direction whatever is in the way."},
-            {"text": "Because larger specks are heavier and sink out of the "
-                     "way",
+            {"text": "Because larger specks are heavier and simply sink out "
+                     "of the way faster",
              "correct": False,
              "why": "The comparison is made while both are suspended, and the "
                     "difference is in the jiggling itself."},
@@ -710,11 +716,13 @@ QUESTIONS = [
         "band": "harder",
         "text": "Why was a jiggling speck taken as evidence that atoms are "
                 "real?",
-        "options": [            {"text": "Because the atoms could finally be seen directly",
+        "options": [
+            {"text": "Because the atoms could finally be seen directly",
              "correct": False,
              "why": "They still could not be seen; only their effect was "
                     "visible."},
-            {"text": "Because the motion stopped when the atoms were removed",
+            {"text": "Because the motion stopped when the atoms were taken "
+                     "out of the cell",
              "correct": False,
              "why": "No experiment removed the atoms; the argument was about "
                     "explaining the movement."},
@@ -722,8 +730,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Everything is made of atoms; what mattered was what "
                     "moved the specks."},
-            {"text": "Because only separate invisible particles delivering "
-                     "uneven pushes could explain it",
+            {"text": "Because only separate invisible particles could push "
+                     "unevenly",
              "correct": True},
         ],
         "figure": None,
@@ -777,14 +785,16 @@ QUESTIONS = [
         "band": "harder",
         "text": "A sealed cell is left for a week at a steady temperature. "
                 "Why has the motion not died away?",
-        "options": [            {"text": "Because the molecules never stop moving, so the strikes "
-                     "never stop",
+        "options": [
+            {"text": "Because the molecules never stop moving, nor the "
+                     "strikes",
              "correct": True},
             {"text": "Because the cell has slowly warmed over the week",
              "correct": False,
              "why": "The temperature is stated as steady, and the motion "
                     "would continue even if it were not."},
-            {"text": "Because fresh smoke has been produced inside the cell",
+            {"text": "Because fresh smoke keeps being produced inside the "
+                     "sealed cell",
              "correct": False,
              "why": "The cell is sealed and nothing new is made; the same "
                     "specks are still jiggling."},
@@ -800,7 +810,8 @@ QUESTIONS = [
         "band": "harder",
         "text": "Robert Brown saw this in 1827 and could not explain it. What "
                 "was missing at the time?",
-        "options": [            {"text": "A microscope good enough to see the specks",
+        "options": [
+            {"text": "A microscope good enough to see the specks",
              "correct": False,
              "why": "His microscope showed them perfectly well — that is how "
                     "he saw the motion."},
@@ -808,12 +819,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Being first is why it carries his name; it is not what "
                     "stopped him explaining it."},
-            {"text": "A way of keeping the sample at a steady temperature",
+            {"text": "A reliable way of keeping the whole sample at a steady "
+                     "temperature",
              "correct": False,
              "why": "Temperature control would have refined the observation, "
                     "not explained it."},
-            {"text": "Accepted evidence that matter is made of separate "
-                     "moving particles",
+            {"text": "Accepted evidence that matter is made of moving "
+                     "particles",
              "correct": True},
         ],
         "figure": None,
@@ -825,7 +837,7 @@ QUESTIONS = [
                 "smoke cell?",
         "options": [
             {"text": "Because a current would carry neighbouring specks the "
-                     "same way, and they go different ways",
+                     "same way",
              "correct": True},
             {"text": "Because there is no air in the cell to convect",
              "correct": False,
@@ -836,8 +848,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Small currents certainly can occur, which is why the "
                     "observation has to rule them out."},
-            {"text": "Because the specks are too heavy to be carried by a "
-                     "current",
+            {"text": "Because the specks would be far too heavy to be carried "
+                     "by a current",
              "correct": False,
              "why": "They are light enough for a current to move; the "
                     "directions they take are what settles it."},

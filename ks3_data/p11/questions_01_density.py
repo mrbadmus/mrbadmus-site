@@ -619,12 +619,12 @@ QUESTIONS = [
              "correct": False,
              "why": "Most stones are the denser of the two, and it would not "
                     "matter either way."},
-            {"text": "Because the stone absorbs its own volume of water",
+            {"text": "Because the stone absorbs its own volume of water as it "
+                     "sinks",
              "correct": False,
              "why": "A stone that soaked water up would give a reading that "
                     "was too small."},
-            {"text": "Because the water pushed aside fills the same space as "
-                     "the stone",
+            {"text": "Because the water pushed aside fills the stone's space",
              "correct": True},
             {"text": "Because the stone's mass pushes the water up",
              "correct": False,
@@ -786,8 +786,8 @@ QUESTIONS = [
                 "displaces about 5 cm³. Why is that a poor measurement, and "
                 "what would fix it?",
         "options": [
-            {"text": "The reading is fine; density does not depend on the "
-                     "size of the sample",
+            {"text": "The reading is fine, since density does not depend on "
+                     "the size of the sample",
              "correct": False,
              "why": "The density does not, but the UNCERTAINTY in this "
                     "measurement of it certainly does."},
@@ -796,8 +796,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The balance gives the mass; the cylinder is still needed "
                     "for the volume."},
-            {"text": "The uncertainty is a large share of 5 cm³; use a bigger "
-                     "stone or a narrower cylinder",
+            {"text": "The uncertainty is a big share of 5 cm³; use a bigger "
+                     "stone",
              "correct": True},
             {"text": "Water is the wrong liquid; a denser one would read more "
                      "accurately",

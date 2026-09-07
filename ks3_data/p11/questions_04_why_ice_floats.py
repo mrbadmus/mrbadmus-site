@@ -541,7 +541,8 @@ QUESTIONS = [
             {"text": "Because oil is less dense than water", "correct": False,
              "why": "It is, but that is about floating rather than about "
                     "bursting a bottle."},
-            {"text": "Because oil freezes at a much lower temperature",
+            {"text": "Because oil freezes at a far lower temperature than "
+                     "water ever does",
              "correct": False,
              "why": "Even when it does set, it takes up less space rather "
                     "than more."},
@@ -558,10 +559,11 @@ QUESTIONS = [
              "correct": False,
              "why": "A given volume of ice IS lighter; the trouble is the "
                     "word rather than the fact."},
-            {"text": "Because a berg is far heavier than a cup of water; "
-                     "density decides",
+            {"text": "Because a berg outweighs a cup of water; density "
+                     "decides",
              "correct": True},
-            {"text": "Because floating has nothing to do with weight at all",
+            {"text": "Because floating has nothing at all to do with an "
+                     "object's weight",
              "correct": False,
              "why": "Weight is one of the two forces involved; it is comparing "
                     "raw weights that fails."},
@@ -763,14 +765,15 @@ QUESTIONS = [
             {"text": "Because desert rock is harder", "correct": False,
              "why": "Rock hardness varies everywhere; what is missing is one "
                     "of the ingredients."},
-            {"text": "Because there is little water to get into the cracks "
-                     "and freeze",
+            {"text": "Because there is little water to get into cracks and "
+                     "freeze",
              "correct": True},
             {"text": "Because deserts never get cold enough at night",
              "correct": False,
              "why": "Many deserts drop below freezing; it is the water that "
                     "is absent."},
-            {"text": "Because sand fills the cracks and holds them shut",
+            {"text": "Because blown sand fills up the cracks and holds them "
+                     "tightly shut",
              "correct": False,
              "why": "Sand in a crack does not stop ice forming; the lack of "
                     "water does."},
@@ -783,13 +786,13 @@ QUESTIONS = [
         "text": "A student says the water molecules themselves expand when "
                 "water freezes. Correct them.",
         "options": [
-            {"text": "They are right — that is why the ice takes up more "
-                     "room",
+            {"text": "They are right — that is exactly why the ice takes up "
+                     "more room than water",
              "correct": False,
              "why": "A molecule keeps its size through every change of state; "
                     "only the arrangement alters."},
             {"text": "The molecules are unchanged; they lock into an open "
-                     "arrangement that holds them apart",
+                     "arrangement",
              "correct": True},
             {"text": "The molecules shrink, which is why there are gaps",
              "correct": False,
@@ -862,10 +865,10 @@ QUESTIONS = [
              "why": "Almost everything freezes; it is what happens to the "
                     "density that is unusual."},
             {"text": "Because almost every other substance is denser as a "
-                     "solid than as its liquid",
+                     "solid",
              "correct": True},
             {"text": "Because water is the only substance that has a solid "
-                     "form",
+                     "form at all",
              "correct": False,
              "why": "Every substance has one; iron, wax and lead all do."},
             {"text": "Because water freezes at 0 °C and nothing else does",

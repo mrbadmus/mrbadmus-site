@@ -643,15 +643,17 @@ QUESTIONS = [
         "band": "standard",
         "text": "Two kettles hold 0.5 litres and 1.5 litres of water, both at "
                 "100 °C. Compare them.",
-        "options": [            {"text": "The larger is hotter and holds more energy",
+        "options": [
+            {"text": "The larger one is hotter and holds more energy, since "
+                     "there is more of it",
              "correct": False,
              "why": "Both read 100 °C, so neither is hotter."},
             {"text": "Same temperature and the same internal energy",
              "correct": False,
              "why": "Three times as much water means three times as many "
                     "particles to hold energy."},
-            {"text": "Same temperature, and the larger holds about three "
-                     "times the internal energy",
+            {"text": "Same temperature; the larger holds three times the "
+                     "internal energy",
              "correct": True},
             {"text": "The smaller is hotter, because it heats up quicker",
              "correct": False,
@@ -666,19 +668,20 @@ QUESTIONS = [
         "id": "p11-03-h05",
         "band": "harder",
         "text": "Why is heat a poor word for something an object contains?",
-        "options": [            {"text": "Because objects contain no energy at all",
+        "options": [
+            {"text": "Because objects contain no energy at all",
              "correct": False,
              "why": "They contain a great deal — that is exactly what "
                     "internal energy is."},
-            {"text": "Because only hot objects contain anything worth naming",
+            {"text": "Because only really hot objects contain anything worth "
+                     "naming",
              "correct": False,
              "why": "A cold object holds internal energy too, just less of "
                     "it."},
             {"text": "Because heat is measured in degrees rather than joules",
              "correct": False,
              "why": "Heating moves joules; degrees measure temperature."},
-            {"text": "Because heating names a transfer, and what is contained "
-                     "is internal energy",
+            {"text": "Because heating names a transfer, not what is contained",
              "correct": True},
         ],
         "figure": None,
@@ -761,8 +764,8 @@ QUESTIONS = [
             {"text": "Because thermometers cannot read below −273.15 °C",
              "correct": False,
              "why": "The limit is in the physics, not in the instrument."},
-            {"text": "Because particles can always be given more energy, but "
-                     "cannot have less than the least allowed",
+            {"text": "Because more energy can always be added, but not less "
+                     "than the least",
              "correct": True},
             {"text": "Because there IS a highest temperature, and it has "
                      "simply not been measured",
@@ -811,15 +814,15 @@ QUESTIONS = [
              "correct": False,
              "why": "It does take longer, and that is a consequence rather "
                     "than the reason."},
-            {"text": "Because there are twice as many particles, each needing "
-                     "the same increase",
+            {"text": "Because twice as many particles each need the same "
+                     "increase",
              "correct": True},
             {"text": "Because a larger volume loses more energy to the room",
              "correct": False,
              "why": "Losses matter in practice, but the doubling holds even "
                     "with none at all."},
-            {"text": "Because the temperature rise is halved when the mass "
-                     "doubles",
+            {"text": "Because the temperature rise is always halved when the "
+                     "mass doubles",
              "correct": False,
              "why": "The rise is stated to be the same; it is the energy "
                     "needed that doubles."},
