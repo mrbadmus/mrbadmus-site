@@ -324,17 +324,16 @@ QUESTIONS = [
         "id": "p3-01-e05",
         "band": "easier",
         "text": "Which of these is a unit of speed?",
-        "options": [
-            {"text": "s/m", "correct": False,
+        "options": [            {"text": "s/m", "correct": False,
              "why": "That is the unit you get from time ÷ distance — the "
                     "division the wrong way round."},
-            {"text": "m/s", "correct": True},
-            {"text": "m", "correct": False,
-             "why": "A metre is a distance on its own. A speed needs a time "
-                    "as well."},
             {"text": "ms", "correct": False,
              "why": "Written together that is a millisecond, which is a time, "
                     "not a speed."},
+            {"text": "m", "correct": False,
+             "why": "A metre is a distance on its own. A speed needs a time "
+                    "as well."},
+            {"text": "m/s", "correct": True},
         ],
         "figure": None,
     },
@@ -342,17 +341,16 @@ QUESTIONS = [
         "id": "p3-01-e06",
         "band": "easier",
         "text": "A bus travels 240 m in 30 s. What is its speed?",
-        "options": [
-            {"text": "8 m/s", "correct": True},
+        "options": [            {"text": "210 m/s", "correct": False,
+             "why": "That is 240 − 30. Nothing in speed = distance ÷ time "
+                    "subtracts."},
             {"text": "7200 m/s", "correct": False,
              "why": "That is 240 × 30. Multiplying a distance by a time does "
                     "not give a speed."},
             {"text": "0.125 m/s", "correct": False,
              "why": "That is 30 ÷ 240 — time divided by distance, the "
                     "triangle upside down."},
-            {"text": "210 m/s", "correct": False,
-             "why": "That is 240 − 30. Nothing in speed = distance ÷ time "
-                    "subtracts."},
+            {"text": "8 m/s", "correct": True},
         ],
         "figure": None,
     },
@@ -380,17 +378,16 @@ QUESTIONS = [
         "band": "easier",
         "text": "You know how far a train has to go and how fast it travels. "
                 "How do you find the time it will take?",
-        "options": [
-            {"text": "Divide the distance by the speed", "correct": True},
+        "options": [            {"text": "Subtract the speed from the distance", "correct": False,
+             "why": "Metres and metres per second are different quantities, "
+                    "so they cannot be subtracted."},
             {"text": "Multiply the distance by the speed", "correct": False,
              "why": "That gives a far bigger number, and the seconds never "
                     "appear on their own."},
             {"text": "Divide the speed by the distance", "correct": False,
              "why": "That is the division the wrong way round; the distance "
                     "goes on top when you want a time."},
-            {"text": "Subtract the speed from the distance", "correct": False,
-             "why": "Metres and metres per second are different quantities, "
-                    "so they cannot be subtracted."},
+            {"text": "Divide the distance by the speed", "correct": True},
         ],
         "figure": None,
     },
@@ -417,21 +414,20 @@ QUESTIONS = [
         "id": "p3-01-e10",
         "band": "easier",
         "text": "What is meant by the average speed of a journey?",
-        "options": [
-            {"text": "The average of the speeds travelled at",
+        "options": [            {"text": "The average of the speeds travelled at",
              "correct": False,
              "why": "Adding the speeds and halving ignores how long was spent "
                     "at each one."},
-            {"text": "The total distance divided by the total time",
-             "correct": True},
-            {"text": "The speed reached halfway through the journey",
-             "correct": False,
-             "why": "That is one instant, and it need not be typical of the "
-                    "whole journey."},
             {"text": "The fastest speed reached during the journey",
              "correct": False,
              "why": "That is the top speed. An average has to take the slow "
                     "parts in as well."},
+            {"text": "The speed reached halfway through the journey",
+             "correct": False,
+             "why": "That is one instant, and it need not be typical of the "
+                    "whole journey."},
+            {"text": "The total distance divided by the total time",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -460,9 +456,10 @@ QUESTIONS = [
         "band": "easier",
         "text": "A car is parked at the roadside. Relative to the ground, its "
                 "speed is…",
-        "options": [
-            {"text": "0 m/s, because it is not moving at all",
-             "correct": True},
+        "options": [            {"text": "impossible to give without knowing how far it has come",
+             "correct": False,
+             "why": "It covers no distance in any time, so the division gives "
+                    "zero whatever it did earlier."},
             {"text": "1 m/s, because it is still on the road",
              "correct": False,
              "why": "Sitting on the road is not moving. Its distance from any "
@@ -470,10 +467,8 @@ QUESTIONS = [
             {"text": "not a speed that can be written down", "correct": False,
              "why": "Not moving is a perfectly good speed, and it is written "
                     "0 m/s."},
-            {"text": "impossible to give without knowing how far it has come",
-             "correct": False,
-             "why": "It covers no distance in any time, so the division gives "
-                    "zero whatever it did earlier."},
+            {"text": "0 m/s, because it is not moving at all",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -482,17 +477,16 @@ QUESTIONS = [
         "band": "easier",
         "text": "Which piece of apparatus times a trolley over a set distance "
                 "in the lab?",
-        "options": [
-            {"text": "A metre rule on its own", "correct": False,
+        "options": [            {"text": "A metre rule on its own", "correct": False,
              "why": "A metre rule gives you the distance. You still need a "
                     "time before you have a speed."},
-            {"text": "A pair of light gates", "correct": True},
-            {"text": "A newtonmeter", "correct": False,
-             "why": "A newtonmeter measures a force in newtons, and no force "
-                    "appears in speed = distance ÷ time."},
             {"text": "A balance", "correct": False,
              "why": "A balance measures mass in kilograms, and mass does not "
                     "appear in the speed equation."},
+            {"text": "A newtonmeter", "correct": False,
+             "why": "A newtonmeter measures a force in newtons, and no force "
+                    "appears in speed = distance ÷ time."},
+            {"text": "A pair of light gates", "correct": True},
         ],
         "figure": None,
     },
@@ -539,17 +533,16 @@ QUESTIONS = [
         "id": "p3-01-e16",
         "band": "easier",
         "text": "A snail crawls 0.6 m in 60 s. What is its speed?",
-        "options": [
-            {"text": "36 m/s", "correct": False,
+        "options": [            {"text": "36 m/s", "correct": False,
              "why": "That is 0.6 × 60, and multiplying a distance by a time "
                     "does not give a speed."},
-            {"text": "0.01 m/s", "correct": True},
-            {"text": "100 m/s", "correct": False,
-             "why": "That is 60 ÷ 0.6 — time divided by distance, the wrong "
-                    "way round."},
             {"text": "0.6 m/s", "correct": False,
              "why": "That is the distance with the unit swapped. The 60 s has "
                     "not been used at all."},
+            {"text": "100 m/s", "correct": False,
+             "why": "That is 60 ÷ 0.6 — time divided by distance, the wrong "
+                    "way round."},
+            {"text": "0.01 m/s", "correct": True},
         ],
         "figure": None,
     },
@@ -558,19 +551,18 @@ QUESTIONS = [
         "band": "easier",
         "text": "A car's speedometer reads 13 m/s. What is it telling the "
                 "driver?",
-        "options": [
-            {"text": "How far the car has travelled so far", "correct": False,
+        "options": [            {"text": "How far the car has travelled so far", "correct": False,
              "why": "That is the odometer. A speedometer reads a speed, not a "
                     "distance."},
-            {"text": "How fast the car is going at that moment",
-             "correct": True},
+            {"text": "How long the journey has taken so far", "correct": False,
+             "why": "That would be a time. The unit m/s tells you the reading "
+                    "is a speed."},
             {"text": "The average speed for the whole journey",
              "correct": False,
              "why": "A speedometer reads the speed right now; an average has "
                     "to be worked out from the whole journey."},
-            {"text": "How long the journey has taken so far", "correct": False,
-             "why": "That would be a time. The unit m/s tells you the reading "
-                    "is a speed."},
+            {"text": "How fast the car is going at that moment",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -620,17 +612,16 @@ QUESTIONS = [
         "band": "standard",
         "text": "A train travels at a steady 45 m/s for 200 s. How far does "
                 "it go, in kilometres?",
-        "options": [
-            {"text": "9 km", "correct": True},
+        "options": [            {"text": "0.225 km", "correct": False,
+             "why": "That is 45 ÷ 200. To find a distance you multiply the "
+                    "speed by the time."},
             {"text": "9000 km", "correct": False,
              "why": "9000 is the answer in metres, and there are 1000 m in a "
                     "kilometre."},
             {"text": "90 km", "correct": False,
              "why": "That divides the 9000 m by 100. A kilometre is 1000 m, "
                     "not 100 m."},
-            {"text": "0.225 km", "correct": False,
-             "why": "That is 45 ÷ 200. To find a distance you multiply the "
-                    "speed by the time."},
+            {"text": "9 km", "correct": True},
         ],
         "figure": None,
     },
@@ -678,9 +669,10 @@ QUESTIONS = [
         "text": "A trolley runs at the same steady speed, but the light gates "
                 "are moved from 0.50 m apart to 1.00 m apart. What happens to "
                 "the readings?",
-        "options": [
-            {"text": "The time doubles and the speed comes out the same",
-             "correct": True},
+        "options": [            {"text": "The speed doubles because it travels further",
+             "correct": False,
+             "why": "Travelling further does not make it faster; it simply "
+                    "takes longer."},
             {"text": "The time doubles and so does the speed",
              "correct": False,
              "why": "Both the distance and the time double, so the division "
@@ -689,10 +681,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Twice the distance at the same speed must take twice as "
                     "long, so the time cannot stay the same."},
-            {"text": "The speed doubles because it travels further",
-             "correct": False,
-             "why": "Travelling further does not make it faster; it simply "
-                    "takes longer."},
+            {"text": "The time doubles and the speed comes out the same",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -744,8 +734,10 @@ QUESTIONS = [
         "band": "standard",
         "text": "A student times a 10.0 m walk three times and gets 8.2 s, "
                 "8.6 s and 8.4 s. What speed should be reported?",
-        "options": [
-            {"text": "About 1.2 m/s", "correct": True},
+        "options": [            {"text": "About 3.6 m/s, worked out from 30.0 m",
+             "correct": False,
+             "why": "The walk was 10.0 m each time. The three runs are "
+                    "repeats, not three legs of one journey."},
             {"text": "About 1.22 m/s, worked out from the quickest run",
              "correct": False,
              "why": "Picking the quickest run throws away two perfectly good "
@@ -753,10 +745,7 @@ QUESTIONS = [
             {"text": "About 0.84 m/s", "correct": False,
              "why": "That is 8.4 ÷ 10.0 — time divided by distance, the wrong "
                     "way round."},
-            {"text": "About 3.6 m/s, worked out from 30.0 m",
-             "correct": False,
-             "why": "The walk was 10.0 m each time. The three runs are "
-                    "repeats, not three legs of one journey."},
+            {"text": "About 1.2 m/s", "correct": True},
         ],
         "figure": None,
     },
@@ -786,9 +775,10 @@ QUESTIONS = [
         "band": "standard",
         "text": "A lorry is limited to 25 m/s. It covers 1500 m of motorway "
                 "in 50 s. Has it kept to the limit?",
-        "options": [
-            {"text": "No — its average speed over that stretch was 30 m/s",
-             "correct": True},
+        "options": [            {"text": "It cannot be decided without the lorry's top speed",
+             "correct": False,
+             "why": "The check measures the average over the stretch, and "
+                    "both numbers for it are given."},
             {"text": "Yes, because 1500 m is only a short stretch of road",
              "correct": False,
              "why": "The length of the stretch does not matter: 1500 ÷ 50 is "
@@ -797,10 +787,8 @@ QUESTIONS = [
              "correct": False,
              "why": "A speed and a time are different quantities and cannot "
                     "be compared like that."},
-            {"text": "It cannot be decided without the lorry's top speed",
-             "correct": False,
-             "why": "The check measures the average over the stretch, and "
-                    "both numbers for it are given."},
+            {"text": "No — its average speed over that stretch was 30 m/s",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -893,17 +881,16 @@ QUESTIONS = [
         "band": "harder",
         "text": "A ferry crosses a strait at a steady 8 m/s and the crossing "
                 "takes 25 minutes. How wide is the strait?",
-        "options": [
-            {"text": "12 km", "correct": True},
+        "options": [            {"text": "12 000 km", "correct": False,
+             "why": "12 000 is the answer in metres, and there are 1000 m in "
+                    "a kilometre."},
             {"text": "200 m", "correct": False,
              "why": "That is 8 × 25, treating the minutes as if they were "
                     "seconds."},
             {"text": "3.1 km", "correct": False,
              "why": "That is 25 ÷ 8, a division where the question needs a "
                     "multiplication."},
-            {"text": "12 000 km", "correct": False,
-             "why": "12 000 is the answer in metres, and there are 1000 m in "
-                    "a kilometre."},
+            {"text": "12 km", "correct": True},
         ],
         "figure": None,
     },
@@ -931,17 +918,16 @@ QUESTIONS = [
         "band": "harder",
         "text": "A satellite travels at 7.8 km/s. How far does it go in one "
                 "minute?",
-        "options": [
-            {"text": "468 km", "correct": True},
+        "options": [            {"text": "28 080 km", "correct": False,
+             "why": "That is 7.8 × 3600, which is how far it goes in an hour, "
+                    "not in a minute."},
             {"text": "7.8 km", "correct": False,
              "why": "That is one second's worth of travel, and a minute is 60 "
                     "of them."},
             {"text": "0.13 km", "correct": False,
              "why": "That is 7.8 ÷ 60, a division where a multiplication is "
                     "needed."},
-            {"text": "28 080 km", "correct": False,
-             "why": "That is 7.8 × 3600, which is how far it goes in an hour, "
-                    "not in a minute."},
+            {"text": "468 km", "correct": True},
         ],
         "figure": None,
     },

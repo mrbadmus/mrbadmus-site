@@ -518,6 +518,55 @@ give **20 / 24 / 20 / 20**.
 
 ---
 
+## ⚠️ A bias no row-by-row read can see: where the correct answer sat
+
+Measured across all twelve units once `phys_rebalance.py` existed, and it is
+the finding of this run that a careful reader would never have caught, because
+**every individual row was fine**. The defect lived in the aggregate.
+
+| unit | before | after |
+|---|---|---|
+| P3 | 40 / 36 / 30 / 14 | 31 / 31 / 30 / 28 |
+| P1 | 20 / 17 / 16 / 7 | 16 / 16 / 16 / 12 |
+| P4 | 16 / 15 / 14 / 3 | 13 / 13 / 13 / 9 |
+| P2 | 24 / 32 / 31 / 9 | 24 / 25 / 25 / 22 |
+| P8 | 17 / 23 / 28 / 4 | 17 / 19 / 19 / 17 |
+| P5 | 26 / 42 / 35 / 5 | 26 / 28 / 28 / 26 |
+| P6 | 6 / 20 / 13 / 9 | 11 / 13 / 13 / 11 |
+| P7 | 12 / 23 / 24 / 13 | 17 / 19 / 19 / 17 |
+| P9 | 16 / 68 / 34 / 2 | 29 / 31 / 31 / 29 |
+| P10 | 12 / 57 / 25 / 2 | 23 / 25 / 25 / 23 |
+| P11 | 9 / 73 / 23 / 3 | 26 / 30 / 26 / 26 |
+| P12 | 10 / 63 / 11 / 0 | 20 / 24 / 20 / 20 |
+
+**The shape of the bias.** Across the first eight units the fourth slot held
+about **10%** of the correct answers where it should hold 25%; in P12 it held
+**none at all** out of 84. A student who never read a stem and always guessed
+the second option would have beaten chance on this bank, on nine units out of
+twelve. That is a bigger edge than most of the distractors take away.
+
+**Why it happened.** Writing four options in order, the correct one gets
+written first and then distractors are built around it. Nothing in a single
+row looks wrong, and reviewing rows one at a time — which is what a cold
+examiner read is — cannot surface it. It needs a count.
+
+**The fix.** `phys_rebalance.py` walks a unit's rows at `bank_position >= 12`,
+finds the ones whose correct answer sits in an over-used slot, and swaps two
+option blocks so it moves to the least-used one. **It is content-neutral**: the
+same four options, the same correct one, every `why` still attached to its own
+option, and the correct option still carrying no `why`. Only rows this lane
+added are eligible, so the twelve rows AUTO composition reads are untouched.
+Verified after every run by `question_bank`'s "exactly one correct" and
+"positions 0–11 hold four of each band" checks, by the duplicate-answer-set
+check, and by reading rotated rows back.
+
+**What to take from it.** The mechanical sweep earned its place here. Length
+parity, duplicate stems and markup are all things it caught that a read might
+have caught too; the slot distribution is the one that was invisible without
+counting, and it was present in every unit written before the count existed.
+
+---
+
 ## ⚠️ `git add` was scoped correctly and a commit still swept in another lane
 
 Found by the commander in this lane's **P5 commit `586aaa0c4`**, which carried
