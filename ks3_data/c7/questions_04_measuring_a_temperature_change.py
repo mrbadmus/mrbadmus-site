@@ -333,4 +333,635 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c7-04-e05",
+        "band": "easier",
+        "text": "What is insulation?",
+        "options": [
+            {"text": "Material that stops heat escaping altogether, so that "
+                     "an insulated cup loses none of the energy the reaction "
+                     "inside it releases",
+             "correct": False,
+             "why": "Nothing stops it altogether. Even the best school rig "
+                    "still reads low"},
+            {"text": "Material that keeps electricity in a wire",
+             "correct": False,
+             "why": "The word is used that way too. Here it is about heat"},
+            {"text": "The lid on top of the cup",
+             "correct": False,
+             "why": "A lid helps, and insulation is what the cup itself is "
+                    "made of"},
+            {"text": "Material that slows heat escaping",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e06",
+        "band": "easier",
+        "text": "What is a systematic error?",
+        "options": [
+            {"text": "An error that pushes every reading the same way",
+             "correct": True},
+            {"text": "An error made by following the method incorrectly, so "
+                     "that the whole experiment has to be set up again from "
+                     "the beginning",
+             "correct": False,
+             "why": "That is a mistake. A systematic error can happen in a "
+                    "perfectly followed method"},
+            {"text": "An error that scatters readings either side of the "
+                     "truth",
+             "correct": False,
+             "why": "That is a random error, and it is the kind averaging "
+                    "reduces"},
+            {"text": "An error in the arithmetic",
+             "correct": False,
+             "why": "That is a mistake in the calculation rather than in the "
+                    "measurement"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e07",
+        "band": "easier",
+        "text": "What is a random error?",
+        "options": [
+            {"text": "An error that happens without any cause at all, which "
+                     "is why nothing can be done to reduce one however the "
+                     "apparatus is improved",
+             "correct": False,
+             "why": "Random errors have causes — reading a scale slightly "
+                    "differently each time. Averaging reduces them"},
+            {"text": "An error that scatters readings on both sides of the "
+                     "true value",
+             "correct": True},
+            {"text": "An error that makes every reading too low",
+             "correct": False,
+             "why": "That is systematic, and heat loss is the example in this "
+                    "lesson"},
+            {"text": "An error made by a careless student",
+             "correct": False,
+             "why": "Careful workers get random errors too. It is about the "
+                    "measurement, not the person"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e08",
+        "band": "easier",
+        "text": "What is the peak temperature?",
+        "options": [
+            {"text": "The highest temperature the reaction is capable of "
+                     "producing, which is worked out afterwards rather than "
+                     "read off the thermometer during the run",
+             "correct": False,
+             "why": "It is a reading you take at the time. Nothing is worked "
+                    "out"},
+            {"text": "The reading five minutes after mixing",
+             "correct": False,
+             "why": "By then heat loss has been winning for some time and the "
+                    "number has fallen"},
+            {"text": "The highest reading the thermometer reaches",
+             "correct": True},
+            {"text": "The temperature of the room",
+             "correct": False,
+             "why": "The room is a separate thing, and it is not what the "
+                    "peak measures"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e09",
+        "band": "easier",
+        "text": "What is meant by the true value?",
+        "options": [
+            {"text": "The mean of all the readings a group takes, which is "
+                     "the closest anybody can get to a value with real "
+                     "apparatus and is therefore treated as the true one",
+             "correct": False,
+             "why": "A mean can be wrong in the same direction every time. "
+                    "The true value is what a perfect measurement would "
+                    "give"},
+            {"text": "The reading the teacher gets",
+             "correct": False,
+             "why": "A teacher's apparatus loses heat too"},
+            {"text": "The largest reading anyone obtained",
+             "correct": False,
+             "why": "In this experiment the largest is likely to be the "
+                    "closest, and that is not what the phrase means"},
+            {"text": "The value a perfect measurement would give",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e10",
+        "band": "easier",
+        "text": "Why does polystyrene foam insulate so well?",
+        "options": [
+            {"text": "Because it is mostly trapped air, and air is a poor "
+                     "conductor",
+             "correct": True},
+            {"text": "Because the plastic it is made of conducts heat "
+                     "extremely badly, far worse than any other material a "
+                     "school laboratory has on the shelf",
+             "correct": False,
+             "why": "Solid polystyrene is a fair insulator and nothing "
+                    "special. It is the trapped air that does the work"},
+            {"text": "Because it is white, so it reflects heat",
+             "correct": False,
+             "why": "Colour matters a little for radiation. The trapped air "
+                    "is the reason"},
+            {"text": "Because it is light",
+             "correct": False,
+             "why": "It is light BECAUSE it is mostly air. The air is the "
+                    "insulator"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e11",
+        "band": "easier",
+        "text": "How is the temperature change worked out?",
+        "options": [
+            {"text": "The highest temperature reached, minus the temperature "
+                     "of the room",
+             "correct": False,
+             "why": "The room may not be at the same temperature as the "
+                    "solution. You measure the solution before you start"},
+            {"text": "The highest or lowest temperature reached, minus the "
+                     "starting temperature",
+             "correct": True},
+            {"text": "The highest temperature reached",
+             "correct": False,
+             "why": "One reading on its own says nothing. A change is a "
+                    "difference"},
+            {"text": "The mean of all the readings taken during the run",
+             "correct": False,
+             "why": "The mean would include readings from before the reaction "
+                    "and after it had cooled"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e12",
+        "band": "easier",
+        "text": "Which way does heat loss push the measured temperature "
+                "change?",
+        "options": [
+            {"text": "It makes it too large",
+             "correct": False,
+             "why": "Losing heat means the peak is lower than it should be, "
+                    "so the change comes out smaller"},
+            {"text": "It scatters it either side of the true value, so that "
+                     "some runs come out too high and some too low",
+             "correct": False,
+             "why": "That would be a random error. Heat loss only ever runs "
+                    "one way"},
+            {"text": "It makes it too small",
+             "correct": True},
+            {"text": "It has no effect if the cup is insulated",
+             "correct": False,
+             "why": "Insulation reduces it and never removes it. Even the "
+                    "best rig reads low"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c7-04-s05",
+        "band": "standard",
+        "text": "A group mixes the solutions, writes up their method, and "
+                "then reads the thermometer five minutes later. What has that "
+                "cost them?",
+        "options": [
+            {"text": "Nothing, provided they record what they see, since the "
+                     "reading five minutes on is a perfectly honest "
+                     "measurement of the temperature at that moment",
+             "correct": False,
+             "why": "It is honest and it is not the quantity wanted. The peak "
+                    "has been and gone"},
+            {"text": "The starting temperature",
+             "correct": False,
+             "why": "That was taken before mixing and is unaffected by the "
+                    "delay"},
+            {"text": "Nothing much, because the reaction is still going",
+             "correct": False,
+             "why": "A neutralisation finishes in seconds. Five minutes later "
+                    "only cooling is happening"},
+            {"text": "The peak — the mixture has been cooling towards room "
+                     "temperature since it passed",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s06",
+        "band": "standard",
+        "text": "Why is the STARTING temperature of the solution measured, "
+                "rather than the temperature of the room?",
+        "options": [
+            {"text": "Because the solution may not be at room temperature "
+                     "when you start",
+             "correct": True},
+            {"text": "Because a thermometer in a solution is more accurate "
+                     "than one in air, and a reading taken in air can be out "
+                     "by several degrees either way",
+             "correct": False,
+             "why": "The thermometer works fine in air. The problem is that "
+                    "the solution may not be at room temperature"},
+            {"text": "Because the room's temperature changes during the "
+                     "lesson",
+             "correct": False,
+             "why": "It changes very slowly. The point is that the solution "
+                    "and the room can differ from the outset"},
+            {"text": "Because the room is always warmer than the solution",
+             "correct": False,
+             "why": "It may be either. That is exactly why you measure rather "
+                    "than assume"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s07",
+        "band": "standard",
+        "text": "Two groups report +7 °C and +2 °C for the same reaction, and "
+                "neither invented anything. Which is likely to be closer to "
+                "the truth?",
+        "options": [
+            {"text": "The +2, because a smaller reading means less heat was "
+                     "lost during the run and so less of the energy escaped "
+                     "before the thermometer could register it",
+             "correct": False,
+             "why": "Exactly backwards. Losing heat is what makes a reading "
+                    "SMALL"},
+            {"text": "The +7, because every error in this experiment makes "
+                     "the reading too small",
+             "correct": True},
+            {"text": "The mean of the two, at +4.5",
+             "correct": False,
+             "why": "Averaging a good result with a bad one gives a worse "
+                    "one. These errors do not cancel"},
+            {"text": "It cannot be said without knowing which group was more "
+                     "careful",
+             "correct": False,
+             "why": "The direction of the error is known, and it points to "
+                    "the larger reading whoever took it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s08",
+        "band": "standard",
+        "text": "The same reaction in a glass beaker gives a smaller rise "
+                "than in a polystyrene cup. Give BOTH reasons.",
+        "options": [
+            {"text": "Glass conducts heat away faster, and the reaction runs "
+                     "more slowly in glass because the surface of the beaker "
+                     "does not stir the mixture as a cup does",
+             "correct": False,
+             "why": "The container does not change the reaction. The second "
+                    "reason is that glass warms itself"},
+            {"text": "Glass is transparent, and glass is heavier",
+             "correct": False,
+             "why": "Neither affects the reading. Conduction and heat "
+                    "capacity do"},
+            {"text": "Glass conducts heat away faster, and glass absorbs more "
+                     "energy warming itself up",
+             "correct": True},
+            {"text": "Glass reacts with the acid, and glass is colder",
+             "correct": False,
+             "why": "Glass does not react with dilute acid, and both "
+                    "containers start at room temperature"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s09",
+        "band": "standard",
+        "text": "Why must the volumes and concentrations be kept the same "
+                "between runs?",
+        "options": [
+            {"text": "So that the reaction finishes in the same time each "
+                     "run, which is what makes the peak readings comparable "
+                     "with one another",
+             "correct": False,
+             "why": "The timing is a side effect. The reason is that a "
+                    "changed variable makes the comparison meaningless"},
+            {"text": "So that the same amount of heat is lost each time",
+             "correct": False,
+             "why": "Heat loss depends on insulation and timing rather than "
+                    "on the volumes. Fair comparison is the reason"},
+            {"text": "Because the method says so",
+             "correct": False,
+             "why": "The method says so for a reason, and it is the reason "
+                    "that is being asked for"},
+            {"text": "So that the only thing being compared is the thing you "
+                     "meant to compare",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s10",
+        "band": "standard",
+        "text": "What would a set of readings need in order to be both "
+                "PRECISE and ACCURATE?",
+        "options": [
+            {"text": "To agree closely with each other AND with the true "
+                     "value",
+             "correct": True},
+            {"text": "To agree closely with each other, taken enough times "
+                     "that the mean can be trusted to have settled on the "
+                     "right answer",
+             "correct": False,
+             "why": "That is precision alone. Five readings can agree closely "
+                    "and all be low"},
+            {"text": "To be taken by more than one person",
+             "correct": False,
+             "why": "Two people using the same leaking rig get the same low "
+                    "answer"},
+            {"text": "To be taken with a thermometer reading to two decimal "
+                     "places",
+             "correct": False,
+             "why": "A finer scale improves precision and does nothing about "
+                    "a heat loss that is already there"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s11",
+        "band": "standard",
+        "text": "A group records the peak at 27 °C but forgets to take a "
+                "starting temperature. What can they report?",
+        "options": [
+            {"text": "A change of 27 °C, since the reading they have is the "
+                     "one the reaction produced and the other would only have "
+                     "been the temperature of the room anyway",
+             "correct": False,
+             "why": "The solution was already at some temperature before the "
+                    "reaction. 27 is where it ended, not how far it moved"},
+            {"text": "Nothing about the temperature change, because a change "
+                     "needs two readings",
+             "correct": True},
+            {"text": "A change of about 7 °C, using room temperature as the "
+                     "start",
+             "correct": False,
+             "why": "Room temperature is a guess at the missing reading. It "
+                    "may not be what the solution was at"},
+            {"text": "That the reaction was exothermic, and nothing else",
+             "correct": False,
+             "why": "Even that needs a comparison. One reading on its own "
+                    "does not show a rise"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s12",
+        "band": "standard",
+        "text": "A group already has an insulated cup, a lid and a prompt "
+                "reading, and their answer is still slightly low. What is "
+                "left?",
+        "options": [
+            {"text": "Nothing at all — a rig with those three things is "
+                     "perfect, so any remaining shortfall has to be a random "
+                     "error rather than a systematic one",
+             "correct": False,
+             "why": "There is still a systematic shortfall, and it is the "
+                    "apparatus absorbing energy"},
+            {"text": "More repeats",
+             "correct": False,
+             "why": "Repeats do nothing about an error that runs one way "
+                    "every time"},
+            {"text": "The energy that goes into warming the cup, the lid and "
+                     "the thermometer themselves",
+             "correct": True},
+            {"text": "A larger volume of solution",
+             "correct": False,
+             "why": "More solution changes the amounts rather than the "
+                    "shortfall"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c7-04-h05",
+        "band": "harder",
+        "text": "A group with a visibly leaking rig reports a value exactly "
+                "equal to the published one. What is the most honest thing to "
+                "say?",
+        "options": [
+            {"text": "That the rig cannot have been leaking after all, since "
+                     "a result that matches the published value is the best "
+                     "evidence there is that the apparatus was working",
+             "correct": False,
+             "why": "Matching once is not evidence the rig was sound. It "
+                    "invites the question of what else was wrong"},
+            {"text": "That the published value must be wrong",
+             "correct": False,
+             "why": "One school reading is a poor reason to doubt a published "
+                    "figure"},
+            {"text": "That the result should be reported without comment",
+             "correct": False,
+             "why": "A result that disagrees with what the apparatus should "
+                    "do is exactly the kind that needs a comment"},
+            {"text": "That it is suspicious — a leaking rig should read low, "
+                     "so something else has pushed it back up",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h06",
+        "band": "harder",
+        "text": "A bomb calorimeter is weighed and its own heat capacity "
+                "measured before any reaction is run. Why go to that trouble?",
+        "options": [
+            {"text": "Because the vessel absorbs some of the energy itself, "
+                     "and that share has to be known to be added back in",
+             "correct": True},
+            {"text": "Because the vessel has to be identical from one "
+                     "laboratory to the next, and weighing it is how that is "
+                     "checked before a measurement is published anywhere",
+             "correct": False,
+             "why": "Vessels differ, which is exactly why each one's own heat "
+                    "capacity is measured"},
+            {"text": "Because a heavier vessel loses heat faster",
+             "correct": False,
+             "why": "Heat loss depends on insulation. The mass matters "
+                    "because of what the steel absorbs"},
+            {"text": "To check nothing has been left inside it",
+             "correct": False,
+             "why": "Sensible practice and not the reason. The measurement is "
+                    "used in the arithmetic afterwards"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h07",
+        "band": "harder",
+        "text": "Why is a polystyrene cup a genuine piece of scientific "
+                "apparatus rather than a cheap substitute for something "
+                "better?",
+        "options": [
+            {"text": "It insulates well enough that no heat escapes from it "
+                     "at all, which is the property a container for this "
+                     "measurement most needs to have",
+             "correct": False,
+             "why": "Heat still escapes — the best school rig reads low. Its "
+                    "second virtue is its small heat capacity"},
+            {"text": "It insulates well AND absorbs very little energy "
+                     "warming itself up",
+             "correct": True},
+            {"text": "It is cheap, so a class can have one each",
+             "correct": False,
+             "why": "True and beside the point. The question is about the "
+                    "physics"},
+            {"text": "It cannot break",
+             "correct": False,
+             "why": "It can be crushed easily enough. Durability is not what "
+                    "makes it suitable"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h08",
+        "band": "harder",
+        "text": "The calorie figures on a food packet come from burning a "
+                "sample in a machine. Why is that measurement more trustworthy "
+                "than a school one?",
+        "options": [
+            {"text": "The machine burns a far larger sample, so the "
+                     "temperature rise is big enough for the losses to be too "
+                     "small to matter beside it",
+             "correct": False,
+             "why": "The samples are small. What makes it trustworthy is that "
+                    "the losses are controlled and accounted for"},
+            {"text": "The people running it are more careful",
+             "correct": False,
+             "why": "Care helps and cannot remove a systematic error. Better "
+                    "apparatus can"},
+            {"text": "The vessel is sealed and insulated, and its own heat "
+                     "capacity is measured and allowed for",
+             "correct": True},
+            {"text": "It uses electricity rather than a flame",
+             "correct": False,
+             "why": "Electric ignition is a detail. The insulation and the "
+                    "known heat capacity are what matter"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h09",
+        "band": "harder",
+        "text": "A student proposes comparing three fuels by measuring the "
+                "temperature of each FLAME rather than the water. Why is that "
+                "no use?",
+        "options": [
+            {"text": "Because a thermometer put into a flame would break "
+                     "before it could take a reading, so no measurement could "
+                     "be made at all",
+             "correct": False,
+             "why": "There are thermometers that survive a flame. The "
+                    "objection is that the reading answers the wrong "
+                    "question"},
+            {"text": "Because all three flames would be at the same "
+                     "temperature",
+             "correct": False,
+             "why": "They would differ. And even different readings would not "
+                    "measure energy released"},
+            {"text": "Because a flame has no fixed temperature",
+             "correct": False,
+             "why": "A flame's temperature varies across it and can be "
+                    "measured. It is still the wrong quantity"},
+            {"text": "Because a flame's temperature says nothing about how "
+                     "much energy the fuel released",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h10",
+        "band": "harder",
+        "text": "Why does averaging genuinely help with a RANDOM error, when "
+                "it does nothing for a systematic one?",
+        "options": [
+            {"text": "Because random errors fall on both sides of the truth, "
+                     "so they tend to cancel",
+             "correct": True},
+            {"text": "Because a random error is smaller than a systematic "
+                     "one, so it takes fewer readings to average it away to "
+                     "nothing at all",
+             "correct": False,
+             "why": "Size is not the difference. Direction is — a random "
+                    "error can be large and still cancels"},
+            {"text": "Because random errors happen less often",
+             "correct": False,
+             "why": "They happen on every reading. What matters is which way "
+                    "they push"},
+            {"text": "Because averaging removes the largest and smallest "
+                     "readings",
+             "correct": False,
+             "why": "A mean uses every reading. Nothing is discarded"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h11",
+        "band": "harder",
+        "text": "A group improves its rig and the answer rises from +5.0 to "
+                "+6.8 °C. Has the reaction changed?",
+        "options": [
+            {"text": "Yes — the better insulation keeps more of the energy in "
+                     "the mixture, so the reaction releases more of it and "
+                     "the temperature goes higher",
+             "correct": False,
+             "why": "The reaction releases the same energy whatever it is "
+                    "sitting in. What changed is how much of it stayed"},
+            {"text": "No — the reaction was always the same, and the "
+                     "measurement has got closer to it",
+             "correct": True},
+            {"text": "Yes, because the conditions were changed",
+             "correct": False,
+             "why": "The apparatus changed rather than the chemistry. The "
+                    "same substances reacted in the same amounts"},
+            {"text": "It cannot be known without repeating both",
+             "correct": False,
+             "why": "Repeating is good practice and the question is settled "
+                    "by reasoning: a reaction does not depend on its cup"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h12",
+        "band": "harder",
+        "text": "The lesson insists that one temperature reading on its own "
+                "says nothing. Why is that a statement about the QUANTITY "
+                "rather than about carelessness?",
+        "options": [
+            {"text": "Because a single reading might have been taken at the "
+                     "wrong moment, and only a second one taken later shows "
+                     "whether the first was at the peak",
+             "correct": False,
+             "why": "Timing is a separate worry. Even a perfectly timed peak "
+                    "is useless without a start"},
+            {"text": "Because thermometers are unreliable",
+             "correct": False,
+             "why": "A perfect thermometer would not help. The quantity "
+                    "itself needs two readings"},
+            {"text": "Because a temperature change is a difference, and a "
+                     "difference cannot be got from one number",
+             "correct": True},
+            {"text": "Because the room temperature has to be recorded as "
+                     "well",
+             "correct": False,
+             "why": "The room is not the second reading. The solution's "
+                    "starting temperature is"},
+        ],
+        "figure": None,
+    },
 ]

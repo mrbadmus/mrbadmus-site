@@ -512,3 +512,67 @@ Gates at commit: chemistry-only `validate_lesson` clean,
 `verify_answer_positions` OK, `verify_answer_lengths` green on `bank/C5`.
 
 ---
+## C7 — Energy in reactions (4 lessons)
+
+**Quota:** 34 needed per band; 39 added, taking every band to **51**. Spread
+9 · 9 · 13 · 8 per band across four lessons, 117 rows — the largest top-up in
+the unit list, because four lessons have to carry what seven carry elsewhere.
+
+| lesson | easier | standard | harder |
+|---|---|---|---|
+| 01 energy-and-changes-of-state | e05–e13 | s05–s13 | h05–h13 |
+| 02 exothermic-reactions | e05–e13 | s05–s13 | h05–h13 |
+| 03 endothermic-reactions | e05–e13 | s05–s13 | h05–h13 |
+| 04 measuring-a-temperature-change | e05–e12 | s05–s12 | h05–h12 |
+
+Positions 27 · 27 · 27 · 24. Length tell **28.7%**, against a `BASELINE` of
+85.7% — C7's original twelve are the second-worst giveaway cell in the key
+stage.
+
+### Review fixes before commit — the unit where the failure mode showed its size
+
+**1 · The fast gate caught two EXACT stem repeats.** `c7-03-s08` and
+`c7-03-s11` were written word for word as `c7-03-s03` and `c7-03-h03` already
+stood. `python3 -m ks3_data.question_bank` names both, with the id they clash
+with. That is the check working exactly as designed, and it is the first time
+in this run it has fired on my own rows.
+
+**2 · The detector then found TEN more that were not word-for-word.** Nine or
+thirteen new rows per band in a four-lesson unit is roughly three times the
+density of C3 or C8, and it exhausts a lesson's material: by the ninth standard
+row on exothermic reactions there is very little the file does not already ask.
+
+| new row | duplicated |
+|---|---|
+| `c7-01-s09` | its own new `c7-01-e08` — both on condensing giving energy out |
+| `c7-02-e11` | `c7-02-e03` — where the thermometer goes |
+| `c7-02-s08` | `c7-02-s04` — why a power station wants an exothermic reaction |
+| `c7-02-s09` | `c7-02-s01` — the camping stove and the spark |
+| `c7-03-s05` | `c7-03-e04` — where the energy from the cooled beaker went |
+| `c7-03-s06` | `c7-03-s04` — why the decomposition stops with the flame |
+| `c7-03-s07` | `c7-03-s01` — photosynthesis and respiration as a pair |
+| `c7-03-s09` | `c7-03-s02` — the fridge and "making cold" |
+| `c7-03-h06` | `c7-03-h02` — conservation of energy in an endothermic change |
+| `c7-03-h07` | `c7-03-h04` — photosynthesis as the largest endothermic process |
+
+All ten replaced with material the unit did not have: the energy cost of
+melting against warming, the total energy of the universe, doubling both
+volumes in a neutralisation, a control beaker beside a cold pack, which
+evidence for endothermic is the stronger, the seed-to-tree objection, doubling
+the powder, an insulated flask over an hour, and the growing tree against the
+burning log.
+
+**The rule this suggests for the units still to come:** a lesson has an
+approximate ceiling of about eight or nine genuinely distinct questions per
+band on top of its original four. Past that, the next row is a rewording rather
+than a new question, and the detector finds it after the fact rather than the
+author avoiding it. C9 has the same four-lesson shape and gets the same care.
+
+**3 · A tooling note.** `rebalance` needed EIGHT passes to converge on C7,
+against one or two elsewhere. Run it in a loop until it reports zero rather
+than a fixed number of times.
+
+Gates at commit: chemistry-only `validate_lesson` clean,
+`verify_answer_positions` OK, `verify_answer_lengths` green on `bank/C7`.
+
+---

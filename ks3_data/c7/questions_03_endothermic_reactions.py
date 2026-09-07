@@ -344,4 +344,705 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c7-03-e05",
+        "band": "easier",
+        "text": "What does endothermic mean?",
+        "options": [
+            {"text": "A change that produces cold, in the same way that an "
+                     "exothermic change produces heat, so that the two are "
+                     "opposites of each other",
+             "correct": False,
+             "why": "Cold is not produced or made. Energy is REMOVED from the "
+                    "surroundings"},
+            {"text": "A change that gives energy out to its surroundings",
+             "correct": False,
+             "why": "That is exothermic"},
+            {"text": "A change that takes energy in from its surroundings",
+             "correct": True},
+            {"text": "A change that happens only in a fridge",
+             "correct": False,
+             "why": "A cold pack works on a mountainside with no electricity "
+                    "at all"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e06",
+        "band": "easier",
+        "text": "What is the law of conservation of energy?",
+        "options": [
+            {"text": "Energy always spreads out from where it is concentrated",
+             "correct": False,
+             "why": "That is a true and different statement. Conservation is "
+                    "about the TOTAL never changing"},
+            {"text": "Energy has to be saved rather than wasted",
+             "correct": False,
+             "why": "That is the everyday sense of conserving. The law is "
+                    "about totals"},
+            {"text": "Every reaction gives out as much energy as it takes in",
+             "correct": False,
+             "why": "Reactions are exothermic or endothermic precisely "
+                    "because those amounts differ"},
+            {"text": "Energy is never created and never destroyed — it can "
+                     "only be moved from one store to another",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e07",
+        "band": "easier",
+        "text": "Which of these is endothermic?",
+        "options": [
+            {"text": "Melting",
+             "correct": True},
+            {"text": "Burning a candle",
+             "correct": False,
+             "why": "Every combustion gives energy out"},
+            {"text": "Neutralising an acid with an alkali, which is why the "
+                     "beaker is noticeably warmer once the two have been "
+                     "stirred together",
+             "correct": False,
+             "why": "The warm beaker is the sign of an EXOTHERMIC change"},
+            {"text": "A metal reacting with an acid",
+             "correct": False,
+             "why": "The tube warms up, so energy is coming out"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e08",
+        "band": "easier",
+        "text": "Photosynthesis is endothermic. What supplies the energy?",
+        "options": [
+            {"text": "The carbon dioxide the plant takes in, which carries "
+                     "energy into the leaf along with the carbon that is "
+                     "built into the glucose",
+             "correct": False,
+             "why": "Carbon dioxide supplies atoms rather than energy. The "
+                    "energy comes from light"},
+            {"text": "Light",
+             "correct": True},
+            {"text": "The water the plant draws up",
+             "correct": False,
+             "why": "Water is a reactant too, and it supplies no energy. A "
+                    "watered plant in the dark cannot photosynthesise"},
+            {"text": "The warmth of the air",
+             "correct": False,
+             "why": "A warm plant in the dark makes no glucose. Light is what "
+                    "it needs"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e09",
+        "band": "easier",
+        "text": "An instant cold pack drops close to 0 °C when it is "
+                "squeezed. What is inside it?",
+        "options": [
+            {"text": "Ice, which has been kept frozen in an insulated "
+                     "compartment until the moment the pack is squeezed and "
+                     "the seal between the two halves is broken",
+             "correct": False,
+             "why": "It sits in a first aid kit at room temperature for "
+                    "years. Nothing in it was ever cold"},
+            {"text": "A gas under pressure that cools as it escapes",
+             "correct": False,
+             "why": "That is how some sprays work. This one uses a "
+                    "dissolving"},
+            {"text": "A solid and a pouch of water, which mix and dissolve "
+                     "endothermically",
+             "correct": True},
+            {"text": "A battery driving a small cooler",
+             "correct": False,
+             "why": "There is nothing electrical in it. The chemistry does "
+                    "the work"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e10",
+        "band": "easier",
+        "text": "Melting is endothermic. What does that make freezing?",
+        "options": [
+            {"text": "Endothermic as well, since both of them involve ice and "
+                     "ice is the cold substance in each case",
+             "correct": False,
+             "why": "They are opposite changes, so the energy travels in "
+                    "opposite directions"},
+            {"text": "Neither, because freezing involves no energy change",
+             "correct": False,
+             "why": "A freezer has to keep removing energy. That energy is "
+                    "coming out of the water"},
+            {"text": "It depends how cold the freezer is",
+             "correct": False,
+             "why": "The freezer's temperature changes the rate. The "
+                    "direction is fixed"},
+            {"text": "Exothermic",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e11",
+        "band": "easier",
+        "text": "What is dissolving?",
+        "options": [
+            {"text": "A solute spreading through a solvent to make a "
+                     "solution",
+             "correct": True},
+            {"text": "A solid being broken down into the simpler substances "
+                     "it was made from, which then spread out through the "
+                     "liquid",
+             "correct": False,
+             "why": "Nothing is broken down. Evaporate the water and the same "
+                    "substance comes back"},
+            {"text": "A solid melting in a liquid",
+             "correct": False,
+             "why": "Melting needs heat and one substance. Salt dissolves in "
+                    "cold water and melts at 801 °C"},
+            {"text": "A change that always takes energy in",
+             "correct": False,
+             "why": "Some dissolvings take energy in and some give it out"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e12",
+        "band": "easier",
+        "text": "Which way does the thermometer move during an endothermic "
+                "change?",
+        "options": [
+            {"text": "Up",
+             "correct": False,
+             "why": "That is exothermic. Endothermic takes energy away from "
+                    "the surroundings"},
+            {"text": "Down",
+             "correct": True},
+            {"text": "It does not move, because energy is conserved and so "
+                     "the total in the beaker is the same before and after",
+             "correct": False,
+             "why": "Energy IS conserved, and it has moved out of the "
+                    "surroundings into the products. The reading falls"},
+            {"text": "Up and then down",
+             "correct": False,
+             "why": "There is no burst of energy out first. It falls from the "
+                    "start"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e13",
+        "band": "easier",
+        "text": "What is a reversible change?",
+        "options": [
+            {"text": "A change that undoes itself over time without anything "
+                     "having to be done to it, which is why a reusable hand "
+                     "warmer eventually resets on the shelf",
+             "correct": False,
+             "why": "A hand warmer has to be boiled. Nothing resets on its "
+                    "own"},
+            {"text": "A change that gives out as much energy as it took in "
+                     "while it was happening",
+             "correct": False,
+             "why": "That is one thing reversing it achieves. The word is "
+                    "about being able to run it backwards"},
+            {"text": "A change that can be run backwards, which also reverses "
+                     "its energy transfer",
+             "correct": True},
+            {"text": "A change that can be repeated",
+             "correct": False,
+             "why": "Repeating means doing it again with fresh materials. "
+                    "Reversing means undoing it"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c7-03-s05",
+        "band": "standard",
+        "text": "A cold pack is rested in a beaker of water. A second, "
+                "identical beaker of water is left beside it with nothing in "
+                "it. What is the second beaker for?",
+        "options": [
+            {"text": "To keep the room's temperature steady around the first "
+                     "beaker, so that the reading in it is not affected by "
+                     "the air moving past",
+             "correct": False,
+             "why": "A beaker of water does not steady a room. It is there as "
+                    "a comparison"},
+            {"text": "To be used if the first beaker is spilled",
+             "correct": False,
+             "why": "A spare is not an experiment. This one is being measured "
+                    "alongside"},
+            {"text": "It is a control — it shows what the water would have "
+                     "done anyway",
+             "correct": True},
+            {"text": "To warm the first beaker back up afterwards",
+             "correct": False,
+             "why": "Nothing is being warmed. The second beaker is measured, "
+                    "not used"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s06",
+        "band": "standard",
+        "text": "Which is the stronger evidence that a change is endothermic: "
+                "that it stops when the flame is removed, or that a "
+                "thermometer in it falls?",
+        "options": [
+            {"text": "Stopping when the flame is removed, because a reaction "
+                     "that cannot continue without a supply of energy is one "
+                     "that must have been taking energy in the whole time",
+             "correct": False,
+             "why": "It is good evidence and not decisive — a reaction can "
+                    "stop because the tube cooled below the temperature it "
+                    "needs to go at any speed"},
+            {"text": "Neither — both are equally good",
+             "correct": False,
+             "why": "One measures the direction of the transfer directly. The "
+                    "other is a clue about it"},
+            {"text": "Neither — only weighing the products would show it",
+             "correct": False,
+             "why": "Mass says nothing about energy direction. A thermometer "
+                    "says a great deal"},
+            {"text": "The falling thermometer, because stopping when the heat "
+                     "goes could have other causes",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s07",
+        "band": "standard",
+        "text": "A student says photosynthesis creates energy, because a seed "
+                "weighing a gram becomes a tree weighing tonnes. What is the "
+                "correction?",
+        "options": [
+            {"text": "Nothing is created — the energy came from sunlight and "
+                     "is now stored in the wood",
+             "correct": True},
+            {"text": "Nothing is created — the energy came out of the soil, "
+                     "which is why a pot of earth weighs measurably less "
+                     "after a plant has been grown in it for a season",
+             "correct": False,
+             "why": "The soil loses almost nothing, which is a famous old "
+                    "experiment. The energy came from light"},
+            {"text": "The student is right, because a plant makes its own "
+                     "food",
+             "correct": False,
+             "why": "Making food is storing energy from elsewhere. It is not "
+                    "creating any"},
+            {"text": "The mass came from water, so no energy was involved",
+             "correct": False,
+             "why": "Water and carbon dioxide supply the atoms, and building "
+                    "them into glucose takes a great deal of energy"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s08",
+        "band": "standard",
+        "text": "Salt is spread on a snowy road and the slush that forms ends "
+                "up colder than the snow was. Which idea from this lesson is "
+                "that?",
+        "options": [
+            {"text": "The salt is colder than the snow, and it cools the "
+                     "slush by contact as the two of them mix together on the "
+                     "road surface",
+             "correct": False,
+             "why": "The salt comes off a lorry at air temperature. Nothing "
+                     "cold was added"},
+            {"text": "The salt dissolving is endothermic, so it takes energy "
+                     "out of the slush",
+             "correct": True},
+            {"text": "The salt produces cold as it dissolves",
+             "correct": False,
+             "why": "Cold is not produced. Energy is taken away, which is not "
+                    "the same thing"},
+            {"text": "The salt stops the snow reflecting sunlight",
+             "correct": False,
+             "why": "It does darken the surface, which would WARM it. The "
+                    "cooling is chemical"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s09",
+        "band": "standard",
+        "text": "Two powders stirred into water drop the temperature by "
+                "8 °C. What would twice as much of each powder do, in the same "
+                "volume of water?",
+        "options": [
+            {"text": "Drop it by the same 8 °C, because the temperature a "
+                     "change reaches is a property of the substances rather "
+                     "than of how much of them there is",
+             "correct": False,
+             "why": "The amount of energy taken in doubles while the water "
+                    "warmed stays the same. The fall gets bigger"},
+            {"text": "Drop it by half as much",
+             "correct": False,
+             "why": "More powder takes in more energy. Halving would need "
+                    "less of it"},
+            {"text": "Drop it further, because more of the change happens in "
+                     "the same amount of water",
+             "correct": True},
+            {"text": "Have no effect, because the water is what is being "
+                     "measured",
+             "correct": False,
+             "why": "The water is what is being measured, and it is losing "
+                    "energy to the change. More change means more loss"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s10",
+        "band": "standard",
+        "text": "A sealed flask of two powders is weighed, they are stirred "
+                "together, the temperature falls, and the flask is weighed "
+                "again. What does the balance read?",
+        "options": [
+            {"text": "Less, because energy has left the flask and energy has "
+                     "mass",
+             "correct": False,
+             "why": "No measurable mass leaves with energy. Nothing crossed "
+                    "the seal"},
+            {"text": "More, because the products hold the energy that was "
+                     "taken in",
+             "correct": False,
+             "why": "The products do hold that energy, and it makes no "
+                    "difference a balance can read"},
+            {"text": "Less, because some of the powder has dissolved",
+             "correct": False,
+             "why": "Dissolving moves a substance about inside the flask. "
+                    "None of it leaves"},
+            {"text": "Exactly the same",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s11",
+        "band": "standard",
+        "text": "Which of these everyday objects works by an endothermic "
+                "change, and what tells you?",
+        "options": [
+            {"text": "An instant cold pack, because it gets colder",
+             "correct": True},
+            {"text": "A firework, because the energy stored in it has to be "
+                     "taken in from somewhere before it can be given out "
+                     "again on the night",
+             "correct": False,
+             "why": "The energy was put in during manufacture. What the "
+                    "firework itself does is release it"},
+            {"text": "A hand warmer, because it changes temperature",
+             "correct": False,
+             "why": "Changing temperature is not enough — the DIRECTION is "
+                    "what matters, and a hand warmer gets hotter"},
+            {"text": "A candle, because it needs lighting",
+             "correct": False,
+             "why": "Needing a start is not taking energy in overall. A "
+                    "candle gives out far more than the match supplied"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s12",
+        "band": "standard",
+        "text": "Why does the same reaction reversed give the same energy "
+                "back, rather than some other amount?",
+        "options": [
+            {"text": "Because energy is conserved, so nothing can ever come "
+                     "back in a different amount from the one that went in "
+                     "however the change is run",
+             "correct": False,
+             "why": "Conservation says the total across everything holds. It "
+                    "does not by itself fix the amount for one change"},
+            {"text": "Because the same joins are being made that were broken, "
+                     "so the same energy is involved",
+             "correct": True},
+            {"text": "Because reactions are always symmetrical",
+             "correct": False,
+             "why": "Many are hard or impossible to reverse. When they can be "
+                    "reversed, the same joins are involved"},
+            {"text": "Because the temperature returns to where it started",
+             "correct": False,
+             "why": "That is a consequence rather than a reason"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s13",
+        "band": "standard",
+        "text": "A student holds a cold pack and says it feels like the cold "
+                "is going into their hand. What is really happening?",
+        "options": [
+            {"text": "Cold is passing from the pack into their hand, which is "
+                     "why the hand goes numb from the outside inwards rather "
+                     "than all at once",
+             "correct": False,
+             "why": "Nothing passes into the hand. Energy passes out of it, "
+                    "which is what feeling cold is"},
+            {"text": "The pack is stopping their hand from making heat",
+             "correct": False,
+             "why": "The hand goes on respiring and producing energy. The "
+                    "pack is taking it faster than that"},
+            {"text": "Energy is leaving their hand and going into the pack",
+             "correct": True},
+            {"text": "Nothing is happening — the sensation is an illusion",
+             "correct": False,
+             "why": "It is a real transfer. Only the direction is being "
+                    "described the wrong way round"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c7-03-h05",
+        "band": "harder",
+        "text": "Why can a reusable hand warmer be reset in a pan of boiling "
+                "water while a cold pack cannot be reset at all?",
+        "options": [
+            {"text": "Because the hand warmer's reaction is exothermic and "
+                     "the cold pack's is endothermic, and only an exothermic "
+                     "change can ever be reversed",
+             "correct": False,
+             "why": "Either direction can be reversed in principle. What "
+                    "matters is whether it can be done inside the packet"},
+            {"text": "Because boiling water is hot enough for one and not the "
+                     "other",
+             "correct": False,
+             "why": "Temperature is not the obstacle. Getting the solid back "
+                    "out of solution is"},
+            {"text": "Because the hand warmer's change can be reversed inside "
+                     "its sealed pouch, and undoing the cold pack would mean "
+                     "evaporating the water out of it",
+             "correct": True},
+            {"text": "Because the cold pack has been used up",
+             "correct": False,
+             "why": "Every atom is still in the bag. It is dissolved rather "
+                    "than gone"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h06",
+        "band": "harder",
+        "text": "An endothermic reaction is run in a well insulated flask. "
+                "What does a thermometer in it do over the next hour?",
+        "options": [
+            {"text": "Falls while the reaction runs and then stays where it "
+                     "is, because the insulation keeps the room's energy out "
+                     "and there is nothing left inside to change it",
+             "correct": False,
+             "why": "Insulation slows the leak rather than stopping it. Given "
+                    "an hour the flask warms back up"},
+            {"text": "Falls steadily for the whole hour",
+             "correct": False,
+             "why": "The reaction finishes. After that only the room is "
+                    "acting on the flask"},
+            {"text": "Rises, because the insulation traps energy",
+             "correct": False,
+             "why": "There is nothing to trap while the reaction is taking "
+                    "energy IN. It falls first"},
+            {"text": "Falls while the reaction runs, then climbs slowly back "
+                     "towards room temperature",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h07",
+        "band": "harder",
+        "text": "A growing tree gets heavier year by year; a burning log gets "
+                "lighter in an hour. Both involve the same substances. What is "
+                "the relationship?",
+        "options": [
+            {"text": "The tree is storing what the log is spending — one "
+                     "change is endothermic and the other its exothermic "
+                     "reverse",
+             "correct": True},
+            {"text": "The tree takes its mass from the soil and the log gives "
+                     "its mass to the air, so the two changes move matter in "
+                     "opposite directions between the ground and the sky",
+             "correct": False,
+             "why": "Almost all the tree's mass comes from the AIR rather "
+                    "than the soil. And the point of the pair is the energy"},
+            {"text": "They are unrelated, because one is biology and the "
+                     "other chemistry",
+             "correct": False,
+             "why": "The same reaction runs in both, in opposite directions. "
+                    "Which subject studies it changes nothing"},
+            {"text": "The log releases more energy than the tree ever stored",
+             "correct": False,
+             "why": "It cannot release more than went in. The reverse change "
+                    "returns the same amount"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h08",
+        "band": "harder",
+        "text": "Ammonium nitrate dissolving takes energy in; sodium "
+                "hydroxide dissolving gives it out. What does that pair show "
+                "about dissolving?",
+        "options": [
+            {"text": "That one of the two is not really dissolving, since a "
+                     "process cannot run in both energy directions and still "
+                     "be given a single name",
+             "correct": False,
+             "why": "Both are genuinely dissolving. A process CAN go either "
+                    "way depending on the substances"},
+            {"text": "That dissolving has no fixed energy direction — it "
+                     "depends on the substance",
+             "correct": True},
+            {"text": "That sodium hydroxide is reacting rather than "
+                     "dissolving",
+             "correct": False,
+             "why": "It dissolves, and the solution warms. No new substance "
+                    "is made"},
+            {"text": "That the direction depends on how much water is used",
+             "correct": False,
+             "why": "The amount changes the size of the change, never its "
+                    "direction"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h09",
+        "band": "harder",
+        "text": "A designer wants a cold pack that can be used again and "
+                "again. What would the chemistry have to allow?",
+        "options": [
+            {"text": "A reaction that takes in less energy each time it is "
+                     "used",
+             "correct": False,
+             "why": "A weakening pack would be worse rather than reusable. "
+                    "What is needed is a reversal"},
+            {"text": "A pack that can be refrigerated between uses",
+             "correct": False,
+             "why": "That is an ordinary ice pack, and the whole point of an "
+                    "instant one is working with no freezer"},
+            {"text": "A change that can be reversed inside the pack, which "
+                     "for this one would mean getting the solid back out of "
+                     "solution",
+             "correct": True},
+            {"text": "An exothermic reaction instead",
+             "correct": False,
+             "why": "That would warm rather than cool. The pack has to stay "
+                    "endothermic"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h10",
+        "band": "harder",
+        "text": "Melting ice takes energy in and is not usually called a "
+                "REACTION. Does that stop it being endothermic?",
+        "options": [
+            {"text": "Yes — the words exothermic and endothermic are defined "
+                     "for chemical reactions, and a change of state needs "
+                     "different language of its own",
+             "correct": False,
+             "why": "The lesson applies both words to melting and freezing "
+                    "directly. They describe changes of any kind"},
+            {"text": "Yes, because no new substance is made",
+             "correct": False,
+             "why": "Making a new substance is what decides CHEMICAL. It does "
+                    "not decide the energy direction"},
+            {"text": "No, because melting is really a slow reaction",
+             "correct": False,
+             "why": "It is not a reaction at all. It is endothermic anyway"},
+            {"text": "No — endothermic describes any change that takes energy "
+                     "in, chemical or physical",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h11",
+        "band": "harder",
+        "text": "A plant is given plenty of water and carbon dioxide and kept "
+                "in the dark. Why does it make no glucose?",
+        "options": [
+            {"text": "Because photosynthesis is endothermic and light is what "
+                     "supplies the energy it needs",
+             "correct": True},
+            {"text": "Because a plant needs light to open the pores in its "
+                     "leaves, and with those closed the carbon dioxide cannot "
+                     "get in however much of it is available",
+             "correct": False,
+             "why": "Pores do respond to light, and even with the gas inside "
+                    "there would be no energy to drive the reaction"},
+            {"text": "Because carbon dioxide only reacts in sunlight",
+             "correct": False,
+             "why": "Carbon dioxide reacts in plenty of dark places. The "
+                    "energy is what is missing"},
+            {"text": "Because the plant respires instead, and cannot do both",
+             "correct": False,
+             "why": "It does both at once in the light. Respiring does not "
+                    "prevent photosynthesis"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h12",
+        "band": "harder",
+        "text": "A cold pack and a fridge both make food colder. What is the "
+                "fundamental difference?",
+        "options": [
+            {"text": "The pack removes energy and the fridge produces cold",
+             "correct": False,
+             "why": "Neither produces cold. Both remove energy, and the "
+                    "difference is where it ends up"},
+            {"text": "The pack stores the energy in its own products; the "
+                     "fridge moves it out and releases it at the back",
+             "correct": True},
+            {"text": "The pack is chemical and the fridge is physical, so "
+                     "they cannot be compared",
+             "correct": False,
+             "why": "They can be compared perfectly well, and both move "
+                    "energy out of the food"},
+            {"text": "The fridge is endothermic and the pack is not",
+             "correct": False,
+             "why": "The pack's change is the endothermic one. A fridge is a "
+                    "machine rather than a reaction"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h13",
+        "band": "harder",
+        "text": "Reversing an endothermic change gives an exothermic one, by "
+                "exactly the same amount. Why does that mean a hand warmer can "
+                "be reset but a firework cannot?",
+        "options": [
+            {"text": "Because the firework's reaction gives out far more "
+                     "energy than the warmer's",
+             "correct": False,
+             "why": "Size is not the obstacle in principle. The products have "
+                    "gone into the sky, which is"},
+            {"text": "Because a firework's change is exothermic and cannot be "
+                     "reversed at all",
+             "correct": False,
+             "why": "Exothermic changes are reversed all the time — that is "
+                    "what resetting a hand warmer is"},
+            {"text": "Because the hand warmer's change can be run backwards "
+                     "with the energy a pan of water can supply, and the "
+                     "firework's products have scattered",
+             "correct": True},
+            {"text": "Because the hand warmer is sealed and fireworks are "
+                     "not",
+             "correct": False,
+             "why": "The right idea, put too narrowly. What matters is that "
+                    "the products are still there to work with"},
+        ],
+        "figure": None,
+    },
 ]
