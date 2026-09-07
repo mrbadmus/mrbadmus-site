@@ -377,4 +377,462 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c5-03-e05",
+        "band": "easier",
+        "text": "What happens to a substance in an oxidation?",
+        "options": [
+            {"text": "It is broken apart by heat into two or more simpler "
+                     "substances, which is why an oxidation always needs a "
+                     "flame under it",
+             "correct": False,
+             "why": "That is thermal decomposition, and rusting is an "
+                    "oxidation that needs no heat at all"},
+            {"text": "It gains oxygen",
+             "correct": True},
+            {"text": "It loses oxygen",
+             "correct": False,
+             "why": "That is reduction, which comes at GCSE. Oxidation is the "
+                    "gain"},
+            {"text": "It dissolves in water",
+             "correct": False,
+             "why": "Dissolving makes nothing new. An oxidation is a chemical "
+                    "change"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-e06",
+        "band": "easier",
+        "text": "What is corrosion?",
+        "options": [
+            {"text": "A metal being worn away by rubbing against something "
+                     "else, which is why a gate hinge wears thin where it "
+                     "turns and nowhere else along its length",
+             "correct": False,
+             "why": "That is wear, and it is physical. Corrosion is a "
+                    "chemical change"},
+            {"text": "Rust, and nothing else",
+             "correct": False,
+             "why": "Rusting is one kind of corrosion. Aluminium and zinc "
+                    "corrode too, and neither of them rusts"},
+            {"text": "A metal being eaten away by reacting with its "
+                     "surroundings",
+             "correct": True},
+            {"text": "A metal melting in the heat",
+             "correct": False,
+             "why": "Melting is a change of state and makes nothing new"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-e07",
+        "band": "easier",
+        "text": "Which two things does iron need before it will rust?",
+        "options": [
+            {"text": "Salt and water",
+             "correct": False,
+             "why": "Salt only speeds it up. A nail in plain tap water open "
+                    "to the air rusts perfectly well"},
+            {"text": "Heat and oxygen",
+             "correct": False,
+             "why": "Rusting happens at any ordinary temperature. Water is "
+                    "the second thing it needs"},
+            {"text": "Oxygen and salt, which is why cars rust so much faster "
+                     "in a coastal town or after a winter of gritting",
+             "correct": False,
+             "why": "Salt makes it faster and is not required. Water is what "
+                    "the four-tube experiment shows is needed"},
+            {"text": "Oxygen and water",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-e08",
+        "band": "easier",
+        "text": "What is sacrificial protection?",
+        "options": [
+            {"text": "Attaching a more reactive metal so that it corrodes in "
+                     "preference to the iron",
+             "correct": True},
+            {"text": "Coating iron in paint so that nothing can reach the "
+                     "surface, which is the cheapest way of keeping a gate "
+                     "from rusting for a season or two",
+             "correct": False,
+             "why": "That is a barrier. Sacrificial protection uses a metal "
+                    "that corrodes INSTEAD of the iron"},
+            {"text": "Keeping the metal dry so it never rusts",
+             "correct": False,
+             "why": "That works and is not what the name means. Nothing is "
+                    "being sacrificed"},
+            {"text": "Replacing iron with a metal that does not corrode",
+             "correct": False,
+             "why": "Then there would be no iron to protect. The point is to "
+                    "keep the iron and lose something else"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-e09",
+        "band": "easier",
+        "text": "Rust flakes off an iron gate. What does aluminium oxide do "
+                "instead?",
+        "options": [
+            {"text": "It dissolves into the rain and washes away, so no layer "
+                     "of it ever builds up thickly enough to be seen on a "
+                     "window frame",
+             "correct": False,
+             "why": "It stays put, which is exactly why the frame lasts. "
+                    "Washing away would leave fresh metal exposed"},
+            {"text": "It clings to the metal and seals the surface",
+             "correct": True},
+            {"text": "It never forms, because aluminium does not corrode",
+             "correct": False,
+             "why": "Aluminium is MORE reactive than iron and oxidises at "
+                    "once. The layer it forms is what protects it"},
+            {"text": "It flakes off as well, only more slowly",
+             "correct": False,
+             "why": "It does not flake at all. Clinging is the whole "
+                    "difference between the two metals"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-e10",
+        "band": "easier",
+        "text": "What is a control tube for?",
+        "options": [
+            {"text": "To show what the experiment looks like when it is going "
+                     "correctly, so that the other tubes can be compared "
+                     "against a tube that is known to be right",
+             "correct": False,
+             "why": "The tube that rusts is the one going as expected. A "
+                    "control has a variable taken OUT of it"},
+            {"text": "To repeat the experiment and check the result",
+             "correct": False,
+             "why": "That is a repeat, and it changes nothing about the "
+                    "conditions"},
+            {"text": "To remove exactly one thing, so that what happens tells "
+                     "you whether that thing was needed",
+             "correct": True},
+            {"text": "To hold the spare nails",
+             "correct": False,
+             "why": "It is a full experiment of its own, with one thing "
+                    "deliberately missing"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c5-03-s05",
+        "band": "standard",
+        "text": "Why is the water in one of the four tubes boiled before the "
+                "nail goes in?",
+        "options": [
+            {"text": "To drive the dissolved air out of it",
+             "correct": True},
+            {"text": "To sterilise it, so that nothing living in the water "
+                     "can take part in the reaction and confuse the result",
+             "correct": False,
+             "why": "Rusting is chemistry rather than biology. Boiling is "
+                    "there to drive the dissolved air out"},
+            {"text": "To make the reaction go faster",
+             "correct": False,
+             "why": "The tube is left to cool, and the point is to REMOVE "
+                    "something rather than to speed anything up"},
+            {"text": "To make the oil float on top",
+             "correct": False,
+             "why": "Oil floats on cold water just as well. The boiling does "
+                    "a different job"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-s06",
+        "band": "standard",
+        "text": "Glucose reacts with oxygen in your cells to give carbon "
+                "dioxide and water. Which type of reaction is that?",
+        "options": [
+            {"text": "Thermal decomposition, because the glucose is broken "
+                     "down into two simpler substances by the warmth of the "
+                     "body",
+             "correct": False,
+             "why": "Two reactants, one of them oxygen. A decomposition has "
+                    "one reactant and needs no oxygen"},
+            {"text": "An oxidation",
+             "correct": True},
+            {"text": "A displacement",
+             "correct": False,
+             "why": "There are no metals here and nothing takes another's "
+                    "place"},
+            {"text": "Nothing chemical — it happens inside a living thing",
+             "correct": False,
+             "why": "The same chemistry runs whether it is in a cell or a "
+                    "crucible. Being alive changes nothing about the "
+                    "reaction"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-s07",
+        "band": "standard",
+        "text": "A cut apple browns within minutes on the bench. What is "
+                "happening?",
+        "options": [
+            {"text": "The apple is drying out, and the brown is what is left "
+                     "behind once the water in the exposed surface has "
+                     "evaporated away into the room",
+             "correct": False,
+             "why": "A drying apple goes wrinkled rather than brown, and it "
+                    "browns in a sealed damp box too"},
+            {"text": "Bacteria from the knife are growing on the surface",
+             "correct": False,
+             "why": "It happens far too fast for that, and a sterile knife "
+                    "makes no difference"},
+            {"text": "Substances in the flesh are being oxidised by the air",
+             "correct": True},
+            {"text": "The apple is rusting",
+             "correct": False,
+             "why": "Only iron and steel rust. This is an oxidation of "
+                    "something else"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-s08",
+        "band": "standard",
+        "text": "Steel wool is burned on an open balance and the reading "
+                "rises. Which type of reaction, and what joined?",
+        "options": [
+            {"text": "Thermal decomposition, and nothing joined — the rise is "
+                     "the ash settling back onto the pan after being lifted "
+                     "by the heat",
+             "correct": False,
+             "why": "Nothing is lifted or settled. Oxygen from the air has "
+                    "joined the iron, and it has mass"},
+            {"text": "A displacement, and the iron took the place of the "
+                     "oxygen",
+             "correct": False,
+             "why": "Displacement needs a metal and another metal's compound. "
+                    "There is none here"},
+            {"text": "An oxidation, and the mass rose because the wool "
+                     "expanded",
+             "correct": False,
+             "why": "A balance weighs mass rather than size. Expanding "
+                    "changes nothing on the pan"},
+            {"text": "An oxidation, and oxygen from the air joined the iron",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-s09",
+        "band": "standard",
+        "text": "One nail is painted and another is greased, and both are "
+                "left outdoors. What do the two coatings have in common?",
+        "options": [
+            {"text": "Both keep oxygen and water off the iron",
+             "correct": True},
+            {"text": "Both corrode in preference to the iron underneath, "
+                     "which is why each of them has to be renewed every few "
+                     "years before the protection runs out",
+             "correct": False,
+             "why": "Neither corrodes at all — they are barriers. Corroding "
+                    "instead is what a sacrificial metal does"},
+            {"text": "Both make the iron less reactive",
+             "correct": False,
+             "why": "The iron is unchanged underneath. Scratch either coating "
+                    "and it rusts at once"},
+            {"text": "Both add oxygen to the surface in a form that will not "
+                     "flake",
+             "correct": False,
+             "why": "That describes aluminium's own oxide layer. Paint and "
+                    "grease add no oxygen"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-s10",
+        "band": "standard",
+        "text": "A nail is sealed in a tube of dry air with a drying agent, "
+                "and left for four weeks. What happens?",
+        "options": [
+            {"text": "It rusts slowly, because the air in the tube supplies "
+                     "the oxygen and rusting needs nothing else",
+             "correct": False,
+             "why": "Rusting needs water as well, and the drying agent has "
+                    "removed it"},
+            {"text": "It does not rust",
+             "correct": True},
+            {"text": "It rusts as fast as a nail in the open",
+             "correct": False,
+             "why": "Both would need water. Only one of the two tubes has "
+                    "any"},
+            {"text": "It corrodes but does not rust",
+             "correct": False,
+             "why": "Rusting IS the corrosion of iron. With no water, neither "
+                    "happens"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c5-03-h05",
+        "band": "harder",
+        "text": "Burning glucose in a crucible and respiring it in a cell "
+                "give the same products. What is the difference?",
+        "options": [
+            {"text": "The products, because a cell keeps the carbon dioxide "
+                     "and releases only the water, while a crucible releases "
+                     "both of them into the room",
+             "correct": False,
+             "why": "A cell releases both. Breathe onto cold glass and onto "
+                    "limewater and you can show it"},
+            {"text": "The speed — released slowly at 37 °C, the energy can be "
+                     "used instead of setting the cell on fire",
+             "correct": True},
+            {"text": "The reactants — a cell uses no oxygen",
+             "correct": False,
+             "why": "A cell uses oxygen, which is most of why you breathe"},
+            {"text": "Nothing at all — they are the same reaction",
+             "correct": False,
+             "why": "The chemistry is the same and the RATE is not, and the "
+                    "rate is what makes one useful and the other fatal"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-h06",
+        "band": "harder",
+        "text": "A ship's zinc blocks are nearly gone after three years. Is "
+                "the system working or failing?",
+        "options": [
+            {"text": "Failing — a protective coating that has been eaten away "
+                     "is a coating that was not up to the job it was fitted "
+                     "to do",
+             "correct": False,
+             "why": "It is not a coating. Being eaten away IS the method "
+                    "working"},
+            {"text": "Failing, because zinc should not corrode at all",
+             "correct": False,
+             "why": "Zinc is more reactive than iron and corrodes readily. "
+                    "That is why it was chosen"},
+            {"text": "Working — the blocks corroding instead of the hull is "
+                     "the whole point of them",
+             "correct": True},
+            {"text": "Neither can be said without inspecting the hull",
+             "correct": False,
+             "why": "Inspecting the hull is sensible practice, and the state "
+                    "of the blocks already tells you the method has been "
+                    "doing its work"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-h07",
+        "band": "harder",
+        "text": "A steel food can is coated in tin, which is LESS reactive "
+                "than iron. What happens if the coating is scratched?",
+        "options": [
+            {"text": "The tin corrodes in preference to the iron, as zinc "
+                     "does",
+             "correct": False,
+             "why": "Only a MORE reactive metal does that. Tin is less "
+                    "reactive than iron"},
+            {"text": "Nothing, because tin seals the scratch as it corrodes",
+             "correct": False,
+             "why": "That is aluminium's oxide layer. A tin coating with a "
+                    "hole in it stays a hole"},
+            {"text": "The iron is protected, because the tin is a barrier",
+             "correct": False,
+             "why": "It is a barrier until it is scratched. After that the "
+                    "iron is exposed and nothing corrodes in its place"},
+            {"text": "The iron rusts, and the tin does nothing to stop it",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-h08",
+        "band": "harder",
+        "text": "An oxidation makes the product heavier, yet a badly rusted "
+                "gate weighs less than it did when new. How do both hold?",
+        "options": [
+            {"text": "The rust is heavier than the iron it came from, and "
+                     "what the gate has lost is rust falling off it",
+             "correct": True},
+            {"text": "Rusting is the one oxidation that makes a product "
+                     "lighter, because the rust holds water rather than "
+                     "oxygen and water is lighter than iron",
+             "correct": False,
+             "why": "Rust holds both, and it is heavier than the iron. "
+                    "Nothing about it is an exception"},
+            {"text": "The gate has lost oxygen to the air over the years",
+             "correct": False,
+             "why": "It has GAINED oxygen. That is what makes it rust"},
+            {"text": "A rusted gate does not weigh less — the observation is "
+                     "mistaken",
+             "correct": False,
+             "why": "A gate really can end up lighter, because the flakes end "
+                    "up on the ground"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-h09",
+        "band": "harder",
+        "text": "Why does the lesson insist that only iron and steel RUST, "
+                "when copper and aluminium clearly corrode too?",
+        "options": [
+            {"text": "Because copper and aluminium corrode so slowly that "
+                     "nobody has ever needed a separate word for what happens "
+                     "to them over an ordinary lifetime",
+             "correct": False,
+             "why": "Aluminium oxidises within seconds of being cut. The "
+                    "distinction is about naming, not speed"},
+            {"text": "Because rust names one specific product, and corrosion "
+                     "is the general word for all of them",
+             "correct": True},
+            {"text": "Because only iron reacts with oxygen",
+             "correct": False,
+             "why": "Almost every metal does. Iron's product has its own "
+                    "name"},
+            {"text": "Because rusting needs water and other corrosion does "
+                     "not",
+             "correct": False,
+             "why": "A real difference, and not the reason for the word. "
+                    "Rust is the name of hydrated iron oxide"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-03-h10",
+        "band": "harder",
+        "text": "Tube 3 has BOTH boiled water and a layer of oil on top. Why "
+                "are two precautions needed for one variable?",
+        "options": [
+            {"text": "Because oil alone would slow the rusting down without "
+                     "stopping it, and boiling alone would stop it entirely — "
+                     "so together they make the result unambiguous",
+             "correct": False,
+             "why": "Neither alone removes the air properly. They do "
+                    "different halves of one job"},
+            {"text": "Because the oil would otherwise react with the water",
+             "correct": False,
+             "why": "Oil and water do not react. The oil is a seal"},
+            {"text": "Boiling removes the air already dissolved; the oil "
+                     "stops more dissolving in",
+             "correct": True},
+            {"text": "Because boiling also removes the salt",
+             "correct": False,
+             "why": "There is no salt in that tube, and boiling would "
+                    "concentrate salt rather than remove it"},
+        ],
+        "figure": None,
+    },
 ]

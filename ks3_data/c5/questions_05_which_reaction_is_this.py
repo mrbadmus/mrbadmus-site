@@ -350,4 +350,476 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c5-05-e05",
+        "band": "easier",
+        "text": "Combustion sits inside which of the other types?",
+        "options": [
+            {"text": "Thermal decomposition, because the fuel is broken apart "
+                     "by the heat of its own flame as it burns",
+             "correct": False,
+             "why": "A decomposition has one reactant and takes energy in. "
+                    "Combustion has two and gives energy out"},
+            {"text": "Oxidation",
+             "correct": True},
+            {"text": "Displacement",
+             "correct": False,
+             "why": "Displacement needs a metal and another metal's compound. "
+                    "Burning needs a fuel and oxygen"},
+            {"text": "None of them — it stands on its own",
+             "correct": False,
+             "why": "Every combustion is a gain of oxygen, so every "
+                    "combustion is an oxidation"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-e06",
+        "band": "easier",
+        "text": "What is synthesis?",
+        "options": [
+            {"text": "A substance being made in a laboratory rather than "
+                     "found in nature, which is what the word means when it "
+                     "appears on a label",
+             "correct": False,
+             "why": "That is the everyday use. Here it names the shape of the "
+                    "reaction: several in, one out"},
+            {"text": "One compound breaking into two or more substances",
+             "correct": False,
+             "why": "That is decomposition. Synthesis is the same thing run "
+                    "the other way"},
+            {"text": "Two or more substances joining to make one compound",
+             "correct": True},
+            {"text": "A metal taking another metal's place",
+             "correct": False,
+             "why": "That is displacement, and nothing is joined into one "
+                    "compound"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-e07",
+        "band": "easier",
+        "text": "What does exothermic mean?",
+        "options": [
+            {"text": "Happening quickly, which is why combustion is "
+                     "exothermic and a reaction taking twenty years cannot be",
+             "correct": False,
+             "why": "Rusting is slow and exothermic. Speed and energy "
+                    "direction are separate"},
+            {"text": "Taking energy in from the surroundings",
+             "correct": False,
+             "why": "That is endothermic, and thermal decomposition is the "
+                    "example in this unit"},
+            {"text": "Producing a gas",
+             "correct": False,
+             "why": "Nothing about the word is to do with gases. It is about "
+                    "energy"},
+            {"text": "Giving out energy to the surroundings",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-e08",
+        "band": "easier",
+        "text": "Which of the four types is endothermic?",
+        "options": [
+            {"text": "Thermal decomposition",
+             "correct": True},
+            {"text": "Combustion",
+             "correct": False,
+             "why": "Combustion gives out a great deal of energy. It is the "
+                    "most obviously exothermic reaction there is"},
+            {"text": "Displacement",
+             "correct": False,
+             "why": "Displacement gives energy out — thermite reaches "
+                    "2500 °C"},
+            {"text": "Oxidation, because a substance taking oxygen in must "
+                     "take energy in along with it",
+             "correct": False,
+             "why": "Taking a substance in is nothing to do with taking "
+                    "energy in. Oxidations give energy out"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-e09",
+        "band": "easier",
+        "text": "Which type of reaction is synthesis run backwards?",
+        "options": [
+            {"text": "Combustion, since burning a fuel takes it apart into "
+                     "the two products it was built from and synthesis puts "
+                     "substances together",
+             "correct": False,
+             "why": "Burning JOINS the fuel to oxygen. Nothing is being taken "
+                    "apart into what it was made of"},
+            {"text": "Thermal decomposition",
+             "correct": True},
+            {"text": "Displacement",
+             "correct": False,
+             "why": "Displacement swaps a partner. Neither direction of it "
+                    "joins several substances into one"},
+            {"text": "Oxidation",
+             "correct": False,
+             "why": "Oxidation is a gain of oxygen. Reversing synthesis is "
+                    "about breaking one compound into several"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-e10",
+        "band": "easier",
+        "text": "How many reactants does a displacement have?",
+        "options": [
+            {"text": "One, since the compound is the only thing being changed "
+                     "and the metal is simply what it is changed by",
+             "correct": False,
+             "why": "The metal is used up and ends in the solution. Both are "
+                    "reactants"},
+            {"text": "Three",
+             "correct": False,
+             "why": "Two is enough. Nothing else has to be added"},
+            {"text": "Two — a metal, and a compound of another metal",
+             "correct": True},
+            {"text": "It depends which metals are used",
+             "correct": False,
+             "why": "The shape is the same whichever pair you choose"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c5-05-s05",
+        "band": "standard",
+        "text": "Iron and sulfur are heated together and make iron sulfide. "
+                "Which type is that?",
+        "options": [
+            {"text": "Synthesis — two substances joining to make one",
+             "correct": True},
+            {"text": "Thermal decomposition, because heat is what makes it "
+                     "happen and the dish is heated until it glows",
+             "correct": False,
+             "why": "Two reactants go in and one substance comes out. A "
+                    "decomposition is the other way round"},
+            {"text": "Displacement",
+             "correct": False,
+             "why": "Nothing takes anything else's place. Sulfur is not a "
+                    "metal compound"},
+            {"text": "Oxidation",
+             "correct": False,
+             "why": "No oxygen is involved at all — the dish can be heated in "
+                    "a sealed tube"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-s06",
+        "band": "standard",
+        "text": "A copper strip is heated in air until it is black, and it "
+                "weighs more afterwards. Which type is it?",
+        "options": [
+            {"text": "Thermal decomposition, because the black solid was made "
+                     "by heating and heat is what a decomposition needs",
+             "correct": False,
+             "why": "Heating is how it was done rather than what it is. A "
+                    "decomposition LOSES mass"},
+            {"text": "Oxidation",
+             "correct": True},
+            {"text": "Combustion",
+             "correct": False,
+             "why": "It is an oxidation and there is no flame. Combustion is "
+                    "the burning kind"},
+            {"text": "Displacement",
+             "correct": False,
+             "why": "There is no second metal's compound for the copper to "
+                    "take anything from"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-s07",
+        "band": "standard",
+        "text": "Sodium hydrogencarbonate is heated and gives a solid, a gas "
+                "and some water vapour. Which type?",
+        "options": [
+            {"text": "Oxidation, because the oxygen in the carbonate joins "
+                     "the sodium as the tube is heated",
+             "correct": False,
+             "why": "Nothing gains oxygen from outside. One compound has "
+                    "broken into several"},
+            {"text": "Synthesis",
+             "correct": False,
+             "why": "That is several in and one out. This is one in and "
+                    "several out"},
+            {"text": "Thermal decomposition",
+             "correct": True},
+            {"text": "Combustion",
+             "correct": False,
+             "why": "Nothing burns and no oxygen is needed. It works in a "
+                    "tube with no air"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-s08",
+        "band": "standard",
+        "text": "Zinc is dropped into copper sulfate and the tube gets warm. "
+                "Name the type and say what the warmth tells you.",
+        "options": [
+            {"text": "Displacement, and the warmth shows the reaction needs "
+                     "heat to run, which is why a cold tube reacts so much "
+                     "more slowly than a warm one",
+             "correct": False,
+             "why": "The warmth is produced BY the reaction. Nothing was "
+                    "heated"},
+            {"text": "Oxidation, and it is exothermic",
+             "correct": False,
+             "why": "Right about the energy and wrong about the type. No "
+                    "oxygen is involved"},
+            {"text": "Thermal decomposition, and it is endothermic",
+             "correct": False,
+             "why": "Two reactants rules out a decomposition, and the tube is "
+                    "getting warmer rather than cooler"},
+            {"text": "Displacement, and it is exothermic",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-s09",
+        "band": "standard",
+        "text": "Which pair of types are both exothermic?",
+        "options": [
+            {"text": "Combustion and displacement",
+             "correct": True},
+            {"text": "Combustion and thermal decomposition",
+             "correct": False,
+             "why": "Decomposition is the endothermic one. It stops when the "
+                    "flame comes off"},
+            {"text": "Displacement and thermal decomposition",
+             "correct": False,
+             "why": "Displacement gives energy out and decomposition takes it "
+                    "in, so the pair is split"},
+            {"text": "All four of them, because every chemical reaction "
+                     "releases energy as its new joins are made",
+             "correct": False,
+             "why": "New joins do give energy back, and breaking the old ones "
+                    "costs energy. When the cost is larger the reaction is "
+                    "endothermic"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-s10",
+        "band": "standard",
+        "text": "A reaction has two reactants, one of them oxygen, and no "
+                "flame at any point. Which name fits?",
+        "options": [
+            {"text": "Combustion, because oxygen is a reactant and that is "
+                     "what combustion means",
+             "correct": False,
+             "why": "Combustion is oxidation fast enough to BURN. No flame "
+                    "means the more general name"},
+            {"text": "Oxidation, but not combustion",
+             "correct": True},
+            {"text": "Neither, because oxidation always burns",
+             "correct": False,
+             "why": "Rusting is an oxidation and takes years without a "
+                    "flame"},
+            {"text": "Thermal decomposition",
+             "correct": False,
+             "why": "Two reactants rules that out at once"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-s11",
+        "band": "standard",
+        "text": "You are told only that a reaction is exothermic. How much "
+                "does that narrow down its type?",
+        "options": [
+            {"text": "Completely — only combustion gives out energy",
+             "correct": False,
+             "why": "Displacement and rusting are exothermic too, and neither "
+                    "burns"},
+            {"text": "Not at all, because every reaction is exothermic",
+             "correct": False,
+             "why": "Thermal decomposition is not, which is why the word "
+                    "narrows anything at all"},
+            {"text": "A little — it rules out thermal decomposition and "
+                     "leaves several possibilities",
+             "correct": True},
+            {"text": "Completely — it must be a displacement",
+             "correct": False,
+             "why": "Combustion and oxidation are exothermic as well. One "
+                    "word cannot pick between them"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c5-05-h05",
+        "band": "harder",
+        "text": "Rusting is an oxidation and is never called a combustion. "
+                "What is the one feature that separates them?",
+        "options": [
+            {"text": "Whether oxygen is one of the reactants, since rusting "
+                     "takes its oxygen out of the water rather than out of "
+                     "the air around the nail",
+             "correct": False,
+             "why": "Rusting needs oxygen from the air as well as water. Both "
+                    "have oxygen as a reactant"},
+            {"text": "Whether oxygen is one of the reactants, since rusting "
+                     "uses water",
+             "correct": True},
+            {"text": "Whether a metal is involved",
+             "correct": False,
+             "why": "Magnesium is a metal and burns. The metal is not what "
+                    "decides it"},
+            {"text": "Whether the product is heavier",
+             "correct": False,
+             "why": "Both products are heavier, because both gained oxygen"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-h06",
+        "band": "harder",
+        "text": "A reaction gives out energy, and its two reactants are a "
+                "metal and a compound of a different metal. Name it, and say "
+                "what you would see.",
+        "options": [
+            {"text": "Displacement, and both metals end up dissolved in the "
+                     "solution together, which is why it changes colour as "
+                     "the reaction runs",
+             "correct": False,
+             "why": "One goes IN to solution and one comes OUT of it. Only "
+                    "one is dissolved at the end"},
+            {"text": "Synthesis, and one new compound is formed",
+             "correct": False,
+             "why": "Two compounds exist at the end — the new sulfate, and "
+                    "the metal that came out. Nothing joined into one"},
+            {"text": "Displacement, and the less reactive metal appears as a "
+                     "solid",
+             "correct": True},
+            {"text": "Oxidation, and a gas is given off",
+             "correct": False,
+             "why": "No oxygen is involved and no gas appears"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-h07",
+        "band": "harder",
+        "text": "Why does knowing a reaction is a COMBUSTION let you predict "
+                "its products without being told them?",
+        "options": [
+            {"text": "Because every combustion gives the same two products "
+                     "whatever the fuel, so the products can be written down "
+                     "before anyone says what is burning",
+             "correct": False,
+             "why": "Burning hydrogen gives water only, and burning sulfur "
+                    "gives sulfur dioxide. You need to know what is in the "
+                    "fuel"},
+            {"text": "Because combustion always releases the same amount of "
+                     "energy",
+             "correct": False,
+             "why": "Different fuels release very different amounts. The "
+                    "prediction is about the products"},
+            {"text": "Because the products of a combustion are always gases",
+             "correct": False,
+             "why": "Magnesium burns to a solid oxide. The rule is about "
+                    "where the carbon and hydrogen go"},
+            {"text": "Because a fuel of carbon and hydrogen, with enough "
+                     "oxygen, always gives carbon dioxide and water",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-h08",
+        "band": "harder",
+        "text": "A student is told a reaction is endothermic and concludes it "
+                "must be a thermal decomposition. What is wrong with that?",
+        "options": [
+            {"text": "Exothermic and endothermic cut across the four types, "
+                     "so other endothermic reactions exist as well",
+             "correct": True},
+            {"text": "Nothing — thermal decomposition is the only endothermic "
+                     "reaction",
+             "correct": False,
+             "why": "It is the only endothermic one among the FOUR. Chemistry "
+                    "has many others"},
+            {"text": "Thermal decomposition is exothermic",
+             "correct": False,
+             "why": "It takes energy in, which is why it stops when the flame "
+                    "comes off"},
+            {"text": "Endothermic means the same as decomposition",
+             "correct": False,
+             "why": "One describes the energy and the other the shape of the "
+                    "reaction. They are two different cuts"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-h09",
+        "band": "harder",
+        "text": "Marble chips fizz in acid. A student calls it a thermal "
+                "decomposition because a gas came off. Where does that go "
+                "wrong?",
+        "options": [
+            {"text": "It names the reaction from what came out, and the gas "
+                     "is not carbon dioxide but hydrogen, so even that "
+                     "observation has been misread",
+             "correct": False,
+             "why": "The gas IS carbon dioxide and turns limewater milky. The "
+                    "error is in the reasoning rather than the observation"},
+            {"text": "It names the reaction from what came OUT, and there are "
+                     "two reactants going in",
+             "correct": True},
+            {"text": "Nothing is wrong — a gas coming off is what a "
+                     "decomposition looks like",
+             "correct": False,
+             "why": "It is one thing a decomposition looks like. Plenty of "
+                    "other reactions give off gases too"},
+            {"text": "The reaction needed no heating, and every reaction "
+                     "needs heat",
+             "correct": False,
+             "why": "The lack of heating is a real clue, and plenty of "
+                    "reactions run cold. The decisive point is the two "
+                    "reactants"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-05-h10",
+        "band": "harder",
+        "text": "The lesson says none of these classifications is a fact "
+                "about nature. What are they for, then?",
+        "options": [
+            {"text": "For making chemistry easier to teach, by giving four "
+                     "boxes to sort into",
+             "correct": False,
+             "why": "Teaching convenience is not the test. The test is "
+                    "whether the name lets you say what will happen next"},
+            {"text": "For deciding which reactions are allowed to happen",
+             "correct": False,
+             "why": "Nature is not consulting the classification. The names "
+                    "describe rather than permit"},
+            {"text": "For grouping reactions so that a prediction becomes "
+                     "possible — a name that predicts nothing would not be "
+                     "worth learning",
+             "correct": True},
+            {"text": "For nothing much — they are only labels",
+             "correct": False,
+             "why": "A label that lets you predict the products of a reaction "
+                    "you have never seen is worth a great deal"},
+        ],
+        "figure": None,
+    },
 ]

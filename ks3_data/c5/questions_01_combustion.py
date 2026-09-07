@@ -344,4 +344,518 @@ QUESTIONS = [
                    ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c5-01-e05",
+        "band": "easier",
+        "text": "What is combustion?",
+        "options": [
+            {"text": "A fuel reacting with oxygen and giving out energy",
+             "correct": True},
+            {"text": "A substance being broken down into simpler ones by the "
+                     "heat of a flame, which is why a fire leaves ash behind "
+                     "where the fuel used to be",
+             "correct": False,
+             "why": "Breaking one substance down by heat is thermal "
+                    "decomposition, and it needs no oxygen at all"},
+            {"text": "Any reaction that gets hot",
+             "correct": False,
+             "why": "Plenty of reactions get hot without burning. Combustion "
+                    "needs oxygen and a fuel"},
+            {"text": "A solid turning into a gas",
+             "correct": False,
+             "why": "That is a change of state. Nothing new is made"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-e06",
+        "band": "easier",
+        "text": "What is a hydrocarbon?",
+        "options": [
+            {"text": "A compound of carbon, hydrogen and oxygen, which is why "
+                     "burning one of them can produce both carbon dioxide and "
+                     "water from what was already in it",
+             "correct": False,
+             "why": "A hydrocarbon holds no oxygen. The oxygen in the "
+                    "products comes from the air"},
+            {"text": "A compound made of carbon and hydrogen only",
+             "correct": True},
+            {"text": "Any fuel that burns with a flame",
+             "correct": False,
+             "why": "Hydrogen and charcoal both burn and neither is a "
+                    "hydrocarbon"},
+            {"text": "Water with carbon dissolved in it",
+             "correct": False,
+             "why": "Nothing is dissolved. The carbon and hydrogen are "
+                    "chemically joined"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-e07",
+        "band": "easier",
+        "text": "What is soot?",
+        "options": [
+            {"text": "Ash left behind by the parts of the fuel that could "
+                     "never have burned in the first place, however much air "
+                     "had reached them",
+             "correct": False,
+             "why": "Soot is carbon that COULD have burned and did not. With "
+                    "enough air there is none"},
+            {"text": "Carbon dioxide that has cooled and gone solid",
+             "correct": False,
+             "why": "Carbon dioxide is a gas at these temperatures and does "
+                    "not go solid on a beaker"},
+            {"text": "Carbon from the fuel that never finished reacting",
+             "correct": True},
+            {"text": "Dust drawn into the flame from the room",
+             "correct": False,
+             "why": "It comes out of the fuel. Burn the same gas with the air "
+                    "hole open and none appears"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-e08",
+        "band": "easier",
+        "text": "Which gas does INCOMPLETE combustion produce that complete "
+                "combustion does not?",
+        "options": [
+            {"text": "Carbon dioxide, which is only made once the oxygen "
+                     "supply has run short enough for the flame to turn "
+                     "yellow",
+             "correct": False,
+             "why": "Carbon dioxide is what COMPLETE combustion makes. It is "
+                    "the finished product"},
+            {"text": "Water vapour",
+             "correct": False,
+             "why": "Both kinds produce water, from the hydrogen in the "
+                    "fuel"},
+            {"text": "Oxygen",
+             "correct": False,
+             "why": "Oxygen is used UP by burning. Neither kind produces "
+                    "any"},
+            {"text": "Carbon monoxide",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-e09",
+        "band": "easier",
+        "text": "Which Bunsen flame is the hotter?",
+        "options": [
+            {"text": "The blue one",
+             "correct": True},
+            {"text": "The yellow one, because it is taller and brighter and "
+                     "there is visibly more fire in it than in the other",
+             "correct": False,
+             "why": "Brightness is glowing soot. The blue flame is hotter, at "
+                    "around 1500 °C"},
+            {"text": "They are the same, because it is the same gas",
+             "correct": False,
+             "why": "Same gas, and different amounts of air. That is what "
+                    "changes the temperature"},
+            {"text": "It depends how far the gas tap is opened",
+             "correct": False,
+             "why": "The tap changes the size of the flame. The AIR HOLE "
+                    "changes the colour and the temperature"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-e10",
+        "band": "easier",
+        "text": "What does complete combustion need plenty of?",
+        "options": [
+            {"text": "Fuel",
+             "correct": False,
+             "why": "More fuel without more air makes it LESS complete. Fuel "
+                    "is not what runs short"},
+            {"text": "Oxygen",
+             "correct": True},
+            {"text": "Time, because a reaction given long enough will always "
+                     "finish whatever else is short",
+             "correct": False,
+             "why": "A flame starved of air goes on making soot for as long "
+                    "as it burns. Time does not fix it"},
+            {"text": "Heat",
+             "correct": False,
+             "why": "Combustion supplies its own heat once it has started. "
+                    "What decides whether it finishes is the air"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-e11",
+        "band": "easier",
+        "text": "What is a fuel?",
+        "options": [
+            {"text": "A substance that catches fire easily, so that it can be "
+                     "lit with a match rather than needing anything hotter to "
+                     "start it off",
+             "correct": False,
+             "why": "How easily it lights is a separate matter. Coal is hard "
+                    "to light and is a fuel"},
+            {"text": "Any liquid that can be poured into an engine",
+             "correct": False,
+             "why": "Gas and coal are fuels and neither is a liquid"},
+            {"text": "A substance burned to release energy",
+             "correct": True},
+            {"text": "A substance that gives out oxygen when it is heated",
+             "correct": False,
+             "why": "A fuel takes oxygen IN. Giving it out is what an "
+                    "oxidiser does"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c5-01-s05",
+        "band": "standard",
+        "text": "Methane burns completely in plenty of air. Which word "
+                "equation is right?",
+        "options": [
+            {"text": "methane + oxygen makes carbon dioxide + water",
+             "correct": True},
+            {"text": "methane + oxygen makes carbon monoxide + water",
+             "correct": False,
+             "why": "Carbon monoxide is what INCOMPLETE combustion gives. "
+                    "With plenty of air the carbon reaches carbon dioxide"},
+            {"text": "methane + air makes carbon dioxide + water + soot, "
+                     "because a little of the carbon always fails to react "
+                     "however much air is supplied to the flame",
+             "correct": False,
+             "why": "Complete combustion leaves no soot at all, and it is "
+                    "OXYGEN that reacts rather than the whole of the air"},
+            {"text": "methane makes carbon + hydrogen",
+             "correct": False,
+             "why": "That would be a decomposition, and nothing here is "
+                    "reacting with the oxygen"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-s06",
+        "band": "standard",
+        "text": "A candle under a jar goes out in a few seconds. What would "
+                "make it burn for longer?",
+        "options": [
+            {"text": "A taller candle, since the flame would then be closer "
+                     "to the top of the jar where the air is freshest and "
+                     "least used up",
+             "correct": False,
+             "why": "The air inside the jar mixes. What runs out is the "
+                    "oxygen in the whole jar, whatever the candle's height"},
+            {"text": "A larger jar",
+             "correct": True},
+            {"text": "A thicker wick",
+             "correct": False,
+             "why": "A bigger flame uses the oxygen up FASTER, so it would go "
+                    "out sooner"},
+            {"text": "Lighting it before the jar goes on",
+             "correct": False,
+             "why": "That is what happens anyway. The clock starts when the "
+                    "jar seals the air in"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-s07",
+        "band": "standard",
+        "text": "A beaker held over a yellow flame comes away black, and over "
+                "a blue flame it stays clean. What has the black deposit cost "
+                "the person heating the beaker?",
+        "options": [
+            {"text": "Nothing — the soot is a by-product and costs nothing",
+             "correct": False,
+             "why": "Soot is carbon that never reacted, so its energy was "
+                    "never released. The yellow flame delivers less"},
+            {"text": "Only the time spent cleaning the beaker afterwards",
+             "correct": False,
+             "why": "That is a nuisance and not the real cost. Less energy "
+                    "reached the water"},
+            {"text": "Fuel and energy, because soot is carbon that never "
+                     "released its energy",
+             "correct": True},
+            {"text": "Oxygen, which the soot has used up",
+             "correct": False,
+             "why": "Soot is carbon that did NOT get oxygen. Too little "
+                    "oxygen is what made it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-s08",
+        "band": "standard",
+        "text": "A boiler is burning with a yellow flame. Name the two "
+                "problems that creates.",
+        "options": [
+            {"text": "It burns too hot and wears the boiler out faster than "
+                     "it should",
+             "correct": False,
+             "why": "A yellow flame is COOLER than a blue one. Heat is not "
+                    "the problem"},
+            {"text": "It uses more oxygen and makes more carbon dioxide",
+             "correct": False,
+             "why": "It uses LESS oxygen — that is what makes it yellow — and "
+                    "makes less carbon dioxide, not more"},
+            {"text": "It is harder to see and easier to leave on by "
+                     "accident",
+             "correct": False,
+             "why": "A yellow flame is the easier one to see. The problems "
+                    "are chemical"},
+            {"text": "It makes soot and carbon monoxide, and it releases less "
+                     "energy from the same gas",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-s09",
+        "band": "standard",
+        "text": "Why does burning hydrogen produce no soot at all, however "
+                "little air it is given?",
+        "options": [
+            {"text": "Because soot is unreacted carbon, and hydrogen contains "
+                     "no carbon",
+             "correct": True},
+            {"text": "Because hydrogen burns so hot that any soot formed "
+                     "would be burned away again before it could settle "
+                     "anywhere",
+             "correct": False,
+             "why": "There is no soot to burn away. Soot is unreacted carbon, "
+                    "and hydrogen has none"},
+            {"text": "Because hydrogen always burns completely",
+             "correct": False,
+             "why": "Starve it of air and less of it burns. What it cannot do "
+                    "is make soot"},
+            {"text": "Because the water it makes washes the soot away",
+             "correct": False,
+             "why": "The water leaves as vapour, and there is no soot for it "
+                    "to wash"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-s10",
+        "band": "standard",
+        "text": "Shutting the air hole on a burner makes the flame yellow "
+                "rather than putting it out. Why does it not go out "
+                "altogether?",
+        "options": [
+            {"text": "Because a flame carries on burning on its own heat once "
+                     "it is lit",
+             "correct": False,
+             "why": "No oxygen means no combustion, as the candle under the "
+                    "jar shows. Some air is still getting in"},
+            {"text": "Because air still reaches the flame from around it, so "
+                     "it burns incompletely rather than not at all",
+             "correct": True},
+            {"text": "Because the gas contains enough oxygen of its own to "
+                     "keep going",
+             "correct": False,
+             "why": "Methane is carbon and hydrogen only. Every oxygen atom "
+                    "has to come from the air"},
+            {"text": "Because the air hole controls the gas rather than the "
+                     "air",
+             "correct": False,
+             "why": "The gas tap controls the gas. The collar controls how "
+                    "much air is mixed in before the flame"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c5-01-h05",
+        "band": "harder",
+        "text": "Why does incomplete combustion release LESS energy from the "
+                "same amount of fuel?",
+        "options": [
+            {"text": "Because some of the carbon has not finished reacting, "
+                     "so the energy that would have come from it is still "
+                     "locked in the soot",
+             "correct": True},
+            {"text": "Because the yellow flame spreads its energy over a "
+                     "larger area",
+             "correct": False,
+             "why": "That is about where the heat goes. Less energy is "
+                    "RELEASED in the first place"},
+            {"text": "Because the soot absorbs the energy as it forms",
+             "correct": False,
+             "why": "The soot never released its energy at all. It is not "
+                    "taking any back"},
+            {"text": "Because carbon monoxide is a cold gas",
+             "correct": False,
+             "why": "It leaves at flame temperature like everything else. "
+                    "What it carries away is unreleased energy"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-h06",
+        "band": "harder",
+        "text": "Carbon monoxide sticks to the haemoglobin in red blood cells "
+                "far more strongly than oxygen does, and does not let go. Why "
+                "does that make it so hard to notice?",
+        "options": [
+            {"text": "Because it acts only after several days, by which time "
+                     "the person has usually left the room and cannot connect "
+                     "the two things",
+             "correct": False,
+             "why": "It acts within an hour or two in a poorly ventilated "
+                    "room. The problem is that the symptoms are ordinary "
+                    "ones"},
+            {"text": "Because the blood keeps circulating normally while it "
+                     "carries less and less oxygen, and the early symptoms "
+                     "look like tiredness",
+             "correct": True},
+            {"text": "Because it smells faintly of gas, which people ignore",
+             "correct": False,
+             "why": "It has no smell whatever. The smell in a gas leak is "
+                    "added to the gas on purpose"},
+            {"text": "Because it makes breathing painful, which people put "
+                     "down to a cold",
+             "correct": False,
+             "why": "Breathing feels normal, which is part of the danger. The "
+                    "blood is the thing affected"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-h07",
+        "band": "harder",
+        "text": "A candle burns with a yellow flame and a gas hob with a blue "
+                "one. Is the candle badly designed?",
+        "options": [
+            {"text": "Yes — a yellow flame wastes fuel, so a candle would "
+                     "last longer",
+             "correct": False,
+             "why": "It would last longer and give almost no light. The soot "
+                    "glowing is the whole point of a candle"},
+            {"text": "No — a candle's flame is blue at the base, so it is "
+                     "burning completely after all",
+             "correct": False,
+             "why": "There is a blue region, and most of the flame is "
+                    "burning incompletely. That is what makes it bright"},
+            {"text": "No — the yellow glow is soot burning brightly, and "
+                     "light is what a candle is for",
+             "correct": True},
+            {"text": "Yes — the soot is dangerous to breathe",
+             "correct": False,
+             "why": "A candle's real hazard is the carbon monoxide in an "
+                    "unventilated room, and the design question is about "
+                    "what a candle is FOR"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-h08",
+        "band": "harder",
+        "text": "A fuel is burned in plenty of air and the only product is "
+                "water. What does that tell you about the fuel?",
+        "options": [
+            {"text": "That it contains no oxygen of its own, which is why "
+                     "everything in the products has had to come out of the "
+                     "air instead",
+             "correct": False,
+             "why": "A hydrocarbon holds no oxygen either and still gives "
+                    "carbon dioxide. What is missing here is carbon"},
+            {"text": "That it burned incompletely",
+             "correct": False,
+             "why": "Incomplete combustion gives soot and carbon monoxide. "
+                    "Water alone is a complete burn of a carbon-free fuel"},
+            {"text": "That it was burned in oxygen rather than in air",
+             "correct": False,
+             "why": "The nitrogen in air takes no part either way. The "
+                    "products depend on the fuel"},
+            {"text": "That it contains no carbon",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-h09",
+        "band": "harder",
+        "text": "A car engine draws in air and still puts carbon monoxide out "
+                "of the exhaust. What does that show?",
+        "options": [
+            {"text": "That an air supply does not guarantee complete "
+                     "combustion — inside a cylinder there is not always "
+                     "enough oxygen where the fuel is",
+             "correct": True},
+            {"text": "That petrol is a fuel that cannot burn completely under "
+                     "any conditions at all, which is why every engine ever "
+                     "built produces the gas",
+             "correct": False,
+             "why": "Petrol burns completely given enough oxygen. The "
+                    "difficulty is mixing it well enough inside a cylinder"},
+            {"text": "That the engine is faulty and needs servicing",
+             "correct": False,
+             "why": "Even a healthy engine makes some, which is why a "
+                    "catalytic converter is fitted"},
+            {"text": "That air contains carbon monoxide already",
+             "correct": False,
+             "why": "Clean air holds almost none. It is made in the "
+                    "cylinder"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-h10",
+        "band": "harder",
+        "text": "The lesson says a clean flame is not the same as a clean "
+                "fuel. What does that mean for a hydrogen car?",
+        "options": [
+            {"text": "That the water coming out of the exhaust pipe is not "
+                     "really clean, because it carries traces of the fuel "
+                     "that did not manage to burn on the way through",
+             "correct": False,
+             "why": "The water is clean. What is not clean is how the "
+                    "hydrogen was produced"},
+            {"text": "That the exhaust is water, and the carbon dioxide may "
+                     "have been released where the hydrogen was made",
+             "correct": True},
+            {"text": "That hydrogen does not burn completely",
+             "correct": False,
+             "why": "It burns completely to water. The problem is upstream of "
+                    "the car"},
+            {"text": "That the car is worse than a petrol one",
+             "correct": False,
+             "why": "That depends entirely on how the hydrogen was made, "
+                    "which is the point — the question has to be asked"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-01-h11",
+        "band": "harder",
+        "text": "Charcoal is almost pure carbon. Burned on an open "
+                "barbecue it gives carbon dioxide; brought into a tent it "
+                "kills people. What has changed?",
+        "options": [
+            {"text": "The tent traps the smoke, and smoke is what does the "
+                     "harm",
+             "correct": False,
+             "why": "Smoke is unpleasant and visible. What kills is a "
+                    "colourless gas made because the air ran short"},
+            {"text": "The temperature, because charcoal burns hotter indoors",
+             "correct": False,
+             "why": "It burns cooler with less air. The change that matters "
+                    "is which gas it produces"},
+            {"text": "The air supply — with too little oxygen the charcoal "
+                     "makes carbon monoxide instead",
+             "correct": True},
+            {"text": "Nothing chemical — the danger is the fire spreading",
+             "correct": False,
+             "why": "Fire is a real risk and it is not what makes this case "
+                    "notorious. The poisoning happens with no flames "
+                    "spreading at all"},
+        ],
+        "figure": None,
+    },
 ]

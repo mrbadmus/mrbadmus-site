@@ -474,3 +474,41 @@ Gates at commit: chemistry-only `validate_lesson` clean,
 `verify_answer_positions` OK, `verify_answer_lengths` green on `bank/C8`.
 
 ---
+## C5 — Types of reaction (5 lessons)
+
+**Quota:** 30 needed per band; 31 added, taking every band to **51**. Spread
+7 · 6 · 6 · 6 · 6 per band for easier and harder, 6 · 6 · 6 · 6 · 7 for
+standard, 93 rows.
+
+| lesson | easier | standard | harder |
+|---|---|---|---|
+| 01 combustion | e05–e11 | s05–s10 | h05–h11 |
+| 02 thermal-decomposition | e05–e10 | s05–s10 | h05–h10 |
+| 03 oxidation | e05–e10 | s05–s10 | h05–h10 |
+| 04 displacement | e05–e10 | s05–s10 | h05–h10 |
+| 05 which-reaction-is-this | e05–e10 | s05–s11 | h05–h10 |
+
+Positions 24 · 24 · 24 · 21. Length tell **28.8%**, against a `BASELINE` of
+70.6%.
+
+### Review fixes before commit
+
+Two near-duplicates:
+
+- `c5-01-e08` asked what makes carbon monoxide dangerous in a house, which is
+  `c5-01-s03`. Replaced with which gas incomplete combustion produces that
+  complete combustion does not — a cleaner recall item that the lesson needed.
+- `c5-05-e09` asked which of a list is NOT one of the four types, and the
+  answer was neutralisation, which is `c5-05-s02`'s answer to a different
+  question. Replaced with synthesis-run-backwards.
+
+**Judged and kept.** The detector also flagged `c5-04-h04` (why copper sulfate
+is not stored in steel drums) against the new `c5-04-h08` (what would happen in
+a ZINC-lined drum). That is a deliberate pair: the same scenario, a different
+metal, and the reasoning has to be done again rather than recalled. A bank of
+fifty per band is exactly where a second instance of a skill belongs.
+
+Gates at commit: chemistry-only `validate_lesson` clean,
+`verify_answer_positions` OK, `verify_answer_lengths` green on `bank/C5`.
+
+---

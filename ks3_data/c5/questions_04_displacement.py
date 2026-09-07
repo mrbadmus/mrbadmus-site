@@ -351,4 +351,471 @@ QUESTIONS = [
                    ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c5-04-e05",
+        "band": "easier",
+        "text": "What is the reactivity series?",
+        "options": [
+            {"text": "The order in which the metals were discovered, running "
+                     "from the ones the ancient world could work up to the "
+                     "ones that needed electricity",
+             "correct": False,
+             "why": "The two orders are related and are not the same. The "
+                    "series is a measured order of reactivity"},
+            {"text": "A list of metals in order of how heavy they are",
+             "correct": False,
+             "why": "Mass has nothing to do with it. Sodium is light and near "
+                    "the top"},
+            {"text": "The order the metals appear on the periodic table",
+             "correct": False,
+             "why": "The table is arranged by atomic number. The series cuts "
+                    "across it"},
+            {"text": "A list of metals in order of reactivity, most reactive "
+                     "first",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-e06",
+        "band": "easier",
+        "text": "Zinc is put into copper sulfate solution. What happens?",
+        "options": [
+            {"text": "The zinc displaces the copper, which appears as a brown "
+                     "solid",
+             "correct": True},
+            {"text": "Nothing, because a solid cannot react with something "
+                     "dissolved",
+             "correct": False,
+             "why": "That is exactly what displacement is, and it happens "
+                    "readily here"},
+            {"text": "The copper displaces the zinc",
+             "correct": False,
+             "why": "The wrong way round. Zinc is the more reactive of the "
+                    "two, so it is the one that displaces"},
+            {"text": "The solution turns blue",
+             "correct": False,
+             "why": "It starts blue and FADES as the dissolved copper "
+                    "leaves"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-e07",
+        "band": "easier",
+        "text": "Why are carbon and hydrogen included in the reactivity "
+                "series, when neither is a metal?",
+        "options": [
+            {"text": "Because every list of elements has to include them, "
+                     "since they are the two commonest elements in the "
+                     "universe and in living things",
+             "correct": False,
+             "why": "Commonness is no reason to be in this list. They are "
+                    "there because they take part in displacement"},
+            {"text": "Because they displace on the same rule, so they can be "
+                     "placed in the same order",
+             "correct": True},
+            {"text": "Because they are needed to make the metals react",
+             "correct": False,
+             "why": "Zinc displaces copper with neither of them present"},
+            {"text": "Because they behave like metals in every other way",
+             "correct": False,
+             "why": "They behave like non-metals in almost every other way. "
+                    "Displacement is the exception"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-e08",
+        "band": "easier",
+        "text": "What is an ore?",
+        "options": [
+            {"text": "A rock containing a metal in its pure form, ready to be "
+                     "melted down",
+             "correct": False,
+             "why": "That happens for gold and almost nothing else. An ore "
+                    "holds the metal as a COMPOUND"},
+            {"text": "A metal that has been dug out of the ground",
+             "correct": False,
+             "why": "The ore is the rock. The metal is what comes out of it"},
+            {"text": "A rock containing enough of a metal's compound to be "
+                     "worth extracting the metal from",
+             "correct": True},
+            {"text": "Any rock with a metal atom anywhere in it",
+             "correct": False,
+             "why": "Almost every rock qualifies on that test. The word means "
+                    "enough to be worth the trouble"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-e09",
+        "band": "easier",
+        "text": "All the solutions on the displacement bench are SULFATES. "
+                "Why does that matter?",
+        "options": [
+            {"text": "Because sulfates are the only compounds that dissolve "
+                     "well enough",
+             "correct": False,
+             "why": "Chlorides and nitrates dissolve well too. Keeping the "
+                    "partner the same is about making the tubes comparable"},
+            {"text": "Because a sulfate is the only compound a metal can be "
+                     "displaced from",
+             "correct": False,
+             "why": "Displacement works from chlorides and oxides too. "
+                    "Thermite uses an oxide"},
+            {"text": "Because sulfates are all the same colour",
+             "correct": False,
+             "why": "They are not — copper sulfate is blue and zinc sulfate "
+                    "is colourless. The colours are part of what you "
+                    "observe"},
+            {"text": "Because keeping the same partner means the only thing "
+                     "changing between tubes is the metal",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-e10",
+        "band": "easier",
+        "text": "A more reactive metal is described as holding on to a "
+                "partner more strongly. What follows?",
+        "options": [
+            {"text": "It can take a partner away from a less reactive metal, "
+                     "and not the other way round",
+             "correct": True},
+            {"text": "It dissolves in water more readily than a less reactive "
+                     "one, which is why the solutions of reactive metals are "
+                     "the most concentrated ones on the bench",
+             "correct": False,
+             "why": "How much dissolves is a separate property. What follows "
+                    "is which metal wins a partner"},
+            {"text": "It is harder and denser than a less reactive metal",
+             "correct": False,
+             "why": "Sodium is soft and light and highly reactive. Hardness "
+                    "does not follow"},
+            {"text": "It gives its partner up more easily",
+             "correct": False,
+             "why": "Exactly backwards, and it is what makes the order run "
+                    "one way only"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c5-04-s05",
+        "band": "standard",
+        "text": "An iron nail in copper sulfate goes brown and the blue "
+                "solution fades to pale green. What has the green colour told "
+                "you?",
+        "options": [
+            {"text": "That the copper is still dissolved in the solution, and "
+                     "the green is what copper sulfate looks like once it has "
+                     "been diluted by the reaction",
+             "correct": False,
+             "why": "Diluting blue gives paler blue. The green is a new "
+                    "substance"},
+            {"text": "That the nail is rusting",
+             "correct": False,
+             "why": "Rust is orange-brown and on the nail. The green is in "
+                    "the liquid"},
+            {"text": "That iron sulfate has formed, so the iron has gone into "
+                     "solution",
+             "correct": True},
+            {"text": "That the solution has been contaminated",
+             "correct": False,
+             "why": "It is the expected product of the reaction. Nothing has "
+                    "gone wrong"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-s06",
+        "band": "standard",
+        "text": "Thermite is iron oxide mixed with aluminium powder, lit to "
+                "weld a rail. Which metal ends up with the oxygen?",
+        "options": [
+            {"text": "The iron keeps it, and the aluminium melts and pours "
+                     "into the gap between the rails as the weld",
+             "correct": False,
+             "why": "It is the IRON that pours out white-hot. Aluminium is "
+                    "more reactive and takes the oxygen"},
+            {"text": "Neither — the oxygen is given off as a gas",
+             "correct": False,
+             "why": "No gas is produced. The oxygen changes partner"},
+            {"text": "Both share it equally",
+             "correct": False,
+             "why": "Displacement is not a sharing. The more reactive metal "
+                    "takes it"},
+            {"text": "The aluminium, because it is the more reactive of the "
+                     "two",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-s07",
+        "band": "standard",
+        "text": "A grid of four metals against four solutions has sixteen "
+                "tubes, and four of them are a metal in its own solution. What "
+                "are those four for?",
+        "options": [
+            {"text": "To show that a metal cannot displace itself from its "
+                     "own compound",
+             "correct": True},
+            {"text": "To show the colour each solution starts at, so that any "
+                     "change in the other twelve can be judged against it",
+             "correct": False,
+             "why": "The bottle already shows the starting colour. These "
+                    "tubes show that a metal cannot displace itself"},
+            {"text": "To check the metals have been cleaned properly",
+             "correct": False,
+             "why": "A tube where nothing should happen cannot test the "
+                    "cleaning"},
+            {"text": "To act as spares in case a tube is broken",
+             "correct": False,
+             "why": "Every tube on the grid is a real test with a result"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-s08",
+        "band": "standard",
+        "text": "Gold and copper were worked thousands of years before iron. "
+                "What does the reactivity series say about that?",
+        "options": [
+            {"text": "That gold and copper are hard enough to shape with "
+                     "stone tools",
+             "correct": False,
+             "why": "Gold and copper are the SOFTER metals, and the "
+                    "difference is chemical rather than mechanical"},
+            {"text": "That both are unreactive enough to be found as the "
+                     "metal, while iron has to be displaced from its ore",
+             "correct": True},
+            {"text": "That gold and copper were more common in the ancient "
+                     "world",
+             "correct": False,
+             "why": "Iron is far more abundant than either. Getting it out "
+                    "was the difficulty"},
+            {"text": "That iron ore had not formed yet",
+             "correct": False,
+             "why": "Iron ore is older than the human species. What was "
+                    "missing was the furnace"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-s09",
+        "band": "standard",
+        "text": "Magnesium is put into zinc sulfate and a dark solid appears; "
+                "zinc is put into magnesium sulfate and nothing happens. What "
+                "have those two tubes together established?",
+        "options": [
+            {"text": "That magnesium reacts faster than zinc does, which is "
+                     "what a solid appearing in one tube and not in the other "
+                     "is a measure of",
+             "correct": False,
+             "why": "One tube has no reaction at all rather than a slow one. "
+                    "That is a difference of order, not of rate"},
+            {"text": "That zinc sulfate is more concentrated than magnesium "
+                     "sulfate",
+             "correct": False,
+             "why": "Concentration was kept the same. What differs is the "
+                    "metals"},
+            {"text": "That magnesium is above zinc, and that the order runs "
+                     "one way only",
+             "correct": True},
+            {"text": "That both metals are more reactive than copper",
+             "correct": False,
+             "why": "True from other tubes on the grid, and not from these "
+                    "two. They compare magnesium with zinc"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-s10",
+        "band": "standard",
+        "text": "Why does the displacement grid come out half full, with "
+                "every reaction on one side of the diagonal?",
+        "options": [
+            {"text": "Because half the tubes were a metal in its own "
+                     "solution, and those can never react whichever way round "
+                     "they are set up",
+             "correct": False,
+             "why": "Only four of the sixteen are like that. The diagonal "
+                    "shape comes from the order running one way"},
+            {"text": "Because half the solutions were too dilute to react",
+             "correct": False,
+             "why": "All were made up the same way. Concentration is not what "
+                    "makes the pattern"},
+            {"text": "Because the grid was only half filled in",
+             "correct": False,
+             "why": "Every tube was run. The blanks are results"},
+            {"text": "Because a metal displaces every metal below it and none "
+                     "above it",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c5-04-h05",
+        "band": "harder",
+        "text": "Aluminium was once more valuable than silver, and is now in "
+                "every kitchen. What changed?",
+        "options": [
+            {"text": "New ore deposits were found, and the price fell",
+             "correct": False,
+             "why": "Aluminium is the commonest metal in the crust and always "
+                    "was. Extracting it was the problem"},
+            {"text": "Chemists discovered that it was not really a metal",
+             "correct": False,
+             "why": "It is very much a metal. Its value fell when it became "
+                    "easy to obtain"},
+            {"text": "It was found to be more reactive than carbon",
+             "correct": False,
+             "why": "Being above carbon is WHY a furnace fails. Knowing it "
+                    "did not solve anything by itself"},
+            {"text": "Electricity made it possible to break its ore apart, "
+                     "which no furnace could do",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-h06",
+        "band": "harder",
+        "text": "An unknown metal displaces zinc from zinc sulfate but not "
+                "magnesium from magnesium sulfate. Where does it sit?",
+        "options": [
+            {"text": "Between magnesium and zinc",
+             "correct": True},
+            {"text": "Above magnesium, since a metal that can displace one of "
+                     "the two must be more reactive than both of them",
+             "correct": False,
+             "why": "It failed against magnesium, which puts it below. Only "
+                    "the zinc test went its way"},
+            {"text": "Below zinc",
+             "correct": False,
+             "why": "Then it could not have displaced zinc at all"},
+            {"text": "It cannot be placed from two results",
+             "correct": False,
+             "why": "One win and one loss brackets it between the two, which "
+                    "is exactly what the series is built from"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-h07",
+        "band": "harder",
+        "text": "A student says an iron nail in copper sulfate turns into "
+                "copper on the outside. What is the strongest single reply?",
+        "options": [
+            {"text": "Iron and copper are different elements, so one cannot "
+                     "become the other, and any claim that they can is a "
+                     "claim about alchemy rather than chemistry",
+             "correct": False,
+             "why": "Perfectly true and it is an argument from principle. The "
+                    "fading blue is EVIDENCE, on the bench, in front of "
+                    "them"},
+            {"text": "Iron and copper are different elements, so one cannot "
+                     "become the other",
+             "correct": True},
+            {"text": "The nail gets heavier, which shows something was "
+                     "added",
+             "correct": False,
+             "why": "It does gain mass, and that is consistent with several "
+                    "stories. The fading solution names where the copper came "
+                    "from"},
+            {"text": "Copper is less reactive than iron",
+             "correct": False,
+             "why": "That explains why the reaction runs and does not by "
+                    "itself answer where the copper came from"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-h08",
+        "band": "harder",
+        "text": "Copper sulfate solution is kept in plastic rather than in "
+                "steel drums. Suppose it were stored in a ZINC-lined drum "
+                "instead. What would happen?",
+        "options": [
+            {"text": "Nothing, because zinc is not iron and only iron "
+                     "displaces copper",
+             "correct": False,
+             "why": "Zinc is above copper too, and it displaces copper "
+                    "readily"},
+            {"text": "The copper would plate the lining and protect it",
+             "correct": False,
+             "why": "Copper does deposit, and the zinc underneath is being "
+                    "consumed to put it there"},
+            {"text": "The zinc would displace the copper, so the lining would "
+                     "be eaten away as well",
+             "correct": True},
+            {"text": "The solution would turn from blue to a deeper blue",
+             "correct": False,
+             "why": "The blue fades as the dissolved copper leaves. It does "
+                    "not deepen"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-h09",
+        "band": "harder",
+        "text": "A thermite reaction reaches 2500 °C with no power supply at "
+                "all. Where does that energy come from?",
+        "options": [
+            {"text": "From the match used to light it, which supplies enough "
+                     "energy to reach that temperature once it is concentrated "
+                     "into a small crucible",
+             "correct": False,
+             "why": "A match supplies only the start. What follows releases "
+                    "far more than the match ever held"},
+            {"text": "From the iron oxide decomposing as it heats",
+             "correct": False,
+             "why": "No decomposition is happening. The oxygen changes "
+                    "partner rather than being released"},
+            {"text": "From the friction of the powders mixing",
+             "correct": False,
+             "why": "Mixing releases almost nothing. The energy is chemical"},
+            {"text": "From the reaction itself, which is exothermic — "
+                     "displacement gives energy out",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-04-h10",
+        "band": "harder",
+        "text": "A student proposes finding a metal's place in the series by "
+                "testing it against EVERY solution on the shelf. Why is that "
+                "more work than it needs to be?",
+        "options": [
+            {"text": "Because each result narrows the range, so the next "
+                     "solution can be chosen from the last answer",
+             "correct": True},
+            {"text": "Because a metal only has to be tested against the "
+                     "solution directly above it and the one directly below "
+                     "it, and those two can be read off the series in "
+                     "advance",
+             "correct": False,
+             "why": "You cannot know which two are adjacent until you have "
+                    "placed it. Narrowing is how you find out"},
+            {"text": "Because most of the tubes would give the same result",
+             "correct": False,
+             "why": "They would split into wins and losses, and every one "
+                    "would be a real result. The saving is in not needing "
+                    "them all"},
+            {"text": "Because testing every solution would use up the metal",
+             "correct": False,
+             "why": "A small piece goes into each tube. Supply is not the "
+                    "objection"},
+        ],
+        "figure": None,
+    },
 ]
