@@ -1,47 +1,108 @@
-"""ks4_pool_drive.py — MRB-332. A KS4 teacher sets work, and the right child
-gets the right questions.
+"""ks4_pool_drive.py — MRB-332, ported to Set work v2 (MRB-335). A KS4 teacher
+sets work, and the right child gets the right questions.
 
-    MRB_THROWAWAY_PASSWORD=<pw> python3 ks4_pool_drive.py
-    MRB_THROWAWAY_PASSWORD=<pw> python3 ks4_pool_drive.py --keep
+    MRB_SET_WORK_PASSWORD=<pw> python3 ks4_pool_drive.py --keep
+    MRB_SET_WORK_PASSWORD=<pw> MRB_BACKEND=<path> python3 ks4_pool_drive.py --keep
 
 ⚠️ REQUIRES THE INTEGRATED BRANCH. It imports `mrb331_fixture`, which arrives
-with MRB-331 (`feat/set-work`), and it drives a backend carrying MRB-332's
-`bankFor` KS4 branch (`feat/mrb332-ks4-pool`). Run it after the rebase, not
-before; on its own branch it will fail at the import, loudly, which is the
-correct behaviour.
+with MRB-331 (`feat/set-work`), and it drives a backend carrying MRB-335's
+`/api/teacher/set-work/scope` and `/preview` (`feat/set-work-v2`). Run it after
+the rebase, not before; on its own branch it will fail at the import, loudly,
+which is the correct behaviour.
 
 ⚠️ EVERY CHECK RUNS ON A REAL USER'S JWT against the real TEST project through
 a locally-run backend, exactly as `set_work_drive.py` does. Nothing is stubbed.
-The service key builds and tears down the world and never appears inside a
-check — a proof carried on a service-role key proves nothing about what a
-teacher or a child can actually do, because service role bypasses RLS.
+The service key builds the world and never appears inside a check — a proof
+carried on a service-role key proves nothing about what a teacher or a child
+can actually do, because service role bypasses RLS.
 
 ── WHAT THIS DRIVE EXISTS TO PROVE ─────────────────────────────────────
 
 One property, and it is the one that matters to a child:
 
-    **A Foundation Combined class is never served a Higher or a Triple-only
-    question. A Triple Higher class is served everything.**
+    **A Combined class is never served a Triple-only question, whatever tier
+    it is set at. A class is served the tier its TEACHER asked for, which is
+    not necessarily its own.**
 
-`ks4_pool_check.py` proves that about the DATA. This proves it about the
-SERVING PATH — the class row, the scope function, the query, RLS and the
-payload, end to end — because a correct rule and a query that forgets to
-apply it look identical from the outside.
+`ks4_pool_check.py` proves the content rule about the DATA. This proves it
+about the SERVING PATH — the class row, the tree, the scope seal, the pool
+query, RLS and the payload, end to end — because a correct rule and a query
+that forgets to apply it look identical from the outside.
 
-── ⚠️ THREE OF MRB-331'S CHECKS INVERT HERE, AND ONE CHANGES SHAPE ─────
+── ⊕ MRB-335: THE ONE SEMANTIC CHANGE, AND IT IS THE POINT OF THE PORT ──
 
-`set_work_drive.py` asserts, correctly for its own branch:
+This file used to say, and MRB-332's checks used to assume:
+
+    "A Foundation Combined class is never served a Higher or a Triple-only
+    question. A Triple Higher class is served everything."
+
+Half of that sentence is still true and half of it is now WRONG, and the wrong
+half is kept here rather than deleted because following it would re-open the
+hole from the other side — a reader who "fixed" a check back to it would be
+asserting that a teacher may not set Foundation revision to a Higher class,
+which is ordinary teaching that v1 could not express and v2 exists to allow.
+
+What actually holds under v2 (RISKS E1, C1):
+
+  · **Set work's tier is the REQUEST's tier.** A teacher chooses it per set.
+    A Foundation class may legitimately be set Higher extension work; a Higher
+    class may legitimately be set Foundation revision. So "this class is
+    Foundation, therefore it may not see a Higher row" is no longer a true
+    statement about Set work, and every assertion in the old file that said it
+    has been retired.
+  · **Set work's PATHWAY is always the CLASS's, and cannot be asked for.**
+    There is no pathway parameter on any route. That asymmetry is what makes
+    `triple_only` unreachable on a combined class no matter what a browser
+    posts — the tree is re-derived from the class row and the scope must be a
+    node OF THAT TREE, so the refusal happens before the pool is consulted.
+  · **The class tier still governs the AUTOMATIC producer** (`ks4BankScope`),
+    which is a different question with a different answer, and which reads
+    only `bank_position < 12` (RISKS D7). Set work reads every position.
+
+── ⊕ MRB-335: v1's ROUTE AND ITS `sow_entry_id` CONTRACT ARE DELETED ────
+
+Kept, because it names the route this file used to call and a reader who
+restored it would be calling a 404. The old text read:
+
+    "This drive was written against `POST …/preview {lesson_slug}`. MRB-331
+    shipped `GET /api/teacher/set-work/preview?class_id=&sow_entry_id=`…
+    it keys on the SCHEME ENTRY, not the slug, and deliberately 404s
+    `sow_entry_not_found` for a row outside the class's own cohort."
+
+`GET /api/teacher/set-work/topics` is GONE, `sow_entry_id` is GONE, and the
+scheme of work no longer scopes Set work at all. The refusal that replaces
+`sow_entry_not_found` is `400 scope_not_for_class`, and it is a STRONGER
+refusal, not a renamed one: the scheme was a list somebody had authored, so a
+gap in it refused by accident; the tree is derived from the class's cohort, so
+it refuses by construction.
+
+⚠️ The old helper's THIRD state (`not_on_scheme`) is gone with it, and the
+lesson that produced it is not. An earlier revision of this drive treated a
+404 and an empty payload alike, and two checks went green while every preview
+in the run was 404ing. `preview()` below therefore returns the HTTP status and
+the parsed body, and every check asserts on the status explicitly — there is
+no state in which "the route refused me" can be read as "the rule protected
+me".
+
+── ⚠️ MRB-331'S THREE CHECKS: WHAT BECAME OF EACH ──────────────────────
+
+`set_work_drive.py` asserted, correctly for its own branch:
 
     · `has_bank is False` for a KS4 class
     · every KS4 lesson reports `available == 0`
     · the eight colliding slugs report `available == 0`
 
-The first two simply invert once this pool exists, and the rebase must update
-them; they are named here so that whoever does the rebase finds them.
+⊕ MRB-335: the first two are gone rather than inverted. `has_bank` and the
+per-lesson `available` were fields of `/set-work/topics`, and that route no
+longer exists; what replaced them is `/scope`, whose tree carries a `counts`
+object PER TIER on every node (RISKS C12) because the tier chip must re-count
+in place. The property those two checks were reaching for — "the KS4 pool is
+real and reachable" — is now proved by the previews actually returning `ks4-`
+rows, which is a stronger statement than a non-zero count.
 
-**The third does NOT invert — it changes shape, and getting that wrong would
-re-open the exact hole MRB-331 closed.** The eight colliding slugs hold twelve
-KS3 rows each. They now also hold twelve KS4 rows each. So `available == 12`
+**The third did NOT invert and still has not — it changes shape, and getting
+that wrong would re-open the exact hole MRB-331 closed.** The eight colliding
+slugs hold twelve KS3 rows each. They now also hold KS4 rows each. So a count
 is true whether the route is reading the right table or the wrong one, and a
 check on the number proves nothing at all.
 
@@ -49,7 +110,7 @@ What separates them is the IDENTITY of the rows: a KS4 pool id begins `ks4-`
 and a KS3 bank id looks like `c1-04-h02`. So the collision check here asserts
 that every question served for a colliding slug is a `ks4-` id, and that no
 KS3 id appears anywhere in a KS4 payload. That is a property no amount of
-counting can fake.
+counting can fake, and it is the most important assertion in this file.
 """
 
 import json
@@ -62,6 +123,7 @@ import time
 import urllib.error
 import urllib.request
 from datetime import datetime, timedelta, timezone
+from urllib.parse import quote
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 os.chdir(REPO)
@@ -73,7 +135,7 @@ except ModuleNotFoundError:
     raise SystemExit(
         "ks4_pool_drive: mrb331_fixture is missing.\n"
         "This drive runs on the INTEGRATED branch — MRB-331 (feat/set-work)\n"
-        "provides the fixture and the two KS4 classes it needs. Rebase this\n"
+        "provides the fixture and the three KS4 classes it needs. Rebase this\n"
         "lane onto MRB-331 and run it again.")
 
 import ks4_data                          # noqa: E402
@@ -104,6 +166,10 @@ DUE = NOW + timedelta(days=7)
 # A KS3 bank id: unit code, lesson number, band letter and index — 'c1-04-h02'.
 # Anything matching this inside a KS4 payload is a cross-key-stage leak.
 KS3_ID = re.compile(r"^[bcp]\d{1,2}-\d{2}-[esh]\d{2}$", re.I)
+
+# The bands, in the order the pool authors them. `standard|harder` is the half
+# of the Foundation rows a Higher set may draw — see `permits()`.
+HARDER_BANDS = ("standard", "harder")
 
 checks = []
 
@@ -159,6 +225,40 @@ def call(method, path, token, payload=None):
             return e.code, {"raw": raw.decode("utf-8", "replace")[:400]}
 
 
+# ── the two v2 routes ────────────────────────────────────────────────────
+
+_SCOPE = {}
+
+
+def scope(token, class_id, fresh=False):
+    """(status, body) for `/scope`. Cached: it is the same answer every time
+    for a class and it reads the whole tree's counts, which is 189 slugs on a
+    combined class."""
+    if fresh or class_id not in _SCOPE:
+        _SCOPE[class_id] = call(
+            "GET", "/api/teacher/set-work/scope?class_id=" + class_id, token)
+    return _SCOPE[class_id]
+
+
+def preview(token, class_id, tier, kind, ref, count=10, exclude=None):
+    """(status, body) for `/preview`.
+
+    ⚠️ RETURNS THE STATUS, ALWAYS, AND NEVER COLLAPSES IT INTO 'no questions'.
+    See the docstring: an earlier revision of this file treated a refusal and
+    an empty payload alike and went green while every request was 404ing.
+    """
+    path = ("/api/teacher/set-work/preview?class_id=%s&tier=%s"
+            "&scope_kind=%s&scope_ref=%s&count=%d"
+            % (class_id, quote(tier), quote(kind), quote(ref), count))
+    if exclude:
+        path += "&exclude=" + quote(",".join(exclude))
+    return call("GET", path, token)
+
+
+def picked_ids(body):
+    return [str(q.get("id") or "") for q in (body.get("picked") or [])]
+
+
 # ── the pool, as Python knows it ─────────────────────────────────────────
 
 def pool_index():
@@ -171,13 +271,60 @@ def pool_index():
     return {r["id"]: r for r in ks4_data.load_pool(strict=False)}
 
 
+def pool_slugs(pool):
+    return {r["subtopic_slug"] for r in pool.values()}
+
+
+def permits(row, tier, pathway):
+    """PLAN §1's pool spec, as a predicate, applied from first principles.
+
+    ⊕ MRB-335 REWROTE THE TIER HALF OF THIS, and the old one would have failed
+    on correct data. It read:
+
+        if tier == "foundation" and row["tier"] == "higher": forbidden
+
+    — i.e. it treated a Higher set as "the higher rows, plus anything". PLAN §1
+    is narrower on one side and wider on the other:
+
+        Foundation → `tier='foundation'` rows, ALL THREE BANDS.
+        Higher     → `tier='higher'` rows (all bands)
+                     ∪ `tier='foundation'` rows in `standard|harder`.
+
+    The second clause is the part worth reading twice, and it is why an audit
+    that assumed "Higher = the higher rows" would go red against a correct
+    server. A Higher class is not a class that skips the foundation material;
+    it is a class that meets it at the harder end. Only 30 of 264 subtopics are
+    classified `higher` at all, so excluding foundation rows would leave Higher
+    unable to set most of the specification — and including their `easier` band
+    would hand a Higher group the four gentlest questions in the topic.
+
+    The PATHWAY half is unchanged and is an INCLUSION, never an exclusion
+    (RISKS C6): the day a third content flag appears, an exclusion would admit
+    it silently to every class in the school.
+    """
+    if pathway == "combined" and row["triple_only"]:
+        return False, "triple-only"
+    if tier == "foundation":
+        if row["tier"] != "foundation":
+            return False, "higher-tier row in a foundation set"
+    else:
+        if row["tier"] == "foundation" and row["band"] not in HARDER_BANDS:
+            return False, "foundation/%s row in a higher set" % row["band"]
+    return True, ""
+
+
 def audit_payload(label, questions, pool, tier, pathway):
     """Every question in one payload, against the content rule.
 
     Returns (ok, detail). The rule is applied here from first principles —
-    `tier`/`pathway` in, permitted flag combinations out — rather than by
-    calling the backend's own scope function, so that a wrong scope function
-    cannot agree with itself.
+    the REQUEST's tier and the CLASS's pathway in, permitted flag combinations
+    out — rather than by calling the backend's own scope function, so that a
+    wrong scope function cannot agree with itself.
+
+    ⊕ MRB-335: `tier` is now the tier the request ASKED FOR, not the class's
+    own. Under v1 the two were the same number and this argument could be read
+    either way; under v2 they are independent and reading it as the class's
+    would make every legitimate cross-tier set look like a leak.
     """
     problems, unknown, ks3 = [], [], []
     for q in questions:
@@ -189,171 +336,456 @@ def audit_payload(label, questions, pool, tier, pathway):
         if row is None:
             unknown.append(qid)
             continue
-        if tier == "foundation" and row["tier"] == "higher":
-            problems.append("%s is higher-tier" % qid)
-        if pathway == "combined" and row["triple_only"]:
-            problems.append("%s is triple-only" % qid)
+        ok, why = permits(row, tier, pathway)
+        if not ok:
+            problems.append("%s is %s" % (qid, why))
 
     if ks3:
         return False, ("⚠️ %d KS3 BANK id(s) served to a KS4 class: %s"
                        % (len(ks3), ", ".join(ks3[:5])))
     if problems:
-        return False, ("⚠️ %d FORBIDDEN question(s) served to %s %s: %s"
-                       % (len(problems), pathway, tier,
-                          "; ".join(problems[:5])))
+        return False, ("⚠️ %d FORBIDDEN question(s) served to %s at tier=%s: %s"
+                       % (len(problems), pathway, tier, "; ".join(problems[:5])))
     if unknown:
         return False, ("%d served id(s) are in no pool at all: %s"
                        % (len(unknown), ", ".join(unknown[:5])))
-    return True, "%d question(s), every one permitted for %s %s" % (
+    return True, "%d question(s), every one permitted for %s at tier=%s" % (
         len(questions), pathway, tier)
+
+
+# ── tree helpers ─────────────────────────────────────────────────────────
+
+def tree_slugs(body):
+    """slug → topic id, for every child in a `/scope` tree."""
+    out = {}
+    for topic in body.get("tree") or []:
+        for child in topic.get("children") or []:
+            out[child["id"]] = topic["id"]
+    return out
+
+
+def tree_topics(body):
+    return {t["id"]: t for t in (body.get("tree") or [])}
 
 
 # ── the checks ───────────────────────────────────────────────────────────
 
-def check_topics(t_teacher, pool):
-    """The set-work sheet's topic list, for both KS4 classes."""
-    print("\n── the topic list ──")
-    st, trip = call("GET", "/api/teacher/set-work/topics?class_id=" +
-                    FX.C_KS4_TRIPLE, t_teacher)
-    st2, comb = call("GET", "/api/teacher/set-work/topics?class_id=" +
-                     FX.C_KS4_COMB, t_teacher)
-    if st != 200 or st2 != 200:
-        record(False, "KS4 topics load", "%s / %s" % (st, st2))
-        return None, None
+def check_scope(token):
+    """`/scope` answers for all three KS4 classes, and its tree is the class's.
 
-    # ⊕ INVERTS MRB-331. Its drive asserts has_bank is False; a KS4 pool now
-    # exists, so False here would mean the branch never landed.
-    record(trip.get("has_bank") is True and comb.get("has_bank") is True,
-           "KS4 has_bank is now TRUE for both classes (inverts MRB-331)",
-           "triple=%s combined=%s"
-           % (trip.get("has_bank"), comb.get("has_bank")))
+    ⊕ MRB-335 REPLACES `check_topics`. That function called
+    `GET /api/teacher/set-work/topics`, which no longer exists, and asserted
+    `has_bank is True` and `available == 4` per lesson. Both fields are gone
+    with the route; see the docstring for what replaced them and why the
+    replacement is stronger.
+    """
+    print("\n── /scope answers, and the tree is the CLASS's ──")
+    bodies = {}
+    for label, cid in (("Triple Higher biology 10a/Bi1", FX.C_KS4_TRIPLE),
+                       ("Combined Foundation 10b/Sc5", FX.C_KS4_COMB),
+                       ("Triple Higher physics 10c/Ph1", FX.C_KS4_SEPS)):
+        st, body = scope(token, cid)
+        record(st == 200 and bool(body.get("tree")),
+               "/scope 200 for %s" % label,
+               "%d topic(s), %d subtopic(s)"
+               % (len(body.get("tree") or []), len(tree_slugs(body)))
+               if st == 200 else "HTTP %s %s" % (st, str(body)[:120]))
+        bodies[cid] = body if st == 200 else {}
 
-    t_rows = {r["lesson_slug"]: r.get("available", 0)
-              for r in trip.get("topics") or []}
-    c_rows = {r["lesson_slug"]: r.get("available", 0)
-              for r in comb.get("topics") or []}
-
-    # ⊕ INVERTS MRB-331. Every seeded subtopic should now offer questions.
-    t_stocked = [s for s, n in t_rows.items() if n > 0]
-    record(len(t_stocked) > 20,
-           "KS4 Triple Higher: most lessons now have banked questions",
-           "%d of %d rows have available > 0" % (len(t_stocked), len(t_rows)))
-
-    # ⚠️ THE COUNT IS FOUR, NOT TWELVE, AND THAT IS CORRECT.
-    #
-    # A subtopic holds twelve questions — but `/set-work/topics` reports what is
-    # available AT ONE BAND, because `bankFor` applies `.eq('band', band)` and
-    # the route answers for a single band at a time. Twelve per subtopic is four
-    # easier, four standard, four harder, so a correctly stocked subtopic
-    # reports 4 here and a route that reported 12 would be ignoring the band.
-    #
-    # This drive asserted 12 and was wrong, not the product. Recorded rather
-    # than quietly corrected, because "the number I expected" is the weakest
-    # possible reason to change an assertion and the next reader deserves the
-    # arithmetic.
-    wrong = {s: n for s, n in t_rows.items() if n not in (0, 4)}
-    record(not wrong,
-           "KS4: every stocked subtopic reports four available — one band of twelve",
-           "%d stocked, all at 4" % len(t_stocked) if not wrong
-           else "off-band counts: %s" % dict(list(wrong.items())[:5]))
-
-    # Scoping proved by DIFFERENCE, not by a count. A route ignoring tier and
-    # pathway entirely would still return rows for both classes.
-    only_triple = set(t_rows) - set(c_rows)
-    record(bool(only_triple),
-           "KS4: the Triple Higher class is offered lessons the Combined "
-           "Foundation class is not",
-           "%d triple-only lesson(s), e.g. %s"
-           % (len(only_triple), ", ".join(sorted(only_triple)[:3])))
-
-    # And the Combined Foundation sheet must never LIST a triple-only or a
-    # higher-only subtopic. The scheme scopes this too, so a failure here is
-    # a scheme problem rather than a pool problem — worth telling apart.
     cls = ks4_data.classify()
-    wrong = [s for s in c_rows
-             if cls.get(s) and (cls[s]["triple_only"]
-                                or cls[s]["tier"] == "higher")]
-    record(not wrong,
-           "KS4: the Combined Foundation sheet lists no higher/triple subtopic",
-           "clean" if not wrong
-           else "⚠️ listed: %s" % ", ".join(sorted(wrong)[:5]))
-    return trip, comb
+    comb = bodies.get(FX.C_KS4_COMB) or {}
+    trip = bodies.get(FX.C_KS4_TRIPLE) or {}
+    seps = bodies.get(FX.C_KS4_SEPS) or {}
+
+    # ── RISKS C6 — the Combined tree holds no triple-only subtopic ────────
+    #
+    # Measured against `ks4_data.classify()`, the AUTHORED classification, not
+    # against the backend's mirrored tree — the mirror is the thing under test.
+    comb_slugs = tree_slugs(comb)
+    leaked = sorted(s for s in comb_slugs
+                    if cls.get(s) and cls[s]["triple_only"])
+    record(comb_slugs and not leaked,
+           "RISKS C6: the Combined tree contains NO triple_only subtopic",
+           "%d subtopic(s), none triple-only" % len(comb_slugs)
+           if not leaked else "⚠️ leaked: %s" % ", ".join(leaked[:6]))
+
+    # ── RISKS C7 — `space` is absent from the Combined tree entirely ──────
+    #
+    # Not "space has no children" — ABSENT. All five of its subtopics are
+    # triple-only, so a tree that pruned children but kept the topic would show
+    # a teacher a topic they can never set anything on.
+    record("space" not in tree_topics(comb),
+           "RISKS C7: the topic `space` is absent from the Combined tree",
+           "not present at all"
+           if "space" not in tree_topics(comb)
+           else "⚠️ present with %d child(ren)"
+                % len(tree_topics(comb)["space"].get("children") or []))
+
+    # And the mirror: the Triple class DOES see triple-only content, or the
+    # filter is simply "serve nothing unusual" and Triple pupils are short-
+    # changed by a check that would pass either way.
+    trip_slugs = tree_slugs(trip)
+    trip_only = sorted(s for s in trip_slugs
+                       if cls.get(s) and cls[s]["triple_only"])
+    record(bool(trip_only),
+           "the Triple tree DOES contain triple_only subtopics",
+           "%d of %d, e.g. %s" % (len(trip_only), len(trip_slugs),
+                                  ", ".join(trip_only[:3])))
+
+    # ── RISKS C5 — a separate-sciences class sees ONE science ─────────────
+    for label, body, want in (("10a/Bi1", trip, "biology"),
+                              ("10c/Ph1", seps, "physics")):
+        subs = {t.get("subject") for t in (body.get("tree") or [])}
+        record(subs == {want} and body.get("subjects") == [want],
+               "RISKS C5: %s sees %s and nothing else" % (label, want),
+               "tree subjects=%s, subjects=%s"
+               % (sorted(subs), body.get("subjects")))
+
+    comb_subs = {t.get("subject") for t in (comb.get("tree") or [])}
+    record(comb_subs == {"biology", "chemistry", "physics"}
+           and sorted(comb.get("subjects") or []) ==
+           ["biology", "chemistry", "physics"],
+           "the Combined class sees all three sciences",
+           "tree subjects=%s, subjects=%s"
+           % (sorted(comb_subs), comb.get("subjects")))
+
+    # Papers are a combined-only chip (RISKS C8 / PLAN §4).
+    record(comb.get("papers") == [1, 2] and trip.get("papers") is None
+           and seps.get("papers") is None,
+           "papers: [1,2] on Combined, null on both Triple classes",
+           "combined=%s triple=%s seps=%s"
+           % (comb.get("papers"), trip.get("papers"), seps.get("papers")))
+
+    # ── RISKS C11 — the default tier is the class-NAME rule's answer ──────
+    #
+    # ⚠️ THIS IS THE ONE PLACE THE CLASS'S OWN TIER STILL SHOWS UP IN SET WORK,
+    # and it is a DEFAULT, not a constraint. `defaultTierFor()` lands the sheet
+    # on the tier the teacher usually wants; every check below then proves that
+    # the teacher can move off it. Confusing the two is exactly the error this
+    # port exists to remove.
+    want = {FX.C_KS4_COMB: ("10b/Sc5", "foundation"),
+            FX.C_KS4_TRIPLE: ("10a/Bi1", "higher"),
+            FX.C_KS4_SEPS: ("10c/Ph1", "higher")}
+    bad = []
+    for cid, (name, tier) in want.items():
+        got = ((bodies.get(cid) or {}).get("class") or {}).get("default_tier")
+        if got != tier:
+            bad.append("%s wanted %s got %s" % (name, tier, got))
+    record(not bad,
+           "RISKS C11: default_tier matches the class-name rule on all three",
+           "10b/Sc5=foundation, 10a/Bi1=higher, 10c/Ph1=higher"
+           if not bad else "; ".join(bad))
+
+    return bodies
 
 
-# ── the route's real contract (⚠️ read at merge, not assumed) ────────────
-#
-# This drive was written against `POST …/preview {lesson_slug}`. MRB-331 shipped
-#     GET /api/teacher/set-work/preview?class_id=&sow_entry_id=[&count=][&band=]
-# and it answers `{picked, pool, available, reason}` — not `questions`. It keys
-# on the SCHEME ENTRY, not the slug, and deliberately 404s `sow_entry_not_found`
-# for a row outside the class's own cohort, because "that row exists but is not
-# yours" is a fact about another cohort's scheme.
-#
-# ⚠️ That 404 is why the helper below returns a THIRD state. A missing scheme
-# entry and an empty payload are different refusals — the first is the scheme
-# declining to offer the topic, the second is the pool declining to fill it —
-# and a check that treats them alike passes when the route is simply broken.
-# An earlier revision of this drive did exactly that: every preview 404'd and
-# two checks went green on "served 0".
-_TOPICS = {}
+def check_request_tier(token, pool, bodies):
+    """⊕ MRB-335, RISKS E1/C1. THE TIER IS THE REQUEST'S, NOT THE CLASS'S.
+
+    This check replaces MRB-332's `check_serving` half that read the class row
+    to decide what was allowed. Under v1 that was right; under v2 it is the
+    defect. A teacher chooses the tier per set, so a Foundation class being
+    asked for Higher extension and a Higher class being asked for Foundation
+    revision are both ORDINARY, and a drive that refused either would be
+    asserting v1's contract against v2's product.
+    """
+    print("\n── the tier is the REQUEST's, not the class's ──")
+    cls = ks4_data.classify()
+    comb = bodies.get(FX.C_KS4_COMB) or {}
+    comb_slugs = tree_slugs(comb)
+    have = pool_slugs(pool)
+
+    # A subtopic the COMBINED FOUNDATION class can reach that is classified
+    # `higher` — 11 of them exist and none is triple-only. It is the sharpest
+    # possible instrument: at tier=foundation its pool is empty, at tier=higher
+    # it is full, and the only thing that moved is the query parameter.
+    higher_slugs = sorted(s for s in comb_slugs
+                          if s in have and cls[s]["tier"] == "higher")
+    if not higher_slugs:
+        record(False, "no higher-tier subtopic on the Combined tree — "
+                      "the request-tier property is not measurable")
+        return
+    slug = higher_slugs[0]
+
+    st_f, b_f = preview(token, FX.C_KS4_COMB, "foundation", "subtopic", slug)
+    st_h, b_h = preview(token, FX.C_KS4_COMB, "higher", "subtopic", slug)
+
+    record(st_f == 200 and st_h == 200,
+           "a FOUNDATION class may be asked for HIGHER work — both 200 on %s"
+           % slug,
+           "foundation=%s (%d served), higher=%s (%d served)"
+           % (st_f, len(b_f.get("picked") or []),
+              st_h, len(b_h.get("picked") or [])))
+
+    # The two requests draw from DIFFERENT pools, proved by a row the
+    # foundation pool cannot contain: PLAN §1's Foundation clause is
+    # `tier='foundation'` rows only, so any `tier='higher'` row served here is
+    # outside it by construction.
+    extra = [i for i in picked_ids(b_h)
+             if pool.get(i) and pool[i]["tier"] == "higher"]
+    record(bool(extra),
+           "the higher request serves rows the foundation pool cannot hold",
+           "%d of %d served row(s) are tier='higher', e.g. %s"
+           % (len(extra), len(picked_ids(b_h)), ", ".join(extra[:3]))
+           if extra else "⚠️ nothing outside the foundation pool was served")
+
+    # And the foundation request on that same subtopic serves nothing, because
+    # every row it has is higher-tier. `short` says so rather than an error:
+    # a tier with an empty pool is a legitimate answer, not a refusal.
+    record(st_f == 200 and not (b_f.get("picked") or []),
+           "…and the same subtopic at tier=foundation serves nothing at all",
+           "available=%s short=%s — the request tier, not the class, emptied it"
+           % (b_f.get("available"), b_f.get("short")))
+
+    # ── the mirror: a HIGHER class asked for FOUNDATION revision ──────────
+    trip = bodies.get(FX.C_KS4_TRIPLE) or {}
+    base = sorted(s for s in tree_slugs(trip)
+                  if s in have and cls[s]["tier"] == "foundation")
+    if base:
+        st, body = preview(token, FX.C_KS4_TRIPLE, "foundation",
+                           "subtopic", base[0])
+        ids = picked_ids(body)
+        wrong = [i for i in ids
+                 if not (pool.get(i) and pool[i]["tier"] == "foundation")]
+        record(st == 200 and ids and not wrong,
+               "a HIGHER class may be asked for FOUNDATION revision (10a/Bi1)",
+               "HTTP %s, %d served on %s, every one a tier='foundation' row"
+               % (st, len(ids), base[0]) if not wrong
+               else "⚠️ %s served: %s" % (st, ", ".join(wrong[:4])))
+    else:
+        record(False, "no foundation-tier subtopic on 10a/Bi1's tree")
+
+    # ── RISKS C1 — a tier that is not this key stage's is refused ─────────
+    #
+    # `easy|medium|hard` are the KS3 difficulties. They are real tier values
+    # SOMEWHERE, which is what makes them the right thing to post: a validator
+    # that merely checked the string against a global list would accept them.
+    bad = []
+    for t in ("easy", "medium", "hard"):
+        st, body = preview(token, FX.C_KS4_COMB, t, "subtopic", slug)
+        if st != 400 or body.get("error") != "bad_tier":
+            bad.append("%s → %s %s" % (t, st, body.get("error")))
+    record(not bad,
+           "RISKS C1: a KS3 tier on a KS4 class is 400 bad_tier",
+           "easy/medium/hard all refused" if not bad else "; ".join(bad))
 
 
-def topics_for(t_teacher, class_id):
-    if class_id not in _TOPICS:
-        st, body = call("GET", "/api/teacher/set-work/topics?class_id=" + class_id,
-                        t_teacher)
-        _TOPICS[class_id] = (body.get("topics") or []) if st == 200 else []
-    return _TOPICS[class_id]
+def check_pathway_is_the_class(token, pool, bodies):
+    """⊕ MRB-335, RISKS C6. THE PATHWAY IS THE CLASS'S AND CANNOT BE ASKED FOR.
+
+    ⚠️ THE REFUSAL IS AT THE SCOPE, NOT AT THE POOL, AND THAT IS STRONGER.
+
+    There is no pathway parameter on any Set work route. `swReadPreamble` calls
+    `SW.findScope(cls, kind, ref)`, which walks a tree RE-DERIVED FROM THE
+    CLASS ROW, so a triple-only slug is not a node of a combined class's tree
+    and the request is refused before a single bank row is read.
+
+    Why that is stronger than a pool filter that returns zero rows:
+
+      · A pool filter has to be correct in every read path — count, preview,
+        swap and the write — and the day one of them forgets it, the leak is
+        silent. The scope seal is ONE function that all four go through.
+      · A filter that returns zero looks identical to a filter that found
+        nothing, so "0 served" is not evidence. `400 scope_not_for_class` is a
+        statement the server made on purpose.
+      · The refusal survives content changes. If someone later authored a
+        foundation-band row against a triple-only slug, a tier filter would let
+        it through and the scope seal still would not.
+
+    This is the same reasoning MRB-332 wrote about the SCHEME refusing first —
+    kept, because the shape of the argument survived even though the mechanism
+    did not. The scheme refused by accident (a gap in what somebody had
+    authored); the tree refuses by construction (a fact about the cohort).
+    """
+    print("\n── the pathway is the CLASS's, and cannot be asked for ──")
+    cls = ks4_data.classify()
+    have = pool_slugs(pool)
+    trip_slugs = tree_slugs(bodies.get(FX.C_KS4_TRIPLE) or {})
+
+    # A BIOLOGY triple-only subtopic — 10a/Bi1 is triple biology and sees only
+    # biology, so a chemistry or physics slug would be refused for the wrong
+    # reason (RISKS C5's subject rule) and prove nothing about the pathway.
+    only = sorted(s for s in trip_slugs
+                  if s in have and cls[s]["triple_only"])
+    if not only:
+        record(False, "no triple-only biology subtopic in the pool — "
+                      "the pathway seal is not measurable")
+        return
+    slug = only[0]
+
+    st, body = preview(token, FX.C_KS4_COMB, "higher", "subtopic", slug)
+    record(st == 400 and body.get("error") == "scope_not_for_class",
+           "a triple-only slug posted to the Combined class is refused",
+           "HTTP %s %s on %s — refused at the SCOPE, not at the pool"
+           % (st, body.get("error"), slug))
+
+    # ⚠️ AND AT EVERY TIER. The seal must not be reachable by moving the one
+    # parameter a teacher CAN choose: if `tier=foundation` let the slug
+    # through, the pathway would be asked for by proxy.
+    st2, body2 = preview(token, FX.C_KS4_COMB, "foundation", "subtopic", slug)
+    record(st2 == 400 and body2.get("error") == "scope_not_for_class",
+           "…and moving the tier chip does not unlock it",
+           "tier=foundation → HTTP %s %s" % (st2, body2.get("error")))
+
+    # The mirror. Without it, "refuse everything" would pass.
+    st3, body3 = preview(token, FX.C_KS4_TRIPLE, "higher", "subtopic", slug)
+    ids = picked_ids(body3)
+    record(st3 == 200 and bool(ids),
+           "the Triple class previews that same slug with questions",
+           "HTTP %s, %d served on %s" % (st3, len(ids), slug))
 
 
-def sow_id_for(t_teacher, class_id, slug):
-    """The class's own scheme-entry id for `slug`, or None if not on its scheme."""
-    for r in topics_for(t_teacher, class_id):
-        if r.get("lesson_slug") == slug:
-            return r.get("id")
-    return None
+def check_audience_audit(token, pool, bodies):
+    """The audience audit: four (pathway, requested tier) audiences, on real
+    payloads, against PLAN §1's pool spec.
+
+    ⊕ MRB-335: v1 read the class's tier here and had one audience per class.
+    v2 has one audience per (class pathway × requested tier), which is four —
+    the same four `ks4_pool_check.py` measures on the data, now measured on the
+    serving path.
+    """
+    print("\n── the four audiences, on what is actually served ──")
+    cls = ks4_data.classify()
+    have = pool_slugs(pool)
+
+    for label, cid, pathway in (("Combined 10b/Sc5", FX.C_KS4_COMB, "combined"),
+                                ("Triple 10a/Bi1", FX.C_KS4_TRIPLE, "triple")):
+        slugs = tree_slugs(bodies.get(cid) or {})
+        # A BASE subtopic — foundation-tier and not triple-only — because it is
+        # the only kind both tiers can legitimately draw from, so a difference
+        # between the two payloads is the tier rule and nothing else.
+        base = sorted(s for s in slugs if s in have
+                      and cls[s]["tier"] == "foundation"
+                      and not cls[s]["triple_only"])
+        if not base:
+            record(False, "%s: no base subtopic on its tree" % label)
+            continue
+        slug = base[0]
+        for tier in ("foundation", "higher"):
+            st, body = preview(token, cid, tier, "subtopic", slug, count=20)
+            if st != 200:
+                record(False, "%s at tier=%s on %s" % (label, tier, slug),
+                       "HTTP %s %s" % (st, str(body)[:120]))
+                continue
+            ok, detail = audit_payload(label, body.get("picked") or [],
+                                       pool, tier, pathway)
+            record(ok, "%s at tier=%s is served only what it may be served"
+                   % (label, tier), detail)
+
+        # ⚠️ AND THE TWO TIERS ARE NOT THE SAME SET. PLAN §1's Higher clause
+        # excludes the `easier` band of the foundation rows, which is the whole
+        # of the difference on a base subtopic — so a server that ignored the
+        # tier entirely would pass both audits above and fail this one.
+        st, b_h = preview(token, cid, "higher", "subtopic", slug, count=20)
+        st2, b_f = preview(token, cid, "foundation", "subtopic", slug, count=20)
+        h_bands = {q.get("band") for q in (b_h.get("picked") or [])}
+        f_bands = {q.get("band") for q in (b_f.get("picked") or [])}
+        record("easier" not in h_bands and "easier" in f_bands,
+               "%s: a higher set draws no `easier` band, a foundation set does"
+               % label,
+               "higher bands=%s, foundation bands=%s, available %s vs %s"
+               % (sorted(h_bands), sorted(f_bands),
+                  b_h.get("available"), b_f.get("available")))
 
 
-def preview(t_teacher, class_id, slug, band="standard", count=10):
-    """(state, questions). state is 'ok' | 'not_on_scheme' | 'http <n>'."""
-    sow_id = sow_id_for(t_teacher, class_id, slug)
-    if not sow_id:
-        return "not_on_scheme", []
-    st, body = call("GET", "/api/teacher/set-work/preview?class_id=%s"
-                    "&sow_entry_id=%s&band=%s&count=%d"
-                    % (class_id, sow_id, band, count), t_teacher)
-    if st != 200:
-        return "http %s" % st, []
-    return "ok", list(body.get("picked") or [])
+def check_topic_scope(token, pool, bodies):
+    """RISKS C14. A topic-level set spreads across its subtopics.
+
+    Round-robin is the whole reason to offer a topic scope at all: a set drawn
+    slug by slug puts the first eight questions on one subtopic, which is what
+    a teacher gets if the code walks the children in order.
+    """
+    print("\n── a topic scope spreads across its subtopics ──")
+    have = pool_slugs(pool)
+    body = bodies.get(FX.C_KS4_COMB) or {}
+    cand = [t for t in (body.get("tree") or [])
+            if len([c for c in t.get("children") or [] if c["id"] in have]) > 1]
+    if not cand:
+        record(False, "no topic on the Combined tree has two stocked subtopics")
+        return
+    topic = cand[0]
+    st, b = preview(token, FX.C_KS4_COMB, "foundation", "topic",
+                    topic["id"], count=10)
+    slugs = {q.get("subtopic") or q.get("slug")
+             for q in (b.get("picked") or [])}
+    stocked = len([c for c in topic["children"] if c["id"] in have])
+    record(st == 200 and len(slugs) > 1,
+           "RISKS C14: 10 questions on topic `%s` span more than one subtopic"
+           % topic["id"],
+           "HTTP %s, %d question(s) across %d of %d stocked subtopic(s): %s"
+           % (st, len(b.get("picked") or []), len(slugs), stocked,
+              ", ".join(sorted(s for s in slugs if s)[:4])))
+
+    ok, detail = audit_payload("topic scope", b.get("picked") or [], pool,
+                               "foundation", "combined")
+    record(ok, "…and every one of them is permitted for combined/foundation",
+           detail)
 
 
-def check_collision(t_teacher, pool):
-    """⚠️ THE COLLISION, RESHAPED. See the module docstring.
+def check_collision(token, pool, bodies):
+    """⚠️ THE COLLISION, RESHAPED FOR v2. See the module docstring.
 
-    MRB-331 proved this by asserting `available == 0`. That test cannot
-    survive this ticket: the eight slugs hold twelve KS3 rows AND twelve KS4
-    rows, so the number is 12 either way. Identity is what separates them.
+    MRB-331 proved this by asserting `available == 0`. That test cannot survive
+    the KS4 pool existing: the eight slugs hold twelve KS3 rows AND a full set
+    of KS4 rows, so the number is the same whichever table is read. IDENTITY is
+    what separates them, and identity is what is asserted here.
+
+    ⊕ MRB-335 — WHICH CLASS EACH SLUG IS DRIVEN AGAINST, AND WHY IT IS NOT
+    ALWAYS THE TRIPLE ONE.
+
+    v1 drove all eight against `10a/Bi1`, because v1's scope came from the
+    scheme of work and the scheme carried whatever somebody had authored. v2's
+    scope is the class's own tree, and `10a/Bi1` is triple BIOLOGY: seven of
+    the eight slugs are chemistry or physics and are simply not nodes of its
+    tree, so seven of the eight would answer `400 scope_not_for_class` and the
+    check would go green having measured one slug.
+
+    So each slug is driven against the class whose tree actually contains it —
+    six non-triple-only slugs on the Combined class, `aerobic-respiration` on
+    either, and `electric-fields` (triple-only physics) on `10c/Ph1`, which is
+    the only class in the fixture that can reach it. The assertion is unchanged
+    and the coverage is now eight of eight rather than one of eight.
     """
     print("\n── the eight colliding slugs ──")
     COLLIDING = ["aerobic-respiration", "catalysts", "changes-of-state",
                  "chromatography", "conservation-of-mass",
                  "distance-time-graphs", "electric-fields", "magnetic-fields"]
 
+    cls = ks4_data.classify()
+    have = pool_slugs(pool)
+    trees = {cid: tree_slugs(bodies.get(cid) or {})
+             for cid in (FX.C_KS4_COMB, FX.C_KS4_TRIPLE, FX.C_KS4_SEPS)}
+    names = {FX.C_KS4_COMB: "10b/Sc5", FX.C_KS4_TRIPLE: "10a/Bi1",
+             FX.C_KS4_SEPS: "10c/Ph1"}
+
     leaked, checked, missing = [], [], []
     for slug in COLLIDING:
-        if slug not in pool_slugs(pool):
-            missing.append(slug)
+        if slug not in have:
+            missing.append(slug + " (not in the KS4 pool)")
             continue
-        state, qs = preview(t_teacher, FX.C_KS4_TRIPLE, slug)
-        if state == "not_on_scheme":
-            missing.append(slug + " (not on this class's scheme)")
+        # The first class whose tree holds it. Combined first, because it is
+        # the widest tree in the fixture — all three sciences, everything that
+        # is not triple-only.
+        cid = next((c for c in (FX.C_KS4_COMB, FX.C_KS4_TRIPLE, FX.C_KS4_SEPS)
+                    if slug in trees[c]), None)
+        if cid is None:
+            missing.append(slug + " (on no fixture class's tree)")
             continue
-        if state != "ok":
-            leaked.append("%s: preview %s" % (slug, state))
+        # The tier the slug's own rows are authored at, so the pool is not
+        # empty for a reason that has nothing to do with the collision.
+        tier = "higher" if cls[slug]["tier"] == "higher" else "foundation"
+        st, body = preview(token, cid, tier, "subtopic", slug, count=20)
+        if st != 200:
+            leaked.append("%s on %s: preview HTTP %s %s"
+                          % (slug, names[cid], st, body.get("error")))
             continue
-        checked.append(slug)
-        for q in qs:
-            qid = str(q.get("source_ref") or q.get("id") or "")
+        ids = picked_ids(body)
+        if not ids:
+            leaked.append("%s on %s: 200 but nothing served — a count check "
+                          "would have passed here" % (slug, names[cid]))
+            continue
+        checked.append("%s/%s" % (slug, names[cid]))
+        for qid in ids:
             if KS3_ID.match(qid):
                 leaked.append("%s served KS3 id %s" % (slug, qid))
             elif not qid.startswith("ks4-"):
@@ -364,110 +796,8 @@ def check_collision(t_teacher, pool):
            "%d slug(s) checked, every question a ks4- id" % len(checked)
            if not leaked else "; ".join(leaked[:5]))
     if missing:
-        record(True, "collision check: %d slug(s) not yet authored"
+        record(True, "collision check: %d slug(s) not reachable"
                % len(missing), ", ".join(missing))
-
-
-def pool_slugs(pool):
-    return {r["subtopic_slug"] for r in pool.values()}
-
-
-def check_serving(t_teacher, pool):
-    """THE PROPERTY. Set real work on both classes and audit what is served."""
-    print("\n── what each class is actually served ──")
-    cls = ks4_data.classify()
-    have = pool_slugs(pool)
-
-    # ⚠️ THE SUBTOPIC MUST BE ONE BOTH CLASSES ARE ACTUALLY OFFERED, and it is
-    # chosen from their topic lists rather than from the pool alphabetically.
-    #
-    # The pool holds all 264 subtopics; a fixture class is one year group at one
-    # week and is offered a fraction of them. Taking `sorted(pool)[0]` picked
-    # `abiotic-biotic-factors`, which is on neither class's scheme, so every
-    # preview answered `sow_entry_not_found` and the checks failed for a reason
-    # that had nothing to do with what they measure.
-    #
-    # Intersecting the two lists is also what makes the comparison mean
-    # anything: both classes can reach this row, so any DIFFERENCE in what comes
-    # back is the content rule rather than the scheme.
-    offered_both = ({r["lesson_slug"] for r in topics_for(t_teacher, FX.C_KS4_COMB)}
-                    & {r["lesson_slug"] for r in topics_for(t_teacher, FX.C_KS4_TRIPLE)})
-    base = sorted(s for s in have & offered_both
-                  if cls[s]["tier"] == "foundation"
-                  and not cls[s]["triple_only"])
-    if not base:
-        record(False, "no base subtopic is on BOTH classes' schemes — "
-                      "nothing comparable to serve")
-        return None
-    slug = base[0]
-
-    out = {}
-    for label, class_id, tier, pathway in (
-            ("Foundation Combined", FX.C_KS4_COMB, "foundation", "combined"),
-            ("Triple Higher", FX.C_KS4_TRIPLE, "higher", "triple")):
-        state, qs = preview(t_teacher, class_id, slug)
-        if state != "ok":
-            record(False, "%s: preview on %s" % (label, slug), state)
-            continue
-        ok, detail = audit_payload(label, qs, pool, tier, pathway)
-        record(ok, "%s is served only what it may be served" % label, detail)
-        out[label] = qs
-    return slug, out
-
-
-def check_full_set(t_teacher, pool):
-    """The Triple Higher class reaches content the Combined class cannot.
-
-    The mirror of the check above: it is not enough that Foundation Combined
-    is protected — if the filter were simply "serve nothing unusual", both
-    classes would pass and Triple students would be short-changed.
-    """
-    print("\n── the Triple Higher class gets the full set ──")
-    cls = ks4_data.classify()
-    have = pool_slugs(pool)
-    # Same correction as check_serving: chosen from what the Triple Higher class
-    # is actually OFFERED, not from the pool alphabetically. A subtopic off its
-    # scheme previews as sow_entry_not_found and proves nothing either way.
-    offered_triple = {r["lesson_slug"] for r in topics_for(t_teacher, FX.C_KS4_TRIPLE)}
-    triple = sorted(s for s in have & offered_triple if cls[s]["triple_only"])
-    higher = sorted(s for s in have & offered_triple
-                    if cls[s]["tier"] == "higher" and not cls[s]["triple_only"])
-
-    for label, slugs in (("triple-only", triple), ("higher-only", higher)):
-        if not slugs:
-            record(True, "no %s subtopic on this class's scheme — not measurable"
-                   % label)
-            continue
-        slug = slugs[0]
-        state, qs = preview(t_teacher, FX.C_KS4_TRIPLE, slug)
-        record(state == "ok" and qs,
-               "Triple Higher reaches a %s subtopic (%s)" % (label, slug),
-               "%d question(s) served" % len(qs) if state == "ok"
-               else "preview %s" % state)
-
-        # ⚠️ AND THE COMBINED FOUNDATION CLASS MUST NOT REACH IT — but state
-        # WHICH refusal, because there are two and only one is this ticket's.
-        #
-        # On correct data the SCHEME refuses first: a triple-only or higher-only
-        # subtopic is not on a Combined Foundation class's scheme at all, so
-        # there is no scheme entry to preview and the pool filter is never
-        # consulted. That is the honest result and it is asserted as such.
-        #
-        # It would be easy, and wrong, to write this as "served 0" and call it
-        # proof of the content rule. An earlier revision did, and it went green
-        # while every preview in the run was 404ing. The content rule itself is
-        # proved where it can actually be exercised — test_ks4_bank_read.js
-        # calls bankFor() with each scope against real rows, including the
-        # Foundation-Triple and no-tier-no-pathway cases this route cannot
-        # reach. Two lines of defence, each tested where it lives.
-        state2, qs2 = preview(t_teacher, FX.C_KS4_COMB, slug)
-        record(state2 == "not_on_scheme" or not qs2,
-               "Combined Foundation cannot reach that same %s subtopic" % label,
-               "refused at the SCHEME — not on its list at all"
-               if state2 == "not_on_scheme" else
-               ("refused at the POOL — scheme offered it, 0 served"
-                if not qs2 else
-                "⚠️ served %d question(s) it may not have" % len(qs2)))
 
 
 def main():
@@ -477,7 +807,8 @@ def main():
             "ks4_pool_drive: set %s to the throwaway accounts' password."
             % FX.ENV_SWITCH)
 
-    print("ks4_pool_drive — MRB-332, the KS4 content rule on the serving path")
+    print("ks4_pool_drive — MRB-335, the KS4 content rule on Set work v2's "
+          "serving path")
     pool = pool_index()
     print("   pool: %d authored question(s), %d subtopic(s)"
           % (len(pool), len(pool_slugs(pool))))
@@ -490,8 +821,16 @@ def main():
     # clear_work() / teardown(). docs/ks4/merge-notes.md says to read the
     # seam's final form rather than assume it — this is that, and it is
     # why the drive is run here rather than declared compatible.
+    #
+    # ⊕ MRB-335: `clear_work()` IS NO LONGER CALLED, deliberately. This drive
+    # sets no work — every check is a GET — so it needs no empty slate, and
+    # `clear_work()` deletes the assignments of every fixture class, which
+    # during MRB-335 is a world three lanes share. Deleting a colleague's rows
+    # out from under a running drive would make their red look like a product
+    # failure. The only thing leftover history changes here is which questions
+    # `pickRoundRobin` prefers, and every assertion below is about which
+    # questions are PERMITTED, never about which were chosen.
     FX.seed()
-    FX.clear_work()
     server = None
     try:
         server = subprocess.Popen(
@@ -509,10 +848,12 @@ def main():
                              "port %d" % PORT)
 
         t_teacher = sign_in(FX.TEACHER_EMAIL, pw)
-        check_topics(t_teacher, pool)
-        check_collision(t_teacher, pool)
-        check_serving(t_teacher, pool)
-        check_full_set(t_teacher, pool)
+        bodies = check_scope(t_teacher)
+        check_request_tier(t_teacher, pool, bodies)
+        check_pathway_is_the_class(t_teacher, pool, bodies)
+        check_audience_audit(t_teacher, pool, bodies)
+        check_topic_scope(t_teacher, pool, bodies)
+        check_collision(t_teacher, pool, bodies)
     finally:
         if server:
             server.terminate()
