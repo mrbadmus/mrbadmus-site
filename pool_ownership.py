@@ -313,32 +313,52 @@ def check_backend():
     # and the gate's own closing note said so: "a bank read outside bankFor()
     # is currently unconstrained by this gate".
     #
-    # MRB-331 gave three surfaces a reason to want the bank (the topics sheet,
-    # its question preview, and the write that validates the chosen ids), so
-    # the hole became a live risk rather than a theoretical one. It is closed
-    # the way the ladder's was: an allowlist of named spans, each justified,
-    # and anything outside them fails.
+    # ⊕ MRB-335, AND THIS IS THE PART TO READ BEFORE EDITING. The sweep used to
+    # look for the LITERAL STRING `ks3_assignment_bank` in server.js. On the day
+    # v2 landed there were ZERO literal occurrences left outside a comment —
+    # every read now goes through `BANK_TABLES[keyStage]`, which MRB-332
+    # introduced so that a caller cannot reach a bank without having said which
+    # key stage it is asking for. So the sweep found nothing, the gate went
+    # green, and the property it exists to hold — no unnamed way into either
+    # pool — was no longer being measured at all. It went green on the change
+    # it was built to catch.
     #
-    # ⚠️ THE ALLOWLIST IS SHORT ON PURPOSE. Two of the three new surfaces do
-    # NOT appear in it, because they were built to go through `bankFor()` with
-    # a different column list rather than to open a read of their own. If a
-    # future change gives one its own `.from('ks3_assignment_bank')`, this gate
-    # fails and the author has to come here and say why — which is the entire
-    # point.
+    # ⚠️ SO THE SWEEP IS ON THE READ, NOT ON THE NAME. What it looks for is
+    # `.from(<anything that resolves to a bank>)` — the two literals AND the
+    # `BANK_TABLES` indirection — so a third way of spelling the table is
+    # covered by construction rather than by somebody remembering to add it.
+    # A gate that watches a spelling stops watching when the spelling changes,
+    # and that is not a hypothetical: it is what happened here.
     BANK_HOMES = (
         (r"async function bankFor.*?\n}",
-         "composition's pool read, the ruled owner path — every SERVING read "
-         "of the bank goes through it, including the Set work sheet's topic "
-         "counts and its question preview, which pass a column list rather "
-         "than opening a read of their own"),
+         "AUTOMATIC composition's pool read, the ruled owner path. ⚠️ It is "
+         "also the ONLY read that carries the auto ceiling "
+         "`bank_position < 12` (MRB-335 RISKS D7): Set work's content lanes "
+         "add rows at 12 and up, and without the ceiling the producer would "
+         "start composing different questions for the same lesson in the same "
+         "week with nothing saying so"),
         (r"async function readAssignmentWithQuestions.*?\n}",
          "hydrating an assignment's stored source_refs back into questions. "
          "Serving, and of the pool the assignment owns"),
-        (r"app\.post\('/api/teacher/set-work'.*?\n\}\);",
-         "the write-side seal (MRB-331): it re-reads the chosen ids to prove "
-         "every one belongs to the lesson the teacher picked. ⚠️ It selects "
-         "`id, lesson_slug, band` and MUST NOT select `text` or `options` — "
-         "it is validating provenance, not serving questions"),
+        # ⊕ MRB-335. This home is NEW TO THE ALLOWLIST AND OLD IN THE CODE, and
+        # that pairing is the finding. `bankRowsByIds` has read both banks
+        # through `BANK_TABLES` since MRB-332; the literal-name sweep could
+        # never see it, so it sat outside every named home without ever being
+        # reported. Widening the sweep to the READ is what surfaced it. It is
+        # legitimate — the by-id hydration behind
+        # `readAssignmentWithQuestions`, and it applies its scope to the QUERY
+        # so an out-of-scope id comes back as nothing rather than as a row the
+        # caller has to remember to check — but it belongs on the list, said
+        # out loud, rather than being invisible.
+        (r"async function bankRowsByIds.*?\n}",
+         "by-id hydration: an assignment's stored source_refs, read back as "
+         "questions. Serving, of the pool the assignment owns, with the "
+         "content scope applied to the query rather than after it"),
+        (r"async function bankForScope.*?\n}",
+         "SET WORK v2's read (MRB-335). Per-scope rather than per-week, and it "
+         "reads EVERY bank_position deliberately — everything in the bank is "
+         "what a teacher is choosing from. ⚠️ Reachable from exactly three "
+         "routes, asserted below; it is not a general-purpose bank read"),
     )
     spans = []
     for pattern, why in BANK_HOMES:
@@ -350,31 +370,118 @@ def check_backend():
         else:
             spans.append((m3.span(), why))
 
-    for m4 in re.finditer(r"ks3_assignment_bank", server):
+    # Every way of naming either bank table, in a `.from(...)`. The literals
+    # are still checked because a future caller may well type one.
+    BANK_READ = re.compile(
+        r"\.from\(\s*(?:BANK_TABLES(?:\.\w+|\[[^\]]+\])"
+        r"|'ks[34]_assignment_bank'|\"ks[34]_assignment_bank\")\s*\)")
+    reads = 0
+    for m4 in BANK_READ.finditer(server):
+        reads += 1
         if any(a <= m4.start() < b for (a, b), _why in spans):
             continue
         line_start = server.rfind("\n", 0, m4.start()) + 1
         line = server[line_start:m4.start()]
         if "//" in line or line.strip()[:1] == "*":
             continue          # prose about the bank, not a read of it
-        fail("server.js", "ks3_assignment_bank read outside every named home "
-             "(offset %d) — a new way into the assignment pool. Add it to "
-             "BANK_HOMES with a reason, or route it through bankFor()"
-             % m4.start())
+        fail("server.js", "a question-bank read sits outside every named home "
+             "(offset %d) — a new way into an assignment pool. Add it to "
+             "BANK_HOMES with a reason, or route it through bankFor()/"
+             "bankForScope()" % m4.start())
 
-    # the write-side seal must not become a serving read
-    seal = re.search(r"app\.post\('/api/teacher/set-work'.*?\n\}\);",
-                     server, re.S)
-    if seal:
-        body = seal.group(0)
-        m5 = re.search(r"from\('ks3_assignment_bank'\)\s*\.select\((.*?)\)",
-                       body, re.S)
-        if m5:
-            for banned in ("text", "options"):
-                if banned in m5.group(1):
-                    fail("server.js", "/api/teacher/set-work selects %r from "
-                         "the bank — it validates provenance and must not "
-                         "serve question content" % banned)
+    # ⚠️ AND THE SWEEP MUST FIND SOMETHING. A regex that matches nothing
+    # reports no violations, which is exactly how the literal-name version of
+    # this check went green on a backend it had stopped reading.
+    if reads == 0:
+        fail("server.js", "the bank-read sweep matched NOTHING. Either every "
+             "read has moved to a spelling this gate cannot see — which is "
+             "how it silently stopped watching at MRB-335 — or `.from(...)` "
+             "is no longer how the backend reads a table. Re-point BANK_READ "
+             "before trusting a green run.")
+
+    # ── Set work's read is reachable from exactly three routes ──────────
+    #
+    # `bankForScope` reads ALL bank positions, which is right for a teacher
+    # choosing questions and wrong for anything that composes. RISKS E2 names
+    # the three v2 routes as its only callers; a fourth is a new serving
+    # surface and has to be argued for here.
+    SET_WORK_READERS = {
+        "/api/teacher/set-work/scope":   "the tree's per-tier counts",
+        "/api/teacher/set-work/preview": "the questions a class would get",
+        "/api/teacher/set-work/swap":    "one replacement question",
+        "/api/teacher/set-work":         "the write-side seal — it re-reads "
+                                         "every chosen id under the scope's "
+                                         "own filters, so an out-of-scope id "
+                                         "is NOT FOUND rather than "
+                                         "found-and-then-rejected",
+    }
+    ROUTE_RE = re.compile(r"app\.(get|post)\('(/api/[^']+)'")
+    bounds = [(m.start(), m.group(2)) for m in ROUTE_RE.finditer(server)]
+
+    def route_at(offset):
+        owner = None
+        for start, path in bounds:
+            if start <= offset:
+                owner = path
+            else:
+                break
+        return owner
+
+    # ⚠️ THE DEFINITION IS EXCLUDED BY ITS SPAN, NOT BY A REGEX ON THE LINE.
+    # `route_at` attributes an offset to the last route declared before it, and
+    # `bankForScope` is DEFINED after `/api/admin/school/assignments-open-from`
+    # — so the definition's own name reads as a call from that route, and the
+    # first version of this check reported the admin hold screen as a Set work
+    # surface. A span is the honest way to say "not a call site".
+    defn = re.search(r"async function bankForScope.*?\n}", server, re.S)
+    defn_span = defn.span() if defn else (-1, -1)
+
+    callers = set()
+    for m5 in re.finditer(r"\bbankForScope\(", server):
+        if defn_span[0] <= m5.start() < defn_span[1]:
+            continue
+        line_start = server.rfind("\n", 0, m5.start()) + 1
+        line = server[line_start:m5.start()]
+        if "//" in line or line.strip()[:1] == "*":
+            continue
+        owner = route_at(m5.start())
+        if owner is None:
+            continue
+        callers.add(owner)
+    callers.discard(None)
+    stray = sorted(c for c in callers if c not in SET_WORK_READERS)
+    if stray:
+        fail("server.js", "bankForScope() is called from %s, which is not one "
+             "of Set work's four named surfaces. It reads EVERY bank_position "
+             "— a composing caller reaching it would silently start drawing "
+             "content the automatic producer is ceilinged away from (RISKS "
+             "D7). Name it here with a reason, or use bankFor()."
+             % ", ".join(stray))
+    missing = sorted(r for r in SET_WORK_READERS if r not in callers)
+    if missing and len(missing) == len(SET_WORK_READERS):
+        fail("server.js", "no Set work route calls bankForScope() at all — "
+             "this half of the gate is measuring nothing")
+
+    # ⚠️ THE AUTO CEILING IS ON THE QUERY, NOT MERELY DECLARED. `bankFor` is
+    # the only read that must carry it, and a constant that is right beside a
+    # query that forgets to use it looks identical from outside. The backend's
+    # own `auto_ignores_positions_ge_12` proves the effect; this proves the
+    # filter has not been deleted from the source the gate is reading.
+    bf = re.search(r"async function bankFor.*?\n}", server, re.S)
+    if bf:
+        arms = len(re.findall(r"\.lt\('bank_position',\s*AUTO_MAX_BANK_POSITION\)",
+                              bf.group(0)))
+        if arms < 2:
+            fail("server.js", "bankFor has %d of its 2 arms filtering "
+                 "`bank_position < AUTO_MAX_BANK_POSITION`. Both banks now "
+                 "hold rows above 11 that exist for Set work; an arm without "
+                 "the ceiling recomposes every automatic assignment in the "
+                 "school for that key stage, silently (RISKS D7)." % arms)
+    scope_fn = re.search(r"async function bankForScope.*?\n}", server, re.S)
+    if scope_fn and "AUTO_MAX_BANK_POSITION" in scope_fn.group(0):
+        fail("server.js", "bankForScope applies the AUTO ceiling. It must "
+             "read every position — the whole reason it is a second reader is "
+             "that a teacher chooses from the whole bank (RISKS D7).")
 
     # ── the key stage is a precondition, not a filter ───────────────────
     #
@@ -981,12 +1088,19 @@ def main():
 
     print("✅ pool_ownership: one bank per surface")
     print("   KS3 ladder page  ← authored ladder (ks3_data, baked at build)")
-    print("   KS3 assignment   ← ks3_assignment_bank (backend composition only)")
+    print("   KS3 assignment   ← ks3_assignment_bank (backend only)")
     print("   KS3 flashcards   ← ks3_cards (class page, one serving read)")
     print("   KS4 lesson page  ← all_subtopics_*.py `quiz` (baked at build, "
           "no runtime read)")
-    print("   KS4 assignment   ← ks4_assignment_bank / ks4_data (backend "
-          "composition only)")
+    print("   KS4 assignment   ← ks4_assignment_bank / ks4_data (backend only)")
+    # ⊕ MRB-335. Both assignment pools now have a SECOND legitimate backend
+    # reader, and it is not a composer. Saying "composition only" would be a
+    # summary that no longer describes the code it just finished checking.
+    print("   Set work v2      ← both assignment pools, ALL bank_positions, "
+          "through bankForScope,\n                      reachable only from "
+          "/scope, /preview, /swap and the write seal.\n"
+          "                      AUTO composition stays ceilinged at "
+          "bank_position < 12 (RISKS D7).")
     print("   FROZEN MRB-288: the practice round serves recall+apply from "
           "ks3_ladder_questions\n   (student-live.js + /api/class/practice) "
           "— bounded to one serving read each,\n   awaiting Mide's ruling.")
