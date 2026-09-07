@@ -432,23 +432,23 @@ QUESTIONS = [
         "band": "easier",
         "text": "Which of these describes continuous variation?",
         "options": [
-            {"text": "The values grade into one another, so any value between "
-                     "two others is possible.",
+            {"text": "The values grade into one another, so any in-between "
+                     "value is possible.",
              "correct": True},
-            {"text": "The values fall into separate groups with nothing in "
-                     "between them.",
+            {"text": "The values fall into a few separate groups, with no "
+                     "possible value lying anywhere in between them.",
              "correct": False,
              "why": "That is discontinuous variation — blood group, or "
                     "tongue rolling. Continuous variation is the other one, "
                     "where the in-between values all exist."},
-            {"text": "The characteristic keeps changing throughout a person's "
-                     "whole life.",
+            {"text": "The characteristic keeps changing all through a "
+                     "person's life rather than settling.",
              "correct": False,
              "why": "Continuous is about the values in the data, not about "
                     "whether one person's value moves. Adult height barely "
                     "changes for decades and is still continuous."},
-            {"text": "The characteristic is set by the environment rather than "
-                     "by genes.",
+            {"text": "The characteristic is set by the environment, not by "
+                     "genes.",
              "correct": False,
              "why": "That is the swap to avoid. Height is continuous and "
                     "strongly inherited, so continuous cannot mean "
@@ -638,27 +638,27 @@ QUESTIONS = [
                 "AB 2. A student says the counts are so uneven that the "
                 "variation must really be continuous. What is wrong?",
         "options": [
-            {"text": "Nothing — a smooth fall from 28 down to 2 is exactly "
-                     "what continuous data looks like.",
+            {"text": "Nothing — a fall from 28 all the way down to 2 is "
+                     "exactly what continuous data looks like.",
              "correct": False,
              "why": "Four numbers getting smaller is not a smooth range of "
                     "values. There is still no such thing as a blood group "
                     "between A and B, which is what continuous would need."},
-            {"text": "The counts are uneven only because 60 students is a "
-                     "small sample.",
+            {"text": "The counts are uneven only because a year group of "
+                     "60 is far too small a sample.",
              "correct": False,
              "why": "Those proportions are roughly what any large UK sample "
                     "gives. But even a perfectly even 15, 15, 15, 15 would "
                     "still be discontinuous — how common each group is says "
                     "nothing about the kind of variation."},
-            {"text": "Blood group is decided by genes, and genes always give "
+            {"text": "Blood group is genetic, and genes always give "
                      "categories.",
              "correct": False,
              "why": "Right conclusion, wrong argument. Height is strongly "
                     "inherited and perfectly smooth. What produces categories "
                     "here is that one gene decides it."},
-            {"text": "How common each category is has nothing to do with it — "
-                     "there is still nothing between the categories.",
+            {"text": "How common each category is has no bearing — nothing "
+                     "lies in between.",
              "correct": True},
         ],
         "figure": None,
@@ -795,23 +795,24 @@ QUESTIONS = [
                 "category without any arguing, the variation must be "
                 "discontinuous. Is that a safe rule?",
         "options": [
-            {"text": "Yes — being able to sort everybody cleanly is exactly "
-                     "what discontinuous variation means.",
+            {"text": "Yes — being able to sort everybody into a category "
+                     "cleanly is exactly what discontinuous variation "
+                     "means.",
              "correct": False,
              "why": "Clean categories can be imposed on anything. Sort sixty "
                     "students into 5 cm height groups and nobody will argue, "
                     "and height is still continuous."},
-            {"text": "No — continuous data is routinely sorted into agreed "
-                     "ranges, and the in-between values still exist.",
+            {"text": "No — continuous data is sorted into ranges too, and "
+                     "in-between values exist.",
              "correct": True},
-            {"text": "Yes, as long as there are at least three categories to "
-                     "sort people into.",
+            {"text": "Yes, as long as there are at least three separate "
+                     "categories to sort the individuals into.",
              "correct": False,
              "why": "The number of categories is not the test either. Tongue "
                     "rolling has two and is discontinuous; height put into "
                     "seven groups is still continuous."},
-            {"text": "No — you can never sort continuous measurements into "
-                     "categories at all.",
+            {"text": "No — continuous measurements can never be sorted "
+                     "into categories.",
              "correct": False,
              "why": "You always do, and you have to: a histogram's bars are "
                     "exactly those categories. What matters is that its "
@@ -827,24 +828,25 @@ QUESTIONS = [
                 "white. She draws one graph with touching bars and one with "
                 "gaps. Which is which, and why?",
         "options": [
-            {"text": "Stem length gets the gaps, because the lengths were "
-                     "sorted into separate groups to be plotted.",
+            {"text": "Stem length gets the gaps, because the lengths had "
+                     "to be sorted into separate groups of centimetres "
+                     "before being plotted.",
              "correct": False,
              "why": "Sorting into groups is how continuous data is always "
                     "plotted, and the groups join up. It is stem length that "
                     "has every value in between, so its bars touch."},
             {"text": "Flower colour gets the touching bars, because yellow "
-                     "and white are both flower colours.",
+                     "and white are both colours of the same kind of "
+                     "flower.",
              "correct": False,
              "why": "Sharing a heading does not join two categories up. No "
                     "daffodil is partway between yellow and white, so the "
                     "gap between those bars is the honest drawing."},
-            {"text": "Stem length gets the touching bars and flower colour "
-                     "the gaps, because only stem length has values in "
-                     "between.",
+            {"text": "Stem length gets the touching bars and colour the "
+                     "gaps, since only length has values in between.",
              "correct": True},
-            {"text": "It cannot be decided until she knows which of the two "
-                     "is set by genes.",
+            {"text": "It cannot be decided until she knows which is set by "
+                     "genes.",
              "correct": False,
              "why": "The shape question is answered from the data alone. What "
                     "caused each characteristic is a second question, and you "
@@ -1014,23 +1016,25 @@ QUESTIONS = [
                 "gets two separate columns, white and brown. Same birds, same "
                 "feed. Explain the two shapes.",
         "options": [
-            {"text": "Mass was measured and colour was only looked at, and "
-                     "measuring always gives a smooth curve.",
+            {"text": "Mass was measured with a balance while colour was "
+                     "only looked at, and measuring always gives a smooth "
+                     "curve.",
              "correct": False,
              "why": "The instrument is not the test. What matters is that an "
                     "egg of any mass in between is possible, while no egg is "
                     "partway between the two shell colours."},
-            {"text": "The feed was the same for every bird, so any difference "
-                     "left in the data must be genetic.",
+            {"text": "The feed was the same for every bird, so any "
+                     "difference left in the data must be an inherited "
+                     "one.",
              "correct": False,
              "why": "That is an answer to the cause question, and it does not "
                     "give you two different shapes. Both characteristics are "
                     "influenced by genes and only one of them is smooth."},
-            {"text": "Egg mass has every value in between, while shell colour "
-                     "falls into categories with nothing between them.",
+            {"text": "Egg mass has every value in between; shell colour "
+                     "falls into two separate categories.",
              "correct": True},
-            {"text": "Two hundred eggs is enough to show the hump for mass "
-                     "but not enough to show it for colour.",
+            {"text": "Two hundred eggs is enough for the mass hump but too "
+                     "few for colour.",
              "correct": False,
              "why": "Twenty thousand eggs would still give two columns for "
                     "colour, because there is no shade in between to fill a "
@@ -1046,27 +1050,28 @@ QUESTIONS = [
                 "tallest adults were usually the children of tall parents. "
                 "Explain how both facts can be true.",
         "options": [
-            {"text": "The gene pool changed a little and nutrition changed a "
-                     "little, and the two effects add to 13 cm.",
+            {"text": "The gene pool changed a little and nutrition changed "
+                     "a little, and the two effects add up to the whole 13 "
+                     "cm.",
              "correct": False,
              "why": "A century is far too short for the gene pool to have "
                     "moved 13 cm. Almost all of that rise is nutrition, "
                     "public health and childhood disease."},
             {"text": "Only the second fact is really true — tall parents "
-                     "having tall children is a coincidence people notice.",
+                     "having tall children is just a coincidence that "
+                     "people notice and remember.",
              "correct": False,
              "why": "It is one of the strongest inherited patterns there is, "
                     "and explaining it away is not needed. Both facts are "
                     "true at once, which is the whole point."},
-            {"text": "Height must be continuous in 1900 and discontinuous "
+            {"text": "Height was continuous in 1900 and discontinuous "
                      "today, because the average moved.",
              "correct": False,
              "why": "An average moving does not change the kind of variation. "
                     "Every height in between existed in 1900 and still does, "
                     "so the data was continuous in both centuries."},
-            {"text": "Who is tallest within a generation is largely "
-                     "inherited; the level the whole population sits at is "
-                     "set by the environment.",
+            {"text": "Who is tallest in a generation is inherited; where "
+                     "the whole population sits is environmental.",
              "correct": True},
         ],
         "figure": None,

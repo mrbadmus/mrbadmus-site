@@ -437,7 +437,8 @@ QUESTIONS = [
         "text": "Erwin Chargaff worked in New York with chemical amounts "
                 "rather than images. What did he measure?",
         "options": [
-            {"text": "The width of the DNA molecule and the distance per turn",
+            {"text": "The width of the DNA molecule and the distance along "
+                     "it taken up by a single full turn of the helix",
              "correct": False,
              "why": "Those came from the X-ray diffraction images taken at "
                     "King's. Chargaff never worked with images at all"},
@@ -448,7 +449,8 @@ QUESTIONS = [
              "correct": False,
              "why": "That was Franklin's measurement, and it is what put the "
                     "phosphates on the outside. Chargaff was counting bases"},
-            {"text": "How many genes each chromosome carries",
+            {"text": "How many genes each chromosome carries in the "
+                     "organisms he collected his samples from",
              "correct": False,
              "why": "Nobody could count genes in 1950. What Chargaff could "
                     "measure was the proportion of each base in a sample"},
@@ -461,20 +463,20 @@ QUESTIONS = [
         "text": "In the story of how DNA's structure was worked out, what "
                 "is meant by a model?",
         "options": [
-            {"text": "A drawing made once the answer is known, to explain it "
-                     "to other people",
+            {"text": "A drawing made once the answer is already known, in "
+                     "order to explain that answer to other people",
              "correct": False,
              "why": "That is an illustration, made afterwards. A model is "
                     "built while the answer is still unknown, so that it can "
                     "be tested"},
             {"text": "A smaller copy of something real, built to the right "
-                     "proportions",
+                     "proportions in every dimension",
              "correct": False,
              "why": "That is a scale model. Here a model is a proposal about "
                     "what the structure might be, kept only while it fits the "
                     "evidence"},
-            {"text": "A representation built so it can be tested against "
-                     "evidence and thrown away if it fails",
+            {"text": "A representation built to be tested against evidence "
+                     "and dropped if wrong",
              "correct": True},
             {"text": "An idea that has been proved correct and can now be "
                      "relied on",
@@ -519,23 +521,24 @@ QUESTIONS = [
                 "that the ratio of A to C changes from one species to "
                 "another. What does the changing ratio show?",
         "options": [
-            {"text": "That some species have more strands of DNA in each "
-                     "chromosome than others",
+            {"text": "That some species must have more strands of DNA in "
+                     "each of their chromosomes than other species do",
              "correct": False,
              "why": "Every species has the same two-stranded molecule. What "
                     "differs is what is written along it"},
-            {"text": "That what is written along the molecule differs between "
-                     "species, even though the pairing rule does not",
+            {"text": "That what is written along the molecule differs "
+                     "between species, unlike the pairing rule",
              "correct": True},
             {"text": "That his measurements were less reliable for some "
-                     "species than for others",
+                     "species",
              "correct": False,
              "why": "The variation is real and repeatable. A rule that holds "
                     "everywhere, alongside a proportion that varies, is "
                     "exactly what a shared structure carrying different "
                     "information looks like"},
-            {"text": "That the pairing rule holds in some species and breaks "
-                     "down in others, depending on the sample",
+            {"text": "That the pairing rule holds in some species and "
+                     "breaks down in others, depending on the sample he "
+                     "happened to test",
              "correct": False,
              "why": "The pairing rule held in every sample he tested — that is "
                     "the half that never changed. Only the proportion of A to "
@@ -550,25 +553,27 @@ QUESTIONS = [
                 "centre of the molecule was about the phosphates themselves. "
                 "What was it?",
         "options": [
-            {"text": "Phosphates are too large to fit in the middle of a "
-                     "molecule that narrow",
+            {"text": "Phosphates are far too large to fit into the middle "
+                     "of a molecule as narrow as DNA had already been "
+                     "measured to be",
              "correct": False,
              "why": "Size was not the objection. The problem was electrical — "
                     "the phosphates carry negative charges"},
-            {"text": "Phosphates are not part of DNA at all, so they cannot be "
-                     "anywhere in it",
+            {"text": "Phosphates are not part of DNA at all, so the "
+                     "question of where they sit inside it does not even "
+                     "arise",
              "correct": False,
              "why": "They are part of it, and they run along the two "
                     "backbones. The question was whether those backbones face "
                     "in or out"},
-            {"text": "Phosphates would block the bases from being read from "
-                     "the centre",
+            {"text": "Phosphates in the middle would block the bases from "
+                     "being read",
              "correct": False,
              "why": "Reading was not what was being argued about in 1952. The "
                     "objection was that negative charges crowded together "
                     "repel each other"},
-            {"text": "They carry negative charges, and crowding them into the "
-                     "centre would push the molecule apart",
+            {"text": "They carry negative charges, so crowding them into "
+                     "the centre would push the molecule apart",
              "correct": True},
         ],
         "figure": None,
@@ -668,25 +673,25 @@ QUESTIONS = [
                 "experimentally that DNA really is copied in the way the "
                 "structure suggested. What did their result change?",
         "options": [
-            {"text": "It showed that the 1953 structure had been wrong in one "
-                     "detail",
+            {"text": "It showed that the 1953 structure had been wrong in "
+                     "at least one important detail",
              "correct": False,
              "why": "It confirmed the structure's most striking implication "
                     "rather than correcting it. The model survived the test"},
-            {"text": "It replaced the model with a photograph of DNA copying "
-                     "itself",
+            {"text": "It replaced the model with a photograph of DNA "
+                     "copying",
              "correct": False,
              "why": "No photograph of that exists, then or now. What they "
                     "produced was an experiment whose result the model had "
                     "predicted"},
-            {"text": "It meant the credit for the structure had to be shared "
-                     "more widely",
+            {"text": "It meant the credit for working out the structure "
+                     "had to be shared much more widely than before",
              "correct": False,
              "why": "The question of credit is a separate one, and it turns on "
                     "whose data was used in 1953. Meselson and Stahl were "
                     "testing the model, not auditing it"},
             {"text": "The copying idea stopped being a proposal and became "
-                     "something that had been tested",
+                     "a tested result",
              "correct": True},
         ],
         "figure": None,
@@ -700,23 +705,25 @@ QUESTIONS = [
                 "down a microscope in 1952 and settle the argument. What is "
                 "the reply, and what follows from it?",
         "options": [
-            {"text": "DNA is far too thin to be resolved by any microscope, so "
-                     "the structure had to be deduced from indirect evidence",
+            {"text": "DNA is far too thin for any microscope to resolve, "
+                     "so its structure had to be deduced indirectly",
              "correct": True},
             {"text": "Microscopes of the 1950s were not good enough, but a "
-                     "modern one would show the double helix directly",
+                     "modern electron microscope would be able to show the "
+                     "double helix directly",
              "correct": False,
              "why": "No microscope today can show the shape of a single DNA "
                     "molecule either. It is not a matter of the equipment "
                     "catching up"},
-            {"text": "DNA can be seen, but only when a cell is dividing, and "
-                     "no dividing cells were available",
+            {"text": "DNA can be seen, but only while a cell is dividing, "
+                     "and none were available",
              "correct": False,
              "why": "What becomes visible then is a whole chromosome, packed "
                     "from a great many turns of the molecule. The molecule "
                     "itself stays far below what can be resolved"},
-            {"text": "They could have, but X-ray diffraction gave a sharper "
-                     "picture, so they used that instead",
+            {"text": "They could have looked, but X-ray diffraction gave a "
+                     "much sharper picture of the molecule, so they used "
+                     "that",
              "correct": False,
              "why": "Diffraction gives no picture at all — Photo 51 is a "
                     "pattern of spots. It was used because looking was "
@@ -792,27 +799,28 @@ QUESTIONS = [
                 "stolen. Historians say the episode is more complicated than "
                 "that. What is a fair summary?",
         "options": [
-            {"text": "The complications mean no fair criticism can be made of "
-                     "the way her data was used in 1953",
+            {"text": "The complications mean that no fair criticism can "
+                     "now be made of the way her data was used by Watson "
+                     "and Crick in 1953",
              "correct": False,
              "why": "One thing is not in dispute: the data were used without "
                     "her knowledge and the acknowledgement understated what "
                     "was owed. Complication is not the same as exoneration"},
             {"text": "Nothing was owed, because unpublished results are "
-                     "available to anyone who hears of them",
+                     "open to anyone",
              "correct": False,
              "why": "The rule people have since drawn from this episode is the "
                     "opposite: data belongs to whoever produced it and should "
                     "be used with their knowledge"},
-            {"text": "The whole argument is about the Nobel rules, which "
-                     "cannot be given after a person's death",
+            {"text": "The whole argument is really about the Nobel rules, "
+                     "since the prize cannot be given after a person's "
+                     "death",
              "correct": False,
              "why": "That explains the 1962 prize and nothing else. The use of "
                     "her measurements in 1953 is a separate question, and it "
                     "is the one being asked"},
             {"text": "Her data was used without her knowledge and "
-                     "under-acknowledged, and how much else was at work is "
-                     "still argued",
+                     "under-acknowledged; how much else counted is argued",
              "correct": True},
         ],
         "figure": None,
@@ -853,8 +861,8 @@ QUESTIONS = [
                 "outside, and shows that it fits Chargaff's ratios perfectly. "
                 "Why is her model still ruled out?",
         "options": [
-            {"text": "Because Chargaff's ratios were about chemical amounts "
-                     "and say nothing about any model",
+            {"text": "Because Chargaff's ratios were only about chemical "
+                     "amounts and say nothing at all about any model",
              "correct": False,
              "why": "They say a great deal about a model — they are what "
                     "forces A to pair with T. Her model passes that test; the "
@@ -864,11 +872,12 @@ QUESTIONS = [
              "correct": False,
              "why": "Watson and Crick's were metal and cardboard. What matters "
                     "is what a model claims, not what it is cut out of"},
-            {"text": "Because a model has to fit every piece of evidence, and "
-                     "the water measurements put the phosphates outside",
+            {"text": "Because a model must fit all the evidence, and the "
+                     "water data puts phosphates outside",
              "correct": True},
-            {"text": "Because the bases on the outside would make the molecule "
-                     "too narrow for the measured width",
+            {"text": "Because putting the bases on the outside would make "
+                     "the molecule far too narrow for the width actually "
+                     "measured",
              "correct": False,
              "why": "Width is decided by the number of strands, and Photo 51 "
                     "settled that separately. What rules out bases on the "

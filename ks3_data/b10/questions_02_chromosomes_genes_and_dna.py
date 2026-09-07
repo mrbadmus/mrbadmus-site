@@ -357,21 +357,24 @@ QUESTIONS = [
         "band": "easier",
         "text": "What is a gene?",
         "options": [
-            {"text": "A small object attached to the outside of a chromosome",
+            {"text": "A small separate object attached to the outside of a "
+                     "chromosome, like a bead threaded on a string",
              "correct": False,
              "why": "Nothing is attached. A gene is part of the chromosome "
                     "itself, the way a chapter is part of a book rather than a "
                     "bookmark in one"},
-            {"text": "A section of the DNA in a chromosome, carrying the "
+            {"text": "A length of DNA in a chromosome carrying the "
                      "instruction for one characteristic",
              "correct": True},
             {"text": "A whole chromosome, which is why a human body cell "
-                     "contains exactly 46 of them",
+                     "is said to contain exactly 46 genes altogether in "
+                     "its nucleus",
              "correct": False,
              "why": "A human carries around twenty thousand genes and only 46 "
                     "chromosomes, so a gene must be far smaller than a whole "
                     "chromosome"},
-            {"text": "One of the four bases, A, T, C or G",
+            {"text": "One of the four bases — A, T, C or G — from which "
+                     "DNA is built",
              "correct": False,
              "why": "The bases are the units the instruction is written in. A "
                     "gene is a length of them, the way a word is a run of "
@@ -458,18 +461,20 @@ QUESTIONS = [
         "band": "easier",
         "text": "What does the DNA in a cell do?",
         "options": [
-            {"text": "It supplies the cell with the energy it needs to work",
+            {"text": "It is the fuel that supplies the cell with the "
+                     "energy it needs for growing and for working",
              "correct": False,
              "why": "Energy comes from respiration. DNA is not a fuel — it is "
                     "the store of instructions"},
             {"text": "It carries the instructions for building and running an "
                      "organism",
              "correct": True},
-            {"text": "It holds the cell's shape, like a frame inside it",
+            {"text": "It holds the cell in shape, acting like a stiff "
+                     "frame running through the cell",
              "correct": False,
              "why": "DNA is coiled into chromosomes for storage, not for "
                     "support. Its job is to carry information"},
-            {"text": "It carries the waste out of the nucleus",
+            {"text": "It carries the cell's waste out of the nucleus",
              "correct": False,
              "why": "Nothing about DNA is waste. It is the set of instructions "
                     "the cell is built and run from, and it stays in the "
@@ -510,8 +515,8 @@ QUESTIONS = [
         "text": "Why is the DNA in a cell packed into chromosomes rather than "
                 "left as it is?",
         "options": [
-            {"text": "So that the cell can decide which genes to keep and "
-                     "which to throw away",
+            {"text": "So that the cell can decide which of its own genes "
+                     "to keep and which ones it should throw away as waste",
              "correct": False,
              "why": "Nothing is thrown away. Every cell with a nucleus keeps "
                     "the complete set; packing is about storage, not "
@@ -521,11 +526,11 @@ QUESTIONS = [
              "why": "The instructions have to be readable — that is what they "
                     "are for. Packing is what makes a very long molecule "
                     "manageable"},
-            {"text": "So that about two metres of a very thin molecule can be "
+            {"text": "So that about two metres of thin molecule can be "
                      "stored and moved without tangling",
              "correct": True},
-            {"text": "So that the DNA takes up less space by becoming shorter "
-                     "and thinner",
+            {"text": "So that the DNA molecule itself takes up much less "
+                     "space by becoming both shorter and thinner",
              "correct": False,
              "why": "The molecule itself is unchanged — nothing is removed and "
                     "nothing shrinks. It is wound and coiled, the way a long "
@@ -659,22 +664,21 @@ QUESTIONS = [
         "text": "A mature red blood cell has no nucleus. What follows from "
                 "that?",
         "options": [
-            {"text": "It carries no chromosomes at all, unlike almost every "
-                     "other cell in the body",
+            {"text": "It carries no chromosomes at all, unlike almost "
+                     "every other cell",
              "correct": True},
-            {"text": "It carries only the genes it needs for making "
-                     "haemoglobin",
+            {"text": "It keeps only the genes needed to make haemoglobin",
              "correct": False,
              "why": "It carries none. Losing the nucleus means losing the "
                     "whole set, not keeping a useful part of it"},
-            {"text": "It cannot be a living cell, since every living cell has "
-                     "a nucleus",
+            {"text": "It cannot really be a living cell, since every "
+                     "living cell must have a nucleus to work from",
              "correct": False,
              "why": "It is a living cell doing a demanding job. What it has "
                     "given up is the storage space its chromosomes took, in "
                     "exchange for room to carry oxygen"},
-            {"text": "It reads its instructions from the cells around it "
-                     "instead",
+            {"text": "It reads the instructions it needs from the "
+                     "neighbouring cells around it instead",
              "correct": False,
              "why": "Instructions do not pass between cells like that. A red "
                     "blood cell simply works without a set, which is why it "
@@ -718,22 +722,22 @@ QUESTIONS = [
         "text": "The 46 chromosomes in a human body cell are described as 23 "
                 "pairs rather than as 46 separate chromosomes. Why?",
         "options": [
-            {"text": "Because they are stored in the nucleus two at a time, "
-                     "side by side",
+            {"text": "Because they sit side by side in the nucleus, two at "
+                     "a time",
              "correct": False,
              "why": "How they sit in the nucleus is not the reason. They are "
                     "called pairs because the two members of a pair match each "
                     "other"},
-            {"text": "Because the two members of each pair match, carrying the "
-                     "same genes, one having come from each parent",
+            {"text": "Because the two in each pair carry the same genes, "
+                     "one from each parent",
              "correct": True},
             {"text": "Because a cell always makes a spare copy of each "
-                     "chromosome in case one is damaged",
+                     "chromosome in case the first one is ever damaged",
              "correct": False,
              "why": "Neither is a spare. Both are used, and the two came from "
                     "different parents rather than from a copying step"},
-            {"text": "Because 46 is an even number, so the chromosomes can be "
-                     "counted in twos",
+            {"text": "Because 46 is an even number, so the chromosomes can "
+                     "always be counted off in twos",
              "correct": False,
              "why": "Counting in twos is not pairing. The pairs are real — "
                     "each is two matching chromosomes, one from each parent"},
@@ -806,8 +810,8 @@ QUESTIONS = [
                 "of instructions. A sperm cell has a nucleus and carries 23 "
                 "chromosomes. Is the claim broken?",
         "options": [
-            {"text": "Yes — 23 is half a set, so a sperm is missing half the "
-                     "instructions",
+            {"text": "Yes — 23 is only half a set, so a sperm must be "
+                     "missing half of the instructions altogether",
              "correct": False,
              "why": "It has one of every pair, so every instruction is there "
                     "once. What it lacks is the second copy, not half the "
@@ -818,10 +822,11 @@ QUESTIONS = [
              "why": "No cell selects its genes that way. A sperm carries a "
                     "complete single set, chosen one from each pair"},
             {"text": "No — it carries one of each pair, so it holds one "
-                     "complete copy rather than the usual two",
+                     "complete copy instead of two",
              "correct": True},
-            {"text": "No — a sperm cell has 46 like every other cell, and 23 "
-                     "is the number of pairs",
+            {"text": "No — a sperm cell has 46 chromosomes like every "
+                     "other body cell, and 23 is simply the number of "
+                     "pairs",
              "correct": False,
              "why": "A sperm really does carry 23 single chromosomes. If it "
                     "carried 46 the fertilised egg would have 92"},
@@ -873,21 +878,21 @@ QUESTIONS = [
              "why": "Half right, and it misses the other half. Many genes do "
                     "affect more than one characteristic, but many "
                     "characteristics also need a great many genes at once"},
-            {"text": "Because the twenty thousand is only an estimate, and the "
-                     "true number is much larger",
+            {"text": "Because the twenty thousand is only a rough "
+                     "estimate, and the true number of genes is much "
+                     "larger",
              "correct": False,
              "why": "The estimate is good, and its being an estimate is not "
                     "the flaw. The flaw is treating one gene and one "
                     "characteristic as a matching pair"},
-            {"text": "Because some genes are switched off, so those "
-                     "characteristics never appear",
+            {"text": "Because genes that are switched off produce no "
+                     "characteristic",
              "correct": False,
              "why": "A gene switched off in one cell is switched on in "
                     "another. Switching is about where a gene is used, not "
                     "about characteristics going missing from the count"},
-            {"text": "Because one gene to one characteristic is a "
-                     "simplification — most characteristics take many genes, "
-                     "and many genes affect several",
+            {"text": "Because most characteristics take many genes, and "
+                     "many genes affect more than one",
              "correct": True},
         ],
         "figure": None,
@@ -930,19 +935,19 @@ QUESTIONS = [
                 "reply?",
         "options": [
             {"text": "She is right, which is why most characteristics need "
-                     "many genes rather than one",
+                     "many genes working together rather than one",
              "correct": False,
              "why": "Many genes per characteristic is true and is a separate "
                     "matter. It is not a patch for a shortage of letters, "
                     "because there is no shortage"},
-            {"text": "She is right about DNA on its own, and the proteins "
-                     "wound through a chromosome supply the rest",
+            {"text": "She is right about DNA on its own, and it is the "
+                     "proteins wound through a chromosome that supply the "
+                     "rest of it",
              "correct": False,
              "why": "The proteins are packing, not information. Every "
                     "instruction is in the order of the bases"},
-            {"text": "A sequence millions of bases long gives an "
-                     "unimaginable number of possible orders, so four is "
-                     "plenty",
+            {"text": "Millions of bases in a row give a vast number of "
+                     "possible orders, so four is plenty",
              "correct": True},
             {"text": "There are really twenty thousand bases, one for each "
                      "gene",
