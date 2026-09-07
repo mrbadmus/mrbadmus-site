@@ -299,4 +299,148 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p4-05-e05",
+        "band": "easier",
+        "text": "Which of these REDUCES friction?",
+        "options": [
+            {"text": "Fitting rubber grips to a handle", "correct": False,
+             "why": "Rubber is chosen to increase grip, which means more "
+                    "friction, not less."},
+            {"text": "Oiling the moving parts of a machine", "correct": True},
+            {"text": "Roughening a surface with sandpaper", "correct": False,
+             "why": "A rougher surface gives more friction, which is why "
+                    "sandpaper works at all."},
+            {"text": "Pressing two surfaces together more firmly",
+             "correct": False,
+             "why": "Pressing harder increases friction — that is one of the "
+                    "two things its size depends on."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-05-e06",
+        "band": "easier",
+        "text": "When two surfaces rub together, where does the energy end "
+                "up?",
+        "options": [
+            {"text": "In the thermal stores of the two surfaces",
+             "correct": True},
+            {"text": "It is destroyed by the rubbing", "correct": False,
+             "why": "Nothing destroys energy. Rubbing moves it into thermal "
+                    "stores."},
+            {"text": "In the elastic store of the moving object",
+             "correct": False,
+             "why": "Nothing is stretched or squashed by sliding, so no "
+                    "elastic store fills."},
+            {"text": "Back in the chemical store it came from",
+             "correct": False,
+             "why": "Energy does not return the way it came; the warmed "
+                    "surfaces are where it goes."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p4-05-s05",
+        "band": "standard",
+        "text": "A box is pushed with 50 N and does not move at all. What is "
+                "the friction on it?",
+        "options": [
+            {"text": "0 N, because friction only exists once something slides",
+             "correct": False,
+             "why": "Friction acts before sliding starts — it is exactly what "
+                    "is stopping the box moving."},
+            {"text": "50 N, acting backwards against the push",
+             "correct": True},
+            {"text": "As much as the surfaces can possibly manage",
+             "correct": False,
+             "why": "It matches the push up to a limit; here it matches "
+                    "exactly 50 N and no more."},
+            {"text": "100 N, because it must beat the push", "correct": False,
+             "why": "More than the push would drive the box backwards, and it "
+                    "is not moving at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-05-s06",
+        "band": "standard",
+        "text": "Why does a rubber tyre grip a road better than a smooth "
+                "plastic wheel of the same size?",
+        "options": [
+            {"text": "Because rubber is heavier, so it presses down harder",
+             "correct": False,
+             "why": "The car's weight sets how hard it presses, not what the "
+                    "wheel is made of."},
+            {"text": "Because plastic has no friction at all",
+             "correct": False,
+             "why": "Every real surface has some. Plastic on tarmac simply "
+                    "has much less than rubber does."},
+            {"text": "Because friction depends on the surfaces, and rubber "
+                     "on tarmac gives more",
+             "correct": True},
+            {"text": "Because rubber is softer, so it slides more easily",
+             "correct": False,
+             "why": "Sliding more easily would be LESS grip, which is the "
+                    "opposite of what a tyre is for."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p4-05-h05",
+        "band": "harder",
+        "text": "A crate needs 90 N to break away and 75 N to keep sliding. "
+                "What happens if the 90 N push is held on once it is moving?",
+        "options": [
+            {"text": "It slides at a steady speed, because 90 N was the "
+                     "amount needed",
+             "correct": False,
+             "why": "Once moving, friction drops to 75 N, so 90 N leaves "
+                    "15 N over."},
+            {"text": "It stops again, because the push is now too big",
+             "correct": False,
+             "why": "A push larger than friction never stops anything; it "
+                    "speeds it up."},
+            {"text": "It speeds up, because there is a 15 N resultant force",
+             "correct": True},
+            {"text": "Nothing changes, because friction always matches the "
+                     "push exactly",
+             "correct": False,
+             "why": "Friction matches the push only up to the point of "
+                    "sliding; after that it settles at 75 N."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-05-h06",
+        "band": "harder",
+        "text": "Running spikes and ice skates both work by changing "
+                "friction. Which description is right?",
+        "options": [
+            {"text": "Spikes increase friction for grip; skates reduce it so "
+                     "the blade slides",
+             "correct": True},
+            {"text": "Both increase friction, one on a track and one on ice",
+             "correct": False,
+             "why": "A skater who could not slide would go nowhere; the blade "
+                    "is designed for very little friction."},
+            {"text": "Both reduce friction so that the athlete moves more "
+                     "freely",
+             "correct": False,
+             "why": "A sprinter with no grip could not push off at all — "
+                    "spikes are there to increase it."},
+            {"text": "Spikes reduce friction for speed; skates increase it "
+                     "for control",
+             "correct": False,
+             "why": "The two are the wrong way round: spikes bite in, and a "
+                    "blade glides."},
+        ],
+        "figure": None,
+    },
 ]

@@ -314,4 +314,73 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p4-08-e05",
+        "band": "easier",
+        "text": "A spring is 60 mm long with nothing on it and 105 mm long "
+                "with a load hanging from it. What is its extension?",
+        "options": [
+            {"text": "105 mm, the length with the load on", "correct": False,
+             "why": "That is the total length. Extension is the INCREASE in "
+                    "length."},
+            {"text": "165 mm, the two lengths added", "correct": False,
+             "why": "Adding the two lengths gives a spring longer than it "
+                    "ever was."},
+            {"text": "45 mm, the increase in length", "correct": True},
+            {"text": "60 mm, the length it started at", "correct": False,
+             "why": "That is the natural length, which is what the extension "
+                    "is measured from."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p4-08-s05",
+        "band": "standard",
+        "text": "A spring extends 24 mm under a 4 N load. Staying on the "
+                "straight line, which load gives an extension of 42 mm?",
+        "options": [
+            {"text": "7 N", "correct": True},
+            {"text": "18 N, the difference in the extensions",
+             "correct": False,
+             "why": "42 − 24 is a difference in millimetres, not a load in "
+                    "newtons."},
+            {"text": "6 N, because 42 is 18 more than 24", "correct": False,
+             "why": "Adding 18 mm as if it were 2 N ignores that each newton "
+                    "adds 6 mm."},
+            {"text": "10.5 N", "correct": False,
+             "why": "That is 42 ÷ 4, dividing the extension by the load "
+                    "instead of using 6 mm per newton."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p4-08-h05",
+        "band": "harder",
+        "text": "A spring gives 10 mm at 2 N, 20 mm at 4 N, 30 mm at 6 N and "
+                "48 mm at 8 N. What has happened by the last reading?",
+        "options": [
+            {"text": "The spring has snapped", "correct": False,
+             "why": "A snapped spring gives no reading at all, and this one "
+                    "gave 48 mm."},
+            {"text": "The last reading must be a mistake and should be "
+                     "discarded",
+             "correct": False,
+             "why": "It is a real result, and throwing it away would hide the "
+                    "very thing it shows."},
+            {"text": "The limit of proportionality has been passed",
+             "correct": True},
+            {"text": "The spring has become stiffer, so it extends less than "
+                     "expected",
+             "correct": False,
+             "why": "40 mm was expected and 48 mm was measured, so it "
+                    "extended MORE, not less."},
+        ],
+        "figure": None,
+    },
 ]

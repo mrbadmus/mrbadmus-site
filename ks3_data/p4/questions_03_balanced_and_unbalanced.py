@@ -291,4 +291,129 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p4-03-e05",
+        "band": "easier",
+        "text": "What is the weight of a 12 kg suitcase, taking gravity as "
+                "10 N/kg?",
+        "options": [
+            {"text": "1.2 N", "correct": False,
+             "why": "That is 12 ÷ 10. Weight is the mass MULTIPLIED by "
+                    "10 N/kg."},
+            {"text": "12 N", "correct": False,
+             "why": "That is the mass with the unit swapped. A kilogram is "
+                    "not a newton."},
+            {"text": "120 N", "correct": True},
+            {"text": "22 N", "correct": False,
+             "why": "That is 12 + 10, and a mass and a gravitational field "
+                    "strength cannot be added."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-03-e06",
+        "band": "easier",
+        "text": "A car is driving along a straight road at a steady speed. "
+                "The forces on it are…",
+        "options": [
+            {"text": "balanced, with a resultant of 0 N", "correct": True},
+            {"text": "unbalanced, pointing forwards", "correct": False,
+             "why": "A forward resultant would make it speed up, and the "
+                    "speed is steady."},
+            {"text": "unbalanced, pointing backwards", "correct": False,
+             "why": "A backward resultant would slow it down, and the speed "
+                    "is not falling."},
+            {"text": "zero, because nothing is touching it", "correct": False,
+             "why": "Plenty is touching it — the road and the air. Their "
+                    "forces cancel rather than being absent."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p4-03-s05",
+        "band": "standard",
+        "text": "A 60 kg student stands still on a floor. How hard does the "
+                "floor push up, taking gravity as 10 N/kg?",
+        "options": [
+            {"text": "60 N", "correct": False,
+             "why": "That is the mass in kilograms, not a force. Multiply by "
+                    "10 N/kg first."},
+            {"text": "600 N", "correct": True},
+            {"text": "6 N", "correct": False,
+             "why": "That is 60 ÷ 10, the division the wrong way round."},
+            {"text": "As hard as the floor is able to push", "correct": False,
+             "why": "A support pushes back as hard as it NEEDS to, which here "
+                    "is exactly the student's weight."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-03-s06",
+        "band": "standard",
+        "text": "A 5 kg box hangs at rest from a rope. What is the tension in "
+                "the rope, and the resultant force on the box?",
+        "options": [
+            {"text": "50 N and a resultant of 0 N", "correct": True},
+            {"text": "50 N and a resultant of 50 N", "correct": False,
+             "why": "The box is at rest, so the two 50 N forces must cancel "
+                    "to nothing."},
+            {"text": "5 N and a resultant of 0 N", "correct": False,
+             "why": "5 is the mass in kilograms. The weight is 5 × 10 N/kg."},
+            {"text": "100 N and a resultant of 0 N", "correct": False,
+             "why": "That doubles the weight; the rope pulls up with exactly "
+                    "as much as gravity pulls down."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p4-03-h05",
+        "band": "harder",
+        "text": "A 700 kg lift hangs at rest from a cable rated to pull with "
+                "up to 9000 N. How much spare pull has the cable, taking "
+                "gravity as 10 N/kg?",
+        "options": [
+            {"text": "8300 N, the rating minus the mass", "correct": False,
+             "why": "700 is a mass in kilograms and cannot be subtracted from "
+                    "a force in newtons."},
+            {"text": "None — a cable at rest is already at its limit",
+             "correct": False,
+             "why": "At rest it only pulls with the weight, which is well "
+                    "below what it can manage."},
+            {"text": "2000 N of pull to spare", "correct": True},
+            {"text": "9000 N, because the lift is not moving", "correct": False,
+             "why": "It is already pulling with 7000 N to hold the lift up, "
+                    "so not all of the rating is spare."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-03-h06",
+        "band": "harder",
+        "text": "A student says balanced forces mean an object is stopped. "
+                "Which example shows that is wrong?",
+        "options": [
+            {"text": "A book on a table, pushed up with exactly its weight",
+             "correct": False,
+             "why": "The book IS stopped, so it fits the student's claim "
+                    "rather than testing it."},
+            {"text": "A lorry at a steady 25 m/s with 4000 N of drive and "
+                     "drag",
+             "correct": True},
+            {"text": "A ball at the top of its flight, momentarily at rest",
+             "correct": False,
+             "why": "Its forces are unbalanced there — gravity still pulls "
+                    "down — so it is not a balanced case."},
+            {"text": "A car speeding up with more drive than drag",
+             "correct": False,
+             "why": "That is unbalanced by definition, so it says nothing "
+                    "about what balanced means."},
+        ],
+        "figure": None,
+    },
 ]

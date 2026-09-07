@@ -292,4 +292,154 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p4-01-e05",
+        "band": "easier",
+        "text": "Which of these is a CONTACT force?",
+        "options": [
+            {"text": "Friction between a shoe and the floor", "correct": True},
+            {"text": "Gravity pulling a dropped ball down", "correct": False,
+             "why": "Gravity acts across a gap with nothing in between, so it "
+                    "is a non-contact force."},
+            {"text": "A magnet attracting a pin from 2 cm away",
+             "correct": False,
+             "why": "Magnetism reaches across the gap without touching, which "
+                    "makes it non-contact."},
+            {"text": "A charged balloon lifting hair from a head",
+             "correct": False,
+             "why": "The electrostatic force works across a gap too, so it is "
+                    "non-contact."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-01-e06",
+        "band": "easier",
+        "text": "Which statement about the two forces in a pair is right?",
+        "options": [
+            {"text": "They are the same size, act in opposite directions, and "
+                     "act on two different objects",
+             "correct": True},
+            {"text": "They are the same size and act in the same direction on "
+                     "one object",
+             "correct": False,
+             "why": "Two forces in the same direction on one object would add "
+                    "up, and a pair never does."},
+            {"text": "The bigger object always pushes with the larger force",
+             "correct": False,
+             "why": "Size makes no difference: the Moon pulls the Earth as "
+                    "hard as the Earth pulls the Moon."},
+            {"text": "They are the same size and both act on the same object",
+             "correct": False,
+             "why": "If both acted on one object nothing could ever move; the "
+                    "two act on the two different objects."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p4-01-s05",
+        "band": "standard",
+        "text": "A gymnast presses down on a beam with 500 N. What does the "
+                "beam do?",
+        "options": [
+            {"text": "It pushes up on the gymnast with 500 N", "correct": True},
+            {"text": "It pushes up on the gymnast with rather less than "
+                     "500 N",
+             "correct": False,
+             "why": "The pair is always equal. Less would leave a resultant "
+                    "and the gymnast would sink."},
+            {"text": "Nothing — a beam is not able to push", "correct": False,
+             "why": "It is squashed very slightly and pushes back, exactly as "
+                    "a stiff spring does."},
+            {"text": "It pushes down on the gymnast with 500 N",
+             "correct": False,
+             "why": "The pair acts in opposite directions, so the beam's "
+                    "force on the gymnast is upwards."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-01-s06",
+        "band": "standard",
+        "text": "A student says a rolling ball has force inside it that runs "
+                "out. What is wrong with that?",
+        "options": [
+            {"text": "Force is stored in the ball but it leaks out through "
+                     "the floor",
+             "correct": False,
+             "why": "Nothing stores force at all, so there is nothing to "
+                    "leak."},
+            {"text": "The force is there, but it is far too small to measure "
+                     "in newtons",
+             "correct": False,
+             "why": "Size is not the issue. There is no force being carried "
+                    "along, at any size."},
+            {"text": "A force only exists while two objects interact, so "
+                     "nothing carries a supply of it",
+             "correct": True},
+            {"text": "Nothing is wrong — that is why a ball eventually stops "
+                     "rolling",
+             "correct": False,
+             "why": "It stops because friction acts ON it, not because "
+                    "something inside it has run out."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p4-01-h05",
+        "band": "harder",
+        "text": "A horse pulls a cart, and the cart pulls back on the horse "
+                "just as hard. Why does the pair move at all?",
+        "options": [
+            {"text": "Because the horse's pull is really slightly bigger than "
+                     "the cart's",
+             "correct": False,
+             "why": "The two are exactly equal. The movement is explained "
+                    "elsewhere."},
+            {"text": "Because the two forces act on different objects, and "
+                     "the ground pushes the horse forwards",
+             "correct": True},
+            {"text": "Because the cart's pull only starts once the cart is "
+                     "moving",
+             "correct": False,
+             "why": "It is there from the first instant; both appear and "
+                    "disappear together."},
+            {"text": "Because a pair of equal forces cancels and leaves the "
+                     "horse free",
+             "correct": False,
+             "why": "They cannot cancel: cancelling needs two forces on the "
+                    "SAME object, and these act on two."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-01-h06",
+        "band": "harder",
+        "text": "A student insists a table is not doing anything to the book "
+                "resting on it. What single test would settle it?",
+        "options": [
+            {"text": "Weigh the book and check it against the table's mass",
+             "correct": False,
+             "why": "The table's mass has nothing to do with the force it "
+                    "pushes back with."},
+            {"text": "Stand the book on a thin sheet of foam and watch it "
+                     "squash",
+             "correct": True},
+            {"text": "Slide the book along and see whether it slows down",
+             "correct": False,
+             "why": "That tests friction along the surface, not the upward "
+                    "push holding the book up."},
+            {"text": "Take the table away and see whether the book falls",
+             "correct": False,
+             "why": "It shows something WAS holding it, but not that the "
+                    "table itself pushes — the foam does."},
+        ],
+        "figure": None,
+    },
 ]

@@ -292,4 +292,81 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p4-09-e05",
+        "band": "easier",
+        "text": "Which of these materials is attracted to a magnet?",
+        "options": [
+            {"text": "Copper", "correct": False,
+             "why": "Copper is a metal, but not a magnetic one — magnets do "
+                    "not attract every metal."},
+            {"text": "Steel", "correct": True},
+            {"text": "Aluminium", "correct": False,
+             "why": "Aluminium is a metal too, and a magnet has no effect on "
+                    "it at all."},
+            {"text": "Plastic", "correct": False,
+             "why": "Plastic is not a metal and is not magnetic, so nothing "
+                    "happens."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p4-09-s05",
+        "band": "standard",
+        "text": "Two north poles are pushed towards each other and the "
+                "magnets resist without ever touching. What does that show?",
+        "options": [
+            {"text": "That a force can act across a gap with nothing in "
+                     "between",
+             "correct": True},
+            {"text": "That the air between them is being squashed and pushing "
+                     "back",
+             "correct": False,
+             "why": "The same happens with the air pumped out, so the air is "
+                    "not what carries it."},
+            {"text": "That magnetism only works when the poles are the same",
+             "correct": False,
+             "why": "Opposite poles attract across a gap just as well; both "
+                    "are non-contact."},
+            {"text": "That the two magnets are touching at a scale too small "
+                     "to see",
+             "correct": False,
+             "why": "The gap can be centimetres wide and the force still "
+                    "acts."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p4-09-h05",
+        "band": "harder",
+        "text": "A satellite circles the Earth with nothing touching it and "
+                "its engines off. Which account of the force is right?",
+        "options": [
+            {"text": "There is no force on it, which is why it keeps going "
+                     "round",
+             "correct": False,
+             "why": "Going round is a constant change of direction, and that "
+                    "needs a resultant force."},
+            {"text": "A contact force from the thin air up there holds it in "
+                     "its path",
+             "correct": False,
+             "why": "The air is far too thin to steer a satellite, and it "
+                    "slows them rather than turning them."},
+            {"text": "Gravity acts across the gap and keeps changing its "
+                     "direction",
+             "correct": True},
+            {"text": "Gravity acts across the gap and keeps increasing its "
+                     "speed",
+             "correct": False,
+             "why": "Its speed stays steady; what the force changes is the "
+                    "direction it travels in."},
+        ],
+        "figure": None,
+    },
 ]

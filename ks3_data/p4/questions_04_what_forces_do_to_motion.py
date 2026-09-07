@@ -293,4 +293,146 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p4-04-e05",
+        "band": "easier",
+        "text": "What is needed to change the DIRECTION an object is moving "
+                "in?",
+        "options": [
+            {"text": "A resultant force acting on it", "correct": True},
+            {"text": "Nothing — direction changes on its own over time",
+             "correct": False,
+             "why": "With no resultant force an object keeps the same "
+                    "direction indefinitely."},
+            {"text": "A greater speed, so that it can turn", "correct": False,
+             "why": "Speed does not turn anything. A force pointing across "
+                    "the motion does."},
+            {"text": "The forces on it to become balanced", "correct": False,
+             "why": "Balanced forces change nothing at all, including the "
+                    "direction."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-04-e06",
+        "band": "easier",
+        "text": "Which of these does NOT need a resultant force?",
+        "options": [
+            {"text": "Starting a stationary trolley moving", "correct": False,
+             "why": "Starting something moving is a change of motion, so it "
+                    "needs a resultant force."},
+            {"text": "Bringing a moving trolley to a stop", "correct": False,
+             "why": "Stopping is a change of motion too, and it needs a force "
+                    "against the movement."},
+            {"text": "Keeping a steady speed in a straight line",
+             "correct": True},
+            {"text": "Making a moving trolley turn a corner", "correct": False,
+             "why": "Changing direction is a change of motion, so a force is "
+                    "needed for it."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p4-04-s05",
+        "band": "standard",
+        "text": "A ball rolls across a level floor and gradually slows down. "
+                "What is the resultant force on it?",
+        "options": [
+            {"text": "A small force backwards, from friction", "correct": True},
+            {"text": "A small force forwards, left over from the push",
+             "correct": False,
+             "why": "The push ended when the hand let go, and a forward "
+                    "resultant would make it speed up."},
+            {"text": "Zero, because it is still moving", "correct": False,
+             "why": "A zero resultant would keep the speed steady, and this "
+                    "ball is slowing."},
+            {"text": "A large force downwards, from its weight",
+             "correct": False,
+             "why": "The weight is balanced by the floor pushing up; it is "
+                    "not what slows the ball."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-04-s06",
+        "band": "standard",
+        "text": "A probe in deep space fires an engine that pushes it "
+                "forwards with 500 N, with nothing to resist it. What happens "
+                "while the engine keeps firing?",
+        "options": [
+            {"text": "It settles at a top speed and goes no faster",
+             "correct": False,
+             "why": "A top speed needs a resistance to grow and match the "
+                    "push, and out there nothing does."},
+            {"text": "It speeds up for as long as the engine fires",
+             "correct": True},
+            {"text": "It moves at a steady 500 m/s while the engine is on",
+             "correct": False,
+             "why": "500 N is a force, not a speed, and a resultant force "
+                    "keeps changing the speed."},
+            {"text": "Nothing, because there is nothing to push against",
+             "correct": False,
+             "why": "It pushes against its own exhaust gas, which is the "
+                    "second object in the pair."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p4-04-h05",
+        "band": "harder",
+        "text": "A ball thrown straight upwards is momentarily at rest at the "
+                "very top. Why is the resultant force not zero at that "
+                "instant?",
+        "options": [
+            {"text": "Because the throwing force is still in the ball at the "
+                     "top",
+             "correct": False,
+             "why": "Nothing carries a force along. The hand's push ended at "
+                    "the moment of release."},
+            {"text": "Because gravity keeps pulling down whether the ball is "
+                     "moving or not",
+             "correct": True},
+            {"text": "Because being at rest always means the forces are "
+                     "unbalanced",
+             "correct": False,
+             "why": "A book at rest on a table has balanced forces; being at "
+                    "rest settles nothing on its own."},
+            {"text": "Because air resistance acts upwards at the top",
+             "correct": False,
+             "why": "Air resistance opposes the motion, and at the instant of "
+                    "rest there is none to oppose."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-04-h06",
+        "band": "harder",
+        "text": "A car brakes to a standstill. A student says the braking "
+                "force was used up in stopping it. What is wrong?",
+        "options": [
+            {"text": "Nothing — a force is used up doing its job",
+             "correct": False,
+             "why": "A force is not a supply and cannot be spent. It exists "
+                    "only while the interaction lasts."},
+            {"text": "The braking force existed only while the surfaces "
+                     "rubbed, and ended with the motion",
+             "correct": True},
+            {"text": "The braking force is still acting, which is why the car "
+                     "stays still",
+             "correct": False,
+             "why": "The car stays still because the forces on it are now "
+                    "balanced, not because braking continues."},
+            {"text": "The braking force turned into the car's weight",
+             "correct": False,
+             "why": "One force never becomes another; the weight was there "
+                    "throughout, unchanged."},
+        ],
+        "figure": None,
+    },
 ]

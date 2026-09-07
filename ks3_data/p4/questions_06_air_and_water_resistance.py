@@ -285,4 +285,155 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p4-06-e05",
+        "band": "easier",
+        "text": "Which of these INCREASES the air resistance on a moving car?",
+        "options": [
+            {"text": "Fitting a large roof box", "correct": True},
+            {"text": "Polishing the paintwork until it shines",
+             "correct": False,
+             "why": "A smoother surface slightly reduces resistance rather "
+                    "than adding to it."},
+            {"text": "Driving more slowly along the same road",
+             "correct": False,
+             "why": "Resistance grows with speed, so going slower makes it "
+                    "smaller."},
+            {"text": "Letting some air out of the tyres", "correct": False,
+             "why": "That changes the friction at the road, not how much air "
+                    "the car has to push aside."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-06-e06",
+        "band": "easier",
+        "text": "What is terminal velocity?",
+        "options": [
+            {"text": "The fastest speed anything is allowed to fall at",
+             "correct": False,
+             "why": "It is not a rule or a limit. It is simply where the "
+                    "forces happen to balance for that object."},
+            {"text": "The speed at which a falling object hits the ground",
+             "correct": False,
+             "why": "It is reached well before landing, and an object can "
+                    "land at other speeds entirely."},
+            {"text": "The steady speed reached once resistance has grown to "
+                     "match the weight",
+             "correct": True},
+            {"text": "The speed at which air resistance disappears",
+             "correct": False,
+             "why": "Air resistance is at its largest there — that is exactly "
+                    "why the speed stops rising."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p4-06-s05",
+        "band": "standard",
+        "text": "A skydiver of weight 800 N is falling at terminal velocity. "
+                "What is the air resistance on them?",
+        "options": [
+            {"text": "0 N, because the speed is steady", "correct": False,
+             "why": "A steady speed means the RESULTANT is zero, which needs "
+                    "the resistance to equal the weight."},
+            {"text": "More than 800 N, or they would not have stopped "
+                     "speeding up",
+             "correct": False,
+             "why": "More than 800 N would slow them down. Steady means "
+                    "exactly equal."},
+            {"text": "800 N, acting upwards on them", "correct": True},
+            {"text": "It cannot be given without knowing the speed",
+             "correct": False,
+             "why": "Whatever the speed turns out to be, at terminal velocity "
+                    "the resistance equals the weight."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-06-s06",
+        "band": "standard",
+        "text": "A flat sheet of paper falls slowly, but the same sheet "
+                "screwed into a tight ball falls quickly. Why?",
+        "options": [
+            {"text": "Because screwing it up makes it heavier",
+             "correct": False,
+             "why": "The paper is the same paper, so its weight has not "
+                    "changed at all."},
+            {"text": "Because the flat sheet has a much larger area facing "
+                     "the air",
+             "correct": True},
+            {"text": "Because a ball is a more natural shape for falling",
+             "correct": False,
+             "why": "Shape matters only through the area meeting the air and "
+                    "how smoothly it parts."},
+            {"text": "Because gravity pulls harder on compact objects",
+             "correct": False,
+             "why": "Gravity depends on mass, which is unchanged by folding "
+                    "the sheet up."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p4-06-h05",
+        "band": "harder",
+        "text": "Two skydivers have the same shape and posture, but one is "
+                "heavier. Why does the heavier one reach a higher terminal "
+                "velocity?",
+        "options": [
+            {"text": "Because gravity pulls heavier objects faster from the "
+                     "start",
+             "correct": False,
+             "why": "Both start with the same acceleration; it is where the "
+                    "balance point falls that differs."},
+            {"text": "Because a heavier body pushes the air out of the way "
+                     "rather than being slowed",
+             "correct": False,
+             "why": "Both push the air aside. The heavier one simply needs "
+                    "more resistance before it balances."},
+            {"text": "Because heavier objects have less air resistance at any "
+                     "speed",
+             "correct": False,
+             "why": "Resistance depends on speed and area, not on weight, so "
+                    "at a given speed it is the same."},
+            {"text": "Because the resistance must grow larger to match the "
+                     "bigger weight, and that needs more speed",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-06-h06",
+        "band": "harder",
+        "text": "Submarines and aircraft are both streamlined. Why does "
+                "streamlining matter more in water than in air at the same "
+                "speed?",
+        "options": [
+            {"text": "Because water is far denser, so far more of it must be "
+                     "pushed aside",
+             "correct": True},
+            {"text": "Because water is colder than air, so it grips the hull "
+                     "harder",
+             "correct": False,
+             "why": "Temperature is not what makes the resistance large; how "
+                    "much material is in the way is."},
+            {"text": "Because a submarine travels much faster than an "
+                     "aircraft",
+             "correct": False,
+             "why": "It is much slower, and the question compares them at the "
+                    "same speed anyway."},
+            {"text": "Because water resistance does not grow with speed, so "
+                     "shape is all that is left",
+             "correct": False,
+             "why": "Water resistance grows with speed exactly as air "
+                    "resistance does."},
+        ],
+        "figure": None,
+    },
 ]

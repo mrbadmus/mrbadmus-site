@@ -278,4 +278,140 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p4-07-e05",
+        "band": "easier",
+        "text": "When you work out a moment, where is the distance measured "
+                "from?",
+        "options": [
+            {"text": "From the pivot to where the force acts", "correct": True},
+            {"text": "From where you are standing to the object",
+             "correct": False,
+             "why": "Where the person stands makes no difference; the turn "
+                    "happens about the pivot."},
+            {"text": "From the ground up to the force", "correct": False,
+             "why": "Height above the ground is not part of it. The pivot is "
+                    "the reference point."},
+            {"text": "From one end of the object to the other",
+             "correct": False,
+             "why": "The full length only matters if the pivot happens to be "
+                    "at one end."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-07-e06",
+        "band": "easier",
+        "text": "A force of 40 N acts at right angles, 0.25 m from a pivot. "
+                "What is the moment?",
+        "options": [
+            {"text": "160 N m", "correct": False,
+             "why": "That is 40 ÷ 0.25. A moment is force MULTIPLIED by "
+                    "distance."},
+            {"text": "40.25 N m", "correct": False,
+             "why": "That adds the two, and a force and a distance cannot be "
+                    "added."},
+            {"text": "10 N m", "correct": True},
+            {"text": "10 N", "correct": False,
+             "why": "The number is right but a moment is measured in newton "
+                    "metres, not newtons."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p4-07-s05",
+        "band": "standard",
+        "text": "A spanner is gripped 0.30 m from a bolt and pulled at right "
+                "angles with 45 N. What moment does it apply?",
+        "options": [
+            {"text": "150 N m", "correct": False,
+             "why": "That is 45 ÷ 0.30, the division where a multiplication "
+                    "is needed."},
+            {"text": "13.5 N m", "correct": True},
+            {"text": "45.3 N m", "correct": False,
+             "why": "That adds the force to the distance, which cannot be "
+                    "done."},
+            {"text": "1350 N m", "correct": False,
+             "why": "That uses 30 rather than 0.30 — the centimetres were "
+                    "never turned into metres."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-07-s06",
+        "band": "standard",
+        "text": "How can a light child balance a much heavier adult on a "
+                "seesaw?",
+        "options": [
+            {"text": "By sitting further from the pivot, so the smaller force "
+                     "gives the same moment",
+             "correct": True},
+            {"text": "By sitting closer to the pivot, so the seesaw turns "
+                     "less easily",
+             "correct": False,
+             "why": "Closer in gives a SMALLER moment, so the adult's side "
+                    "would go straight down."},
+            {"text": "By pushing down harder than their own weight",
+             "correct": False,
+             "why": "A person sitting still presses with their weight and no "
+                    "more."},
+            {"text": "It cannot be done — the heavier person always wins",
+             "correct": False,
+             "why": "Distance can make up the difference entirely, which is "
+                    "why seesaws work at all."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p4-07-h05",
+        "band": "harder",
+        "text": "A seesaw balances with a 250 N child sitting 1.6 m from the "
+                "pivot. Where must a 400 N child sit on the other side?",
+        "options": [
+            {"text": "1.6 m from the pivot, to match", "correct": False,
+             "why": "Equal distances with unequal weights give unequal "
+                    "moments, so it would tip."},
+            {"text": "2.56 m from the pivot", "correct": False,
+             "why": "That multiplies by 1.6 instead of dividing; the heavier "
+                    "child must sit nearer, not further."},
+            {"text": "1.0 m from the pivot", "correct": True},
+            {"text": "0.625 m from the pivot", "correct": False,
+             "why": "That is 250 ÷ 400, leaving out the 1.6 m the first child "
+                    "is sitting at."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-07-h06",
+        "band": "harder",
+        "text": "A wheelbarrow is loaded close to the wheel rather than near "
+                "the handles. Explain in terms of moments.",
+        "options": [
+            {"text": "The load is then lighter, so less lifting force is "
+                     "needed",
+             "correct": False,
+             "why": "The load weighs the same wherever it sits; only its "
+                    "distance from the wheel changes."},
+            {"text": "The wheel becomes the load's pivot, so nothing has to "
+                     "be lifted at all",
+             "correct": False,
+             "why": "The handles still take a share; the point is that the "
+                    "share is smaller."},
+            {"text": "The wheel carries the whole weight, so the handles "
+                     "take none of it",
+             "correct": False,
+             "why": "The handles always take a share. Moving the load close "
+                    "to the wheel makes that share small."},
+            {"text": "The load's short distance from the wheel gives it a "
+                     "small moment to overcome",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

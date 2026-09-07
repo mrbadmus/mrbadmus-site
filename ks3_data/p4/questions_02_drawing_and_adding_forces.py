@@ -294,4 +294,140 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p4-02-e05",
+        "band": "easier",
+        "text": "Where should a force arrow start on a diagram?",
+        "options": [
+            {"text": "At the edge of the page, pointing inwards",
+             "correct": False,
+             "why": "The arrow belongs to the object, not to the page, so it "
+                    "starts on the object."},
+            {"text": "On the object the force is acting on", "correct": True},
+            {"text": "On the object causing the force", "correct": False,
+             "why": "That would draw the force on the wrong body of the "
+                    "pair — each arrow goes on the object being pushed."},
+            {"text": "Anywhere, as long as it points the right way",
+             "correct": False,
+             "why": "Where it starts says what the force acts on, so it "
+                    "cannot go just anywhere."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-02-e06",
+        "band": "easier",
+        "text": "A sledge is pulled right with 30 N while friction pushes "
+                "left with 12 N. What is the resultant force?",
+        "options": [
+            {"text": "42 N to the right", "correct": False,
+             "why": "Forces along a line only add when they point the same "
+                    "way. These point opposite ways."},
+            {"text": "18 N to the left", "correct": False,
+             "why": "The size is right but the direction is not: what is left "
+                    "over points the way the larger force points."},
+            {"text": "18 N to the right", "correct": True},
+            {"text": "0 N, because the forces cancel", "correct": False,
+             "why": "They only cancel when they are equal, and 30 N is not "
+                    "12 N."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p4-02-s05",
+        "band": "standard",
+        "text": "A crate is pushed right with 100 N while friction pushes "
+                "left with 40 N and a second person pulls left with 25 N. "
+                "What is the resultant?",
+        "options": [
+            {"text": "165 N to the right", "correct": False,
+             "why": "That adds all three. Only forces pointing the same way "
+                    "add; the two leftward ones subtract."},
+            {"text": "35 N to the right", "correct": True},
+            {"text": "60 N to the right", "correct": False,
+             "why": "That leaves out the 25 N pull, and every force along the "
+                    "line has to be counted."},
+            {"text": "35 N to the left", "correct": False,
+             "why": "The size is right, but 100 N is larger than 65 N, so "
+                    "what is left over points right."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-02-s06",
+        "band": "standard",
+        "text": "On a scale diagram a 20 N arrow is drawn 4 cm long. How long "
+                "should a 50 N arrow be on the same diagram?",
+        "options": [
+            {"text": "4 cm, because all arrows on one diagram match",
+             "correct": False,
+             "why": "Equal lengths would say the forces are equal, and these "
+                    "are not."},
+            {"text": "34 cm", "correct": False,
+             "why": "That is 50 − 20 + 4. The scale is a multiplication, not "
+                    "a difference."},
+            {"text": "1.6 cm", "correct": False,
+             "why": "That is the scale used upside down; a larger force needs "
+                    "a longer arrow, not a shorter one."},
+            {"text": "10 cm", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p4-02-h05",
+        "band": "harder",
+        "text": "A falling parachutist has 700 N of weight down and, once the "
+                "canopy opens, 760 N of drag up. What is the resultant, and "
+                "what happens?",
+        "options": [
+            {"text": "60 N upwards, so the fall slows down", "correct": True},
+            {"text": "60 N upwards, so the parachutist is pushed back up into "
+                     "the sky",
+             "correct": False,
+             "why": "A resultant against the motion slows it; it does not "
+                    "reverse it while the fall continues."},
+            {"text": "1460 N upwards, because the two forces add",
+             "correct": False,
+             "why": "They point in opposite directions, so they subtract "
+                    "rather than add."},
+            {"text": "0 N, because the parachute has taken over",
+             "correct": False,
+             "why": "It is 0 N only once the drag has fallen back to 700 N, "
+                    "which happens a little later."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p4-02-h06",
+        "band": "harder",
+        "text": "Why is a resultant of 0 N not the same as having no forces "
+                "at all?",
+        "options": [
+            {"text": "Because a resultant of 0 N can only happen when nothing "
+                     "is touching the object",
+             "correct": False,
+             "why": "It is most common when things ARE touching — a book on a "
+                    "table is the standard case."},
+            {"text": "Because the forces are still acting; they only cancel "
+                     "in their effect on the motion",
+             "correct": True},
+            {"text": "Because 0 N is only ever an approximation to the real "
+                     "total",
+             "correct": False,
+             "why": "It can be exactly zero, and a book that stays put shows "
+                    "that it is."},
+            {"text": "Because forces cannot be added together in the first "
+                     "place",
+             "correct": False,
+             "why": "Along one line they add and subtract perfectly well; "
+                    "that is how a resultant is found."},
+        ],
+        "figure": None,
+    },
 ]

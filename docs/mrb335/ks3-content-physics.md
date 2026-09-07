@@ -65,6 +65,88 @@ Gates after P3: `question_bank` OK, `verify_questions` OK — nine checks clean.
 
 ---
 
+## P1 · Energy transfers — 8 lessons, 60 new rows (20 per band)
+
+Unit total: **52 / 52 / 52**. Three per band on lessons 01–04, two per band on
+05–08.
+
+| lesson | ids added (each band) |
+|---|---|
+| 01 energy stores | e05–e07, s05–s07, h05–h07 |
+| 02 energy transfers: before and after | e05–e07, s05–s07, h05–h07 |
+| 03 conservation of energy | e05–e07, s05–s07, h05–h07 |
+| 04 heating and thermal equilibrium | e05–e07, s05–s07, h05–h07 |
+| 05 conduction | e05–e06, s05–s06, h05–h06 |
+| 06 radiation | e05–e06, s05–s06, h05–h06 |
+| 07 insulation | e05–e06, s05–s06, h05–h06 |
+| 08 simple machines | e05–e06, s05–s06, h05–h06 |
+
+**The store/pathway discrimination carries the unit**, so it is tested from
+several sides rather than once: which of four is a store (`p1-01-e05`), which
+item on a child's own list of "kinds of energy" is one (`p1-01-h06`), why
+electricity is not (`p1-01-s07`), and a wind-up radio whose whole chain has to
+be sorted (`p1-01-s06`).
+
+**`ks3_data/quantities.py` was read and not retyped.** No new row states a
+definition of temperature; the two lesson-04 rows that come near it ask instead
+what a thermal store depends on besides temperature (`p1-04-e06`) and what
+thermal equilibrium is (`p1-04-e05`), so the single owned definition is not
+duplicated at a fifth site.
+
+**Review fixes:** thirteen length-parity flags (nine where the correct option
+was longest — `p1-02-s07`, `p1-02-h06`, `p1-03-s07`, `p1-03-h05`, `p1-03-h07`,
+`p1-04-e05`, `p1-04-s06`, `p1-07-s05`; four where it was conspicuously
+shortest — `p1-01-h06`, `p1-03-e06`, `p1-06-e05`, `p1-06-e06`, `p1-08-s06`),
+all reworded without changing a claim. One authoring slip caught before the
+gate: `p1-05-e06` had been written with a `True if False else False` in a
+`correct` field — it evaluated correctly but is not something to leave in a
+content file, and it is now a plain `False`. Arithmetic re-worked from the
+stems: the 1800 J hairdryer split, the 200 kJ kettle tenth, and all four
+machine calculations (`50 N × 2 m`, `150 N × 0.80 m ÷ 600 N`, the 4 m ramp,
+the 800 N pulley).
+
+---
+
+## P4 · Forces — 9 lessons, 48 new rows (16 per band)
+
+Unit total: **52 / 52 / 52**. Two per band on lessons 01–07, one per band on
+08–09.
+
+| lesson | ids added (each band) |
+|---|---|
+| 01 what a force is | e05–e06, s05–s06, h05–h06 |
+| 02 drawing and adding forces | e05–e06, s05–s06, h05–h06 |
+| 03 balanced and unbalanced | e05–e06, s05–s06, h05–h06 |
+| 04 what forces do to motion | e05–e06, s05–s06, h05–h06 |
+| 05 friction | e05–e06, s05–s06, h05–h06 |
+| 06 air and water resistance | e05–e06, s05–s06, h05–h06 |
+| 07 moments | e05–e06, s05–s06, h05–h06 |
+| 08 springs and Hooke's law | e05, s05, h05 |
+| 09 non-contact forces | e05, s05, h05 |
+
+Every weight is worked from `mass × 10 N/kg` and the classic slip — reading the
+mass in kilograms as a force in newtons — is a distractor at every band.
+Moments carry their unit (N m, never N), and the cm-not-converted error is a
+named distractor at `p4-07-s05`.
+
+**Review fixes:** six length flags reworded. One finding that was not about
+length: `p4-07-h06` (the wheelbarrow) had a distractor — "the handles are
+further from the pivot, so a smaller lift gives a bigger moment" — that is
+**true physics**, merely not the answer to the question asked. A distractor a
+well-taught student can defend is a defective distractor however carefully the
+`why` hedges, so it was replaced with a real misconception ("the wheel carries
+the whole weight, so the handles take none of it").
+
+**Two REF flags were reviewed and kept.** `p4-02-e05` and `p4-02-s06` use the
+word *diagram* — but in the abstract ("where should an arrow start on a
+diagram", "on a scale diagram a 20 N arrow is 4 cm long"), never pointing at
+one the child is expected to look at. That is exactly how the twelve rows
+already in the file read (`p4-02-e01`, `p4-02-s02`), and both new stems carry
+every number they need. The lane's mechanical check was narrowed to deictic
+references (*above*, *below*, *shown here*) rather than the bare word.
+
+---
+
 ## ⚠️ A gate defect that is NOT content, found while topping up P1
 
 From the moment the biology lane's B1 top-up landed in this worktree,
