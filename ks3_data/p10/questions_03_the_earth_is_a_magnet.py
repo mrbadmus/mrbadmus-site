@@ -407,13 +407,15 @@ QUESTIONS = [
         "band": "easier",
         "text": "Why does a compass needle settle in one direction rather "
                 "than spinning?",
-        "options": [            {"text": "Because friction on the pivot stops it", "correct": False,
+        "options": [
+            {"text": "Because friction on the pivot stops it", "correct": False,
              "why": "Friction slows it down, but something has to turn it to "
                     "one particular direction first."},
             {"text": "Because it is heavier at one end", "correct": False,
              "why": "It is balanced on its pivot; weight would tip it, not "
                     "aim it north."},
-            {"text": "Because the Earth's spin drags it round", "correct": False,
+            {"text": "Because the Earth's spin slowly drags the needle round "
+                     "with it", "correct": False,
              "why": "Spin does not act on a needle; the magnetic field "
                     "does."},
             {"text": "Because it lines up with the Earth's magnetic field",
@@ -429,11 +431,11 @@ QUESTIONS = [
             {"text": "Yes, it has never moved", "correct": False,
              "why": "It has moved hundreds of kilometres within living "
                     "memory, which is why maps carry a date."},
-            {"text": "Yes, because it is fixed to the spin axis",
+            {"text": "Yes, because it is fixed to the Earth's spin axis",
              "correct": False,
              "why": "It is tilted away from the spin axis and is not attached "
                     "to it."},
-            {"text": "No — it drifts, which is why a bearing needs a date",
+            {"text": "No — it drifts, so a bearing needs a date",
              "correct": True},
             {"text": "No — it moves back and forth every day",
              "correct": False,
@@ -582,8 +584,9 @@ QUESTIONS = [
         "band": "harder",
         "text": "Why is a compass of little use very close to the magnetic "
                 "pole?",
-        "options": [            {"text": "Because the field there is too strong and the needle "
-                     "sticks",
+        "options": [
+            {"text": "Because the field there is so strong that the needle "
+                     "simply sticks",
              "correct": False,
              "why": "A strong field would make it settle more firmly, not "
                     "less."},
@@ -595,8 +598,8 @@ QUESTIONS = [
              "correct": False,
              "why": "It is at its strongest there; the problem is its "
                     "direction, not its size."},
-            {"text": "Because the field points almost straight down, leaving "
-                     "little to turn a flat needle",
+            {"text": "Because the field points almost straight down, not "
+                     "sideways",
              "correct": True},
         ],
         "figure": None,

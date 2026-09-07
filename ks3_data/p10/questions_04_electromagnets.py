@@ -411,7 +411,8 @@ QUESTIONS = [
             {"text": "Because soft iron lets go of its magnetism at "
                      "switch-off",
              "correct": True},
-            {"text": "Because hardened steel is not magnetic at all",
+            {"text": "Because hardened steel cannot be magnetised in the "
+                     "first place",
              "correct": False,
              "why": "Steel is magnetic — too much so, since it keeps its "
                     "magnetism afterwards."},
@@ -536,7 +537,7 @@ QUESTIONS = [
         "band": "standard",
         "text": "Which change would NOT make an electromagnet stronger?",
         "options": [
-            {"text": "Adding more turns of wire", "correct": False,
+            {"text": "Adding many more turns of wire to the coil", "correct": False,
              "why": "More turns means more fields adding together, so it gets "
                     "stronger."},
             {"text": "Increasing the current", "correct": False,
@@ -683,11 +684,11 @@ QUESTIONS = [
              "correct": False,
              "why": "The arm springs back, which remakes the circuit, and the "
                     "cycle repeats."},
-            {"text": "The field goes, the arm springs back, the circuit is "
-                     "remade, and it repeats",
+            {"text": "The arm springs back, the circuit remakes, and it all "
+                     "repeats",
              "correct": True},
             {"text": "The arm stays across, because the iron keeps its "
-                     "magnetism",
+                     "magnetism for good",
              "correct": False,
              "why": "The core is soft iron, chosen so it lets go the moment "
                     "the current stops."},
@@ -708,7 +709,8 @@ QUESTIONS = [
             {"text": "Attract iron and steel", "correct": False,
              "why": "Any magnet does that; it is not what separates the "
                     "two."},
-            {"text": "Have a north end and a south end", "correct": False,
+            {"text": "Have a north end at one side and a south end at the "
+                     "other", "correct": False,
              "why": "Both have two ends, and neither can have just one."},
             {"text": "Have its strength and poles changed by a switch",
              "correct": True},

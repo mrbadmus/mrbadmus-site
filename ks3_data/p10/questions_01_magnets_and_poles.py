@@ -450,8 +450,7 @@ QUESTIONS = [
         "text": "A known magnet attracts an unlabelled object. What might the "
                 "object be?",
         "options": [
-            {"text": "A magnet with its opposite pole facing, or unmagnetised "
-                     "steel",
+            {"text": "A magnet's opposite pole facing, or unmagnetised steel",
              "correct": True},
             {"text": "A magnet with its like pole facing", "correct": False,
              "why": "Two like poles repel, so it would be pushed away rather "
@@ -460,7 +459,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Unmagnetised iron and steel are attracted too, which is "
                     "why attraction proves nothing."},
-            {"text": "Only unmagnetised steel — a magnet would repel",
+            {"text": "Only unmagnetised steel, since a magnet would repel it "
+                     "instead",
              "correct": False,
              "why": "A magnet the other way round is attracted as strongly as "
                     "any steel bar."},
@@ -647,12 +647,13 @@ QUESTIONS = [
              "correct": False,
              "why": "It ignores copper, plastic and wood; only a magnetic "
                     "field acts on it."},
-            {"text": "Because the bar has a north pole at one end already",
+            {"text": "Because the bar already has a north pole at one end, "
+                     "whichever way up",
              "correct": False,
              "why": "It is unmagnetised, so it has no poles until the magnet "
                     "gives it some."},
-            {"text": "Because the magnet magnetises the bar first, so the "
-                     "near end is always opposite",
+            {"text": "Because the magnet magnetises it, so the near end is "
+                     "opposite",
              "correct": True},
             {"text": "Because attraction does not depend on poles at all",
              "correct": False,

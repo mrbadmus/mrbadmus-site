@@ -571,13 +571,13 @@ QUESTIONS = [
         "text": "A single-coil motor is held with its coil exactly upright "
                 "and released with the current on. What happens?",
         "options": [
-            {"text": "It accelerates away at once, as it would from any "
-                     "position",
+            {"text": "It accelerates away at once, just as it would from any "
+                     "other position",
              "correct": False,
              "why": "In that one position the two pushes act straight along "
                     "the coil and give no turning effect."},
-            {"text": "It may not start, because there is no turning effect in "
-                     "that position",
+            {"text": "It may not start, because there is no turning effect "
+                     "there",
              "correct": True},
             {"text": "It turns the other way from usual", "correct": False,
              "why": "Nothing has reversed; the difficulty is that nothing "
@@ -661,15 +661,15 @@ QUESTIONS = [
              "correct": False,
              "why": "The coil is usually copper, which is not magnetic at "
                     "all."},
-            {"text": "The coil is pushed sideways because a current in a "
-                     "field feels a force",
+            {"text": "A current in a field feels a force, pushing the coil "
+                     "sideways",
              "correct": True},
             {"text": "The coil is repelled by both magnets equally",
              "correct": False,
              "why": "Neither attraction nor repulsion of the metal is "
                     "involved; the current is what matters."},
-            {"text": "The magnets attract it only while the split ring is "
-                     "closed",
+            {"text": "The magnets attract it only while the split ring keeps "
+                     "the circuit closed",
              "correct": False,
              "why": "The split ring switches the current; it does not turn an "
                     "attraction on and off."},

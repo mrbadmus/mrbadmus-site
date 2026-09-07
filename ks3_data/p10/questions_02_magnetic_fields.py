@@ -548,12 +548,12 @@ QUESTIONS = [
             {"text": "The shape of the field", "correct": False,
              "why": "The shape is in the lines themselves, and it survives "
                     "perfectly well."},
-            {"text": "Where the field is strong and where it is weak",
+            {"text": "Where the field is strong and where it is weak across "
+                     "the map",
              "correct": False,
              "why": "That is shown by how crowded the lines are, which the "
                     "arrowheads do not affect."},
-            {"text": "Which way round the field runs, so the poles cannot be "
-                     "told apart",
+            {"text": "Which way round the field runs — the poles are lost",
              "correct": True},
             {"text": "Nothing at all — arrowheads are decoration",
              "correct": False,
@@ -566,8 +566,8 @@ QUESTIONS = [
         "id": "p10-02-s10",
         "band": "standard",
         "text": "Why must a plotting compass be small?",
-        "options": [            {"text": "So that it records the field at one place rather than "
-                     "an average",
+        "options": [
+            {"text": "So that it records the field at one place only",
              "correct": True},
             {"text": "So that it is light enough to turn freely",
              "correct": False,
@@ -741,10 +741,10 @@ QUESTIONS = [
         "band": "harder",
         "text": "Why is a plotting compass better than iron filings for "
                 "recording a field?",
-        "options": [            {"text": "Because a compass shows which way round the field runs, "
-                     "and filings do not",
+        "options": [
+            {"text": "Because a compass shows which way round the field runs",
              "correct": True},
-            {"text": "Because filings are too heavy to be moved by a weak "
+            {"text": "Because filings are far too heavy to be moved by a weak "
                      "field",
              "correct": False,
              "why": "They line up readily; what they cannot show is the "
