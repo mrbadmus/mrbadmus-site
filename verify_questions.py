@@ -425,12 +425,14 @@ def _check_composition():
         fail("compose_assignment/thin-week",
              "one current lesson plus five earlier gave %d, expected %d"
              % (len(got), qb.ASSIGNMENT_SIZE))
-    own = [q["id"] for q in bank.get(keys[5], []) if q.get("band") == "standard"]
+    # ⊕ MRB-335: the composer reads only auto_pool() (bank_position < 12), so the
+    # expectation must be built from the same slice or a topped-up lesson trips it.
+    own = [q["id"] for q in qb.auto_pool(bank.get(keys[5], [])) if q.get("band") == "standard"]
     if ids(got)[:len(own)] != own:
         fail("compose_assignment/thin-week",
              "the current week's own questions must come first; got %s"
              % ids(got)[:len(own)])
-    nearest = [q["id"] for q in bank.get(keys[4], []) if q.get("band") == "standard"]
+    nearest = [q["id"] for q in qb.auto_pool(bank.get(keys[4], [])) if q.get("band") == "standard"]
     if ids(got)[len(own):len(own) + len(nearest)] != nearest:
         fail("compose_assignment/nearest-first",
              "the fill must take the NEAREST earlier lesson next; expected %s, "
