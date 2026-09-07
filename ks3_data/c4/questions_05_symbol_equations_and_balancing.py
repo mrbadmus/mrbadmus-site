@@ -345,4 +345,455 @@ QUESTIONS = [
                    ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c4-05-e05",
+        "band": "easier",
+        "text": "What does it mean to say an equation is balanced?",
+        "options": [
+            {"text": "There are the same number of substances written on each "
+                     "side of the arrow, so that neither side of the equation "
+                     "is longer than the other",
+             "correct": False,
+             "why": "The number of SUBSTANCES often differs. It is the atoms "
+                    "that have to match"},
+            {"text": "Every kind of atom appears the same number of times on "
+                     "both sides",
+             "correct": True},
+            {"text": "The same big numbers appear on both sides",
+             "correct": False,
+             "why": "The big numbers are usually different. What has to match "
+                    "is the atom count"},
+            {"text": "The equation describes a reaction that really happens",
+             "correct": False,
+             "why": "Balanced is not the same as true. An equation can "
+                    "balance and describe a reaction nobody has ever seen"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-e06",
+        "band": "easier",
+        "text": "What can a symbol equation tell you that a word equation "
+                "cannot?",
+        "options": [
+            {"text": "Whether the reaction gives out heat or takes it in, "
+                     "which is the thing an engineer most needs to know "
+                     "before building a plant around it",
+             "correct": False,
+             "why": "Neither kind of equation carries energy. It is the "
+                    "numbers of particles that symbols add"},
+            {"text": "Which substances react",
+             "correct": False,
+             "why": "A word equation does that perfectly well. The symbols "
+                    "add the counting"},
+            {"text": "How many particles of each substance take part",
+             "correct": True},
+            {"text": "How fast the reaction goes",
+             "correct": False,
+             "why": "No equation of either kind says anything about rate"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-e07",
+        "band": "easier",
+        "text": "In 4H2O, what does the 4 tell you?",
+        "options": [
+            {"text": "That there are four hydrogen atoms in each water "
+                     "particle, so the formula describes a substance with "
+                     "twice as much hydrogen in it as ordinary water",
+             "correct": False,
+             "why": "A number in FRONT counts particles. A number changing "
+                    "the hydrogen would have to be small and after the H"},
+            {"text": "That there are four oxygen atoms in one particle",
+             "correct": False,
+             "why": "Small numbers count atoms inside a particle. This one is "
+                    "in front"},
+            {"text": "That the water is four times as concentrated",
+             "correct": False,
+             "why": "Concentration is not what a formula records. The number "
+                    "counts particles"},
+            {"text": "That there are four water particles",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-e08",
+        "band": "easier",
+        "text": "What is H2O2?",
+        "options": [
+            {"text": "Hydrogen peroxide, which bleaches hair",
+             "correct": True},
+            {"text": "Water, written out more fully so that both of the "
+                     "atoms it is built from are shown in the formula rather "
+                     "than only one of them",
+             "correct": False,
+             "why": "Water is H2O. Adding the second oxygen makes a different "
+                    "substance altogether"},
+            {"text": "Two water particles",
+             "correct": False,
+             "why": "Two waters would be 2H2O, with the number in front"},
+            {"text": "A mixture of hydrogen and oxygen",
+             "correct": False,
+             "why": "It is a compound with its atoms joined, not a mixture of "
+                    "two gases"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-e09",
+        "band": "easier",
+        "text": "In 3CO2, how many oxygen atoms are there altogether?",
+        "options": [
+            {"text": "Two",
+             "correct": False,
+             "why": "That is the number in ONE particle. There are three "
+                    "particles here"},
+            {"text": "Six",
+             "correct": True},
+            {"text": "Three",
+             "correct": False,
+             "why": "Three is how many particles there are. Each one carries "
+                    "two oxygens"},
+            {"text": "Five, adding the big 3 in front to the small 2 that "
+                     "follows the oxygen symbol",
+             "correct": False,
+             "why": "The two numbers multiply rather than adding. Three lots "
+                    "of two is six"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-e10",
+        "band": "easier",
+        "text": "Why must the big numbers in a balanced equation be whole "
+                "numbers?",
+        "options": [
+            {"text": "Because a fraction would make the equation harder to "
+                     "read, and chemists agreed a long time ago to keep the "
+                     "notation as simple as it can be made",
+             "correct": False,
+             "why": "Tidiness is why the SMALLEST whole numbers are used. "
+                    "Whole numbers are required for a stronger reason"},
+            {"text": "Because a fraction would unbalance the equation",
+             "correct": False,
+             "why": "A half would balance the counts perfectly well. It would "
+                    "describe something that cannot exist"},
+            {"text": "Because you cannot have half a particle",
+             "correct": True},
+            {"text": "Because small numbers are already whole",
+             "correct": False,
+             "why": "True and unrelated. The rule is about what a particle "
+                    "count can mean"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c4-05-s05",
+        "band": "standard",
+        "text": "Balance: C + O2 makes CO2. What numbers have to go in?",
+        "options": [
+            {"text": "2 in front of the C and 2 in front of the CO2, matching "
+                     "the two oxygen atoms that the O2 brings with it",
+             "correct": False,
+             "why": "That would give two carbons on the left and two on the "
+                    "right — balanced, but not the smallest numbers, and "
+                    "unnecessary"},
+            {"text": "None — it is already balanced",
+             "correct": True},
+            {"text": "2 in front of the CO2",
+             "correct": False,
+             "why": "That would need two carbons and four oxygens on the "
+                    "left, and there is one of each"},
+            {"text": "2 in front of the O2",
+             "correct": False,
+             "why": "That gives four oxygen atoms on the left and two on the "
+                    "right. It was balanced before you touched it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-s06",
+        "band": "standard",
+        "text": "N2 + 3H2 makes 2NH3. How many hydrogen atoms are on each "
+                "side?",
+        "options": [
+            {"text": "Three on the left and three on the right, which is what "
+                     "makes the equation balance in the first place",
+             "correct": False,
+             "why": "Three is the number of hydrogen PARTICLES on the left. "
+                    "Each carries two atoms"},
+            {"text": "Six on the left and three on the right",
+             "correct": False,
+             "why": "Then it would not balance. Two NH3 particles carry three "
+                    "hydrogens each"},
+            {"text": "Six on each side",
+             "correct": True},
+            {"text": "Two on each side",
+             "correct": False,
+             "why": "Two is the number of ammonia particles. Count the atoms "
+                    "inside them"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-s07",
+        "band": "standard",
+        "text": "A student balances H2 + Cl2 makes HCl by writing HCl2. What "
+                "have they actually done?",
+        "options": [
+            {"text": "Balanced it correctly, since both sides now carry the "
+                     "same number of each kind of atom and that is the whole "
+                     "requirement",
+             "correct": False,
+             "why": "The counts do not even match, and changing a small "
+                    "number changes the substance in any case"},
+            {"text": "Written the equation backwards",
+             "correct": False,
+             "why": "The direction is fine. The fault is inside a formula"},
+            {"text": "Nothing wrong — HCl2 is another way of writing HCl",
+             "correct": False,
+             "why": "A small number is part of the substance's name. HCl and "
+                    "HCl2 are not the same thing"},
+            {"text": "Written a formula for a substance that is not hydrogen "
+                     "chloride",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-s08",
+        "band": "standard",
+        "text": "Which line is balanced?",
+        "options": [
+            {"text": "2H2 + O2 makes 2H2O",
+             "correct": True},
+            {"text": "H2 + O2 makes H2O",
+             "correct": False,
+             "why": "Two oxygen atoms on the left and one on the right. An "
+                    "oxygen atom has gone missing"},
+            {"text": "H2 + O2 makes H2O2, which balances because there are "
+                     "two hydrogens and two oxygens on each side of the arrow",
+             "correct": False,
+             "why": "The counts do match, and the product is hydrogen "
+                    "peroxide. Balanced is not the same as true"},
+            {"text": "2H2 + 2O2 makes 2H2O",
+             "correct": False,
+             "why": "Four oxygen atoms on the left and two on the right. Two "
+                    "have vanished"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-s09",
+        "band": "standard",
+        "text": "In CH4 + 2O2 makes CO2 + 2H2O, how many atoms are there "
+                "altogether on the right-hand side?",
+        "options": [
+            {"text": "Six, counting one carbon, two oxygens and then the "
+                     "three atoms that make up a single particle of water",
+             "correct": False,
+             "why": "There are TWO water particles, so their atoms count "
+                    "twice: three carbon-and-oxygen plus six from the water"},
+            {"text": "Nine",
+             "correct": True},
+            {"text": "Five",
+             "correct": False,
+             "why": "That is the number on the left-hand side. Count the "
+                    "products instead"},
+            {"text": "Four",
+             "correct": False,
+             "why": "Four is the number of oxygen atoms on the left. The "
+                    "question asks for every atom on the right"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-s10",
+        "band": "standard",
+        "text": "How many atoms are there altogether in 3NH3?",
+        "options": [
+            {"text": "Four, which is the number of atoms in one particle of "
+                     "ammonia and therefore the number the formula is "
+                     "describing",
+             "correct": False,
+             "why": "Four is right for ONE particle. The 3 in front says "
+                    "there are three of them"},
+            {"text": "Seven, adding the 3 in front to the 3 after the H and "
+                     "the nitrogen atom",
+             "correct": False,
+             "why": "The numbers multiply rather than adding. Three lots of "
+                    "four is twelve"},
+            {"text": "Twelve",
+             "correct": True},
+            {"text": "Nine",
+             "correct": False,
+             "why": "That is three lots of the three hydrogens. The nitrogen "
+                    "in each particle has to be counted too"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c4-05-h05",
+        "band": "harder",
+        "text": "A plant runs 2H2 + O2 makes 2H2O and is fed 100 particles of "
+                "hydrogen and 60 of oxygen. What happens?",
+        "options": [
+            {"text": "All of both are used, because the plant supplies "
+                     "whatever is needed and any imbalance is corrected as the "
+                     "reaction goes on",
+             "correct": False,
+             "why": "Nothing corrects an imbalance. The reaction stops when "
+                    "one reactant runs out"},
+            {"text": "All 100 hydrogens react with 50 oxygens, leaving 10 "
+                     "oxygens unused",
+             "correct": True},
+            {"text": "60 hydrogens react with 60 oxygens, leaving 40 "
+                     "hydrogens",
+             "correct": False,
+             "why": "The ratio is two hydrogen particles to one oxygen, not "
+                    "one to one"},
+            {"text": "Nothing reacts, because the amounts are not in the "
+                     "right ratio",
+             "correct": False,
+             "why": "A reaction runs until one reactant is exhausted. It does "
+                    "not refuse to start"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-h06",
+        "band": "harder",
+        "text": "Balance: Fe + O2 makes Fe2O3. Which set of big numbers "
+                "works?",
+        "options": [
+            {"text": "2Fe + O2 makes Fe2O3, which balances the iron and "
+                     "leaves the oxygen to look after itself",
+             "correct": False,
+             "why": "The iron balances and the oxygen does not: two on the "
+                    "left, three on the right"},
+            {"text": "2Fe + 3O2 makes 2Fe2O3",
+             "correct": False,
+             "why": "The oxygen balances at six each side and the iron does "
+                    "not: two on the left, four on the right"},
+            {"text": "4Fe + 3O2 makes 2Fe2O3",
+             "correct": True},
+            {"text": "Fe + 3O2 makes Fe2O3",
+             "correct": False,
+             "why": "Neither element balances. One iron cannot make a product "
+                    "containing two"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-h07",
+        "band": "harder",
+        "text": "4H2 + 2O2 makes 4H2O balances perfectly and would still be "
+                "marked down. Why?",
+        "options": [
+            {"text": "Because it describes four reactions at once rather than "
+                     "one, and an equation is only allowed to describe a "
+                     "single reaction happening",
+             "correct": False,
+             "why": "It describes the same reaction. The convention is about "
+                    "the smallest whole numbers, not about how many "
+                    "reactions"},
+            {"text": "Because 4H2O is not a real formula",
+             "correct": False,
+             "why": "It is perfectly real — four water particles"},
+            {"text": "Because oxygen cannot have a number in front of it",
+             "correct": False,
+             "why": "Any formula may carry a big number. There is no "
+                    "exception for oxygen"},
+            {"text": "Because the numbers are not the smallest whole ones "
+                     "that work",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-h08",
+        "band": "harder",
+        "text": "A hydrogen car is fed exactly equal numbers of hydrogen and "
+                "oxygen particles. What does the engineer need to change, and "
+                "why?",
+        "options": [
+            {"text": "Double the hydrogen, because the equation needs two "
+                     "hydrogen particles per oxygen",
+             "correct": True},
+            {"text": "Nothing, because the two gases react one particle to "
+                     "one particle",
+             "correct": False,
+             "why": "The balanced equation gives two hydrogens to one oxygen, "
+                    "not one to one"},
+            {"text": "Double the oxygen, so that there is plenty of it",
+             "correct": False,
+             "why": "There is already too much oxygen. Doubling it wastes "
+                    "more"},
+            {"text": "Halve both, so that the numbers stay equal",
+             "correct": False,
+             "why": "Halving both keeps the same wrong ratio, with less of "
+                    "everything"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-h09",
+        "band": "harder",
+        "text": "Adding a small 2 to the water balances the hydrogen "
+                "equation in one move. What exactly does that move cost?",
+        "options": [
+            {"text": "Nothing at the time, and it will cost marks later on "
+                     "because examiners insist on the big numbers being used "
+                     "even where a small one would do the same job",
+             "correct": False,
+             "why": "It is not a marking convention. The equation now "
+                    "describes a different reaction"},
+            {"text": "The equation now says that burning hydrogen makes "
+                     "hydrogen peroxide, which it does not",
+             "correct": True},
+            {"text": "The atom counts no longer match",
+             "correct": False,
+             "why": "They match exactly, which is what makes the move so "
+                    "tempting. The problem is what has been written"},
+            {"text": "The equation now needs a big number as well",
+             "correct": False,
+             "why": "No further number is needed. What is wrong is the "
+                    "substance"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-05-h10",
+        "band": "harder",
+        "text": "Why does a balanced equation HAVE to have equal atom counts "
+                "on both sides?",
+        "options": [
+            {"text": "Because chemists agreed on the rule so that equations "
+                     "from different laboratories could be compared with each "
+                     "other reliably",
+             "correct": False,
+             "why": "It is not a convention that could have been agreed "
+                    "otherwise. It follows from what a reaction does"},
+            {"text": "Because the two sides have to weigh the same",
+             "correct": False,
+             "why": "They do weigh the same, and that is a CONSEQUENCE of the "
+                    "atoms being the same atoms"},
+            {"text": "Because atoms are never created or destroyed in a "
+                     "chemical reaction",
+             "correct": True},
+            {"text": "Because otherwise the equation would be hard to read",
+             "correct": False,
+             "why": "Readability is not the reason. An unbalanced equation "
+                    "claims an atom appeared from nowhere"},
+        ],
+        "figure": None,
+    },
 ]

@@ -395,4 +395,481 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c4-02-e05",
+        "band": "easier",
+        "text": "What is a reactant?",
+        "options": [
+            {"text": "A substance that takes part in the reaction without "
+                     "being used up by it, so that it is still there in the "
+                     "same amount at the end",
+             "correct": False,
+             "why": "That is a catalyst. A reactant is used up in making the "
+                    "products"},
+            {"text": "A substance the reaction makes",
+             "correct": False,
+             "why": "That is a product. Reactants go in, products come out"},
+            {"text": "The container the reaction happens in",
+             "correct": False,
+             "why": "A flask is equipment. A reactant takes part"},
+            {"text": "A substance you start with, before the reaction "
+                     "happens",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-e06",
+        "band": "easier",
+        "text": "What does it mean to say a reaction REARRANGES atoms?",
+        "options": [
+            {"text": "It keeps the same atoms and puts them together "
+                     "differently",
+             "correct": True},
+            {"text": "It swaps some of the atoms for different kinds, so that "
+                     "the substance you end up with can have properties the "
+                     "starting one could not have had",
+             "correct": False,
+             "why": "No atom changes kind in a chemical reaction. New "
+                    "properties come from new PARTNERS"},
+            {"text": "It moves the atoms into a tidier order",
+             "correct": False,
+             "why": "Nothing is being tidied. The joins between atoms are "
+                    "broken and remade"},
+            {"text": "It makes the atoms smaller so more will fit",
+             "correct": False,
+             "why": "Atoms never change size. Only what they are joined to "
+                    "changes"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-e07",
+        "band": "easier",
+        "text": "What is a compound?",
+        "options": [
+            {"text": "A mixture of two substances that have been stirred "
+                     "together thoroughly enough that no part of it can be "
+                     "told apart from any other part",
+             "correct": False,
+             "why": "Stirring joins nothing. A compound has its atoms "
+                    "chemically joined"},
+            {"text": "A substance made of two or more kinds of atom joined "
+                     "together",
+             "correct": True},
+            {"text": "Any substance with a long name",
+             "correct": False,
+             "why": "Names have nothing to do with it. Water is a compound "
+                    "and has a short one"},
+            {"text": "A substance made of one kind of atom",
+             "correct": False,
+             "why": "That is an element. A compound needs at least two"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-e08",
+        "band": "easier",
+        "text": "There is no such thing as a magnesium oxide atom. Why not?",
+        "options": [
+            {"text": "Because magnesium oxide is white, and an atom has no "
+                     "colour of its own to give it",
+             "correct": False,
+             "why": "True about colour and beside the point. Magnesium oxide "
+                    "is made of two kinds of atom joined"},
+            {"text": "Because magnesium oxide is a mixture",
+             "correct": False,
+             "why": "It is a compound, with its atoms chemically joined in a "
+                    "fixed ratio"},
+            {"text": "Because magnesium oxide is a compound — magnesium atoms "
+                     "joined to oxygen atoms",
+             "correct": True},
+            {"text": "Because its atoms are too small to have a name",
+             "correct": False,
+             "why": "Every atom has a name — the name of its element. There "
+                    "simply is no element called magnesium oxide"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-e09",
+        "band": "easier",
+        "text": "Hydrogen and oxygen are the only atoms on the bench. Which "
+                "of these can the bench build?",
+        "options": [
+            {"text": "Ammonia, which is built out of hydrogen and needs "
+                     "nothing more than a supply of it and enough energy to "
+                     "join the atoms up",
+             "correct": False,
+             "why": "Ammonia holds nitrogen as well, and there is no nitrogen "
+                    "on the table"},
+            {"text": "Methane",
+             "correct": False,
+             "why": "Methane needs carbon, and none is available"},
+            {"text": "Sodium chloride",
+             "correct": False,
+             "why": "Neither sodium nor chlorine is on the table, so neither "
+                    "can be in a product"},
+            {"text": "Hydrogen peroxide",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-e10",
+        "band": "easier",
+        "text": "Copper reacts with oxygen to make copper oxide. How many "
+                "copper atoms are in the product compared with the copper you "
+                "started with?",
+        "options": [
+            {"text": "Exactly the same number",
+             "correct": True},
+            {"text": "Fewer, because some of them are used up in joining the "
+                     "oxygen and are not available to appear in the product "
+                     "afterwards",
+             "correct": False,
+             "why": "Joining uses no atoms up. Every copper atom you started "
+                    "with is in the product"},
+            {"text": "More, because the oxygen adds to them",
+             "correct": False,
+             "why": "The oxygen adds oxygen atoms. The number of copper atoms "
+                    "is unchanged"},
+            {"text": "It cannot be known without weighing the product",
+             "correct": False,
+             "why": "It can be known without weighing anything. Atoms are "
+                    "never created or destroyed"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c4-02-s05",
+        "band": "standard",
+        "text": "Two hydrogen particles react with one oxygen particle. Each "
+                "hydrogen particle holds two atoms and the oxygen particle "
+                "holds two. How many water particles can be made?",
+        "options": [
+            {"text": "One, because there is only one oxygen particle and "
+                     "every water particle has to contain a whole one of them",
+             "correct": False,
+             "why": "The oxygen particle holds TWO atoms, and each water "
+                    "needs only one. It supplies two waters"},
+            {"text": "Four",
+             "correct": False,
+             "why": "That is the number of hydrogen ATOMS. Each water takes "
+                    "two of them, so four hydrogens make two waters"},
+            {"text": "Three",
+             "correct": False,
+             "why": "There is no way to make three from four hydrogens and "
+                    "two oxygens without leftovers that do not exist"},
+            {"text": "Two",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-s06",
+        "band": "standard",
+        "text": "A reaction is asked to make ammonia from hydrogen and oxygen "
+                "alone, and the bench refuses. What is the refusal telling "
+                "you?",
+        "options": [
+            {"text": "That ammonia contains nitrogen, and no nitrogen was "
+                     "supplied",
+             "correct": True},
+            {"text": "That the conditions on the bench are wrong, and that "
+                     "with more heat or a catalyst the same two gases would "
+                     "eventually give ammonia",
+             "correct": False,
+             "why": "Conditions change how a reaction goes, never which atoms "
+                    "exist. No amount of heat makes nitrogen"},
+            {"text": "That ammonia cannot be made by any reaction",
+             "correct": False,
+             "why": "It is made industrially by the tonne — from nitrogen and "
+                    "hydrogen"},
+            {"text": "That the bench is broken",
+             "correct": False,
+             "why": "The refusal is the rule working. A reaction can only "
+                    "build from the atoms it is given"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-s07",
+        "band": "standard",
+        "text": "Water and hydrogen peroxide were both built from the same "
+                "two elements on the bench. Which statement about them is "
+                "right?",
+        "options": [
+            {"text": "They are the same substance written two different ways",
+             "correct": False,
+             "why": "One quenches thirst and one bleaches hair. Same "
+                    "elements, different substances"},
+            {"text": "Each peroxide particle holds one more oxygen atom than "
+                     "a water particle",
+             "correct": True},
+            {"text": "Hydrogen peroxide is water with extra oxygen dissolved "
+                     "in it",
+             "correct": False,
+             "why": "The extra oxygen is joined inside each particle rather "
+                    "than dissolved between them"},
+            {"text": "Hydrogen peroxide holds a different kind of hydrogen "
+                     "atom",
+             "correct": False,
+             "why": "A hydrogen atom is a hydrogen atom. What differs is how "
+                    "many oxygens it is joined to"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-s08",
+        "band": "standard",
+        "text": "Propane holds three carbon atoms in each particle. One "
+                "particle burns completely. How many carbon dioxide particles "
+                "are made?",
+        "options": [
+            {"text": "One, because all three carbon atoms end up joined "
+                     "together inside a single particle of the gas that comes "
+                     "out of the flame",
+             "correct": False,
+             "why": "Carbon dioxide holds ONE carbon atom. Three carbons need "
+                    "three particles of it"},
+            {"text": "Six, one for each carbon and one for each of the oxygen "
+                     "atoms they join",
+             "correct": False,
+             "why": "The oxygens are inside those particles rather than "
+                    "making particles of their own"},
+            {"text": "Three",
+             "correct": True},
+            {"text": "It depends how much oxygen is supplied",
+             "correct": False,
+             "why": "Too little oxygen stops the burning being complete. The "
+                    "question says it was, so all three carbons are used"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-s09",
+        "band": "standard",
+        "text": "Sodium is a soft metal that catches fire on water. Chlorine "
+                "is a poisonous green gas. Table salt is neither. What has "
+                "happened to the sodium atoms?",
+        "options": [
+            {"text": "They have been changed into a different kind of atom by "
+                     "the violence of the reaction between the two elements",
+             "correct": False,
+             "why": "No atom changes kind in a chemical reaction, however "
+                    "violent it is"},
+            {"text": "They have been used up, and the salt is made of "
+                     "chlorine only",
+             "correct": False,
+             "why": "Both elements are in the salt. Neither is used up in the "
+                    "sense of ceasing to exist"},
+            {"text": "They are still loose in the salt, which is why it "
+                     "dissolves",
+             "correct": False,
+             "why": "They are joined, not loose. Dissolving does not release "
+                    "sodium metal — a spoonful of salt in water does "
+                    "nothing"},
+            {"text": "Nothing, except that they are now joined to chlorine "
+                     "atoms",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-s10",
+        "band": "standard",
+        "text": "A reaction warms its surroundings. Using the idea of joins "
+                "between atoms, why?",
+        "options": [
+            {"text": "Because the new joins give back more energy than "
+                     "breaking the old ones cost",
+             "correct": True},
+            {"text": "Because the reaction is fast, and fast reactions give "
+                     "out heat",
+             "correct": False,
+             "why": "Speed has nothing to do with it. Slow rusting warms its "
+                    "surroundings too"},
+            {"text": "Because breaking joins always gives out energy",
+             "correct": False,
+             "why": "Exactly backwards. Breaking a join always COSTS energy; "
+                    "making one gives it back"},
+            {"text": "Because heat is one of the products",
+             "correct": False,
+             "why": "Heat is not a substance and is never a product. It is "
+                    "the surplus from the bookkeeping on joins"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c4-02-h05",
+        "band": "harder",
+        "text": "A balloon of hydrogen and oxygen sits unchanged for months, "
+                "yet the reaction gives out an enormous amount of energy. Why "
+                "does it need a flame?",
+        "options": [
+            {"text": "Because the two gases have to be mixed thoroughly first",
+             "correct": False,
+             "why": "They are already mixed. What is missing is payment for "
+                    "the first joins to be broken"},
+            {"text": "Because the reaction needs heat as one of its "
+                     "reactants",
+             "correct": False,
+             "why": "Heat is a condition, not a reactant. It starts the "
+                    "reaction rather than being consumed by it"},
+            {"text": "Because hydrogen only burns above a certain "
+                     "temperature, which is a property of the gas",
+             "correct": False,
+             "why": "This is the same fact described from the outside. What "
+                    "the temperature buys is the first broken joins"},
+            {"text": "Because breaking the first joins costs energy, and "
+                     "nothing has paid for it",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-h06",
+        "band": "harder",
+        "text": "A reaction takes energy IN and everything around it gets "
+                "colder. What does that say about its joins?",
+        "options": [
+            {"text": "That the new joins give back less energy than breaking "
+                     "the old ones cost",
+             "correct": True},
+            {"text": "That no new joins are made at all, so all the energy "
+                     "spent on breaking the old ones is simply lost to the "
+                     "surroundings as the reaction goes on",
+             "correct": False,
+             "why": "New joins are always made — that is what produces the "
+                    "products. They just give back less than was spent"},
+            {"text": "That the reaction is running backwards",
+             "correct": False,
+             "why": "It is running forwards and making products. Which way it "
+                    "runs is not what decides the energy"},
+            {"text": "That the atoms are being destroyed to supply the "
+                     "energy",
+             "correct": False,
+             "why": "No atom is destroyed in any chemical reaction. The "
+                    "energy comes from the joins"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-h07",
+        "band": "harder",
+        "text": "Someone offers to make a diamond by reacting sand with "
+                "water, arguing that both contain oxygen. Why can it not "
+                "work?",
+        "options": [
+            {"text": "Because sand and water do not react with each other at "
+                     "all, and two substances that are unreactive together "
+                     "can never be made to produce anything new",
+             "correct": False,
+             "why": "The reaction failing is a symptom. Even a violent "
+                    "reaction between them could not produce carbon"},
+            {"text": "Because diamond is carbon, and neither sand nor water "
+                     "contains any",
+             "correct": True},
+            {"text": "Because diamond can only be made under enormous "
+                     "pressure",
+             "correct": False,
+             "why": "Pressure is a condition, and it is a real one. It is not "
+                    "the reason this recipe is impossible"},
+            {"text": "Because diamond is a compound and sand is an element",
+             "correct": False,
+             "why": "Both descriptions are the wrong way round. Diamond is an "
+                    "element and sand is a compound"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-h08",
+        "band": "harder",
+        "text": "Two grams of hydrogen react with sixteen grams of oxygen to "
+                "make eighteen grams of water. Which statement about the ATOMS "
+                "follows from that?",
+        "options": [
+            {"text": "That eighteen grams' worth of new atoms have been "
+                     "created out of the two starting materials by the "
+                     "reaction between them",
+             "correct": False,
+             "why": "No atom is created. The eighteen grams are the same "
+                    "atoms that went in"},
+            {"text": "That the atoms have got heavier as they joined",
+             "correct": False,
+             "why": "An atom's mass does not change on joining. The total "
+                    "adds up because nothing was lost"},
+            {"text": "That every atom in the water was in the hydrogen or the "
+                     "oxygen first",
+             "correct": True},
+            {"text": "That some hydrogen atoms became oxygen atoms",
+             "correct": False,
+             "why": "That would be a nuclear change. Chemistry only alters "
+                    "what an atom is joined to"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-h09",
+        "band": "harder",
+        "text": "A firework maker says a mixture with no iron in it produces "
+                "orange sparks that are iron. What single point defeats the "
+                "claim?",
+        "options": [
+            {"text": "Orange sparks can be produced by several substances, so "
+                     "the colour on its own is not enough to identify what is "
+                     "burning in a firework",
+             "correct": False,
+             "why": "Perfectly true, and a weaker objection. Even if the "
+                    "sparks looked exactly right, the iron could not be "
+                    "there"},
+            {"text": "Fireworks burn too quickly to make a metal",
+             "correct": False,
+             "why": "Speed is not the obstacle. The obstacle is that there "
+                    "are no iron atoms to build from"},
+            {"text": "Iron does not burn",
+             "correct": False,
+             "why": "Fine iron wool burns readily. That is not what is wrong "
+                    "with the claim"},
+            {"text": "Iron is an element, so iron atoms would have to be in "
+                     "the mixture already",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-02-h10",
+        "band": "harder",
+        "text": "A student writes that the reaction “used up all the "
+                "oxygen”, and concludes that those oxygen atoms no longer "
+                "exist. What is the correction?",
+        "options": [
+            {"text": "They exist, and they are inside the products — used up "
+                     "means no longer available as oxygen gas",
+             "correct": True},
+            {"text": "They exist, and they have been pushed out of the flask "
+                     "into the room, where they are now mixed back in with "
+                     "the rest of the air",
+             "correct": False,
+             "why": "They did not leave. They are chemically joined inside "
+                    "the product, which is why it is heavier"},
+            {"text": "Nothing is wrong — a reactant that is used up has been "
+                     "destroyed",
+             "correct": False,
+             "why": "Used up describes a substance running out, never atoms "
+                    "being destroyed"},
+            {"text": "They have become a different kind of atom",
+             "correct": False,
+             "why": "Chemistry never changes what kind an atom is. Only its "
+                    "partners change"},
+        ],
+        "figure": None,
+    },
 ]

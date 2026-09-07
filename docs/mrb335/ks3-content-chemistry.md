@@ -331,3 +331,76 @@ OK (whole KS3 bank, worst index 27%), `verify_answer_lengths` green on
 `bank/C6` at 25.5% against a 65.4% baseline.
 
 ---
+## C4 — Chemical reactions and equations (5 lessons)
+
+**Quota:** 30 needed per band; 31 added, taking every band to **51**. Spread
+7 · 6 · 6 · 6 · 6 per band, 93 rows.
+
+| lesson | easier | standard | harder |
+|---|---|---|---|
+| 01 chemical-vs-physical-change | e05–e11 | s05–s11 | h05–h11 |
+| 02 reactions-rearrange-atoms | e05–e10 | s05–s10 | h05–h10 |
+| 03 word-equations | e05–e10 | s05–s10 | h05–h10 |
+| 04 mass-in-a-reaction | e05–e10 | s05–s10 | h05–h10 |
+| 05 symbol-equations-and-balancing | e05–e10 | s05–s10 | h05–h10 |
+
+Formulae are FLAT throughout (`H2O`, `2H2`, `CH4`, `Fe2O3`), matching this
+unit's original twelve. C2's subscript exception does not apply here: C4 is
+about balancing, not about notation, and its existing rows are flat.
+
+Positions 24 · 24 · 24 · 21. Length tell 18.9%.
+
+### Review fixes before commit
+
+**1 · A near-duplicate DETECTOR, written because C6 showed the eye is not
+enough.** `nearpub.py` in the lane's scratch directory scores every new row
+against every other row in its own lesson — 60% on the words of the stem, 40%
+on the words of the correct option, both normalised and stopped — and lists the
+close pairs for a person to judge. It is a shortlist, not a verdict: two rows
+can share every content word and be different questions.
+
+On C4 it found **ten** rows that repeated a question the unit already asked,
+all of them invisible to `validate_lesson`:
+
+| new row | duplicated | what was repeated |
+|---|---|---|
+| `c4-02-s08` | `c4-02-s01` | where the carbon atom in burning methane ends up |
+| `c4-02-s09` | `c4-02-h03` | what has happened to the copper atoms in copper oxide |
+| `c4-02-h10` | `c4-02-h01` | why a nuclear change is not a chemical reaction |
+| `c4-03-h07` | `c4-03-h03` | why a word equation cannot tell an engineer how much oxygen |
+| `c4-04-s06` | `c4-04-e03` | the missing unit on a mass answer |
+| `c4-04-s09` | `c4-04-s02` | covering a bar and reading the calculation off |
+| `c4-04-s10` | `c4-04-s03` | the football as evidence that a gas has mass |
+| `c4-04-h07` | `c4-04-s04` | a gas loss too small for a school balance |
+| `c4-05-s05` | the LADDER's explain rung | why 2Mg + O2 makes 2MgO needs its two |
+| `c4-05-s10` | `c4-05-h01` | that balancing cannot tell you the products |
+
+`c4-05-s05` is the one worth naming separately: it did not duplicate another
+bank row, it restated **rung 3 of the lesson's own ladder**, which
+`ks3-authoring.md` §10 forbids and no gate checks. Replaced with an
+already-balanced equation (C + O2 makes CO2, no numbers needed), which is a
+useful item this file did not have.
+
+**2 · The replacement itself needed replacing.** The first rewrite of
+`c4-05-s10` asked for a count of oxygen atoms and came to four — the same task
+and the same answer as `c4-05-h03`. Re-pointed at 3NH3 and twelve. Worth
+recording: a replacement written in the same sitting reaches for the same
+material.
+
+**3 · Two pairs left standing deliberately.** `c4-05-e02` (hydrogens in 3H2O)
+and the new `c4-05-e09` (oxygens in 3CO2) score 0.76 and are a legitimate
+parallel — different formula, different element, the same skill practised
+twice, which is what a bank of fifty is for. `c4-04-s02` and the new
+`c4-04-e09` score 1.00 on shared vocabulary and ask different questions about
+the same diagram: one asks which bar is the whole, the other asks what covering
+a part leaves you.
+
+**4 · A syntax error I introduced and the gate caught.** One option in
+`c4-05-s10`'s first draft was written `"correct": False",` with an empty `why`.
+`python3 -m ks3_data.question_bank` failed to import the module and said which
+line. Repaired before anything else was run.
+
+Gates at commit: chemistry-only `validate_lesson` clean, `verify_answer_positions`
+OK, `verify_answer_lengths` green on `bank/C4`.
+
+---
