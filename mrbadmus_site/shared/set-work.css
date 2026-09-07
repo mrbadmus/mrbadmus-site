@@ -1,0 +1,479 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   set-work.css — the Set work sheet (MRB-335), Design's chrome, our DOM.
+
+   ⚠️ WHY THIS FILE EXISTS AT ALL, AND WHY THE SHEET LEFT THE COMPILED
+   RUNTIME. The v1 sheet was Design's compiled node 581, mounted inside
+   `#mrb-teacher`, and it scroll-jumped on every selection. The cause is
+   `shared/student-runtime.js`:
+
+       496   var keepScroll = window.scrollY;
+       497   host.textContent = "";
+       498   host.appendChild(frag);
+       501   if (window.scrollY !== keepScroll) { window.scrollTo(0, keepScroll); }
+
+   `draw()` empties the WHOLE mount host and rebuilds it from the template on
+   every `setState`, and the only scroll it preserves is the DOCUMENT's.
+   Design's sheet is `max-height:86vh; overflow:auto` — an INNER scroller — so
+   the node holding the teacher's scroll position was destroyed and replaced
+   by a fresh one at scrollTop 0 every time they tapped a topic.
+
+   So the fix is structural rather than cosmetic: this sheet is a sibling of
+   the mount host, appended to `<body>`, and `draw()` can never reach it.
+   Nothing here is rebuilt on a selection — see set-work.js.
+
+   ⚠️ EVERY COLOUR, RADIUS AND FONT IS A `--st-*` TOKEN read out of
+   `shared/teacher-ds.css`, and every one of them is Design's own value from
+   the Set work sheet in `Teacher Dashboard.dc.html` (nodes 581-627). Nothing
+   here is a new design. The two shapes she did not draw — a sticky header and
+   a tier/subject/paper chip rail — are drawn in her vocabulary: the header is
+   her footer's button pair over her panel's bottom rule, and the chip rails
+   are her `swCounts` row.
+
+   ⚠️ NO SIDEWAYS SCROLL AT 390px. Every flex child that can hold long text
+   carries `min-width:0`, every stem carries `overflow-wrap:anywhere`, and
+   every date/time input pair wraps rather than pushing. RISKS A8/E11.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── the overlay ─────────────────────────────────────────────────────────
+   Design's node 581: `position:fixed;inset:0;z-index:60;background:
+   rgba(26,23,20,.45)`. The padding drops to 0 under 480px so the sheet can
+   use the whole width of a phone rather than 350px of it. */
+.sw-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(26, 23, 20, .45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+.sw-overlay[hidden] { display: none; }
+
+/* ── the sheet — AND THE SCROLLER ────────────────────────────────────────
+   Design's exact frame. `overflow:auto` makes this the scroll container the
+   sticky header sticks inside; NOTHING between it and the header may carry a
+   transform, a filter or `overflow:hidden`, because each of those makes a
+   `position:sticky` descendant behave differently on iOS ≤16 (RISKS A2). */
+.sw-sheet {
+  width: 720px;
+  max-width: 100%;
+  max-height: 86vh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--st-paper);
+  border: 1px solid var(--st-edge);
+  border-radius: 14px;
+  box-shadow: var(--st-shadow-frame);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ── the sticky header: Back · step · primary ────────────────────────────
+   RISKS A3 — v1's primary action lived in a footer that scrolled away with
+   the content, so on a long topic list "Next" was off-screen from the moment
+   the sheet opened. It is up here now and it does not move.
+
+   `top:0` inside `.sw-sheet`'s own scroller. Opaque background is not
+   decoration: a transparent sticky header shows the list sliding under it. */
+.sw-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--st-paper);
+  border-bottom: 1px solid var(--st-rule-soft);
+  border-radius: 14px 14px 0 0;
+}
+.sw-step {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  font: 500 13px/1.2 var(--st-mono);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  overflow-wrap: anywhere;
+}
+
+/* ── iOS FALLBACK, WIRED AND OFF ─────────────────────────────────────────
+   RISKS A2's ruling: if `position:sticky` inside the scroller fails on real
+   iOS Safari, add `sw-fixed-header` to `.sw-sheet` and the header becomes
+   `position:fixed` with the body padded down to clear it. It is coded here
+   rather than left as a note so that turning it on is one class and no
+   rebuild. It is OFF: nothing sets this class today. */
+.sw-sheet.sw-fixed-header { position: relative; }
+.sw-sheet.sw-fixed-header .sw-head {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-radius: 0;
+}
+.sw-sheet.sw-fixed-header .sw-body { padding-top: 78px; }
+
+/* ── buttons ─────────────────────────────────────────────────────────────
+   Design's footer pair, node 626/627, unchanged. */
+.sw-btn {
+  flex: none;
+  height: 38px;
+  padding: 0 15px;
+  font: 600 16.5px/1.2 var(--st-ui);
+  color: var(--st-ink);
+  background: var(--st-paper);
+  border: 1px solid var(--st-btn-border);
+  border-radius: 9px;
+  cursor: pointer;
+}
+.sw-btn-primary {
+  padding: 0 18px;
+  color: var(--st-paper);
+  background: var(--st-accent-text);
+  border: none;
+}
+.sw-btn-primary:hover { background: var(--st-accent-hover); }
+
+/* ⚠️ A DISABLED PRIMARY IS THE WHOLE VALIDATION LANGUAGE (RISKS A9). There
+   is no sentence anywhere in this sheet explaining why a step will not
+   advance; the button is off and the field that is wrong is outlined. So the
+   disabled state has to be legible rather than merely different — 0.45 alpha
+   on a filled button reads as "off" at a glance and still passes contrast
+   against the paper it sits on. */
+.sw-btn[disabled] { opacity: .45; cursor: default; }
+.sw-btn-primary[disabled]:hover { background: var(--st-accent-text); }
+
+/* ── body ───────────────────────────────────────────────────────────────── */
+.sw-body { padding: 18px 16px 22px; min-width: 0; }
+.sw-panel[hidden] { display: none; }
+
+/* Design's section label, node 588: her `swCounts` eyebrow exactly. */
+.sw-label {
+  font: 500 13px/1.2 var(--st-mono);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  margin-top: 20px;
+}
+.sw-label:first-child { margin-top: 0; }
+.sw-label[hidden] { display: none; }
+
+/* ── chip rails ──────────────────────────────────────────────────────────
+   Design's `swCounts` row (node 590): equal-width mono chips, tinted when
+   chosen. `flex-wrap` is the 390px answer — four count chips at 14px padding
+   do not fit a 358px sheet body, and wrapping is the only alternative to a
+   sideways scroll. */
+.sw-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.sw-chips[hidden] { display: none; }
+.sw-chip {
+  flex: 1 1 auto;
+  min-width: 72px;
+  padding: 13px 10px;
+  font: 500 16px/1.2 var(--st-mono);
+  letter-spacing: .06em;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--st-ink);
+  background: var(--st-paper);
+  border: 1px solid var(--st-btn-border);
+  overflow-wrap: anywhere;
+}
+.sw-chip.is-on {
+  color: var(--st-accent-text);
+  background: var(--st-chip-tint);
+  border-color: var(--st-chip-tint-border);
+}
+.sw-chip[disabled] { opacity: .4; cursor: default; }
+
+/* ── the tree ────────────────────────────────────────────────────────────
+   Design's topic row (nodes 596-600): name in UI 600/18, eyebrow in mono, tag
+   right-aligned. v2 adds the chevron and the subtopic level; the count takes
+   the tag's mono treatment because it IS the tag's slot. */
+.sw-tree { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.sw-node { min-width: 0; }
+.sw-node[hidden] { display: none; }
+
+/* The topic row and its chevron. Two controls, one frame's worth of space:
+   expanding a topic must not be the same press as choosing it. */
+.sw-node-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.sw-node-head > .sw-row { flex: 1 1 auto; }
+
+.sw-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  padding: 13px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: var(--st-paper);
+  border: 1px solid var(--st-btn-border);
+  min-width: 0;
+}
+.sw-row.is-on {
+  background: var(--st-chip-tint);
+  border-color: var(--st-chip-tint-border);
+}
+/* A zero-count node is shown, with its `0`, and cannot be picked (RISKS A5).
+   Shown rather than hidden because "this topic has nothing at Higher" is a
+   fact a teacher planning a term needs; hiding it would answer the question
+   with a silence. */
+.sw-row[aria-disabled="true"] { opacity: .5; cursor: default; }
+
+.sw-row-main { flex: 1 1 auto; min-width: 0; }
+.sw-row-name {
+  display: block;
+  font: 600 17px/1.25 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+.sw-row-tag {
+  display: block;
+  margin-top: 5px;
+  font: 400 12.5px/1.2 var(--st-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  overflow-wrap: anywhere;
+}
+.sw-row.is-on .sw-row-tag { color: var(--st-accent-text); }
+.sw-row-tag[hidden] { display: none; }
+
+/* DM Mono, right-aligned, per the ticket. `tabular-nums` so a column of
+   counts lines up rather than shimmering as the tier changes. */
+.sw-count {
+  flex: none;
+  font: 500 15px/1.2 var(--st-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--st-ghost);
+  min-width: 2.2em;
+  text-align: right;
+}
+.sw-row.is-on .sw-count { color: var(--st-accent-text); }
+
+/* The chevron is its own button so that expanding a topic is not the same
+   press as selecting it. */
+.sw-chev {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--st-btn-border);
+  border-radius: 9px;
+  cursor: pointer;
+  color: var(--st-muted);
+}
+.sw-chev svg { transition: transform .12s ease; }
+.sw-chev[aria-expanded="true"] svg { transform: rotate(90deg); }
+.sw-chev[hidden] { display: none; }
+
+.sw-kids {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 6px 0 0 14px;
+  padding-left: 10px;
+  border-left: 1px solid var(--st-rule-soft);
+}
+.sw-kids[hidden] { display: none; }
+.sw-kids .sw-row { padding: 10px 12px; }
+.sw-kids .sw-row-name { font-size: 15.5px; font-weight: 500; }
+
+/* ── the question list ───────────────────────────────────────────────────
+   Collapsed: the stem on ONE line, ellipsised. Expanded: the full stem and
+   the four options with the correct one marked. A teacher is accountable for
+   work thirty children will sit, so the questions are readable before it is
+   set — MRB-331's ruled divergence 2, kept. */
+.sw-qlist { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.sw-q {
+  border: 1px solid var(--st-btn-border);
+  border-radius: 10px;
+  background: var(--st-paper);
+  min-width: 0;
+}
+.sw-q-head { display: flex; align-items: center; gap: 8px; padding: 11px 12px; min-width: 0; }
+.sw-q-n {
+  flex: none;
+  font: 500 13px/1.2 var(--st-mono);
+  color: var(--st-ghost);
+  font-variant-numeric: tabular-nums;
+  min-width: 1.6em;
+}
+/* The collapsed stem: one line, ellipsised. `min-width:0` is what lets
+   `text-overflow` work at all inside a flex row — without it the flex item
+   refuses to shrink below its content and the row overflows sideways, which
+   is RISKS A8 exactly. */
+.sw-q-stem {
+  flex: 1 1 auto;
+  min-width: 0;
+  font: 400 15px/1.35 var(--st-ui);
+  color: var(--st-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.sw-q.is-open .sw-q-stem {
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: anywhere;
+}
+.sw-swap {
+  flex: none;
+  height: 30px;
+  padding: 0 11px;
+  font: 500 13.5px/1.2 var(--st-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--st-accent-text);
+  background: var(--st-paper);
+  border: 1px solid var(--st-btn-border);
+  border-radius: 9px;
+  cursor: pointer;
+}
+.sw-swap[disabled] { color: var(--st-ghost); opacity: .5; cursor: default; }
+
+.sw-q-body { padding: 0 12px 12px 12px; min-width: 0; }
+.sw-q-body[hidden] { display: none; }
+.sw-opt {
+  display: flex;
+  gap: 8px;
+  padding: 7px 0;
+  font: 400 14.5px/1.4 var(--st-ui);
+  color: var(--st-body);
+  border-top: 1px solid var(--st-rule-fact);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.sw-opt-k {
+  flex: none;
+  font: 500 13px/1.4 var(--st-mono);
+  color: var(--st-ghost);
+}
+/* The correct option is marked by a WEIGHT and a COLOUR and a tick, never by
+   colour alone — the same rule the KS3 figures follow. */
+.sw-opt.is-right { color: var(--st-accent-text); font-weight: 600; }
+.sw-opt.is-right .sw-opt-k { color: var(--st-accent-text); }
+.sw-tick { flex: none; }
+.sw-tick[hidden] { display: none; }
+
+/* ── fields ──────────────────────────────────────────────────────────────
+   `min-width:0` and `flex-wrap` on every pair: a `<input type=date>` and an
+   `<input type=time>` side by side are ~300px of intrinsic width on iOS, and
+   at 390px the sheet body is 358px. They wrap. */
+.sw-fields { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.sw-fields[hidden] { display: none; }
+.sw-input {
+  flex: 1 1 150px;
+  min-width: 0;
+  width: 100%;
+  padding: 11px 12px;
+  font: 400 15.5px/1.2 var(--st-ui);
+  color: var(--st-ink);
+  background: var(--st-paper);
+  border: 1px solid var(--st-btn-border);
+  border-radius: 10px;
+}
+.sw-input[type="date"], .sw-input[type="time"] {
+  font-family: var(--st-mono);
+  font-size: 15px;
+}
+/* ⚠️ THE WHOLE OF VALIDATION'S VOCABULARY, WITH THE DISABLED PRIMARY. A
+   field that is wrong is outlined in the accent and nothing is written about
+   it. `--st-accent-text` rather than `--st-accent`: the darker of the two is
+   the one that reads against paper at 1px. */
+.sw-input.sw-bad, .sw-chips.sw-bad .sw-chip, .sw-tree.sw-bad {
+  border-color: var(--st-accent-text);
+}
+.sw-tree.sw-bad { border: 1px solid var(--st-accent-text); border-radius: 10px; padding: 6px; }
+
+/* ── the hold line ───────────────────────────────────────────────────────
+   The ONE factual line in the sheet, and it is a date (RISKS B6/A9). It says
+   when the school opens work to students and nothing else — no explanation,
+   no apology, no instruction. */
+.sw-hold {
+  margin-top: 14px;
+  padding: 11px 13px;
+  font: 400 13.5px/1.4 var(--st-mono);
+  letter-spacing: .06em;
+  color: var(--st-accent-text);
+  background: var(--st-note-bg);
+  border: 1px solid var(--st-note-border);
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+.sw-hold[hidden] { display: none; }
+
+/* ── the toast ───────────────────────────────────────────────────────────
+   Design's `tin` keyframes, redeclared here under our own name because this
+   file must stand up on a page that has not loaded her inline `<style>`. */
+.sw-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  z-index: 70;
+  max-width: calc(100vw - 32px);
+  padding: 12px 18px;
+  font: 500 15px/1.35 var(--st-ui);
+  color: var(--st-cream);
+  background: var(--st-ink);
+  border-radius: 11px;
+  box-shadow: var(--st-shadow-pop);
+  animation: sw-tin .18s ease-out;
+  overflow-wrap: anywhere;
+}
+.sw-toast[hidden] { display: none; }
+@keyframes sw-tin {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ── 390px ───────────────────────────────────────────────────────────────
+   The sheet takes the whole phone. `max-height:100%` with the overlay padding
+   at 0 gives the scroller the full height, which matters because the sticky
+   header costs 66px of it. */
+@media (max-width: 520px) {
+  .sw-overlay { padding: 0; align-items: stretch; }
+  .sw-sheet {
+    max-height: 100%;
+    height: 100%;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+  .sw-head { border-radius: 0; padding: 12px 14px; }
+  .sw-body { padding: 16px 14px 26px; }
+  .sw-step { letter-spacing: .12em; font-size: 12px; }
+  .sw-btn { padding: 0 12px; font-size: 15.5px; }
+  .sw-btn-primary { padding: 0 14px; }
+  .sw-kids { margin-left: 8px; padding-left: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sw-toast { animation: none; }
+  .sw-chev svg { transition: none; }
+}
