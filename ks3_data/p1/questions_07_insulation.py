@@ -366,4 +366,153 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p1-07-e05",
+        "band": "easier",
+        "text": "Does wrapping something in an insulator add warmth to it?",
+        "options": [
+            {"text": "Yes — that is why a coat makes you warmer",
+             "correct": False,
+             "why": "A coat adds nothing. It slows the energy leaving YOU, "
+                    "which is where the warmth comes from."},
+            {"text": "No — it only slows energy passing in or out",
+             "correct": True},
+            {"text": "Yes, but only for objects warmer than the room",
+             "correct": False,
+             "why": "It adds nothing at any temperature. Wrapped ice lasts "
+                    "longer rather than melting sooner."},
+            {"text": "No — an insulator has no effect on energy transfer at "
+                     "all",
+             "correct": False,
+             "why": "It has a large effect: it makes the transfer much "
+                    "slower, in either direction."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-07-e06",
+        "band": "easier",
+        "text": "In a cooling trial, which measurement is taken at regular "
+                "intervals?",
+        "options": [
+            {"text": "The mass of the beaker in grams", "correct": False,
+             "why": "The mass barely changes, and it is not what the trial "
+                    "is following."},
+            {"text": "The thickness of the wrapping in centimetres",
+             "correct": False,
+             "why": "The wrapping is set at the start and left alone; it is "
+                    "what you changed, not what you measure."},
+            {"text": "The temperature in degrees Celsius", "correct": True},
+            {"text": "The volume of water in cubic centimetres",
+             "correct": False,
+             "why": "The volume is kept the same throughout, so measuring it "
+                    "repeatedly tells you nothing."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p1-07-s05",
+        "band": "standard",
+        "text": "Two beakers start at 80 °C. After twenty minutes one is at "
+                "62 °C and the other at 44 °C. Which one was lagged?",
+        "options": [
+            {"text": "The 44 °C one, because it has changed the most",
+             "correct": False,
+             "why": "Changing most means cooling fastest, which is what an "
+                    "unwrapped beaker does."},
+            {"text": "The 62 °C one, which lost 18 °C rather than 36 °C",
+             "correct": True},
+            {"text": "Neither — lagging does not change a cooling curve",
+             "correct": False,
+             "why": "It changes it a great deal, which is the whole point of "
+                    "the trial."},
+            {"text": "It cannot be told without knowing the room temperature",
+             "correct": False,
+             "why": "Both stood in the same room, so the one that stayed "
+                    "hotter is the wrapped one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-07-s06",
+        "band": "standard",
+        "text": "Why does a cooling curve become less steep as the minutes go "
+                "on?",
+        "options": [
+            {"text": "Because the insulation gets better as it warms up",
+             "correct": False,
+             "why": "The wrapping does not change. The temperature difference "
+                    "does."},
+            {"text": "Because the water runs out of energy to give away",
+             "correct": False,
+             "why": "It still holds plenty; it simply gives it away more "
+                    "slowly as it nears room temperature."},
+            {"text": "Because the thermometer becomes less accurate at lower "
+                     "temperatures",
+             "correct": False,
+             "why": "A thermometer reads just as well cool as hot. The shape "
+                    "is real, not an instrument fault."},
+            {"text": "Because the gap between the water and the room gets "
+                     "smaller",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p1-07-h05",
+        "band": "harder",
+        "text": "Why is loft insulation usually the first thing fitted when a "
+                "house is being made cheaper to heat?",
+        "options": [
+            {"text": "Because warm air rises, so the roof is the biggest "
+                     "escape route to block",
+             "correct": True},
+            {"text": "Because a loft is the coldest part of a house, so it "
+                     "needs warming first",
+             "correct": False,
+             "why": "Insulation warms nothing. It is fitted there because "
+                    "that is where most energy leaves."},
+            {"text": "Because insulation only works where there is no "
+                     "furniture in the way",
+             "correct": False,
+             "why": "Walls and floors are insulated too; the loft is chosen "
+                    "for the size of the loss, not for access."},
+            {"text": "Because energy always travels upwards and never "
+                     "sideways",
+             "correct": False,
+             "why": "Radiation goes in every direction and walls lose plenty; "
+                    "it is the rising WARM AIR that goes up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-07-h06",
+        "band": "harder",
+        "text": "A beaker wrapped in shiny foil cools more slowly than a bare "
+                "one. Which route has been slowed most?",
+        "options": [
+            {"text": "Conduction, because foil is a metal", "correct": False,
+             "why": "Metal foil is a good conductor, so if anything that "
+                    "route is helped, not slowed."},
+            {"text": "Radiation, because a shiny surface emits infrared "
+                     "poorly",
+             "correct": True},
+            {"text": "Convection, because the foil is airtight",
+             "correct": False,
+             "why": "A loose wrap slows some air movement, but the striking "
+                    "change comes from the shiny surface."},
+            {"text": "None of the three — the foil simply adds warmth of its "
+                     "own",
+             "correct": False,
+             "why": "No wrapping adds warmth. The foil changes how fast "
+                    "energy leaves."},
+        ],
+        "figure": None,
+    },
 ]

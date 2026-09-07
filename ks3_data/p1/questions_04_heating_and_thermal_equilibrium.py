@@ -383,4 +383,230 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p1-04-e05",
+        "band": "easier",
+        "text": "What is thermal equilibrium?",
+        "options": [
+            {"text": "When two objects reach the same temperature and the "
+                     "net flow stops",
+             "correct": True},
+            {"text": "When two objects hold exactly the same amount of energy",
+             "correct": False,
+             "why": "They can hold very different amounts — a pool and a mug "
+                    "reach it while holding wildly different energies."},
+            {"text": "When one object has given away all of its energy",
+             "correct": False,
+             "why": "Nothing ever gives away all of it; the flow stops when "
+                    "the temperatures match."},
+            {"text": "When an object stops conducting energy altogether",
+             "correct": False,
+             "why": "Energy still passes both ways. What stops is any net "
+                    "flow one way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-04-e06",
+        "band": "easier",
+        "text": "The energy in an object's thermal store depends on its "
+                "temperature and on what else?",
+        "options": [
+            {"text": "Its colour", "correct": False,
+             "why": "Colour affects how well it radiates, not how much its "
+                    "thermal store holds."},
+            {"text": "How many particles it has", "correct": True},
+            {"text": "How long it has been standing there", "correct": False,
+             "why": "Time changes the temperature by letting it cool; it is "
+                    "not a second quantity in the store."},
+            {"text": "How high above the ground it is", "correct": False,
+             "why": "Height fills a gravitational store, which is a different "
+                    "store altogether."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-04-e07",
+        "band": "easier",
+        "text": "Is cold a substance that travels from one object to "
+                "another?",
+        "options": [
+            {"text": "Yes — cold moves out of ice and into a drink",
+             "correct": False,
+             "why": "Energy moves the other way: out of the drink and into "
+                    "the ice. Nothing cold travels."},
+            {"text": "Yes, but only when the two objects touch",
+             "correct": False,
+             "why": "Touching lets energy pass. It does not create a "
+                    "substance called cold."},
+            {"text": "No — cold is simply less energy, and only energy moves",
+             "correct": True},
+            {"text": "No — nothing moves at all between a cold object and a "
+                     "warm one",
+             "correct": False,
+             "why": "Energy certainly moves, from the warmer one to the "
+                    "colder one, until they match."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p1-04-s05",
+        "band": "standard",
+        "text": "A 1 kg block and a 4 kg block of the same metal are both at "
+                "60 °C. Which statement is right?",
+        "options": [
+            {"text": "The 4 kg block is at a higher temperature because there "
+                     "is more of it",
+             "correct": False,
+             "why": "Both were measured at 60 °C. Temperature does not depend "
+                    "on how much there is."},
+            {"text": "They hold the same energy, because they are at the same "
+                     "temperature",
+             "correct": False,
+             "why": "Temperature is the average per particle; the 4 kg block "
+                    "has four times as many particles."},
+            {"text": "The 1 kg block holds more, because its particles are "
+                     "more crowded",
+             "correct": False,
+             "why": "The same metal has the same crowding. What differs is "
+                    "simply how much of it there is."},
+            {"text": "Both are at 60 °C, but the 4 kg block holds more in its "
+                     "thermal store",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-04-s06",
+        "band": "standard",
+        "text": "200 g of water at 80 °C is mixed with 800 g of water at "
+                "30 °C. What can you say about the final temperature?",
+        "options": [
+            {"text": "It will be 40 °C, pulled down by the extra cool "
+                     "water",
+             "correct": True},
+            {"text": "It will be 55 °C, halfway between the two",
+             "correct": False,
+             "why": "Halfway would need equal masses. The 800 g pulls the "
+                    "result strongly towards 30 °C."},
+            {"text": "It will be 110 °C, because the two temperatures add",
+             "correct": False,
+             "why": "Temperatures never add on mixing — the result always "
+                    "lies between the two."},
+            {"text": "It will be 30 °C, because cold always wins",
+             "correct": False,
+             "why": "The hot water raises it above 30 °C; nothing 'wins', the "
+                    "two settle in between."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-04-s07",
+        "band": "standard",
+        "text": "Why does a thermometer left in a drink eventually read the "
+                "drink's temperature?",
+        "options": [
+            {"text": "Because glass always takes the temperature of whatever "
+                     "it touches instantly",
+             "correct": False,
+             "why": "It is not instant — that is why you wait for the reading "
+                    "to settle."},
+            {"text": "Because the thermometer adds its own temperature to the "
+                     "drink",
+             "correct": False,
+             "why": "It does change the drink very slightly, but the reading "
+                    "settles because the two match."},
+            {"text": "Because energy flows between them until they reach "
+                     "thermal equilibrium",
+             "correct": True},
+            {"text": "Because the liquid inside the thermometer is the same "
+                     "as the drink",
+             "correct": False,
+             "why": "The two liquids are quite different; what matters is the "
+                    "temperature difference between them."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p1-04-h05",
+        "band": "harder",
+        "text": "A small cup of tea at 90 °C is poured into a heavy metal "
+                "teapot at 20 °C. What happens to the two temperatures?",
+        "options": [
+            {"text": "The tea cools a lot and the pot warms a little, until "
+                     "both match",
+             "correct": True},
+            {"text": "The pot warms to 90 °C, because that is the tea's "
+                     "temperature",
+             "correct": False,
+             "why": "The pot has far more particles to warm, so the shared "
+                    "temperature ends up near 20 °C."},
+            {"text": "They meet at 55 °C, halfway between the two",
+             "correct": False,
+             "why": "Halfway would need the two to have equal thermal "
+                    "capacities, and the pot is far heavier."},
+            {"text": "Nothing happens until the tea is stirred",
+             "correct": False,
+             "why": "Stirring speeds it up but the flow begins the moment "
+                    "they touch."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-04-h06",
+        "band": "harder",
+        "text": "Why does a room stop getting colder once it has reached the "
+                "temperature outside?",
+        "options": [
+            {"text": "Because the walls stop conducting energy once they are "
+                     "cold",
+             "correct": False,
+             "why": "The walls conduct just as well as before. What has gone "
+                    "is the temperature difference."},
+            {"text": "Because the cold outside has all been used up",
+             "correct": False,
+             "why": "Cold is not a substance and cannot be used up; only "
+                    "energy moves."},
+            {"text": "Because there is no temperature difference left to "
+                     "drive a net flow",
+             "correct": True},
+            {"text": "Because energy can only flow for a limited time",
+             "correct": False,
+             "why": "It flows for as long as a difference lasts, which can be "
+                    "hours or days."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-04-h07",
+        "band": "harder",
+        "text": "You can hold your hand in a 200 °C oven for a moment, but "
+                "not in water at 100 °C. Explain.",
+        "options": [
+            {"text": "Water is at a higher temperature than the oven air, "
+                     "despite the numbers",
+             "correct": False,
+             "why": "The numbers are the temperatures: 200 °C really is "
+                    "hotter than 100 °C."},
+            {"text": "Air has far fewer particles per litre, so it delivers "
+                     "far less energy to your skin",
+             "correct": True},
+            {"text": "Air is a gas, and gases cannot transfer energy at all",
+             "correct": False,
+             "why": "They can — it is how an oven cooks. They simply deliver "
+                    "much less, much more slowly."},
+            {"text": "Skin is a good conductor, so the oven's energy passes "
+                     "straight through",
+             "correct": False,
+             "why": "Skin conducts poorly, and passing through would still "
+                    "mean being burnt."},
+        ],
+        "figure": None,
+    },
 ]

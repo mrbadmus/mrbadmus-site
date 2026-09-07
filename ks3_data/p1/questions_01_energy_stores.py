@@ -337,4 +337,216 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p1-01-e05",
+        "band": "easier",
+        "text": "Which of these is an energy STORE?",
+        "options": [
+            {"text": "The chemical store of a battery", "correct": True},
+            {"text": "A beam of light crossing a room", "correct": False,
+             "why": "Light is a pathway — a way energy travels — not "
+                    "somewhere it sits and waits."},
+            {"text": "An electric current in a wire", "correct": False,
+             "why": "A current carries energy from one store to another. "
+                    "Nothing is held in the current itself."},
+            {"text": "A sound wave travelling through air", "correct": False,
+             "why": "Sound is a pathway too; the energy is on its way from "
+                    "one store to another."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-01-e06",
+        "band": "easier",
+        "text": "A mug of hot tea holds energy in which store?",
+        "options": [
+            {"text": "The chemical store", "correct": False,
+             "why": "A chemical store fills when bonds are rearranged, as in "
+                    "a battery or a fuel — not by being warmed."},
+            {"text": "The thermal store", "correct": True},
+            {"text": "The kinetic store", "correct": False,
+             "why": "The mug as a whole is not moving. The particles are, and "
+                    "that is counted as the thermal store."},
+            {"text": "The elastic store", "correct": False,
+             "why": "An elastic store fills when something is stretched or "
+                    "squashed, which the tea is not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-01-e07",
+        "band": "easier",
+        "text": "A firework explodes. Which store is emptying?",
+        "options": [
+            {"text": "The kinetic store", "correct": False,
+             "why": "The kinetic store FILLS as the pieces fly outwards; "
+                    "something else had to empty to fill it."},
+            {"text": "The gravitational store", "correct": False,
+             "why": "The gravitational store only changes when something "
+                    "rises or falls, not when it burns."},
+            {"text": "The chemical store", "correct": True},
+            {"text": "The elastic store", "correct": False,
+             "why": "Nothing in a firework is stretched or squashed before it "
+                    "goes off."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p1-01-s05",
+        "band": "standard",
+        "text": "A catapult is pulled back and released, firing a stone. "
+                "Which store empties and which fills?",
+        "options": [
+            {"text": "The elastic store empties and the kinetic store fills",
+             "correct": True},
+            {"text": "The kinetic store empties and the elastic store fills",
+             "correct": False,
+             "why": "That is the pull-back, not the release. On release the "
+                    "stretched rubber is what empties."},
+            {"text": "The chemical store empties and the kinetic store fills",
+             "correct": False,
+             "why": "Nothing chemical happens in a catapult. The chemical "
+                    "store emptied earlier, in the arm that pulled it."},
+            {"text": "The elastic store empties and the thermal store fills "
+                     "only",
+             "correct": False,
+             "why": "A little does warm the rubber, but the point of a "
+                    "catapult is the kinetic store of the stone."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-01-s06",
+        "band": "standard",
+        "text": "A wind-up radio is cranked and then plays music. Which "
+                "sequence of stores is right?",
+        "options": [
+            {"text": "Chemical in the arm, then elastic in the spring, then "
+                     "thermal and sound leaving",
+             "correct": True},
+            {"text": "Elastic in the spring, then electrical stored in the "
+                     "wires, then sound stored in the air",
+             "correct": False,
+             "why": "Neither electricity nor sound is a store. Both are "
+                    "pathways carrying energy onwards."},
+            {"text": "Sound in the spring, then chemical in the speaker, then "
+                     "kinetic in the air",
+             "correct": False,
+             "why": "A wound spring holds an elastic store, and nothing in "
+                    "the radio holds a chemical one."},
+            {"text": "Thermal in the arm, then kinetic in the spring, then "
+                     "chemical in the speaker",
+             "correct": False,
+             "why": "The muscles empty a chemical store, and a wound spring "
+                    "is stretched, so its store is elastic."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-01-s07",
+        "band": "standard",
+        "text": "Why is it wrong to call electricity a store of energy?",
+        "options": [
+            {"text": "Because electricity is far too fast to be stored "
+                     "anywhere",
+             "correct": False,
+             "why": "Speed has nothing to do with it. A pathway is defined by "
+                    "carrying energy, not by how quickly."},
+            {"text": "Because an electric current carries energy between "
+                     "stores rather than holding it",
+             "correct": True},
+            {"text": "Because electricity is not really a form of energy at "
+                     "all",
+             "correct": False,
+             "why": "It does deliver energy — that is exactly what makes it a "
+                    "pathway."},
+            {"text": "Because only chemicals and moving objects can hold "
+                     "energy",
+             "correct": False,
+             "why": "There are eight stores, including thermal, elastic and "
+                    "gravitational, so the list is far longer than that."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p1-01-h05",
+        "band": "harder",
+        "text": "A skydiver falls at a constant speed under an open "
+                "parachute. Which account of the stores is correct?",
+        "options": [
+            {"text": "The gravitational store empties, the kinetic store is "
+                     "unchanged, thermal stores in the air fill",
+             "correct": True},
+            {"text": "The gravitational store empties and the kinetic store "
+                     "fills at the same rate",
+             "correct": False,
+             "why": "The speed is constant, so the kinetic store is not "
+                    "changing at all."},
+            {"text": "No store changes, because the speed is not changing",
+             "correct": False,
+             "why": "The skydiver is still losing height, so the "
+                    "gravitational store is emptying every second."},
+            {"text": "The kinetic store empties into the thermal store of the "
+                     "air",
+             "correct": False,
+             "why": "The kinetic store stays the same size. What is emptying "
+                    "is the gravitational store."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-01-h06",
+        "band": "harder",
+        "text": "A student lists light, heat, sound, electrical and chemical "
+                "as five kinds of energy. Which item is genuinely a store?",
+        "options": [
+            {"text": "Sound, because you can hear the energy arriving",
+             "correct": False,
+             "why": "Hearing it is the energy passing through you. Sound is a "
+                    "pathway, not a store."},
+            {"text": "Light, because a bright object clearly holds a lot",
+             "correct": False,
+             "why": "The brightness shows energy leaving. Light carries it "
+                    "away rather than holding it."},
+            {"text": "Chemical, because a battery holds it while nothing "
+                     "happens",
+             "correct": True},
+            {"text": "Electrical, because a charged battery holds it",
+             "correct": False,
+             "why": "The battery holds a CHEMICAL store; the current is the "
+                    "pathway that takes it out."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-01-h07",
+        "band": "harder",
+        "text": "A roller-coaster car is held still at the top of the first "
+                "hill. A student says it has no energy. What is the right "
+                "account?",
+        "options": [
+            {"text": "Its kinetic store is empty, but its gravitational store "
+                     "is at its fullest",
+             "correct": True},
+            {"text": "It has no energy at all until the brakes are released",
+             "correct": False,
+             "why": "Being high up is precisely what fills the gravitational "
+                    "store; the release only lets it empty."},
+            {"text": "Both its stores are empty, because it is not moving",
+             "correct": False,
+             "why": "Height fills a store whether or not anything is moving, "
+                    "which is why the drop works."},
+            {"text": "Its kinetic store is full, because it is about to move",
+             "correct": False,
+             "why": "A store counts what is there now. About to move is not "
+                    "moving."},
+        ],
+        "figure": None,
+    },
 ]

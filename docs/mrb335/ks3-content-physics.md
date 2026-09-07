@@ -62,3 +62,62 @@ length/markup/spelling/position sweep):
   restated (gated), no markup, UK spellings, a unit on every quantity.
 
 Gates after P3: `question_bank` OK, `verify_questions` OK — nine checks clean.
+
+---
+
+## ⚠️ A gate defect that is NOT content, found while topping up P1
+
+From the moment the biology lane's B1 top-up landed in this worktree,
+`python3 verify_questions.py` reports **two check-8 findings**:
+
+```
+[check 8] compose_assignment/nearest-first
+[check 8] compose_assignment/thin-week
+```
+
+**`compose_assignment` is not the problem — it is correct.** It draws through
+`auto_pool()`, so it still takes exactly four standard rows from a lesson that
+now holds eight, and RISKS D7 holds: a topped-up lesson composes the identical
+assignment it composed before. Measured, read-only:
+
+```
+B1 lesson 6 standard rows in the file : 8
+B1 lesson 6 standard rows auto can see: 4
+cap obeyed by compose_assignment      : True
+```
+
+**The check's EXPECTATION is what is uncapped.** In
+`verify_questions.py::_check_composition`, the two comparisons build their
+expected lists from the whole lesson:
+
+```python
+own     = [q["id"] for q in bank.get(keys[5], []) if q.get("band") == "standard"]
+nearest = [q["id"] for q in bank.get(keys[4], []) if q.get("band") == "standard"]
+```
+
+so they expect eight ids where composition can only ever reach four. Re-running
+the same two assertions with `qb.auto_pool(...)` wrapped round each expectation
+makes both pass:
+
+```
+thin-week     (capped expectation): True
+nearest-first (capped expectation): True
+```
+
+**Why it matters to every lane, not just biology.** B1 is check 8's fixture
+unit. The check therefore goes red on the FIRST unit any lane tops up in B1 and
+stays red for everyone in the worktree afterwards — including runs whose own
+content is perfectly clean. It is the gate measuring the pre-MRB-335 world.
+
+**The fix is two lines**, wrapping each expectation in `qb.auto_pool(...)`. It
+is in `verify_questions.py`, which this lane may not edit (scope is
+`ks3_data/p*/questions_*.py` plus this file), so it is reported rather than
+made. **It must not be "fixed" by relaxing the assertion** — the property it
+tests is real and is exactly what protects existing assignments.
+
+**How this lane stayed honest in the meantime.** Every unit from P1 onwards is
+gated with a wrapper that fails on any finding that is not that named B1
+check-8 pair, so a physics defect cannot hide behind the known red. The fast
+gate `python3 -m ks3_data.question_bank` — which runs `validate_lesson` over
+every physics lesson, the ids, the positions, the duplicate stems and the
+markup rule — stays **OK, unconditionally**, after every unit below.

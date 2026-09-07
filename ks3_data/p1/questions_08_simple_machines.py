@@ -351,4 +351,141 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p1-08-e05",
+        "band": "easier",
+        "text": "What is meant by work done?",
+        "options": [
+            {"text": "The energy transferred when a force moves through a "
+                     "distance",
+             "correct": True},
+            {"text": "The force needed to hold something still",
+             "correct": False,
+             "why": "Holding still moves nothing, so no distance is covered "
+                    "and no energy is transferred."},
+            {"text": "The time a machine has been running for",
+             "correct": False,
+             "why": "That is a time in seconds. Work done is an energy in "
+                    "joules."},
+            {"text": "The distance a load has been lifted", "correct": False,
+             "why": "That is a distance in metres. It has to be multiplied by "
+                    "the force to give an energy."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-08-e06",
+        "band": "easier",
+        "text": "A force of 50 N lifts a load through 2 m. How much energy is "
+                "transferred?",
+        "options": [
+            {"text": "25 J", "correct": False,
+             "why": "That is 50 ÷ 2. Work done is force MULTIPLIED by "
+                    "distance."},
+            {"text": "100 J", "correct": True},
+            {"text": "52 J", "correct": False,
+             "why": "That is 50 + 2, and a force and a distance cannot be "
+                    "added."},
+            {"text": "0.04 J", "correct": False,
+             "why": "That is 2 ÷ 50, the division upside down as well as the "
+                    "wrong operation."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p1-08-s05",
+        "band": "standard",
+        "text": "A lever lifts a 600 N rock using an effort of 150 N, and the "
+                "effort end moves 0.80 m. Ignoring friction, how far does the "
+                "rock rise?",
+        "options": [
+            {"text": "0.20 m", "correct": True},
+            {"text": "3.20 m", "correct": False,
+             "why": "That multiplies the distance by four. Multiplying the "
+                    "force by four must DIVIDE the distance by four."},
+            {"text": "0.80 m", "correct": False,
+             "why": "Both ends cannot move the same distance, or the lever "
+                    "would be giving energy away free."},
+            {"text": "120 m", "correct": False,
+             "why": "120 is the energy in joules. It still has to be divided "
+                    "by the 600 N load."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-08-s06",
+        "band": "standard",
+        "text": "A ramp 4 m long is used to raise a load through a height of "
+                "1 m. Ignoring friction, by what factor is the force "
+                "reduced?",
+        "options": [
+            {"text": "Three times, the difference between 4 m and 1 m",
+             "correct": False,
+             "why": "It is the RATIO of the two distances that counts, not "
+                    "the difference between them."},
+            {"text": "Four times, because the ramp is four times as long",
+             "correct": True},
+            {"text": "It is not reduced at all — the load weighs the same",
+             "correct": False,
+             "why": "The weight is unchanged, but the push needed along the "
+                    "ramp is a quarter of it."},
+            {"text": "Four times, and the energy needed is quartered too",
+             "correct": False,
+             "why": "The force is quartered and the distance is quadrupled, "
+                    "so the energy is exactly the same."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p1-08-h05",
+        "band": "harder",
+        "text": "A pulley system raises an 800 N load through 0.50 m using an "
+                "effort of 200 N. Ignoring friction, how far must the rope be "
+                "pulled?",
+        "options": [
+            {"text": "0.125 m", "correct": False,
+             "why": "That divides the distance by four. A smaller force must "
+                    "move a LONGER distance, not a shorter one."},
+            {"text": "0.50 m", "correct": False,
+             "why": "If both distances matched, the pulley would be creating "
+                    "300 J out of nothing."},
+            {"text": "400 m", "correct": False,
+             "why": "400 is the energy in joules. It still has to be divided "
+                    "by the 200 N effort."},
+            {"text": "2.0 m", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-08-h06",
+        "band": "harder",
+        "text": "On the lever bench the measured input is always slightly "
+                "MORE than the output. What would it mean if a group measured "
+                "LESS in than out?",
+        "options": [
+            {"text": "That the lever is unusually efficient and worth keeping",
+             "correct": False,
+             "why": "No lever can pass on more than it was given, however "
+                    "well made."},
+            {"text": "That friction has helped rather than hindered on this "
+                     "occasion",
+             "correct": False,
+             "why": "Friction only ever moves energy into thermal stores, so "
+                    "it can never add to the output."},
+            {"text": "That there is a measurement error, because it would "
+                     "break conservation of energy",
+             "correct": True},
+            {"text": "That the load was lighter than the label on it says",
+             "correct": False,
+             "why": "A lighter load would change both figures together, and "
+                    "still could not put the output above the input."},
+        ],
+        "figure": None,
+    },
 ]

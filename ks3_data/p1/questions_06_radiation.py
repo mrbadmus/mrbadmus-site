@@ -371,4 +371,150 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p1-06-e05",
+        "band": "easier",
+        "text": "Which of these transfers CANNOT happen across a vacuum?",
+        "options": [
+            {"text": "Conduction between the two surfaces", "correct": True},
+            {"text": "Radiation from a hot object", "correct": False,
+             "why": "Radiation is the one route that crosses a vacuum, which "
+                    "is how the Sun's energy reaches us."},
+            {"text": "Infrared leaving a warm surface", "correct": False,
+             "why": "Infrared is radiation, so it crosses a vacuum "
+                    "perfectly well."},
+            {"text": "Light passing through a window", "correct": False,
+             "why": "Light is radiation as well, and needs no particles to "
+                    "travel through."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-06-e06",
+        "band": "easier",
+        "text": "Which objects emit infrared radiation?",
+        "options": [
+            {"text": "Only objects that are glowing red or white hot",
+             "correct": False,
+             "why": "Glowing means visible light as well. Infrared comes off "
+                    "long before anything glows."},
+            {"text": "Only objects hotter than the room they are in",
+             "correct": False,
+             "why": "Cold objects emit too — just less than warm ones do."},
+            {"text": "Every object, however warm or cool it is",
+             "correct": True},
+            {"text": "Only objects that have been heated by electricity",
+             "correct": False,
+             "why": "How something was warmed makes no difference to whether "
+                    "it emits."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p1-06-s05",
+        "band": "standard",
+        "text": "On a thermal camera a person appears bright and the wall "
+                "behind them appears dark. What does that show?",
+        "options": [
+            {"text": "Only the person is emitting infrared", "correct": False,
+             "why": "The wall emits too. It is cooler, so it emits less and "
+                    "shows up darker."},
+            {"text": "Both emit infrared, and the warmer one emits more",
+             "correct": True},
+            {"text": "The wall is absorbing all the infrared that reaches it",
+             "correct": False,
+             "why": "The camera shows what is emitted, and a wall that "
+                    "absorbed everything would then emit strongly."},
+            {"text": "The camera is detecting visible light from the person",
+             "correct": False,
+             "why": "A thermal camera sees infrared. The picture works in a "
+                    "completely dark room."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-06-s06",
+        "band": "standard",
+        "text": "You sit behind a closed window in sunlight and still feel "
+                "warm. Which route is reaching you?",
+        "options": [
+            {"text": "Conduction through the glass and then through the air",
+             "correct": False,
+             "why": "Conduction through glass and still air is far too slow "
+                    "to be what you feel."},
+            {"text": "Convection carrying warm air through the closed window",
+             "correct": False,
+             "why": "The window is shut, so no air is coming through it at "
+                    "all."},
+            {"text": "Radiation, which passes straight through the glass",
+             "correct": True},
+            {"text": "Nothing is reaching you; the room is simply warm "
+                     "already",
+             "correct": False,
+             "why": "Step out of the sunbeam and the feeling stops at once, "
+                    "so something is arriving along it."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p1-06-h05",
+        "band": "harder",
+        "text": "Space is extremely cold, yet a spacecraft needs radiators to "
+                "get rid of unwanted energy. Why?",
+        "options": [
+            {"text": "Because there are no particles outside, so only "
+                     "radiation can carry energy away",
+             "correct": True},
+            {"text": "Because space is not really cold, so nothing can cool "
+                     "at all",
+             "correct": False,
+             "why": "It is genuinely cold. The difficulty is that there is "
+                    "nothing to conduct into."},
+            {"text": "Because the spacecraft makes so much energy that no "
+                     "route could keep up",
+             "correct": False,
+             "why": "It is not the amount. Two of the three routes are simply "
+                    "unavailable out there."},
+            {"text": "Because energy can only leave a spacecraft through "
+                     "metal fins",
+             "correct": False,
+             "why": "The fins are shaped to radiate well; the whole hull "
+                    "radiates too, just less."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-06-h06",
+        "band": "harder",
+        "text": "Two identical cans of hot water are left side by side, one "
+                "painted matt black and one polished silver. Which cools "
+                "faster, and why?",
+        "options": [
+            {"text": "The silver one, because shiny metal conducts energy "
+                     "away quickly",
+             "correct": False,
+             "why": "Both cans are metal, so conduction through the wall is "
+                    "the same. The surfaces differ in what they emit."},
+            {"text": "Neither — the paint changes the colour, not the "
+                     "physics",
+             "correct": False,
+             "why": "The surface is exactly what decides how well infrared "
+                    "leaves it."},
+            {"text": "The black one, because a matt dark surface emits "
+                     "infrared better",
+             "correct": True},
+            {"text": "The black one, because dark surfaces hold less energy "
+                     "to start with",
+             "correct": False,
+             "why": "Both start with the same water at the same temperature; "
+                    "the difference is the rate of emission."},
+        ],
+        "figure": None,
+    },
 ]

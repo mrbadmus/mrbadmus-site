@@ -381,4 +381,224 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p1-02-e05",
+        "band": "easier",
+        "text": "What is meant by wasted energy?",
+        "options": [
+            {"text": "Energy that has been destroyed by the device",
+             "correct": False,
+             "why": "Nothing destroys energy. Wasted energy is still there, "
+                    "just spread out where it is no use."},
+            {"text": "Energy that ends up in a store you did not want filled",
+             "correct": True},
+            {"text": "Energy that was never supplied in the first place",
+             "correct": False,
+             "why": "It was supplied and it was transferred; it simply "
+                    "arrived in the wrong store."},
+            {"text": "Energy that leaks out before the device is switched on",
+             "correct": False,
+             "why": "Waste happens during the transfer, not before anything "
+                    "has started."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-02-e06",
+        "band": "easier",
+        "text": "An electric drill takes in 200 J and 150 J ends up doing the "
+                "drilling. How much is wasted?",
+        "options": [
+            {"text": "350 J", "correct": False,
+             "why": "That adds the two. The useful part is included in the "
+                    "200 J, not on top of it."},
+            {"text": "150 J", "correct": False,
+             "why": "That is the useful part. The waste is what is left of "
+                    "the 200 J."},
+            {"text": "50 J", "correct": True},
+            {"text": "0 J, because energy cannot be lost", "correct": False,
+             "why": "Energy is not lost, but 50 J of it went somewhere other "
+                    "than the drilling."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-02-e07",
+        "band": "easier",
+        "text": "In an energy account, what is meant by the surroundings?",
+        "options": [
+            {"text": "Everything around the device — the air, the bench, the "
+                     "room",
+             "correct": True},
+            {"text": "The wires and switches that supply the device",
+             "correct": False,
+             "why": "Those are part of the device's own circuit, not the "
+                    "space around it."},
+            {"text": "The place where energy goes when it is destroyed",
+             "correct": False,
+             "why": "Energy is never destroyed. The surroundings are where "
+                    "wasted energy genuinely ends up."},
+            {"text": "Any store that has been completely emptied",
+             "correct": False,
+             "why": "An empty store is a store. The surroundings are the "
+                    "things around the device."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p1-02-s05",
+        "band": "standard",
+        "text": "A hairdryer takes in 1800 J each second. About 1500 J warms "
+                "the air and 200 J turns the fan. What has happened to the "
+                "other 100 J?",
+        "options": [
+            {"text": "It has been destroyed inside the motor",
+             "correct": False,
+             "why": "Nothing destroys energy. Every joule can be found "
+                    "somewhere in the account."},
+            {"text": "It was never supplied, so the total is really 1700 J",
+             "correct": False,
+             "why": "The 1800 J was measured going in, so the account has to "
+                    "explain all of it."},
+            {"text": "It has filled thermal and sound stores in the casing "
+                     "and the room",
+             "correct": True},
+            {"text": "It is still inside the hairdryer, waiting to be used",
+             "correct": False,
+             "why": "Nothing in a hairdryer stores energy for later; it "
+                    "leaves as fast as it arrives."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-02-s06",
+        "band": "standard",
+        "text": "A phone charger feels warm while it is charging. What does "
+                "that tell you?",
+        "options": [
+            {"text": "The charger is faulty and should be replaced",
+             "correct": False,
+             "why": "Every charger warms a little. Some waste is normal, not "
+                    "a fault."},
+            {"text": "The phone is full and the extra energy has nowhere to "
+                     "go",
+             "correct": False,
+             "why": "It warms while charging as well, so this is not about "
+                    "the battery being full."},
+            {"text": "Warmth is being stored in the charger for later use",
+             "correct": False,
+             "why": "That thermal store simply drains into the room; nothing "
+                    "gets it back."},
+            {"text": "Some of the energy is filling thermal stores instead of "
+                     "the phone's chemical store",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-02-s07",
+        "band": "standard",
+        "text": "A motor uses 8000 J to raise a lift, and the lift's "
+                "gravitational store gains 6000 J. Which account is right?",
+        "options": [
+            {"text": "6000 J useful, and 2000 J into thermal stores in the "
+                     "motor and cable",
+             "correct": True},
+            {"text": "6000 J useful, and 2000 J destroyed by friction in "
+                     "the cable",
+             "correct": False,
+             "why": "Friction moves energy into thermal stores; it never "
+                    "destroys any of it."},
+            {"text": "8000 J useful, because all of it went into lifting",
+             "correct": False,
+             "why": "Only 6000 J reached the lift's gravitational store — the "
+                    "measurement says so."},
+            {"text": "2000 J useful, and 6000 J wasted in the motor",
+             "correct": False,
+             "why": "The two figures are the wrong way round: the lift gained "
+                    "the 6000 J."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p1-02-h05",
+        "band": "harder",
+        "text": "A kettle takes in 200 kJ and 180 kJ ends up in the water. "
+                "What fraction is wasted, and where has it gone?",
+        "options": [
+            {"text": "One tenth, into thermal stores in the kettle body, the "
+                     "worktop and the air",
+             "correct": True},
+            {"text": "One tenth, destroyed as the element gets hot",
+             "correct": False,
+             "why": "The fraction is right but the fate is not: a hot element "
+                    "is a thermal store, not a destruction."},
+            {"text": "Nine tenths, because only 20 kJ did the useful job",
+             "correct": False,
+             "why": "The two figures are swapped: 180 kJ of the 200 kJ "
+                    "reached the water."},
+            {"text": "None of it, because the water ends up hot either way",
+             "correct": False,
+             "why": "Only 180 kJ reached the water, so 20 kJ went elsewhere "
+                    "and is wasted."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-02-h06",
+        "band": "harder",
+        "text": "Why can an energy account never be finished with the words "
+                "and the rest was lost?",
+        "options": [
+            {"text": "Because losing energy is only allowed in a closed "
+                     "system",
+             "correct": False,
+             "why": "A closed system is where it is easiest to track. It is "
+                    "not a place where loss becomes allowed."},
+            {"text": "Because the rest is always somewhere, and naming it "
+                     "finishes the account",
+             "correct": True},
+            {"text": "Because the totals never balance in a real experiment "
+                     "anyway",
+             "correct": False,
+             "why": "They balance every time, once the thermal stores in the "
+                    "surroundings are included."},
+            {"text": "Because energy is destroyed too slowly to write down",
+             "correct": False,
+             "why": "Energy is not destroyed at any speed; that is what "
+                    "conservation says."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-02-h07",
+        "band": "harder",
+        "text": "A student writes that a 60 W bulb uses up 60 J each second. "
+                "Which rewrite is correct?",
+        "options": [
+            {"text": "It destroys 60 J each second, which is why the bill "
+                     "goes up",
+             "correct": False,
+             "why": "The bill measures energy supplied, not destroyed. "
+                    "Nothing destroys any of it."},
+            {"text": "It stores 60 J of light energy each second",
+             "correct": False,
+             "why": "Light is a pathway, and the bulb holds nothing — the "
+                    "energy leaves as fast as it arrives."},
+            {"text": "It transfers 60 J each second into light and thermal "
+                     "stores in the room",
+             "correct": True},
+            {"text": "It loses 60 J each second to the wires around it",
+             "correct": False,
+             "why": "The wires carry energy TO the bulb; the room is where "
+                    "almost all of it ends up."},
+        ],
+        "figure": None,
+    },
 ]

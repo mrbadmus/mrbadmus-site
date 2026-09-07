@@ -367,4 +367,151 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p1-05-e05",
+        "band": "easier",
+        "text": "Which of these is the best INSULATOR?",
+        "options": [
+            {"text": "Copper", "correct": False,
+             "why": "Copper is one of the best conductors there is, which is "
+                    "the opposite of an insulator."},
+            {"text": "Aluminium", "correct": False,
+             "why": "Aluminium is a metal with free electrons, so it passes "
+                    "energy on quickly."},
+            {"text": "Wool", "correct": True},
+            {"text": "Steel", "correct": False,
+             "why": "Steel is a metal too. It conducts more slowly than "
+                    "copper, but far faster than any non-metal."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-05-e06",
+        "band": "easier",
+        "text": "During conduction, do the particles themselves travel along "
+                "the material?",
+        "options": [
+            {"text": "Yes — the hot particles move to the cold end",
+             "correct": False,
+             "why": "The particles stay where they are. What travels along "
+                    "the material is the energy."},
+            {"text": "No — they stay in place and pass energy on by "
+                     "colliding",
+             "correct": True},
+            {"text": "Yes — but only in metals, because of free electrons",
+             "correct": False,
+             "why": "Free electrons do move, but the metal's atoms stay put, "
+                    "which is why the spoon keeps its shape."},
+            {"text": "No — nothing at all moves during conduction",
+             "correct": False,
+             "why": "The particles vibrate harder and harder along the "
+                    "material; that is how the energy is passed."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p1-05-s05",
+        "band": "standard",
+        "text": "A metal ruler and a wooden ruler are left in a warm oven for "
+                "the same time. Which is uncomfortable to pick up, and why?",
+        "options": [
+            {"text": "The wooden one, because wood holds more energy",
+             "correct": False,
+             "why": "Both reach the oven's temperature; the wood simply "
+                    "delivers its energy to your hand very slowly."},
+            {"text": "The metal one, because metal reaches a higher "
+                     "temperature in an oven",
+             "correct": False,
+             "why": "Both end up at the oven's temperature. The difference is "
+                    "how fast each delivers energy."},
+            {"text": "Neither, because they are at the same temperature",
+             "correct": False,
+             "why": "Same temperature, very different feel: what your hand "
+                    "senses is the RATE energy arrives at."},
+            {"text": "The metal one, because it conducts energy into your "
+                     "hand far faster",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-05-s06",
+        "band": "standard",
+        "text": "Why does a metal teaspoon left standing in hot tea become "
+                "too hot to hold, while a plastic one does not?",
+        "options": [
+            {"text": "Metal conducts energy up the handle quickly; plastic "
+                     "hardly conducts at all",
+             "correct": True},
+            {"text": "Metal attracts energy towards itself more strongly than "
+                     "plastic",
+             "correct": False,
+             "why": "Nothing attracts energy. It flows from hotter to colder, "
+                    "and metal simply passes it on faster."},
+            {"text": "Metal is hotter than plastic to start with",
+             "correct": False,
+             "why": "Both start at room temperature; it is the transfer speed "
+                    "that differs."},
+            {"text": "Plastic reflects the energy back into the tea",
+             "correct": False,
+             "why": "Conduction is not reflected. Plastic simply passes "
+                    "energy along very slowly."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p1-05-h05",
+        "band": "harder",
+        "text": "A fire-walker crosses a bed of glowing wood embers at "
+                "several hundred degrees without being burnt. Why?",
+        "options": [
+            {"text": "The embers are not really hot, only glowing",
+             "correct": False,
+             "why": "They genuinely are at several hundred degrees; glowing "
+                    "is what that temperature looks like."},
+            {"text": "Embers conduct very slowly, so little energy reaches "
+                     "the feet in the brief contact",
+             "correct": True},
+            {"text": "The feet are cold enough to cool the embers on contact",
+             "correct": False,
+             "why": "A foot cannot cool a bed of embers. What protects it is "
+                    "how slowly they deliver energy."},
+            {"text": "Walking quickly stops any energy transferring at all",
+             "correct": False,
+             "why": "Some does transfer every step; the point is that a poor "
+                    "conductor delivers very little of it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-05-h06",
+        "band": "harder",
+        "text": "Why do free electrons make a metal conduct faster than "
+                "vibration on its own?",
+        "options": [
+            {"text": "Because they are hotter than the atoms they move "
+                     "between",
+             "correct": False,
+             "why": "An electron does not have its own temperature. It is a "
+                    "carrier, not a hot object."},
+            {"text": "Because they push the atoms out of the way as they go",
+             "correct": False,
+             "why": "The atoms stay in place. The electrons travel between "
+                    "them without moving them along."},
+            {"text": "Because they carry energy right through the structure "
+                     "instead of neighbour to neighbour",
+             "correct": True},
+            {"text": "Because there are more electrons than atoms in a metal",
+             "correct": False,
+             "why": "How many there are is not the point; being free to move "
+                    "the whole length is."},
+        ],
+        "figure": None,
+    },
 ]

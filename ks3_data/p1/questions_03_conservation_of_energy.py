@@ -378,4 +378,227 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p1-03-e05",
+        "band": "easier",
+        "text": "What does it mean to say energy has been dissipated?",
+        "options": [
+            {"text": "It has been spread thinly into thermal stores in the "
+                     "surroundings",
+             "correct": True},
+            {"text": "It has been destroyed and no longer counts in the "
+                     "total",
+             "correct": False,
+             "why": "Dissipated energy still exists and still counts. It is "
+                    "spread out, not gone."},
+            {"text": "It has been gathered back into a single useful store",
+             "correct": False,
+             "why": "That is the opposite of dissipation, and it is the thing "
+                    "that never happens on its own."},
+            {"text": "It has been turned into a new kind of energy",
+             "correct": False,
+             "why": "There are no new kinds. Energy has simply moved into "
+                    "thermal stores."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-03-e06",
+        "band": "easier",
+        "text": "How many exceptions to the law of conservation of energy "
+                "have ever been found?",
+        "options": [
+            {"text": "A few, in nuclear reactions", "correct": False,
+             "why": "Nuclear reactions were checked especially hard, and the "
+                    "total balances there too."},
+            {"text": "None have ever been found", "correct": True},
+            {"text": "Many, which is why it is only called a rule",
+             "correct": False,
+             "why": "It is called a law precisely because no exception has "
+                    "survived checking."},
+            {"text": "One, which physicists have not yet explained",
+             "correct": False,
+             "why": "The one famous gap, in radioactive decay, turned out to "
+                    "be a missing particle rather than missing energy."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-03-e07",
+        "band": "easier",
+        "text": "A firework explodes and the energy spreads out in every "
+                "direction. What is the total energy afterwards?",
+        "options": [
+            {"text": "Smaller, because the energy has spread out",
+             "correct": False,
+             "why": "Spreading out changes how useful energy is, never how "
+                    "much of it there is."},
+            {"text": "Larger, because the explosion released extra energy",
+             "correct": False,
+             "why": "Nothing is released from outside the account; the "
+                    "chemical store supplied all of it."},
+            {"text": "Impossible to say without weighing the firework",
+             "correct": False,
+             "why": "The total is the same whatever the firework weighs — "
+                    "that is what the law says."},
+            {"text": "Exactly the same as before", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p1-03-s05",
+        "band": "standard",
+        "text": "A child on a swing is given one push and then left alone. "
+                "Why does each swing rise a little less high?",
+        "options": [
+            {"text": "Because the gravitational store is slowly being used "
+                     "up",
+             "correct": False,
+             "why": "No store is used up. It empties into thermal stores in "
+                    "the air and the pivot."},
+            {"text": "Because energy is dissipated to thermal stores by air "
+                     "resistance and friction",
+             "correct": True},
+            {"text": "Because gravity gets stronger the longer the swing "
+                     "goes on",
+             "correct": False,
+             "why": "Gravity is unchanged throughout; nothing about the pull "
+                    "on the child alters."},
+            {"text": "Because the child gets heavier as they tire",
+             "correct": False,
+             "why": "The mass does not change, and a heavier child would not "
+                    "swing lower anyway."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-03-s06",
+        "band": "standard",
+        "text": "A hot drink cools in a room. Where must the boundary of the "
+                "closed system be drawn?",
+        "options": [
+            {"text": "Around the drink only", "correct": False,
+             "why": "Energy crosses that boundary as the drink cools, so the "
+                    "total inside it falls."},
+            {"text": "Around the mug and the table it stands on",
+             "correct": False,
+             "why": "The air is carrying energy away too, so this boundary "
+                    "still leaks."},
+            {"text": "Around the drink and the whole room", "correct": True},
+            {"text": "Around the drink and the person waiting to drink it",
+             "correct": False,
+             "why": "The room takes most of the energy, and it is outside "
+                    "this boundary."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-03-s07",
+        "band": "standard",
+        "text": "A group measures 500 J going into a pulley and 470 J coming "
+                "out, and concludes the law is broken. What should they do "
+                "next?",
+        "options": [
+            {"text": "Repeat the experiment until the two numbers match "
+                     "exactly",
+             "correct": False,
+             "why": "They will never match at the useful end. The missing "
+                    "30 J is real and needs finding, not removing."},
+            {"text": "Report that conservation of energy does not hold for "
+                     "pulleys",
+             "correct": False,
+             "why": "No exception has ever survived checking, and this one is "
+                    "explained by friction."},
+            {"text": "Add the 30 J on at the end so the totals balance",
+             "correct": False,
+             "why": "Writing in a number is not accounting for it. The 30 J "
+                    "has to be found somewhere real."},
+            {"text": "Look for the missing 30 J in thermal stores in the "
+                     "rope and axle",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p1-03-h05",
+        "band": "harder",
+        "text": "Water falls 40 m through a hydroelectric turbine. Only part "
+                "of the energy reaches the generator. Which account is "
+                "right?",
+        "options": [
+            {"text": "The rest fills thermal stores in the water and pipes, "
+                     "so the total holds",
+             "correct": True},
+            {"text": "The rest is destroyed by the turbine blades",
+             "correct": False,
+             "why": "Blades cannot destroy energy; they can only pass it to "
+                    "other stores."},
+            {"text": "The rest never existed, because only useful energy "
+                     "counts",
+             "correct": False,
+             "why": "The whole gravitational store emptied, so all of it has "
+                    "to be accounted for."},
+            {"text": "The rest stays in the water's gravitational store at "
+                     "the bottom",
+             "correct": False,
+             "why": "The water has already fallen, so that store has emptied "
+                    "by the time it leaves."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-03-h06",
+        "band": "harder",
+        "text": "A student says conservation of energy means nothing can ever "
+                "run out. What has been confused?",
+        "options": [
+            {"text": "The total staying fixed with a useful store staying "
+                     "full",
+             "correct": True},
+            {"text": "Conservation with efficiency, which are the same idea",
+             "correct": False,
+             "why": "They are different: efficiency is the share that goes "
+                    "where you wanted, and conservation is about the total."},
+            {"text": "Energy with power, which is measured in watts",
+             "correct": False,
+             "why": "Power is energy per second. Nothing in the student's "
+                    "claim is about time."},
+            {"text": "Nothing — a fuel really does last for ever",
+             "correct": False,
+             "why": "A tank empties. Its energy still exists, but spread "
+                    "through the surroundings where nothing can use it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p1-03-h07",
+        "band": "harder",
+        "text": "A sealed vacuum flask of hot water is left for a week and "
+                "its temperature has fallen a little. What is the best "
+                "conclusion?",
+        "options": [
+            {"text": "Energy has been destroyed slowly over the week",
+             "correct": False,
+             "why": "A week is no different from a second: energy is not "
+                    "destroyed at any rate."},
+            {"text": "The flask is not truly closed, so energy has crossed "
+                     "its boundary",
+             "correct": True},
+            {"text": "The law of conservation fails over long periods",
+             "correct": False,
+             "why": "It has been tested over far longer than a week and has "
+                    "never failed."},
+            {"text": "The water has turned some of its energy into cold",
+             "correct": False,
+             "why": "Cold is not a substance and not a store. There is only "
+                    "less energy in the water."},
+        ],
+        "figure": None,
+    },
 ]
