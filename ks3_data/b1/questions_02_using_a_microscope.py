@@ -394,4 +394,387 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b1-02-e05",
+        "band": "easier",
+        "text": "What does the word specimen mean when you are using a "
+                "microscope?",
+        "options": [
+            {"text": "The circle of light you see when you look down the "
+                     "eyepiece.", "correct": False,
+             "why": "That circle is the field of view. The specimen is the "
+                    "thing itself — the onion skin or the pond water you have "
+                    "mounted."},
+            {"text": "The thing you are looking at under the microscope.",
+             "correct": True},
+            {"text": "The glass rectangle that the sample is mounted on.",
+             "correct": False,
+             "why": "That is the slide, with the coverslip over the top of "
+                    "it. The specimen is the sample lying between them."},
+            {"text": "The number of times bigger than real life it is being "
+                     "viewed at.", "correct": False,
+             "why": "That is the magnification, and it is a number rather "
+                    "than a thing. The specimen is whatever you have put on "
+                    "the stage."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-e06",
+        "band": "easier",
+        "text": "The slide has to be clipped onto the stage over the hole in "
+                "the middle. Why?",
+        "options": [
+            {"text": "So that the clips have something solid to grip "
+                     "against.", "correct": False,
+             "why": "The clips grip the slide against the stage itself. The "
+                    "hole is there for the light, which comes from "
+                    "underneath."},
+            {"text": "So that the objective cannot touch the slide as it "
+                     "comes down.", "correct": False,
+             "why": "The objective comes down from above and the hole is "
+                    "below it. What the hole is for is the light travelling "
+                    "up through the specimen."},
+            {"text": "So that any spare water can drain away underneath "
+                     "it.", "correct": False,
+             "why": "Nothing is meant to drain anywhere — the water is held "
+                    "in a thin layer under the coverslip. The hole lets the "
+                    "lamp's light through."},
+            {"text": "So that light from the lamp below can pass up through "
+                     "the specimen.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-e07",
+        "band": "easier",
+        "text": "What is a coverslip?",
+        "options": [
+            {"text": "The thin square of glass laid over a specimen.",
+             "correct": True},
+            {"text": "The thick glass rectangle a specimen is mounted on.",
+             "correct": False,
+             "why": "That is the slide. The coverslip is the thin square that "
+                    "goes on top of the specimen."},
+            {"text": "The lens at the top of the microscope that you look "
+                     "down.", "correct": False,
+             "why": "That is the eyepiece. A coverslip is a piece of glass on "
+                    "the slide, and not part of the microscope at all."},
+            {"text": "The cover that keeps dust off the microscope between "
+                     "lessons.", "correct": False,
+             "why": "That is a dust cover. A coverslip is the thin square of "
+                    "glass laid over the specimen."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-e08",
+        "band": "easier",
+        "text": "Light leaves the specimen and travels to your eye. Which "
+                "lenses does it pass through, and in what order?",
+        "options": [
+            {"text": "The eyepiece first, then the objective.",
+             "correct": False,
+             "why": "That is the right pair in the wrong order. The objective "
+                    "is the lens closest to the slide, so the light reaches "
+                    "it first."},
+            {"text": "The objective only — the eyepiece is a window you look "
+                     "through.", "correct": False,
+             "why": "The eyepiece is a lens, and it magnifies the image the "
+                    "objective has made. That is why the two numbers are "
+                    "multiplied together."},
+            {"text": "The objective first, then the eyepiece.",
+             "correct": True},
+            {"text": "The eyepiece only — the objective holds the slide in "
+                     "place.", "correct": False,
+             "why": "The stage and its clips hold the slide. The objective is "
+                    "the lens that swings round on the turret just above "
+                    "it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-e09",
+        "band": "easier",
+        "text": "You click round from a lower-powered objective to a "
+                "higher-powered one. What happens to the field of view?",
+        "options": [
+            {"text": "It gets larger, because the whole image is being made "
+                     "bigger.", "correct": False,
+             "why": "The circle you look through stays the same size. What "
+                    "changes is how much slide fits into it, and at higher "
+                    "power that is less."},
+            {"text": "It gets smaller, so less of the slide is in front of "
+                     "you.", "correct": True},
+            {"text": "It stays the same, because the eyepiece has not been "
+                     "changed.", "correct": False,
+             "why": "The objective is what sets the field of view. Change it "
+                    "and the width of slide in the circle changes with it."},
+            {"text": "It gets smaller, but only if the eyepiece is changed as "
+                     "well.", "correct": False,
+             "why": "The objective alone does it. Turning from the ×4 "
+                    "objective to the ×40 takes the field of view from "
+                    "4.5 mm to 0.45 mm."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b1-02-s05",
+        "band": "standard",
+        "text": "A microscope has a ×10 eyepiece. A student views a slide on "
+                "the ×10 objective, then clicks round to the ×40. How many "
+                "times more magnified is the second view?",
+        "options": [
+            {"text": "Thirty times more, because 40 − 10 = 30.",
+             "correct": False,
+             "why": "Subtracting compares the two objectives, not the two "
+                    "views. Compare the totals: ×400 against ×100 is four "
+                    "times."},
+            {"text": "Four hundred times more, because the total is now "
+                     "×400.", "correct": False,
+             "why": "×400 is how much bigger than real life it looks, not how "
+                    "much bigger than the last view. The first view was "
+                    "already ×100, so it is 400 ÷ 100."},
+            {"text": "Four times more, because ×400 is four times ×100.",
+             "correct": True},
+            {"text": "Ten times more, because the eyepiece is ×10.",
+             "correct": False,
+             "why": "The eyepiece never changed, so it cannot be what changed "
+                    "the view. The objective went from ×10 to ×40, which is "
+                    "four times."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-s06",
+        "band": "standard",
+        "text": "Onion skin is peeled away as a single layer rather than cut "
+                "into a slice with a knife. Why does that matter?",
+        "options": [
+            {"text": "One layer lets light through and shows cells that are "
+                     "not lying on top of each other.", "correct": True},
+            {"text": "A knife would damage the cells, and cells that have "
+                     "been damaged cannot be seen at all.", "correct": False,
+             "why": "A clean cut damages very few cells, and damaged ones are "
+                    "still visible. The trouble with a slice is its "
+                    "thickness."},
+            {"text": "The skin is the only part of an onion that is made of "
+                     "cells.", "correct": False,
+             "why": "Every part of the onion is made of cells. The skin is "
+                    "used because it comes away one layer thick."},
+            {"text": "A slice would be too small to find anywhere on the "
+                     "stage.", "correct": False,
+             "why": "A slice is usually easier to find, not harder. What "
+                    "makes it useless is that light cannot pass cleanly "
+                    "through several layers of cells."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-s07",
+        "band": "standard",
+        "text": "A student has hunted on the ×4 objective for a minute and "
+                "found nothing. A friend tells her to turn to the ×40, "
+                "because there is more to see there. Why is that bad advice?",
+        "options": [
+            {"text": "The ×40 objective shows less detail, so she would be "
+                     "going backwards.", "correct": False,
+             "why": "It shows more detail, which is exactly why it is "
+                    "tempting. What it does not do is help her find "
+                    "anything."},
+            {"text": "On the ×40 objective the image would be far too dark "
+                     "for her to see anything at all in it.", "correct": False,
+             "why": "The lamp still lights it. The real problem is how little "
+                    "slide is in front of her, and how little of it is in "
+                    "focus at once."},
+            {"text": "She should change the eyepiece instead of the "
+                     "objective.", "correct": False,
+             "why": "The eyepiece is fixed on a school microscope, and "
+                    "swapping it would not help her search. The point is to "
+                    "hunt where the field of view is widest."},
+            {"text": "On the ×40 objective she would search 0.45 mm of "
+                     "slide instead of 4.5 mm, so it is harder still.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-s08",
+        "band": "standard",
+        "text": "A microscope has a ×10 eyepiece, and on the ×4 objective the "
+                "field of view is 4.5 mm. The student clicks round to the ×10 "
+                "objective. Which pair of numbers is right?",
+        "options": [
+            {"text": "Total ×20, field of view 4.5 mm.", "correct": False,
+             "why": "×20 is 10 + 10, and the two lenses multiply: 10 × 10 = "
+                    "×100. The field of view cannot stay the same either — a "
+                    "higher objective always narrows it."},
+            {"text": "Total ×100, field of view 1.8 mm.", "correct": True},
+            {"text": "Total ×100, field of view 11.25 mm.", "correct": False,
+             "why": "The total is right and the field of view has gone the "
+                    "wrong way. Raising the magnification always shows you "
+                    "less slide, never more."},
+            {"text": "Total ×40, field of view 1.8 mm.", "correct": False,
+             "why": "×40 was the total on the previous objective. With the "
+                    "×10 objective in place the total is 10 × 10 = ×100."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-s09",
+        "band": "standard",
+        "text": "A dark hair-like line lies across the view. When the student "
+                "slides the specimen across the stage, everything moves "
+                "except that line. What is it?",
+        "options": [
+            {"text": "A crack in the slide, which is why it does not move "
+                     "with the specimen.", "correct": False,
+             "why": "A crack is in the slide, so it travels whenever the "
+                    "slide does. Anything that stays put while the slide "
+                    "moves is not on the slide at all."},
+            {"text": "A fibre from the specimen, caught under the "
+                     "coverslip.", "correct": False,
+             "why": "Everything under the coverslip moves with the slide. "
+                    "Something that stays still must be in the microscope, "
+                    "not on it."},
+            {"text": "A fibre or a hair on the eyepiece lens, with the slide "
+                     "moving underneath it.", "correct": True},
+            {"text": "An air bubble that has been stretched out under the "
+                     "coverslip.", "correct": False,
+             "why": "Bubbles are round with thick black rims, and they travel "
+                    "with the slide like everything else underneath the "
+                    "coverslip."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b1-02-h05",
+        "band": "harder",
+        "text": "A microscope's eyepiece has the field number 18 printed on "
+                "it. With the ×40 objective clicked into place, what is the "
+                "field of view?",
+        "options": [
+            {"text": "720 mm, because 18 × 40 = 720.", "correct": False,
+             "why": "Multiplying makes the field of view grow as the "
+                    "magnification grows, which is the opposite of what "
+                    "happens. Divide: 18 ÷ 40 = 0.45 mm."},
+            {"text": "0.045 mm, because the total magnification is ×400.",
+             "correct": False,
+             "why": "The field number is divided by the objective, not by the "
+                    "total. 18 ÷ 40 = 0.45 mm, which is the same answer "
+                    "180 ÷ 400 gives."},
+            {"text": "4.5 mm, because that is where the field of view always "
+                     "starts.", "correct": False,
+             "why": "4.5 mm is the field of view on the ×4 objective. On the "
+                    "×40 it is ten times narrower: 18 ÷ 40 = 0.45 mm."},
+            {"text": "0.45 mm, because 18 ÷ 40 = 0.45.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-h06",
+        "band": "harder",
+        "text": "A student draws a cell 60 mm across and writes ×400 beside "
+                "the drawing. How wide is the real cell?",
+        "options": [
+            {"text": "0.15 mm, because 60 ÷ 400 = 0.15.", "correct": True},
+            {"text": "24 000 mm, because 60 × 400 = 24 000.",
+             "correct": False,
+             "why": "Multiplying magnifies the drawing a second time. To get "
+                    "back to real life you divide by the magnification: "
+                    "60 ÷ 400 = 0.15 mm."},
+            {"text": "6.7 mm, because 400 ÷ 60 = 6.7.", "correct": False,
+             "why": "The division is the wrong way round. The drawing is 400 "
+                    "times bigger than the cell, so the cell is the drawing "
+                    "divided by 400."},
+            {"text": "0.15 cm, because 60 ÷ 400 = 0.15.", "correct": False,
+             "why": "The number is right and the unit is not. 0.15 cm is "
+                    "1.5 mm, ten times too big — the drawing was measured in "
+                    "millimetres, so the answer is 0.15 mm."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-h07",
+        "band": "harder",
+        "text": "A student records: eyepiece ×10, objective ×40, total "
+                "magnification ×400, field of view 4.5 mm. One of those four "
+                "numbers cannot be right. Which?",
+        "options": [
+            {"text": "The total — 10 + 40 is ×50, not ×400.", "correct": False,
+             "why": "The two lenses multiply, never add. ×400 is the one "
+                    "number in the row that is certainly right."},
+            {"text": "The objective — a ×40 objective cannot be used with a "
+                     "×10 eyepiece.", "correct": False,
+             "why": "That is the commonest pairing on a school microscope. "
+                    "The objective is fine; it is the field of view that does "
+                    "not fit."},
+            {"text": "The field of view — at ×400 it is 0.45 mm, and 4.5 mm "
+                     "belongs to ×40.", "correct": True},
+            {"text": "The eyepiece — it would have to be ×100 for the total "
+                     "to come to ×400.", "correct": False,
+             "why": "10 × 40 already comes to ×400, so the eyepiece is right. "
+                    "The field of view has been copied from the wrong row."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-h08",
+        "band": "harder",
+        "text": "A student wants to see a whole 3 mm insect leg in one view "
+                "and also count the tiny hairs along it. Why can she not do "
+                "both at once, and what should she do?",
+        "options": [
+            {"text": "She can do neither — 3 mm is far too large to go under "
+                     "a microscope at all.", "correct": False,
+             "why": "It sits easily on a slide, and 3 mm fits inside the "
+                    "4.5 mm field of view on the lowest objective. What it "
+                    "will not do is fit there at high power."},
+            {"text": "At high power the field of view is narrower than the "
+                     "leg, so view it whole on low power and climb to look at "
+                     "parts.", "correct": True},
+            {"text": "The hairs are too small to be seen at any "
+                     "magnification, so she should draw the whole leg only.",
+             "correct": False,
+             "why": "They show up at higher power — that is what higher power "
+                    "is for. The limit is how much of the leg fits in the "
+                    "circle at once."},
+            {"text": "She should turn the magnification up until the whole "
+                     "leg and every one of the hairs along it are sharp at "
+                     "the same time.", "correct": False,
+             "why": "Turning it up does the opposite: every step up narrows "
+                    "the field of view. There is no setting at which both are "
+                    "in view."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-02-h09",
+        "band": "harder",
+        "text": "Across a field of view 4.5 mm wide, a student counts 15 "
+                "onion cells lying end to end from one edge to the other. "
+                "About how long is one cell?",
+        "options": [
+            {"text": "67.5 mm, because 4.5 × 15 = 67.5.", "correct": False,
+             "why": "Multiplying makes each cell longer than the whole view. "
+                    "The fifteen cells share the 4.5 mm between them, so each "
+                    "one is 4.5 ÷ 15."},
+            {"text": "3.3 mm, because 15 ÷ 4.5 = 3.3.", "correct": False,
+             "why": "The division is the wrong way round — that is cells per "
+                    "millimetre. One cell is 4.5 ÷ 15 = 0.3 mm."},
+            {"text": "0.3 cm, because 4.5 ÷ 15 = 0.3.", "correct": False,
+             "why": "The number is right and the unit is not. 0.3 cm is 3 mm, "
+                    "ten times too long — the field of view was measured in "
+                    "millimetres, so it is 0.3 mm."},
+            {"text": "0.3 mm, because 4.5 ÷ 15 = 0.3.", "correct": True},
+        ],
+        "figure": None,
+    },
 ]

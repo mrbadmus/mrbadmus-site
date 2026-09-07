@@ -374,4 +374,305 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b1-06-e05",
+        "band": "easier",
+        "text": "What does multicellular mean?",
+        "options": [
+            {"text": "Made of one cell that carries out all seven life "
+                     "processes.", "correct": False,
+             "why": "That is unicellular — one cell that is the whole "
+                    "organism. Multicellular means many cells."},
+            {"text": "Made of cells that are all exactly the same as each "
+                     "other.", "correct": False,
+             "why": "The cells of a multicellular organism are usually "
+                    "specialised, so they differ. What the word means is that "
+                    "there are many of them."},
+            {"text": "Made of cells that could each survive alone if they "
+                     "were separated.", "correct": False,
+             "why": "Most of them could not. A cheek cell is fed, positioned "
+                    "and supplied by the rest of you."},
+            {"text": "Made of many cells, which are usually specialised for "
+                     "different jobs.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-06-e06",
+        "band": "easier",
+        "text": "What is a flagellum?",
+        "options": [
+            {"text": "A long whip that a cell beats in order to swim.",
+             "correct": True},
+            {"text": "A short hair, one of hundreds covering a cell's "
+                     "surface.", "correct": False,
+             "why": "Those are cilia, and they beat together like tiny oars. "
+                    "A flagellum is a single long whip."},
+            {"text": "A groove that sweeps food into the cell.",
+             "correct": False,
+             "why": "That is an oral groove, which is how a Paramecium feeds. "
+                    "A flagellum is used for swimming."},
+            {"text": "A vacuole that collects water and squeezes it out "
+                     "again.", "correct": False,
+             "why": "That is a contractile vacuole. A flagellum is the long "
+                    "whip a cell beats to move itself along."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-06-e07",
+        "band": "easier",
+        "text": "Which single-celled organism is green, makes its own food "
+                "from light, and swims using one long whip?",
+        "options": [
+            {"text": "Amoeba", "correct": False,
+             "why": "An Amoeba changes shape to move and engulfs other cells "
+                    "for food. It is not green and it makes nothing."},
+            {"text": "Paramecium", "correct": False,
+             "why": "A Paramecium swims with hundreds of cilia and sweeps "
+                    "food into an oral groove. The green one with a single "
+                    "whip is Euglena."},
+            {"text": "Euglena", "correct": True},
+            {"text": "A bacterium", "correct": False,
+             "why": "A bacterium has no nucleus and is not green. Euglena "
+                    "is the one that makes its own food from light and swims "
+                    "with a single whip."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-06-e08",
+        "band": "easier",
+        "text": "Which one of these single cells is a whole organism rather "
+                "than part of one?",
+        "options": [
+            {"text": "A red blood cell", "correct": False,
+             "why": "It is one of your cells, made in your marrow and carried "
+                    "round by your blood. Everything it needs is supplied to "
+                    "it."},
+            {"text": "An Amoeba", "correct": True},
+            {"text": "A sperm cell", "correct": False,
+             "why": "It carries half a set of chromosomes and never feeds — "
+                    "both signs that something larger made it and stocked "
+                    "it."},
+            {"text": "A cheek cell", "correct": False,
+             "why": "It lines your mouth, is held in place by the cells "
+                    "around it and is fed by your blood. It does one job "
+                    "while the rest of you does the others."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b1-06-s05",
+        "band": "standard",
+        "text": "A single cell flows around a smaller cell and takes it "
+                "inside itself. Does that settle whether it is a whole "
+                "organism?",
+        "options": [
+            {"text": "Yes — anything that hunts and eats another cell must be "
+                     "an organism.", "correct": False,
+             "why": "A white blood cell does exactly that inside you, and it "
+                    "is part of an organism. Behaviour is the least reliable "
+                    "evidence there is."},
+            {"text": "Yes — no cell inside a body ever engulfs anything.",
+             "correct": False,
+             "why": "Your white blood cells engulf bacteria in precisely this "
+                    "way. That is why engulfing settles nothing."},
+            {"text": "No — it is far too small a thing for anyone to watch "
+                     "and judge.", "correct": False,
+             "why": "It can be watched under a microscope. The reason it "
+                    "settles nothing is that cells inside a body do it too."},
+            {"text": "No — a white blood cell engulfs bacteria the same way, "
+                     "and it is part of you.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-06-s06",
+        "band": "standard",
+        "text": "A single cell in a rain barrel is green, has mitochondria, "
+                "is 0.05 mm long and can swim. Which of those facts settles "
+                "that it is a whole organism?",
+        "options": [
+            {"text": "That it can swim under its own power.",
+             "correct": False,
+             "why": "A sperm cell swims and a white blood cell crawls through "
+                    "tissue. Moving under your own power tells you nothing."},
+            {"text": "That it is green, and so makes its own food.",
+             "correct": True},
+            {"text": "That it has mitochondria inside it.",
+             "correct": False,
+             "why": "A Paramecium has mitochondria, and so does your cheek "
+                    "cell. A fact that is true of everything separates "
+                    "nothing."},
+            {"text": "That it is only 0.05 mm long.", "correct": False,
+             "why": "Size never settles it. Your cheek cell is 0.06 mm and a "
+                    "Paramecium is 0.25 mm, and the larger of those is the "
+                    "organism."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-06-s07",
+        "band": "standard",
+        "text": "A Paramecium is 0.25 mm long and one of your cheek cells is "
+                "0.06 mm. A student says the larger one must be the organism. "
+                "What is wrong with that?",
+        "options": [
+            {"text": "Nothing — a whole organism does have to be larger than "
+                     "one of its own cells.", "correct": False,
+             "why": "An organism made of one cell is exactly the size of that "
+                    "cell. Euglena is smaller than your cheek cell and is a "
+                    "whole organism."},
+            {"text": "The Paramecium is not really larger; it only looks it "
+                     "because it sits nearer the lens.", "correct": False,
+             "why": "It genuinely is four times longer. The mistake is "
+                    "treating size as evidence at all."},
+            {"text": "Size never settles it — Euglena is smaller than a cheek "
+                     "cell and is still an organism.", "correct": True},
+            {"text": "Cheek cells are the largest cells you have, so the "
+                     "comparison was unfair.", "correct": False,
+             "why": "A nerve cell can be a metre long. The reasoning fails "
+                    "whichever pair of cells you pick, because size does not "
+                    "decide this."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-06-s08",
+        "band": "standard",
+        "text": "A student says a unicellular organism must be a simpler cell "
+                "than one of yours, since it is only one cell. What is wrong "
+                "with that?",
+        "options": [
+            {"text": "It is the other way round: it does all seven itself, "
+                     "so it needs structures your cells do not.",
+             "correct": True},
+            {"text": "Nothing is wrong — a single cell does have fewer parts "
+                     "than a cell working inside a body.", "correct": False,
+             "why": "A Paramecium has cilia, an oral groove and a contractile "
+                    "vacuole on top of the parts your cells have. It is doing "
+                    "more, not less."},
+            {"text": "It is simpler, but only because it is smaller than one "
+                     "of your cells.", "correct": False,
+             "why": "A Paramecium is four times longer than a cheek cell. And "
+                    "size does not decide how much a cell has to do for "
+                    "itself."},
+            {"text": "They are equally complex, because both are built from "
+                     "the same seven parts.", "correct": False,
+             "why": "The seven parts are not the whole story. A cell that "
+                    "feeds, moves and manages its own water needs structures "
+                    "a cheek cell never builds."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b1-06-h05",
+        "band": "harder",
+        "text": "One bacterium divides into two every twenty minutes, and "
+                "every new cell divides at the same rate. Starting from a "
+                "single bacterium, how many are there after two hours?",
+        "options": [
+            {"text": "6, because there are six divisions in two hours.",
+             "correct": False,
+             "why": "Six is the number of divisions, not the number of cells. "
+                    "Each division doubles the whole population."},
+            {"text": "12, because six divisions each make two cells.",
+             "correct": False,
+             "why": "Six twos added together is 12; the number doubles "
+                    "instead. One becomes 2, 4, 8, 16, 32, 64."},
+            {"text": "64, because the number doubles six times.",
+             "correct": True},
+            {"text": "128, because the number doubles seven times.",
+             "correct": False,
+             "why": "Two hours is 120 minutes, and 120 ÷ 20 = 6 divisions, "
+                    "not seven. Six doublings give 64."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-06-h06",
+        "band": "harder",
+        "text": "A cell is found held in a sheet with thousands of identical "
+                "cells beside it, all sweeping their cilia the same way. "
+                "Organism, or part of one?",
+        "options": [
+            {"text": "An organism, because it is moving under its own "
+                     "power.", "correct": False,
+             "why": "Movement is the most misleading evidence there is. A "
+                    "sperm cell swims and a Paramecium swims, and only one of "
+                    "them is an organism."},
+            {"text": "Part of one — it does a single job while something else "
+                     "feeds it and holds it in place.", "correct": True},
+            {"text": "An organism, because thousands of identical cells means "
+                     "thousands of identical organisms.", "correct": False,
+             "why": "Being held in a sheet of identical neighbours is what a "
+                    "tissue looks like. Each of these cells does one job for "
+                    "something larger."},
+            {"text": "Part of one, because any cell that is covered in cilia "
+                     "is always part of a larger organism.", "correct": False,
+             "why": "A Paramecium is covered in cilia and is a complete "
+                    "organism. What settles this case is that the cell does "
+                    "one job and is supplied by something else."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-06-h07",
+        "band": "harder",
+        "text": "A Paramecium in pond water has a vacuole that keeps filling "
+                "with water and squeezing it out, and so does an Amoeba. No "
+                "cell in your body has one. What does that tell you?",
+        "options": [
+            {"text": "That your own cells are watertight in a way a pond "
+                     "organism's cells simply are not.", "correct": False,
+             "why": "Water crosses your cell membranes constantly. The "
+                    "difference is that the fluid around your cells is held "
+                    "steady, so nothing builds up."},
+            {"text": "That pond organisms are more advanced, because they "
+                     "control their own water.", "correct": False,
+             "why": "It is not a ranking. It is a job your body does for your "
+                    "cells and a free-living cell has to do for itself."},
+            {"text": "That a contractile vacuole is what makes something a "
+                     "unicellular organism.", "correct": False,
+             "why": "A bacterium has none and is a complete organism. The "
+                    "vacuole is one answer to living in fresh water, not a "
+                    "definition."},
+            {"text": "That a free-living cell manages its own water, while "
+                     "your body does that job for your cells.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b1-06-h08",
+        "band": "harder",
+        "text": "A bacterium is about 0.002 mm long and a Paramecium about "
+                "0.25 mm. How many times longer is the Paramecium?",
+        "options": [
+            {"text": "125 times, because 0.25 ÷ 0.002 = 125.",
+             "correct": True},
+            {"text": "0.248 times, because 0.25 − 0.002 = 0.248.",
+             "correct": False,
+             "why": "Subtracting gives the difference in length in "
+                    "millimetres, not how many times longer. For “how many "
+                    "times”, divide."},
+            {"text": "12.5 times, because 0.25 ÷ 0.02 = 12.5.",
+             "correct": False,
+             "why": "There is a zero missing from the divisor. The bacterium "
+                    "is 0.002 mm, so it is 0.25 ÷ 0.002 = 125."},
+            {"text": "1250 times, because 0.25 ÷ 0.0002 = 1250.",
+             "correct": False,
+             "why": "That is one zero too many. 0.002 mm is two thousandths "
+                    "of a millimetre, and 0.25 ÷ 0.002 = 125."},
+        ],
+        "figure": None,
+    },
 ]
