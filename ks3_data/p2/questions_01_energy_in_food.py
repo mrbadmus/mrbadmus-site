@@ -565,7 +565,9 @@ QUESTIONS = [
         "band": "standard",
         "text": "Why is a shield or screen put around the calorimeter?",
         "options": [
-            {"text": "To keep the food dry while it burns", "correct": False,
+            {"text": "To keep the food completely dry for as long as it "
+                     "burns",
+             "correct": False,
              "why": "The water is above the flame, and how dry the food is "
                     "was fixed before the run."},
             {"text": "To stop the flame going out", "correct": False,
@@ -574,7 +576,7 @@ QUESTIONS = [
             {"text": "To make the food burn faster", "correct": False,
              "why": "How fast it burns does not change how much energy it "
                     "holds altogether."},
-            {"text": "To cut down the energy escaping to the surroundings",
+            {"text": "To cut the energy escaping to the surroundings",
              "correct": True},
         ],
         "figure": None,
@@ -671,8 +673,8 @@ QUESTIONS = [
                 "21.6 kJ/g, run after run. Why does repeating it not fix the "
                 "gap?",
         "options": [
-            {"text": "Because the loss pushes every reading the same way — it "
-                     "is a systematic error",
+            {"text": "Because the loss is systematic, shifting every reading "
+                     "the same way",
              "correct": True},
             {"text": "Because five runs is not enough to average out a "
                      "random error",
@@ -684,8 +686,8 @@ QUESTIONS = [
              "correct": False,
              "why": "A bomb calorimeter reaches it routinely, so the label is "
                     "not the problem."},
-            {"text": "Because the thermometer becomes less accurate with each "
-                     "run",
+            {"text": "Because the thermometer becomes less accurate with "
+                     "every run that is done",
              "correct": False,
              "why": "It reads the same each time, which is why the results "
                     "agree with one another so closely."},
@@ -770,7 +772,7 @@ QUESTIONS = [
              "why": "It is a unit, fixed by law on the label, not a name a "
                     "company picks."},
             {"text": "Because a capital C means the figure is for the whole "
-                     "packet",
+                     "packet, not one portion",
              "correct": False,
              "why": "Whether it is per packet or per 100 g is stated "
                     "separately; the capital is about the unit."},
@@ -779,8 +781,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Most are lower case — the metre, the second and the gram "
                     "among them."},
-            {"text": "Because it is a kilocalorie — a thousand of the "
-                     "calories a scientist means",
+            {"text": "Because it is a kilocalorie — a thousand of the smaller "
+                     "calories",
              "correct": True},
         ],
         "figure": None,

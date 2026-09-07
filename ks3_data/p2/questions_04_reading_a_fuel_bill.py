@@ -606,13 +606,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Time alone is not the measure. At 0.36 kWh a day the "
                     "lighting is a very small share."},
-            {"text": "It is poor advice, because switching a light off saves "
-                     "no energy at all",
+            {"text": "It is poor advice, because switching a light off never "
+                     "saves any energy at all",
              "correct": False,
              "why": "It saves a real amount, just a small one — about 0.36 "
                     "units a day."},
-            {"text": "It is poor advice here: the lighting is about 0.36 "
-                     "units a day, far less than heating",
+            {"text": "Poor advice here: the lighting is only about 0.36 units "
+                     "a day",
              "correct": True},
             {"text": "It cannot be judged without knowing the price per unit",
              "correct": False,
@@ -627,8 +627,7 @@ QUESTIONS = [
         "text": "Why do suppliers charge a standing charge instead of putting "
                 "everything into the unit price?",
         "options": [
-            {"text": "Because the network costs the same whether anyone "
-                     "uses electricity or not",
+            {"text": "Because the network costs the same however much is used",
              "correct": True},
             {"text": "Because it makes the bill easier to work out",
              "correct": False,
@@ -639,8 +638,8 @@ QUESTIONS = [
              "correct": False,
              "why": "That is handled by different unit prices at different "
                     "times, not by a fixed daily charge."},
-            {"text": "Because it stops households using too much "
-                     "electricity",
+            {"text": "Because it stops households from using too much "
+                     "electricity at once",
              "correct": False,
              "why": "A charge that does not vary with usage cannot discourage "
                     "usage."},

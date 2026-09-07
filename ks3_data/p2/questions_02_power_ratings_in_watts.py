@@ -495,15 +495,16 @@ QUESTIONS = [
         "text": "Two lamps are rated 5 W and 60 W. Which statement is "
                 "certain?",
         "options": [
-            {"text": "The 60 W lamp will cost more over a year",
+            {"text": "The 60 W lamp will cost more to run over the course of "
+                     "a whole year",
              "correct": False,
              "why": "Only if it is on for as long. A 5 W lamp left on always "
                     "can easily cost more."},
             {"text": "The 60 W lamp is brighter", "correct": False,
              "why": "Brightness depends on the technology too — a 5 W LED can "
                     "beat a 60 W filament lamp."},
-            {"text": "The 60 W lamp transfers more energy each second while "
-                     "it is on",
+            {"text": "The 60 W lamp transfers more energy each second it is "
+                     "on",
              "correct": True},
             {"text": "The 60 W lamp holds more energy inside it",
              "correct": False,
@@ -546,11 +547,11 @@ QUESTIONS = [
              "correct": False,
              "why": "Neither holds any. Both transfer energy arriving along "
                     "the mains."},
-            {"text": "Because the kettle transfers energy far faster, so more "
-                     "passes through the cable each second",
+            {"text": "Because far more energy passes through the cable each "
+                     "second",
              "correct": True},
-            {"text": "Because the kettle is used at a hotter part of the "
-                     "house",
+            {"text": "Because the kettle is used in a hotter part of the "
+                     "house than the lamp",
              "correct": False,
              "why": "Where it stands has nothing to do with how much the "
                     "cable has to carry each second."},
@@ -627,7 +628,7 @@ QUESTIONS = [
                 "room to the same temperature. Which uses more energy?",
         "options": [
             {"text": "The 3 kW heater, because its rating is three times as "
-                     "big",
+                     "big as the other one",
              "correct": False,
              "why": "It transfers three times as fast, so it reaches the "
                     "temperature in about a third of the time."},
@@ -636,7 +637,7 @@ QUESTIONS = [
              "why": "Longer at a third of the rate comes to roughly the same "
                     "total, not to more."},
             {"text": "Roughly the same, because the room needs a fixed amount "
-                     "of energy either way",
+                     "of energy",
              "correct": True},
             {"text": "Neither — a heater's energy depends only on its rating",
              "correct": False,

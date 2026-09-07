@@ -333,7 +333,8 @@ QUESTIONS = [
         "band": "easier",
         "text": "What does intermittent mean, applied to an energy resource?",
         "options": [
-            {"text": "It runs out after a fixed number of years",
+            {"text": "It runs out after a fixed number of years and cannot be "
+                     "used again",
              "correct": False,
              "why": "That is what non-renewable means. Intermittent is about "
                     "availability day to day."},
@@ -341,8 +342,7 @@ QUESTIONS = [
              "correct": False,
              "why": "The bursts are not the point; being unavailable when you "
                     "want it is."},
-            {"text": "It is available only sometimes, and not when you "
-                     "choose",
+            {"text": "It is available only sometimes, not when you choose",
              "correct": True},
             {"text": "It produces only a small amount of energy",
              "correct": False,

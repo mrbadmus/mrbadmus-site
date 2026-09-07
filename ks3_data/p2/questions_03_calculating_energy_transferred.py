@@ -607,7 +607,7 @@ QUESTIONS = [
                 "2200 W oven runs 30 minutes a day. Which transfers more in a "
                 "day?",
         "options": [
-            {"text": "The oven, by a wide margin, at 1.1 kWh against "
+            {"text": "The oven, by a wide margin, at 1.1 kWh against just "
                      "0.045 kWh",
              "correct": False,
              "why": "0.045 kWh is the fridge for half an hour. Over 12 hours "
@@ -615,8 +615,7 @@ QUESTIONS = [
             {"text": "The oven, because 2200 W dwarfs 90 W", "correct": False,
              "why": "The rating dwarfs it, but the fridge runs for "
                     "twenty-four times as long."},
-            {"text": "They are within a few per cent of each other, at about "
-                     "1.1 kWh each",
+            {"text": "They are within a few per cent, at about 1.1 kWh each",
              "correct": True},
             {"text": "The fridge, at 10.8 kWh against 1.1 kWh",
              "correct": False,
