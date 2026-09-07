@@ -418,7 +418,18 @@ GATES = [
          cmd=["python3", "pool_ownership.py"],
          speed="fast",
          needs="/Users/midebadmus/Documents/GitHub/mrbadmus---backend/server.js",
-         why="Mide's 24 Aug 2026 ruling: three question pools, one per "
+         needs_env="MRB_BACKEND",
+         why="⚠️ needs_env=MRB_BACKEND SINCE MRB-331, 7 Sep 2026, and for "
+             "`verify_week_truth`'s reason. This gate reads the BACKEND's "
+             "source, and the main backend checkout is a shared working copy "
+             "that any session can leave on any branch. On 7 September it was "
+             "on a colleague's feat/mrb332-ks4-pool and this gate reported a "
+             "red about that branch as though it were about the tree being "
+             "pushed. The mirror image is worse and just as reachable: a "
+             "colleague's branch that happens to satisfy the contract makes "
+             "this print PASS about a backend nobody is shipping. Skipped BY "
+             "NAME without the variable, never guessed. "
+             "Mide's 24 Aug 2026 ruling: three question pools, one per "
              "surface, and no surface SERVES from a pool it does not own. "
              "Composition fed assignments from BOTH the ladder and the bank "
              "before this existed — verified in the production rows, not "

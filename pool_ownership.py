@@ -53,7 +53,33 @@ import re
 import sys
 
 SITE = os.path.dirname(os.path.abspath(__file__))
-BACKEND = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend"
+
+# ⚠️ WHICH BACKEND CHECKOUT, AND WHY IT IS NOT SIMPLY THE SIBLING REPO
+# (⊕ MRB-331, 7 Sep 2026).
+#
+# This read used to be hardwired to the main backend checkout. That is fine on
+# a machine with one branch checked out and actively wrong on this one: the
+# main checkout is a shared working copy and any session can leave it on any
+# branch. On 7 September it was sitting on a colleague's `feat/mrb332-ks4-pool`,
+# and this gate went RED on `bankFor() no longer reads ks3_assignment_bank` —
+# a true statement about a branch that has nothing to do with the tree being
+# pushed, reported as if it were about it.
+#
+# ⚠️ THE FAILURE DIRECTION IS THE DANGEROUS ONE. Red-for-the-wrong-reason is
+# survivable because somebody investigates. The same wiring can just as easily
+# read a colleague's branch that HAPPENS to satisfy the contract and report
+# green about a backend nobody is shipping — a gate that has stopped watching
+# while still printing PASS.
+#
+# So it takes an explicit path, exactly as `verify_week_truth.py` does and for
+# exactly that file's reason: point it at the backend actually being shipped.
+# The sibling repo remains the default, because that is what an ordinary
+# machine has.
+BACKEND = (
+    (sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else None)
+    or os.environ.get("MRB_BACKEND")
+    or "/Users/midebadmus/Documents/GitHub/mrbadmus---backend"
+)
 
 POOLS = ("ks3_assignment_bank", "ks3_ladder_questions", "ks3_cards")
 RETIRED_NAME = "ks3_bank_questions"   # must never come back into live code
