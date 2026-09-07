@@ -400,4 +400,406 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c1-04-e05",
+        "band": "easier",
+        "text": "What does the word pressure mean?",
+        "options": [
+            {"text": "How hard a force pushes on each bit of a surface.",
+             "correct": True},
+            {"text": "How much a gas weighs in its container.",
+             "correct": False,
+             "why": "Weight is a different quantity. Pressure is about how "
+                    "hard the pushing is on each bit of surface."},
+            {"text": "How fast the particles of a gas are moving about.",
+             "correct": False,
+             "why": "Speed is part of what causes pressure, but it is not "
+                    "what pressure means."},
+            {"text": "How much space a gas takes up.",
+             "correct": False,
+             "why": "That is volume. A gas can be at high or low pressure in "
+                    "the same volume."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-e06",
+        "band": "easier",
+        "text": "The bench counts collisions. What is a collision?",
+        "options": [
+            {"text": "A particle being destroyed as it reaches the wall.",
+             "correct": False,
+             "why": "Nothing is destroyed. The particle bounces and carries "
+                    "on."},
+            {"text": "A particle sticking to the wall and staying there.",
+             "correct": False,
+             "why": "If particles stuck, the count would fall to nothing "
+                    "within seconds. They bounce off."},
+            {"text": "When a moving particle hits something and bounces off.",
+             "correct": True},
+            {"text": "Two particles joining together to make a bigger one.",
+             "correct": False,
+             "why": "Particles do not join or grow in this unit. A collision "
+                    "is a hit followed by a bounce."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-e07",
+        "band": "easier",
+        "text": "The bench lets you change three things about the gas. Which "
+                "of these is NOT one of them?",
+        "options": [
+            {"text": "The temperature",
+             "correct": False,
+             "why": "This is one of the three, and it is the control that "
+                    "changes how fast the particles move."},
+            {"text": "The size of the container",
+             "correct": False,
+             "why": "This is one of the three. Shrink the box and each "
+                    "particle reaches a wall sooner."},
+            {"text": "The number of particles",
+             "correct": False,
+             "why": "This is one of the three. Take particles out and fewer "
+                    "arrive at the wall each second."},
+            {"text": "The size of the particles",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-e08",
+        "band": "easier",
+        "text": "Half the particles are removed from a sealed container, and "
+                "the temperature and the container stay exactly the same. What "
+                "happens to the pressure?",
+        "options": [
+            {"text": "It falls to about half.",
+             "correct": True},
+            {"text": "It stays the same, because each particle now has more "
+                     "room to build up speed.",
+             "correct": False,
+             "why": "Temperature sets the speed, and it has not changed. Each "
+                    "remaining particle behaves exactly as before — there are "
+                    "simply fewer of them."},
+            {"text": "It rises, because the particles have further to travel "
+                     "and hit harder.",
+             "correct": False,
+             "why": "A longer trip means a particle reaches the wall LESS "
+                    "often, and it hits no harder. Fewer arrivals means less "
+                    "pressure."},
+            {"text": "It falls to nothing, because half the gas has gone.",
+             "correct": False,
+             "why": "Half the particles are still there, still moving, still "
+                    "hitting the wall. Half the gas gives about half the "
+                    "pressure, not none."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-e09",
+        "band": "easier",
+        "text": "A gas is heated. What happens to its particles?",
+        "options": [
+            {"text": "They swell up and fill more of the container.",
+             "correct": False,
+             "why": "Particles never change size. The reference particle on "
+                    "the bench is drawn to prove it."},
+            {"text": "They move faster.",
+             "correct": True},
+            {"text": "There are more of them, because heat makes new ones.",
+             "correct": False,
+             "why": "Heating creates nothing. The same particles are there "
+                    "before and after."},
+            {"text": "They move apart until they are touching the walls.",
+             "correct": False,
+             "why": "In a sealed container the gas already fills it. What "
+                    "heating changes is speed, not spacing."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c1-04-s05",
+        "band": "standard",
+        "text": "The bench reads 14 wall hits per second. The container is "
+                "made half its size and nothing else is touched. What should "
+                "the count settle at?",
+        "options": [
+            {"text": "About 7 per second, because there is half as much "
+                     "space.",
+             "correct": False,
+             "why": "Less space means each particle gets back to a wall "
+                    "sooner, so the count goes UP rather than down."},
+            {"text": "About 14 per second, because no particles were added "
+                     "and none were removed.",
+             "correct": False,
+             "why": "The number of particles is only one of the three "
+                    "controls. Moving the walls closer changes the count "
+                    "without changing the number."},
+            {"text": "About 28 per second, because each particle reaches a "
+                     "wall twice as often.",
+             "correct": True},
+            {"text": "About 196 per second, because the count is squared.",
+             "correct": False,
+             "why": "Nothing here is squared. Halving the space roughly "
+                    "doubles how often each particle arrives."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-s06",
+        "band": "standard",
+        "text": "A rubber suction cup pressed onto a wall holds a shelf up. "
+                "What is holding it there?",
+        "options": [
+            {"text": "The rubber sucking the air out and pulling itself hard "
+                     "against the wall.",
+             "correct": False,
+             "why": "Nothing sucks. Squeezing the cup pushes air out; what "
+                    "holds it is the air outside pushing in."},
+            {"text": "The stickiness of the rubber against the smooth "
+                     "surface.",
+             "correct": False,
+             "why": "A dry suction cup is not sticky, and it falls off the "
+                    "moment air gets behind it."},
+            {"text": "Air particles outside hitting it, with almost none "
+                     "behind it to push back.",
+             "correct": True},
+            {"text": "The vacuum behind the cup pulling on it.",
+             "correct": False,
+             "why": "A vacuum is nothing, and nothing cannot pull. The push "
+                    "comes from the side where the particles are."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-s07",
+        "band": "standard",
+        "text": "The air above you pushes down with about the weight of a "
+                "tonne on your shoulders. Why can you not feel it?",
+        "options": [
+            {"text": "Because your skin is far too thick to notice a push as "
+                     "gentle as that.",
+             "correct": False,
+             "why": "A tonne is not gentle. It is unnoticed because it is "
+                    "balanced, not because it is small."},
+            {"text": "Because the same pressure pushes out from inside you, "
+                     "and the two balance.",
+             "correct": True},
+            {"text": "Because air is far too light to push on anything.",
+             "correct": False,
+             "why": "Air is made of particles and they hit you constantly. "
+                    "Their combined push is enormous."},
+            {"text": "Because you only feel a push when something is moving.",
+             "correct": False,
+             "why": "A book resting on your hand is not moving and you feel "
+                    "it. What matters here is that the push is matched from "
+                    "the other side."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-s08",
+        "band": "standard",
+        "text": "A balloon left on a car's back seat on a hot day bursts, "
+                "although nobody has touched it. Using the collision count, "
+                "why?",
+        "options": [
+            {"text": "The rubber was weakened by the sun, so the pressure it "
+                     "already held was enough to burst it.",
+             "correct": False,
+             "why": "Warm rubber actually stretches more easily rather than "
+                    "less. The change that matters is inside the balloon."},
+            {"text": "More air got in through the neck as the balloon warmed "
+                     "up.",
+             "correct": False,
+             "why": "The balloon is tied. No particles were added, and none "
+                    "need to be."},
+            {"text": "The particles inside got bigger and needed more room.",
+             "correct": False,
+             "why": "Particles never change size. Heating changes how fast "
+                    "they move and nothing else."},
+            {"text": "The particles inside sped up, hitting the rubber more "
+                     "often and harder, until it gave way.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-s09",
+        "band": "standard",
+        "text": "A student says the pressure inside a sealed can comes from "
+                "the weight of the gas pressing down. Which observation deals "
+                "with that best?",
+        "options": [
+            {"text": "The pressure pushes on the top and sides of the can as "
+                     "hard as on the bottom.",
+             "correct": True},
+            {"text": "Gas has almost no weight, so it could not press "
+                     "anywhere.",
+             "correct": False,
+             "why": "Gas does have mass and does have weight. The point is "
+                    "that weight acts downwards and pressure acts in every "
+                    "direction."},
+            {"text": "The can weighs the same whether the pressure is high or "
+                     "low.",
+             "correct": False,
+             "why": "Pumping more gas in does make the can heavier. What "
+                    "rules weight out is the direction the pressure acts."},
+            {"text": "The pressure changes when the can is heated, and "
+                     "heating does not change the weight.",
+             "correct": False,
+             "why": "True, and it does count for something — but the "
+                    "sharpest evidence is that the push is just as strong "
+                    "upwards on the lid."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c1-04-h05",
+        "band": "harder",
+        "text": "Two sealed boxes are the same size and hold the same number "
+                "of particles. Box A is at 20 °C and box B at 80 °C. How do "
+                "their wall hits compare?",
+        "options": [
+            {"text": "B's particles arrive more often, but each hit is just "
+                     "as gentle as A's.",
+             "correct": False,
+             "why": "Half the story. Faster particles arrive more often AND "
+                    "carry more punch when they get there."},
+            {"text": "B's hits are harder, but they arrive no more often than "
+                     "A's.",
+             "correct": False,
+             "why": "The other half. A faster particle crosses the box in "
+                    "less time, so it also arrives more often."},
+            {"text": "B's particles arrive more often and each hit is harder, "
+                     "so B's pressure is higher.",
+             "correct": True},
+            {"text": "The counts are the same, because the boxes hold the same "
+                     "number of particles.",
+             "correct": False,
+             "why": "The number is only one control of three. Temperature is "
+                    "another, and it has been changed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-h06",
+        "band": "harder",
+        "text": "A gas sits at 100 kPa in a 2-litre sealed box. It is pushed "
+                "into a 1-litre box at the same temperature, with no particles "
+                "lost. What is the best estimate of the new pressure?",
+        "options": [
+            {"text": "50 kPa",
+             "correct": False,
+             "why": "That is dividing where you should multiply. Half the "
+                    "space means each particle reaches a wall more often, not "
+                    "less."},
+            {"text": "100 kPa",
+             "correct": False,
+             "why": "Nothing would have changed only if the box had stayed "
+                    "the same size. Moving the walls in raises the hit count "
+                    "on its own."},
+            {"text": "200 kPa",
+             "correct": True},
+            {"text": "400 kPa",
+             "correct": False,
+             "why": "That is doubling twice. The volume was halved once, so "
+                    "the pressure roughly doubles once."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-h07",
+        "band": "harder",
+        "text": "An aerosol can that no longer sprays is thrown onto a "
+                "bonfire and bursts. Put the reason in the right order.",
+        "options": [
+            {"text": "The metal weakens in the heat, so the pressure inside "
+                     "no longer has to rise for the can to fail.",
+             "correct": False,
+             "why": "The metal does soften, but the can bursts outwards, "
+                    "which needs a rising pressure inside to do the "
+                    "bursting."},
+            {"text": "The gas inside is heated, so the particles move faster, "
+                     "so they hit the walls more often and harder, so the "
+                     "pressure rises until the can gives way.",
+             "correct": True},
+            {"text": "The gas inside is heated, so the particles swell up, so "
+                     "they press harder against the walls of the can, so the "
+                     "pressure rises and the can gives way.",
+             "correct": False,
+             "why": "The last step is right and the middle one is not. "
+                    "Particles never swell — they simply move faster."},
+            {"text": "The fire forces extra air in through the nozzle, so "
+                     "there are more particles, so the pressure rises.",
+             "correct": False,
+             "why": "Nothing gets in through a closed valve, and the "
+                    "pressure inside is already higher than outside. No "
+                    "particles are added."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-h08",
+        "band": "harder",
+        "text": "A sealed syringe is pushed in, released, and springs back "
+                "out; then it is pulled out, released, and springs back in. "
+                "Which explanation covers both?",
+        "options": [
+            {"text": "The gas inside pulls the plunger back when stretched "
+                     "and pushes it back when squashed.",
+             "correct": False,
+             "why": "A gas never pulls. When you pull the plunger out, what "
+                    "moves it back is the air OUTSIDE pushing in."},
+            {"text": "The rubber seal returns to its resting shape both "
+                     "times.",
+             "correct": False,
+             "why": "The seal only slides. Do the same with a well-oiled "
+                    "metal plunger and it still springs back both ways."},
+            {"text": "The plunger always returns to the point where the "
+                     "pressure inside and outside are equal.",
+             "correct": True},
+            {"text": "Gravity returns the plunger to its resting position "
+                     "each time.",
+             "correct": False,
+             "why": "It happens whichever way up the syringe is held, so "
+                    "gravity cannot be what does it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-04-h09",
+        "band": "harder",
+        "text": "A student argues: “Squeeze the gas and there are more "
+                "particle-to-particle bumps, so those bumps must add to the "
+                "pressure after all.” The first half is true. Why does the "
+                "conclusion still fail?",
+        "options": [
+            {"text": "Because the bumps happen away from the wall, and "
+                     "pressure is only what arrives at the wall.",
+             "correct": True},
+            {"text": "Because the bumps are too gentle to be worth counting.",
+             "correct": False,
+             "why": "They are no gentler than wall hits. Where they happen is "
+                    "what rules them out, not how hard they are."},
+            {"text": "Because there are not really any more of those bumps "
+                     "when the gas is squeezed into less space.",
+             "correct": False,
+             "why": "There genuinely are more — the student has that right. "
+                    "The error is in what follows from it."},
+            {"text": "Because the bumps cancel each other out, leaving no net "
+                     "push.",
+             "correct": False,
+             "why": "It is not a cancelling argument. The wall simply never "
+                    "feels them at all."},
+        ],
+        "figure": None,
+    },
 ]

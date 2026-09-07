@@ -389,4 +389,335 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c1-06-e05",
+        "band": "easier",
+        "text": "This lesson uses the word prediction in a particular way. "
+                "What is a prediction?",
+        "options": [
+            {"text": "What a model says should happen, worked out before "
+                     "anyone checks.",
+             "correct": True},
+            {"text": "An explanation of something that has already been "
+                     "carefully measured.",
+             "correct": False,
+             "why": "That is an explanation, and it is much easier to "
+                    "produce. A prediction has to come first, before the "
+                    "result is known."},
+            {"text": "A guess about something nobody could ever test.",
+             "correct": False,
+             "why": "An untestable guess is exactly what a prediction is "
+                    "not. A prediction has to be checkable."},
+            {"text": "A rule that has never once been found to fail.",
+             "correct": False,
+             "why": "Predictions fail all the time, and a failed one is the "
+                    "most useful thing a model can produce."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-06-e06",
+        "band": "easier",
+        "text": "The lesson talks about the limits of a model. What is a "
+                "limit?",
+        "options": [
+            {"text": "The smallest thing the model is able to describe.",
+             "correct": False,
+             "why": "Size is not what is meant. A limit is where the model "
+                    "starts giving wrong answers, whatever the size."},
+            {"text": "The point where the model stops giving the right "
+                     "answer.",
+             "correct": True},
+            {"text": "The number of things a model is allowed to explain.",
+             "correct": False,
+             "why": "Nothing caps what a model may explain. A limit is found, "
+                    "not set."},
+            {"text": "A mistake made by the scientist who built the model.",
+             "correct": False,
+             "why": "A limit is not a blunder. Every model has limits, "
+                    "including carefully built ones."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-06-e07",
+        "band": "easier",
+        "text": "Which of these does the simple particle model handle "
+                "completely?",
+        "options": [
+            {"text": "Ice floating on water.",
+             "correct": False,
+             "why": "This is one of the three failures. The model predicts "
+                    "the solid should sink."},
+            {"text": "Diamond and graphite being so different.",
+             "correct": False,
+             "why": "This is one of the three failures. Identical particles "
+                    "should give one substance one set of properties."},
+            {"text": "Sealing a melting ice cube in a bag and finding the "
+                     "mass unchanged.",
+             "correct": True},
+            {"text": "A rubber band springing back into its old shape when it "
+                     "is let go.",
+             "correct": False,
+             "why": "This is one of the three failures. It needs particles "
+                    "joined into long chains, which this model has no way to "
+                    "draw."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-06-e08",
+        "band": "easier",
+        "text": "According to the timeline, what did Thomson's model say an "
+                "atom was?",
+        "options": [
+            {"text": "A ball of positive charge with tiny negative electrons "
+                     "dotted through it.",
+             "correct": True},
+            {"text": "A solid sphere that cannot be split, created or "
+                     "destroyed.",
+             "correct": False,
+             "why": "That is Dalton's model, the one Thomson's replaced when "
+                    "he found the atom had parts."},
+            {"text": "A tiny dense centre with electrons a long way out.",
+             "correct": False,
+             "why": "That is Rutherford's, which came next — after his "
+                    "experiment broke the plum pudding."},
+            {"text": "The smallest possible piece of matter, reached by pure "
+                     "argument alone.",
+             "correct": False,
+             "why": "That is Democritus, two thousand years earlier, with no "
+                    "experiment behind it."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c1-06-s05",
+        "band": "standard",
+        "text": "One of the verdict options is to call the particle model a "
+                "theory instead, since a theory is allowed exceptions. Why "
+                "does that fix nothing?",
+        "options": [
+            {"text": "Because a theory is a much weaker kind of idea than a "
+                     "model, so it would be a step backwards.",
+             "correct": False,
+             "why": "A theory is not weaker than a model. The trouble with "
+                    "the swap is that it changes nothing about the "
+                    "predictions."},
+            {"text": "Because a theory that predicts ice will sink has "
+                     "exactly the same problem as a model that does.",
+             "correct": True},
+            {"text": "Because only physicists are allowed to use the word "
+                     "theory.",
+             "correct": False,
+             "why": "Chemistry uses the word freely. The objection is about "
+                    "the prediction, not about who may use the word."},
+            {"text": "Because the exceptions would then have to be listed "
+                     "somewhere.",
+             "correct": False,
+             "why": "The exceptions are listed either way, and listing them "
+                    "is a good thing. Renaming simply does not change what "
+                    "the idea predicts."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-06-s06",
+        "band": "standard",
+        "text": "A student holds that a model is either true or false, and "
+                "that one exception proves it false. What would happen to "
+                "chemistry if that rule were applied consistently?",
+        "options": [
+            {"text": "Only the very newest models would survive it.",
+             "correct": False,
+             "why": "The newest models have limits too — they are simply "
+                    "further out. None of them would survive either."},
+            {"text": "Chemistry would be left with no models at all, because "
+                     "every one of them has limits.",
+             "correct": True},
+            {"text": "Chemistry would end up far more reliable, because only "
+                     "perfect ideas would be kept.",
+             "correct": False,
+             "why": "There would be no ideas left to be reliable. A standard "
+                    "nothing can meet is not a high standard, it is an "
+                    "unusable one."},
+            {"text": "Nothing would change, because the particle model has no "
+                     "exceptions.",
+             "correct": False,
+             "why": "This lesson names three of them, and the bench is built "
+                    "to make you find them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-06-s07",
+        "band": "standard",
+        "text": "The timeline gives the evidence that broke every model "
+                "except one. What broke Democritus's idea?",
+        "options": [
+            {"text": "The discovery that atoms have smaller parts inside "
+                     "them, which he had said was impossible.",
+             "correct": False,
+             "why": "That broke Dalton's model, two thousand years later. By "
+                    "then Democritus's version had long been overtaken."},
+            {"text": "The measurement of 50 ml and 50 ml giving 97 ml.",
+             "correct": False,
+             "why": "That measurement supports the particle idea rather than "
+                    "breaking it. It is one of the numbers that finally made "
+                    "it science."},
+            {"text": "Nothing broke it — and that was the problem, because an "
+                     "idea nobody can test cannot win.",
+             "correct": True},
+            {"text": "Rutherford's experiment with the gold foil.",
+             "correct": False,
+             "why": "That broke Thomson's plum pudding, and it came in the "
+                    "twentieth century."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-06-s08",
+        "band": "standard",
+        "text": "The lesson says the three failures were treated as a map. "
+                "What does that mean?",
+        "options": [
+            {"text": "That they were written down and then set aside as "
+                     "unimportant.",
+             "correct": False,
+             "why": "The opposite of setting aside. Each one was followed "
+                    "up, and each one led somewhere."},
+            {"text": "That they showed the model was worthless and had to be "
+                     "abandoned as soon as they were found.",
+             "correct": False,
+             "why": "Nobody abandoned it. It is still used every day by "
+                    "people who know exactly where it breaks."},
+            {"text": "That they had to be hidden until a better model was "
+                     "ready.",
+             "correct": False,
+             "why": "They were published and argued over. Hiding a failure is "
+                    "how you lose the discovery in it."},
+            {"text": "That each one marked a place where a better model was "
+                     "needed, and each one eventually got built.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c1-06-h05",
+        "band": "harder",
+        "text": "Dalton's claim that atoms cannot be split turned out to be "
+                "wrong. What happened to the things he used that claim to "
+                "explain?",
+        "options": [
+            {"text": "They had to be explained all over again from nothing.",
+             "correct": False,
+             "why": "Nothing had to be started again. Conservation of mass is "
+                    "explained today the way Dalton explained it."},
+            {"text": "They are still explained the same way today.",
+             "correct": True},
+            {"text": "They turned out to be wrong as well, once the claim "
+                     "fell.",
+             "correct": False,
+             "why": "The observations never changed. Mass still balances "
+                    "through a reaction, exactly as it did in 1803."},
+            {"text": "They are now regarded as coincidences.",
+             "correct": False,
+             "why": "They are regarded as well-established results. A model "
+                    "being superseded does not turn its successes into "
+                    "luck."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-06-h06",
+        "band": "harder",
+        "text": "Suppose a new model gave particles a shape and let them be "
+                "joined together in different arrangements. Which of the three "
+                "failures would that deal with?",
+        "options": [
+            {"text": "Only ice floating, since the other two are about "
+                     "solids.",
+             "correct": False,
+             "why": "Diamond, graphite and rubber are solids and all three "
+                    "failures come from the same assumption. Shape and "
+                    "joining reach all of them."},
+            {"text": "Only diamond and graphite, since they are the same "
+                     "element.",
+             "correct": False,
+             "why": "Being the same element makes that one vivid, but ice and "
+                    "rubber fail for the same reason — featureless spheres."},
+            {"text": "All three, because all three come from treating "
+                     "particles as identical featureless spheres.",
+             "correct": True},
+            {"text": "None of them, because once a model has failed a test it "
+                     "cannot be repaired, only replaced.",
+             "correct": False,
+             "why": "Repairing a model on the evidence is exactly what the "
+                    "timeline shows happening, four times over."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-06-h07",
+        "band": "harder",
+        "text": "A student argues: “The model is wrong about ice, so what it "
+                "says about gas pressure cannot be trusted either.” What is "
+                "wrong with that reasoning?",
+        "options": [
+            {"text": "Nothing — a model that fails once should not be trusted "
+                     "anywhere.",
+             "correct": False,
+             "why": "That is the standard no model in science survives. It "
+                    "would leave you unable to explain anything at all."},
+            {"text": "The failures trace to one assumption, and the "
+                     "gas-pressure explanation does not rest on it.",
+             "correct": True},
+            {"text": "Gas pressure belongs to physics rather than chemistry, "
+                     "so the two have nothing to do with each other.",
+             "correct": False,
+             "why": "They are the same model at work in both places. What "
+                    "separates them is which assumption each one uses."},
+            {"text": "The ice failure is too small to matter.",
+             "correct": False,
+             "why": "It is not small — it is why lakes do not freeze solid. "
+                    "The answer is not that the failure is minor but that it "
+                    "is traceable."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-06-h08",
+        "band": "harder",
+        "text": "Someone proposes a new model of matter that explains ice "
+                "floating perfectly but gets gas pressure wrong. Should it "
+                "replace the particle model?",
+        "options": [
+            {"text": "Yes — it explains something the old model could not, "
+                     "and that is exactly what replacement means.",
+             "correct": False,
+             "why": "Only half of what replacement means. It also has to keep "
+                    "everything the old model already got right."},
+            {"text": "Yes, but only until someone finds a limit in it too.",
+             "correct": False,
+             "why": "Every model has limits, so that would be no test at "
+                    "all. The test is whether it loses ground the old one "
+                    "held."},
+            {"text": "No — a replacement must reproduce what the old model "
+                     "explained as well as fixing what broke it.",
+             "correct": True},
+            {"text": "No — the particle model has been used for so long that "
+                     "it cannot now be replaced.",
+             "correct": False,
+             "why": "Age protects nothing. The timeline shows four "
+                    "replacements, each of a model that everyone had been "
+                    "using."},
+        ],
+        "figure": None,
+    },
 ]

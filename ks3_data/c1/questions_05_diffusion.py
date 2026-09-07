@@ -345,4 +345,330 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c1-05-e05",
+        "band": "easier",
+        "text": "What does concentration mean?",
+        "options": [
+            {"text": "How many particles of a substance there are in a given "
+                     "space",
+             "correct": True},
+            {"text": "How fast the particles of a substance happen to be "
+                     "moving",
+             "correct": False,
+             "why": "That is set by temperature. Concentration is about how "
+                    "many are packed into a space"},
+            {"text": "How strongly a substance smells",
+             "correct": False,
+             "why": "A strong smell often means a high concentration, but the "
+                    "word counts particles rather than describing a smell"},
+            {"text": "How heavy one particle of a substance is",
+             "correct": False,
+             "why": "That is a property of one particle. Concentration is "
+                    "about how crowded a space is"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-05-e06",
+        "band": "easier",
+        "text": "The bench says each particle takes a step in a random "
+                "direction. What does random mean in science?",
+        "options": [
+            {"text": "Strange, or hard to believe",
+             "correct": False,
+             "why": "That is the everyday use of the word. In science it "
+                    "means unpredictable, direction by direction"},
+            {"text": "Very fast, and hard to follow",
+             "correct": False,
+             "why": "Speed has nothing to do with it. A slow movement can be "
+                    "just as random"},
+            {"text": "With no pattern and no set direction",
+             "correct": True},
+            {"text": "Chosen by something too small to see",
+             "correct": False,
+             "why": "Nothing is choosing. That is what random rules out"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-05-e07",
+        "band": "easier",
+        "text": "The lesson gives the time diffusion needs at different "
+                "scales. About how long does it take to cross a single cell, "
+                "roughly 0.01 mm?",
+        "options": [
+            {"text": "About a hundredth of a second",
+             "correct": True},
+            {"text": "About a minute, once the spreading gets going",
+             "correct": False,
+             "why": "Far too slow. Over distances this small diffusion is "
+                    "quick enough that a cell needs no delivery system at "
+                    "all"},
+            {"text": "About three hours",
+             "correct": False,
+             "why": "That is the figure for a fingertip, about a thousand "
+                    "times further"},
+            {"text": "About a day",
+             "correct": False,
+             "why": "Nothing like it. Diffusion is unbeatable over distances "
+                    "this small"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-05-e08",
+        "band": "easier",
+        "text": "Which of these does diffusion NOT need?",
+        "options": [
+            {"text": "Particles that are moving",
+             "correct": False,
+             "why": "It needs this above everything. The movement of the "
+                    "particles is the whole mechanism"},
+            {"text": "Somewhere less crowded for particles to move into",
+             "correct": False,
+             "why": "It needs this too. Without a difference in crowding "
+                    "there is no net spreading"},
+            {"text": "Someone to waft it, or a draught to carry it",
+             "correct": True},
+            {"text": "Space between the particles to move through",
+             "correct": False,
+             "why": "It needs this. Pack the space solid and nothing can go "
+                    "anywhere"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c1-05-s05",
+        "band": "standard",
+        "text": "A teabag is lowered into a mug of still hot water and the "
+                "colour spreads through it without anyone stirring. What is "
+                "doing the work?",
+        "options": [
+            {"text": "The heat rising through the mug and carrying the colour "
+                     "with it",
+             "correct": False,
+             "why": "Warmth speeds diffusion up, but the spreading happens in "
+                    "cold water too. Nothing is being carried"},
+            {"text": "The tea particles' own random movement, from where they "
+                     "are crowded to where they are not",
+             "correct": True},
+            {"text": "The water pushing the tea particles outwards from the "
+                     "bag",
+             "correct": False,
+             "why": "The water is still. Nothing is pushing — the tea "
+                    "particles were already moving on their own"},
+            {"text": "The tea particles being lighter than the water around "
+                     "them, so they float outwards through it",
+             "correct": False,
+             "why": "Diffusion works in every direction, including "
+                    "downwards. Floating cannot explain that"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-05-s06",
+        "band": "standard",
+        "text": "A smell can reach you across a room in under a minute, yet "
+                "diffusion alone would take days over that distance. How does "
+                "it get there?",
+        "options": [
+            {"text": "Diffusion speeds up over long distances once it gets "
+                     "going",
+             "correct": False,
+             "why": "It does the opposite. Double the distance and diffusion "
+                    "takes four times as long"},
+            {"text": "The smell travels through the air as a signal rather "
+                     "than as particles actually arriving",
+             "correct": False,
+             "why": "A smell IS particles arriving at your nose. There is no "
+                    "signal to send"},
+            {"text": "Draughts and convection carry it most of the way, and "
+                     "diffusion covers the last stretch",
+             "correct": True},
+            {"text": "The particles are lighter than air, so they are carried "
+                     "up and over",
+             "correct": False,
+             "why": "You can smell something standing above the source as "
+                    "easily as below it. Weight is not what moves it across "
+                    "the room"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-05-s07",
+        "band": "standard",
+        "text": "Two tanks get an identical drop of dye. One is left still; "
+                "the other is gently stirred and evens out far sooner. Is the "
+                "stirring diffusion?",
+        "options": [
+            {"text": "Yes — stirring is just diffusion done faster",
+             "correct": False,
+             "why": "Stirring moves whole regions of liquid at once. "
+                    "Diffusion moves one particle at a time, by itself"},
+            {"text": "Yes — the stirring gives the particles the push that "
+                     "diffusion needs in order to begin",
+             "correct": False,
+             "why": "Diffusion needs no push at all. That is the point of the "
+                    "still tank, which evens out on its own"},
+            {"text": "No — and it also means the still tank will never even "
+                     "out",
+             "correct": False,
+             "why": "The still tank does even out, given time. Stirring "
+                    "changes how long it takes, not whether it happens"},
+            {"text": "No — stirring moves whole regions of liquid, while "
+                     "diffusion carries on in both tanks",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-05-s08",
+        "band": "standard",
+        "text": "A smell spreads through air far faster than a dye spreads "
+                "through water. Why?",
+        "options": [
+            {"text": "Gas particles move faster and travel further between "
+                     "collisions",
+             "correct": True},
+            {"text": "Gas particles are smaller, so they slip between the air "
+                     "particles",
+             "correct": False,
+             "why": "Size is not what decides it, and the particles do not "
+                    "change size on entering a gas. Speed and free distance "
+                    "are what differ"},
+            {"text": "Air is a mixture, and mixtures diffuse faster than pure "
+                     "substances",
+             "correct": False,
+             "why": "Being a mixture makes no difference. What matters is how "
+                    "far apart the particles are and how fast they move"},
+            {"text": "Gravity pulls the dye downwards and holds it back",
+             "correct": False,
+             "why": "Dye spreads upwards through water as well as downwards. "
+                    "Gravity is not what is slowing it"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c1-05-h05",
+        "band": "harder",
+        "text": "Diffusion crosses 0.01 mm in about a hundredth of a second "
+                "and 10 mm in about three hours. The distance is a thousand "
+                "times bigger; the time is about a million times longer. Why "
+                "the mismatch?",
+        "options": [
+            {"text": "Because the particles slow down as they get further "
+                     "from the start",
+             "correct": False,
+             "why": "Nothing slows them. Their speed is set by temperature "
+                    "and does not change with distance travelled"},
+            {"text": "Because the time goes up with the SQUARE of the "
+                     "distance, and a thousand squared is a million",
+             "correct": True},
+            {"text": "Because there are more particles in the way over a "
+                     "longer distance",
+             "correct": False,
+             "why": "The crowding is the same all the way along. It is the "
+                    "wandering path that makes long distances so costly"},
+            {"text": "Because the three-hour figure was measured in a liquid "
+                     "and the hundredth of a second in a gas",
+             "correct": False,
+             "why": "Both figures are for the same kind of journey. The "
+                    "squaring rule is what accounts for the difference"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-05-h06",
+        "band": "harder",
+        "text": "A lung is folded into millions of tiny sacs rather than "
+                "being two smooth bags. Which fact about diffusion forces that "
+                "design?",
+        "options": [
+            {"text": "Diffusion works only in gases, so the air has to be "
+                     "kept well apart from the blood in the vessels below",
+             "correct": False,
+             "why": "Diffusion works in liquids too — that is how oxygen "
+                    "crosses into the blood once it arrives"},
+            {"text": "Diffusion needs a current, and the folds create one",
+             "correct": False,
+             "why": "Diffusion needs no current at all. The folds are about "
+                    "distance, not about stirring the air"},
+            {"text": "Diffusion is fast only over a fraction of a millimetre, "
+                     "so the air must be brought very close to the blood",
+             "correct": True},
+            {"text": "Diffusion goes faster when there is more surface, "
+                     "whatever the distance",
+             "correct": False,
+             "why": "Surface does help, but the reason a smooth bag fails is "
+                    "the distance from its middle to the blood, which no "
+                    "amount of surface fixes"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-05-h07",
+        "band": "harder",
+        "text": "Einstein predicted in 1905 exactly how far a pollen grain "
+                "should wander in a given time, and Perrin then measured it. "
+                "Why did that settle an argument that eighty years of watching "
+                "had not?",
+        "options": [
+            {"text": "Because Einstein was by then far more famous than any "
+                     "of the people who had sat and watched the jitter for "
+                     "themselves",
+             "correct": False,
+             "why": "Reputation settles nothing. What settled it was a number "
+                    "fixed in advance and then checked"},
+            {"text": "Because a microscope powerful enough had finally been "
+                     "built",
+             "correct": False,
+             "why": "Brown had seen the jitter perfectly well in 1827. Seeing "
+                    "it was never the problem"},
+            {"text": "Because the jitter stopped once it was explained",
+             "correct": False,
+             "why": "The jitter has never stopped, and would not be evidence "
+                    "for anything if it had"},
+            {"text": "Because a number predicted in advance and then measured "
+                     "can decide between rival ideas, and a description "
+                     "cannot",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-05-h08",
+        "band": "harder",
+        "text": "Why must every cell in your body be microscopic?",
+        "options": [
+            {"text": "Because a bigger cell would be too heavy for the body "
+                     "to carry",
+             "correct": False,
+             "why": "Mass is not the limit. The same matter arranged as many "
+                    "small cells weighs exactly the same"},
+            {"text": "Because oxygen reaches a cell's middle by diffusion, "
+                     "and diffusion is hopeless over more than a fraction of "
+                     "a millimetre",
+             "correct": True},
+            {"text": "Because cells have to fit into the narrow spaces "
+                     "between the blood vessels, and those vessels are "
+                     "themselves very fine",
+             "correct": False,
+             "why": "The vessels are built around the cells rather than the "
+                    "other way round. The limit is set by how far diffusion "
+                    "can reach"},
+            {"text": "Because a large cell would be too slow to move about "
+                     "the body",
+             "correct": False,
+             "why": "Almost all your cells stay where they are. Size is "
+                    "limited by supply, not by travel"},
+        ],
+        "figure": None,
+    },
 ]

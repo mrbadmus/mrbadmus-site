@@ -392,4 +392,427 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c1-01-e05",
+        "band": "easier",
+        "text": "On the cutting bench the sugar cube starts one centimetre "
+                "across and is halved again and again. About how many halvings "
+                "does it take to reach a single particle?",
+        "options": [
+            {"text": "About two dozen.",
+             "correct": True},
+            {"text": "About two hundred.",
+             "correct": False,
+             "why": "Far too many. Each cut halves the piece, and halving is "
+                    "brutal — two dozen halvings is already down to one "
+                    "particle."},
+            {"text": "About two million.",
+             "correct": False,
+             "why": "Far too many, and the number is wrong for a count of "
+                    "particles too. Halving is brutal: each cut throws away "
+                    "half of what is left."},
+            {"text": "There is no fixed number — it depends how sharp the "
+                     "knife is.",
+             "correct": False,
+             "why": "The knife on the bench never blunts, and the floor is in "
+                    "the same place every time you run it. The limit is the "
+                    "sugar, not the tool."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-e06",
+        "band": "easier",
+        "text": "This unit uses the word matter. What does matter mean?",
+        "options": [
+            {"text": "Anything you can see or touch.",
+             "correct": False,
+             "why": "Air is matter and you can do neither. What counts is "
+                    "having mass and taking up space."},
+            {"text": "Anything that has mass and takes up space.",
+             "correct": True},
+            {"text": "Anything that is solid rather than liquid or gas.",
+             "correct": False,
+             "why": "All three states are matter. Matter is not one of the "
+                    "states — the states are ways matter can be arranged."},
+            {"text": "Anything that is made by a chemical reaction.",
+             "correct": False,
+             "why": "Matter does not have to be made by anything. Rock, air "
+                    "and water are all matter and no reaction produced "
+                    "them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-e07",
+        "band": "easier",
+        "text": "A single sugar particle is about 0.6 nm across — roughly a "
+                "millionth of a millimetre. How does that compare with the "
+                "width of a human hair?",
+        "options": [
+            {"text": "A hair is about ten times wider.",
+             "correct": False,
+             "why": "Nowhere near enough. Ten sugar particles side by side "
+                    "would still be a millionth of a centimetre across."},
+            {"text": "A hair is about a hundred times wider than a sugar "
+                     "particle.",
+             "correct": False,
+             "why": "Still far too small a gap. The lesson gives the figure as "
+                    "a hundred thousand times, not a hundred."},
+            {"text": "A hair is about a hundred thousand times wider.",
+             "correct": True},
+            {"text": "A hair is about the same width.",
+             "correct": False,
+             "why": "You can see a hair. You cannot see a particle under any "
+                    "microscope, which already tells you they are nothing "
+                    "like the same size."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-e08",
+        "band": "easier",
+        "text": "The vocabulary says that in this unit the word particle means "
+                "something more exact. What does it mean?",
+        "options": [
+            {"text": "Atoms or molecules — the names come properly in the "
+                     "next unit.",
+             "correct": True},
+            {"text": "Any small piece of a substance, such as a grain of "
+                     "sugar.",
+             "correct": False,
+             "why": "A grain is a lump holding billions of particles. A "
+                    "particle here is the piece you cannot cut past."},
+            {"text": "A speck of dust floating in the air.",
+             "correct": False,
+             "why": "Dust is matter, made of particles itself, and easily "
+                    "big enough to see. A particle is far smaller than "
+                    "that."},
+            {"text": "A drop of liquid too small to see with your eyes.",
+             "correct": False,
+             "why": "A drop that small still holds a huge number of "
+                    "particles. Being invisible is not the same as being one "
+                    "particle."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-e09",
+        "band": "easier",
+        "text": "Democritus gave the last piece — the one that cannot be cut "
+                "— a name. What did the name mean?",
+        "options": [
+            {"text": "Invisible.",
+             "correct": False,
+             "why": "Being too small to see is true of a particle, but it is "
+                    "not what he named it for. He named it for the cutting "
+                    "stopping."},
+            {"text": "Uncuttable.",
+             "correct": True},
+            {"text": "Unchanging.",
+             "correct": False,
+             "why": "That is a different claim. His point was that halving "
+                    "matter has to stop somewhere, not that nothing ever "
+                    "changes."},
+            {"text": "Weightless.",
+             "correct": False,
+             "why": "Particles have mass — that is part of being matter. The "
+                    "name is about cutting, not about weight."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c1-01-s05",
+        "band": "standard",
+        "text": "A student says the cutting stopped at two dozen halvings "
+                "because the knife had gone blunt. Which fact about the bench "
+                "deals with that best?",
+        "options": [
+            {"text": "The piece was already too small to see, so nobody could "
+                     "check the edge.",
+             "correct": False,
+             "why": "Being unable to see it does not settle anything. What "
+                    "settles it is that the knife is stated never to blunt."},
+            {"text": "The knife has a perfect edge and never blunts, so "
+                     "nothing about it changed at the last cut.",
+             "correct": True},
+            {"text": "The sugar had turned into a liquid by then, and a "
+                     "liquid cannot be cut cleanly by any blade.",
+             "correct": False,
+             "why": "Nothing was heated and nothing melted. The piece is "
+                    "solid sugar right down to the last particle."},
+            {"text": "The particle is too hard for any knife to cut through.",
+             "correct": False,
+             "why": "A sharp enough tool does split a particle — you get "
+                    "carbon, hydrogen and oxygen. What is impossible is a "
+                    "smaller piece that is still sugar."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-s06",
+        "band": "standard",
+        "text": "The mixed water and alcohol is left in its cylinder "
+                "overnight, sealed, and read again the next morning. What does "
+                "the model predict?",
+        "options": [
+            {"text": "Back to 100 ml, because the particles settle apart "
+                     "again overnight.",
+             "correct": False,
+             "why": "Nothing pulls them back apart. The closer packing is a "
+                    "stable arrangement, not a temporary squeeze."},
+            {"text": "Below 97 ml, because more small particles keep dropping "
+                     "into gaps.",
+             "correct": False,
+             "why": "The gaps that could be filled were filled as you poured. "
+                    "The reading settles and then stays where it is."},
+            {"text": "97 ml, exactly as it read the night before.",
+             "correct": True},
+            {"text": "Less than 50 ml, because the alcohol evaporates "
+                     "overnight.",
+             "correct": False,
+             "why": "The cylinder is sealed, so nothing can leave it. Even "
+                    "unsealed, the 97 ml reading appears the moment you pour, "
+                    "long before anything could evaporate."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-s07",
+        "band": "standard",
+        "text": "The gap rig says that if you fill the gaps, the "
+                "spreading-smell test fails. What exactly would go wrong with "
+                "it?",
+        "options": [
+            {"text": "The smell would spread, but only along the draught, so "
+                     "a still room would need stirring.",
+             "correct": False,
+             "why": "No draught is involved. Filling the gaps does not make a "
+                    "particle need a draught — it leaves it with nowhere to "
+                    "go at all."},
+            {"text": "The smell would spread faster than it really does, "
+                     "because the filling would carry it.",
+             "correct": False,
+             "why": "Filling the space cannot carry anything. It blocks "
+                    "movement rather than helping it."},
+            {"text": "The smell would reach you instantly, because the "
+                     "filling already touches both ends of the room.",
+             "correct": False,
+             "why": "A smell is particles arriving, not a signal passing "
+                    "along. Those particles have to travel, and packed space "
+                    "leaves them nowhere to travel through."},
+            {"text": "A moving particle would have nowhere to go, so a smell "
+                     "could never cross a still room — and it does.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-s08",
+        "band": "standard",
+        "text": "Someone still holds the old idea that matter is continuous "
+                "— all one piece, with no separate bits. Which observation "
+                "would that idea find hardest to explain?",
+        "options": [
+            {"text": "That a sugar cube has mass and takes up the space you "
+                     "can see.",
+             "correct": False,
+             "why": "Continuous matter would have mass and take up space "
+                    "too. An observation both ideas explain cannot choose "
+                    "between them."},
+            {"text": "That air can be squashed into a fifth of the space it "
+                     "was in.",
+             "correct": True},
+            {"text": "That a knife can cut a sugar cube in half.",
+             "correct": False,
+             "why": "Continuous matter would cut perfectly well. It is where "
+                    "the cutting STOPS that the two ideas disagree."},
+            {"text": "That sugar tastes sweet and salt does not.",
+             "correct": False,
+             "why": "Both ideas allow different substances to be different. "
+                    "This does not test either one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-s09",
+        "band": "standard",
+        "text": "A student objects that nobody has ever seen a particle, so "
+                "the model cannot be trusted. Which reply is strongest?",
+        "options": [
+            {"text": "Microscopes can see particles now, so the objection is "
+                     "out of date.",
+             "correct": False,
+             "why": "No microscope shows a particle in the way this reply "
+                    "suggests. The model was never resting on someone seeing "
+                    "one."},
+            {"text": "You have to take some things in science on trust.",
+             "correct": False,
+             "why": "That gives away the strongest point. The model is not "
+                    "trusted blindly — it is trusted because measurements "
+                    "keep coming out the way it predicts."},
+            {"text": "A model earns its place by explaining measurements, and "
+                     "the 97 ml reading is one of them.",
+             "correct": True},
+            {"text": "It does not matter whether particles are real, as long "
+                     "as the model keeps giving useful answers.",
+             "correct": False,
+             "why": "That concedes too much. The measurements are evidence "
+                    "that particles are real, not just that the picture is "
+                    "handy."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c1-01-h05",
+        "band": "harder",
+        "text": "Both ideas — matter is continuous, and matter is particles "
+                "— explain why a sugar cube looks perfectly smooth. Why is "
+                "that observation no help in deciding between them?",
+        "options": [
+            {"text": "Because an observation both ideas predict cannot tell "
+                     "you which one is right.",
+             "correct": True},
+            {"text": "Because looking at something is never scientific "
+                     "evidence.",
+             "correct": False,
+             "why": "Observation is evidence. The trouble here is that this "
+                    "particular observation is predicted by both ideas, so it "
+                    "separates nothing."},
+            {"text": "Because a sugar cube is too small to judge by eye.",
+             "correct": False,
+             "why": "You can see a sugar cube perfectly well. The problem is "
+                    "not the seeing — it is that smoothness follows from "
+                    "either idea."},
+            {"text": "Because the particle model was not invented until long "
+                     "after sugar cubes were.",
+             "correct": False,
+             "why": "When an idea was thought of has nothing to do with what "
+                    "counts as evidence for it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-h06",
+        "band": "harder",
+        "text": "50 ml of water is mixed with 50 ml of a liquid whose "
+                "particles are much LARGER than water's. What does the model "
+                "predict for the reading?",
+        "options": [
+            {"text": "Exactly 100 ml, because only small particles leave gaps "
+                     "behind.",
+             "correct": False,
+             "why": "Large particles leave large gaps. It is the SIZE "
+                    "DIFFERENCE that lets one liquid settle into the other, "
+                    "and there is a big one here."},
+            {"text": "More than 100 ml, because the large particles need more "
+                     "room once the two liquids are mixed.",
+             "correct": False,
+             "why": "Nothing grows on mixing. Each particle takes exactly the "
+                    "room it always did, and the packing can only improve."},
+            {"text": "Under 100 ml, because the small water particles drop "
+                     "into the gaps between the large ones.",
+             "correct": True},
+            {"text": "It cannot be predicted, because the model says nothing "
+                     "about how big a particle is.",
+             "correct": False,
+             "why": "Particle size is central to this model — it is the whole "
+                    "reason 50 and 50 make 97 rather than 100."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-h07",
+        "band": "harder",
+        "text": "Squashing air into a fifth of its space is offered as "
+                "evidence that the gaps hold nothing. Why would that squash be "
+                "impossible if the gaps were packed with dust?",
+        "options": [
+            {"text": "Because dust would make the air too heavy to move.",
+             "correct": False,
+             "why": "Weight is not what resists a squash. What resists it is "
+                    "having no empty space left to remove."},
+            {"text": "Because the space would already be occupied, so there "
+                     "would be nothing left to remove.",
+             "correct": True},
+            {"text": "Because the dust would block the pump before the air "
+                     "could move.",
+             "correct": False,
+             "why": "This is not about a pump jamming. The claim is about the "
+                    "gas itself: filled space cannot be shrunk."},
+            {"text": "Because dust would turn the air into a solid, and a "
+                     "solid cannot be squashed at all.",
+             "correct": False,
+             "why": "Adding dust does not change the state of the air. The "
+                    "point is simpler — filled space has nothing left to give "
+                    "up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-h08",
+        "band": "harder",
+        "text": "The lesson says a model need not be an exact copy to be "
+                "useful, and also that this model has limits. Which statement "
+                "follows from both?",
+        "options": [
+            {"text": "A model should be replaced as soon as anyone finds a "
+                     "limit in it.",
+             "correct": False,
+             "why": "Every model has limits, so that rule would leave you "
+                    "with nothing at all to think with."},
+            {"text": "A model is only a guess until someone proves it is an "
+                     "exact copy.",
+             "correct": False,
+             "why": "No model is ever an exact copy, and this one is far past "
+                    "guesswork — measurements have tested it."},
+            {"text": "A model can be relied on where it gives right answers, "
+                     "and still be expected to fail somewhere.",
+             "correct": True},
+            {"text": "A model with limits explains less than one without, so "
+                     "the aim should be a model with none at all.",
+             "correct": False,
+             "why": "There is no model without limits to aim for. Knowing "
+                    "where the edges are is part of understanding a model, "
+                    "not a defect in it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c1-01-h09",
+        "band": "harder",
+        "text": "Doubling a number two dozen times multiplies it by about 17 "
+                "million. Given that the bench needs two dozen halvings to get "
+                "from a centimetre of sugar to one particle, what does that "
+                "number tell you?",
+        "options": [
+            {"text": "That a sugar particle is about 17 million times heavier "
+                     "than a sugar cube.",
+             "correct": False,
+             "why": "The wrong way round, and the wrong quantity. The cube is "
+                    "the heavier one, and the count here is about how many "
+                    "particles fit along a length."},
+            {"text": "That about 17 million particles lie along one "
+                     "centimetre of sugar.",
+             "correct": True},
+            {"text": "That a sugar cube holds exactly 17 million particles "
+                     "altogether.",
+             "correct": False,
+             "why": "17 million is the count along ONE edge. A cube holds "
+                    "that many along each of three directions, which is a far "
+                    "larger number again."},
+            {"text": "That it would take 17 million knives to make the last "
+                     "cut.",
+             "correct": False,
+             "why": "No number of knives makes the last cut. The number "
+                    "counts particles along the edge, not tools."},
+        ],
+        "figure": None,
+    },
 ]
