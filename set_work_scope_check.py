@@ -1,0 +1,449 @@
+#!/usr/bin/env python3
+"""set_work_scope_check.py — every node a teacher can pick can be filled.
+
+    python3 set_work_scope_check.py            # measure the authored Python
+    python3 set_work_scope_check.py --db       # measure what TEST actually holds
+    python3 set_work_scope_check.py --quiet    # totals and failures only
+
+── WHAT THIS PROVES, AND WHY IT IS A DIFFERENT QUESTION FROM ks4_pool_check ──
+
+`ks4_pool_check.py` asks whether each ROW is flagged correctly — whether a
+Foundation Combined child could be handed a Higher or a Triple-only question.
+It is a statement about the pool.
+
+This asks the question Set work v2 created, which the pool has never had to
+answer before: **for every node the sheet will OFFER, and every tier it will
+offer it at, is there anything there.** v1 offered scheme-of-work rows, so the
+only nodes a teacher could reach were ones somebody had already written a row
+for. v2 offers the whole curriculum — 264 KS4 subtopics and 185 KS3 lessons,
+each at two or three tiers, filtered four ways by cohort — and a node with an
+empty pool is a topic a teacher taps, waits for, and gets nothing from.
+
+⚠️ AN EMPTY CELL IS INVISIBLE FROM EVERY OTHER GATE. The counts the sheet
+renders come from the same read as the questions, so a zero renders as `0`,
+disables the row, and looks exactly like a deliberate "not authored yet".
+Nothing else in the estate walks the CROSS PRODUCT of (cohort × node × tier),
+which is where the holes are: `energy-changes` has rows, and
+`energy-changes × combined × foundation` may still have none.
+
+The four cohorts, from PLAN §1:
+
+    KS3                      easy / medium / hard   (band easier/standard/harder)
+    KS4 combined             foundation / higher    (triple_only rows excluded)
+    KS4 triple biology       foundation / higher    (that subject only)
+    KS4 triple chemistry     "
+    KS4 triple physics       "
+
+── THE FOUR PROPERTIES ────────────────────────────────────────────────
+
+  1. NON-EMPTY — every (cohort, node, tier) cell has at least one question,
+     with ONE derived exception, which is a rule and not a list: a KS4 subtopic
+     that `ks4_data.classify()` puts at `tier = 'higher'` holds no foundation
+     rows at all, so its FOUNDATION cell is empty by construction. Measured:
+     30 subtopics are classified higher and not one of them carries a
+     foundation row, so the exception is exactly co-extensive with the
+     classification rather than an allowance for missing content.
+
+     ⚠️ THAT IS THE DESIGNED BEHAVIOUR, NOT A HOLE, and the reason is
+     `treeForClass()`: the tree is filtered by pathway and subject and NEVER by
+     tier, deliberately, because a tree that changed shape when the tier chip
+     moved would be a different tree and the teacher would lose their place in
+     it (RISKS C12). So a Foundation class DOES see `moles` in its list, with
+     the count `0` beside it and the row disabled (RISKS A5). This gate counts
+     those cells and asserts every one of them fills at HIGHER — a subtopic
+     empty at BOTH tiers would be unreachable by anybody, which is a hole, and
+     is the failure this exception must not be allowed to hide.
+  2. MCQ-ONLY (RISKS C10) — every row in every cell has exactly four options
+     and exactly one of them correct. Neither bank has a type column, so "is
+     this a multiple-choice question" is answered by its SHAPE; a three-option
+     row would render a fourth blank button in the sheet and a fourth blank
+     button to the child.
+  3. PATHWAY-PURE (RISKS C5/C6) — a combined cell contains no `triple_only`
+     row, and a separate-sciences cell contains only that science's rows. This
+     is asserted on the CELL, after the filter, which is the only place the
+     mistake could show: the flags themselves are ks4_pool_check's business.
+  4. NO DUPLICATE STEM WITHIN A CELL (RISKS A7) — two questions whose stems
+     differ only in case, whitespace or trailing punctuation are one question
+     to a child reading them one after the other. The backend's `pickRoundRobin`
+     de-duplicates on exactly this normalisation, so a duplicate does not reach
+     a set — it silently shrinks the pool instead, and a scope reporting 20
+     available then hands back 19.
+
+Plus: the SMALLEST CELL per key stage, which is the number that says whether
+the content lanes are finished. It is reported whether or not anything failed,
+because "the smallest KS4 cell is 4" is the fact a reader wants.
+
+── WHERE THE RULES COME FROM ──────────────────────────────────────────
+
+The tree comes from `tools/export_curriculum_tree.build_tree()` — the same
+function that writes the backend's mirror, so this gate and the sheet are
+looking at the same curriculum by construction, and `--check` on that exporter
+is what proves the backend's copy has not drifted.
+
+⚠️ THE COHORT FILTER AND THE POOL SPEC ARE RE-DERIVED FROM PLAN §1, NOT READ
+OUT OF THE BACKEND. That is deliberate and it is the same posture
+`ks4_pool_check.py` takes: asserting that `set-work-scope.js` *contains* the
+right `.eq()` calls is a spelling test that passes a filter which is correct in
+shape and wrong in effect. So this states the rule independently and measures
+the DATA against it. The JS's own copy is proved against the same rule by
+`test_set_work_v2.js` (`poolRowMatches` against a synthetic bank), and the
+serving path is proved end to end by `set_work_drive.py`. Three readings of one
+rule, none of them reading each other.
+"""
+
+import argparse
+import collections
+import json
+import os
+import re
+import ssl
+import sys
+import urllib.error
+import urllib.request
+
+REPO = os.path.dirname(os.path.abspath(__file__))
+os.chdir(REPO)
+sys.path.insert(0, REPO)
+
+SUBJECTS = ("biology", "chemistry", "physics")
+KS4_TIERS = ("foundation", "higher")
+KS3_TIERS = ("easy", "medium", "hard")
+KS3_BAND_BY_TIER = {"easy": "easier", "medium": "standard", "hard": "harder"}
+
+failures = []
+notes = []
+
+
+def fail(where, msg):
+    failures.append((where, msg))
+
+
+# ── the pool spec, PLAN §1 ─────────────────────────────────────────────
+#
+# KS4 Foundation — `tier='foundation'` rows, all three bands.
+# KS4 Higher     — `tier='higher'` rows (all bands) ∪ `tier='foundation'` rows
+#                  in `standard|harder`.
+#
+# ⚠️ THE SECOND HALF IS THE PART TO READ TWICE, and it is why a Higher cell is
+# never simply "the higher rows". A Higher class is not a class that skips the
+# foundation material; it is a class that meets it at the harder end. Only 30 of
+# 264 subtopics are classified `higher`, so excluding foundation rows would
+# leave Higher unable to set most of the specification — and including their
+# `easier` band would hand a Higher group the four gentlest questions in the
+# topic.
+def ks4_row_in_tier(row, tier):
+    if tier == "foundation":
+        return row["tier"] == "foundation"
+    if row["tier"] == "higher":
+        return True
+    return row["tier"] == "foundation" and row["band"] in ("standard", "harder")
+
+
+# ⚠️ AN INCLUSION, NEVER AN EXCLUSION (RISKS C6). "not triple_only" would admit
+# a third content flag silently, to every class in the school, on the day it was
+# added.
+def ks4_row_in_pathway(row, pathway):
+    return row["triple_only"] in ((False, True) if pathway == "triple" else (False,))
+
+
+def normalise_stem(s):
+    return re.sub(r"[.?!\s]+$", "", re.sub(r"\s+", " ", str(s or "").lower())).strip()
+
+
+# ── loading the two pools into ONE row shape ───────────────────────────
+#
+# The banks disagree about where the answer lives — KS4 stores `options: [str]`
+# plus a `correct_index`, KS3 stores `[{text, correct, why}]` — exactly as they
+# disagree for the backend, which normalises them in `swShapeKs4`/`swShapeKs3`.
+# The conversion happens once, here, so every check below reads one shape.
+
+def load_python():
+    import ks4_data
+    import ks3_data.question_bank as qb
+
+    ks4 = []
+    for r in ks4_data.load_pool():
+        opts = list(r.get("options") or [])
+        ks4.append({
+            "id": r["id"], "slug": r["subtopic_slug"], "subject": r.get("subject"),
+            "band": r["band"], "tier": r["tier"],
+            "triple_only": bool(r.get("triple_only")),
+            "text": r.get("text"), "n_options": len(opts),
+            "n_correct": (1 if isinstance(r.get("correct_index"), int)
+                          and 0 <= r["correct_index"] < len(opts) else 0),
+        })
+
+    ks3 = []
+    for entry in qb.load_bank():
+        for q in entry["questions"]:
+            opts = list(q.get("options") or [])
+            ks3.append({
+                "id": q["id"], "slug": entry["lesson"], "unit": entry["unit"],
+                "band": q["band"], "tier": None, "triple_only": False,
+                "text": q.get("text"), "n_options": len(opts),
+                "n_correct": sum(1 for o in opts if o and o.get("correct")),
+            })
+    return ks4, ks3, "the authored Python"
+
+
+def load_db():
+    """The same two pools as TEST actually holds them.
+
+    ⚠️ SERVICE ROLE, AND ONLY BECAUSE THIS IS A CONTENT CHECK. Both banks are
+    `authenticated`-SELECT, so an anon read returns nothing and would report
+    every cell empty — a red that says nothing about the content. Nothing here
+    is a claim about what a USER can reach; that is `set_work_drive.py`'s job,
+    and it carries no service key at all.
+    """
+    env_path = os.environ.get(
+        "MRB_BACKEND_ENV",
+        "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env")
+    conf = {}
+    for line in open(env_path, encoding="utf-8"):
+        if "=" in line and not line.startswith("#"):
+            k, v = line.split("=", 1)
+            conf[k.strip()] = v.strip()
+    url, key = conf["SUPABASE_URL"], conf["SUPABASE_SERVICE_ROLE_KEY"]
+    ctx = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
+
+    def page(table, cols):
+        out, frm = [], 0
+        while True:
+            req = urllib.request.Request(
+                "%s/rest/v1/%s?select=%s&order=id" % (url, table, cols),
+                headers={"apikey": key, "Authorization": "Bearer " + key,
+                         "Range": "%d-%d" % (frm, frm + 999)})
+            with urllib.request.urlopen(req, context=ctx, timeout=60) as r:
+                rows = json.loads(r.read().decode())
+            out.extend(rows)
+            if len(rows) < 1000:
+                return out
+            frm += 1000
+
+    ks4 = []
+    for r in page("ks4_assignment_bank",
+                  "id,subtopic_slug,subject,band,tier,triple_only,text,options,correct_index"):
+        opts = list(r.get("options") or [])
+        ks4.append({
+            "id": r["id"], "slug": r["subtopic_slug"], "subject": r.get("subject"),
+            "band": r["band"], "tier": r["tier"],
+            "triple_only": bool(r.get("triple_only")),
+            "text": r.get("text"), "n_options": len(opts),
+            "n_correct": (1 if isinstance(r.get("correct_index"), int)
+                          and 0 <= r["correct_index"] < len(opts) else 0),
+        })
+    ks3 = []
+    for r in page("ks3_assignment_bank", "id,lesson_slug,unit_code,band,text,options"):
+        opts = list(r.get("options") or [])
+        ks3.append({
+            "id": r["id"], "slug": r["lesson_slug"], "unit": r.get("unit_code"),
+            "band": r["band"], "tier": None, "triple_only": False,
+            "text": r.get("text"), "n_options": len(opts),
+            "n_correct": sum(1 for o in opts if isinstance(o, dict) and o.get("correct")),
+        })
+    return ks4, ks3, "the TEST database"
+
+
+# ── the cohorts, and the nodes each of them can reach ──────────────────
+#
+# A cohort is (key_stage, pathway, subject) — PLAN §1 — and it is the ONLY
+# thing that decides which nodes exist for a class. Tier is chosen per set and
+# never changes the shape of the tree, only the counts on it (RISKS C12).
+
+def ks4_nodes(tree, pathway, subject):
+    """(kind, ref, label, [slugs], all_higher) for every node this cohort sees.
+
+    RISKS C7 lives in the `if not slugs: continue` — a topic all of whose
+    subtopics are triple-only is not an empty topic on a combined tree, it is a
+    topic that is not on it. Today that is exactly `space`.
+    """
+    out = []
+    subjects = [subject] if subject else list(SUBJECTS)
+    for subj in subjects:
+        for topic in tree["ks4"][subj]:
+            slugs = [st["slug"] for st in topic["subtopics"]
+                     if pathway == "triple" or not st["triple_only"]]
+            if not slugs:
+                continue
+            kept = [st for st in topic["subtopics"] if st["slug"] in slugs]
+            out.append(("topic", topic["id"], "%s/%s" % (subj, topic["id"]), slugs,
+                        all(st["tier"] == "higher" for st in kept)))
+            for st in kept:
+                out.append(("subtopic", st["slug"],
+                            "%s/%s/%s" % (subj, topic["id"], st["slug"]),
+                            [st["slug"]], st["tier"] == "higher"))
+    return out
+
+
+def ks3_nodes(tree):
+    out = []
+    for subj in SUBJECTS:
+        for unit in tree["ks3"][subj]:
+            slugs = [l["slug"] for l in unit["lessons"]]
+            if not slugs:
+                continue
+            out.append(("unit", unit["code"], "%s/%s" % (subj, unit["code"]),
+                        slugs, False))
+            for slug in slugs:
+                out.append(("lesson", slug, "%s/%s/%s" % (subj, unit["code"], slug),
+                            [slug], False))
+    return out
+
+
+def by_slug(rows):
+    m = collections.defaultdict(list)
+    for r in rows:
+        m[r["slug"]].append(r)
+    return m
+
+
+# ── one cohort, measured ───────────────────────────────────────────────
+
+def measure(label, nodes, index, tiers, keep, want_subject=None):
+    """`keep(row, tier)` is the pool spec for this cohort. Returns
+    (smallest, empties, shape_bad, purity_bad, dup_bad, cells, higher_only)."""
+    smallest = None
+    empties, shape_bad, purity_bad, dup_bad = [], [], [], []
+    cells = 0
+    higher_only = 0
+    for kind, ref, where, slugs, all_higher in nodes:
+        for tier in tiers:
+            cells += 1
+            pool = [r for slug in slugs for r in index.get(slug, []) if keep(r, tier)]
+            n = len(pool)
+            if n == 0:
+                # The one derived exception, and the assertion that keeps it
+                # honest is three lines below: a node empty at foundation
+                # BECAUSE it is classified higher must fill at higher, or it is
+                # reachable by nobody and the exception has hidden a hole.
+                if all_higher and tier == "foundation":
+                    higher_only += 1
+                    other = [r for slug in slugs for r in index.get(slug, [])
+                             if keep(r, "higher")]
+                    if not other:
+                        empties.append("%s %s is empty at BOTH tiers — nobody "
+                                       "can reach it" % (kind, where))
+                    continue
+                empties.append("%s %s @ %s" % (kind, where, tier))
+                continue
+            if smallest is None or n < smallest[0]:
+                smallest = (n, "%s %s @ %s" % (kind, where, tier))
+
+            # 2 · MCQ shape
+            for r in pool:
+                if r["n_options"] != 4 or r["n_correct"] != 1:
+                    shape_bad.append("%s (%s): %d option(s), %d correct"
+                                     % (r["id"], where, r["n_options"], r["n_correct"]))
+            # 3 · purity
+            for r in pool:
+                if want_subject is None and r.get("triple_only"):
+                    purity_bad.append("%s is triple_only and reached %s"
+                                      % (r["id"], where))
+                if want_subject and r.get("subject") and r["subject"] != want_subject:
+                    purity_bad.append("%s is %s and reached the %s tree"
+                                      % (r["id"], r["subject"], want_subject))
+            # 4 · duplicate stems
+            seen = {}
+            for r in pool:
+                k = normalise_stem(r["text"])
+                if k in seen:
+                    dup_bad.append("%s == %s (%s @ %s)"
+                                   % (r["id"], seen[k], where, tier))
+                else:
+                    seen[k] = r["id"]
+    return (smallest, empties, shape_bad, purity_bad, dup_bad, cells, higher_only)
+
+
+def report(cohort, res, quiet):
+    smallest, empties, shape_bad, purity_bad, dup_bad, cells, higher_only = res
+    ok = not (empties or shape_bad or purity_bad or dup_bad)
+    print("   %s %-26s %5d cells   smallest %s"
+          % ("✅" if ok else "❌", cohort, cells,
+             ("%d  (%s)" % smallest) if smallest else "— nothing at all"))
+    if higher_only:
+        print("        %d Higher-only node(s) render 0 at Foundation and fill "
+              "at Higher — RISKS A5" % higher_only)
+    for name, bad in (("EMPTY", empties), ("not a four-option MCQ", shape_bad),
+                      ("out of pathway", purity_bad), ("duplicate stem", dup_bad)):
+        if not bad:
+            continue
+        fail(cohort, "%d %s" % (len(bad), name))
+        head = bad if quiet else bad[:12]
+        for b in head:
+            print("        · %s" % b)
+        if len(bad) > len(head):
+            print("        · … and %d more" % (len(bad) - len(head)))
+    return smallest
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--db", action="store_true",
+                    help="measure the TEST database instead of the Python source")
+    ap.add_argument("--quiet", action="store_true")
+    args = ap.parse_args()
+
+    sys.path.insert(0, os.path.join(REPO, "tools"))
+    import export_curriculum_tree as ex
+    tree = ex.build_tree()
+
+    ks4_rows, ks3_rows, source = load_db() if args.db else load_python()
+    ks4_index, ks3_index = by_slug(ks4_rows), by_slug(ks3_rows)
+
+    print("\n🧭  set_work_scope_check — every node a teacher can pick, at every "
+          "tier\n    measuring %s: %d KS4 rows, %d KS3 rows\n"
+          % (source, len(ks4_rows), len(ks3_rows)))
+
+    ks4_small, ks3_small = [], []
+
+    s = report("KS3 (all three sciences)",
+               measure("KS3", ks3_nodes(tree), ks3_index, KS3_TIERS,
+                       lambda r, t: r["band"] == KS3_BAND_BY_TIER[t]),
+               args.quiet)
+    if s:
+        ks3_small.append(s)
+
+    s = report("KS4 combined",
+               measure("combined", ks4_nodes(tree, "combined", None), ks4_index,
+                       KS4_TIERS,
+                       lambda r, t: ks4_row_in_tier(r, t)
+                       and ks4_row_in_pathway(r, "combined")),
+               args.quiet)
+    if s:
+        ks4_small.append(s)
+
+    for subject in SUBJECTS:
+        s = report("KS4 triple %s" % subject,
+                   measure("triple %s" % subject,
+                           ks4_nodes(tree, "triple", subject), ks4_index,
+                           KS4_TIERS,
+                           lambda r, t: ks4_row_in_tier(r, t)
+                           and ks4_row_in_pathway(r, "triple"),
+                           want_subject=subject),
+                   args.quiet)
+        if s:
+            ks4_small.append(s)
+
+    # ⚠️ THE SMALLEST CELL IS PRINTED WHETHER OR NOT ANYTHING FAILED. "Nothing
+    # is empty" and "the thinnest node holds four questions" are different
+    # facts, and only the second one says whether a teacher can ask for ten.
+    print("\n   smallest cell, KS4: %s" % (("%d — %s" % min(ks4_small))
+                                           if ks4_small else "—"))
+    print("   smallest cell, KS3: %s" % (("%d — %s" % min(ks3_small))
+                                         if ks3_small else "—"))
+
+    for n in notes:
+        print("   ℹ️  %s" % n)
+
+    if failures:
+        print("\n❌ set_work_scope_check: %d cohort(s) with findings" % len(failures))
+        for where, msg in failures:
+            print("   · %-24s %s" % (where, msg))
+        return 1
+    print("\n✅ set_work_scope_check: every offered node fills at every tier, "
+          "four options and one answer, in pathway, no repeated stem")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

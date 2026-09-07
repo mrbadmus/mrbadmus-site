@@ -561,18 +561,115 @@ GATES = [
              "catch a classify() that had quietly become a constant — a rule "
              "that returns 'allowed' for everyone passes a per-row flag "
              "comparison and fails this. Plus the structural floor the "
-             "composer relies on: twelve per subtopic, four per band, "
-             "bank_position contiguous 0..11, ids unique, four distinct "
-             "options with the answer in range, and the longest option keyed "
-             "no more often than chance. Runs on the Python source in 0.2s, "
+             "composer relies on: AT LEAST twelve per subtopic, at "
+             "least four per band, bank_position contiguous 0..n-1, ids "
+             "unique, four distinct options with the answer in range, and the "
+             "longest option keyed no more often than chance. "
+             "⊕ MRB-335 CORRECTED THE FLOOR, and the old wording — 'twelve "
+             "per subtopic, four per band, bank_position contiguous 0..11' — "
+             "would now fail every subtopic the content lanes have topped up. "
+             "It was right while twelve was the whole pool. Set work v2 draws "
+             "TWENTY questions from one scope, so the pool GREW, and the "
+             "invariant that replaces the number is a WINDOW: positions 0..11 "
+             "are still exactly four of each band, because that window is "
+             "what the AUTOMATIC producer reads (`bank_position < 12` in "
+             "`bankFor` and in `compose_assignment`), and freezing it is what "
+             "stops new content silently recomposing every automatic "
+             "assignment in the school (RISKS D7). Above 11 the pool may be "
+             "any size; contiguity is still required, because a gap is a "
+             "failed load rather than a decision. "
+             "Runs on the Python source in 0.2s, "
              "so it is fast; `--rows` runs the identical rule against what "
              "the DATABASE actually holds, which is what the load path uses."),
+
+    # ── ⊕ MRB-335, 8 Sep 2026 · Set work v2, and the cross product ──────
+
+    dict(name="set_work_scope_check",
+         cmd=["python3", "set_work_scope_check.py"],
+         speed="fast",
+         needs="tools/export_curriculum_tree.py",
+         why="MRB-335 — EVERY NODE A TEACHER CAN PICK CAN ACTUALLY BE FILLED. "
+             "v1 offered scheme-of-work ROWS, so the only thing a teacher "
+             "could reach was something somebody had already written a row "
+             "for. v2 offers the WHOLE CURRICULUM — 264 KS4 subtopics and 185 "
+             "KS3 lessons, each at two or three tiers, filtered four ways by "
+             "cohort — and nothing else in the estate walks that cross "
+             "product. 1,658 cells; the holes are not in the topic, they are "
+             "in the CELL: `energy-changes` has rows and `energy-changes × "
+             "combined × foundation` may still have none. "
+             "⚠️ AN EMPTY CELL IS INVISIBLE FROM EVERY OTHER GATE, and that "
+             "is the whole reason this exists. The count the sheet renders "
+             "comes from the same read as the questions, so an empty cell "
+             "renders as `0`, disables the row, and is indistinguishable on "
+             "the screen from a deliberate 'not authored yet'. "
+             "It also asserts, per cell rather than per row: exactly four "
+             "options with exactly one correct (RISKS C10 — neither bank has "
+             "a type column, so 'is this an MCQ' is answered by its shape); "
+             "no `triple_only` row reachable by a combined class and no "
+             "foreign science reachable by a separate-sciences one (C5/C6), "
+             "asserted AFTER the filter, which is the only place that "
+             "mistake can show; and no two rows in one cell sharing a "
+             "normalised stem (A7), which does not reach a set — "
+             "`pickRoundRobin` de-duplicates — but silently shrinks a pool "
+             "that has already promised its size to the count chips. "
+             "⚠️ ONE DERIVED EXCEPTION, AND IT IS A RULE RATHER THAN A LIST: "
+             "a KS4 subtopic classified `higher` holds no foundation rows, so "
+             "its Foundation cell is empty by construction — measured, all 30 "
+             "of them, none carrying a foundation row. That is A5's designed "
+             "behaviour (`treeForClass` filters by pathway and NEVER by tier, "
+             "so a Foundation class sees `moles` with a `0` beside it) and "
+             "the gate asserts every such node fills at HIGHER, because a "
+             "node empty at both tiers is reachable by nobody and is exactly "
+             "the hole the exception must not hide. "
+             "Reports the SMALLEST CELL per key stage whether or not anything "
+             "failed: 'nothing is empty' and 'the thinnest node holds four' "
+             "are different facts and only the second says whether a teacher "
+             "can ask for ten. `--db` runs the identical rule against what "
+             "TEST holds, which is what the sheet actually serves."),
+
+    dict(name="curriculum_tree_mirror",
+         cmd=["python3", "tools/export_curriculum_tree.py", "--check"],
+         speed="fast",
+         needs="tools/export_curriculum_tree.py",
+         why="MRB-335 — THE BACKEND'S COPY OF THE CURRICULUM HAS NOT DRIFTED. "
+             "The curriculum is authored in this repo's Python — "
+             "`PATHWAY_TOPIC_MAP` orders the topics, `ks4_data.classify()` "
+             "says which tier and pathway each subtopic is, `ks3_data` holds "
+             "the 33 units and 185 lessons — and the backend is Node and "
+             "cannot import any of it. So the tree is exported into "
+             "`curriculum-tree.json`, committed in BOTH repos, and read at "
+             "boot; `set-work-scope.js` opens by saying a missing tree is "
+             "fatal at first use rather than silently empty, because 'there "
+             "is no curriculum' and 'this class has no topics' look identical "
+             "on the page. "
+             "⚠️ THE DRIFT THIS CATCHES IS NOT A CONTENT LANE'S. Content "
+             "lanes add questions, not subtopics. What moves the tree is a "
+             "spec revision, a renamed topic or a changed tier flag — and the "
+             "failure mode is a sheet offering a teacher a node whose pool "
+             "cannot be found, or worse, silently NOT offering one that "
+             "exists. Fast, no network, no credential; it rebuilds from the "
+             "Python and compares byte for byte, and says WHICH half moved "
+             "rather than diffing 6,000 lines of JSON at the reader. "
+             "⚠️ It needs the backend checkout to compare against — "
+             "`MRB_BACKEND_DIR`, or the sibling repo, or `<this>-backend` "
+             "beside it, in that order."),
 
     dict(name="ks4_pool_drive",
          cmd=["python3", "ks4_pool_drive.py"],
          speed="slow",
          needs="mrb331_fixture.py",
-         needs_env="MRB_THROWAWAY_PASSWORD",
+         # ⊕ MRB-335 — WAS `MRB_THROWAWAY_PASSWORD`, AND IT WAS WRONG IN BOTH
+         # DIRECTIONS. This drive imports `mrb331_fixture`, whose switch is
+         # `MRB_SET_WORK_PASSWORD` — renamed at MRB-331 precisely because two
+         # drives sharing one env name meant two different passwords, and the
+         # collision was invisible in the direction that matters. The sibling
+         # `set_work` row already said the right name; this one was missed.
+         # With only MRB_SET_WORK_PASSWORD exported the guard reported this
+         # gate SKIPPED although it would run and pass; with only
+         # MRB_THROWAWAY_PASSWORD exported the guard RAN it and the drive
+         # exited on its own SystemExit — a red about the environment wearing
+         # the clothes of a red about the product.
+         needs_env="MRB_SET_WORK_PASSWORD",
          why="MRB-332, ported to Set work v2 at MRB-335 — the same rule, "
              "proved through the SERVING PATH instead of the data. "
              "ks4_pool_check proves the rows are correctly flagged; a correct "
@@ -1485,7 +1582,16 @@ EXCLUDED_PREFIXES = {
 
 
 def gate_scripts():
-    """Every repo-root script that a GATES row actually invokes."""
+    """Every script a GATES row actually invokes, by the path it invokes it at.
+
+    ⊕ MRB-335. Keys used to be bare filenames because every gate lived in the
+    repo root, and `coverage()` then compared them against `os.listdir(".")`.
+    `curriculum_tree_mirror` runs `tools/export_curriculum_tree.py`, which
+    exists and is a perfectly good gate, and the root-only comparison called it
+    missing. The fix is to keep the path the row gave — a gate outside the root
+    is still a gate — and to split the two questions `coverage()` was asking at
+    once (see there).
+    """
     out = {}
     for g in GATES:
         for token in g["cmd"]:
@@ -1504,8 +1610,14 @@ def coverage(root="."):
                      if (f.endswith(".py") or f.endswith(".sh"))
                      and os.path.isfile(os.path.join(root, f)))
 
+    # ⚠️ TWO QUESTIONS, AND THEY ARE NOT THE SAME QUESTION. "Is every root
+    # script classified?" is answered against the root listing; "does every
+    # gate's script exist?" is answered against the path the row names. Rolling
+    # them together is what made a `tools/` gate report as a missing root file.
+    gated_roots = {os.path.basename(f) for f in gated}
+
     for f in present:
-        if f in gated or f in EXCLUDED:
+        if f in gated_roots or f in EXCLUDED:
             continue
         if any(f.startswith(p) for p in EXCLUDED_PREFIXES):
             continue
@@ -1519,10 +1631,10 @@ def coverage(root="."):
     # will notice has stopped meaning anything.
     have = set(present)
     for f in sorted(gated):
-        if f not in have:
+        if not os.path.isfile(os.path.join(root, f)):
             problems.append(
-                "GATES row(s) %s invoke %s, which does not exist at the repo "
-                "root." % (", ".join(gated[f]), f))
+                "GATES row(s) %s invoke %s, which does not exist."
+                % (", ".join(gated[f]), f))
     for f in sorted(EXCLUDED):
         if f not in have:
             problems.append(
@@ -1535,10 +1647,12 @@ def coverage(root="."):
 
     # Both at once is not belt-and-braces, it is two rows disagreeing: one
     # says the script is run on every push, the other says why it never is.
-    for f in sorted(set(gated) & set(EXCLUDED)):
+    for f in sorted(gated_roots & set(EXCLUDED)):
+        names = sorted({n for path, ns in gated.items()
+                        if os.path.basename(path) == f for n in ns})
         problems.append(
             "%s is BOTH a gate (%s) and excluded. One of those rows is wrong."
-            % (f, ", ".join(gated[f])))
+            % (f, ", ".join(names)))
 
     # A row that EXPLAINS a required mode and does not PASS it is the
     # ks3_statutory defect waiting to happen again: the registry says
