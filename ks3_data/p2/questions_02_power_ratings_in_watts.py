@@ -375,17 +375,16 @@ QUESTIONS = [
         "id": "p2-02-e07",
         "band": "easier",
         "text": "Which of these is a rate rather than a total?",
-        "options": [
-            {"text": "3000 joules transferred by a lamp", "correct": False,
+        "options": [            {"text": "3000 joules transferred by a lamp", "correct": False,
              "why": "Joules on their own are a total amount, with no time "
                     "attached."},
-            {"text": "A 60 watt rating on a lamp", "correct": True},
-            {"text": "2.5 kilowatt-hours on a bill", "correct": False,
-             "why": "A kilowatt-hour is an amount of energy, despite having "
-                    "kilowatt in the name."},
             {"text": "958 kilojoules in a bag of crisps", "correct": False,
              "why": "That is an amount held in a store, not how fast anything "
                     "is transferred."},
+            {"text": "2.5 kilowatt-hours on a bill", "correct": False,
+             "why": "A kilowatt-hour is an amount of energy, despite having "
+                    "kilowatt in the name."},
+            {"text": "A 60 watt rating on a lamp", "correct": True},
         ],
         "figure": None,
     },
@@ -434,17 +433,16 @@ QUESTIONS = [
         "id": "p2-02-e10",
         "band": "easier",
         "text": "Which quantity is measured in watts?",
-        "options": [
-            {"text": "Energy", "correct": False,
+        "options": [            {"text": "Energy", "correct": False,
              "why": "Energy is measured in joules; watts always carry a time "
                     "in them."},
-            {"text": "Power", "correct": True},
-            {"text": "Force", "correct": False,
-             "why": "Force is measured in newtons, and nothing about it is a "
-                    "rate of energy transfer."},
             {"text": "Time", "correct": False,
              "why": "Time is measured in seconds, and it is the thing a watt "
                     "divides by."},
+            {"text": "Force", "correct": False,
+             "why": "Force is measured in newtons, and nothing about it is a "
+                    "rate of energy transfer."},
+            {"text": "Power", "correct": True},
         ],
         "figure": None,
     },
