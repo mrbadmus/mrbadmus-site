@@ -43,6 +43,41 @@ fifth flag value and forgets an audience.
 `--rows` takes the JSON array a `select ... from ks4_assignment_bank` gives
 back, so the same logic can be pointed at TEST or at production without this
 file needing a database driver or a credential of its own.
+
+── ⚠️ THE FOUR AUDIENCES DESCRIBE THE *AUTOMATIC* PRODUCER'S READ ──────
+
+Added at MRB-335 (RISKS E1), because without it a reader finishes the section
+above believing that "(pathway, tier)" means the same thing everywhere in the
+estate. It does not, and the difference is the whole of Set work v2.
+
+TWO readers draw from this one pool, and they disagree about both halves:
+
+  · **The AUTOMATIC producer** (`ks4BankScope` / `bankFor`) takes its tier
+    from the CLASS — a Foundation class is composed a Foundation assignment,
+    week after week, with nobody choosing anything — and it stops at
+    `bank_position < 12`, permanently (RISKS D7), so that content authored
+    later cannot silently change an assignment it already composes. It is
+    this reader whose behaviour the four audiences below describe.
+
+  · **Set work** (MRB-335) takes its tier from the REQUEST. A teacher picks
+    it per set, so a Foundation class may be set Higher extension work and a
+    Higher class may be set Foundation revision; the class's tier survives
+    only as the sheet's opening default (`defaultTierFor`). And Set work
+    reads EVERY `bank_position`, because every position is what the teacher
+    is choosing from.
+
+The PATHWAY half does not fork: it is the class's for both readers, and there
+is no pathway parameter on any Set work route at all. That asymmetry is what
+makes `triple_only` unreachable on a combined class no matter what a browser
+posts.
+
+So the audiences below are not a description of who may be served what by
+Set work — that is `ks4_pool_drive.py`'s job, against the live routes. What
+this file proves is the thing BOTH readers depend on: that every row's own
+`tier` and `triple_only` flags are correct, and that no combination of them
+exists which some audience would be handed and is not entitled to. A row
+mis-flagged here is wrong twice over — once in a set a teacher chose, and
+once in an assignment nobody chose.
 """
 
 import argparse
