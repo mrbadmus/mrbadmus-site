@@ -444,6 +444,49 @@
   var toastTimer = null;
   var opens = 0;         // how many times the sheet has been opened, ever
 
+  /* ═══════════════════════════════════════════════════════════════════
+     STALE-RESPONSE GUARDS. ⊕ MRB-335, added after a drive reproduced the
+     failure deterministically.
+
+     ⚠️ WITHOUT THESE, WHICH CLASS'S CURRICULUM THE TEACHER SEES IS DECIDED
+     BY NETWORK ARRIVAL ORDER RATHER THAN BY WHICH CLASS THEY OPENED.
+
+     FOUR buttons open this one sheet — the classes screen's primary, the
+     class screen's primary, a class card and the empty state — and the
+     header above already notes that a sweep can press a second one while
+     the first is still open. What it did not account for is the REQUEST
+     the first press left in flight. `loadScope`'s `.then` closes over no
+     identity at all: it writes into whatever `S` happens to be when it
+     resolves, and repaints the tree, the tier chip and the subject rail
+     from it.
+
+     Measured (set_work_drive, `sheet_shows_the_class_it_was_opened_for`):
+     open 10a/Bi1 (Triple Higher Biology), then 10b/Sc5 (Combined
+     Foundation) 150ms later with the first response held two seconds. The
+     sheet ends up flagged `data-sw-class = 10b/Sc5` and drawn as
+     10a/Bi1 — seven topics, the subject rail hidden, and the tier chip on
+     HIGHER.
+
+     ⚠️ THE TIER IS WHY THIS MATTERS RATHER THAN MERELY LOOKING WRONG.
+     `S.classId` stays correct, so the write goes to the right class — at
+     `S.tier`, which is now the OTHER class's default. Most base subtopics
+     are in both trees, so the request is accepted, and a Foundation group
+     is set Higher questions with the chip agreeing that they should be.
+
+     Two counters rather than one, because there are two different
+     staleness questions:
+
+       `session`  — bumped by open() and close(). Any answer that arrives
+                    after the sheet has been reopened or closed is for a
+                    sheet that no longer exists.
+       `fetchSeq` — bumped by every /scope and /preview request. Two count
+                    chips tapped quickly are two legitimate requests within
+                    ONE session, and the later one must win however they
+                    arrive.
+     ═══════════════════════════════════════════════════════════════════ */
+  var session = 0;
+  var fetchSeq = 0;
+
   function freshState(classId) {
     return {
       classId: classId,
@@ -1043,12 +1086,17 @@
       if (exclude.indexOf(String(p.id)) < 0) { exclude.push(String(p.id)); }
     });
     rec.swap.disabled = true;
+    var mySession = session;
     apiGet("/api/teacher/set-work/swap?class_id=" + encodeURIComponent(S.classId) +
       "&tier=" + encodeURIComponent(S.tier) +
       "&scope_kind=" + encodeURIComponent(S.scopeKind) +
       "&scope_ref=" + encodeURIComponent(S.scopeRef) +
       "&exclude=" + encodeURIComponent(exclude.join(","))
     ).then(function (r) {
+      /* A swap that lands after the sheet has moved on would replace a row
+         in somebody else's set. `fetchSeq` is deliberately NOT checked: two
+         swaps on two rows are both legitimate at once. */
+      if (!S || mySession !== session) { return; }
       if (r.status === 204 || !r.body || !r.body.id) {
         S.swapDead[rec.i] = true;
         return;                              // stays disabled
@@ -1060,6 +1108,7 @@
       fillOptions(rec.body, q);
       rec.swap.disabled = false;
     }, function () {
+      if (!S || mySession !== session) { return; }
       rec.swap.disabled = false;
     });
   }
@@ -1070,8 +1119,10 @@
 
   function loadScope() {
     S.scopeErr = false;
+    var mySession = session, mySeq = ++fetchSeq;
     return apiGet("/api/teacher/set-work/scope?class_id=" +
                   encodeURIComponent(S.classId)).then(function (r) {
+      if (!S || mySession !== session || mySeq !== fetchSeq) { return false; }
       S.scope = r.body || {};
       var k = S.scope.class || {};
       S.holdIso = k.open_from || "";
@@ -1087,6 +1138,7 @@
       syncValidity();
       return true;
     }, function () {
+      if (!S || mySession !== session || mySeq !== fetchSeq) { return false; }
       S.scope = null;
       S.scopeErr = true;
       els.tree.textContent = "";
@@ -1108,7 +1160,18 @@
 
   function loadPreview() {
     var cap = S.available || scopeAvailable();
+    /* ⚠️ THE COUNT IS CAPPED BEFORE THE REQUEST, NOT AFTER IT. ⊕ MRB-335.
+       This used to ask for `min(S.count, cap)` and then call `capCount()`
+       on the answer, which left the two disagreeing: on a scope holding
+       eight, the sheet asked for eight, rendered eight rows, and moved the
+       selected chip to 5. The chip is not decoration — it is the teacher's
+       statement of how many questions the class gets, and `submit()` sends
+       `S.picked`, so pressing Set work there would have set EIGHT under a
+       chip reading 5. Capping first makes the number on the chip and the
+       number of rows the same number. */
+    capCount(cap);
     var want = Math.min(S.count, cap > 0 ? cap : S.count);
+    var mySession = session, mySeq = ++fetchSeq;
     S.busy = true;
     S.previewErr = false;
     syncValidity();
@@ -1124,6 +1187,7 @@
       "&scope_ref=" + encodeURIComponent(S.scopeRef) +
       "&count=" + encodeURIComponent(want)
     ).then(function (r) {
+      if (!S || mySession !== session || mySeq !== fetchSeq) { return false; }
       var d = r.body || {};
       S.busy = false;
       S.picked = d.picked || [];
@@ -1131,12 +1195,16 @@
       S.picked.forEach(function (q) { S.shown[String(q.id)] = true; });
       S.swapDead = {};
       S.expanded = {};
-      capCount();
+      /* The server's `available` de-duplicates by normalised stem, so it can
+         be smaller than the count /scope sent. Cap again against the number
+         that turned out to be true. */
+      capCount(S.available);
       buildQuestions();
       syncCountChips();
       syncValidity();
       return true;
     }, function () {
+      if (!S || mySession !== session || mySeq !== fetchSeq) { return false; }
       S.busy = false;
       S.previewErr = true;
       S.picked = [];
@@ -1149,9 +1217,13 @@
   }
 
   /* Chips above availability are disabled, and a default that is now above
-     it drops to the largest chip that is not (RISKS A4). */
-  function capCount() {
-    var cap = S.available;
+     it drops to the largest chip that is not (RISKS A4).
+
+     ⚠️ THE CAP IS AN ARGUMENT, NOT `S.available`. ⊕ MRB-335. It has to run
+     BEFORE the first request, when `S.available` is still 0 and the only
+     number available is /scope's count for the node — and a cap of 0 means
+     "no ceiling known", which is not the same as "a ceiling of nothing". */
+  function capCount(cap) {
     if (cap > 0 && S.count > cap) {
       var best = COUNTS[0];
       for (var i = 0; i < COUNTS.length; i++) {
@@ -1238,9 +1310,15 @@
 
   function syncCountChips() {
     var cap = S.available || scopeAvailable();
-    syncChips(els.countList, S.count, function (k) {
-      return cap > 0 && Number(k) > cap;
-    });
+    var off = function (k) { return cap > 0 && Number(k) > cap; };
+    /* ⚠️ A DISABLED CHIP IS NEVER SHOWN AS SELECTED. ⊕ MRB-335. On a scope
+       holding fewer than five — a KS3 lesson at one tier holds four — every
+       chip is above the ceiling, so `capCount` has nothing to drop to and
+       leaves `S.count` at 5. Highlighting a 5 the teacher cannot press, over
+       four rendered rows, states a number that is wrong and unreachable at
+       once. Nothing selected is the honest rendering of "there are four here
+       and none of the sizes apply". */
+    syncChips(els.countList, off(S.count) ? null : S.count, off);
   }
 
   function buildReleaseChips() {
@@ -1456,6 +1534,10 @@
     var o = opts || {};
     if (!o.classId) { return; }
     buildShell();
+    /* ⚠️ EVERY IN-FLIGHT ANSWER IS ABANDONED HERE. See the guards above: an
+       answer for the class the sheet was showing a moment ago must not paint
+       over the class it is showing now. */
+    session += 1;
     S = freshState(String(o.classId));
     els.title.value = "";
     els.relTime.value = S.releaseTime;
@@ -1497,6 +1579,7 @@
 
   function close() {
     if (!els) { return; }
+    session += 1;
     els.overlay.hidden = true;
     S = null;
   }
