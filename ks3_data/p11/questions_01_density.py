@@ -292,4 +292,544 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p11-01-e05",
+        "band": "easier",
+        "text": "Density is worked out by…",
+        "options": [
+            {"text": "dividing the mass by the volume", "correct": True},
+            {"text": "dividing the volume by the mass", "correct": False,
+             "why": "That is the ratio upside down, and it would be measured "
+                    "in cm³ per gram."},
+            {"text": "multiplying the mass by the volume", "correct": False,
+             "why": "Multiplying gives a much larger number with no useful "
+                    "meaning."},
+            {"text": "adding the mass to the volume", "correct": False,
+             "why": "Grams and cubic centimetres are different quantities and "
+                    "cannot be added."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e06",
+        "band": "easier",
+        "text": "Which unit of volume goes with a mass in grams?",
+        "options": [            {"text": "Cubic metres", "correct": False,
+             "why": "Cubic metres pair with kilograms; grams go with cubic "
+                    "centimetres."},
+            {"text": "Kilograms", "correct": False,
+             "why": "A kilogram is a mass, and the pair needs a volume."},
+            {"text": "Metres", "correct": False,
+             "why": "A metre is a length, not a volume."},
+            {"text": "Cubic centimetres", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e07",
+        "band": "easier",
+        "text": "A material has a density of 1.20 g/cm³. Dropped into water, "
+                "it…",
+        "options": [            {"text": "floats", "correct": False,
+             "why": "Floating needs a density below 1.00 g/cm³, and this is "
+                    "above it."},
+            {"text": "dissolves", "correct": False,
+             "why": "Dissolving is a separate matter and has nothing to do "
+                    "with density."},
+            {"text": "hangs in the middle without moving", "correct": False,
+             "why": "That happens only at exactly 1.00 g/cm³, the same as the "
+                    "water."},
+            {"text": "sinks", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e08",
+        "band": "easier",
+        "text": "1000 kg/m³ is the same density as…",
+        "options": [
+            {"text": "1000 g/cm³", "correct": False,
+             "why": "That is a million times too dense — denser than any "
+                    "material on Earth."},
+            {"text": "0.001 g/cm³", "correct": False,
+             "why": "That is a thousand times too small, and about the "
+                    "density of air."},
+            {"text": "1.00 g/cm³", "correct": True},
+            {"text": "100 g/cm³", "correct": False,
+             "why": "That is a hundred times too dense; the conversion is a "
+                    "factor of a thousand."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e09",
+        "band": "easier",
+        "text": "A block of copper is cut exactly in half. What happens to "
+                "the density of each half?",
+        "options": [
+            {"text": "It halves", "correct": False,
+             "why": "Both the mass and the volume halve, so the division "
+                    "gives the same answer."},
+            {"text": "It doubles", "correct": False,
+             "why": "Nothing about cutting makes a material more tightly "
+                    "packed."},
+            {"text": "It stays the same", "correct": True},
+            {"text": "It cannot be worked out until the pieces are weighed "
+                     "again",
+             "correct": False,
+             "why": "Weighing confirms it, but density belongs to the "
+                    "material and does not change."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e10",
+        "band": "easier",
+        "text": "How is the volume of a small irregular stone found?",
+        "options": [
+            {"text": "By measuring its longest side and cubing it",
+             "correct": False,
+             "why": "That would only work for a cube, and a stone is not "
+                    "one."},
+            {"text": "By weighing it on a balance", "correct": False,
+             "why": "A balance gives the mass. The volume needs a separate "
+                    "measurement."},
+            {"text": "By lowering it into water and reading the rise",
+             "correct": True},
+            {"text": "By dividing its mass by its density", "correct": False,
+             "why": "That works only if the density is already known, and "
+                    "here it is what you are trying to find."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e11",
+        "band": "easier",
+        "text": "A sample has a mass of 60 g and a volume of 20 cm³. What is "
+                "its density?",
+        "options": [
+            {"text": "1200 g/cm³", "correct": False,
+             "why": "That is 60 × 20; density is the mass DIVIDED by the "
+                    "volume."},
+            {"text": "0.33 g/cm³", "correct": False,
+             "why": "That is 20 ÷ 60, the ratio the wrong way up."},
+            {"text": "80 g/cm³", "correct": False,
+             "why": "That adds the two, and a mass cannot be added to a "
+                    "volume."},
+            {"text": "3.0 g/cm³", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e12",
+        "band": "easier",
+        "text": "Which of these is NOT a unit of density you would use?",
+        "options": [
+            {"text": "g/cm³", "correct": False,
+             "why": "That is the standard pairing for grams and cubic "
+                    "centimetres."},
+            {"text": "kg/m³", "correct": False,
+             "why": "That is the standard pairing for kilograms and cubic "
+                    "metres."},
+            {"text": "kg/cm³", "correct": True},
+            {"text": "g/mL", "correct": False,
+             "why": "A millilitre is the same as a cubic centimetre, so this "
+                    "is g/cm³ written another way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e13",
+        "band": "easier",
+        "text": "Density is a property of…",
+        "options": [            {"text": "the object, so a bigger object is denser",
+             "correct": False,
+             "why": "A bigger object has more mass AND more volume, so the "
+                    "division comes out the same."},
+            {"text": "how hard the material is", "correct": False,
+             "why": "Hardness is a different property; lead is soft and very "
+                    "dense."},
+            {"text": "how heavy something feels to lift", "correct": False,
+             "why": "How heavy it feels is its weight, which depends on how "
+                    "much of it there is."},
+            {"text": "the material something is made of", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p11-01-s05",
+        "band": "standard",
+        "text": "A sample has a mass of 150 g and a volume of 60 cm³. What is "
+                "its density?",
+        "options": [            {"text": "9000 g/cm³", "correct": False,
+             "why": "That multiplies the two; density divides."},
+            {"text": "210 g/cm³", "correct": False,
+             "why": "That adds the mass to the volume, which cannot be done."},
+            {"text": "0.40 g/cm³", "correct": False,
+             "why": "That is 60 ÷ 150, the division upside down."},
+            {"text": "2.5 g/cm³", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s06",
+        "band": "standard",
+        "text": "A block has a density of 8.0 g/cm³ and a volume of 25 cm³. "
+                "What is its mass?",
+        "options": [
+            {"text": "0.32 g", "correct": False,
+             "why": "That is 8.0 ÷ 25, dividing where the rearrangement "
+                    "multiplies."},
+            {"text": "3.1 g", "correct": False,
+             "why": "That is 25 ÷ 8.0, which gives neither a mass nor "
+                    "anything usable."},
+            {"text": "33 g", "correct": False,
+             "why": "That adds the two, and a density cannot be added to a "
+                    "volume."},
+            {"text": "200 g", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s07",
+        "band": "standard",
+        "text": "A liquid of density 1.2 g/cm³ has a mass of 300 g. What "
+                "volume does it occupy?",
+        "options": [
+            {"text": "250 cm³", "correct": True},
+            {"text": "360 cm³", "correct": False,
+             "why": "That is 300 × 1.2; to find a volume you divide the mass "
+                    "by the density."},
+            {"text": "0.004 cm³", "correct": False,
+             "why": "That is 1.2 ÷ 300, the division the wrong way round."},
+            {"text": "301 cm³", "correct": False,
+             "why": "That adds the density on, and the two quantities cannot "
+                    "be added."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s08",
+        "band": "standard",
+        "text": "A stone of mass 180 g is lowered into a cylinder and the "
+                "level rises from 40 cm³ to 100 cm³. What is its density?",
+        "options": [
+            {"text": "1.8 g/cm³, using the final reading", "correct": False,
+             "why": "The volume is the RISE, which is 60 cm³, not the final "
+                    "level of 100 cm³."},
+            {"text": "4.5 g/cm³, using the first reading", "correct": False,
+             "why": "The first reading is the water alone; the stone's volume "
+                    "is the difference."},
+            {"text": "3.0 g/cm³", "correct": True},
+            {"text": "0.33 g/cm³", "correct": False,
+             "why": "That is 60 ÷ 180, the ratio upside down."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s09",
+        "band": "standard",
+        "text": "Two blocks have exactly the same volume, but one has twice "
+                "the mass of the other. Compare their densities.",
+        "options": [
+            {"text": "The heavier one is twice as dense", "correct": True},
+            {"text": "They have the same density, because the volumes match",
+             "correct": False,
+             "why": "Equal volumes with different masses give different "
+                    "densities — that is what the division shows."},
+            {"text": "The heavier one is half as dense", "correct": False,
+             "why": "More mass in the same space means MORE densely packed, "
+                    "not less."},
+            {"text": "The lighter one is twice as dense", "correct": False,
+             "why": "The lighter block has less mass in the same space, so it "
+                    "is the less dense of the two."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s10",
+        "band": "standard",
+        "text": "Why must a mass in kilograms be converted before it is "
+                "divided by a volume in cubic centimetres?",
+        "options": [            {"text": "Because kilograms are too large to divide accurately",
+             "correct": False,
+             "why": "Size is not the difficulty; the pairing of the units "
+                    "is."},
+            {"text": "Because the answer would come out negative",
+             "correct": False,
+             "why": "Nothing about mixed units makes an answer negative; it "
+                    "makes it meaningless."},
+            {"text": "Because cubic centimetres cannot be used for a solid",
+             "correct": False,
+             "why": "They are used for solids constantly, alongside grams."},
+            {"text": "Because the units must be a matched pair, which kg/cm³ "
+                     "is not",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s11",
+        "band": "standard",
+        "text": "A cube measures 3.0 cm along each edge and has a mass of "
+                "54 g. What is its density?",
+        "options": [
+            {"text": "18 g/cm³, using 3.0 cm as the volume", "correct": False,
+             "why": "3.0 cm is a length. The volume of the cube is 3.0 × 3.0 "
+                    "× 3.0."},
+            {"text": "6.0 g/cm³, using 9.0 cm² as the volume",
+             "correct": False,
+             "why": "9.0 cm² is the area of one face; a volume needs all "
+                    "three edges."},
+            {"text": "2.0 g/cm³", "correct": True},
+            {"text": "1458 g/cm³", "correct": False,
+             "why": "That multiplies the mass by the volume instead of "
+                    "dividing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s12",
+        "band": "standard",
+        "text": "A block floats on water. What must be true of its density?",
+        "options": [            {"text": "It is greater than 1.00 g/cm³", "correct": False,
+             "why": "Anything denser than water sinks in it."},
+            {"text": "It cannot be told without knowing the block's mass",
+             "correct": False,
+             "why": "Floating tells you the density directly, whatever the "
+                    "mass happens to be."},
+            {"text": "It is exactly 1.00 g/cm³", "correct": False,
+             "why": "At exactly that value it hangs level with the surface "
+                    "rather than floating on it."},
+            {"text": "It is less than 1.00 g/cm³", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s13",
+        "band": "standard",
+        "text": "Why does the rise in the water level measure a stone's "
+                "volume?",
+        "options": [
+            {"text": "Because water is denser than most stones",
+             "correct": False,
+             "why": "Most stones are the denser of the two, and it would not "
+                    "matter either way."},
+            {"text": "Because the stone absorbs its own volume of water",
+             "correct": False,
+             "why": "A stone that soaked water up would give a reading that "
+                    "was too small."},
+            {"text": "Because the water pushed aside fills the same space as "
+                     "the stone",
+             "correct": True},
+            {"text": "Because the stone's mass pushes the water up",
+             "correct": False,
+             "why": "How heavy it is makes no difference; the space it "
+                    "occupies is what displaces the water."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p11-01-h05",
+        "band": "harder",
+        "text": "A block of mass 500 g and volume 250 cm³ is cut into five "
+                "equal pieces. What is each piece's density?",
+        "options": [            {"text": "2.0 g/cm³, the same as the whole block",
+             "correct": True},
+            {"text": "0.40 g/cm³, a fifth of the original", "correct": False,
+             "why": "Both the mass and the volume are divided by five, so the "
+                    "ratio is unchanged."},
+            {"text": "10 g/cm³, five times the original", "correct": False,
+             "why": "Cutting cannot pack a material more tightly."},
+            {"text": "It depends which piece, since they may differ",
+             "correct": False,
+             "why": "They are the same material throughout, so all five share "
+                    "one density."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h06",
+        "band": "harder",
+        "text": "A sample has a mass of 0.50 kg and a volume of 200 cm³. What "
+                "is its density in g/cm³?",
+        "options": [
+            {"text": "0.0025 g/cm³", "correct": False,
+             "why": "That divides 0.50 kg by 200 without turning the "
+                    "kilograms into grams."},
+            {"text": "400 g/cm³", "correct": False,
+             "why": "That is 200 ÷ 0.50, which inverts the ratio as well as "
+                    "leaving the units mixed."},
+            {"text": "100 g/cm³", "correct": False,
+             "why": "That multiplies 0.50 by 200 instead of dividing."},
+            {"text": "2.5 g/cm³", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h07",
+        "band": "harder",
+        "text": "Three liquids that do not mix are poured into one jar: "
+                "0.79 g/cm³, 1.00 g/cm³ and 1.26 g/cm³. What is the order "
+                "from the bottom up?",
+        "options": [            {"text": "0.79, then 1.00, then 1.26", "correct": False,
+             "why": "That puts the least dense at the bottom; it floats on "
+                    "the others instead."},
+            {"text": "They mix into one layer of average density",
+             "correct": False,
+             "why": "The question says they do not mix, so they settle in "
+                    "order."},
+            {"text": "1.00, then 1.26, then 0.79", "correct": False,
+             "why": "1.26 is the densest of the three, so nothing sits below "
+                    "it."},
+            {"text": "1.26, then 1.00, then 0.79", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h08",
+        "band": "harder",
+        "text": "A sealed balloon is carried up a mountain and expands. What "
+                "happens to the density of the gas inside it?",
+        "options": [            {"text": "It falls, because the same mass now fills more space",
+             "correct": True},
+            {"text": "It rises, because the gas is colder up there",
+             "correct": False,
+             "why": "Cooling would shrink it; the balloon has grown, so the "
+                    "same mass fills more space."},
+            {"text": "It stays the same, because no gas has escaped",
+             "correct": False,
+             "why": "The mass is unchanged, but the volume is not, so the "
+                    "division changes."},
+            {"text": "It falls, because some of the gas has leaked out",
+             "correct": False,
+             "why": "The balloon is sealed, so nothing has escaped — the "
+                    "volume is what changed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h09",
+        "band": "harder",
+        "text": "Why is a gas so much less dense than the same substance as a "
+                "liquid?",
+        "options": [
+            {"text": "Because the particles themselves shrink when it "
+                     "evaporates",
+             "correct": False,
+             "why": "The particles are unchanged; only their spacing is "
+                    "different."},
+            {"text": "Because there are far fewer particles in a gas",
+             "correct": False,
+             "why": "Every particle is still there; they are simply spread "
+                    "much further apart."},
+            {"text": "Because the particles are far further apart, so it "
+                     "fills more space",
+             "correct": True},
+            {"text": "Because a gas has no mass worth measuring",
+             "correct": False,
+             "why": "A gas certainly has mass — that is why the atmosphere "
+                    "presses on us."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h10",
+        "band": "harder",
+        "text": "Two cubes are made of the same metal, one twice as long "
+                "along each edge. How do their masses compare?",
+        "options": [
+            {"text": "The larger has twice the mass", "correct": False,
+             "why": "Doubling every edge multiplies the VOLUME by eight, not "
+                    "by two."},
+            {"text": "The larger has four times the mass", "correct": False,
+             "why": "Four times is what happens to the surface area, not to "
+                    "the volume."},
+            {"text": "The larger has eight times the mass", "correct": True},
+            {"text": "They have the same mass, since it is the same metal",
+             "correct": False,
+             "why": "The same metal means the same DENSITY, and the larger "
+                    "cube holds much more of it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h11",
+        "band": "harder",
+        "text": "A stone gives 240 g and 80 cm³. A larger stone of the same "
+                "rock gives 480 g and 160 cm³. What does that show?",
+        "options": [            {"text": "That the larger stone is twice as dense",
+             "correct": False,
+             "why": "Both come out at 3.0 g/cm³; the mass and the volume have "
+                    "doubled together."},
+            {"text": "That the larger stone is half as dense", "correct": False,
+             "why": "Neither is denser: the ratio is identical for both."},
+            {"text": "That one of the two measurements must be wrong",
+             "correct": False,
+             "why": "Both are entirely consistent, which is exactly the "
+                    "point."},
+            {"text": "That density belongs to the rock, not to the piece",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h12",
+        "band": "harder",
+        "text": "A cylinder reads to the nearest 1 cm³ and a small stone "
+                "displaces about 5 cm³. Why is that a poor measurement, and "
+                "what would fix it?",
+        "options": [
+            {"text": "The reading is fine; density does not depend on the "
+                     "size of the sample",
+             "correct": False,
+             "why": "The density does not, but the UNCERTAINTY in this "
+                    "measurement of it certainly does."},
+            {"text": "The stone is too heavy for the cylinder; use a balance "
+                     "instead",
+             "correct": False,
+             "why": "The balance gives the mass; the cylinder is still needed "
+                    "for the volume."},
+            {"text": "The uncertainty is a large share of 5 cm³; use a bigger "
+                     "stone or a narrower cylinder",
+             "correct": True},
+            {"text": "Water is the wrong liquid; a denser one would read more "
+                     "accurately",
+             "correct": False,
+             "why": "The rise depends on the stone's volume, not on which "
+                    "liquid it is lowered into."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h13",
+        "band": "harder",
+        "text": "Why is a density in kg/m³ a number a thousand times larger "
+                "than the same density in g/cm³?",
+        "options": [            {"text": "Because a cubic metre is a million cubic centimetres "
+                     "and a kilogram is a thousand grams",
+             "correct": True},
+            {"text": "Because a kilogram is a thousand grams, and that is the "
+                     "whole difference",
+             "correct": False,
+             "why": "That is half of it; the volume unit changes by a million "
+                    "at the same time."},
+            {"text": "Because a cubic metre is a hundred cubic centimetres",
+             "correct": False,
+             "why": "A hundred is the LENGTH conversion; a volume needs it "
+                    "cubed, giving a million."},
+            {"text": "Because the two are different quantities that happen to "
+                     "look alike",
+             "correct": False,
+             "why": "They are the same quantity in different units, which is "
+                    "why one converts into the other."},
+        ],
+        "figure": None,
+    },
 ]

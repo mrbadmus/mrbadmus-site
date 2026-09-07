@@ -292,4 +292,587 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p11-04-e05",
+        "band": "easier",
+        "text": "The density of ice is about…",
+        "options": [
+            {"text": "0.92 g/cm³", "correct": True},
+            {"text": "1.00 g/cm³", "correct": False,
+             "why": "That is the density of liquid water; ice is a little "
+                    "less."},
+            {"text": "1.09 g/cm³", "correct": False,
+             "why": "That would be denser than water, and ice would sink."},
+            {"text": "0.09 g/cm³", "correct": False,
+             "why": "That is ten times too small — an iceberg would sit "
+                    "almost entirely above the surface."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-e06",
+        "band": "easier",
+        "text": "Water expands on freezing by about…",
+        "options": [
+            {"text": "0.9%", "correct": False,
+             "why": "That is ten times too small to burst a pipe or float an "
+                    "iceberg the way ice does."},
+            {"text": "9%", "correct": True},
+            {"text": "50%", "correct": False,
+             "why": "That would make ice about half the density of water, and "
+                    "icebergs would ride far higher."},
+            {"text": "90%", "correct": False,
+             "why": "Ice would be almost as light as air, which it plainly is "
+                    "not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-e07",
+        "band": "easier",
+        "text": "When almost any substance freezes, it becomes…",
+        "options": [
+            {"text": "less dense than its own liquid", "correct": False,
+             "why": "That is water's odd behaviour, and it is the exception "
+                    "rather than the rule."},
+            {"text": "denser than its own liquid", "correct": True},
+            {"text": "exactly as dense as its own liquid", "correct": False,
+             "why": "The particles pack closer on freezing, so the density "
+                    "changes."},
+            {"text": "lighter, because cold things weigh less",
+             "correct": False,
+             "why": "Cooling does not change a mass; it changes the volume it "
+                    "occupies."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-e08",
+        "band": "easier",
+        "text": "A lump of solid candle wax is dropped into melted wax at the "
+                "same temperature. What does it do?",
+        "options": [
+            {"text": "Floats, like ice on water", "correct": False,
+             "why": "Wax follows the normal rule: its solid is denser than "
+                    "its liquid."},
+            {"text": "Sinks straight to the bottom", "correct": True},
+            {"text": "Hangs level, halfway down", "correct": False,
+             "why": "That would need the two densities to be identical, and "
+                    "they are not."},
+            {"text": "Melts instantly and mixes in", "correct": False,
+             "why": "Both are at the same temperature, so nothing drives it "
+                    "to melt."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-e09",
+        "band": "easier",
+        "text": "Which substance is unusual in being LESS dense as a solid "
+                "than as a liquid?",
+        "options": [
+            {"text": "Iron", "correct": False,
+             "why": "Solid iron sinks in molten iron, following the normal "
+                    "rule."},
+            {"text": "Wax", "correct": False,
+             "why": "Solid wax sinks in melted wax, as most solids do in "
+                    "their own melt."},
+            {"text": "Water", "correct": True},
+            {"text": "Lead", "correct": False,
+             "why": "Solid lead is denser than molten lead and sinks in it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-e10",
+        "band": "easier",
+        "text": "As water freezes, its molecules lock into a structure that "
+                "is…",
+        "options": [
+            {"text": "packed tighter than in the liquid", "correct": False,
+             "why": "Tighter packing would make ice denser, and it sinks in "
+                    "that case."},
+            {"text": "open and six-sided, holding them further apart",
+             "correct": True},
+            {"text": "completely random, like a liquid", "correct": False,
+             "why": "A solid's particles are in a fixed arrangement, not a "
+                    "random one."},
+            {"text": "the same as in the liquid, only colder", "correct": False,
+             "why": "If nothing changed about the arrangement, the density "
+                    "would not change either."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-e11",
+        "band": "easier",
+        "text": "Roughly what fraction of a floating iceberg is BELOW the "
+                "surface?",
+        "options": [
+            {"text": "About 8%", "correct": False,
+             "why": "That is the fraction ABOVE the surface, which is what is "
+                    "left over."},
+            {"text": "About 50%", "correct": False,
+             "why": "Half and half would need ice to be half water's density, "
+                    "and it is 0.92."},
+            {"text": "About 92%", "correct": True},
+            {"text": "All of it", "correct": False,
+             "why": "A fully submerged berg would not be floating at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-e12",
+        "band": "easier",
+        "text": "Freeze–thaw weathering breaks rock apart because water in a "
+                "crack…",
+        "options": [
+            {"text": "dissolves the rock as it freezes", "correct": False,
+             "why": "Dissolving is a chemical effect; this one is the water "
+                    "pushing the crack wider."},
+            {"text": "expands as it freezes and widens the crack",
+             "correct": True},
+            {"text": "shrinks as it freezes and pulls the crack open",
+             "correct": False,
+             "why": "Shrinking would leave a gap and pull nothing; water "
+                    "expands on freezing."},
+            {"text": "makes the rock softer as it warms", "correct": False,
+             "why": "Rock does not soften at those temperatures; the ice does "
+                    "the work."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-e13",
+        "band": "easier",
+        "text": "A glass bottle filled to the brim with water is left in a "
+                "freezer. What may happen?",
+        "options": [
+            {"text": "Nothing, because water shrinks as it freezes",
+             "correct": False,
+             "why": "Water is the exception: it expands, which is what "
+                    "threatens the bottle."},
+            {"text": "It splits as the ice expands", "correct": True},
+            {"text": "The water leaks out through the glass", "correct": False,
+             "why": "Glass does not let water through; the pressure of the "
+                    "expanding ice is the danger."},
+            {"text": "The bottle shrinks around the ice", "correct": False,
+             "why": "The glass barely changes size, and the ice pushes "
+                    "outwards against it."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p11-04-s05",
+        "band": "standard",
+        "text": "What is anomalous about water between 0 °C and 4 °C?",
+        "options": [
+            {"text": "It freezes and melts at the same time", "correct": False,
+             "why": "It is liquid throughout that range; the oddity is what "
+                    "its volume does."},
+            {"text": "Cooling it makes it expand instead of contract",
+             "correct": True},
+            {"text": "It boils at a lower temperature than usual",
+             "correct": False,
+             "why": "Boiling is nowhere near this range; the anomaly is about "
+                    "density."},
+            {"text": "It stops conducting energy altogether", "correct": False,
+             "why": "It conducts as usual; the change is in how tightly it "
+                    "packs."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-s06",
+        "band": "standard",
+        "text": "Solid lead is denser than molten lead. What happens to a "
+                "lump of solid lead dropped into molten lead?",
+        "options": [
+            {"text": "It floats, as ice does on water", "correct": False,
+             "why": "Ice is the exception; lead follows the ordinary rule and "
+                    "sinks."},
+            {"text": "It sinks, as most solids do", "correct": True},
+            {"text": "It hangs level with the surface", "correct": False,
+             "why": "That needs the two densities to be equal, and they are "
+                    "not."},
+            {"text": "It expands and then floats", "correct": False,
+             "why": "Solid lead does not expand on being placed in its own "
+                    "melt."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-s07",
+        "band": "standard",
+        "text": "Why does ice float with MOST of itself below the surface?",
+        "options": [
+            {"text": "Because ice is much less dense than water",
+             "correct": False,
+             "why": "It is only a little less dense — 0.92 against 1.00 — "
+                    "which is why so much sits under."},
+            {"text": "Because its density is only a little below water's",
+             "correct": True},
+            {"text": "Because water pushes down on the top of it",
+             "correct": False,
+             "why": "The water pushes UP on it; that is what holds it "
+                    "afloat."},
+            {"text": "Because ice absorbs water as it floats", "correct": False,
+             "why": "It does not soak anything up; the fraction is set by the "
+                    "two densities."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-s08",
+        "band": "standard",
+        "text": "A bottle of cooking oil left in the freezer does not split. "
+                "Why not?",
+        "options": [
+            {"text": "Because oil never becomes solid", "correct": False,
+             "why": "It does thicken and set; what matters is that it "
+                    "contracts as it does."},
+            {"text": "Because oil contracts as it solidifies, like most "
+                     "substances",
+             "correct": True},
+            {"text": "Because oil is less dense than water", "correct": False,
+             "why": "It is, but that is about floating rather than about "
+                    "bursting a bottle."},
+            {"text": "Because oil freezes at a much lower temperature",
+             "correct": False,
+             "why": "Even when it does set, it takes up less space rather "
+                    "than more."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-s09",
+        "band": "standard",
+        "text": "Why is saying ice floats because it is lighter a poor "
+                "answer?",
+        "options": [
+            {"text": "Because ice is actually heavier than water",
+             "correct": False,
+             "why": "A given volume of ice IS lighter; the trouble is the "
+                    "word rather than the fact."},
+            {"text": "Because a berg is far heavier than a cup of water; "
+                     "density decides",
+             "correct": True},
+            {"text": "Because floating has nothing to do with weight at all",
+             "correct": False,
+             "why": "Weight is one of the two forces involved; it is comparing "
+                    "raw weights that fails."},
+            {"text": "Because ice and water weigh exactly the same",
+             "correct": False,
+             "why": "That depends entirely on how much of each you take, "
+                    "which is the point."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-s10",
+        "band": "standard",
+        "text": "A student says cold things float on warm things, which is "
+                "why ice sits on top. What is right?",
+        "options": [
+            {"text": "They are right — cold water always rises",
+             "correct": False,
+             "why": "Cold water sinks, right down to 4 °C, which is the "
+                    "opposite of the claim."},
+            {"text": "Being cold is not what floats it; being less dense is",
+             "correct": True},
+            {"text": "They are right, but only for water", "correct": False,
+             "why": "It is not right for water either: the ice floats because "
+                    "of its density."},
+            {"text": "Temperature decides it, and 0 °C is the floating point",
+             "correct": False,
+             "why": "Water at 1 °C does not float on water at 5 °C; density "
+                    "is what settles it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-s11",
+        "band": "standard",
+        "text": "A sealed metal pipe full of water freezes and bursts. What "
+                "has happened?",
+        "options": [
+            {"text": "The ice contracted and pulled the pipe apart",
+             "correct": False,
+             "why": "Contracting would leave a gap, not split the walls."},
+            {"text": "The water expanded on freezing and had nowhere to go",
+             "correct": True},
+            {"text": "The metal shrank in the cold and crushed the ice",
+             "correct": False,
+             "why": "The metal does contract slightly, but the pipe splits "
+                    "outwards under the ice."},
+            {"text": "The water dissolved the pipe from the inside",
+             "correct": False,
+             "why": "The failure is sudden and mechanical, not a slow "
+                    "chemical one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-s12",
+        "band": "standard",
+        "text": "What happens to the density of water as it is cooled from "
+                "20 °C to 4 °C?",
+        "options": [
+            {"text": "It falls steadily", "correct": False,
+             "why": "It rises over this range; the fall only begins below "
+                    "4 °C."},
+            {"text": "It rises", "correct": True},
+            {"text": "It stays exactly the same", "correct": False,
+             "why": "It changes measurably, which is why 4 °C is worth "
+                    "naming."},
+            {"text": "It rises and then falls again before 4 °C",
+             "correct": False,
+             "why": "The turning point is at 4 °C itself, not before it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-s13",
+        "band": "standard",
+        "text": "Why does the coldest water in a deep pond NOT sit at the "
+                "bottom in winter?",
+        "options": [
+            {"text": "Because cold water always rises", "correct": False,
+             "why": "It sinks down to 4 °C; only below that does it become "
+                    "less dense again."},
+            {"text": "Because water is densest at 4 °C, so colder water sits "
+                     "above it",
+             "correct": True},
+            {"text": "Because the bottom of a pond is warmed by the ground",
+             "correct": False,
+             "why": "Some warmth comes from below, but the layering follows "
+                    "from water's density curve."},
+            {"text": "Because ice at the surface stops the water mixing",
+             "correct": False,
+             "why": "The layering is there before any ice forms, and density "
+                    "is what causes it."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p11-04-h05",
+        "band": "harder",
+        "text": "A block of ice of volume 1000 cm³ melts completely. What "
+                "volume of water does it give?",
+        "options": [
+            {"text": "1000 cm³, since nothing has been added or taken away",
+             "correct": False,
+             "why": "The mass is unchanged, but water is denser, so it takes "
+                    "up less room."},
+            {"text": "920 cm³", "correct": True},
+            {"text": "1090 cm³", "correct": False,
+             "why": "That is larger than the ice, and melting makes water "
+                    "take up LESS space."},
+            {"text": "92 cm³", "correct": False,
+             "why": "That is ten times too small — a check on the order of "
+                    "magnitude catches it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-h06",
+        "band": "harder",
+        "text": "Why is it wrong to treat water expanding on freezing and "
+                "water expanding on heating as the same effect?",
+        "options": [
+            {"text": "Because water does not expand on heating at all",
+             "correct": False,
+             "why": "It does, above 4 °C, which is why the two are easy to "
+                    "run together."},
+            {"text": "Because the freezing expansion comes from the open "
+                     "structure the molecules lock into",
+             "correct": True},
+            {"text": "Because only the freezing one is real; the other is a "
+                     "measurement error",
+             "correct": False,
+             "why": "Both are real and both are measured routinely."},
+            {"text": "Because the molecules themselves get bigger in one case "
+                     "and not the other",
+             "correct": False,
+             "why": "The molecules never change size; only their arrangement "
+                    "and spacing do."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-h07",
+        "band": "harder",
+        "text": "Why does a British pond almost never freeze solid to the "
+                "bottom?",
+        "options": [
+            {"text": "Because the water below the ice is warmed by the fish "
+                     "in it",
+             "correct": False,
+             "why": "Fish add a negligible amount; the ice layer and the "
+                    "layering of the water do the work."},
+            {"text": "Because the ice layer insulates the water below, which "
+                     "stays near 4 °C",
+             "correct": True},
+            {"text": "Because moving water cannot freeze", "correct": False,
+             "why": "Still ponds freeze at the surface readily; movement is "
+                    "not what saves the depths."},
+            {"text": "Because ice forms at the bottom first and stops the "
+                     "rest",
+             "correct": False,
+             "why": "Ice floats, so it forms at the top — which is the "
+                    "starting point of the whole answer."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-h08",
+        "band": "harder",
+        "text": "Why does an iceberg sit slightly higher in sea water than in "
+                "fresh water?",
+        "options": [
+            {"text": "Because salt water is denser, so less of the berg has "
+                     "to be submerged",
+             "correct": True},
+            {"text": "Because salt water is colder, so the ice expands",
+             "correct": False,
+             "why": "Temperature is not what sets the fraction; the two "
+                    "densities are."},
+            {"text": "Because salt makes the ice lighter", "correct": False,
+             "why": "The berg is unchanged; it is the water round it that is "
+                    "denser."},
+            {"text": "Because salt water pushes upwards with a fixed force "
+                     "whatever floats in it",
+             "correct": False,
+             "why": "The upward push always matches the berg's weight; what "
+                    "changes is how much water that takes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-h09",
+        "band": "harder",
+        "text": "Freeze–thaw weathering shapes mountains but does little in a "
+                "hot dry desert. Why?",
+        "options": [
+            {"text": "Because desert rock is harder", "correct": False,
+             "why": "Rock hardness varies everywhere; what is missing is one "
+                    "of the ingredients."},
+            {"text": "Because there is little water to get into the cracks "
+                     "and freeze",
+             "correct": True},
+            {"text": "Because deserts never get cold enough at night",
+             "correct": False,
+             "why": "Many deserts drop below freezing; it is the water that "
+                    "is absent."},
+            {"text": "Because sand fills the cracks and holds them shut",
+             "correct": False,
+             "why": "Sand in a crack does not stop ice forming; the lack of "
+                    "water does."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-h10",
+        "band": "harder",
+        "text": "A student says the water molecules themselves expand when "
+                "water freezes. Correct them.",
+        "options": [
+            {"text": "They are right — that is why the ice takes up more "
+                     "room",
+             "correct": False,
+             "why": "A molecule keeps its size through every change of state; "
+                    "only the arrangement alters."},
+            {"text": "The molecules are unchanged; they lock into an open "
+                     "arrangement that holds them apart",
+             "correct": True},
+            {"text": "The molecules shrink, which is why there are gaps",
+             "correct": False,
+             "why": "They do not shrink either; the gaps come from how they "
+                    "are arranged."},
+            {"text": "The molecules split apart into atoms as ice forms",
+             "correct": False,
+             "why": "Freezing is a physical change; no molecule is broken "
+                    "up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-h11",
+        "band": "harder",
+        "text": "A sealed bottle only half full of water does not split in a "
+                "freezer. Why not?",
+        "options": [
+            {"text": "Because half as much water expands by half as much, "
+                     "which the glass can take",
+             "correct": False,
+             "why": "Even a small expansion would burst a full sealed bottle; "
+                    "the empty space is what saves it."},
+            {"text": "Because there is space above the water for the ice to "
+                     "expand into",
+             "correct": True},
+            {"text": "Because water only expands when a container is "
+                     "completely full",
+             "correct": False,
+             "why": "It expands by the same fraction either way; the room to "
+                    "do it is what differs."},
+            {"text": "Because the air above the water keeps it from freezing",
+             "correct": False,
+             "why": "It freezes perfectly well; the air simply gets out of "
+                    "the way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-h12",
+        "band": "harder",
+        "text": "If ice were denser than liquid water, what would happen to a "
+                "pond over a hard winter?",
+        "options": [
+            {"text": "Nothing would change, since the surface would still "
+                     "freeze first",
+             "correct": False,
+             "why": "The ice would sink as it formed, so fresh water would "
+                    "keep being exposed at the top."},
+            {"text": "It would freeze from the bottom up and could freeze "
+                     "solid",
+             "correct": True},
+            {"text": "It would never freeze at all", "correct": False,
+             "why": "It would freeze readily; where the ice went is what "
+                    "would differ."},
+            {"text": "The ice would form in the middle and stay there",
+             "correct": False,
+             "why": "Denser ice would sink all the way to the bottom rather "
+                    "than hanging in the water."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-04-h13",
+        "band": "harder",
+        "text": "Why is water's behaviour on freezing called an exception?",
+        "options": [
+            {"text": "Because it is the only substance that freezes at all",
+             "correct": False,
+             "why": "Almost everything freezes; it is what happens to the "
+                    "density that is unusual."},
+            {"text": "Because almost every other substance is denser as a "
+                     "solid than as its liquid",
+             "correct": True},
+            {"text": "Because water is the only substance that has a solid "
+                     "form",
+             "correct": False,
+             "why": "Every substance has one; iron, wax and lead all do."},
+            {"text": "Because water freezes at 0 °C and nothing else does",
+             "correct": False,
+             "why": "The freezing temperature is not what makes it "
+                    "exceptional; the density change is."},
+        ],
+        "figure": None,
+    },
 ]

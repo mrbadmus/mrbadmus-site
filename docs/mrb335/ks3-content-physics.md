@@ -441,6 +441,47 @@ moved 32 of them to give **23 / 25 / 25 / 23**.
 
 ---
 
+## P11 · Matter and the particle model — 4 lessons, 108 new rows (36 per band)
+
+Unit total: **52 / 52 / 52**. Nine per band on every lesson.
+
+| lesson | ids added (each band) |
+|---|---|
+| 01 density | e05–e13, s05–s13, h05–h13 |
+| 02 Brownian motion | e05–e13, s05–s13, h05–h13 |
+| 03 temperature and internal energy | e05–e13, s05–s13, h05–h13 |
+| 04 why ice floats | e05–e13, s05–s13, h05–h13 |
+
+**P11 is the referencing unit, and the folder was read before authoring.** Its
+four lessons carry a `references` list pointing at C1 (`solids-liquids-and-gases`,
+`changes-of-state`, `diffusion`) and at P1 (`heating-and-thermal-equilibrium`),
+each with a stated reason. The rows here lean on those ideas where a lesson
+already does — a gas being far less dense because its particles are far apart
+(`p11-01-h09`), energy going into the arrangement rather than the temperature
+during a change of state (`p11-03-s08`) — but they **test P11's own content**,
+never C1's. No row asks what the states of matter are; the density, the
+jiggling, the temperature/internal-energy split and the ice anomaly are what is
+examined.
+
+**⚠️ `quantities.py` governs lesson 03 and was honoured.** That module owns the
+one definition of temperature, and P11 lesson 03 is one of its four sites. No
+new row restates it. The nine easier rows go at what the lesson adds instead —
+which quantity is in joules and which in degrees, what internal energy also
+depends on, when heating stops, and what absolute zero is — and the harder ones
+work the distinction rather than the definition (`h07`, `h12`, `h13`).
+
+Lesson 02's rows keep the three named misconceptions in view: the specks are
+not alive (`e08`), they are not the molecules (`s12`), and a draught or a
+convection current is ruled out by neighbouring specks going different ways at
+the same moment (`s07`, `h11`).
+
+**Review fixes.** Fifteen length flags reworded, most of them one-word correct
+answers ("No", "Sinks", "It splits") given a short reason so they no longer
+stood out among wordy distractors. The spread was 9 / 73 / 23 / 3 and 43 rows
+were rotated to give **26 / 30 / 26 / 26**.
+
+---
+
 ## ⚠️ `git add` was scoped correctly and a commit still swept in another lane
 
 Found by the commander in this lane's **P5 commit `586aaa0c4`**, which carried
