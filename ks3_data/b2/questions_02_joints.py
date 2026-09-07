@@ -423,17 +423,18 @@ QUESTIONS = [
              "why": "The elbow is a hinge. It folds to about 145 degrees, "
                     "which is a great deal more than a fixed joint allows."},
             {"text": "At the top of the neck, where the head turns from side "
-                     "to side.",
+                     "to side on a peg of bone.",
              "correct": False,
              "why": "That turn happens at a pivot. A fixed joint would not "
                     "let the head turn at all."},
-            {"text": "At the base of the thumb, which swings across the palm.",
+            {"text": "At the base of the thumb, which swings across the palm "
+                     "to the fingers.",
              "correct": False,
              "why": "The thumb's joint moves in two directions, which is why "
                     "it fits none of the four types. A fixed joint moves in "
                     "none."},
-            {"text": "Between the plates across the top of an adult skull, "
-                     "along a jagged seam.",
+            {"text": "Between the plates of an adult skull, along a jagged "
+                     "seam.",
              "correct": True},
         ],
         "figure": None,
@@ -473,13 +474,13 @@ QUESTIONS = [
              "why": "A break is a break in the bone itself. In a dislocation "
                     "the bone is whole and has come out of place."},
             {"text": "A ligament torn so that the joint moves further than it "
-                     "should.",
+                     "should when it is loaded.",
              "correct": False,
              "why": "That is a sprain, and it makes a dislocation more "
                     "likely. A dislocation is the bone ends themselves no "
                     "longer sitting together."},
-            {"text": "A joint pushed out of place, so the two bone ends no "
-                     "longer sit together properly.",
+            {"text": "A joint pushed out of place, so the bone ends come "
+                     "apart.",
              "correct": True},
             {"text": "A joint that has become too stiff to move through its "
                      "usual range.",
@@ -545,11 +546,11 @@ QUESTIONS = [
                 "and fixed. Which of these joints is none of the four, and why "
                 "not?",
         "options": [
-            {"text": "The base of the thumb — its saddle shape moves in two "
-                     "directions, and no type covers that.",
+            {"text": "The base of the thumb — its saddle shape moves two "
+                     "ways, and no type does.",
              "correct": True},
-            {"text": "The top of the neck — it turns much further than any of "
-                     "the four types allow.",
+            {"text": "The top of the neck — it turns much further in each "
+                     "direction than the four types allow.",
              "correct": False,
              "why": "That turn is exactly what a pivot does, and about 80 "
                     "degrees each way is its ordinary range."},
@@ -558,8 +559,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Three directions is what a ball and socket gives, and the "
                     "shoulder is the clearest example of one there is."},
-            {"text": "The knee — it bends and also turns, so it is a hinge "
-                     "and a pivot at once.",
+            {"text": "The knee — it bends and also turns, so it is both a "
+                     "hinge and a pivot at once.",
              "correct": False,
              "why": "A knee does not turn. That refusal is exactly why a "
                     "twisting tackle damages one so badly."},
@@ -572,8 +573,8 @@ QUESTIONS = [
         "text": "Which joint in the body is dislocated most often, and what "
                 "makes it that one?",
         "options": [
-            {"text": "The knee, because it takes more weight than any other "
-                     "joint.",
+            {"text": "The knee, because it takes more of the body's weight "
+                     "than any other joint.",
              "correct": False,
              "why": "Weight is not what pushes a joint out of place. The knee "
                     "is a hinge, and a hinge refuses almost every "
@@ -583,8 +584,7 @@ QUESTIONS = [
              "correct": False,
              "why": "It does swing in several, but its socket is deep. "
                     "Deeper socket, less range, far fewer dislocations."},
-            {"text": "The shoulder, because it refuses fewer directions than "
-                     "any other joint.",
+            {"text": "The shoulder, because it refuses the fewest directions.",
              "correct": True},
             {"text": "The elbow, because it is used more often than any other "
                      "joint.",
@@ -615,8 +615,8 @@ QUESTIONS = [
              "why": "It heals slowly and often not at all. Softness is not "
                     "what decides healing — a blood supply is, and cartilage "
                     "has none."},
-            {"text": "It has no blood supply of its own, and is fed by fluid "
-                     "squeezed through it.",
+            {"text": "No blood supply — it is fed by fluid squeezed through "
+                     "it.",
              "correct": True},
         ],
         "figure": None,
@@ -746,7 +746,7 @@ QUESTIONS = [
                 "shoulder.",
         "options": [
             {"text": "It is backwards: ligaments take directions away, and "
-                     "the elbow with straps down both sides has only one.",
+                     "the elbow has only one.",
              "correct": True},
             {"text": "It is right: the shoulder has a whole ring of ligaments "
                      "and moves in three directions.",
@@ -756,7 +756,7 @@ QUESTIONS = [
                     "it going further; the round ball in a round socket is "
                     "what lets it move."},
             {"text": "It is right for the elbow and wrong for the shoulder, "
-                     "because the two are held differently.",
+                     "because the two are strapped quite differently.",
              "correct": False,
              "why": "The rule fails at both. Ligaments restrict at every "
                     "joint in the body, and the shape of the bone ends "
@@ -1055,8 +1055,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Fluid keeps a joint working smoothly wherever it is. It "
                     "has nothing to do with which directions the joint has."},
-            {"text": "The shapes of the bone ends — she has copied the straps "
-                     "and the facing, and neither decides a direction.",
+            {"text": "The shapes of the bone ends, which the straps and "
+                     "facing cannot supply.",
              "correct": True},
             {"text": "The tendons — each type of joint needs its own kind of "
                      "tendon to give it its movement.",

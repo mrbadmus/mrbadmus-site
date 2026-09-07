@@ -553,13 +553,13 @@ QUESTIONS = [
         "text": "The muscle down the front of the shin is the calf muscle's "
                 "partner. What movement does it produce?",
         "options": [
-            {"text": "It lifts the heel, so that you rise onto your toes.",
+            {"text": "It lifts the heel off the ground, so that you rise up "
+                     "onto your toes.",
              "correct": False,
              "why": "That is the calf's own movement, through the Achilles "
                     "tendon. The two muscles of a pair never do the same "
                     "job."},
-            {"text": "It lifts the toes, which is the opposite movement to "
-                     "the calf's.",
+            {"text": "It lifts the toes, the opposite of what the calf does.",
              "correct": True},
             {"text": "It bends the knee, pulling the heel up behind you.",
              "correct": False,
@@ -615,8 +615,8 @@ QUESTIONS = [
              "why": "A muscle moves a bone only if its pull reaches that "
                     "bone. With the lower attachment gone, the forearm never "
                     "feels it."},
-            {"text": "Bend that elbow against a resistance, because the "
-                     "biceps' pull can no longer reach the forearm.",
+            {"text": "Bend that elbow against a resistance — the pull cannot "
+                     "reach the forearm.",
              "correct": True},
             {"text": "Straighten that elbow, because the biceps was what "
                      "pulled the forearm back down.",
@@ -624,7 +624,7 @@ QUESTIONS = [
              "why": "Straightening is the triceps' job, and gravity does it "
                     "too on a hanging arm. Both of those still work."},
             {"text": "Relax the biceps, because a snapped tendon leaves the "
-                     "muscle permanently contracted.",
+                     "muscle permanently contracted and bunched.",
              "correct": False,
              "why": "The muscle can still let go. What it has lost is the "
                     "connection carrying its pull to the bone."},
@@ -641,13 +641,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Let go and the weight drops. Something is pulling hard; "
                     "it is simply not winning."},
-            {"text": "No — the biceps has locked at that length and stopped "
-                     "working.",
+            {"text": "No — the biceps has locked at that length and has "
+                     "stopped working.",
              "correct": False,
              "why": "There is no lock in a muscle. It is pulling "
                     "continuously, and paying for it in energy."},
-            {"text": "Yes — it is pulling hard enough to hold the weight "
-                     "where it is, without shortening any further.",
+            {"text": "Yes — it is pulling hard without shortening any "
+                     "further.",
              "correct": True},
             {"text": "Yes, but it is the triceps, because a held weight has "
                      "to be stopped from rising.",
@@ -699,7 +699,7 @@ QUESTIONS = [
              "why": "Strength decides how hard, not which way. A pull behind "
                     "the elbow can only ever open it."},
             {"text": "It does not — each muscle can pull either way, "
-                     "depending on what the brain asks for.",
+                     "depending on what the brain asks it for.",
              "correct": False,
              "why": "A muscle pulls towards itself and nowhere else. Where it "
                     "is attached is the whole of its choice."},
@@ -708,8 +708,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Length is not the point. What matters is which side of "
                     "the joint the pull acts on."},
-            {"text": "A muscle pulls towards itself, so a pull in front folds "
-                     "the joint and a pull behind opens it.",
+            {"text": "A muscle pulls towards itself: in front folds the "
+                     "joint, behind opens it.",
              "correct": True},
         ],
         "figure": None,
@@ -894,12 +894,11 @@ QUESTIONS = [
         "text": "A boxer's punch and a swimmer's stroke both push something "
                 "away. Explain how, given that no muscle can push.",
         "options": [
-            {"text": "A muscle pulls on the bone behind the joint, the limb "
-                     "straightens, and the straightening limb does the "
-                     "pushing.",
+            {"text": "A pull behind the joint straightens the limb, and the "
+                     "limb pushes.",
              "correct": True},
             {"text": "The muscle contracts so hard that its pull turns into a "
-                     "push at the far end.",
+                     "push at the far end of the bone.",
              "correct": False,
              "why": "A pull does not become a push however hard it is. What "
                     "straightens the limb is a pull on the other side of the "
@@ -940,9 +939,8 @@ QUESTIONS = [
              "why": "Strength is why they can do it, not why they have to. "
                     "They have to because of the direction gravity happens to "
                     "pull the knee."},
-            {"text": "Gravity only pulls down: at a hanging arm that is the "
-                     "straightening direction, at a standing knee the bending "
-                     "one.",
+            {"text": "Gravity pulls down: that straightens a hanging arm, "
+                     "bends a standing knee.",
              "correct": True},
         ],
         "figure": None,
@@ -1074,7 +1072,7 @@ QUESTIONS = [
                 "which can let go?",
         "options": [
             {"text": "The straightening muscles must work, because they hold "
-                     "the limb out to the branch.",
+                     "the limb out towards the branch.",
              "correct": False,
              "why": "Straightening would drop it. What has to be held is the "
                     "bend, and a bend is held by the muscles that make one."},
@@ -1083,8 +1081,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Gravity is what is trying to pull it off the branch. "
                     "Something has to pull the other way."},
-            {"text": "The bending muscles must keep pulling; their partners "
-                     "can relax, since gravity already straightens the limbs.",
+            {"text": "The bending muscles must keep pulling; gravity does the "
+                     "straightening.",
              "correct": True},
             {"text": "Both must pull at once, because that is the only way to "
                      "hold a joint still.",

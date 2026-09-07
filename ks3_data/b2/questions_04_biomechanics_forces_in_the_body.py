@@ -413,11 +413,11 @@ QUESTIONS = [
         "band": "easier",
         "text": "What is weight?",
         "options": [
-            {"text": "The force pulling something down towards the Earth, "
-                     "measured in newtons.",
+            {"text": "The force pulling something down towards the Earth, in "
+                     "newtons.",
              "correct": True},
             {"text": "The amount of matter in something, measured in "
-                     "kilograms.",
+                     "kilograms on a top-pan balance.",
              "correct": False,
              "why": "That is mass. Weight is the force that mass is pulled "
                     "down with, and it is measured in newtons."},
@@ -626,11 +626,11 @@ QUESTIONS = [
              "why": "The force is the same, and it is only half the "
                     "calculation. The other half is how far from the hinge it "
                     "acts."},
-            {"text": "At the handle, because the same force acting further "
-                     "from the hinge has a bigger turning effect.",
+            {"text": "At the handle, because the same force further out turns "
+                     "more.",
              "correct": True},
-            {"text": "At the handle, because a handle is designed to make a "
-                     "push into a bigger force.",
+            {"text": "At the handle, because a handle is built to turn a "
+                     "small push into a much bigger force.",
              "correct": False,
              "why": "The handle adds nothing to the push itself. What it adds "
                     "is distance from the hinge, and distance is what "
@@ -679,13 +679,13 @@ QUESTIONS = [
              "why": "Nothing is lost in a short spanner. What is missing is "
                     "distance — the same force further out turns more."},
             {"text": "The long spanner increases the force you apply, because "
-                     "your hand travels much further round.",
+                     "your hand travels much further round the nut.",
              "correct": False,
              "why": "Your hand does travel further, and that is what you pay "
                     "with. The force is the same; it is the turning effect "
                     "that has grown."},
-            {"text": "The same force acting further from the nut has a bigger "
-                     "turning effect: turning effect = force × distance.",
+            {"text": "The same force further from the nut turns more: turning "
+                     "effect = force × distance.",
              "correct": True},
         ],
         "figure": None,
@@ -850,11 +850,11 @@ QUESTIONS = [
              "why": "Multiplying all three together does not give a force, "
                     "and the unit that came out of it would not be newtons "
                     "either."},
-            {"text": "The muscle distance should be divided by, not "
-                     "multiplied — and what comes out is not in newtons.",
+            {"text": "The muscle distance must be divided by, not multiplied "
+                     "— and the unit is wrong.",
              "correct": True},
             {"text": "The weight should be 2 N rather than 20 N, and the "
-                     "answer should be divided by 0.32 m.",
+                     "answer should then be divided by 0.32 m.",
              "correct": False,
              "why": "A 2 kg load really does weigh 20 N. And it is the "
                     "muscle's distance you divide by, not the load's."},
@@ -1082,14 +1082,13 @@ QUESTIONS = [
                     "people can differ from each other by more than two "
                     "muscle groups do."},
             {"text": "It matters because one person can only pull so hard, so "
-                     "all three readings are capped.",
+                     "all three of the readings are capped.",
              "correct": False,
              "why": "No cap is being hit — the leg press reads 1422 N. What "
                     "one person gives you is a fair comparison between the "
                     "three groups."},
-            {"text": "It means a difference between the readings is a "
-                     "difference between the muscle groups, not between "
-                     "people.",
+            {"text": "Any difference in the readings is between the muscle "
+                     "groups, not the people.",
              "correct": True},
             {"text": "It matters because a mean can only be worked out from "
                      "readings taken by one person.",

@@ -463,7 +463,8 @@ QUESTIONS = [
         "text": "A femur is a hollow tube rather than a solid rod. What is in "
                 "the hollow space?",
         "options": [
-            {"text": "Nothing — it is left empty so that the leg stays light",
+            {"text": "Nothing — the shaft is left hollow and empty to keep "
+                     "the leg light",
              "correct": False,
              "why": "Being a tube is what keeps it light, and the space is "
                     "not wasted. The marrow is in there, making blood cells."},
@@ -471,13 +472,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Cartilage faces the ends of bones inside a joint. It is "
                     "not what fills the shaft."},
-            {"text": "A core of softer bone, which stops the tube from "
-                     "splitting", "correct": False,
+            {"text": "A core of softer spongy bone, which stops the hollow "
+                     "tube from splitting open", "correct": False,
              "why": "A bar loaded from the side is barely stressed down its "
                     "middle, so a core would add weight and almost no "
                     "strength."},
-            {"text": "Bone marrow, the soft living tissue where new blood "
-                     "cells are made", "correct": True},
+            {"text": "Bone marrow, the soft living tissue that makes blood "
+                     "cells", "correct": True},
         ],
         "figure": None,
     },
@@ -579,14 +580,14 @@ QUESTIONS = [
                      "bigger bone means a worse injury", "correct": False,
              "why": "Size is not what decides it. A femur is far bigger than "
                     "a rib and breaking one does not make breathing painful."},
-            {"text": "A rib sits close to the heart, so damage there is felt "
-                     "more sharply than damage further out", "correct": False,
+            {"text": "A rib sits close to the heart, so damage in the ribcage "
+                     "is felt more sharply than damage further out",
+             "correct": False,
              "why": "Being near an organ is not the point. The pain arrives "
                     "with every breath because the rib itself has to move for "
                     "you to breathe."},
-            {"text": "The ribcage has to swing up and outwards for every "
-                     "breath, so a broken rib is moved thousands of times a "
-                     "day", "correct": True},
+            {"text": "Every breath moves the ribcage, so the broken rib is "
+                     "disturbed constantly", "correct": True},
             {"text": "Ribs hold far more marrow than finger bones do, so much "
                      "more is going wrong inside them", "correct": False,
              "why": "Ribs do hold marrow, but a marrow failure is silent and "
@@ -657,11 +658,11 @@ QUESTIONS = [
                 "shape. The diaphragm still pulls down as normal. Why does "
                 "far less air get into the lungs?",
         "options": [
-            {"text": "Air only moves in when the chest gets bigger, and a "
-                     "loose chest wall is pulled inwards instead",
-             "correct": True},
-            {"text": "The broken ribs press on the lungs and block the air "
-                     "from getting past them", "correct": False,
+            {"text": "Air only moves in when the chest gets bigger, and this "
+                     "one is pulled inwards", "correct": True},
+            {"text": "The broken ribs press inwards on the lungs and block "
+                     "the air getting past them to the airways",
+             "correct": False,
              "why": "Nothing is blocked. The route in is clear; what has gone "
                     "is the increase in volume that draws air along it."},
             {"text": "The diaphragm is weakened by the injury, so its pull is "
@@ -735,8 +736,8 @@ QUESTIONS = [
                 "bone, well behind the ankle. What would happen if that heel "
                 "bone were soft rather than rigid?",
         "options": [
-            {"text": "The pull would be bigger, because a soft bone gives the "
-                     "tendon further to travel", "correct": False,
+            {"text": "The pull would be bigger, because a soft bone gives way "
+                     "and lets the tendon travel further", "correct": False,
              "why": "Softness does not hand out extra distance. A pull that "
                     "bends what it is attached to moves nothing at the far "
                     "end."},
@@ -749,8 +750,8 @@ QUESTIONS = [
                      "for the missing stiffness", "correct": False,
              "why": "No muscle can push. It shortens, and shortening only "
                     "ever pulls."},
-            {"text": "The muscle would still contract, but the pull would "
-                     "bend the heel rather than lift the body", "correct": True},
+            {"text": "The muscle would still pull, but it would bend the "
+                     "heel, not lift you", "correct": True},
         ],
         "figure": None,
     },
@@ -869,11 +870,10 @@ QUESTIONS = [
                 "bones do are extras.\" Use the ribcage on its own to show "
                 "that this is wrong.",
         "options": [
-            {"text": "The ribcage holds nothing up, and without its movement "
-                     "each breath brings in far too little air",
-             "correct": True},
-            {"text": "The ribcage holds the chest up, so it is doing exactly "
-                     "the job the student describes", "correct": False,
+            {"text": "The ribcage holds nothing up, yet each breath depends "
+                     "on it moving", "correct": True},
+            {"text": "The ribcage holds the whole chest up, so it is doing "
+                     "exactly the job the student describes", "correct": False,
              "why": "Nothing rests on the ribcage. The weight of the body "
                     "above it travels down the spine, while the ribs are busy "
                     "with two other jobs."},
@@ -897,13 +897,12 @@ QUESTIONS = [
                 "than hard, and concludes that the middle of a bone must be "
                 "dead. What have they actually found?",
         "options": [
-            {"text": "Cartilage, which is soft because it is fed by fluid "
-                     "rather than by blood", "correct": False,
+            {"text": "Cartilage, which is soft because joint fluid rather "
+                     "than blood seeps in to feed it", "correct": False,
              "why": "Cartilage sits on the ends of a bone, inside a joint. It "
                     "is not what fills the shaft."},
-            {"text": "The marrow — the busiest living tissue in the bone, "
-                     "making about two million cells a second",
-             "correct": True},
+            {"text": "The marrow — living tissue making two million cells a "
+                     "second", "correct": True},
             {"text": "Old bone that has not been rebuilt yet, which is why it "
                      "has gone soft", "correct": False,
              "why": "Rebuilding replaces bone with bone; it does not leave a "
@@ -932,14 +931,15 @@ QUESTIONS = [
              "why": "Healing time is not the question here. The skull is "
                     "watched for what may happen next, not for how long it "
                     "takes to knit."},
-            {"text": "The skull, because protection is the job where nothing "
-                     "happens until it fails, and then everything does",
-             "correct": True},
-            {"text": "The skull, because a bigger bone means a bigger injury "
-                     "and a longer recovery", "correct": False,
-             "why": "Size is not what decides it. What makes the skull the "
-                    "worry is the brain underneath and damage that does not "
-                    "show yet."},
+            {"text": "The skull, because with protection nothing shows until "
+                     "it fails", "correct": True},
+            {"text": "The skull, because a bigger bone means a bigger injury, "
+                     "more bleeding inside and a longer recovery",
+             "correct": False,
+             "why": "Size is not what decides it, and a skull fracture need "
+                    "not bleed heavily to be dangerous. What makes the skull "
+                    "the worry is the brain underneath and damage that does "
+                    "not show yet."},
         ],
         "figure": None,
     },
