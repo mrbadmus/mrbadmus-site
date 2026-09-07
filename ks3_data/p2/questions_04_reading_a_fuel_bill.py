@@ -298,4 +298,375 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p2-04-e05",
+        "band": "easier",
+        "text": "A 2 kW heater runs for 3 hours. How many units does it use?",
+        "options": [
+            {"text": "6 units", "correct": True},
+            {"text": "1.5 units", "correct": False,
+             "why": "That is 3 ÷ 2, the division upside down as well as the "
+                    "wrong operation."},
+            {"text": "5 units", "correct": False,
+             "why": "That is 2 + 3, and a power cannot be added to a time."},
+            {"text": "2 units, one for each kilowatt", "correct": False,
+             "why": "The hours have to be counted in: a unit is a kilowatt "
+                    "for an hour."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-e06",
+        "band": "easier",
+        "text": "At 30p a unit, what do 12 units cost?",
+        "options": [
+            {"text": "£42", "correct": False,
+             "why": "That adds 30 to 12 rather than multiplying, and then "
+                    "reads pence as pounds."},
+            {"text": "£3.60", "correct": True},
+            {"text": "£0.40", "correct": False,
+             "why": "That is 12 ÷ 30, dividing where the calculation "
+                    "multiplies."},
+            {"text": "£360", "correct": False,
+             "why": "That is the answer in pence read as pounds — a hundred "
+                    "times too much."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-e07",
+        "band": "easier",
+        "text": "How many joules is one unit on a bill?",
+        "options": [
+            {"text": "1000 J", "correct": False,
+             "why": "That is a kilojoule. A unit runs for a whole hour as "
+                    "well."},
+            {"text": "3600 J", "correct": False,
+             "why": "That is one WATT for an hour; a kilowatt is a thousand "
+                    "times more."},
+            {"text": "3 600 000 J", "correct": True},
+            {"text": "60 000 J", "correct": False,
+             "why": "That uses 60 seconds instead of the 3600 in an hour."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-e08",
+        "band": "easier",
+        "text": "A household uses no electricity at all for a whole month. "
+                "What does it owe?",
+        "options": [
+            {"text": "Nothing at all", "correct": False,
+             "why": "The standing charge is owed for being connected, "
+                    "whatever is used."},
+            {"text": "The standing charge for those days", "correct": True},
+            {"text": "The price of one unit, as a minimum", "correct": False,
+             "why": "No unit was used, so no unit is charged; the fixed daily "
+                    "amount is what remains."},
+            {"text": "Double the standing charge, as a penalty",
+             "correct": False,
+             "why": "Nothing doubles it. It is a fixed daily amount and "
+                    "nothing else."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-e09",
+        "band": "easier",
+        "text": "Which of these is a unit of ENERGY?",
+        "options": [
+            {"text": "The kilowatt", "correct": False,
+             "why": "A kilowatt is a rate — a thousand joules every second."},
+            {"text": "The kilowatt-hour", "correct": True},
+            {"text": "The watt", "correct": False,
+             "why": "A watt is one joule per second, which is a rate rather "
+                    "than an amount."},
+            {"text": "The pence per unit", "correct": False,
+             "why": "That is a price, charged against an amount of energy."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-e10",
+        "band": "easier",
+        "text": "A standing charge of 50p a day is billed over 30 days. How "
+                "much is that?",
+        "options": [
+            {"text": "£1.50", "correct": False,
+             "why": "That is 50 × 30 in pence read as though it were pounds "
+                    "divided by ten."},
+            {"text": "£15.00", "correct": True},
+            {"text": "£80", "correct": False,
+             "why": "That adds 50 to 30 instead of multiplying."},
+            {"text": "£0.60", "correct": False,
+             "why": "That is 30 ÷ 50, a division where a multiplication is "
+                    "needed."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p2-04-s05",
+        "band": "standard",
+        "text": "A 3 kW immersion heater runs for 40 minutes a day. How many "
+                "units a day is that?",
+        "options": [
+            {"text": "120 units", "correct": False,
+             "why": "That is 3 × 40, with the minutes going in as though they "
+                    "were hours."},
+            {"text": "2 units", "correct": True},
+            {"text": "0.075 units", "correct": False,
+             "why": "That is 3 ÷ 40, dividing where the calculation "
+                    "multiplies."},
+            {"text": "1.33 units", "correct": False,
+             "why": "That is 40 ÷ 30, which uses neither the rating nor the "
+                    "right conversion."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-s06",
+        "band": "standard",
+        "text": "A household uses 250 units in a month at 28p a unit. What is "
+                "the energy part of the bill?",
+        "options": [
+            {"text": "£8.93", "correct": False,
+             "why": "That is 250 ÷ 28, a division where the cost is units "
+                    "MULTIPLIED by price."},
+            {"text": "£70.00", "correct": True},
+            {"text": "£2.78", "correct": False,
+             "why": "That is 250 × 28 read with the decimal point two places "
+                    "out."},
+            {"text": "£7000", "correct": False,
+             "why": "That is the answer in pence read as pounds — a hundred "
+                    "times too much."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-s07",
+        "band": "standard",
+        "text": "Which of these uses exactly two units of electricity?",
+        "options": [
+            {"text": "A 2 kW heater for 30 minutes", "correct": False,
+             "why": "That is 2 × 0.5, which is one unit, not two."},
+            {"text": "A 500 W lamp for 2 hours", "correct": False,
+             "why": "0.5 kW for 2 hours is one unit; the watts have to become "
+                    "kilowatts first."},
+            {"text": "A 4 kW shower for 30 minutes", "correct": True},
+            {"text": "A 100 W television for 2 hours", "correct": False,
+             "why": "0.1 kW for 2 hours is 0.2 units — a tenth of what is "
+                    "wanted."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-s08",
+        "band": "standard",
+        "text": "A bill shows 300 units at 28p and a standing charge of 50p a "
+                "day for 30 days. What is the total?",
+        "options": [
+            {"text": "£84.00, the units alone", "correct": False,
+             "why": "That leaves the standing charge out, and it is owed "
+                    "whatever the usage."},
+            {"text": "£99.00, the units plus the standing charge",
+             "correct": True},
+            {"text": "£15.00, the standing charge alone", "correct": False,
+             "why": "That leaves out the 300 units, which are the larger part "
+                    "of the bill."},
+            {"text": "£84.50, adding one day's standing charge",
+             "correct": False,
+             "why": "The standing charge runs for all 30 days, not for one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-s09",
+        "band": "standard",
+        "text": "Why does working out a bill need a sum of products rather "
+                "than a single multiplication?",
+        "options": [
+            {"text": "Because each row is multiplied first, and the rows are "
+                     "then added",
+             "correct": True},
+            {"text": "Because electricity and gas are charged at different "
+                     "rates",
+             "correct": False,
+             "why": "That is one example of two rows, but the shape holds "
+                    "even for one fuel with a standing charge."},
+            {"text": "Because the price per unit changes every day",
+             "correct": False,
+             "why": "The price is normally fixed for the period; the two "
+                    "different sorts of charge are what need adding."},
+            {"text": "Because units and pounds cannot be multiplied together",
+             "correct": False,
+             "why": "They are multiplied together — that is exactly what each "
+                    "row does."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-s10",
+        "band": "standard",
+        "text": "A 9 W LED runs 6 hours a day for 30 days. Roughly how many "
+                "units does it use in the month?",
+        "options": [
+            {"text": "About 1.6 units", "correct": True},
+            {"text": "About 1620 units", "correct": False,
+             "why": "That leaves the watts as watts; 9 W is 0.009 kW."},
+            {"text": "About 54 units", "correct": False,
+             "why": "That is 9 × 6, using watts and one day rather than "
+                    "kilowatts and thirty."},
+            {"text": "About 0.054 units", "correct": False,
+             "why": "That is one day's worth, and the month has thirty of "
+                    "them."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p2-04-h05",
+        "band": "harder",
+        "text": "A household on 28p a unit with a 50p daily standing charge "
+                "uses 400 units in 30 days. What would halving the usage "
+                "save?",
+        "options": [
+            {"text": "Half the whole bill, because usage is what a bill "
+                     "charges for",
+             "correct": False,
+             "why": "The £15 standing charge does not move, so the saving is "
+                    "less than half."},
+            {"text": "£112.00, the whole of the energy charge",
+             "correct": False,
+             "why": "That is what stopping ALL use would save, not halving "
+                    "it."},
+            {"text": "£56.00, half the energy charge, with the £15 standing "
+                     "charge unchanged",
+             "correct": True},
+            {"text": "£63.50, half of the whole bill", "correct": False,
+             "why": "Halving the total would need the standing charge to halve "
+                    "too, and it is fixed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-h06",
+        "band": "harder",
+        "text": "Supplier A charges 24p a unit with 70p a day; supplier B "
+                "charges 29p a unit with 40p a day. Which suits a household "
+                "using very little?",
+        "options": [
+            {"text": "A, because its unit price is lower", "correct": False,
+             "why": "A low unit price helps a heavy user. A light user pays "
+                    "mostly the daily charge."},
+            {"text": "B, because its daily charge is lower", "correct": True},
+            {"text": "A, because a lower unit price always wins",
+             "correct": False,
+             "why": "It only wins once enough units are bought to outweigh "
+                    "the extra 30p a day."},
+            {"text": "Neither — the two tariffs cost the same for everybody",
+             "correct": False,
+             "why": "They cross at one particular usage; above and below it "
+                    "the winner changes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-h07",
+        "band": "harder",
+        "text": "Roughly how many units a day would the two tariffs in the "
+                "last question cost the same?",
+        "options": [
+            {"text": "About 30 units a day", "correct": False,
+             "why": "That is ten times too many; the difference in unit price "
+                    "is 5p, not 1p."},
+            {"text": "About 6 units a day", "correct": True},
+            {"text": "About 0.6 units a day", "correct": False,
+             "why": "That is ten times too few — 0.6 × 5p is only 3p, nowhere "
+                    "near the 30p gap."},
+            {"text": "They can never cost the same", "correct": False,
+             "why": "The 30p daily gap and the 5p unit gap must cross, and "
+                    "they do at 6 units."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-h08",
+        "band": "harder",
+        "text": "A family is advised to switch off lights to save money. "
+                "Their lighting is eight 9 W LEDs on 5 hours a day. What is "
+                "the strongest response?",
+        "options": [
+            {"text": "It is good advice, because lights are on for longer "
+                     "than anything else",
+             "correct": False,
+             "why": "Time alone is not the measure. At 0.36 kWh a day the "
+                    "lighting is a very small share."},
+            {"text": "It is poor advice, because switching a light off saves "
+                     "no energy at all",
+             "correct": False,
+             "why": "It saves a real amount, just a small one — about 0.36 "
+                    "units a day."},
+            {"text": "It is poor advice here: the lighting is about 0.36 "
+                     "units a day, far less than heating",
+             "correct": True},
+            {"text": "It cannot be judged without knowing the price per unit",
+             "correct": False,
+             "why": "The comparison is between appliances, and the same price "
+                    "applies to all of them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-h09",
+        "band": "harder",
+        "text": "Why do suppliers charge a standing charge instead of putting "
+                "everything into the unit price?",
+        "options": [
+            {"text": "Because the network costs the same whether anyone "
+                     "uses electricity or not",
+             "correct": True},
+            {"text": "Because it makes the bill easier to work out",
+             "correct": False,
+             "why": "It makes it harder — the bill becomes a sum of two rows "
+                    "instead of one product."},
+            {"text": "Because the price of electricity changes during the "
+                     "day",
+             "correct": False,
+             "why": "That is handled by different unit prices at different "
+                    "times, not by a fixed daily charge."},
+            {"text": "Because it stops households using too much "
+                     "electricity",
+             "correct": False,
+             "why": "A charge that does not vary with usage cannot discourage "
+                    "usage."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-04-h10",
+        "band": "harder",
+        "text": "A student says a 3 kW heater used for 2 hours must cost more "
+                "than a 100 W lamp used for 60 hours. Is that right?",
+        "options": [
+            {"text": "Yes — the heater's rating is thirty times larger",
+             "correct": False,
+             "why": "The rating is thirty times larger and the time thirty "
+                    "times shorter, so they land in the same place."},
+            {"text": "No — the lamp uses twice as many units", "correct": False,
+             "why": "The lamp uses 6 units, the same as the heater, not twice "
+                    "as many."},
+            {"text": "No — both come to 6 units, so both cost the same",
+             "correct": True},
+            {"text": "It cannot be decided without the standing charge",
+             "correct": False,
+             "why": "The standing charge is owed either way, so it cannot "
+                    "separate the two."},
+        ],
+        "figure": None,
+    },
 ]

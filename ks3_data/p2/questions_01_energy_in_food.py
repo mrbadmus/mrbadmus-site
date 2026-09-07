@@ -345,4 +345,455 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p2-01-e05",
+        "band": "easier",
+        "text": "A biscuit holds 20 kJ in every gram. How much energy is in a "
+                "25 g biscuit?",
+        "options": [
+            {"text": "500 kJ", "correct": True},
+            {"text": "0.8 kJ", "correct": False,
+             "why": "That is 20 ÷ 25. Energy in a portion is energy per gram "
+                    "MULTIPLIED by the mass."},
+            {"text": "45 kJ", "correct": False,
+             "why": "That is 20 + 25, and a kJ/g cannot be added to a mass in "
+                    "grams."},
+            {"text": "1.25 kJ", "correct": False,
+             "why": "That is 25 ÷ 20, the division upside down as well as the "
+                    "wrong operation."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-e06",
+        "band": "easier",
+        "text": "Which food type holds roughly twice as much energy per gram "
+                "as the other two?",
+        "options": [
+            {"text": "Protein", "correct": False,
+             "why": "Protein holds about 17 kJ/g, the same as carbohydrate "
+                    "and about half of fat."},
+            {"text": "Fat", "correct": True},
+            {"text": "Carbohydrate", "correct": False,
+             "why": "Carbohydrate is about 17 kJ/g — the lower of the two "
+                    "figures, not the higher."},
+            {"text": "Fibre", "correct": False,
+             "why": "Fibre passes through largely undigested and is not one "
+                    "of the three energy figures."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-e07",
+        "band": "easier",
+        "text": "Energy density of a food is measured in…",
+        "options": [
+            {"text": "grams per kilojoule (g/kJ)", "correct": False,
+             "why": "That is the unit upside down. Energy density is energy "
+                    "per gram, not grams per unit of energy."},
+            {"text": "kilojoules (kJ)", "correct": False,
+             "why": "Kilojoules alone give the energy in the whole portion, "
+                    "not the amount in each gram."},
+            {"text": "kilojoules per gram (kJ/g)", "correct": True},
+            {"text": "watts (W)", "correct": False,
+             "why": "A watt is a rate of transfer in joules per second, which "
+                    "has nothing to do with mass."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-e08",
+        "band": "easier",
+        "text": "About how much energy does one gram of carbohydrate hold?",
+        "options": [
+            {"text": "About 1.7 kJ", "correct": False,
+             "why": "That is ten times too small — the figure is about "
+                    "17 kJ/g."},
+            {"text": "About 37 kJ", "correct": False,
+             "why": "37 kJ/g is fat, which holds roughly twice as much as "
+                    "carbohydrate."},
+            {"text": "About 170 kJ", "correct": False,
+             "why": "That is ten times too large; a single gram does not hold "
+                    "that much."},
+            {"text": "About 17 kJ", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-e09",
+        "band": "easier",
+        "text": "A label prints 250 kcal. Roughly how many kilojoules is "
+                "that?",
+        "options": [
+            {"text": "About 1045 kJ", "correct": True},
+            {"text": "About 250 kJ", "correct": False,
+             "why": "A kilocalorie and a kilojoule are different sizes: one "
+                    "kcal is 4.18 kJ."},
+            {"text": "About 60 kJ", "correct": False,
+             "why": "That is 250 ÷ 4.18, the conversion the wrong way round."},
+            {"text": "About 254 kJ", "correct": False,
+             "why": "That adds 4.18 rather than multiplying by it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-e10",
+        "band": "easier",
+        "text": "In a school calorimeter, what does the burning food heat?",
+        "options": [
+            {"text": "The air above the flame", "correct": False,
+             "why": "Some air is warmed, but nothing measures it — that is "
+                    "one reason the reading comes out low."},
+            {"text": "A known mass of water", "correct": True},
+            {"text": "The mounted needle the food sits on", "correct": False,
+             "why": "The needle warms a little, and again nothing measures "
+                    "it. The water is what is read."},
+            {"text": "The thermometer itself", "correct": False,
+             "why": "The thermometer reads the water's temperature; it is an "
+                    "instrument, not the thing being heated."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-e11",
+        "band": "easier",
+        "text": "Where in a food is its chemical store held?",
+        "options": [
+            {"text": "In the warmth the food gives off as it is eaten",
+             "correct": False,
+             "why": "Warmth is energy leaving by a pathway, not the store "
+                    "that held it."},
+            {"text": "In the water the food contains", "correct": False,
+             "why": "Water carries no chemical store at all — a wet food "
+                    "holds less per gram, not more."},
+            {"text": "In the arrangement of the particles it is made from",
+             "correct": True},
+            {"text": "In the mass of the food, which is why heavier foods "
+                     "hold more",
+             "correct": False,
+             "why": "Mass matters, but a gram of fat and a gram of "
+                    "carbohydrate hold very different amounts."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p2-01-s05",
+        "band": "standard",
+        "text": "A 45 g portion of a food holds 37 kJ in every gram. How much "
+                "energy does the portion hold?",
+        "options": [
+            {"text": "1665 kJ", "correct": True},
+            {"text": "82 kJ", "correct": False,
+             "why": "That is 37 + 45, and an energy density cannot be added "
+                    "to a mass."},
+            {"text": "1.2 kJ", "correct": False,
+             "why": "That is 45 ÷ 37, a division where the calculation needs "
+                    "a multiplication."},
+            {"text": "0.82 kJ", "correct": False,
+             "why": "That is 37 ÷ 45, the division upside down as well as the "
+                    "wrong operation."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-s06",
+        "band": "standard",
+        "text": "A label reads 500 kcal. A student writes that this is "
+                "500 kJ. What is wrong?",
+        "options": [
+            {"text": "Nothing — a kilocalorie and a kilojoule are the same "
+                     "size",
+             "correct": False,
+             "why": "They are not: one kilocalorie is 4.18 kilojoules."},
+            {"text": "The label is wrong, because food energy is only ever in "
+                     "kJ",
+             "correct": False,
+             "why": "Labels legally print both. The student's conversion is "
+                    "what is wrong."},
+            {"text": "One kilocalorie is 4.18 kJ, so it is about 2090 kJ",
+             "correct": True},
+            {"text": "One kilocalorie is 4.18 kJ, so it is about 120 kJ",
+             "correct": False,
+             "why": "That divides by 4.18 instead of multiplying, making the "
+                    "figure smaller rather than larger."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-s07",
+        "band": "standard",
+        "text": "Two foods are measured at 17 kJ/g and 37 kJ/g. Which is "
+                "mostly fat, and how do you know?",
+        "options": [
+            {"text": "The 17 kJ/g one, because fat is the lighter of the two",
+             "correct": False,
+             "why": "How heavy a food is does not set its energy density; fat "
+                    "is the higher figure."},
+            {"text": "The 37 kJ/g one, because fat holds about twice as much "
+                     "per gram",
+             "correct": True},
+            {"text": "The 37 kJ/g one, because fat burns more easily in air",
+             "correct": False,
+             "why": "How easily it burns is not the measurement. The figure "
+                    "is energy per gram."},
+            {"text": "Neither can be told from these figures alone",
+             "correct": False,
+             "why": "17 and 37 kJ/g are exactly the two standard figures for "
+                    "carbohydrate and fat."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-s08",
+        "band": "standard",
+        "text": "A calorimeter run gives a temperature rise for a known mass "
+                "of water. What else must be measured before an energy per "
+                "gram can be given?",
+        "options": [
+            {"text": "The mass of food that was burnt", "correct": True},
+            {"text": "The temperature of the room", "correct": False,
+             "why": "The rise is what counts, and it is already the "
+                    "difference between two readings."},
+            {"text": "The height of the flame", "correct": False,
+             "why": "Nothing in the calculation uses the flame's size."},
+            {"text": "The time the food took to burn", "correct": False,
+             "why": "Time would give a power in watts, not an energy per "
+                    "gram."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-s09",
+        "band": "standard",
+        "text": "Why is a shield or screen put around the calorimeter?",
+        "options": [
+            {"text": "To keep the food dry while it burns", "correct": False,
+             "why": "The water is above the flame, and how dry the food is "
+                    "was fixed before the run."},
+            {"text": "To stop the flame going out", "correct": False,
+             "why": "A shield helps a little there, but the reason it is used "
+                    "is the energy escaping sideways."},
+            {"text": "To make the food burn faster", "correct": False,
+             "why": "How fast it burns does not change how much energy it "
+                    "holds altogether."},
+            {"text": "To cut down the energy escaping to the surroundings",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-s10",
+        "band": "standard",
+        "text": "A 30 g cereal bar is found to hold 630 kJ. What is its "
+                "energy density?",
+        "options": [
+            {"text": "18 900 kJ/g", "correct": False,
+             "why": "That is 630 × 30. Energy density is the energy DIVIDED "
+                    "by the mass."},
+            {"text": "660 kJ/g", "correct": False,
+             "why": "That is 630 + 30, and the two quantities cannot be "
+                    "added."},
+            {"text": "21 kJ/g", "correct": True},
+            {"text": "0.048 kJ/g", "correct": False,
+             "why": "That is 30 ÷ 630, the division the wrong way round."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-s11",
+        "band": "standard",
+        "text": "A student says exercise destroys the energy that was in the "
+                "food. Which correction is right?",
+        "options": [
+            {"text": "Exercise moves it into kinetic and thermal stores; none "
+                     "of it is destroyed",
+             "correct": True},
+            {"text": "Exercise turns it into a new kind of energy the body "
+                     "makes",
+             "correct": False,
+             "why": "There are no new kinds. The same energy simply moves "
+                    "into different stores."},
+            {"text": "Nothing is wrong — that is what burning it off means",
+             "correct": False,
+             "why": "Burning off is everyday language for emptying the "
+                    "chemical store, not for destroying anything."},
+            {"text": "Exercise sends the energy back into the food that has "
+                     "not been eaten",
+             "correct": False,
+             "why": "Energy never returns to a store it has left; it ends up "
+                    "warming the body and the air."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p2-01-h05",
+        "band": "harder",
+        "text": "Snack A is 80 g at 22 kJ/g. Snack B is 40 g at 37 kJ/g. "
+                "Which holds more energy altogether?",
+        "options": [
+            {"text": "B, because it has the higher energy density",
+             "correct": False,
+             "why": "Per gram it does, but there is only half as much of it: "
+                    "1480 kJ against 1760 kJ."},
+            {"text": "A, with 1760 kJ against 1480 kJ", "correct": True},
+            {"text": "They are the same, because the figures balance out",
+             "correct": False,
+             "why": "They do not balance: 80 × 22 is 1760 and 40 × 37 is "
+                    "1480."},
+            {"text": "B, with 2960 kJ against 1760 kJ", "correct": False,
+             "why": "That doubles B's mass. It is 40 g, so its total is "
+                    "1480 kJ."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-h06",
+        "band": "harder",
+        "text": "A bag is labelled 958 kJ and 229 kcal. Do the two figures "
+                "agree?",
+        "options": [
+            {"text": "No — 229 kcal should be about 229 kJ", "correct": False,
+             "why": "A kilocalorie is 4.18 times a kilojoule, so the two "
+                    "numbers cannot be equal."},
+            {"text": "No — the kJ figure should be about 55", "correct": False,
+             "why": "That divides by 4.18 instead of multiplying; the kJ "
+                    "figure is always the larger one."},
+            {"text": "Yes — 229 × 4.18 is about 957", "correct": True},
+            {"text": "It cannot be decided without knowing the mass of the "
+                     "bag",
+             "correct": False,
+             "why": "The conversion between the two units does not use a mass "
+                    "at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-h07",
+        "band": "harder",
+        "text": "A calorimeter reads about 8 kJ/g where the label says "
+                "21.6 kJ/g, run after run. Why does repeating it not fix the "
+                "gap?",
+        "options": [
+            {"text": "Because the loss pushes every reading the same way — it "
+                     "is a systematic error",
+             "correct": True},
+            {"text": "Because five runs is not enough to average out a "
+                     "random error",
+             "correct": False,
+             "why": "Averaging removes scatter, and the readings are already "
+                    "tightly grouped. The gap is not scatter."},
+            {"text": "Because the label is simply wrong and cannot be "
+                     "reached",
+             "correct": False,
+             "why": "A bomb calorimeter reaches it routinely, so the label is "
+                    "not the problem."},
+            {"text": "Because the thermometer becomes less accurate with each "
+                     "run",
+             "correct": False,
+             "why": "It reads the same each time, which is why the results "
+                    "agree with one another so closely."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-h08",
+        "band": "harder",
+        "text": "Burning 1.0 g of food raises 100 g of water by 12 °C. Water "
+                "needs 4.2 J for each gram for each degree. What energy was "
+                "measured?",
+        "options": [
+            {"text": "5040 J", "correct": True},
+            {"text": "504 J", "correct": False,
+             "why": "That is ten times too small — 100 × 4.2 × 12 is 5040."},
+            {"text": "420 J", "correct": False,
+             "why": "That is 100 × 4.2, leaving the 12 °C rise out "
+                    "altogether."},
+            {"text": "50 400 J", "correct": False,
+             "why": "That is ten times too large; check the order of "
+                    "magnitude before writing it down."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-h09",
+        "band": "harder",
+        "text": "A poster says a 400 kJ snack will be burnt off in twenty "
+                "minutes of running. What does burnt off actually mean?",
+        "options": [
+            {"text": "The 400 kJ has been destroyed by the muscles",
+             "correct": False,
+             "why": "Nothing destroys energy. It has moved rather than "
+                    "vanished."},
+            {"text": "The chemical store has emptied into kinetic and thermal "
+                     "stores",
+             "correct": True},
+            {"text": "The snack has been removed from the body without being "
+                     "digested",
+             "correct": False,
+             "why": "The food was digested; what changed is where its energy "
+                    "now sits."},
+            {"text": "The 400 kJ has been stored as heat inside the muscles "
+                     "for later",
+             "correct": False,
+             "why": "That thermal store drains away into the surroundings; "
+                    "nothing gets it back."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-h10",
+        "band": "harder",
+        "text": "A 50 g snack and a 120 g snack both hold 1800 kJ. Which has "
+                "the higher energy density, and by how much?",
+        "options": [
+            {"text": "The 120 g one, at 15 kJ/g against 36 kJ/g",
+             "correct": False,
+             "why": "The figures are right but attached to the wrong snacks: "
+                    "36 kJ/g belongs to the smaller one."},
+            {"text": "Neither — equal energy means equal energy density",
+             "correct": False,
+             "why": "Density is energy per gram, so spreading the same energy "
+                    "over more grams lowers it."},
+            {"text": "The 50 g one, at 36 kJ/g against 15 kJ/g",
+             "correct": True},
+            {"text": "The 50 g one, at 90 kJ/g against 21 kJ/g",
+             "correct": False,
+             "why": "Those come from multiplying rather than dividing; "
+                    "1800 ÷ 50 is 36."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-01-h11",
+        "band": "harder",
+        "text": "Why is the Calorie printed on a food label written with a "
+                "capital C?",
+        "options": [
+            {"text": "Because it is the brand name a manufacturer chooses to "
+                     "use",
+             "correct": False,
+             "why": "It is a unit, fixed by law on the label, not a name a "
+                    "company picks."},
+            {"text": "Because a capital C means the figure is for the whole "
+                     "packet",
+             "correct": False,
+             "why": "Whether it is per packet or per 100 g is stated "
+                    "separately; the capital is about the unit."},
+            {"text": "Because capital letters are used for every unit in "
+                     "science",
+             "correct": False,
+             "why": "Most are lower case — the metre, the second and the gram "
+                    "among them."},
+            {"text": "Because it is a kilocalorie — a thousand of the "
+                     "calories a scientist means",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

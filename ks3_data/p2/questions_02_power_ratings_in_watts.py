@@ -331,4 +331,467 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p2-02-e05",
+        "band": "easier",
+        "text": "One watt is one…",
+        "options": [
+            {"text": "joule for every second", "correct": True},
+            {"text": "second for every joule", "correct": False,
+             "why": "That is the definition upside down; the unit is joules "
+                    "per second, not seconds per joule."},
+            {"text": "joule altogether", "correct": False,
+             "why": "A joule altogether is an amount of energy. A watt is a "
+                    "rate, so a time has to be in it."},
+            {"text": "kilojoule for every hour", "correct": False,
+             "why": "That is a rate, but the wrong one — a watt is measured "
+                    "in joules and seconds."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-e06",
+        "band": "easier",
+        "text": "A 1500 W hairdryer is switched on. How much energy does it "
+                "transfer each second?",
+        "options": [
+            {"text": "1500 J", "correct": True},
+            {"text": "1500 W", "correct": False,
+             "why": "1500 W is the rate. The energy transferred in one second "
+                    "is an amount, measured in joules."},
+            {"text": "1.5 J", "correct": False,
+             "why": "That is 1500 divided by 1000, as though the kilo were "
+                    "being removed twice."},
+            {"text": "It cannot be said without knowing how long it runs",
+             "correct": False,
+             "why": "The time is given: the question asks about one second, "
+                    "and the rating answers it directly."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-e07",
+        "band": "easier",
+        "text": "Which of these is a rate rather than a total?",
+        "options": [
+            {"text": "3000 joules transferred by a lamp", "correct": False,
+             "why": "Joules on their own are a total amount, with no time "
+                    "attached."},
+            {"text": "A 60 watt rating on a lamp", "correct": True},
+            {"text": "2.5 kilowatt-hours on a bill", "correct": False,
+             "why": "A kilowatt-hour is an amount of energy, despite having "
+                    "kilowatt in the name."},
+            {"text": "958 kilojoules in a bag of crisps", "correct": False,
+             "why": "That is an amount held in a store, not how fast anything "
+                    "is transferred."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-e08",
+        "band": "easier",
+        "text": "What does an appliance's power rating tell you?",
+        "options": [
+            {"text": "How much it will cost over a year", "correct": False,
+             "why": "Cost needs the time it runs for as well; the rating "
+                    "alone cannot give it."},
+            {"text": "How much energy it holds inside it", "correct": False,
+             "why": "Appliances hold nothing. They transfer energy that "
+                    "arrives along the mains."},
+            {"text": "How fast it transfers energy while it is running",
+             "correct": True},
+            {"text": "How long it can safely be left switched on",
+             "correct": False,
+             "why": "Safe running time is a separate matter and is not what "
+                    "the watts measure."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-e09",
+        "band": "easier",
+        "text": "An appliance is left on standby. What power does it draw?",
+        "options": [
+            {"text": "None at all — standby means off", "correct": False,
+             "why": "Standby is a low power, and low is not zero. It runs for "
+                    "thousands of hours a year."},
+            {"text": "Its full rating, because it is still plugged in",
+             "correct": False,
+             "why": "It draws far less than its running rating; the point is "
+                    "that it is not nothing."},
+            {"text": "A small but real power, for as long as it is left",
+             "correct": True},
+            {"text": "A power that changes with the price of electricity",
+             "correct": False,
+             "why": "Price affects the bill, not how many joules a second the "
+                    "appliance draws."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-e10",
+        "band": "easier",
+        "text": "Which quantity is measured in watts?",
+        "options": [
+            {"text": "Energy", "correct": False,
+             "why": "Energy is measured in joules; watts always carry a time "
+                    "in them."},
+            {"text": "Power", "correct": True},
+            {"text": "Force", "correct": False,
+             "why": "Force is measured in newtons, and nothing about it is a "
+                    "rate of energy transfer."},
+            {"text": "Time", "correct": False,
+             "why": "Time is measured in seconds, and it is the thing a watt "
+                    "divides by."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-e11",
+        "band": "easier",
+        "text": "A 3 kW immersion heater is the same as a heater rated…",
+        "options": [
+            {"text": "0.003 W", "correct": False,
+             "why": "That divides by 1000 instead of multiplying; a kilowatt "
+                    "is larger than a watt, not smaller."},
+            {"text": "3000 W", "correct": True},
+            {"text": "300 W", "correct": False,
+             "why": "That multiplies by 100. A kilo always means a thousand."},
+            {"text": "3 W", "correct": False,
+             "why": "That drops the kilo entirely, leaving a heater about as "
+                    "powerful as a night light."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p2-02-s05",
+        "band": "standard",
+        "text": "A 1200 W toaster runs for 2 minutes and a 5 W phone charger "
+                "runs for 10 hours. Which transfers more energy?",
+        "options": [
+            {"text": "The toaster, at 144 000 J against 180 000 J",
+             "correct": False,
+             "why": "The two totals are right but attached the wrong way "
+                    "round: 144 000 J is the toaster's."},
+            {"text": "The toaster, because 1200 W is far more than 5 W",
+             "correct": False,
+             "why": "A rating alone settles nothing. The charger runs for "
+                    "three hundred times as long."},
+            {"text": "The charger, at 180 000 J against 144 000 J",
+             "correct": True},
+            {"text": "They are the same, because a rating and a time always "
+                     "balance",
+             "correct": False,
+             "why": "Nothing makes them balance; the two products have to be "
+                    "worked out and compared."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-s06",
+        "band": "standard",
+        "text": "Two lamps are rated 5 W and 60 W. Which statement is "
+                "certain?",
+        "options": [
+            {"text": "The 60 W lamp will cost more over a year",
+             "correct": False,
+             "why": "Only if it is on for as long. A 5 W lamp left on always "
+                    "can easily cost more."},
+            {"text": "The 60 W lamp is brighter", "correct": False,
+             "why": "Brightness depends on the technology too — a 5 W LED can "
+                    "beat a 60 W filament lamp."},
+            {"text": "The 60 W lamp transfers more energy each second while "
+                     "it is on",
+             "correct": True},
+            {"text": "The 60 W lamp holds more energy inside it",
+             "correct": False,
+             "why": "Neither lamp holds any; the energy arrives along the "
+                    "mains while it is switched on."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-s07",
+        "band": "standard",
+        "text": "A 2 W smart speaker is left on all year, about 8760 hours. "
+                "Roughly how much energy is that?",
+        "options": [
+            {"text": "About 17.5 kWh", "correct": True},
+            {"text": "About 17 500 kWh", "correct": False,
+             "why": "That is a thousand times too big — the watts have to "
+                    "become kilowatts before multiplying by hours."},
+            {"text": "About 2 kWh, because it is only a 2 W device",
+             "correct": False,
+             "why": "That is one hour's worth in the wrong unit; the hours "
+                    "have to be counted in."},
+            {"text": "About 4380 kWh", "correct": False,
+             "why": "That is 8760 ÷ 2, dividing where the calculation "
+                    "multiplies."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-s08",
+        "band": "standard",
+        "text": "Why does a 2000 W kettle need thicker cable than a 60 W "
+                "lamp?",
+        "options": [
+            {"text": "Because the kettle uses more energy over a year",
+             "correct": False,
+             "why": "It may not — a lamp on all evening can beat it. Cable "
+                    "thickness answers a different question."},
+            {"text": "Because the kettle holds more energy inside it",
+             "correct": False,
+             "why": "Neither holds any. Both transfer energy arriving along "
+                    "the mains."},
+            {"text": "Because the kettle transfers energy far faster, so more "
+                     "passes through the cable each second",
+             "correct": True},
+            {"text": "Because the kettle is used at a hotter part of the "
+                     "house",
+             "correct": False,
+             "why": "Where it stands has nothing to do with how much the "
+                    "cable has to carry each second."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-s09",
+        "band": "standard",
+        "text": "Which piece of information alone is enough to say which of "
+                "two appliances transferred more energy?",
+        "options": [
+            {"text": "The two power ratings", "correct": False,
+             "why": "A rating is a rate. Without a time it cannot give a "
+                    "total."},
+            {"text": "The two power ratings and how long each ran",
+             "correct": True},
+            {"text": "The prices the two appliances were bought for",
+             "correct": False,
+             "why": "The purchase price says nothing about joules "
+                    "transferred."},
+            {"text": "How long each ran for", "correct": False,
+             "why": "A time on its own cannot give an energy either; the rate "
+                    "is needed as well."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-s10",
+        "band": "standard",
+        "text": "A 900 W microwave runs for 5 minutes. What is the energy "
+                "transferred?",
+        "options": [
+            {"text": "4500 J", "correct": False,
+             "why": "That is 900 × 5, with the minutes put into the formula "
+                    "as they stand."},
+            {"text": "270 000 J", "correct": True},
+            {"text": "180 J", "correct": False,
+             "why": "That is 900 ÷ 5, a division where a multiplication is "
+                    "needed."},
+            {"text": "54 000 J", "correct": False,
+             "why": "That is 900 × 60, using one minute instead of five."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-s11",
+        "band": "standard",
+        "text": "A television draws 100 W when watched for 4 hours a day and "
+                "1 W on standby for the other 20 hours. Which draws more "
+                "energy in a day?",
+        "options": [
+            {"text": "Standby, because 20 hours is far longer than 4",
+             "correct": False,
+             "why": "Longer, but at a hundredth of the power: 20 Wh against "
+                    "400 Wh."},
+            {"text": "Watching it, at 400 Wh against 20 Wh", "correct": True},
+            {"text": "They come out equal, which is why standby matters",
+             "correct": False,
+             "why": "Standby matters, but not because it equals viewing — "
+                    "here it is twenty times smaller."},
+            {"text": "Standby, at 2000 Wh against 400 Wh", "correct": False,
+             "why": "That uses 100 W for the standby hours; on standby it "
+                    "draws 1 W."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p2-02-h05",
+        "band": "harder",
+        "text": "A 3 kW heater and a 1 kW heater are used to warm the same "
+                "room to the same temperature. Which uses more energy?",
+        "options": [
+            {"text": "The 3 kW heater, because its rating is three times as "
+                     "big",
+             "correct": False,
+             "why": "It transfers three times as fast, so it reaches the "
+                    "temperature in about a third of the time."},
+            {"text": "The 1 kW heater, because it has to run for far longer",
+             "correct": False,
+             "why": "Longer at a third of the rate comes to roughly the same "
+                    "total, not to more."},
+            {"text": "Roughly the same, because the room needs a fixed amount "
+                     "of energy either way",
+             "correct": True},
+            {"text": "Neither — a heater's energy depends only on its rating",
+             "correct": False,
+             "why": "Energy is always the rating multiplied by the time, so "
+                    "the time can never drop out."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-h06",
+        "band": "harder",
+        "text": "A 15 W router runs 8760 hours a year; a 2000 W kettle runs "
+                "about 30 hours a year. Which transfers more, and by roughly "
+                "how much?",
+        "options": [
+            {"text": "The router, about twice the kettle's total",
+             "correct": True},
+            {"text": "The kettle, because 2000 W dwarfs 15 W", "correct": False,
+             "why": "The rating does dwarf it, but the router runs nearly "
+                    "three hundred times as long."},
+            {"text": "The router, about a hundred times the kettle's total",
+             "correct": False,
+             "why": "The gap is far smaller: 131 kWh against 60 kWh is about "
+                    "two to one."},
+            {"text": "They are almost equal, which is why standby is ignored",
+             "correct": False,
+             "why": "They are not equal, and the router's larger figure is "
+                    "precisely why standby is not ignored."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-h07",
+        "band": "harder",
+        "text": "A 2 kW fan heater and a 2 kW oil-filled radiator each run "
+                "for one hour. Which transfers more energy?",
+        "options": [
+            {"text": "The fan heater, because it warms the room much faster",
+             "correct": False,
+             "why": "It spreads the warmth faster, but both draw 2000 J every "
+                    "second, so both transfer 7.2 MJ."},
+            {"text": "The radiator, because it stays warm after it is "
+                     "switched off",
+             "correct": False,
+             "why": "Staying warm afterwards releases energy it already took "
+                    "in; it does not draw any extra."},
+            {"text": "Exactly the same, because both draw 2 kW for the same "
+                     "hour",
+             "correct": True},
+            {"text": "It cannot be decided without knowing the size of the "
+                     "room",
+             "correct": False,
+             "why": "The room decides how warm it gets, not how much energy "
+                    "the heaters draw from the mains."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-h08",
+        "band": "harder",
+        "text": "Why can swapping a 2000 W kettle for a 1000 W one make the "
+                "total energy slightly WORSE?",
+        "options": [
+            {"text": "Because the slower kettle has longer to lose energy to "
+                     "the kitchen while it boils",
+             "correct": True},
+            {"text": "Because a 1000 W element is less efficient at turning "
+                     "electricity into warmth",
+             "correct": False,
+             "why": "Both elements put nearly all of it into the water; the "
+                    "difference is the time spent losing some."},
+            {"text": "Because the water needs more energy when it is heated "
+                     "slowly",
+             "correct": False,
+             "why": "The water needs the same energy either way; the extra is "
+                    "what escapes on the way."},
+            {"text": "Because a lower rating draws a larger current",
+             "correct": False,
+             "why": "A lower rating draws a smaller current, and that is not "
+                    "what changes the total."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-h09",
+        "band": "harder",
+        "text": "A person can sustain about 100 W of useful output. Roughly "
+                "how many people would it take to run one 2000 W kettle?",
+        "options": [
+            {"text": "About 2, because 2000 W is about twice 1000 W",
+             "correct": False,
+             "why": "That compares the kettle with 1000 W, not with one "
+                    "person's 100 W."},
+            {"text": "About 200", "correct": False,
+             "why": "That divides by 10 W rather than by 100 W, giving ten "
+                    "times too many."},
+            {"text": "About 20", "correct": True},
+            {"text": "About 2000, one for each watt", "correct": False,
+             "why": "Each person supplies 100 W, so far fewer than one per "
+                    "watt are needed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-h10",
+        "band": "harder",
+        "text": "An appliance is described as using 5 kW an hour. What is "
+                "wrong with that description?",
+        "options": [
+            {"text": "Nothing — that is how power is always written",
+             "correct": False,
+             "why": "Power is written as a plain rating; the 'an hour' turns "
+                    "it into something else entirely."},
+            {"text": "A kilowatt is already a rate, so 'an hour' divides by "
+                     "time twice",
+             "correct": True},
+            {"text": "It should say 5 kW a second, because power uses "
+                     "seconds",
+             "correct": False,
+             "why": "The rating needs no time phrase at all; the watt already "
+                    "carries the seconds."},
+            {"text": "5 kW is far too large a figure for any appliance",
+             "correct": False,
+             "why": "An electric shower can be 8.5 kW, so the size is "
+                    "perfectly ordinary."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p2-02-h11",
+        "band": "harder",
+        "text": "Two students argue about a 9 W LED and a 60 W filament lamp "
+                "that light a room equally well. Which conclusion is sound?",
+        "options": [
+            {"text": "The LED is the better buy only if it is cheaper to "
+                     "purchase",
+             "correct": False,
+             "why": "Purchase price is a separate question; on energy the LED "
+                    "wins by a factor of about seven."},
+            {"text": "The two use the same energy, because they give the same "
+                     "light",
+             "correct": False,
+             "why": "The same light for far fewer joules a second is exactly "
+                    "what makes the LED different."},
+            {"text": "The 60 W lamp is brighter, because a bigger rating "
+                     "always means more light",
+             "correct": False,
+             "why": "The question says they light the room equally; most of "
+                    "the filament's 60 W ends up as warmth."},
+            {"text": "The LED does the same job for about a seventh of the "
+                     "energy each second",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

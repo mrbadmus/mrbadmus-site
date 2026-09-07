@@ -147,6 +147,56 @@ references (*above*, *below*, *shown here*) rather than the bare word.
 
 ---
 
+## P2 · Energy at home — 5 lessons, 96 new rows (32 per band)
+
+Unit total: **52 / 52 / 52**. Seven per band on lessons 01–02, six per band on
+03–05.
+
+| lesson | ids added (each band) |
+|---|---|
+| 01 energy in food | e05–e11, s05–s11, h05–h11 |
+| 02 power ratings in watts | e05–e11, s05–s11, h05–h11 |
+| 03 calculating energy transferred | e05–e10, s05–s10, h05–h10 |
+| 04 reading a fuel bill | e05–e10, s05–s10, h05–h10 |
+| 05 fuels and energy resources | e05–e10, s05–s10, h05–h10 |
+
+This is the unit where the arithmetic does the teaching, so every calculation
+divides cleanly and each distractor is a **named** working error rather than a
+near miss: the time left in minutes (`p2-03-s05`, `p2-03-h07`), the kilo
+dropped or added twice (`p2-03-h05`, `p2-04-s10`), the division inverted, and
+the order-of-magnitude check that catches all of them (`p2-03-s07`). The
+rate-versus-total confusion that the unit exists to fix is tested from both
+ends — a 5 W charger beating a 1200 W toaster over the day (`p2-02-s05`), and
+two heaters of different ratings warming the same room to the same temperature
+for the same energy (`p2-02-h05`, `p2-02-h07`).
+
+**Review fixes.** Two duplicate stems were caught by the gate and rewritten
+rather than nudged: `p2-02-h07` had reproduced the existing `h03` ("when does a
+lower wattage genuinely save energy") and became the two-heaters comparison;
+`p2-05-h06` had reproduced `h02` (the all-wind-and-solar objection) and became
+a grid battery, which asks the same physics of intermittency from the solution
+end instead. Both were visible in the stem list before writing and were
+authored anyway — the fast gate is what caught them, which is the argument for
+running it per lesson rather than per unit.
+
+Two more distractor sets were rewritten on the cold read, not for length but
+because they were **incoherent as written**: `p2-03-h06` had an option reading
+"the lamp, at 3.6 MJ against the kettle's 3.6 MJ", which states a difference
+and an equality in one line, and `p2-03-h08` had a `why` that contradicted its
+own option. Both now carry the two symmetric errors (rating-wins and
+time-wins) instead. Five length flags fixed, and one authoring slip of the same
+shape as P1's: a `True if 0 else False` in a `correct` field, removed before
+the append.
+
+**The lane's length checker was corrected twice during this unit.** It had been
+counting "18 000 J" as three words, so every large numeric answer looked
+conspicuously long; it now collapses a thousands space before counting. It had
+also been flagging the bare word *opposite* — `p2-05-h05` says wood and nuclear
+sit in "opposite corners of the grid", which is a description, not a
+page reference — so it now looks for deictic phrases only.
+
+---
+
 ## ⚠️ A gate defect that is NOT content, found while topping up P1
 
 From the moment the biology lane's B1 top-up landed in this worktree,
