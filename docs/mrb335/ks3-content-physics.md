@@ -482,6 +482,42 @@ were rotated to give **26 / 30 / 26 / 26**.
 
 ---
 
+## P12 · Space — 6 lessons, 84 new rows (28 per band)
+
+Unit total: **52 / 52 / 52**. Five per band on lessons 01–04, four per band on
+05–06.
+
+| lesson | ids added (each band) |
+|---|---|
+| 01 gravity and weight | e05–e09, s05–s09, h05–h09 |
+| 02 mass vs weight | e05–e09, s05–s09, h05–h09 |
+| 03 gravity: Earth, Moon and Sun | e05–e09, s05–s09, h05–h09 |
+| 04 the Sun, stars and galaxies | e05–e09, s05–s09, h05–h09 |
+| 05 seasons and the tilt | e05–e08, s05–s08, h05–h08 |
+| 06 how far is a light year | e05–e08, s05–s08, h05–h08 |
+
+Every `W = m × g` row carries its field strength in the stem, and the two
+standing errors — reading a mass in newtons and a weight in kilograms — are
+distractors rather than assumptions. Lesson 02 keeps the pair apart from both
+sides: what is unchanged on the Moon (`e07`), what is just as hard there
+(`s06`, `h07` — lifting gets easier, shaking does not), and why weightless is
+not massless (`h05`).
+
+Lesson 03 refuses the two orbit misconceptions by name: there is no outward
+force to balance gravity (`e08`, `h07`), and the two pulls in a gravitational
+pair are equal however unequal the masses (`s08`, `h09`). Lesson 05 keeps
+distance out of the seasons at every band, including the version that is hardest
+to shake — that the TILT itself brings a hemisphere nearer (`h08`, where a few
+thousand kilometres is set against 150 million).
+
+**Review fixes.** One duplicate stem caught by the gate: `p12-04-s08` had
+reproduced the existing `s04` (how many galaxies) and became "what is the
+universe" instead. Ten length flags reworded. The spread was 10 / 63 / 11 / 0 —
+the correct answer never once in the last slot — and 39 rows were rotated to
+give **20 / 24 / 20 / 20**.
+
+---
+
 ## ⚠️ `git add` was scoped correctly and a commit still swept in another lane
 
 Found by the commander in this lane's **P5 commit `586aaa0c4`**, which carried

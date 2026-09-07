@@ -293,4 +293,294 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p12-01-e05",
+        "band": "easier",
+        "text": "What unit is mass measured in?",
+        "options": [            {"text": "Newtons", "correct": False,
+             "why": "Newtons measure a force, which is what weight is."},
+            {"text": "Joules", "correct": False,
+             "why": "Joules measure energy, not the amount of matter in "
+                    "something."},
+            {"text": "Newtons per kilogram", "correct": False,
+             "why": "That is the unit of gravitational field strength."},
+            {"text": "Kilograms", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-e06",
+        "band": "easier",
+        "text": "Which formula gives an object's weight?",
+        "options": [
+            {"text": "W = m ÷ g", "correct": False,
+             "why": "Dividing would make weight smaller where gravity is "
+                    "stronger, which is backwards."},
+            {"text": "W = m + g", "correct": False,
+             "why": "A mass in kilograms cannot be added to a field strength "
+                    "in N/kg."},
+            {"text": "W = m × g", "correct": True},
+            {"text": "W = g ÷ m", "correct": False,
+             "why": "That would make a heavier object weigh less, which "
+                    "cannot be right."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-e07",
+        "band": "easier",
+        "text": "A bag has a mass of 5 kg. What is its weight on Earth, where "
+                "g = 10 N/kg?",
+        "options": [
+            {"text": "50 N", "correct": True},
+            {"text": "5 N", "correct": False,
+             "why": "That is the mass with the unit changed; it still has to "
+                    "be multiplied by 10 N/kg."},
+            {"text": "0.5 N", "correct": False,
+             "why": "That is 5 ÷ 10, dividing where the formula multiplies."},
+            {"text": "15 N", "correct": False,
+             "why": "That is 5 + 10, and a mass cannot be added to a field "
+                    "strength."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-e08",
+        "band": "easier",
+        "text": "The gravitational field strength on the Moon is about…",
+        "options": [            {"text": "10 N/kg, the same as Earth", "correct": False,
+             "why": "If it were the same, astronauts would not have bounced "
+                    "about the way they did."},
+            {"text": "24.8 N/kg", "correct": False,
+             "why": "That is Jupiter's figure, and it is far stronger than "
+                    "Earth's rather than weaker."},
+            {"text": "0 N/kg", "correct": False,
+             "why": "There is real gravity on the Moon — things fall there, "
+                    "just more slowly."},
+            {"text": "1.6 N/kg", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-e09",
+        "band": "easier",
+        "text": "Which of these does NOT change when an object is taken to "
+                "the Moon?",
+        "options": [
+            {"text": "Its weight", "correct": False,
+             "why": "Weight is the pull of gravity on it, and the Moon pulls "
+                    "far less than the Earth."},
+            {"text": "The reading on a spring balance", "correct": False,
+             "why": "A spring balance measures the pull, which is much "
+                    "smaller there."},
+            {"text": "Its mass", "correct": True},
+            {"text": "The force needed to lift it", "correct": False,
+             "why": "Lifting means overcoming the weight, and the weight has "
+                    "fallen."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p12-01-s05",
+        "band": "standard",
+        "text": "A case has a mass of 12 kg. What is its weight on the Moon, "
+                "where g = 1.6 N/kg?",
+        "options": [
+            {"text": "19.2 N", "correct": True},
+            {"text": "7.5 N", "correct": False,
+             "why": "That is 12 ÷ 1.6, dividing where the formula "
+                    "multiplies."},
+            {"text": "120 N", "correct": False,
+             "why": "That uses Earth's 10 N/kg rather than the Moon's 1.6."},
+            {"text": "13.6 N", "correct": False,
+             "why": "That adds the two, and kilograms cannot be added to "
+                    "N/kg."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-s06",
+        "band": "standard",
+        "text": "An object weighs 120 N on a world where g = 4.0 N/kg. What "
+                "is its mass?",
+        "options": [            {"text": "480 kg", "correct": False,
+             "why": "That is 120 × 4.0; to find a mass you divide the weight "
+                    "by the field strength."},
+            {"text": "116 kg", "correct": False,
+             "why": "That subtracts, and a field strength cannot be taken "
+                    "from a force."},
+            {"text": "12 kg", "correct": False,
+             "why": "That uses Earth's 10 N/kg rather than the 4.0 N/kg "
+                    "given."},
+            {"text": "30 kg", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-s07",
+        "band": "standard",
+        "text": "A book has a mass of 0.50 kg. What is its weight on Earth, "
+                "where g = 10 N/kg?",
+        "options": [            {"text": "0.05 N", "correct": False,
+             "why": "That is 0.50 ÷ 10, a division where the formula "
+                    "multiplies."},
+            {"text": "10.5 N", "correct": False,
+             "why": "That adds the two quantities, which cannot be done."},
+            {"text": "0.50 N", "correct": False,
+             "why": "That is the mass with the unit swapped; the 10 N/kg has "
+                    "not been used."},
+            {"text": "5.0 N", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-s08",
+        "band": "standard",
+        "text": "Bathroom scales measure a force but display a mass in "
+                "kilograms. How?",
+        "options": [            {"text": "They measure the mass directly and show it",
+             "correct": False,
+             "why": "What presses on them is a force; the mass is worked out "
+                    "from it."},
+            {"text": "They compare you with a known mass inside them",
+             "correct": False,
+             "why": "That is what a pan balance does, and it would work "
+                    "anywhere."},
+            {"text": "They multiply the force by Earth's field strength",
+             "correct": False,
+             "why": "Multiplying would give a far larger number and the wrong "
+                    "unit."},
+            {"text": "They divide the force by Earth's field strength, which "
+                     "they assume",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-s09",
+        "band": "standard",
+        "text": "A 70 kg astronaut stands on Jupiter, where g = 24.8 N/kg. "
+                "What is their weight?",
+        "options": [
+            {"text": "1736 N", "correct": True},
+            {"text": "700 N", "correct": False,
+             "why": "That uses Earth's 10 N/kg instead of Jupiter's 24.8."},
+            {"text": "2.8 N", "correct": False,
+             "why": "That is 70 ÷ 24.8, dividing where the formula "
+                    "multiplies."},
+            {"text": "94.8 N", "correct": False,
+             "why": "That adds the two, and kilograms cannot be added to "
+                    "N/kg."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p12-01-h05",
+        "band": "harder",
+        "text": "An object weighs 37 N on Mars, where g = 3.7 N/kg. What "
+                "would it weigh on Earth, where g = 10 N/kg?",
+        "options": [
+            {"text": "37 N, because weight is a property of the object",
+             "correct": False,
+             "why": "Weight changes with where you are; only the mass stays "
+                    "put."},
+            {"text": "3.7 N", "correct": False,
+             "why": "That is the field strength read as a weight, with no "
+                    "calculation done."},
+            {"text": "100 N", "correct": True},
+            {"text": "370 N", "correct": False,
+             "why": "That multiplies the Mars weight by 10 instead of finding "
+                    "the mass first."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-h06",
+        "band": "harder",
+        "text": "A sack is described as weighing 40 kg. What are the two "
+                "correct statements about it on Earth?",
+        "options": [            {"text": "Its mass is 40 N and its weight is 400 kg",
+             "correct": False,
+             "why": "The units are the wrong way round: mass is in kilograms "
+                    "and weight in newtons."},
+            {"text": "Its mass is 4 kg and its weight is 40 N",
+             "correct": False,
+             "why": "The 40 in the everyday phrase is the mass in kilograms, "
+                    "not a tenth of it."},
+            {"text": "Its mass and its weight are both 40, in different "
+                     "units",
+             "correct": False,
+             "why": "Each kilogram weighs about 10 N, so the two numbers "
+                    "cannot match."},
+            {"text": "Its mass is 40 kg and its weight is about 400 N",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-h07",
+        "band": "harder",
+        "text": "Why would a spring balance calibrated on Earth read too "
+                "little on Mars?",
+        "options": [            {"text": "Because the object loses mass on the way there",
+             "correct": False,
+             "why": "Mass never changes; it is the pull on it that does."},
+            {"text": "Because Mars is further from the Sun", "correct": False,
+             "why": "The Sun's pull on a hand-held object is negligible; "
+                    "Mars's own field is what matters."},
+            {"text": "Because springs are weaker in the cold of Mars",
+             "correct": False,
+             "why": "Temperature effects are tiny next to the difference in "
+                    "gravity."},
+            {"text": "Because Mars pulls less hard, so the spring stretches "
+                     "less",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-h08",
+        "band": "harder",
+        "text": "Can two objects on Earth have the same weight but different "
+                "masses?",
+        "options": [
+            {"text": "Yes, if one is denser than the other", "correct": False,
+             "why": "Density changes the size of an object, not the "
+                    "relationship between its mass and its weight."},
+            {"text": "Yes, if one is higher above the ground", "correct": False,
+             "why": "The change over any everyday height is far too small to "
+                    "matter."},
+            {"text": "No — in the same field, weight is always mass × g",
+             "correct": True},
+            {"text": "No, because weight and mass are the same quantity",
+             "correct": False,
+             "why": "They are different quantities in different units; they "
+                    "are simply linked by g."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-01-h09",
+        "band": "harder",
+        "text": "A 1 kg mass is taken to a planet where it weighs 25 N. What "
+                "is the field strength there?",
+        "options": [
+            {"text": "25 N/kg", "correct": True},
+            {"text": "10 N/kg, as on Earth", "correct": False,
+             "why": "On Earth that mass would weigh 10 N, and here it weighs "
+                    "25 N."},
+            {"text": "0.04 N/kg", "correct": False,
+             "why": "That is 1 ÷ 25, the division the wrong way round."},
+            {"text": "26 N/kg", "correct": False,
+             "why": "That adds the mass on, and kilograms cannot be added to "
+                    "newtons."},
+        ],
+        "figure": None,
+    },
 ]

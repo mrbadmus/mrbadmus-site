@@ -308,4 +308,310 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p12-03-e05",
+        "band": "easier",
+        "text": "Gravity acts between…",
+        "options": [
+            {"text": "any two masses", "correct": True},
+            {"text": "planets and stars only", "correct": False,
+             "why": "It acts between any two masses; a planet's is simply "
+                    "large enough to notice."},
+            {"text": "objects that are touching", "correct": False,
+             "why": "It reaches across empty space, which is how the Moon is "
+                    "held."},
+            {"text": "magnets and magnetic materials", "correct": False,
+             "why": "That is magnetism, a different non-contact force."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-e06",
+        "band": "easier",
+        "text": "Does gravity need something in the gap to act across it?",
+        "options": [
+            {"text": "Yes — the air carries it", "correct": False,
+             "why": "It acts through the vacuum of space, where there is no "
+                    "air at all."},
+            {"text": "Yes, but only over very long distances",
+             "correct": False,
+             "why": "It needs nothing in between at any distance."},
+            {"text": "No, nothing is needed in between", "correct": True},
+            {"text": "Only when both objects are moving", "correct": False,
+             "why": "Two stationary masses attract each other just as well."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-e07",
+        "band": "easier",
+        "text": "What makes the gravitational pull between two objects "
+                "stronger?",
+        "options": [
+            {"text": "Larger masses on either side", "correct": True},
+            {"text": "A greater distance between them", "correct": False,
+             "why": "Distance weakens it, and quickly."},
+            {"text": "One of them being made of metal", "correct": False,
+             "why": "What a thing is made of makes no difference; only how "
+                    "much mass it has."},
+            {"text": "One of them being charged", "correct": False,
+             "why": "Charge belongs to the electrostatic force, not to "
+                    "gravity."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-e08",
+        "band": "easier",
+        "text": "An orbiting body is best described as…",
+        "options": [            {"text": "held up by a force flinging it outwards",
+             "correct": False,
+             "why": "There is no outward force; gravity is the only one "
+                    "acting."},
+            {"text": "beyond the reach of gravity", "correct": False,
+             "why": "Gravity is exactly what keeps it in orbit; without it "
+                    "the body would fly off straight."},
+            {"text": "permanently falling and permanently missing",
+             "correct": True},
+            {"text": "moving in a straight line at a steady speed",
+             "correct": False,
+             "why": "A straight line is what it would do with no force; the "
+                    "orbit is a constant turn."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-e09",
+        "band": "easier",
+        "text": "Is there gravity where the International Space Station "
+                "orbits?",
+        "options": [            {"text": "No — that is why astronauts float", "correct": False,
+             "why": "They float because they are falling with the station, "
+                    "not because gravity has gone."},
+            {"text": "Yes, but only about a hundredth of the ground value",
+             "correct": False,
+             "why": "At that height it is close to nine tenths of the "
+                    "surface value."},
+            {"text": "No, because it is above the atmosphere",
+             "correct": False,
+             "why": "Air has nothing to do with gravity; the field reaches "
+                    "far beyond the atmosphere."},
+            {"text": "Yes, nearly as strong as at the ground", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p12-03-s05",
+        "band": "standard",
+        "text": "Two objects 2 m apart attract with 36 N. They are moved to "
+                "6 m apart. What is the pull now?",
+        "options": [            {"text": "4 N", "correct": True},
+            {"text": "12 N", "correct": False,
+             "why": "That divides by three, in step with the distance; the "
+                    "fall goes with the SQUARE."},
+            {"text": "108 N", "correct": False,
+             "why": "Moving further apart always weakens the pull."},
+            {"text": "18 N", "correct": False,
+             "why": "That halves it, which matches neither the distance nor "
+                    "its square."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-s06",
+        "band": "standard",
+        "text": "Why does the Moon not simply fall into the Earth?",
+        "options": [            {"text": "Because the Earth's gravity does not reach that far",
+             "correct": False,
+             "why": "It reaches easily; it is what holds the Moon in orbit at "
+                    "all."},
+            {"text": "Because an outward force balances the pull",
+             "correct": False,
+             "why": "There is no outward force; gravity is the only one "
+                    "acting on it."},
+            {"text": "Because it is moving sideways fast enough to keep "
+                     "missing",
+             "correct": True},
+            {"text": "Because it is too far away to be pulled", "correct": False,
+             "why": "It is pulled constantly — that is what curves its path "
+                    "into an orbit."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-s07",
+        "band": "standard",
+        "text": "Why does the Moon not fly off into space instead?",
+        "options": [            {"text": "Because space pushes back on it", "correct": False,
+             "why": "Space pushes on nothing; there is no material there to "
+                    "do it."},
+            {"text": "Because the Sun holds it in place", "correct": False,
+             "why": "The Sun pulls it too, but the Earth's pull is what keeps "
+                    "it in orbit around us."},
+            {"text": "Because it is not moving fast enough to escape the "
+                     "atmosphere",
+             "correct": False,
+             "why": "It is far above any atmosphere; gravity is what holds "
+                    "it."},
+            {"text": "Because the Earth's gravity keeps pulling it round",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-s08",
+        "band": "standard",
+        "text": "A student says the Sun must pull the Earth harder than the "
+                "Earth pulls the Sun. What is right?",
+        "options": [            {"text": "The two pulls are equal and opposite", "correct": True},
+            {"text": "They are right — the more massive object always pulls "
+                     "harder",
+             "correct": False,
+             "why": "The two forces in a gravitational pair are always "
+                    "equal, whatever the masses."},
+            {"text": "The Earth pulls harder, because it is closer to itself",
+             "correct": False,
+             "why": "Distance is the same for both, and it would not break "
+                    "the equality anyway."},
+            {"text": "Only the Sun pulls; the Earth does not pull back",
+             "correct": False,
+             "why": "Every gravitational force comes with an equal one the "
+                    "other way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-s09",
+        "band": "standard",
+        "text": "Why is the gravitational pull between two people standing "
+                "side by side far too small to notice?",
+        "options": [            {"text": "Because gravity only acts on very large objects",
+             "correct": False,
+             "why": "It acts between any two masses; theirs are simply "
+                    "tiny."},
+            {"text": "Because they are too close together", "correct": False,
+             "why": "Being close makes the pull larger, not smaller."},
+            {"text": "Because their masses are tiny compared with a planet's",
+             "correct": True},
+            {"text": "Because the Earth's pull cancels it out", "correct": False,
+             "why": "The Earth's pull acts downwards and does not cancel a "
+                    "sideways one; the sideways pull is just minute."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p12-03-h05",
+        "band": "harder",
+        "text": "The pull between two masses is 100 N at 1 m. What is it at "
+                "5 m?",
+        "options": [            {"text": "20 N", "correct": False,
+             "why": "That divides by five, in step with the distance rather "
+                    "than with its square."},
+            {"text": "50 N", "correct": False,
+             "why": "That halves it, which matches neither rule."},
+            {"text": "2500 N", "correct": False,
+             "why": "Moving apart weakens the pull; nothing about separating "
+                    "them strengthens it."},
+            {"text": "4 N", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-h06",
+        "band": "harder",
+        "text": "A satellite's engines are switched off for good. Why does it "
+                "stay in orbit?",
+        "options": [            {"text": "Because nothing stops its sideways motion, and gravity "
+                     "keeps turning it",
+             "correct": True},
+            {"text": "Because the engines had built up a store of motion it "
+                     "slowly uses",
+             "correct": False,
+             "why": "Nothing is stored and spent; with no resistance its "
+                    "sideways motion simply continues."},
+            {"text": "Because at that height gravity is exactly balanced by "
+                     "another force",
+             "correct": False,
+             "why": "There is no second force; gravity acts alone and is "
+                    "unbalanced."},
+            {"text": "Because it is beyond the reach of the Earth's gravity",
+             "correct": False,
+             "why": "It is well inside it — otherwise it would travel "
+                    "straight off."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-h07",
+        "band": "harder",
+        "text": "Why is an orbit NOT a balance between gravity pulling in and "
+                "a force flinging outwards?",
+        "options": [
+            {"text": "Because gravity is far too weak to balance anything at "
+                     "that distance",
+             "correct": False,
+             "why": "It is easily strong enough; the trouble is that there is "
+                    "nothing to balance."},
+            {"text": "Because the two forces are equal, so the body would "
+                     "stand still",
+             "correct": False,
+             "why": "No second force exists at all, so there is no pair to "
+                    "compare."},
+            {"text": "Because there is no outward force — gravity acts alone "
+                     "and changes the direction",
+             "correct": True},
+            {"text": "Because an orbit needs no force of any kind",
+             "correct": False,
+             "why": "A constant change of direction needs a resultant force, "
+                    "and gravity supplies it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-h08",
+        "band": "harder",
+        "text": "Two spacecraft double their separation and the pull falls to "
+                "a quarter, not a half. Why?",
+        "options": [            {"text": "Because some of the pull is absorbed by the space "
+                     "between them",
+             "correct": False,
+             "why": "Nothing absorbs gravity; empty space takes none of it."},
+            {"text": "Because their masses fall as they separate",
+             "correct": False,
+             "why": "Neither mass changes; only the distance does."},
+            {"text": "Because the pull falls with the SQUARE of the distance",
+             "correct": True},
+            {"text": "Because gravity acts in two directions at once",
+             "correct": False,
+             "why": "It does come in a pair, and that has nothing to do with "
+                    "how it falls off."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-03-h09",
+        "band": "harder",
+        "text": "The Earth pulls a 1 kg apple with 10 N. How hard does the "
+                "apple pull the Earth?",
+        "options": [            {"text": "Almost nothing, because the apple is tiny",
+             "correct": False,
+             "why": "Its mass is tiny and its pull is not: the two forces in "
+                    "the pair are equal."},
+            {"text": "Nothing at all — only the Earth pulls", "correct": False,
+             "why": "Every gravitational force comes with an equal one in the "
+                    "opposite direction."},
+            {"text": "Far more than 10 N, because the Earth is enormous",
+             "correct": False,
+             "why": "The Earth's size affects how hard IT pulls, and the pair "
+                    "is still equal both ways."},
+            {"text": "10 N, exactly as hard", "correct": True},
+        ],
+        "figure": None,
+    },
 ]

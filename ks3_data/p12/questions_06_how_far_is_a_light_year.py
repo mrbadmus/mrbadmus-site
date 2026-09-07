@@ -296,4 +296,266 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p12-06-e05",
+        "band": "easier",
+        "text": "A light year measures…",
+        "options": [
+            {"text": "a length of time", "correct": False,
+             "why": "The word year is misleading: it is how far light gets, "
+                    "not how long it takes."},
+            {"text": "a distance", "correct": True},
+            {"text": "a speed", "correct": False,
+             "why": "The speed of light is a separate quantity, in metres per "
+                    "second."},
+            {"text": "an amount of energy", "correct": False,
+             "why": "Energy is in joules and has nothing to do with this "
+                    "unit."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-06-e06",
+        "band": "easier",
+        "text": "A star is 4 light years away. How long has the light "
+                "entering your eye been travelling?",
+        "options": [
+            {"text": "4 seconds", "correct": False,
+             "why": "In four seconds light covers about a billion metres, "
+                    "nowhere near another star."},
+            {"text": "4 years", "correct": True},
+            {"text": "No time at all, because light is instant",
+             "correct": False,
+             "why": "Light is fast but not instant, which is what makes the "
+                    "unit useful."},
+            {"text": "4 million years", "correct": False,
+             "why": "That would be a galaxy's distance, not a nearby star's."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-06-e07",
+        "band": "easier",
+        "text": "Why are kilometres a poor unit for the distance to a star?",
+        "options": [
+            {"text": "Because kilometres cannot be used outside the "
+                     "atmosphere",
+             "correct": False,
+             "why": "A kilometre is a kilometre anywhere; the difficulty is "
+                    "the size of the numbers."},
+            {"text": "Because the numbers become unmanageably large",
+             "correct": True},
+            {"text": "Because distances in space cannot be measured",
+             "correct": False,
+             "why": "They are measured routinely; the question is what unit "
+                    "to report them in."},
+            {"text": "Because light does not travel in kilometres",
+             "correct": False,
+             "why": "It covers kilometres perfectly well — about 300 000 of "
+                    "them every second."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-06-e08",
+        "band": "easier",
+        "text": "Roughly how many metres is one light year?",
+        "options": [
+            {"text": "About 9.5 × 10^15 m", "correct": True},
+            {"text": "About 3.0 × 10^8 m", "correct": False,
+             "why": "That is how far light travels in one SECOND."},
+            {"text": "About 9.5 × 10^9 m", "correct": False,
+             "why": "That is about a million times too small — roughly the "
+                    "distance to a nearby planet."},
+            {"text": "About 300 000 m", "correct": False,
+             "why": "That is 300 km, a distance you could drive in a few "
+                    "hours."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p12-06-s05",
+        "band": "standard",
+        "text": "A signal takes 1.2 s to reach the Moon. How far away is it? "
+                "Take the speed of light as 3.0 × 10^8 m/s.",
+        "options": [
+            {"text": "2.5 × 10^8 m", "correct": False,
+             "why": "That is 3.0 × 10^8 ÷ 1.2; distance is speed MULTIPLIED "
+                    "by time."},
+            {"text": "3.6 × 10^8 m", "correct": True},
+            {"text": "1.8 × 10^8 m", "correct": False,
+             "why": "That halves the answer, as though the signal made a "
+                    "round trip, and it does not."},
+            {"text": "3.0 × 10^8 m", "correct": False,
+             "why": "That is one second's worth, and the journey took 1.2 s."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-06-s06",
+        "band": "standard",
+        "text": "A probe is 4.5 light hours from Earth. How long does a "
+                "command take to reach it?",
+        "options": [
+            {"text": "4.5 seconds", "correct": False,
+             "why": "The unit says light HOURS, so the journey takes hours, "
+                    "not seconds."},
+            {"text": "4.5 hours", "correct": True},
+            {"text": "4.5 years", "correct": False,
+             "why": "That would be a light-year distance, thousands of times "
+                    "further out."},
+            {"text": "No time at all, because radio is instant",
+             "correct": False,
+             "why": "Radio travels at the speed of light, which is fast but "
+                    "not instant."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-06-s07",
+        "band": "standard",
+        "text": "A star 100 light years away explodes today. When will people "
+                "on Earth see it?",
+        "options": [
+            {"text": "Today, because the explosion is happening now",
+             "correct": False,
+             "why": "The light has to cross 100 light years before anyone "
+                    "here can see it."},
+            {"text": "In 100 years from today", "correct": True},
+            {"text": "It happened 100 years ago and was seen then",
+             "correct": False,
+             "why": "The question says it explodes today, so the light has "
+                    "not started its journey until now."},
+            {"text": "Never, because the light will be too faint",
+             "correct": False,
+             "why": "An exploding star at that distance is easily bright "
+                    "enough to see."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-06-s08",
+        "band": "standard",
+        "text": "Why does saying the Sun is eight light minutes away also "
+                "tell you a distance?",
+        "options": [
+            {"text": "Because minutes and metres mean the same thing in "
+                     "space",
+             "correct": False,
+             "why": "They are quite different quantities; what links them is "
+                    "a fixed speed."},
+            {"text": "Because distance = speed × time, and the speed of light "
+                     "is fixed",
+             "correct": True},
+            {"text": "Because a light minute is a unit of time that "
+                     "astronomers reuse",
+             "correct": False,
+             "why": "A light minute is a distance, which is exactly why the "
+                    "statement works."},
+            {"text": "Because the Sun's distance never changes",
+             "correct": False,
+             "why": "It varies a little through the year, and that is not "
+                    "what makes the statement a distance."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p12-06-h05",
+        "band": "harder",
+        "text": "A spacecraft travels at a tenth of the speed of light. How "
+                "long would it take to reach a star 4 light years away?",
+        "options": [
+            {"text": "4 years, because the star is 4 light years away",
+             "correct": False,
+             "why": "Only light itself covers a light year in a year; this "
+                    "craft is ten times slower."},
+            {"text": "40 years", "correct": True},
+            {"text": "0.4 years", "correct": False,
+             "why": "That divides by ten where the calculation multiplies; a "
+                    "slower craft takes longer."},
+            {"text": "It could never arrive", "correct": False,
+             "why": "A tenth of light speed is fast but finite, so the "
+                    "journey has a definite length."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-06-h06",
+        "band": "harder",
+        "text": "Andromeda is 2.5 million light years away. If it vanished "
+                "today, when would astronomers here know?",
+        "options": [
+            {"text": "Immediately, because gravity acts at once",
+             "correct": False,
+             "why": "Nothing carries the news faster than light, gravity "
+                    "included."},
+            {"text": "In 2.5 million years", "correct": True},
+            {"text": "2.5 million years ago", "correct": False,
+             "why": "That is when the light now arriving set out; the "
+                    "vanishing has not been seen yet."},
+            {"text": "In 2.5 million seconds", "correct": False,
+             "why": "That is about a month, and the distance is stated in "
+                    "light YEARS."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-06-h07",
+        "band": "harder",
+        "text": "Why does knowing a star is 4 light years away NOT tell you "
+                "how long a journey there would take?",
+        "options": [
+            {"text": "Because nothing we can build travels anywhere near the "
+                     "speed of light",
+             "correct": True},
+            {"text": "Because a light year is a time, so it cannot give a "
+                     "distance",
+             "correct": False,
+             "why": "It is a distance, which is exactly why a journey time "
+                    "needs a speed as well."},
+            {"text": "Because the star will have moved by the time you "
+                     "arrive",
+             "correct": False,
+             "why": "It does move, but the reason the four years does not "
+                    "apply is the speed of the craft."},
+            {"text": "Because distances in space cannot be converted into "
+                     "times at all",
+             "correct": False,
+             "why": "They can, once a speed is known — which is the whole "
+                    "point."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-06-h08",
+        "band": "harder",
+        "text": "Why is every observation of a distant object an observation "
+                "of the past?",
+        "options": [
+            {"text": "Because telescopes record images and play them back "
+                     "later",
+             "correct": False,
+             "why": "It is true of the naked eye as well, with no recording "
+                    "involved."},
+            {"text": "Because light takes time to arrive, and the further "
+                     "away the longer",
+             "correct": True},
+            {"text": "Because distant objects move so slowly that they look "
+                     "frozen",
+             "correct": False,
+             "why": "Their speed is not the issue; the travel time of the "
+                    "light is."},
+            {"text": "Because the atmosphere delays the light as it arrives",
+             "correct": False,
+             "why": "The atmosphere adds a fraction of a millisecond, against "
+                    "years or millennia of travel."},
+        ],
+        "figure": None,
+    },
 ]

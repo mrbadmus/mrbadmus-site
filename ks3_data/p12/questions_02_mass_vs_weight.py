@@ -294,4 +294,302 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p12-02-e05",
+        "band": "easier",
+        "text": "Which quantity is measured in newtons?",
+        "options": [            {"text": "Mass", "correct": False,
+             "why": "Mass is measured in kilograms and never changes with "
+                    "location."},
+            {"text": "Density", "correct": False,
+             "why": "Density is in g/cm³ or kg/m³."},
+            {"text": "Gravitational field strength", "correct": False,
+             "why": "That is measured in newtons per kilogram, not in newtons "
+                    "alone."},
+            {"text": "Weight", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-e06",
+        "band": "easier",
+        "text": "A pan balance measures…",
+        "options": [            {"text": "weight, in newtons", "correct": False,
+             "why": "It compares one mass against another, and gives the same "
+                    "answer wherever it is used."},
+            {"text": "density", "correct": False,
+             "why": "Density needs a volume as well, which a balance does not "
+                    "measure."},
+            {"text": "gravitational field strength", "correct": False,
+             "why": "It cannot measure the field at all; it cancels the "
+                    "field out by comparing."},
+            {"text": "mass, in kilograms", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-e07",
+        "band": "easier",
+        "text": "A 6 kg object is carried to the Moon. What is its mass "
+                "there?",
+        "options": [            {"text": "1 kg, a sixth of its Earth value", "correct": False,
+             "why": "It is the WEIGHT that falls to about a sixth; the mass "
+                    "is unchanged."},
+            {"text": "9.6 kg", "correct": False,
+             "why": "That multiplies by 1.6, which is a field strength, not a "
+                    "conversion for mass."},
+            {"text": "0 kg, because it is weightless", "correct": False,
+             "why": "It is not weightless on the Moon, and even in orbit its "
+                    "mass would be 6 kg."},
+            {"text": "6 kg", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-e08",
+        "band": "easier",
+        "text": "A spring balance measures…",
+        "options": [
+            {"text": "a force", "correct": True},
+            {"text": "an amount of matter", "correct": False,
+             "why": "That is mass, which a pan balance measures by "
+                    "comparison."},
+            {"text": "a volume", "correct": False,
+             "why": "Volume is measured with a cylinder or by displacement."},
+            {"text": "an energy", "correct": False,
+             "why": "Energy is measured in joules and is a different quantity "
+                    "entirely."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-e09",
+        "band": "easier",
+        "text": "Which quantity decides how hard an object is to get moving?",
+        "options": [            {"text": "Its mass", "correct": True},
+            {"text": "Its weight", "correct": False,
+             "why": "Weight is the pull downwards; getting something moving "
+                    "sideways depends on its mass."},
+            {"text": "The gravitational field strength where it is",
+             "correct": False,
+             "why": "That sets its weight; it does not change how hard the "
+                    "object is to accelerate."},
+            {"text": "Its density", "correct": False,
+             "why": "Density says how tightly packed it is, not how much "
+                    "matter there is altogether."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p12-02-s05",
+        "band": "standard",
+        "text": "A crate weighs 200 N on the Moon, where g = 1.6 N/kg. What "
+                "is its mass?",
+        "options": [            {"text": "320 kg", "correct": False,
+             "why": "That is 200 × 1.6; to find a mass you divide the weight "
+                    "by the field strength."},
+            {"text": "200 kg", "correct": False,
+             "why": "That is the weight with the unit swapped; the field "
+                    "strength has not been used."},
+            {"text": "20 kg", "correct": False,
+             "why": "That uses Earth's 10 N/kg rather than the Moon's 1.6."},
+            {"text": "125 kg", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-s06",
+        "band": "standard",
+        "text": "Why is a heavy hammer just as hard to swing on the Moon as "
+                "on Earth?",
+        "options": [            {"text": "Because its mass is unchanged, and mass is what resists "
+                     "a change of motion",
+             "correct": True},
+            {"text": "Because its weight is unchanged there", "correct": False,
+             "why": "Its weight is about a sixth; it is the mass that has not "
+                    "changed."},
+            {"text": "Because there is no air on the Moon to swing it "
+                     "through",
+             "correct": False,
+             "why": "Less air would make swinging slightly EASIER, not "
+                    "harder."},
+            {"text": "Because the astronaut is weaker in a spacesuit",
+             "correct": False,
+             "why": "A suit is awkward, but the physics point is that the "
+                    "hammer's mass is the same."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-s07",
+        "band": "standard",
+        "text": "Which instrument would still give a correct mass on Mars?",
+        "options": [            {"text": "A spring balance calibrated on Earth", "correct": False,
+             "why": "It reads the pull, which is much smaller on Mars, so its "
+                    "kilogram scale would be wrong."},
+            {"text": "Bathroom scales", "correct": False,
+             "why": "They assume Earth's field strength, so they would "
+                    "under-read badly."},
+            {"text": "A pan balance with known masses", "correct": True},
+            {"text": "A newtonmeter", "correct": False,
+             "why": "A newtonmeter reads a force; it would give the Mars "
+                    "weight, not the mass."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-s08",
+        "band": "standard",
+        "text": "A 10 kg object is taken to the Moon, where g = 1.6 N/kg. "
+                "Which row is right?",
+        "options": [            {"text": "Mass 10 kg on Earth and 1.6 kg on the Moon",
+             "correct": False,
+             "why": "Mass does not change with location at all."},
+            {"text": "Mass 10 kg everywhere; weight 100 N on both",
+             "correct": False,
+             "why": "The Moon pulls with 1.6 N on each kilogram, so the "
+                    "weight there is 16 N."},
+            {"text": "Weight 10 N everywhere; mass 100 kg on Earth",
+             "correct": False,
+             "why": "The two quantities have been swapped and neither figure "
+                    "is right."},
+            {"text": "Mass 10 kg; weight 100 N on Earth and 16 N on the "
+                     "Moon",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-s09",
+        "band": "standard",
+        "text": "A spring balance on Earth reads 60 N. What mass is hanging "
+                "from it, taking g = 10 N/kg?",
+        "options": [
+            {"text": "600 kg", "correct": False,
+             "why": "That multiplies by 10; to get a mass you divide the "
+                    "force by the field strength."},
+            {"text": "60 kg", "correct": False,
+             "why": "That is the reading with the unit swapped, which is "
+                    "exactly the confusion to avoid."},
+            {"text": "6 kg", "correct": True},
+            {"text": "70 kg", "correct": False,
+             "why": "That adds the two, and newtons cannot be added to "
+                    "N/kg."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p12-02-h05",
+        "band": "harder",
+        "text": "Why is weightless not the same as massless for an object in "
+                "orbit?",
+        "options": [            {"text": "Because it keeps all its mass, and could still crush "
+                     "you",
+             "correct": True},
+            {"text": "Because a weightless object has no mass either",
+             "correct": False,
+             "why": "It keeps every kilogram it had; only the reading on a "
+                    "balance has gone."},
+            {"text": "Because weightless objects have negative mass",
+             "correct": False,
+             "why": "There is no such thing as negative mass; the mass is "
+                    "simply unchanged."},
+            {"text": "Because the two words mean the same thing in orbit",
+             "correct": False,
+             "why": "They come apart precisely there, which is why the "
+                    "distinction matters."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-h06",
+        "band": "harder",
+        "text": "Why would a spring balance calibrated on Earth OVER-read on "
+                "Jupiter?",
+        "options": [            {"text": "Because objects gain mass on a larger planet",
+             "correct": False,
+             "why": "Mass never changes; the pull on it does."},
+            {"text": "Because springs stretch more in a thicker atmosphere",
+             "correct": False,
+             "why": "Atmosphere has nothing to do with how far the spring is "
+                    "pulled."},
+            {"text": "Because the same mass is pulled harder, so the spring "
+                     "stretches further",
+             "correct": True},
+            {"text": "Because Jupiter spins faster, which adds to the "
+                     "reading",
+             "correct": False,
+             "why": "Spin has a small effect; the 24.8 N/kg field strength is "
+                    "what dominates."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-h07",
+        "band": "harder",
+        "text": "On the Moon, which becomes easier: LIFTING a heavy toolbox, "
+                "or shaking it from side to side?",
+        "options": [
+            {"text": "Both, because everything is easier on the Moon",
+             "correct": False,
+             "why": "Shaking it sideways is just as hard, because its mass is "
+                    "unchanged."},
+            {"text": "Neither, because its mass is unchanged", "correct": False,
+             "why": "Lifting really is easier: the toolbox weighs about a "
+                    "sixth of what it did."},
+            {"text": "Lifting only", "correct": True},
+            {"text": "Shaking only", "correct": False,
+             "why": "Shaking is the one that does NOT get easier, since it "
+                    "depends on the mass."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-h08",
+        "band": "harder",
+        "text": "A 2 kg object weighs 3.2 N on one world and 20 N on another. "
+                "What are the two field strengths?",
+        "options": [            {"text": "3.2 N/kg and 20 N/kg", "correct": False,
+             "why": "Those are the weights; each must be divided by the 2 kg "
+                    "mass."},
+            {"text": "0.63 N/kg and 0.1 N/kg", "correct": False,
+             "why": "Those are the divisions upside down — mass over weight "
+                    "instead of weight over mass."},
+            {"text": "6.4 N/kg and 40 N/kg", "correct": False,
+             "why": "That multiplies by the mass where the calculation "
+                    "divides."},
+            {"text": "1.6 N/kg and 10 N/kg", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p12-02-h09",
+        "band": "harder",
+        "text": "Why does an object's weight change from world to world while "
+                "its mass does not?",
+        "options": [            {"text": "Because weight is the pull on the object, which depends "
+                     "on where it is",
+             "correct": True},
+            {"text": "Because matter is squashed by a stronger field",
+             "correct": False,
+             "why": "Nothing about the matter changes; the pull on it does."},
+            {"text": "Because kilograms are defined differently on each "
+                     "world",
+             "correct": False,
+             "why": "A kilogram is the same everywhere, which is why mass is "
+                    "the reliable one."},
+            {"text": "Because weight is measured with a different instrument "
+                     "on each world",
+             "correct": False,
+             "why": "The same spring balance gives different readings, which "
+                    "is the effect rather than the cause."},
+        ],
+        "figure": None,
+    },
 ]
