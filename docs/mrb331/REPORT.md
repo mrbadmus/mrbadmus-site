@@ -638,3 +638,251 @@ capture's first pass searched for a control whose label *contained* "Set work",
 and step 3's confirm button is also labelled "Set work" — so every "advance"
 re-opened the sheet at step 1, and all three files showed the same panel. The
 capture now matches labels EXACTLY and takes the last match.
+
+---
+
+# 16 · The merge run — 7 September 2026
+
+Sections 1–15 describe the BUILD. This section describes landing it: rebasing
+over a main that had moved twice, fixing a credential collision that had
+disabled a gate, and the two defects a cold pass found in the merged tree that
+neither side contained on its own.
+
+## 16.1 · Integration: a merge, not a rebase
+
+The brief said rebase. It is a merge, and the reason is the generated tree.
+
+Seventy-four files were touched by both `feat/set-work` and `origin/main`.
+**Sixty-nine of them are generator output** — `teacher_fixtures/`, the six
+ported `teacher/*.html`, the student pages, and their `mrbadmus_site/` copies.
+There is no such thing as hand-resolving a conflict in those: the only correct
+resolution is to take the merged SOURCES and rebuild. A rebase would have
+demanded that once per commit — five times — with five chances to hand-edit a
+file the next build silently discards.
+
+The five real sources auto-merged with **no conflict at all**:
+
+| file | conflicted? |
+|---|---|
+| `build_teacher_port.py` | no |
+| `gate_registry.py` | no |
+| `teacher_rulings.py` | no |
+| `shared/teacher-live.js` | no |
+| `shared/student-live.js` | no |
+
+So the merge cost one resolution pass where the rebase would have cost five,
+for identical trees. The repo's own precedent agrees — `24f337d6c`, the commit
+this branch grew from, is itself *"Merge origin/main into MRB-326"* — and the
+branch was already pushed, so a rebase would have rewritten published history
+for no gain.
+
+⚠️ **Textually clean is not semantically clean, and this run is the proof.**
+Both defects in §16.5 live in files that merged without a murmur.
+
+**Backend**, by contrast, WAS rebased: two commits over one, three conflicts,
+all three pure import/export list unions (`dueAtNotBornLate` and the MRB-330
+week helpers arriving beside `resolveReleaseAt`, `bankRefusalFor` and the
+MRB-331 additions), plus one test-file conflict that was two independent
+blocks appended at the same line. Union in every case; nothing was dropped from
+either side. 68 tests green immediately after.
+
+## 16.2 · The seam the two tickets create
+
+MRB-330 moved the teaching week's rollover to **Sunday 00:00 London** and
+guaranteed that work is never born already overdue. MRB-331 files an assignment
+under `currentTeachingWeek(year, new Date(release_at))` — the week the work
+APPEARS in, not the week it was typed in.
+
+The two agree, and they agree without either referring to the other, which is
+exactly the kind of agreement that stops holding without anything turning red.
+So it is pinned: **fifteen fixtures** in `test_assignment_compose.js`, in two
+properties the brief named.
+
+**Work set on a Saturday releases into the week starting Sunday.** The same
+Saturday afternoon yields week 1 work if it appears immediately and week 2 work
+if it appears on Sunday morning, and the boundary is checked to the minute in
+London time — a UTC-only reading files the 23:30Z row under a week that had
+already ended for every child in the school. A school hold drags the week with
+it, because children see work when it opens, not when it was typed.
+
+**Work set on a Friday evening is not born late.** The auto composer walks the
+deadline forward (`dueAtNotBornLate`). Teacher-set work cannot: the deadline is
+the teacher's own and moving it silently would be a lie on the sheet. It
+reaches the same guarantee by REFUSAL — `due_at` at or before the resolved
+release instant is a 400, whether the collision comes from the teacher's own
+dates or from a school hold landing past the due date.
+
+⚠️ **The fixtures were negative-controlled rather than trusted.** Run against
+the pre-MRB-330 arithmetic, four of the five week fixtures return the WRONG
+week; the fifth is the Saturday-23:30-London case that must not move. A fixture
+that passed under both models would have been watching nothing.
+
+`setWorkWeek` and `setWorkBornLate` are the route's own lines lifted verbatim,
+so the fixture cannot drift from the thing it describes.
+
+## 16.3 · A gate that could not pass, and why
+
+`teacher_admin_real` drives pages this ticket changes. It was recording a SKIP.
+
+`set_work_drive.py` and `teacher_admin_real_drive.py` both read
+`MRB_THROWAWAY_PASSWORD`, and they meant two different passwords by it. The
+halves are not symmetric, which is what made it invisible:
+
+| | accounts | behaviour |
+|---|---|---|
+| `set_work` | `mrb331_*`, **created by the fixture** | re-asserts whatever password it is handed — green on any value |
+| `teacher_admin_real` | `mrb326_*`, **pre-seeded by hand** | exactly one correct value, or a bare HTTP 400 |
+
+Run both from one shell and either the mrb326 accounts silently acquire a
+password no file records, or set_work adopts mrb326's. Only the second is
+harmless — and **the first had already happened.** Probed on TEST before
+changing anything: both accounts present, both alive, and the password this
+repo documents answering `invalid_credentials`. MRB-328 had set them to a value
+of its own on 28 August; nothing owned the credential, so nothing kept it true.
+
+Two fixes, because the collision has two halves:
+
+- **Set work owns its own switch** — `MRB_SET_WORK_PASSWORD`, at
+  `mrb331_fixture.ENV_SWITCH`, with the reasoning kept beside it.
+- **MRB-326's credential becomes re-assertable from the file that documents
+  it** — `teacher_admin_real_drive.py --provision` resets both passwords
+  through the service-role key it already reads for cleanup, and VERIFIES by
+  signing in rather than trusting the admin API's own 200. It is a password
+  reset, not a reseed: nothing created, deleted or relinked, so the fixture the
+  RLS proofs stand on is unchanged.
+
+Three drives share those two accounts; the two that borrowed the credential
+without documenting it now point at the file that owns it.
+
+**`teacher_admin_real` now records a real PASS** — every check, under real RLS,
+including all four admin writes and the plain-teacher negative control.
+
+## 16.4 · Two gates were reading a colleague's branch
+
+`pool_ownership` went red on *"server.js — bankFor() no longer reads
+ks3_assignment_bank"*. The claim was true. It was true about
+`feat/mrb332-ks4-pool`, which is what the shared main backend checkout happened
+to be sitting on — a statement about a branch with nothing to do with the tree
+being pushed, reported as though it were about it.
+
+Red-for-the-wrong-reason is the survivable direction, because somebody
+investigates. **The same wiring reads a colleague's branch that HAPPENS to
+satisfy the contract and prints PASS about a backend nobody is shipping**, and
+nobody investigates that at all.
+
+Three files had it. All three now take an explicit path (argv or
+`MRB_BACKEND`), with the sibling repo as the default:
+
+| file | what it was doing |
+|---|---|
+| `pool_ownership.py` | reading a colleague's `server.js` — now `needs_env`, as MRB-330 did for `verify_week_truth` |
+| `set_work_drive.py` | would have **launched** `node server.js` from a colleague's checkout and reported 54 green checks about code this branch does not contain — its own `Server` docstring already insisted it must be "THIS RUN'S CODE" |
+| `seating_tells.py` | reading a colleague's `server.js` |
+
+Verified in both directions: `pool_ownership` is red against the colleague's
+checkout and green against this run's backend worktree. A gate that could not
+tell them apart would have been watching nothing.
+
+⊘ **One open question for Mide.** `seating_tells` honours the variable but is
+deliberately NOT marked `needs_env`, unlike `pool_ownership`. Requiring it makes
+the gate SKIP on a machine that has not set it, and whether seating's tells are
+worth that trade is a call about a feature this run is not shipping. Flagged
+rather than decided in passing.
+
+## 16.5 · The cold pass: two defects the merge created
+
+Both live in files that merged without a conflict. Each side was correct alone.
+
+### A held school hid live teacher-set work and denied it existed
+
+`benchOpen: !benchDone && !held`. MRB-330 wrote that when `benchWork` could only
+ever be the auto assignment, so *held* and *empty* were one fact. MRB-331
+rewired `benchWork` to fall back to released teacher-set work, and the two facts
+came apart **in both directions**:
+
+- A school sets `assignments_open_from` a fortnight out. MRB-324 is explicit
+  that a hold moved later must not retract work a child can already see, so the
+  teacher's released homework stays live and rides in `week_work`. The child's
+  page closed the whole bench and printed **"This week's work isn't live yet"**
+  — three inches above that same homework, still listed in the work list below.
+- A class with `auto_assignments = false` — **this ticket's own new dial**, a
+  supported setting rather than an error path — is not held and has no auto
+  row, so `benchOpen` stayed TRUE with nothing to put in it: four blank docket
+  rows, a badge falling through to OPEN, a button leading nowhere. Verbatim the
+  state MRB-330's own comment says it closed. It closed it for the hold only.
+
+`benchWork` already answers the real question for both kinds of work, so it is
+asked directly: `!benchDone && !!benchWork`. One condition, both directions,
+and `held` keeps the one job it is good at — choosing the sentence.
+
+### The due-date chips put Sunday in the week that had ended
+
+`MRB_SET_WORK_DUE_DATE` anchored on `(d.getDay()+6)%7` — the exact arithmetic
+MRB-330 replaced. Measured, not reasoned:
+
+| pressed on | chip "Thu" resolved to | release default |
+|---|---|---|
+| Fri 11 Sep | Thu 17 Sep | Mon 14 Sep |
+| Sat 12 Sep | Thu 17 Sep | Mon 14 Sep |
+| **Sun 13 Sep** | **Thu 17 Sep** ⟵ before | Mon 14 Sep |
+| **Mon 14 Sep** | **Thu 24 Sep** | Mon 21 Sep |
+
+A seven-day jump between two moments the week model calls the same teaching
+week — on the one evening of the week when homework actually gets set, and the
+exact weekday the MRB-329 audit was reported on. `MRB_SET_WORK_NEXT_MONDAY_YMD`
+had the mirror of it, and the two together were worse than either: on a Sunday
+the release default offered the very next morning while the due chips pointed a
+week further on. Work appearing Monday, due ten days later, from two defaults
+the teacher never touched.
+
+Both now anchor on the week Sunday OPENS. Sunday and Monday agree; the
+discontinuity falls exactly where MRB-330 puts the week roll; the release
+default always precedes the due date offered beside it. **Every other day of
+the week is byte-identical** — MRB-330's own property, that off a Sunday the
+changed branch is a no-op.
+
+## 16.6 · What the cold pass found that is NOT fixed here
+
+Four findings are real and are **left for Mide**, because each is a product or
+scope decision rather than a merge defect. They are written up so they are not
+rediscovered from scratch.
+
+1. **No teacher surface shows `release_at`.** `shared/teacher-data.js`'s
+   assignments select carries neither `release_at` nor `source`; `release_at`
+   is read in exactly one place in the whole frontend. So scheduled work sits
+   on the papers rail as an ordinary open paper with every child in "Not in
+   yet" — and MRB-330's Remind/Chase will happily write a notification per
+   child telling them work is waiting, which `studentAssignment()` then 404s.
+   *Needs: a release-aware state on the teacher's paper, and a chase that
+   refuses unreleased work.*
+
+2. **A school hold more than ~12 days out makes the sheet unusable.** The due
+   control is Mon–Fri chips reaching only next week; the release control is a
+   free date input; the server requires `due_at > release_at`. A hold to
+   1 October with work set on 8 September cannot produce a valid due date at
+   all — every attempt is a 400, and no control on the sheet can move the date
+   far enough. It also blocks the forward-setting the backend explicitly built
+   for. *Needs: a due control that can reach past next week.*
+
+3. **`academic_week` is the RELEASE week while the default due date is the
+   following week**, so at the Sunday roll the bench stops showing work whose
+   deadline has not arrived. The row survives in the list below, so it is
+   degraded rather than lost. *Needs a ruling: file by release week or by due
+   week — it changes which week-scoped surface shows the work.*
+
+4. **A paper's displayed "Set" date is `due_at − 7`** even for teacher rows
+   that carry a real `created_at` — a fiction from when every assignment was
+   auto-composed a week before its deadline. Cosmetic, but it is a date a
+   teacher will quote.
+
+## 16.7 · Gate state
+
+Fifteen fast gates PASS, including `pool_ownership` and `week_truth` against
+this run's own backend worktree. Slow receipts recorded against the merged
+tree. `teacher_admin_real` is a **PASS**, not a skip, for the first time since
+28 August.
+
+Permanent, named skips: the three `3d_*` gates (`3d-studio/dist` is not built
+in this worktree), and `student_controls_drive` /
+`export_ks3_questions_verify`, which default to Mide's real account and cannot
+run here.
