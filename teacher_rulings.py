@@ -1793,7 +1793,31 @@ BINDINGS_AT = {
     # not come back.
 
     # ── the classes screen ──────────────────────────────────────────────
-    161: ("Autumn term · 2026–27", "termLabel"),
+    #
+    # ⊕ MRB-328 J3, 6 Sep 2026 — THESE TWO NOW ANSWER "WHOSE CLASSES?".
+    #
+    # 161 used to bind `termLabel` and 162 was not bound at all — it was
+    # Design's literal `<h1>My classes</h1>`, which is correct for every
+    # teacher reading their own list and WRONG THE MOMENT A SCHOOL ADMIN
+    # OPENS A COLLEAGUE'S from `teacher/admin.html`. A page headed "My
+    # classes" over twelve cards that are somebody else's is the same defect
+    # `klass.meta` already fixed one screen along, and it is fixed the same
+    # way: the marker LEADS the eyebrow, and the heading names the person.
+    #
+    # ⚠️ `termLabel` IS NOT DELETED and its derivation has not moved. It is
+    # still computed in the seam and still describes NOW; `classesEyebrow`
+    # is that string with up to two markers in front of it, joined the way
+    # `klass.meta` joins its own parts, and it is EQUAL to `termLabel` on
+    # every ordinary load. Two keys rather than one overloaded key, because
+    # `termWeekLabel` and `termSeason` are derived from the same season and
+    # must keep meaning the term and nothing else.
+    #
+    # ⚠️ NO NEW COPY IS INTRODUCED BY EITHER. "My classes" is Design's,
+    # "Acting as admin" is MRB-325 ruling 5's, "Not yet signed in" is the tag
+    # `teacher/admin.html` already prints on an unclaimed invitation. See
+    # `shared/teacher-live.js`'s `classesEyebrow` for the join.
+    161: ("Autumn term · 2026–27", "classesEyebrow"),
+    162: ("My classes", "classesTitle"),
     204: ("Viewing 2026–27", "viewingYearLabel"),
     # ⊕ MRB-287 E1 — the year toggle's own label. "Previous years" is right
     # only while the WORKING year is in view; opened FROM a past year the same
@@ -2205,10 +2229,23 @@ _SO_FOOT = ("display:flex;align-items:center;justify-content:space-between;"
             "gap:10px;margin-top:14px")
 _SO_COUNTER = ("font:400 13px/1.2 var(--st-mono);letter-spacing:.12em;"
                "text-transform:uppercase;color:var(--st-ghost)")
+# ⊕ MRB-330, 6 Sep 2026 — SPLIT IN TWO, GEOMETRY FROM SKIN. Node 654's
+# declarations are unchanged and all still here; the three that say "this can
+# be pressed" — `color`, `background`, `cursor` — moved out into `sendSkin`,
+# a computed string in LOGIC, because whether Send is live is now a question
+# about state (is there a template or some text?) and only the logic knows.
+# That is Design's own idiom, not a new one: her template chips already carry
+# `t.fg` / `t.bg` / `t.bc` the same way.
+#
+# ⚠️ THE DISABLED SKIN CHANGES NO BOX. `border:none` and the height, padding,
+# font and radius are shared by both states, so nothing in the footer moves
+# when Send goes live — a button that resizes as you type reads as a glitch.
+# The off state is `--st-note-bg` under `--st-muted`, which is 4.8:1 and both
+# tokens are already on this surface; it is legible, obviously inactive, and
+# not a fourth button register.
 _SO_SEND = ("flex:none;height:38px;padding:0 18px;"
-            "font:600 16.5px/1.2 var(--st-ui);color:var(--st-paper);"
-            "background:var(--st-accent-text);border:none;"
-            "border-radius:9px;cursor:pointer")                   # node 654
+            "font:600 16.5px/1.2 var(--st-ui);border:none;"
+            "border-radius:9px;")                                 # node 654
 
 _SO_FEED_COL = "display:flex;flex-direction:column;gap:12px"
 _SO_FEED_CARD = ("padding:16px 18px;background:var(--st-paper);"
@@ -3572,10 +3609,36 @@ INSERT_AT = {
                             {"t": "span", "a": {"style": _SO_COUNTER},
                              "c": [{"t": "#", "v": {"parts": [
                                  {"e": "noteCount"}]}}]},
+                            # ⊕ MRB-330, 6 Sep 2026 — NO DEAD PRESS.
+                            # (MRB-329 audit finding F25.) The composer opens
+                            # with the first template selected and pressing
+                            # that template UNPICKS it (the `t.pick` toggle in
+                            # LOGIC, ruled 3 Sep 2026), which leaves a
+                            # composer with no template, no text — and a Send
+                            # button still painted live. Pressing it wrote
+                            # nothing, and the row count measured 5 → 5.
+                            # ⚠️ A REAL `disabled` ATTRIBUTE, NOT A CLASS AND
+                            # NOT A COLOUR. `student-runtime.js` DROPS an
+                            # attribute whose value resolves to `false`
+                            # (build(): `val === false` → `continue`), so
+                            # `sendOff` puts the attribute on the element when
+                            # there is nothing to send and takes it off again
+                            # on the next redraw — and every keystroke and
+                            # every template press schedules one. The browser
+                            # then refuses the press, refuses focus and
+                            # dispatches no mouse events, which is also why
+                            # `hov` below cannot paint the accent hover on a
+                            # button that cannot be sent.
+                            # ⚠️ THE GUARD IN `sendShoutout` STAYS. It is the
+                            # belt: a press can still arrive from a keyboard
+                            # or a script, and the toast it says is the one
+                            # sentence that names both ways out.
                             {"t": "button",
                              "a": {"type": "button",
                                    "data-mrb-added": "shoutout-send",
-                                   "style": _SO_SEND},
+                                   "disabled": {"parts": [{"e": "sendOff"}]},
+                                   "style": {"parts": [_SO_SEND,
+                                                       {"e": "sendSkin"}]}},
                              "hov": "background:var(--st-accent-hover)",
                              "on": "sendShoutout",
                              "c": [{"t": "#", "v": "Send shoutout"}]},
@@ -6632,7 +6695,9 @@ LOGIC = (
      "      readOnlyLine: MRB_DATA('readOnlyLine'),\n"
      "      yearOptions: MRB_DATA('yearOptions').map((y) => ({\n"
      "        name: y.name,\n"
-     "        open: () => MRB_GO('classes', { year: y.id })\n"
+     "        open: () => MRB_GO('classes', { year: y.id,\n"
+     "          teacher: MRB_DATA('scopeTeacherParam'),\n"
+     "          pending: MRB_DATA('scopePendingParam') })\n"
      "      })),",
      "the five keys the year selector and the read-only rule need. "
      "`yearOptions` is mapped into Design's own row idiom — a `name` and an "
@@ -6640,7 +6705,17 @@ LOGIC = (
      "inserted list is a list of Design's rows rather than a new pattern. "
      "Switching year always returns to the GRID, which is the retired page's "
      "behaviour and the only destination that is certainly valid in the year "
-     "being opened."),
+     "being opened.\n"
+     "\n"
+     "⊕ MRB-328 J3, 6 Sep 2026 — AND IT CARRIES THE SUBJECT OF THE PAGE "
+     "WITH IT. Both parameters are EMPTY on every ordinary load and "
+     "`MRB_GO` drops an empty parameter, so the URL a teacher switching "
+     "year gets is byte-identical to the one this ruling has always "
+     "produced. They are non-empty only while a school admin is reading "
+     "SOMEBODY ELSE'S list, and without them that press would hand the "
+     "admin their OWN 2025-26 under the colleague's name still in the "
+     "heading — a page that is wrong and looks right, which is the one "
+     "outcome worth two extra keys."),
 
     # ⊕ Mide, 4 Sep 2026 — `showClassesLink`, the top bar's "My classes"
     # button (INSERT_AT[(10,13)]). ⚠️ WITHOUT THIS RETURN-OBJECT ENTRY THE
@@ -6848,6 +6923,29 @@ componentDidUpdate() {
      "screen changes any more. `weekIdxFor` is re-derived over weeks; the "
      "other three are v2 verbatim."),
 
+    # ══ ⊕ MRB-328 J3, 6 Sep 2026 · "1 CLASSES · 4 STUDENTS" ════════════
+    #
+    # A plural that has always been wrong and has only just become easy to
+    # meet. Design's sample teacher has twelve classes, so `CLASSES.length`
+    # was never 1 on any screen anybody looked at; a school admin opening a
+    # colleague's list from `teacher/admin.html` now lands on a one-class
+    # teacher routinely, and the first one photographed read "1 classes ·
+    # 4 students" under their name.
+    #
+    # ⚠️ FIXED IN THE SAME BREATH AS THE FEATURE THAT SURFACES IT, and
+    # nothing else about the line moves: same separator, same order, same
+    # two numbers, both still `this.CLASSES.length` and `totalStudents`.
+    # `student` is pluralised too — a class of one is a real class, and
+    # leaving half the line right is worse than leaving it alone.
+    ("      classLine: this.CLASSES.length + ' classes · ' + totalStudents "
+     "+ ' students',",
+     "      classLine: this.CLASSES.length\n"
+     "        + (this.CLASSES.length === 1 ? ' class · ' : ' classes · ')\n"
+     "        + totalStudents\n"
+     "        + (totalStudents === 1 ? ' student' : ' students'),",
+     "the classes screen's sub-heading. Design's own shape, with the two "
+     "plurals it never had to get right."),
+
     # ══ ⊕ 24 Aug 2026 · A FILTER THAT MATCHES NOTHING ═══════════════════
     #
     # The two keys `INSERT_AT[31]` renders. `s.ks` is the filter that is ON,
@@ -6855,6 +6953,15 @@ componentDidUpdate() {
     # the teacher has no classes: they have classes, they filtered them out,
     # and the genuinely-empty case never reaches this grid because
     # `teacher-live.js` throws `SAY.noClasses` before mount.
+    #
+    # ⊕ CORRECTED, MRB-328 J3, 6 Sep 2026 — THE LAST CLAUSE IS NO LONGER
+    # TRUE, AND THE `All` ARM IS NOW REACHABLE FOR REAL. `SAY.noClasses` is
+    # a sentence about the VIEWER'S timetable, so `run()`'s guard no longer
+    # fires when a school admin has asked for SOMEBODY ELSE'S list — a
+    # colleague with no classes this year draws this panel, reading "No
+    # classes", under that colleague's name. Which is what the arm should
+    # always have said and never previously got to. The `s.ks` arms are
+    # unchanged and the reasoning above them still holds.
     ("      shownLine: cards.length + ' shown',",
      "      shownLine: cards.length + ' shown',\n"
      "      noneShown: !cards.length,\n"
@@ -6970,6 +7077,57 @@ componentDidUpdate() {
      "      },",
      "the shoutout composer. Design's version toasts a confirmation of a "
      "write that does not happen."),
+
+    # ══ ⊕ MRB-330, 6 Sep 2026 · SEND IS OFF UNTIL THERE IS SOMETHING TO
+    #    SEND ═══════════════════════════════════════════════════════════
+    #
+    # ⛔ THE ONE STATE THE COMPOSER COULD REACH WITH NOTHING IN IT. The
+    # composer opens on the first template (`MRB_FIRST_TEMPLATE`) and pressing
+    # that template unpicks it — the toggle ruled on 3 Sep 2026, and the right
+    # ruling: a teacher writing their own words must be able to take the
+    # template off. What came with it is a composer holding no template and no
+    # text, in front of a Send button still painted in the accent as though it
+    # were live. MRB-329's audit pressed it: no row, no error, no toast a
+    # teacher would connect to the press, rows 5 → 5.
+    #
+    # ⚠️ `sendShoutout` ALREADY REFUSED THAT PRESS and said so — "Pick a
+    # template, or write a message" — so this is NOT a missing guard. It is
+    # that the guard speaks in a toast, at the top of the screen, about a
+    # button at the bottom of it, and the audit did not see one. Mide's ruling
+    # is that the button must not be pressable at all: the state is visible in
+    # the control rather than announced after the fact.
+    #
+    # ⚠️ TEMPLATE-OR-TEXT, AND NOT THE RECIPIENT. Sending with no student
+    # chosen already gets "Pick a student first", which is a sentence that
+    # tells a teacher what to do next about a control they can see; that press
+    # is not dead and it is not what was ruled on. Widening this to the
+    # recipient would also mean a composer that opens disabled, and the ruling
+    # is about a button that lies, not about an empty form.
+    #
+    # ⚠️ `s.boTpl` IS SHARED WITH THE BULK SHEET, deliberately — it is the same
+    # key the template chips write and the sheet reads (see `sendBulk`), so
+    # the composer cannot disagree with itself about which template is picked.
+    # The bulk sheet's own Send is NOT changed here: its refusals name a
+    # selection as well as a template, and it is a different control on a
+    # different surface.
+    ("      noteCount: (s.note || '').length + ' / 500',",
+     "      noteCount: (s.note || '').length + ' / 500',\n"
+     "      /* ⊕ MRB-330 — is there anything to send? Read by the Send\n"
+     "         button's `disabled` and by its skin; the two cannot disagree\n"
+     "         because they are the same question asked once each. */\n"
+     "      sendOff: !(s.boTpl || String(s.note || '').trim()),\n"
+     "      sendSkin: (s.boTpl || String(s.note || '').trim())\n"
+     "        ? 'color:var(--st-paper);background:var(--st-accent-text);"
+     "cursor:pointer'\n"
+     "        : 'color:var(--st-muted);background:var(--st-note-bg);"
+     "cursor:default',",
+     "the two keys the Send button needs to stop being a dead press: "
+     "`sendOff`, which the runtime turns into a real `disabled` attribute "
+     "(or into no attribute at all, because it drops an attribute that "
+     "resolves to `false`), and `sendSkin`, the three declarations lifted "
+     "out of node 654's style so the off state can be painted. Anchored on "
+     "`noteCount` because it is the composer's other computed key and the "
+     "only line in Design's logic that names this footer."),
 
     # ⛔ AND THE BULK SHEET, WHICH IS THE SAME LIE MULTIPLIED. Design's
     # `sendBulk` closes the sheet, empties the selection and toasts "Shoutout

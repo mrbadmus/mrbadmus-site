@@ -531,8 +531,15 @@ def shell(title, body, crumb_html="", discipline=None, description="",
 
     `footer_links` is a list of `(label, href)` for the footer's right-hand
     quick links. It is per-page rather than derived here because only the caller
-    knows which year and which discipline it is inside; `landing()` passes
-    nothing but "All of KS3", the browse screens add their own way back up.
+    knows which year and which discipline it is inside; the browse screens pass
+    their own way back up and every other page type passes nothing, which is
+    why the links div is conditional rather than always emitted.
+
+    ⊕ MRB-330, 6 Sep 2026 — this used to end "`landing()` passes nothing but
+    'All of KS3', the browse screens add their own way back up". `landing()`
+    never passed it: it was PREPENDED here, to every page in the key stage.
+    That prepend is gone (see the ruling at the `links` assignment), so on most
+    pages `footer_links` is now empty and the footer is title-only.
 
     `lesson_slug` stamps `data-ks3-lesson` on `<body>`. MRB-212's visit logger
     reads it to know which lesson a page IS. It cannot use the existing
@@ -585,12 +592,24 @@ def shell(title, body, crumb_html="", discipline=None, description="",
     crumb_rail = ('<span class="ks3-nav-divider" aria-hidden="true"></span>\n  %s'
                   % header_nav) if header_nav.strip() else ""
 
-    # "All of KS3" is on every KS3 page, always — the one link that is true
-    # from anywhere in the tree. Callers supply only the extra rungs they
-    # happen to sit under.
+    # ⊕ MRB-330, 6 Sep 2026 — the "All of KS3" footer link is CUT. It used to
+    # be prepended to every page in the key stage:
+    #     for label, href in (("All of KS3", "/ks3/index.html"),) + tuple(footer_links))
+    # reasoned as "the one link that is true from anywhere in the tree".
+    # It was true and it was redundant: `.ks3-brand` and the crumb trail both
+    # already carry the way back up, in the header, above the fold. The footer
+    # was spending its only row restating them. Callers now supply every footer
+    # link there is — which for most page types is none at all.
+    #
+    # ⚠ The links DIV is conditional, not just its contents. An always-emitted
+    # empty `<div class="ks3-footer-links">` is a zero-width flex item in a
+    # `justify-content: space-between` rail, which is invisible but is still a
+    # second child — and a future `gap` or separator rule would then paint one
+    # against nothing. A footer with no links has no links element.
     links = "".join(
         '<a href="%s">%s</a>' % (e(href), t(label))
-        for label, href in (("All of KS3", "/ks3/index.html"),) + tuple(footer_links))
+        for label, href in footer_links)
+    links_html = ('\n    <div class="ks3-footer-links">%s</div>' % links) if links else ""
 
     # The description is composed once and reused three times — `<meta
     # name="description">`, `og:description` and nothing else — so the social
@@ -618,6 +637,28 @@ def shell(title, body, crumb_html="", discipline=None, description="",
     # DOMContentLoaded, they just stop starving the CSS to do it.
     scripts = ('<script src="/shared/ks3.js" defer fetchpriority="low"></script>\n'
                if needs_js else "")
+
+    # ⊕ MRB-330, 6 Sep 2026 — the "KS3" header pill is CUT. The rail used to
+    # end with
+    #     <a class="ks3-pill" href="/ks3/index.html">KS3</a>
+    # a solid ink lozenge, top right, on every page in the key stage. It cost a
+    # flat 63px plus a 12px gap in a rail whose whole problem at phone widths is
+    # that there is no width, and it pointed at the key-stage index — which
+    # `.ks3-brand` and the first crumb both already reach. 75px to say a third
+    # time what the header says twice.
+    #
+    # ⚠️ `.ks3-nav-spacer` STAYS. It looks dead now — a `flex: 1` element with
+    # nothing after it — but it is not: `renderKs3()` in shared/class-entry.js
+    # injects a signed-in student's `.ks3-classlink` into this rail, and with
+    # the pill gone it takes the `else rail.appendChild(a)` branch and lands
+    # AFTER the spacer. The spacer is what still holds that link at the right
+    # edge. Delete it and the one element this rail still has on the right goes
+    # and sits against the crumbs.
+    #
+    # ⚠️ No change is needed in class-entry.js. It reads
+    # `rail.querySelector('.ks3-pill')` and branches on the result, so a missing
+    # pill was always a supported state; it degrades from insertBefore to
+    # appendChild and lands in the same place.
     return """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -636,7 +677,6 @@ def shell(title, body, crumb_html="", discipline=None, description="",
   <div class="ks3-nav-rail">%(brand)s
   %(crumbs)s
   <span class="ks3-nav-spacer"></span>
-  <a class="ks3-pill" href="/ks3/index.html">KS3</a>
   </div>
 </header>
 %(rail)s<main class="ks3-main%(mainclass)s">
@@ -644,8 +684,7 @@ def shell(title, body, crumb_html="", discipline=None, description="",
 </main>
 <footer class="ks3-footer">
   <div class="ks3-footer-rail">
-    <p class="ks3-footer-title">MrBadmusAI · Key Stage 3 Science</p>
-    <div class="ks3-footer-links">%(links)s</div>
+    <p class="ks3-footer-title">MrBadmusAI · Key Stage 3 Science</p>%(links)s
   </div>
 </footer>
 %(tail)s%(scripts)s<script src="/shared/class-entry.js" defer></script>
@@ -665,7 +704,7 @@ def shell(title, body, crumb_html="", discipline=None, description="",
         "crumbs": crumb_rail,
         "rail": rail_html,
         "mainclass": (" %s" % main_class) if main_class else "",
-        "links": links,
+        "links": links_html,
         "body": body,
         "preload": FONT_PRELOADS,
     }
@@ -5299,35 +5338,33 @@ def landing(units, browse):
     """
     crumb = crumbs([("KS3", None)])
 
-    total_lessons = sum(len(u["lessons"]) for u in units)
-    total_done = sum(u["authored_count"] for u in units)
-
-    # ── "Live right now" — one bar per subject ──
-    bars = []
-    for disc in DISCIPLINES:
-        du = [u for u in units if u["discipline"] == disc]
-        done = sum(u["authored_count"] for u in du)
-        total = sum(len(u["lessons"]) for u in du)
-        # A bar at zero keeps a 2% stub so the track still reads as a track
-        # rather than as an empty strip. The stub is shape, not a claim: the
-        # honest count sits in words directly above it ("0 of 58"), which is
-        # the R2 signal.
-        pct = max(2, int(round(done * 100.0 / total))) if total else 2
-        bars.append(
-            '<div class="ks3-live-row" data-discipline="%s">'
-            '<div class="ks3-live-label"><span>%s</span>'
-            '<span class="ks3-live-of">%d of %d</span></div>'
-            '<div class="ks3-live-track">'
-            '<span class="ks3-live-fill" style="width:%d%%"></span></div></div>'
-            % (e(disc), e(DISCIPLINE_TITLES[disc]), done, total, pct))
-
-    if total_done == 0:
-        live_line = "The first lessons are on their way."
-    else:
-        live_line = ("%s lesson%s %s finished. The rest are on their way."
-                     % (_count_word(total_done).capitalize(),
-                        "" if total_done == 1 else "s",
-                        "is" if total_done == 1 else "are"))
+    # ⊕ MRB-330, 6 Sep 2026 — the "Live right now" panel is CUT, and with it
+    # everything computed only to fill it. What stood here was `total_lessons`
+    # and `total_done` swept over every unit, a per-subject `bars` loop
+    # (`.ks3-live-row` / `-label` / `-of` / `-track` / `-fill`, with a 2% stub so
+    # a zero bar still read as a track), and a `live_line` that rendered as
+    # "One hundred and eighty-five lessons are finished. The rest are on their
+    # way."
+    #
+    # It was a build-progress readout on a student's front door — a fact about
+    # how much of the site exists, which is the team's business and not the
+    # reader's. The slot is deliberately left EMPTY rather than refilled: a
+    # daily science fact is coming, and a placeholder now would be a second
+    # thing to remove then.
+    #
+    # ⚠️ The counts were NOT shared. The subject cards below sweep their own
+    # `done`/`total` per discipline inside their own loop, and the year cards
+    # go through `_counts(_entries(...))`; neither reads these. Grepped before
+    # deleting — `total_done`, `total_lessons`, `bars` and `live_line` had no
+    # other reader in the file. `_count_word` keeps two (the year and unit
+    # cards), so its import stays.
+    #
+    # ⚠️ The per-subject "· N live" fragment on the subject cards
+    # (`.ks3-hub-live`) is a DIFFERENT thing and is NOT part of this cut.
+    #
+    # ⚠️ verify_ks3.py check 6b is unaffected: it asserts the browse layer AS A
+    # SET differs after a unit moves years, and the year cards on this page and
+    # every year/half-term index still derive from the sequence.
 
     # ── year cards ──
     years = []
@@ -5392,14 +5429,6 @@ def landing(units, browse):
     <div class="ks3-hub-actions">%(primary)s
     </div>
   </div>
-  <div class="ks3-live">
-    <div class="ks3-live-head">
-      <p class="ks3-eyebrow">Live right now</p>
-      <span class="ks3-live-count">%(done)d / %(total)d</span>
-    </div>
-    <p class="ks3-live-line">%(liveline)s</p>
-    <div class="ks3-live-bars">%(bars)s</div>
-  </div>
 </section>
 
 <section class="ks3-hub-sec">
@@ -5417,10 +5446,6 @@ def landing(units, browse):
 </section>""" % {
         "swash": HERO_SWASH,
         "primary": lesson_picker(units),
-        "done": total_done,
-        "total": total_lessons,
-        "liveline": t(live_line),
-        "bars": "".join(bars),
         "years": "".join(years),
         "subjects": "".join(secs),
     }

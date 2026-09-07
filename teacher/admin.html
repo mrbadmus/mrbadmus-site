@@ -215,6 +215,31 @@
     .tag.pending { background: var(--st-note-bg); color: var(--st-body); border-color: var(--st-note-border); }
     .tag.you     { background: var(--st-chip-tint); color: var(--st-accent-text); border-color: var(--st-chip-tint-border); }
 
+    /* ── Messages (⊕ MRB-330, 6 Sep 2026) ────────────────────────────────
+       No new visual language, because none is wanted: a message is a `.row`
+       like a teacher or a class, and it wears `.tag` / `.tag.pending` for
+       its markers exactly as those rows do. The ONE thing `.row` could not
+       already do is carry a paragraph — so a `flex-basis:100%` child, which
+       `.row`'s own `flex-wrap` drops onto its own line at every width
+       without a second row construction to keep in step with this one. */
+    .row .body {
+      flex-basis: 100%;
+      color: var(--st-ink);
+      font: 400 16.5px/1.5 var(--st-ui);
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+    }
+    /* The body a teacher replaced when they edited. Muted, so the live text
+       is the one the eye lands on, but present — the prior body is retained
+       by a database CHECK precisely so an audit can read it. */
+    .row .body.prior { color: var(--st-muted); }
+
+    /* The honest-degradation line sits ABOVE the list. `.hold-note`'s own
+       12px top margin is drawn for a note that FOLLOWS a control; a reader
+       has to be told what is missing from a list before they read it, not
+       after they have finished and drawn a conclusion. */
+    #messages-note { margin-top: 0; margin-bottom: 14px; }
+
     /* ── Assignments go-live hold (MRB-324) ──────────────────────────────
        Built to be wound on the spot during a live dry run: the state is a
        sentence, the input is pre-filled with the date that is actually set,
@@ -378,8 +403,15 @@
     </div>
     <div class="hold-msg" id="hold-msg"></div>
     <div class="hold-note">
+      <!-- ⊕ MRB-330, 6 Sep 2026 — this promise is now KEPT, and it quotes what
+           a child actually reads. Until today a held school's student saw a card
+           badged OPEN with a live "Open the assignment" button (MRB-329 F3), so
+           this paragraph described a behaviour that did not exist; the sentence
+           it quoted was the one for a week with no work set, not for a school
+           that has not opened. The ruled held-school line is the one below, and
+           `benchHeldLine` in shared/student-live.js is where it is written. -->
       Before this date no new weekly assignments are created, and students see
-      “No work has been set for this week yet.” Work that has already been set
+      “This week’s work isn’t live yet.” Work that has already been set
       stays visible either way. You can change this date as often as you like.
     </div>
   </div>
@@ -394,6 +426,38 @@
     <h2>Classes</h2>
     <div id="classes"></div>
     <div class="empty" id="classes-empty" style="display:none;">No classes set up for this year yet.</div>
+  </div>
+
+  <!-- ⊕ MRB-330, 6 Sep 2026 — the safeguarding log.
+
+       Every message a teacher has sent a student, both kinds, one list,
+       newest first. It is the surface migration 20260903200007 was written
+       FOR — that file's own comment says "That read IS admin.html's
+       'Messages' audit surface, and Mide calls it the safeguarding control"
+       — and until now the read existed and nothing exercised it.
+
+       It is LAST on the page on purpose. The four sections above answer
+       "what is my school", which is what an admin opens this page for; this
+       one answers "what is being said to children", which is what they come
+       back to it for. It is also the only section whose reads are capped,
+       so it is the only one that can be behind, and being last means it
+       fills in under sections that have already settled.
+
+       ⚠️ NO SECTION NAV IS ADDED WITH IT. This page has never had jump
+       links — its sections are cards in a column — and the topbar has no
+       Admin tab by construction ("never link a page to itself", in
+       teacher-admin-nav.js). Messages is reachable from the Admin page by
+       being ON it; the entry to the Admin page is the injected nav link
+       that already exists on every other staff screen. -->
+  <div class="card">
+    <h2>Messages</h2>
+    <div class="hold-note" id="messages-note" style="display:none;"></div>
+    <!-- The same `…` this page's own `#school-line` starts as. There is no
+         spinner anywhere on this page and this section does not introduce
+         one. -->
+    <div id="messages"><div class="empty">…</div></div>
+    <div class="empty" id="messages-empty" style="display:none;">No messages have been sent to students in this school yet.</div>
+    <div class="hold-note" id="messages-cap" style="display:none;"></div>
   </div>
 </div>
 
@@ -419,10 +483,18 @@
      `teacher-profile.html` and `import.html` can defer it because neither
      calls into `teacher-data.js`; this page does, on its very first read.
      Caught by admin_view_drive.py, which is the reason the drive exists. -->
-<script src="/shared/class-entry.js?v=d47329ae"></script>
-<script src="/shared/teacher-guard.js?v=2efdc820"></script>
-<script src="/shared/teacher-data.js?v=d5fbc542"></script>
+<script src="/shared/class-entry.js?v=dc8db888"></script>
+<script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
+<script src="/shared/teacher-data.js?v=e5af7ed6"></script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
+<!-- ⊕ MRB-330 — the six locked shoutout template keys resolve to a
+     sentence in exactly ONE place, and this is it. A template-only
+     shoutout carries a NULL `message`, so without this module the
+     Messages list would render a blank row for it — an invisible
+     message in a safeguarding log. Presentation-only, no session, no
+     read: it costs the page one small cached file and nothing else.
+     Order-free (it defines a global and calls nothing). -->
+<script src="/shared/shoutouts.js?v=23393220"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════════════════
    MRB-303 Job 2 — Admin v1: the READ-ONLY school view.
@@ -521,6 +593,38 @@ function classHref(id) {
   var q = ['class=' + encodeURIComponent(id)];
   if (envQ()) { q.push(envQ()); }
   return '/teacher/class-detail.html?' + q.join('&');
+}
+
+/* ⊕ MRB-328 J3 — a member of staff's own classes, as the My-classes grid.
+
+   ⚑ IT IS THE GENERATED GRID, NOT A SECOND ONE. `/teacher/classes.html` is
+   Design's card list, built by `build_teacher_port.py`; handed `?teacher=`
+   or `?pending=` it draws THAT person's classes instead of the viewer's and
+   heads the page with their name. Every card then opens class-detail through
+   the acting-as-admin path that already exists (`mergeForeignClass`), with
+   the "Acting as admin" marker on the class header. Nothing about the card,
+   the counts or the filters is re-implemented here.
+
+   Two parameters rather than one because there are two kinds of row on this
+   page and they live in different tables. A CLAIMED teacher is a `profiles`
+   row with `class_teachers` links; an unclaimed invitation is a
+   `pending_staff` row whose classes are in `pending_staff_classes` and
+   become links on first sign-in. Passing a `pending_staff` id as `teacher`
+   would silently find nothing.
+
+   ⚠️ THE LINK IS NOT THE PERMISSION. `shared/teacher-live.js` honours either
+   parameter only for an admin-scoped viewer, and RLS refuses the rows to
+   anyone else regardless — a plain teacher who types one of these URLs gets
+   her own classes. Both halves are written up there. */
+function teacherHref(profileId) {
+  var q = ['teacher=' + encodeURIComponent(profileId)];
+  if (envQ()) { q.push(envQ()); }
+  return '/teacher/classes.html?' + q.join('&');
+}
+function pendingHref(pendingStaffId) {
+  var q = ['pending=' + encodeURIComponent(pendingStaffId)];
+  if (envQ()) { q.push(envQ()); }
+  return '/teacher/classes.html?' + q.join('&');
 }
 
 /* Reveal the page with a sentence instead of data. Used for the scope
@@ -713,6 +817,322 @@ function wireHold(value) {
   });
 }
 
+/* ── Messages: the safeguarding log (⊕ MRB-330, 6 Sep 2026) ────────────────
+
+   Every teacher→student message in the school, both tables merged into one
+   list, newest first. `class_shoutouts` and `submission_feedback` are
+   separate tables for reasons written up in
+   20260902221216_create_submission_feedback.sql — a shoutout binds to a
+   class+member, feedback binds to a submission — and they are read
+   separately here for the same reason. Nothing joins them in the database
+   and nothing should try to.
+
+   ⚠️ THE SCHOOL FILTER IS THE POLICY, NOT A `.eq()` WRITTEN HERE, AND THAT
+   IS NOT LAZINESS. Neither table carries a `school_id` column and neither
+   can honestly be scoped from a browser: a shoutout hangs off `class_id`,
+   which may belong to an academic year that has already finished — so the
+   working-year class list two sections above is the WRONG filter and would
+   silently drop last year's messages out of an audit — and feedback hangs
+   off a submission two joins away. `20260903200007_mrb306_messages_audit_
+   widening` is what makes these rows school-wide for a `school_admin`, and
+   the same policy is what refuses another school's. One mechanism, both
+   halves.
+
+   ⚠️ IT IS NOT N+1, AND THE SHAPE IS THE POINT. Two capped table reads run
+   in PARALLEL; the people and the classes behind up to 200 messages are
+   then resolved in TWO MORE batched `.in()` reads over the DISTINCT ids,
+   chunked by this page's own `inChunks`. Four waves for two hundred
+   messages, not two hundred round trips. `/teacher/classes.html` already
+   costs 11.2s and this page is the fastest staff screen at 2.7s; a read per
+   row would have spent that whole lead in one section.
+
+   ⚠️ AND IT STARTS BEFORE IT IS NEEDED. `render()` creates the promise on
+   its first line and awaits it on its last, so the two table reads overlap
+   the classes, roster and people reads instead of being added after them.
+
+   ⚠️ IT NEVER REJECTS. A failure comes back as a VALUE. A throw here would
+   be caught by `render()`'s own catch, which replaces the whole page with
+   "we couldn't load the school" — a sentence that would be a lie about the
+   four sections that loaded perfectly well. */
+
+/* One number, named once, and shown to the reader. An audit list that
+   silently stops at some depth is worse than a short one, so the cap is
+   printed under the list rather than left for someone to discover. */
+var MESSAGES_CAP = 200;
+
+/* A template-only shoutout has a NULL `message` — the sentence lives in
+   `shared/shoutouts.js`, which owns the six locked keys and is the module
+   the compose form and the student's own feed already resolve them through.
+   Rendering the blank would put an EMPTY row in a safeguarding log, which is
+   the one list where a message must never be invisible.
+
+   The emoji is deliberately dropped and the label kept: this is a list to be
+   read down, not a card to be celebrated. */
+function templateSentence(key) {
+  if (!key) { return ''; }
+  var S = window.MrBadmusShoutouts;
+  var tpl = (S && S.templateByKey) ? S.templateByKey(key) : null;
+  /* A key this module does not know means the DB CHECK has been relaxed and
+     `shoutouts.js` has not followed. Print the key rather than nothing — a
+     reader can act on an odd-looking word, never on a blank. */
+  return tpl ? tpl.label : key;
+}
+
+async function fetchMessages() {
+  var out = { shoutouts: [], feedback: [], shoutoutsFailed: false, feedbackFailed: false };
+  try {
+    var pair = await Promise.all([
+      sb.from('class_shoutouts')
+        .select('id, class_id, author_id, recipient_id, template_key, message, created_at, deleted_at')
+        /* NO `.is('deleted_at', null)`. The policy exposes soft-deleted rows
+           to a school admin ON PURPOSE — a teacher can post a message,
+           delete it, and the admin still sees it while the recipient sees
+           nothing. That is the retention half of the guardrail meeting the
+           audit half, and filtering it out here would quietly undo the most
+           sensitive single thing that migration did. */
+        .order('created_at', { ascending: false })
+        .limit(MESSAGES_CAP),
+      sb.from('submission_feedback')
+        /* The student and the class come back WITH the row rather than in
+           two more waves: `submission_id` → `assignment_submissions` →
+           `assignments.class_id` is a nested embed, one request, and PostgREST
+           applies each table's own RLS to its own level. A viewer who may not
+           read the submission gets a NULL embed rather than a refusal, which
+           is handled below as an unresolved student rather than as an error. */
+        .select('id, teacher_id, body, prior_body, created_at, edited_at, deleted_at, ' +
+                'submission:submission_id ( student_id, assignment:assignment_id ( class_id ) )')
+        .order('created_at', { ascending: false })
+        .limit(MESSAGES_CAP),
+    ]);
+    /* Recorded per table, not as one flag. The two reads answer to two
+       different policies and one can fail while the other is perfectly
+       healthy; collapsing them would report a whole section broken because
+       half of it was. */
+    if (pair[0].error) { out.shoutoutsFailed = true; console.error('[admin] shoutouts', pair[0].error); }
+    else { out.shoutouts = pair[0].data || []; }
+    if (pair[1].error) { out.feedbackFailed = true; console.error('[admin] feedback', pair[1].error); }
+    else { out.feedback = pair[1].data || []; }
+  } catch (e) {
+    console.error('[admin] messages', e);
+    out.shoutoutsFailed = true;
+    out.feedbackFailed = true;
+  }
+  return out;
+}
+
+/* Two row shapes flattened to one, so the sort and the renderer below each
+   have a single thing to reason about. `at` is the ISO string PostgREST
+   returns, compared lexically — `timestamptz` renders as ISO-8601 in UTC, so
+   lexical order IS chronological order and there is no parse to get wrong.
+   Same reasoning as teacher-admin-nav.js's scope comparison. */
+function messageItems(raw) {
+  var items = [];
+
+  (raw.shoutouts || []).forEach(function (s) {
+    items.push({
+      kind: 'Shoutout',
+      at: s.created_at,
+      authorId: s.author_id,
+      studentId: s.recipient_id,
+      classId: s.class_id,
+      deleted: !!s.deleted_at,
+      edited: false,
+      /* A shoutout may carry a message, a template, or both — its CHECK
+         requires at least one. Both are shown when both exist: the template
+         is what the teacher picked and the message is what they typed, and
+         an audit wants the two, not a preference between them. */
+      /* ⊕ MRB-330 — the template's sentence and the typed message, joined,
+         but NEVER the same sentence twice. Since F23 a template send persists
+         the template's own words into `message` so that a child's card is not
+         blank; here that made a template-only shoutout read "Smashed a tough
+         topic — Smashed a tough topic". Compared rather than assumed: a teacher
+         who picked a template AND typed something still gets both halves, which
+         is the case the join exists for. */
+      body: (function () {
+        var t = templateSentence(s.template_key);
+        var m = s.message || '';
+        return (m && m !== t) ? [t, m].filter(Boolean).join(' — ') : (t || m);
+      })(),
+      prior: null,
+    });
+  });
+
+  (raw.feedback || []).forEach(function (f) {
+    var sub = f.submission || null;
+    var asg = (sub && sub.assignment) ? sub.assignment : null;
+    items.push({
+      kind: 'Feedback',
+      at: f.created_at,
+      authorId: f.teacher_id,
+      studentId: sub ? sub.student_id : null,
+      classId: asg ? asg.class_id : null,
+      deleted: !!f.deleted_at,
+      edited: !!f.edited_at,
+      body: f.body || '',
+      prior: f.prior_body || null,
+    });
+  });
+
+  items.sort(function (a, b) { return String(b.at).localeCompare(String(a.at)); });
+  /* Each read was capped at 200, so the merge holds up to 400 and the newest
+     200 of THAT is the true newest 200 overall — taking the newest N of two
+     lists each already the newest N of their table cannot miss a row. */
+  return items.slice(0, MESSAGES_CAP);
+}
+
+/* Paint. Takes what `render()` has already read rather than reading it
+   again: the working year's classes and the staff names are on the page
+   already, and asking for them twice would be a second answer to "what is
+   this class called". */
+async function paintMessages(pending, ctx, scopesBy, classes, nameById, nowIso) {
+  var listEl = document.getElementById('messages');
+  var noteEl = document.getElementById('messages-note');
+  var emptyEl = document.getElementById('messages-empty');
+  var capEl = document.getElementById('messages-cap');
+
+  function note(text) {
+    noteEl.textContent = text;
+    noteEl.style.display = 'block';
+  }
+
+  var raw;
+  try { raw = await pending; }
+  catch (e) { raw = { shoutouts: [], feedback: [], shoutoutsFailed: true, feedbackFailed: true }; }
+
+  /* ⚠️ THE ASYMMETRY IS REAL AND MUST BE SAID OUT LOUD.
+     `20260903200007` gives `slt` school-wide read on FEEDBACK and
+     deliberately NOT on shoutouts — its own comment: "in one session a
+     deputy reads the comment on a child's score and ZERO messages". So an
+     SLT viewer's shoutouts read is not refused, it is NARROWED, to the
+     classes they happen to teach or belong to. A narrowed list is
+     indistinguishable from a complete one, and a deputy who read this
+     section and concluded "no shoutouts have been sent" would have been
+     misled by a page that knew better. Hence the sentence.
+
+     The predicate mirrors `auth_user_has_scope('school_admin')` exactly, via
+     THIS page's own `accessLabels` (one definition of a live grant) plus the
+     `profiles.role = 'admin'` dual-read the same function carries. The
+     viewer's own `staff_scopes` rows are always readable — `staff_scopes_self_read`
+     is a self-read needing no scope — so this answer holds even for a viewer
+     the school-wide scopes read returned nothing for. */
+  var viewerIsSchoolAdmin =
+    accessLabels(scopesBy[uid], nowIso).indexOf('School admin') !== -1 ||
+    ctx.profile.role === 'admin';
+
+  if (raw.shoutoutsFailed && raw.feedbackFailed) {
+    /* The same plain voice as the page-level failure, and the same care not
+       to be mistaken for "you have no access" — that would send an admin to
+       ask for a permission they already hold. */
+    listEl.innerHTML = '<div class="empty">We couldn’t load messages right now. ' +
+      'Please refresh the page in a moment.</div>';
+    return;
+  }
+  if (raw.shoutoutsFailed) {
+    note('Shoutouts couldn’t be loaded just now, so this list has written ' +
+         'feedback only. Please refresh the page in a moment.');
+  } else if (raw.feedbackFailed) {
+    note('Written feedback couldn’t be loaded just now, so this list has ' +
+         'shoutouts only. Please refresh the page in a moment.');
+  } else if (!viewerIsSchoolAdmin) {
+    note('Shoutouts for the whole school are shown to school admins only, ' +
+         'so the shoutouts below are the ones from your own classes rather ' +
+         'than every one in the school. Written feedback is school-wide.');
+  }
+
+  var items = messageItems(raw);
+
+  if (!items.length) {
+    listEl.innerHTML = '';
+    emptyEl.style.display = 'block';
+    return;
+  }
+
+  // ── the two batched resolutions ────────────────────────────────────────
+  var classNameById = {};
+  classes.forEach(function (c) { classNameById[c.id] = c.name; });
+
+  var wantPeople = {}, wantClasses = {};
+  items.forEach(function (m) {
+    if (m.authorId && !nameById[m.authorId]) { wantPeople[m.authorId] = 1; }
+    if (m.studentId && !nameById[m.studentId]) { wantPeople[m.studentId] = 1; }
+    /* A shoutout can name a class from a FINISHED year, which is exactly why
+       the list is not filtered by the working year — so its name has to be
+       fetched rather than assumed missing. */
+    if (m.classId && !classNameById[m.classId]) { wantClasses[m.classId] = 1; }
+  });
+  var peopleIds = Object.keys(wantPeople);
+  var wantedClassIds = Object.keys(wantClasses);
+
+  /* Two waves, run together, each chunked. This is the whole of the name
+     resolution for up to 200 messages — there is no per-row read anywhere
+     in this function, and adding one would be the defect the header comment
+     is about. */
+  var resolved = await Promise.all([
+    peopleIds.length ? inChunks(peopleIds, async function (chunk) {
+      var r = await sb.from('profiles')
+        .select('id, first_name, last_name, display_name')
+        .in('id', chunk);
+      /* ⚠️ A REFUSAL HERE IS NOT A FAILURE OF THE SECTION. Students' profiles
+         are read school-wide through `profiles_admin_read_school`, which
+         still tests `auth_user_role() = 'admin'` — the profiles.role column —
+         and NOT the scope helper the Messages policies use. So a viewer who
+         is school_admin by a `staff_scopes` row alone can read the MESSAGE
+         and not the NAME of the child it is about. That gap is pre-existing
+         and shared with the Teachers card above (which reads school-wide
+         profiles the same way); it is not this section's to close, and
+         closing it is a migration. The row degrades to "A student" below. */
+      if (r.error) { console.error('[admin] message names', r.error); return []; }
+      return r.data || [];
+    }) : [],
+    wantedClassIds.length ? inChunks(wantedClassIds, async function (chunk) {
+      var r = await sb.from('classes').select('id, name').in('id', chunk);
+      if (r.error) { console.error('[admin] message classes', r.error); return []; }
+      return r.data || [];
+    }) : [],
+  ]);
+
+  /* Merged into the page's OWN name map, not a second one — `fullName` is
+     already the single answer to "what do we call this person" here. */
+  (resolved[0] || []).forEach(function (p) { nameById[p.id] = fullName(p); });
+  (resolved[1] || []).forEach(function (c) { classNameById[c.id] = c.name; });
+
+  // ── the rows ───────────────────────────────────────────────────────────
+  var rows = items.map(function (m) {
+    /* The page's existing vocabulary for a person it cannot name — the
+       Classes card already says "Another teacher" rather than printing an
+       id. An identifier in front of a safeguarding reader is noise they
+       cannot act on. */
+    var student = (m.studentId && nameById[m.studentId]) || 'A student';
+    var author = (m.authorId && nameById[m.authorId]) || 'Another teacher';
+    var cls = (m.classId && classNameById[m.classId]) || '';
+
+    var bits = ['<span class="name">' + escapeHtml(student) + '</span>'];
+    bits.push('<span class="tag">' + escapeHtml(m.kind) + '</span>');
+    /* `.tag.pending` is this page's existing marker for "this row is not the
+       ordinary case" — it already carries "Not yet signed in". A deleted
+       message is still in the log, and reads as one; the tag is what says it
+       is gone from the child's view. */
+    if (m.deleted) { bits.push('<span class="tag pending">Deleted</span>'); }
+    if (m.edited) { bits.push('<span class="tag pending">Edited</span>'); }
+
+    var meta = 'from ' + author + (cls ? ' · ' + cls : '');
+    bits.push('<span class="meta">' + escapeHtml(meta) + '</span>');
+
+    return '<div class="row">' + bits.join(' ') +
+      '<span class="right"><span class="meta">' + escapeHtml(dateLabel(m.at)) + '</span></span>' +
+      '<span class="body">' + escapeHtml(m.body) + '</span>' +
+      /* The body the teacher replaced. Kept by a database CHECK so that an
+         edit cannot quietly rewrite what was said to a child; showing it is
+         the only thing that makes that retention worth having. */
+      (m.prior ? '<span class="body prior">' + escapeHtml(m.prior) + '</span>' : '') +
+      '</div>';
+  });
+
+  listEl.innerHTML = rows.join('');
+  capEl.textContent = 'This list shows the ' + MESSAGES_CAP + ' most recent messages.';
+  capEl.style.display = 'block';
+}
+
 async function render(ctx) {
   var TD = window.MrBadmusTeacherData;
   var schoolId = ctx.profile.school_id;
@@ -727,6 +1147,16 @@ async function render(ctx) {
            'list its teachers and classes.');
     return;
   }
+
+  /* ⊕ MRB-330 — started HERE and awaited on the last line of this function,
+     so the two Messages reads run alongside every read below instead of
+     after them. `fetchMessages` never rejects (see its header), so this bare
+     promise cannot become an unhandled rejection while it waits.
+
+     BELOW the no-school guard, not above it: that branch shows a sentence
+     and returns, and firing two reads for a page that will render no list is
+     two requests spent on nothing. */
+  var messagesPending = fetchMessages();
 
   // ── the year, and the school's name ────────────────────────────────────
   var schoolRes, yearIdx;
@@ -895,7 +1325,12 @@ async function render(ctx) {
     if (!labels.length && p.role === 'admin') { labels.push('School admin'); }
 
     var bits = [];
-    bits.push('<span class="name">' + escapeHtml(fullName(p)) + '</span>');
+    /* ⊕ MRB-328 J3 — the name IS the control, so the row grew no button and
+       no "View classes" label. `a.classlink` is the treatment the class names
+       in the section below already use, so a link on this page looks like a
+       link on this page. */
+    bits.push('<a class="name classlink" href="' + escapeHtml(teacherHref(p.id)) +
+              '">' + escapeHtml(fullName(p)) + '</a>');
     if (p.id === uid) { bits.push('<span class="tag you">You</span>'); }
     labels.forEach(function (l) { bits.push('<span class="tag">' + escapeHtml(l) + '</span>'); });
     if (claimedOn[p.id]) {
@@ -921,7 +1356,12 @@ async function render(ctx) {
        identity — the claim matches on email only, never on a name. */
     var nm = ((p.first_name || '') + ' ' + (p.last_name || '')).trim() || p.email;
     rows.push('<div class="row">' +
-      '<span class="name muted">' + escapeHtml(nm) + '</span> ' +
+      /* ⊕ MRB-328 J3 — an unclaimed invitation opens the same grid, scoped
+         by `pending_staff_classes`. `muted` stays: this row is still the
+         quieter one, and the classes behind it are assignments waiting on a
+         claim rather than links anybody holds. The page it opens says so. */
+      '<a class="name muted classlink" href="' + escapeHtml(pendingHref(p.id)) +
+      '">' + escapeHtml(nm) + '</a> ' +
       '<span class="tag pending">Not yet signed in</span> ' +
       '<span class="meta">' + escapeHtml(p.email || '') + '</span>' +
       '</div>');
@@ -983,6 +1423,24 @@ async function render(ctx) {
 
   document.getElementById('main').style.display = 'block';
   document.body.style.display = 'block';
+
+  /* ⊕ MRB-330 — AFTER the page is revealed, and awaited so a failure inside
+     it is still reported rather than swallowed. Everything above is already
+     on screen by the time this resolves, so the cap'd Messages read cannot
+     hold the four sections an admin opened the page for.
+
+     ⚠️ Its own try/catch, NOT `render()`'s. `render()`'s catch replaces the
+     whole page with "we couldn't load the school", which would be false
+     about four sections that loaded. A broken Messages section says so in
+     its own card and leaves the rest of the page standing. */
+  try {
+    await paintMessages(messagesPending, ctx, scopesBy, classes, nameById, nowIso);
+  } catch (e) {
+    console.error('[admin] messages', e);
+    document.getElementById('messages').innerHTML =
+      '<div class="empty">We couldn\u2019t load messages right now. ' +
+      'Please refresh the page in a moment.</div>';
+  }
 }
 
 MrBadmusTeacherGuard.requireTeacherRole({

@@ -505,6 +505,35 @@
            inferring from a screenshot that a binding rendered nothing. */
         host.setAttribute("data-mrb-renders", String(api.renders));
         host.setAttribute("data-mrb-misses", String(ctx.miss.length));
+
+        /* ⊕ MRB-330, 6 Sep 2026 — AFTER-DRAW HOOKS: the things that must
+           SURVIVE the rebuild.
+
+           `draw` empties the host and builds a fresh tree, so anything appended
+           to the page from outside the template lives exactly until the next
+           state change. The teacher's reminder banner was appended into `main`
+           straight after mount and was measured being removed 12 MILLISECONDS
+           later by the following render pass (MRB-329 F24) — built correctly,
+           worded correctly, and gone before a child could see it. A teacher
+           pressing "Remind all" changed nothing anybody could read.
+
+           The same argument the MRB-287 note above makes about form fields
+           applies here: the rebuild is deliberate and cheap, and what it costs
+           is anything the template does not own. Fields are carried over; this
+           is how everything else is. A hook is re-run after EVERY draw, so its
+           content is state rather than a one-off insert, and it is the hook's
+           own job to be idempotent — it is drawing into a host that has just
+           been emptied, so in practice it simply draws again.
+
+           A throwing hook must never take the page down with it: a child's work
+           is on this screen. */
+        var hooks = window.__MRB_AFTER_DRAW__;
+        if (hooks && hooks.length) {
+          for (var h = 0; h < hooks.length; h++) {
+            try { hooks[h](host); }
+            catch (hookErr) { console.error("[student-runtime] after-draw hook", hookErr); }
+          }
+        }
       }
     };
 

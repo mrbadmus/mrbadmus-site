@@ -5899,6 +5899,23 @@ def build_site(output_dir="mrbadmus_site"):
         else:
             print(f"  ⚠️  {_auth_file} not found — skipping")
 
+    # ── Cloudflare Pages' `_headers` ──
+    # MRB-328 J4(b). It has to be copied from the repo root for the same reason
+    # the pages above do: the wipe at the top of this function clears the output
+    # root, so anything written there by another generator, or left over from a
+    # previous run, is gone. It is not HTML and does not belong in the list
+    # above, whose loop is about pages.
+    #
+    # If this copy ever stops happening the site does not break — it silently
+    # reverts to Pages' four-hour default on /shared/*, which is exactly the
+    # cost this file exists to remove, and nothing would look wrong.
+    _hdr_src = "_headers"
+    if _os.path.exists(_hdr_src):
+        _shutil.copy2(_hdr_src, f"{output_dir}/_headers")
+        print("  ✅ _headers (Cloudflare cache policy)")
+    else:
+        print("  ⚠️  _headers not found — /shared/ falls back to the 4h default")
+
     # ── Auto-copy any non-patched file in shared/ ──
     # Glob-based instead of hardcoded list so future additions to shared/
     # don't require generator edits. styles.css and mrbadmus.v2.js are

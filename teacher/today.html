@@ -718,9 +718,9 @@
      load-order rule (MRB-267). `teacher-data.js` delegates
      `workingAcademicYear` to `class-entry.js` and throws a named error if it
      is not already on the page, and this page's very first read needs it. -->
-<script src="/shared/class-entry.js?v=d47329ae"></script>
-<script src="/shared/teacher-guard.js?v=2efdc820"></script>
-<script src="/shared/teacher-data.js?v=d5fbc542"></script>
+<script src="/shared/class-entry.js?v=dc8db888"></script>
+<script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
+<script src="/shared/teacher-data.js?v=e5af7ed6"></script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <!-- ⊕ MRB-323 — the name picker. Defines `window.MrBadmusPicker` and does
      nothing until a lesson row's picker button is pressed. It makes no
@@ -766,6 +766,60 @@ function notice(title, bodyHtml) {
   el('notice-body').innerHTML = bodyHtml;
   el('notice').style.display = 'block';
   document.body.style.display = 'block';
+}
+
+/* ⊕ MRB-328 J4(a) — ONE TIMING ROW FOR THIS PAGE, AT THE MOMENT IT IS REALLY
+   READY. And on this page that moment takes finding.
+
+   ⚠️ IT IS NOT `DOMContentLoaded`, AND IT IS NOT THE BODY EITHER. The
+   stylesheet holds `body { display: none }` and `onAllowed` reveals the body
+   as its FIRST act — before `loadTimetable()` has been called, let alone come
+   back. A beacon on either would report a hundred-odd milliseconds for a
+   screen the teacher is still watching load, which is a measurement that
+   makes the page look good and tells us nothing. `teacher_perf_budget.py`
+   already learned this the hard way and says so in its docstring: the signal
+   is `body` AND `#main` displayed AND `#lessons` actually filled.
+
+   So this is called at each of the THREE places `#main` is revealed — the
+   no-timetable prompt, the nothing-timetabled empty state, and the real
+   lesson list — because all three are a teacher looking at a finished page,
+   and a page that finishes by telling you there is nothing on it has still
+   made you wait for the answer.
+
+   It is NOT called from `notice()`. A refusal is not a load time; counting it
+   would let a broken page report the fastest number on the estate, which is
+   the same trap `teacher_perf_budget` refuses a `data-mrb-state="unavailable"`
+   for.
+
+   ⚠️ THE CLOCK IS READ ON ENTRY, before `rum.js` is even requested. The
+   script is fetched asynchronously so telemetry can never sit in front of a
+   teacher's paint, and by the time it has loaded `performance.now()` has
+   moved on by the length of its own download — which would be billed to the
+   teacher. Idempotent, because three call sites and a `return` between them
+   is exactly the shape that fires twice one day. */
+var _rumFired = false;
+function rumReady() {
+  if (_rumFired) { return; }
+  _rumFired = true;
+  try {
+    var at = Math.round(performance.now());
+    var s = document.createElement('script');
+    // ⚠️ DOUBLE QUOTES, and that is load-bearing. generate_site_v5.py's
+    // cache-bust pass matches `/shared/<name>"` — anchored on a trailing
+    // DOUBLE quote — so this string is rewritten to carry `?v=<hash>` at
+    // build time. In single quotes it would ship unstamped, and `_headers`
+    // serves /shared/* as `immutable, max-age=31536000`: unstamped under
+    // immutable is a file pinned in a browser for a year that no deploy can
+    // reach. The build also VERIFIES this — an unstamped `/shared/…"` in a
+    // published page fails the build rather than shipping.
+    s.src = "/shared/rum.js?v=215c6794";
+    s.async = true;
+    s.onload = function () {
+      try { window.MrBadmusRUM.report('teacher-today', 'teacher', at); }
+      catch (e) {}
+    };
+    document.head.appendChild(s);
+  } catch (e) { /* silent, always: a page must not break over a measurement */ }
 }
 
 function esc(s) {
@@ -1095,6 +1149,16 @@ MrBadmusTeacherGuard.requireTeacherRole({
         return null;
       });
 
+    /* ⊕ MRB-328 J4(b) — fired BESIDE the timetable, awaited far below where
+       the lesson rows are drawn. See the note at that await for why the two
+       were never dependent. The rejection is claimed here so an in-flight
+       failure cannot raise `unhandledrejection` in the window before it is
+       read; the `try` at the await still sees the real error and still falls
+       back to labelling by period number. */
+    const periodTimesPromise = (TD.loadPeriodTimes ? TD.loadPeriodTimes()
+                                                   : Promise.resolve({}));
+    periodTimesPromise.catch(function () {});
+
     let entries;
     try {
       entries = await TD.loadTimetable();
@@ -1107,10 +1171,19 @@ MrBadmusTeacherGuard.requireTeacherRole({
 
     /* MRB-325 ruling 2 — real clock times, once a school has them. Never
        fatal: a school with no rows yet (school_period_times empty) simply
-       keeps labelling by period number, exactly as before. */
+       keeps labelling by period number, exactly as before.
+
+       ⊕ MRB-328 J4(b) — AWAITED HERE, ASKED FOR EARLIER. `loadPeriodTimes()`
+       takes no arguments at all: it reads `school_period_times` for the
+       caller's own school and has never had any dependency on the timetable.
+       It nonetheless sat in a strict queue BEHIND `loadTimetable()` — a whole
+       extra round trip, in front of the lesson rows, on the page a teacher
+       opens first every morning. It is now fired beside the timetable read
+       and collected here, so the two arrive together. The failure contract is
+       unchanged: a school with no rows keeps labelling by period number. */
     let periodTimes = {};
     try {
-      periodTimes = await TD.loadPeriodTimes();
+      periodTimes = await periodTimesPromise;
     } catch (e) {
       console.warn('[today] loadPeriodTimes unavailable — labelling by period number', e);
     }
@@ -1155,6 +1228,7 @@ MrBadmusTeacherGuard.requireTeacherRole({
         '<a class="btn" href="/teacher/timetable.html">Set up my timetable</a>' +
         '</div>';
       el('main').style.display = 'block';
+      rumReady();
       return;
     }
 
@@ -1196,6 +1270,7 @@ MrBadmusTeacherGuard.requireTeacherRole({
       summary(['Nothing timetabled.']);
       el('lessons').innerHTML = '<div class="empty">Nothing timetabled.</div>';
       el('main').style.display = 'block';
+      rumReady();
       return;
     }
 
@@ -1252,6 +1327,7 @@ MrBadmusTeacherGuard.requireTeacherRole({
              '</div>';
     }).join('');
     el('main').style.display = 'block';
+    rumReady();
 
     /* ⊕ MRB-325 ruling 1 — the actions and the panels are revealed HERE, past
        the no-timetable and nothing-timetabled returns, so neither of those

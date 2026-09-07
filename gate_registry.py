@@ -453,6 +453,30 @@ GATES = [
              "and that hash/rng have exactly two callers each — the "
              "declaration and Design's confetti."),
 
+    dict(name="week_truth",
+         cmd=["python3", "verify_week_truth.py"],
+         speed="fast",
+         needs_env="MRB_BACKEND",
+         why="⊕ MRB-330 — ONE WEEK, agreed on by every surface that names it. "
+             "The product had TWO definitions of \"this week\" and neither knew "
+             "about the other: the backend composed and served work by one, the "
+             "teacher's week bar and the digest drew the other. On Sunday 6 "
+             "September 2026 they disagreed by exactly one week, and the "
+             "disagreement reached a child as \"LATE · 3 DAYS LATE\" on the first "
+             "thing she had ever opened (MRB-329 F1/F2/F6). Fixing the "
+             "arithmetic in four places does not stop that happening again — "
+             "the four implementations are still four. This holds them against "
+             "each other across a whole academic year, for every weekday a year "
+             "could open on, and fails if they EVER disagree. "
+             "⚠️ needs_env=MRB_BACKEND ON PURPOSE, and the reason is visible in "
+             "the gate beside it: `pool_ownership` hardcodes the sibling backend "
+             "checkout, and is red right now because that checkout is sitting on "
+             "another session's feature branch rather than on the code that is "
+             "deployed. A gate that silently compares against whatever branch "
+             "somebody left checked out proves nothing about what a child is "
+             "served, so this one refuses to guess and must be TOLD which "
+             "backend is authoritative."),
+
     dict(name="leaderboard_seam",
          cmd=["python3", "leaderboard_seam.py"],
          speed="fast",
@@ -870,7 +894,28 @@ GATES = [
              "fixture per capability — import, picker, seating, marking, "
              "feedback, shoutouts, reminders, digest — because 'the page "
              "opened' was all it ever proved, which is how 'opens but cannot "
-             "act' shipped."),
+             "act' shipped. "
+             "⊕ MRB-328 J3 — AND SECTION D, WHICH IS THE OTHER DIRECTION: "
+             "not one class an admin may open, but ONE TEACHER'S WHOLE LIST. "
+             "`teacher/admin.html`'s staff rows now open "
+             "`/teacher/classes.html?teacher=<profile>` or `?pending=<row>`, "
+             "and the generated My-classes grid draws THAT person's classes "
+             "under their name. Four shapes, and the fourth is the control "
+             "the other three are worthless without: a CLAIMED teacher with "
+             "classes (his and not the admin's own); an UNCLAIMED invitation, "
+             "whose classes exist only in `pending_staff_classes` and have no "
+             "`class_teachers` row at all, rendered through the SAME card; a "
+             "teacher with NONE, which must draw Design's own empty panel and "
+             "NEVER `SAY.noClasses` — a sentence about the VIEWER'S timetable "
+             "said over somebody else's list; and a PLAIN TEACHER typing "
+             "either parameter, who is shown HER OWN classes, unheaded and "
+             "unmarked, with not one of his anywhere on the page. "
+             "⚠️ THE PARAMETER IS HONOURED BY A CLIENT-SIDE ADMIN CHECK AND "
+             "THAT IS NOT THE BOUNDARY: RLS is "
+             "(`class_teachers_self_read` returns her zero of his link rows, "
+             "`pending_staff_admin_all` is school_admin only), so the failure "
+             "direction is an empty list rather than a colleague's. This gate "
+             "proves the first half; the second is SQL's."),
 
     # ── ⊕ MRB-326, 6 Sep 2026 · the half a stub cannot reach ────────────
 
@@ -937,6 +982,98 @@ GATES = [
              "run; `--keep` leaves them and lists the ids. It touches the "
              "TEST project only — production is never addressed by this "
              "file."),
+
+    # ── ⊕ MRB-328 J2, 6 Sep 2026 · the import page's class picker ───────
+
+    dict(name="mrb328_import_picker",
+         cmd=["python3", "mrb328_import_picker_drive.py", "--section", "b"],
+         speed="slow",
+         needs="teacher/import.html",
+         why="MRB-328 J2 — WHO MAY IMPORT INTO WHICH CLASS, and whether a "
+             "chosen class is really the destination. `teacher/import.html` "
+             "now carries a class picker where it used to carry a readout, "
+             "and that is a WIDENING (a school_admin may import into any "
+             "class in the school) wrapped around a LIMIT (a plain teacher "
+             "may not, including when a `?class=` in the URL asks her to). "
+             "⚠️ A GATE THAT DROVE ONLY THE WIDENING WOULD GO GREEN AGAINST "
+             "A PAGE THAT LET EVERYBODY INTO EVERYTHING, so the same page, "
+             "the same fixture and the SAME FOREIGN CLASS ID are driven "
+             "twice, ONE `staff_scopes` ROW APART, and demanded to answer "
+             "differently — refused for the teacher, preselected for the "
+             "admin. Her own id in the same parameter DOES select, so the "
+             "refusal is a refusal and not an inert page. ⚠️ AND THE CHECK "
+             "THAT MATTERS IS ON THE PAYLOAD, not on anything rendered: the "
+             "fixture CSV's class column names a DIFFERENT class, and the "
+             "body handed to `roster-import` must still carry only the "
+             "chosen one — a page can show the right class in its header and "
+             "send the file's class a screen later. The fixture also holds "
+             "the same class name in TWO academic years (MRB-307's trap, "
+             "kept) and three `10b/Sc…` classes whose lexical order is not "
+             "their natural order. Stubbed and offline, so it runs on every "
+             "push; the stub models row visibility and does not prove RLS, "
+             "which is what the row below is for."),
+
+    dict(name="mrb328_import_picker_real",
+         cmd=["python3", "mrb328_import_picker_drive.py", "--section", "a"],
+         speed="slow",
+         needs="teacher/import.html",
+         needs_env="MRB_THROWAWAY_PASSWORD",
+         why="MRB-328 J2, THE HALF THE STUB CANNOT REACH. The same MRB-326 "
+             "throwaway school_admin — who teaches nothing, so every class in "
+             "the school is a colleague's — signs in for real, opens a "
+             "colleague's class through the same `?class=` link "
+             "`teacher/class-detail.html` emits, and completes an actual "
+             "import against TEST. ⚠️ THE SUCCESS PANEL IS A CLAIM AND A ROW "
+             "IS A FACT: the two synthetic pupils are read back out of "
+             "`class_members` WITH THE ADMIN'S OWN JWT, asserted to be in "
+             "that exact class id and in no other, and the class is asserted "
+             "to have been FOUND rather than duplicated — an import that "
+             "resolved the right name in the wrong year would have made a "
+             "second class of the same name and every membership check would "
+             "still have passed, against a class nobody teaches. It WRITES "
+             "rows on TEST and deletes them in the same run (`--keep` leaves "
+             "them and lists the ids), which is why it is env-switched: a "
+             "push must not depend on the network and must certainly never "
+             "write to a shared project by accident."),
+
+    # ── ⊕ MRB-328 J4(b), 6 Sep 2026 · the hover that has no output ──────
+
+    dict(name="mrb328_card_prefetch",
+         cmd=["python3", "mrb328_card_prefetch_drive.py"],
+         speed="slow",
+         needs="shared/teacher-live.js",
+         needs_env="MRB_TEST_TEACHER_PASSWORD",
+         why="MRB-328 J4(b) — HOVERING A CLASS CARD STARTS FETCHING ITS PAGE, "
+             "and every way that can go wrong is SILENT. `class-detail.html` "
+             "is a 165 KB document served `max-age=0`, so a press begins by "
+             "downloading it; `armCardPrefetch` spends the time a pointer "
+             "rests on the card by putting a `<link rel=prefetch>` in the "
+             "head. It draws nothing, changes no text, and is wrapped in "
+             "try/catch so a speculative fetch can never take a dashboard "
+             "down — which means a version that fires for NOBODY and a "
+             "version that fires for EVERYBODY look identical from outside, "
+             "and both are wrong. ⚠️ THAT IS NOT HYPOTHETICAL: the first "
+             "scoped-list guard read `if (data.scope)`, a key `load()` has "
+             "never published (`base()` sets it on its own cache object; the "
+             "payload carries `scopeTeacherParam`/`scopePendingParam`), so "
+             "the refusal was a no-op that READ like a refusal, and an admin "
+             "opening a colleague's list would have had every one of that "
+             "colleague's class pages prefetched with nothing to say so. No "
+             "other gate on this estate looks at the head of a signed-in "
+             "classes page. Five checks: nothing before a hover; exactly ONE "
+             "link afterwards whose href matches `MRB_GO`'s construction byte "
+             "for byte (a prefetch of `?class=X` against a click to "
+             "`?class=X&env=test` costs a teacher 165 KB for nothing); "
+             "idempotence across 40 crossings of the card's descendants; the "
+             "zero-student fork honoured, because a card with no roster opens "
+             "IMPORT and not the class (a standing ruling); and the scoped "
+             "list, which takes three checks because `?teacher=` in the URL "
+             "is NOT the same thing as a scoped page — a plain teacher's is "
+             "REFUSED and she correctly does prefetch her own list, so the "
+             "gate pins the payload's key NAMES as well, and the honoured "
+             "half runs as the MRB-326 throwaway admin behind "
+             "$MRB_THROWAWAY_PASSWORD. Reads only; no row on TEST is "
+             "written."),
 ]
 
 

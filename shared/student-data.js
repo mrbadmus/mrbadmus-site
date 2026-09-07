@@ -215,9 +215,16 @@ window.MrBadmusStudentData = (function () {
     const isFallback = (assignmentDayOfWeek === null || assignmentDayOfWeek === undefined);
     const anchor_day = isFallback ? 1 : assignmentDayOfWeek;
     const now = new Date();
-    const today = now.getDay();
+    /* ⊕ MRB-330, 6 Sep 2026 — SUNDAY BELONGS TO THE WEEK THAT IS COMING.
+       Kept byte-for-byte in step with teacher-data.js's copy of this algorithm
+       and with `teachingWeek()` in teacher-live.js; the backend's
+       `currentTeachingWeek()` is the same rule again. If these drift, the
+       teacher's "this week" and the child's stop naming the same assignment,
+       which is the defect this ruling exists to close (MRB-329 F6). */
+    const today = (now.getDay() === 0) ? 1 : now.getDay();
     const daysSinceAnchor = (today - anchor_day + 7) % 7;
     const start = new Date(now);
+    if (now.getDay() === 0) { start.setDate(start.getDate() + 1); }
     start.setDate(start.getDate() - daysSinceAnchor);
     start.setHours(0, 0, 0, 0);
     const end = new Date(start);
@@ -313,6 +320,40 @@ window.MrBadmusStudentData = (function () {
       throw new Error('[student-data] Supabase client unavailable — getClient() returned null');
     }
 
+    /* ⊕ MRB-328 J4(b) — THE TWO READS THAT NEED NOTHING, STARTED FIRST.
+
+       This function was SIX waves deep and it is arm 0 of `buildClass`'s
+       opening `Promise.all`, which makes its waves the student class page's
+       waves. Two of the six ask for something that depends on nothing this
+       function computes: the academic years (`yearRows(sb)` takes only the
+       client) and the viewer's own profile row (`viewingStudentId` is a
+       PARAMETER — it is known before the first line of the body runs). Both
+       sat behind two other round trips purely because of the order the code
+       was written in.
+
+       ⚠️ THE MEMBERSHIP GATE BELOW IS NOT MOVED, AND THAT IS DELIBERATE.
+       It is the cheapest thing to reorder here and the one thing that must
+       not be: it is an AUTHORISATION ordering, not a data one. It stays
+       first, it stays awaited, and every read that could disclose anything
+       about the class still happens after it. What has been hoisted are two
+       reads about the VIEWER'S OWN school and the VIEWER'S OWN profile —
+       rows they may read whatever the answer to the gate turns out to be —
+       so nothing here can leak on a refusal.
+
+       `catch` on the handle, not on the await: if the gate refuses, these
+       two are abandoned unread, and an abandoned rejection would otherwise
+       raise `unhandledrejection` in the browser. The awaits below still see
+       the real result, exactly as they did. */
+    const yearRowsPromise = yearRows(sb);
+    yearRowsPromise.catch(function () {});
+
+    const viewerProfilePromise = sb
+      .from('profiles')
+      .select('id, first_name, last_name, avatar_url, bench_theme')
+      .eq('id', viewingStudentId)
+      .single()
+      .then(function (r) { return r; }, function (e) { return { data: null, error: e }; });
+
     // 1. Membership gate — RLS-scoped to viewer's own rows; if they're
     // not a member, the query returns zero rows. We treat that as
     // not_authorised (cleanly differentiated from class_not_found below).
@@ -374,7 +415,9 @@ window.MrBadmusStudentData = (function () {
        A past class is UNAVAILABLE, not missing and not forbidden: the
        student was in it, and saying "you're not in this class" would be a
        lie. Its own code, so the page can say the true thing. */
-    const workingYear = workingAcademicYear(await yearRows(sb));
+    // ⊕ MRB-328 J4(b) — started at the top of this function; this is the
+    // await, not the request.
+    const workingYear = workingAcademicYear(await yearRowsPromise);
     // No readable years at all (a self-serve visitor with no school) — show
     // the class rather than hiding it, matching the listing's own fallback.
     if (workingYear && klass.academic_year_id &&
@@ -393,11 +436,9 @@ window.MrBadmusStudentData = (function () {
     // so it follows them from the school machine to their phone. NULL is a
     // real value and it means harbour: see the column's own comment in
     // `supabase/migrations/20260822000050_profiles_bench_theme.sql`.
-    const viewerProfileRes = await sb
-      .from('profiles')
-      .select('id, first_name, last_name, avatar_url, bench_theme')
-      .eq('id', viewingStudentId)
-      .single();
+    // ⊕ MRB-328 J4(b) — started at the top of this function; this is the
+    // await, not the request. The select is unchanged and lives up there.
+    const viewerProfileRes = await viewerProfilePromise;
     const viewer = viewerProfileRes.data || {
       id: viewingStudentId, first_name: null, last_name: null, avatar_url: null,
       // No profile row read at all is the same state as a profile that has
@@ -405,10 +446,22 @@ window.MrBadmusStudentData = (function () {
       bench_theme: null,
     };
 
-    // 4. Parallel: assignments + own submissions + RPC leaderboard.
+    /* 4. Parallel: assignments + own submissions + RPC leaderboard.
+
+       ⊕ MRB-328 J4(b) — …AND THE TEACHER LINKS, which are a FOURTH arm now
+       rather than a fourth WAVE. `loadClassTeacherLinks(sb, [klass.id])`
+       produces the subject pill and takes nothing but the class id, which has
+       been known since the class row came back several lines above. It used
+       to run on its own, after this `Promise.all` had already resolved — one
+       whole round trip, at the very end of the slowest function on the
+       student class page, for one coloured label.
+
+       Joining the existing wave rather than starting a fifth is the same
+       argument `student-live.js` makes where its own feedback read joined a
+       `Promise.all` "rather than adding a wave". */
     const week = computeWeekWindow(klass.assignment_day_of_week);
 
-    const [assignmentsRes, mySubsRes, leaderboardRes] = await Promise.all([
+    const [assignmentsRes, mySubsRes, leaderboardRes, teacherLinks] = await Promise.all([
       sb.from('assignments')
         .select('id, title, subject_id, due_at, deleted_at, ' +
                 'subject:subject_id ( name )')
@@ -420,6 +473,7 @@ window.MrBadmusStudentData = (function () {
         .eq('student_id', viewingStudentId)
         .is('deleted_at', null),
       sb.rpc('class_stars_leaderboard_for_member', { p_class_id: classId }),
+      loadClassTeacherLinks(sb, [klass.id]),
     ]);
 
     if (assignmentsRes.error) {
@@ -567,8 +621,10 @@ window.MrBadmusStudentData = (function () {
       leaderboard.eligible.some(function (e) { return e.student_id === viewingStudentId; })
     );
 
-    // ⊕ MRB-265 — the subject comes from the link table now, not the name.
-    const teacherLinks = await loadClassTeacherLinks(sb, [klass.id]);
+    /* ⊕ MRB-265 — the subject comes from the link table now, not the name.
+       ⊕ MRB-328 J4(b) — and it arrives on the `Promise.all` above rather than
+       in a round trip of its own. Same value, same derivation, one wave
+       earlier. */
     const pill = deriveStudentPill(klass, teacherLinks[klass.id]);
     const stripe_colour_var = deriveStripeColourVar(klass);
 

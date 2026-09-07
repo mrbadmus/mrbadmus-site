@@ -569,6 +569,19 @@
     return "";
   }
 
+  /* ⊕ MRB-330 — initials from ONE display name rather than a first/last pair.
+     `class_teachers_for_viewer` returns `display_name` as a single string, so
+     the pair-taking helper above cannot be reused. "Tunde Adeyemi" → TA; a
+     one-word name → its first two letters, exactly as `initials` does. */
+  function initialsOfName(name) {
+    var parts = String(name == null ? "" : name).trim().split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    if (parts.length === 1) { return parts[0].slice(0, 2).toUpperCase(); }
+    return "";
+  }
+
   /* '2 DAYS AGO', from the SERVER's clock against the row's own timestamp. */
   function agoText(iso, now) {
     if (!iso || !now) { return ""; }
@@ -1804,7 +1817,45 @@
 
          READ ONLY — this feature adds no save path to this page and must not
          disturb the per-answer queue or the keepalive. */
-      withDbDeadline(WARM_MS, sb.rpc("student_reminders_for_viewer", { p_class_id: klass.id }))
+      withDbDeadline(WARM_MS, sb.rpc("student_reminders_for_viewer", { p_class_id: klass.id })),
+      /* ⊕ MRB-328 J4(b) — THE SHOUT-OUT FEED, joined to this wave for exactly
+         the reason the reminders RPC above was joined to it, and stated in
+         the same words: it takes only `klass.id`, already an argument here,
+         so it has no dependency on the six above and costs no extra round
+         trip.
+
+         ⛔ WHAT IT WAS: the last `await` in a seven-hundred-line function, a
+         full round trip AFTER every other read on the page had resolved and
+         every derivation had run. It was the page's pure serial tail — the
+         student sat looking at nothing while one query fetched a list of
+         praise. Nothing between the opening wave and that await touched it.
+
+         Soft-failed HERE rather than at the read site, so the `catch` that
+         has always turned a failed feed into an empty one still does exactly
+         that: an arm of a `Promise.all` that rejects would take the whole
+         wave down, and this feed is one panel on a page whose subject is the
+         work. Empty, logged, and the rest of the class view renders. */
+      window.MrBadmusStudentData.loadStudentClassShoutouts(klass.id, { limit: 20 })
+        .catch(function (e) {
+          console.warn("[student-live] shoutouts unavailable", e);
+          return { shoutouts: [] };
+        }),
+      /* ⊕ MRB-330, 6 Sep 2026 — WHO ACTUALLY TEACHES ME (MRB-329 redundancy).
+         Design drew a chip in the hero for the teacher's name, with an avatar
+         beside it. This page has never filled either: `teacherName` was the
+         constant "Your teacher" and `teacherInitials` the empty string, marked
+         COULD NOT SOURCE because a student has no read policy on a teacher's
+         `profiles` row. That was true when it was written and has not been
+         since — `class_teachers_for_viewer` (migration 20260820001231) is the
+         SECURITY DEFINER RPC that exists for exactly this, and the assignment
+         page has been using it for weeks. The class page simply never asked.
+
+         So the verdict on the "YOUR TEACHER" chip is KEEP AND FILL rather than
+         cut: Design drew it to hold a name, and the name is readable. The empty
+         circle beside it went with it — it was empty only because nothing fed
+         it. Joined to this wave for the reason the two RPCs above give: it
+         takes only `klass.id` and costs no extra round trip. Never throws. */
+      D.loadClassTeacherNames(klass.id)
     ]);
     var detail = opening[0];
     var practice = opening[1];
@@ -1812,6 +1863,8 @@
     var aw = opening[3];
     var yrs = opening[4];
     var unreadNotes = opening[5];
+    var feedEarly = opening[6];
+    var classTeachers = opening[7] || [];
 
     /* Whether a piece of work is still open or has been missed is decided
        against the SERVER's clock and nothing else. Without one, this page does
@@ -2124,6 +2177,25 @@
        Same field, same card, one answer now. */
     var benchCard = null;
     cards.forEach(function (c) { if (c.id === currentId) { benchCard = c; } });
+    /* ⊕ MRB-330, 6 Sep 2026 — IS THE SCHOOL HELD? (MRB-329 F3)
+       `schools.assignments_open_from` lets a school say "no weekly work before
+       this date", and `/api/class/current-assignment` answers it plainly:
+       200 with `assignment: null` and `reason: 'assignments_not_open_yet'`.
+       Nothing on the student page read that reason, so a held school's child
+       was shown a card badged OPEN with four blank docket rows and a live
+       "Open the assignment" button that opened nothing — while the admin screen
+       that turns the dial promises, in as many words, that students see a
+       sentence saying no work is set. The promise was written; the reading of
+       it was not.
+
+       ⚠️ HELD IS NOT DONE, AND IT IS NOT AN EMPTY CLASS. Design's `fresh`
+       state would have been the obvious vehicle and is the wrong one: it also
+       empties the work list, the shoutouts and the leaderboard, which would
+       take last week's completed work off the page. Held changes THIS WEEK's
+       card and nothing else — history stays exactly where it is. */
+    var held = !!(current && !current.assignment &&
+                  current.reason === "assignments_not_open_yet");
+
     var benchDone = !!(benchCard && benchCard.is_submitted);
     var benchMarked = !!(benchDone && benchCard.score != null
                          && benchCard.max_score != null);
@@ -2599,8 +2671,12 @@
        view down with it. */
     var shoutouts = [];
     try {
-      var feed = await window.MrBadmusStudentData.loadStudentClassShoutouts(
-        klass.id, { limit: 20 });
+      /* ⊕ MRB-328 J4(b) — fetched in the OPENING wave at the top of this
+         function, not here. This is the shaping, which is all it ever was;
+         the round trip it used to make on this line is gone. The `try` is
+         kept because the mapping below can still throw on a malformed row,
+         and the empty-feed contract is unchanged either way. */
+      var feed = feedEarly || { shoutouts: [] };
       shoutouts = (feed.shoutouts || []).filter(function (s) {
         return s.recipient_id == null || s.recipient_id === user.id;
       }).map(function (s) {
@@ -2826,12 +2902,23 @@
         ? "Welcome back, " + first + " · your class"
         : "Welcome back · your class",
 
-      /* COULD NOT SOURCE — a student can read `class_teachers` but has no
-         read policy on a TEACHER's `profiles` row (MRB-265, half delivered),
-         so the teacher's name is genuinely unreadable from here. "Your
-         teacher" is true; a name would be invented. */
-      teacherName: "Your teacher",
-      teacherInitials: "",
+      /* ⊕ MRB-330, 6 Sep 2026 — NOW SOURCED. This used to read "COULD NOT
+         SOURCE — a student can read `class_teachers` but has no read policy on
+         a TEACHER's `profiles` row (MRB-265, half delivered), so the teacher's
+         name is genuinely unreadable from here." That was accurate when it was
+         written; `class_teachers_for_viewer` is the RPC that closed it, and the
+         chip has been rendering the words "Your teacher" over an empty avatar
+         on every student's page ever since, because nobody came back.
+
+         ⚠️ ONE TEACHER, OR NEITHER. The RPC returns names WITHOUT ids, so with
+         two teachers on a class there is no way to say which of them is the
+         one this chip means, and picking the first would put a name in front of
+         a child that may not be theirs. With anything other than exactly one,
+         the honest fallback is the words that were always there. */
+      teacherName: (classTeachers.length === 1 && classTeachers[0])
+        ? classTeachers[0] : "Your teacher",
+      teacherInitials: (classTeachers.length === 1 && classTeachers[0])
+        ? initialsOfName(classTeachers[0]) : "",
 
       /* COULD NOT SOURCE — `class_members_self_read` shows a student their own
          membership row and no one else's, so the size of the class cannot be
@@ -2978,6 +3065,12 @@
          finished piece of work has. Unmarked, it is full and says so in
          words: the student's part is complete even though the score is not
          in yet. */
+      /* ⊕ MRB-330 — the one sentence a held school gets. The backend already
+         says so unambiguously (`reason: 'assignments_not_open_yet'`); until now
+         nothing on this page read it, and the child was shown an assertion that
+         work existed instead. Ruled copy, and the only copy: no badge, no bench
+         line, no button, no checklist. */
+      benchHeldLine: held ? "This week's work isn't live yet" : "",
       benchDone: benchDone,
       /* ⊕ 23 Aug 2026 — PHASE 4. ONE FACT, ONE NEGATION. Design's amended
          bench is two branches and names them `benchOpen` and `benchDone`;
@@ -2986,7 +3079,15 @@
          `!benchDone` into the template is what makes it impossible for the two
          to disagree — there is no state in which both branches or neither is
          on the page. */
-      benchOpen: !benchDone,
+      /* ⊕ MRB-330, 6 Sep 2026 — AND NOT WHILE THE SCHOOL IS HELD (MRB-329 F3).
+         `benchOpen` gates the whole open-bench grid: the docket, its badge,
+         the three tick-boxes and the "Open the assignment" button. On a held
+         school none of those has anything true to say — there is no assignment
+         row, so the docket rendered four blank rows, the badge fell through to
+         its else-branch and said OPEN, and the button led nowhere while ticking
+         "Open it" as done. Closing this gate removes all of it at once, which
+         is why the fix is one condition rather than six empty strings. */
+      benchOpen: !benchDone && !held,
 
       /* ── the done bench, from the real submission ─────────────────────
          ⊕ 23 Aug 2026 — PHASE 4. Design's `bench-done` region, donor 101. The
@@ -3496,9 +3597,45 @@
      other), and it deliberately does NOT go through the answer sink: the
      offline queue and its keepalive belong to answers, and a dismissed banner
      must never sit in the same queue as a child's work. */
+  /* ⊕ MRB-330, 6 Sep 2026 — THE HELD SCHOOL'S ONE SENTENCE (MRB-329 F3).
+
+     With `benchOpen` closed the bench section renders its frame and its hatched
+     rule and nothing else, so the sentence is drawn into that frame here. Like
+     the reminder banner below it this is new markup rather than a graft: there
+     is nothing of Design's to be faithful to, because Design never drew a held
+     school. It uses the page's own bench tokens, so it follows whichever bench
+     theme the student has chosen.
+
+     Registered as an after-draw hook for the reason F24 exists — anything put
+     into the mount point from outside the template lives until the next render
+     pass, and this one has to outlast every one of them. */
+  function drawHeld(data) {
+    if (!data || !data.benchHeldLine) { return; }
+    var frame = document.querySelector('[data-port-region="bench"]');
+    if (!frame || frame.querySelector("[data-mrb-held]")) { return; }
+
+    var p = document.createElement("p");
+    p.setAttribute("data-mrb-held", "1");
+    p.style.cssText = [
+      "margin:0", "padding:clamp(26px,3cqw,38px) clamp(18px,2.5cqw,36px)",
+      "color:var(--b-ink,#FBF3E6)",
+      "font:600 clamp(19px,2.4cqw,27px)/1.25 var(--st-display,inherit)",
+      "letter-spacing:-.02em"
+    ].join(";");
+    p.textContent = data.benchHeldLine;
+    frame.appendChild(p);
+  }
+
+  /* ⊕ MRB-330 — set when the child dismisses, and read on every redraw. */
+  var reminderDismissed = false;
+
   function drawReminder(sb, data) {
     var host = document.querySelector("main") || document.body;
-    if (!host || !data.reminderLine) { return; }
+    if (!host || !data.reminderLine || reminderDismissed) { return; }
+    /* Idempotent. The host is emptied before each redraw so normally there is
+       nothing to find, but a hook that ran twice against one tree must not
+       stack two banners. */
+    if (host.querySelector("[data-mrb-reminder]")) { return; }
 
     var bar = document.createElement("div");
     bar.setAttribute("data-mrb-reminder", "1");
@@ -3531,6 +3668,10 @@
       "min-height:40px", "padding:0 12px"
     ].join(";");
     x.addEventListener("click", function () {
+      /* ⊕ MRB-330 — dismissal is STATE, not a removed node. The banner is
+         redrawn after every render pass now, so taking the element away would
+         last only until the next one; the flag is what makes it stay gone. */
+      reminderDismissed = true;
       bar.remove();
       markRemindersRead(sb, data.reminderIds);
     });
@@ -3538,13 +3679,58 @@
 
     host.insertBefore(bar, host.firstChild);
 
-    /* Opening the work counts as reading the reminder, exactly as dismissing
-       does — the student has done the thing it asked them to do. */
-    var go = document.querySelector('a[href*="/student/assignment"]');
-    if (go) {
-      go.addEventListener("click", function () {
-        markRemindersRead(sb, data.reminderIds);
-      });
+    /* ⊖ REMOVED by MRB-330, 6 Sep 2026 — it had never once fired. It read:
+
+           var go = document.querySelector('a[href*="/student/assignment"]');
+           if (go) { go.addEventListener("click", …markRemindersRead…); }
+
+       and its comment — "opening the work counts as reading the reminder,
+       exactly as dismissing does" — was right about the rule and wrong about
+       the page. This page renders NO anchors at all: every control on it is a
+       `<button>`, the bench's primary one included, and it navigates by setting
+       `window.location.href` from `openAssignment`. Measured on the live page:
+       0 anchors, 0 selector hits, and `read_at` still null after a child opened
+       her work. A reminder could only ever be cleared by pressing Dismiss.
+
+       It is kept here as a comment because the shape is the lesson: a handler
+       keyed on markup that the port had already changed, failing silently, in a
+       file whose gates were all green. The replacement is deliberately NOT
+       another selector — see `markRemindersReadOnOpen` on the assignment page,
+       which asks the same question of the DATA and cannot go stale when the
+       markup moves again. */
+  }
+
+  /* ⊕ MRB-330, 6 Sep 2026 — OPENING THE WORK COUNTS AS READING THE REMINDER.
+
+     The rule is the one the removed class-page handler stated and never
+     managed to apply: a child who has done the thing the reminder asked for
+     should not still be being asked. What changed is where the question is
+     asked from. The old version watched for a click on a link that does not
+     exist on that page; this one runs on the assignment page itself, where
+     "she opened her work" is not an event to be caught but a fact already
+     established by the page being there at all. There is no selector in it, so
+     there is nothing for a future change of markup to break silently.
+
+     Fire and forget, AFTER the work is on screen. It is a courtesy write on a
+     page whose subject is a child's assignment: it must never delay the render
+     and must never be able to fail it, which is why nothing awaits it and why
+     `markRemindersRead` was already silent about its own failures. Worst case
+     the line simply appears once more on the class page — the same honest
+     outcome that function's own comment describes. */
+  function markRemindersReadOnOpen(sb, classId) {
+    if (!sb || !classId) { return; }
+    try {
+      Promise.resolve(sb.rpc("student_reminders_for_viewer", { p_class_id: classId }))
+        .then(function (r) {
+          var rows = (r && !r.error && r.data && r.data.reminders) || [];
+          var ids = rows.map(function (n) { return n.id; }).filter(Boolean);
+          if (ids.length) { markRemindersRead(sb, ids); }
+        })
+        .catch(function (err) {
+          console.warn("[student-live] mark-read on open unavailable", err);
+        });
+    } catch (err) {
+      console.warn("[student-live] mark-read on open unavailable", err);
     }
   }
 
@@ -3693,6 +3879,34 @@
 
           window.__MRB_MOUNT__();
 
+          /* ⊕ MRB-330 — she has opened her work, so the reminder that asked her
+             to has been read. After the mount, never awaited: see
+             `markRemindersReadOnOpen`. */
+          if (page === "assignment") { markRemindersReadOnOpen(sb, klass.id); }
+
+          /* ⊕ MRB-328 J4(a) — one timing row, and it cannot hurt the page.
+             The clock is read HERE, on the line after the mount, because that
+             is the moment the student stops waiting. rum.js is then fetched
+             asynchronously and handed that number: loading it in DEPS would
+             put telemetry in front of the paint, and measuring inside it would
+             bill the student for the beacon's own download.
+             Everything is inside try/catch and the failure path is silence —
+             a page must never break because a measurement did. */
+          try {
+            var _rumAt = Math.round(performance.now());
+            var _rumEl = document.createElement("script");
+            _rumEl.src = stamped("/shared/rum.js");
+            _rumEl.async = true;
+            _rumEl.onload = function () {
+              try {
+                window.MrBadmusRUM.report(
+                  page === "class" ? "student-class" : "student-assignment",
+                  "student", _rumAt);
+              } catch (e) {}
+            };
+            document.head.appendChild(_rumEl);
+          } catch (e) {}
+
           /* ⊕ MRB-306 WS-3 — the reminder line, drawn AFTER the mount.
              Design drew no student-side banner, so there is no donor subtree
              to GRAFT and nothing to be faithful to; this is new markup, and it
@@ -3705,7 +3919,28 @@
              none, so the fixture renders nothing extra and `student_behaviour`'s
              visible-text comparison against Design's own file is untouched —
              no RULED_DIVERGENCE needed, because there is no divergence. */
-          if (page === "class" && data && data.hasReminder) { drawReminder(sb, data); }
+          /* ⊕ MRB-330 — REGISTERED, NOT DRAWN ONCE (MRB-329 F24).
+             This used to be a bare `drawReminder(sb, data)` immediately after
+             `__MRB_MOUNT__()`. The banner was built into `main`, and the next
+             render pass — `draw()` in student-runtime.js, which empties the
+             mount point and rebuilds it — took it away 12ms later, every time.
+             The gate on this branch was firing and the sentence was already
+             written and correct; none of it reached the child, so a teacher
+             pressing "Remind all" changed nothing anybody could read.
+
+             As an after-draw hook it is redrawn by the runtime after every
+             rebuild: state rather than an insert, surviving any number of
+             them. */
+          if (page === "class" && data && data.hasReminder) {
+            window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
+            window.__MRB_AFTER_DRAW__.push(function () { drawReminder(sb, data); });
+            drawReminder(sb, data);
+          }
+          if (page === "class" && data && data.benchHeldLine) {
+            window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
+            window.__MRB_AFTER_DRAW__.push(function () { drawHeld(data); });
+            drawHeld(data);
+          }
         } catch (err) {
           console.error("[student-live]", err);
           if (err && err.mrbSay) { return say(err.mrbSay); }

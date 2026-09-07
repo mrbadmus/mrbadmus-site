@@ -244,10 +244,26 @@ window.MrBadmusTeacherData = (function () {
     const anchor_source = isFallback ? 'fallback' : 'explicit';
 
     const now = new Date();
-    const today = now.getDay();                       // 0..6, Sun..Sat (matches postgres dow)
+    /* ⊕ MRB-330, 6 Sep 2026 — SUNDAY BELONGS TO THE WEEK THAT IS COMING.
+       Ruled by Mide, and the same rule as `teachingWeek()` in teacher-live.js
+       and `currentTeachingWeek()` in the backend's assignment-compose.js. All
+       three have to agree: on the Sunday this was written, the backend served
+       week 2's work while this window still said week 1, so a teacher's "this
+       week's homework" card named a different assignment from the one the child
+       was looking at (MRB-329 F6).
+
+       Shifting `today` forward one day on a Sunday is the whole change. For the
+       Monday anchor — the fallback, and what every real class uses — the window
+       that results is exactly the teaching week. ⚠️ A class anchored on some
+       OTHER weekday still buckets on that weekday; the Sunday rule moves which
+       bucket a Sunday falls in, it does not move the boundary itself. */
+    const today = (now.getDay() === 0)
+      ? 1                                           // Sunday reads as the Monday ahead
+      : now.getDay();                               // 0..6, Sun..Sat (matches postgres dow)
     const daysSinceAnchor = (today - anchor_day + 7) % 7;
 
     const start = new Date(now);
+    if (now.getDay() === 0) { start.setDate(start.getDate() + 1); }
     start.setDate(start.getDate() - daysSinceAnchor);
     start.setHours(0, 0, 0, 0);
     const end = new Date(start);
@@ -694,15 +710,28 @@ window.MrBadmusTeacherData = (function () {
     // so a teacher who looked at 2025-26 on Friday lands on 2026-27 on
     // Monday. Persisting it would silently hand someone a historical
     // dashboard they believed was current.
-    let yearId = academicYearId || null;
-    if (!yearId) {
-      const y = await loadAcademicYears();
-      yearId = y.working ? y.working.id : null;
-    }
+    /* ⊕ MRB-328 J4(b) — THE TWO ANSWERS THE DRIVER QUERY NEEDS, ASKED
+       TOGETHER. They were strictly serial and neither has ever needed the
+       other: the year comes from `academic_years` (usually a cache hit, but a
+       real read when it is not) and the id comes from the persisted session.
+       The query below needs both and cares about neither's order.
+
+       `getSession()` is a localStorage read in the common case, so this is
+       not usually a round trip saved — it becomes one on the load where the
+       token has expired and the SDK refreshes it, which is exactly the load
+       that could least afford to pay for the year read afterwards. */
+    const yearNeeded = !academicYearId;
+    const [yearResolved, sessionData] = await Promise.all([
+      yearNeeded ? loadAcademicYears() : Promise.resolve(null),
+      sb.auth.getSession().then(function (r) { return r && r.data; },
+                               function () { return null; })
+    ]);
+
+    let yearId = academicYearId ||
+      (yearResolved && yearResolved.working ? yearResolved.working.id : null);
 
     // Fail closed: no session id means we cannot prove whose links these are,
     // and the honest answer is an error, never an unfiltered list.
-    const { data: sessionData } = await sb.auth.getSession();
     const selfId = sessionData && sessionData.session && sessionData.session.user
       ? sessionData.session.user.id
       : null;
@@ -779,7 +808,100 @@ window.MrBadmusTeacherData = (function () {
     enriched.sort(function (a, b) {
       return a.name.localeCompare(b.name, undefined, { numeric: true });
     });
+    /* ⊕ MRB-328 J4(b) — kept, so the NEXT page does not have to wait for it.
+       Only the `{ metrics: false }` shape is stored: with metrics on, five of
+       these fields are live counts that move as students hand work in, and a
+       cache is the wrong place for a number a teacher is watching change. */
+    if (!wantMetrics) { rememberOwnClasses(selfId, yearId, enriched); }
     return enriched;
+  }
+
+  /* ── ⊕ MRB-328 J4(b) · THE OWN-CLASSES LIST, ACROSS PAGES ──────────────
+
+     Which classes this teacher holds in this year. It changes when somebody
+     is enrolled or a timetable is imported — a few times a term — and it is
+     re-read in full on every single navigation, because each teacher page is
+     a fresh document with a fresh JavaScript world.
+
+     ⚠️ WHAT THIS IS FOR IS NOT SKIPPING THE READ. `base()` still asks, every
+     load, and still renders the answer it gets back. What the cache buys is
+     the right to START THE NEXT READ EARLY: `loadClassMatrices` needs a list
+     of class ids and used to sit idle for one whole round trip waiting for
+     the driver query to produce them. With a remembered list it can go out
+     at the same instant, and the two waves become one. If the fresh list
+     turns out to differ, the fresh list wins and the difference is fetched —
+     see `base()`.
+
+     So a stale entry here can cost an extra read. It cannot put a stale class
+     on a teacher's screen, which is why it is allowed to be short-lived
+     rather than having to be right.
+
+     ⚠️ THE KEY CARRIES THE YEAR. `loadTeacherClasses` is year-scoped
+     (MRB-261) and a teacher who opens 2025-26 must not be handed 2026-27's
+     ids under the same key — that would speculatively fetch last year's
+     matrices and, worse, look like it had worked. */
+  const OWN_CLASSES_PREFIX = 'mrb-teacher-classes:v1:';
+  /* Two minutes, the guard's TTL and for the same reason: it spans a burst of
+     navigation between lessons and expires long before a roster change could
+     be worth an extra read. */
+  const OWN_CLASSES_TTL_MS = 2 * 60 * 1000;
+
+  function ownClassesKey(selfId, yearId) {
+    const ce = window.MRBClassEntry;
+    if (!ce || !ce.cacheKey) { return null; }
+    let base;
+    try { base = ce.cacheKey(OWN_CLASSES_PREFIX); } catch (e) { return null; }
+    if (!base) { return null; }
+    /* `cacheKey` has already put the environment and the VIEWER'S OWN id in
+       there. `selfId` is re-appended rather than trusted to match, because
+       the two are read from the same stored session by two different files
+       and a mismatch means the session moved mid-load — in which case the
+       right behaviour is a miss, not a hit on the other person's key. */
+    return base + ':' + selfId + ':' + (yearId || 'working');
+  }
+
+  function rememberOwnClasses(selfId, yearId, rows) {
+    const ce = window.MRBClassEntry;
+    const key = ownClassesKey(selfId, yearId);
+    if (!key || !ce.cacheSet) { return; }
+    // Ids and nothing else. The rows carry class names, tiers and pathways;
+    // none of that is needed to start a matrices read, and a cache holds
+    // exactly what it is for.
+    try {
+      ce.cacheSet(key, (rows || []).map(function (r) { return r.id; }));
+    } catch (e) {}
+  }
+
+  /* The remembered ids for a (viewer, year), or null. Null means "I do not
+     know" — never "no classes" — so a caller falls back to waiting for the
+     driver query rather than rendering an empty dashboard.
+
+     ⚠️ IT TAKES THE VIEWER'S ID AS AN ARGUMENT AND WILL NOT GUESS ONE. A
+     helper that resolved "whose classes" for itself is the shape MRB-293's
+     leak had; this one cannot be called without the caller saying whose. */
+  function cachedOwnClassIds(selfId, yearId) {
+    const ce = window.MRBClassEntry;
+    if (!selfId || !ce || !ce.cacheGet) { return null; }
+    const key = ownClassesKey(selfId, yearId);
+    if (!key) { return null; }
+    try {
+      const hit = ce.cacheGet(key, OWN_CLASSES_TTL_MS);
+      if (!Array.isArray(hit) || !hit.length) { return null; }
+      return hit.filter(isUuid);
+    } catch (e) { return null; }
+  }
+
+  /* Forget them. Called by the one frontend path that changes who is in a
+     class (`roster-import`, from teacher/import.html) and by sign-out, via
+     `MRBClassEntry.dropCaches`. Drops the FAMILY — every year, every viewer
+     in this tab — because an import can create a class in a year the
+     importer is not looking at, and a key-by-key invalidation would have to
+     know which. */
+  function forgetOwnClasses() {
+    const ce = window.MRBClassEntry;
+    try {
+      if (ce && ce.dropPrefix) { ce.dropPrefix(OWN_CLASSES_PREFIX); }
+    } catch (e) {}
   }
 
   /**
@@ -1553,6 +1675,10 @@ window.MrBadmusTeacherData = (function () {
    * Caller validates UI-side that at least one of templateKey/message is
    * non-null; the DB CHECK is the belt.
    *
+   * ⊕ MRB-330, 6 Sep 2026 — a template send with no free text now stores the
+   * template's own label in `message` as well as the key, so the child's card
+   * has a sentence in it. See the block comment in the body.
+   *
    * Returns the inserted row (single object), with the same shape as a
    * loadClassShoutouts row (profile joins included), so the caller can
    * prepend it to the feed without a re-fetch if desired. We currently
@@ -1561,6 +1687,22 @@ window.MrBadmusTeacherData = (function () {
    *
    * Throws on driver/RLS error. Caller surfaces an inline error message.
    */
+  /* The words a template SAYS, read out of the locked six-key enum in
+     shared/shoutouts.js and never retyped here — that list mirrors
+     `class_shoutouts_template_key_chk`, and a second copy of it in this file
+     would be a seventh place for a label to drift.
+
+     ⚠️ AN EMPTY STRING WHEN THE MODULE IS NOT LOADED, NOT A THROW.
+     `teacher-live.js` loads shoutouts.js as the last of its DEPS, long before
+     a teacher can press Send, so in practice it is always there. If it is
+     not, the caller falls back to writing `message: null` — exactly what this
+     function did before MRB-330 — rather than failing a send over a label. */
+  function shoutoutTemplateLabel(key) {
+    const mod = window.MrBadmusShoutouts;
+    const tpl = (key && mod && mod.templateByKey) ? mod.templateByKey(key) : null;
+    return (tpl && tpl.label) ? tpl.label : '';
+  }
+
   async function insertClassShoutout(args) {
     const guard = window.MrBadmusTeacherGuard;
     const sb = guard && guard.getClient ? guard.getClient() : null;
@@ -1568,12 +1710,47 @@ window.MrBadmusTeacherData = (function () {
       throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
     }
 
+    /* ⊕ MRB-330, 6 Sep 2026 — A TEMPLATE CARRIES ITS OWN WORDS TO THE CHILD.
+       (MRB-329 audit finding F23, severity 1.)
+
+       A template shoutout stored `template_key` and NOTHING else, because the
+       six templates are `{ key, emoji, label }` and the label was never
+       persisted. The teacher's own feed renders the label from the key and so
+       looked correct; the student page renders `s.message` and only that, so
+       a child opened their class page and read their initials, their name,
+       "TODAY" — and no words at all. The most common shoutout there is (a
+       template, no free text) was the one that arrived blank.
+
+       ⚠️ THE TYPED MESSAGE ALWAYS WINS. A teacher who picks a template AND
+       writes their own sentence keeps their sentence; the label fills the
+       column only when nothing was typed. Overwriting a teacher's words with
+       a stock phrase about a child would be a worse defect than the one this
+       fixes.
+
+       ⚠️ AND BOTH COLUMNS MAY BE SET — CHECKED, NOT ASSUMED. The only
+       content constraint is `class_shoutouts_content_chk`, which reads
+       `CHECK ((template_key IS NOT NULL) OR (message IS NOT NULL))` — an OR,
+       verified against the TEST project on 6 Sep 2026. Nothing forbids a row
+       carrying both, and the safeguarding log is the second reason to write
+       one: what a child was actually told is now readable in the row itself
+       rather than only by joining a key to a list held in a JS file.
+
+       ⚑ THE TEACHER'S OWN FEED CARD NOW SAYS IT TWICE — `buildFeed` in
+       teacher-live.js maps `template` (the label) and `body` (the message)
+       onto two lines, so a template-only shoutout renders the label above
+       itself. That is visible, it is on Mide, and it is NOT patched here:
+       suppressing the body when it equals the label is a change to the
+       teacher-side render, which this ticket rules out of scope. */
+    const templateKey = args.templateKey || null;
+    const typed = String(args.message == null ? '' : args.message).trim();
+    const label = typed ? '' : shoutoutTemplateLabel(templateKey);
+
     const row = {
       class_id:     args.classId,
       author_id:    args.authorId,
       recipient_id: args.recipientId,
-      template_key: args.templateKey || null,
-      message:      args.message || null,
+      template_key: templateKey,
+      message:      typed || label || null,
     };
 
     const { data, error } = await sb
@@ -2285,6 +2462,24 @@ window.MrBadmusTeacherData = (function () {
       throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
     }
 
+    /* ⊕ MRB-328 J4(b) — FIRED HERE, AWAITED WHERE IT IS USED, four dozen
+       lines down. The year is only ever applied as a FILTER over rows that
+       have already come back, so it has never needed to wait for them — and
+       waiting for them is what it did: `timetable_entries` and
+       `academic_years` are two independent reads that ran strictly one after
+       the other on the one page a teacher opens first every morning.
+
+       It is usually served from `class-entry.js`'s shared cache and costs
+       nothing at all. On the load where it is not — a fresh tab, which is
+       precisely the slow load — it is now overlapped instead of added. */
+    const yearsPromise = loadAcademicYears();
+    /* The rejection is claimed NOW rather than at the await below. An
+       unhandled rejection on a promise nobody is yet awaiting is an
+       `unhandledrejection` event in the browser, and this one would fire on
+       every timetable read that raced a network blip. The real error is still
+       thrown at the await — this handler re-throws. */
+    yearsPromise.catch(function () {});
+
     /* The id comes from the SDK's own persisted session — local, no round
        trip — and is sourced HERE rather than accepted from the caller, for
        the reason `loadTeacherClasses` states at length: a scope that arrives
@@ -2319,8 +2514,10 @@ window.MrBadmusTeacherData = (function () {
        list on this site is (MRB-261): through late August two years are both
        unfinished, and a timetable row from the year that ended in July must
        not appear in today's lessons. `workingAcademicYear` is the one
-       implementation, in class-entry.js. */
-    const years = await loadAcademicYears();
+       implementation, in class-entry.js.
+       ⊕ MRB-328 J4(b) — started at the top of this function; this is the
+       await, not the request. */
+    const years = await yearsPromise;
     const workingId = years && years.working ? years.working.id : null;
 
     /* Newest wins, and an unparseable or missing `updated_at` loses to any
@@ -2821,6 +3018,151 @@ window.MrBadmusTeacherData = (function () {
     }
   }
 
+  /**
+   * loadStaffClassScope({ teacherId, pendingId }) — MRB-328 J3.
+   *
+   * "Whose classes am I being asked to look at, and which classes are they?"
+   * ONE function for the two shapes a member of staff can be in, because
+   * from the page's point of view they are one question with one answer:
+   *
+   *   teacherId   a CLAIMED teacher — a real `profiles` row with real
+   *               `class_teachers` links.
+   *   pendingId   an UNCLAIMED invitation — a `pending_staff` row whose
+   *               class assignments live in `pending_staff_classes` and
+   *               become `class_teachers` rows on first sign-in
+   *               (`claim_pending_staff`).
+   *
+   * Returns `{ name, classIds, claimed }`, or NULL when the row cannot be
+   * read. Never throws for "not allowed": see the authorisation note below.
+   *
+   * ⚠️ AUTHORISATION IS RLS, AND ONLY RLS — the same standing this file's
+   * `loadClassMatrices` has, and the reason a caller may pass any id it
+   * likes without leaking anything:
+   *
+   *   · `class_teachers` — `class_teachers_admin_read` (school + school_admin
+   *     OR slt) is what returns another teacher's link rows. A plain teacher
+   *     has only `class_teachers_self_read` (`teacher_id = auth.uid()`), so
+   *     the same query with somebody else's id returns ZERO ROWS to her.
+   *   · `pending_staff` / `pending_staff_classes` — `..._admin_all` is
+   *     school_admin ONLY (migration 20260828203900). slt is deliberately
+   *     not on it, and a plain teacher is nowhere near it.
+   *   · `profiles` — `profiles_admin_read_school` for the name.
+   *
+   * So the FAILURE DIRECTION IS EMPTY, never another teacher's list: an
+   * unauthorised caller gets no rows, this returns null or an empty
+   * `classIds`, and `loadClassMatrices` over an empty list returns `{}`.
+   * Nothing here decides who may ask; it only reports what came back.
+   *
+   * ⚠️ NO YEAR FILTER HERE, ON PURPOSE. Neither `class_teachers` nor
+   * `pending_staff_classes` carries an academic year — the year lives on
+   * `classes.academic_year_id`, which `loadClassMatrices` returns on every
+   * pack it builds. Filtering here would need a fourth read of a table the
+   * caller is about to read anyway, and two year filters that can disagree
+   * is the defect MRB-261 is about.
+   */
+  async function loadStaffClassScope(opts) {
+    const teacherId = (opts && opts.teacherId) || null;
+    const pendingId = (opts && opts.pendingId) || null;
+    if (!teacherId && !pendingId) return null;
+    if (teacherId && !isUuid(teacherId)) {
+      const e = new Error('[teacher-data] invalid teacher id: ' + teacherId);
+      e.code = 'invalid_teacher_id';
+      throw e;
+    }
+    if (pendingId && !isUuid(pendingId)) {
+      const e = new Error('[teacher-data] invalid pending staff id: ' + pendingId);
+      e.code = 'invalid_pending_staff_id';
+      throw e;
+    }
+
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    function nameOf(row) {
+      if (!row) return '';
+      const full = ((row.first_name || '') + ' ' + (row.last_name || '')).trim();
+      /* `display_name` before `email`, and `email` only for an invitation
+         that has neither name — that is the shape `teacher/admin.html`
+         already uses for the same two row types, and two answers to
+         "what is this person called" is one of them being wrong. */
+      return full || row.display_name || row.email || '';
+    }
+
+    if (teacherId) {
+      const [who, links] = await Promise.all([
+        sb.from('profiles')
+          .select('id, first_name, last_name, display_name')
+          .eq('id', teacherId)
+          .is('deleted_at', null)
+          .maybeSingle(),
+        sb.from('class_teachers')
+          .select('class_id')
+          .eq('teacher_id', teacherId)
+          .is('deleted_at', null)
+          .is('ended_at', null),
+      ]);
+      if (links.error) {
+        const e = new Error('[teacher-data] class_teachers query failed: ' + links.error.message);
+        e.code = 'query_failed_class_teachers';
+        e.cause = links.error;
+        throw e;
+      }
+      /* A profile this caller cannot read is not an error and is not a
+         reason to refuse: PostgREST answers a `maybeSingle` miss with a
+         null row, and a nameless scope is still a legible one. The CLASSES
+         are the thing being asked for. */
+      const nm = nameOf(who && who.data);
+      if (!nm && !(links.data || []).length) return null;
+      const ids = [];
+      (links.data || []).forEach(function (r) {
+        if (r.class_id && ids.indexOf(r.class_id) === -1) ids.push(r.class_id);
+      });
+      return { name: nm, classIds: ids, claimed: true };
+    }
+
+    const [who, rows] = await Promise.all([
+      sb.from('pending_staff')
+        .select('id, first_name, last_name, email, claimed_at, claimed_profile_id')
+        .eq('id', pendingId)
+        .is('deleted_at', null)
+        .maybeSingle(),
+      sb.from('pending_staff_classes')
+        .select('class_id')
+        .eq('pending_staff_id', pendingId),
+    ]);
+    if (rows.error) {
+      const e = new Error('[teacher-data] pending_staff_classes query failed: ' + rows.error.message);
+      e.code = 'query_failed_pending_staff_classes';
+      e.cause = rows.error;
+      throw e;
+    }
+    const row = who && who.data;
+    /* ⚠️ NO ROW MEANS NO SCOPE, and here that IS the refusal — unlike the
+       claimed branch above, where the name is a nicety. `pending_staff` is
+       the only table that says this invitation exists at all, so a caller
+       who cannot read it has been told nothing and must fall back to their
+       own classes rather than to a nameless list of somebody's. */
+    if (!row) return null;
+    const ids = [];
+    (rows.data || []).forEach(function (r) {
+      if (r.class_id && ids.indexOf(r.class_id) === -1) ids.push(r.class_id);
+    });
+    /* A CLAIMED invitation is not a pending one. `teacher/admin.html` folds
+       a claimed row onto the live teacher's row rather than listing it
+       twice, and the same fact holds here: once claimed, the real links
+       exist and `claimed_profile_id` is the id to scope by. Reported as
+       claimed so the caller states the right thing. */
+    return {
+      name: nameOf(row),
+      classIds: ids,
+      claimed: !!(row.claimed_at && row.claimed_profile_id),
+      claimedProfileId: row.claimed_profile_id || null,
+    };
+  }
+
   return {
     loadAcademicYears,
     loadTeacherClasses,
@@ -2834,6 +3176,18 @@ window.MrBadmusTeacherData = (function () {
     // above changed, and no existing caller sees a difference.
     loadClassMatrices,
     loadPaperQuestions,
+    // ⊕ MRB-328 J3 — whose classes a school admin has asked to look at.
+    // Additive; no existing caller changes.
+    loadStaffClassScope,
+    /* ⊕ MRB-328 J4(b) — the remembered own-classes ids, so `base()` can start
+       `loadClassMatrices` in the same instant as the driver query instead of
+       one round trip behind it. `forgetOwnClasses` is the invalidation hook
+       for the one write that changes membership (`roster-import`).
+       ⚠️ `cachedOwnClassIds` IS THE VIEWER'S OWN LIST AND NOTHING ELSE. It
+       must never be consulted for a `?teacher=`/`?pending=` scoped view —
+       see `base()`, where the scoped branch does not reach it. */
+    cachedOwnClassIds,
+    forgetOwnClasses,
     // ⊕ 27 Aug 2026 — the five per-class numbers, derived from a matrices
     // pack instead of re-fetched per class. See loadTeacherClasses(opts).
     deriveClassMetrics,
