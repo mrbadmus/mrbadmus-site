@@ -85,7 +85,17 @@ PUPIL_EMAIL   = "mrb331_pupil@throwaway.test"
 PUPIL_B_EMAIL = "mrb331_pupil_b@throwaway.test"
 EMAILS = [TEACHER_EMAIL, ADMIN_EMAIL, PUPIL_EMAIL, PUPIL_B_EMAIL]
 
-ENV_SWITCH = "MRB_THROWAWAY_PASSWORD"
+# ⚠️ NOT `MRB_THROWAWAY_PASSWORD`, and the difference is load-bearing.
+# Two drives shared that one name while meaning two different passwords:
+# `teacher_admin_real_drive.py` signs into MRB-326 accounts that are
+# PRE-SEEDED on TEST and therefore has exactly one correct value, while this
+# fixture CREATES its accounts and re-asserts whatever password it is handed,
+# so any value works. Running both from one shell meant either the mrb326
+# accounts got a password they were not seeded with, or this drive silently
+# adopted mrb326's. The collision was invisible in the direction that matters:
+# set_work went green on any value and teacher_admin_real answered a bare
+# "sign-in FAILED ... HTTP 403" with nothing pointing at the password.
+ENV_SWITCH = "MRB_SET_WORK_PASSWORD"
 
 SUBJECT_SCIENCE = "26000000-0000-0000-0000-000000000001"
 SUBJECT_BIOLOGY = "f06e297f-1a44-47d3-9c93-bb616c968cc7"

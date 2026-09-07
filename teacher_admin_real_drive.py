@@ -4,6 +4,25 @@
     MRB_THROWAWAY_PASSWORD=mrb326-throwaway python3 teacher_admin_real_drive.py
     …                                       python3 teacher_admin_real_drive.py --shots DIR
     …                                       python3 teacher_admin_real_drive.py --keep
+    …                                       python3 teacher_admin_real_drive.py --provision
+
+⚠️ `--provision` RE-ASSERTS THE TWO PASSWORDS AND EXITS (MRB-331, 7 Sep 2026).
+
+These two accounts were created by hand and nothing owned their credential, so
+nothing kept it true. `set_work_drive.py` read the SAME env var while creating
+its own accounts and re-asserting whatever password it was handed, which meant
+one shell could leave these two holding a password no file records. That is
+how they were found on 7 September: both accounts present, both alive, and the
+documented password answering `invalid_credentials`. The gate could not pass —
+it could only skip, or fail with a bare HTTP 400 that pointed nowhere near the
+cause.
+
+The env-var collision itself is gone (set_work now owns `MRB_SET_WORK_PASSWORD`
+— see `mrb331_fixture.ENV_SWITCH`). `--provision` is the other half: the
+credential is now RE-ASSERTABLE from the file that documents it, so the next
+reader who meets a sign-in failure has a one-line remedy instead of an
+archaeology problem. It touches nothing but `auth.users.encrypted_password` for
+these two ids, so every class link, scope row and profile survives it.
 
 ⚑ WHY THIS FILE EXISTS ALONGSIDE `teacher_admin_foreign_class_drive.py`.
 
@@ -190,6 +209,54 @@ def call(method, path, key, bearer, body=None, prefer=None):
             return e.code, raw[:300]
 
 
+def provision(password):
+    """Re-assert the two throwaway passwords on TEST. Returns an exit code.
+
+    ⚠️ A PASSWORD RESET, NOT A RESEED. It sets `password` on the two existing
+    auth users and nothing else — no row is created, deleted or relinked — so
+    the fixture these checks stand on is exactly the fixture they stood on
+    before. Refuses outright without the service key rather than half-doing it.
+    """
+    svc = service_key()
+    if not svc:
+        print("\n❌ --provision needs the TEST service-role key, and the backend\n"
+              "   .env does not have one. Nothing was changed.\n")
+        return 2
+    key = anon_key()
+    bad = 0
+    print("\n🔑  re-asserting the MRB-326 throwaway credentials on TEST\n")
+    for email in (TEACHER_EMAIL, ADMIN_EMAIL):
+        st, body = call("GET", "/auth/v1/admin/users?per_page=1000", svc, svc)
+        uid = None
+        if st == 200 and isinstance(body, dict):
+            for u in body.get("users", []):
+                if u.get("email") == email:
+                    uid = u["id"]
+                    break
+        if not uid:
+            print("     ❌ %s — no such user on TEST" % email)
+            bad += 1
+            continue
+        st, body = call("PUT", "/auth/v1/admin/users/" + uid, svc, svc,
+                        {"password": password, "email_confirm": True})
+        if st != 200:
+            print("     ❌ %s — reset HTTP %s %s" % (email, st, json.dumps(body)[:160]))
+            bad += 1
+            continue
+        # ⚠️ VERIFIED BY SIGNING IN, not by the reset's own 200. A 200 from the
+        # admin API says the write landed, which is not the same claim as "the
+        # password this file documents now works", and the second is the only
+        # one worth printing.
+        st2, _ = call("POST", "/auth/v1/token?grant_type=password", key, key,
+                      {"email": email, "password": password})
+        ok = st2 == 200
+        print("     %s %s — reset, and signs in" % ("✅" if ok else "❌", email))
+        if not ok:
+            bad += 1
+    print()
+    return 1 if bad else 0
+
+
 def sign_in(email, password, key):
     """A real password grant. ⚠️ VERIFY HERE, NOT IN THE BROWSER.
 
@@ -297,8 +364,9 @@ def main():
     ap.add_argument("--shots", default="/tmp/mrb326-shots")
     ap.add_argument("--keep", action="store_true",
                     help="leave the rows this run writes on TEST, and list them")
+    ap.add_argument("--provision", action="store_true",
+                    help="re-assert the two throwaway passwords on TEST, then exit")
     args = ap.parse_args()
-    os.makedirs(args.shots, exist_ok=True)
 
     password = os.environ.get(ENV_SWITCH)
     if not password:
@@ -307,6 +375,11 @@ def main():
               "    project, so it never runs by accident. Set it to run.\n"
               % ENV_SWITCH)
         return 0
+
+    if args.provision:
+        return provision(password)
+
+    os.makedirs(args.shots, exist_ok=True)
 
     key = anon_key()
     fails = []

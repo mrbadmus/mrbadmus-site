@@ -879,7 +879,7 @@ GATES = [
          cmd=["python3", "set_work_drive.py"],
          speed="slow",
          needs="mrbadmus_site/teacher/class-detail.html",
-         needs_env="MRB_THROWAWAY_PASSWORD",
+         needs_env="MRB_SET_WORK_PASSWORD",
          why="MRB-331 — THE SEAMS SET WORK CREATES, END TO END, UNDER REAL "
              "RLS. Every property this ticket has to establish is a join "
              "between two things that are each individually fine, so none of "

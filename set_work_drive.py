@@ -22,8 +22,12 @@ all seams between things that are individually fine:
 
 None of those is visible from either side alone.
 
-    MRB_THROWAWAY_PASSWORD=<pw> python3 set_work_drive.py
-    MRB_THROWAWAY_PASSWORD=<pw> python3 set_work_drive.py --keep   # leave the world
+    MRB_SET_WORK_PASSWORD=<pw> python3 set_work_drive.py
+    MRB_SET_WORK_PASSWORD=<pw> python3 set_work_drive.py --keep   # leave the world
+
+⚠️ MRB_SET_WORK_PASSWORD, not MRB_THROWAWAY_PASSWORD — this drive creates its
+own accounts and accepts any value, where teacher_admin_real_drive.py signs
+into pre-seeded ones and accepts exactly one. See mrb331_fixture.ENV_SWITCH.
 """
 
 import json
