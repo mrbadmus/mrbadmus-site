@@ -886,3 +886,33 @@ Permanent, named skips: the three `3d_*` gates (`3d-studio/dist` is not built
 in this worktree), and `student_controls_drive` /
 `export_ks3_questions_verify`, which default to Mide's real account and cannot
 run here.
+
+### One red ships, and it is inherited
+
+`teacher_admin_foreign_class` fails three checks — C7, the Remind control on a
+foreign class. **It is not this ticket's, and that was established rather than
+assumed:** the gate fails IDENTICALLY on `origin/main` with none of this branch
+applied, run in a detached worktree at `3b56144eb`. This branch never touches
+the drive; main added all 313 lines of it.
+
+It is already carried on main under MRB-330's own `GATE-OVERRIDE`, and the
+diagnosis there is a fixture time bomb rather than a product defect:
+`admin_view_drive.py` pins `NOW = "2026-08-30T00:00:00+00:00"`, an instant that
+was genuinely now when it was typed and stopped being now on 31 August. It is
+the fixture's live paper's `due_at`, and the Remind control draws only when
+children owe THIS week's paper — so the fixture stopped making the button the
+gate reports as missing. The drive's own comment says *"THE FIXTURE IS WHAT
+MAKES THE BUTTON EXIST"*.
+
+⊘ **Deliberately not repaired here.** MRB-330 attempted exactly that repair —
+making `NOW` track the clock, which restores the fixture's property rather than
+weakening an assertion — and it perturbed a second, unrelated check on the same
+drive, so that run reverted it and wrote it up for a run of its own. Tuning it
+at the end of a different ticket's merge is precisely the mistake that decision
+avoided, so the override is carried forward unchanged and the repair stays
+where MRB-330 left it: wanting its own run, with that drive's fixture semantics
+properly understood.
+
+⊕ **One of main's three overrides is retired by this run.** `pool_ownership`
+shipped red on main because *"it reads the sibling backend checkout"* — the
+defect §16.4 fixes. It is green here, and needs no override.
