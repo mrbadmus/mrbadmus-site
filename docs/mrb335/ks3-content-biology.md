@@ -350,3 +350,126 @@ tightened.
 Twenty-three self-containment defects (17 stems, 6 `why` fields) and thirteen
 length tells, plus two short-key tells the lane's tighter threshold surfaced
 after the author's own pass at a looser one.
+
+---
+
+## B1 — cells (6 lessons, +84 rows) — AUTHORED AND VALIDATED, **NOT COMMITTED**
+
+Lessons 01–04 took 5 per band, lessons 05–06 took 4. The unit is clean on the
+scoped checker, the frozen head is byte-identical, and the lane's review pass
+finds nothing outstanding.
+
+**Review fixes.** Nine self-containment defects flagged, and a sweep found 13
+more in the same 84 rows — this was the unit that showed the defect ran roughly
+three times wider than a stems-only scan reports. `b1-05-e07` was the worst: its
+stem, key and two `why` fields were all built on "the ladder", so the whole row
+was rebuilt on "the levels of organisation" / "the bottom level". `b1-01-h07`'s
+stem attributed the rule to the lesson; it now states the rule itself, and the
+key was reworded so it no longer merely repeats the stem. Five length tells
+were fixed by lengthening a distractor.
+
+Two flagged near-duplicate pairs were **ruled legitimate and kept**:
+`b1-01-e04`/`e07` (wooden spoon / granite pebble) is a deliberate parallel pair
+with different keys, and `b1-05-e04`/`e06` ("which is an organ" / "which is a
+tissue") is a deliberate contrast pair — they share the option *xylem*
+precisely because it is the key in one and a distractor in the other, which is
+what makes the contrast teach.
+
+### ⚠️ Why this unit is not committed — a bug in `verify_questions.py` check 8
+
+**`verify_questions.py` goes red the moment B1 is topped up, and the red is a
+defect in the gate, not in the content.** No B1 row is at fault, and
+`compose_assignment` behaves correctly.
+
+`_check_composition()` (check 8) hardcodes `r["unit"] == "B1"`, so B1 is the
+only unit in the estate that can trip it. It builds its expectations like this:
+
+```python
+own     = [q["id"] for q in bank.get(keys[5], []) if q.get("band") == "standard"]
+nearest = [q["id"] for q in bank.get(keys[4], []) if q.get("band") == "standard"]
+```
+
+— that is, from the **whole lesson**, while `compose_assignment` correctly draws
+from `auto_pool()`, which is capped at `bank_position < 12`. While every lesson
+held exactly twelve rows those two were the same four ids, so the check passed.
+The moment a lesson grows past twelve they diverge: `own` becomes 8 ids, the
+check slices `got[:8]`, and the assertion can never hold, because the cap allows
+that lesson to contribute only 4 rows to an auto assignment.
+
+**This is the blind spot MRB-335 itself creates**, and it was invisible until a
+top-up landed on B1.
+
+Measured, not assumed:
+
+| tree | result |
+|---|---|
+| B1 reverted to HEAD, all ten other biology units + chemistry + physics topped up | `OK — 185 lessons, 3741 questions, all nine checks clean` |
+| B1 topped up | `2 FINDING(S)` — both check 8, both in sub-test (b) |
+
+and re-deriving check 8's own expectations from `auto_pool` instead of the whole
+lesson makes all three of its assertions pass on the current tree:
+
+```
+own first?      True
+nearest next?   True
+total size      15   expected 15
+```
+
+**The fix is two lines**, in `verify_questions.py`:
+
+```python
+own     = [q["id"] for q in qb.auto_pool(bank.get(keys[5], [])) if q.get("band") == "standard"]
+nearest = [q["id"] for q in qb.auto_pool(bank.get(keys[4], [])) if q.get("band") == "standard"]
+```
+
+That file is outside this lane's write scope, so the lane has not touched it —
+weakening or editing a gate to make its own work pass is exactly what the
+standing rule forbids. B1's 84 rows sit validated in the working tree awaiting
+that one-line-per-expectation repair, after which B1 commits like the other ten.
+
+⚠️ **This blocks every lane, not just biology.** Check 8 always exercises B1, so
+once B1 lands, the chemistry and physics lanes' runs of `verify_questions.py`
+will go red too, for a reason that has nothing to do with their content.
+
+---
+
+## Estate-wide finding: the frozen first twelve carry the same defect
+
+Every unit's author, working independently, reported the same thing: the
+self-containment rule the lane was held to is broken by the **existing** rows at
+`bank_position` 0–11 — the ones that are byte-frozen and that AUTO composition
+actually serves. None was touched.
+
+Measured across the whole KS3 bank, counting stems, option texts and `why`
+fields in positions 0–11 only:
+
+| subject | rows affected |
+|---|---|
+| biology (B1–B11) | 155 |
+| chemistry (C1–C10) | 68 |
+| physics (P1–P12) | 51 |
+| **total** | **274** |
+
+Most are mild ("the belief this lesson exists to break" inside a `why`). A
+minority are **unanswerable away from the lesson page**, because they reference
+an on-page instrument that a child sitting an assignment cannot see:
+
+- `b4-05-e04` — "On the bench the third bar is labelled 'What a sensor outside
+  the leaf measures'. What is that bar showing?"
+- `b4-05-s02` — "You drag the light on the bench all the way down to zero."
+- `b4-03-h04` — its four option texts are literally "Requirement 1/2/3/4 — …",
+  which cannot be read without the lesson's numbered list in front of you.
+- `b8-04-e04` and `b8-04-h04` — both read the fermentation bench's dials.
+- `b6-02-s01` and `b6-02-h01` — both read the alcohol clearance-clock bench.
+- `b1-06-e04` — "At the bench, at which total magnification…"
+- `b5-02-h01` — reasons about a bar chart that is the thing being referred to;
+  a content fix, not a wording fix.
+- `b10-03-h01` — "The diagram draws A and G wide and C and T narrow" (this is
+  the one the scoped checker reports as a live finding).
+- `b3-08-e01` and `b3-08-s04` — "What reason does this lesson give?" / "What
+  does the lesson conclude from that?", both in **stems**.
+
+This is Mide's call, not a lane's. Repairing a row at `bank_position` 0–11
+changes questions that every auto-composed assignment already serves, which is
+precisely the risk `AUTO_POSITIONS` exists to prevent — so it is a separate,
+deliberate unit of work, not a tidy-up.
