@@ -114,6 +114,66 @@ CONFLICT_KEY = "id"
 COMPARED = [c for c in COLUMNS if c != CONFLICT_KEY]
 
 
+def _jwt_ref(token):
+    """The Supabase project ref a JWT was issued for, or None.
+
+    Decodes the payload only. It does NOT verify the signature and must never
+    be used to decide whether a token is authentic — that is the server's job,
+    and here the token is our own. What it answers is the one question a
+    signature cannot: WHICH PROJECT this key opens.
+
+    Returns None rather than raising on anything unreadable, so that the
+    caller reports "the project could not be established" and refuses, instead
+    of a traceback three frames from a production write.
+    """
+    import base64
+    try:
+        payload = token.split(".")[1]
+        payload += "=" * (-len(payload) % 4)
+        claims = json.loads(base64.urlsafe_b64decode(payload).decode("utf-8"))
+    except Exception:
+        return None
+    ref = claims.get("ref")
+    return ref if isinstance(ref, str) and ref else None
+
+
+def checksum(rows):
+    """One SHA-256 over the whole pool, computed identically on both sides.
+
+    ⚠️ WHAT THIS IS FOR, AND WHAT IT IS NOT FOR. `--verify` already compares
+    row for row and names the fields that differ; that is the check. This is
+    the thing you can WRITE DOWN — a single value that a report, a commit
+    message or a person three months from now can compare against another
+    run without re-reading 3,168 rows.
+
+    Canonical on purpose, so that "the database matches" is a statement about
+    content rather than about transport:
+
+      · rows sorted by id, so page order cannot change the answer;
+      · all eleven columns, id included, so a renamed question is a different
+        checksum even if its wording is identical;
+      · `options` joined IN ORDER and never sorted — correct_index is an index
+        into that exact sequence, so a reordered array is a different
+        question with a different answer, and must not checksum the same;
+      · `triple_only` coerced through bool() and the rest through str(),
+        because PostgREST hands back JSON types and Python holds native ones,
+        and a checksum that changed with the wire format would be a checksum
+        of the wire format.
+    """
+    import hashlib
+    h = hashlib.sha256()
+    for r in sorted(rows, key=lambda r: r["id"]):
+        for f in COLUMNS:
+            v = r[f]
+            if f == "options":
+                v = "\u0000".join(str(o) for o in (v or []))
+            elif f == "triple_only":
+                v = "1" if v else "0"
+            h.update(("%s=%s\u0001" % (f, v)).encode("utf-8"))
+        h.update(b"\x02")   # end of row
+    return h.hexdigest()
+
+
 # ── SQL literals ─────────────────────────────────────────────────────────
 
 def sql_str(v):
@@ -301,11 +361,13 @@ def main():
     ap.add_argument("--partial", action="store_true",
                     help="allow a part-authored pool (load_pool strict=False) "
                          "— completeness only; malformed questions still fail")
-    ap.add_argument("--load", choices=("test",), default=None,
+    ap.add_argument("--load", choices=("test", "prod"), default=None,
                     help="apply the rows straight to the database over "
-                         "PostgREST, instead of writing SQL files. TEST only: "
-                         "production is written at merge, deliberately by "
-                         "hand, and this flag will not do it.")
+                         "PostgREST, instead of writing SQL files. `test` "
+                         "reads the backend's own .env; `prod` reads "
+                         "~/.mrbadmus/prod.env and nothing else, and refuses "
+                         "unless that file points at the production project "
+                         "by ref. See load() for all three guards.")
     ap.add_argument("--project", choices=("test", "prod"), default="test",
                     help="which database --verify reads (default: test). "
                          "The KS4 pool reaches production only at merge, so "
@@ -344,7 +406,8 @@ def main():
         return
 
     if args.verify:
-        sys.exit(verify(rows, args.subject, args.partial))
+        sys.exit(verify(rows, args.subject, args.partial,
+                        args.project))
 
     if args.load:
         sys.exit(load(rows, args.subject, args.load))
@@ -402,18 +465,60 @@ def load(rows, subject, project):
     `ks4_assignment_bank` is reference content whose only writer is this
     exporter. Loading it as a student would fail, correctly.
 
-    ⚠️ TEST ONLY, enforced twice. `--load` accepts no other value, and the key
-    is read from the backend's own .env, which points at the test project. A
-    production load is a merge-time act done deliberately from the SQL files,
-    with the migrations applied first — not something a build script reaches
-    for by accident.
+    ⚠️ WHICH DATABASE, AND THE GUARDS ON THE PRODUCTION ONE (MRB-332).
+
+    `--load test` reads the backend's own .env, which points at the test
+    project, and refuses if it ever stops doing so.
+
+    `--load prod` writes production, and is guarded THREE independent ways.
+    Each one alone is enough to stop the accident; they are separate because
+    they fail for different reasons and a single guard is a single thing to
+    get wrong.
+
+      1. THE VALUE IS TYPED IN FULL. argparse does not prefix-match choice
+         values, but this does not rely on that: the raw argv is re-read and
+         must carry the exact token `prod`. No abbreviation, no default, no
+         environment variable, and no other flag can route here.
+
+      2. THE KEY COMES FROM ~/.mrbadmus/prod.env AND NOWHERE ELSE. Not the
+         repo, not the backend .env, not the environment. The production
+         service key is never written into this tree and is never printed —
+         not in a success line, not in an error, not in a traceback. If the
+         file is absent this returns 4, which the caller is meant to read as
+         "use the SQL files instead", not as a failure to retry.
+
+      3. THE URL MUST BE PRODUCTION BY REF. It must contain
+         urklkrwevjtlfbwnipjn or this refuses. So a prod.env accidentally
+         pointing at TEST cannot quietly write test rows while reporting a
+         production load — the two failure directions are both closed.
+
+    ⚠️ Production is loaded ONCE, at merge, with the migrations already
+    applied. Per CLAUDE.md this is deliberate hand-work, and the run that does
+    it is followed immediately by `--verify --project prod`, which is the only
+    thing that turns "the load reported success" into "the rows are right".
     """
     import json as _json
     import ssl
     import urllib.error
     import urllib.request
 
-    env = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env"
+    if project == "prod":
+        # Guard 1 — the value, re-read from raw argv rather than trusted
+        # from the parsed namespace.
+        if "prod" not in sys.argv:
+            print("\n     ⛔ --load prod: the literal token `prod` is not in "
+                  "the command line.\n        Production is never reached by "
+                  "an abbreviation. Refusing.")
+            return 3
+        # Guard 2 — the key, from one path, never this repo.
+        env = os.path.expanduser("~/.mrbadmus/prod.env")
+        expect_ref = "urklkrwevjtlfbwnipjn"
+        label = "PRODUCTION"
+    else:
+        env = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env"
+        expect_ref = "qeppkiswvclkkwbxmlok"
+        label = "TEST"
+
     conf = {}
     try:
         with open(env, encoding="utf-8") as fh:
@@ -422,28 +527,64 @@ def load(rows, subject, project):
                     k, v = line.split("=", 1)
                     conf[k.strip()] = v.strip()
     except OSError as exc:
+        if project == "prod":
+            print("\n     ⛔ --load prod: %s is not readable (%s)." % (env, exc))
+            print("        This is the ONLY place the production service key "
+                  "is read from, on purpose.")
+            print("        Exit 4 — load the pool from the generated SQL "
+                  "instead (build/ks4-questions/),")
+            print("        per subject. Do not put a production key anywhere "
+                  "in this repo.\n")
+            return 4
         print("\n     ⛔ --load cannot read %s (%s)" % (env, exc))
         return 3
 
     url = conf.get("SUPABASE_URL", "")
     key = conf.get("SUPABASE_SERVICE_ROLE_KEY", "")
-    if not url or not key:
-        print("\n     ⛔ --load: SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY "
-              "are not both in %s" % env)
+    if not key:
+        # ⚠️ Names the missing SETTING, never a value.
+        print("\n     ⛔ --load: SUPABASE_SERVICE_ROLE_KEY is not in %s" % env)
+        return 4 if project == "prod" else 3
+
+    # ── Guard 3: the target is proved from the KEY, not merely stated ─────
+    #
+    # ⚠️ THIS IS STRONGER THAN CHECKING SUPABASE_URL, and the difference is
+    # the whole point. A URL is an assertion in a file — someone's note about
+    # where the key belongs. A Supabase service-role key is a JWT, and its
+    # payload carries the project it was ISSUED FOR:  {"ref":"<project>"}.
+    # Reading the ref out of the key makes "which database is this" a fact
+    # about the credential rather than a claim next to it, so a production
+    # key sitting under a test URL — or the reverse, which is how 3,168 rows
+    # end up in the wrong place — cannot get past this.
+    #
+    # ~/.mrbadmus/prod.env carries the key alone and no URL, so on the prod
+    # path this is not a convenience: it is the only thing that knows where
+    # the load is going, and the URL below is DERIVED from it.
+    key_ref = _jwt_ref(key)
+    if key_ref is None:
+        print("\n     ⛔ --load %s: the SUPABASE_SERVICE_ROLE_KEY in %s is not "
+              "a readable JWT,\n        so the project it belongs to cannot be "
+              "established. Refusing." % (project, env))
         return 3
-    if "qeppkiswvclkkwbxmlok" not in url:
-        # The guard that matters. If that .env is ever repointed at
-        # production, this refuses rather than writing 3,168 rows to it.
-        print("\n     ⛔ --load: %s does not point at the TEST project "
-              "(qeppkiswvclkkwbxmlok). Refusing.\n        It points at: %s"
-              % (env, url))
+    if key_ref != expect_ref:
+        print("\n     ⛔ --load %s: that key belongs to project %r, not the %s "
+              "project %r.\n        Refusing — this is exactly the mix-up the "
+              "guard exists for." % (project, key_ref, label, expect_ref))
         return 3
+    if url and expect_ref not in url:
+        # Both were supplied and they disagree. Never guess which is right.
+        print("\n     ⛔ --load %s: %s sets a SUPABASE_URL that does not match "
+              "its own key.\n        Key says %r; URL says %s. Refusing."
+              % (project, env, key_ref, url))
+        return 3
+    url = url or ("https://%s.supabase.co" % key_ref)
 
     ctx = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
     endpoint = url.rstrip("/") + "/rest/v1/ks4_assignment_bank"
     BATCH = 200
     sent = 0
-    print("\n     loading %d row(s) into TEST over PostgREST…" % len(rows))
+    print("\n     loading %d row(s) into %s over PostgREST…"
+          % (len(rows), label))
     for i in range(0, len(rows), BATCH):
         chunk = [{k: r[k] for k in
                   ("id", "subtopic_slug", "subject", "band", "tier",
@@ -467,14 +608,14 @@ def load(rows, subject, project):
             return 1
         sent += len(chunk)
         print("        %d / %d" % (sent, len(rows)))
-    print("\n     ✅ %d row(s) upserted into TEST%s.\n"
-          % (sent, " (%s)" % subject if subject else ""))
+    print("\n     ✅ %d row(s) upserted into %s%s.\n"
+          % (sent, label, " (%s)" % subject if subject else ""))
     return 0
 
 
 # ── the gate ─────────────────────────────────────────────────────────────
 
-def verify(rows, subject, partial):
+def verify(rows, subject, partial, project):
     """Does the database still match Python, row for row?
 
     The table is a mirror, and a mirror nobody checks is just a second copy.
@@ -517,7 +658,60 @@ def verify(rows, subject, partial):
         return 3
 
     pw = os.environ.get("MRB_TEST_STUDENT_PASSWORD")
-    if not pw:
+
+    # ⚠️ TWO PROOFS, AND THEY ARE NOT THE SAME PROOF (MRB-332).
+    #
+    #   CONTENT — "the rows in the database equal the rows in Python".
+    #   REACH   — "a signed-in student can read them, and nobody else can".
+    #
+    # On TEST both are made here, by signing a real user in: the read is
+    # carried on that user's JWT, so it passes through RLS and answers both
+    # questions at once. That is the better arrangement and it stays.
+    #
+    # On PRODUCTION there is no credential for it, deliberately. The only
+    # account this would sign in as is Mide's own, and a production password
+    # is not something to acquire, store or type into a build script — so the
+    # honest thing is to make the two proofs separately and say which is
+    # which, rather than to make one and describe it as both:
+    #
+    #   · CONTENT is read with the production SERVICE key, from
+    #     ~/.mrbadmus/prod.env and nowhere else — the same file and the same
+    #     ref guard as `--load prod`. Service role bypasses RLS, which is
+    #     exactly wrong for a reach proof and exactly right for a content
+    #     one: it reads every row that is there, including any a policy would
+    #     have hidden, so it cannot report a clean mirror over a table it was
+    #     only allowed to see half of.
+    #
+    #   · REACH gets a NEGATIVE CONTROL that needs no password at all — the
+    #     anon key must read ZERO rows, because ks4_assignment_bank_read
+    #     grants SELECT to `authenticated` only. That catches the failure
+    #     that actually matters here (a pool of 3,168 answer keys readable by
+    #     the whole internet) without holding a credential for anyone.
+    #
+    #   · The positive half of REACH on production — a real signed-in teacher
+    #     seeing real questions — is made in a browser under Mide's own
+    #     permissions, not here.
+    service_key = None
+    if project == "prod" and not pw:
+        env = os.path.expanduser("~/.mrbadmus/prod.env")
+        try:
+            for line in open(env, encoding="utf-8"):
+                if line.startswith("SUPABASE_SERVICE_ROLE_KEY="):
+                    service_key = line.split("=", 1)[1].strip()
+        except OSError:
+            service_key = None
+        if service_key and _jwt_ref(service_key) != "urklkrwevjtlfbwnipjn":
+            return cannot_see(
+                "the key in %s is not the production project's." % env,
+                "Refusing rather than comparing against whatever it does "
+                "open.")
+        if not service_key:
+            return cannot_see(
+                "no production credential: MRB_TEST_STUDENT_PASSWORD is unset "
+                "and %s has no SUPABASE_SERVICE_ROLE_KEY." % env,
+                "Production content cannot be compared without one of the "
+                "two.")
+    elif not pw:
         return cannot_see(
             "MRB_TEST_STUDENT_PASSWORD is not set, so there is no session to "
             "read the table with.",
@@ -545,7 +739,11 @@ def verify(rows, subject, partial):
         "test": "qeppkiswvclkkwbxmlok",
         "prod": "urklkrwevjtlfbwnipjn",
     }
-    ref = PROJECTS[getattr(args, "project", None) or "test"]
+    # ⚠️ Passed in, NOT read off a module-level `args`. It was written
+    # that way and `args` is local to main(), so every --verify run
+    # raised NameError before reaching a database. A gate that cannot
+    # run is a gate that is not watching — see docs/ks4/merge-notes.md.
+    ref = PROJECTS[project]
     url = "https://%s.supabase.co" % ref
     print("     verifying against %s (%s)"
           % (("PRODUCTION" if ref == PROJECTS["prod"] else "TEST"), ref))
@@ -596,19 +794,29 @@ def verify(rows, subject, partial):
     # traceback and never a pass. A gate whose only failure mode is a stack
     # trace tends to get wrapped in a `|| true` by the third person who meets
     # it at midnight.
-    try:
-        tok = api("/auth/v1/token?grant_type=password", {"apikey": key},
-                  {"email": "midebolabadmus@gmail.com", "password": pw})
-    except urllib.error.HTTPError as exc:
-        return cannot_see(
-            "sign-in was refused (HTTP %s)." % exc.code,
-            "MRB_TEST_STUDENT_PASSWORD is set but the credential did not work "
-            "against %s." % ref)
-    except Exception as exc:
-        return cannot_see("sign-in could not reach %s (%s)." % (url, exc),
-                          "No network, no comparison.")
-    del pw
-    auth = {"apikey": key, "Authorization": "Bearer " + tok["access_token"]}
+    if service_key:
+        # ⚠️ The key is used and never printed — not here, not in an error,
+        # not in the summary. `how` is what the report says instead.
+        auth = {"apikey": service_key,
+                "Authorization": "Bearer " + service_key}
+        how = ("the production SERVICE key (content only — RLS is bypassed, "
+               "see the anon control below)")
+    else:
+        try:
+            tok = api("/auth/v1/token?grant_type=password", {"apikey": key},
+                      {"email": "midebolabadmus@gmail.com", "password": pw})
+        except urllib.error.HTTPError as exc:
+            return cannot_see(
+                "sign-in was refused (HTTP %s)." % exc.code,
+                "MRB_TEST_STUDENT_PASSWORD is set but the credential did not "
+                "work against %s." % ref)
+        except Exception as exc:
+            return cannot_see("sign-in could not reach %s (%s)." % (url, exc),
+                              "No network, no comparison.")
+        del pw
+        auth = {"apikey": key, "Authorization": "Bearer " + tok["access_token"]}
+        how = "a real signed-in session (content AND reach)"
+    print("     reading with %s" % how)
 
     cols = ",".join(COLUMNS)
     # Scoped to the subject being verified when one is named. Without this a
@@ -705,6 +913,56 @@ def verify(rows, subject, partial):
           "%d differing"
           % ("❌" if not ok else "✅", TABLE, len(want), len(got),
              len(missing), len(extra), len(differing)))
+
+    # ⚠️ Printed whether or not the comparison passed. A checksum is most
+    # useful on the run that FAILS — it is what tells you, next time, whether
+    # you are looking at the same wrong database or a different one.
+    py_sum, db_sum = checksum(rows), checksum(live)
+    print("        python   sha256 %s" % py_sum)
+    print("        database sha256 %s   %s"
+          % (db_sum, "✅ equal" if py_sum == db_sum else "❌ DIFFERENT"))
+    if (py_sum == db_sum) != ok and not partial:
+        # Belt and braces, and it has caught a real class of bug elsewhere:
+        # if these two ever disagree, one of the two comparisons is not
+        # looking at what it claims to. Say so rather than pick a winner.
+        problems.append(
+            "the row-by-row comparison and the checksum DISAGREE. One of them "
+            "is not reading what it says it is — do not trust either until "
+            "that is explained.")
+        ok = False
+    print()
+
+    # ── the reach control ────────────────────────────────────────────────
+    #
+    # ⚠️ RUN WHATEVER THE CONTENT COMPARISON SAID, and reported even when the
+    # rest passed. `ks4_assignment_bank_read` grants SELECT to `authenticated`
+    # and to nobody else; the anon key is not authenticated, so it must read
+    # nothing. If it can read the table, every answer key in the pool is
+    # public — a failure the row-for-row comparison cannot see, because the
+    # rows would be perfectly correct.
+    #
+    # An anon read that ERRORS (401/403) is also a pass: refused is refused.
+    # What fails is rows coming back.
+    try:
+        leak = api("/rest/v1/%s?select=id&limit=1" % TABLE, {"apikey": key})
+        if leak:
+            print("        ❌ ANON READ RETURNED %d ROW(S) — the pool is "
+                  "readable without signing in." % len(leak))
+            problems.append(
+                "public.%s is readable by the anon key. Every answer key in "
+                "the pool is public. Check the RLS policy before anything "
+                "else." % TABLE)
+            ok = False
+        else:
+            print("        anon read     0 rows  ✅ refused to the public "
+                  "(authenticated only)")
+    except urllib.error.HTTPError as exc:
+        print("        anon read     HTTP %s  ✅ refused to the public "
+              "(authenticated only)" % exc.code)
+    except Exception as exc:
+        # Could not run the control. Not drift, and NOT silence either.
+        print("        anon read     ⚠️ could not be run (%s) — the reach "
+              "half of this verify was NOT made." % exc)
     print()
 
     if problems:
