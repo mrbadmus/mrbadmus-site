@@ -343,17 +343,16 @@ QUESTIONS = [
         "id": "p1-01-e05",
         "band": "easier",
         "text": "Which of these is an energy STORE?",
-        "options": [
-            {"text": "The chemical store of a battery", "correct": True},
+        "options": [            {"text": "A sound wave travelling through air", "correct": False,
+             "why": "Sound is a pathway too; the energy is on its way from "
+                    "one store to another."},
             {"text": "A beam of light crossing a room", "correct": False,
              "why": "Light is a pathway — a way energy travels — not "
                     "somewhere it sits and waits."},
             {"text": "An electric current in a wire", "correct": False,
              "why": "A current carries energy from one store to another. "
                     "Nothing is held in the current itself."},
-            {"text": "A sound wave travelling through air", "correct": False,
-             "why": "Sound is a pathway too; the energy is on its way from "
-                    "one store to another."},
+            {"text": "The chemical store of a battery", "correct": True},
         ],
         "figure": None,
     },
@@ -361,17 +360,16 @@ QUESTIONS = [
         "id": "p1-01-e06",
         "band": "easier",
         "text": "A mug of hot tea holds energy in which store?",
-        "options": [
-            {"text": "The chemical store", "correct": False,
+        "options": [            {"text": "The chemical store", "correct": False,
              "why": "A chemical store fills when bonds are rearranged, as in "
                     "a battery or a fuel — not by being warmed."},
-            {"text": "The thermal store", "correct": True},
-            {"text": "The kinetic store", "correct": False,
-             "why": "The mug as a whole is not moving. The particles are, and "
-                    "that is counted as the thermal store."},
             {"text": "The elastic store", "correct": False,
              "why": "An elastic store fills when something is stretched or "
                     "squashed, which the tea is not."},
+            {"text": "The kinetic store", "correct": False,
+             "why": "The mug as a whole is not moving. The particles are, and "
+                    "that is counted as the thermal store."},
+            {"text": "The thermal store", "correct": True},
         ],
         "figure": None,
     },
@@ -400,9 +398,11 @@ QUESTIONS = [
         "band": "standard",
         "text": "A catapult is pulled back and released, firing a stone. "
                 "Which store empties and which fills?",
-        "options": [
-            {"text": "The elastic store empties and the kinetic store fills",
-             "correct": True},
+        "options": [            {"text": "The elastic store empties and the thermal store fills "
+                     "only",
+             "correct": False,
+             "why": "A little does warm the rubber, but the point of a "
+                    "catapult is the kinetic store of the stone."},
             {"text": "The kinetic store empties and the elastic store fills",
              "correct": False,
              "why": "That is the pull-back, not the release. On release the "
@@ -411,11 +411,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Nothing chemical happens in a catapult. The chemical "
                     "store emptied earlier, in the arm that pulled it."},
-            {"text": "The elastic store empties and the thermal store fills "
-                     "only",
-             "correct": False,
-             "why": "A little does warm the rubber, but the point of a "
-                    "catapult is the kinetic store of the stone."},
+            {"text": "The elastic store empties and the kinetic store fills",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -424,10 +421,11 @@ QUESTIONS = [
         "band": "standard",
         "text": "A wind-up radio is cranked and then plays music. Which "
                 "sequence of stores is right?",
-        "options": [
-            {"text": "Chemical in the arm, then elastic in the spring, then "
-                     "thermal and sound leaving",
-             "correct": True},
+        "options": [            {"text": "Thermal in the arm, then kinetic in the spring, then "
+                     "chemical in the speaker",
+             "correct": False,
+             "why": "The muscles empty a chemical store, and a wound spring "
+                    "is stretched, so its store is elastic."},
             {"text": "Elastic in the spring, then electrical stored in the "
                      "wires, then sound stored in the air",
              "correct": False,
@@ -438,11 +436,9 @@ QUESTIONS = [
              "correct": False,
              "why": "A wound spring holds an elastic store, and nothing in "
                     "the radio holds a chemical one."},
-            {"text": "Thermal in the arm, then kinetic in the spring, then "
-                     "chemical in the speaker",
-             "correct": False,
-             "why": "The muscles empty a chemical store, and a wound spring "
-                    "is stretched, so its store is elastic."},
+            {"text": "Chemical in the arm, then elastic in the spring, then "
+                     "thermal and sound leaving",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -479,10 +475,11 @@ QUESTIONS = [
         "band": "harder",
         "text": "A skydiver falls at a constant speed under an open "
                 "parachute. Which account of the stores is correct?",
-        "options": [
-            {"text": "The gravitational store empties, the kinetic store is "
-                     "unchanged, thermal stores in the air fill",
-             "correct": True},
+        "options": [            {"text": "The kinetic store empties into the thermal store of the "
+                     "air",
+             "correct": False,
+             "why": "The kinetic store stays the same size. What is emptying "
+                    "is the gravitational store."},
             {"text": "The gravitational store empties and the kinetic store "
                      "fills at the same rate",
              "correct": False,
@@ -492,11 +489,9 @@ QUESTIONS = [
              "correct": False,
              "why": "The skydiver is still losing height, so the "
                     "gravitational store is emptying every second."},
-            {"text": "The kinetic store empties into the thermal store of the "
-                     "air",
-             "correct": False,
-             "why": "The kinetic store stays the same size. What is emptying "
-                    "is the gravitational store."},
+            {"text": "The gravitational store empties, the kinetic store is "
+                     "unchanged, thermal stores in the air fill",
+             "correct": True},
         ],
         "figure": None,
     },
