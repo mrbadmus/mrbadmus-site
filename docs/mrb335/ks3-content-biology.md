@@ -87,3 +87,31 @@ did, so nothing was lost. `b4-03-s09`'s distractor and its `why` appealed to
 were a named list became "the airway", the unit's own term. One length-parity
 regression introduced by the h10 rewrite was closed afterwards by lengthening a
 distractor rather than trimming the key.
+
+---
+
+## B2 — the skeleton and movement (4 lessons, +108 rows)
+
+Every lesson took 9 per band: `e05–e13`, `s05–s13`, `h05–h13`. Lesson 04's
+levers and forces carry the calculation rows, with units stated.
+
+**Review fixes.** Two science corrections found by the cold read before any
+reviewer saw the unit: `b2-02-h06`'s stem claimed "a horse's leg joints are
+almost all hinges", which is false — a horse's hip and shoulder are
+ball-and-socket — now scoped to the lower leg; and `b2-03-s06`'s key said a
+held biceps is "matching the weight exactly", which is only true of turning
+effects and so reached into lesson 04.
+
+Four flagged stems in `questions_02_joints.py` said "this lesson". Sweeping the
+whole unit found the defect at **10 sites across 3 files**, two of them in
+`why` fields — the finding that made the lane extend the rule to whys
+everywhere. All ten fixed; all four rewritten stems keep their original four
+options and original correct answer.
+
+⚠️ **A re-wrap artefact worth knowing about.** The author's helper used
+`textwrap` with default `break_on_hyphens`, so a hyphenated word split across
+source lines gained a spurious space and `b2-02-s11` rendered to the child as
+"range-against- stability". Caught by reading the rows back as a child sees
+them, not by any gate. The helper was hardened with `break_on_hyphens=False`
+and all 108 rows swept for the signature. The lane's reviewer now checks for it
+(`\w-\s` and doubled spaces) across stems, options and whys.
