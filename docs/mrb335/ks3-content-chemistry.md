@@ -698,3 +698,52 @@ checks clean; `verify_answer_positions` OK; `verify_answer_lengths` green on
 every chemistry scope.
 
 ---
+## Closing summary — the chemistry lane is complete
+
+**870 new rows across ten units.** Every `(unit, band)` is at or above the
+floor of 50.
+
+| unit | lessons | easier | standard | harder | new rows |
+|---|---|---|---|---|---|
+| C1 | 6 | 52 | 52 | 52 | 84 |
+| C2 | 6 | 52 | 52 | 52 | 84 |
+| C3 | 7 | 51 | 51 | 51 | 69 |
+| C4 | 5 | 51 | 51 | 51 | 93 |
+| C5 | 5 | 51 | 51 | 51 | 93 |
+| C6 | 7 | 56 | 56 | 56 | 84 |
+| C7 | 4 | 51 | 51 | 51 | 117 |
+| C8 | 7 | 51 | 51 | 51 | 69 |
+| C9 | 4 | 52 | 52 | 52 | 108 |
+| C10 | 6 | 51 | 51 | 51 | 81 |
+
+Every row lands at `bank_position` ≥ 12 by construction, so `auto_pool()` sees
+exactly what it saw before this run and no weekly assignment changes.
+
+### Gates, at the end
+
+- `python3 verify_questions.py` — **OK, 185 lessons, 5142 questions, all nine
+  checks clean** across the whole key stage.
+- `python3 verify_answer_positions.py` — healthy in both key stages.
+- `python3 verify_answer_lengths.py` — **green on all ten chemistry scopes**,
+  every one between 18.9% and 28.8% against a chance rate of 25%. Five of the
+  ten carried recorded baselines of 65.4% to 88.2%; all five are now at chance.
+  The file still fails overall on sixteen scopes, every one of them a biology
+  or physics unit.
+
+### Two things the next lane should take from this
+
+1. **Both answer tells have to be aimed at, not avoided.** Fixing the giveaway
+   by lengthening distractors produced its mirror — "the long option is never
+   right" — which fails the same gate. The target is chance: make the key the
+   longest in about a quarter of the rows.
+2. **A near-duplicate is the top-up's characteristic defect, and no gate sees
+   it.** `validate_lesson` refuses a repeated string; it cannot refuse a
+   repeated QUESTION. Thirty-nine rows across this lane asked something their
+   own unit already asked, in different words. The detector is in the lane's
+   scratch directory and is thirty lines; it is worth keeping.
+
+### Open for Mide
+
+- **`c9-04-h02` marks the wrong answer correct** — steel and concrete swapped.
+  Live, inside the untouchable first twelve, and written up in the C9 section
+  above with exactly what needs changing.
