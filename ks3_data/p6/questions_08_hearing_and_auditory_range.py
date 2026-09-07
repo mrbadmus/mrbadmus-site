@@ -294,4 +294,77 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-08-e05",
+        "band": "easier",
+        "text": "Sound below the bottom of the human range is called…",
+        "options": [
+            {"text": "ultrasound", "correct": False,
+             "why": "Ultrasound is ABOVE the top of our range, not below the "
+                    "bottom of it."},
+            {"text": "infrasound", "correct": True},
+            {"text": "silence", "correct": False,
+             "why": "It is a real sound that other animals hear; it is only "
+                    "silent to us."},
+            {"text": "a rarefaction", "correct": False,
+             "why": "A rarefaction is a stretched-out patch within any sound "
+                    "wave, at any frequency."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-08-s05",
+        "band": "standard",
+        "text": "A whistle sounds steadily at 25 000 Hz in a room holding a "
+                "person and a dog. Who hears it?",
+        "options": [
+            {"text": "Both of them, because it is a real sound",
+             "correct": False,
+             "why": "It is real, but 25 000 Hz is above the top of a human "
+                    "range of about 20 000 Hz."},
+            {"text": "Neither, because nothing is really being made",
+             "correct": False,
+             "why": "The whistle is vibrating and sending out a wave like any "
+                    "other."},
+            {"text": "The dog only, whose range reaches higher",
+             "correct": True},
+            {"text": "The person only, because dogs hear lower notes",
+             "correct": False,
+             "why": "A dog's range reaches far higher than ours, not lower."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-08-h05",
+        "band": "harder",
+        "text": "A bat calls at 80 000 Hz. Why is that not a different KIND "
+                "of sound from a human shout?",
+        "options": [
+            {"text": "Because both are made by vibrations and obey the same "
+                     "rules; only our ears differ",
+             "correct": True},
+            {"text": "Because a bat's call is much quieter, so it is only a "
+                     "faint version",
+             "correct": False,
+             "why": "Loudness is amplitude and is a separate matter; some bat "
+                    "calls are extremely loud."},
+            {"text": "Because it becomes an ordinary sound once it reflects "
+                     "off something",
+             "correct": False,
+             "why": "Reflecting does not change a sound's frequency, so it "
+                    "comes back just as inaudible."},
+            {"text": "Because all sound above 20 000 Hz travels faster than "
+                     "audible sound",
+             "correct": False,
+             "why": "Every frequency travels at the same speed through the "
+                    "same material."},
+        ],
+        "figure": None,
+    },
 ]

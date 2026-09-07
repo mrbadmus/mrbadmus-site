@@ -327,4 +327,142 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-01-e05",
+        "band": "easier",
+        "text": "What does a wave carry from place to place?",
+        "options": [            {"text": "Air trapped under the surface", "correct": False,
+             "why": "Waves cross deep open water where no air is trapped "
+                    "beneath them."},
+            {"text": "The water itself, from one end of the tank to the other",
+             "correct": False,
+             "why": "A float bobs and stays put, so the water is not "
+                    "travelling along with the wave."},
+            {"text": "Nothing — a wave is only a shape on the surface",
+             "correct": False,
+             "why": "It certainly carries something: a distant storm can send "
+                    "energy right across an ocean."},
+            {"text": "Energy, without carrying the material with it",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-e06",
+        "band": "easier",
+        "text": "The lowest point of a water wave is called the…",
+        "options": [
+            {"text": "crest", "correct": False,
+             "why": "The crest is the highest point, at the top of the wave."},
+            {"text": "trough", "correct": True},
+            {"text": "amplitude", "correct": False,
+             "why": "Amplitude is a distance measured from the still level, "
+                    "not a place on the wave."},
+            {"text": "wavelength", "correct": False,
+             "why": "Wavelength is the distance from one crest to the next, "
+                    "not a point."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-01-s05",
+        "band": "standard",
+        "text": "A wave has a wavelength of 0.80 m. How far is it from one "
+                "trough to the next?",
+        "options": [
+            {"text": "0.40 m, because a trough is halfway along",
+             "correct": False,
+             "why": "Trough to CREST is half a wavelength; trough to trough is "
+                    "a whole one."},
+            {"text": "1.60 m", "correct": False,
+             "why": "That doubles it. One full wave takes you from a trough to "
+                    "the next trough."},
+            {"text": "0.80 m", "correct": True},
+            {"text": "It cannot be told without the amplitude",
+             "correct": False,
+             "why": "Amplitude is how far the surface rises, and it does not "
+                    "affect the spacing at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-s06",
+        "band": "standard",
+        "text": "A ripple-tank dipper is made to move further up and down, at "
+                "the same rate as before. What changes?",
+        "options": [
+            {"text": "The wavelength gets longer and the amplitude stays the "
+                     "same",
+             "correct": False,
+             "why": "The two are the wrong way round: it is how FAR it moves "
+                    "that has changed, not how often."},
+            {"text": "Both the amplitude and the wavelength get bigger",
+             "correct": False,
+             "why": "Wavelength is set by how often the dipper bobs, and that "
+                    "has not changed."},
+            {"text": "Neither changes, because the dipper is the same dipper",
+             "correct": False,
+             "why": "Moving further each time is a real change, and the waves "
+                    "show it."},
+            {"text": "The amplitude gets bigger and the wavelength stays the "
+                     "same",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-01-h05",
+        "band": "harder",
+        "text": "Two wave trains cross the same tank, one with twice the "
+                "amplitude of the other. Compare their energy and their "
+                "wavelengths.",
+        "options": [
+            {"text": "The taller one carries more energy, and the wavelengths "
+                     "need not differ",
+             "correct": True},
+            {"text": "The taller one carries more energy, so its wavelength "
+                     "must be longer too",
+             "correct": False,
+             "why": "Amplitude and wavelength are independent — a tall wave "
+                    "can be closely spaced."},
+            {"text": "They carry the same energy, because the tank is the "
+                     "same",
+             "correct": False,
+             "why": "A bigger disturbance carries more energy; that is why a "
+                    "storm swell does damage."},
+            {"text": "The shorter one carries more energy, because it is "
+                     "packed tighter",
+             "correct": False,
+             "why": "Nothing about the height of these waves is set by how "
+                    "tightly they are packed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-h06",
+        "band": "harder",
+        "text": "A cork bobs up and down twenty times as a wave train passes "
+                "and finishes where it began. What has crossed the tank?",
+        "options": [
+            {"text": "The water, which is why the cork moved", "correct": False,
+             "why": "The cork ends where it started, so the water beneath it "
+                    "has gone nowhere either."},
+            {"text": "Nothing has crossed it — the surface simply moved up "
+                     "and down",
+             "correct": False,
+             "why": "Something reached the far end: the disturbance arrived "
+                    "there and could do work on a float."},
+            {"text": "The disturbance, carrying energy with it", "correct": True},
+            {"text": "Air pushed along above the surface", "correct": False,
+             "why": "The wave travels just as well in still air, so moving "
+                    "air is not what crossed."},
+        ],
+        "figure": None,
+    },
 ]

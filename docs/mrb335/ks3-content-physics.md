@@ -284,6 +284,82 @@ checker misreading the subject. It now matches deictic phrases only
 
 ---
 
+## P6 · Waves and sound — 9 lessons, 48 new rows (16 per band)
+
+Unit total: **52 / 52 / 52**. Two per band on lessons 01–07, one per band on
+08–09.
+
+| lesson | ids added (each band) |
+|---|---|
+| 01 waves on water | e05–e06, s05–s06, h05–h06 |
+| 02 transverse waves and superposition | e05–e06, s05–s06, h05–h06 |
+| 03 how sound is made | e05–e06, s05–s06, h05–h06 |
+| 04 sound is longitudinal | e05–e06, s05–s06, h05–h06 |
+| 05 frequency, pitch and loudness | e05–e06, s05–s06, h05–h06 |
+| 06 sound needs a medium | e05–e06, s05–s06, h05–h06 |
+| 07 echoes, reflection and absorption | e05–e06, s05–s06, h05–h06 |
+| 08 hearing and auditory range | e05, s05, h05 |
+| 09 ultrasound at work | e05, s05, h05 |
+
+The out-and-back path is the arithmetic this unit gets wrong most often, so it
+is asked three ways: as the plain fact (`p6-07-e06`), as a cliff distance
+(`p6-07-s05`) and a sonar depth (`p6-07-h05`), and finally as the consequence
+of forgetting it (`p6-07-h06` — the answer comes out twice the true distance,
+not half). The independence of pitch and loudness is tested from the amplitude
+end (`p6-05-h06`, a string plucked harder) and the speed end (`p6-05-s06`, two
+notes arriving together).
+
+**Review fixes.** Five length flags reworded. Then a pattern the row-by-row
+read would not have caught: across the 48 new rows the correct option sat in
+the **last slot only once**, and in the first slot thirteen times. That is a
+tell a test-wise student can use without reading a single stem. Eight rows had
+two of their four options swapped — the same four options and the same correct
+one, in a different order — bringing the spread to 6 / 20 / 13 / 9. The lane's
+mechanical check reports this spread after every unit; it is the reason it does.
+
+---
+
+## ⚠️ `git add` was scoped correctly and a commit still swept in another lane
+
+Found by the commander in this lane's **P5 commit `586aaa0c4`**, which carried
+fifteen files belonging to the site lane (`teacher/*`,
+`mrbadmus_site/teacher/*`, `shared/set-work.js`) alongside the four that were
+this lane's. It photographed a temporary revert of those pages, which then had
+to be repaired.
+
+**The `git add` was not the fault.** Every commit in this lane ran exactly the
+scoped form the brief asks for:
+
+```bash
+git add ks3_data/p5/ docs/mrb335/ks3-content-physics.md
+git commit -m "…"
+```
+
+**`git commit` is what widened it.** `git commit` records the WHOLE INDEX, not
+the paths just added — and in a shared worktree the index is shared too. A
+co-tenant lane that has run its own `git add` leaves its files staged, and the
+next lane to commit takes them along, whatever that lane added itself. Nothing
+in the scoped `add` prevents it, and `git status --short` on your own paths does
+not show it either: the extra files sit under a heading you were not reading.
+
+**The form that cannot do this**, used for every unit from P6 onwards:
+
+```bash
+git commit ks3_data/p6/ docs/mrb335/ks3-content-physics.md -m "…"
+```
+
+A commit with pathspecs commits exactly those paths and **ignores the index
+entirely**, so a co-tenant's staged work cannot ride along even if it is
+staged at that moment. `git status --short` is checked first regardless, and
+`git show --stat` after, to confirm the file list is only this lane's.
+
+**Scope of the damage: P5 only.** The other five commits carry exactly their
+own unit plus the log — P3 4 files, P1 9, P4 10, P2 6, P8 8 — checked with
+`git show --name-only`. The repair to the teacher pages was the commander's;
+this lane has not touched those files.
+
+---
+
 ## ⚠️ A gate defect that is NOT content, found while topping up P1
 
 From the moment the biology lane's B1 top-up landed in this worktree,

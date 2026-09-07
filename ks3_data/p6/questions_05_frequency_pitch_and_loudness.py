@@ -296,4 +296,128 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-05-e05",
+        "band": "easier",
+        "text": "Frequency is measured in…",
+        "options": [            {"text": "seconds (s)", "correct": False,
+             "why": "Seconds measure time; frequency counts how many "
+                    "vibrations fit into each one."},
+            {"text": "decibels (dB)", "correct": False,
+             "why": "Decibels describe how loud a sound is, which is set by "
+                    "the amplitude instead."},
+            {"text": "metres per second (m/s)", "correct": False,
+             "why": "That is a speed. Every frequency of sound travels at the "
+                    "same speed in one material."},
+            {"text": "hertz (Hz)", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-05-e06",
+        "band": "easier",
+        "text": "Which measurement decides how LOUD a note sounds?",
+        "options": [
+            {"text": "The frequency", "correct": False,
+             "why": "Frequency sets the pitch — how high the note is, not how "
+                    "loud."},
+            {"text": "The amplitude", "correct": True},
+            {"text": "The speed of the sound", "correct": False,
+             "why": "Every sound travels at the same speed through the same "
+                    "air, loud or quiet."},
+            {"text": "The wavelength", "correct": False,
+             "why": "Wavelength goes with frequency, so it is tied to pitch "
+                    "rather than loudness."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-05-s05",
+        "band": "standard",
+        "text": "A string makes 1500 complete vibrations in 5.0 seconds. What "
+                "is its frequency?",
+        "options": [
+            {"text": "7500 Hz", "correct": False,
+             "why": "That is 1500 × 5. Frequency is vibrations DIVIDED by the "
+                    "time."},
+            {"text": "300 Hz", "correct": True},
+            {"text": "0.0033 Hz", "correct": False,
+             "why": "That is 5 ÷ 1500, the division upside down."},
+            {"text": "1495 Hz", "correct": False,
+             "why": "That subtracts, and a count cannot have a time taken "
+                    "from it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-05-s06",
+        "band": "standard",
+        "text": "A 200 Hz note and an 800 Hz note are played together across "
+                "the same room. Which reaches the listener first?",
+        "options": [
+            {"text": "The 800 Hz note, because higher notes travel faster",
+             "correct": False,
+             "why": "Pitch has no effect on speed; if it did, music would "
+                    "arrive scrambled."},
+            {"text": "The 200 Hz note, because longer waves cover ground "
+                     "faster",
+             "correct": False,
+             "why": "Wavelength does not change the speed either — all of it "
+                    "arrives together."},
+            {"text": "They arrive together, at the same speed", "correct": True},
+            {"text": "The louder of the two, whichever that is",
+             "correct": False,
+             "why": "Loudness is amplitude, and it does not change the speed "
+                    "of sound at all."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-05-h05",
+        "band": "harder",
+        "text": "A tuning fork of frequency 512 Hz rings for 2.5 s. How many "
+                "complete vibrations does it make?",
+        "options": [
+            {"text": "1280", "correct": True},
+            {"text": "205", "correct": False,
+             "why": "That is 512 ÷ 2.5. The count is the frequency MULTIPLIED "
+                    "by the time."},
+            {"text": "514.5", "correct": False,
+             "why": "That adds the time to the frequency, which cannot be "
+                    "done."},
+            {"text": "0.0049", "correct": False,
+             "why": "That is 2.5 ÷ 512, the division the wrong way round."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-05-h06",
+        "band": "harder",
+        "text": "A guitar string is plucked harder than before, and nothing "
+                "else is changed. What happens to the note?",
+        "options": [
+            {"text": "It becomes higher, because the string moves faster",
+             "correct": False,
+             "why": "It does move faster, but it still completes the same "
+                    "number of vibrations each second."},
+            {"text": "It becomes louder and lower at the same time",
+             "correct": False,
+             "why": "Nothing lowers the pitch: the string's rate of vibration "
+                    "is unchanged."},
+            {"text": "It becomes louder: the amplitude is bigger but the rate "
+                     "is not",
+             "correct": True},
+            {"text": "Nothing changes, because it is the same string",
+             "correct": False,
+             "why": "The amplitude has changed, and that is what the ear "
+                    "hears as loudness."},
+        ],
+        "figure": None,
+    },
 ]

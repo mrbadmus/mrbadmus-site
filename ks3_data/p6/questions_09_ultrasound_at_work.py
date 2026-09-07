@@ -305,4 +305,67 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-09-e05",
+        "band": "easier",
+        "text": "A pulse of ultrasound is reflected at…",
+        "options": [            {"text": "the surface of the probe only", "correct": False,
+             "why": "The probe sends it in; the reflections that matter come "
+                    "from inside the material."},
+            {"text": "any point where the material gets warmer",
+             "correct": False,
+             "why": "Temperature changes the speed a little, but a reflection "
+                    "needs a boundary."},
+            {"text": "the point where its energy runs out", "correct": False,
+             "why": "A pulse fading away leaves nothing to reflect; a "
+                    "boundary is what sends it back."},
+            {"text": "a boundary between two different materials",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-09-s05",
+        "band": "standard",
+        "text": "A pulse is sent into a block and reflects off something "
+                "90 mm down. What total distance does it travel?",
+        "options": [
+            {"text": "90 mm", "correct": False,
+             "why": "That is the journey down only; the echo has to come back "
+                    "to the probe."},
+            {"text": "45 mm", "correct": False,
+             "why": "That halves the depth instead of doubling it — the "
+                    "halving comes later, when finding the depth."},
+            {"text": "180 mm", "correct": True},
+            {"text": "8100 mm", "correct": False,
+             "why": "That is 90 × 90. The two journeys are added, not "
+                    "multiplied."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-09-h05",
+        "band": "harder",
+        "text": "A pulse in steel at about 5000 m/s returns to the probe "
+                "0.040 ms after it left. How deep is the reflector?",
+        "options": [
+            {"text": "200 mm", "correct": False,
+             "why": "That is the whole path of 0.20 m; the reflector is half "
+                    "of it down."},
+            {"text": "100 mm", "correct": True},
+            {"text": "0.2 mm", "correct": False,
+             "why": "That reads the milliseconds as seconds, making the "
+                    "answer a thousand times too small."},
+            {"text": "125 000 mm", "correct": False,
+             "why": "That is 5000 ÷ 0.040, dividing where the calculation "
+                    "multiplies."},
+        ],
+        "figure": None,
+    },
 ]

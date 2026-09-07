@@ -294,4 +294,133 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-06-e05",
+        "band": "easier",
+        "text": "The speed of sound in water is about…",
+        "options": [
+            {"text": "340 m/s", "correct": False,
+             "why": "That is the figure for air; water's particles are far "
+                    "closer, so sound goes much faster."},
+            {"text": "1500 m/s", "correct": True},
+            {"text": "5000 m/s", "correct": False,
+             "why": "That is the figure for steel, where the particles are "
+                    "linked most strongly of the three."},
+            {"text": "30 m/s", "correct": False,
+             "why": "That is slower than sound in air, and water carries "
+                    "sound better than air does."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-06-e06",
+        "band": "easier",
+        "text": "Sound can travel through…",
+        "options": [
+            {"text": "air only", "correct": False,
+             "why": "It travels through water and through steel too, and "
+                    "faster in both."},
+            {"text": "gases and liquids, but not solids", "correct": False,
+             "why": "A tap on one end of a metal fence is heard at the other, "
+                    "so solids carry it well."},
+            {"text": "gases, liquids and solids", "correct": True},
+            {"text": "anything, including a vacuum", "correct": False,
+             "why": "A vacuum has no particles to pass the disturbance on, so "
+                    "sound cannot cross it at all."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-06-s05",
+        "band": "standard",
+        "text": "A sound takes 2.0 s to cross 3000 m of sea water. What is "
+                "its speed?",
+        "options": [
+            {"text": "6000 m/s", "correct": False,
+             "why": "That is 3000 × 2.0. Speed is distance DIVIDED by time."},
+            {"text": "1500 m/s", "correct": True},
+            {"text": "0.00067 m/s", "correct": False,
+             "why": "That is 2.0 ÷ 3000, the division upside down."},
+            {"text": "2998 m/s", "correct": False,
+             "why": "That subtracts, and a time cannot be taken from a "
+                    "distance."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-06-s06",
+        "band": "standard",
+        "text": "Why does a diver hear a boat's engine so clearly under "
+                "water?",
+        "options": [            {"text": "Because sound travels more slowly under water, so it "
+                     "lasts longer",
+             "correct": False,
+             "why": "It travels much faster in water — about 1500 m/s against "
+                    "340 m/s."},
+            {"text": "Because sound is louder under water than in air",
+             "correct": False,
+             "why": "Loudness depends on the source; what changes is how well "
+                    "the material carries the disturbance."},
+            {"text": "Because water has no particles to get in the way",
+             "correct": False,
+             "why": "It is full of particles, and that is exactly why sound "
+                    "travels through it so well."},
+            {"text": "Because water carries sound well, its particles being "
+                     "close together",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-06-h05",
+        "band": "harder",
+        "text": "A sound covers 680 m of air in 2.0 s, and the same 680 m of "
+                "steel in 0.136 s. What are the two speeds?",
+        "options": [
+            {"text": "340 m/s in air and 5000 m/s in steel", "correct": True},
+            {"text": "340 m/s in air and 340 m/s in steel", "correct": False,
+             "why": "The steel journey took a fifteenth of the time, so its "
+                    "speed cannot be the same."},
+            {"text": "1360 m/s in air and 92 m/s in steel", "correct": False,
+             "why": "Both come from multiplying rather than dividing, and "
+                    "they put the faster one in the wrong material."},
+            {"text": "0.003 m/s in air and 0.0002 m/s in steel",
+             "correct": False,
+             "why": "Both are the division upside down — time over distance "
+                    "rather than distance over time."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-06-h06",
+        "band": "harder",
+        "text": "Why does sound travel faster where the particles are closer "
+                "together and more strongly linked?",
+        "options": [
+            {"text": "Because the particles themselves travel further with "
+                     "each push",
+             "correct": False,
+             "why": "The particles barely move at all; it is the disturbance "
+                    "that travels."},
+            {"text": "Because each particle passes the disturbance on to its "
+                     "neighbour sooner",
+             "correct": True},
+            {"text": "Because a denser material has more energy to give the "
+                     "wave",
+             "correct": False,
+             "why": "The material adds no energy; all of it comes from the "
+                    "source."},
+            {"text": "Because there is less friction between close particles",
+             "correct": False,
+             "why": "Friction is not what limits the speed; how quickly one "
+                    "particle affects the next is."},
+        ],
+        "figure": None,
+    },
 ]

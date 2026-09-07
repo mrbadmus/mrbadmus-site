@@ -318,4 +318,141 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-04-e05",
+        "band": "easier",
+        "text": "A place in a sound wave where the air is pulled further "
+                "apart is called a…",
+        "options": [
+            {"text": "compression", "correct": False,
+             "why": "A compression is the opposite: a place where the air is "
+                    "bunched together."},
+            {"text": "rarefaction", "correct": True},
+            {"text": "trough", "correct": False,
+             "why": "Troughs belong to transverse waves, where the surface "
+                    "dips below its rest level."},
+            {"text": "vacuum", "correct": False,
+             "why": "A vacuum has no particles at all; a rarefaction still "
+                    "has air, just more spread out."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-04-e06",
+        "band": "easier",
+        "text": "Sound travelling through a steel bar is…",
+        "options": [
+            {"text": "transverse, because steel is solid", "correct": False,
+             "why": "Being solid does not change it: sound is longitudinal in "
+                    "solids, liquids and gases alike."},
+            {"text": "longitudinal, as it is in air", "correct": True},
+            {"text": "neither, because sound cannot pass through metal",
+             "correct": False,
+             "why": "It passes very well, and faster than through air."},
+            {"text": "transverse in the steel and longitudinal in the air",
+             "correct": False,
+             "why": "It is longitudinal in both; the material changes the "
+                    "speed, not the kind of wave."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-04-s05",
+        "band": "standard",
+        "text": "Which is a longitudinal wave: a rope flicked sideways, or a "
+                "slinky pushed along its own length?",
+        "options": [
+            {"text": "The rope, because the pulse travels along it",
+             "correct": False,
+             "why": "The pulse travels along both. What matters is which way "
+                    "the material itself moves."},
+            {"text": "The slinky, because its coils move along the direction "
+                     "of travel",
+             "correct": True},
+            {"text": "Both, because both send a pulse to the far end",
+             "correct": False,
+             "why": "Sending a pulse is what makes them waves; the rope's "
+                    "material moves at right angles, so it is transverse."},
+            {"text": "Neither — only sound in air is longitudinal",
+             "correct": False,
+             "why": "A pushed slinky is the standard model of a longitudinal "
+                    "wave precisely because it behaves like sound."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-04-s06",
+        "band": "standard",
+        "text": "Each patch of air in a sound wave finishes where it started. "
+                "What does that tell you?",
+        "options": [            {"text": "That the sound has not really travelled anywhere",
+             "correct": False,
+             "why": "The disturbance travels the whole way; it is the air "
+                    "that stays put."},
+            {"text": "That the wave must be transverse after all",
+             "correct": False,
+             "why": "Returning to the starting place happens in both kinds; "
+                    "the DIRECTION of the movement is what decides."},
+            {"text": "That sound can only travel a short distance",
+             "correct": False,
+             "why": "Thunder is heard kilometres away, with no air making the "
+                    "journey."},
+            {"text": "That no air travels from the source to the listener",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-04-h05",
+        "band": "harder",
+        "text": "A longitudinal wave has no humps to measure. What is its "
+                "amplitude?",
+        "options": [
+            {"text": "It has none, because there is nothing to measure",
+             "correct": False,
+             "why": "It certainly has one — that is what makes a sound loud "
+                    "or quiet."},
+            {"text": "The distance between one compression and the next",
+             "correct": False,
+             "why": "That is the wavelength, which is a different measurement "
+                    "altogether."},
+            {"text": "How far each patch of air moves from its rest place",
+             "correct": True},
+            {"text": "How many compressions pass each second",
+             "correct": False,
+             "why": "That is the frequency, which sets the pitch rather than "
+                    "the loudness."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-04-h06",
+        "band": "harder",
+        "text": "In a compression the air is bunched together. Why does that "
+                "not mean air is travelling to your ear?",
+        "options": [
+            {"text": "Because the bunching is too small to notice",
+             "correct": False,
+             "why": "Size is not the point: even a very loud sound moves no "
+                    "air from the source to the listener."},
+            {"text": "Because the air is bunched only near the source",
+             "correct": False,
+             "why": "Compressions form all the way along; each one is passed "
+                    "on to the next patch of air."},
+            {"text": "Because each patch shuffles to and fro, while the "
+                     "bunching travels on",
+             "correct": True},
+            {"text": "Because the compression is made of a different gas",
+             "correct": False,
+             "why": "It is the same air, momentarily closer together than "
+                    "usual."},
+        ],
+        "figure": None,
+    },
 ]

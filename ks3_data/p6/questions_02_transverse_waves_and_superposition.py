@@ -321,4 +321,135 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-02-e05",
+        "band": "easier",
+        "text": "Two waves overlap and then pass each other. What happens to "
+                "each wave afterwards?",
+        "options": [            {"text": "Both stop where they met", "correct": False,
+             "why": "Meeting does not stop a wave — it keeps travelling in "
+                    "the direction it was going."},
+            {"text": "The larger one carries on and the smaller one is gone",
+             "correct": False,
+             "why": "Neither is destroyed; both emerge from the overlap "
+                    "unchanged."},
+            {"text": "They join into one wave of the average size",
+             "correct": False,
+             "why": "Averaging never happens. They add while they overlap and "
+                    "then separate again."},
+            {"text": "Each carries on exactly as it was", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-02-e06",
+        "band": "easier",
+        "text": "Adding the two displacements at every point where waves "
+                "overlap is called…",
+        "options": [
+            {"text": "reflection", "correct": False,
+             "why": "Reflection is a wave bouncing off a barrier, which is a "
+                    "different behaviour."},
+            {"text": "absorption", "correct": False,
+             "why": "Absorption is a surface taking energy from a wave, not "
+                    "two waves meeting."},
+            {"text": "superposition", "correct": True},
+            {"text": "refraction", "correct": False,
+             "why": "Refraction is a wave changing direction as it enters a "
+                    "different material."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-02-s05",
+        "band": "standard",
+        "text": "A crest of amplitude 5 cm meets a trough of amplitude 2 cm. "
+                "What is the displacement there at that instant?",
+        "options": [
+            {"text": "7 cm upwards", "correct": False,
+             "why": "That adds them as though both were crests; a trough "
+                    "counts the other way."},
+            {"text": "3 cm upwards", "correct": True},
+            {"text": "3 cm downwards", "correct": False,
+             "why": "The size is right but the direction is not: the crest is "
+                    "the larger of the two."},
+            {"text": "0 cm — they cancel", "correct": False,
+             "why": "They only cancel completely when the two are the same "
+                    "size, and these are not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-02-s06",
+        "band": "standard",
+        "text": "A ripple reflects off the wall of a tank. What can then "
+                "happen to it?",
+        "options": [
+            {"text": "It stops at the wall, having given up its energy",
+             "correct": False,
+             "why": "Some is absorbed, but a reflected ripple travels back "
+                    "across the tank."},
+            {"text": "It travels back and can overlap with the waves still "
+                     "arriving",
+             "correct": True},
+            {"text": "It travels back at half the speed it arrived with",
+             "correct": False,
+             "why": "The speed is set by the water, and reflecting does not "
+                    "change it."},
+            {"text": "It carries on through the wall into the bench",
+             "correct": False,
+             "why": "The wall is what it reflects from; that is what makes "
+                    "the returning ripple."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-02-h05",
+        "band": "harder",
+        "text": "A crest of amplitude 3 mm meets a trough of amplitude 5 mm. "
+                "What is seen where they overlap?",
+        "options": [
+            {"text": "A displacement of 8 mm downwards", "correct": False,
+             "why": "That adds their sizes; a crest and a trough count "
+                    "against each other."},
+            {"text": "Flat water, because a crest and a trough always cancel",
+             "correct": False,
+             "why": "They cancel completely only when the two amplitudes "
+                    "match, and these differ by 2 mm."},
+            {"text": "A displacement of 2 mm downwards", "correct": True},
+            {"text": "A displacement of 2 mm upwards", "correct": False,
+             "why": "The size is right but the trough is the larger, so what "
+                    "is left over points downwards."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-02-h06",
+        "band": "harder",
+        "text": "In a crossing pattern some patches heave twice as far and "
+                "others stay flat. What is true at every flat patch?",
+        "options": [
+            {"text": "The two waves arrive there crest on trough",
+             "correct": True},
+            {"text": "Only one of the two waves ever reaches there",
+             "correct": False,
+             "why": "Both reach every patch; it is how they line up that "
+                    "differs from place to place."},
+            {"text": "The water there is deeper, so the waves are damped",
+             "correct": False,
+             "why": "The pattern appears in a tank of even depth, so depth is "
+                    "not what makes it."},
+            {"text": "The energy of both waves has been absorbed there",
+             "correct": False,
+             "why": "Nothing absorbs it — the waves carry on past the flat "
+                    "patch unchanged."},
+        ],
+        "figure": None,
+    },
 ]

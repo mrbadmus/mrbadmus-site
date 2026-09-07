@@ -303,4 +303,129 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-07-e05",
+        "band": "easier",
+        "text": "A surface that gives a strong echo is…",
+        "options": [
+            {"text": "soft and open, like a heavy curtain", "correct": False,
+             "why": "Soft open materials absorb sound, which is why a "
+                    "curtained room is quiet."},
+            {"text": "hard, flat and heavy", "correct": True},
+            {"text": "warm rather than cold", "correct": False,
+             "why": "Temperature is not what decides how much a surface "
+                    "reflects."},
+            {"text": "rough and full of small holes", "correct": False,
+             "why": "That is what acoustic foam is like, and it is designed "
+                    "to absorb rather than reflect."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-07-e06",
+        "band": "easier",
+        "text": "A shout reflects from a wall and comes back. The total "
+                "distance the sound travels is…",
+        "options": [
+            {"text": "the distance to the wall", "correct": False,
+             "why": "That is only the outward leg; the sound has to come back "
+                    "before it is heard."},
+            {"text": "half the distance to the wall", "correct": False,
+             "why": "The path is longer than the distance to the wall, not "
+                    "shorter."},
+            {"text": "twice the distance to the wall", "correct": True},
+            {"text": "four times the distance to the wall", "correct": False,
+             "why": "There are two journeys, out and back, not four."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-07-s05",
+        "band": "standard",
+        "text": "An echo returns from a cliff 2.0 s after the shout. Sound "
+                "travels at about 340 m/s. How far away is the cliff?",
+        "options": [
+            {"text": "680 m", "correct": False,
+             "why": "That is the whole path, out and back. The cliff is half "
+                    "of it away."},
+            {"text": "340 m", "correct": True},
+            {"text": "170 m", "correct": False,
+             "why": "That halves it twice — once for the two journeys and "
+                    "once too often."},
+            {"text": "1360 m", "correct": False,
+             "why": "That doubles the total path instead of halving it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-07-s06",
+        "band": "standard",
+        "text": "Why does hanging a heavy curtain across a bare wall reduce "
+                "the echo in a room?",
+        "options": [            {"text": "Because sound cannot travel through fabric at all",
+             "correct": False,
+             "why": "Some passes through and some is absorbed — an echo needs "
+                    "sound sent BACK."},
+            {"text": "Because the curtain makes the room smaller, so there is "
+                     "no time for an echo",
+             "correct": False,
+             "why": "A curtain hardly changes the distance; what changes is "
+                    "how much comes back."},
+            {"text": "Because the curtain stops the sound being made in the "
+                     "first place",
+             "correct": False,
+             "why": "The source is unaffected; the curtain acts on the sound "
+                    "after it arrives."},
+            {"text": "Because the curtain absorbs sound instead of reflecting "
+                     "it",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-07-h05",
+        "band": "harder",
+        "text": "A ship's pulse returns after 0.60 s through sea water at "
+                "about 1500 m/s. How deep is the water?",
+        "options": [
+            {"text": "900 m", "correct": False,
+             "why": "That is the whole path. The pulse went down and came "
+                    "back, so the depth is half of it."},
+            {"text": "450 m", "correct": True},
+            {"text": "2500 m", "correct": False,
+             "why": "That is 1500 ÷ 0.60, dividing where the calculation "
+                    "multiplies."},
+            {"text": "225 m", "correct": False,
+             "why": "That halves the answer a second time; only one halving "
+                    "is needed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-07-h06",
+        "band": "harder",
+        "text": "A student forgets that an echo makes two journeys. What "
+                "happens to their answer?",
+        "options": [
+            {"text": "It comes out half the true distance", "correct": False,
+             "why": "Forgetting to halve leaves the answer too big, not too "
+                    "small."},
+            {"text": "It comes out twice the true distance", "correct": True},
+            {"text": "It comes out four times the true distance",
+             "correct": False,
+             "why": "The path is doubled, not quadrupled, so the error is a "
+                    "factor of two."},
+            {"text": "It is unaffected, because the speed cancels out",
+             "correct": False,
+             "why": "The speed appears once either way; it is the path length "
+                    "that has been got wrong."},
+        ],
+        "figure": None,
+    },
 ]

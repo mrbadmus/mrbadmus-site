@@ -326,4 +326,148 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-03-e05",
+        "band": "easier",
+        "text": "A drum is struck and a sound is heard. What is making the "
+                "sound?",
+        "options": [            {"text": "The drummer's hand", "correct": False,
+             "why": "The hand supplies the energy; the vibrating surface is "
+                    "what produces the sound."},
+            {"text": "The air inside the drum, on its own", "correct": False,
+             "why": "The air carries the sound onwards, but the skin is what "
+                    "starts it vibrating."},
+            {"text": "The stick, which stores the sound and lets it out",
+             "correct": False,
+             "why": "Nothing stores sound. The stick sets the skin moving and "
+                    "the skin does the rest."},
+            {"text": "The vibrating drum skin", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-e06",
+        "band": "easier",
+        "text": "What does a microphone turn a vibration into?",
+        "options": [
+            {"text": "A louder sound", "correct": False,
+             "why": "Making a sound louder is a loudspeaker's job, at the "
+                    "other end of the chain."},
+            {"text": "A changing electrical signal", "correct": True},
+            {"text": "A beam of light carrying the note", "correct": False,
+             "why": "Nothing in a microphone produces light; it produces an "
+                    "electrical signal."},
+            {"text": "A store of sound to be released later", "correct": False,
+             "why": "Sound is never stored; the pattern is passed on as it "
+                    "arrives."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-03-s05",
+        "band": "standard",
+        "text": "A struck tuning fork is dipped into a beaker of water. What "
+                "happens, and what does it show?",
+        "options": [
+            {"text": "The water is thrown about, showing the prongs are "
+                     "moving",
+             "correct": True},
+            {"text": "The water stays still, showing the fork is not "
+                     "vibrating",
+             "correct": False,
+             "why": "The splashing is easy to see, and it is exactly the "
+                    "evidence the eye could not get from the fork alone."},
+            {"text": "The water heats up, showing sound is a kind of warmth",
+             "correct": False,
+             "why": "Sound is a disturbance passed between particles, not a "
+                    "thermal store."},
+            {"text": "The fork stops ringing at once, showing water blocks "
+                     "sound",
+             "correct": False,
+             "why": "It does damp quickly, but what the test shows is the "
+                    "movement, not a blocking effect."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-s06",
+        "band": "standard",
+        "text": "A loudspeaker is playing, and a hand is pressed firmly on "
+                "the cone. What happens?",
+        "options": [
+            {"text": "The sound gets louder, because the hand adds to the "
+                     "push",
+             "correct": False,
+             "why": "The hand stops the cone rather than helping it; there is "
+                    "nothing left to disturb the air."},
+            {"text": "The sound stops, because the cone can no longer "
+                     "vibrate",
+             "correct": True},
+            {"text": "The sound carries on, because the signal is still "
+                     "arriving",
+             "correct": False,
+             "why": "The signal arrives, but nothing turns it into a "
+                    "disturbance in the air."},
+            {"text": "The note gets lower, because the cone is now heavier",
+             "correct": False,
+             "why": "The cone is held still, not merely loaded, so there is "
+                    "no note at all."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-03-h05",
+        "band": "harder",
+        "text": "Why does a note stop the instant a ringing object is "
+                "gripped, rather than fading away over seconds?",
+        "options": [
+            {"text": "Because the hand absorbs the sound already in the room",
+             "correct": False,
+             "why": "A hand cannot mop up sound that has already left; what "
+                    "it stops is the source."},
+            {"text": "Because gripping it makes the note too low to hear",
+             "correct": False,
+             "why": "The note does not drop in pitch — it ceases to be "
+                    "produced at all."},
+            {"text": "Because the source stops vibrating, so no new "
+                     "disturbance is sent out",
+             "correct": True},
+            {"text": "Because the sound stored inside the object has been "
+                     "sealed in",
+             "correct": False,
+             "why": "Nothing is stored inside it; the sound existed only "
+                    "while the surface moved."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-h06",
+        "band": "harder",
+        "text": "A ringing bell is put inside a sealed box lined with thick "
+                "foam and almost nothing is heard. Is the bell still "
+                "vibrating?",
+        "options": [
+            {"text": "No — the foam stops it moving", "correct": False,
+             "why": "The foam never touches the bell; it absorbs the "
+                    "disturbance travelling through the air."},
+            {"text": "Yes, and the foam is absorbing the disturbance before "
+                     "it gets out",
+             "correct": True},
+            {"text": "No — sound cannot be made inside a closed box",
+             "correct": False,
+             "why": "The box is full of air, so the bell makes sound "
+                    "perfectly well inside it."},
+            {"text": "Yes, but the sound has been stored in the foam",
+             "correct": False,
+             "why": "The foam takes the energy into thermal stores; nothing "
+                    "keeps the sound for later."},
+        ],
+        "figure": None,
+    },
 ]
