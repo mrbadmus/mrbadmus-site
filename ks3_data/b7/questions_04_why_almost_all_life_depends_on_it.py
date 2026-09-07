@@ -527,8 +527,9 @@ QUESTIONS = [
         "text": "A slice of bread is two steps back to a producer. What is "
                 "the wheat grain in the middle of that chain?",
         "options": [
-            {"text": "A fruit the plant grows to attract the animals that "
-                     "will carry it away.",
+            {"text": "A fruit the plant grows in order to attract the "
+                     "animals that will eat it and carry its seeds away for "
+                     "it later.",
              "correct": False,
              "why": "Wheat is pollinated by the wind and spreads no fruit. "
                     "The grain is a seed, packed with starch for the "
@@ -542,8 +543,8 @@ QUESTIONS = [
             {"text": "A seed — a store of starch the plant packed for its "
                      "own seedling, which we intercept.",
              "correct": True},
-            {"text": "A piece of the root, swollen with the sugar the plant "
-                     "had no use for.",
+            {"text": "A swollen piece of the root, filled with the sugar "
+                     "that the plant itself had no immediate use for.",
              "correct": False,
              "why": "A grain grows on the ear, at the top of the plant. It "
                     "is a seed, and what is packed into it is starch."},
@@ -730,8 +731,9 @@ QUESTIONS = [
         "text": "A fungus eats no living organism at all. Why is it still not "
                 "a producer?",
         "options": [
-            {"text": "Because it grows in the dark, and a producer has to be "
-                     "somewhere lit.",
+            {"text": "Because it grows in the dark under the soil, and a "
+                     "producer has to live somewhere that the light can "
+                     "reach.",
              "correct": False,
              "why": "Where an organism lives is not the test. What settles it "
                     "is whether it builds its own organic molecules."},
@@ -741,8 +743,8 @@ QUESTIONS = [
              "why": "Roots are not the test either. Phytoplankton have none "
                     "and are producers, because they build sugar from carbon "
                     "dioxide."},
-            {"text": "Because it is not green, and only green organisms count "
-                     "as producers.",
+            {"text": "Because it has no green colour anywhere in it, and "
+                     "only green organisms are counted as producers.",
              "correct": False,
              "why": "Colour is not the test — some photosynthetic bacteria "
                     "are not green. What matters is building your own food."},
@@ -787,24 +789,24 @@ QUESTIONS = [
                 "A mature forest of the same size takes out far less. "
                 "Explain.",
         "options": [
-            {"text": "A mature forest's leaves are older, so their "
-                     "chlorophyll no longer absorbs light properly.",
+            {"text": "A mature forest's leaves are much older, so the "
+                     "chlorophyll in them no longer absorbs light properly.",
              "correct": False,
              "why": "Its leaves are new each year and work perfectly well. "
                     "What has changed is the balance between growth and "
                     "decay."},
             {"text": "A mature forest has stopped photosynthesising, since "
-                     "only young trees can do it.",
+                     "only young trees do it.",
              "correct": False,
              "why": "A mature forest photosynthesises enormously. It also "
                     "respires and decays at about the same rate, which is the "
                     "point."},
-            {"text": "In a mature forest the carbon locked into new growth is "
-                     "about matched by the carbon returned by respiration and "
-                     "decay.",
+            {"text": "In a mature forest, new growth locks up as much carbon "
+                     "as respiration and decay return.",
              "correct": True},
             {"text": "A mature forest is shaded by its own canopy, so almost "
-                     "no light reaches the leaves lower down in it.",
+                     "no light reaches any of the leaves lower down inside "
+                     "it.",
              "correct": False,
              "why": "The canopy is the part in full sunlight. The difference "
                     "is that a mature forest is no longer piling up new "
@@ -852,8 +854,8 @@ QUESTIONS = [
                 "use up all the oxygen it makes and so cannot supply any. "
                 "What is wrong?",
         "options": [
-            {"text": "Plants respire only at night, so the whole of the day's "
-                     "oxygen is left over.",
+            {"text": "Plants respire only during the night, so the whole of "
+                     "the oxygen they make during the day is left over.",
              "correct": False,
              "why": "Plants respire day and night. The reason there is a "
                     "surplus is that in the light photosynthesis runs much "
@@ -864,14 +866,15 @@ QUESTIONS = [
              "why": "Every living thing respires. What leaves a surplus is "
                     "that in the light a plant photosynthesises far faster "
                     "than it respires."},
-            {"text": "The student is right, and the oxygen in the air came "
-                     "out of the rocks instead.",
+            {"text": "The student is right, and the oxygen in the air must "
+                     "have come out of the rocks and the oceans instead of "
+                     "from plants.",
              "correct": False,
              "why": "All of it came from photosynthetic organisms. A plant in "
                     "the light releases far more oxygen than its own "
                     "respiration uses."},
             {"text": "In the light a plant photosynthesises much faster than "
-                     "it respires, so there is a surplus left over.",
+                     "it respires, so oxygen is left over.",
              "correct": True},
         ],
         "figure": None,
@@ -882,18 +885,18 @@ QUESTIONS = [
         "text": "A student writes that the Sun feeds every living thing. "
                 "Rewrite that so it is accurate.",
         "options": [
-            {"text": "The Sun feeds producers directly, and they pass the "
-                     "food they are given along the chain.",
+            {"text": "The Sun feeds the producers directly, and they pass "
+                     "the food they are given on along the rest of the "
+                     "chain.",
              "correct": False,
              "why": "Nothing is given to a producer. It builds its own food "
                     "out of carbon dioxide and water, using the energy in "
                     "sunlight."},
-            {"text": "The Sun supplies energy that producers capture and "
-                     "store in molecules, and everything else eats those "
-                     "molecules.",
+            {"text": "The Sun supplies energy producers store in molecules "
+                     "that everything else eats.",
              "correct": True},
-            {"text": "The Sun feeds animals through their skin and plants "
-                     "through their leaves.",
+            {"text": "The Sun feeds animals directly through their skin and "
+                     "feeds the plants through their leaves.",
              "correct": False,
              "why": "No animal can capture light energy. Only a "
                     "photosynthetic organism can, which is why everything "
@@ -914,8 +917,9 @@ QUESTIONS = [
                 "little light reaches the water, krill numbers fall. Explain "
                 "the link.",
         "options": [
-            {"text": "The ice keeps the krill away from the surface, so they "
-                     "starve where they are.",
+            {"text": "The ice keeps the krill away from the surface where "
+                     "they feed, so they starve in the deeper water below "
+                     "it.",
              "correct": False,
              "why": "Krill can move; their food cannot be made. Less light "
                     "means less photosynthesis, so less food enters the "
@@ -926,11 +930,11 @@ QUESTIONS = [
              "why": "The whales' feeding is not what has changed. Less light "
                     "reaching the water means the producers build less, and "
                     "the chain has less to pass on."},
-            {"text": "Less light means less photosynthesis by the "
-                     "phytoplankton, so less food enters the chain.",
+            {"text": "Less light means the phytoplankton photosynthesise "
+                     "less, so less food enters the chain.",
              "correct": True},
-            {"text": "The ice takes the oxygen out of the water, so the krill "
-                     "cannot respire.",
+            {"text": "The ice takes the dissolved oxygen out of the water "
+                     "underneath it, so the krill cannot respire.",
              "correct": False,
              "why": "Ice does not strip the oxygen out of the sea. The link "
                     "that matters here is light, photosynthesis and food."},
@@ -975,27 +979,27 @@ QUESTIONS = [
         "text": "Suppose all the world's phytoplankton died. Which of "
                 "photosynthesis's three jobs would be affected?",
         "options": [
-            {"text": "Only the first, since chains in the sea would empty "
-                     "while the air stayed exactly as it is.",
+            {"text": "Only the first, since the chains in the sea would "
+                     "empty while the air itself stayed exactly as it is at "
+                     "the moment.",
              "correct": False,
              "why": "The sea's producers do about half of the world's "
                     "photosynthesis, so the oxygen and the carbon dioxide "
                     "would both be affected as well."},
-            {"text": "Only the second, since their oxygen would stop being "
-                     "added to the atmosphere.",
+            {"text": "Only the second, since their oxygen would stop "
+                     "reaching the atmosphere.",
              "correct": False,
              "why": "That is one of the three. The chains above them would "
                     "empty too, and half the world's carbon dioxide removal "
                     "would stop."},
-            {"text": "None of them, since land plants would simply do more to "
-                     "make up the difference.",
+            {"text": "None of them, since the land plants would simply "
+                     "photosynthesise more to make up the difference.",
              "correct": False,
              "why": "Land plants cannot spread out over the ocean. Roughly "
                     "half of the world's photosynthesis would simply be "
                     "gone."},
-            {"text": "All three — the sea's chains would empty, less oxygen "
-                     "would be added, and less carbon dioxide would be "
-                     "removed.",
+            {"text": "All three — the sea's chains empty, less oxygen added, "
+                     "less carbon dioxide removed.",
              "correct": True},
         ],
         "figure": None,
@@ -1071,22 +1075,21 @@ QUESTIONS = [
                 "dark cupboard. Predict what happens, and explain it.",
         "options": [
             {"text": "Only the animals die, and the algae live on the "
-                     "minerals dissolved in the water.",
+                     "minerals in the water.",
              "correct": False,
              "why": "Minerals supply no energy. Without light the algae "
                     "cannot build anything and go the same way as the "
                     "animals."},
-            {"text": "Everything dies — nothing is capturing energy, so no "
-                     "food is built and the oxygen is used up and never "
-                     "replaced.",
+            {"text": "Everything dies — nothing captures energy, so no food "
+                     "is built and no oxygen replaced.",
              "correct": True},
-            {"text": "Everything survives, because a sealed jar keeps its "
-                     "food and its oxygen inside it.",
+            {"text": "Everything survives, because a sealed jar holds on to "
+                     "all of its own food and all of its oxygen.",
              "correct": False,
              "why": "Both are being spent all the time by respiration. In the "
                     "light they are replaced; in the dark they are not."},
             {"text": "Only the algae die, and the animals live on for months "
-                     "on what is already in the water.",
+                     "on the food and oxygen already dissolved in the water.",
              "correct": False,
              "why": "The animals were eating the algae and breathing the "
                     "oxygen the algae released. Both supplies stop at the "
@@ -1100,23 +1103,24 @@ QUESTIONS = [
         "text": "The middle of a compost heap gets warm. What is happening in "
                 "there, and which way is the carbon moving?",
         "options": [
-            {"text": "Decomposers are respiring as they feed, and the carbon "
-                     "is going back into the air as carbon dioxide.",
+            {"text": "Decomposers respire as they feed, and the carbon "
+                     "returns to the air as carbon dioxide.",
              "correct": True},
-            {"text": "The heap is photosynthesising in the dark, and carbon "
-                     "is being locked into new material.",
+            {"text": "The heap is photosynthesising in the dark inside it, "
+                     "and the carbon in it is being locked away into new "
+                     "material.",
              "correct": False,
              "why": "Nothing photosynthesises without light, and there is no "
                     "chlorophyll left in a compost heap. What is going on is "
                     "decay."},
-            {"text": "The rotting material is burning slowly, and the heat is "
-                     "destroying the carbon in it.",
+            {"text": "The rotting material is burning slowly, and the heat "
+                     "destroys its carbon.",
              "correct": False,
              "why": "No reaction destroys carbon. The heap is warm because "
                     "organisms in it are respiring, and the carbon leaves as "
                     "carbon dioxide."},
-            {"text": "The heap is drawing carbon dioxide out of the air, "
-                     "which is why compost improves a soil.",
+            {"text": "The heap is drawing carbon dioxide out of the air "
+                     "around it, which is why compost improves a soil.",
              "correct": False,
              "why": "Compost does feed a soil, and it is releasing carbon "
                     "dioxide rather than taking any in. Decomposers respire "
@@ -1195,11 +1199,12 @@ QUESTIONS = [
                 "instead of stored food and oxygen. Which jobs would the "
                 "algae do, and what must still be supplied?",
         "options": [
-            {"text": "Food and oxygen — and the crew must still supply light "
-                     "energy, along with carbon dioxide and water.",
+            {"text": "Food and oxygen — the crew must still supply light "
+                     "energy, carbon dioxide and water.",
              "correct": True},
-            {"text": "Food only, since oxygen cannot be released without an "
-                     "atmosphere around the tanks.",
+            {"text": "Food only, since oxygen cannot be released into "
+                     "anything unless there is already an atmosphere around "
+                     "the tanks.",
              "correct": False,
              "why": "Oxygen is released into whatever the algae are sealed "
                     "in. Both jobs are done; what has to be supplied is "
@@ -1209,8 +1214,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Algae feed enormous numbers of animals in the sea, and "
                     "they are grown as food. They would supply both."},
-            {"text": "Neither, since a closed system cannot work without soil "
-                     "for the algae to root in.",
+            {"text": "Neither, since a closed system cannot work without a "
+                     "bed of soil for the algae to root themselves in.",
              "correct": False,
              "why": "Algae drift and have no roots at all. What a closed "
                     "system does need is a supply of light energy and raw "

@@ -468,23 +468,24 @@ QUESTIONS = [
         "text": "The outer surface of a leaf is covered by a waxy cuticle. "
                 "What does it do?",
         "options": [
-            {"text": "It slows the escape of water, which evaporates far more "
-                     "slowly through wax than through a bare cell wall.",
+            {"text": "It slows water loss: water evaporates only slowly "
+                     "through wax.",
              "correct": True},
             {"text": "It absorbs the light and passes the energy on to the "
-                     "cells underneath.",
+                     "palisade cells underneath.",
              "correct": False,
              "why": "Light is absorbed by chlorophyll, inside the "
                     "chloroplasts. The cuticle is a transparent waxy layer "
                     "and its subject is water."},
-            {"text": "It lets carbon dioxide in while keeping water out, so "
-                     "both problems are solved at once.",
+            {"text": "It lets carbon dioxide in through the wax while "
+                     "holding the water in, so both problems are solved at "
+                     "once.",
              "correct": False,
              "why": "Gases do not cross the cuticle. Carbon dioxide goes in "
                     "through the stomata, which is exactly why those holes "
                     "cost the plant water."},
-            {"text": "It keeps the leaf rigid and flat so that it holds "
-                     "itself out towards the light.",
+            {"text": "It keeps the whole blade rigid and flat, so that the "
+                     "leaf holds itself out towards the light.",
              "correct": False,
              "why": "That is the vein network's doing. The cuticle is a thin "
                     "waxy layer whose job is limiting water loss."},
@@ -580,14 +581,16 @@ QUESTIONS = [
         "band": "easier",
         "text": "Why is a leaf broad and flat?",
         "options": [
-            {"text": "So that rain runs off it quickly and the surface "
-                     "dries.",
+            {"text": "So that rain runs off it quickly and the whole surface "
+                     "dries out again before the leaf can begin to rot in "
+                     "wet weather.",
              "correct": False,
              "why": "Shedding rain is not what shapes a leaf. Broad and flat "
                     "is about catching light and keeping every cell near a "
                     "surface."},
-            {"text": "So that it can hold as many layers of cells inside it "
-                     "as possible.",
+            {"text": "So that it can hold as many layers of "
+                     "photosynthesising cells stacked inside the blade as it "
+                     "possibly can.",
              "correct": False,
              "why": "A leaf is deliberately thin rather than deep. Broad is "
                     "about area; thin is about how far light and gases have "
@@ -609,20 +612,21 @@ QUESTIONS = [
         "text": "In October a beech wood turns yellow and orange. Where have "
                 "those colours come from?",
         "options": [
-            {"text": "The tree makes them in autumn, to replace the green "
-                     "pigment it has lost.",
+            {"text": "The tree makes fresh yellow and orange pigments in "
+                     "autumn to replace the green one it has taken back out "
+                     "of its leaves.",
              "correct": False,
              "why": "Nothing new has to be made. The yellows and oranges were "
                     "in the leaf all summer, masked by so much chlorophyll "
                     "that you could not see them."},
-            {"text": "The first frost turns the green pigment yellow wherever "
-                     "it touches a leaf.",
+            {"text": "The first hard frost of the autumn turns the green "
+                     "pigment yellow and orange wherever it touches a leaf.",
              "correct": False,
              "why": "The colour usually changes before the first frost. What "
                     "has happened is that the tree has dismantled its "
                     "chlorophyll and stopped hiding the other pigments."},
-            {"text": "They were in the leaves all summer, hidden by so much "
-                     "chlorophyll that you could not see them.",
+            {"text": "They were in the leaves all summer, hidden by the "
+                     "chlorophyll.",
              "correct": True},
             {"text": "The leaves have filled with the sugar the tree could "
                      "not carry away in time.",
@@ -864,14 +868,13 @@ QUESTIONS = [
                     "The branching is about delivery, collection and "
                     "support."},
             {"text": "Because the branches are where the stomata open, and "
-                     "those are spread over the leaf.",
+                     "those are spread right across the whole leaf.",
              "correct": False,
              "why": "Stomata are in the leaf's outer skin, not in the veins. "
                     "The branching is there so no cell is far from water or "
                     "from the phloem."},
-            {"text": "Because every part of the blade needs water delivered "
-                     "and its sugar collected, and the network holds the "
-                     "blade flat.",
+            {"text": "Because every part of the blade needs water brought "
+                     "in, sugar taken out and support.",
              "correct": True},
         ],
         "figure": None,
@@ -1008,12 +1011,12 @@ QUESTIONS = [
         "text": "Before a beech drops its leaves in autumn it dismantles the "
                 "chlorophyll in them. Why not simply drop them green?",
         "options": [
-            {"text": "Chlorophyll is built around expensive atoms, nitrogen "
-                     "and magnesium among them, and the tree pulls those back "
-                     "into the twigs.",
+            {"text": "Chlorophyll is built around nitrogen and magnesium, "
+                     "which the tree pulls back into its twigs.",
              "correct": True},
-            {"text": "A green leaf would go on photosynthesising on the "
-                     "ground and rob the tree of its store.",
+            {"text": "A green leaf would go on photosynthesising where it "
+                     "lay on the ground and rob the tree of the store it had "
+                     "built up.",
              "correct": False,
              "why": "A fallen leaf is cut off from the tree entirely. What "
                     "the tree is recovering is the material its chlorophyll "
@@ -1024,8 +1027,8 @@ QUESTIONS = [
              "why": "Leaf litter feeds the soil rather than poisoning it. The "
                     "dismantling happens because the atoms in chlorophyll are "
                     "worth keeping."},
-            {"text": "A leaf has to lose its colour before the wind is able "
-                     "to pull it off the twig.",
+            {"text": "A leaf has to lose all its colour before the layer "
+                     "holding it to the twig will let the wind pull it off.",
              "correct": False,
              "why": "Colour has nothing to do with how a leaf is shed. The "
                     "tree takes the chlorophyll apart to recover the nitrogen "
@@ -1202,25 +1205,25 @@ QUESTIONS = [
                 "Which features would tell them apart, and what would that "
                 "not tell you?",
         "options": [
-            {"text": "The Spanish one will be smaller, thicker or waxier, "
-                     "because those cut water loss — and neither leaf is "
-                     "better, since each suits its own place.",
+            {"text": "The Spanish one will be smaller, thicker or waxier to "
+                     "cut water loss; neither is better.",
              "correct": True},
             {"text": "The Spanish one will be the larger of the two, because "
                      "there is more sunlight in Spain and a bigger blade "
-                     "catches more of it.",
+                     "catches more of it each day.",
              "correct": False,
              "why": "More light means the leaf can afford to be small. What "
                     "limits it there is water, and area is what spends "
                     "water."},
-            {"text": "The Devon one will be the waxier, because a damp "
-                     "climate demands more protection from the rain.",
+            {"text": "The Devon one will be the waxier of the two, because a "
+                     "damp climate demands more protection from rain.",
              "correct": False,
              "why": "Rain on a leaf is not a problem worth building for. Wax "
                     "keeps water in, so the dry-country leaf is the one that "
                     "carries most."},
             {"text": "Neither can be told from the other, because leaf shape "
-                     "depends only on the species and not on the place.",
+                     "depends only on the species and never on the place it "
+                     "grew.",
              "correct": False,
              "why": "Species matters and so does habitat. Look across a whole "
                     "hillside and the local compromise is readable off the "

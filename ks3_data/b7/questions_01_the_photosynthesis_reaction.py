@@ -572,13 +572,13 @@ QUESTIONS = [
                 "does it need them, and what are they for?",
         "options": [
             {"text": "In large quantities, because minerals are the plant's "
-                     "food and supply the energy it lives on.",
+                     "food and supply all the energy it lives and grows on.",
              "correct": False,
              "why": "Minerals supply no energy at all and are not food. A "
                     "plant makes its own food, which is what being a producer "
                     "means."},
-            {"text": "In milligram quantities, to build particular molecules "
-                     "— they are not a raw material for photosynthesis.",
+            {"text": "In milligram quantities, to build particular "
+                     "molecules, not glucose.",
              "correct": True},
             {"text": "In milligram quantities, as the raw material the plant "
                      "builds its glucose out of.",
@@ -754,12 +754,12 @@ QUESTIONS = [
                 "carbon dioxide in the jar falls while the oxygen in it "
                 "rises. Why do both happen at once?",
         "options": [
-            {"text": "They are the two ends of one reaction: carbon dioxide "
-                     "is being built into glucose and oxygen is released as "
-                     "waste.",
+            {"text": "One reaction is using up the carbon dioxide and "
+                     "releasing the oxygen as waste.",
              "correct": True},
             {"text": "The oxygen is pushing the carbon dioxide out of the "
-                     "jar, so the two gases always swap over.",
+                     "jar as it builds up, so the two gases swap over one "
+                     "for one.",
              "correct": False,
              "why": "Nothing is pushed out of a sealed jar. One reaction is "
                     "using up the one gas and releasing the other, which is "
@@ -770,8 +770,8 @@ QUESTIONS = [
              "why": "Both changes are the reaction's doing. The carbon "
                     "dioxide is being used up as glucose is built, and the "
                     "oxygen is the waste that comes with it."},
-            {"text": "Two separate reactions happen to be running in the leaf "
-                     "at the same time.",
+            {"text": "Two separate reactions happen to be running in the "
+                     "leaf at once.",
              "correct": False,
              "why": "It is one reaction. Two reactants go in and two products "
                     "come out, so a change in one is always matched by a "
@@ -787,26 +787,26 @@ QUESTIONS = [
                 "the first few weeks its leaves still test blue-black for "
                 "starch. Explain that result.",
         "options": [
-            {"text": "It must have found minerals in the water, so it had a "
-                     "supply after all.",
+            {"text": "It must have found minerals dissolved in the water it "
+                     "was given, so it had a small supply of them after all.",
              "correct": False,
              "why": "Even if there were traces, that is not the point. "
                     "Minerals are not what glucose is built from, so the "
                     "starch does not depend on them."},
-            {"text": "The starch is left over from the seed, and no new "
-                     "starch is being made.",
+            {"text": "The starch is left over from the food store in the "
+                     "seed, and no new starch is being made at all.",
              "correct": False,
              "why": "There is nothing to stop the seedling. Light, carbon "
                     "dioxide, water and chlorophyll are all present, so it is "
                     "building new glucose every day."},
-            {"text": "Iodine gives a false blue-black on a plant that is "
-                     "short of minerals.",
+            {"text": "Iodine gives a false blue-black on a plant short of "
+                     "minerals.",
              "correct": False,
              "why": "Iodine answers one question and answers it honestly. "
                     "Blue-black means starch, and there is nothing false "
                     "about this result."},
-            {"text": "Minerals are not a raw material for photosynthesis, so "
-                     "the reaction runs without them.",
+            {"text": "Photosynthesis does not use minerals as a raw "
+                     "material, so it runs without them.",
              "correct": True},
         ],
         "figure": None,
@@ -849,22 +849,23 @@ QUESTIONS = [
                 "and leaves it in bright light, expecting it to grow faster. "
                 "What actually happens?",
         "options": [
-            {"text": "It makes no starch at all, because there is no carbon "
-                     "dioxide in the jar to build glucose from.",
+            {"text": "It makes no starch at all: there is no carbon dioxide "
+                     "in the jar to build glucose from.",
              "correct": True},
-            {"text": "It grows faster than usual, because oxygen is the gas a "
-                     "plant needs most of.",
+            {"text": "It grows faster than usual, because oxygen is the gas "
+                     "a plant takes in through its stomata and needs most "
+                     "of.",
              "correct": False,
              "why": "Oxygen is what photosynthesis releases, not what it "
                     "uses. Filling the jar with it has taken away the gas the "
                     "plant actually needs."},
             {"text": "It grows at its normal rate, because it can make its "
-                     "own carbon dioxide from the water.",
+                     "own carbon dioxide from the water it is given.",
              "correct": False,
              "why": "A plant cannot build carbon dioxide out of anything. It "
                     "has to arrive from the air, through the stomata."},
-            {"text": "It grows more slowly, because oxygen in that quantity "
-                     "is poisonous to a plant.",
+            {"text": "It grows more slowly, because oxygen at that strength "
+                     "poisons a plant.",
              "correct": False,
              "why": "The plant is not being poisoned. It has simply been "
                     "sealed away from the one raw material it cannot make for "
@@ -911,14 +912,15 @@ QUESTIONS = [
                 "inside the bag than there was at the start. Where has it "
                 "come from?",
         "options": [
-            {"text": "From the water the plant was given, which has "
-                     "evaporated inside the bag.",
+            {"text": "From the water the plant was given at the start, which "
+                     "has evaporated off its leaves and collected inside the "
+                     "bag.",
              "correct": False,
              "why": "Evaporating water gives water vapour, which is why the "
                     "bag mists up. The extra oxygen is a product of the "
                     "reaction going on inside the leaves."},
-            {"text": "From the air that was already in the bag, which has "
-                     "warmed up and expanded.",
+            {"text": "From the air that was already sealed inside the bag, "
+                     "which has warmed up in the light and expanded.",
              "correct": False,
              "why": "Warming air does not create any more oxygen in it. What "
                     "is in the bag is oxygen the leaves have released."},
@@ -927,8 +929,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Soil does not supply the air with oxygen. The leaves do, "
                     "as a waste product of building glucose."},
-            {"text": "The leaves released it as waste while building glucose, "
-                     "and it diffused out through the stomata.",
+            {"text": "The leaves released it as waste while building "
+                     "glucose, and it left through the stomata.",
              "correct": True},
         ],
         "figure": None,
@@ -1036,7 +1038,7 @@ QUESTIONS = [
                 "What is wrong with that sentence?",
         "options": [
             {"text": "Nothing is wrong, since gases move into a leaf and out "
-                     "of it just as they do in your lungs.",
+                     "of it again just as they do in your lungs.",
              "correct": False,
              "why": "Gases do move in and out, and that is gas exchange "
                     "rather than photosynthesis. Photosynthesis is the "
@@ -1048,14 +1050,14 @@ QUESTIONS = [
                     "day, so gases certainly matter. The error is in the word "
                     "used for the reaction."},
             {"text": "Photosynthesis happens only at night, which is exactly "
-                     "when a plant would need to take in air.",
+                     "when a plant would need to take air in through its "
+                     "leaves.",
              "correct": False,
              "why": "It is the other way round. Photosynthesis needs light "
                     "and stops in the dark, so nothing about it is a "
                     "night-time process."},
-            {"text": "Photosynthesis is a reaction that builds glucose rather "
-                     "than a way of moving air, and plants respire as well, "
-                     "day and night.",
+            {"text": "Photosynthesis builds glucose rather than moving air, "
+                     "and plants also respire.",
              "correct": True},
         ],
         "figure": None,
@@ -1191,15 +1193,15 @@ QUESTIONS = [
                 "carbon dioxide and the crop still grows. Are those two "
                 "statements in conflict?",
         "options": [
-            {"text": "Yes — if the rule holds, a crop short of carbon "
-                     "dioxide ought to be making nothing at all.",
+            {"text": "Yes — if the rule holds, a crop that is short of "
+                     "carbon dioxide ought to be making no glucose and no "
+                     "starch at all.",
              "correct": False,
              "why": "Short is not absent. The rule is about taking a "
                     "condition away completely; the glasshouse only has less "
                     "of it than the crop could use."},
             {"text": "No — the rule is about removing a condition outright, "
-                     "while the glasshouse merely has less of it than the "
-                     "crop could use.",
+                     "not about having less of it.",
              "correct": True},
             {"text": "No — the rule is about starch and the glasshouse is "
                      "about growth, so the two are not the same subject.",
@@ -1229,14 +1231,14 @@ QUESTIONS = [
              "why": "Light carries energy, not matter. Nothing about a beam "
                     "of light has any mass to give to a stem."},
             {"text": "It is wrong throughout, because a plant makes no food "
-                     "and takes what it needs from the soil.",
+                     "of its own and simply takes everything it needs from "
+                     "the soil around its roots.",
              "correct": False,
              "why": "A plant is the one kind of organism that makes its own "
                     "food. What it takes from the soil is water and minerals, "
                     "and neither is food."},
-            {"text": "Making food is right; out of sunlight is wrong — the "
-                     "material is carbon dioxide and water, and sunlight "
-                     "supplies the energy.",
+            {"text": "Making food is right; the material is carbon dioxide "
+                     "and water, not sunlight.",
              "correct": True},
             {"text": "Out of sunlight is right; making food is wrong — a "
                      "plant stores energy but never builds anything of its "

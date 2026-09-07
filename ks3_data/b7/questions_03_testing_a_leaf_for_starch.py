@@ -418,20 +418,20 @@ QUESTIONS = [
             {"text": "An insoluble carbohydrate made of many glucose "
                      "molecules joined together.",
              "correct": True},
-            {"text": "A sugar the plant makes and then moves out of the "
-                     "leaf.",
+            {"text": "A soluble sugar the plant makes inside its leaves and "
+                     "then moves out to the rest of the growing plant.",
              "correct": False,
              "why": "That is glucose. Starch is what a leaf turns glucose "
                     "into, and being insoluble it stays exactly where it was "
                     "made."},
-            {"text": "The green pigment a leaf needs before it can make "
-                     "food.",
+            {"text": "The green pigment inside a leaf's cells that it must "
+                     "have before it can make any food.",
              "correct": False,
              "why": "That is chlorophyll, and it is dissolved out into the "
                     "ethanol before the iodine goes on. Starch is the store "
                     "you are testing for."},
-            {"text": "A mineral a plant takes up from the soil and keeps in "
-                     "its leaves.",
+            {"text": "A mineral a plant takes up from the soil into its "
+                     "leaves.",
              "correct": False,
              "why": "Minerals come from the soil. Starch is built by the "
                     "plant itself, out of the glucose it made."},
@@ -499,24 +499,23 @@ QUESTIONS = [
                 "control mean here?",
         "options": [
             {"text": "The step that controls how hot the ethanol is allowed "
-                     "to get.",
+                     "to get while it is standing in the hot water bath.",
              "correct": False,
              "why": "That is the water bath, and it is a safety measure. A "
                     "control is the part of an investigation everything else "
                     "is compared against."},
-            {"text": "The person who decides which steps the class will leave "
-                     "out.",
+            {"text": "The person in the group who decides which of the steps "
+                     "the class will leave out.",
              "correct": False,
              "why": "A control is not a person. It is the part of the "
                     "investigation that everything else is compared with."},
-            {"text": "The amount of iodine dropped on the leaf, kept exactly "
-                     "the same every time so the test is fair.",
+            {"text": "The amount of iodine dropped on the leaf, kept the "
+                     "same every time so the test is fair.",
              "correct": False,
              "why": "Keeping a quantity the same is a different idea. The "
                     "control is the thing your result is compared against."},
             {"text": "The part of the investigation everything else is "
-                     "compared against, such as the half of the leaf under "
-                     "the foil.",
+                     "compared against.",
              "correct": True},
         ],
         "figure": None,
@@ -609,14 +608,15 @@ QUESTIONS = [
         "text": "Half of one leaf is covered with foil before the plant goes "
                 "into the light. What is the foil doing?",
         "options": [
-            {"text": "Keeping that half warm, so temperature can be compared "
-                     "across the leaf.",
+            {"text": "Keeping that half of the leaf warm under the metal, so "
+                     "that temperature can be compared across the two "
+                     "halves.",
              "correct": False,
              "why": "Both halves are on one leaf and share a temperature. The "
                     "foil is blocking light, which is the one thing being "
                     "changed."},
-            {"text": "Stopping the iodine from reaching that half during the "
-                     "test.",
+            {"text": "Stopping the iodine from reaching that half of the "
+                     "leaf when the test is carried out at the end.",
              "correct": False,
              "why": "The foil comes off long before the test. It was on the "
                     "leaf while the plant was in the light."},
@@ -641,7 +641,7 @@ QUESTIONS = [
                      "converted for storage.",
              "correct": True},
             {"text": "From the soil, taken up through the roots and carried "
-                     "into the leaf.",
+                     "up the stem into the leaf in the water it drinks.",
              "correct": False,
              "why": "Nothing takes starch up from the soil. The leaf built "
                     "glucose from carbon dioxide and water, then converted it "
@@ -651,8 +651,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Iodine is a test and adds nothing to the leaf. It "
                     "reports the starch that was already there."},
-            {"text": "From the store the plant was holding before the "
-                     "experiment began.",
+            {"text": "From the store the plant was already holding in its "
+                     "leaves before the experiment began.",
              "correct": False,
              "why": "That store is exactly what the two days in the dark got "
                     "rid of. Anything found now was made during the "
@@ -913,14 +913,15 @@ QUESTIONS = [
         "text": "One mistake gives a result you can read but cannot use; "
                 "another gives no reading at all. Which mistake is which?",
         "options": [
-            {"text": "Skipping the ethanol gives a result you cannot use; "
-                     "skipping the destarching gives no reading.",
+            {"text": "Skipping the ethanol gives you a result you cannot "
+                     "use, while skipping the destarching gives no reading "
+                     "at all.",
              "correct": False,
              "why": "It is the other way round. A green leaf hides the colour "
                     "completely, while an undestarched leaf gives a strong "
                     "blue-black nobody can date."},
-            {"text": "Skipping the destarching gives a readable result you "
-                     "cannot date; skipping the ethanol gives no reading.",
+            {"text": "Skipping the destarching gives an undatable result; "
+                     "skipping the ethanol gives none.",
              "correct": True},
             {"text": "Both give no reading, since neither leaf can take up "
                      "the iodine.",
@@ -928,8 +929,8 @@ QUESTIONS = [
              "why": "The undestarched leaf takes up iodine perfectly well and "
                     "goes blue-black. Its problem is that you cannot say when "
                     "the starch was made."},
-            {"text": "Both give readable results, and the only difference is "
-                     "how strong the colour is.",
+            {"text": "Both give readable results, and the only difference "
+                     "between them is how strong the colour turns out.",
              "correct": False,
              "why": "A still-green leaf gives nothing readable at all. The "
                     "colour change is hidden completely rather than "
@@ -1105,23 +1106,23 @@ QUESTIONS = [
                 "is which?",
         "options": [
             {"text": "Skipping the boiling makes the result unreliable; "
-                     "skipping the destarching makes a repeatable result that "
-                     "still proves nothing.",
+                     "skipping the destarching makes it undatable.",
              "correct": True},
             {"text": "Both faults make the result unreliable, since neither "
-                     "class can repeat what it saw.",
+                     "class could repeat exactly what it saw the first time.",
              "correct": False,
              "why": "The undestarched class repeats its result exactly. "
                     "Repeatable and useless are not the same thing, which is "
                     "the whole point."},
             {"text": "Skipping the destarching makes the result unreliable; "
-                     "skipping the boiling makes it repeatable but useless.",
+                     "skipping the boiling makes it repeatable but useless "
+                     "as evidence.",
              "correct": False,
              "why": "That is the two swapped over. Live waxy cells let iodine "
                     "in unevenly, so that is what varies; old starch gives "
                     "the same strong reading every time."},
-            {"text": "Neither is a fault, since both classes came away with a "
-                     "result they could write down.",
+            {"text": "Neither is a fault, since both classes came away with "
+                     "a result to write down.",
              "correct": False,
              "why": "Writing a result down is not the test of it. One class "
                     "cannot trust what it saw, and the other cannot say when "
@@ -1138,25 +1139,25 @@ QUESTIONS = [
                 "often torn. Why might a critic not accept the result?",
         "options": [
             {"text": "Because a variegated leaf cannot photosynthesise "
-                     "anywhere, so nothing at all would go blue-black.",
+                     "anywhere on it, so nothing at all would go blue-black.",
              "correct": False,
              "why": "The green parts photosynthesise perfectly well and do go "
                     "blue-black. The criticism is about what else differs at "
                     "the edge."},
             {"text": "Because white tissue has no cells in it at all, so "
-                     "there is nothing there to test.",
+                     "there is nothing there for iodine to test.",
              "correct": False,
              "why": "White tissue is made of ordinary cells; what they lack "
                     "is chlorophyll. The problem is that the edge differs in "
                     "other ways too."},
-            {"text": "Because iodine behaves differently on white tissue than "
-                     "it does on green.",
+            {"text": "Because iodine behaves differently on white tissue "
+                     "than on green.",
              "correct": False,
              "why": "Iodine behaves identically wherever it is put. What "
                     "weakens this design is that the edge is not otherwise "
                     "identical to the middle."},
             {"text": "Because the edge differs from the middle in more than "
-                     "chlorophyll, so chlorophyll is not the only variable.",
+                     "just its chlorophyll.",
              "correct": True},
         ],
         "figure": None,
@@ -1168,22 +1169,23 @@ QUESTIONS = [
                 "rather than green. Will the starch test work on it?",
         "options": [
             {"text": "No, because a red leaf has no chlorophyll and so makes "
-                     "no starch at all.",
+                     "no starch.",
              "correct": False,
              "why": "A red leaf has chlorophyll underneath the red pigment "
                     "and photosynthesises normally. The pigments come out "
                     "together in the ethanol."},
-            {"text": "Yes, because the pigments dissolve out in the ethanol "
-                     "and the leaf is pale before the iodine arrives.",
+            {"text": "Yes, because the ethanol dissolves the pigments out "
+                     "and leaves the leaf pale.",
              "correct": True},
             {"text": "Yes, but only with twice as long in the ethanol, since "
-                     "red is harder to see through.",
+                     "red is harder to see through than green.",
              "correct": False,
              "why": "The method does not change for a red leaf. What matters "
                     "is that the ethanol removes the pigment, whatever colour "
                     "it was."},
-            {"text": "No, because red is the colour of a positive result and "
-                     "the two could not be told apart.",
+            {"text": "No, because red is the colour of a positive result, "
+                     "and the two colours could not be told apart at the "
+                     "end.",
              "correct": False,
              "why": "A positive result is blue-black rather than red — and in "
                     "any case the leaf's own colour has gone before the "
@@ -1199,18 +1201,19 @@ QUESTIONS = [
                 "must the plant stay in the dark, and does that agree with "
                 "the usual instruction?",
         "options": [
-            {"text": "About half a day, since 12 is half of 24 — so two days "
-                     "is far longer than is needed.",
+            {"text": "About half a day, since 12 mg is half of 24 mg, so the "
+                     "usual two days in the dark is far longer than is "
+                     "needed.",
              "correct": False,
              "why": "You have divided the wrong way round. A 24 mg store used "
                     "at 12 mg a day lasts two days, not half of one."},
-            {"text": "About twelve days, since a leaf uses 1 mg a day for "
-                     "each of its 12 mg.",
+            {"text": "About twelve days, since a leaf uses up 1 mg of starch "
+                     "a day for each of the 12 mg in the rate.",
              "correct": False,
              "why": "The rate you are given is 12 mg a day, not 1 mg. "
                     "Twenty-four milligrams at 12 mg a day is two days."},
             {"text": "About two days, since 24 mg divided by 12 mg a day is "
-                     "2 days — which is what the method says.",
+                     "2 days — as the method says.",
              "correct": True},
             {"text": "About 288 days, since 24 multiplied by 12 gives the "
                      "time it takes.",
