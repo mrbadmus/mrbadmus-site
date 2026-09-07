@@ -420,4 +420,496 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b8-04-e05",
+        "band": "easier",
+        "text": "What kind of organism is yeast?",
+        "options": [
+            {"text": "A chemical powder that reacts as soon as it is wetted.",
+             "correct": False,
+             "why": "That is baking powder. Yeast is alive — dried yeast is "
+                    "dormant cells, which is why warm water revives it and "
+                    "boiling water kills it."},
+            {"text": "A living, single-celled fungus that respires the sugar "
+                     "it is given.",
+             "correct": True},
+            {"text": "A bacterium, like the ones that turn milk into "
+                     "yoghurt.",
+             "correct": False,
+             "why": "Both are micro-organisms and both ferment, but they are "
+                    "different kinds of living thing — and they take "
+                    "different routes, giving different products."},
+            {"text": "A tiny green plant that makes its own food from light.",
+             "correct": False,
+             "why": "Yeast has no chlorophyll and cannot photosynthesise. It "
+                    "lives on sugar supplied to it, which is why a vessel "
+                    "with no sugar in it produces nothing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-e06",
+        "band": "easier",
+        "text": "Which gas makes a ball of bread dough rise?",
+        "options": [
+            {"text": "Carbon dioxide", "correct": True},
+            {"text": "Oxygen", "correct": False,
+             "why": "Oxygen is the thing the yeast in the middle of a dough "
+                    "ball does not have. It is not a product of fermentation "
+                    "at all."},
+            {"text": "Ethanol", "correct": False,
+             "why": "Ethanol is the other product, but in the dough it is a "
+                    "liquid and it leaves later, in the oven. The holes are "
+                    "carbon dioxide."},
+            {"text": "Hydrogen", "correct": False,
+             "why": "No respiration of any kind produces hydrogen gas. Yeast "
+                    "gives ethanol and carbon dioxide, and it is the carbon "
+                    "dioxide you can see."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-e07",
+        "band": "easier",
+        "text": "Fermentation is another name for what?",
+        "options": [
+            {"text": "Food decaying slowly, under conditions that keep it "
+                     "safe.",
+             "correct": False,
+             "why": "Decay is whatever happens to land on the food growing on "
+                    "it. Fermentation is one chosen micro-organism, given the "
+                    "conditions it likes, doing a reaction we want."},
+            {"text": "A reaction between an acid and an alkali inside the "
+                     "food.",
+             "correct": False,
+             "why": "Nothing is neutralised and no acid is added. The acid, "
+                    "or the alcohol, is made by a living organism out of the "
+                    "sugar."},
+            {"text": "Aerobic respiration carried out by micro-organisms.",
+             "correct": False,
+             "why": "Half right — respiration by micro-organisms, but the "
+                    "anaerobic route. Give the vessel air and yeast makes "
+                    "carbon dioxide and water instead."},
+            {"text": "Anaerobic respiration carried out by micro-organisms.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-e08",
+        "band": "easier",
+        "text": "Which of these foods is made using lactic acid bacteria?",
+        "options": [
+            {"text": "Beer", "correct": False,
+             "why": "Beer is yeast's work, and what the brewer wants from it "
+                    "is the ethanol. Lactic acid bacteria produce no alcohol "
+                    "at all."},
+            {"text": "Bread", "correct": False,
+             "why": "Bread is yeast as well, and it is the carbon dioxide "
+                    "that raises the loaf. The bacteria's route makes no gas "
+                    "to raise anything with."},
+            {"text": "Yoghurt", "correct": True},
+            {"text": "Cider", "correct": False,
+             "why": "Cider is apple juice fermented by yeast, giving ethanol "
+                    "and carbon dioxide. These bacteria give lactic acid "
+                    "instead."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-e09",
+        "band": "easier",
+        "text": "A baker and a brewer both use yeast, and yeast makes two "
+                "products. Which product does each of them want?",
+        "options": [
+            {"text": "Both want the ethanol; the baker's simply bakes away "
+                     "again.",
+             "correct": False,
+             "why": "The baker never wanted the ethanol. It is the gas that "
+                    "raises the loaf, and the ethanol leaving in the oven is "
+                    "a side effect."},
+            {"text": "The baker wants the carbon dioxide; the brewer wants "
+                     "the ethanol.",
+             "correct": True},
+            {"text": "The baker wants the ethanol; the brewer wants the "
+                     "carbon dioxide.",
+             "correct": False,
+             "why": "The right two products, swapped over. The gas is what "
+                    "raises dough, and the ethanol is what makes beer beer."},
+            {"text": "Both want the carbon dioxide, and the ethanol is waste "
+                     "to each of them.",
+             "correct": False,
+             "why": "The ethanol is exactly what a brewer is after. Only the "
+                    "baker treats it as something to be rid of."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-e10",
+        "band": "easier",
+        "text": "Which of these does fermentation not need?",
+        "options": [
+            {"text": "Sugar for the organism to respire.", "correct": False,
+             "why": "With no sugar nothing happens at all. A starved yeast is "
+                    "alive and idle, because respiration must have a fuel."},
+            {"text": "A living micro-organism.", "correct": False,
+             "why": "The organism is what does the respiring. Kill it and the "
+                    "vessel produces nothing, permanently."},
+            {"text": "A temperature the organism can survive at.",
+             "correct": False,
+             "why": "Above the optimum the enzymes are denatured and the "
+                    "organism dies, and the vessel then produces nothing at "
+                    "all, permanently."},
+            {"text": "Light for the organism to work by.", "correct": True},
+        ],
+        "figure": None,
+    },
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b8-04-s05",
+        "band": "standard",
+        "text": "Bread recipes say to leave the dough somewhere warm, never "
+                "somewhere as hot as possible. Why not hotter?",
+        "options": [
+            {"text": "Because the heat would drive the carbon dioxide out "
+                     "before the dough could rise.",
+             "correct": False,
+             "why": "The gas is trapped in the dough as it forms. What too "
+                    "much heat does is kill the organism that is making it."},
+            {"text": "Because heat makes yeast produce lactic acid instead of "
+                     "carbon dioxide.",
+             "correct": False,
+             "why": "Temperature changes the rate, never the products. Only "
+                    "changing the organism changes what comes out."},
+            {"text": "Because above its optimum the yeast's enzymes are "
+                     "denatured and it dies.",
+             "correct": True},
+            {"text": "Because the dough would rise too fast to be shaped in "
+                     "time.",
+             "correct": False,
+             "why": "Bakers do control the speed, but that is convenience "
+                    "rather than chemistry. Too hot and there is no rise at "
+                    "all, because the yeast is dead."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-s06",
+        "band": "standard",
+        "text": "Sourdough is made from flour, water and time, with no yeast "
+                "added at all — and it still rises. What must be happening?",
+        "options": [
+            {"text": "Micro-organisms already in the flour and the air are "
+                     "respiring the sugars.",
+             "correct": True},
+            {"text": "The flour reacts with the water, giving off gas as a "
+                     "raising agent.",
+             "correct": False,
+             "why": "Flour and water produce no gas between them. Something "
+                    "living has to respire the sugars, and in sourdough it "
+                    "arrived by itself."},
+            {"text": "Air folded in during kneading expands slowly over the "
+                     "hours.",
+             "correct": False,
+             "why": "Kneading does fold air in, but trapped air does not "
+                    "increase. The holes grow because gas is being made "
+                    "inside them."},
+            {"text": "Water can ferment sugars on its own if it is left long "
+                     "enough.",
+             "correct": False,
+             "why": "Fermentation is respiration, and respiration needs a "
+                    "living organism. Water does nothing on its own however "
+                    "long it stands."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-s07",
+        "band": "standard",
+        "text": "A bottle of home-made ginger beer is sealed with sugar and "
+                "live yeast still in it and left somewhere warm. Why can it "
+                "burst?",
+        "options": [
+            {"text": "The ethanol expands as it warms and forces the bottle "
+                     "apart.",
+             "correct": False,
+             "why": "The liquid barely expands at all. What builds the "
+                    "pressure is a gas being produced continuously inside a "
+                    "sealed container."},
+            {"text": "The yeast goes on growing until the cells fill the "
+                     "bottle.",
+             "correct": False,
+             "why": "The cells stay a tiny fraction of the volume. The "
+                    "pressure comes from the carbon dioxide they release, not "
+                    "from the cells."},
+            {"text": "Warmth makes the yeast switch to a reaction that gives "
+                     "more gas.",
+             "correct": False,
+             "why": "The reaction does not change with temperature; only its "
+                    "rate does. Warmth makes the same gas arrive faster."},
+            {"text": "The yeast keeps fermenting, and the carbon dioxide has "
+                     "nowhere to go.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-s08",
+        "band": "standard",
+        "text": "A wine maker adds sugar to grape juice that is not sweet "
+                "enough. Why does that raise the alcohol in the finished "
+                "wine?",
+        "options": [
+            {"text": "Sugar turns into alcohol on its own once it dissolves "
+                     "in the juice.",
+             "correct": False,
+             "why": "Nothing happens to it without the yeast. The sugar is "
+                    "the fuel a living organism respires, and ethanol is what "
+                    "that leaves behind."},
+            {"text": "More sugar gives the yeast more to respire, and ethanol "
+                     "is one product.",
+             "correct": True},
+            {"text": "Sugar makes the yeast work faster, so it uses up less "
+                     "of the alcohol.",
+             "correct": False,
+             "why": "The yeast does not consume the ethanol at all. It is a "
+                    "product being got rid of, not a store being kept."},
+            {"text": "Sugar keeps oxygen out of the juice, which is what "
+                     "allows ethanol.",
+             "correct": False,
+             "why": "Keeping oxygen out is the sealed vessel's job, not the "
+                    "sugar's. The sugar's job is to be the fuel."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-s09",
+        "band": "standard",
+        "text": "Some cakes are raised with baking powder and some breads "
+                "with yeast. What is the essential difference between the "
+                "two?",
+        "options": [
+            {"text": "Baking powder gives off carbon dioxide, and yeast gives "
+                     "off oxygen.",
+             "correct": False,
+             "why": "Yeast gives carbon dioxide too — that is what raises the "
+                    "loaf. Neither of them releases any oxygen."},
+            {"text": "Baking powder has to be warmed, while yeast works at "
+                     "any temperature.",
+             "correct": False,
+             "why": "Both halves are the wrong way round. Yeast is the fussy "
+                    "one precisely because it is alive: cold slows it and "
+                    "heat kills it."},
+            {"text": "Baking powder is a chemical; yeast is alive and raises "
+                     "dough by respiring.",
+             "correct": True},
+            {"text": "Baking powder produces alcohol as well, which is why "
+                     "cakes taste different.",
+             "correct": False,
+             "why": "It produces none. Ethanol is yeast's second product, and "
+                    "it takes a living organism to make it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-s10",
+        "band": "standard",
+        "text": "Ethanol for fuel is made by fermenting sugar cane. Which "
+                "product is wanted, and what happens to the other one?",
+        "options": [
+            {"text": "The ethanol is wanted, and the carbon dioxide escapes "
+                     "as a gas.",
+             "correct": True},
+            {"text": "The carbon dioxide is wanted, and the ethanol is burned "
+                     "off first.",
+             "correct": False,
+             "why": "The whole point of the process is the liquid fuel. The "
+                    "gas is released and is of no use here."},
+            {"text": "Both are wanted, because ethanol and carbon dioxide "
+                     "both burn well.",
+             "correct": False,
+             "why": "Carbon dioxide does not burn — it is one of the things "
+                    "burning produces. Only the ethanol is a fuel."},
+            {"text": "The ethanol is wanted, and the lactic acid has to be "
+                     "removed.",
+             "correct": False,
+             "why": "Lactic acid comes from the bacterial route, and this is "
+                    "yeast. Yeast's two products are ethanol and carbon "
+                    "dioxide."},
+        ],
+        "figure": None,
+    },
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b8-04-h05",
+        "band": "harder",
+        "text": "At 30 °C a fermenting vessel releases 60 cm³ of carbon "
+                "dioxide a minute. Cooled to 4 °C the rate falls to 12% of "
+                "that. What is the rate at 4 °C?",
+        "options": [
+            {"text": "0 cm³ per minute", "correct": False,
+             "why": "Cold slows fermentation; it does not stop it. Twelve per "
+                    "cent of 60 is a real rate, which is why a yoghurt goes "
+                    "on souring gently in a fridge."},
+            {"text": "52.8 cm³ per minute", "correct": False,
+             "why": "That is 60 with 12% taken off it. The question asks for "
+                    "12% of the rate, which is 60 × 0.12."},
+            {"text": "7.2 cm³ per minute", "correct": True},
+            {"text": "500 cm³ per minute", "correct": False,
+             "why": "That is 60 ÷ 0.12, dividing where you should multiply. "
+                    "Cooling a vessel cannot make it faster."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-h06",
+        "band": "harder",
+        "text": "Yeast and your own muscles both respire without oxygen. "
+                "Which difference between the two matters most to a baker?",
+        "options": [
+            {"text": "Yeast gets more energy out of each glucose molecule "
+                     "than your muscles do.",
+             "correct": False,
+             "why": "Both routes give far less than the aerobic one, and "
+                    "neither yield is any use to a baker. What a baker needs "
+                    "is a gas."},
+            {"text": "Yeast produces a gas; human muscle produces lactic acid "
+                     "and no gas.",
+             "correct": True},
+            {"text": "Yeast can respire without any sugar, and human muscle "
+                     "cannot.",
+             "correct": False,
+             "why": "Neither can. Take the sugar away and a yeast makes "
+                    "nothing at all, however right everything else is."},
+            {"text": "Yeast respires only when warm; muscle respires at any "
+                     "temperature.",
+             "correct": False,
+             "why": "Warmth changes yeast's rate, not whether it respires. "
+                    "And rate is not what raises a loaf — the gas is."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-h07",
+        "band": "harder",
+        "text": "Kimchi is made by covering cabbage in salt and leaving it, "
+                "with no bacteria added from a packet. Where do the bacteria "
+                "come from, and what is the salt for?",
+        "options": [
+            {"text": "The salt makes the acid, and the bacteria only add the "
+                     "flavour.",
+             "correct": False,
+             "why": "The acid is made by bacteria respiring the sugars in the "
+                    "cabbage. Salt produces none of it."},
+            {"text": "The bacteria arrive in the salt, which also holds the "
+                     "jar at the right pH.",
+             "correct": False,
+             "why": "Salt carries no bacteria and sets no pH. The pH falls "
+                    "because lactic acid is being made inside the jar."},
+            {"text": "The bacteria come from the air, and the salt kills them "
+                     "off slowly.",
+             "correct": False,
+             "why": "If the salt killed them the jar would never ferment. It "
+                    "holds back the organisms that would spoil the cabbage, "
+                    "and the useful ones survive it."},
+            {"text": "They are already on the leaves, and the salt holds back "
+                     "the spoilage organisms.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-h08",
+        "band": "harder",
+        "text": "A yoghurt maker heats the milk to near boiling, cools it to "
+                "about 40 °C, and only then stirs in the culture. Explain "
+                "both steps.",
+        "options": [
+            {"text": "Heating kills what was already in the milk; cooling "
+                     "stops the culture being killed too.",
+             "correct": True},
+            {"text": "Heating starts the reaction, and cooling slows it so "
+                     "the yoghurt sets gently.",
+             "correct": False,
+             "why": "Heat starts nothing — the bacteria do that when they "
+                    "arrive. The boiling is there to clear the milk of "
+                    "everything else."},
+            {"text": "Heating thickens the milk, and cooling makes that "
+                     "thickening permanent.",
+             "correct": False,
+             "why": "What thickens milk is lactic acid curdling its protein, "
+                    "and none has been made at that stage."},
+            {"text": "Heating drives the oxygen out, and cooling keeps it out "
+                     "for the bacteria.",
+             "correct": False,
+             "why": "The lid deals with the oxygen. Boiling is about what is "
+                    "living in the milk, and cooling is about not killing "
+                    "what you are about to add."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-h09",
+        "band": "harder",
+        "text": "Two loaves use the same dough. One is proved for one hour at "
+                "30 °C, the other for eight hours at 4 °C, and both rise the "
+                "same amount. How is that possible?",
+        "options": [
+            {"text": "In the cold the yeast switches to a slower reaction "
+                     "that gives more gas per cell.",
+             "correct": False,
+             "why": "There is no second reaction to switch to. The same one "
+                    "runs more slowly, and the extra hours make up the "
+                    "difference."},
+            {"text": "Cold dough traps the gas better, so less of it has to "
+                     "be produced.",
+             "correct": False,
+             "why": "Cold dough is stiffer, but the rise still measures gas "
+                    "made. The cold batch simply had eight times as long to "
+                    "make it."},
+            {"text": "The rate is far lower but the time is far longer, so "
+                     "the total gas is similar.",
+             "correct": True},
+            {"text": "Only the warm loaf really ferments; the cold one rises "
+                     "as the dough relaxes.",
+             "correct": False,
+             "why": "At 4 °C the yeast is alive and working, just unhurried. "
+                    "The holes in an overnight loaf are carbon dioxide, "
+                    "exactly as in the warm one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-04-h10",
+        "band": "harder",
+        "text": "Fermentation produces alcohol or acid rather than carbon "
+                "dioxide and water. Justify calling it respiration all the "
+                "same.",
+        "options": [
+            {"text": "Because the yeast breathes in through its membrane "
+                     "while the reaction runs.",
+             "correct": False,
+             "why": "Yeast does not breathe, and breathing is not respiration "
+                    "in any organism. What makes this respiration is what "
+                    "happens to the glucose."},
+            {"text": "Because energy is released from glucose inside a living "
+                     "cell, without oxygen.",
+             "correct": True},
+            {"text": "Because the products can be burned to release energy "
+                     "later on.",
+             "correct": False,
+             "why": "Ethanol does burn, which shows energy was left in it — "
+                    "but burning it later is not what the organism did. The "
+                    "yeast released energy for itself."},
+            {"text": "Because the reaction gives off a gas, just as aerobic "
+                     "respiration does.",
+             "correct": False,
+             "why": "The bacterial route gives off no gas at all and is still "
+                    "respiration. What counts is energy released from glucose "
+                    "in a living cell."},
+        ],
+        "figure": None,
+    },
 ]

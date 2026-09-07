@@ -170,3 +170,43 @@ Both keys were lengthened rather than the distractors cut. Sweeping the unit at
 ⚠️ `b3-02-h05` and `b3-02-e07`'s "bench" were flagged and deliberately **kept**
 — both are laboratory benches, one holding two unlabelled white powders and one
 in a sentence about keeping a naked flame away from a water bath.
+
+---
+
+## B8 — respiration (5 lessons, +96 rows)
+
+| lesson | easier | standard | harder |
+|---|---|---|---|
+| 01 aerobic-respiration | e05–e11 | s05–s11 | h05–h11 |
+| 02 why-every-cell-respires | e05–e11 | s05–s11 | h05–h11 |
+| 03 anaerobic-respiration-in-humans | e05–e10 | s05–s10 | h05–h10 |
+| 04 fermentation | e05–e10 | s05–s10 | h05–h10 |
+| 05 aerobic-vs-anaerobic | e05–e10 | s05–s10 | h05–h10 |
+
+Eight harder-band calculations, each with a named wrong move behind every
+distractor: masses from the 180:192:264:108 ratio, 15.6 kJ per gram, the
+demand−supply gap, lactate clearance time, a twentyfold yield.
+
+**Review fixes — including the lane's worst content defect.**
+
+⚠️ **`b8-05-e08` had two defensible answers.** It asked which case is supplied
+almost entirely by *anaerobic* respiration, keyed to yeast in sealed dough, but
+also offered "a sprinter in the last three seconds of a race" — which is the
+lactic-acid case the unit itself teaches, and therefore also correct. Fixed by
+replacing that option with "a resting muscle with blood flowing normally
+through it", whose `why` names the misconception: being a muscle is not what
+makes respiration anaerobic, running short of oxygen is. Its partner
+`b8-05-e07` (the aerobic version) is a deliberate contrast pair and stays.
+
+Two further science fixes came from the author's own cold read: `b8-01-e10`'s
+key overclaimed that window mist is mostly metabolic water, and `b8-04-h05`
+carried an arithmetic error inside a distractor's `why` (60 less 12% is 52.8,
+not 48) so the named wrong move was not the one actually made. `b8-04-e10` had
+a second defensible answer — "warmth, so that it runs at a useful rate" — since
+cold only slows fermentation; replaced with a genuinely non-optional condition.
+
+Eleven self-containment defects: four stems naming "the ledger", five rows
+appealing to "the four jobs" as a list the child was never given, and three
+using "the ceiling" as jargon their own stems never introduce. The term was
+deliberately **kept** in `b8-03-s05`, `h05` and `h10`, whose stems state the
+ceiling of 80 units themselves, so it is grounded in the row.

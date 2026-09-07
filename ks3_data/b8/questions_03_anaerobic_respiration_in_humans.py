@@ -392,4 +392,509 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b8-03-e05",
+        "band": "easier",
+        "text": "Anaerobic respiration in human muscle uses no oxygen. Which "
+                "two substances does it therefore never produce?",
+        "options": [
+            {"text": "Carbon dioxide and water", "correct": True},
+            {"text": "Lactic acid and water", "correct": False,
+             "why": "Lactic acid is the one thing it does produce. Water "
+                    "needs the glucose broken down completely, and without "
+                    "oxygen it never is."},
+            {"text": "Glucose and lactic acid", "correct": False,
+             "why": "Glucose is what goes in and lactic acid is what comes "
+                    "out. Neither of them is missing from this reaction."},
+            {"text": "Carbon dioxide and lactic acid", "correct": False,
+             "why": "Half right. There is no carbon dioxide, but lactic acid "
+                    "is exactly what is left behind in the muscle."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-e06",
+        "band": "easier",
+        "text": "What does the word anaerobic tell you about this kind of "
+                "respiration?",
+        "options": [
+            {"text": "That it goes on without releasing any energy at all.",
+             "correct": False,
+             "why": "Energy is released — it is what keeps a sprinter moving. "
+                    "There is simply far less of it from each glucose "
+                    "molecule."},
+            {"text": "That it happens outside the body rather than inside "
+                     "it.",
+             "correct": False,
+             "why": "It happens inside your muscle cells. The word names a "
+                    "condition the reaction runs under, not a place."},
+            {"text": "That it happens without any glucose being needed.",
+             "correct": False,
+             "why": "Glucose is still the fuel and still what is broken down. "
+                    "What is missing is the oxygen, not the fuel."},
+            {"text": "That it happens without any oxygen being used.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-e07",
+        "band": "easier",
+        "text": "Which of these is most likely to make your leg muscles "
+                "respire anaerobically?",
+        "options": [
+            {"text": "Walking slowly to the bus stop.", "correct": False,
+             "why": "Walking asks for far less than your oxygen supply can "
+                    "deliver, so no gap opens and nothing anaerobic is "
+                    "needed."},
+            {"text": "Sitting still through a lesson.", "correct": False,
+             "why": "Sitting still is the lowest demand of the day. Aerobic "
+                    "respiration covers it several times over."},
+            {"text": "Sprinting flat out for the last ten metres.",
+             "correct": True},
+            {"text": "Sleeping through the night after a hard day.",
+             "correct": False,
+             "why": "Demand falls to its lowest overnight. The anaerobic "
+                    "route is for when demand climbs above what oxygen "
+                    "delivery can cover."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-e08",
+        "band": "easier",
+        "text": "Anaerobic respiration gets far less energy out of each "
+                "glucose molecule than aerobic respiration does. So what is "
+                "its advantage?",
+        "options": [
+            {"text": "It leaves a product the liver can make use of "
+                     "afterwards.",
+             "correct": False,
+             "why": "The liver does recover the lactic acid, but that is "
+                    "repairing the cost rather than the point of taking the "
+                    "route. The advantage is speed."},
+            {"text": "It supplies energy quickly, without waiting for oxygen "
+                     "to arrive.",
+             "correct": True},
+            {"text": "It uses less glucose, so a muscle's fuel lasts much "
+                     "longer.",
+             "correct": False,
+             "why": "The opposite is true. Getting less from each molecule "
+                    "means breaking down more of them for the same amount of "
+                    "work."},
+            {"text": "It can carry on for hours, long after aerobic "
+                     "respiration stops.",
+             "correct": False,
+             "why": "It is the short-term route. Lactic acid accumulates "
+                    "within seconds and forces you to slow down."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-e09",
+        "band": "easier",
+        "text": "During a sprint, where in the body does anaerobic "
+                "respiration actually happen?",
+        "options": [
+            {"text": "In the muscle cells that are doing the work.",
+             "correct": True},
+            {"text": "In the lungs, where the oxygen has run short.",
+             "correct": False,
+             "why": "The lungs are where air is exchanged; nothing is "
+                    "respired in them. The shortfall is felt in the working "
+                    "muscle."},
+            {"text": "In the blood, which is carrying the lactic acid.",
+             "correct": False,
+             "why": "The blood carries the lactic acid away afterwards. The "
+                    "reaction itself happened inside the muscle cells."},
+            {"text": "In the liver, which is where the lactic acid ends up.",
+             "correct": False,
+             "why": "The liver is the destination, not the source. It deals "
+                    "with lactic acid the muscles have already made."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-e10",
+        "band": "easier",
+        "text": "Straight after a sprint you are breathing hard; two days "
+                "after a new training session your legs ache. Which of those "
+                "two is caused by lactic acid?",
+        "options": [
+            {"text": "Both, since lactic acid is behind all soreness from "
+                     "exercise.",
+             "correct": False,
+             "why": "It clears within about an hour of stopping, so two days "
+                    "later there is none of it left to cause anything."},
+            {"text": "Neither — lactic acid causes no pain and no "
+                     "breathlessness.",
+             "correct": False,
+             "why": "It does cause the burning during the effort, and "
+                    "repaying the oxygen debt it created is why you keep "
+                    "breathing hard."},
+            {"text": "The ache two days later, because the acid drains away "
+                     "slowly.",
+             "correct": False,
+             "why": "It does not drain slowly. The blood removes it to the "
+                    "liver within the hour, and the later ache is damage to "
+                    "the muscle fibres."},
+            {"text": "The hard breathing, because oxygen is owed for dealing "
+                     "with the acid.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b8-03-s05",
+        "band": "standard",
+        "text": "Oxygen delivery rises towards a ceiling of 80 units. A "
+                "runner picks a hard run, which asks for 85 units. What "
+                "happens to the lactic acid?",
+        "options": [
+            {"text": "None is made, because 85 and 80 are so close "
+                     "together.",
+             "correct": False,
+             "why": "A gap is a gap. Five units is slow accumulation rather "
+                    "than none, which is why a hard run can be held for "
+                    "minutes and a sprint cannot."},
+            {"text": "It accumulates as fast as it does in a flat-out "
+                     "sprint.",
+             "correct": False,
+             "why": "A sprint asks 150 units against the same ceiling — a gap "
+                    "of 70, not 5. How fast it accumulates depends on the "
+                    "size of the gap."},
+            {"text": "It accumulates slowly, because demand is just above the "
+                     "ceiling.",
+             "correct": True},
+            {"text": "None is made, because aerobic respiration shuts down "
+                     "instead.",
+             "correct": False,
+             "why": "Aerobic respiration is working flat out at 80 units, "
+                    "which is most of the job. Only the extra five units come "
+                    "from anywhere else."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-s06",
+        "band": "standard",
+        "text": "A runner in the last 50 m of a 200 m is trying just as hard "
+                "as at the start, and is visibly slowing down. What is the "
+                "best explanation?",
+        "options": [
+            {"text": "Lactic acid has built up in the working muscles and is "
+                     "forcing the slow-down.",
+             "correct": True},
+            {"text": "They have used up all the glucose stored in their leg "
+                     "muscles.",
+             "correct": False,
+             "why": "Glucose stores are not emptied in twenty seconds. What "
+                    "has built up is lactic acid, and that is what limits the "
+                    "effort."},
+            {"text": "Their muscles have used up the oxygen they stored "
+                     "before the start.",
+             "correct": False,
+             "why": "There was no store to use up. Oxygen has been arriving "
+                    "throughout; it has simply never arrived fast enough."},
+            {"text": "Aerobic respiration has stopped, so far less energy is "
+                     "available.",
+             "correct": False,
+             "why": "Aerobic respiration has run flat out from the gun and "
+                    "has not stopped. What has changed is how much lactic "
+                    "acid sits on top of it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-s07",
+        "band": "standard",
+        "text": "The word summary for anaerobic respiration in humans has "
+                "only one substance on the right-hand side. Why is there "
+                "nothing else there?",
+        "options": [
+            {"text": "Because anything else dissolves in the blood and leaves "
+                     "at once.",
+             "correct": False,
+             "why": "Nothing is being hidden — the other substances are not "
+                    "made at all. Carbon dioxide and water need oxygen, and "
+                    "there is none."},
+            {"text": "Because with no oxygen the glucose is only partly "
+                     "broken down.",
+             "correct": True},
+            {"text": "Because the muscle keeps the rest for the liver to "
+                     "collect later.",
+             "correct": False,
+             "why": "The liver collects the lactic acid, and that is all "
+                    "there is to collect. The reaction stops before anything "
+                    "else can form."},
+            {"text": "Because carbon dioxide and water count as waste rather "
+                     "than as products.",
+             "correct": False,
+             "why": "Neither is made here at all. When they are made — "
+                    "aerobically — they are products, and they are written as "
+                    "products."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-s08",
+        "band": "standard",
+        "text": "A footballer sprints, then jogs, then sprints again, for "
+                "ninety minutes. When is the lactic acid from those sprints "
+                "being cleared?",
+        "options": [
+            {"text": "Only at half time and at the final whistle, once the "
+                     "running stops.",
+             "correct": False,
+             "why": "Clearing starts as soon as delivery is ahead of demand, "
+                    "and that happens during the jogging rather than only "
+                    "when the game does."},
+            {"text": "Not at all until the match ends, so it builds up all "
+                     "game.",
+             "correct": False,
+             "why": "If it did, nobody would finish. The jogging spells are "
+                    "when the debt is repaid, which is why players keep "
+                    "moving rather than standing still."},
+            {"text": "During the sprints, when the heart and lungs work "
+                     "hardest.",
+             "correct": False,
+             "why": "The sprints are when it is made. Delivery is at its "
+                    "highest then, but demand is higher still, so the gap is "
+                    "open rather than closing."},
+            {"text": "During the jogging, when demand drops below what "
+                     "delivery covers.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-s09",
+        "band": "standard",
+        "text": "After a sprint your heart goes on beating fast as well as "
+                "your lungs working hard. How does the fast heartbeat help?",
+        "options": [
+            {"text": "It warms the muscles, which breaks the lactic acid down "
+                     "faster.",
+             "correct": False,
+             "why": "Temperature is not what deals with lactic acid. The "
+                    "blood is needed to move it, and to bring oxygen to the "
+                    "muscles."},
+            {"text": "It pushes the lactic acid out through the skin in "
+                     "sweat.",
+             "correct": False,
+             "why": "Sweat carries no lactic acid away. The blood carries it "
+                    "to the liver, and the liver is what deals with it."},
+            {"text": "It delivers oxygen to the muscles and carries the "
+                     "lactic acid to the liver.",
+             "correct": True},
+            {"text": "It refills the muscles' store of oxygen ready for the "
+                     "next sprint.",
+             "correct": False,
+             "why": "There is no store to refill. Whatever the next sprint "
+                    "needs will have to arrive while it is happening."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-s10",
+        "band": "standard",
+        "text": "A student says a sprinter could avoid anaerobic respiration "
+                "altogether by simply breathing more deeply during the race. "
+                "Why will that not work?",
+        "options": [
+            {"text": "Because you cannot breathe at all while sprinting flat "
+                     "out.",
+             "correct": False,
+             "why": "You can, and sprinters do. The limit is not whether you "
+                    "breathe but how fast oxygen can be delivered to the "
+                    "muscles."},
+            {"text": "Because delivery has a ceiling — heart, lungs and blood "
+                     "can only move so much.",
+             "correct": True},
+            {"text": "Because deep breathing lets in more carbon dioxide as "
+                     "well as more oxygen.",
+             "correct": False,
+             "why": "Air is almost all nitrogen and oxygen, so breathing "
+                    "deeply does not flood you with carbon dioxide. The limit "
+                    "is delivery, not what the air holds."},
+            {"text": "Because the oxygen taken in during a sprint is stored "
+                     "for afterwards.",
+             "correct": False,
+             "why": "None of it is stored. It is used as fast as it arrives, "
+                    "all the way through the race."},
+        ],
+        "figure": None,
+    },
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b8-03-h05",
+        "band": "harder",
+        "text": "During a sprint a runner's muscles demand 150 units of "
+                "energy supply per 10 seconds, and oxygen delivery has "
+                "reached 62 units. How many units must be covered "
+                "anaerobically?",
+        "options": [
+            {"text": "212 units", "correct": False,
+             "why": "That is 150 + 62, adding the supply to the demand. The "
+                    "anaerobic route covers only what the oxygen cannot, so "
+                    "the two are subtracted."},
+            {"text": "150 units", "correct": False,
+             "why": "That would be right only if no oxygen were arriving at "
+                    "all. Aerobic respiration is running flat out at 62 "
+                    "units, and the shortfall is what is left over."},
+            {"text": "80 units", "correct": False,
+             "why": "80 is the ceiling delivery could eventually reach, not "
+                    "what it has reached at this moment. Use the 62 units "
+                    "actually being delivered."},
+            {"text": "88 units", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-h06",
+        "band": "harder",
+        "text": "A runner finishes with 88 units of lactic acid, and recovery "
+                "clears about 22 units every 30 seconds. Roughly how long "
+                "will it take to clear?",
+        "options": [
+            {"text": "About 2 minutes", "correct": True},
+            {"text": "About 30 seconds", "correct": False,
+             "why": "Thirty seconds clears 22 units, a quarter of the total. "
+                    "Four such periods are needed, and four half-minutes make "
+                    "two minutes."},
+            {"text": "About 1 minute", "correct": False,
+             "why": "A minute clears 44 units, half of it. Divide 88 by 22 to "
+                    "get four periods, each of 30 seconds."},
+            {"text": "About 4 minutes", "correct": False,
+             "why": "The right number of periods, each given the wrong "
+                    "length. There are four of them and each lasts 30 "
+                    "seconds, not a minute."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-h07",
+        "band": "harder",
+        "text": "A person whose heart cannot pump strongly is breathless "
+                "after one flight of stairs, while a healthy person of the "
+                "same age is not. Explain that using demand and supply.",
+        "options": [
+            {"text": "Their muscles make lactic acid at every activity, "
+                     "including sitting still.",
+             "correct": False,
+             "why": "At rest no gap is open in either person, so neither is "
+                    "accumulating anything. What differs is how hard each of "
+                    "them can work before a gap opens at all."},
+            {"text": "The stairs are harder work for them, so their muscles "
+                     "demand more energy.",
+             "correct": False,
+             "why": "The stairs cost about the same in both people. What has "
+                    "changed is the supply side — how much oxygen can be "
+                    "delivered — not the demand."},
+            {"text": "Their delivery ceiling is low, so even stairs open a "
+                     "gap covered anaerobically.",
+             "correct": True},
+            {"text": "Their muscles have no store of oxygen left to spend on "
+                     "the stairs.",
+             "correct": False,
+             "why": "Nobody has one, healthy or not. The difference is how "
+                    "fast oxygen can be delivered while the stairs are being "
+                    "climbed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-h08",
+        "band": "harder",
+        "text": "A cyclist attacks up a hill, then keeps pedalling gently at "
+                "the top instead of stopping. She recovers faster than a "
+                "rider who stops dead. Why?",
+        "options": [
+            {"text": "Her leg muscles use the lactic acid up directly, as a "
+                     "second fuel.",
+             "correct": False,
+             "why": "The muscles do not consume it themselves — the blood "
+                    "takes it to the liver. What gentle pedalling does is "
+                    "keep that blood moving quickly."},
+            {"text": "Pedalling gently holds demand below what oxygen "
+                     "delivery covers, and keeps the blood moving.",
+             "correct": True},
+            {"text": "Stopping dead makes the muscles produce more lactic "
+                     "acid than pedalling does.",
+             "correct": False,
+             "why": "Both riders stop producing it the moment the effort "
+                    "ends. The difference is how quickly what is already "
+                    "there is carried away."},
+            {"text": "Pedalling gently means she never went into oxygen debt "
+                     "in the first place.",
+             "correct": False,
+             "why": "The attack up the hill put her into debt exactly as it "
+                    "did the other rider. What differs is how quickly the "
+                    "debt is repaid."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-h09",
+        "band": "harder",
+        "text": "Blood taken from a sprinter's arm one minute after a 400 m "
+                "contains lactic acid, even though the arm did none of the "
+                "hard work. How did it get there?",
+        "options": [
+            {"text": "The arm muscles respired anaerobically too, from the "
+                     "effort of swinging.",
+             "correct": False,
+             "why": "The arm swing asks nothing like the demand the legs "
+                    "made. This lactic acid was produced in the legs and has "
+                    "travelled."},
+            {"text": "Lactic acid forms in the blood itself whenever oxygen "
+                     "runs short anywhere.",
+             "correct": False,
+             "why": "It forms inside cells that are respiring, not in the "
+                    "blood. The blood is what carries it away from them."},
+            {"text": "The blood carried it out of the leg muscles, on its way "
+                     "to the liver.",
+             "correct": True},
+            {"text": "The liver made it and sent it out to the muscles that "
+                     "needed it.",
+             "correct": False,
+             "why": "The liver receives lactic acid and deals with it. What "
+                    "it sends back out to the muscles is glucose."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-03-h10",
+        "band": "harder",
+        "text": "A sprinter's muscles work at a demand of 150 units against "
+                "an oxygen ceiling of 80, and can hold it for about ten "
+                "seconds. Why only ten?",
+        "options": [
+            {"text": "Because the muscles run out of glucose after about ten "
+                     "seconds of it.",
+             "correct": False,
+             "why": "There is far more glucose available than that. What runs "
+                    "out is tolerance of the lactic acid, which accumulates "
+                    "while the gap is open."},
+            {"text": "Because lactic acid accumulates fast while the gap is "
+                     "open, and forces a slow-down.",
+             "correct": True},
+            {"text": "Because oxygen delivery hits its ceiling after ten "
+                     "seconds and then falls away.",
+             "correct": False,
+             "why": "Delivery climbs towards the ceiling and stays there. It "
+                    "is the accumulating lactic acid that ends the effort, "
+                    "not a fall in supply."},
+            {"text": "Because ten seconds is as long as anyone can hold their "
+                     "breath while sprinting.",
+             "correct": False,
+             "why": "Sprinters breathe throughout the race. The limit is "
+                    "chemical, and it is not a matter of holding your "
+                    "breath."},
+        ],
+        "figure": None,
+    },
 ]

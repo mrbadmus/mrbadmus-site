@@ -408,4 +408,500 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b8-05-e05",
+        "band": "easier",
+        "text": "Roughly how much more energy does aerobic respiration get "
+                "from each glucose molecule than anaerobic respiration does?",
+        "options": [
+            {"text": "About twice as much.", "correct": False,
+             "why": "Far more than that. The gap is about twentyfold, which "
+                    "is why the aerobic route is the default in every "
+                    "organism that can use it."},
+            {"text": "About twenty times as much.", "correct": True},
+            {"text": "About the same — the difference is in speed alone.",
+             "correct": False,
+             "why": "Speed is one difference, but not the only one. The "
+                    "anaerobic route leaves a product that still holds most "
+                    "of the energy."},
+            {"text": "About a hundred times as much.", "correct": False,
+             "why": "An overestimate. The figure is about twenty, which is "
+                    "already large enough to decide how big an organism can "
+                    "be."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-e06",
+        "band": "easier",
+        "text": "Anaerobic respiration in yeast and other micro-organisms has "
+                "a name of its own. What is it?",
+        "options": [
+            {"text": "Digestion", "correct": False,
+             "why": "Digestion breaks large food molecules into small ones so "
+                    "they can be absorbed. What happens to the small ones "
+                    "inside the cell is respiration."},
+            {"text": "Photosynthesis", "correct": False,
+             "why": "Photosynthesis builds glucose using light. This process "
+                    "breaks glucose down, and it needs no light at all."},
+            {"text": "Excretion", "correct": False,
+             "why": "Excretion is getting rid of waste an organism has made. "
+                    "This is the reaction that made it."},
+            {"text": "Fermentation", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-e07",
+        "band": "easier",
+        "text": "Which of these is supplied almost entirely by aerobic "
+                "respiration?",
+        "options": [
+            {"text": "A student sitting still and reading a page.",
+             "correct": True},
+            {"text": "The last three seconds of a 100 m race.",
+             "correct": False,
+             "why": "Aerobic respiration is flat out there, but it is nowhere "
+                    "near enough. A large part of the energy is coming "
+                    "anaerobically."},
+            {"text": "Yeast in a sealed ball of bread dough.",
+             "correct": False,
+             "why": "Almost no oxygen reaches the middle of a dough ball, so "
+                    "the yeast is fermenting — glucose to ethanol and carbon "
+                    "dioxide."},
+            {"text": "The root cells of a plant in waterlogged soil.",
+             "correct": False,
+             "why": "Water has filled the air spaces in the soil, so no "
+                    "oxygen reaches those cells and they respire "
+                    "anaerobically."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-e08",
+        "band": "easier",
+        "text": "Which of these is supplied almost entirely by anaerobic "
+                "respiration?",
+        "options": [
+            {"text": "A student sitting still, reading a page.",
+             "correct": False,
+             "why": "Demand is low and the oxygen supply covers it several "
+                    "times over, so this is the aerobic route almost "
+                    "entirely."},
+            {"text": "A marathon runner two hours into a race.",
+             "correct": False,
+             "why": "She is working hard, but at a pace her oxygen supply "
+                    "still keeps up with. Hard work is not the test — whether "
+                    "oxygen keeps up is."},
+            {"text": "Yeast in a sealed ball of bread dough.", "correct": True},
+            {"text": "A resting muscle with blood flowing normally through "
+                     "it.",
+             "correct": False,
+             "why": "Being a muscle is not what makes respiration anaerobic — "
+                    "running short of oxygen is. A resting muscle has the "
+                    "easiest case of all: low demand, and blood delivering "
+                    "oxygen faster than the cells can use it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-e09",
+        "band": "easier",
+        "text": "Which of these can respire anaerobically?",
+        "options": [
+            {"text": "Only micro-organisms, such as yeast and bacteria.",
+             "correct": False,
+             "why": "Your own muscles do it, and so do plant roots in flooded "
+                    "soil. It is not a micro-organism speciality."},
+            {"text": "Humans, plants and micro-organisms can all do it.",
+             "correct": True},
+            {"text": "Only animals, since plants have photosynthesis "
+                     "instead.",
+             "correct": False,
+             "why": "Photosynthesis is not a substitute for respiration. A "
+                    "root cell in waterlogged soil respires anaerobically "
+                    "exactly as a sprinting muscle does."},
+            {"text": "Only organisms that have no mitochondria at all.",
+             "correct": False,
+             "why": "A muscle cell is full of mitochondria and still uses the "
+                    "anaerobic route when oxygen runs short, because that "
+                    "route runs outside them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-e10",
+        "band": "easier",
+        "text": "Anaerobic respiration needs no oxygen. Which substance does "
+                "it still need, exactly as aerobic respiration does?",
+        "options": [
+            {"text": "Water", "correct": False,
+             "why": "Water is a product of the aerobic route, not something "
+                    "either route has to be supplied with. What both must "
+                    "have is a fuel."},
+            {"text": "Carbon dioxide", "correct": False,
+             "why": "Carbon dioxide comes out of aerobic respiration, and "
+                    "nothing respires it. Both routes need a fuel to break "
+                    "down."},
+            {"text": "Lactic acid", "correct": False,
+             "why": "Lactic acid is what the human anaerobic route leaves "
+                    "behind. It is a product, not a starting material."},
+            {"text": "Glucose", "correct": True},
+        ],
+        "figure": None,
+    },
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b8-05-s05",
+        "band": "standard",
+        "text": "Bacteria in the middle of a compost heap and yeast in a "
+                "sealed ball of dough are both respiring anaerobically. What "
+                "do the two situations have in common?",
+        "options": [
+            {"text": "Both organisms are short of food, so they take the "
+                     "cheaper route.",
+             "correct": False,
+             "why": "Neither is short of food — the dough is full of sugar "
+                    "and so is the compost. What is missing in both cases is "
+                    "oxygen."},
+            {"text": "Both are too cold for aerobic respiration to run at "
+                     "all.",
+             "correct": False,
+             "why": "Temperature does not decide which route runs. The middle "
+                    "of a compost heap is warm, and dough is proved somewhere "
+                    "warm on purpose."},
+            {"text": "No oxygen reaches either of them, so the anaerobic "
+                     "route supplies the energy.",
+             "correct": True},
+            {"text": "Neither organism has mitochondria, so the aerobic route "
+                     "is closed to them.",
+             "correct": False,
+             "why": "Yeast is a fungus and has mitochondria. What stops it "
+                    "using them here is the absence of oxygen, not the "
+                    "absence of machinery."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-s06",
+        "band": "standard",
+        "text": "Which of these shows most clearly that anaerobic respiration "
+                "is not simply an emergency measure?",
+        "options": [
+            {"text": "Yeast ferments in dough for a living, and an industry "
+                     "is built on the result.",
+             "correct": True},
+            {"text": "A sprinter uses it in the last seconds of a race and "
+                     "recovers afterwards.",
+             "correct": False,
+             "why": "That is the case that makes it look like an emergency — "
+                    "a shortfall covered and then repaid. The convincing case "
+                    "is an organism in no trouble at all."},
+            {"text": "Root cells use it when their soil floods, and often die "
+                     "soon after.",
+             "correct": False,
+             "why": "That genuinely is an emergency, and the cells lose it. "
+                    "It is evidence for the other side of the argument."},
+            {"text": "Muscles use it when heart and lungs cannot keep up with "
+                     "demand.",
+             "correct": False,
+             "why": "Again a shortfall being covered. What settles the "
+                    "question is an organism that lives this way by "
+                    "preference."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-s07",
+        "band": "standard",
+        "text": "Two identical yeast cultures are given the same amount of "
+                "sugar. One is sealed; the other has air bubbled through it. "
+                "Which produces more new yeast cells?",
+        "options": [
+            {"text": "The sealed one, because fermentation is the faster of "
+                     "the two routes.",
+             "correct": False,
+             "why": "A faster supply is not a bigger total. The sealed "
+                    "culture gets far less from each sugar molecule, so it "
+                    "can build far less."},
+            {"text": "The sealed one, because the ethanol it makes is used to "
+                     "build new cells.",
+             "correct": False,
+             "why": "Ethanol is a waste product leaving the cell, not "
+                    "building material. It still holds energy, which is "
+                    "exactly why the sealed route is the wasteful one."},
+            {"text": "Both the same, since they were given the same amount of "
+                     "sugar.",
+             "correct": False,
+             "why": "The same sugar is not the same energy. Aerobic "
+                    "respiration gets about twenty times more out of each "
+                    "molecule."},
+            {"text": "The aerated one, because aerobic respiration gets far "
+                     "more from each molecule.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-s08",
+        "band": "standard",
+        "text": "A student says that because you breathe harder during "
+                "exercise, exercise must be anaerobic. Where is the error?",
+        "options": [
+            {"text": "Breathing harder shows the anaerobic route has taken "
+                     "over from the aerobic one.",
+             "correct": False,
+             "why": "Nothing takes over. Aerobic respiration is working "
+                    "harder than ever, and that is exactly what the harder "
+                    "breathing is for."},
+            {"text": "Breathing harder is the aerobic route being supplied "
+                     "faster, not replaced.",
+             "correct": True},
+            {"text": "Breathing harder is how the body gets rid of lactic "
+                     "acid, through the lungs.",
+             "correct": False,
+             "why": "Lactic acid is not a gas and does not leave in your "
+                    "breath. The blood carries it to the liver, and the extra "
+                    "oxygen is what the liver needs."},
+            {"text": "Breathing has nothing to do with respiration, so it "
+                     "shows nothing either way.",
+             "correct": False,
+             "why": "Too strong. Breathing supplies the oxygen the aerobic "
+                    "route uses, so harder breathing is evidence about that "
+                    "route — just not the evidence the student thought."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-s09",
+        "band": "standard",
+        "text": "The anaerobic route gets far less energy out of each glucose "
+                "molecule. Why is it worth having at all?",
+        "options": [
+            {"text": "Because it can run for hours once the aerobic route is "
+                     "exhausted.",
+             "correct": False,
+             "why": "The aerobic route does not get exhausted; it runs "
+                    "continuously. The anaerobic one is the short-term "
+                    "option, not the long one."},
+            {"text": "Because it leaves a product the body can store up for "
+                     "later use.",
+             "correct": False,
+             "why": "Lactic acid is a debt to be dealt with, not a store to "
+                    "draw on. What this route buys is time, not storage."},
+            {"text": "Because it supplies energy faster than oxygen can be "
+                     "delivered, for short bursts.",
+             "correct": True},
+            {"text": "Because it uses less glucose, so the body's fuel lasts "
+                     "longer.",
+             "correct": False,
+             "why": "The opposite is true. Getting less from each molecule "
+                    "means breaking down far more of them for the same "
+                    "work."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-s10",
+        "band": "standard",
+        "text": "A student says fermentation and anaerobic respiration are "
+                "two completely different processes. What is the best reply?",
+        "options": [
+            {"text": "Fermentation is anaerobic respiration, carried out by a "
+                     "micro-organism.",
+             "correct": True},
+            {"text": "They differ because fermentation needs no glucose and "
+                     "respiration does.",
+             "correct": False,
+             "why": "Both start from glucose. What differs between one "
+                    "organism and another is what is left at the end of it."},
+            {"text": "They differ because fermentation happens outside a cell "
+                     "and respiration inside.",
+             "correct": False,
+             "why": "Fermentation happens inside the yeast or bacterial "
+                    "cells, exactly as respiration happens inside yours."},
+            {"text": "They differ because fermentation releases no energy, so "
+                     "it is not respiration.",
+             "correct": False,
+             "why": "It releases energy — that is why the organism does it. "
+                    "There is simply far less of it than the aerobic route "
+                    "would give."},
+        ],
+        "figure": None,
+    },
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b8-05-h05",
+        "band": "harder",
+        "text": "Respiring 5 g of glucose aerobically transfers about 78 kJ. "
+                "The anaerobic route gets about a twentieth as much per gram. "
+                "What mass of glucose would it need for the same 78 kJ?",
+        "options": [
+            {"text": "0.25 g", "correct": False,
+             "why": "That is 5 ÷ 20, dividing where you should multiply. "
+                    "Getting less out of each gram means needing more grams, "
+                    "not fewer."},
+            {"text": "5 g", "correct": False,
+             "why": "That would be right only if the two routes gave the same "
+                    "energy per gram. The anaerobic route gives about a "
+                    "twentieth, so it needs about twenty times the glucose."},
+            {"text": "100 g", "correct": True},
+            {"text": "25 g", "correct": False,
+             "why": "That is 5 × 5. The factor in the question is twenty, so "
+                    "the mass needed is 5 × 20 = 100 g."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-h06",
+        "band": "harder",
+        "text": "The middle of a compost heap and a sealed ball of dough both "
+                "hold no oxygen. Air is let into each of them. What happens "
+                "to the organisms living there?",
+        "options": [
+            {"text": "Both die, because both are adapted to living without "
+                     "oxygen.",
+             "correct": False,
+             "why": "Only some compost bacteria are killed by oxygen. Yeast "
+                    "is not one of them — it thrives on air, which is how "
+                    "baker's yeast is manufactured."},
+            {"text": "The yeast switches to the aerobic route and grows fast; "
+                     "obligate anaerobes are killed.",
+             "correct": True},
+            {"text": "Both switch to the aerobic route and give us more of "
+                     "what we wanted from them.",
+             "correct": False,
+             "why": "The yeast does switch, but the loaf then gets less of "
+                    "what a baker wants, not more. And an obligate anaerobe "
+                    "cannot switch at all, because oxygen kills it."},
+            {"text": "Neither changes, since each carries on with the route "
+                     "it was already using.",
+             "correct": False,
+             "why": "Oxygen changes everything for both, in opposite "
+                    "directions. The yeast takes the better route; the "
+                    "obligate anaerobes do not survive to take any."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-h07",
+        "band": "harder",
+        "text": "A sprinter's muscle and a yeast in dough both start with "
+                "glucose and both run short of oxygen, yet they do not end up "
+                "with the same product. What decides which product forms?",
+        "options": [
+            {"text": "How long the shortage of oxygen lasts in each case.",
+             "correct": False,
+             "why": "Time changes how much is made, not what it is. Ten "
+                    "seconds and ten hours both leave a human muscle cell "
+                    "with lactic acid."},
+            {"text": "How completely the glucose is broken down inside each "
+                     "of the two cells.",
+             "correct": False,
+             "why": "In both the breakdown is incomplete — that is what they "
+                    "share. What differs is where each of them stops."},
+            {"text": "The temperature each of them is at when the oxygen runs "
+                     "out.",
+             "correct": False,
+             "why": "Temperature changes the rate, never the products. A cold "
+                    "dough gives the same two products as a warm one."},
+            {"text": "Which organism it is: human muscle gives lactic acid, "
+                     "yeast gives ethanol and carbon dioxide.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-h08",
+        "band": "harder",
+        "text": "Ethanol from yeast and lactic acid from your muscles are "
+                "both said to still hold energy. What is the evidence for "
+                "that, in each case?",
+        "options": [
+            {"text": "Ethanol burns as a fuel, and the liver recovers energy "
+                     "from lactic acid.",
+             "correct": True},
+            {"text": "Both taste strong or sour, which is the energy left in "
+                     "them being detected.",
+             "correct": False,
+             "why": "Taste is no evidence of energy content. The evidence is "
+                    "that both substances can still be used as a source of "
+                    "energy afterwards."},
+            {"text": "Both are gases, and a gas carries energy away from the "
+                     "cell that made it.",
+             "correct": False,
+             "why": "Neither is a gas. Ethanol is a liquid in the dough, and "
+                    "lactic acid stays dissolved in the muscle."},
+            {"text": "Both are broken down further by the organism that made "
+                     "them, on the spot.",
+             "correct": False,
+             "why": "Yeast does not break its ethanol down at all — it is got "
+                    "rid of. Lactic acid leaves the muscle and is dealt with "
+                    "by the liver."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-h09",
+        "band": "harder",
+        "text": "In a 90-minute football match a player sprints repeatedly, "
+                "and blood lactate rises during the sprints and falls between "
+                "them. Which route supplies most of the energy overall?",
+        "options": [
+            {"text": "Anaerobic, because the sprints are what a match is "
+                     "really made of.",
+             "correct": False,
+             "why": "The sprints are short and the running between them is "
+                    "long. For most of the ninety minutes the demand is "
+                    "inside what oxygen delivery covers."},
+            {"text": "Anaerobic, because lactate can be measured and so must "
+                     "be the main route.",
+             "correct": False,
+             "why": "Measurable is not the same as dominant. Lactate rises "
+                    "because a gap opened for a few seconds, not because the "
+                    "anaerobic route did most of the work."},
+            {"text": "Aerobic, because most of the match is inside what "
+                     "oxygen delivery covers.",
+             "correct": True},
+            {"text": "Aerobic, because the anaerobic route only starts once "
+                     "the player is exhausted.",
+             "correct": False,
+             "why": "It starts whenever demand rises above delivery, which is "
+                    "as true of the first sprint as the last. The route is "
+                    "right and the reason is not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b8-05-h10",
+        "band": "harder",
+        "text": "A patient who has not exercised at all is found to have a "
+                "raised level of lactic acid in their blood. Using the two "
+                "routes, what does that suggest?",
+        "options": [
+            {"text": "That they have been respiring too fast, and should "
+                     "breathe more slowly.",
+             "correct": False,
+             "why": "A fast rate on its own makes no lactic acid. It is made "
+                    "only when demand climbs above what oxygen delivery can "
+                    "cover."},
+            {"text": "That oxygen is not reaching some of their cells fast "
+                     "enough.",
+             "correct": True},
+            {"text": "That their muscles have used up the lactic acid they "
+                     "had stored.",
+             "correct": False,
+             "why": "Lactic acid is not stored anywhere. It is made when a "
+                    "shortfall opens, so a raised level means it is being "
+                    "produced now."},
+            {"text": "That they have eaten too much sugar for their cells to "
+                     "respire aerobically.",
+             "correct": False,
+             "why": "Extra glucose does not force the anaerobic route. Only a "
+                    "shortage of oxygen, relative to demand, does that."},
+        ],
+        "figure": None,
+    },
 ]
