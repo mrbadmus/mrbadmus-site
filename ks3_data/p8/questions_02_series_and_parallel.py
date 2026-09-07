@@ -345,20 +345,19 @@ QUESTIONS = [
         "band": "easier",
         "text": "One branch of a parallel circuit is broken. What happens to "
                 "the other branches?",
-        "options": [
-            {"text": "They all stop as well", "correct": False,
+        "options": [            {"text": "They all stop as well", "correct": False,
              "why": "That is what happens in series. Each parallel branch has "
                     "its own complete path."},
-            {"text": "They carry on working as before", "correct": True},
-            {"text": "They get dimmer, because the supply is damaged",
-             "correct": False,
-             "why": "The supply is untouched, and each branch still has the "
-                    "whole of its push."},
             {"text": "They get brighter, because they take the broken "
                      "branch's current",
              "correct": False,
              "why": "Nothing is handed on: each branch draws its own current, "
                     "which does not change."},
+            {"text": "They get dimmer, because the supply is damaged",
+             "correct": False,
+             "why": "The supply is untouched, and each branch still has the "
+                    "whole of its push."},
+            {"text": "They carry on working as before", "correct": True},
         ],
         "figure": None,
     },
@@ -366,19 +365,18 @@ QUESTIONS = [
         "id": "p8-02-e07",
         "band": "easier",
         "text": "Which arrangement lets each lamp be switched off on its own?",
-        "options": [
-            {"text": "Series, with one switch in the loop", "correct": False,
+        "options": [            {"text": "Series, with one switch in the loop", "correct": False,
              "why": "One switch in a single loop turns everything off "
                     "together."},
-            {"text": "Parallel, with a switch in each branch", "correct": True},
-            {"text": "Series, with a switch beside each lamp",
-             "correct": False,
-             "why": "Any open switch in a single loop stops the whole loop, "
-                    "wherever it sits."},
             {"text": "Either, as long as the switches are identical",
              "correct": False,
              "why": "The kind of switch is irrelevant; the wiring is what "
                     "decides."},
+            {"text": "Series, with a switch beside each lamp",
+             "correct": False,
+             "why": "Any open switch in a single loop stops the whole loop, "
+                    "wherever it sits."},
+            {"text": "Parallel, with a switch in each branch", "correct": True},
         ],
         "figure": None,
     },
@@ -409,8 +407,7 @@ QUESTIONS = [
         "band": "standard",
         "text": "Two identical lamps are wired in series on one battery. How "
                 "does each compare with a single lamp on the same battery?",
-        "options": [
-            {"text": "Each is just as bright, because the battery has not "
+        "options": [            {"text": "Each is just as bright, because the battery has not "
                      "changed",
              "correct": False,
              "why": "The battery's push is now shared between two lamps, so "
@@ -419,11 +416,11 @@ QUESTIONS = [
              "correct": False,
              "why": "The same current passes through both, and they share the "
                     "push equally."},
-            {"text": "Each is dimmer than the single lamp", "correct": True},
             {"text": "Each is brighter, because two lamps draw more current",
              "correct": False,
              "why": "Two lamps in series draw LESS current than one, not "
                     "more."},
+            {"text": "Each is dimmer than the single lamp", "correct": True},
         ],
         "figure": None,
     },
@@ -480,8 +477,7 @@ QUESTIONS = [
         "text": "Two identical lamps sit in series. A student says the first "
                 "is brighter because it gets the current first. What is "
                 "right?",
-        "options": [
-            {"text": "The first is brighter, but only slightly",
+        "options": [            {"text": "The first is brighter, but only slightly",
              "correct": False,
              "why": "There is no difference at all: the same current passes "
                     "through both."},
@@ -490,13 +486,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Nothing is left over. The same current goes through each "
                     "of them."},
-            {"text": "Neither is brighter, because there is nothing to be "
-                     "first in a loop",
-             "correct": True},
             {"text": "It depends which way round the battery is connected",
              "correct": False,
              "why": "Reversing the battery reverses the current and changes "
                     "neither brightness."},
+            {"text": "Neither is brighter, because there is nothing to be "
+                     "first in a loop",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -558,8 +554,7 @@ QUESTIONS = [
         "text": "Three identical lamps: two in parallel with each other, and "
                 "that pair in series with the third. Which lamp is "
                 "brightest?",
-        "options": [
-            {"text": "The two in parallel, because each gets its own branch",
+        "options": [            {"text": "The two in parallel, because each gets its own branch",
              "correct": False,
              "why": "Each of them carries only part of the current, so each "
                     "is dimmer than the single one."},
@@ -568,14 +563,14 @@ QUESTIONS = [
              "correct": False,
              "why": "Being identical does not make the currents equal; the "
                     "wiring decides that."},
-            {"text": "The single lamp, because the whole current passes "
-                     "through it",
-             "correct": True},
             {"text": "It cannot be told without knowing the battery's "
                      "voltage",
              "correct": False,
              "why": "Whatever the voltage, the single lamp carries what both "
                     "branches carry together."},
+            {"text": "The single lamp, because the whole current passes "
+                     "through it",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -584,8 +579,7 @@ QUESTIONS = [
         "band": "harder",
         "text": "A fourth identical lamp is added in parallel to three that "
                 "are already on a battery. What happens at the battery?",
-        "options": [
-            {"text": "Nothing changes, because each branch looks after "
+        "options": [            {"text": "Nothing changes, because each branch looks after "
                      "itself",
              "correct": False,
              "why": "Each branch does look after itself, and the battery has "
@@ -594,12 +588,12 @@ QUESTIONS = [
              "correct": False,
              "why": "Nothing is shared out. The branch currents ADD at the "
                     "battery."},
-            {"text": "It supplies more current, so it goes flat sooner",
-             "correct": True},
             {"text": "It supplies the same current at a higher voltage",
              "correct": False,
              "why": "A battery's push does not rise because more is asked of "
                     "it; if anything it sags."},
+            {"text": "It supplies more current, so it goes flat sooner",
+             "correct": True},
         ],
         "figure": None,
     },

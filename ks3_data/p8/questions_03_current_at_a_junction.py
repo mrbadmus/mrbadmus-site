@@ -336,17 +336,16 @@ QUESTIONS = [
         "band": "easier",
         "text": "Three branches carry 0.10 A, 0.20 A and 0.30 A. What does "
                 "the main wire carry?",
-        "options": [
-            {"text": "0.30 A, the largest branch", "correct": False,
+        "options": [            {"text": "0.30 A, the largest branch", "correct": False,
              "why": "The main wire carries all three branches together, not "
                     "just the biggest."},
             {"text": "0.20 A, the middle value", "correct": False,
              "why": "An average is not what a junction does; the currents "
                     "add."},
-            {"text": "0.60 A", "correct": True},
             {"text": "0.006 A", "correct": False,
              "why": "That multiplies the three. Currents at a junction are "
                     "added, never multiplied."},
+            {"text": "0.60 A", "correct": True},
         ],
         "figure": None,
     },

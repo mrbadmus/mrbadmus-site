@@ -335,17 +335,16 @@ QUESTIONS = [
         "band": "easier",
         "text": "In a single loop containing a cell and a lamp, where is the "
                 "current largest?",
-        "options": [
-            {"text": "In the wire going into the lamp", "correct": False,
+        "options": [            {"text": "In the wire going into the lamp", "correct": False,
              "why": "Nothing is used up in the lamp, so the same current "
                     "comes out as goes in."},
             {"text": "In the wire coming out of the lamp", "correct": False,
              "why": "The current is the same on both sides — neither wire "
                     "carries more."},
-            {"text": "It is the same everywhere in the loop", "correct": True},
             {"text": "In the wire nearest the cell", "correct": False,
              "why": "Distance from the cell makes no difference; charge is "
                     "not handed out along the way."},
+            {"text": "It is the same everywhere in the loop", "correct": True},
         ],
         "figure": None,
     },
@@ -375,17 +374,16 @@ QUESTIONS = [
         "id": "p8-01-e08",
         "band": "easier",
         "text": "Roughly how much current does a small torch bulb draw?",
-        "options": [
-            {"text": "A few thousandths of an amp", "correct": False,
+        "options": [            {"text": "A few thousandths of an amp", "correct": False,
              "why": "That is a hundred times too small — a few milliamps "
                     "would barely glow."},
             {"text": "A few hundred amps", "correct": False,
              "why": "That is enormous; a current like that melts wires and "
                     "welds metal."},
-            {"text": "A few tenths of an amp", "correct": True},
             {"text": "A few thousand amps", "correct": False,
              "why": "That is more than a lightning strike delivers, and far "
                     "beyond any torch."},
+            {"text": "A few tenths of an amp", "correct": True},
         ],
         "figure": None,
     },
@@ -396,21 +394,20 @@ QUESTIONS = [
         "band": "standard",
         "text": "A student claims the lamp uses up the current. Which "
                 "measurement settles it?",
-        "options": [
-            {"text": "A voltmeter across the lamp, showing a reading",
+        "options": [            {"text": "A voltmeter across the lamp, showing a reading",
              "correct": False,
              "why": "That measures energy given up per unit of charge, which "
                     "is a different quantity."},
-            {"text": "Ammeters on both sides of the lamp, reading the same",
-             "correct": True},
-            {"text": "An ammeter beside the cell, reading more than zero",
-             "correct": False,
-             "why": "One reading cannot show whether anything was lost "
-                    "further round the loop."},
             {"text": "Weighing the lamp before and after it is switched on",
              "correct": False,
              "why": "Charge has no measurable mass here, so a balance shows "
                     "nothing either way."},
+            {"text": "An ammeter beside the cell, reading more than zero",
+             "correct": False,
+             "why": "One reading cannot show whether anything was lost "
+                    "further round the loop."},
+            {"text": "Ammeters on both sides of the lamp, reading the same",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -419,8 +416,7 @@ QUESTIONS = [
         "band": "standard",
         "text": "Why must a circuit be a complete loop, rather than a wire "
                 "that simply reaches the lamp?",
-        "options": [
-            {"text": "Because the lamp needs current arriving from both sides "
+        "options": [            {"text": "Because the lamp needs current arriving from both sides "
                      "at once",
              "correct": False,
              "why": "The current passes through in one direction; what it "
@@ -430,14 +426,14 @@ QUESTIONS = [
              "correct": False,
              "why": "None of it is used up. Both wires carry exactly the same "
                     "current."},
-            {"text": "Because the charge needs a complete path back, or "
-                     "nothing flows at all",
-             "correct": True},
             {"text": "Because two wires halve the current and keep the lamp "
                      "safe",
              "correct": False,
              "why": "Nothing is halved; both wires are part of the one loop "
                     "carrying one current."},
+            {"text": "Because the charge needs a complete path back, or "
+                     "nothing flows at all",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -446,23 +442,22 @@ QUESTIONS = [
         "band": "standard",
         "text": "A student writes that a cell holds a store of current and "
                 "sends it out. Which correction is right?",
-        "options": [
-            {"text": "A cell holds a store of current but releases it slowly",
+        "options": [            {"text": "A cell holds a store of current but releases it slowly",
              "correct": False,
              "why": "It holds no current at any rate. Current is a flow, not "
                     "something that can be kept."},
-            {"text": "A cell holds a chemical store and pushes on charge that "
-                     "is already in the wire",
-             "correct": True},
+            {"text": "A cell holds a store of voltage and shares it out",
+             "correct": False,
+             "why": "Potential difference is not held either — it is the "
+                    "energy given up between two points."},
             {"text": "A cell holds a store of electrons and pumps them into "
                      "the circuit",
              "correct": False,
              "why": "The wire is already full of free electrons; the cell "
                     "adds none of its own."},
-            {"text": "A cell holds a store of voltage and shares it out",
-             "correct": False,
-             "why": "Potential difference is not held either — it is the "
-                    "energy given up between two points."},
+            {"text": "A cell holds a chemical store and pushes on charge that "
+                     "is already in the wire",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -523,8 +518,7 @@ QUESTIONS = [
         "band": "harder",
         "text": "Two identical cells are put in a holder facing in opposite "
                 "directions, in one loop with a lamp. What happens?",
-        "options": [
-            {"text": "The lamp is twice as bright, because two cells are "
+        "options": [            {"text": "The lamp is twice as bright, because two cells are "
                      "present",
              "correct": False,
              "why": "Two cells add only when they push the same way round the "
@@ -532,13 +526,13 @@ QUESTIONS = [
             {"text": "The lamp is as bright as with one cell", "correct": False,
              "why": "One does not simply drop out; the second actively pushes "
                     "against the first."},
-            {"text": "The lamp stays dark, because the two pushes cancel",
-             "correct": True},
             {"text": "The lamp lights, but the current flows the other way "
                      "round",
              "correct": False,
              "why": "Neither push wins: they are equal and opposite, so there "
                     "is nothing left to drive a current."},
+            {"text": "The lamp stays dark, because the two pushes cancel",
+             "correct": True},
         ],
         "figure": None,
     },
