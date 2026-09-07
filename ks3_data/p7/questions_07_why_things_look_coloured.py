@@ -309,4 +309,218 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p7-07-e05",
+        "band": "easier",
+        "text": "A red apple in white light looks red because it…",
+        "options": [            {"text": "turns the white light into red light", "correct": False,
+             "why": "Nothing converts one colour into another; the red was "
+                    "already in the white light."},
+            {"text": "absorbs red light and reflects the rest",
+             "correct": False,
+             "why": "Then the red would never reach your eye, and the apple "
+                    "would look blue-green."},
+            {"text": "gives out red light of its own", "correct": False,
+             "why": "An apple is not a source; in a dark room it gives out "
+                    "nothing at all."},
+            {"text": "reflects red light and absorbs the rest", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-07-e06",
+        "band": "easier",
+        "text": "A white object under a blue lamp, in a room with no other "
+                "light, looks…",
+        "options": [
+            {"text": "white, because white objects always look white",
+             "correct": False,
+             "why": "There is no white light arriving; only blue is available "
+                    "to reflect."},
+            {"text": "blue", "correct": True},
+            {"text": "black", "correct": False,
+             "why": "A white surface reflects whatever arrives, so it sends "
+                    "the blue back and is clearly visible."},
+            {"text": "yellow, the opposite of blue", "correct": False,
+             "why": "Nothing produces the opposite colour; only what arrives "
+                    "can be reflected."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-07-e07",
+        "band": "easier",
+        "text": "Absorbing light warms an object slightly. Which surface "
+                "warms most in the same sunlight?",
+        "options": [
+            {"text": "A white one, because it reflects the most",
+             "correct": False,
+             "why": "Reflected light carries its energy away again, so a "
+                    "white surface warms least."},
+            {"text": "A shiny silver one, because metal takes in heat "
+                     "quickly",
+             "correct": False,
+             "why": "A shiny surface reflects most of what lands on it, so "
+                    "little is absorbed."},
+            {"text": "A black one, because it absorbs almost all of it",
+             "correct": True},
+            {"text": "They all warm equally, because the sunlight is the "
+                     "same",
+             "correct": False,
+             "why": "The light arriving is the same; how much each surface "
+                    "keeps is what differs."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p7-07-s05",
+        "band": "standard",
+        "text": "A blue book is put under a blue lamp, in a room with no "
+                "other light. What does it look like?",
+        "options": [
+            {"text": "Black, because the lamp and the book are the same "
+                     "colour",
+             "correct": False,
+             "why": "Matching is exactly what makes it visible: the blue "
+                    "arriving is the blue it reflects."},
+            {"text": "White, because the two blues add together",
+             "correct": False,
+             "why": "Colours of light do not add on a surface; the book "
+                    "reflects the blue that lands on it."},
+            {"text": "Blue, as it does in white light", "correct": True},
+            {"text": "Green, because the two colours mix on the surface",
+             "correct": False,
+             "why": "Nothing mixes on the surface. It reflects what it "
+                    "reflects."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-07-s06",
+        "band": "standard",
+        "text": "Why does a red car look almost black under a street lamp "
+                "giving out only green light?",
+        "options": [
+            {"text": "Because the green light turns the red paint black",
+             "correct": False,
+             "why": "The paint is unchanged; what has changed is the light "
+                    "arriving at it."},
+            {"text": "Because the eye cannot see red at night",
+             "correct": False,
+             "why": "The eye is fine; there is simply no red light coming "
+                    "back from the car."},
+            {"text": "Because there is no red light arriving for it to "
+                     "reflect",
+             "correct": True},
+            {"text": "Because red paint reflects green light very weakly, so "
+                     "the car glows faintly green",
+             "correct": False,
+             "why": "It absorbs the green rather than reflecting it, which is "
+                    "why it looks nearly black."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-07-s07",
+        "band": "standard",
+        "text": "What does a green filter do to white light?",
+        "options": [
+            {"text": "It turns the white light green", "correct": False,
+             "why": "It makes nothing green; it removes everything that is "
+                    "not."},
+            {"text": "It lets green through and absorbs the rest",
+             "correct": True},
+            {"text": "It reflects green and lets the rest through",
+             "correct": False,
+             "why": "A filter is judged by what passes THROUGH it, and that "
+                    "is the green."},
+            {"text": "It adds green to whatever passes through it",
+             "correct": False,
+             "why": "Nothing is added; a filter can only take frequencies "
+                    "away."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p7-07-h05",
+        "band": "harder",
+        "text": "Under a yellow lamp a white page looks yellow and a black "
+                "one still looks black. Explain both.",
+        "options": [
+            {"text": "White reflects whatever arrives; black absorbs almost "
+                     "all of it either way",
+             "correct": True},
+            {"text": "White adds yellow to the light; black cannot add "
+                     "anything",
+             "correct": False,
+             "why": "No surface adds anything to light. Both only reflect or "
+                    "absorb."},
+            {"text": "The yellow lamp bleaches the white page and not the "
+                     "black one",
+             "correct": False,
+             "why": "Nothing is bleached; the page looks yellow only while "
+                    "the lamp is on."},
+            {"text": "Black is not really a colour, so nothing happens to it",
+             "correct": False,
+             "why": "Something does happen: it absorbs nearly all the light "
+                    "and warms slightly."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-07-h06",
+        "band": "harder",
+        "text": "Two jumpers look identical in a shop and clearly different "
+                "in daylight. What is the explanation?",
+        "options": [
+            {"text": "The daylight has changed the dye in one of the jumpers",
+             "correct": False,
+             "why": "Take them back inside and they match again, so nothing "
+                    "has been changed."},
+            {"text": "Daylight is brighter, and brighter light always reveals "
+                     "more colours",
+             "correct": False,
+             "why": "Brightness alone does not do it; a bright lamp missing "
+                    "certain frequencies still hides the difference."},
+            {"text": "They reflect different mixes, and the shop's light "
+                     "lacks the frequencies that separate them",
+             "correct": True},
+            {"text": "The eye adjusts to shop lighting and stops telling "
+                     "colours apart",
+             "correct": False,
+             "why": "A camera photographs the same match indoors, so it is "
+                    "the light rather than the eye."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-07-h07",
+        "band": "harder",
+        "text": "A stage lamp gives out only red light onto a set painted in "
+                "red, green and white. What does the audience see?",
+        "options": [
+            {"text": "All three areas red, because the lamp is red",
+             "correct": False,
+             "why": "The green area absorbs red, so it cannot look red — it "
+                    "goes almost black."},
+            {"text": "Red areas red, green areas almost black, white areas "
+                     "red",
+             "correct": True},
+            {"text": "Red areas red, green areas green, white areas white",
+             "correct": False,
+             "why": "Green and white can only reflect what arrives, and only "
+                    "red is arriving."},
+            {"text": "Red areas black, green areas red, white areas red",
+             "correct": False,
+             "why": "A red surface under red light reflects it strongly, so "
+                    "it looks its brightest, not black."},
+        ],
+        "figure": None,
+    },
 ]

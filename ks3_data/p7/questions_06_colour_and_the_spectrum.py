@@ -288,4 +288,210 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p7-06-e05",
+        "band": "easier",
+        "text": "Which colour of visible light has the highest frequency?",
+        "options": [
+            {"text": "Red", "correct": False,
+             "why": "Red is at the LOW-frequency end of the visible range."},
+            {"text": "Green", "correct": False,
+             "why": "Green sits in the middle; there are higher frequencies "
+                    "beyond it."},
+            {"text": "Violet", "correct": True},
+            {"text": "White", "correct": False,
+             "why": "White is not one frequency at all — it is a mixture of "
+                    "all of them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-06-e06",
+        "band": "easier",
+        "text": "A prism separates the colours of white light because…",
+        "options": [
+            {"text": "it adds a different colour at each face",
+             "correct": False,
+             "why": "It adds nothing; a second prism turns the colours back "
+                    "into white."},
+            {"text": "higher frequencies are refracted a little more than "
+                     "lower ones",
+             "correct": True},
+            {"text": "lower frequencies are refracted a little more than "
+                     "higher ones",
+             "correct": False,
+             "why": "That is the wrong way round: violet is bent further than "
+                    "red."},
+            {"text": "the coloured edges of the glass tint the beam",
+             "correct": False,
+             "why": "The glass is clear throughout, and a clear prism gives "
+                    "the same spectrum."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-06-e07",
+        "band": "easier",
+        "text": "The band of colours a prism throws onto a screen is called "
+                "a…",
+        "options": [
+            {"text": "reflection", "correct": False,
+             "why": "Reflection is light bouncing off a surface, not the "
+                    "fanned-out band."},
+            {"text": "spectrum", "correct": True},
+            {"text": "normal", "correct": False,
+             "why": "The normal is the construction line at right angles to a "
+                    "surface."},
+            {"text": "filter", "correct": False,
+             "why": "A filter removes some frequencies; the band itself is "
+                    "the spectrum."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p7-06-s05",
+        "band": "standard",
+        "text": "Only green light is shone into a prism. What comes out?",
+        "options": [            {"text": "A full spectrum, because a prism always makes one",
+             "correct": False,
+             "why": "It can only separate what is there, and only one "
+                    "frequency has been sent in."},
+            {"text": "White light, because the colours recombine",
+             "correct": False,
+             "why": "Recombining needs all the frequencies, and only green "
+                    "was supplied."},
+            {"text": "Nothing, because a prism only works on white light",
+             "correct": False,
+             "why": "It refracts any light that enters it, whatever its "
+                    "colour."},
+            {"text": "Green light, bent as a single beam", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-06-s06",
+        "band": "standard",
+        "text": "Why does violet land furthest from where the undeviated beam "
+                "would have gone?",
+        "options": [
+            {"text": "Because it is the highest frequency, so it is refracted "
+                     "most",
+             "correct": True},
+            {"text": "Because it is the lowest frequency, so it is refracted "
+                     "most",
+             "correct": False,
+             "why": "Violet is the highest visible frequency, and red the "
+                    "lowest."},
+            {"text": "Because it carries the least energy of the colours",
+             "correct": False,
+             "why": "Higher frequencies carry more, and in any case it is the "
+                    "refraction that places it."},
+            {"text": "Because it enters the prism at a different angle from "
+                     "the rest",
+             "correct": False,
+             "why": "All the colours arrive together at the same angle; they "
+                    "part inside the glass."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-06-s07",
+        "band": "standard",
+        "text": "A second prism the other way up turns the fanned beam back "
+                "into white. What does that show?",
+        "options": [
+            {"text": "That the second prism removes the colours",
+             "correct": False,
+             "why": "Nothing is removed; the frequencies are brought back "
+                    "together and arrive as a mixture."},
+            {"text": "That white light is a mixture and the prism only sorts "
+                     "it",
+             "correct": True},
+            {"text": "That the first prism made colours and the second "
+                     "destroyed them",
+             "correct": False,
+             "why": "Neither makes nor destroys anything; both simply refract "
+                    "what arrives."},
+            {"text": "That a prism works only in one direction",
+             "correct": False,
+             "why": "Both prisms refract in the same way; it is their "
+                    "orientation that recombines the beam."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p7-06-h05",
+        "band": "harder",
+        "text": "Why is a spectrum a continuous band rather than seven "
+                "separate stripes?",
+        "options": [
+            {"text": "Because the screen is too rough to show the gaps",
+             "correct": False,
+             "why": "A better screen shows the same continuous band; there "
+                    "are no gaps to reveal."},
+            {"text": "Because seven colours overlap and fill the spaces "
+                     "between them",
+             "correct": False,
+             "why": "There are not seven underlying colours; the frequencies "
+                    "run smoothly from end to end."},
+            {"text": "Because the frequencies change smoothly, and the seven "
+                     "names are a convention",
+             "correct": True},
+            {"text": "Because the prism cannot separate the colours "
+                     "completely",
+             "correct": False,
+             "why": "It separates them perfectly well; there is simply no "
+                    "natural place to draw a line."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-06-h06",
+        "band": "harder",
+        "text": "A second prism is placed the SAME way up as the first, in "
+                "the fanned beam. What happens?",
+        "options": [
+            {"text": "The colours recombine into white", "correct": False,
+             "why": "Recombining needs the second prism turned the other way "
+                    "up, so that it bends the colours back together."},
+            {"text": "The spectrum spreads further apart", "correct": True},
+            {"text": "The beam passes through unchanged", "correct": False,
+             "why": "It refracts every frequency again, so the beam cannot "
+                    "come out unaltered."},
+            {"text": "The order of the colours is reversed", "correct": False,
+             "why": "Violet is bent most by both prisms, so it stays at the "
+                    "same end of the band."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-06-h07",
+        "band": "harder",
+        "text": "Why can a prism never produce a colour that was not in the "
+                "light to begin with?",
+        "options": [
+            {"text": "Because a prism only separates the frequencies already "
+                     "arriving",
+             "correct": True},
+            {"text": "Because glass can only bend certain colours",
+             "correct": False,
+             "why": "It refracts every frequency; the amount simply differs "
+                    "between them."},
+            {"text": "Because the prism absorbs any colour it cannot bend",
+             "correct": False,
+             "why": "Very little is absorbed, and nothing is filtered out by "
+                    "the shape of the glass."},
+            {"text": "Because a prism can only work once on any beam",
+             "correct": False,
+             "why": "A second prism refracts the beam again quite happily, as "
+                    "the recombining experiment shows."},
+        ],
+        "figure": None,
+    },
 ]

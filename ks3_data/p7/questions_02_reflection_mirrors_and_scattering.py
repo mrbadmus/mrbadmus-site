@@ -316,4 +316,269 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p7-02-e05",
+        "band": "easier",
+        "text": "The angle of incidence is measured from…",
+        "options": [            {"text": "the surface of the mirror", "correct": False,
+             "why": "Measuring from the mirror gives the complement of the "
+                    "angle wanted; the normal is the reference line."},
+            {"text": "the reflected ray", "correct": False,
+             "why": "The two rays are compared with the normal, not with each "
+                    "other."},
+            {"text": "the edge of the mirror", "correct": False,
+             "why": "Where the mirror ends has nothing to do with the angle "
+                    "a ray arrives at."},
+            {"text": "the normal", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-02-e06",
+        "band": "easier",
+        "text": "A ray strikes a plane mirror at 50° to the normal. What is "
+                "the angle of reflection?",
+        "options": [
+            {"text": "40°", "correct": False,
+             "why": "That is the angle to the mirror SURFACE, not to the "
+                    "normal."},
+            {"text": "100°", "correct": False,
+             "why": "That doubles it; the two angles are equal, not added."},
+            {"text": "50°", "correct": True},
+            {"text": "0°", "correct": False,
+             "why": "A ray reflects straight back only when it arrives along "
+                    "the normal."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-02-e07",
+        "band": "easier",
+        "text": "Reflection from a rough surface, where rays leave in every "
+                "direction, is called…",
+        "options": [
+            {"text": "specular reflection", "correct": False,
+             "why": "Specular reflection is what a smooth surface gives, "
+                    "keeping parallel rays parallel."},
+            {"text": "refraction", "correct": False,
+             "why": "Refraction is light bending as it enters a different "
+                    "material, not bouncing off one."},
+            {"text": "dispersion", "correct": False,
+             "why": "Dispersion is a prism fanning colours apart, which is a "
+                    "different effect."},
+            {"text": "diffuse scattering", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-02-e08",
+        "band": "easier",
+        "text": "Does a rough surface obey the law of reflection?",
+        "options": [
+            {"text": "Yes — every tiny facet obeys it, each with its own "
+                     "normal",
+             "correct": True},
+            {"text": "No — rough surfaces break the law", "correct": False,
+             "why": "No surface breaks it. What differs is that the facets "
+                    "point in many directions."},
+            {"text": "Yes, but only for light arriving straight on",
+             "correct": False,
+             "why": "It holds at every angle, on every facet, however the "
+                    "light arrives."},
+            {"text": "No — rough surfaces absorb light rather than reflect "
+                     "it",
+             "correct": False,
+             "why": "White paper is rough and reflects most of the light, "
+                    "which is why it looks bright."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p7-02-s05",
+        "band": "standard",
+        "text": "A ray strikes a plane mirror at 20° to the mirror SURFACE. "
+                "What is the angle of reflection?",
+        "options": [
+            {"text": "20°", "correct": False,
+             "why": "That is the angle to the surface. The angle of "
+                    "reflection is measured from the normal."},
+            {"text": "70°", "correct": True},
+            {"text": "40°", "correct": False,
+             "why": "That doubles the angle to the surface, which is not what "
+                    "the law says."},
+            {"text": "160°", "correct": False,
+             "why": "That subtracts from 180°, which is not how either angle "
+                    "is found."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-02-s06",
+        "band": "standard",
+        "text": "Why can this page be seen from every seat in a room?",
+        "options": [
+            {"text": "Because it gives out light of its own", "correct": False,
+             "why": "Paper is not a source; in a dark room it cannot be seen "
+                    "at all."},
+            {"text": "Because it is smooth enough to reflect light straight "
+                     "back to each seat",
+             "correct": False,
+             "why": "A smooth surface sends light one way only, which is why "
+                    "a mirror cannot be read from every seat."},
+            {"text": "Because its rough surface scatters light in every "
+                     "direction",
+             "correct": True},
+            {"text": "Because white surfaces bend light towards the reader",
+             "correct": False,
+             "why": "Bending light is refraction, which happens on entering a "
+                    "material, not on reflecting from one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-02-s07",
+        "band": "standard",
+        "text": "A mirror and a sheet of white paper are lit equally. Which "
+                "sends back more light altogether?",
+        "options": [
+            {"text": "The mirror, by a very large margin", "correct": False,
+             "why": "Both send back most of what lands on them; the mirror "
+                    "sends it all one way instead."},
+            {"text": "The paper, because it looks brighter from everywhere",
+             "correct": False,
+             "why": "It looks bright from everywhere because it spreads the "
+                    "light out, not because there is more of it."},
+            {"text": "About the same — they differ in which directions it "
+                     "goes",
+             "correct": True},
+            {"text": "Neither — both absorb almost all of it", "correct": False,
+             "why": "Both reflect most of it; a surface that absorbed almost "
+                    "everything would look black."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-02-s08",
+        "band": "standard",
+        "text": "Why does a polished car bonnet show a reflection while a "
+                "matt one does not?",
+        "options": [
+            {"text": "Because polish makes the surface smooth, so parallel "
+                     "rays stay parallel",
+             "correct": True},
+            {"text": "Because polish makes the paint reflect more light "
+                     "altogether",
+             "correct": False,
+             "why": "Both reflect a similar amount; it is the arrangement of "
+                    "the rays that changes."},
+            {"text": "Because matt paint absorbs all the light that lands on "
+                     "it",
+             "correct": False,
+             "why": "A matt white bonnet is clearly visible, so it is "
+                    "reflecting plenty."},
+            {"text": "Because polish bends the light towards the eye",
+             "correct": False,
+             "why": "Bending on entering a material is refraction, and no "
+                    "light enters the paint here."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p7-02-h05",
+        "band": "harder",
+        "text": "A ray arrives at a mirror exactly along the normal. What is "
+                "the angle of reflection, and where does the ray go?",
+        "options": [
+            {"text": "90°, and it travels along the mirror surface",
+             "correct": False,
+             "why": "90° to the normal is along the surface, and no reflected "
+                    "ray does that."},
+            {"text": "0°, and it goes straight back the way it came",
+             "correct": True},
+            {"text": "0°, and it passes straight through the mirror",
+             "correct": False,
+             "why": "The angle is right, but a mirror reflects rather than "
+                    "transmits."},
+            {"text": "180°, and it is turned right around", "correct": False,
+             "why": "The reflected ray does reverse, but the ANGLE from the "
+                    "normal is zero."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-02-h06",
+        "band": "harder",
+        "text": "A mirror is turned through 10° while the incoming ray stays "
+                "put. By how much does the reflected ray turn?",
+        "options": [
+            {"text": "10°, the same as the mirror", "correct": False,
+             "why": "Turning the mirror changes the normal by 10°, and both "
+                    "angles shift, so the ray turns further."},
+            {"text": "5°, half as much as the mirror", "correct": False,
+             "why": "The effect is doubled, not halved: both the incidence "
+                    "and reflection angles change."},
+            {"text": "0°, because the incoming ray has not moved",
+             "correct": False,
+             "why": "The normal has moved, and the reflected ray is measured "
+                    "from the normal."},
+            {"text": "20°, twice as much as the mirror", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-02-h07",
+        "band": "harder",
+        "text": "The Moon gives out no light of its own, yet it is one of the "
+                "brightest things in the night sky. Why?",
+        "options": [
+            {"text": "Because it stores sunlight during the day and releases "
+                     "it at night",
+             "correct": False,
+             "why": "Nothing stores light. What we see is sunlight arriving "
+                    "and being scattered at that moment."},
+            {"text": "Because it scatters sunlight landing on it back towards "
+                     "us",
+             "correct": True},
+            {"text": "Because it is a smooth mirror reflecting the Sun "
+                     "exactly",
+             "correct": False,
+             "why": "Its surface is rough dust, which is why the whole disc "
+                    "is lit rather than one bright dot."},
+            {"text": "Because it is much closer than the stars, so its light "
+                     "is stronger",
+             "correct": False,
+             "why": "Being close helps, but the Moon still has to be "
+                    "reflecting light rather than making it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-02-h08",
+        "band": "harder",
+        "text": "A student says only shiny things reflect light. What is the "
+                "strongest counter-example?",
+        "options": [
+            {"text": "A polished mirror, which reflects almost everything",
+             "correct": False,
+             "why": "That agrees with the student rather than testing them — "
+                    "a mirror is shiny."},
+            {"text": "A black card, which reflects a small amount",
+             "correct": False,
+             "why": "It is a fair example, but a weak one: very little comes "
+                    "back from it."},
+            {"text": "A pane of clear glass, which lets light through",
+             "correct": False,
+             "why": "Transmission is a different behaviour, so it does not "
+                    "settle the question about reflecting."},
+            {"text": "A matt white wall, which reflects most of the light",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

@@ -319,6 +319,49 @@ mechanical check reports this spread after every unit; it is the reason it does.
 
 ---
 
+## P7 · Light — 7 lessons, 72 new rows (24 per band)
+
+Unit total: **52 / 52 / 52**. Four per band on lessons 01–02, three per band on
+03–07.
+
+| lesson | ids added (each band) |
+|---|---|
+| 01 light travels | e05–e08, s05–s08, h05–h08 |
+| 02 reflection, mirrors and scattering | e05–e08, s05–s08, h05–h08 |
+| 03 refraction | e05–e08, s05–s08, h05–h08 |
+| 04 lenses and images | e05–e07, s05–s07, h05–h07 |
+| 05 the eye and the camera | e05–e07, s05–s07, h05–h07 |
+| 06 colour and the spectrum | e05–e07, s05–s07, h05–h07 |
+| 07 why things look coloured | e05–e07, s05–s07, h05–h07 |
+
+Lesson 01's harder rows are all the same calculation at four scales — a torch
+across a room, a laser to a wall, a satellite round trip, the Sun — so the
+powers of ten are the thing being tested, and every distractor is a specific
+slip of three or six decimal places rather than a wrong method. Lesson 02
+carries the one item that needs a second step: turning a mirror through 10°
+turns the reflected ray through 20°, because the normal moves with the mirror.
+Lesson 03 keeps the speed change and the direction change welded together —
+`h07` asks whether a pulse really does take longer through 5 cm of glass, which
+is the fact that makes refraction more than a rule about bending.
+
+**Review fixes.** One duplicate stem caught by the gate: `p7-07-e07` had
+reproduced the existing `e04` (what happens to unreflected light) and was
+rewritten as which surface warms most in the same sunlight — the same physics
+reached from the thermal end. Eleven length flags reworded. Seven rows had
+their option order rotated: the correct answer had landed in the last slot only
+six times in 72, and the spread is now 12 / 23 / 24 / 13.
+
+**A third narrowing of the lane's REF check.** It flagged *the picture* five
+times — but in lesson 04 "the picture" is the lesson's own name for the image
+on the pinhole screen, used throughout the twelve rows already there. It now
+matches *the picture above* / *below* only. Between P4, P5 and P7 this check
+has been wrong three times and right none: every REF it has raised has been the
+physics vocabulary of the unit rather than a page reference. It is kept because
+the failure it looks for is real and silent, but its output is treated as a
+prompt to read the stem, never as a finding on its own.
+
+---
+
 ## ⚠️ `git add` was scoped correctly and a commit still swept in another lane
 
 Found by the commander in this lane's **P5 commit `586aaa0c4`**, which carried

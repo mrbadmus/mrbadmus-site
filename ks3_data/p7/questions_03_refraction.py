@@ -308,4 +308,279 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p7-03-e05",
+        "band": "easier",
+        "text": "Light leaving glass and going out into air bends…",
+        "options": [
+            {"text": "towards the normal", "correct": False,
+             "why": "That is what happens on the way IN, when the light slows "
+                    "down."},
+            {"text": "away from the normal", "correct": True},
+            {"text": "not at all, whatever angle it leaves at",
+             "correct": False,
+             "why": "It carries straight on only if it leaves along the "
+                    "normal."},
+            {"text": "straight back into the glass", "correct": False,
+             "why": "That is reflection, and it is a different behaviour from "
+                    "refraction."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-03-e06",
+        "band": "easier",
+        "text": "What happens to the speed of light when it goes from air "
+                "into water?",
+        "options": [            {"text": "It speeds up, because water is clearer than air",
+             "correct": False,
+             "why": "Clearness is not the test. A denser transparent material "
+                    "slows light down."},
+            {"text": "It stays exactly the same", "correct": False,
+             "why": "If it did, there would be no refraction at all — and a "
+                    "straw in water clearly looks bent."},
+            {"text": "It stops until it is bent", "correct": False,
+             "why": "It never stops; it simply travels more slowly through "
+                    "the water."},
+            {"text": "It slows down as it enters", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-03-e07",
+        "band": "easier",
+        "text": "Refraction happens because light…",
+        "options": [
+            {"text": "is pushed sideways by the material", "correct": False,
+             "why": "Nothing pushes it. The change of direction follows from "
+                    "the change of speed."},
+            {"text": "bounces off the surface of the material",
+             "correct": False,
+             "why": "That is reflection. Refraction is what happens to the "
+                    "light that goes IN."},
+            {"text": "is absorbed and then given out again in a new direction",
+             "correct": False,
+             "why": "Absorbed light does not come out again as a ray; "
+                    "refracted light passes through."},
+            {"text": "changes speed as it enters a different material",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-03-e08",
+        "band": "easier",
+        "text": "A ray enters a glass block exactly along the normal. What "
+                "happens to its direction?",
+        "options": [
+            {"text": "It carries straight on", "correct": True},
+            {"text": "It bends towards the normal", "correct": False,
+             "why": "It is already along the normal, so there is no angle to "
+                    "bend towards."},
+            {"text": "It bends away from the normal", "correct": False,
+             "why": "That happens on leaving a denser material at an angle, "
+                    "not on arriving straight on."},
+            {"text": "It reflects straight back out", "correct": False,
+             "why": "A little is reflected at any surface, but the ray in "
+                    "question passes into the glass."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p7-03-s05",
+        "band": "standard",
+        "text": "A ray enters water from air at 30° to the normal. Which "
+                "describes the refracted ray?",
+        "options": [
+            {"text": "It bends away from the normal, to more than 30°",
+             "correct": False,
+             "why": "That is what happens leaving a denser material, not "
+                    "entering one."},
+            {"text": "It bends towards the normal, to less than 30°",
+             "correct": True},
+            {"text": "It carries on at exactly 30°", "correct": False,
+             "why": "Only a ray along the normal keeps its direction; this "
+                    "one arrives at an angle."},
+            {"text": "It reflects back into the air at 30°", "correct": False,
+             "why": "Some does reflect, but the refracted ray is the part "
+                    "that enters the water."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-03-s06",
+        "band": "standard",
+        "text": "Why does a swimming pool look shallower than it really is?",
+        "options": [
+            {"text": "Because the water magnifies the bottom of the pool",
+             "correct": False,
+             "why": "Things do look larger, but what raises the bottom is the "
+                    "direction the light leaves in."},
+            {"text": "Because water is denser, so the bottom really is closer "
+                     "to the surface",
+             "correct": False,
+             "why": "The pool's depth is unchanged; only where the bottom "
+                    "APPEARS to be has changed."},
+            {"text": "Because light from the bottom bends away from the "
+                     "normal on leaving",
+             "correct": True},
+            {"text": "Because the surface of the water reflects the bottom "
+                     "upwards",
+             "correct": False,
+             "why": "You are seeing light that came THROUGH the surface, not "
+                    "light reflected from it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-03-s07",
+        "band": "standard",
+        "text": "A ray passes from glass out into air at an angle. Which way "
+                "does it bend, and what happens to its speed?",
+        "options": [
+            {"text": "Towards the normal, and it slows down", "correct": False,
+             "why": "Both halves are the wrong way round; that is what "
+                    "happens going the other way."},
+            {"text": "Away from the normal, and it slows down",
+             "correct": False,
+             "why": "The direction is right but the speed is not: light goes "
+                    "faster in air than in glass."},
+            {"text": "Towards the normal, and it speeds up", "correct": False,
+             "why": "The speed is right, but a ray leaving a denser material "
+                    "bends AWAY from the normal."},
+            {"text": "Away from the normal, and it speeds up", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-03-s08",
+        "band": "standard",
+        "text": "A student says water bends light because it is thicker and "
+                "pushes the ray sideways. What is right?",
+        "options": [
+            {"text": "The light changes speed at the boundary, and that is "
+                     "what changes its direction",
+             "correct": True},
+            {"text": "The student is right, which is why thicker liquids bend "
+                     "light more",
+             "correct": False,
+             "why": "Denser materials do bend light more, but nothing pushes "
+                    "the ray; the speed change does it."},
+            {"text": "The water heats the light, which makes it curve",
+             "correct": False,
+             "why": "Nothing about the temperature of the water is involved "
+                    "in refraction."},
+            {"text": "The light is reflected many times inside the water",
+             "correct": False,
+             "why": "Refracted light travels straight through the water in "
+                    "one new direction."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p7-03-h05",
+        "band": "harder",
+        "text": "Why does a straw look broken only at the water surface, and "
+                "straight above and below it?",
+        "options": [
+            {"text": "Because the straw is really bent at that point by the "
+                     "water pressure",
+             "correct": False,
+             "why": "Lift it out and it is perfectly straight, so nothing has "
+                    "bent."},
+            {"text": "Because the water is deepest at the surface",
+             "correct": False,
+             "why": "The surface is the shallowest place there is; depth is "
+                    "not what matters."},
+            {"text": "Because the change of speed happens only at the "
+                     "boundary between the two materials",
+             "correct": True},
+            {"text": "Because the light is reflected off the surface at that "
+                     "point",
+             "correct": False,
+             "why": "Some is reflected, but the broken look comes from the "
+                    "light that passes through and bends."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-03-h06",
+        "band": "harder",
+        "text": "A ray enters glass at 60° to the normal, and another at 20°. "
+                "Which is bent through the larger angle?",
+        "options": [
+            {"text": "The 20° ray, because it is closer to the normal",
+             "correct": False,
+             "why": "The closer to the normal it arrives, the less it bends; "
+                    "along the normal it does not bend at all."},
+            {"text": "The 60° ray, arriving furthest from the normal",
+             "correct": True},
+            {"text": "Both bend by the same amount, because it is the same "
+                     "glass",
+             "correct": False,
+             "why": "The glass is the same, but how much a ray bends depends "
+                    "on the angle it arrives at."},
+            {"text": "Neither bends, because both are entering the same "
+                     "material",
+             "correct": False,
+             "why": "Entering a different material at an angle is exactly "
+                    "when bending happens."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-03-h07",
+        "band": "harder",
+        "text": "Light slows down in glass. Does a pulse take longer to cross "
+                "5 cm of glass than 5 cm of air?",
+        "options": [
+            {"text": "No — it makes up the time by bending",
+             "correct": False,
+             "why": "Bending changes direction, not the time taken over a "
+                    "given path."},
+            {"text": "No — light always takes the same time over the same "
+                     "distance",
+             "correct": False,
+             "why": "It takes the same time only in the same material; the "
+                    "speed differs between materials."},
+            {"text": "Yes, because it is travelling more slowly through the "
+                     "glass",
+             "correct": True},
+            {"text": "Yes, but only if the ray enters at an angle",
+             "correct": False,
+             "why": "The slowing happens whatever the angle, including "
+                    "straight along the normal."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-03-h08",
+        "band": "harder",
+        "text": "Why is there no refraction at a boundary between two "
+                "materials in which light travels at the same speed?",
+        "options": [
+            {"text": "Because the two materials must be the same material",
+             "correct": False,
+             "why": "They can be quite different substances and still happen "
+                    "to carry light at the same speed."},
+            {"text": "Because light cannot cross such a boundary at all",
+             "correct": False,
+             "why": "It crosses perfectly well — it simply carries straight "
+                    "on."},
+            {"text": "Because with no speed change there is nothing to bend "
+                     "the ray",
+             "correct": True},
+            {"text": "Because the boundary reflects all of the light instead",
+             "correct": False,
+             "why": "Almost none is reflected there; the light goes through "
+                    "undeviated."},
+        ],
+        "figure": None,
+    },
 ]

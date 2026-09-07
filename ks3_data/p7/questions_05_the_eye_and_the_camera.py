@@ -308,4 +308,201 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p7-05-e05",
+        "band": "easier",
+        "text": "The lens of the eye focuses light onto the…",
+        "options": [
+            {"text": "iris", "correct": False,
+             "why": "The iris is the coloured ring that controls the opening; "
+                    "it does not receive the picture."},
+            {"text": "pupil", "correct": False,
+             "why": "The pupil is the opening light passes through on its way "
+                    "in."},
+            {"text": "retina", "correct": True},
+            {"text": "cornea", "correct": False,
+             "why": "The cornea is at the front and does some of the "
+                    "focusing; the picture forms at the back."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-05-e06",
+        "band": "easier",
+        "text": "The pupil of the eye is…",
+        "options": [
+            {"text": "the opening that the iris makes bigger or smaller",
+             "correct": True},
+            {"text": "the coloured muscle around the opening", "correct": False,
+             "why": "That is the iris. The pupil is the gap in the middle of "
+                    "it."},
+            {"text": "the lens that focuses the light", "correct": False,
+             "why": "The lens sits behind the pupil and does the focusing."},
+            {"text": "the layer that absorbs the light at the back",
+             "correct": False,
+             "why": "That is the retina, at the far end of the eye."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-05-e07",
+        "band": "easier",
+        "text": "Light carries energy from a source to…",
+        "options": [            {"text": "the eye only", "correct": False,
+             "why": "Any absorber will do — a camera sensor, a solar cell or "
+                    "a dark wall."},
+            {"text": "another source", "correct": False,
+             "why": "A source gives light out; the energy ends up somewhere "
+                    "that takes it in."},
+            {"text": "the air it passes through", "correct": False,
+             "why": "Clear air absorbs almost none of it; the light passes "
+                    "straight on."},
+            {"text": "an absorber", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p7-05-s05",
+        "band": "standard",
+        "text": "In bright sunshine, what does the iris do to the pupil?",
+        "options": [
+            {"text": "It makes it larger, to see more detail",
+             "correct": False,
+             "why": "In bright light the opening is made SMALLER, to let less "
+                    "in."},
+            {"text": "It makes it smaller, so less light gets in",
+             "correct": True},
+            {"text": "It closes it completely for a moment", "correct": False,
+             "why": "It never shuts entirely; it narrows to a small opening."},
+            {"text": "Nothing — the pupil is a fixed size", "correct": False,
+             "why": "It changes size constantly, which is easy to watch in a "
+                    "mirror."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-05-s06",
+        "band": "standard",
+        "text": "How does a camera focus on something nearer than what it was "
+                "focused on before?",
+        "options": [
+            {"text": "By changing the shape of its lens", "correct": False,
+             "why": "That is how the EYE does it; a glass lens cannot change "
+                    "shape."},
+            {"text": "By moving its lens", "correct": True},
+            {"text": "By moving the sensor closer to the subject",
+             "correct": False,
+             "why": "The sensor is fixed at the back of the body; the lens is "
+                    "what moves."},
+            {"text": "By opening the aperture wider", "correct": False,
+             "why": "That changes how much light gets in, not where the "
+                    "picture is sharp."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-05-s07",
+        "band": "standard",
+        "text": "Why can you still see nothing in a completely dark room even "
+                "after waiting an hour?",
+        "options": [
+            {"text": "Because the pupils cannot open far enough in an hour",
+             "correct": False,
+             "why": "They open within seconds, and no opening helps when "
+                    "there is nothing arriving."},
+            {"text": "Because there is no light for the retina to absorb",
+             "correct": True},
+            {"text": "Because the eyes have stopped sending out rays",
+             "correct": False,
+             "why": "Eyes never send anything out; they only receive."},
+            {"text": "Because the lens cannot focus in the dark",
+             "correct": False,
+             "why": "The lens works as usual; there is simply nothing to "
+                    "bring to a focus."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p7-05-h05",
+        "band": "harder",
+        "text": "What happens to the energy of the light the retina absorbs?",
+        "options": [
+            {"text": "It is reflected back out through the pupil",
+             "correct": False,
+             "why": "Reflected light would leave again; absorbed light is "
+                    "what triggers the response."},
+            {"text": "It is stored in the retina until the eye is next "
+                     "closed",
+             "correct": False,
+             "why": "Nothing stores it; the change happens as the light "
+                    "arrives."},
+            {"text": "It causes a chemical change in cells, which sets off "
+                     "nerve signals",
+             "correct": True},
+            {"text": "It is turned into an electrical signal directly, with "
+                     "no chemistry",
+             "correct": False,
+             "why": "That is a camera sensor. In the eye a chemical change "
+                    "comes first."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-05-h06",
+        "band": "harder",
+        "text": "Why does the eye change the SHAPE of its lens rather than "
+                "moving it, as a camera does?",
+        "options": [
+            {"text": "Because the eye's lens is flexible and held in place by "
+                     "muscles",
+             "correct": True},
+            {"text": "Because moving a lens cannot focus light at all",
+             "correct": False,
+             "why": "It focuses perfectly well — every camera works that "
+                    "way."},
+            {"text": "Because the eye's lens is fixed and cannot change at "
+                     "all",
+             "correct": False,
+             "why": "If it could not change, the eye could not switch between "
+                    "near and far objects."},
+            {"text": "Because the retina moves instead, taking the lens's "
+                     "place",
+             "correct": False,
+             "why": "The retina is fixed at the back of the eye and does not "
+                    "move."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-05-h07",
+        "band": "harder",
+        "text": "The picture on the retina is upside down. Why does the world "
+                "not look upside down?",
+        "options": [
+            {"text": "Because the lens turns it back the right way before it "
+                     "lands",
+             "correct": False,
+             "why": "The lens is what inverts it; nothing after that turns "
+                    "the light round again."},
+            {"text": "Because the retina is curved, which cancels the "
+                     "inversion",
+             "correct": False,
+             "why": "Curvature keeps the picture sharp across the retina; it "
+                    "does not flip it."},
+            {"text": "Because the brain interprets the signals, and the "
+                     "physics is unchanged",
+             "correct": True},
+            {"text": "Because the eye is upside down inside the head",
+             "correct": False,
+             "why": "Turning the whole eye over would not undo an inversion "
+                    "produced by its own lens."},
+        ],
+        "figure": None,
+    },
 ]

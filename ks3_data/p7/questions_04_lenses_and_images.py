@@ -300,4 +300,192 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p7-04-e05",
+        "band": "easier",
+        "text": "Light travels in…",
+        "options": [            {"text": "whichever direction the eye is looking", "correct": False,
+             "why": "The eye receives light; it does not steer it."},
+            {"text": "curves that follow the shape of the room",
+             "correct": False,
+             "why": "If it curved round obstacles there would be no sharp "
+                    "shadows."},
+            {"text": "circles around a source", "correct": False,
+             "why": "It spreads outwards from a source, but each ray runs "
+                    "straight."},
+            {"text": "straight lines, in every direction", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-04-e06",
+        "band": "easier",
+        "text": "Widening the hole of a pinhole camera makes the picture…",
+        "options": [
+            {"text": "brighter and sharper", "correct": False,
+             "why": "It is brighter, but overlapping patches of light make it "
+                    "blurred, not sharper."},
+            {"text": "brighter and blurrier", "correct": True},
+            {"text": "dimmer and sharper", "correct": False,
+             "why": "That is what NARROWING the hole does."},
+            {"text": "bigger and brighter", "correct": False,
+             "why": "The size is set by the object's distance and the box's "
+                    "length, not by the hole."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-04-e07",
+        "band": "easier",
+        "text": "A convex lens brings all the rays leaving one point of an "
+                "object to…",
+        "options": [
+            {"text": "one point on the screen", "correct": True},
+            {"text": "a spread of points across the whole screen",
+             "correct": False,
+             "why": "That is what a wide pinhole does, and it is why a wide "
+                    "pinhole blurs."},
+            {"text": "the edge of the screen", "correct": False,
+             "why": "Where the point lands depends on where the object point "
+                    "is, not on the edge."},
+            {"text": "a point in front of the lens", "correct": False,
+             "why": "The rays are brought together beyond the lens, on the "
+                    "screen side."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p7-04-s05",
+        "band": "standard",
+        "text": "A pinhole box giving a 20 mm picture is made three times as "
+                "long, with the object left where it was. The picture becomes…",
+        "options": [
+            {"text": "60 mm tall", "correct": True},
+            {"text": "20 mm tall, because the object has not moved",
+             "correct": False,
+             "why": "The box length is one of the two things that set the "
+                    "size, and it has changed."},
+            {"text": "about 7 mm tall", "correct": False,
+             "why": "A longer box gives a BIGGER picture, not a smaller one."},
+            {"text": "60 mm tall and the right way up", "correct": False,
+             "why": "The height is right, but the rays still cross at the "
+                    "hole, so it stays inverted."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-04-s06",
+        "band": "standard",
+        "text": "The object in front of a pinhole camera is moved closer, "
+                "with the box unchanged. What happens to the picture?",
+        "options": [
+            {"text": "It gets smaller", "correct": False,
+             "why": "Moving closer makes the picture larger, as it does with "
+                    "any camera."},
+            {"text": "It gets bigger", "correct": True},
+            {"text": "It stays the same size but gets brighter",
+             "correct": False,
+             "why": "It does get brighter, but the size changes as well."},
+            {"text": "It turns the right way up", "correct": False,
+             "why": "The rays still cross at the hole whatever the distance, "
+                    "so it stays inverted."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-04-s07",
+        "band": "standard",
+        "text": "Which change makes a pinhole picture brighter without "
+                "changing its size?",
+        "options": [
+            {"text": "Making the box longer", "correct": False,
+             "why": "That makes the picture bigger and dimmer, so the size "
+                    "does change."},
+            {"text": "Moving the object closer", "correct": False,
+             "why": "That makes the picture bigger too, so the size does not "
+                    "hold still."},
+            {"text": "Widening the hole", "correct": True},
+            {"text": "Using a brighter screen", "correct": False,
+             "why": "The screen does not add light; it only shows what "
+                    "arrives on it."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p7-04-h05",
+        "band": "harder",
+        "text": "A convex lens replaces the pinhole in the same box. What "
+                "changes, and what stays the same?",
+        "options": [
+            {"text": "It becomes bright and sharp at once, and stays upside "
+                     "down",
+             "correct": True},
+            {"text": "It becomes bright and sharp at once, and turns the "
+                     "right way up",
+             "correct": False,
+             "why": "The rays still cross on their way to the screen, so the "
+                    "picture is still inverted."},
+            {"text": "It becomes sharper but dimmer, and stays upside down",
+             "correct": False,
+             "why": "The lens gathers a wide beam, so it is brighter than a "
+                    "pinhole, not dimmer."},
+            {"text": "Nothing changes, because light still travels in "
+                     "straight lines",
+             "correct": False,
+             "why": "It does, but the lens refracts each ray, which is "
+                    "exactly what a pinhole cannot do."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-04-h06",
+        "band": "harder",
+        "text": "A 100 mm pinhole box gives a 25 mm picture of an object 1000 "
+                "mm tall. How far away is the object?",
+        "options": [
+            {"text": "250 mm", "correct": False,
+             "why": "That is 25 × 10, which does not follow from the "
+                    "proportion between the two pairs."},
+            {"text": "4000 mm", "correct": True},
+            {"text": "2500 mm", "correct": False,
+             "why": "That is 25 × 100, and the object height has been left "
+                    "out."},
+            {"text": "40 mm", "correct": False,
+             "why": "That is a hundred times too small — the object is much "
+                    "further away than the box is long."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-04-h07",
+        "band": "harder",
+        "text": "A wide hole blurs the picture, but a wide lens does not. "
+                "Why?",
+        "options": [
+            {"text": "Because a lens is smaller than the hole it replaces",
+             "correct": False,
+             "why": "A camera lens is usually much wider, which is the whole "
+                    "point of using one."},
+            {"text": "Because a lens lets less light through, so there is "
+                     "less to blur",
+             "correct": False,
+             "why": "It lets far more through, and the picture is brighter "
+                    "for it."},
+            {"text": "Because a lens refracts every ray from one object point "
+                     "back to one screen point",
+             "correct": True},
+            {"text": "Because a lens makes light travel in curves rather than "
+                     "straight lines",
+             "correct": False,
+             "why": "Each ray still runs straight; the lens changes its "
+                    "direction at the glass."},
+        ],
+        "figure": None,
+    },
 ]

@@ -306,4 +306,257 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p7-01-e05",
+        "band": "easier",
+        "text": "Light is a…",
+        "options": [            {"text": "longitudinal wave, like sound", "correct": False,
+             "why": "Sound is longitudinal; light is not. Light is displaced "
+                    "at right angles to its direction of travel."},
+            {"text": "kind of sound too fast for the ear", "correct": False,
+             "why": "Sound needs a material and light does not, so they are "
+                    "different kinds of wave entirely."},
+            {"text": "stream of air particles", "correct": False,
+             "why": "It crosses a vacuum, where there are no particles at "
+                    "all."},
+            {"text": "transverse wave, like a ripple", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-01-e06",
+        "band": "easier",
+        "text": "Which travels faster: light in a vacuum, or sound in air?",
+        "options": [
+            {"text": "Sound, because air carries it along", "correct": False,
+             "why": "Air carries sound at about 340 m/s, which light beats by "
+                    "close to a million times."},
+            {"text": "They travel at the same speed", "correct": False,
+             "why": "If they did, thunder would arrive with the flash rather "
+                    "than seconds later."},
+            {"text": "Light, by about a million times", "correct": True},
+            {"text": "Light, but only by about twice", "correct": False,
+             "why": "The gap is enormous: 300 000 000 m/s against about "
+                    "340 m/s."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-01-e07",
+        "band": "easier",
+        "text": "Does light need a material to travel through?",
+        "options": [
+            {"text": "Yes, which is why it travels best through air",
+             "correct": False,
+             "why": "It travels FASTEST through a vacuum, where there is no "
+                    "material at all."},
+            {"text": "Yes, but only over long distances", "correct": False,
+             "why": "Distance makes no difference; it crosses the emptiness "
+                    "between stars perfectly well."},
+            {"text": "No — it crosses a vacuum", "correct": True},
+            {"text": "No, but it travels much more slowly in a vacuum",
+             "correct": False,
+             "why": "A vacuum is where it is quickest; materials slow it "
+                    "down."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-01-e08",
+        "band": "easier",
+        "text": "In a vacuum, light travels 300 000 000 m in…",
+        "options": [
+            {"text": "one hour", "correct": False,
+             "why": "In an hour it covers about a thousand billion metres; a "
+                    "second is the right unit here."},
+            {"text": "one minute", "correct": False,
+             "why": "In a minute it covers sixty times that distance."},
+            {"text": "one second", "correct": True},
+            {"text": "no time at all", "correct": False,
+             "why": "Light is fast but not instant — that is why sunlight "
+                    "takes about eight minutes to arrive."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p7-01-s05",
+        "band": "standard",
+        "text": "Light from the Sun takes about eight minutes to reach the "
+                "Earth. What does that show?",
+        "options": [
+            {"text": "That light is slowed down by the emptiness of space",
+             "correct": False,
+             "why": "Empty space is where light goes fastest; the eight "
+                    "minutes is a matter of distance."},
+            {"text": "That light takes time to travel, and the Sun is very "
+                     "far away",
+             "correct": True},
+            {"text": "That the Sun only shines every eight minutes",
+             "correct": False,
+             "why": "It shines continuously; the eight minutes is how long "
+                    "the journey takes."},
+            {"text": "That sunlight has to pass through the atmosphere first",
+             "correct": False,
+             "why": "The atmosphere is crossed in a fraction of a "
+                    "millisecond; almost all the time is spent in space."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-01-s06",
+        "band": "standard",
+        "text": "A laser is fired at a wall 900 m away. About how long does "
+                "the light take to get there?",
+        "options": [
+            {"text": "About 2.6 s", "correct": False,
+             "why": "That uses the speed of sound. Light covers 900 m in a "
+                    "few millionths of a second."},
+            {"text": "About 0.003 s", "correct": False,
+             "why": "That is a thousand times too long — check the powers of "
+                    "ten in 300 000 000."},
+            {"text": "No time at all", "correct": False,
+             "why": "It is extremely quick but not instant; the journey has a "
+                    "real, if tiny, duration."},
+            {"text": "About 0.000003 s", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-01-s07",
+        "band": "standard",
+        "text": "Sound travels at about 340 m/s and light at 300 000 000 m/s. "
+                "Roughly how many times faster is light?",
+        "options": [
+            {"text": "About a thousand times", "correct": False,
+             "why": "That is a thousand times too small; divide the two "
+                    "figures and check the zeros."},
+            {"text": "About a million times", "correct": True},
+            {"text": "About a hundred times", "correct": False,
+             "why": "A hundred times 340 is 34 000, nowhere near "
+                    "300 000 000."},
+            {"text": "About a billion times", "correct": False,
+             "why": "That is a thousand times too large."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-01-s08",
+        "band": "standard",
+        "text": "Why can light cross the space between the Sun and the Earth "
+                "when sound cannot?",
+        "options": [
+            {"text": "Because light is much faster, so it gets across before "
+                     "it fades",
+             "correct": False,
+             "why": "Speed is not the issue. Sound would not cross at any "
+                    "speed, because there is nothing to carry it."},
+            {"text": "Because sound is absorbed by the Sun's atmosphere",
+             "correct": False,
+             "why": "Even with a clear path, sound needs particles all the "
+                    "way, and space has almost none."},
+            {"text": "Because light needs no particles, while sound is passed "
+                     "from particle to particle",
+             "correct": True},
+            {"text": "Because light is a longitudinal wave and sound is "
+                     "transverse",
+             "correct": False,
+             "why": "The two are the other way round, and it is not what "
+                    "decides this in any case."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p7-01-h05",
+        "band": "harder",
+        "text": "The Sun is about 150 000 000 000 m away. How long does its "
+                "light take to reach us?",
+        "options": [
+            {"text": "About 50 s, well under a minute", "correct": False,
+             "why": "That is ten times too short — check the zeros in the "
+                    "division."},
+            {"text": "About 500 s, or eight minutes", "correct": True},
+            {"text": "About 5000 s, nearly an hour and a half", "correct": False,
+             "why": "That is ten times too long, and would make sunrise "
+                    "arrive nearly an hour and a half late."},
+            {"text": "About 0.5 s, almost instant", "correct": False,
+             "why": "That is roughly the time for light to reach the Moon and "
+                    "back, not to cross to the Sun."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-01-h06",
+        "band": "harder",
+        "text": "A radio signal travels at the speed of light to a satellite "
+                "36 000 000 m up and back again. How long is the round trip?",
+        "options": [
+            {"text": "0.12 s", "correct": False,
+             "why": "That is the one-way time; the signal has to come back as "
+                    "well."},
+            {"text": "0.24 s", "correct": True},
+            {"text": "0.0012 s", "correct": False,
+             "why": "That is a hundred times too short — check the powers of "
+                    "ten before writing it down."},
+            {"text": "8.3 s", "correct": False,
+             "why": "That divides by 8 600 000 rather than by 300 000 000."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-01-h07",
+        "band": "harder",
+        "text": "Why is a light year a distance rather than a length of time?",
+        "options": [
+            {"text": "Because it is how long a star takes to become visible",
+             "correct": False,
+             "why": "That would be a time. The unit measures how far the "
+                    "light gets."},
+            {"text": "Because it counts the years light has already been "
+                     "travelling",
+             "correct": False,
+             "why": "It is not a count of anything's age; it is a fixed "
+                    "distance."},
+            {"text": "Because it is how far light travels in a year",
+             "correct": True},
+            {"text": "Because a year is too long to be used as a time in "
+                     "astronomy",
+             "correct": False,
+             "why": "Years are used as times constantly; the unit is defined "
+                    "as a distance because of what it multiplies."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p7-01-h08",
+        "band": "harder",
+        "text": "Two students argue about whether torchlight reaches a wall "
+                "3 m away instantly. Who is right?",
+        "options": [
+            {"text": "It is instant, because light has no speed to slow it "
+                     "down",
+             "correct": False,
+             "why": "Light has a definite speed of 300 000 000 m/s, so every "
+                    "journey takes some time."},
+            {"text": "It takes about 0.01 s, which is why a torch seems to "
+                     "flicker on",
+             "correct": False,
+             "why": "That is a million times too long, and nothing about a "
+                    "torch flickers for that reason."},
+            {"text": "It takes about 0.00000001 s — very quick, but not "
+                     "instant",
+             "correct": True},
+            {"text": "It cannot be worked out, because light has no fixed "
+                     "speed in air",
+             "correct": False,
+             "why": "Its speed in air is very close to its vacuum value, and "
+                    "the sum is straightforward."},
+        ],
+        "figure": None,
+    },
 ]
