@@ -474,7 +474,7 @@ refuses the seam at the database.
 | Surface | Owner pool | Where the serving read lives |
 |---|---|---|
 | Lesson-page ladder (recall/apply/explain/produce) | the authored ladder in `ks3_data` — baked into the page by `build_ks3.py`; `ks3_ladder_questions` is its DB mirror | no runtime pool read at all |
-| Weekly assignment | **`ks3_assignment_bank`** (renamed from `ks3_bank_questions`, 24 Aug 2026 — the generic name invited the mixing) | backend composition only: `server.js` `bankFor()` → `/api/class/current-assignment` |
+| Weekly assignment | **`ks3_assignment_bank`**, and at KS4 **`ks4_assignment_bank`** (renamed from `ks3_bank_questions`, 24 Aug 2026 — the generic name invited the mixing; KS4 got its own table at MRB-332 because eight subtopic slugs are byte-identical across the key stages) | ⊕ MRB-335: **two serving reads, and they are different reads.** `bankForScope()` serves **Set work** — every `bank_position`, at the tier the TEACHER asked for. `bankFor()` serves **automatic composition** — `bank_position < 12` only, at the CLASS tier. Pathway comes from the class in both. |
 | Dashboard flashcards | `ks3_cards` | `shared/student-live.js`, one serving read |
 
 **FROZEN EXCEPTION (awaiting Mide's ruling):** the class page's **practice
@@ -490,6 +490,150 @@ to a lesson slug, and reading attempt history (`question_ref` + `is_correct`)
 to weight practice toward weaknesses (FROM YOUR WORK), are both intended and
 both survive — the contract governs where questions are SERVED from, nothing
 else.
+
+## Set work v2 (MRB-335, 8 Sep 2026)
+
+A teacher picks a **node of the curriculum**, a tier, and the questions, then
+sets it on one class or twenty. Backend: `set-work-scope.js` (the pure half) +
+five routes in `server.js`. Site: `shared/set-work.js` + `shared/set-work.css`.
+
+⊕ **This REPLACES Set work v1 (MRB-331) entirely.** v1 asked for a
+scheme-of-work ROW, which made the scheme the authority on three unrelated
+things at once — what may be set, what cohort the class is, and what tier the
+questions come at. So a class with no scheme rows could be set nothing, most of
+KS4 was unreachable (865 scheme rows against 264 subtopics), and a teacher
+could not set Foundation revision to a Higher class. v1's `/topics` route and
+its `sow_entry_id` contract are **deleted**. ⚠️ **The scheme of work itself is
+untouched** — it still governs the AUTOMATIC weekly producer, which answers a
+different question ("what has this class been taught by now") with a week
+ceiling Set work has never had.
+
+### The scope model — Subject → Topic → Subtopic, never the scheme
+
+A class's cohort is `(key_stage, science_pathway, science_subject)`.
+
+- **Pathway is never a parameter, on any route.** It is read from the class,
+  always; so is the subject of a separate-sciences class. The sheet only ever
+  OFFERS what a class may have, and a browser can be asked to post anything.
+- **KS4 pathway, tier and subject are DERIVED FROM THE CLASS NAME** by the
+  database rule `class_tier_rule`: `/Sc` → combined with no separate science;
+  `/Bi` `/Ch` `/Ph` → triple plus that science; **set number 4 or 5 →
+  Foundation, any other set number → Higher**. The band letter is
+  case-insensitive (`10A/Bi1` is a real class). Any other shape → NULL.
+- A **separate-sciences** class sees one subject's tree and no subject chips at
+  all. A **combined** class gets Subject chips and Paper chips.
+- The AQA Trilogy paper map is keyed by (subject, topic slug); a topic missing
+  from it fails the backend's `paper_map_complete` unit test.
+  **Paper 1** — biology `cell-biology` `organisation` `infection-response`
+  `bioenergetics`; chemistry `atomic-structure` `bonding` `quantitative`
+  `chemical-changes` `energy-changes`; physics `energy` `electricity`
+  `particle-model` `atomic-structure`. **Paper 2** — biology `homeostasis`
+  `inheritance` `ecology`; chemistry `rates-equilibrium` `organic` `analysis`
+  `atmosphere` `resources`; physics `forces` `waves` `magnetism` `space`.
+  ⚠️ `space` is triple-only — all five subtopics are `triple_only`, so the
+  topic is absent from a combined tree and never carries a paper chip.
+- **KS3** is units → lessons, with subject chips and no papers.
+- ⚠️ The tree is filtered by pathway and subject and **never by tier** — a
+  Foundation class still SEES a higher-only subtopic, counted `0` and disabled.
+
+### Tier semantics — two tiers, and they are not the same tier
+
+- **Set work tier = the REQUEST tier**, chosen by the teacher per set. It
+  defaults to the class's tier and may legitimately differ from it — Foundation
+  revision to a Higher class, Higher extension to a Foundation one.
+- **Automatic composition tier = the CLASS tier.** Unchanged by this ticket.
+- **Pathway is inviolable on both**, and is never accepted as a parameter.
+- KS3 tiers are **Easy / Medium / Hard** — the bank's `band` column, easier /
+  standard / harder. A band is a rung of DEMAND, not a tier: Easy is the easier
+  band, not an easier child.
+
+### The pools, verbatim (PLAN §1) — MCQ only, never filled from elsewhere
+
+- **KS4 Foundation** — `tier='foundation'` rows, all bands; `triple_only=false`
+  when combined.
+- **KS4 Higher** — `tier='higher'` rows (any band) ∪ `tier='foundation'` rows
+  in `standard|harder`; same pathway rule.
+- **KS3 Easy/Medium/Hard** — band easier/standard/harder within the unit or
+  lesson.
+
+### ⚠️ The auto window — `bank_position < 12`, permanently
+
+`composeFromBank` takes EVERY row of the drawn band from a lesson until it has
+`size` questions, and both banks used to hold exactly twelve rows per slug, so
+every automatic assignment in the estate was composed from those twelve.
+MRB-335 added thousands more so Set work can fill a twenty-question set from
+one topic. Therefore **a new bank row always lands at `bank_position` ≥ 12 and
+the AUTO read stops at twelve** — `bankFor()` in the backend, `auto_pool()` /
+`compose_assignment()` in `ks3_data/question_bank.py` (`AUTO_POSITIONS = 12`),
+identically. Without that freeze every auto-composed set in the school would
+have changed the day the pool grew, silently, with nothing saying so. **Set
+work reads every position, on purpose.** ⚠️ The filter is a DEFAULT inside
+`bankFor`, not an argument to it: a ceiling a caller can forget to pass is a
+ceiling that gets forgotten.
+
+### The class's tier and pathway are durable, not computed per request
+
+`20260907211350_mrb335_classes_tier_rule.sql` adds `classes.science_subject`
+and `classes.tier_pathway_source` (`rule` | `admin`), the SQL function
+`class_tier_rule(name)`, and the trigger `classes_apply_tier_rule`, which fills
+NULL tier/pathway/subject on INSERT for KS4 and stamps the source `rule`.
+⚠️ **The trigger fills only NULLs**, so a roster re-import that find-or-creates
+by name cannot overwrite a person's edit. A school admin edits the triple on
+`teacher/admin.html` → `POST /api/admin/class-tier`, which stamps the source
+`admin` and audits `class.tier_pathway.set` in `audit_log` with
+`{from, to, acting_as_admin:true}`.
+
+### What v2 writes to `assignments`
+
+On top of v1's columns: `set_tier`, `scope_kind` (`topic` | `subtopic`),
+`scope_ref` (KS4 topic id / subtopic slug, KS3 unit code / lesson slug),
+`subject`, and `paper` (1 | 2 | NULL). `source_sow_entry_id` is **NULL** on
+every v2 row. ⚠️ Safe, because **no consumer reads the scheme entry**: the
+reteach panel, the marking grid, the digest, the print view, the charts and the
+student's current-assignment read all take `title`, `topic`, `subject_id`,
+`academic_week`, `release_at` and `due_at`. `assignment_questions` rows carry
+`band` and no `rung`, keeping them the right side of `one_pool_per_assignment`.
+
+### The sheet lives OUTSIDE the compiled runtime
+
+`shared/set-work.js` owns ONE overlay appended to `document.body`, a sibling of
+the `#mrb-teacher` mount host, and patches it in place. ⚠️ **That is the fix
+for the scroll-jump, not a style preference.** `shared/student-runtime.js`
+`draw()` empties the entire mount host and rebuilds the whole template on every
+`setState`, restoring focus, form values and the DOCUMENT's scroll but no
+element's `scrollTop` — it keeps no record of one. Design's sheet is its own
+inner scroller, so every tap destroyed the node holding the teacher's place.
+Design's compiled sheet **node 581 is DEAD again** in `teacher_rulings.py`; the
+trigger on the generated pages calls `window.MRBSetWork.open({classId})`.
+⚠️ Those pages are GENERATED — never hand-edit `teacher/class-detail.html`.
+
+### The five routes, and the gates that watch them
+
+- `GET /api/teacher/set-work/scope` — the class, its tiers, its cohort
+  siblings, and the whole tree with a per-tier count on every node.
+- `GET /api/teacher/set-work/preview` — picks the questions for a scope+tier,
+  round-robin across subtopics, preferring ids not set to this class this year.
+- `GET /api/teacher/set-work/swap` — one replacement row outside `exclude=`,
+  or `204` when the pool is exhausted.
+- `POST /api/teacher/set-work` — writes the assignment across one or many
+  same-cohort classes, atomically.
+- `POST /api/admin/class-tier` — school admin sets a KS4 class's
+  tier/pathway/subject by hand; audited.
+
+⚠️ **Every route re-derives its facts server-side** — the cohort, the tree, the
+pool a question may come from, the release instant, the academic week and the
+caller's standing on every class. Nothing is trusted from a request body.
+
+Gates: `set_work` (the seams end to end under real RLS), `set_work_scope_check`
+(every cohort × node × tier cell can be filled; `--db` measures TEST),
+`curriculum_tree_mirror` (`tools/export_curriculum_tree.py --check` — the
+backend's `curriculum-tree.json` has not drifted from this repo's Python),
+`ks4_pool_check` (flags agree with `classify()`; positions 0–11 are still four
+of each band), `ks4_pool_drive` (the same rule through the serving path),
+`pool_ownership` (the v2 routes are named in its allowed reads), and
+`answer_lengths` (the longest-option tell on the KS3 corpora Set work serves).
+⚠️ `verify_answer_lengths` does **not** watch KS4 — `docs/ks4/pool-authoring.md`
+§6 says what KS4 has instead.
 
 ## How the AI Chat Backend Works
 
@@ -514,6 +658,15 @@ If the backend is unreachable, the chat falls back to a static message.
   lowercase band letter, slash, subject code with a single capital, set number —
   `7h/Sc5`, `10h/Ph1`, `11r/Sc1`. The 2026-27 timetable classes already follow it;
   the 2025-26 leftovers `10R1` and `10H/Ph1` were renamed in place to match.
+  ⊕ **MRB-335, 8 Sep 2026 — the name is now LOAD-BEARING at KS4.** It used to be
+  a label a human read. A KS4 class's `tier`, `science_pathway` and
+  `science_subject` are now DERIVED from it on INSERT by the database trigger
+  `classes_apply_tier_rule` (`/Sc` → combined; `/Bi` `/Ch` `/Ph` → triple plus
+  that science; set number 4 or 5 → foundation, otherwise higher), and those
+  three columns are what Set work v2 scopes every question by. A KS4 class named
+  outside the convention gets all three NULL, and a NULL cohort can be offered
+  nothing. ⚠️ The trigger fills only NULLs and stamps `tier_pathway_source`, so
+  a hand-set value survives a re-import; see "Set work v2" above.
   ⚠️ **`classes.name` is not purely cosmetic.** Nothing joins on it, but
   `supabase/functions/roster-import/index.ts` find-or-creates a class by exact
   `(school_id, academic_year_id, name)` match, so renaming a class outside the app

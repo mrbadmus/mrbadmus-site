@@ -42,9 +42,47 @@ twelve keep their ids, their order and their positions, byte for byte;
 rather than trusting it.
 
 **If you are ADDING to a subtopic that already has twelve:** continue each
-band's id sequence (`e05`, `s05`, `h05` …), leave the existing twelve
-untouched, and put the new rows in a separate `<topic>__setwork.py` module so
-the diff shows what is new. Do not renumber anything.
+band's id sequence (`e05`, `s05`, `h05` …) and let `bank_position` continue
+from **12**, leave the existing twelve untouched, and put the new rows in a
+separate `<topic>__setwork.py` module so the diff shows what is new. Do not
+renumber anything.
+
+You do not write `bank_position` by hand — `load_pool()` assigns it, and the
+order it emits in is the contract: **the first four of each band first (0–11),
+every extra afterwards (12…n−1)**, whichever file or order you authored them
+in. What `load_pool()` then ASSERTS, and refuses the file over:
+
+- **at least four rows in each band** per subtopic (the old rule was *exactly*
+  four, and *exactly* twelve per subtopic — both are gone);
+- `bank_position` contiguous `0..n−1` per subtopic — a gap is a failed load,
+  not a decision;
+- and, above that, `ks4_pool_check`'s *positions 0-11 are still four of each
+  band*, which is the frozen auto window proved rather than trusted.
+
+### The availability floor — fifty per (topic, audience, tier)
+
+The number a teacher's experience actually depends on is not per subtopic, it
+is per **cell**: `(topic, audience, tier)`, where audience is one of Combined,
+Triple-biology, Triple-chemistry, Triple-physics. Set work lets a teacher pick
+up to twenty from a whole topic at one tier, so a cell of twenty-four is not a
+choice, it is a list. **The floor is fifty.** The 7 Sep 2026 table found
+twenty-two cells below it; the lowest cell anywhere is now 52.
+
+⚠️ **The floor is an authoring target, not a gate threshold, and no gate will
+fail you for missing it.** What is gated is EMPTINESS: `set_work_scope_check`
+walks the whole (cohort × node × tier) cross product, refuses any cell with
+nothing in it, and PRINTS the smallest cell per key stage. Read that number.
+The full table is rebuilt the way `docs/mrb335/ks4-content.md` §7 rebuilds it,
+from the rows actually loaded, using the v2 cell rule — Foundation is
+`tier='foundation'` (triple excluded for Combined), Higher is `tier='higher'`
+∪ `tier='foundation'` in `standard`/`harder`.
+
+⚠️ **A Higher cell is fed only by `standard` and `harder`.** So a topic short
+at Higher and comfortable at Foundation needs no `easier` rows at all — and
+because `tier` and `triple_only` are DERIVED per subtopic and never chosen, a
+Higher gap inside a base topic is filled with base `standard`/`harder` rows,
+which count for Foundation too. That is why `atmosphere` finished at 82/60
+rather than 60/60. It is arithmetic, not overshoot.
 
 They are not lesson questions. They are not a quiz on the page. They are the
 work a teacher sets when they want a class to practise one subtopic, and the
@@ -168,6 +206,52 @@ This is measured, not trusted: `verify_answer_positions.py` fails the build if
 any index holds more than half a corpus's answers or is never the answer at
 all. It exists because KS3's bank once had a skew a student could have played.
 
+### ⊕ MRB-335 — the LENGTH tell, and the trap on both sides of it
+
+Position is not the only thing an option's shape gives away. **The correct
+option must not be the visibly longest more often than chance.** A KS3 audit
+measured what that costs: a student who ignored the science entirely and always
+picked the longest option scored 35% against 25%, and 56% in one unit.
+
+The method to copy is `verify_answer_lengths.py`'s, because the obvious test is
+the wrong one in both directions. It does not ask "is the correct option the
+longest string" — a one-character difference is not a tell and inviting a
+one-padding-character fix moves a number without changing anything a student
+sees. It asks whether one option is longest **by a clear margin** (`MARGIN` 6
+characters clear of the runner-up); if none is, a length-guessing student has
+nothing to go on and the set is skipped; if one is, the set counts and the gate
+records whether the visibly-longest option was the correct one. Each **scope**
+(a corpus, or one unit inside it) that was already red carries a dated
+`BASELINE` row of the exact `(n, k)` it was found at, and a scope passes at or
+below the rate it inherited and **fails the moment it gets detectably worse**.
+A baseline is a debt, not permission to decay; deleting a row is how it is paid.
+
+⚠️ **`verify_answer_lengths` does NOT watch KS4.** It is written for the KS3
+corpora. What KS4 has is `ks4_pool_check`'s *the longest option is not the
+answer*, and that check reads the **whole corpus** against a 40% threshold — so
+a few hundred badly skewed new rows inside 3,417 read as 24%, at chance, green
+and wrong. **Measure the rows YOU wrote, on their own.** MRB-335 did, and found
+its correct option was the longest in 65% of its 249 new rows, because the
+answer carried a "…, because …" clause its distractors did not.
+
+⚠️ **Over-correcting is the mirror failure, and it is the worse one.** Trimming
+a correct option to match its distractors' length is how MRB-335 produced
+`ks4-magnetic-fields-h06`, whose trimmed key asked a student to vary the
+distance "keeping the compass's POSITION the same" — two things that cannot
+both be done. A key clipped short enough to be un-guessable can be clipped
+short enough to be untrue, or to be the *shortest* option, which is a tell in
+the other direction. **The fix is a better distractor, not a shorter answer**:
+give the most plausible distractor a reason of its own, or move the correct
+option's reason into the `why`, where §7 says it belongs. A mechanical pass
+over a hundred rows will introduce something; the second read is what catches
+it.
+
+A useful second measure, because it is what a student can actually SEE: at 390
+px a phone wraps an option about every 46 characters, so count how often the
+correct option occupies more wrapped LINES than any other. Keep that near 25%
+too — a four-character edge wraps to the same number of lines and changes
+nothing.
+
 ## 7. The `why`
 
 One line. It says **why the correct answer is correct** — the physics, not the
@@ -249,8 +333,9 @@ python3 -c "import ks4_data; ks4_data.load_pool('<subject>', strict=False)"
 
 It validates ids, flags, option counts, duplicate options and index ranges,
 and it names the file and question of anything wrong. Fix everything it
-reports. `strict=True` additionally requires at least twelve per subtopic and
-at least four per band, and is what the export runs.
+reports. `strict=True` additionally requires **at least four per band** and at
+least twelve per subtopic, and is what the export runs. ⊕ MRB-335: it is *at
+least*, not *exactly* — see §1.
 
 Then run the content gate, which also proves the auto-composition window is
 intact:
@@ -262,3 +347,36 @@ python3 ks4_pool_check.py --python
 And sweep your own rows for the two things no gate measures per-author: the
 longest-option skew (§6) and near-duplicate stems inside one subtopic. A pair
 that differs only in its numbers is the same question twice.
+
+## 11. ⊕ MRB-335 — what `--verify` needs, and what its substitute cannot prove
+
+After the pool is loaded, `export_ks4_questions.py --verify` is the proof that
+the database mirror matches the Python. It signs in as a **real student** and
+reads `ks4_assignment_bank` on that JWT, which proves two things at once:
+**CONTENT** (every row, every mirrored column, plus a matching sha256 either
+side) and **REACH** (a signed-in child can actually get the rows).
+
+⚠️ **It needs a credential an executor does not have.** The switch is
+`MRB_TEST_STUDENT_PASSWORD` (or `--project prod` with production's), and it is
+**Mide's own account password**, deliberately not in the repo. Without it the
+script exits **3 — "nobody looked"**. Three is not one: **3 means nobody
+measured, 1 means measured drift.** Never report a 3 as a pass.
+
+**The substitute an unattended run may use** is the pair the script's own
+comments describe, and both halves must be run and both must pass:
+
+- **CONTENT · service-role read** — read every row with the service key and
+  compare row for row against the Python, plus checksum both sides. Service
+  role bypasses RLS, which is wrong for a reach proof and exactly right for a
+  content one: it sees every row that is there, including any a policy would
+  have hidden, so it cannot report a clean mirror over a table it saw half of.
+- **REACH · anon read** — the negative control, and it needs no credential:
+  `HTTP 200, rows=0`, because RLS grants SELECT to `authenticated` only.
+
+⚠️ **What the substitute does NOT prove**: that an AUTHENTICATED student can
+read the rows. Anon-zero says the door is shut; only the JWT read says it opens
+for the child it is meant to open for. A policy that grants nothing to
+`authenticated` passes both halves of the substitute and serves an empty
+assignment to every student in the school. So the substitute is a rehearsal —
+`--verify` against the real project, with Mide's credential, is still owed
+after the production load, and it is the merge step that closes this out.

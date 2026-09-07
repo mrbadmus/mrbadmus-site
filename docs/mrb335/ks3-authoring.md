@@ -184,3 +184,84 @@ not go through either** — it reads every position, on purpose. The Python side
 is proved by `_cap_test()` in `question_bank.py` (a synthetic 60-row lesson
 composes exactly what its 12-row self composes, at all three bands); the same
 test removed the cap and watched it fail before it was believed.
+
+---
+
+## 5. What actually happened ⊕ 8 Sep 2026
+
+Three lanes ran this brief across the 33 units. **2,922 rows were added** to
+the 2,220 that were there, so `ks3_assignment_bank` now holds **5,142** across
+185 lessons.
+
+| subject | lessons | new rows | total |
+|---|---:|---:|---:|
+| biology (B1–B11) | 58 | 1,020 | 1,716 |
+| chemistry (C1–C10) | 57 | 870 | 1,554 |
+| physics (P1–P12) | 70 | 1,032 | 1,872 |
+| **total** | **185** | **2,922** | **5,142** |
+
+More than §3's 2,730, and deliberately: `50 − 4 × lessons` rarely divides
+evenly across a unit's lessons, and every lane rounded UP to a whole number per
+lesson per band rather than leaving one lesson short. Nothing is below quota.
+
+### The three traps the lanes hit
+
+1. **A scoped `git add` still committed another lane's work.** Every commit ran
+   `git add ks3_data/p5/ docs/…` and then a bare `git commit -m` — and a bare
+   commit commits **the whole index**, not the paths just added. In a shared
+   worktree the index is shared, so a co-tenant lane that had staged its own
+   files had them swept into someone else's commit. ⚠️ **Commit with pathspecs**
+   — `git commit <paths> -m …` commits exactly those paths and ignores
+   everything else staged. Never `git add -A`, never a bare `git commit -m`, in
+   a worktree with more than one lane in it.
+2. **`verify_questions.py` check 8 goes red the moment ANY unit is topped up,
+   and it is the gate that is wrong, not the content.** `_check_composition()`
+   hardcodes `r["unit"] == "B1"` as its fixture and derives its expected id
+   sequences from the WHOLE lesson rather than from `auto_pool()`. So it pins
+   the first twelve while reading all of them. The two findings it emits —
+   `compose_assignment/nearest-first` and `compose_assignment/thin-week` — are
+   the KNOWN pair; a lane must check its run reports **exactly those two and
+   nothing else**, because a real defect would otherwise hide behind a red that
+   everybody has learned to expect. The fix is `auto_pool(bank.get(...))` in
+   `own` and `nearest`.
+3. **A paraphrase is a duplicate and no string check can see it.**
+   `validate_lesson` refuses a repeated STRING; it cannot refuse a repeated
+   QUESTION. Thirty-nine rows in the chemistry lane alone asked something their
+   own unit already asked, in different words — `c9-02-e12` was `c9-02-s03`
+   with lead swapped for copper. A thirty-line normalised-stem similarity sweep
+   (≥ 0.90, within the unit) found them all. Run one over your own rows; §1.8's
+   rule is only enforced for exact matches.
+
+### One live answer was keyed backwards, and it was fixed
+
+`c9-04-h02` marked "the concrete takes the pull and the steel spreads the load"
+correct. That is the physics the other way round, and the row contradicted
+itself: its own distractor was corrected with *"Concrete is strong in
+compression and weak in tension"* while the key said the reverse. Fixed in
+`ada785706` — **steel takes the pull**. It sits at `bank_position` 9, inside
+the twelve this run was otherwise required to leave byte-identical; the id, the
+position and the option ORDER are unchanged, so the auto window is untouched,
+but a student drawn this row was being marked wrong for the right answer and
+that outranks the freeze.
+
+### ⚠️ OPEN for Mide — 274 rows in the frozen twelve are page-bound
+
+Every lane independently reported the same thing: the self-containment rule
+they were held to (§1.7 — a bank question is read on the assignment page, away
+from the lesson) is broken by the **existing** rows at `bank_position` 0–11 —
+the byte-frozen ones AUTO composition actually serves.
+
+| subject | rows affected |
+|---|---:|
+| biology | 155 |
+| chemistry | 68 |
+| physics | 51 |
+| **total** | **274** |
+
+Most are mild — "the belief this lesson exists to break", inside a `why`. A
+minority are **unanswerable away from the lesson page**, because they point at
+an on-page instrument a child sitting an assignment cannot see: `b4-05-e04`
+("the third bar is labelled…"), `b4-05-s02` ("you drag the light on the bench
+down to zero"), `b4-03-h04` (its four options are "Requirement 1/2/3/4"). None
+was touched. Rewriting them is a content decision inside the frozen window and
+therefore Mide's, not a lane's.
