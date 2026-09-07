@@ -316,4 +316,198 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p8-05-e05",
+        "band": "easier",
+        "text": "Which two measurements does R = V ÷ I need?",
+        "options": [
+            {"text": "The p.d. across the component and the current through "
+                     "it",
+             "correct": True},
+            {"text": "The p.d. across the battery and the current through the "
+                     "battery",
+             "correct": False,
+             "why": "Those give the whole circuit's resistance, not the one "
+                    "component's."},
+            {"text": "The current through the component and the time it runs "
+                     "for",
+             "correct": False,
+             "why": "Time appears nowhere in the definition of resistance."},
+            {"text": "The p.d. across the component and its temperature",
+             "correct": False,
+             "why": "Temperature changes the answer for a filament, but it is "
+                    "not one of the two measurements."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-05-e06",
+        "band": "easier",
+        "text": "A component has 6.0 V across it and 2.0 A through it. What "
+                "is its resistance?",
+        "options": [
+            {"text": "12 Ω", "correct": False,
+             "why": "That is 6.0 × 2.0. Resistance is the p.d. DIVIDED by "
+                    "the current."},
+            {"text": "0.33 Ω", "correct": False,
+             "why": "That is 2.0 ÷ 6.0, the ratio upside down."},
+            {"text": "3.0 Ω", "correct": True},
+            {"text": "8.0 Ω", "correct": False,
+             "why": "That adds the two readings, and volts cannot be added to "
+                    "amps."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-05-e07",
+        "band": "easier",
+        "text": "Why can a resistance not be read straight off a single "
+                "meter?",
+        "options": [
+            {"text": "Because resistance changes too quickly to be read",
+             "correct": False,
+             "why": "A plain resistor holds steady; the reason is what "
+                    "resistance IS."},
+            {"text": "Because it is a ratio, so it takes two measurements and "
+                     "a division",
+             "correct": True},
+            {"text": "Because ohms are too small a unit to display",
+             "correct": False,
+             "why": "Ohms display perfectly well; the difficulty is that two "
+                    "readings are needed."},
+            {"text": "Because a meter would change the resistance it was "
+                     "measuring",
+             "correct": False,
+             "why": "Meters are built not to disturb the circuit; the point "
+                    "is that resistance is defined as a ratio."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p8-05-s05",
+        "band": "standard",
+        "text": "A voltmeter reads 4.0 V across a component and the ammeter "
+                "reads 0.25 A. What is its resistance?",
+        "options": [
+            {"text": "1.0 Ω", "correct": False,
+             "why": "That is 4.0 × 0.25. The definition divides rather than "
+                    "multiplies."},
+            {"text": "0.0625 Ω", "correct": False,
+             "why": "That is 0.25 ÷ 4.0, the ratio the wrong way up."},
+            {"text": "16 Ω", "correct": True},
+            {"text": "4.25 Ω", "correct": False,
+             "why": "That adds the readings, and a p.d. cannot be added to a "
+                    "current."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-05-s06",
+        "band": "standard",
+        "text": "A 12 Ω resistor carries 0.50 A. What is the p.d. across it?",
+        "options": [
+            {"text": "24 V", "correct": False,
+             "why": "That is 12 ÷ 0.50. To find a p.d. you multiply the "
+                    "resistance by the current."},
+            {"text": "6.0 V", "correct": True},
+            {"text": "12.5 V", "correct": False,
+             "why": "That adds the two, and ohms cannot be added to amps."},
+            {"text": "0.042 V", "correct": False,
+             "why": "That is 0.50 ÷ 12, a division where a multiplication is "
+                    "needed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-05-s07",
+        "band": "standard",
+        "text": "Two wires are the same metal and the same thickness, but one "
+                "is twice as long. Which resists more?",
+        "options": [
+            {"text": "The shorter one, because the charge is more crowded",
+             "correct": False,
+             "why": "Crowding is not the issue; a longer path is harder to "
+                    "get through, not an easier one."},
+            {"text": "Neither — resistance depends only on the metal",
+             "correct": False,
+             "why": "The metal matters, and so do the length and the "
+                    "thickness of the piece."},
+            {"text": "The longer one, roughly twice as much", "correct": True},
+            {"text": "The longer one, but only by a tiny amount",
+             "correct": False,
+             "why": "Doubling the length roughly doubles the resistance — "
+                    "that is not a tiny change."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p8-05-h05",
+        "band": "harder",
+        "text": "A filament lamp gives 5 Ω when tested at 1 V and 20 Ω at "
+                "12 V. Which statement is right?",
+        "options": [
+            {"text": "One reading must be a mistake, since a component has "
+                     "one resistance",
+             "correct": False,
+             "why": "A filament genuinely has no single value; both readings "
+                    "can be right."},
+            {"text": "Both are right: the filament's resistance climbs as it "
+                     "heats",
+             "correct": True},
+            {"text": "Both are right, but only because the ammeter drifts at "
+                     "higher currents",
+             "correct": False,
+             "why": "The meters are steady. It is the filament itself that "
+                    "changes."},
+            {"text": "The 5 Ω figure is the true value and 20 Ω is the "
+                     "distorted one",
+             "correct": False,
+             "why": "Neither is more true; each describes the lamp at the "
+                    "temperature it was at."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-05-h06",
+        "band": "harder",
+        "text": "A wire has 6.0 V across it and 400 mA through it. What is "
+                "its resistance?",
+        "options": [
+            {"text": "0.015 Ω", "correct": False,
+             "why": "That is 6.0 ÷ 400, using milliamps as if they were "
+                    "amps."},
+            {"text": "2400 Ω", "correct": False,
+             "why": "That is 6.0 × 400, multiplying instead of dividing and "
+                    "leaving the milliamps unconverted."},
+            {"text": "15 Ω", "correct": True},
+            {"text": "0.067 Ω", "correct": False,
+             "why": "That is 0.400 ÷ 6.0, the ratio upside down."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-05-h07",
+        "band": "harder",
+        "text": "A 3 Ω and a 6 Ω resistor sit in series on a 9 V battery. "
+                "Which takes the larger share of the p.d., and how much?",
+        "options": [
+            {"text": "The 3 Ω one, with 6 V", "correct": False,
+             "why": "The larger share goes to whatever resists more, and 6 Ω "
+                    "is the larger of the two."},
+            {"text": "They share it equally, 4.5 V each", "correct": False,
+             "why": "Equal shares would need equal resistances, and these "
+                    "differ by a factor of two."},
+            {"text": "The 6 Ω one, with 6 V", "correct": True},
+            {"text": "The 6 Ω one, with 9 V", "correct": False,
+             "why": "That leaves nothing for the 3 Ω resistor, which must "
+                    "take 3 V of the total."},
+        ],
+        "figure": None,
+    },
 ]

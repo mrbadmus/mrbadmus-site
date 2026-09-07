@@ -315,4 +315,211 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p8-04-e05",
+        "band": "easier",
+        "text": "Potential difference tells you…",
+        "options": [
+            {"text": "how much charge passes a point each second",
+             "correct": False,
+             "why": "That is current, measured in amps on an ammeter."},
+            {"text": "how much energy each unit of charge gives up between "
+                     "two points",
+             "correct": True},
+            {"text": "how hard a component makes it for charge to get "
+                     "through",
+             "correct": False,
+             "why": "That is resistance, measured in ohms and found from a "
+                    "ratio."},
+            {"text": "how much charge a battery is holding", "correct": False,
+             "why": "A battery holds a chemical store, and its rating says "
+                    "how hard it pushes, not how much it holds."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-04-e06",
+        "band": "easier",
+        "text": "Two 1.5 V cells are put in series in a holder. What does the "
+                "battery supply?",
+        "options": [
+            {"text": "1.5 V, because both cells are the same", "correct": False,
+             "why": "In series the pushes add, so two cells give more than "
+                    "one."},
+            {"text": "3.0 V", "correct": True},
+            {"text": "0.75 V, shared between the two", "correct": False,
+             "why": "Cells in series add rather than share; sharing is what "
+                    "components do."},
+            {"text": "2.25 V", "correct": False,
+             "why": "That multiplies 1.5 by 1.5. The two ratings are simply "
+                    "added."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-04-e07",
+        "band": "easier",
+        "text": "Three lamps are wired in parallel across a 6.0 V battery. "
+                "What is the p.d. across each lamp?",
+        "options": [
+            {"text": "2.0 V, a third each", "correct": False,
+             "why": "Sharing is what happens in series. Parallel branches "
+                    "each get the whole of it."},
+            {"text": "18 V, three times the battery", "correct": False,
+             "why": "Nothing multiplies the battery's push; branches cannot "
+                    "get more than it supplies."},
+            {"text": "6.0 V across each one", "correct": True},
+            {"text": "3.0 V, half each", "correct": False,
+             "why": "Halving would be sharing between two in series, and "
+                    "these are three in parallel."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p8-04-s05",
+        "band": "standard",
+        "text": "Three components sit in series on a 6.0 V battery. "
+                "Voltmeters across two of them read 1.5 V and 2.0 V. What "
+                "does the third read?",
+        "options": [
+            {"text": "3.5 V, the two readings added", "correct": False,
+             "why": "The three shares add to the battery's 6.0 V, so the "
+                    "third is what is left over."},
+            {"text": "2.5 V, the share that is left", "correct": True},
+            {"text": "6.0 V, because the battery drives it", "correct": False,
+             "why": "That is the whole push, and two components have already "
+                    "taken shares of it."},
+            {"text": "2.0 V, the same as the second", "correct": False,
+             "why": "Shares are only equal when the components resist "
+                    "equally, and these do not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-04-s06",
+        "band": "standard",
+        "text": "Why is a voltmeter connected across a component rather than "
+                "in the loop?",
+        "options": [
+            {"text": "Because it needs the current to pass through it to "
+                     "work",
+             "correct": False,
+             "why": "That is an ammeter. A voltmeter is built to take almost "
+                    "no current at all."},
+            {"text": "Because a p.d. is a difference between two points, "
+                     "needing a lead at each",
+             "correct": True},
+            {"text": "Because it would be damaged by the full current of the "
+                     "loop",
+             "correct": False,
+             "why": "It would not be damaged — it would simply stop the "
+                    "current, because its resistance is enormous."},
+            {"text": "Because it can then measure the current as well",
+             "correct": False,
+             "why": "It measures p.d. only; the current needs a separate "
+                    "instrument."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-04-s07",
+        "band": "standard",
+        "text": "A 12 V battery drives two identical lamps in series. What is "
+                "the p.d. across each lamp?",
+        "options": [
+            {"text": "12 V across each", "correct": False,
+             "why": "That would need 24 V altogether, and the battery "
+                    "supplies 12 V."},
+            {"text": "24 V across each", "correct": False,
+             "why": "Nothing in a circuit multiplies the battery's push."},
+            {"text": "6 V across each", "correct": True},
+            {"text": "0 V across each, because they cancel", "correct": False,
+             "why": "Components do not cancel; they share the push out "
+                    "between them."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p8-04-h05",
+        "band": "harder",
+        "text": "A 9.0 V battery drives a lamp and a resistor in series. The "
+                "lamp takes 6.0 V. How do their resistances compare?",
+        "options": [
+            {"text": "The lamp resists twice as much as the resistor",
+             "correct": True},
+            {"text": "The resistor resists twice as much as the lamp",
+             "correct": False,
+             "why": "The larger share of the p.d. goes to whatever resists "
+                    "more, and the lamp took 6.0 V of the 9.0 V."},
+            {"text": "They resist equally, because the current through them "
+                     "is the same",
+             "correct": False,
+             "why": "The current is the same, which is exactly why the "
+                    "p.d. shares reveal the resistances."},
+            {"text": "Their resistances cannot be compared without an "
+                     "ammeter reading",
+             "correct": False,
+             "why": "The same current passes through both, so the ratio of "
+                    "the p.d.s is the ratio of the resistances."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-04-h06",
+        "band": "harder",
+        "text": "A student writes that the p.d. is used up as the charge goes "
+                "round the loop. Which rewrite is right?",
+        "options": [
+            {"text": "The p.d. is used up, but only at the last component in "
+                     "the loop",
+             "correct": False,
+             "why": "Every component takes a share; nothing waits until the "
+                    "end."},
+            {"text": "The charge gives up energy at each component, and the "
+                     "shares add to the battery's p.d.",
+             "correct": True},
+            {"text": "The charge is used up at each component, which is why "
+                     "the p.d. falls",
+             "correct": False,
+             "why": "Charge is conserved all the way round; it is energy that "
+                    "is given up."},
+            {"text": "The p.d. is the same across every component, so nothing "
+                     "is shared",
+             "correct": False,
+             "why": "That is true of parallel branches only. Round a series "
+                    "loop the shares differ."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-04-h07",
+        "band": "harder",
+        "text": "Two lamps sit in parallel across a 6 V battery. A third lamp "
+                "is added in series ahead of the pair. What happens to the "
+                "p.d. across the pair?",
+        "options": [
+            {"text": "It stays at 6 V, because parallel branches always get "
+                     "the whole supply",
+             "correct": False,
+             "why": "They get the whole of what reaches them, and the new "
+                    "lamp now takes a share first."},
+            {"text": "It rises above 6 V, because there are more lamps",
+             "correct": False,
+             "why": "No arrangement of components can give more than the "
+                    "battery supplies."},
+            {"text": "It falls below 6 V, because the new lamp takes a share",
+             "correct": True},
+            {"text": "It halves to 3 V, because there are now two stages",
+             "correct": False,
+             "why": "The share depends on how much each part resists, and "
+                    "there is no reason for an even split."},
+        ],
+        "figure": None,
+    },
 ]

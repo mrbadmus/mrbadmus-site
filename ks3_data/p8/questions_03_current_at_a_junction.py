@@ -307,4 +307,270 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p8-03-e05",
+        "band": "easier",
+        "text": "At a junction, the current arriving is…",
+        "options": [
+            {"text": "equal to the currents leaving, added together",
+             "correct": True},
+            {"text": "shared equally between the branches", "correct": False,
+             "why": "Each branch draws its own current, so an easier branch "
+                    "takes more than a harder one."},
+            {"text": "halved, because there are two ways to go",
+             "correct": False,
+             "why": "Halving would only be right if the branches happened to "
+                    "be identical, and it is never the rule."},
+            {"text": "larger than the currents leaving, because some is left "
+                     "behind",
+             "correct": False,
+             "why": "Nothing is stored at a junction, so nothing can be left "
+                    "behind there."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-03-e06",
+        "band": "easier",
+        "text": "Three branches carry 0.10 A, 0.20 A and 0.30 A. What does "
+                "the main wire carry?",
+        "options": [
+            {"text": "0.30 A, the largest branch", "correct": False,
+             "why": "The main wire carries all three branches together, not "
+                    "just the biggest."},
+            {"text": "0.20 A, the middle value", "correct": False,
+             "why": "An average is not what a junction does; the currents "
+                    "add."},
+            {"text": "0.60 A", "correct": True},
+            {"text": "0.006 A", "correct": False,
+             "why": "That multiplies the three. Currents at a junction are "
+                    "added, never multiplied."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-03-e07",
+        "band": "easier",
+        "text": "400 mA written in amps is…",
+        "options": [
+            {"text": "400 A", "correct": False,
+             "why": "The m is milli, meaning a thousandth, so the number must "
+                    "get smaller."},
+            {"text": "0.4 A", "correct": True},
+            {"text": "4 A", "correct": False,
+             "why": "That divides by 100. A milliamp is a thousandth of an "
+                    "amp, not a hundredth."},
+            {"text": "40 A", "correct": False,
+             "why": "That divides by 10, and a milliamp is a thousandth."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-03-e08",
+        "band": "easier",
+        "text": "Is any charge stored at a junction while a circuit runs?",
+        "options": [
+            {"text": "Yes, a little, which is why the branches read less",
+             "correct": False,
+             "why": "The branches add to exactly the main wire's reading, so "
+                    "nothing has been kept."},
+            {"text": "Yes, enough to run the circuit for a moment after "
+                     "switch-off",
+             "correct": False,
+             "why": "A plain junction is just a meeting of wires and holds "
+                    "nothing at all."},
+            {"text": "No — whatever arrives at a junction leaves it",
+             "correct": True},
+            {"text": "Only in a parallel circuit, where the branches divide",
+             "correct": False,
+             "why": "Dividing is exactly where the rule is tested, and "
+                    "nothing is stored there either."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p8-03-s05",
+        "band": "standard",
+        "text": "A main wire carries 0.75 A into a junction with two "
+                "branches. One branch reads 0.45 A. What does the other read?",
+        "options": [
+            {"text": "1.20 A", "correct": False,
+             "why": "That adds the two readings; a branch cannot carry more "
+                    "than the main wire brings."},
+            {"text": "0.375 A, half the main wire", "correct": False,
+             "why": "Branches are not given equal shares — the other one "
+                    "already reads 0.45 A."},
+            {"text": "0.30 A", "correct": True},
+            {"text": "0.75 A, the same as the main wire", "correct": False,
+             "why": "That would leave nothing for the first branch, which "
+                    "already carries 0.45 A."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-03-s06",
+        "band": "standard",
+        "text": "A third branch is added to a parallel section. What happens "
+                "to the current in the MAIN wire?",
+        "options": [
+            {"text": "It rises, because it now carries three branch currents",
+             "correct": True},
+            {"text": "It falls, because the current is shared out more "
+                     "thinly",
+             "correct": False,
+             "why": "Nothing is shared out. Each branch draws its own, and "
+                    "the main wire carries the total."},
+            {"text": "It stays the same, because the battery is unchanged",
+             "correct": False,
+             "why": "The battery has to supply more, and the main wire is "
+                    "what delivers it."},
+            {"text": "It stays the same until a fourth branch is added",
+             "correct": False,
+             "why": "Every branch added raises the total, from the very first "
+                    "one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-03-s07",
+        "band": "standard",
+        "text": "A main wire reads 1.20 A and its only two branches read "
+                "0.50 A and 0.50 A. What should you conclude?",
+        "options": [
+            {"text": "That 0.20 A has been lost in the junction",
+             "correct": False,
+             "why": "Nothing is lost at a junction; the readings must add "
+                    "exactly."},
+            {"text": "That one of the three readings is wrong and should be "
+                     "taken again",
+             "correct": True},
+            {"text": "That the main wire always reads more than the branches",
+             "correct": False,
+             "why": "It reads their TOTAL, which here would be 1.00 A, not "
+                    "more than it."},
+            {"text": "That there must be a third branch somewhere",
+             "correct": False,
+             "why": "That is worth checking, but the question says these are "
+                    "its only two branches."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-03-s08",
+        "band": "standard",
+        "text": "Two branches carry 250 mA and 0.35 A. What does the main "
+                "wire carry, in amps?",
+        "options": [
+            {"text": "250.35 A", "correct": False,
+             "why": "The milliamps were added as though they were amps; "
+                    "250 mA is 0.25 A."},
+            {"text": "0.60 A", "correct": True},
+            {"text": "0.10 A", "correct": False,
+             "why": "That subtracts. Currents leaving a junction are added to "
+                    "give the current arriving."},
+            {"text": "2.85 A", "correct": False,
+             "why": "That adds 0.35 to 2.5, misreading 250 mA as 2.5 A."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p8-03-h05",
+        "band": "harder",
+        "text": "A junction feeds three branches carrying 0.30 A, 250 mA and "
+                "0.15 A. The main wire is rated at 0.65 A. Is it safe?",
+        "options": [
+            {"text": "Yes — no single branch is anywhere near 0.65 A",
+             "correct": False,
+             "why": "The rating applies to the main wire, which carries all "
+                    "three branches together."},
+            {"text": "Yes — the branches total 0.55 A", "correct": False,
+             "why": "That reads 250 mA as 0.05 A. It is 0.25 A, so the total "
+                    "is 0.70 A."},
+            {"text": "No — the branches total 0.70 A, above the rating",
+             "correct": True},
+            {"text": "It cannot be judged without the supply voltage",
+             "correct": False,
+             "why": "A current rating is compared with a current, and all "
+                    "three branch currents are given."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-03-h06",
+        "band": "harder",
+        "text": "A student finds the total at a junction by adding all four "
+                "ammeter readings — the main wire and the three branches. "
+                "What is wrong?",
+        "options": [
+            {"text": "The branches should be multiplied together, not added",
+             "correct": False,
+             "why": "Adding the branches is exactly right; it is the fourth "
+                    "reading that does not belong."},
+            {"text": "Only two branches may be added at a time",
+             "correct": False,
+             "why": "Any number of branches may be added; the rule does not "
+                    "stop at two."},
+            {"text": "The main wire's reading IS the total, so it is counted "
+                     "twice",
+             "correct": True},
+            {"text": "The main wire should be subtracted rather than added",
+             "correct": False,
+             "why": "Subtracting it would give zero, which is not a total "
+                    "either — it simply should not be in the sum."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-03-h07",
+        "band": "harder",
+        "text": "One of two identical branches is replaced by a component "
+                "that resists twice as much. What happens to the main-wire "
+                "current?",
+        "options": [
+            {"text": "It stays the same, because the number of branches has "
+                     "not changed",
+             "correct": False,
+             "why": "The total is the sum of what the branches draw, and one "
+                    "of them now draws less."},
+            {"text": "It falls, because the new branch draws less current "
+                     "than the old one",
+             "correct": True},
+            {"text": "It rises, because a harder branch pushes more current "
+                     "into the other",
+             "correct": False,
+             "why": "Branches do not push current into one another; each "
+                    "simply draws its own."},
+            {"text": "It halves, because one branch resists twice as much",
+             "correct": False,
+             "why": "Only that branch halves. The other is unchanged, so the "
+                    "total falls by less than half."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-03-h08",
+        "band": "harder",
+        "text": "A main wire reads 0.90 A. One branch is switched off and the "
+                "remaining branch still reads 0.40 A. What did the "
+                "switched-off branch carry?",
+        "options": [
+            {"text": "0.90 A, the whole main-wire reading", "correct": False,
+             "why": "That would leave nothing for the branch that is still "
+                    "carrying 0.40 A."},
+            {"text": "0.40 A, the same as the other branch", "correct": False,
+             "why": "Branches are not given equal shares; the sum has to come "
+                    "to 0.90 A."},
+            {"text": "1.30 A", "correct": False,
+             "why": "That adds the two readings, and no branch can carry more "
+                    "than the main wire delivers."},
+            {"text": "0.50 A", "correct": True},
+        ],
+        "figure": None,
+    },
 ]

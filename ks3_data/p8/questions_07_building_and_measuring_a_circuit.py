@@ -313,4 +313,231 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p8-07-e05",
+        "band": "easier",
+        "text": "A voltmeter is built to have…",
+        "options": [
+            {"text": "an enormous resistance, so almost no current passes "
+                     "through it",
+             "correct": True},
+            {"text": "almost no resistance, so it does not slow the current",
+             "correct": False,
+             "why": "That is an ammeter, which has to sit in the loop without "
+                    "changing it."},
+            {"text": "exactly the same resistance as the component it "
+                     "measures",
+             "correct": False,
+             "why": "Matching the component would halve the current through "
+                    "it and change what it reads."},
+            {"text": "no resistance at all, so it reads instantly",
+             "correct": False,
+             "why": "No resistance across a component would short it out "
+                    "completely."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-07-e06",
+        "band": "easier",
+        "text": "While a circuit is being built, the switch should be…",
+        "options": [
+            {"text": "closed, so faults show up straight away",
+             "correct": False,
+             "why": "A fault found by running current through it can damage a "
+                    "meter or a cell."},
+            {"text": "removed from the circuit until it is finished",
+             "correct": False,
+             "why": "The switch is part of the loop and should be wired in "
+                    "from the start — just left open."},
+            {"text": "open, so nothing flows until the loop has been checked",
+             "correct": True},
+            {"text": "replaced with a plain wire while the meters are fitted",
+             "correct": False,
+             "why": "That makes it impossible to stop the current while you "
+                    "check anything."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-07-e07",
+        "band": "easier",
+        "text": "An ammeter is connected ACROSS a lamp instead of in the "
+                "loop. What happens?",
+        "options": [
+            {"text": "It reads the lamp's current correctly anyway",
+             "correct": False,
+             "why": "It is no longer carrying the lamp's current, so what it "
+                    "reads is something else entirely."},
+            {"text": "It reads zero, because no current reaches it",
+             "correct": False,
+             "why": "A great deal reaches it — its resistance is almost "
+                    "nothing, so it takes the lot."},
+            {"text": "It short-circuits the lamp, so the lamp goes dark",
+             "correct": True},
+            {"text": "Nothing changes, because meters do not affect a "
+                     "circuit",
+             "correct": False,
+             "why": "A meter in the wrong place changes the circuit itself, "
+                    "not just the reading."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p8-07-s05",
+        "band": "standard",
+        "text": "Why does putting a voltmeter IN the loop stop almost all the "
+                "current?",
+        "options": [
+            {"text": "Because its resistance is enormous, so very little gets "
+                     "through",
+             "correct": True},
+            {"text": "Because it only allows current to pass in one "
+                     "direction",
+             "correct": False,
+             "why": "That is a diode. A voltmeter blocks by resistance, not "
+                    "by direction."},
+            {"text": "Because it measures p.d. and therefore cannot carry "
+                     "current",
+             "correct": False,
+             "why": "It carries a tiny current; being a voltmeter does not "
+                    "forbid it, its resistance limits it."},
+            {"text": "Because it has no resistance, so it shorts the loop out",
+             "correct": False,
+             "why": "That is the ammeter's problem when it is misplaced; a "
+                    "voltmeter has the opposite fault."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-07-s06",
+        "band": "standard",
+        "text": "A group takes one reading at each setting and no more. Why "
+                "is that not enough?",
+        "options": [
+            {"text": "Because a single reading is always wrong",
+             "correct": False,
+             "why": "A single reading is often perfectly good; the problem is "
+                    "that you cannot tell which ones are."},
+            {"text": "Because a value that does not fit cannot be spotted "
+                     "without repeats",
+             "correct": True},
+            {"text": "Because meters need to warm up before they read "
+                     "correctly",
+             "correct": False,
+             "why": "School meters read immediately; repeating is about "
+                    "spotting odd values."},
+            {"text": "Because the average of one reading cannot be "
+                     "calculated",
+             "correct": False,
+             "why": "The point is not the arithmetic; it is having something "
+                    "to compare each value with."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-07-s07",
+        "band": "standard",
+        "text": "A set of readings runs 0.20, 0.21, 0.20, 0.35 and 0.21 A. "
+                "What should be done about the 0.35 A?",
+        "options": [
+            {"text": "Cross it out, because it is obviously wrong",
+             "correct": False,
+             "why": "It may be telling you something. Crossing it out decides "
+                    "that before you have checked."},
+            {"text": "Include it in the mean, because all readings count",
+             "correct": False,
+             "why": "Averaging it in hides it, and a value that far out "
+                    "usually has a cause worth finding."},
+            {"text": "Take that setting again before writing anything down",
+             "correct": True},
+            {"text": "Move the point onto the line when the graph is drawn",
+             "correct": False,
+             "why": "Smoothing a point onto a line is changing the data, "
+                    "which is never allowed."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p8-07-h05",
+        "band": "harder",
+        "text": "An ammeter reads a negative value. What has happened, and "
+                "does it matter?",
+        "options": [
+            {"text": "The current is genuinely flowing backwards through the "
+                     "battery",
+             "correct": False,
+             "why": "The battery drives it one way; the meter is simply "
+                    "connected against that direction."},
+            {"text": "The meter is broken and should be replaced",
+             "correct": False,
+             "why": "It is working perfectly — a negative sign is exactly how "
+                    "it reports reversed leads."},
+            {"text": "The leads are the wrong way round; the size is right, "
+                     "but reconnect them",
+             "correct": True},
+            {"text": "Nothing has happened; a negative current is an ordinary "
+                     "reading to record",
+             "correct": False,
+             "why": "The size is usable, but leaving it reversed invites a "
+                    "sign error later in the table."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-07-h06",
+        "band": "harder",
+        "text": "A group swaps the order of the lamp and the buzzer round a "
+                "single loop and expects the readings to change. What "
+                "actually happens?",
+        "options": [
+            {"text": "Both readings change, because the first component gets "
+                     "the current first",
+             "correct": False,
+             "why": "There is no first in a loop; the same current passes "
+                    "through every part of it."},
+            {"text": "The ammeter changes but the voltmeter does not",
+             "correct": False,
+             "why": "Neither changes: the same current and the same shares of "
+                    "p.d. are unaffected by order."},
+            {"text": "Nothing changes at all in either reading", "correct": True},
+            {"text": "The readings swap over between the two components",
+             "correct": False,
+             "why": "Each component keeps its own share of the p.d. wherever "
+                    "it sits in the loop."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-07-h07",
+        "band": "harder",
+        "text": "In an investigation of current against the number of cells, "
+                "why must the same lamp be used throughout?",
+        "options": [
+            {"text": "Because a second lamp would not fit the same holder",
+             "correct": False,
+             "why": "Fitting is a practical detail, not the reason the result "
+                    "would be spoilt."},
+            {"text": "Because a different lamp would change the current for a "
+                     "reason other than the cells",
+             "correct": True},
+            {"text": "Because lamps wear out and give lower readings each "
+                     "time",
+             "correct": False,
+             "why": "A lamp does not fade measurably over one lesson; the "
+                    "issue is comparing like with like."},
+            {"text": "Because only one lamp can be connected to a battery at "
+                     "a time",
+             "correct": False,
+             "why": "Several can be, in series or parallel — but then the "
+                    "circuit itself has changed."},
+        ],
+        "figure": None,
+    },
 ]

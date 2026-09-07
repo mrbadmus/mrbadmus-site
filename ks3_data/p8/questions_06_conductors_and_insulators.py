@@ -323,4 +323,204 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p8-06-e05",
+        "band": "easier",
+        "text": "In a metal, the charges that are free to move are…",
+        "options": [
+            {"text": "loose electrons", "correct": True},
+            {"text": "dissolved ions", "correct": False,
+             "why": "Ions carry the charge in salt water, not in a solid "
+                    "metal."},
+            {"text": "the metal's whole atoms", "correct": False,
+             "why": "The atoms stay in place; only the loose electrons "
+                    "travel."},
+            {"text": "protons from the nuclei", "correct": False,
+             "why": "Protons are locked inside nuclei and never move through "
+                    "a wire."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-06-e06",
+        "band": "easier",
+        "text": "An insulator is a material with…",
+        "options": [
+            {"text": "almost no free charges, and a very high resistance",
+             "correct": True},
+            {"text": "no charged particles in it at all", "correct": False,
+             "why": "It is full of charged particles; they are simply not "
+                    "free to move."},
+            {"text": "a resistance of exactly zero", "correct": False,
+             "why": "That describes a perfect conductor, which is the "
+                    "opposite end of the range."},
+            {"text": "free charges that move only very slowly",
+             "correct": False,
+             "why": "Even in a conductor the drift is slow. What an insulator "
+                    "lacks is charges that are free at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-06-e07",
+        "band": "easier",
+        "text": "Which of these conducts best?",
+        "options": [
+            {"text": "Tap water", "correct": False,
+             "why": "Tap water passes a small current, far less than any "
+                    "metal."},
+            {"text": "Graphite", "correct": False,
+             "why": "Graphite conducts, unusually for a non-metal, but "
+                    "nowhere near as well as copper."},
+            {"text": "Dry wood", "correct": False,
+             "why": "Dry wood sits near the insulating end of the range."},
+            {"text": "Copper", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p8-06-s05",
+        "band": "standard",
+        "text": "A specimen clipped across a 6.0 V supply passes 0.020 A. "
+                "What is its resistance?",
+        "options": [
+            {"text": "300 Ω", "correct": True},
+            {"text": "0.12 Ω", "correct": False,
+             "why": "That is 6.0 × 0.020. Resistance is the p.d. divided by "
+                    "the current."},
+            {"text": "0.0033 Ω", "correct": False,
+             "why": "That is 0.020 ÷ 6.0, the ratio upside down."},
+            {"text": "6.02 Ω", "correct": False,
+             "why": "That adds the readings, and volts cannot be added to "
+                    "amps."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-06-s06",
+        "band": "standard",
+        "text": "Graphite is unusual among non-metals. Why?",
+        "options": [
+            {"text": "Because it is the only non-metal that is shiny",
+             "correct": False,
+             "why": "Appearance is not the test; being able to pass a current "
+                    "is."},
+            {"text": "Because it dissolves to give ions that carry charge",
+             "correct": False,
+             "why": "It does not dissolve. Its own electrons do the "
+                    "carrying."},
+            {"text": "Because some of its electrons are free to move, so it "
+                     "conducts",
+             "correct": True},
+            {"text": "Because it has no resistance at all", "correct": False,
+             "why": "It has a real resistance, well above copper's — it is "
+                    "simply far below plastic's."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-06-s07",
+        "band": "standard",
+        "text": "Why does damp wood conduct far better than dry wood?",
+        "options": [
+            {"text": "Because water makes the wood softer, so charge passes "
+                     "more easily",
+             "correct": False,
+             "why": "Softness has nothing to do with it; what matters is "
+                    "having charges free to move."},
+            {"text": "Because the water carries dissolved ions that are free "
+                     "to move",
+             "correct": True},
+            {"text": "Because wet wood is a metal once the water is in it",
+             "correct": False,
+             "why": "It is not a metal at all, and it has no loose electrons "
+                    "of its own."},
+            {"text": "Because water has no resistance", "correct": False,
+             "why": "Even salt water has a substantial resistance; it is "
+                    "simply far lower than dry wood's."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p8-06-h05",
+        "band": "harder",
+        "text": "A student says a short enough piece of an insulator would "
+                "conduct properly. What is wrong with that?",
+        "options": [
+            {"text": "Nothing — halving the length halves the resistance, so "
+                     "it must work eventually",
+             "correct": False,
+             "why": "Halving from millions of millions of ohms still leaves "
+                    "millions of millions of ohms."},
+            {"text": "Length has no effect on resistance at all",
+             "correct": False,
+             "why": "It does have an effect, and that is exactly why the "
+                    "argument is tempting."},
+            {"text": "Shortening lowers the resistance a little, but it "
+                     "starts far too high to matter",
+             "correct": True},
+            {"text": "A short piece would have a HIGHER resistance, not a "
+                     "lower one",
+             "correct": False,
+             "why": "Shorter really is lower; the argument fails on the size "
+                    "of the starting figure, not the direction."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-06-h06",
+        "band": "harder",
+        "text": "Why are conductors and insulators better drawn as one "
+                "continuous range than as two separate boxes?",
+        "options": [
+            {"text": "Because the measured resistances fill every value in "
+                     "between",
+             "correct": True},
+            {"text": "Because no material has ever had its resistance "
+                     "measured accurately",
+             "correct": False,
+             "why": "They are measured routinely, and it is those "
+                    "measurements that fill the range."},
+            {"text": "Because a material can be either one depending on the "
+                     "day",
+             "correct": False,
+             "why": "A dry specimen keeps its value; it is the spread ACROSS "
+                    "materials that is continuous."},
+            {"text": "Because every insulator becomes a conductor if enough "
+                     "voltage is applied",
+             "correct": False,
+             "why": "That can happen at extremes, but it is not why the chart "
+                    "is drawn as a range."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-06-h07",
+        "band": "harder",
+        "text": "Silicon's resistance can be controlled on purpose. What is a "
+                "material like that called, and where does it sit?",
+        "options": [
+            {"text": "A superconductor, at the very bottom of the range",
+             "correct": False,
+             "why": "A superconductor has no resistance at all, and its value "
+                    "is not adjustable."},
+            {"text": "A semiconductor, in the middle of the range",
+             "correct": True},
+            {"text": "An insulator, at the very top of the range",
+             "correct": False,
+             "why": "An insulator's resistance is fixed and enormous; "
+                    "silicon's is neither."},
+            {"text": "A conductor, at the very bottom of the range",
+             "correct": False,
+             "why": "Silicon conducts far less well than copper, so it does "
+                    "not sit at that end."},
+        ],
+        "figure": None,
+    },
 ]

@@ -305,4 +305,292 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p8-01-e05",
+        "band": "easier",
+        "text": "When a current passes through a copper wire, what is "
+                "actually moving?",
+        "options": [
+            {"text": "Free electrons that were already in the metal",
+             "correct": True},
+            {"text": "Electricity sent out from inside the cell",
+             "correct": False,
+             "why": "The cell pushes on charge that is already in the wire; it "
+                    "sends nothing out of itself."},
+            {"text": "The copper atoms, sliding along the wire",
+             "correct": False,
+             "why": "The atoms stay where they are, which is why the wire "
+                    "keeps its shape and its mass."},
+            {"text": "Heat, travelling from the cell to the lamp",
+             "correct": False,
+             "why": "Warming is a result of the current, not the thing that "
+                    "flows round the loop."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-01-e06",
+        "band": "easier",
+        "text": "In a single loop containing a cell and a lamp, where is the "
+                "current largest?",
+        "options": [
+            {"text": "In the wire going into the lamp", "correct": False,
+             "why": "Nothing is used up in the lamp, so the same current "
+                    "comes out as goes in."},
+            {"text": "In the wire coming out of the lamp", "correct": False,
+             "why": "The current is the same on both sides — neither wire "
+                    "carries more."},
+            {"text": "It is the same everywhere in the loop", "correct": True},
+            {"text": "In the wire nearest the cell", "correct": False,
+             "why": "Distance from the cell makes no difference; charge is "
+                    "not handed out along the way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-01-e07",
+        "band": "easier",
+        "text": "A wire is disconnected at one point in a single loop. What "
+                "happens?",
+        "options": [
+            {"text": "Everything in the loop stops working", "correct": True},
+            {"text": "Only the parts after the break stop working",
+             "correct": False,
+             "why": "A loop has no after: with the path broken anywhere, "
+                    "nothing flows anywhere."},
+            {"text": "Only the parts before the break stop working",
+             "correct": False,
+             "why": "Charge cannot flow into a dead end, so the whole loop "
+                    "stops together."},
+            {"text": "Everything keeps working but more dimly",
+             "correct": False,
+             "why": "A break is not a partial obstacle; there is no complete "
+                    "path at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-01-e08",
+        "band": "easier",
+        "text": "Roughly how much current does a small torch bulb draw?",
+        "options": [
+            {"text": "A few thousandths of an amp", "correct": False,
+             "why": "That is a hundred times too small — a few milliamps "
+                    "would barely glow."},
+            {"text": "A few hundred amps", "correct": False,
+             "why": "That is enormous; a current like that melts wires and "
+                    "welds metal."},
+            {"text": "A few tenths of an amp", "correct": True},
+            {"text": "A few thousand amps", "correct": False,
+             "why": "That is more than a lightning strike delivers, and far "
+                    "beyond any torch."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p8-01-s05",
+        "band": "standard",
+        "text": "A student claims the lamp uses up the current. Which "
+                "measurement settles it?",
+        "options": [
+            {"text": "A voltmeter across the lamp, showing a reading",
+             "correct": False,
+             "why": "That measures energy given up per unit of charge, which "
+                    "is a different quantity."},
+            {"text": "Ammeters on both sides of the lamp, reading the same",
+             "correct": True},
+            {"text": "An ammeter beside the cell, reading more than zero",
+             "correct": False,
+             "why": "One reading cannot show whether anything was lost "
+                    "further round the loop."},
+            {"text": "Weighing the lamp before and after it is switched on",
+             "correct": False,
+             "why": "Charge has no measurable mass here, so a balance shows "
+                    "nothing either way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-01-s06",
+        "band": "standard",
+        "text": "Why must a circuit be a complete loop, rather than a wire "
+                "that simply reaches the lamp?",
+        "options": [
+            {"text": "Because the lamp needs current arriving from both sides "
+                     "at once",
+             "correct": False,
+             "why": "The current passes through in one direction; what it "
+                    "needs is a path onwards."},
+            {"text": "Because the second wire carries the electricity that "
+                     "was not used",
+             "correct": False,
+             "why": "None of it is used up. Both wires carry exactly the same "
+                    "current."},
+            {"text": "Because the charge needs a complete path back, or "
+                     "nothing flows at all",
+             "correct": True},
+            {"text": "Because two wires halve the current and keep the lamp "
+                     "safe",
+             "correct": False,
+             "why": "Nothing is halved; both wires are part of the one loop "
+                    "carrying one current."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-01-s07",
+        "band": "standard",
+        "text": "A student writes that a cell holds a store of current and "
+                "sends it out. Which correction is right?",
+        "options": [
+            {"text": "A cell holds a store of current but releases it slowly",
+             "correct": False,
+             "why": "It holds no current at any rate. Current is a flow, not "
+                    "something that can be kept."},
+            {"text": "A cell holds a chemical store and pushes on charge that "
+                     "is already in the wire",
+             "correct": True},
+            {"text": "A cell holds a store of electrons and pumps them into "
+                     "the circuit",
+             "correct": False,
+             "why": "The wire is already full of free electrons; the cell "
+                    "adds none of its own."},
+            {"text": "A cell holds a store of voltage and shares it out",
+             "correct": False,
+             "why": "Potential difference is not held either — it is the "
+                    "energy given up between two points."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-01-s08",
+        "band": "standard",
+        "text": "A loop is complete except for a small gap of air. Why does "
+                "no current flow, even though the cell still pushes?",
+        "options": [
+            {"text": "Because air is too light for the electrons to push "
+                     "through",
+             "correct": False,
+             "why": "Weight is not the issue; what matters is whether there "
+                    "are charges free to move."},
+            {"text": "Because the cell only works when the loop is short",
+             "correct": False,
+             "why": "Loop length barely matters. The gap is what stops it."},
+            {"text": "Because the push is used up crossing the gap",
+             "correct": False,
+             "why": "Nothing crosses the gap at all, so nothing can be used "
+                    "up doing it."},
+            {"text": "Because air has almost no free charges, so the loop is "
+                     "not complete",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-335 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p8-01-h05",
+        "band": "harder",
+        "text": "An ammeter reads 0.30 A leaving a cell and 0.30 A returning "
+                "to it. What does that show, and what IS used up?",
+        "options": [
+            {"text": "Charge is not used up anywhere in the loop; energy is",
+             "correct": True},
+            {"text": "Both charge and energy are conserved, so nothing is "
+                     "used up anywhere",
+             "correct": False,
+             "why": "The cell's chemical store really does empty, so "
+                    "something is being spent."},
+            {"text": "Charge is used up, and the meters are not sensitive "
+                     "enough to show it",
+             "correct": False,
+             "why": "The equality is exact, not a limit of the meters; charge "
+                    "is genuinely conserved."},
+            {"text": "Energy is not used up either, because it returns to the "
+                     "cell",
+             "correct": False,
+             "why": "It leaves the lamp as light and warmth and never comes "
+                    "back to the cell."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-01-h06",
+        "band": "harder",
+        "text": "Two identical cells are put in a holder facing in opposite "
+                "directions, in one loop with a lamp. What happens?",
+        "options": [
+            {"text": "The lamp is twice as bright, because two cells are "
+                     "present",
+             "correct": False,
+             "why": "Two cells add only when they push the same way round the "
+                    "loop."},
+            {"text": "The lamp is as bright as with one cell", "correct": False,
+             "why": "One does not simply drop out; the second actively pushes "
+                    "against the first."},
+            {"text": "The lamp stays dark, because the two pushes cancel",
+             "correct": True},
+            {"text": "The lamp lights, but the current flows the other way "
+                     "round",
+             "correct": False,
+             "why": "Neither push wins: they are equal and opposite, so there "
+                    "is nothing left to drive a current."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-01-h07",
+        "band": "harder",
+        "text": "A torch is rebuilt with the filament lamp connected the "
+                "other way round. What happens when the switch is closed?",
+        "options": [
+            {"text": "It lights exactly as it did before the change",
+             "correct": True},
+            {"text": "It stays dark, because current can only pass one way "
+                     "through a lamp",
+             "correct": False,
+             "why": "That is true of a diode, not of a filament lamp, which "
+                    "simply heats a wire."},
+            {"text": "It lights, but much more dimly than before",
+             "correct": False,
+             "why": "Nothing about the filament changes with direction, so "
+                    "the brightness is the same."},
+            {"text": "It lights and then fails, because the current runs "
+                     "backwards through it",
+             "correct": False,
+             "why": "A filament is heated by the current whichever way it "
+                    "passes, and takes no harm from it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p8-01-h08",
+        "band": "harder",
+        "text": "A closed loop of copper wire with no cell in it is still "
+                "full of free electrons. Why is there no current?",
+        "options": [
+            {"text": "Because the electrons have all been used up by earlier "
+                     "circuits",
+             "correct": False,
+             "why": "They are part of the metal itself and are never used "
+                    "up."},
+            {"text": "Because free electrons only appear once a cell is "
+                     "connected",
+             "correct": False,
+             "why": "They are there in every piece of metal, connected or "
+                    "not."},
+            {"text": "Because a loop with no cell is not a complete circuit",
+             "correct": False,
+             "why": "The loop is complete; what it lacks is anything to push "
+                    "the electrons one way."},
+            {"text": "Because nothing pushes them the same way, so they move "
+                     "randomly instead of drifting",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

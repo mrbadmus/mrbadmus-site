@@ -197,6 +197,50 @@ page reference — so it now looks for deictic phrases only.
 
 ---
 
+## P8 · Electric circuits — 7 lessons, 72 new rows (24 per band)
+
+Unit total: **52 / 52 / 52**. Four per band on lessons 01–03, three per band on
+04–07.
+
+| lesson | ids added (each band) |
+|---|---|
+| 01 current and circuits | e05–e08, s05–s08, h05–h08 |
+| 02 series and parallel | e05–e08, s05–s08, h05–h08 |
+| 03 current at a junction | e05–e08, s05–s08, h05–h08 |
+| 04 potential difference | e05–e07, s05–s07, h05–h07 |
+| 05 resistance | e05–e07, s05–s07, h05–h07 |
+| 06 conductors and insulators | e05–e07, s05–s07, h05–h07 |
+| 07 building and measuring a circuit | e05–e07, s05–s07, h05–h07 |
+
+The four named misconceptions of lesson 01 — the bulb using up the current, the
+cell holding a store of current, the delay down a long wire, the return wire
+not mattering — are each given a row that can only be answered by rejecting
+them. Two rows go further than the lesson's own framing without leaving its
+scope: `p8-01-h06` puts two cells in a holder facing opposite ways (the pushes
+cancel, so nothing lights), and `p8-01-h08` asks why a cell-less loop full of
+free electrons carries no current at all. Lesson 02's `h07` is the one
+genuinely composite item — two lamps in parallel, that pair in series with a
+third — and its answer turns on the single lamp carrying what both branches
+carry together.
+
+Every resistance is worked as a ratio from two readings, and the three classic
+errors (multiplying, inverting, and leaving milliamps unconverted) each appear
+as a named distractor: `p8-05-e06`, `p8-05-s05`, `p8-05-h06`.
+
+**Review fixes.** Twelve length flags, ten reworded and two — `p8-01-h05` and
+`p8-07-h06` — lengthened because the correct option was a bare four or five
+words among wordy distractors.
+
+**The lane's spelling check was wrong, and P8 is what exposed it.** It had been
+flagging *meter* and *meters* as an Americanism for *metre*. In UK English the
+INSTRUMENT is a meter — ammeter, voltmeter, "both meters read zero" — and only
+the unit of length is a metre; the twelve rows already in `questions_07` use
+*meters* throughout. Ten flags here were the checker being wrong, not the
+content. It now flags *meter* only when a number stands immediately before it,
+which is the one place the length is meant.
+
+---
+
 ## ⚠️ A gate defect that is NOT content, found while topping up P1
 
 From the moment the biology lane's B1 top-up landed in this worktree,
@@ -253,3 +297,15 @@ check-8 pair, so a physics defect cannot hide behind the known red. The fast
 gate `python3 -m ks3_data.question_bank` — which runs `validate_lesson` over
 every physics lesson, the ids, the positions, the duplicate stems and the
 markup rule — stays **OK, unconditionally**, after every unit below.
+
+⊕ **Updated at P8 (still 7 Sep 2026): the red has CLEARED, and that is not a
+fix.** `verify_questions.py` now reports all nine checks clean, because the
+biology lane's B1 is back at twelve rows a lesson — it has committed B2, B3 and
+B7 instead and B1 is not yet topped up. Nothing about `_check_composition`
+changed. **The defect returns the moment B1 is topped up**, which the quota
+table requires (B1 needs 26 more rows per band), so the two-line fix above is
+still owed and should land before or with the biology lane's B1 commit.
+
+The lane's gate wrapper stays in place for the rest of the run: it treats that
+one named B1 check-8 pair as known and fails on anything else, so a physics
+defect cannot hide behind a red if it comes back.
