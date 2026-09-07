@@ -341,4 +341,407 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c2-01-e05",
+        "band": "easier",
+        "text": "This lesson uses the word property. What is a property of a "
+                "substance?",
+        "options": [
+            {"text": "Something it is like or does — its colour, whether it "
+                     "bends, whether it conducts",
+             "correct": True},
+            {"text": "The name of the element the substance was originally "
+                     "made from",
+             "correct": False,
+             "why": "A property is about behaviour, not about origin. Iron "
+                    "sulfide's properties belong to iron sulfide"},
+            {"text": "The number of atoms that one particle of it contains",
+             "correct": False,
+             "why": "That is what a formula gives you. A property is what the "
+                    "substance is like"},
+            {"text": "The place on the periodic table where it is listed",
+             "correct": False,
+             "why": "Only elements have an entry, and its position is not a "
+                    "property of the substance"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-e06",
+        "band": "easier",
+        "text": "What is a chemical reaction?",
+        "options": [
+            {"text": "A change in which the particles of a substance are "
+                     "spread further apart than they were before",
+             "correct": False,
+             "why": "That is a change of state. No atom joins anything new, "
+                    "and the substance is the one you started with"},
+            {"text": "A change in which atoms are rearranged into different "
+                     "substances",
+             "correct": True},
+            {"text": "A change in which one kind of atom is turned into "
+                     "another kind",
+             "correct": False,
+             "why": "That is the one thing a chemical reaction never does. It "
+                    "is why alchemy failed for fifteen hundred years"},
+            {"text": "Any change that cannot be reversed once it has "
+                     "happened",
+             "correct": False,
+             "why": "Plenty of reactions can be reversed, and plenty of "
+                    "changes that cannot are not reactions at all"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-e07",
+        "band": "easier",
+        "text": "One of Dalton's three claims is about the atoms of a single "
+                "element. What does it say?",
+        "options": [
+            {"text": "That they can be broken into smaller pieces if enough "
+                     "energy is put into them somehow",
+             "correct": False,
+             "why": "Dalton said the opposite — that they cannot be broken at "
+                    "all. That is the claim Thomson later overturned"},
+            {"text": "That they combine with other elements in simple "
+                     "whole-number ratios",
+             "correct": False,
+             "why": "That is a different one of the three, and it is about "
+                    "elements combining rather than about one element's own "
+                    "atoms"},
+            {"text": "That they are all the same as each other, and different "
+                     "from every other element's",
+             "correct": True},
+            {"text": "That they are all the same size, whichever element they "
+                     "belong to",
+             "correct": False,
+             "why": "Dalton never claimed that, and it is not true. Atoms of "
+                    "different elements differ in size and in mass"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-e08",
+        "band": "easier",
+        "text": "Which observation had been known for fifteen hundred years "
+                "before Dalton wrote his model down?",
+        "options": [
+            {"text": "That an atom is made of a nucleus with electrons "
+                     "outside it",
+             "correct": False,
+             "why": "That is Rutherford, a hundred years AFTER Dalton. Nobody "
+                    "in 1803 knew an atom had any parts"},
+            {"text": "That about forty million copper atoms fit across a "
+                     "centimetre",
+             "correct": False,
+             "why": "Nothing could measure that until long after Dalton. He "
+                    "worked from masses, not sizes"},
+            {"text": "That electricity can split water into two gases",
+             "correct": False,
+             "why": "Electrolysis arrived at almost exactly Dalton's own "
+                    "time, not fifteen centuries before it"},
+            {"text": "That no amount of heating, dissolving or burning ever "
+                     "turned lead into gold",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-e09",
+        "band": "easier",
+        "text": "On the zoom, at which point does light stop being any use "
+                "and electrons have to be used instead?",
+        "options": [
+            {"text": "At 0.0001 mm, past the reach of any light microscope",
+             "correct": True},
+            {"text": "At 1 mm, under an ordinary hand lens",
+             "correct": False,
+             "why": "A hand lens works perfectly well there. Nothing has run "
+                    "out at a millimetre"},
+            {"text": "At 0.1 mm, about as far as a school microscope reaches",
+             "correct": False,
+             "why": "That is where the SCHOOL microscope runs out, not where "
+                    "light itself does. Better light microscopes go further"},
+            {"text": "At 0.000001 mm, where the individual atoms finally come "
+                     "into view",
+             "correct": False,
+             "why": "By then you are already using electrons. Light gave out "
+                    "two steps earlier"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c2-01-s05",
+        "band": "standard",
+        "text": "Switch off Dalton's claim that elements combine in simple "
+                "whole-number ratios. Which observation stops being "
+                "explained?",
+        "options": [
+            {"text": "That water from a river, the sea and a laboratory "
+                     "always holds the same proportion of hydrogen to oxygen",
+             "correct": True},
+            {"text": "That a reaction sealed in a flask weighs exactly the "
+                     "same afterwards as it did before it was started",
+             "correct": False,
+             "why": "That rests on atoms not being created or destroyed, "
+                    "which is a different claim and is still switched on"},
+            {"text": "That no amount of chemistry has ever turned lead into "
+                     "gold",
+             "correct": False,
+             "why": "That rests on atoms not changing kind. Ratios have "
+                    "nothing to do with it"},
+            {"text": "That copper is orange and lead is grey",
+             "correct": False,
+             "why": "Dalton's model does not explain colours at all. "
+                    "Switching a claim off cannot take down something it "
+                    "never held up"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-s06",
+        "band": "standard",
+        "text": "A student says Dalton could not have had evidence for atoms, "
+                "because nobody could see one until the 1930s. What is the "
+                "best reply?",
+        "options": [
+            {"text": "He did see them, using the best microscopes that were "
+                     "available to a chemist working in 1803",
+             "correct": False,
+             "why": "No microscope of any kind could show an atom then. His "
+                    "case never depended on seeing one"},
+            {"text": "His evidence was measurement — fixed proportions, "
+                     "balanced masses and whole-number ratios",
+             "correct": True},
+            {"text": "He had no evidence, so the model was a lucky guess that "
+                     "later turned out to be right",
+             "correct": False,
+             "why": "A guess would not have predicted the ratios he "
+                    "predicted. The numbers came first"},
+            {"text": "Seeing something is the only evidence that counts, so "
+                     "the model was not science until 1930",
+             "correct": False,
+             "why": "Chemistry had been using and testing the model for a "
+                    "century by then. Measurement is evidence"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-s07",
+        "band": "standard",
+        "text": "Dalton's model says a reaction rearranges atoms into new "
+                "substances. Which of these is therefore NOT a chemical "
+                "reaction?",
+        "options": [
+            {"text": "Magnesium burning in air to leave a white powder behind "
+                     "in the crucible",
+             "correct": False,
+             "why": "A new substance has been made from two others, so atoms "
+                    "have been rearranged. That is a reaction"},
+            {"text": "Iron rusting slowly over a month in a damp shed",
+             "correct": False,
+             "why": "Rust is a new substance made from iron and oxygen. Being "
+                    "slow does not stop it being a reaction"},
+            {"text": "Ice melting into water in a warm room",
+             "correct": True},
+            {"text": "Marble chips fizzing when dilute acid is poured onto "
+                     "them",
+             "correct": False,
+             "why": "The fizzing is a new gas being made. Atoms have been "
+                    "rearranged"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-s08",
+        "band": "standard",
+        "text": "Suppose Dalton's claim that all atoms of one element are "
+                "alike were dropped, and the other two kept. Which "
+                "observation would still be explained?",
+        "options": [
+            {"text": "That water everywhere holds hydrogen and oxygen in the "
+                     "same proportion by mass",
+             "correct": False,
+             "why": "That needs atoms of one element to be alike. Mixed "
+                    "masses would give a proportion that drifted"},
+            {"text": "That every sample of copper oxide holds the same "
+                     "proportion of copper to oxygen",
+             "correct": False,
+             "why": "Same problem as water. A fixed proportion by mass needs "
+                    "the atoms to have a fixed mass"},
+            {"text": "That elements combine in whole-number ratios of fixed "
+                     "masses",
+             "correct": False,
+             "why": "The ratios are ratios of masses, so they need identical "
+                    "atoms to come out the same every time"},
+            {"text": "That a sealed reaction weighs the same before and after "
+                     "it has finished",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-s09",
+        "band": "standard",
+        "text": "Iron rusts, wood burns and copper roofs turn green. What has "
+                "happened to the atoms in every one of those changes?",
+        "options": [
+            {"text": "They have been rearranged into new substances, and none "
+                     "has changed kind",
+             "correct": True},
+            {"text": "Some of them have been destroyed, which is why the wood "
+                     "is lighter",
+             "correct": False,
+             "why": "Nothing is destroyed. The wood's atoms have left as "
+                    "gases, and those gases have mass"},
+            {"text": "Some of them have been turned into atoms of a different "
+                     "element",
+             "correct": False,
+             "why": "No chemical change does that. It is the one thing "
+                    "fifteen hundred years of alchemy could never manage"},
+            {"text": "They have all been split into the smaller pieces that "
+                     "Thomson found",
+             "correct": False,
+             "why": "Chemistry never splits an atom. Rusting and burning "
+                    "rearrange whole atoms"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c2-01-h05",
+        "band": "harder",
+        "text": "Every sample of water ever measured holds 1 g of hydrogen "
+                "for every 8 g of oxygen. Which of Dalton's claims does that "
+                "measurement support most directly?",
+        "options": [
+            {"text": "That all atoms of one element are alike, so a fixed "
+                     "count gives a fixed mass",
+             "correct": True},
+            {"text": "That atoms cannot be created or destroyed in a reaction",
+             "correct": False,
+             "why": "That claim is about totals before and after a reaction. "
+                    "It says nothing about the proportion inside a "
+                    "compound"},
+            {"text": "That atoms are far too small to be seen with any "
+                     "microscope",
+             "correct": False,
+             "why": "Their size is not one of Dalton's three claims, and no "
+                    "mass measurement could establish it"},
+            {"text": "That one kind of atom can never be turned into "
+                     "another",
+             "correct": False,
+             "why": "That claim is what alchemy's failure supports. Fixed "
+                    "proportions are a different piece of evidence"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-h06",
+        "band": "harder",
+        "text": "About forty million copper atoms fit across the 1 cm of "
+                "wire. Roughly how wide is one copper atom?",
+        "options": [
+            {"text": "About 0.3 mm — small, but a good hand lens would show "
+                     "you one if you looked carefully",
+             "correct": False,
+             "why": "That is thicker than a hair. Dividing 10 mm by forty "
+                    "million gives something ten million times smaller"},
+            {"text": "About 0.0000003 mm",
+             "correct": True},
+            {"text": "About 0.003 mm",
+             "correct": False,
+             "why": "That is around the size of a small cell. You are still "
+                    "several thousand times too big"},
+            {"text": "About 0.03 mm",
+             "correct": False,
+             "why": "That is about half the width of a hair, and a school "
+                    "microscope would show it easily. An atom would not"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-h07",
+        "band": "harder",
+        "text": "A reaction is sealed in a flask and weighed before and "
+                "after. Which of Dalton's claims is that experiment actually "
+                "testing?",
+        "options": [
+            {"text": "That all the atoms of one element are alike, since "
+                     "otherwise the masses would not agree so neatly",
+             "correct": False,
+             "why": "A balance reads a total. It would read the same total "
+                    "whether the atoms in it were alike or not"},
+            {"text": "That elements combine in simple whole-number ratios",
+             "correct": False,
+             "why": "The balance never sees the ratio. It only sees the "
+                    "total, before and after"},
+            {"text": "That atoms are neither created nor destroyed",
+             "correct": True},
+            {"text": "That atoms cannot be split into anything smaller",
+             "correct": False,
+             "why": "Splitting an atom would not change the total mass on the "
+                    "balance by anything you could weigh"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-h08",
+        "band": "harder",
+        "text": "Which result, if anyone ever obtained it, would break "
+                "Dalton's model as chemists actually use it today?",
+        "options": [
+            {"text": "A machine that splits an atom into smaller pieces than "
+                     "anyone had managed to produce before",
+             "correct": False,
+             "why": "That has already been done, and the model survived it. "
+                    "Splitting an atom is not a chemical change"},
+            {"text": "A finding that atoms of one element can have different "
+                     "masses from each other",
+             "correct": False,
+             "why": "Also already found, and also outside chemistry's range. "
+                    "The model was given a boundary rather than dropped"},
+            {"text": "The discovery of a new element that nobody had listed "
+                     "before",
+             "correct": False,
+             "why": "New elements have been added for two centuries without "
+                    "troubling the model at all"},
+            {"text": "A chemical reaction that turned copper into gold",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-01-h09",
+        "band": "harder",
+        "text": "Atoms of one element really can have different masses, which "
+                "Dalton denied. Why does that not wreck the chemistry he used "
+                "the claim for?",
+        "options": [
+            {"text": "Because those atoms still cannot change kind, so "
+                     "reactions still balance and proportions still hold",
+             "correct": True},
+            {"text": "Because the difference is far too small for any balance "
+                     "in any laboratory anywhere to detect it",
+             "correct": False,
+             "why": "The difference is easily measurable. It survives for a "
+                    "better reason than being invisible"},
+            {"text": "Because chemists agreed to ignore it so that the older "
+                     "model would not have to be rewritten",
+             "correct": False,
+             "why": "Nothing was ignored. The model was given a boundary, "
+                    "which is a different thing from looking away"},
+            {"text": "Because the atoms with the odd masses are all "
+                     "radioactive and are never met in a school laboratory",
+             "correct": False,
+             "why": "Most are perfectly ordinary. Chlorine in the lab is a "
+                    "mixture of two masses and behaves exactly as expected"},
+        ],
+        "figure": None,
+    },
 ]

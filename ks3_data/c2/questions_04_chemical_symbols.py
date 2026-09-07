@@ -368,4 +368,380 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c2-04-e05",
+        "band": "easier",
+        "text": "What is a chemical symbol?",
+        "options": [
+            {"text": "The short set of letters and numbers that says which "
+                     "elements are in a substance and how many of each",
+             "correct": False,
+             "why": "That is a formula. A formula is built out of symbols, "
+                    "but it is not one"},
+            {"text": "The number that says where an element sits on the "
+                     "periodic table",
+             "correct": False,
+             "why": "That is its number, not its symbol. The symbol is the "
+                    "letters"},
+            {"text": "A shortened version of an element's English name",
+             "correct": False,
+             "why": "Sometimes it looks like that, and Fe, Na, Pb, Au and Cu "
+                    "show it is not the rule"},
+            {"text": "The one or two letters that stand for an element",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-e06",
+        "band": "easier",
+        "text": "A chemical symbol has two letters. What must be true of the "
+                "second one?",
+        "options": [
+            {"text": "It must be lower case",
+             "correct": True},
+            {"text": "It must be a capital, so that the symbol is easy to "
+                     "pick out in the middle of a long formula",
+             "correct": False,
+             "why": "A capital always starts a NEW element, so a second "
+                    "capital would split the symbol into two"},
+            {"text": "It must be the second letter of the element's name",
+             "correct": False,
+             "why": "Chlorine is Cl and magnesium is Mg — both use the first "
+                    "letter and the third. The rule is looser than that"},
+            {"text": "It must be a vowel",
+             "correct": False,
+             "why": "Mg, Cl and Zn all have a consonant there. Nothing about "
+                    "the rule mentions vowels"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-e07",
+        "band": "easier",
+        "text": "Which of these is the correct symbol for sodium?",
+        "options": [
+            {"text": "So",
+             "correct": False,
+             "why": "That is the name shortened, which is exactly what a "
+                    "symbol need not be. Sodium's comes from natrium"},
+            {"text": "Na",
+             "correct": True},
+            {"text": "NA",
+             "correct": False,
+             "why": "Two capitals means two elements. This says nitrogen "
+                    "followed by something starting with A"},
+            {"text": "Sd",
+             "correct": False,
+             "why": "Invented from the English name. No element has this "
+                    "symbol"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-e08",
+        "band": "easier",
+        "text": "Gold's symbol is Au. Where do those letters come from?",
+        "options": [
+            {"text": "From the first and last letters of the English name, a "
+                     "rule used whenever the first two are already taken",
+             "correct": False,
+             "why": "There is no such rule, and gold has neither an a nor a u "
+                    "in it. Au comes from a different language"},
+            {"text": "From the name of the chemist who first purified it",
+             "correct": False,
+             "why": "No symbol is taken from a person's name in this way. "
+                    "The odd-looking ones are Latin"},
+            {"text": "From aurum, an older name for gold",
+             "correct": True},
+            {"text": "From the Australian mines where most of it was found",
+             "correct": False,
+             "why": "Gold has been worked for thousands of years, long "
+                    "before those mines. The letters are Latin"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-e09",
+        "band": "easier",
+        "text": "What is a formula?",
+        "options": [
+            {"text": "The one or two letters that stand for a single element",
+             "correct": False,
+             "why": "That is a symbol. A formula is what you get when symbols "
+                    "and numbers are written together"},
+            {"text": "The list of every element a substance could be broken "
+                     "down into",
+             "correct": False,
+             "why": "A formula gives counts as well as names, and the order "
+                    "is not the table's"},
+            {"text": "The recipe for making a substance in a laboratory",
+             "correct": False,
+             "why": "A formula says what the substance IS, not how to make "
+                    "it"},
+            {"text": "Symbols written together, saying which elements are in "
+                     "a substance and how many atoms of each",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c2-04-s05",
+        "band": "standard",
+        "text": "A student says a symbol is simply the element's English name "
+                "shortened. Which pair of symbols shows that is wrong?",
+        "options": [
+            {"text": "Mg and Cl, because neither of them uses the first two "
+                     "letters of the name it belongs to",
+             "correct": False,
+             "why": "Both are still taken from the English name, just not "
+                    "from its first two letters. Something stronger is "
+                    "needed"},
+            {"text": "H and C",
+             "correct": False,
+             "why": "Both are exactly the first letter of the English name, "
+                    "so they support the student rather than refuting them"},
+            {"text": "Ca and Cl",
+             "correct": False,
+             "why": "Both come from the English names calcium and chlorine. "
+                    "Neither is a counter-example"},
+            {"text": "Fe and Na",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-s06",
+        "band": "standard",
+        "text": "Four students write the formula of magnesium oxide. Which "
+                "one has written it correctly?",
+        "options": [
+            {"text": "MgO",
+             "correct": True},
+            {"text": "MGO",
+             "correct": False,
+             "why": "Three capitals, so three elements. It says magnesium is "
+                    "not there at all and names something beginning with G "
+                    "instead"},
+            {"text": "mgo",
+             "correct": False,
+             "why": "No capital at all, so nothing starts an element. The "
+                    "case is not decoration"},
+            {"text": "Mgo",
+             "correct": False,
+             "why": "One capital, so one element — and Mgo is not an element. "
+                    "The oxygen has been swallowed by the magnesium"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-s07",
+        "band": "standard",
+        "text": "No two elements are allowed to share a symbol. Why does that "
+                "matter so much?",
+        "options": [
+            {"text": "Because the periodic table is arranged in alphabetical "
+                     "order of symbol",
+             "correct": False,
+             "why": "The table is not in alphabetical order at all. The "
+                    "reason is about reading formulae, not about the "
+                    "layout"},
+            {"text": "Because a formula has to name exactly one substance, "
+                     "whoever reads it and whatever language they speak",
+             "correct": True},
+            {"text": "Because there are only enough letters for about a "
+                     "hundred elements",
+             "correct": False,
+             "why": "Two letters give hundreds of combinations. Running out "
+                    "is not the problem"},
+            {"text": "Because chemists would otherwise argue about who chose "
+                     "it first",
+             "correct": False,
+             "why": "The reason is practical rather than about credit: a "
+                    "shared symbol would make a formula ambiguous"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-s08",
+        "band": "standard",
+        "text": "A packet of baking soda gives its contents as NaHCO₃. How "
+                "many different elements does that name?",
+        "options": [
+            {"text": "Three, because the lower-case letters and the small "
+                     "number are all part of the symbols in front of them",
+             "correct": False,
+             "why": "The lower-case a does belong to the N, but H and C and O "
+                    "are three more capitals. Count the capitals and you get "
+                    "four"},
+            {"text": "Five, counting the small 3 as one more",
+             "correct": False,
+             "why": "The 3 is a count of oxygen atoms, not an element. Only "
+                    "capital letters start elements"},
+            {"text": "Four",
+             "correct": True},
+            {"text": "Six, one for every letter and number written down",
+             "correct": False,
+             "why": "Lower-case letters belong to the capital in front of "
+                    "them, and numbers are counts"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-s09",
+        "band": "standard",
+        "text": "In a formula, which part tells you how many ATOMS there are "
+                "rather than how many elements?",
+        "options": [
+            {"text": "The capital letters, since one capital always stands "
+                     "for one atom of the element it begins",
+             "correct": False,
+             "why": "A capital counts elements, not atoms. One capital can "
+                    "have any small number after it"},
+            {"text": "The lower-case letters",
+             "correct": False,
+             "why": "A lower-case letter is part of a symbol. It counts "
+                    "nothing at all"},
+            {"text": "The order the symbols are written in",
+             "correct": False,
+             "why": "The order says nothing about how many. It is a "
+                    "convention about how the formula is set out"},
+            {"text": "The small numbers",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c2-04-h05",
+        "band": "harder",
+        "text": "A table in a book you cannot read lists CoO. Reading only "
+                "the letters, what does it name?",
+        "options": [
+            {"text": "Carbon and two oxygens, because the lower-case o counts "
+                     "a second oxygen atom after the capital one",
+             "correct": False,
+             "why": "A lower-case letter is never a count. It belongs to the "
+                    "capital in front of it, making Co"},
+            {"text": "Carbon and oxygen",
+             "correct": False,
+             "why": "Carbon on its own is C. The lower-case o joins it into "
+                    "Co, which is cobalt"},
+            {"text": "Three elements, one for each letter",
+             "correct": False,
+             "why": "Only capitals start elements, and there are two of "
+                    "them"},
+            {"text": "Cobalt and oxygen",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-h06",
+        "band": "harder",
+        "text": "A new element needs a symbol and Fe, Nh and N are all "
+                "already taken. Which proposal obeys the rule and is still "
+                "free?",
+        "options": [
+            {"text": "Nq",
+             "correct": True},
+            {"text": "nh, which uses letters nobody has claimed in that order "
+                     "and is easy to tell apart from Nh at a glance",
+             "correct": False,
+             "why": "The first letter must be a capital. Lower case at the "
+                    "start starts no element at all"},
+            {"text": "NH",
+             "correct": False,
+             "why": "Two capitals, so this reads as two elements — nitrogen "
+                    "and hydrogen — rather than one new one"},
+            {"text": "Fe",
+             "correct": False,
+             "why": "Already iron's. No two elements may share a symbol, "
+                    "which is the whole point of the system"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-h07",
+        "band": "harder",
+        "text": "Sodium's compounds have been called soda for centuries, and "
+                "its symbol is Na. What connects those two facts?",
+        "options": [
+            {"text": "Both come from the English word sodium, which was "
+                     "shortened one way for the symbol and another way for "
+                     "the everyday name",
+             "correct": False,
+             "why": "Neither comes from the English name. Soda and Na are "
+                    "both older than it"},
+            {"text": "Both come from natrium, an older name for the element",
+             "correct": True},
+            {"text": "Soda is a compound of sodium, so it took the first two "
+                     "letters of the symbol",
+             "correct": False,
+             "why": "The word came first and the symbol was chosen to match "
+                    "it, both from the same older name"},
+            {"text": "It is a coincidence — the letters happen to line up",
+             "correct": False,
+             "why": "The shared root natrium is exactly why they line up. "
+                    "Nothing here is accidental"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-h08",
+        "band": "harder",
+        "text": "A student proposes writing cobalt as Cob and carbon "
+                "monoxide as CarMon, arguing that it would be clearer. What "
+                "does the real notation do that theirs could not?",
+        "options": [
+            {"text": "It would take up less room on a page, which matters "
+                     "when a long formula has to be fitted into a table or "
+                     "onto a label",
+             "correct": False,
+             "why": "Being shorter is a convenience. It is not the reason the "
+                    "one- or two-letter rule exists"},
+            {"text": "It makes every symbol match its English name exactly",
+             "correct": False,
+             "why": "The opposite: several symbols come from Latin and do not "
+                    "match the English name at all"},
+            {"text": "It lets symbols be strung into a formula that can be "
+                     "read apart again, because a capital always starts a new "
+                     "element",
+             "correct": True},
+            {"text": "It stops two elements being confused with each other",
+             "correct": False,
+             "why": "Cob and CarMon would be distinguishable too. What they "
+                    "could not do is be strung together and read back"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-04-h09",
+        "band": "harder",
+        "text": "How many atoms altogether are there in one particle of "
+                "NaHCO₃?",
+        "options": [
+            {"text": "Four, one for each of the different elements the "
+                     "formula names between its capital letters",
+             "correct": False,
+             "why": "Four is the number of ELEMENTS. The small 3 means three "
+                    "oxygen atoms rather than one"},
+            {"text": "Seven, counting the lower-case a as an atom of its own",
+             "correct": False,
+             "why": "The a belongs to the N, making sodium. It counts "
+                    "nothing"},
+            {"text": "Three, because only the small number counts atoms",
+             "correct": False,
+             "why": "A symbol with no number after it already means one atom. "
+                    "Na, H and C are one each"},
+            {"text": "Six",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

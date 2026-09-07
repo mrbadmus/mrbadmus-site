@@ -396,13 +396,13 @@ QUESTIONS = [
         "text": "The bench says the particles in a solid vibrate. What does "
                 "vibrate mean?",
         "options": [
-            {"text": "To move quickly back and forth about a fixed position.",
-             "correct": True},
             {"text": "To travel slowly from one side of the substance to the "
                      "other.",
              "correct": False,
              "why": "That is travelling, not vibrating. A vibrating particle "
                     "always comes back to the same place."},
+            {"text": "To move quickly back and forth about a fixed position.",
+             "correct": True},
             {"text": "To get slightly larger and then smaller again.",
              "correct": False,
              "why": "Particles never change size. Vibrating is about movement "
@@ -425,13 +425,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Temperature has nothing to do with it. A gas can be as "
                     "cold as you like and still be a gas."},
-            {"text": "Gas is a state of matter; air is one particular mixture "
-                     "of gases.",
-             "correct": True},
             {"text": "Gas is what you burn; air is what you breathe.",
              "correct": False,
              "why": "That is one use of one gas. Helium and steam are gases "
                     "and neither is a fuel."},
+            {"text": "Gas is a state of matter; air is one particular mixture "
+                     "of gases.",
+             "correct": True},
             {"text": "Gas is invisible; air can be seen when it moves.",
              "correct": False,
              "why": "You cannot see air moving either — you see what it "
@@ -453,12 +453,12 @@ QUESTIONS = [
              "correct": False,
              "why": "A liquid's particles are jumbled and moving, but they "
                     "are touching — not far apart."},
-            {"text": "Gas",
-             "correct": True},
             {"text": "All three, at different speeds",
              "correct": False,
              "why": "Only a gas has its particles far apart. That spacing is "
                     "exactly what makes it a gas rather than a liquid."},
+            {"text": "Gas",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -497,6 +497,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Glass is a single awkward material, not a state, and "
                     "there is very little of it in the universe."},
+            {"text": "Plasma",
+             "correct": True},
             {"text": "Liquid crystal",
              "correct": False,
              "why": "Liquid crystals are a curiosity of a few materials, "
@@ -506,8 +508,6 @@ QUESTIONS = [
              "correct": False,
              "why": "Ice is water in the solid state. It is one substance, "
                     "not a fourth state."},
-            {"text": "Plasma",
-             "correct": True},
         ],
         "figure": None,
     },
@@ -520,14 +520,14 @@ QUESTIONS = [
                 "particles are lighter than the particles in the water below. "
                 "What is wrong with that?",
         "options": [
-            {"text": "The particles are identical — the same substance in a "
-                     "different state, spread far further apart.",
-             "correct": True},
             {"text": "Nothing is wrong; heating a particle does make it "
                      "lighter.",
              "correct": False,
              "why": "Heating changes how fast a particle moves and nothing "
                     "else. Its mass and size are untouched."},
+            {"text": "The particles are identical — the same substance in a "
+                     "different state, spread far further apart.",
+             "correct": True},
             {"text": "Steam does not rise at all — it only looks as though it "
                      "does.",
              "correct": False,
@@ -552,14 +552,14 @@ QUESTIONS = [
              "correct": False,
              "why": "Same substance, same particles, same size. Melting ice "
                     "does not shrink anything."},
-            {"text": "Because a liquid's particles are jumbled and can slide "
-                     "past each other; a solid's are locked in a pattern.",
-             "correct": True},
             {"text": "Because a liquid is lighter than a solid, so gravity "
                      "moves it more easily.",
              "correct": False,
              "why": "Mercury is a liquid and far heavier than most solids, "
                     "and it still pours. Weight is not what decides it."},
+            {"text": "Because a liquid's particles are jumbled and can slide "
+                     "past each other; a solid's are locked in a pattern.",
+             "correct": True},
             {"text": "Because a liquid has gaps between its particles and a "
                      "solid does not.",
              "correct": False,
@@ -583,12 +583,12 @@ QUESTIONS = [
              "correct": False,
              "why": "Heating is exactly what speeds particles up, so this has "
                     "certainly changed."},
-            {"text": "The size of each particle",
-             "correct": True},
             {"text": "The volume the substance takes up",
              "correct": False,
              "why": "Steam fills a room where the water filled a beaker. The "
                     "volume changes enormously."},
+            {"text": "The size of each particle",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -599,6 +599,9 @@ QUESTIONS = [
                 "of particles — one as a liquid, one as a gas. Which box is "
                 "heavier?",
         "options": [
+            {"text": "Neither — identical particles, and the same number of "
+                     "them.",
+             "correct": True},
             {"text": "The liquid one, because a liquid is denser.",
              "correct": False,
              "why": "Denser means the same mass packed into less room. With "
@@ -612,9 +615,6 @@ QUESTIONS = [
              "correct": False,
              "why": "Empty space has no mass, so it takes nothing away. The "
                     "same particles are in both boxes."},
-            {"text": "Neither — identical particles, and the same number of "
-                     "them.",
-             "correct": True},
         ],
         "figure": None,
     },
@@ -624,14 +624,14 @@ QUESTIONS = [
         "text": "You can stand on a frozen pond but not on the water "
                 "underneath it. Which fact from the table explains that?",
         "options": [
-            {"text": "A solid's particles are held in fixed positions in a "
-                     "regular pattern, so it keeps its own shape.",
-             "correct": True},
             {"text": "A solid's particles are heavier, so they can carry more "
                      "weight.",
              "correct": False,
              "why": "Ice and water are the same particles. Nothing has got "
                     "heavier by freezing."},
+            {"text": "A solid's particles are held in fixed positions in a "
+                     "regular pattern, so it keeps its own shape.",
+             "correct": True},
             {"text": "A solid has no gaps at all, while a liquid does.",
              "correct": False,
              "why": "Neither has space to spare — that is why neither "
@@ -718,15 +718,15 @@ QUESTIONS = [
              "correct": False,
              "why": "A state is not a substance. Ice, water and steam are one "
                     "substance in three states."},
-            {"text": "That its particles are arranged and move in a way none "
-                     "of the three known states does.",
-             "correct": True},
             {"text": "That it cannot be turned into a solid, a liquid or a "
                      "gas.",
              "correct": False,
              "why": "Many substances move freely between the states, and "
                     "plasma comes from heating a gas. Being reachable does "
                     "not disqualify a state."},
+            {"text": "That its particles are arranged and move in a way none "
+                     "of the three known states does.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -737,14 +737,14 @@ QUESTIONS = [
                 "yet both are metals made of particles. What must be different "
                 "about them?",
         "options": [
+            {"text": "Mercury's particles hold each other less strongly, so "
+                     "room temperature is enough for them to slide.",
+             "correct": True},
             {"text": "Mercury's particles must be far smaller than iron's, so "
                      "they slide past each other more easily.",
              "correct": False,
              "why": "Size is not what sets a state — a substance keeps the "
                     "same particles in all three of them."},
-            {"text": "Mercury's particles hold each other less strongly, so "
-                     "room temperature is enough for them to slide.",
-             "correct": True},
             {"text": "Mercury's particles are moving and iron's are "
                      "completely still.",
              "correct": False,
@@ -767,15 +767,15 @@ QUESTIONS = [
                 "shrinking every particle, and leaving them touching. Name the "
                 "two things the drawing gets wrong.",
         "options": [
-            {"text": "The particles should be the same size as before, and "
-                     "far apart rather than touching.",
-             "correct": True},
             {"text": "The particles should be larger than before, and still "
                      "touching.",
              "correct": False,
              "why": "Half right at best. Particles never change size in "
                     "either direction, and a gas's are certainly not "
                     "touching."},
+            {"text": "The particles should be the same size as before, and "
+                     "far apart rather than touching.",
+             "correct": True},
             {"text": "The particles should be the same size as before, and "
                      "arranged in neat regular rows.",
              "correct": False,

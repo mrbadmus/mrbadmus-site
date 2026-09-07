@@ -401,4 +401,415 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c2-02-e05",
+        "band": "easier",
+        "text": "What is a mixture?",
+        "options": [
+            {"text": "Two or more elements that have been joined together in "
+                     "one fixed proportion by a reaction",
+             "correct": False,
+             "why": "That is a compound. The giveaway is the fixed "
+                    "proportion — a mixture can be any proportion you like"},
+            {"text": "Two or more substances in the same place, not "
+                     "chemically joined",
+             "correct": True},
+            {"text": "A substance made of one kind of atom that has been "
+                     "ground up finely",
+             "correct": False,
+             "why": "Grinding an element leaves you with the element. A "
+                    "mixture needs more than one substance in it"},
+            {"text": "Anything that is not pure enough to have its own entry "
+                     "on the periodic table",
+             "correct": False,
+             "why": "Compounds have no entry either, and they are not "
+                    "mixtures. The test is whether anything is joined"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-e06",
+        "band": "easier",
+        "text": "What does the word metal describe?",
+        "options": [
+            {"text": "A substance that appears on the periodic table and "
+                     "cannot be broken down",
+             "correct": False,
+             "why": "That describes an element. Brass behaves as a metal and "
+                    "has no entry at all"},
+            {"text": "A substance made of only one kind of atom",
+             "correct": False,
+             "why": "That is an element. Metal is how a substance behaves; "
+                    "element is what it is made of"},
+            {"text": "A substance that is shiny when freshly cut, conducts "
+                     "electricity, and can be bent or hammered",
+             "correct": True},
+            {"text": "Any substance that has been dug out of the ground",
+             "correct": False,
+             "why": "Coal and chalk are dug up and neither is a metal. Where "
+                    "it came from is not the test"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-e07",
+        "band": "easier",
+        "text": "Brass is checked against the periodic table and no entry is "
+                "found. What does that tell you?",
+        "options": [
+            {"text": "That brass is too rare a substance for the table to "
+                     "have got round to listing it yet",
+             "correct": False,
+             "why": "Brass is everywhere. The table lists elements, and brass "
+                    "is not one"},
+            {"text": "That brass has not yet been broken down, so nobody "
+                     "knows what is in it",
+             "correct": False,
+             "why": "Everyone knows what is in it — copper and zinc. That is "
+                    "exactly why it has no entry"},
+            {"text": "That brass is a compound rather than a mixture",
+             "correct": False,
+             "why": "Compounds have no entry either, so a missing entry "
+                    "cannot tell the two apart. Brass is in fact a mixture"},
+            {"text": "That brass is not an element",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-e08",
+        "band": "easier",
+        "text": "The key note says one thing proves nothing about whether a "
+                "substance is an element. What is it?",
+        "options": [
+            {"text": "What it looks like",
+             "correct": True},
+            {"text": "Whether anything simpler can be got out of it by "
+                     "heating, electrolysis or acid",
+             "correct": False,
+             "why": "That is the one test that settles it, so it proves a "
+                    "great deal rather than nothing"},
+            {"text": "Whether it has its own entry on the periodic table",
+             "correct": False,
+             "why": "The table gives the answer straight away. It is looking "
+                    "it up rather than finding it out, but it is not "
+                    "useless"},
+            {"text": "What its atoms are",
+             "correct": False,
+             "why": "One kind of atom is the whole definition of an element. "
+                    "Nothing settles it more completely"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-e09",
+        "band": "easier",
+        "text": "Ninety-nine per cent of your body is made of just six "
+                "elements. Which two of them are almost all present as "
+                "water?",
+        "options": [
+            {"text": "Carbon and hydrogen, the two elements that every food "
+                     "you eat is largely built out of",
+             "correct": False,
+             "why": "Carbon is in the six and is not in water at all. Water "
+                    "is hydrogen and oxygen"},
+            {"text": "Oxygen and hydrogen",
+             "correct": True},
+            {"text": "Calcium and phosphorus",
+             "correct": False,
+             "why": "Both are in the six and both are locked mostly in your "
+                    "bones. Neither is part of water"},
+            {"text": "Oxygen and carbon",
+             "correct": False,
+             "why": "Both are in the six, and together they make up most of "
+                    "your mass — but carbon is not in water"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c2-02-s05",
+        "band": "standard",
+        "text": "You have eight tests for six samples. Which spend is the "
+                "best use of them?",
+        "options": [
+            {"text": "Look closely at all six, then use the last two tests on "
+                     "the ones still unclear",
+             "correct": False,
+             "why": "Looking settles nothing on any of the six. Six of the "
+                    "eight tests would have bought you no information"},
+            {"text": "Try to break down each of the six, and use the two "
+                     "spare tests wherever the result is unclear",
+             "correct": True},
+            {"text": "Test all six for conducting electricity, then look up "
+                     "the two that conduct",
+             "correct": False,
+             "why": "Conducting is shared by copper, brass, steel and salt "
+                    "water, so it separates nothing. Two of those are not "
+                    "elements"},
+            {"text": "Look up all six on the periodic table and spend the "
+                     "other two tests looking at them",
+             "correct": False,
+             "why": "Looking up works, but it answers by lookup rather than "
+                    "by evidence — and the two spare tests are then wasted "
+                    "on looking"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-s06",
+        "band": "standard",
+        "text": "Pure water barely conducts electricity, but tap water does. "
+                "What does that difference tell you?",
+        "options": [
+            {"text": "That water is an element when pure and a mixture when "
+                     "it comes out of a tap somewhere in a building",
+             "correct": False,
+             "why": "Water is a compound in both cases. What changes is what "
+                    "else is in the jug with it"},
+            {"text": "That conducting electricity is a good test for being an "
+                     "element",
+             "correct": False,
+             "why": "It is a poor test. It fails on copper and brass alike, "
+                    "and here it fails on two samples of the same compound"},
+            {"text": "That tap water has substances dissolved in it, so it is "
+                     "a mixture",
+             "correct": True},
+            {"text": "That pure water contains no ions and therefore no atoms "
+                     "at all",
+             "correct": False,
+             "why": "Pure water is made of atoms like everything else. What "
+                    "it lacks is dissolved substances"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-s07",
+        "band": "standard",
+        "text": "A silvery solid is heated strongly, treated with acid and "
+                "electrolysed, and nothing simpler ever comes out of it. What "
+                "can you now say?",
+        "options": [
+            {"text": "That it is a metal, since only metals survive all three "
+                     "of those treatments without being changed",
+             "correct": False,
+             "why": "Sulfur survives plenty and is not a metal, and many "
+                    "metals react readily with acid. The result is not about "
+                    "being a metal"},
+            {"text": "That it is definitely an element, and no future method "
+                     "could ever change that",
+             "correct": False,
+             "why": "Soda was called an element until electricity took it "
+                    "apart. A verdict is as good as the methods behind it"},
+            {"text": "That it is a compound whose parts are held together "
+                     "unusually strongly",
+             "correct": False,
+             "why": "Nothing here points that way. The evidence is that "
+                    "nothing simpler came out"},
+            {"text": "That it is an element, as far as those methods can "
+                     "show",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-s08",
+        "band": "standard",
+        "text": "Brass is 70% copper in one sample and 60% in another, and "
+                "both are sold as brass. Which conclusion follows?",
+        "options": [
+            {"text": "That brass is a mixture, because its proportions can be "
+                     "varied",
+             "correct": True},
+            {"text": "That one of the two samples has been made badly and is "
+                     "not really brass at all, whatever the label says",
+             "correct": False,
+             "why": "Both are brass. Being able to choose the recipe is the "
+                    "point, not a fault in the manufacture"},
+            {"text": "That brass is a compound with two different formulae",
+             "correct": False,
+             "why": "A compound has one fixed proportion and one formula. Two "
+                    "recipes rules a compound out"},
+            {"text": "That brass is an element that comes in two grades",
+             "correct": False,
+             "why": "An element is one kind of atom, and brass holds two. "
+                    "Grades of anything are a sign of a mixture"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-s09",
+        "band": "standard",
+        "text": "Bright yellow sulfur powder conducts nothing at all, snaps "
+                "rather than bending, and looks nothing like a metal. Is it an "
+                "element?",
+        "options": [
+            {"text": "No — an element has to conduct electricity, and this "
+                     "one does not conduct at all",
+             "correct": False,
+             "why": "Conducting is a property of metals, and most elements "
+                    "are not metals. It has nothing to do with the "
+                    "definition"},
+            {"text": "Yes — nothing simpler can be got out of it, and that is "
+                     "the whole test",
+             "correct": True},
+            {"text": "No — a powder is made of separate grains, so it must be "
+                     "a mixture of something",
+             "correct": False,
+             "why": "Grinding an element gives grains of that element. Being "
+                    "a powder says nothing about what it is made of"},
+            {"text": "It cannot be decided without knowing where the sample "
+                     "came from originally",
+             "correct": False,
+             "why": "Where it came from is never the test. Several elements "
+                    "are made artificially and are still elements"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c2-02-h05",
+        "band": "harder",
+        "text": "Before electricity was available, chemists listed soda as an "
+                "element. Electrolysis then split it. Were they wrong to have "
+                "listed it?",
+        "options": [
+            {"text": "Yes — they should have waited until every method had "
+                     "been invented",
+             "correct": False,
+             "why": "No list could ever be published on that rule, because "
+                    "there is always another method to come"},
+            {"text": "No — they reported what their methods could show, and a "
+                     "new method moved it off the list",
+             "correct": True},
+            {"text": "Yes — soda is obviously a compound, and careful work "
+                     "would have shown it",
+             "correct": False,
+             "why": "Nothing available to them could take it apart. It was "
+                    "not carelessness but the limit of the technique"},
+            {"text": "No — soda really was an element then and became a "
+                     "compound later",
+             "correct": False,
+             "why": "The substance never changed. What changed was what could "
+                    "be found out about it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-h06",
+        "band": "harder",
+        "text": "Steel conducts, is shiny and can be hammered flat, and it "
+                "has no entry on the periodic table. Iron has an entry and "
+                "does all three too. What separates them?",
+        "options": [
+            {"text": "Iron is magnetic and steel is not, which is the "
+                     "property that decides whether something is an element",
+             "correct": False,
+             "why": "Most steel is magnetic, and being magnetic is not part "
+                    "of the definition of an element in any case"},
+            {"text": "Steel is harder than iron, and hardness is what the "
+                     "table records",
+             "correct": False,
+             "why": "The table records elements, not hardness. Diamond is "
+                    "harder than any metal and carbon still has one entry"},
+            {"text": "Steel has carbon added, in an amount the steelmaker "
+                     "chooses, so it is more than one kind of atom",
+             "correct": True},
+            {"text": "Steel is manufactured and iron is found in the ground",
+             "correct": False,
+             "why": "Iron has to be smelted out of its ore, so it is "
+                    "manufactured too. Origin is never the test"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-h07",
+        "band": "harder",
+        "text": "Every atom in your body except the hydrogen was made inside "
+                "a star. What does that tell you about the atoms you are made "
+                "of?",
+        "options": [
+            {"text": "That your atoms are steadily being replaced by newly "
+                     "made ones as you grow older and older",
+             "correct": False,
+             "why": "Atoms move between substances constantly, but no new "
+                    "ones are being made. There is no such thing as a fresh "
+                    "atom"},
+            {"text": "That your body must contain elements not found "
+                     "elsewhere on Earth",
+             "correct": False,
+             "why": "Every element in you is common on Earth. Being made in a "
+                    "star is true of the rock under your feet as well"},
+            {"text": "That living things can make their own atoms out of "
+                     "food",
+             "correct": False,
+             "why": "Food supplies atoms; nothing in biology makes one. "
+                    "Living things rearrange what they take in"},
+            {"text": "That they are extremely old, and were used by something "
+                     "else before they were used by you",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-h08",
+        "band": "harder",
+        "text": "Two samples both fail to break down under every test on the "
+                "bench. One is on the periodic table and the other is not "
+                "listed anywhere. What is the most likely explanation?",
+        "options": [
+            {"text": "The unlisted one is a compound so strongly joined that "
+                     "no method on this bench has been able to separate it",
+             "correct": True},
+            {"text": "The unlisted one is an element that nobody has "
+                     "discovered yet",
+             "correct": False,
+             "why": "Possible in principle, and far less likely. New elements "
+                    "are made one at a time in specialised laboratories"},
+            {"text": "The table must have an entry missing, since anything "
+                     "that refuses to break down is an element",
+             "correct": False,
+             "why": "That assumes the bench's tests are complete, which is "
+                    "exactly the assumption soda punished"},
+            {"text": "The unlisted one is a mixture whose parts happen to be "
+                     "identical",
+             "correct": False,
+             "why": "A mixture of identical substances is just that "
+                    "substance. There is nothing there to separate"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-02-h09",
+        "band": "harder",
+        "text": "Sodium fizzes across water and catches fire; gold sits in "
+                "acid unchanged. Both are elements. What does that pair show "
+                "about the definition?",
+        "options": [
+            {"text": "That reacting violently is a sign of an element, and "
+                     "gold must be an exception to a rule that usually "
+                     "holds",
+             "correct": False,
+             "why": "There is no such rule. Compounds react violently too, "
+                    "and plenty of elements do almost nothing"},
+            {"text": "That an element is defined by what it is made of, not "
+                     "by how strongly it reacts",
+             "correct": True},
+            {"text": "That the definition only works for metals that behave "
+                     "themselves",
+             "correct": False,
+             "why": "It works for every substance. Neither sodium's fizzing "
+                    "nor gold's stillness touches it"},
+            {"text": "That sodium is being broken down by the water, which is "
+                     "why the definition needs care here",
+             "correct": False,
+             "why": "The reaction builds something more complicated out of "
+                    "the sodium. Nothing simpler comes out of it"},
+        ],
+        "figure": None,
+    },
 ]

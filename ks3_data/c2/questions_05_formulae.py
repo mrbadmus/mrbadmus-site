@@ -378,4 +378,319 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c2-05-e05",
+        "band": "easier",
+        "text": "What is a molecule?",
+        "options": [
+            {"text": "A small group of atoms joined together, existing as a "
+                     "separate particle",
+             "correct": True},
+            {"text": "Any group of billions of atoms locked into one "
+                     "repeating stack that carries on in every direction",
+             "correct": False,
+             "why": "That is a giant structure, like salt. A molecule is "
+                    "small and separate"},
+            {"text": "The smallest particle of an element",
+             "correct": False,
+             "why": "That is an atom. A molecule is usually several atoms "
+                    "joined"},
+            {"text": "Any particle too small to be seen with a microscope",
+             "correct": False,
+             "why": "Atoms are too small to see and are not molecules. Size "
+                    "is not the definition"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e06",
+        "band": "easier",
+        "text": "What is a giant structure?",
+        "options": [
+            {"text": "A substance whose particles are unusually large and "
+                     "heavy",
+             "correct": False,
+             "why": "Nothing here is about a particle being large. There are "
+                    "no separate particles in it at all"},
+            {"text": "Billions of atoms locked into one repeating stack, with "
+                     "no separate particles in it",
+             "correct": True},
+            {"text": "A single very big molecule floating on its own",
+             "correct": False,
+             "why": "A giant structure is not one molecule. It is a stack "
+                    "with no separate pieces in it"},
+            {"text": "A pile of grains of a solid, each grain made of many "
+                     "particles",
+             "correct": False,
+             "why": "A pile of grains is a pile. The word describes what is "
+                    "inside ONE grain"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e07",
+        "band": "easier",
+        "text": "Which of these is made of separate molecules rather than a "
+                "giant structure?",
+        "options": [
+            {"text": "Table salt, NaCl, where every sodium is surrounded by "
+                     "chlorines and every chlorine by sodiums",
+             "correct": False,
+             "why": "That description is a giant structure. There is no "
+                    "particle in it holding one of each"},
+            {"text": "A grain of sand",
+             "correct": False,
+             "why": "Sand is a giant structure too — a repeating stack, not "
+                    "separate particles"},
+            {"text": "Carbon dioxide, CO₂",
+             "correct": True},
+            {"text": "A copper wire",
+             "correct": False,
+             "why": "Copper is a stack of atoms all the way through. Nothing "
+                    "in it is a separate particle"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e08",
+        "band": "easier",
+        "text": "What does the word ratio mean?",
+        "options": [
+            {"text": "The total number of atoms that a formula names when all "
+                     "its small numbers have been added up together",
+             "correct": False,
+             "why": "That is a total, not a ratio. A ratio compares two "
+                    "counts rather than adding them"},
+            {"text": "How much of a substance you have in grams",
+             "correct": False,
+             "why": "That is a mass. A ratio has no units and does not depend "
+                    "on how much you have"},
+            {"text": "The order in which the symbols are written",
+             "correct": False,
+             "why": "Order is a convention. A ratio is about numbers of "
+                    "atoms"},
+            {"text": "How many of one thing there are for every one of "
+                     "another",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c2-05-s05",
+        "band": "standard",
+        "text": "Ammonia has the formula NH₃. How many atoms are in one "
+                "particle, and how many different elements?",
+        "options": [
+            {"text": "Four atoms and two elements",
+             "correct": True},
+            {"text": "Three atoms and two elements, since the small 3 gives "
+                     "the total number of atoms in the whole particle",
+             "correct": False,
+             "why": "The 3 counts hydrogen atoms only. Add the nitrogen and "
+                    "the total is four"},
+            {"text": "Four atoms and four elements",
+             "correct": False,
+             "why": "Count the capitals for elements: N and H, so two. The "
+                    "hydrogens are three atoms of one element"},
+            {"text": "Two atoms and two elements",
+             "correct": False,
+             "why": "That ignores the small 3 altogether. It is a count of "
+                    "hydrogen atoms and has to be used"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s06",
+        "band": "standard",
+        "text": "Methane, the gas burnt in a cooker, is CH₄. Which statement "
+                "about the small 4 is right?",
+        "options": [
+            {"text": "It says there is four times as much methane as there "
+                     "would otherwise be",
+             "correct": False,
+             "why": "A small number never counts how much you have. It counts "
+                    "atoms inside one particle"},
+            {"text": "It counts the hydrogen atoms in one particle, and "
+                     "changing it would give a different substance",
+             "correct": True},
+            {"text": "It counts the atoms of both elements added together",
+             "correct": False,
+             "why": "A small number belongs to the symbol it follows. Only "
+                    "the hydrogens are counted by it"},
+            {"text": "It says the methane must be handled in fours",
+             "correct": False,
+             "why": "Nothing in a formula is an instruction. It is a "
+                    "description of one particle"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s07",
+        "band": "standard",
+        "text": "Sulfuric acid is H₂SO₄. A student says the S must really "
+                "have an invisible 1 after it. Are they right?",
+        "options": [
+            {"text": "No — a symbol with nothing after it can mean any number "
+                     "of atoms, and only the reaction settles which",
+             "correct": False,
+             "why": "It always means exactly one. Nothing about a reaction "
+                    "changes what a formula says"},
+            {"text": "Yes, and it should be written in, because leaving it "
+                     "out makes the formula ambiguous",
+             "correct": False,
+             "why": "The meaning is not ambiguous at all. Chemists agree that "
+                    "no number means one"},
+            {"text": "Yes about the meaning — it is one sulfur atom — but a 1 "
+                     "is never written",
+             "correct": True},
+            {"text": "No — a symbol with no number after it means the element "
+                     "is present in traces",
+             "correct": False,
+             "why": "There is no such thing as a trace in a formula. It means "
+                    "exactly one atom"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s08",
+        "band": "standard",
+        "text": "A grain of salt is ground into a fine powder. What happens "
+                "to its formula?",
+        "options": [
+            {"text": "It becomes Na₂Cl₂, because the grinding has broken the "
+                     "stack into pieces that hold two of each",
+             "correct": False,
+             "why": "Grinding breaks a grain into smaller grains, each still "
+                    "a stack. Nothing about the ratio changes"},
+            {"text": "It stops having one, because a powder is a mixture",
+             "correct": False,
+             "why": "Grinding does not mix anything. Every speck is still "
+                    "sodium chloride"},
+            {"text": "It gains a big number in front to show how many grains "
+                     "there are",
+             "correct": False,
+             "why": "A big number counts particles in an equation, not grains "
+                    "in a dish"},
+            {"text": "Nothing — it is still NaCl",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c2-05-h05",
+        "band": "harder",
+        "text": "Rust is Fe₂O₃. What is the ratio of iron atoms to oxygen "
+                "atoms, and does a bigger lump change it?",
+        "options": [
+            {"text": "Two iron to three oxygen, and a bigger lump does not "
+                     "change it",
+             "correct": True},
+            {"text": "Two iron to three oxygen in a small lump, and more "
+                     "oxygen in a large one because the outside has been "
+                     "exposed to the air for longer",
+             "correct": False,
+             "why": "The ratio is a property of the substance. Anything with "
+                    "a different ratio would be a different substance"},
+            {"text": "Three iron to two oxygen, unchanged by the size",
+             "correct": False,
+             "why": "The right idea about size, but the numbers are the wrong "
+                    "way round. The small number follows the symbol it "
+                    "counts"},
+            {"text": "Five to one, since there are five atoms in the formula",
+             "correct": False,
+             "why": "Five is the total number of atoms, not a ratio. A ratio "
+                    "compares the two counts"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h06",
+        "band": "harder",
+        "text": "A student says 2CO and CO₂ must be the same thing, because "
+                "each of them has a 2 and the letters C and O. What is "
+                "actually in each?",
+        "options": [
+            {"text": "2CO is one carbon and two oxygens; CO₂ is two carbons "
+                     "and one oxygen, so the two are the same atoms written "
+                     "in the opposite order",
+             "correct": False,
+             "why": "A big number in front multiplies the WHOLE formula, and "
+                    "a small number counts only the symbol before it"},
+            {"text": "2CO is two carbons and two oxygens in two particles; "
+                     "CO₂ is one carbon and two oxygens in one",
+             "correct": True},
+            {"text": "Both are two carbons and two oxygens, so the student is "
+                     "right",
+             "correct": False,
+             "why": "CO₂ has only one carbon. Doubling CO gives two of "
+                    "each"},
+            {"text": "2CO is a mixture of carbon and oxygen; CO₂ is a "
+                     "compound",
+             "correct": False,
+             "why": "Both are compounds. The big number counts particles of a "
+                    "compound, not a mixture"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h07",
+        "band": "harder",
+        "text": "Copper sulfate is CuSO₄. A student reads it as four "
+                "elements: copper, sulfur, oxygen and “four”. Correct them.",
+        "options": [
+            {"text": "Three elements and six atoms, since the 4 also counts "
+                     "the sulfur that is written immediately in front of it",
+             "correct": False,
+             "why": "A small number counts only the symbol directly before "
+                    "it, which is the O. There is one sulfur"},
+            {"text": "Four elements and six atoms, because the 4 is a count "
+                     "and a count is a fourth thing in the formula",
+             "correct": False,
+             "why": "A count is not an element. Only capital letters start "
+                    "elements, and there are three"},
+            {"text": "Three elements and six atoms — the 4 counts oxygen "
+                     "atoms",
+             "correct": True},
+            {"text": "Three elements and three atoms, because a formula names "
+                     "each element once",
+             "correct": False,
+             "why": "The small numbers have to be used. Three elements here "
+                    "come to six atoms"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h08",
+        "band": "harder",
+        "text": "Ethanol and dimethyl ether are both C₂H₆O, and they are "
+                "completely different substances — one is in beer and the "
+                "other is a gas. What does that show?",
+        "options": [
+            {"text": "That one of the two formulae must have been written "
+                     "down wrongly",
+             "correct": False,
+             "why": "Both are right. Sharing a formula is exactly what makes "
+                    "the pair worth knowing about"},
+            {"text": "That one of them must be a mixture rather than a "
+                     "compound",
+             "correct": False,
+             "why": "Both are compounds with a fixed formula. Neither is a "
+                    "mixture"},
+            {"text": "That the atoms must be different sizes in the two "
+                     "substances",
+             "correct": False,
+             "why": "A carbon atom is a carbon atom in both. What differs is "
+                    "which atom is joined to which"},
+            {"text": "That a formula does not fix a substance on its own — "
+                     "how the atoms are joined matters too",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

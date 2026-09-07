@@ -477,9 +477,6 @@ QUESTIONS = [
         "text": "The vocabulary says that in this unit the word particle means "
                 "something more exact. What does it mean?",
         "options": [
-            {"text": "Atoms or molecules — the names come properly in the "
-                     "next unit.",
-             "correct": True},
             {"text": "Any small piece of a substance, such as a grain of "
                      "sugar.",
              "correct": False,
@@ -495,6 +492,9 @@ QUESTIONS = [
              "why": "A drop that small still holds a huge number of "
                     "particles. Being invisible is not the same as being one "
                     "particle."},
+            {"text": "Atoms or molecules — the names come properly in the "
+                     "next unit.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -504,13 +504,13 @@ QUESTIONS = [
         "text": "Democritus gave the last piece — the one that cannot be cut "
                 "— a name. What did the name mean?",
         "options": [
+            {"text": "Uncuttable.",
+             "correct": True},
             {"text": "Invisible.",
              "correct": False,
              "why": "Being too small to see is true of a particle, but it is "
                     "not what he named it for. He named it for the cutting "
                     "stopping."},
-            {"text": "Uncuttable.",
-             "correct": True},
             {"text": "Unchanging.",
              "correct": False,
              "why": "That is a different claim. His point was that halving "
@@ -532,14 +532,14 @@ QUESTIONS = [
                 "because the knife had gone blunt. Which fact about the bench "
                 "deals with that best?",
         "options": [
+            {"text": "The knife has a perfect edge and never blunts, so "
+                     "nothing about it changed at the last cut.",
+             "correct": True},
             {"text": "The piece was already too small to see, so nobody could "
                      "check the edge.",
              "correct": False,
              "why": "Being unable to see it does not settle anything. What "
                     "settles it is that the knife is stated never to blunt."},
-            {"text": "The knife has a perfect edge and never blunts, so "
-                     "nothing about it changed at the last cut.",
-             "correct": True},
             {"text": "The sugar had turned into a liquid by then, and a "
                      "liquid cannot be cut cleanly by any blade.",
              "correct": False,
@@ -565,13 +565,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Nothing pulls them back apart. The closer packing is a "
                     "stable arrangement, not a temporary squeeze."},
+            {"text": "97 ml, exactly as it read the night before.",
+             "correct": True},
             {"text": "Below 97 ml, because more small particles keep dropping "
                      "into gaps.",
              "correct": False,
              "why": "The gaps that could be filled were filled as you poured. "
                     "The reading settles and then stays where it is."},
-            {"text": "97 ml, exactly as it read the night before.",
-             "correct": True},
             {"text": "Less than 50 ml, because the alcohol evaporates "
                      "overnight.",
              "correct": False,
@@ -599,15 +599,15 @@ QUESTIONS = [
              "correct": False,
              "why": "Filling the space cannot carry anything. It blocks "
                     "movement rather than helping it."},
+            {"text": "A moving particle would have nowhere to go, so a smell "
+                     "could never cross a still room — and it does.",
+             "correct": True},
             {"text": "The smell would reach you instantly, because the "
                      "filling already touches both ends of the room.",
              "correct": False,
              "why": "A smell is particles arriving, not a signal passing "
                     "along. Those particles have to travel, and packed space "
                     "leaves them nowhere to travel through."},
-            {"text": "A moving particle would have nowhere to go, so a smell "
-                     "could never cross a still room — and it does.",
-             "correct": True},
         ],
         "figure": None,
     },
@@ -624,9 +624,6 @@ QUESTIONS = [
              "why": "Continuous matter would have mass and take up space "
                     "too. An observation both ideas explain cannot choose "
                     "between them."},
-            {"text": "That air can be squashed into a fifth of the space it "
-                     "was in.",
-             "correct": True},
             {"text": "That a knife can cut a sugar cube in half.",
              "correct": False,
              "why": "Continuous matter would cut perfectly well. It is where "
@@ -635,6 +632,9 @@ QUESTIONS = [
              "correct": False,
              "why": "Both ideas allow different substances to be different. "
                     "This does not test either one."},
+            {"text": "That air can be squashed into a fifth of the space it "
+                     "was in.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -644,6 +644,9 @@ QUESTIONS = [
         "text": "A student objects that nobody has ever seen a particle, so "
                 "the model cannot be trusted. Which reply is strongest?",
         "options": [
+            {"text": "A model earns its place by explaining measurements, and "
+                     "the 97 ml reading is one of them.",
+             "correct": True},
             {"text": "Microscopes can see particles now, so the objection is "
                      "out of date.",
              "correct": False,
@@ -655,9 +658,6 @@ QUESTIONS = [
              "why": "That gives away the strongest point. The model is not "
                     "trusted blindly — it is trusted because measurements "
                     "keep coming out the way it predicts."},
-            {"text": "A model earns its place by explaining measurements, and "
-                     "the 97 ml reading is one of them.",
-             "correct": True},
             {"text": "It does not matter whether particles are real, as long "
                      "as the model keeps giving useful answers.",
              "correct": False,
@@ -711,14 +711,14 @@ QUESTIONS = [
              "why": "Large particles leave large gaps. It is the SIZE "
                     "DIFFERENCE that lets one liquid settle into the other, "
                     "and there is a big one here."},
+            {"text": "Under 100 ml, because the small water particles drop "
+                     "into the gaps between the large ones.",
+             "correct": True},
             {"text": "More than 100 ml, because the large particles need more "
                      "room once the two liquids are mixed.",
              "correct": False,
              "why": "Nothing grows on mixing. Each particle takes exactly the "
                     "room it always did, and the packing can only improve."},
-            {"text": "Under 100 ml, because the small water particles drop "
-                     "into the gaps between the large ones.",
-             "correct": True},
             {"text": "It cannot be predicted, because the model says nothing "
                      "about how big a particle is.",
              "correct": False,
@@ -738,14 +738,14 @@ QUESTIONS = [
              "correct": False,
              "why": "Weight is not what resists a squash. What resists it is "
                     "having no empty space left to remove."},
-            {"text": "Because the space would already be occupied, so there "
-                     "would be nothing left to remove.",
-             "correct": True},
             {"text": "Because the dust would block the pump before the air "
                      "could move.",
              "correct": False,
              "why": "This is not about a pump jamming. The claim is about the "
                     "gas itself: filled space cannot be shrunk."},
+            {"text": "Because the space would already be occupied, so there "
+                     "would be nothing left to remove.",
+             "correct": True},
             {"text": "Because dust would turn the air into a solid, and a "
                      "solid cannot be squashed at all.",
              "correct": False,
@@ -772,15 +772,15 @@ QUESTIONS = [
              "correct": False,
              "why": "No model is ever an exact copy, and this one is far past "
                     "guesswork — measurements have tested it."},
-            {"text": "A model can be relied on where it gives right answers, "
-                     "and still be expected to fail somewhere.",
-             "correct": True},
             {"text": "A model with limits explains less than one without, so "
                      "the aim should be a model with none at all.",
              "correct": False,
              "why": "There is no model without limits to aim for. Knowing "
                     "where the edges are is part of understanding a model, "
                     "not a defect in it."},
+            {"text": "A model can be relied on where it gives right answers, "
+                     "and still be expected to fail somewhere.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -792,15 +792,15 @@ QUESTIONS = [
                 "from a centimetre of sugar to one particle, what does that "
                 "number tell you?",
         "options": [
+            {"text": "That about 17 million particles lie along one "
+                     "centimetre of sugar.",
+             "correct": True},
             {"text": "That a sugar particle is about 17 million times heavier "
                      "than a sugar cube.",
              "correct": False,
              "why": "The wrong way round, and the wrong quantity. The cube is "
                     "the heavier one, and the count here is about how many "
                     "particles fit along a length."},
-            {"text": "That about 17 million particles lie along one "
-                     "centimetre of sugar.",
-             "correct": True},
             {"text": "That a sugar cube holds exactly 17 million particles "
                      "altogether.",
              "correct": False,

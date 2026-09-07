@@ -473,9 +473,6 @@ QUESTIONS = [
         "text": "According to the timeline, what did Thomson's model say an "
                 "atom was?",
         "options": [
-            {"text": "A ball of positive charge with tiny negative electrons "
-                     "dotted through it.",
-             "correct": True},
             {"text": "A solid sphere that cannot be split, created or "
                      "destroyed.",
              "correct": False,
@@ -490,6 +487,9 @@ QUESTIONS = [
              "correct": False,
              "why": "That is Democritus, two thousand years earlier, with no "
                     "experiment behind it."},
+            {"text": "A ball of positive charge with tiny negative electrons "
+                     "dotted through it.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -502,15 +502,15 @@ QUESTIONS = [
                 "theory instead, since a theory is allowed exceptions. Why "
                 "does that fix nothing?",
         "options": [
+            {"text": "Because a theory that predicts ice will sink has "
+                     "exactly the same problem as a model that does.",
+             "correct": True},
             {"text": "Because a theory is a much weaker kind of idea than a "
                      "model, so it would be a step backwards.",
              "correct": False,
              "why": "A theory is not weaker than a model. The trouble with "
                     "the swap is that it changes nothing about the "
                     "predictions."},
-            {"text": "Because a theory that predicts ice will sink has "
-                     "exactly the same problem as a model that does.",
-             "correct": True},
             {"text": "Because only physicists are allowed to use the word "
                      "theory.",
              "correct": False,
@@ -615,12 +615,12 @@ QUESTIONS = [
                 "wrong. What happened to the things he used that claim to "
                 "explain?",
         "options": [
+            {"text": "They are still explained the same way today.",
+             "correct": True},
             {"text": "They had to be explained all over again from nothing.",
              "correct": False,
              "why": "Nothing had to be started again. Conservation of mass is "
                     "explained today the way Dalton explained it."},
-            {"text": "They are still explained the same way today.",
-             "correct": True},
             {"text": "They turned out to be wrong as well, once the claim "
                      "fell.",
              "correct": False,
@@ -647,14 +647,14 @@ QUESTIONS = [
              "why": "Diamond, graphite and rubber are solids and all three "
                     "failures come from the same assumption. Shape and "
                     "joining reach all of them."},
+            {"text": "All three, because all three come from treating "
+                     "particles as identical featureless spheres.",
+             "correct": True},
             {"text": "Only diamond and graphite, since they are the same "
                      "element.",
              "correct": False,
              "why": "Being the same element makes that one vivid, but ice and "
                     "rubber fail for the same reason — featureless spheres."},
-            {"text": "All three, because all three come from treating "
-                     "particles as identical featureless spheres.",
-             "correct": True},
             {"text": "None of them, because once a model has failed a test it "
                      "cannot be repaired, only replaced.",
              "correct": False,
@@ -675,14 +675,14 @@ QUESTIONS = [
              "correct": False,
              "why": "That is the standard no model in science survives. It "
                     "would leave you unable to explain anything at all."},
-            {"text": "The failures trace to one assumption, and the "
-                     "gas-pressure explanation does not rest on it.",
-             "correct": True},
             {"text": "Gas pressure belongs to physics rather than chemistry, "
                      "so the two have nothing to do with each other.",
              "correct": False,
              "why": "They are the same model at work in both places. What "
                     "separates them is which assumption each one uses."},
+            {"text": "The failures trace to one assumption, and the "
+                     "gas-pressure explanation does not rest on it.",
+             "correct": True},
             {"text": "The ice failure is too small to matter.",
              "correct": False,
              "why": "It is not small — it is why lakes do not freeze solid. "
@@ -708,15 +708,15 @@ QUESTIONS = [
              "why": "Every model has limits, so that would be no test at "
                     "all. The test is whether it loses ground the old one "
                     "held."},
-            {"text": "No — a replacement must reproduce what the old model "
-                     "explained as well as fixing what broke it.",
-             "correct": True},
             {"text": "No — the particle model has been used for so long that "
                      "it cannot now be replaced.",
              "correct": False,
              "why": "Age protects nothing. The timeline shows four "
                     "replacements, each of a model that everyone had been "
                     "using."},
+            {"text": "No — a replacement must reproduce what the old model "
+                     "explained as well as fixing what broke it.",
+             "correct": True},
         ],
         "figure": None,
     },

@@ -381,12 +381,12 @@ QUESTIONS = [
              "correct": False,
              "why": "That is the everyday use of the word. In science it "
                     "means unpredictable, direction by direction"},
+            {"text": "With no pattern and no set direction",
+             "correct": True},
             {"text": "Very fast, and hard to follow",
              "correct": False,
              "why": "Speed has nothing to do with it. A slow movement can be "
                     "just as random"},
-            {"text": "With no pattern and no set direction",
-             "correct": True},
             {"text": "Chosen by something too small to see",
              "correct": False,
              "why": "Nothing is choosing. That is what random rules out"},
@@ -400,8 +400,6 @@ QUESTIONS = [
                 "scales. About how long does it take to cross a single cell, "
                 "roughly 0.01 mm?",
         "options": [
-            {"text": "About a hundredth of a second",
-             "correct": True},
             {"text": "About a minute, once the spreading gets going",
              "correct": False,
              "why": "Far too slow. Over distances this small diffusion is "
@@ -411,6 +409,8 @@ QUESTIONS = [
              "correct": False,
              "why": "That is the figure for a fingertip, about a thousand "
                     "times further"},
+            {"text": "About a hundredth of a second",
+             "correct": True},
             {"text": "About a day",
              "correct": False,
              "why": "Nothing like it. Diffusion is unbeatable over distances "
@@ -431,12 +431,12 @@ QUESTIONS = [
              "correct": False,
              "why": "It needs this too. Without a difference in crowding "
                     "there is no net spreading"},
-            {"text": "Someone to waft it, or a draught to carry it",
-             "correct": True},
             {"text": "Space between the particles to move through",
              "correct": False,
              "why": "It needs this. Pack the space solid and nothing can go "
                     "anywhere"},
+            {"text": "Someone to waft it, or a draught to carry it",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -449,14 +449,14 @@ QUESTIONS = [
                 "colour spreads through it without anyone stirring. What is "
                 "doing the work?",
         "options": [
+            {"text": "The tea particles' own random movement, from where they "
+                     "are crowded to where they are not",
+             "correct": True},
             {"text": "The heat rising through the mug and carrying the colour "
                      "with it",
              "correct": False,
              "why": "Warmth speeds diffusion up, but the spreading happens in "
                     "cold water too. Nothing is being carried"},
-            {"text": "The tea particles' own random movement, from where they "
-                     "are crowded to where they are not",
-             "correct": True},
             {"text": "The water pushing the tea particles outwards from the "
                      "bag",
              "correct": False,
@@ -482,14 +482,14 @@ QUESTIONS = [
              "correct": False,
              "why": "It does the opposite. Double the distance and diffusion "
                     "takes four times as long"},
+            {"text": "Draughts and convection carry it most of the way, and "
+                     "diffusion covers the last stretch",
+             "correct": True},
             {"text": "The smell travels through the air as a signal rather "
                      "than as particles actually arriving",
              "correct": False,
              "why": "A smell IS particles arriving at your nose. There is no "
                     "signal to send"},
-            {"text": "Draughts and convection carry it most of the way, and "
-                     "diffusion covers the last stretch",
-             "correct": True},
             {"text": "The particles are lighter than air, so they are carried "
                      "up and over",
              "correct": False,
@@ -515,14 +515,14 @@ QUESTIONS = [
              "correct": False,
              "why": "Diffusion needs no push at all. That is the point of the "
                     "still tank, which evens out on its own"},
+            {"text": "No — stirring moves whole regions of liquid, while "
+                     "diffusion carries on in both tanks",
+             "correct": True},
             {"text": "No — and it also means the still tank will never even "
                      "out",
              "correct": False,
              "why": "The still tank does even out, given time. Stirring "
                     "changes how long it takes, not whether it happens"},
-            {"text": "No — stirring moves whole regions of liquid, while "
-                     "diffusion carries on in both tanks",
-             "correct": True},
         ],
         "figure": None,
     },
@@ -532,9 +532,6 @@ QUESTIONS = [
         "text": "A smell spreads through air far faster than a dye spreads "
                 "through water. Why?",
         "options": [
-            {"text": "Gas particles move faster and travel further between "
-                     "collisions",
-             "correct": True},
             {"text": "Gas particles are smaller, so they slip between the air "
                      "particles",
              "correct": False,
@@ -550,6 +547,9 @@ QUESTIONS = [
              "correct": False,
              "why": "Dye spreads upwards through water as well as downwards. "
                     "Gravity is not what is slowing it"},
+            {"text": "Gas particles move faster and travel further between "
+                     "collisions",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -563,14 +563,14 @@ QUESTIONS = [
                 "times bigger; the time is about a million times longer. Why "
                 "the mismatch?",
         "options": [
+            {"text": "Because the time goes up with the SQUARE of the "
+                     "distance, and a thousand squared is a million",
+             "correct": True},
             {"text": "Because the particles slow down as they get further "
                      "from the start",
              "correct": False,
              "why": "Nothing slows them. Their speed is set by temperature "
                     "and does not change with distance travelled"},
-            {"text": "Because the time goes up with the SQUARE of the "
-                     "distance, and a thousand squared is a million",
-             "correct": True},
             {"text": "Because there are more particles in the way over a "
                      "longer distance",
              "correct": False,
@@ -596,13 +596,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Diffusion works in liquids too — that is how oxygen "
                     "crosses into the blood once it arrives"},
+            {"text": "Diffusion is fast only over a fraction of a millimetre, "
+                     "so the air must be brought very close to the blood",
+             "correct": True},
             {"text": "Diffusion needs a current, and the folds create one",
              "correct": False,
              "why": "Diffusion needs no current at all. The folds are about "
                     "distance, not about stirring the air"},
-            {"text": "Diffusion is fast only over a fraction of a millimetre, "
-                     "so the air must be brought very close to the blood",
-             "correct": True},
             {"text": "Diffusion goes faster when there is more surface, "
                      "whatever the distance",
              "correct": False,
@@ -631,14 +631,14 @@ QUESTIONS = [
              "correct": False,
              "why": "Brown had seen the jitter perfectly well in 1827. Seeing "
                     "it was never the problem"},
-            {"text": "Because the jitter stopped once it was explained",
-             "correct": False,
-             "why": "The jitter has never stopped, and would not be evidence "
-                    "for anything if it had"},
             {"text": "Because a number predicted in advance and then measured "
                      "can decide between rival ideas, and a description "
                      "cannot",
              "correct": True},
+            {"text": "Because the jitter stopped once it was explained",
+             "correct": False,
+             "why": "The jitter has never stopped, and would not be evidence "
+                    "for anything if it had"},
         ],
         "figure": None,
     },
@@ -652,10 +652,6 @@ QUESTIONS = [
              "correct": False,
              "why": "Mass is not the limit. The same matter arranged as many "
                     "small cells weighs exactly the same"},
-            {"text": "Because oxygen reaches a cell's middle by diffusion, "
-                     "and diffusion is hopeless over more than a fraction of "
-                     "a millimetre",
-             "correct": True},
             {"text": "Because cells have to fit into the narrow spaces "
                      "between the blood vessels, and those vessels are "
                      "themselves very fine",
@@ -668,6 +664,10 @@ QUESTIONS = [
              "correct": False,
              "why": "Almost all your cells stay where they are. Size is "
                     "limited by supply, not by travel"},
+            {"text": "Because oxygen reaches a cell's middle by diffusion, "
+                     "and diffusion is hopeless over more than a fraction of "
+                     "a millimetre",
+             "correct": True},
         ],
         "figure": None,
     },

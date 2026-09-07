@@ -390,12 +390,12 @@ QUESTIONS = [
              "correct": False,
              "why": "That is the other direction — solid to liquid. Melting "
                     "and freezing use the same doorway opposite ways."},
-            {"text": "Freezing",
-             "correct": True},
             {"text": "Condensing",
              "correct": False,
              "why": "Condensing is gas to liquid — what happens on a cold "
                     "window, not in a freezer."},
+            {"text": "Freezing",
+             "correct": True},
             {"text": "Evaporating",
              "correct": False,
              "why": "Evaporating goes the other way again, from liquid to "
@@ -417,12 +417,12 @@ QUESTIONS = [
              "correct": False,
              "why": "The opposite. Conserved means nothing is lost at all, "
                     "quickly or slowly."},
-            {"text": "Stays the same in total — nothing is gained or lost.",
-             "correct": True},
             {"text": "Changed into energy rather than being destroyed.",
              "correct": False,
              "why": "Nothing here turns into anything. The particles are "
                     "rearranged, and every one of them is still present."},
+            {"text": "Stays the same in total — nothing is gained or lost.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -462,6 +462,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Condensing makes a liquid appear, not disappear. That is "
                     "what happens on a cold window."},
+            {"text": "Evaporating",
+             "correct": True},
             {"text": "Melting",
              "correct": False,
              "why": "Melting turns a solid into a liquid. The playground "
@@ -470,8 +472,6 @@ QUESTIONS = [
              "correct": False,
              "why": "Freezing would leave ice behind. The playground is dry, "
                     "so the water has left as a gas."},
-            {"text": "Evaporating",
-             "correct": True},
         ],
         "figure": None,
     },
@@ -484,13 +484,13 @@ QUESTIONS = [
              "correct": False,
              "why": "It is far colder, but that is not where the name comes "
                     "from. The name is about what it leaves behind."},
-            {"text": "Because it turns straight into a gas and leaves no "
-                     "puddle.",
-             "correct": True},
             {"text": "Because it has had all the water taken out of it.",
              "correct": False,
              "why": "There was never any water in it — it is carbon dioxide, "
                     "a different substance altogether."},
+            {"text": "Because it turns straight into a gas and leaves no "
+                     "puddle.",
+             "correct": True},
             {"text": "Because it does not melt until it is warmed a great "
                      "deal.",
              "correct": False,
@@ -513,13 +513,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Both processes end with something runny. Going runny "
                     "does not tell the two apart."},
-            {"text": "Only one substance is involved, and it was warmed past "
-                     "its melting point.",
-             "correct": True},
             {"text": "It happened outdoors rather than in a cup.",
              "correct": False,
              "why": "Where it happens does not decide it. Butter melts in a "
                     "pan and salt dissolves in a beaker."},
+            {"text": "Only one substance is involved, and it was warmed past "
+                     "its melting point.",
+             "correct": True},
             {"text": "It cannot be reversed, and dissolving can.",
              "correct": False,
              "why": "Cool the chocolate and it sets again — melting reverses "
@@ -545,14 +545,14 @@ QUESTIONS = [
              "why": "Some energy is always lost to the room, before and after "
                     "the plateaus alike. It cannot explain why the climb "
                     "happens here and not there."},
-            {"text": "Making the particles move faster, which the thermometer "
-                     "reports.",
-             "correct": True},
             {"text": "Making the particles larger, so the substance takes up "
                      "more room.",
              "correct": False,
              "why": "Particles never change size. What heating changes is how "
                     "fast they move."},
+            {"text": "Making the particles move faster, which the thermometer "
+                     "reports.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -563,14 +563,14 @@ QUESTIONS = [
                 "destroyed. What is the strongest single piece of evidence "
                 "against that?",
         "options": [
+            {"text": "Cool the air above it and the same water comes back as "
+                     "droplets.",
+             "correct": True},
             {"text": "The puddle takes hours to dry, so nothing sudden "
                      "happened to it.",
              "correct": False,
              "why": "How long it takes says nothing about where the water "
                     "went. Slow destruction would still be destruction."},
-            {"text": "Cool the air above it and the same water comes back as "
-                     "droplets.",
-             "correct": True},
             {"text": "The ground underneath is still damp, so some water is "
                      "left.",
              "correct": False,
@@ -593,15 +593,15 @@ QUESTIONS = [
              "correct": False,
              "why": "Boiling is a change of state. The water is still water "
                     "throughout, only in a different state."},
+            {"text": "Splitting water is a chemical change and needs far more "
+                     "energy than a kettle has.",
+             "correct": True},
             {"text": "Hydrogen and oxygen would be invisible, and the bubbles "
                      "can be seen.",
              "correct": False,
              "why": "Steam is invisible too — what you see is the bubble's "
                     "edge. The real problem is that boiling does not split "
                     "water at all."},
-            {"text": "Splitting water is a chemical change and needs far more "
-                     "energy than a kettle has.",
-             "correct": True},
             {"text": "Hydrogen and oxygen are both liquids at 100 °C, so they "
                      "could not form bubbles.",
              "correct": False,
@@ -620,14 +620,14 @@ QUESTIONS = [
              "correct": False,
              "why": "The can is sealed and its level does not drop. The water "
                     "arrives from outside it."},
-            {"text": "It is water vapour from the air, condensing on the cold "
-                     "surface.",
-             "correct": True},
             {"text": "The can is sweating, the way your skin does when it is "
                      "warm.",
              "correct": False,
              "why": "A can produces nothing of its own. The water is already "
                     "in the air as a gas before it touches the can."},
+            {"text": "It is water vapour from the air, condensing on the cold "
+                     "surface.",
+             "correct": True},
             {"text": "Ice inside the can has melted and soaked through.",
              "correct": False,
              "why": "Nothing passes through the metal, and it happens to cans "
@@ -646,9 +646,6 @@ QUESTIONS = [
                 "the size of each temperature rise, what does that comparison "
                 "suggest?",
         "options": [
-            {"text": "Water takes more energy per degree than the same mass "
-                     "of ice does.",
-             "correct": True},
             {"text": "The ring gets weaker as the run goes on.",
              "correct": False,
              "why": "The ring is stated to deliver the same energy every "
@@ -659,6 +656,9 @@ QUESTIONS = [
              "correct": False,
              "why": "The flask is sealed and the mass never moves. Nothing "
                     "has left."},
+            {"text": "Water takes more energy per degree than the same mass "
+                     "of ice does.",
+             "correct": True},
             {"text": "Water particles are heavier than ice particles.",
              "correct": False,
              "why": "They are the same particles. A change of state never "
@@ -682,15 +682,15 @@ QUESTIONS = [
              "correct": False,
              "why": "It is not — the sea warms and cools with the seasons. It "
                     "simply does so far less than the land does."},
-            {"text": "Water takes a great deal of energy to warm and gives it "
-                     "back slowly, so its temperature swings less.",
-             "correct": True},
             {"text": "Water evaporates all through the summer, and "
                      "evaporation always warms the air lying above the sea.",
              "correct": False,
              "why": "Evaporation cools what is left behind rather than "
                     "warming the air. And it would not explain the milder "
                     "winter."},
+            {"text": "Water takes a great deal of energy to warm and gives it "
+                     "back slowly, so its temperature swings less.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -702,6 +702,8 @@ QUESTIONS = [
                 "what loosening them costs. About how long should the boiling "
                 "plateau last?",
         "options": [
+            {"text": "About 40 minutes.",
+             "correct": True},
             {"text": "About 6 minutes — the ring's power has not changed.",
              "correct": False,
              "why": "The power is the same, which is exactly why the times "
@@ -711,8 +713,6 @@ QUESTIONS = [
              "correct": False,
              "why": "That is doubling. The comparison in the lesson is about "
                     "seven times, not twice."},
-            {"text": "About 40 minutes.",
-             "correct": True},
             {"text": "About 90 minutes.",
              "correct": False,
              "why": "That is nearer fifteen times as long. Seven lots of six "
@@ -767,15 +767,15 @@ QUESTIONS = [
              "why": "Nothing inside the fridge is carried outside. What "
                     "travels is the liquid in a sealed loop, and what it "
                     "carries is energy."},
+            {"text": "Because evaporating takes energy in inside, and "
+                     "condensing gives the same energy out at the back.",
+             "correct": True},
             {"text": "Because a fridge destroys the energy of the food it "
                      "cools.",
              "correct": False,
              "why": "Energy is not destroyed. It is moved from inside the "
                     "fridge to the room, which is why the back of a fridge is "
                     "warm."},
-            {"text": "Because evaporating takes energy in inside, and "
-                     "condensing gives the same energy out at the back.",
-             "correct": True},
         ],
         "figure": None,
     },

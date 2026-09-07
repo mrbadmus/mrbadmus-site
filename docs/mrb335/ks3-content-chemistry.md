@@ -114,3 +114,119 @@ Gates at commit: `question_bank` OK, `verify_questions` OK (all nine checks),
 scope.
 
 ---
+## C1 follow-up — answer POSITION rebalanced
+
+Committing C1 and then measuring C2 exposed a second tell of the same family,
+in the other gate's territory. `verify_answer_positions.py` (MRB-278) passes on
+the whole KS3 bank, so nothing went red — but C1's 84 new rows had landed
+19 · 27 · 28 · 10 across the four option slots, and C2's first draft was worse
+still at 19 · 48 · 14 · 3. Fifty-seven per cent of a unit's new rows with the
+key in slot two is a strategy a child can find without reading any chemistry.
+
+The cause is the same drafting habit as the length tell: you write the
+plausible wrong answer first, then the key, then pad out the rest.
+
+Both units' new rows were permuted — options reordered verbatim, the `why`
+travelling with its own option, nothing at `bank_position` < 12 touched —
+walking each band in bank order and cycling the target slot 0, 1, 2, 3. Both
+units now sit at exactly 21 · 21 · 21 · 21. Every unit from C3 on is rebalanced
+the same way before its commit.
+
+---
+
+## C2 — Atoms, elements and compounds (6 lessons)
+
+**Quota:** 28 new rows per band (52 per band across the unit), 84 rows total.
+Spread 5 · 5 · 5 · 5 · 4 · 4 per band.
+
+| lesson | easier | standard | harder |
+|---|---|---|---|
+| 01 the-atom-daltons-model | e05–e09 | s05–s09 | h05–h09 |
+| 02 elements | e05–e09 | s05–s09 | h05–h09 |
+| 03 compounds | e05–e09 | s05–s09 | h05–h09 |
+| 04 chemical-symbols | e05–e09 | s05–s09 | h05–h09 |
+| 05 formulae | e05–e08 | s05–s08 | h05–h08 |
+| 06 conservation-of-mass | e05–e08 | s05–s08 | h05–h08 |
+
+Final band totals: easier 52, standard 52, harder 52.
+
+**Subscripts.** C2's notation lessons are the case `ks3-authoring.md` §9 names:
+`c2-05-s05` asks what the small 3 in NH₃ counts, and the question is
+unanswerable written flat. Those rows carry the real character (₃, ₂, ₄) and
+never `<sub>`. Rows where the formula is only mentioned in passing stay flat.
+
+### Review fixes before commit
+
+**1 · The mirror of the length tell — overcorrecting is also a fail.** Having
+learnt the giveaway lesson on C1, I wrote every C2 row with a distractor longer
+than the key. That took the unit to **5.9%** and `verify_answer_lengths` failed
+it again, from the other side: *"the long option is never right — the mirror
+tell"*. The gate's band is 12% to 35% around a chance rate of 25%, and a corpus
+where the long option is reliably WRONG is exactly as exploitable as one where
+it is reliably right.
+
+Twenty padded distractors were trimmed back so the key is the longest in about
+one question in four. C2 now measures 23.2%, C1 27.5% — both at chance. **The
+authoring rule that comes out of this is not "keep the key short". It is: make
+the key the longest in roughly a quarter of the rows, and nothing anywhere in
+the four options should be decorative.**
+
+**2 · `c2-02-e09` — two defensible answers, from an imprecise stem.** It asked
+which pair of the body's six elements "makes up most of it". By mass that is
+oxygen and carbon; the intended key was oxygen and hydrogen, which is the pair
+the lesson names as being present almost entirely as water. Re-pointed to the
+claim the lesson actually makes — "which two of them are almost all present as
+water" — with the three distractors rewritten to match.
+
+**3 · Nothing built on the "Latin symbols are the ancient elements" line.** The
+lesson's key note says the elements with Latin symbols "are the elements people
+knew first". That holds for Fe, Pb, Au and Cu; sodium and potassium were not
+isolated until 1807, so Na and K are counter-examples inside the lesson's own
+list. No new row asserts the generalisation, and none uses K. Flagged here
+rather than fixed, because the lesson text is outside this lane.
+
+Gates at commit: `question_bank` OK; `verify_answer_positions` OK;
+`verify_answer_lengths` green on `bank/C1` and `bank/C2`.
+`verify_questions.py` is RED for a reason outside chemistry — see the
+cross-lane finding below.
+
+---
+
+## Cross-lane finding — `verify_questions.py` check 8 is wrong once ANY unit is topped up
+
+Not a chemistry defect and not fixable from this lane (`verify_questions.py` is
+outside the files I may edit), but it will stop every content lane from
+reporting a clean full gate, so it is written down here.
+
+Check 8 exercises `compose_assignment` against unit **B1** and builds its
+expectation like this:
+
+```python
+own = [q["id"] for q in bank.get(keys[5], []) if q.get("band") == "standard"]
+```
+
+— the WHOLE lesson, not `auto_pool(...)`. The whole point of MRB-335's cap is
+that composition reads only `bank_position < 12`, so the moment B1's lessons
+grow past four standard rows the check expects eight ids and correctly receives
+four:
+
+```
+expected ['b1-05-s01' … 'b1-05-s08']   got ['b1-04-s01' … 'b1-03-s03']
+```
+
+**`compose_assignment` is behaving correctly.** Proved directly: with every
+lesson in the bank truncated to its original twelve, the same check passes
+(own-first true, nearest-first true, length 15) on today's data. The two lines
+that need `auto_pool(bank.get(...))` are `own` and `nearest` in check 8.
+
+Check 8 only ever builds its keys from B1, so chemistry alone can never trip
+it; the biology lane reached it first. C1 was committed while the gate was
+still fully green, and C2 onwards are committed with this one check red for a
+cause proven to be outside `ks3_data/c*/`.
+
+`verify_answer_lengths` is separately red on `bank/B1 B2 B4 B6 B7 B8 B10 B11`
+and on the whole-corpus BIO+CHEM cell: the biology lane's new rows carry the
+giveaway tell that C1's first draft had. Worth passing on before that lane
+commits much more of it.
+
+---

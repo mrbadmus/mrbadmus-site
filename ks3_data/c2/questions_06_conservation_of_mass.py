@@ -388,4 +388,317 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c2-06-e05",
+        "band": "easier",
+        "text": "What is a closed system?",
+        "options": [
+            {"text": "A container nothing can get into or out of, so "
+                     "everything that takes part is on the balance",
+             "correct": True},
+            {"text": "A container that has had all of the air pumped out of "
+                     "it first",
+             "correct": False,
+             "why": "Nothing has to be pumped out. What matters is that "
+                    "nothing can cross the boundary either way"},
+            {"text": "A reaction that has finished and cannot restart",
+             "correct": False,
+             "why": "The word describes the container, not the state of the "
+                    "reaction"},
+            {"text": "A flask that is too strong to break",
+             "correct": False,
+             "why": "Strength is not the point. A thin sealed bag is a closed "
+                    "system too"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-06-e06",
+        "band": "easier",
+        "text": "A reaction gives out a great deal of heat and light. Do heat "
+                "and light have mass?",
+        "options": [
+            {"text": "Yes — that is why an open flask reads lower after the "
+                     "reaction than it did before it started fizzing",
+             "correct": False,
+             "why": "The open flask lost a GAS, and the gas has mass. Heat "
+                    "and light are not made of atoms"},
+            {"text": "No — they are not made of atoms",
+             "correct": True},
+            {"text": "Yes, but far too little to weigh on a school balance",
+             "correct": False,
+             "why": "This sounds careful and is still wrong. They are not "
+                    "matter at all"},
+            {"text": "Only heat does, because you can feel it",
+             "correct": False,
+             "why": "Feeling something is not weighing it. Neither is made of "
+                    "atoms"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-06-e07",
+        "band": "easier",
+        "text": "What is a product?",
+        "options": [
+            {"text": "The substance that is left in the flask at the end, as "
+                     "opposed to anything that has escaped into the room",
+             "correct": False,
+             "why": "A gas that escapes is a product too. Where it ends up "
+                    "does not change what it is"},
+            {"text": "A substance you start a reaction with",
+             "correct": False,
+             "why": "Those are the things you begin with. A product is what "
+                    "comes out"},
+            {"text": "A substance a reaction makes",
+             "correct": True},
+            {"text": "The heat a reaction gives out",
+             "correct": False,
+             "why": "Heat is not a substance. A product is made of atoms"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-06-e08",
+        "band": "easier",
+        "text": "A reaction is run in an OPEN flask and the balance reading "
+                "goes down. What must have happened?",
+        "options": [
+            {"text": "Some of the mass has been destroyed by the reaction, "
+                     "which is what makes an open flask different",
+             "correct": False,
+             "why": "Nothing is ever destroyed. The flask is open, so "
+                    "something has simply left it"},
+            {"text": "A gas has joined from the air",
+             "correct": False,
+             "why": "That would make the reading go UP, as it does when "
+                    "magnesium burns"},
+            {"text": "Heat has escaped, and heat has mass",
+             "correct": False,
+             "why": "Heat is not made of atoms and weighs nothing. What left "
+                    "was a gas"},
+            {"text": "A gas has left the flask",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c2-06-s05",
+        "band": "standard",
+        "text": "A candle is lit and immediately sealed inside a large glass "
+                "jar standing on a balance. What does the reading do while it "
+                "burns?",
+        "options": [
+            {"text": "It stays exactly the same",
+             "correct": True},
+            {"text": "It falls, because the wax is being used up and its mass "
+                     "goes into the heat and light given off",
+             "correct": False,
+             "why": "Heat and light have no mass. Everything the wax became "
+                    "is still inside the jar"},
+            {"text": "It rises, because oxygen joins the wax",
+             "correct": False,
+             "why": "The oxygen joining the wax was already inside the jar, "
+                    "and already on the balance"},
+            {"text": "It falls, then rises again as the candle goes out",
+             "correct": False,
+             "why": "Nothing crosses the glass in either direction, so the "
+                    "reading never moves"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-06-s06",
+        "band": "standard",
+        "text": "A sealed tube holds 2.40 g of magnesium and 1.60 g of "
+                "oxygen, and they react completely. The tube is opened and the "
+                "white powder is weighed. What should it read?",
+        "options": [
+            {"text": "0.80 g, which is the difference between the two masses "
+                     "that went into the tube in the first place",
+             "correct": False,
+             "why": "Subtracting is the wrong move — nothing was taken away. "
+                    "The two substances joined"},
+            {"text": "4.00 g",
+             "correct": True},
+            {"text": "2.40 g, because only the magnesium is left as a solid",
+             "correct": False,
+             "why": "The oxygen is in the powder. That is what makes "
+                    "magnesium oxide heavier than the ribbon"},
+            {"text": "1.60 g",
+             "correct": False,
+             "why": "That is the oxygen alone. The magnesium has not gone "
+                    "anywhere"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-06-s07",
+        "band": "standard",
+        "text": "A heavy log burns in an open grate and leaves a small heap "
+                "of ash weighing far less. Has mass been destroyed?",
+        "options": [
+            {"text": "Yes — burning is the one process that genuinely "
+                     "destroys matter, which is why so little ash is left "
+                     "behind",
+             "correct": False,
+             "why": "Burning destroys nothing. Most of the log left the grate "
+                    "as gases you cannot see"},
+            {"text": "Yes, but only the part that turned into heat and light",
+             "correct": False,
+             "why": "Heat and light are not made of atoms, so they carry no "
+                    "mass away at all"},
+            {"text": "No — most of the log left as gases, which have mass",
+             "correct": True},
+            {"text": "No — the ash weighs the same as the log, and the "
+                     "balance must be faulty",
+             "correct": False,
+             "why": "The balance is right: the ash really is lighter. What is "
+                    "missing is in the air"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-06-s08",
+        "band": "standard",
+        "text": "Marble and acid are reacted in a SEALED flask on a balance. "
+                "The reaction finishes, then the bung is taken out. What "
+                "happens to the reading?",
+        "options": [
+            {"text": "It rises, because air rushes into the flask to fill the "
+                     "space the gas was taking up inside it",
+             "correct": False,
+             "why": "The gas inside is at a higher pressure and leaves rather "
+                    "than air coming in. The reading falls"},
+            {"text": "Nothing happens, because the reaction has already "
+                     "finished",
+             "correct": False,
+             "why": "The reaction has finished, but the gas it made is still "
+                    "on the balance until the bung comes out"},
+            {"text": "It falls and then rises back, as the flask refills",
+             "correct": False,
+             "why": "Air is far lighter than the carbon dioxide that left. "
+                    "The reading does not come back"},
+            {"text": "It falls, as the trapped carbon dioxide escapes",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c2-06-h05",
+        "band": "harder",
+        "text": "A student says the sealed flask's reading does not move "
+                "because nothing is reacting inside it. What is the evidence "
+                "against?",
+        "options": [
+            {"text": "It fizzes hard, and the marble is used up — a reaction "
+                     "is plainly happening",
+             "correct": True},
+            {"text": "The sealed flask is warmer afterwards, and only an "
+                     "unreacted mixture would stay at room temperature "
+                     "throughout",
+             "correct": False,
+             "why": "Warmth is suggestive, and there is something far more "
+                    "direct to point at: you can watch it fizzing"},
+            {"text": "The bung would blow out if nothing were happening",
+             "correct": False,
+             "why": "The bung stays in. What shows the reaction is the "
+                    "fizzing and the marble disappearing"},
+            {"text": "Nothing — the student is right, since the balance never "
+                     "moves",
+             "correct": False,
+             "why": "The balance not moving is exactly what conservation of "
+                    "mass predicts for a sealed vessel"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-06-h06",
+        "band": "harder",
+        "text": "Steel wool burned in an open dish gets HEAVIER. A log burned "
+                "in an open grate gets LIGHTER. Both are burning. Explain the "
+                "difference.",
+        "options": [
+            {"text": "The steel takes oxygen in and the log gives it out",
+             "correct": False,
+             "why": "Nothing gives oxygen out when it burns. Both take it "
+                    "in — the difference is where the products end up"},
+            {"text": "Oxygen joins in both, but iron oxide stays as a solid "
+                     "while the log's products leave as gases",
+             "correct": True},
+            {"text": "Iron is a metal, and only metals obey conservation of "
+                     "mass",
+             "correct": False,
+             "why": "Conservation of mass holds for everything. Both readings "
+                    "obey it once the gases are counted"},
+            {"text": "The log burns hotter, so more of its mass is turned "
+                     "into heat",
+             "correct": False,
+             "why": "Heat carries no mass at any temperature. The log's mass "
+                    "left as carbon dioxide and water vapour"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-06-h07",
+        "band": "harder",
+        "text": "A student insists the 2.20 g missing from the open flask "
+                "turned into heat. Which experiment settles it?",
+        "options": [
+            {"text": "Repeat the reaction and take the temperature "
+                     "throughout, to see how much heat is given out for every "
+                     "gram that disappears",
+             "correct": False,
+             "why": "You could measure that all day. It would not show "
+                    "whether the heat came from the missing mass"},
+            {"text": "Weigh the flask again once it has cooled to room "
+                     "temperature",
+             "correct": False,
+             "why": "It reads 149.80 g cold as well as warm. Cooling brings "
+                    "nothing back"},
+            {"text": "Run exactly the same reaction sealed, and see that the "
+                     "reading does not move",
+             "correct": True},
+            {"text": "Use a bigger flask, so that less heat escapes",
+             "correct": False,
+             "why": "The size makes no difference to the loss. Sealing it "
+                    "does"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-06-h08",
+        "band": "harder",
+        "text": "12 g of carbon burns completely in 32 g of oxygen. What mass "
+                "of carbon dioxide is made, and what would an open balance "
+                "show?",
+        "options": [
+            {"text": "44 g is made, and the balance would show no change at "
+                     "all, because the carbon dioxide has exactly the mass of "
+                     "everything that made it",
+             "correct": False,
+             "why": "True about the 44 g, and the gas floats away — so the "
+                    "balance loses the 12 g of carbon that was sitting on "
+                    "it"},
+            {"text": "20 g is made, and the balance would show a loss of "
+                     "20 g",
+             "correct": False,
+             "why": "20 g is 32 − 12. Nothing was subtracted here: the two "
+                    "joined, so the masses add"},
+            {"text": "12 g is made, and the balance would show no change",
+             "correct": False,
+             "why": "The oxygen is in the product too, so the carbon dioxide "
+                    "weighs more than the carbon did"},
+            {"text": "44 g is made, and the balance would show a loss of "
+                     "12 g as the gas left",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

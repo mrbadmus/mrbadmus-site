@@ -407,8 +407,6 @@ QUESTIONS = [
         "band": "easier",
         "text": "What does the word pressure mean?",
         "options": [
-            {"text": "How hard a force pushes on each bit of a surface.",
-             "correct": True},
             {"text": "How much a gas weighs in its container.",
              "correct": False,
              "why": "Weight is a different quantity. Pressure is about how "
@@ -421,6 +419,8 @@ QUESTIONS = [
              "correct": False,
              "why": "That is volume. A gas can be at high or low pressure in "
                     "the same volume."},
+            {"text": "How hard a force pushes on each bit of a surface.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -429,6 +429,8 @@ QUESTIONS = [
         "band": "easier",
         "text": "The bench counts collisions. What is a collision?",
         "options": [
+            {"text": "When a moving particle hits something and bounces off.",
+             "correct": True},
             {"text": "A particle being destroyed as it reaches the wall.",
              "correct": False,
              "why": "Nothing is destroyed. The particle bounces and carries "
@@ -437,8 +439,6 @@ QUESTIONS = [
              "correct": False,
              "why": "If particles stuck, the count would fall to nothing "
                     "within seconds. They bounce off."},
-            {"text": "When a moving particle hits something and bounces off.",
-             "correct": True},
             {"text": "Two particles joining together to make a bigger one.",
              "correct": False,
              "why": "Particles do not join or grow in this unit. A collision "
@@ -456,6 +456,8 @@ QUESTIONS = [
              "correct": False,
              "why": "This is one of the three, and it is the control that "
                     "changes how fast the particles move."},
+            {"text": "The size of the particles",
+             "correct": True},
             {"text": "The size of the container",
              "correct": False,
              "why": "This is one of the three. Shrink the box and each "
@@ -464,8 +466,6 @@ QUESTIONS = [
              "correct": False,
              "why": "This is one of the three. Take particles out and fewer "
                     "arrive at the wall each second."},
-            {"text": "The size of the particles",
-             "correct": True},
         ],
         "figure": None,
     },
@@ -476,8 +476,6 @@ QUESTIONS = [
                 "the temperature and the container stay exactly the same. What "
                 "happens to the pressure?",
         "options": [
-            {"text": "It falls to about half.",
-             "correct": True},
             {"text": "It stays the same, because each particle now has more "
                      "room to build up speed.",
              "correct": False,
@@ -490,6 +488,8 @@ QUESTIONS = [
              "why": "A longer trip means a particle reaches the wall LESS "
                     "often, and it hits no harder. Fewer arrivals means less "
                     "pressure."},
+            {"text": "It falls to about half.",
+             "correct": True},
             {"text": "It falls to nothing, because half the gas has gone.",
              "correct": False,
              "why": "Half the particles are still there, still moving, still "
@@ -507,8 +507,6 @@ QUESTIONS = [
              "correct": False,
              "why": "Particles never change size. The reference particle on "
                     "the bench is drawn to prove it."},
-            {"text": "They move faster.",
-             "correct": True},
             {"text": "There are more of them, because heat makes new ones.",
              "correct": False,
              "why": "Heating creates nothing. The same particles are there "
@@ -517,6 +515,8 @@ QUESTIONS = [
              "correct": False,
              "why": "In a sealed container the gas already fills it. What "
                     "heating changes is speed, not spacing."},
+            {"text": "They move faster.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -540,13 +540,13 @@ QUESTIONS = [
              "why": "The number of particles is only one of the three "
                     "controls. Moving the walls closer changes the count "
                     "without changing the number."},
-            {"text": "About 28 per second, because each particle reaches a "
-                     "wall twice as often.",
-             "correct": True},
             {"text": "About 196 per second, because the count is squared.",
              "correct": False,
              "why": "Nothing here is squared. Halving the space roughly "
                     "doubles how often each particle arrives."},
+            {"text": "About 28 per second, because each particle reaches a "
+                     "wall twice as often.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -556,6 +556,9 @@ QUESTIONS = [
         "text": "A rubber suction cup pressed onto a wall holds a shelf up. "
                 "What is holding it there?",
         "options": [
+            {"text": "Air particles outside hitting it, with almost none "
+                     "behind it to push back.",
+             "correct": True},
             {"text": "The rubber sucking the air out and pulling itself hard "
                      "against the wall.",
              "correct": False,
@@ -566,9 +569,6 @@ QUESTIONS = [
              "correct": False,
              "why": "A dry suction cup is not sticky, and it falls off the "
                     "moment air gets behind it."},
-            {"text": "Air particles outside hitting it, with almost none "
-                     "behind it to push back.",
-             "correct": True},
             {"text": "The vacuum behind the cup pulling on it.",
              "correct": False,
              "why": "A vacuum is nothing, and nothing cannot pull. The push "
@@ -619,13 +619,13 @@ QUESTIONS = [
              "correct": False,
              "why": "The balloon is tied. No particles were added, and none "
                     "need to be."},
+            {"text": "The particles inside sped up, hitting the rubber more "
+                     "often and harder, until it gave way.",
+             "correct": True},
             {"text": "The particles inside got bigger and needed more room.",
              "correct": False,
              "why": "Particles never change size. Heating changes how fast "
                     "they move and nothing else."},
-            {"text": "The particles inside sped up, hitting the rubber more "
-                     "often and harder, until it gave way.",
-             "correct": True},
         ],
         "figure": None,
     },
@@ -636,9 +636,6 @@ QUESTIONS = [
                 "the weight of the gas pressing down. Which observation deals "
                 "with that best?",
         "options": [
-            {"text": "The pressure pushes on the top and sides of the can as "
-                     "hard as on the bottom.",
-             "correct": True},
             {"text": "Gas has almost no weight, so it could not press "
                      "anywhere.",
              "correct": False,
@@ -656,6 +653,9 @@ QUESTIONS = [
              "why": "True, and it does count for something — but the "
                     "sharpest evidence is that the push is just as strong "
                     "upwards on the lid."},
+            {"text": "The pressure pushes on the top and sides of the can as "
+                     "hard as on the bottom.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -678,14 +678,14 @@ QUESTIONS = [
              "correct": False,
              "why": "The other half. A faster particle crosses the box in "
                     "less time, so it also arrives more often."},
-            {"text": "B's particles arrive more often and each hit is harder, "
-                     "so B's pressure is higher.",
-             "correct": True},
             {"text": "The counts are the same, because the boxes hold the same "
                      "number of particles.",
              "correct": False,
              "why": "The number is only one control of three. Temperature is "
                     "another, and it has been changed."},
+            {"text": "B's particles arrive more often and each hit is harder, "
+                     "so B's pressure is higher.",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -696,6 +696,8 @@ QUESTIONS = [
                 "into a 1-litre box at the same temperature, with no particles "
                 "lost. What is the best estimate of the new pressure?",
         "options": [
+            {"text": "200 kPa",
+             "correct": True},
             {"text": "50 kPa",
              "correct": False,
              "why": "That is dividing where you should multiply. Half the "
@@ -706,8 +708,6 @@ QUESTIONS = [
              "why": "Nothing would have changed only if the box had stayed "
                     "the same size. Moving the walls in raises the hit count "
                     "on its own."},
-            {"text": "200 kPa",
-             "correct": True},
             {"text": "400 kPa",
              "correct": False,
              "why": "That is doubling twice. The volume was halved once, so "
@@ -782,9 +782,6 @@ QUESTIONS = [
                 "pressure after all.” The first half is true. Why does the "
                 "conclusion still fail?",
         "options": [
-            {"text": "Because the bumps happen away from the wall, and "
-                     "pressure is only what arrives at the wall.",
-             "correct": True},
             {"text": "Because the bumps are too gentle to be worth counting.",
              "correct": False,
              "why": "They are no gentler than wall hits. Where they happen is "
@@ -799,6 +796,9 @@ QUESTIONS = [
              "correct": False,
              "why": "It is not a cancelling argument. The wall simply never "
                     "feels them at all."},
+            {"text": "Because the bumps happen away from the wall, and "
+                     "pressure is only what arrives at the wall.",
+             "correct": True},
         ],
         "figure": None,
     },
