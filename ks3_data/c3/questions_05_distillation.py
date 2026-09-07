@@ -366,4 +366,248 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-05-e05",
+        "band": "easier",
+        "text": "What does it mean to condense a gas?",
+        "options": [
+            {"text": "To squash it into a smaller space until the particles "
+                     "are forced close enough together to touch one another",
+             "correct": False,
+             "why": "Squashing a gas is a different thing altogether. "
+                    "Condensing is done by cooling"},
+            {"text": "To make it more concentrated by removing some of it",
+             "correct": False,
+             "why": "That is the everyday use of the word, as in condensed "
+                    "milk. In this lesson it names a change of state"},
+            {"text": "To turn it back into a liquid by cooling it",
+             "correct": True},
+            {"text": "To turn it into a new substance",
+             "correct": False,
+             "why": "Condensing makes nothing new. The liquid is the same "
+                    "substance the gas was"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-05-e06",
+        "band": "easier",
+        "text": "What is a boiling point?",
+        "options": [
+            {"text": "The highest temperature a liquid can be heated to "
+                     "before the substance itself starts to break down into "
+                     "something else",
+             "correct": False,
+             "why": "Nothing breaks down at a boiling point. The liquid "
+                    "simply turns to gas"},
+            {"text": "The temperature a liquid has to reach before any of it "
+                     "can evaporate",
+             "correct": False,
+             "why": "A puddle dries at 8 °C. Evaporation happens from the "
+                    "surface at any temperature"},
+            {"text": "The same temperature for every liquid",
+             "correct": False,
+             "why": "Different for each one — which is exactly what makes "
+                    "liquids separable by distilling"},
+            {"text": "The temperature at which a liquid turns to gas "
+                     "throughout",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-05-e07",
+        "band": "easier",
+        "text": "Which piece of the still turns the vapour back into a "
+                "liquid?",
+        "options": [
+            {"text": "The condenser",
+             "correct": True},
+            {"text": "The flask",
+             "correct": False,
+             "why": "The flask is where the mixture is boiled. The vapour "
+                    "leaves it as a gas"},
+            {"text": "The thermometer, which is placed at the side arm so "
+                     "that the vapour has to pass over it on its way out",
+             "correct": False,
+             "why": "The thermometer measures and changes nothing. It is "
+                    "there to tell you what is coming over"},
+            {"text": "The beaker at the end",
+             "correct": False,
+             "why": "The beaker collects the liquid once it has already "
+                    "condensed further back"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c3-05-s05",
+        "band": "standard",
+        "text": "A mixture of ethanol (boiling point 78 °C) and water "
+                "(100 °C) is heated in a still. Which comes over first, and "
+                "why?",
+        "options": [
+            {"text": "Water, because there is more of it in the mixture and "
+                     "the substance in the majority is always the one that "
+                     "boils away first",
+             "correct": False,
+             "why": "How much there is does not decide the order. The lower "
+                    "boiling point comes over first"},
+            {"text": "Water, because it boils at the higher temperature",
+             "correct": False,
+             "why": "A higher boiling point means it takes MORE heating to "
+                    "turn to gas, so it comes over later"},
+            {"text": "Ethanol, because it boils at the lower temperature",
+             "correct": True},
+            {"text": "Both at once, because they are mixed",
+             "correct": False,
+             "why": "Being mixed is what makes the separation possible. The "
+                    "vapour at 78 °C is mostly ethanol"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-05-s06",
+        "band": "standard",
+        "text": "The thermometer bulb sits level with the side arm rather "
+                "than down in the liquid. Why is it put there?",
+        "options": [
+            {"text": "Because a thermometer left in a boiling liquid would be "
+                     "broken by the bubbles knocking against the bulb",
+             "correct": False,
+             "why": "A thermometer sits in boiling liquid quite safely. It is "
+                    "moved for what it tells you, not to protect it"},
+            {"text": "So it reads the temperature of the room, as a control",
+             "correct": False,
+             "why": "It is inside the apparatus, in the vapour's path. "
+                    "Nothing here is measuring the room"},
+            {"text": "Because the liquid in the flask is always hotter than "
+                     "its own boiling point",
+             "correct": False,
+             "why": "A boiling liquid sits at its boiling point. The reading "
+                    "that matters is the vapour's"},
+            {"text": "So it reads the temperature of the vapour that is "
+                     "leaving, which is what tells you what is coming over",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-05-s07",
+        "band": "standard",
+        "text": "A life raft's emergency kit holds a solar still: a black "
+                "tray, a clear cover, and nothing else. How does it give "
+                "drinking water?",
+        "options": [
+            {"text": "The sun evaporates the water slowly and the cool cover "
+                     "condenses it, and the salt stays in the tray",
+             "correct": True},
+            {"text": "The black tray absorbs the salt out of the sea water as "
+                     "it warms",
+             "correct": False,
+             "why": "Nothing absorbs the salt. The water is moved and the "
+                    "salt is left behind"},
+            {"text": "The cover filters the sea water as it drips through it "
+                     "into a channel at the edge",
+             "correct": False,
+             "why": "Nothing is poured through anything, and a filter cannot "
+                    "hold back dissolved salt"},
+            {"text": "The sun boils the sea water hard, and boiling destroys "
+                     "the salt in it",
+             "correct": False,
+             "why": "The sun never gets it near boiling, and nothing destroys "
+                    "salt. It is left behind"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-05-h05",
+        "band": "harder",
+        "text": "A fractionating column is described as a still with the same "
+                "trick repeated dozens of times up its length. Why does "
+                "repeating it help?",
+        "options": [
+            {"text": "Because each repeat raises the temperature a little "
+                     "further up the column",
+             "correct": False,
+             "why": "A column is COOLER at the top, not hotter. What repeats "
+                    "is the boil-and-condense step"},
+            {"text": "Because a taller column holds more liquid, so more of "
+                     "it can be collected",
+             "correct": False,
+             "why": "The height is about purity, not about quantity"},
+            {"text": "Because each repeat enriches the vapour further, so a "
+                     "single pass that only improves the mixture becomes a "
+                     "real separation",
+             "correct": True},
+            {"text": "Because the extra distance gives the salt time to "
+                     "settle out on the way up",
+             "correct": False,
+             "why": "A column separates liquids from each other. No solid is "
+                    "travelling up it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-05-h06",
+        "band": "harder",
+        "text": "A crude oil refinery draws petrol off near the TOP of its "
+                "column and bitumen off at the BOTTOM. What does that tell you "
+                "about the two?",
+        "options": [
+            {"text": "Petrol is more valuable, and the most valuable products "
+                     "are always taken from the top of a column so that they "
+                     "can be piped away first",
+             "correct": False,
+             "why": "Value has nothing to do with where a substance comes "
+                    "off. Boiling point does"},
+            {"text": "Bitumen has the lower boiling point, so it condenses "
+                     "first at the bottom",
+             "correct": False,
+             "why": "A LOW boiling point means a substance stays a gas "
+                    "longer, so it goes higher before condensing"},
+            {"text": "Petrol is lighter than air, so it rises",
+             "correct": False,
+             "why": "Petrol vapour is heavier than air. What lifts it up the "
+                    "column is heat, and what stops it is cooling"},
+            {"text": "Petrol has the lower boiling point, so it travels "
+                     "furthest up before condensing",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-05-h07",
+        "band": "harder",
+        "text": "Sea water is distilled and left running far longer than "
+                "usual. The boiling point in the flask has been creeping up "
+                "all along. What happens in the end?",
+        "options": [
+            {"text": "The solution gets more and more concentrated until salt "
+                     "starts to crystallise in the flask",
+             "correct": True},
+            {"text": "The distillate slowly turns salty, because the "
+                     "stronger the solution gets the more of the salt is "
+                     "carried over with the vapour",
+             "correct": False,
+             "why": "Salt cannot become a gas at these temperatures however "
+                    "strong the solution is. Only careless boiling throws "
+                    "droplets over"},
+            {"text": "The flask boils dry and the water is destroyed",
+             "correct": False,
+             "why": "Nothing is destroyed. Every gram of the water is in the "
+                    "beaker as distillate"},
+            {"text": "The boiling point falls back to 100 °C once enough "
+                     "water has gone",
+             "correct": False,
+             "why": "It climbs the other way. Less water and the same salt "
+                    "makes a stronger solution, which boils higher still"},
+        ],
+        "figure": None,
+    },
 ]

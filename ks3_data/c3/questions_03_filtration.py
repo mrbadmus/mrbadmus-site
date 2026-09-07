@@ -366,4 +366,248 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-03-e05",
+        "band": "easier",
+        "text": "Before the mixture is poured in, the folded cone is seated "
+                "in the funnel and wetted. What is the wetting for?",
+        "options": [
+            {"text": "It makes the paper stick to the funnel, so nothing can "
+                     "run down between the two",
+             "correct": True},
+            {"text": "It rinses any dust off the paper first, so that "
+                     "nothing already on it can end up in the filtrate and "
+                     "spoil the result",
+             "correct": False,
+             "why": "Filter paper is clean when you take it from the box. The "
+                    "wetting is about the seal"},
+            {"text": "It makes the holes in the paper swell up and close",
+             "correct": False,
+             "why": "Nothing about the paper changes size. A wet paper filters "
+                    "the same as a dry one, once it is seated"},
+            {"text": "It stops the paper tearing under the weight of the "
+                     "liquid",
+             "correct": False,
+             "why": "A wet paper is weaker, not stronger. The reason is the "
+                    "seal against the glass"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-03-e06",
+        "band": "easier",
+        "text": "Coffee is made by pouring hot water through ground beans in "
+                "a paper. Which part of that is the residue?",
+        "options": [
+            {"text": "The coffee in the cup, since that is the part you "
+                     "actually wanted to keep and the grounds are thrown away",
+             "correct": False,
+             "why": "Which one you want does not decide the name. The residue "
+                    "is whatever the paper holds back"},
+            {"text": "The ground beans left in the paper",
+             "correct": True},
+            {"text": "The hot water before it is poured",
+             "correct": False,
+             "why": "Neither word is used before the filtering. They name the "
+                    "two things you end up with"},
+            {"text": "The paper itself",
+             "correct": False,
+             "why": "The paper is the equipment. The residue is the solid "
+                    "caught in it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-03-e07",
+        "band": "easier",
+        "text": "This lesson uses the word dissolved with a precise meaning. "
+                "What is it?",
+        "options": [
+            {"text": "Broken into pieces small enough to pass through filter "
+                     "paper",
+             "correct": False,
+             "why": "A dissolved substance is single particles, thousands of "
+                    "times smaller than the fibres. Size alone is not the "
+                    "definition either"},
+            {"text": "Destroyed by the liquid it was put into",
+             "correct": False,
+             "why": "Nothing is destroyed. Boil the liquid off and it is all "
+                    "still there"},
+            {"text": "Broken up into single particles, spread evenly through "
+                     "the liquid",
+             "correct": True},
+            {"text": "Melted by the liquid it was put into",
+             "correct": False,
+             "why": "Melting needs heat and one substance. Salt dissolves in "
+                    "cold water and melts at 801 °C"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c3-03-s05",
+        "band": "standard",
+        "text": "A student pours a muddy mixture through the funnel as fast "
+                "as it will go, and the filtrate comes out slightly cloudy. "
+                "What should they do?",
+        "options": [
+            {"text": "Pour it through again, more slowly this time",
+             "correct": True},
+            {"text": "Use two papers on top of each other, since a single "
+                     "sheet is clearly not thick enough to hold everything "
+                     "back at that speed",
+             "correct": False,
+             "why": "Doubling the paper is not the fix. Pouring slowly lets "
+                    "the same paper catch what it was pushing through"},
+            {"text": "Accept it, because a filtrate is never completely "
+                     "clear",
+             "correct": False,
+             "why": "A properly poured filtration gives a clear filtrate "
+                    "every time"},
+            {"text": "Warm the mixture first, so that it runs through more "
+                     "easily",
+             "correct": False,
+             "why": "Running through MORE easily is the problem, not the "
+                    "cure. Faster flow pushes particles through"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-03-s06",
+        "band": "standard",
+        "text": "Sand and water are filtered, and it is the SAND that is "
+                "wanted. Which part do you keep, and where is it?",
+        "options": [
+            {"text": "The filtrate, in the flask underneath the funnel",
+             "correct": False,
+             "why": "The filtrate is the liquid that came through. The sand "
+                    "never reached the flask"},
+            {"text": "The residue, in the filter paper",
+             "correct": True},
+            {"text": "The residue, in the flask underneath the funnel",
+             "correct": False,
+             "why": "Right word, wrong place. The residue is what stays in "
+                    "the paper"},
+            {"text": "Both, because the sand ends up spread between the paper "
+                     "and the flask and has to be collected from each of them",
+             "correct": False,
+             "why": "None of the sand passes through. It is insoluble and in "
+                    "lumps far larger than the gaps"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-03-s07",
+        "band": "standard",
+        "text": "Muddy water is filtered until the filtrate is completely "
+                "clear. The filtrate is then boiled dry and a white residue is "
+                "left. What does that show?",
+        "options": [
+            {"text": "That the filter paper was faulty and let some mud "
+                     "through",
+             "correct": False,
+             "why": "Mud is brown and visible, and the filtrate was clear. "
+                    "What is left is something that was dissolved"},
+            {"text": "That boiling has made a new substance out of the "
+                     "water",
+             "correct": False,
+             "why": "Boiling is a change of state and makes nothing new. The "
+                    "white solid was in the water all along"},
+            {"text": "That something was dissolved in the water, and "
+                     "filtering never removed it",
+             "correct": True},
+            {"text": "That the water was pure, since only pure water leaves a "
+                     "clean white solid",
+             "correct": False,
+             "why": "Pure water boils dry and leaves nothing at all. A "
+                    "residue is proof it was a mixture"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-03-h05",
+        "band": "harder",
+        "text": "A filter paper's widest gap is quoted as 8 micrometres, yet "
+                "it also stops some particles half that size. How?",
+        "options": [
+            {"text": "The paper is a tangle of fibres, so a particle can hit "
+                     "one, stick to one, or be trapped in a bend below the "
+                     "surface",
+             "correct": True},
+            {"text": "The quoted size is an average, so about half the gaps "
+                     "are narrower than that",
+             "correct": False,
+             "why": "The quoted figure is the widest gap, not an average — "
+                    "and a particle can be caught well away from any gap at "
+                    "all"},
+            {"text": "The first particles caught block the gaps, and after "
+                     "that nothing gets through",
+             "correct": False,
+             "why": "Blocking does happen and it slows the flow. It does not "
+                    "explain the very first small particles being caught"},
+            {"text": "Small particles clump together in the liquid until they "
+                     "are too big to pass",
+             "correct": False,
+             "why": "Some do clump, and the paper stops single small "
+                    "particles too. The tangle is the reason"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-03-h06",
+        "band": "harder",
+        "text": "Rock salt is salt mixed with insoluble grit. Which order of "
+                "steps gives you clean dry salt?",
+        "options": [
+            {"text": "Filter the rock salt as it is, then dissolve what is "
+                     "caught in the paper",
+             "correct": False,
+             "why": "Filtering a dry solid separates nothing. The salt has to "
+                    "be dissolved BEFORE the grit can be filtered off"},
+            {"text": "Dissolve in water, then filter, then evaporate the "
+                     "filtrate",
+             "correct": True},
+            {"text": "Evaporate first, then dissolve in water, then filter",
+             "correct": False,
+             "why": "There is nothing to evaporate at the start — the rock "
+                    "salt is dry"},
+            {"text": "Dissolve in water, then evaporate, then filter",
+             "correct": False,
+             "why": "Evaporating first leaves the salt and the grit together "
+                    "in the dish, exactly as they started"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-03-h07",
+        "band": "harder",
+        "text": "Why can filtration never separate two liquids that mix "
+                "completely, such as alcohol and water?",
+        "options": [
+            {"text": "Because a liquid cannot be a residue, and a filter can "
+                     "only ever hold back a solid",
+             "correct": False,
+             "why": "Nearly the right shape, and it is not about being a "
+                    "liquid: a filter sorts by size, and neither is in "
+                    "lumps"},
+            {"text": "Because the two liquids would react with each other in "
+                     "the paper and make a third substance that runs through "
+                     "with them",
+             "correct": False,
+             "why": "Nothing reacts. Both simply pass through, unchanged"},
+            {"text": "Because both are single particles far smaller than any "
+                     "gap, so neither is held back",
+             "correct": True},
+            {"text": "Because the paper would dissolve in the alcohol",
+             "correct": False,
+             "why": "Filter paper stands up to alcohol perfectly well. The "
+                    "problem is that neither liquid can be caught"},
+        ],
+        "figure": None,
+    },
 ]

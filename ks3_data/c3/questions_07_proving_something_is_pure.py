@@ -363,4 +363,249 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-07-e05",
+        "band": "easier",
+        "text": "What is an anomalous result?",
+        "options": [
+            {"text": "A reading that disagrees with the others taken the same "
+                     "way",
+             "correct": True},
+            {"text": "A reading that does not match the value the "
+                     "investigation was expected to produce, so it has to be "
+                     "left out of the conclusion",
+             "correct": False,
+             "why": "Disagreeing with what you expected is not the test — "
+                    "and a real result is never quietly left out"},
+            {"text": "A reading taken by a different person",
+             "correct": False,
+             "why": "Who took it does not make it anomalous. Whether it fits "
+                    "the others does"},
+            {"text": "A reading you decide to delete",
+             "correct": False,
+             "why": "It is reported and set aside with a reason. Deleting it "
+                    "is the one thing you must not do"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-07-e06",
+        "band": "easier",
+        "text": "What is an expected value?",
+        "options": [
+            {"text": "The average of all the readings you have taken so far "
+                     "in this investigation, worked out before the last run is "
+                     "done",
+             "correct": False,
+             "why": "That is your own mean. The expected value comes from "
+                    "outside your experiment"},
+            {"text": "The result you already know a pure sample should give",
+             "correct": True},
+            {"text": "The result you are hoping for",
+             "correct": False,
+             "why": "Hoping has no place in it. It is a known figure for a "
+                    "known substance"},
+            {"text": "The middle of the range a substance melts over",
+             "correct": False,
+             "why": "A pure substance barely has a range. The expected value "
+                    "is its sharp melting point"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-07-e07",
+        "band": "easier",
+        "text": "Salt spread on an icy road makes the ice melt at a "
+                "temperature where pure water would stay solid. Which idea "
+                "from this lesson is that?",
+        "options": [
+            {"text": "Salt gives out heat as it dissolves, and that heat is "
+                     "what melts the ice around each grain of it",
+             "correct": False,
+             "why": "Dissolving salt actually cools the water slightly. The "
+                    "melting point is what has moved"},
+            {"text": "A mixture melts higher than the pure substance",
+             "correct": False,
+             "why": "The wrong way round — and if it were true, salt would "
+                    "make an icy road worse"},
+            {"text": "A mixture melts lower than the pure substance",
+             "correct": True},
+            {"text": "Salt is insoluble in ice",
+             "correct": False,
+             "why": "Salt dissolves readily in the thin film of water on the "
+                    "ice, which is how it works at all"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c3-07-s05",
+        "band": "standard",
+        "text": "A pharmacist rejects a batch of aspirin because its melting "
+                "range is wider than a degree. What has that measurement "
+                "shown?",
+        "options": [
+            {"text": "That something else is present, but not what",
+             "correct": True},
+            {"text": "That the batch has been contaminated with a named "
+                     "substance that the melting range has identified for "
+                     "them",
+             "correct": False,
+             "why": "A melting range never names anything. Identifying the "
+                    "impurity is a separate job"},
+            {"text": "That the aspirin has gone off with age",
+             "correct": False,
+             "why": "It might have, and the measurement cannot say so. All it "
+                    "shows is that the sample is not one substance"},
+            {"text": "That the apparatus was heated too fast",
+             "correct": False,
+             "why": "Heating fast drags the readings up. It does not widen a "
+                    "pure sample's range into several degrees"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-07-s06",
+        "band": "standard",
+        "text": "Which of these is evidence that a white powder is pure?",
+        "options": [
+            {"text": "It weighs exactly what the label says it should, "
+                     "checked three times over on a balance that has been "
+                     "properly zeroed",
+             "correct": False,
+             "why": "Mass tells you how much you have, never what it is. Two "
+                    "powders together weigh the same as one"},
+            {"text": "It melts within a degree at the expected value, on "
+                     "repeated slow runs",
+             "correct": True},
+            {"text": "It looks the same all the way through under a hand "
+                     "lens",
+             "correct": False,
+             "why": "Two white powders ground together look like one white "
+                    "powder. This is the evidence that fails every time"},
+            {"text": "It dissolves completely in water, leaving nothing "
+                     "behind",
+             "correct": False,
+             "why": "That rules out an impurity that does not dissolve, and "
+                    "nothing else. A soluble impurity would pass it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-07-s07",
+        "band": "standard",
+        "text": "A shop compares a suspect bag of sugar with a sample it "
+                "knows is pure. What must be kept the same for the comparison "
+                "to be worth anything?",
+        "options": [
+            {"text": "The mass of powder put into each tube, weighed out to "
+                     "the same figure on the same balance before either of "
+                     "them is heated",
+             "correct": False,
+             "why": "A melting point does not depend on how much you have. It "
+                    "is the heating rate that has to match"},
+            {"text": "The person watching the tube",
+             "correct": False,
+             "why": "Helpful for consistency and not the thing that would "
+                    "wreck the comparison. Heating rate is"},
+            {"text": "The apparatus and the heating rate",
+             "correct": True},
+            {"text": "The room temperature both samples were stored at",
+             "correct": False,
+             "why": "Storage temperature does not change a melting point. The "
+                    "rate of heating during the run does"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-07-h05",
+        "band": "harder",
+        "text": "Why does an impurity make a solid start melting LOWER and "
+                "over a range, rather than simply melting at a different sharp "
+                "temperature?",
+        "options": [
+            {"text": "Because the impurity gets in the way of the regular "
+                     "arrangement, so less energy is needed and different "
+                     "regions give way at different temperatures",
+             "correct": True},
+            {"text": "Because the impurity melts first at its own melting "
+                     "point, and the rest follows once it has all turned to "
+                     "liquid",
+             "correct": False,
+             "why": "The impurity's own melting point is often far higher. "
+                    "What matters is that the arrangement is interrupted"},
+            {"text": "Because a mixture holds more heat than a pure substance "
+                     "does",
+             "correct": False,
+             "why": "Nothing here is about how much heat is stored. It is "
+                    "about how neatly the particles fit together"},
+            {"text": "Because the thermometer cannot keep up with a mixture",
+             "correct": False,
+             "why": "The thermometer behaves the same for both. The range is "
+                    "real, and it is a property of the sample"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-07-h06",
+        "band": "harder",
+        "text": "A gritter salting a road and a pharmacist rejecting a batch "
+                "are using the same physics. How do the two uses differ?",
+        "options": [
+            {"text": "The gritter is making a mixture and the pharmacist is "
+                     "making a pure substance, so one of them is doing "
+                     "chemistry and the other is not",
+             "correct": False,
+             "why": "Both are doing chemistry, and neither is MAKING "
+                    "anything. What differs is whether the effect is wanted"},
+            {"text": "The gritter is making a mixture and the pharmacist a "
+                     "pure substance",
+             "correct": True},
+            {"text": "The gritter is raising a melting point and the "
+                     "pharmacist is lowering one",
+             "correct": False,
+             "why": "Both are about a melting point being lowered. Salt on "
+                    "ice does not raise anything"},
+            {"text": "They are not the same physics at all — one is about "
+                     "melting and the other about purity",
+             "correct": False,
+             "why": "Purity is measured BY melting behaviour. That is what "
+                    "makes them the same physics"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-07-h07",
+        "band": "harder",
+        "text": "One of three runs on a batch disagrees with the other two. A "
+                "student averages all three and reports the mean. What is "
+                "wrong with that?",
+        "options": [
+            {"text": "Nothing — averaging is what you do with repeats, and "
+                     "taking the mean of three readings is more reliable than "
+                     "trusting any one of them",
+             "correct": False,
+             "why": "Averaging is right for repeats that agree. A reading you "
+                    "have reason to distrust must not be folded in"},
+            {"text": "Three runs is too few to average at all",
+             "correct": False,
+             "why": "Three is a reasonable number of repeats. The problem is "
+                    "which three, not how many"},
+            {"text": "It drags the answer towards a reading they already have "
+                     "reason to distrust, and hides the anomaly",
+             "correct": True},
+            {"text": "The odd run should be deleted from the table before "
+                     "averaging the rest",
+             "correct": False,
+             "why": "It is set aside with a reason written down, never "
+                    "deleted. Deleting it hides the same thing averaging "
+                    "does"},
+        ],
+        "figure": None,
+    },
 ]

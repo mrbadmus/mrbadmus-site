@@ -360,4 +360,248 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-04-e05",
+        "band": "easier",
+        "text": "What is a crystal?",
+        "options": [
+            {"text": "Any solid that is clear enough to see through, such as "
+                     "glass or ice",
+             "correct": False,
+             "why": "Being see-through has nothing to do with it. Salt "
+                    "crystals are opaque and metals are crystalline"},
+            {"text": "A solid that has been made by heating a solution",
+             "correct": False,
+             "why": "Slow evaporation on a windowsill makes the best crystals "
+                    "of all, and nothing is heated"},
+            {"text": "A very small piece of a solid",
+             "correct": False,
+             "why": "Crystals come metres long in the right conditions. Size "
+                    "is not the definition"},
+            {"text": "A solid whose particles sit in a regular repeating "
+                     "arrangement, giving flat faces and sharp edges",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-04-e06",
+        "band": "easier",
+        "text": "A geologist has rock salt dissolved and filtered, and needs "
+                "the mass of the salt today. Which method should she use?",
+        "options": [
+            {"text": "Boil it dry over a Bunsen",
+             "correct": True},
+            {"text": "Leave it on a windowsill for a week, because slow "
+                     "evaporation is the method that recovers the most of the "
+                     "solid",
+             "correct": False,
+             "why": "The mass recovered is the same either way, and she needs "
+                    "it today"},
+            {"text": "Filter it again through a fresh paper",
+             "correct": False,
+             "why": "The salt is dissolved, so it goes straight through. It "
+                    "has already been filtered once"},
+            {"text": "Distil it and weigh what comes over",
+             "correct": False,
+             "why": "Distilling keeps the water and leaves the salt behind. "
+                    "She would be weighing the wrong half"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-04-e07",
+        "band": "easier",
+        "text": "Salt pans around the Mediterranean flood a shallow bed with "
+                "sea water and let the sun take the water over weeks. What is "
+                "that?",
+        "options": [
+            {"text": "Distillation, done outdoors and on an enormous scale, "
+                     "with the sun supplying the heat instead of a burner",
+             "correct": False,
+             "why": "Nothing catches the vapour, and the water is thrown "
+                    "away. Distillation keeps the liquid"},
+            {"text": "Evaporation and crystallisation, at the scale of a "
+                     "field",
+             "correct": True},
+            {"text": "Filtration on a large scale",
+             "correct": False,
+             "why": "Nothing is poured through anything, and the salt was "
+                    "dissolved rather than in lumps"},
+            {"text": "Chromatography using the sand as the paper",
+             "correct": False,
+             "why": "Nothing climbs anything and nothing is being separated "
+                    "from another dissolved substance"},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c3-04-s05",
+        "band": "standard",
+        "text": "The instructions say to take the heat away while there is "
+                "still a little liquid in the dish, and let the last of it go "
+                "on its own. Why?",
+        "options": [
+            {"text": "Because the last of the liquid is the part that holds "
+                     "the impurities, and letting it go slowly leaves them "
+                     "behind in the dish",
+             "correct": False,
+             "why": "Anything dissolved stays in the dish however the last of "
+                    "the water goes. The reason is about damaging the "
+                    "crystals"},
+            {"text": "So that more of the solid is recovered",
+             "correct": False,
+             "why": "The mass recovered is the same either way. The solute "
+                    "cannot leave the dish"},
+            {"text": "Because the dish would crack if it were heated dry",
+             "correct": False,
+             "why": "An evaporating basin takes a dry Bunsen flame without "
+                    "trouble. It is the crystals that suffer"},
+            {"text": "So that the crystals are not over-heated and driven to "
+                     "powder",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-04-s06",
+        "band": "standard",
+        "text": "Two dishes hold the same solution on the same windowsill: "
+                "one wide and shallow, one narrow and deep. Which dries "
+                "first?",
+        "options": [
+            {"text": "The wide one, because more of its surface is open to "
+                     "the air",
+             "correct": True},
+            {"text": "The narrow one, because the solution in it is deeper "
+                     "and so is warmed right through by the sun much faster "
+                     "than a thin layer is",
+             "correct": False,
+             "why": "A deep body of liquid warms more slowly, not faster — "
+                    "and what matters is how much surface is open to the "
+                    "air"},
+            {"text": "They dry at the same time, because the solution and the "
+                     "room are the same",
+             "correct": False,
+             "why": "Evaporation happens at the surface, so the shape of the "
+                    "dish changes how fast it goes"},
+            {"text": "The wide one, because a shallow layer holds less "
+                     "solution",
+             "correct": False,
+             "why": "Right answer, wrong reason — the two dishes hold the "
+                    "same amount. It is the exposed surface that differs"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-04-s07",
+        "band": "standard",
+        "text": "Sea salt is made by evaporating sea water. Why is what comes "
+                "out not pure sodium chloride?",
+        "options": [
+            {"text": "Because the sun is not hot enough to drive off all of "
+                     "the water",
+             "correct": False,
+             "why": "The pans go dry. What makes it impure is the other "
+                    "dissolved substances, not leftover water"},
+            {"text": "Because sea water holds several dissolved substances, "
+                     "and evaporation leaves all of them behind together",
+             "correct": True},
+            {"text": "Because some of the sodium chloride evaporates with the "
+                     "water",
+             "correct": False,
+             "why": "Salt does not evaporate at anything like these "
+                    "temperatures. All of it stays"},
+            {"text": "Because sand blows into the pans",
+             "correct": False,
+             "why": "That would be a stray bit of grit, and it can be "
+                    "filtered out. The dissolved substances cannot"},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-04-h05",
+        "band": "harder",
+        "text": "A solution holds TWO dissolved solids. It is evaporated to "
+                "dryness. What is in the dish?",
+        "options": [
+            {"text": "The one that dissolves less readily, since the other "
+                     "one stays in solution right up until the last of the "
+                     "water goes and is then lost with it",
+             "correct": False,
+             "why": "Neither leaves with the water. Both are left in the dish "
+                    "together"},
+            {"text": "Whichever crystallises first, on its own",
+             "correct": False,
+             "why": "One may start first, and the other still comes out "
+                    "before the dish is dry. Both end up in it"},
+            {"text": "Neither — they cancel each other out",
+             "correct": False,
+             "why": "Nothing cancels. Evaporation removes the solvent and "
+                    "leaves everything that was dissolved"},
+            {"text": "Both of them, mixed together",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-04-h06",
+        "band": "harder",
+        "text": "A saturated copper sulfate solution is left on a windowsill "
+                "for a month in a flask with a stopper in it, and no crystals "
+                "form. Why not?",
+        "options": [
+            {"text": "The stopper keeps the solvent in, so the solution never "
+                     "becomes more concentrated than it already is",
+             "correct": True},
+            {"text": "The solution was not left for long enough for crystals "
+                     "to form",
+             "correct": False,
+             "why": "An open dish of the same solution gives crystals within "
+                    "days. Time is not what is missing"},
+            {"text": "Copper sulfate only crystallises when it is heated",
+             "correct": False,
+             "why": "The largest copper sulfate crystals are grown cold and "
+                    "slowly. Heating makes them smaller"},
+            {"text": "The flask is the wrong shape for crystals to grow in",
+             "correct": False,
+             "why": "Shape affects how fast the solvent leaves. With a "
+                    "stopper in, none leaves at all"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-04-h07",
+        "band": "harder",
+        "text": "A student writes: “Slow evaporation is the better method, "
+                "because you lose less of the solid into the air.” What is "
+                "wrong with that?",
+        "options": [
+            {"text": "Slow evaporation is worse, because leaving a dish "
+                     "standing for a week gives dust and dirt from the room "
+                     "plenty of time to settle into it",
+             "correct": False,
+             "why": "Contamination is a real practical worry and it is not "
+                    "what is wrong here. The stated reason is the error"},
+            {"text": "Nothing is lost into the air by either method, so the "
+                     "reason given is not a reason at all",
+             "correct": True},
+            {"text": "Boiling is the better method in every case",
+             "correct": False,
+             "why": "Neither method is better in every case. It depends on "
+                    "whether you want big crystals or a quick answer"},
+            {"text": "Slow evaporation gives smaller crystals, so it is worse "
+                     "for a display",
+             "correct": False,
+             "why": "The other way round. Slow growth is what gives large "
+                    "crystals"},
+        ],
+        "figure": None,
+    },
 ]

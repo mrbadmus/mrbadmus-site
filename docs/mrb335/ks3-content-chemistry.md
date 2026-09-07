@@ -230,3 +230,47 @@ giveaway tell that C1's first draft had. Worth passing on before that lane
 commits much more of it.
 
 ---
+## C3 — Separating mixtures (7 lessons)
+
+**Quota:** 22 needed per band; 23 added, taking every band to **51** across the
+unit. Spread 4 · 4 · 3 · 3 · 3 · 3 · 3 per band.
+
+| lesson | easier | standard | harder |
+|---|---|---|---|
+| 01 pure-or-mixture | e05–e08 | s05–s08 | h05–h08 |
+| 02 dissolving-and-solutions | e05–e08 | s05–s08 | h05–h08 |
+| 03 filtration | e05–e07 | s05–s07 | h05–h07 |
+| 04 evaporation-and-crystallisation | e05–e07 | s05–s07 | h05–h07 |
+| 05 distillation | e05–e07 | s05–s07 | h05–h07 |
+| 06 chromatography | e05–e07 | s05–s07 | h05–h07 |
+| 07 proving-something-is-pure | e05–e07 | s05–s07 | h05–h07 |
+
+Final band totals: easier 51, standard 51, harder 51 — over the floor of 50,
+one short of the 52 the brief aims at. Left at 51 rather than padded: the
+seven lessons divide 23 evenly at 4 · 4 · 3 · 3 · 3 · 3 · 3, and a
+twenty-fourth row would have gone somewhere for the sake of the number.
+
+Positions rebalanced to 18 · 20 · 16 · 15 across the four slots. Length tell
+brought to 22.1% by trimming sixteen padded distractors — the same correction
+C2 needed, applied before the commit this time rather than after it.
+
+### Review fixes before commit
+
+**1 · `c3-02-h08` — the stem let a bigger cause in.** It asked why an opened
+can left in a warm room goes flat within an hour. The honest answer is *because
+it was opened*; the lesson's point is about temperature. Rewritten to compare
+two cans opened at the same moment, one warm and one in a fridge, so the only
+variable left is the one the lesson teaches.
+
+**2 · Two `why` fields left correcting something the child could no longer
+see.** Trimming a padded distractor can orphan its `why`: `c3-03-e07`'s
+correction still argued about a microscope the option no longer mentioned, and
+`c3-03-h06`'s distractor had been trimmed into nonsense ("then wet the paper").
+Both rewritten. A lesson for the remaining units: after a length trim, re-read
+the `why` under it.
+
+Gates at commit: chemistry-only `validate_lesson` clean across all ten units
+(894 rows), `verify_answer_positions` OK, `verify_answer_lengths` green on
+`bank/C3`.
+
+---

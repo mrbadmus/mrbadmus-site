@@ -339,4 +339,315 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-02-e05",
+        "band": "easier",
+        "text": "What does it mean to say a solution is saturated?",
+        "options": [
+            {"text": "No more solute will dissolve in it at that temperature",
+             "correct": True},
+            {"text": "It has been stirred for so long that every last grain "
+                     "of the solid has finally been broken up and spread out",
+             "correct": False,
+             "why": "Stirring changes how fast, never how much. A saturated "
+                    "solution stays saturated however long you stir it"},
+            {"text": "It is completely full to the top of the beaker",
+             "correct": False,
+             "why": "The word is about how much solute the liquid holds, not "
+                    "about how full the glass is"},
+            {"text": "The solute in it has stopped moving about",
+             "correct": False,
+             "why": "Dissolved particles never stop moving. Saturated means "
+                    "no more can join them"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-02-e06",
+        "band": "easier",
+        "text": "Nail varnish will not dissolve in water, but it dissolves "
+                "easily in nail varnish remover. What is the remover called?",
+        "options": [
+            {"text": "The solute, because it is the substance doing the work "
+                     "of breaking the varnish up and spreading it out",
+             "correct": False,
+             "why": "The solute is the thing that dissolves — here, the "
+                    "varnish. The liquid it dissolves in is the solvent"},
+            {"text": "The solvent",
+             "correct": True},
+            {"text": "The solution",
+             "correct": False,
+             "why": "The solution is the two of them together, once the "
+                    "varnish has dissolved in the remover"},
+            {"text": "The residue",
+             "correct": False,
+             "why": "That word belongs to filtering. It is the solid left "
+                    "behind in the paper"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-02-e07",
+        "band": "easier",
+        "text": "A solution is described as even. What does that mean?",
+        "options": [
+            {"text": "It has the same amount of solvent as it has solute, "
+                     "measured out carefully before the two were mixed",
+             "correct": False,
+             "why": "The amounts do not have to match at all. Even is about "
+                    "the spread, not the recipe"},
+            {"text": "It has been left standing until the solute has settled "
+                     "flat",
+             "correct": False,
+             "why": "A solute that settles has not dissolved. A solution "
+                    "never settles out"},
+            {"text": "Every spoonful of it holds the same amount of solute",
+             "correct": True},
+            {"text": "Its surface is flat and level in the beaker",
+             "correct": False,
+             "why": "Every liquid's surface is level. The word is about what "
+                    "is in it, not about its shape"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-02-e08",
+        "band": "easier",
+        "text": "100 g of water takes 35.8 g of salt at 10 °C and 38.1 g at "
+                "80 °C. What does that pair of numbers show about salt?",
+        "options": [
+            {"text": "That salt dissolves far better in hot water, which is "
+                     "why it goes into a hot pan so much faster than a cold "
+                     "one",
+             "correct": False,
+             "why": "The difference is about 2 g in 36 — barely anything. "
+                    "Going in FASTER is a different question from how much "
+                    "goes in"},
+            {"text": "That salt becomes less soluble as the water is heated",
+             "correct": False,
+             "why": "38.1 is larger than 35.8, so it goes very slightly the "
+                    "other way. Gases are the ones that fall"},
+            {"text": "That salt stops dissolving completely above 80 °C",
+             "correct": False,
+             "why": "Nothing in these two numbers says anything about "
+                    "temperatures above 80 °C"},
+            {"text": "Heating the water hardly changes how much salt will "
+                     "dissolve",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c3-02-s05",
+        "band": "standard",
+        "text": "Two beakers each hold 100 g of water — one at 20 °C, one at "
+                "80 °C — and 300 g of sugar is tipped into each. What is on "
+                "the bottom of each afterwards?",
+        "options": [
+            {"text": "More undissolved sugar in the cold beaker",
+             "correct": True},
+            {"text": "Nothing in either, because sugar dissolves completely "
+                     "in water at any temperature you can reach in a beaker",
+             "correct": False,
+             "why": "There is a limit at every temperature. 300 g is well "
+                    "past it in cold water"},
+            {"text": "More undissolved sugar in the hot beaker",
+             "correct": False,
+             "why": "The wrong way round for a solid. Hot water takes nearly "
+                    "twice as much sugar as cold"},
+            {"text": "The same amount in each, because both hold 100 g of "
+                     "water",
+             "correct": False,
+             "why": "The amount of water is the same and the temperature is "
+                    "not, and temperature is what changes the limit"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-02-s06",
+        "band": "standard",
+        "text": "Calcium sulfate gets slightly LESS soluble as water warms, "
+                "which is why it plates out inside hot pipes. What does that "
+                "do to the rule “hot water dissolves more”?",
+        "options": [
+            {"text": "It disproves it, so the rule should be replaced by "
+                     "“cold water dissolves more” instead",
+             "correct": False,
+             "why": "That would be just as wrong in the other direction. "
+                    "Sugar really does go in better hot"},
+            {"text": "It shows the rule is a rough one about solids, with "
+                     "exceptions in both directions",
+             "correct": True},
+            {"text": "Nothing — calcium sulfate is an exception and a rule is "
+                     "allowed one",
+             "correct": False,
+             "why": "It is not a lone exception. Salt barely changes, and "
+                    "every gas runs the other way"},
+            {"text": "It shows calcium sulfate is insoluble",
+             "correct": False,
+             "why": "It dissolves, or there would be nothing in the water to "
+                    "plate out on the pipe"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-02-s07",
+        "band": "standard",
+        "text": "A beaker holds a clear sugar solution. How would you get the "
+                "sugar back as a solid?",
+        "options": [
+            {"text": "Filter it through a fine paper, which holds the sugar "
+                     "back and lets the water run through into a flask below",
+             "correct": False,
+             "why": "Dissolved sugar is single particles, far smaller than "
+                    "any gap in a paper. It goes straight through"},
+            {"text": "Cool it in a fridge until the sugar sinks",
+             "correct": False,
+             "why": "Cooling brings some out of a saturated solution, and "
+                    "most of it stays dissolved. It does not all sink"},
+            {"text": "Evaporate the water and leave the sugar behind",
+             "correct": True},
+            {"text": "Stir it hard in the opposite direction",
+             "correct": False,
+             "why": "Nothing about stirring undoes dissolving. Direction is "
+                    "not a variable here"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-02-s08",
+        "band": "standard",
+        "text": "Which of these is a solution?",
+        "options": [
+            {"text": "Sand stirred into water, which goes cloudy at first and "
+                     "then settles out into a layer on the bottom",
+             "correct": False,
+             "why": "Sand is insoluble. Anything that settles out has not "
+                    "dissolved"},
+            {"text": "Chalk powder shaken up in water",
+             "correct": False,
+             "why": "Also insoluble — that is why it goes cloudy rather than "
+                    "clear"},
+            {"text": "Oil floating on water",
+             "correct": False,
+             "why": "It is a mixture, but the oil has not dissolved. You can "
+                    "see the two layers"},
+            {"text": "Sea water",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-02-h05",
+        "band": "harder",
+        "text": "100 g of water at 40 °C dissolves 240 g of sugar. How much "
+                "sugar will dissolve in 50 g of water at the same "
+                "temperature?",
+        "options": [
+            {"text": "120 g",
+             "correct": True},
+            {"text": "240 g, because the temperature has not changed and the "
+                     "temperature is what sets the limit",
+             "correct": False,
+             "why": "Temperature sets how much goes into a GIVEN amount of "
+                    "water. Half the water holds half as much"},
+            {"text": "480 g",
+             "correct": False,
+             "why": "That is doubling where you should halve. Less solvent "
+                    "means less solute"},
+            {"text": "190 g",
+             "correct": False,
+             "why": "190 g is the figure for 100 g of water at 10 °C. It is "
+                    "the wrong temperature and the wrong amount of water"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-02-h06",
+        "band": "harder",
+        "text": "A saturated salt solution made in 100 g of water at 80 °C is "
+                "cooled to 10 °C. Salt goes from 38.1 g to 35.8 g per 100 g of "
+                "water. What happens?",
+        "options": [
+            {"text": "All 38.1 g comes out, because a cold solution cannot "
+                     "hold any salt at all",
+             "correct": False,
+             "why": "Cold water holds 35.8 g perfectly well. Only what no "
+                    "longer fits comes out"},
+            {"text": "About 2.3 g of salt comes out of solution",
+             "correct": True},
+            {"text": "Nothing comes out, because the salt is already "
+                     "dissolved and dissolved salt stays dissolved however "
+                     "cold it gets",
+             "correct": False,
+             "why": "A solution that becomes over-full does drop its excess. "
+                    "Here it is a small amount, not none"},
+            {"text": "About 2.3 g of water evaporates instead",
+             "correct": False,
+             "why": "Cooling does not drive water off. It is the salt that no "
+                    "longer fits"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-02-h07",
+        "band": "harder",
+        "text": "Solution A is 10 g of salt in 100 g of water. Solution B is "
+                "10 g of salt in 200 g of water. How do they compare?",
+        "options": [
+            {"text": "A holds more salt than B, because the same mass of salt "
+                     "in less water counts as a larger amount of solute",
+             "correct": False,
+             "why": "Both hold exactly 10 g of salt. What differs is how much "
+                    "water it is spread through"},
+            {"text": "B holds more salt, because there is more water for it "
+                     "to dissolve in",
+             "correct": False,
+             "why": "More water could hold more, but only 10 g was added. "
+                    "Capacity is not the same as contents"},
+            {"text": "They hold the same mass of salt, and B is more dilute",
+             "correct": True},
+            {"text": "They are identical in every way, because the same salt "
+                     "was used",
+             "correct": False,
+             "why": "Taste a spoonful of each and they differ. B has the same "
+                    "salt spread through twice the water"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-02-h08",
+        "band": "harder",
+        "text": "Two cans of the same drink are opened at the same "
+                "moment; one is left in a warm room and one in a "
+                "fridge. The warm one goes flat first. Why?",
+        "options": [
+            {"text": "The carbon dioxide reacts with the air, and the "
+                     "products of that reaction are what escape from the open "
+                     "can",
+             "correct": False,
+             "why": "Nothing reacts. The gas that leaves is the same carbon "
+                    "dioxide that was dissolved in it"},
+            {"text": "The drink evaporates, and what is left is too "
+                     "concentrated to hold any gas",
+             "correct": False,
+             "why": "Very little liquid is lost in an hour, and the drink "
+                    "would still be fizzy if it were"},
+            {"text": "The bubbles were made by the can rather than by "
+                     "anything dissolved in the drink",
+             "correct": False,
+             "why": "The can holds nothing but the drink. The gas was "
+                    "dissolved in the liquid all along"},
+            {"text": "Gas was dissolved in it, and gases become less soluble "
+                     "as the liquid warms",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

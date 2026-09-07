@@ -365,4 +365,310 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-01-e05",
+        "band": "easier",
+        "text": "What does a chemist mean by the composition of a sample?",
+        "options": [
+            {"text": "What it is made of, and how much of each",
+             "correct": True},
+            {"text": "How much of it there is, in grams",
+             "correct": False,
+             "why": "That is a mass. A litre of sea water and a spoonful of "
+                    "it have the same composition"},
+            {"text": "Whether it has anything dirty or harmful in it",
+             "correct": False,
+             "why": "That is a safety judgement. Pure sodium is clean and "
+                    "will set fire to your hand"},
+            {"text": "Where the sample came from originally",
+             "correct": False,
+             "why": "Origin is never the test. Factory sugar is pure and "
+                    "natural sea water is not"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-01-e06",
+        "band": "easier",
+        "text": "Road salt is deliberately not pure sodium chloride. What "
+                "does that tell you about the word pure?",
+        "options": [
+            {"text": "That a mixture is never as good as the pure substance "
+                     "would be if you could afford to buy enough of it",
+             "correct": False,
+             "why": "Road salt is a mixture BECAUSE the mixture works better. "
+                    "Pure is not a quality rating"},
+            {"text": "That being pure is not always what you want",
+             "correct": True},
+            {"text": "That road salt has been contaminated on the way to the "
+                     "depot",
+             "correct": False,
+             "why": "Nothing went wrong. What is in it was put there on "
+                    "purpose"},
+            {"text": "That sodium chloride cannot be made pure",
+             "correct": False,
+             "why": "It can, and the salt in a laboratory is. It is not worth "
+                    "the cost for a road"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-01-e07",
+        "band": "easier",
+        "text": "Pure gold is soft enough to mark with a fingernail. What is "
+                "done about that when a ring is made?",
+        "options": [
+            {"text": "It is hammered for a long time, which is what hardens a "
+                     "soft metal without anything having to be added to it",
+             "correct": False,
+             "why": "Hammering helps a little and wears off. A ring is hard "
+                    "because other metals were added to the gold"},
+            {"text": "It is cooled to make it harder",
+             "correct": False,
+             "why": "A ring is worn at room temperature and would be soft "
+                    "again at once. The hardness comes from the mixture"},
+            {"text": "Other metals are added on purpose",
+             "correct": True},
+            {"text": "It is purified further, since a purer gold is harder",
+             "correct": False,
+             "why": "The opposite. The purer the gold, the softer it is"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-01-e08",
+        "band": "easier",
+        "text": "A carton says 100% pure orange juice. What is that "
+                "sentence claiming?",
+        "options": [
+            {"text": "That the juice contains only one substance",
+             "correct": False,
+             "why": "Juice holds water, sugars, acids and dozens of other "
+                    "substances. No drink you can buy is one substance"},
+            {"text": "That it is safe to drink and has been tested",
+             "correct": False,
+             "why": "Safety is a different claim, made in a different place "
+                    "on the packaging"},
+            {"text": "That it is safe to drink",
+             "correct": False,
+             "why": "Juice varies with the fruit. A fixed composition is what "
+                    "a PURE substance has"},
+            {"text": "That nothing has been added to it",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c3-01-s05",
+        "band": "standard",
+        "text": "Steel is iron with a little carbon added, and the amount of "
+                "carbon is chosen by the steelmaker. Pure or mixture?",
+        "options": [
+            {"text": "Mixture, and deliberately so",
+             "correct": True},
+            {"text": "Pure, because both iron and carbon are elements and "
+                     "nothing else has been allowed into it",
+             "correct": False,
+             "why": "Two substances in one sample is a mixture, whether or "
+                    "not each of them is an element"},
+            {"text": "Pure, because it is uniform all the way through",
+             "correct": False,
+             "why": "Uniform appearance is the evidence that has failed in "
+                    "every lesson of this unit"},
+            {"text": "Mixture, because the carbon was an accident of "
+                     "smelting",
+             "correct": False,
+             "why": "The verdict is right and the reason is not. The carbon "
+                    "is put in on purpose, to a chosen amount"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-01-s06",
+        "band": "standard",
+        "text": "Two bottles of clear colourless liquid: one is distilled "
+                "water, the other is tap water filtered until nothing can be "
+                "seen in it. Which is pure?",
+        "options": [
+            {"text": "The filtered tap water, because filtering removes "
+                     "everything that was in it and leaves only the water "
+                     "behind",
+             "correct": False,
+             "why": "Filtering removes what is not dissolved. Everything "
+                    "dissolved goes straight through the paper"},
+            {"text": "The distilled water",
+             "correct": True},
+            {"text": "Both, because both are clear",
+             "correct": False,
+             "why": "Clear is not pure. Sea water can be made perfectly "
+                    "clear"},
+            {"text": "Neither, because no liquid is ever completely pure",
+             "correct": False,
+             "why": "Distilled water is treated as pure for this purpose. "
+                    "This sort of answer refuses a question that has one"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-01-s07",
+        "band": "standard",
+        "text": "A painkiller is sold at 99.9% pure, and the missing 0.1% is "
+                "named and limited on the packet. Why does naming it matter?",
+        "options": [
+            {"text": "Because a substance cannot legally be called pure "
+                     "unless every other substance in it is listed",
+             "correct": False,
+             "why": "The law is looser than that, which is exactly why a "
+                    "juice carton can say 100% pure and name nothing"},
+            {"text": "Because naming it makes the tablet more pure",
+             "correct": False,
+             "why": "Naming changes nothing about the composition. It changes "
+                    "what the buyer can check"},
+            {"text": "Because the tablet is swallowed by someone who cannot "
+                     "inspect it, so what else is in it has to be known and "
+                     "controlled",
+             "correct": True},
+            {"text": "Because 0.1% is a large enough share to change how the "
+                     "painkiller works",
+             "correct": False,
+             "why": "It is a tiny share, and that is not the point. The point "
+                    "is that it is known rather than unknown"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-01-s08",
+        "band": "standard",
+        "text": "Which single result would show that a clear colourless "
+                "liquid is a mixture rather than a pure substance?",
+        "options": [
+            {"text": "It has no smell at all, which a pure substance almost "
+                     "always has and a mixture almost never does",
+             "correct": False,
+             "why": "There is no such rule. Distilled water is pure and has "
+                    "no smell"},
+            {"text": "It pours easily and leaves no film on the glass",
+             "correct": False,
+             "why": "That describes how it behaves as a liquid. It says "
+                    "nothing about how many substances are in it"},
+            {"text": "It is completely clear with nothing floating in it",
+             "correct": False,
+             "why": "Clear rules out undissolved bits and nothing more. Sea "
+                    "water is clear"},
+            {"text": "Boiling it dry leaves a solid residue behind",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-01-h05",
+        "band": "harder",
+        "text": "Air and oxygen are both invisible. Brass and copper both "
+                "look like metal. Sea water and distilled water both look like "
+                "water. What one point do the three pairs make?",
+        "options": [
+            {"text": "That appearance never decides purity",
+             "correct": True},
+            {"text": "That every mixture has a pure substance that looks "
+                     "exactly like it, so purity always comes in pairs",
+             "correct": False,
+             "why": "Neat, and not a rule. The three pairs were chosen to "
+                    "make a point, not because pairing always happens"},
+            {"text": "That mixtures are always harder to identify than pure "
+                     "substances",
+             "correct": False,
+             "why": "Neither is identified by eye. The difficulty is the same "
+                    "in both directions"},
+            {"text": "That a pure substance is always the more useful of the "
+                     "two",
+             "correct": False,
+             "why": "Brass, sea water and air are all more useful than their "
+                    "partners for most jobs"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-01-h06",
+        "band": "harder",
+        "text": "9-carat gold is only 37.5% gold and a ring made of it lasts "
+                "for decades. What does that show about the word pure?",
+        "options": [
+            {"text": "That a jeweller uses the word differently from a "
+                     "chemist",
+             "correct": False,
+             "why": "The carat number is an honest statement of composition. "
+                    "Nobody is using the word loosely here"},
+            {"text": "That purity is a statement about composition, not about "
+                     "how good something is",
+             "correct": True},
+            {"text": "That the ring would be better if it were purer",
+             "correct": False,
+             "why": "A pure gold ring would mark with a fingernail. Purer is "
+                    "worse for this job"},
+            {"text": "That 9-carat gold is a compound of gold with copper and "
+                     "silver",
+             "correct": False,
+             "why": "Nothing is chemically joined, and the proportions can be "
+                    "chosen. That is a mixture"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-01-h07",
+        "band": "harder",
+        "text": "Which change would turn a mixture into a pure substance?",
+        "options": [
+            {"text": "Filtering out everything you can see in it",
+             "correct": False,
+             "why": "That removes the undissolved solids only. Anything "
+                    "dissolved goes through with the liquid"},
+            {"text": "Stirring it until it is uniform all the way through",
+             "correct": False,
+             "why": "Stirring makes a mixture look more convincing and "
+                    "changes nothing about what is in it"},
+            {"text": "Separating out everything except one substance",
+             "correct": True},
+            {"text": "Sterilising it until nothing living is left in it "
+                     "anywhere, so that it is completely safe to drink or to "
+                     "handle",
+             "correct": False,
+             "why": "Purity is a count of substances, not a safety rating. "
+                    "Everything dissolved survives"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-01-h08",
+        "band": "harder",
+        "text": "A student says a pure substance must have been made in a "
+                "factory, because nature always mixes things up. What is the "
+                "best reply?",
+        "options": [
+            {"text": "They are right in practice — no natural sample is pure "
+                     "enough",
+             "correct": False,
+             "why": "Plenty have. A diamond is one, and so is a quartz "
+                    "crystal"},
+            {"text": "They are right, because purifying is something only a "
+                     "chemist can do",
+             "correct": False,
+             "why": "Purity is about what is in the sample, not about who "
+                    "handled it. Nature makes pure substances too"},
+            {"text": "Factory substances are usually less pure, because "
+                     "things get added",
+             "correct": False,
+             "why": "This disagrees with the student for the wrong reason. "
+                    "The test is composition, not origin"},
+            {"text": "A natural diamond is almost pure carbon, and where a "
+                     "sample came from is never the test",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

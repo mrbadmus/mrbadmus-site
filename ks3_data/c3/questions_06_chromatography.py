@@ -369,4 +369,247 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-06-e05",
+        "band": "easier",
+        "text": "What is the solvent front on a chromatogram?",
+        "options": [
+            {"text": "The lowest edge of the paper, the part that is standing "
+                     "in the liquid in the bottom of the tank",
+             "correct": False,
+             "why": "That is where the solvent starts. The front is where it "
+                    "has climbed TO"},
+            {"text": "The highest point the solvent has climbed to",
+             "correct": True},
+            {"text": "The pencil line the spots are placed on",
+             "correct": False,
+             "why": "That is the baseline. The front is the solvent's "
+                    "furthest point"},
+            {"text": "The first spot to appear as the paper dries",
+             "correct": False,
+             "why": "The front is a line made by the solvent itself, not by "
+                    "any of the dyes"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-06-e06",
+        "band": "easier",
+        "text": "What is a chromatogram?",
+        "options": [
+            {"text": "The tank of solvent that the paper is stood in, "
+                     "together with the lid that stops the solvent "
+                     "evaporating out of it",
+             "correct": False,
+             "why": "That is the apparatus. The chromatogram is the result "
+                    "you take out of it"},
+            {"text": "The pencil line the spots are placed on",
+             "correct": False,
+             "why": "That is the baseline, which is one part of the finished "
+                    "paper"},
+            {"text": "The finished paper, with each substance separated into "
+                     "a spot of its own",
+             "correct": True},
+            {"text": "The machine used to measure the heights",
+             "correct": False,
+             "why": "The heights are measured with a ruler. There is no "
+                    "machine in this method"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-06-e07",
+        "band": "easier",
+        "text": "Black ink from two different manufacturers is run on the "
+                "same paper and gives two different sets of spots. What does "
+                "that show?",
+        "options": [
+            {"text": "That one of the two inks has gone off, since a fresh "
+                     "black ink always separates into the same standard set of "
+                     "dyes",
+             "correct": False,
+             "why": "There is no standard set. Each maker chooses its own "
+                    "recipe for black"},
+            {"text": "That one of them was run in the wrong solvent",
+             "correct": False,
+             "why": "They were run on the same paper in the same solvent, "
+                    "which is exactly what makes the comparison fair"},
+            {"text": "That black is not really a colour",
+             "correct": False,
+             "why": "Nothing here is about colour theory. It is about what is "
+                    "dissolved in each ink"},
+            {"text": "That each maker mixes its black from a different set of "
+                     "dyes",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-335 top-up ───────────────────────────────────────
+    {
+        "id": "c3-06-s05",
+        "band": "standard",
+        "text": "One dye travels almost to the solvent front. What does that "
+                "say about it?",
+        "options": [
+            {"text": "That there is more of it in the ink than of any other "
+                     "dye",
+             "correct": False,
+             "why": "How much there is changes how dark the spot is, never "
+                    "how high it goes"},
+            {"text": "That it dissolves in the moving solvent far more "
+                     "readily than it sticks to the paper",
+             "correct": True},
+            {"text": "That its particles are the smallest in the ink",
+             "correct": False,
+             "why": "Nothing here is about size. It is a tug of war between "
+                    "the paper and the solvent"},
+            {"text": "That it was spotted on last",
+             "correct": False,
+             "why": "All the spots start on the same baseline at the same "
+                    "time. The order of spotting changes nothing"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-06-s06",
+        "band": "standard",
+        "text": "One lane's spot never leaves the baseline at all, even "
+                "though the solvent has climbed right past it. What does that "
+                "mean?",
+        "options": [
+            {"text": "That the spot was drawn in pencil rather than being "
+                     "made with ink, so there was never any dye there for the "
+                     "solvent to pick up",
+             "correct": False,
+             "why": "A good point about pencil, and this lane holds a real "
+                    "sample. It is a dye that will not move"},
+            {"text": "That there was too little of that substance to move",
+             "correct": False,
+             "why": "Even a faint trace travels if the solvent can carry it. "
+                    "Amount changes darkness, not height"},
+            {"text": "That substance sticks to the paper so strongly that the "
+                     "solvent cannot carry it",
+             "correct": True},
+            {"text": "That the solvent never reached that lane",
+             "correct": False,
+             "why": "The solvent rises across the whole width of the paper at "
+                    "once, so every lane gets it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-06-s07",
+        "band": "standard",
+        "text": "A student puts the ink on the baseline as one blob a "
+                "centimetre across, instead of a small dot. What goes wrong?",
+        "options": [
+            {"text": "The blob is too heavy, so the paper sags into the "
+                     "solvent and the run is drowned before it can start",
+             "correct": False,
+             "why": "A drop of ink weighs nothing. What it ruins is the "
+                    "spots, not the paper"},
+            {"text": "The dyes travel further, because there is more of them "
+                     "to be carried",
+             "correct": False,
+             "why": "Height does not depend on amount. A big blob gives big "
+                    "spots at the same heights"},
+            {"text": "The blob dissolves the pencil line",
+             "correct": False,
+             "why": "Graphite is insoluble, which is exactly why the baseline "
+                    "is drawn in pencil"},
+            {"text": "The dyes spread sideways and their spots overlap, so "
+                     "the separated colours cannot be told apart",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-335 top-up ─────────────────────────────────────────
+    {
+        "id": "c3-06-h05",
+        "band": "harder",
+        "text": "A height in centimetres means nothing in another laboratory, "
+                "but a spot's distance divided by the solvent's distance does. "
+                "Why?",
+        "options": [
+            {"text": "Because dividing turns the measurement into a "
+                     "percentage",
+             "correct": False,
+             "why": "It is a ratio with no units at all rather than a "
+                    "percentage, and agreeing units is not what fixes the "
+                    "problem"},
+            {"text": "Because dividing removes the effect of how far the "
+                     "solvent happened to run in that particular tank",
+             "correct": True},
+            {"text": "Because the number that comes out is always the same "
+                     "for every dye",
+             "correct": False,
+             "why": "It differs from dye to dye — which is the whole point of "
+                    "quoting it"},
+            {"text": "Because the second laboratory can then use whichever "
+                     "solvent it prefers",
+             "correct": False,
+             "why": "Change the solvent and the value changes too. What is "
+                    "removed is the run's length, not the solvent's "
+                    "identity"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-06-h06",
+        "band": "harder",
+        "text": "A dye's ratio of spot distance to solvent distance is 0.40, "
+                "and on this run the solvent front travelled 12.0 cm from the "
+                "baseline. How far did the dye travel?",
+        "options": [
+            {"text": "30.0 cm",
+             "correct": False,
+             "why": "That is dividing 12.0 by 0.40. A spot can never travel "
+                    "further than the solvent that carries it"},
+            {"text": "12.4 cm",
+             "correct": False,
+             "why": "That is adding rather than multiplying, and it puts the "
+                    "spot above the solvent front"},
+            {"text": "4.8 cm",
+             "correct": True},
+            {"text": "It cannot be worked out without knowing how much dye "
+                     "was spotted onto the baseline in the first place",
+             "correct": False,
+             "why": "The amount changes how dark the spot is, never how far "
+                    "it goes. The two numbers given are enough"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c3-06-h07",
+        "band": "harder",
+        "text": "Why would chromatography be useless for separating sand from "
+                "water?",
+        "options": [
+            {"text": "Because sand is far too heavy to be carried up a piece "
+                     "of paper against gravity, however long the run is left "
+                     "to go on for",
+             "correct": False,
+             "why": "Weight is not the obstacle — the solvent climbs against "
+                    "gravity carrying dissolved dyes quite happily. Sand is "
+                    "not dissolved at all"},
+            {"text": "Because sand has no colour, so the spots could not be "
+                     "seen",
+             "correct": False,
+             "why": "Colourless substances separate perfectly well and are "
+                    "then sprayed to show them. The problem here is earlier "
+                    "than that"},
+            {"text": "Because water cannot be used as the solvent",
+             "correct": False,
+             "why": "Water is a perfectly good chromatography solvent. The "
+                    "trouble is that the sand is a solid in lumps"},
+            {"text": "Because sand is not dissolved, so there is nothing for "
+                     "the solvent to carry",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]
