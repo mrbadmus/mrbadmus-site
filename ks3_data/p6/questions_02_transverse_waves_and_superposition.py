@@ -369,11 +369,10 @@ QUESTIONS = [
         "band": "standard",
         "text": "A crest of amplitude 5 cm meets a trough of amplitude 2 cm. "
                 "What is the displacement there at that instant?",
-        "options": [
+        "options": [            {"text": "3 cm upwards", "correct": True},
             {"text": "7 cm upwards", "correct": False,
              "why": "That adds them as though both were crests; a trough "
                     "counts the other way."},
-            {"text": "3 cm upwards", "correct": True},
             {"text": "3 cm downwards", "correct": False,
              "why": "The size is right but the direction is not: the crest is "
                     "the larger of the two."},
@@ -388,14 +387,13 @@ QUESTIONS = [
         "band": "standard",
         "text": "A ripple reflects off the wall of a tank. What can then "
                 "happen to it?",
-        "options": [
+        "options": [            {"text": "It travels back and can overlap with the waves still "
+                     "arriving",
+             "correct": True},
             {"text": "It stops at the wall, having given up its energy",
              "correct": False,
              "why": "Some is absorbed, but a reflected ripple travels back "
                     "across the tank."},
-            {"text": "It travels back and can overlap with the waves still "
-                     "arriving",
-             "correct": True},
             {"text": "It travels back at half the speed it arrived with",
              "correct": False,
              "why": "The speed is set by the water, and reflecting does not "

@@ -351,11 +351,10 @@ QUESTIONS = [
         "id": "p6-03-e06",
         "band": "easier",
         "text": "What does a microphone turn a vibration into?",
-        "options": [
+        "options": [            {"text": "A changing electrical signal", "correct": True},
             {"text": "A louder sound", "correct": False,
              "why": "Making a sound louder is a loudspeaker's job, at the "
                     "other end of the chain."},
-            {"text": "A changing electrical signal", "correct": True},
             {"text": "A beam of light carrying the note", "correct": False,
              "why": "Nothing in a microphone produces light; it produces an "
                     "electrical signal."},
@@ -398,24 +397,23 @@ QUESTIONS = [
         "band": "standard",
         "text": "A loudspeaker is playing, and a hand is pressed firmly on "
                 "the cone. What happens?",
-        "options": [
-            {"text": "The sound gets louder, because the hand adds to the "
+        "options": [            {"text": "The sound gets louder, because the hand adds to the "
                      "push",
              "correct": False,
              "why": "The hand stops the cone rather than helping it; there is "
                     "nothing left to disturb the air."},
-            {"text": "The sound stops, because the cone can no longer "
-                     "vibrate",
-             "correct": True},
+            {"text": "The note gets lower, because the cone is now heavier",
+             "correct": False,
+             "why": "The cone is held still, not merely loaded, so there is "
+                    "no note at all."},
             {"text": "The sound carries on, because the signal is still "
                      "arriving",
              "correct": False,
              "why": "The signal arrives, but nothing turns it into a "
                     "disturbance in the air."},
-            {"text": "The note gets lower, because the cone is now heavier",
-             "correct": False,
-             "why": "The cone is held still, not merely loaded, so there is "
-                    "no note at all."},
+            {"text": "The sound stops, because the cone can no longer "
+                     "vibrate",
+             "correct": True},
         ],
         "figure": None,
     },
@@ -452,13 +450,12 @@ QUESTIONS = [
         "text": "A ringing bell is put inside a sealed box lined with thick "
                 "foam and almost nothing is heard. Is the bell still "
                 "vibrating?",
-        "options": [
+        "options": [            {"text": "Yes, and the foam is absorbing the disturbance before "
+                     "it gets out",
+             "correct": True},
             {"text": "No — the foam stops it moving", "correct": False,
              "why": "The foam never touches the bell; it absorbs the "
                     "disturbance travelling through the air."},
-            {"text": "Yes, and the foam is absorbing the disturbance before "
-                     "it gets out",
-             "correct": True},
             {"text": "No — sound cannot be made inside a closed box",
              "correct": False,
              "why": "The box is full of air, so the bell makes sound "

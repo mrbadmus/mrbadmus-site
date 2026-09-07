@@ -325,17 +325,16 @@ QUESTIONS = [
         "band": "easier",
         "text": "A place in a sound wave where the air is pulled further "
                 "apart is called a…",
-        "options": [
-            {"text": "compression", "correct": False,
+        "options": [            {"text": "compression", "correct": False,
              "why": "A compression is the opposite: a place where the air is "
                     "bunched together."},
-            {"text": "rarefaction", "correct": True},
-            {"text": "trough", "correct": False,
-             "why": "Troughs belong to transverse waves, where the surface "
-                    "dips below its rest level."},
             {"text": "vacuum", "correct": False,
              "why": "A vacuum has no particles at all; a rarefaction still "
                     "has air, just more spread out."},
+            {"text": "trough", "correct": False,
+             "why": "Troughs belong to transverse waves, where the surface "
+                    "dips below its rest level."},
+            {"text": "rarefaction", "correct": True},
         ],
         "figure": None,
     },

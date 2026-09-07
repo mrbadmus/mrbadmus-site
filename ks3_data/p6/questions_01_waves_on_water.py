@@ -353,10 +353,9 @@ QUESTIONS = [
         "id": "p6-01-e06",
         "band": "easier",
         "text": "The lowest point of a water wave is called the…",
-        "options": [
+        "options": [            {"text": "trough", "correct": True},
             {"text": "crest", "correct": False,
              "why": "The crest is the highest point, at the top of the wave."},
-            {"text": "trough", "correct": True},
             {"text": "amplitude", "correct": False,
              "why": "Amplitude is a distance measured from the still level, "
                     "not a place on the wave."},
