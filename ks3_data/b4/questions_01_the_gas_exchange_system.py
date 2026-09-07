@@ -459,15 +459,15 @@ QUESTIONS = [
              "why": "That is breathing. Gas exchange is the swap that happens "
                     "at the end of the airway, after the air has arrived."},
             {"text": "A chemical reaction that releases energy from glucose "
-                     "inside a cell.",
+                     "inside every living cell.",
              "correct": False,
              "why": "That is respiration, and it happens in every cell in "
                     "your body. Gas exchange happens in one place only."},
-            {"text": "Oxygen and carbon dioxide swapping between the air in "
-                     "the alveoli and the blood.",
+            {"text": "Oxygen and carbon dioxide swapping between the "
+                     "alveoli and the blood.",
              "correct": True},
-            {"text": "Warming, moistening and filtering the air before it "
-                     "reaches the lungs.",
+            {"text": "Warming, moistening and filtering the air in the nose "
+                     "and throat before it reaches the lungs.",
              "correct": False,
              "why": "That is conditioning, and the nose does most of it. "
                     "Nothing is swapped with the blood while it happens."},
@@ -749,24 +749,24 @@ QUESTIONS = [
                 "best correction?",
         "options": [
             {"text": "A deep breath does bring in richer air, because it "
-                     "reaches further down the airway.",
+                     "reaches further down the airway than a shallow one.",
              "correct": False,
              "why": "The air is the same air wherever it reaches. How far down "
                     "it gets does not change what it is made of."},
             {"text": "A deep breath brings in poorer air, because the extra "
-                     "air is already partly used.",
+                     "air drawn in is already partly used.",
              "correct": False,
              "why": "There is no partly used air waiting outside you. Every "
                     "breath, deep or shallow, starts with room air at about "
                     "21% oxygen."},
-            {"text": "It is right, but only outdoors, where the air is richer "
-                     "in oxygen to begin with.",
+            {"text": "It is right, but only outdoors, where the air is "
+                     "richer in oxygen.",
              "correct": False,
              "why": "Ordinary indoor and outdoor air are both about 21% "
                     "oxygen. Neither the depth of the breath nor the room "
                     "changes the composition."},
-            {"text": "The air is about 21% oxygen either way — a deep breath "
-                     "brings in more air, not richer air.",
+            {"text": "The air is about 21% oxygen either way — a deep "
+                     "breath brings in more of it.",
              "correct": True},
         ],
         "figure": None,
@@ -842,24 +842,25 @@ QUESTIONS = [
                 "three processes is starting at that moment, and which were "
                 "already running?",
         "options": [
-            {"text": "All three start at the first breath, because none of "
-                     "them can happen before birth.",
+            {"text": "All three start at the first breath — none can happen "
+                     "before birth.",
              "correct": False,
              "why": "Respiration cannot pause for nine months — the baby's "
                     "cells have been releasing energy from glucose the whole "
                     "time. Something must also have been supplying them with "
                     "oxygen."},
-            {"text": "Breathing starts, and gas exchange moves to the alveoli "
-                     "from the placenta; respiration was already running.",
+            {"text": "Breathing starts and gas exchange moves to the "
+                     "alveoli; respiration was already running.",
              "correct": True},
-            {"text": "Breathing and respiration both start; gas exchange had "
-                     "been happening at the placenta.",
+            {"text": "Breathing and respiration both start at birth, while "
+                     "gas exchange had been happening at the placenta.",
              "correct": False,
              "why": "Half right. The placenta was doing the gas exchange, but "
                     "respiration was running in every one of the baby's cells "
                     "long before the first breath."},
             {"text": "Gas exchange starts for the first time; breathing and "
-                     "respiration were already running.",
+                     "respiration had both been running since well before "
+                     "birth.",
              "correct": False,
              "why": "Gas exchange was happening at the placenta before birth, "
                     "so it does not start — it moves. And you cannot breathe "
@@ -929,22 +930,22 @@ QUESTIONS = [
                 "the carbon dioxide the crew breathe out and pumping the same "
                 "air round again. Why will that not be enough?",
         "options": [
-            {"text": "It would work — taking the carbon dioxide out restores "
-                     "the air to what it was.",
+            {"text": "It would work — taking the carbon dioxide back out "
+                     "restores the recycled air to exactly what it was.",
              "correct": False,
              "why": "It restores one of the two changes. Every pass through a "
                     "crew member also takes about a quarter of the oxygen "
                     "away, and nothing puts that back."},
-            {"text": "The nitrogen would run out, because the crew use it up "
-                     "along with the oxygen.",
+            {"text": "The nitrogen would run out first, because the crew "
+                     "use up nitrogen as well as oxygen.",
              "correct": False,
              "why": "Nitrogen is 78% going in and 78% coming out. It is the "
                     "one gas the crew make no difference to at all."},
-            {"text": "Each pass also removes oxygen, from about 21% to about "
-                     "16%, so oxygen must be added too.",
+            {"text": "Each pass also drops oxygen from about 21% to 16%, so "
+                     "oxygen must be added.",
              "correct": True},
-            {"text": "The water vapour would build up until the air became "
-                     "impossible to breathe.",
+            {"text": "Water vapour would build up until the air became "
+                     "unbreathable.",
              "correct": False,
              "why": "Damp air is uncomfortable rather than unbreathable, and a "
                     "submarine dries its air anyway. The change that would "
@@ -959,23 +960,22 @@ QUESTIONS = [
                 "rather than being given a percentage. What does saturated "
                 "mean here?",
         "options": [
-            {"text": "That all of the water in the body has been given up to "
-                     "the air.",
+            {"text": "That all of the water in the body has been given up "
+                     "to the air that you breathe out each time.",
              "correct": False,
              "why": "You would not survive a single breath if that were true. "
                     "Saturated describes the air, not the body — and it is a "
                     "small amount of water each time."},
-            {"text": "That the air is holding as much water vapour as it can "
-                     "at that temperature.",
+            {"text": "That the air holds as much water vapour as it can at "
+                     "that temperature.",
              "correct": True},
-            {"text": "That the water in the air has turned to liquid inside "
-                     "the lungs.",
+            {"text": "That the water vapour has already turned into liquid "
+                     "droplets inside the airways.",
              "correct": False,
              "why": "The water leaves as a vapour, which is why you cannot "
                     "usually see it. It only turns to liquid outside you, when "
                     "cold air cools it — that is visible breath."},
-            {"text": "That the water vapour makes up a fixed 6% of every "
-                     "breath out.",
+            {"text": "That water vapour is a fixed 6% of every breath out.",
              "correct": False,
              "why": "There is no fixed figure, and that is the reason for "
                     "using the word instead of a number. Warm air can hold "
@@ -990,27 +990,27 @@ QUESTIONS = [
                 "each gas with the amount that was there to begin with, which "
                 "changes by far the greater factor, and why?",
         "options": [
-            {"text": "The nitrogen, because it is by far the largest part of "
-                     "the air.",
+            {"text": "The nitrogen, because it is by far the biggest part "
+                     "of the air.",
              "correct": False,
              "why": "Being the largest part is not the same as changing the "
                     "most. Nitrogen goes in at 78% and comes out at 78% — of "
                     "the three, it is the one that does not change at all."},
-            {"text": "The oxygen, because it is the gas the body actually "
-                     "takes out of the air.",
+            {"text": "The oxygen, because it is the only one of the three "
+                     "gases the body actually removes.",
              "correct": False,
              "why": "Oxygen is taken out, but only about a quarter of it each "
                     "pass — 21% down to 16%. That is a much smaller factor "
                     "than the carbon dioxide's change."},
-            {"text": "Neither: both change by the same amount, because one "
-                     "gas replaces the other.",
+            {"text": "Neither: both change by the same amount, because each "
+                     "oxygen used is replaced by a carbon dioxide.",
              "correct": False,
              "why": "The oxygen falls by about 5 parts in a hundred and the "
                     "carbon dioxide rises by about 4, so the amounts are "
                     "similar — but the question asks about the factor, and the "
                     "carbon dioxide started at almost nothing."},
-            {"text": "The carbon dioxide, which rises about a hundredfold "
-                     "while the oxygen falls by about a quarter.",
+            {"text": "The carbon dioxide, which rises a hundredfold as "
+                     "oxygen falls a quarter.",
              "correct": True},
         ],
         "figure": None,

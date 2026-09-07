@@ -459,22 +459,22 @@ QUESTIONS = [
         "band": "easier",
         "text": "What is atmospheric pressure?",
         "options": [
-            {"text": "The pressure of the air around you, from its particles "
-                     "colliding with surfaces.",
+            {"text": "The pressure of the air around you, from its "
+                     "particles hitting surfaces.",
              "correct": True},
-            {"text": "The pressure your lungs produce when they push air back "
-                     "out again.",
+            {"text": "The pressure your lungs produce themselves when they "
+                     "squeeze down and push all the air back out.",
              "correct": False,
              "why": "Your lungs produce no pressure of their own — they have "
                     "no muscle. Atmospheric pressure belongs to the air "
                     "outside you and is there whether you breathe or not."},
-            {"text": "The force with which your diaphragm pulls air down into "
-                     "the chest.",
+            {"text": "The force with which your diaphragm pulls air down "
+                     "the windpipe and into the chest.",
              "correct": False,
              "why": "The diaphragm never pulls air anywhere. It changes the "
                     "volume of the chest, and the atmosphere outside does the "
                     "pushing."},
-            {"text": "The weight of the air that is already sitting inside your "
+            {"text": "The weight of the air already sitting inside your "
                      "lungs.",
              "correct": False,
              "why": "It is not about the air inside you. It is the pressure of "
@@ -591,25 +591,25 @@ QUESTIONS = [
         "text": "You blow up a balloon, forcing the air out hard. How is that "
                 "different from a quiet breath out?",
         "options": [
-            {"text": "The lungs contract to push the air, which they do not "
-                     "do in a quiet breath.",
+            {"text": "The lungs contract to squeeze the air out, and they "
+                     "simply do not do that in a quiet breath.",
              "correct": False,
              "why": "A lung has no muscle, so it cannot contract at any time. "
                     "The extra effort comes from muscles outside the lungs."},
-            {"text": "The diaphragm contracts harder, which is what forces "
-                     "the air out.",
+            {"text": "The diaphragm contracts harder, which forces the air "
+                     "out.",
              "correct": False,
              "why": "Contracting the diaphragm flattens it and makes the chest "
                     "bigger, which is a breath in. Forcing air out needs the "
                     "chest to be made smaller than its resting size."},
             {"text": "Nothing is different — a hard breath out is just a "
-                     "faster version of the same thing.",
+                     "faster version of exactly the same thing happening.",
              "correct": False,
              "why": "A quiet breath out costs no muscular effort at all: the "
                     "muscles relax and the stretched chest springs back. "
                     "Forcing air out is the version that needs work."},
-            {"text": "Muscles contract to squeeze the chest smaller, instead "
-                     "of relying on elastic recoil alone.",
+            {"text": "Muscles squeeze the chest smaller instead of leaving "
+                     "it to elastic recoil.",
              "correct": True},
         ],
         "figure": None,
@@ -622,23 +622,23 @@ QUESTIONS = [
         "text": "Compared with a quiet breath in, what is different about "
                 "taking the deepest breath in you can?",
         "options": [
-            {"text": "The air arriving is richer, because a deep breath "
-                     "reaches fresher air.",
+            {"text": "The air arriving is richer in oxygen, because a "
+                     "deeper breath reaches fresher air.",
              "correct": False,
              "why": "The air is the same air either way. What changes is how "
                     "much of it moves, and that depends on how far the muscles "
                     "enlarge the chest."},
-            {"text": "The muscles contract harder, the volume grows more, and "
-                     "the pressure falls further.",
+            {"text": "The muscles pull harder, the volume grows more, the "
+                     "pressure drops more.",
              "correct": True},
-            {"text": "The lungs stretch themselves further, which is what "
-                     "makes the breath deeper.",
+            {"text": "The lungs stretch themselves further than usual, "
+                     "which is what makes the breath a deeper one.",
              "correct": False,
              "why": "The lungs never stretch themselves — they have no muscle. "
                     "They are stretched further because the space around them "
                     "has been made bigger."},
-            {"text": "The air is pushed in faster, which is what enlarges the "
-                     "chest further.",
+            {"text": "The air is pushed in faster, which is what enlarges "
+                     "the chest.",
              "correct": False,
              "why": "The causation is backwards. Enlarging the chest is what "
                     "lowers the pressure, and the air moves in afterwards as a "
@@ -716,13 +716,13 @@ QUESTIONS = [
                 "person breathes in?",
         "options": [
             {"text": "There is no difference; the machine simply moves the "
-                     "diaphragm for the patient.",
+                     "patient's own diaphragm up and down for them.",
              "correct": False,
              "why": "The machine never touches the diaphragm. It raises the "
                     "pressure at the mouth end instead, which is a different "
                     "mechanism reaching the same result."},
-            {"text": "The machine lowers the pressure in the lungs, exactly "
-                     "as a diaphragm does.",
+            {"text": "The machine lowers the pressure inside the lungs, in "
+                     "exactly the way a diaphragm does.",
              "correct": False,
              "why": "It does the opposite. A ventilator raises the pressure at "
                     "the airway; a diaphragm lowers the pressure inside the "
@@ -733,8 +733,8 @@ QUESTIONS = [
              "why": "Adding oxygen is a separate matter and is not what makes "
                     "air move. What differs is which end of the tube the "
                     "pressure difference is made at."},
-            {"text": "The machine raises the pressure at the mouth; a healthy "
-                     "chest lowers the pressure inside.",
+            {"text": "The machine raises the pressure at the mouth end; a "
+                     "chest lowers it inside.",
              "correct": True},
         ],
         "figure": None,
@@ -840,27 +840,27 @@ QUESTIONS = [
                 "square centimetre of your chest. Explain why your chest is "
                 "not crushed by it.",
         "options": [
-            {"text": "The ribs are strong enough to take the whole of it on "
-                     "their own.",
+            {"text": "The ribs are strong enough to take all of it on their "
+                     "own.",
              "correct": False,
              "why": "The ribs would not manage it if the pressure were "
                     "one-sided. What saves you is that it is not one-sided — "
                     "there is air inside you at almost exactly the same "
                     "pressure."},
-            {"text": "Air is far too light to press hard on anything as solid "
-                     "as a chest.",
+            {"text": "Air is far too light to press with any real force on "
+                     "something as solid as a chest.",
              "correct": False,
              "why": "Air presses very hard indeed: 101 kPa over the area of a "
                     "chest is an enormous total push. It is balanced rather "
                     "than small."},
             {"text": "The diaphragm holds the pressure out by staying "
-                     "contracted all the time.",
+                     "contracted all the time, even between breaths.",
              "correct": False,
              "why": "The diaphragm relaxes between breaths, and nothing is "
                     "being held out. The air inside the chest is doing the "
                     "balancing, not a muscle."},
-            {"text": "The air inside your chest is at almost the same "
-                     "pressure, pushing out just as hard.",
+            {"text": "The air inside the chest is at almost the same "
+                     "pressure, pushing out too.",
              "correct": True},
         ],
         "figure": None,
@@ -871,14 +871,14 @@ QUESTIONS = [
         "text": "However hard you try, you cannot drink through a straw ten "
                 "metres long. Explain why, using what makes air move.",
         "options": [
-            {"text": "Your mouth cannot make enough of a vacuum to pull that "
-                     "much liquid up.",
+            {"text": "Your mouth cannot make a strong enough vacuum to pull "
+                     "that much liquid all the way up the straw.",
              "correct": False,
              "why": "This still describes a pull. You are never pulling: you "
                     "enlarge your mouth cavity, and the atmosphere pushes the "
                     "drink up for you."},
-            {"text": "All the pushing is done by the atmosphere, and it can "
-                     "only push a column so high.",
+            {"text": "The atmosphere does the pushing, and it can only push "
+                     "a column so high.",
              "correct": True},
             {"text": "The liquid is too heavy to move at all in a tube that "
                      "long.",
@@ -886,8 +886,8 @@ QUESTIONS = [
              "why": "It moves perfectly well in the first few metres. The "
                     "limit is not the weight by itself but the fact that the "
                     "atmosphere's push is a fixed size."},
-            {"text": "Friction inside the straw stops the drink before it "
-                     "gets to the top.",
+            {"text": "Friction against the inside of the straw stops the "
+                     "drink before it reaches the top.",
              "correct": False,
              "why": "Friction slows a drink down but does not set a height "
                     "limit. Even a perfectly smooth straw would fail at the "
