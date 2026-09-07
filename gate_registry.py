@@ -543,6 +543,62 @@ GATES = [
 
     # ── ⊕ MRB-301 · the KS4 chrome port ─────────────────────────────────
 
+    dict(name="ks4_pool_check",
+         cmd=["python3", "ks4_pool_check.py", "--python"],
+         speed="fast",
+         needs="ks4_data/questions/physics/energy.py",
+         why="MRB-332 — THE KS4 CONTENT RULE, and the reason it is measured "
+             "rather than trusted. A Foundation Combined child must never be "
+             "served a Higher or a Triple-only question, and the flags that "
+             "decide it are not typed into the 33 authored files: they are "
+             "DERIVED by ks4_data.classify() from PATHWAY_TOPIC_MAP, the same "
+             "projection the scheme of work is built from. Restating the "
+             "curriculum by hand 264 times would be a second description, and "
+             "a drifted flag is a Foundation child sitting a Higher paper. So "
+             "this re-derives all 3,168 and demands agreement on every one. "
+             "⚠️ IT ALSO ASSERTS THE FOUR AUDIENCES ARE NESTED AND DISTINCT "
+             "(2136 ⊂ 2268 ⊂ 2808 ⊂ 3168), which is the check that would "
+             "catch a classify() that had quietly become a constant — a rule "
+             "that returns 'allowed' for everyone passes a per-row flag "
+             "comparison and fails this. Plus the structural floor the "
+             "composer relies on: twelve per subtopic, four per band, "
+             "bank_position contiguous 0..11, ids unique, four distinct "
+             "options with the answer in range, and the longest option keyed "
+             "no more often than chance. Runs on the Python source in 0.2s, "
+             "so it is fast; `--rows` runs the identical rule against what "
+             "the DATABASE actually holds, which is what the load path uses."),
+
+    dict(name="ks4_pool_drive",
+         cmd=["python3", "ks4_pool_drive.py"],
+         speed="slow",
+         needs="mrb331_fixture.py",
+         needs_env="MRB_THROWAWAY_PASSWORD",
+         why="MRB-332 — the same rule, proved through the SERVING PATH "
+             "instead of the data. ks4_pool_check proves the rows are "
+             "correctly flagged; a correct rule and a query that forgets to "
+             "apply it look identical from the outside, so this signs a "
+             "throwaway teacher and a throwaway child in for real, against "
+             "the real TEST project through a locally-run backend, and reads "
+             "what actually comes back. Nothing is stubbed and no check runs "
+             "on the service key — a proof carried on service role proves "
+             "nothing about a child, because service role bypasses RLS. "
+             "⚠️ THE COLLISION CHECK IS THE ONE TO READ BEFORE EDITING. "
+             "Eight KS4 subtopic slugs are byte-identical to KS3 lesson slugs "
+             "(catalysts, chromatography, distance-time-graphs and five "
+             "more). Each holds twelve KS3 bank rows AND twelve KS4 pool "
+             "rows, so `available == 12` is true whether the route read the "
+             "right table or the wrong one — asserting the NUMBER would "
+             "produce a check that passes on the bug it exists to catch, "
+             "which is worse than no check because it reads as coverage. "
+             "What separates the pools is row IDENTITY: a KS4 id begins "
+             "`ks4-`, a KS3 id looks like `c1-04-h02`. So it asserts every "
+             "id in a KS4 payload carries the KS4 prefix and that no KS3 id "
+             "appears at all. "
+             "SKIPPED until mrb331_fixture.py exists: it imports MRB-331's "
+             "fixture and drives MRB-332's backend `bankFor` branch, so "
+             "before the rebase there is nothing coherent for it to press. "
+             "That is a named skip, not silence — prepush_gate reports it."),
+
     dict(name="ks4_chrome_tells",
          cmd=["python3", "ks4_chrome_tells.py"],
          speed="fast",
@@ -1274,6 +1330,46 @@ EXCLUDED = {
     # is the gap this registry exists to make loud. They are EXCLUDED for
     # the reason every other generator here is: writing is the job, and the
     # gate on their output is somewhere else.
+    "rainford_sow.py":
+        "a GENERATOR of one tracked seed file "
+        "(supabase/seeds/20260906234500_rainford_ks4_overrides.sql) — ONE "
+        "SCHOOL'S sequence, written to scheme_of_work_overrides, never to "
+        "the platform default that ks4_seed_sow.py owns. Excluded for the "
+        "reason every generator here is: writing is the job. ⚠️ Two things "
+        "it does are NOT self-gating and are worth knowing. Its input is an "
+        "untracked spreadsheet outside this tree, so it cannot be re-run on "
+        "a fresh clone and its output is the only durable record. And its "
+        "unmapped entries — the lessons in Rainford's sheet that match no "
+        "platform subtopic — are a CURRICULUM judgement, reported by name in "
+        "docs/ks4/rainford-sow-mapping.md for Mide rather than asserted "
+        "here; a gate cannot tell a genuinely absent topic from a "
+        "mis-spelled one.",
+    "export_ks4_questions.py":
+        "an EXPORTER, the exact sibling of export_ks3_extended.py above: "
+        "ks4_data -> upsert SQL, or straight into the table over PostgREST "
+        "with --load. It asserts nothing about the estate. ⚠️ It does carry "
+        "two guards, and they are guards rather than assertions — --load "
+        "takes no value but a named project and re-reads the target URL to "
+        "refuse a database it was not pointed at. What its OUTPUT must "
+        "satisfy is ks4_pool_check, registered above, which is why this is "
+        "excluded rather than registered: gating the exporter would gate the "
+        "writing, and the rows are what matter.",
+    "ks4_brief.py":
+        "a GENERATOR of the per-topic authoring brief handed to each "
+        "authoring lane — prose on stdout, no tracked file, no assertion. "
+        "⚠️ Named here because it had a real defect that this registry could "
+        "never have caught and a human did: it was reproducing the lesson "
+        "page's own quiz stems into the brief, which is how ~90 collisions "
+        "entered the run. The gate that catches THAT is pool_ownership, "
+        "which now measures authored stems against published ones rather "
+        "than trusting the brief that produced them.",
+    "rainford_ks3_sow.py":
+        "the KS3 twin of rainford_sow.py below — one school's KS3 sequence "
+        "as scheme_of_work_overrides rows, from the same untracked "
+        "spreadsheet, never the platform default. Excluded for the same "
+        "reason, with the same two caveats: it cannot run on a fresh clone, "
+        "and its unmapped entries are a curriculum judgement reported in "
+        "docs/ks4/rainford-ks3-sow-mapping.md rather than asserted.",
     "ks4_seed_sow.py":
         "a GENERATOR of one tracked seed file "
         "(supabase/seeds/20260902001000_ks4_default_sequence.sql), which it "
