@@ -433,4 +433,539 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b4-03-e05",
+        "band": "easier",
+        "text": "What does the word diffusion mean?",
+        "options": [
+            {"text": "Particles being pushed from a crowded place towards an "
+                     "emptier one by some kind of force.",
+             "correct": False,
+             "why": "Nothing pushes and no force is involved. The particles "
+                    "were already moving randomly, and the movement is simply "
+                    "unbalanced when one side is more crowded."},
+            {"text": "The net movement of particles from a more concentrated "
+                     "place to a less concentrated one, caused by random "
+                     "motion.",
+             "correct": True},
+            {"text": "Particles moving in one direction only, and stopping once "
+                     "both sides hold the same amount.",
+             "correct": False,
+             "why": "They cross in both directions the whole time. Only the "
+                    "difference between the two counts is the net movement, "
+                    "and that never means one-way traffic."},
+            {"text": "Gases dissolving into a liquid so that they can then be "
+                     "carried away in it.",
+             "correct": False,
+             "why": "Dissolving is what the moist lining allows, and it "
+                    "happens before the crossing. Diffusion is the movement "
+                    "itself."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-e06",
+        "band": "easier",
+        "text": "Three of these are requirements for a good gas exchange "
+                "surface. Which one is not?",
+        "options": [
+            {"text": "A large surface area.", "correct": False,
+             "why": "This is the first requirement, and it is why there are "
+                    "hundreds of millions of alveoli rather than one cavity."},
+            {"text": "A short distance for the gas to cross.", "correct": False,
+             "why": "This is the second requirement. It is why the alveolus "
+                    "wall and the capillary wall are each a single cell "
+                    "thick."},
+            {"text": "A concentration difference that is kept open.",
+             "correct": False,
+             "why": "This is the third requirement, and it is what breathing "
+                    "and blood flow exist to maintain."},
+            {"text": "A thick protective outer layer over the surface.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-e07",
+        "band": "easier",
+        "text": "Which of these changes to an alveolus would make gas "
+                "exchange slower?",
+        "options": [
+            {"text": "Its wall becoming several cells thick instead of one.",
+             "correct": True},
+            {"text": "More capillaries running over its surface.",
+             "correct": False,
+             "why": "More capillaries drain the blood side faster, so the "
+                    "concentration difference is kept steeper. That speeds "
+                    "exchange up."},
+            {"text": "A steeper difference in oxygen between the air and the "
+                     "blood.",
+             "correct": False,
+             "why": "A steeper difference is the third requirement working "
+                    "well. The bigger the difference, the more net crossings "
+                    "there are each second."},
+            {"text": "A thin film of liquid lining its inside surface.",
+             "correct": False,
+             "why": "That film is the fourth requirement, not a problem. Gases "
+                    "have to dissolve before they can cross."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-e08",
+        "band": "easier",
+        "text": "In which direction does oxygen cross the alveolus wall, and "
+                "what makes it go that way?",
+        "options": [
+            {"text": "From the blood into the air, because the blood is under "
+                     "much greater pressure.",
+             "correct": False,
+             "why": "Blood pressure does not move gases across a wall, and the "
+                    "direction is the other way. Blood arriving at the lungs "
+                    "is low in oxygen."},
+            {"text": "From the air into the blood, because the alveolus wall "
+                     "only opens one way.",
+             "correct": False,
+             "why": "The direction is right and the reason is not. Nothing "
+                    "opens or closes — molecules cross both ways all the time, "
+                    "and the imbalance decides the net result."},
+            {"text": "From the air into the blood, because the alveolar air "
+                     "holds more oxygen than the blood arriving.",
+             "correct": True},
+            {"text": "From the air into the blood, because the cells in the "
+                     "wall carry it across.",
+             "correct": False,
+             "why": "The direction is right, but no cell carries anything. "
+                    "There is no pump in an alveolus and nothing spends energy "
+                    "on the crossing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-e09",
+        "band": "easier",
+        "text": "Molecules cross an exchange surface in both directions at "
+                "once. What does net movement mean?",
+        "options": [
+            {"text": "The total of the crossings in both directions, added "
+                     "together into one figure.",
+             "correct": False,
+             "why": "Adding them treats the outward crossings as a gain, when "
+                    "they are the opposite of one. The two counts have to be "
+                    "subtracted."},
+            {"text": "What is left after the crossings each way are subtracted "
+                     "from each other.",
+             "correct": True},
+            {"text": "The crossings in the direction the body wants, ignoring "
+                     "the rest.",
+             "correct": False,
+             "why": "The crossings the other way are real and they count "
+                    "against the total. Ignoring them would give a figure much "
+                    "larger than the body actually gains."},
+            {"text": "The number of molecules left on the side they started "
+                     "on.",
+             "correct": False,
+             "why": "Net movement is about what has moved, not about what "
+                    "stayed. It is the difference between the two crossing "
+                    "counts."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-e10",
+        "band": "easier",
+        "text": "Which other organ meets the same four requirements for a "
+                "good exchange surface as the lungs do?",
+        "options": [
+            {"text": "The heart, where blood is pumped past a large surface.",
+             "correct": False,
+             "why": "The heart moves blood; it exchanges nothing across a "
+                    "surface. Being large and having blood in it is not the "
+                    "same as being an exchange surface."},
+            {"text": "The trachea, which is long and lined all the way down.",
+             "correct": False,
+             "why": "The trachea is a transport tube. Nothing crosses into the "
+                    "blood there, whatever its lining is like."},
+            {"text": "The brain, which uses more oxygen than any other "
+                     "organ.",
+             "correct": False,
+             "why": "Using a great deal of oxygen is not the same as absorbing "
+                    "it from outside the body. The organ compared with the "
+                    "lungs here is the one that absorbs food."},
+            {"text": "The small intestine, whose villi absorb digested food "
+                     "from the gut contents.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b4-03-s05",
+        "band": "standard",
+        "text": "Blood arriving at the lungs has just come back from the "
+                "body's tissues. What must be true of its oxygen level, and "
+                "why does that matter?",
+        "options": [
+            {"text": "It must be lower than the alveolar air's, which is what "
+                     "makes oxygen cross into it.",
+             "correct": True},
+            {"text": "It must be higher than the alveolar air's, so that "
+                     "carbon dioxide can be swapped for oxygen.",
+             "correct": False,
+             "why": "Blood coming back from the tissues has given much of its "
+                    "oxygen away, so it is the low side. Nothing is swapped "
+                    "one-for-one either — each gas follows its own "
+                    "difference."},
+            {"text": "It must be the same as the alveolar air's, so that the "
+                     "two sides are balanced.",
+             "correct": False,
+             "why": "Equal levels is precisely the state in which net "
+                    "absorption falls to zero. A difference is what makes the "
+                    "exchange happen."},
+            {"text": "It must be zero, because the tissues take all of the "
+                     "oxygen the blood carries.",
+             "correct": False,
+             "why": "The tissues take a share, never all of it. Blood "
+                    "returning to the lungs still carries oxygen — it is "
+                    "simply lower than the air in the alveoli."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-s06",
+        "band": "standard",
+        "text": "Blood flow past the alveoli is stopped while breathing "
+                "continues normally. The air on the alveolar side is as fresh "
+                "as ever. Why does net absorption still collapse?",
+        "options": [
+            {"text": "Because the alveolar air stops being refreshed once the "
+                     "blood is still.",
+             "correct": False,
+             "why": "Breathing has not stopped, so the air is still being "
+                    "replaced about twelve times a minute. It is the other "
+                    "side of the wall that has changed."},
+            {"text": "Because oxygen cannot cross into blood that is not "
+                     "moving.",
+             "correct": False,
+             "why": "It crosses perfectly well into still blood — for a while. "
+                    "What stops is the draining away of what has crossed."},
+            {"text": "Because the blood side fills up with oxygen until the "
+                     "two sides nearly match.",
+             "correct": True},
+            {"text": "Because the wall thickens when there is no blood "
+                     "flowing behind it.",
+             "correct": False,
+             "why": "The wall is unchanged, and so are the surface area and "
+                    "the moist lining. The only thing lost is the difference "
+                    "across it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-s07",
+        "band": "standard",
+        "text": "A student writes that the alveoli “take the oxygen out of "
+                "the air and put it into the blood”. What is the best "
+                "correction?",
+        "options": [
+            {"text": "The capillaries take it out, and the alveoli only hold "
+                     "the air still while they do.",
+             "correct": False,
+             "why": "This moves the taking rather than removing it. No "
+                    "structure on either side takes anything — the molecules "
+                    "cross on their own."},
+            {"text": "The alveoli take nothing: oxygen crosses on its own, "
+                     "because there is more of it in the air than in the "
+                     "blood.",
+             "correct": True},
+            {"text": "The alveoli do take it out, but only when the body "
+                     "needs it, which is why exercise speeds it up.",
+             "correct": False,
+             "why": "Nothing in an alveolus decides when to act. Exercise "
+                    "speeds exchange up by keeping the difference steeper, not "
+                    "by switching anything on."},
+            {"text": "The alveoli put oxygen into the blood, but the blood "
+                     "has to be moving for them to manage it.",
+             "correct": False,
+             "why": "Blood flow matters, but it matters because it keeps the "
+                    "blood side low. The alveoli still put nothing anywhere."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-s08",
+        "band": "standard",
+        "text": "At a particular moment, 640 oxygen molecules a second cross "
+                "into the blood and 640 a second cross out of it. What can "
+                "you say about this surface?",
+        "options": [
+            {"text": "Nothing is crossing it in either direction any more.",
+             "correct": False,
+             "why": "Six hundred and forty crossings a second in each "
+                    "direction is a great deal of movement. What has gone is "
+                    "the imbalance, not the traffic."},
+            {"text": "Oxygen is about to start moving the other way, out of "
+                     "the blood.",
+             "correct": False,
+             "why": "Nothing is about to happen. Equal counts stay equal "
+                    "unless something changes one side, and neither side is "
+                    "favoured at this moment."},
+            {"text": "The molecules have finished spreading out and have come "
+                     "to rest.",
+             "correct": False,
+             "why": "They are moving at hundreds of metres a second and "
+                    "crossing constantly. Nothing has finished, and nothing "
+                    "was ever trying to finish."},
+            {"text": "The body is gaining no oxygen here, although molecules "
+                     "are still crossing constantly.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-s09",
+        "band": "standard",
+        "text": "A student says surface area is all that matters, so doubling "
+                "the number of alveoli would double gas exchange even if the "
+                "blood flow were halved. What is wrong with that?",
+        "options": [
+            {"text": "Slower blood flow lets the blood side rise, so the "
+                     "concentration difference shrinks.",
+             "correct": True},
+            {"text": "Extra alveoli would have thicker walls, so each one "
+                     "would work less well.",
+             "correct": False,
+             "why": "There is no reason for the walls to change. The problem "
+                    "is on the blood side of the wall, not in the wall "
+                    "itself."},
+            {"text": "Nothing is wrong — surface area is the first thing an "
+                     "exchange surface needs, so it is the one that counts.",
+             "correct": False,
+             "why": "Being the most obvious need does not make it the only one. "
+                    "A huge surface with no difference across it exchanges "
+                    "nothing at all."},
+            {"text": "Doubling the alveoli would halve the moist lining, so "
+                     "less oxygen could dissolve.",
+             "correct": False,
+             "why": "Every alveolus is lined, however many there are. The "
+                    "requirement that suffers when the blood slows is the "
+                    "maintained concentration difference."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-s10",
+        "band": "standard",
+        "text": "During exercise the heart pumps blood past the alveoli much "
+                "faster. What does that achieve for gas exchange?",
+        "options": [
+            {"text": "It increases the surface area available, because more "
+                     "capillaries are used.",
+             "correct": False,
+             "why": "The surface belongs to the alveoli and does not change "
+                    "when the blood speeds up. What changes is how quickly "
+                    "absorbed oxygen is taken away."},
+            {"text": "It shortens the diffusion distance, because the blood "
+                     "presses closer to the wall.",
+             "correct": False,
+             "why": "The distance is two cell walls, and pressing harder does "
+                    "not change it. Faster flow works on the third "
+                    "requirement, not the second."},
+            {"text": "It carries absorbed oxygen away sooner, so the blood "
+                     "side stays low and the difference stays steep.",
+             "correct": True},
+            {"text": "It gives each molecule of oxygen more energy, so it "
+                     "crosses the wall more easily.",
+             "correct": False,
+             "why": "Crossing needs no energy at any speed, and nothing gives "
+                    "a molecule any. Faster flow simply keeps one side of the "
+                    "wall emptier."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b4-03-h05",
+        "band": "harder",
+        "text": "A patient is given air enriched to 40% oxygen through a "
+                "mask. Predict what happens to net oxygen absorption at the "
+                "alveoli, and why.",
+        "options": [
+            {"text": "It stays the same, because the wall can only let a "
+                     "fixed amount through each second.",
+             "correct": False,
+             "why": "The wall sets no quota. How much crosses depends on the "
+                    "difference across it, and that difference has just been "
+                    "made bigger."},
+            {"text": "It rises, because the alveolar side is now higher, so "
+                     "the difference across the wall is greater.",
+             "correct": True},
+            {"text": "It rises, because the extra oxygen pushes harder on the "
+                     "alveolus wall.",
+             "correct": False,
+             "why": "The prediction is right and the reason is not. Nothing is "
+                    "pushed across — more crossings simply happen inwards than "
+                    "outwards when one side holds more."},
+            {"text": "It falls, because the blood cannot handle that much "
+                     "oxygen arriving at once.",
+             "correct": False,
+             "why": "Diffusion does not slow down because the far side is "
+                    "busy. As long as the blood side stays lower than the air "
+                    "side, oxygen keeps crossing inwards."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-h06",
+        "band": "harder",
+        "text": "A single-celled organism has no lungs, no blood and no "
+                "exchange surface of any kind, yet it gets all the oxygen it "
+                "needs. Explain why that works for it and not for you.",
+        "options": [
+            {"text": "It needs no oxygen at all, so there is nothing for it "
+                     "to exchange.",
+             "correct": False,
+             "why": "It respires like everything else alive, so it needs "
+                    "oxygen. The question is how the oxygen reaches the inside "
+                    "of it."},
+            {"text": "Its cell can pump oxygen inwards, which the cells in your "
+                     "body cannot do.",
+             "correct": False,
+             "why": "No cell pumps oxygen anywhere — diffusion is the only "
+                    "mechanism, in a single cell and in you. What differs is "
+                    "the distance involved."},
+            {"text": "The water around it carries the oxygen inside, so no "
+                     "diffusion is needed.",
+             "correct": False,
+             "why": "Oxygen still has to cross the cell surface, and it does "
+                    "so by diffusion. Being surrounded by water does not move "
+                    "anything into a cell."},
+            {"text": "Every part of it is close to its surface, so diffusion "
+                     "alone is fast enough.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-h07",
+        "band": "harder",
+        "text": "In a very premature baby, the film of liquid lining the "
+                "alveoli pulls their walls together so that they tend to "
+                "stick shut. Which feature of a good exchange surface is "
+                "causing the trouble?",
+        "options": [
+            {"text": "The moist surface — the same feature that lets gases "
+                     "dissolve is what pulls the walls together.",
+             "correct": True},
+            {"text": "The short diffusion distance — walls that thin are too "
+                     "weak to stay apart.",
+             "correct": False,
+             "why": "Thinness is not what closes them; a wet surface pulling "
+                    "on itself is. A thin dry surface would not stick in the "
+                    "same way."},
+            {"text": "The large surface area — there is simply too much of it "
+                     "for a small chest to hold open.",
+             "correct": False,
+             "why": "Adults have far more surface still and no such problem. "
+                    "The difficulty comes from the liquid film, not from the "
+                    "amount of surface."},
+            {"text": "The concentration difference — with no air arriving "
+                     "there is nothing to hold the alveoli open.",
+             "correct": False,
+             "why": "A concentration difference has no mechanical effect at "
+                    "all; it cannot hold anything open. The feature at fault "
+                    "is the moist lining."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-h08",
+        "band": "harder",
+        "text": "An exchange surface is transferring 700 oxygen molecules a "
+                "second, net. The concentration difference across it is then "
+                "doubled and nothing else is changed. Roughly what net "
+                "transfer would you expect?",
+        "options": [
+            {"text": "About 350 molecules a second.", "correct": False,
+             "why": "This halves the transfer instead of doubling it. A bigger "
+                    "difference makes more crossings happen inwards, not "
+                    "fewer."},
+            {"text": "Still about 700 molecules a second.", "correct": False,
+             "why": "That would mean the difference across a surface makes no "
+                    "odds, which is the opposite of the third requirement. "
+                    "Diffusion follows the difference."},
+            {"text": "About 1400 molecules a second.", "correct": True},
+            {"text": "About 702 molecules a second.", "correct": False,
+             "why": "This adds the two rather than scaling with the "
+                    "difference. Doubling the difference roughly doubles the "
+                    "net transfer."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-h09",
+        "band": "harder",
+        "text": "Someone's lungs are entirely healthy, but their blood can "
+                "carry only half as much oxygen as usual. Explain why gas "
+                "exchange at the alveoli becomes less effective.",
+        "options": [
+            {"text": "The alveolar walls thicken to compensate, so the "
+                     "crossing takes longer.",
+             "correct": False,
+             "why": "Nothing thickens, and the lungs are stated to be healthy. "
+                    "The change is entirely on the blood side of a wall that "
+                    "has not altered."},
+            {"text": "The blood side rises towards the air side sooner, so "
+                     "the difference across the wall closes faster.",
+             "correct": True},
+            {"text": "Diffusion needs energy from the blood, and there is "
+                     "less of it available.",
+             "correct": False,
+             "why": "Diffusion needs no energy from anywhere. What the blood "
+                    "supplies is somewhere for the oxygen to go, and there is "
+                    "now less of that."},
+            {"text": "The surface area falls, because fewer alveoli are used "
+                     "when the blood carries less.",
+             "correct": False,
+             "why": "The alveoli are all still there and all still lined with "
+                    "capillaries. The requirement that suffers is the "
+                    "maintained concentration difference."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-03-h10",
+        "band": "harder",
+        "text": "Crossing the alveolus wall costs no energy at all. So why "
+                "does keeping gas exchange going still cost a body a great "
+                "deal of energy?",
+        "options": [
+            {"text": "Because the cells of the alveolus wall spend energy "
+                     "opening a path for each molecule.",
+             "correct": False,
+             "why": "There is no path to open and no cell that spends anything "
+                    "on the crossing. The energy goes somewhere else "
+                    "entirely."},
+            {"text": "Because oxygen has to be given energy before it will "
+                     "cross a wall that thin.",
+             "correct": False,
+             "why": "The molecules already have all the movement they need, "
+                    "and thinness makes crossing easier rather than harder. "
+                    "Nothing is given energy."},
+            {"text": "It does not — a body at rest spends no energy on "
+                     "breathing or circulation.",
+             "correct": False,
+             "why": "The breathing muscles and the heart work every minute of "
+                    "your life, awake or asleep. Both cost energy "
+                    "continuously."},
+            {"text": "Because the two flows that keep the difference open — "
+                     "breathing and blood flow — are both muscular work.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

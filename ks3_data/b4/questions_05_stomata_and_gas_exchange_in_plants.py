@@ -399,4 +399,522 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b4-05-e05",
+        "band": "easier",
+        "text": "A guard cell is described as turgid. What does turgid mean?",
+        "options": [
+            {"text": "Swollen and firm, because the cell is full of water.",
+             "correct": True},
+            {"text": "Limp and soft, because water has left the cell.",
+             "correct": False,
+             "why": "That is the opposite state, and it is the one in which "
+                    "the pore closes. Turgid guard cells bow apart and open "
+                    "it."},
+            {"text": "Stiffened by a thick wall on the outside edge.",
+             "correct": False,
+             "why": "It is the inner edge of a guard cell that has the thicker "
+                    "wall, and thickness is not what turgid describes. Turgid "
+                    "is about water."},
+            {"text": "Growing larger permanently, so the pore stays open.",
+             "correct": False,
+             "why": "Nothing grows and nothing is permanent. The cells swell "
+                    "and shrink with water, over and over through a day."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-e06",
+        "band": "easier",
+        "text": "By what process do gases get into and out of a leaf?",
+        "options": [
+            {"text": "By breathing, using the stomata as tiny mouths.",
+             "correct": False,
+             "why": "A plant has no diaphragm, no ribs and no muscle, so it "
+                    "cannot ventilate anything. Stomata are holes, and holes "
+                    "do not breathe."},
+            {"text": "By being pumped in and out by the guard cells.",
+             "correct": False,
+             "why": "Guard cells open and close the pore; they move no gas "
+                    "through it. Nothing in a plant pumps a gas anywhere."},
+            {"text": "By diffusion, driven only by concentration differences.",
+             "correct": True},
+            {"text": "By a pressure difference the leaf creates inside "
+                     "itself.",
+             "correct": False,
+             "why": "No plant generates a pressure difference — that is the "
+                    "whole distinction between a plant and your chest. Gases "
+                    "arrive and leave with nothing pushing them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-e07",
+        "band": "easier",
+        "text": "At one particular light level a plant's carbon dioxide "
+                "reading holds perfectly steady. What is that light level "
+                "called?",
+        "options": [
+            {"text": "The saturation point.", "correct": False,
+             "why": "Saturation is about how much water vapour air can hold, "
+                    "which is a different idea altogether. The steady reading "
+                    "has its own name."},
+            {"text": "The compensation point.", "correct": True},
+            {"text": "The dormant point.", "correct": False,
+             "why": "Nothing is dormant. Both processes are running at full "
+                    "rate at that light level, which is why the reading holds "
+                    "still."},
+            {"text": "The limiting point.", "correct": False,
+             "why": "Limiting factors are what make photosynthesis level off "
+                    "in bright light. The steady reading happens at a low "
+                    "light level, where the two rates are equal."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-e08",
+        "band": "easier",
+        "text": "Which gas does photosynthesis use, and which does it make?",
+        "options": [
+            {"text": "It uses oxygen and makes carbon dioxide.",
+             "correct": False,
+             "why": "That is respiration, which runs in a plant continuously. "
+                    "Photosynthesis works the other way round."},
+            {"text": "It uses nitrogen and makes oxygen.",
+             "correct": False,
+             "why": "Nitrogen takes no part in either process. Photosynthesis "
+                    "takes in carbon dioxide."},
+            {"text": "It uses carbon dioxide and makes carbon dioxide.",
+             "correct": False,
+             "why": "A process cannot use and make the same gas here. "
+                    "Photosynthesis consumes carbon dioxide, and the gas it "
+                    "gives out is oxygen."},
+            {"text": "It uses carbon dioxide and makes oxygen.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-e09",
+        "band": "easier",
+        "text": "Most stomata are on the shaded underside of a leaf rather "
+                "than the sunlit top. What is the advantage of that?",
+        "options": [
+            {"text": "The underside is cooler and more sheltered, so less "
+                     "water is lost through an open pore.",
+             "correct": True},
+            {"text": "The underside is where the light falls, so "
+                     "photosynthesis is faster there.",
+             "correct": False,
+             "why": "The light falls on the top of a leaf, not the bottom. And "
+                    "stomata let gases through — they do not collect light."},
+            {"text": "The underside is thicker, so the pores can be held open "
+                     "more firmly.",
+             "correct": False,
+             "why": "Nothing holds a pore open but the shape of the two guard "
+                    "cells beside it. The position is about water, not about "
+                    "grip."},
+            {"text": "Carbon dioxide sinks, so there is more of it "
+                     "underneath a leaf.",
+             "correct": False,
+             "why": "The air around a leaf is thoroughly mixed and carbon "
+                    "dioxide does not pool underneath it. The advantage of the "
+                    "shaded side is that it loses less water."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-e10",
+        "band": "easier",
+        "text": "A plant is in bright sunlight. Which way is carbon dioxide "
+                "moving overall?",
+        "options": [
+            {"text": "Out of the leaf, because respiration is running "
+                     "faster than usual in the warmth.",
+             "correct": False,
+             "why": "Respiration runs at the same rate whatever the light, and "
+                    "in bright light it is outrun by photosynthesis. The "
+                    "overall movement is inwards."},
+            {"text": "Neither way, because the two processes always cancel "
+                     "each other out.",
+             "correct": False,
+             "why": "They cancel at one particular light level only. In bright "
+                    "light photosynthesis is several times faster, so they do "
+                    "not."},
+            {"text": "Into the leaf, because photosynthesis is using it "
+                     "faster than respiration makes it.",
+             "correct": True},
+            {"text": "Into the leaf, because respiration has switched off for "
+                     "the daytime.",
+             "correct": False,
+             "why": "The direction is right and the reason is not. Respiration "
+                    "never switches off — it is simply hidden underneath a "
+                    "larger opposite flow."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b4-05-s05",
+        "band": "standard",
+        "text": "A leaf still attached to a healthy plant has its underside "
+                "coated all over with petroleum jelly. Predict what happens "
+                "to that leaf.",
+        "options": [
+            {"text": "It photosynthesises faster, because no water can be "
+                     "lost from it.",
+             "correct": False,
+             "why": "Blocking the pores does stop water leaving, but the same "
+                    "pores were the only way in for carbon dioxide. You cannot "
+                    "close one without closing the other."},
+            {"text": "Photosynthesis nearly stops, because carbon dioxide can "
+                     "no longer get in.",
+             "correct": True},
+            {"text": "Nothing changes, because gases can pass through the "
+                     "upper surface instead.",
+             "correct": False,
+             "why": "The upper surface has very few stomata, and in many "
+                    "plants effectively none. Almost all the traffic goes "
+                    "through the underside."},
+            {"text": "Respiration stops, because oxygen can no longer reach "
+                     "the cells.",
+             "correct": False,
+             "why": "Respiration is the process that does not stop. There is "
+                    "oxygen inside the leaf already, and respiration "
+                    "carries on using it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-s06",
+        "band": "standard",
+        "text": "Two identical plants are sealed in jars with carbon dioxide "
+                "sensors. One jar is in bright light and the other in "
+                "complete darkness. Predict the two readings after an hour.",
+        "options": [
+            {"text": "Both readings fall, because plants always take carbon "
+                     "dioxide in.",
+             "correct": False,
+             "why": "That is true only while photosynthesis is running. In the "
+                    "dark the only process left is respiration, and it "
+                    "releases carbon dioxide."},
+            {"text": "Both readings hold steady, because respiration and "
+                     "photosynthesis always cancel.",
+             "correct": False,
+             "why": "They cancel at one particular light level only. Neither "
+                    "bright light nor darkness is that level."},
+            {"text": "The bright jar rises and the dark jar falls.",
+             "correct": False,
+             "why": "This has both the right way round the wrong way. In "
+                    "bright light photosynthesis wins and the reading falls; "
+                    "in darkness respiration is alone and the reading rises."},
+            {"text": "The bright jar falls and the dark jar rises.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-s07",
+        "band": "standard",
+        "text": "A wilted pot plant is watered and by the evening it has "
+                "recovered. Explain what has happened at its stomata.",
+        "options": [
+            {"text": "Water has moved back into the guard cells, which have "
+                     "become turgid and bowed apart again.",
+             "correct": True},
+            {"text": "The guard cells have grown new tissue to replace what "
+                     "was lost while it was dry.",
+             "correct": False,
+             "why": "Nothing was lost and nothing has been rebuilt. Closing a "
+                    "stoma is a reversible change of shape, driven entirely by "
+                    "water moving in and out."},
+            {"text": "The guard cells have relaxed, letting the pore fall "
+                     "open under its own weight.",
+             "correct": False,
+             "why": "There is no muscle to relax and nothing falls open. The "
+                    "pore opens because the two cells swell and curve away "
+                    "from each other."},
+            {"text": "The plant has stopped photosynthesising, so it no "
+                     "longer needs the pores shut.",
+             "correct": False,
+             "why": "It is the other way round. Shutting the pores is what "
+                    "stopped photosynthesis, and reopening them is what lets "
+                    "it start again."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-s08",
+        "band": "standard",
+        "text": "A grower adds extra carbon dioxide to the air in a "
+                "greenhouse on a very hot, dry day. Why might it make far "
+                "less difference than expected?",
+        "options": [
+            {"text": "Because the extra carbon dioxide makes the guard cells "
+                     "swell up and shut.",
+             "correct": False,
+             "why": "It is water, not carbon dioxide, that opens and closes a "
+                    "stoma. The reason the pores are shut on a hot dry day is "
+                    "the plant saving water."},
+            {"text": "Because respiration speeds up in the heat and consumes "
+                     "all of the extra gas.",
+             "correct": False,
+             "why": "Respiration does not consume carbon dioxide — it produces "
+                    "it. And its rate is not what changes here."},
+            {"text": "Because the plants may have shut their stomata to save "
+                     "water, so the gas cannot get in.",
+             "correct": True},
+            {"text": "Because a leaf can only take in a fixed amount of "
+                     "carbon dioxide however much is available.",
+             "correct": False,
+             "why": "There is no fixed quota. Diffusion follows the "
+                    "concentration difference, so more outside would normally "
+                    "mean more crossing in — if the pores were open."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-s09",
+        "band": "standard",
+        "text": "Each guard cell has a much thicker wall along its inner "
+                "edge, next to the pore, than along its outer edge. What does "
+                "that thickening achieve?",
+        "options": [
+            {"text": "It stops water escaping from the guard cells into the "
+                     "pore.",
+             "correct": False,
+             "why": "Water vapour leaves through the pore whatever the walls "
+                    "are like — that is the price of an open stoma. The "
+                    "thickening does a mechanical job instead."},
+            {"text": "It makes a filling cell curve rather than swell evenly, "
+                     "so the pair bows apart.",
+             "correct": True},
+            {"text": "It makes the guard cells stiff enough to push the pore "
+                     "open like a lever.",
+             "correct": False,
+             "why": "Nothing pushes. The cells change shape because water "
+                    "enters them, and the uneven walls decide what shape they "
+                    "change into."},
+            {"text": "It protects the inside of the leaf from drying out when "
+                     "the pore is open.",
+             "correct": False,
+             "why": "The inside of a leaf has to stay wet for diffusion to "
+                    "work, and no wall prevents that water leaving. The "
+                    "thickening controls the bending."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-s10",
+        "band": "standard",
+        "text": "An alveolus is the surface where gas crosses in a lung. What "
+                "plays that part in a leaf?",
+        "options": [
+            {"text": "The stomata themselves, which are the place where gas "
+                     "crosses into the plant.",
+             "correct": False,
+             "why": "A stoma is the way in, in the way that the trachea is the "
+                    "way into a lung. Gases cross into the cells further in, "
+                    "not at the pore."},
+            {"text": "The guard cells, which take the gases in as they swell "
+                     "up with water.",
+             "correct": False,
+             "why": "Guard cells control the pore's size and nothing else. "
+                    "They are not where the exchange with the leaf's cells "
+                    "happens."},
+            {"text": "The waxy upper surface, which is the largest area the "
+                     "leaf has.",
+             "correct": False,
+             "why": "The upper surface is a barrier, not an exchange surface. "
+                    "It is unbroken precisely so that water is not lost "
+                    "through it."},
+            {"text": "The air spaces inside the leaf, where air meets the "
+                     "moist surfaces of the cells.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b4-05-h05",
+        "band": "harder",
+        "text": "A sealed jar holds a plant at exactly the light level where "
+                "its carbon dioxide reading is steady. A cloud passes and the "
+                "light dips for a minute. Predict what the sensor does.",
+        "options": [
+            {"text": "The reading starts to rise, because respiration is now "
+                     "outrunning photosynthesis.",
+             "correct": True},
+            {"text": "The reading starts to fall, because less light means "
+                     "less carbon dioxide is produced.",
+             "correct": False,
+             "why": "Light does not control the production of carbon dioxide — "
+                    "respiration does, and it is unchanged. What the cloud "
+                    "reduces is the consumption."},
+            {"text": "The reading stays steady, because the plant adjusts its "
+                     "respiration to match.",
+             "correct": False,
+             "why": "Respiration does not adjust to anything here; its rate is "
+                    "flat at every light level. Nothing keeps the balance once "
+                    "the light moves."},
+            {"text": "The reading stays steady, because a passing cloud is "
+                     "too brief to have any effect.",
+             "correct": False,
+             "why": "Photosynthesis follows the light immediately, with no "
+                    "delay to ride out. As soon as it slows, the balance "
+                    "tips."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-h06",
+        "band": "harder",
+        "text": "A water lily's floating leaves have their stomata on the "
+                "upper surface, unlike almost every land plant. Explain why.",
+        "options": [
+            {"text": "The upper surface is warmer, so the guard cells can "
+                     "open more easily there.",
+             "correct": False,
+             "why": "Guard cells open when water enters them, whatever the "
+                    "temperature. What matters here is which side of the leaf "
+                    "the air is on."},
+            {"text": "Water lilies have no need to save water, so the pores "
+                     "can be anywhere.",
+             "correct": False,
+             "why": "It is true that a floating leaf is in no danger of drying "
+                    "out, which is why the usual reason for hiding the pores "
+                    "underneath has gone. But that only removes an objection — "
+                    "it does not explain the move upwards."},
+            {"text": "The underside is in the water, so pores there would "
+                     "meet no air to exchange gases with.",
+             "correct": True},
+            {"text": "Gases dissolve better in warm surface water, so the "
+                     "pores collect them from above.",
+             "correct": False,
+             "why": "Stomata exchange gases with air, not with water, and they "
+                    "collect nothing. The pores are on top because that is the "
+                    "side the air is on."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-h07",
+        "band": "harder",
+        "text": "At a particular light level a leaf photosynthesises at 9 "
+                "units and respires at 2 units. What is the net movement of "
+                "carbon dioxide?",
+        "options": [
+            {"text": "11 units into the leaf.", "correct": False,
+             "why": "The two rates have been added. They move carbon dioxide "
+                    "in opposite directions, so they have to be subtracted."},
+            {"text": "7 units into the leaf.", "correct": True},
+            {"text": "7 units out of the leaf.", "correct": False,
+             "why": "The size is right and the direction is not. "
+                    "Photosynthesis is the larger of the two here, and it is "
+                    "the one that takes carbon dioxide in."},
+            {"text": "2 units out of the leaf.", "correct": False,
+             "why": "This reports the respiration rate on its own and ignores "
+                    "photosynthesis. The net figure is what is left after the "
+                    "two are set against each other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-h08",
+        "band": "harder",
+        "text": "A student decides to measure oxygen in the sealed jar "
+                "instead of carbon dioxide. Would that tell a different "
+                "story?",
+        "options": [
+            {"text": "Yes — oxygen only moves during the day, so nothing "
+                     "would be seen at night.",
+             "correct": False,
+             "why": "Oxygen moves at night too: respiration consumes it, so "
+                    "the reading falls. Something is always happening to both "
+                    "gases."},
+            {"text": "Yes — oxygen readings would stay flat, because plants "
+                     "do not exchange oxygen.",
+             "correct": False,
+             "why": "Plants exchange oxygen constantly. Respiration uses it "
+                    "and photosynthesis makes it, so the reading moves as much "
+                    "as the carbon dioxide one does."},
+            {"text": "No — the same story, with the readings simply going the "
+                     "other way at each light level.",
+             "correct": True},
+            {"text": "No — the two gases move in the same direction, so the "
+                     "readings would be identical.",
+             "correct": False,
+             "why": "The conclusion is right but the reason has the gases "
+                    "moving together. They move in opposite directions, which "
+                    "is exactly why one reading mirrors the other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-h09",
+        "band": "harder",
+        "text": "A leaf on a hot dry afternoon has kept most of its stomata "
+                "closed for hours in full sunshine. A sensor in a sealed "
+                "bag around it shows carbon dioxide slowly rising. Explain "
+                "why.",
+        "options": [
+            {"text": "Respiration carries on inside the leaf, while "
+                     "photosynthesis is starved of carbon dioxide.",
+             "correct": True},
+            {"text": "The closed stomata trap carbon dioxide inside the bag, "
+                     "which the sensor then detects.",
+             "correct": False,
+             "why": "Shut pores would keep gas inside the leaf, not push it "
+                    "into the bag. What is raising the bag's reading is gas "
+                    "still coming out of the plant."},
+            {"text": "Photosynthesis has been damaged by the strong sunlight "
+                     "and has stopped producing oxygen.",
+             "correct": False,
+             "why": "Bright light does not damage photosynthesis here; it "
+                    "levels off rather than failing. What has stopped it is "
+                    "the shortage of carbon dioxide behind a closed pore."},
+            {"text": "Respiration has speeded up in the heat until it "
+                     "overtakes photosynthesis.",
+             "correct": False,
+             "why": "Respiration does not change rate here — it is the one "
+                    "constant in the whole lesson. The balance has tipped "
+                    "because photosynthesis fell, not because respiration "
+                    "rose."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-05-h10",
+        "band": "harder",
+        "text": "Why can a sealed jar and a carbon dioxide sensor never "
+                "measure a plant's rate of photosynthesis on its own?",
+        "options": [
+            {"text": "Because photosynthesis does not involve carbon dioxide "
+                     "at every possible light level.",
+             "correct": False,
+             "why": "Photosynthesis consumes carbon dioxide whenever it runs "
+                    "at all. The problem is not what it uses — it is what else "
+                    "is going on at the same time."},
+            {"text": "Because a carbon dioxide sensor cannot work properly "
+                     "inside a sealed container.",
+             "correct": False,
+             "why": "They work perfectly well sealed in — that is how the "
+                    "steady dawn reading was found. The limitation is "
+                    "biological, not technical."},
+            {"text": "Because respiration is always running as well, so the "
+                     "sensor only ever sees the difference.",
+             "correct": True},
+            {"text": "Because the stomata may be closed, so no gas reaches "
+                     "the sensor.",
+             "correct": False,
+             "why": "Closed stomata would be a problem on a hot dry day, but "
+                    "not on an ordinary one. Even with the pores wide open the "
+                    "sensor still cannot separate the two processes."},
+        ],
+        "figure": None,
+    },
 ]
