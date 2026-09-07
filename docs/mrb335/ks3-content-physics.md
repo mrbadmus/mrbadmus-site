@@ -241,6 +241,49 @@ which is the one place the length is meant.
 
 ---
 
+## P5 · Pressure — 4 lessons, 108 new rows (36 per band)
+
+Unit total: **52 / 52 / 52**. Nine per band on every lesson: `e05–e13`,
+`s05–s13`, `h05–h13` in each of the four files.
+
+| lesson | ids added (each band) |
+|---|---|
+| 01 pressure = force ÷ area | e05–e13, s05–s13, h05–h13 |
+| 02 pressure in liquids | e05–e13, s05–s13, h05–h13 |
+| 03 upthrust, floating and sinking | e05–e13, s05–s13, h05–h13 |
+| 04 atmospheric pressure | e05–e13, s05–s13, h05–h13 |
+
+**The area conversion is the trap this unit turns on**, so it is tested three
+ways rather than once: as a bare fact (`p5-01-e08`), inside a calculation
+(`p5-01-s08`, 300 cm² on a 150 N box), and as a student's own wrong working to
+diagnose (`p5-01-h08`, "400 cm² is 4 m²"). Lesson 01 also carries the two
+rearrangements — force from pressure and area, area from force and pressure —
+with the inverted division as a named distractor in each.
+
+Lesson 02's rows all turn on the same discrimination: depth and the liquid
+decide the pressure, and the amount of liquid never does. Two rows put that
+under real strain — the thin pipe that bursts a barrel (`h07`) and the two
+tanks holding ten times different volumes to the same depth (`s10`). Lesson 03
+separates upthrust from weight in both directions: the same-volume aluminium
+and lead blocks get the same upthrust (`s06`), and the boat-and-stone level
+question (`h06`) is the one item in the unit a well-taught student can still
+get wrong for a good reason.
+
+**Review fixes.** Sixteen length flags reworded, including four where the
+correct option was a single word ("rises", "Mercury", "They are equal") among
+wordy distractors. Every calculation re-worked from its stem; the jack
+(`p5-01-h11`) and the elephant-versus-heel comparison (`p5-01-h07`) are the two
+that chain two steps, and both were checked end to end.
+
+**The lane's REF check was too blunt, and a pressure unit is where that shows.**
+It had flagged the bare words *above* and *below* — but "the water above the
+probe", "one ninth above the surface" and "no air above 100 km" are physical
+descriptions, not instructions to look at a picture. Nine flags here were the
+checker misreading the subject. It now matches deictic phrases only
+(*shown above*, *diagram below*, *this graph*).
+
+---
+
 ## ⚠️ A gate defect that is NOT content, found while topping up P1
 
 From the moment the biology lane's B1 top-up landed in this worktree,

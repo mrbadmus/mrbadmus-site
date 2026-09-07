@@ -442,7 +442,6 @@
   var S = null;          // the open sheet's state, or null
   var els = null;        // built DOM, kept between renders
   var toastTimer = null;
-  var opens = 0;         // how many times the sheet has been opened, ever
 
   function freshState(classId) {
     return {
@@ -1346,7 +1345,6 @@
 
   function syncStep() {
     els.step.textContent = SAY.steps[S.step];
-    els.overlay.setAttribute("data-sw-step", String(S.step));
     els.pClasses.hidden = (S.step !== 0);
     els.pTopic.hidden = (S.step !== 1);
     els.pDetail.hidden = (S.step !== 2);
@@ -1473,21 +1471,6 @@
     buildReleaseChips();
     syncStep();
     els.overlay.hidden = false;
-    /* ⚠️ COUNTED ONTO THE OVERLAY, and it is the same instrument
-       `student-runtime.js` puts on its mount host for the same reason
-       ("counted onto the mount point so a gate reads a number instead of
-       inferring from a screenshot").
-
-       Four buttons open this one sheet — the classes screen's primary, the
-       class screen's primary, a class card and the empty state — and the
-       second of them pressed in a sweep finds the sheet ALREADY open, for a
-       different class, with a tree that has not refetched yet. The DOM is
-       momentarily identical, so a probe reading text and node counts
-       concludes the control did nothing. It did: it re-opened the sheet, on
-       another class. This says so, and `data-sw-class` says which. */
-    opens += 1;
-    els.overlay.setAttribute("data-sw-opens", String(opens));
-    els.overlay.setAttribute("data-sw-class", S.classId);
     /* The one `focus()` in this file, and it is at OPEN — never after a
        state change. RISKS A1 bans the second, not the first: a dialog that
        does not take focus is unreachable from a keyboard. */
