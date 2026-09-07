@@ -115,3 +115,58 @@ source lines gained a spurious space and `b2-02-s11` rendered to the child as
 them, not by any gate. The helper was hardened with `break_on_hyphens=False`
 and all 108 rows swept for the signature. The lane's reviewer now checks for it
 (`\w-\s` and doubled spaces) across stems, options and whys.
+
+---
+
+## B7 — photosynthesis (4 lessons, +108 rows)
+
+Every lesson took 9 per band: `e05–e13`, `s05–s13`, `h05–h13`. Formulae are
+written flat (`CO2`, `O2`) and no row carries markup.
+
+**Review fixes.** `b7-04-e09` was a near-paraphrase of the existing frozen
+`b7-04-e01`, and worse, e01's stem gave away half of e09's answer — replaced
+outright with a new question on what a wheat grain is. Eighteen length tells
+were repaired by lengthening a distractor into a wrong rule of the same shape
+rather than by shortening the key, so no misconception was diluted.
+
+Ten self-containment defects, all naming the lesson page's own interactive:
+six flagged stems said "the bench" (a glucose counter, a dial, a leaf "set to
+Broad"), and a sweep found four more in `why` fields citing "the counter" and
+"the two readouts". Each was recast into a real situation carrying the same
+science — a pot plant under a dimmed lamp, a grower's glasshouse short of
+carbon dioxide, a pine needle against a broad oak leaf, a class investigation.
+Where the question genuinely is about a model's limits rather than a real
+plant, the stem now says "a simple computer model of a leaf", which is
+self-contained.
+
+⚠️ `b7-03-h09` was flagged and deliberately **kept**: its "bench" is a
+laboratory bench in a real ethanol spill, which is correct and self-contained.
+The lane ruled on this rather than letting a regex decide it.
+
+**Open, passed upward:** `b7-01-h08` and `b7-04-h05` use the 10:1 figure that
+`NOTES-B7` flag 19 says B9 may eventually own. If Mide moves it, two more sites
+move with it.
+
+---
+
+## B3 — diet and digestion (8 lessons, +60 rows)
+
+Lessons 01–04 took 3 per band (`e05–e07`), lessons 05–08 took 2 (`e05–e06`).
+Energy rows carry kJ throughout.
+
+**Review fixes.** Fifteen self-containment defects — eleven flagged, four more
+found by the unit's own sweep. Two of the four are worth naming: `b3-06-s05`'s
+`why` said "the counter still reads forty", which is the lesson page's enzyme
+readout rather than a laboratory instrument; and `b3-02-e06`'s stem opened "All
+four of these tests", which has no referent once the row is read on its own.
+
+Four keys were conspicuously shorter than every distractor — a real tell,
+because the odd one out is pickable without reading. `b3-03-s07`'s key was
+"A surplus of 1250 kJ, which is stored." (8 words) against distractors of 13 to
+16; `b3-04-e06`'s was "The body tissue that stores lipid." (6) against 11 to 12.
+Both keys were lengthened rather than the distractors cut. Sweeping the unit at
+`key < 0.8 × shortest distractor` caught two further instances.
+
+⚠️ `b3-02-h05` and `b3-02-e07`'s "bench" were flagged and deliberately **kept**
+— both are laboratory benches, one holding two unlabelled white powders and one
+in a sentence about keeping a naked flame away from a water bath.
