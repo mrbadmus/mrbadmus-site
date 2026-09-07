@@ -3070,7 +3070,14 @@
          nothing on this page read it, and the child was shown an assertion that
          work existed instead. Ruled copy, and the only copy: no badge, no bench
          line, no button, no checklist. */
-      benchHeldLine: held ? "This week's work isn't live yet" : "",
+      /* ⊕ MRB-331, 7 Sep 2026 — …AND ONLY WHEN THERE IS GENUINELY NOTHING.
+         `held` means the AUTO producer has not opened for this school. Since
+         MRB-331 that no longer implies an empty bench: a teacher can set work
+         by hand, and MRB-324's ruling is explicit that a hold moved later must
+         never retract work a child can already see. So a held school can hold
+         RELEASED teacher-set work, and saying "isn't live yet" over the top of
+         it is a false sentence about homework the child is expected to do. */
+      benchHeldLine: (held && !benchWork) ? "This week's work isn't live yet" : "",
       benchDone: benchDone,
       /* ⊕ 23 Aug 2026 — PHASE 4. ONE FACT, ONE NEGATION. Design's amended
          bench is two branches and names them `benchOpen` and `benchDone`;
@@ -3087,7 +3094,28 @@
          its else-branch and said OPEN, and the button led nowhere while ticking
          "Open it" as done. Closing this gate removes all of it at once, which
          is why the fix is one condition rather than six empty strings. */
-      benchOpen: !benchDone && !held,
+      /* ⊕ MRB-331, 7 Sep 2026 — THE GATE IS "IS THERE WORK", NOT "IS THE
+         SCHOOL HELD". MRB-330 wrote `!held` when `benchWork` could only ever
+         be the auto assignment, so held and empty were the same fact. This
+         ticket rewired `benchWork` to fall back to released teacher-set work
+         and the two facts came apart, in both directions:
+
+           · a held school with live teacher-set work showed NO bench, and
+             printed "This week's work isn't live yet" three inches above that
+             same homework in the work list below;
+           · a class with `auto_assignments = false` — this ticket's own new
+             per-class dial, a supported configuration rather than an error —
+             is not held and has no auto row, so `benchOpen` stayed TRUE with
+             nothing to put in it: four blank docket rows, a badge falling
+             through to OPEN, and a button leading nowhere. Which is verbatim
+             the state the MRB-330 note above says it closed.
+
+         `benchWork` already answers the real question, for both kinds of work
+         — it is set from `current.assignment` for auto and from the
+         `week_work` fallback for teacher-set. Asking it directly closes both
+         directions with one condition and leaves `held` to do the one job it
+         is good at: choosing the sentence. */
+      benchOpen: !benchDone && !!benchWork,
 
       /* ── the done bench, from the real submission ─────────────────────
          ⊕ 23 Aug 2026 — PHASE 4. Design's `bench-done` region, donor 101. The

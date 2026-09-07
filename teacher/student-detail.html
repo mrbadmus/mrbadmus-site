@@ -1037,7 +1037,15 @@ function MRB_SET_WORK_SHORT(r){
    teacher is choosing a school day, not an instant. */
 function MRB_SET_WORK_NEXT_MONDAY_YMD(){
   var d=new Date(); d.setHours(0,0,0,0);
-  d.setDate(d.getDate() + (8 - (d.getDay()||7)));
+  /* ⊕ MRB-331 x MRB-330, 7 Sep 2026 — the same Sunday correction as
+     MRB_SET_WORK_DUE_DATE, and it has to be the same or the two controls
+     disagree with each other on one day a week. `(8-(d.getDay()||7))` treated
+     Sunday as the tail of the old week and offered the very next morning,
+     while the due chips beside it were already pointing a week further on:
+     work that appeared Monday and was due ten days later, from two defaults
+     the teacher never touched. Sunday now anchors on the week it OPENS. */
+  var dow0=d.getDay();
+  d.setDate(d.getDate() + (dow0===0 ? 8 : (8 - dow0)));
   var m=String(d.getMonth()+1), dd=String(d.getDate());
   return d.getFullYear()+'-'+(m.length<2?'0'+m:m)+'-'+(dd.length<2?'0'+dd:dd);}
 
@@ -1127,8 +1135,22 @@ function MRB_SET_WORK_DUE_DATE(day){
   if(want<0){return null;}
   var d=new Date();
   d.setHours(23,59,0,0);
-  /* Monday of this week, then the same weekday seven days on. */
-  var back=(d.getDay()+6)%7;
+  /* Monday of this TEACHING week, then the same weekday seven days on.
+
+     ⊕ MRB-331 x MRB-330, 7 Sep 2026 — SUNDAY IS THE START OF ITS WEEK, NOT
+     THE END. This read `(d.getDay()+6)%7`, which is the arithmetic MRB-330
+     replaced: it puts Sunday six days after the Monday that has gone, so a
+     Sunday press anchored on the week that was ENDING and a Monday press on
+     the week beginning. Measured: pressing "Thu" on Sunday 13 Sep 2026 gave
+     Thu 17 Sep, and the identical press twelve hours later on Monday 14 Sep
+     gave Thu 24 Sep — a seven-day jump between two moments the week model
+     says are the same teaching week.
+
+     Sunday evening is when homework gets set, and Sunday 6 Sep 2026 is the
+     exact day the MRB-329 audit was reported on. The week is still NAMED by
+     its Monday, so on a Sunday that Monday is TOMORROW, which is the -1. */
+  var dow=d.getDay();
+  var back=(dow===0)?-1:((dow+6)%7);
   d.setDate(d.getDate()-back+7+((want+6)%7));
   return d;}
 

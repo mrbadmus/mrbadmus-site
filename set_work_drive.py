@@ -47,7 +47,19 @@ sys.path.insert(0, REPO)
 
 import mrb331_fixture as FX          # noqa: E402  (after chdir, deliberately)
 
-BACKEND = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend"
+# ⚠️ THE CHECKOUT THIS DRIVE LAUNCHES `node server.js` FROM (⊕ MRB-331,
+# 7 Sep 2026). `Server` below already insists it must be "THIS REPO'S BACKEND
+# AND THIS RUN'S CODE" — and then hardwired the MAIN checkout, which is a
+# shared working copy that any session can leave on any branch. On 7 September
+# it was on a colleague's feat/mrb332-ks4-pool, so the drive would have started
+# THEIR server and reported fifty-four green checks about code this branch does
+# not contain. Set MRB_BACKEND (or pass a path) to name the worktree actually
+# being shipped; the sibling repo stays the default.
+BACKEND = (
+    (sys.argv[1] if len(sys.argv) > 1 and not sys.argv[1].startswith("-") else None)
+    or os.environ.get("MRB_BACKEND")
+    or "/Users/midebadmus/Documents/GitHub/mrbadmus---backend"
+)
 PORT = 5531
 API = "http://127.0.0.1:%d" % PORT
 CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")

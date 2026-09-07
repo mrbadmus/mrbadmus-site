@@ -46,7 +46,22 @@ import re
 import sys
 
 REPO = os.path.dirname(os.path.abspath(__file__))
-BACKEND = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/server.js"
+# ⚠️ Honours MRB_BACKEND (⊕ MRB-331, 7 Sep 2026). This reads the BACKEND's
+# source, and the main checkout is a shared working copy any session can leave
+# on another branch — so unqualified it can report PASS about a backend nobody
+# is shipping. `pool_ownership` had the same wiring and was found red against a
+# colleague's branch on 7 September.
+#
+# ⊘ DELIBERATELY NOT `needs_env` here, unlike pool_ownership. Requiring the
+# variable makes the gate SKIP on a machine that has not set it, and whether
+# seating's tells are worth that trade is a call about a feature this run is
+# not shipping. Flagged for Mide in the MRB-331 report rather than decided in
+# passing; the override exists in the meantime.
+BACKEND = os.environ.get(
+    "MRB_BACKEND_SERVER_JS",
+    os.path.join(os.environ.get(
+        "MRB_BACKEND", "/Users/midebadmus/Documents/GitHub/mrbadmus---backend"),
+        "server.js"))
 
 # ── 1. The canonical room list ───────────────────────────────────────────
 # Verbatim, in the order Mide gave it.
