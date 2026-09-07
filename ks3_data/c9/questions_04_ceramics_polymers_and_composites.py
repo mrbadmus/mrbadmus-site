@@ -262,8 +262,8 @@ QUESTIONS = [
              "correct": False,
              "why": "It is the other way round. Concrete is strong in "
                     "compression and weak in tension."},
-            {"text": "The concrete takes the pull and the steel spreads the "
-                     "load across it",
+            {"text": "The steel takes the pull and the concrete takes the "
+                     "squashing load",
              "correct": True},
             {"text": "Both take the same loads, so the pair is simply twice "
                      "as strong",
