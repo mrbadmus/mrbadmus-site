@@ -2,7 +2,13 @@
 """mrb328_import_picker_drive.py — MRB-328 J2: WHICH CLASS AM I IMPORTING INTO?
 
     python3 mrb328_import_picker_drive.py --section b        # stubbed, no network
-    MRB_THROWAWAY_PASSWORD=… python3 mrb328_import_picker_drive.py --section a
+    MRB_THROWAWAY_PASSWORD=mrb326-throwaway python3 mrb328_import_picker_drive.py --section a
+
+⚠️ The password is the MRB-326 throwaway pair's, and `teacher_admin_real_drive.py`
+is where it is documented and where it can be RE-ASSERTED (`--provision`). Three
+drives share these two accounts off this one variable, so a value set by one of
+them for its own convenience breaks the other two — which is exactly what
+happened between 28 August and 7 September 2026.
     …                        python3 mrb328_import_picker_drive.py            # both
     …                        python3 mrb328_import_picker_drive.py --shots DIR
 

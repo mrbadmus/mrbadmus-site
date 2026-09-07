@@ -123,6 +123,9 @@ def password():
     return pw
 
 
+# The MRB-326 throwaway pair, shared with `teacher_admin_real_drive.py` and
+# `mrb328_import_picker_drive.py`. That file documents the value and can
+# re-assert it (`--provision`); all three must be run with the same one.
 THROWAWAY_ENV = "MRB_THROWAWAY_PASSWORD"
 ADMIN_EMAIL = "mrb326_admin@throwaway.test"
 
