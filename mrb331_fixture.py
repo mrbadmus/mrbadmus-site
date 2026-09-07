@@ -51,8 +51,25 @@ YEAR_HELD   = P + "12"
 C_KS3_A     = P + "21"      # 8a/Sc1  — the ordinary single-class set
 C_KS3_B     = P + "22"      # 8b/Sc1  — the second class in a multi-class set
 C_KS3_NOAUTO= P + "23"      # 9a/Sc1  — auto_assignments = false
-C_KS4_TRIPLE= P + "24"      # 10a/Bi1 — KS4 triple higher: the scoping gate
-C_KS4_COMB  = P + "25"      # 10b/Sc1 — KS4 combined foundation: its control
+C_KS4_TRIPLE= P + "24"      # 10a/Bi1 — KS4 triple higher biology: the scoping gate
+# ⊕ MRB-335 (RISKS D15). This was `10b/Sc1`, and the name was a LIE about the
+# row: the class was labelled combined FOUNDATION while MRB-263's naming
+# convention reads set 1 as Higher. That did not matter while the tier was a
+# column somebody typed; it matters now that `class_tier_rule()` derives the
+# cohort FROM THE NAME on insert and `defaultTierFor()` lands the sheet on it.
+# A fixture whose name and columns disagree cannot prove `tier_default_matches_rule`
+# — it can only prove that whichever of the two the code happened to read came
+# back. `Sc5` is the Foundation set number, so the name now says what the row says.
+C_KS4_COMB  = P + "25"      # 10b/Sc5 — KS4 combined FOUNDATION: its control
+# ⊕ MRB-335. The third KS4 cohort, and the one that has no other way of being
+# reached: a SEPARATE-SCIENCES class whose science is not the same as the other
+# seps class's. `10a/Bi1` alone cannot show that a physics class sees physics
+# and nothing else — with one seps class in the world, "its own subject" and
+# "the first subject" are the same answer. It is also the only class that makes
+# `cohort_mismatch` provable at KS4 without leaving the pathway: 10a/Bi1 and
+# 10c/Ph1 are BOTH triple higher and are still two cohorts, because the cohort
+# carries the science.
+C_KS4_SEPS  = P + "28"      # 10c/Ph1 — KS4 triple higher PHYSICS
 C_KS3_HELD  = P + "26"      # 8h/Sc1  — in the held school
 # ⚠️ SAME SCHOOL, DIFFERENT TEACHER — and the "same school" half is the point.
 # A refusal check run against a class in ANOTHER school passes for the wrong
@@ -63,15 +80,23 @@ C_KS3_HELD  = P + "26"      # 8h/Sc1  — in the held school
 # `OTHER_PUPIL` in teacher_admin_real_drive.py.)
 C_FOREIGN   = P + "27"      # 8z/Sc1  — nobody's, in the open school
 
+# ⚠️ THE KS4 ROWS CARRY NO TIER, NO PATHWAY AND NO SUBJECT, and that is the
+# point rather than an omission. `classes_apply_tier_rule` fills all three from
+# the NAME on insert and stamps `tier_pathway_source = 'rule'`. A fixture that
+# typed them in would be seeding the answer the drive is about to check, and
+# `tier_default_matches_rule` would then be a check on this file. What the
+# columns hold is the DATABASE's reading of the name; `normalise_ks4()` below
+# only ever repairs a row an earlier run left disagreeing with it.
 CLASSES = [
-    # (id,           name,      key_stage, year, tier,         pathway,    school,      year_id,   auto)
-    (C_KS3_A,     "8a/Sc1",  "KS3",  8, None,         None,       SCHOOL_OPEN, YEAR_OPEN, True),
-    (C_KS3_B,     "8b/Sc1",  "KS3",  8, None,         None,       SCHOOL_OPEN, YEAR_OPEN, True),
-    (C_KS3_NOAUTO,"9a/Sc1",  "KS3",  9, None,         None,       SCHOOL_OPEN, YEAR_OPEN, False),
-    (C_KS4_TRIPLE,"10a/Bi1", "KS4", 10, "higher",     "triple",   SCHOOL_OPEN, YEAR_OPEN, True),
-    (C_KS4_COMB,  "10b/Sc1", "KS4", 10, "foundation", "combined", SCHOOL_OPEN, YEAR_OPEN, True),
-    (C_KS3_HELD,  "8h/Sc1",  "KS3",  8, None,         None,       SCHOOL_HELD, YEAR_HELD, True),
-    (C_FOREIGN,   "8z/Sc1",  "KS3",  8, None,         None,       SCHOOL_OPEN, YEAR_OPEN, True),
+    # (id,           name,      key_stage, year, school,      year_id,   auto)
+    (C_KS3_A,     "8a/Sc1",  "KS3",  8, SCHOOL_OPEN, YEAR_OPEN, True),
+    (C_KS3_B,     "8b/Sc1",  "KS3",  8, SCHOOL_OPEN, YEAR_OPEN, True),
+    (C_KS3_NOAUTO,"9a/Sc1",  "KS3",  9, SCHOOL_OPEN, YEAR_OPEN, False),
+    (C_KS4_TRIPLE,"10a/Bi1", "KS4", 10, SCHOOL_OPEN, YEAR_OPEN, True),
+    (C_KS4_COMB,  "10b/Sc5", "KS4", 10, SCHOOL_OPEN, YEAR_OPEN, True),
+    (C_KS4_SEPS,  "10c/Ph1", "KS4", 10, SCHOOL_OPEN, YEAR_OPEN, True),
+    (C_KS3_HELD,  "8h/Sc1",  "KS3",  8, SCHOOL_HELD, YEAR_HELD, True),
+    (C_FOREIGN,   "8z/Sc1",  "KS3",  8, SCHOOL_OPEN, YEAR_OPEN, True),
 ]
 
 # The teacher is linked to every class EXCEPT this one.
@@ -99,6 +124,19 @@ ENV_SWITCH = "MRB_SET_WORK_PASSWORD"
 
 SUBJECT_SCIENCE = "26000000-0000-0000-0000-000000000001"
 SUBJECT_BIOLOGY = "f06e297f-1a44-47d3-9c93-bb616c968cc7"
+SUBJECT_PHYSICS = "b7cc103d-53af-45d4-b9fc-4dba20994009"
+
+# The school's TIMETABLE subject for a class, which is a different fact from the
+# pool's `subject` and is what `classSubjectId()` files auto work under. A seps
+# class is taught by a specialist, so its link carries that science.
+SUBJECT_BY_CODE = {"/Bi": SUBJECT_BIOLOGY, "/Ph": SUBJECT_PHYSICS}
+
+
+def timetable_subject(name):
+    for code, sid in SUBJECT_BY_CODE.items():
+        if code in name:
+            return sid
+    return SUBJECT_SCIENCE
 
 
 def env(name):
@@ -204,6 +242,70 @@ def ensure_user(email, pw):
     return d["id"]
 
 
+def rule_for(name):
+    """What `class_tier_rule(name)` says, asked of the DATABASE.
+
+    ⚠️ NOT A PYTHON MIRROR OF THE RULE, deliberately. The rule already exists
+    twice — as SQL (the authority, because the trigger runs it) and as JS
+    (`classTierRule()` in set-work-scope.js, for the admin route's defaulting)
+    — and `test_set_work_v2.js` drives those two against each other. A third
+    copy here would be a copy nothing checks, in the one file whose job is to
+    build the world the checks run in: it would drift, and the drive would
+    then measure this file's opinion of the rule rather than the database's.
+    """
+    st, rows = api("POST", "/rest/v1/rpc/class_tier_rule", {"p_name": name})
+    if st != 200 or not isinstance(rows, list) or not rows:
+        raise SystemExit("class_tier_rule(%r) → %s %s" % (name, st, str(rows)[:200]))
+    r = rows[0]
+    return (r.get("tier"), r.get("pathway"), r.get("subject"))
+
+
+def normalise_ks4():
+    """Repair a KS4 fixture row an EARLIER run left disagreeing with its name.
+
+    ⚠️ THIS IS A MIGRATION FOR THE THROWAWAY WORLD, not a second seeding path,
+    and it exists because of one specific row. `10b/Sc1` was seeded on TEST as
+    combined FOUNDATION while its name said set 1 — so when MRB-335's backfill
+    ran, it correctly concluded that a person had overruled the rule and
+    stamped `tier_pathway_source = 'admin'`. Renaming it to `10b/Sc5` does not
+    undo that: the trigger only DERIVES on INSERT, and the row already exists.
+    Left alone, the fixture would carry a class whose cohort was a fossil of a
+    name it no longer has.
+
+    ⚠️ `tier_pathway_source` IS SENT EXPLICITLY, and that is what stops the
+    repair labelling itself. The trigger's UPDATE arm stamps `admin` when the
+    triple moves AND the source is unchanged from OLD; naming a new source
+    means the row records what actually decided it — the rule — rather than
+    recording this script as a head of department.
+    """
+    ks4 = [(cid, name) for (cid, name, ks, *_r) in CLASSES if ks == "KS4"]
+    if not ks4:
+        return
+    st, rows = api("GET", "/rest/v1/classes?id=in.(%s)&select=id,name,tier,"
+                          "science_pathway,science_subject,tier_pathway_source"
+                   % ",".join(c for c, _n in ks4))
+    have = {r["id"]: r for r in rows} if isinstance(rows, list) else {}
+    fixed = []
+    for cid, name in ks4:
+        row = have.get(cid)
+        if not row:
+            continue
+        want = rule_for(name)
+        got = (row.get("tier"), row.get("science_pathway"),
+               row.get("science_subject"))
+        if got == want and row.get("tier_pathway_source") == "rule":
+            continue
+        st, _ = api("PATCH", "/rest/v1/classes?id=eq." + cid,
+                    {"tier": want[0], "science_pathway": want[1],
+                     "science_subject": want[2], "tier_pathway_source": "rule"})
+        if st not in (200, 204):
+            raise SystemExit("could not normalise %s: %s" % (name, st))
+        fixed.append("%s %s→%s" % (name, "/".join(str(g) for g in got),
+                                   "/".join(str(w) for w in want)))
+    if fixed:
+        print("  repaired  %s" % "; ".join(fixed))
+
+
 def seed():
     pw = password()
     today = date.today()
@@ -227,12 +329,19 @@ def seed():
          % (y_start.year, str(y_end.year)[2:]),
          "start_date": y_start.isoformat(), "end_date": y_end.isoformat()},
     ])
+    # ⚠️ NO tier / science_pathway / science_subject COLUMN IN THE PAYLOAD AT
+    # ALL, and the absence is load-bearing in BOTH directions. On a first run
+    # the KS4 rows insert with all three NULL, so `classes_apply_tier_rule`
+    # fills them from the name — which is the fact the drive then measures. On
+    # a re-run PostgREST's `ON CONFLICT DO UPDATE` only touches the columns the
+    # payload names, so a rename cannot disturb a cohort, and the trigger's
+    # UPDATE arm (which stamps `admin` when the triple MOVES) never fires.
     upsert("classes", [
         {"id": cid, "school_id": sch, "academic_year_id": yr, "name": name,
-         "key_stage": ks, "year_group": yg, "tier": tier,
-         "science_pathway": path, "auto_assignments": auto}
-        for (cid, name, ks, yg, tier, path, sch, yr, auto) in CLASSES
+         "key_stage": ks, "year_group": yg, "auto_assignments": auto}
+        for (cid, name, ks, yg, sch, yr, auto) in CLASSES
     ])
+    normalise_ks4()
 
     teacher = ensure_user(TEACHER_EMAIL, pw)
     admin = ensure_user(ADMIN_EMAIL, pw)
@@ -256,7 +365,7 @@ def seed():
     upsert("class_teachers", [
         {"id": P + "3" + str(i), "class_id": cid, "teacher_id": teacher,
          "role": "subject_teacher",
-         "subject_id": (SUBJECT_BIOLOGY if "/Bi" in name else SUBJECT_SCIENCE)}
+         "subject_id": timetable_subject(name)}
         for i, (cid, name, *_rest) in enumerate(CLASSES)
         if cid not in NOT_TAUGHT
     ], on_conflict="id")
@@ -426,15 +535,18 @@ def show():
     comes back as a 404 that reads like a missing route."""
     st, rows = api("GET", "/rest/v1/classes?id=in.(%s)"
                           "&select=id,name,key_stage,year_group,tier,"
-                          "science_pathway,auto_assignments&order=name"
+                          "science_pathway,science_subject,tier_pathway_source,"
+                          "auto_assignments&order=name"
                    % ",".join(c[0] for c in CLASSES))
     if not isinstance(rows, list):
         print(st, rows)
         return
     for r in rows:
-        print("  %-9s %-4s Y%-2s %-11s %-9s auto=%s"
+        print("  %-9s %-4s Y%-2s %-11s %-9s %-10s src=%-5s auto=%s"
               % (r["name"], r["key_stage"], r["year_group"],
                  r["tier"] or "-", r["science_pathway"] or "-",
+                 r["science_subject"] or "-",
+                 r["tier_pathway_source"] or "-",
                  r["auto_assignments"]))
 
 
