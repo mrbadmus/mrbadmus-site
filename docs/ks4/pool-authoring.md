@@ -8,9 +8,43 @@ nothing exports unreviewed.
 
 ## 1. What you are writing
 
-Twelve multiple-choice questions per KS4 subtopic — **four `easier`, four
-`standard`, four `harder`** — that a Year 10 or Year 11 student meets as
-*homework*, set by their teacher alongside Sparx.
+**At least** twelve multiple-choice questions per KS4 subtopic — **at least
+four `easier`, four `standard`, four `harder`** — that a Year 10 or Year 11
+student meets as *homework*, set by their teacher alongside Sparx.
+
+### ⊕ MRB-335, 8 Sep 2026 — a subtopic may now hold MORE than twelve
+
+This said "twelve … four of each band", full stop, and for MRB-332 that was
+right: a subtopic WAS twelve questions, and the automatic weekly assignment
+took all of them.
+
+Set work v2 changed what the pool is for. A teacher hand-picks up to twenty
+questions from a whole TOPIC at one tier, and the 7 Sep 2026 availability
+table found twenty-two (topic, tier) cells below the fifty-question floor
+that makes picking meaningful — Combined Higher on `energy-changes` offered
+twenty-eight. So the pool grows, and thirty-eight subtopics now hold between
+fourteen and thirty-five questions.
+
+**What did NOT change is the floor, or the first twelve.**
+
+> **At least four per band, and the FIRST four of each band sit at bank
+> positions 0–11.**
+
+⚠️ **Positions 0–11 are the AUTOMATIC weekly assignment's window, and it is
+load-bearing** (MRB-335 / RISKS D7). `composeFromBank` in the backend and
+`compose_assignment` in Python both read `bank_position < 12` and take every
+row of a band they find there. If a thirteenth question could land inside
+that window, every auto-composed set in the estate would change the day the
+pool grew — silently, with nothing saying so. `ks4_data.load_pool()` emits
+the first four of each band FIRST and the extras afterwards, so the original
+twelve keep their ids, their order and their positions, byte for byte;
+`ks4_pool_check`'s *positions 0-11 are still four of each band* proves it
+rather than trusting it.
+
+**If you are ADDING to a subtopic that already has twelve:** continue each
+band's id sequence (`e05`, `s05`, `h05` …), leave the existing twelve
+untouched, and put the new rows in a separate `<topic>__setwork.py` module so
+the diff shows what is new. Do not renumber anything.
 
 They are not lesson questions. They are not a quiz on the page. They are the
 work a teacher sets when they want a class to practise one subtopic, and the
@@ -116,9 +150,19 @@ is the second.
 
 ## 6. Answer positions
 
-**Spread the correct answer across A, B, C and D.** Within each subtopic's
-twelve questions aim for roughly three at each index, and never leave an index
-unused.
+**Spread the correct answer across A, B, C and D.** Within a subtopic aim for
+roughly a quarter at each index, and never leave an index unused.
+
+⊕ **MRB-335: measure the rows YOU wrote, not the corpus.** The longest-option
+check in `ks4_pool_check` reads the whole pool against a 40% threshold, and a
+few hundred skewed new rows inside 3,417 read as 24% — at chance, green, and
+wrong. MRB-335's cold review measured its own 249 rows on their own and found
+the correct option was the longest in 65% of them, because the answer carried
+a "…, because …" clause its distractors did not. Give a distractor its own
+reason, or move the correct option's reason into the `why` where it belongs.
+A useful second measure: at 390 px a phone wraps an option every ~46
+characters, so what a student can actually SEE is a correct option occupying
+more LINES than any other. Keep that figure near 25% too.
 
 This is measured, not trusted: `verify_answer_positions.py` fails the build if
 any index holds more than half a corpus's answers or is never the answer at
@@ -205,5 +249,16 @@ python3 -c "import ks4_data; ks4_data.load_pool('<subject>', strict=False)"
 
 It validates ids, flags, option counts, duplicate options and index ranges,
 and it names the file and question of anything wrong. Fix everything it
-reports. `strict=True` additionally requires all twelve per subtopic and is
-what the export runs.
+reports. `strict=True` additionally requires at least twelve per subtopic and
+at least four per band, and is what the export runs.
+
+Then run the content gate, which also proves the auto-composition window is
+intact:
+
+```bash
+python3 ks4_pool_check.py --python
+```
+
+And sweep your own rows for the two things no gate measures per-author: the
+longest-option skew (§6) and near-duplicate stems inside one subtopic. A pair
+that differs only in its numbers is the same question twice.

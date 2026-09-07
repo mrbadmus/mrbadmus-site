@@ -226,14 +226,41 @@ def load_pool(subject=None, strict=True):
     """Every authored question, validated, in a deterministic order.
 
     Returns rows ready for export: the authored fields plus `subject` and a
-    `bank_position` — the question's index inside its own subtopic, 0..11.
+    `bank_position` — the question's index inside its own subtopic, 0..n-1.
     That position is what makes composition deterministic (the producer takes
     questions in bank order), so it is computed here, from authored order,
     rather than left to the database's row order.
 
-    `strict=False` skips the completeness check (12 per subtopic) so a
-    part-authored subject can still be inspected mid-run. Everything else is
-    checked either way: nothing malformed loads, ever.
+    ── ⊕ MRB-335: a subtopic may now hold MORE than twelve ──────────────
+
+    The rule used to be "exactly PER_BAND per band", and a subtopic was
+    twelve questions, full stop. Set work v2 lets a teacher hand-pick up to
+    twenty questions from a whole TOPIC at one tier, and the 7 Sep 2026
+    availability table found twenty-two (topic, tier) cells below the
+    fifty-question floor that makes picking meaningful — Combined Higher on
+    `energy-changes` offered twenty-eight. So the pool grows.
+
+    The rule is now **at least PER_BAND per band, and the first PER_BAND of
+    each band sit at bank positions 0–11**, which is the invariant the
+    AUTOMATIC weekly assignment depends on (RISKS D7). `composeFromBank` in
+    the backend and `compose_assignment` in Python both read
+    `bank_position < 12` and take every row of a band from there; if a
+    thirteenth question could land inside that window, every auto-composed
+    set in the estate would change the day the pool grew.
+
+    So the emission order below is NOT simply "all easier, then all
+    standard, then all harder" any more. It is:
+
+        first four easier · first four standard · first four harder   → 0–11
+        then the easier extras, the standard extras, the harder extras → 12+
+
+    The first twelve rows of a subtopic therefore keep the ids, the order and
+    the positions they had before this change, byte for byte. Set work reads
+    ALL positions; auto reads only the first twelve.
+
+    `strict=False` skips the completeness check (at least twelve per
+    subtopic) so a part-authored subject can still be inspected mid-run.
+    Everything else is checked either way: nothing malformed loads, ever.
     """
     cls = classify()
     rows, problems = [], []
@@ -263,18 +290,21 @@ def load_pool(subject=None, strict=True):
             if subject and meta["subject"] != subject:
                 continue
             got = by_subtopic.get(slug, [])
-            if len(got) != PER_SUBTOPIC:
+            if len(got) < PER_SUBTOPIC:
                 problems.append(
-                    "%s (%s/%s): %d question(s), expected %d"
+                    "%s (%s/%s): %d question(s), expected at least %d"
                     % (slug, meta["subject"], meta["topic"], len(got),
                        PER_SUBTOPIC))
                 continue
             for band in BANDS:
                 n = sum(1 for _w, q in got if q.get("band") == band)
-                if n != PER_BAND:
+                if n < PER_BAND:
                     problems.append(
-                        "%s: %d %r question(s), expected %d"
-                        % (slug, n, band, PER_BAND))
+                        "%s: %d %r question(s), expected at least %d — the "
+                        "first %d of every band are what the AUTOMATIC weekly "
+                        "assignment composes from (bank positions 0-11), so a "
+                        "band may grow but may never fall below %d."
+                        % (slug, n, band, PER_BAND, PER_BAND, PER_BAND))
 
     if problems:
         raise SystemExit(
@@ -283,26 +313,40 @@ def load_pool(subject=None, strict=True):
 
     # Emit in curriculum order, then band order, then authored order — so the
     # exported file is stable across runs and diffs readably.
+    #
+    # ⚠️ THE FIRST FOUR OF EACH BAND COME FIRST, and that is load-bearing
+    # (MRB-335 / RISKS D7). Positions 0-11 are the window the automatic
+    # weekly assignment composes from, in both mirrors; a subtopic's
+    # thirteenth question must land at 12 or later or every auto-composed set
+    # in the estate changes silently. Taking `[:PER_BAND]` of each band first
+    # and the extras afterwards keeps the original twelve at their original
+    # positions, in their original order, for every subtopic authored before
+    # the pool grew.
     for slug in sorted(by_subtopic, key=lambda s: cls[s]["order"]):
         meta = cls[slug]
         pos = 0
+        banded = {band: [e for e in by_subtopic[slug] if e[1]["band"] == band]
+                  for band in BANDS}
+        emit = []
         for band in BANDS:
-            for _where, q in [e for e in by_subtopic[slug]
-                              if e[1]["band"] == band]:
-                rows.append(dict(
-                    id=q["id"],
-                    subtopic_slug=slug,
-                    subject=meta["subject"],
-                    band=band,
-                    tier=meta["tier"],
-                    triple_only=meta["triple_only"],
-                    text=q["text"],
-                    options=list(q["options"]),
-                    correct_index=q["correct_index"],
-                    why=q["why"],
-                    bank_position=pos,
-                ))
-                pos += 1
+            emit.extend((band, e) for e in banded[band][:PER_BAND])
+        for band in BANDS:
+            emit.extend((band, e) for e in banded[band][PER_BAND:])
+        for band, (_where, q) in emit:
+            rows.append(dict(
+                id=q["id"],
+                subtopic_slug=slug,
+                subject=meta["subject"],
+                band=band,
+                tier=meta["tier"],
+                triple_only=meta["triple_only"],
+                text=q["text"],
+                options=list(q["options"]),
+                correct_index=q["correct_index"],
+                why=q["why"],
+                bank_position=pos,
+            ))
+            pos += 1
     return rows
 
 

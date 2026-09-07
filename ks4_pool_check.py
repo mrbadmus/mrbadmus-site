@@ -164,20 +164,30 @@ def main():
           and cf <= sizes[("triple", "foundation")] <= th and cf < th,
           "Combined Foundation %d ⊂ … ⊂ Triple Higher %d" % (cf, th))
 
-    # ── 3 · twelve per subtopic, four per band ──────────────────────────
+    # ── 3 · at least twelve per subtopic, at least four per band ────────
+    #
+    # ⊕ MRB-335 relaxed this from EXACTLY twelve. Set work v2 lets a teacher
+    # pick up to twenty questions from a whole topic at one tier, and
+    # twenty-two (topic, tier) cells sat below fifty, so subtopics grow. What
+    # did NOT relax is the floor: four per band is what the automatic weekly
+    # assignment composes from, and a band below four would silently shorten
+    # every auto set that reaches it. Check 4a below holds the other half of
+    # the same invariant — that the extras land OUTSIDE the auto window.
     by_sub = collections.defaultdict(list)
     for r in rows:
         by_sub[r["subtopic_slug"]].append(r)
     wrong = []
     for slug, qs in sorted(by_sub.items()):
-        if len(qs) != 12:
+        if len(qs) < 12:
             wrong.append("%s has %d" % (slug, len(qs)))
             continue
         bands = collections.Counter(q["band"] for q in qs)
-        if any(bands[b] != 4 for b in ("easier", "standard", "harder")):
+        if any(bands[b] < 4 for b in ("easier", "standard", "harder")):
             wrong.append("%s bands %s" % (slug, dict(bands)))
-    check("twelve per subtopic, four per band", not wrong,
-          "%d subtopic(s), all 4/4/4" % len(by_sub) if not wrong
+    grown = sum(1 for qs in by_sub.values() if len(qs) > 12)
+    check("at least twelve per subtopic, at least four per band", not wrong,
+          "%d subtopic(s), all ≥4/4/4 (%d hold more than twelve)"
+          % (len(by_sub), grown) if not wrong
           else "%d wrong: %s" % (len(wrong), "; ".join(wrong[:6])))
 
     # ── 4 · ids and positions are sound ─────────────────────────────────
@@ -188,11 +198,32 @@ def main():
           else "%d duplicate(s): %s" % (len(dupes), dupes[:5]))
 
     badpos = [s for s, qs in by_sub.items()
-              if len(qs) == 12
-              and sorted(q["bank_position"] for q in qs) != list(range(12))]
-    check("bank_position is 0..11 per subtopic", not badpos,
+              if sorted(q["bank_position"] for q in qs)
+              != list(range(len(qs)))]
+    check("bank_position is 0..n-1 per subtopic", not badpos,
           "contiguous everywhere" if not badpos
           else "%d subtopic(s) wrong: %s" % (len(badpos), badpos[:5]))
+
+    # ── 4a · the AUTO window still holds four of each band ──────────────
+    #
+    # RISKS D7, proved against the rows rather than trusted. The automatic
+    # weekly assignment reads `bank_position < 12` and takes every row of a
+    # band it finds there. Before MRB-335 that window was the whole subtopic
+    # and the property was free; now it is a window onto a longer list, and
+    # a thirteenth question landing inside it would change every auto set in
+    # the estate with nothing saying so.
+    window = []
+    for slug, qs in sorted(by_sub.items()):
+        first = [q for q in qs if q["bank_position"] < 12]
+        bands = collections.Counter(q["band"] for q in first)
+        if len(first) != 12 or any(
+                bands[b] != 4 for b in ("easier", "standard", "harder")):
+            window.append("%s: %d row(s) below position 12, bands %s"
+                          % (slug, len(first), dict(bands)))
+    check("positions 0-11 are still four of each band", not window,
+          "the auto-composition window is unchanged in all %d subtopic(s)"
+          % len(by_sub) if not window
+          else "%d wrong: %s" % (len(window), "; ".join(window[:5])))
 
     # ── 5 · four distinct options, answer in range ──────────────────────
     shape = []
