@@ -404,4 +404,419 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b9-02-e05",
+        "band": "easier",
+        "text": "A stoat hunts and eats voles. Which words describe the two "
+                "animals?",
+        "options": [
+            {"text": "The stoat is the prey and the vole is the predator.",
+             "correct": False,
+             "why": "The two words are the wrong way round. A predator hunts "
+                    "and eats; the prey is what is hunted."},
+            {"text": "Both are predators, because both are wild animals that "
+                     "have to find their own food.", "correct": False,
+             "why": "A vole eats plants, so it hunts nothing. Being wild does "
+                    "not make an animal a predator."},
+            {"text": "The stoat is the predator and the vole is the prey.",
+             "correct": True},
+            {"text": "The stoat is the predator and the vole is a producer.",
+             "correct": False,
+             "why": "A producer builds its own food from sunlight. A vole "
+                    "eats plants, so it is a consumer, and here it is prey as "
+                    "well."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e06",
+        "band": "easier",
+        "text": "What does the word population mean in biology?",
+        "options": [
+            {"text": "All the individuals of one species living in the same "
+                     "place.", "correct": True},
+            {"text": "All the animals of every kind living in the same "
+                     "place.", "correct": False,
+             "why": "That is the whole community. A population is one species "
+                    "— the rabbits of a field, counted on their own."},
+            {"text": "The number of animals an environment is able to "
+                     "support.", "correct": False,
+             "why": "That is the carrying capacity, the ceiling. A population "
+                    "is the animals themselves, and it can sit well below the "
+                    "ceiling."},
+            {"text": "A group of animals that live and hunt together, such as "
+                     "a pack.", "correct": False,
+             "why": "A pack is one group inside a population. Every rabbit in "
+                    "the field belongs to the population whether or not it "
+                    "lives alongside the others."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e07",
+        "band": "easier",
+        "text": "A blue tit eats caterpillars and is eaten by a sparrowhawk. "
+                "What does that show?",
+        "options": [
+            {"text": "That the blue tit is neither predator nor prey, since "
+                     "it sits in the middle of the chain.", "correct": False,
+             "why": "It is both at once rather than neither. It hunts "
+                    "caterpillars, which makes it a predator, and a "
+                    "sparrowhawk hunts it, which makes it prey."},
+            {"text": "That the blue tit is a predator only, because a bird "
+                     "cannot be prey.", "correct": False,
+             "why": "Plenty of birds are prey — a sparrowhawk makes its "
+                    "living on them. What decides it is what an animal does "
+                    "and what is done to it."},
+            {"text": "That the caterpillar must be a predator too, since "
+                     "something eats it.", "correct": False,
+             "why": "Being eaten makes an organism prey, not a predator. A "
+                    "caterpillar eats leaves, so it hunts nothing at all."},
+            {"text": "That the same animal can be a predator to one species "
+                     "and prey to another.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e08",
+        "band": "easier",
+        "text": "A field has no foxes in it at all. Why can the rabbit "
+                "population still not go on rising for ever?",
+        "options": [
+            {"text": "Because a population always stops growing once it has "
+                     "been rising for about ten years.", "correct": False,
+             "why": "It is not the passing of time that stops it. What stops "
+                    "it is running out of food and space."},
+            {"text": "Because the food, water and space the field holds set a "
+                     "limit on how many it can support.", "correct": True},
+            {"text": "Because rabbits stop breeding once they notice the "
+                     "field is becoming crowded.", "correct": False,
+             "why": "Nothing is noticed or decided. Crowded rabbits are short "
+                    "of food and more likely to fall ill, and that is what "
+                    "brings the rise to a stop."},
+            {"text": "Because another predator would always move in and take "
+                     "the foxes' place.", "correct": False,
+             "why": "One might, and the ceiling is there either way. Remove "
+                    "every predator and the grass still runs out."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e09",
+        "band": "easier",
+        "text": "A rabbit population has reached the ceiling its field can "
+                "support. What is that population likely to be like?",
+        "options": [
+            {"text": "Healthy and well fed, because the field is supporting "
+                     "as many rabbits as it possibly can.", "correct": False,
+             "why": "Supporting the most it can is not the same as supporting "
+                    "them well. At the ceiling the food is stretched as far "
+                    "as it will go."},
+            {"text": "Falling steadily, because a population at its limit "
+                     "always begins to die out.", "correct": False,
+             "why": "It does not have to fall. It can sit at the ceiling for "
+                    "years, held there by the food supply rather than pushed "
+                    "below it."},
+            {"text": "Crowded and short of food, and more vulnerable to "
+                     "disease and to a hard winter.", "correct": True},
+            {"text": "Still rising, because reaching the ceiling only slows a "
+                     "population down.", "correct": False,
+             "why": "The ceiling is where the rise stops, not where it slows. "
+                    "There is no more food with which to support any more "
+                    "rabbits."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b9-02-s05",
+        "band": "standard",
+        "text": "A farmer removes every fox from her land. Two years later "
+                "there are far more rabbits, the grass is thin, and the "
+                "rabbits are in poor condition. Explain.",
+        "options": [
+            {"text": "The rabbits are in poor condition because they miss the "
+                     "foxes, which used to remove the weakest of them.",
+             "correct": False,
+             "why": "Predators do often take the weakest, and that is not "
+                    "what is happening here. There are simply more rabbits "
+                    "than the grass can feed."},
+            {"text": "The grass is thin because rabbits stop eating grass "
+                     "once their numbers are high.", "correct": False,
+             "why": "They eat more grass, not less, because there are far "
+                    "more of them. Thin grass is a result of the rise rather "
+                    "than a cause of it."},
+            {"text": "Something has gone wrong with the removal, because "
+                     "rabbits with no predators should thrive.",
+             "correct": False,
+             "why": "Removing every predator is exactly what lets the rabbits "
+                    "reach the ceiling, and the ceiling is not a comfortable "
+                    "place to be. Nothing has gone wrong."},
+            {"text": "With nothing hunting them the rabbits rose to the limit "
+                     "the grass sets, and there is not enough to go round.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s06",
+        "band": "standard",
+        "text": "A cold wet spring kills most of the young voles in a wood. "
+                "The owls there eat voles and nothing else. What happens to "
+                "owl numbers this year and next?",
+        "options": [
+            {"text": "Little change this year, then a fall, because the owls "
+                     "alive now must raise young on short rations.",
+             "correct": True},
+            {"text": "A fall this year and a recovery next year, because owls "
+                     "breed quickly when food is short.", "correct": False,
+             "why": "Breeding needs food, so short rations mean fewer owlets "
+                    "rather than more. A population cannot answer within the "
+                    "same season either."},
+            {"text": "A rise this year, because the surviving voles are "
+                     "weaker and easier to catch.", "correct": False,
+             "why": "Easier hunting for a few weeks does not add owls. Owl "
+                    "numbers can only rise by owls being born and surviving, "
+                    "which takes a year."},
+            {"text": "No change in either year, because owls live for several "
+                     "years and one bad spring is nothing.", "correct": False,
+             "why": "One bad spring shows up a year later, in how many young "
+                    "survived it. That delay is exactly what makes the two "
+                    "lines swing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s07",
+        "band": "standard",
+        "text": "A wet summer and better soil leave a field with twice as "
+                "much grass. A student says the rabbits will now rise without "
+                "limit. What is wrong with that?",
+        "options": [
+            {"text": "Nothing is wrong — with more food there is nothing left "
+                     "to hold the rabbits back.", "correct": False,
+             "why": "Something still holds them back. A larger food supply "
+                    "raises the ceiling rather than removing it, and space "
+                    "and disease are limits too."},
+            {"text": "More food raises the ceiling, so the rabbits settle at "
+                     "a higher number rather than climbing for ever.",
+             "correct": True},
+            {"text": "More grass makes no difference, because it is the foxes "
+                     "that decide how many rabbits there are.",
+             "correct": False,
+             "why": "Foxes hold the rabbits below the ceiling; the grass "
+                    "decides where the ceiling is. Both are at work, and only "
+                    "one of them is food."},
+            {"text": "More grass would lower rabbit numbers, because the "
+                     "foxes would breed on the extra food.", "correct": False,
+             "why": "Foxes do not eat grass. More rabbits does mean more "
+                    "foxes eventually, and that takes years and still leaves "
+                    "more rabbits than before."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s08",
+        "band": "standard",
+        "text": "Which of these would lower the carrying capacity of a field "
+                "for rabbits?",
+        "options": [
+            {"text": "A pair of foxes moving in from the farm next door.",
+             "correct": False,
+             "why": "Foxes lower the number of rabbits without moving the "
+                    "ceiling. Remove the foxes again and the rabbits climb "
+                    "back to the limit the grass sets."},
+            {"text": "A mild winter, so that more of last year's young "
+                     "survive.", "correct": False,
+             "why": "That raises the number of rabbits, at least for a while. "
+                    "The ceiling is set by what the field can supply, not by "
+                    "how many made it through."},
+            {"text": "A long drought that leaves the grass thin and brown all "
+                     "summer.", "correct": True},
+            {"text": "A wet summer that keeps the grass growing well into the "
+                     "autumn.", "correct": False,
+             "why": "That raises the ceiling rather than lowering it. More "
+                    "food means the field can support more rabbits than "
+                    "before."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s09",
+        "band": "standard",
+        "text": "Looking at twenty years of fox and rabbit numbers, a student "
+                "writes: “the foxes control the rabbits”. What is missing "
+                "from that?",
+        "options": [
+            {"text": "Nothing — the foxes eat the rabbits, so the foxes are "
+                     "in control.", "correct": False,
+             "why": "That is half the story. The rabbits decide how many "
+                    "foxes there can be, because rabbits are what the foxes "
+                    "eat."},
+            {"text": "That the foxes do not control the rabbits at all, since "
+                     "only the grass does.", "correct": False,
+             "why": "The grass sets the ceiling and the foxes hold the "
+                    "rabbits below it. Both are acting, which is why the "
+                    "numbers swing rather than settling."},
+            {"text": "That the rabbits control the grass, which is the real "
+                     "cause of the cycle.", "correct": False,
+             "why": "Grazing does affect the grass, and it is not the missing "
+                    "half. What is missing is that the control runs both ways "
+                    "between the two animals."},
+            {"text": "That the rabbits control the foxes as well — each "
+                     "population limits the other.", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b9-02-h05",
+        "band": "harder",
+        "text": "Twenty-nine reindeer were released on an island of deep "
+                "lichen with no predators. The herd reached about six "
+                "thousand in under twenty years, then crashed to fewer than "
+                "fifty in two winters. Which explanation fits?",
+        "options": [
+            {"text": "They bred until they ran out of space, and the "
+                     "crowding itself killed them.", "correct": False,
+             "why": "Space alone did not do it. What ran out was the lichen, "
+                    "and a herd that has eaten its food supply starves "
+                    "whatever room it has."},
+            {"text": "A predator must have reached the island, because a "
+                     "population does not crash without one.", "correct": False,
+             "why": "Nothing hunted them. A population that overshoots what "
+                    "its food can support crashes on its own, and a hard "
+                    "winter finishes it."},
+            {"text": "The herd grew past what the lichen could support and "
+                     "stripped it, so the ceiling itself fell.",
+             "correct": True},
+            {"text": "The herd reached the island's carrying capacity and "
+                     "settled there, and a hard winter then killed most of "
+                     "them.", "correct": False,
+             "why": "A herd at the ceiling stops climbing; this one climbed "
+                    "straight past it. Overshooting is why there was no food "
+                    "left when the winter came."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h06",
+        "band": "harder",
+        "text": "One biologist says a moose population is limited by the "
+                "wolves that hunt it. Another says it is limited by how much "
+                "willow there is to browse. Both study the same herd. How can "
+                "both be right?",
+        "options": [
+            {"text": "Both limits act at once — the wolves hold the herd "
+                     "below a ceiling that the willow sets.", "correct": True},
+            {"text": "They cannot both be right, so one of them has measured "
+                     "the herd wrongly.", "correct": False,
+             "why": "Nothing here needs a wrong measurement. A population can "
+                    "be pressed down by predators and capped by food at the "
+                    "same time."},
+            {"text": "Both are right because moose eat willow and wolves eat "
+                     "moose, so the willow limits the wolves too.",
+             "correct": False,
+             "why": "Willow does reach the wolves through the moose, and that "
+                    "is a different claim. The question is what limits the "
+                    "moose, and two things do."},
+            {"text": "Only the wolves limit the herd, since a hunted "
+                     "population never reaches its food limit.",
+             "correct": False,
+             "why": "Hunted populations do run short of food, especially in a "
+                    "hard winter. Which limit bites hardest changes from year "
+                    "to year."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h07",
+        "band": "harder",
+        "text": "Cod eat capelin, a small shoaling fish. Heavy fishing "
+                "crashes the cod. Capelin numbers rise, and yet the cod do "
+                "not recover for decades. Why does the usual cycle not bring "
+                "them back?",
+        "options": [
+            {"text": "Because the capelin have taken the cod's place at the "
+                     "top of the chain.", "correct": False,
+             "why": "Capelin eat plankton and are eaten themselves, and "
+                    "nothing about where they feed has changed. Taking a "
+                    "place in a chain is not something a prey fish can do."},
+            {"text": "Because a population that has crashed can never rebuild "
+                     "itself.", "correct": False,
+             "why": "A crashed population usually can rebuild — that is step "
+                    "four of the cycle. What is different here is that "
+                    "something outside the cycle is still removing cod."},
+            {"text": "Because there is now too much food, and a population "
+                     "cannot grow when its food is too plentiful.",
+             "correct": False,
+             "why": "Plenty of food is the condition under which a predator "
+                    "population grows. Too much food is not something that "
+                    "holds numbers down."},
+            {"text": "Because the fishing goes on whatever the cod numbers "
+                     "are, so the pressure never eases as a predator's "
+                     "would.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h08",
+        "band": "harder",
+        "text": "A student says that because predator and prey numbers always "
+                "recover, no predator can ever wipe out its prey. What is the "
+                "best reply?",
+        "options": [
+            {"text": "That is right, and it is why foxes and rabbits are both "
+                     "still here after thousands of years.", "correct": False,
+             "why": "It holds where one predator depends on one prey and "
+                    "nothing else. Change that and the recovery can fail."},
+            {"text": "A predator with other food to fall back on does not go "
+                     "hungry as its prey runs out.", "correct": True},
+            {"text": "It is true of wild animals but not of people, who can "
+                     "decide to hunt something to extinction.",
+             "correct": False,
+             "why": "People are the clearest case and not the only one. Any "
+                    "predator with an alternative food can go on hunting a "
+                    "scarce prey without starving."},
+            {"text": "It is wrong, because a prey population that falls low "
+                     "enough always dies out.", "correct": False,
+             "why": "Low numbers are dangerous and not fatal in themselves — "
+                    "the rabbits recover from very few. What breaks the "
+                    "recovery is hunting that does not ease off."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h09",
+        "band": "harder",
+        "text": "A long record shows hare numbers peaking in 1985, 1995 and "
+                "2005, and lynx numbers peaking in 1987, 1997 and 2007. What "
+                "do those dates show?",
+        "options": [
+            {"text": "A cycle of about ten years, with the lynx peak two "
+                     "years behind because breeding takes time.",
+             "correct": True},
+            {"text": "A cycle of about two years, since that is the gap "
+                     "between a hare peak and a lynx peak.", "correct": False,
+             "why": "Two years is the lag between the two lines, not the "
+                    "length of the cycle. The cycle is the gap between one "
+                    "hare peak and the next."},
+            {"text": "A cycle of about ten years, with the hares following "
+                     "the lynx, since predators drive the numbers.",
+             "correct": False,
+             "why": "Read the dates: each hare peak comes first and each lynx "
+                    "peak follows it. Predators cannot increase before there "
+                    "has been plenty to eat."},
+            {"text": "No cycle at all, because three peaks in twenty years is "
+                     "too few to show a pattern.", "correct": False,
+             "why": "Three peaks evenly spaced ten years apart, in two "
+                    "species at once, is a pattern — and it is the one that "
+                    "made these records famous."},
+        ],
+        "figure": None,
+    },
 ]

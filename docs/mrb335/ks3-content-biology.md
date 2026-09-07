@@ -210,3 +210,80 @@ appealing to "the four jobs" as a list the child was never given, and three
 using "the ceiling" as jargon their own stems never introduce. The term was
 deliberately **kept** in `b8-03-s05`, `h05` and `h10`, whose stems state the
 ceiling of 80 units themselves, so it is grounded in the row.
+
+---
+
+## B9 — ecosystems (6 lessons, +84 rows)
+
+Lessons 01–04 took 5 per band, lessons 05–06 took 4. Lesson 06's harder band
+carries the sampling calculations — quadrat-area scaling, sample size against
+estimate, and a capture–mark–recapture estimate — all with units.
+
+**Review fixes.** `b9-02-h05` said a reindeer herd reached six thousand "in
+thirty years"; the introduction-to-peak interval was under twenty. `b9-04-h06`
+(cocoa midges) had a distractor saying the midges fed on the litter, which is
+close enough to the key to be arguable — replaced with a root-damage
+distractor. Fifteen length tells were trimmed or balanced, and two more
+(`b9-04-e08`, `b9-05-h08`) were closed by the lane afterwards.
+
+Three self-containment defects, **two of which a stems-only scan would have
+missed** — they were in `why` fields. This unit is where that lesson was
+learned, because its existing frozen rows lean heavily on "the bench" and
+"presses Ten years", and the author was explicitly told not to copy the habit.
+
+**Deviation, and it was the right call.** The lane's brief named transects as
+scope for lesson 06. The lesson file puts transects in `ks4_becomes`
+("Required practical fieldwork: … transects along an environmental gradient"),
+i.e. explicitly beyond KS3 here, so no transect rows were written. The harder
+band took quadrat scaling and capture–mark–recapture instead, both of which the
+lesson's own stretch layer and existing `h01` already establish as in scope.
+
+---
+
+## B5 — reproduction, human and plant (8 lessons, +60 rows)
+
+Lessons 01–04 took 3 per band, lessons 05–08 took 2. Register held throughout:
+correct scientific terms, clinical and matter-of-fact, nothing that could
+embarrass a child reading it in class.
+
+**Review fixes.** Three named rows plus a wider sweep. `b5-03-h05`'s key was
+three words against distractors of nine or more; all four options now carry a
+method clause of the same shape ("About day 14, the day that applies to every
+cycle" / "About day 17, a fortnight back from the end of the cycle"), which
+preserves the actual demand — which end of the cycle the fortnight is counted
+from. Eight further parity outliers were fixed on the same principle, and two
+were judged false positives and left: in `b5-01-e07` and `b5-02-e06` another
+distractor is exactly as short as the key, so the key is not the odd one out
+and a length strategy fails.
+
+Two self-containment defects, one of them a **copied habit**: `b5-08-e06`'s
+stem opened "In one of the five dispersal methods…", which is exactly what the
+frozen `b5-08-e04` does. The author had copied the frozen rows' style and
+corrected it rather than propagating it.
+
+---
+
+## B10 — variation and inheritance (5 lessons, +96 rows)
+
+Lessons 01–02 took 7 per band, lessons 03–05 took 6.
+
+**Ruling respected:** lesson 04 carries a NOTES flag holding "dominant",
+"recessive", "allele", "Punnett", "genotype" and "phenotype" back to GCSE. All
+18 lesson-04 rows were grepped clean and use the page's own vocabulary (P/p,
+"version of a gene", pure-breeding, 3:1).
+
+**Review fixes.** `b10-01-s07` had an arguably-defensible distractor — a bimodal
+height graph in a mixed-sex class is a real phenomenon — replaced with a
+clearly wrong one about group width. `b10-05-h06`'s key relied on a fact the
+stem never gave, so the fact moved into the stem. Fourteen length tells fixed,
+then seven more on the lane's stricter measure.
+
+⚠️ **A measurement disagreement worth recording.** The author called
+`b10-03-s09` a false positive at 18 words against 15. It is 22 against 15 —
+`str.split()` counts "DNA's", "X-ray", "King's" and "Franklin's" as one token
+each, and splitting on punctuation gives the true count. The row was over both
+thresholds. The author's *substantive* point stood, though: trimming the key
+would have cost "and it was he who showed Franklin's image to Watson", which is
+the half that places Wilkins accurately against Franklin. So the fix lengthened
+the Chargaff distractor instead, and the tell now runs the safe way round — the
+longest option is a distractor, which helps no guesser.

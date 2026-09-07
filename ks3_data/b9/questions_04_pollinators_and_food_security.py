@@ -402,4 +402,409 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b9-04-e05",
+        "band": "easier",
+        "text": "What does pollination mean?",
+        "options": [
+            {"text": "An insect feeding on the nectar inside a flower.",
+             "correct": False,
+             "why": "That is what the insect came for. Pollination is the "
+                    "pollen it carries from one flower to another while it "
+                    "feeds."},
+            {"text": "A plant producing seeds inside its fruit.",
+             "correct": False,
+             "why": "Seed forms after pollination has happened. Pollination "
+                    "is the moving of the pollen that makes the seed "
+                    "possible."},
+            {"text": "A flower opening so that insects can reach the inside "
+                     "of it.", "correct": False,
+             "why": "Opening is how a flower makes itself available. "
+                    "Pollination is the transfer of pollen between flowers."},
+            {"text": "Moving pollen from one flower to another so that seed "
+                     "or fruit can form.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-e06",
+        "band": "easier",
+        "text": "Bees are not the only pollinators. Which of these also carry "
+                "pollen between flowers?",
+        "options": [
+            {"text": "Hoverflies, moths, beetles and midges.", "correct": True},
+            {"text": "Earthworms, woodlice and slugs.", "correct": False,
+             "why": "Those feed on dead material and leaves at ground level. "
+                    "A pollinator is an animal that visits flowers and "
+                    "carries pollen between them."},
+            {"text": "Only honeybees and bumblebees, since no other insect "
+                     "visits flowers.", "correct": False,
+             "why": "Cocoa is pollinated by midges and moths do the job at "
+                    "night. Pollination is not a bee monopoly."},
+            {"text": "Ladybirds and lacewings, which live on the same "
+                     "plants.", "correct": False,
+             "why": "They live on the plants and hunt aphids rather than "
+                    "visiting flowers. Feeding at a flower is what puts "
+                    "pollen on an insect."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-e07",
+        "band": "easier",
+        "text": "Apart from flowers to feed at, what else does a wild bee need "
+                "on farmland?",
+        "options": [
+            {"text": "A hive, built and looked after by a beekeeper.",
+             "correct": False,
+             "why": "That is what a honeybee has. Most of Britain's bees are "
+                    "solitary and nest on their own, in rough ground or in a "
+                    "hedge bank."},
+            {"text": "Open ploughed ground, which is the easiest surface to "
+                     "nest in.", "correct": False,
+             "why": "Ploughed ground is turned over every year, so a nest in "
+                    "it does not survive. What they need is ground left "
+                    "undisturbed."},
+            {"text": "Somewhere to nest — rough ground, a bank or a hedge "
+                     "left undisturbed.", "correct": True},
+            {"text": "A supply of water, which is the main thing missing from "
+                     "farmland.", "correct": False,
+             "why": "Water is rarely the limit on farmland. What is usually "
+                    "missing is nesting places, and flowers outside the "
+                    "crop's few weeks of bloom."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-e08",
+        "band": "easier",
+        "text": "Potatoes are grown by planting pieces of last year's tubers "
+                "rather than from seed. Why does that mean the crop needs no "
+                "insect?",
+        "options": [
+            {"text": "Because potato flowers are pollinated by the wind "
+                     "instead.", "correct": False,
+             "why": "Wind pollination is how the cereals manage. The potato "
+                    "crop does not need pollinating at all, because it is not "
+                    "grown from seed."},
+            {"text": "Because no seed has to be set, so no pollen needs "
+                     "moving.", "correct": True},
+            {"text": "Because potatoes grow underground, where insects cannot "
+                     "reach them.", "correct": False,
+             "why": "Where the crop grows is not the point, and the flowers "
+                    "are above ground anyway. The point is that the part we "
+                    "eat is not a seed or a fruit."},
+            {"text": "Because potato plants pollinate their own flowers "
+                     "without help.", "correct": False,
+             "why": "Some plants do pollinate themselves, and the potato crop "
+                    "does not depend on it either way. The tubers are "
+                    "planted, so no seed is needed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-e09",
+        "band": "easier",
+        "text": "A strawberry plant is healthy and well watered, but no "
+                "insect visits its flowers. What happens to the crop?",
+        "options": [
+            {"text": "Little or no fruit forms, and what does form comes out "
+                     "small and misshapen.", "correct": True},
+            {"text": "The fruit forms as usual, because the plant has "
+                     "everything else it needs.", "correct": False,
+             "why": "Everything else is not enough. A strawberry cannot set a "
+                    "full fruit unless pollen has been moved between its "
+                    "flowers."},
+            {"text": "The plant produces more fruit, because it puts nothing "
+                     "into making nectar.", "correct": False,
+             "why": "Nectar is what the plant spends to attract the insect. "
+                    "Saving it does not buy fruit — the visit is what the "
+                    "fruit depends on."},
+            {"text": "The fruit forms normally but has no seeds in it.",
+             "correct": False,
+             "why": "The seeds and the fruit go together in a strawberry — "
+                    "the pips on the outside are the seeds, and the fruit "
+                    "swells around them."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b9-04-s05",
+        "band": "standard",
+        "text": "An apple grower brings hives into the orchard for three "
+                "weeks each spring and takes them away again. Why only three "
+                "weeks?",
+        "options": [
+            {"text": "Because the bees would run out of food if they stayed "
+                     "in the orchard any longer.", "correct": False,
+             "why": "They might, and that is the beekeeper's problem rather "
+                    "than the crop's. The hives are there for as long as the "
+                    "blossom is."},
+            {"text": "Because the apples need pollinating again just before "
+                     "they are picked.", "correct": False,
+             "why": "Pollination happens once, at blossom time. After that "
+                    "the fruit is simply growing and no insect is needed."},
+            {"text": "Because pollen can only be moved while the blossom is "
+                     "open, and after that the fruit is set.", "correct": True},
+            {"text": "Because three weeks is as long as a hive can be moved "
+                     "for without harming it.", "correct": False,
+             "why": "Hives are moved for whole seasons in some countries. The "
+                    "three weeks are set by the blossom, not by the bees."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-s06",
+        "band": "standard",
+        "text": "Californian almond growers hire more than a million hives "
+                "every spring, brought in by lorry from across the country. "
+                "What does that tell you about the crop and the place it is "
+                "grown?",
+        "options": [
+            {"text": "That almonds set a better crop when several different "
+                     "hives are used.", "correct": False,
+             "why": "The hives are hired in numbers because the orchards are "
+                    "enormous, not for variety. One hive can only work so "
+                    "many trees."},
+            {"text": "That honeybees are the only insect able to pollinate an "
+                     "almond flower.", "correct": False,
+             "why": "Other insects can and do pollinate almonds. What is "
+                    "missing locally is enough of them, not the right kind."},
+            {"text": "That the crop would set anyway, and the hives only "
+                     "raise the yield a little.", "correct": False,
+             "why": "Almonds are entirely dependent on insect pollination — "
+                    "no visit, no crop. That is why the hives are worth the "
+                    "cost of trucking them in."},
+            {"text": "That the crop depends completely on insects, and too "
+                     "few wild ones live nearby.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-s07",
+        "band": "standard",
+        "text": "A shop wants to stock only foods that would still be "
+                "produced if every insect pollinator disappeared. Which set "
+                "could it stock?",
+        "options": [
+            {"text": "Apples, almonds, coffee and chocolate.", "correct": False,
+             "why": "Every one of those depends on insects, and almonds and "
+                    "cocoa entirely. That is the basket that empties first."},
+            {"text": "Bread, rice, sweetcorn and potatoes.", "correct": True},
+            {"text": "Strawberries, tomatoes, broccoli and milk.",
+             "correct": False,
+             "why": "The first three are all insect-pollinated. Milk is only "
+                    "slightly affected, through the cattle's feed, so it is "
+                    "the odd one out in the wrong direction."},
+            {"text": "Bread, rice, apples and broccoli.", "correct": False,
+             "why": "Bread and rice would survive, being wind-pollinated. "
+                    "Apples and broccoli both need insects, so the shop "
+                    "would be stocking two foods out of four."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-s08",
+        "band": "standard",
+        "text": "A farmer finds his oilseed rape yields fall the further a "
+                "field is from the nearest hedgerow, although the soil and "
+                "the seed are the same throughout. What is the best "
+                "explanation?",
+        "options": [
+            {"text": "The pollinators nest in the hedges and travel only so "
+                     "far, so distant parts are visited less.",
+             "correct": True},
+            {"text": "Hedges shelter the crop from wind, and rape is "
+                     "wind-pollinated.", "correct": False,
+             "why": "Oilseed rape is insect-pollinated, which is exactly why "
+                    "the distance matters. The hedge is supplying insects, "
+                    "not shelter for pollen."},
+            {"text": "Hedges add minerals to the soil beside them, so the "
+                     "crop grows better there.", "correct": False,
+             "why": "That would affect a strip a metre or two wide, not a "
+                    "gradient across a whole field. Insects travel much "
+                    "further than minerals do."},
+            {"text": "Fields further from a hedge are larger, and large "
+                     "fields always yield less per hectare.", "correct": False,
+             "why": "Size on its own does not lower a yield. What falls away "
+                    "with distance is the number of pollinators reaching the "
+                    "crop."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-s09",
+        "band": "standard",
+        "text": "Coffee is about half dependent on insect pollination. What "
+                "would losing every pollinator mean for a coffee crop?",
+        "options": [
+            {"text": "The crop would fail completely, since half dependent "
+                     "still means it needs insects.", "correct": False,
+             "why": "Half means half. A partly dependent crop sets a reduced "
+                    "yield without insects rather than none at all."},
+            {"text": "Nothing would change, because the plant manages the "
+                     "other half on its own.", "correct": False,
+             "why": "It manages half on its own, so half the crop is what is "
+                    "at risk. That is a very large loss to a grower."},
+            {"text": "A crop would still be set, but a much smaller one.",
+             "correct": True},
+            {"text": "The crop would be the same size but poorer in quality.",
+             "correct": False,
+             "why": "Size is what falls when pollination is short. Quality "
+                    "suffers in some crops as well, and here the main loss is "
+                    "yield."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b9-04-h05",
+        "band": "harder",
+        "text": "A farmer sows a strip of wildflowers along the edge of a "
+                "field of insect-pollinated beans, taking that strip out of "
+                "production. The field then yields more beans in total than "
+                "an identical field with no strip. How?",
+        "options": [
+            {"text": "The wildflowers put minerals into the soil, which the "
+                     "beans then use.", "correct": False,
+             "why": "One strip along an edge cannot fertilise a whole field. "
+                    "What it supplies is insects, and insects travel."},
+            {"text": "The strip shelters the crop from wind, so fewer plants "
+                     "are damaged.", "correct": False,
+             "why": "A single strip gives little shelter, and this crop's "
+                    "yield is limited by pollination. The insects are what "
+                    "the strip provides."},
+            {"text": "The wildflowers draw pests away from the beans, so less "
+                     "of the crop is lost.", "correct": False,
+             "why": "Some plantings do work that way, and it is not what is "
+                    "happening here. The gain is in how well the beans were "
+                    "pollinated."},
+            {"text": "The strip feeds pollinators, and better pollinated "
+                     "beans repay the lost ground.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-h06",
+        "band": "harder",
+        "text": "Cocoa is pollinated by tiny midges whose young develop in "
+                "damp rotting leaf litter on the forest floor. Plantations "
+                "that clear their litter and undergrowth to keep the ground "
+                "tidy get poorer yields. Explain.",
+        "options": [
+            {"text": "The litter holds the water the cocoa trees need, so "
+                     "clearing it dries the trees out.", "correct": False,
+             "why": "Litter does hold moisture, and the trees here are "
+                    "healthy while the pods are not being set. What was "
+                    "cleared away was the midges' breeding ground."},
+            {"text": "The midges have lost the places they breed in, so far "
+                     "fewer are there to pollinate the flowers.",
+             "correct": True},
+            {"text": "Clearing the ground damages the roots of the cocoa "
+                     "trees, so they set fewer pods.", "correct": False,
+             "why": "Root damage would show as sick trees. These trees flower "
+                    "as usual; what fails is the transfer of pollen between "
+                    "the flowers."},
+            {"text": "Tidy ground reflects more sunlight, so the flowers open "
+                     "at the wrong time of day.", "correct": False,
+             "why": "Nothing about the flowering has changed. What has gone "
+                    "is the insect that carried pollen from one flower to "
+                    "another."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-h07",
+        "band": "harder",
+        "text": "A grower is told to spray insecticide at dusk rather than at "
+                "midday while the crop is in flower. Why does the timing "
+                "help, and which pollinators does it not protect?",
+        "options": [
+            {"text": "It helps because insecticide works less well in the "
+                     "cool of the evening, and it protects every pollinator "
+                     "equally.", "correct": False,
+             "why": "The aim is not a weaker spray — a weaker spray would not "
+                    "control the pest. The aim is to spray when the "
+                    "pollinators are not on the crop."},
+            {"text": "It helps because bees return to the hive at night, and "
+                     "the moths are asleep by dusk as well.", "correct": False,
+             "why": "Moths are not asleep at dusk; dusk is when they start. "
+                    "They pollinate at night, and an evening spray reaches "
+                    "them."},
+            {"text": "It helps because bees and hoverflies stop visiting "
+                     "flowers at dusk, but moths pollinate at night and are "
+                     "still reached.", "correct": True},
+            {"text": "It does not help at all, because the spray stays on the "
+                     "crop and the insects meet it next morning.",
+             "correct": False,
+             "why": "Residue is a real problem and it is much reduced by the "
+                    "time the bees are out. Spraying onto working insects is "
+                    "worse than spraying onto an empty crop."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-h08",
+        "band": "harder",
+        "text": "A trial nets half a field of strawberries so no insect can "
+                "reach the flowers. The netted half still fruits, but the "
+                "berries are small and misshapen and the crop weighs about "
+                "40% of the open half. What does that show about the word "
+                "dependence?",
+        "options": [
+            {"text": "That dependence is not all-or-nothing — some fruit "
+                     "sets without insects, and most of the value is lost.",
+             "correct": True},
+            {"text": "That strawberries do not really depend on insects, "
+                     "since fruit formed under the net.", "correct": False,
+             "why": "Fruit formed and most of the crop did not. Losing three "
+                    "fifths of a harvest is a dependence by any farmer's "
+                    "reckoning."},
+            {"text": "That the netting itself damaged the plants, since "
+                     "healthy plants would have set a full crop.",
+             "correct": False,
+             "why": "The plants were healthy and the flowers opened. What "
+                    "they did not get was pollen moved between them."},
+            {"text": "That strawberries depend on insects completely, since "
+                     "the fruit came out misshapen.", "correct": False,
+             "why": "Completely dependent would mean no fruit at all, as with "
+                    "almonds. Strawberries sit between the two, which is what "
+                    "the 40% is telling you."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-04-h09",
+        "band": "harder",
+        "text": "A newspaper reports that Britain has more managed honeybee "
+                "colonies than fifty years ago, and concludes that worries "
+                "about pollinators are unfounded. Which reply is best?",
+        "options": [
+            {"text": "The report is right — honeybees do most of the "
+                     "pollinating, so their numbers settle the question.",
+             "correct": False,
+             "why": "A great deal of pollination is done by wild bees, "
+                    "hoverflies, moths and beetles, and several of those do "
+                    "it better than a honeybee does."},
+            {"text": "The report is wrong, because managed colony numbers "
+                     "have in fact been falling steadily.", "correct": False,
+             "why": "Managed colonies are doing reasonably well, which is why "
+                    "the figure can be quoted. The trouble is that it "
+                    "describes the wrong group."},
+            {"text": "The report is right about the figure, and pollination "
+                     "cannot really be measured anyway.", "correct": False,
+             "why": "It can be measured — crop yields with and without "
+                    "insects, and long-run counts of wild species. The "
+                    "evidence exists, and it is about wild pollinators."},
+            {"text": "Managed honeybees are livestock and are doing well; the "
+                     "pollinators in decline are the wild ones.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

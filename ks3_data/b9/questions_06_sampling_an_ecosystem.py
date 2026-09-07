@@ -407,4 +407,323 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b9-06-e05",
+        "band": "easier",
+        "text": "What is a quadrat?",
+        "options": [
+            {"text": "Any small patch of ground a surveyor decides to count.",
+             "correct": False,
+             "why": "The size has to be known and the same every time, or the "
+                    "counts cannot be averaged or scaled up to the whole "
+                    "site."},
+            {"text": "A square drawn on a map to show where a survey took "
+                     "place.", "correct": False,
+             "why": "It is a real frame laid on the ground rather than a mark "
+                    "on a map. What is inside it is counted."},
+            {"text": "A square frame of a known size, laid down so that what "
+                     "is inside it can be counted.", "correct": True},
+            {"text": "A frame whose size is chosen to fit whatever happens to "
+                     "be inside each square.", "correct": False,
+             "why": "The size does have to suit the organism, and it is "
+                    "settled once for the whole survey. Changing it between "
+                    "squares would make the counts useless."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-06-e06",
+        "band": "easier",
+        "text": "What does bias mean in a survey?",
+        "options": [
+            {"text": "A mistake in the arithmetic when the mean is worked "
+                     "out.", "correct": False,
+             "why": "That is a slip you can find and correct. Bias is in the "
+                    "sampling itself, before any arithmetic happens."},
+            {"text": "The natural variation between one quadrat and the "
+                     "next.", "correct": False,
+             "why": "That variation is why an estimate wobbles, and it is "
+                    "chance rather than bias. Chance shrinks as you take more "
+                    "quadrats; bias does not."},
+            {"text": "The difference between an estimate and the real total.",
+             "correct": False,
+             "why": "That is the error, whatever caused it. Bias is one "
+                    "particular cause of it — where you chose to look."},
+            {"text": "An error that comes from where you chose to look.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-06-e07",
+        "band": "easier",
+        "text": "How is the mean number per quadrat worked out?",
+        "options": [
+            {"text": "Add up the counts and divide by the number of "
+                     "quadrats.", "correct": True},
+            {"text": "Add up the counts and divide by the area of the whole "
+                     "site.", "correct": False,
+             "why": "That runs two steps together. The mean is per quadrat; "
+                    "the site's area comes in afterwards, when the mean is "
+                    "scaled up."},
+            {"text": "Put the counts in order and take the middle one.",
+             "correct": False,
+             "why": "That is the median. The method here uses the mean, which "
+                    "uses every count including the zeros."},
+            {"text": "Add up the counts and multiply by the number of "
+                     "quadrats.", "correct": False,
+             "why": "Multiplying makes the figure larger, and a mean is "
+                    "smaller than the total. Divide by how many quadrats were "
+                    "counted."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-06-e08",
+        "band": "easier",
+        "text": "Why do ecologists estimate a population rather than count "
+                "it?",
+        "options": [
+            {"text": "Because a full count would be less accurate than an "
+                     "estimate from a sample.", "correct": False,
+             "why": "A full count would be the more accurate of the two. It "
+                    "is simply not possible in the time anyone has."},
+            {"text": "Because counting every individual on a site would take "
+                     "far longer than anyone has.", "correct": True},
+            {"text": "Because the number changes every day, so no figure can "
+                     "ever be right.", "correct": False,
+             "why": "Numbers do change, and a count would still be the best "
+                    "figure for that day. What rules a count out is the time "
+                    "it would take."},
+            {"text": "Because an estimate is close enough that a count would "
+                     "add nothing.", "correct": False,
+             "why": "A count would give the answer, which is more than an "
+                    "estimate can. It is the labour that rules it out, not "
+                    "the value."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b9-06-s05",
+        "band": "standard",
+        "text": "A group takes six quadrats on a field, works out its "
+                "estimate and reports “about 1,637 daisies”. What is wrong "
+                "with reporting it that way?",
+        "options": [
+            {"text": "Nothing — that is what the arithmetic gave, so that is "
+                     "the honest figure to report.", "correct": False,
+             "why": "The arithmetic is exact and the sample is not. Six "
+                    "squares out of a whole field cannot pin a number down to "
+                    "the nearest daisy."},
+            {"text": "The figure should have been rounded up to 1,700, since "
+                     "an estimate should never come out too low.",
+             "correct": False,
+             "why": "There is no reason to lean either way. Rounding is about "
+                    "not claiming more precision than you have, not about "
+                    "being generous."},
+            {"text": "They should not have used a mean, because the daisies "
+                     "are not spread evenly.", "correct": False,
+             "why": "The mean is right for exactly that reason — it averages "
+                    "across squares that differ. What is wrong is how "
+                    "precisely the answer is written."},
+            {"text": "It claims more precision than six quadrats can support; "
+                     "about 1,600 would be honest.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-06-s06",
+        "band": "standard",
+        "text": "Two classes survey the same field on the same afternoon, "
+                "both placing ten quadrats by random coordinates. One reports "
+                "about 1,400 daisies and the other about 1,750. Has one of "
+                "them made a mistake?",
+        "options": [
+            {"text": "Not necessarily — random placement still leaves chance, "
+                     "and ten quadrats is a small sample.", "correct": True},
+            {"text": "Yes — two correct surveys of the same field must give "
+                     "the same answer as each other.", "correct": False,
+             "why": "Two samples are two different sets of squares. Even a "
+                    "perfect method gives a different answer each time it is "
+                    "run."},
+            {"text": "Yes — one of them must have counted the plants on the "
+                     "lines wrongly.", "correct": False,
+             "why": "An edge rule shifts a count a little and would not open "
+                    "a gap this wide. Different squares is the ordinary "
+                    "explanation."},
+            {"text": "No — the difference proves that both surveys were "
+                     "biased.", "correct": False,
+             "why": "Bias makes surveys agree with each other and disagree "
+                    "with the field. Disagreement between them is the "
+                    "signature of chance, not of bias."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-06-s07",
+        "band": "standard",
+        "text": "Daisies are scattered fairly evenly across a field. Nettles "
+                "in the same field grow in a few dense clumps. Which needs "
+                "more quadrats for an estimate you can trust?",
+        "options": [
+            {"text": "The daisies, because there are far more of them to "
+                     "count.", "correct": False,
+             "why": "How many there are does not decide it. What decides it "
+                    "is how much the count varies from one square to the "
+                    "next."},
+            {"text": "Neither — the number of quadrats depends on the size of "
+                     "the field, not on the plant.", "correct": False,
+             "why": "The site's size matters when you scale up. How many "
+                    "quadrats you need depends on how unevenly the organism "
+                    "is spread."},
+            {"text": "The nettles, because a clumped plant makes the count "
+                     "swing wildly from one quadrat to the next.",
+             "correct": True},
+            {"text": "The nettles, because a dense clump is harder to count "
+                     "accurately inside the frame.", "correct": False,
+             "why": "Counting a dense clump is fiddly, and that is not the "
+                    "problem. The problem is that most squares hold none and "
+                    "a few hold a great many."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-06-s08",
+        "band": "standard",
+        "text": "A class estimates the daisies on their field at about 4,000. "
+                "The next summer, with the same method and the same number of "
+                "quadrats, they get about 6,500. What can they conclude?",
+        "options": [
+            {"text": "That the daisies have increased by about 2,500, since "
+                     "the method was the same both times.", "correct": False,
+             "why": "The method being the same rules out one explanation, not "
+                    "the other. Part of that gap could be the ordinary wobble "
+                    "of a small sample."},
+            {"text": "That the daisies may well have increased, but part of "
+                     "the difference could be chance.", "correct": True},
+            {"text": "Nothing at all, because two estimates cannot be "
+                     "compared with each other.", "correct": False,
+             "why": "They can be compared, and keeping the method the same is "
+                    "what makes it possible. What you cannot do is treat the "
+                    "whole difference as real without checking."},
+            {"text": "That one of the two surveys must have been biased, "
+                     "since a field does not change that much.",
+             "correct": False,
+             "why": "A field really can change that much between summers — "
+                    "mowing, weather and grazing all move a plant population. "
+                    "Nothing here points to bias."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b9-06-h05",
+        "band": "harder",
+        "text": "Twelve quadrats, each 0.5 m by 0.5 m, are placed at random "
+                "on a 600 m² field. The mean count is 3 buttercups per "
+                "quadrat. What is the estimated population?",
+        "options": [
+            {"text": "36 buttercups, which is the total found in the twelve "
+                     "quadrats.", "correct": False,
+             "why": "That is what was counted, not what the field holds. The "
+                    "mean still has to be scaled up to the whole site."},
+            {"text": "1,800 buttercups, taking each quadrat as one square "
+                     "metre.", "correct": False,
+             "why": "Each quadrat is 0.5 m by 0.5 m, so its area is 0.25 m². "
+                    "Four of them fit in every square metre, not one."},
+            {"text": "7,200 buttercups, because 600 m² holds 2,400 areas of "
+                     "0.25 m².", "correct": True},
+            {"text": "3,600 buttercups, taking the quadrat's area as 0.5 m².",
+             "correct": False,
+             "why": "0.5 m is the length of a side. The area is 0.5 m "
+                    "multiplied by 0.5 m, which is 0.25 m²."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-06-h06",
+        "band": "harder",
+        "text": "A group takes 8 quadrats of 1 m² on a 320 m² field and gets "
+                "a mean of 5.5 plants, giving 1,760. They take 8 more; across "
+                "all 16 the mean is 4.75, giving 1,520. Which figure should "
+                "they report?",
+        "options": [
+            {"text": "1,760, because the first eight were counted before "
+                     "anyone knew what answer to expect.", "correct": False,
+             "why": "Nothing makes the first eight purer. They are simply "
+                    "half as much evidence as all sixteen are."},
+            {"text": "The average of the two figures, 1,640, since both "
+                     "surveys were done properly.", "correct": False,
+             "why": "The second figure already contains the first eight "
+                    "quadrats, so averaging counts them twice. Use the mean "
+                    "of all sixteen counts."},
+            {"text": "1,760, because a small sample of a fair method is less "
+                     "likely to include an odd square.", "correct": False,
+             "why": "It is the other way round: a small sample is more easily "
+                    "thrown by one odd square, which is exactly what more "
+                    "quadrats fixes."},
+            {"text": "1,520, because sixteen quadrats leave less room for "
+                     "chance than eight do.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-06-h07",
+        "band": "harder",
+        "text": "An ecologist marks 60 ground beetles and releases them. Some "
+                "days later she catches 90 beetles, of which 15 are marked. "
+                "What is the estimated population?",
+        "options": [
+            {"text": "About 360, because 15 marked in 90 means the 60 are "
+                     "about a sixth of the population.", "correct": True},
+            {"text": "About 150, by adding the beetles caught on the two "
+                     "occasions.", "correct": False,
+             "why": "Adding the two catches counts beetles handled, not "
+                    "beetles present. The method uses the fraction of the "
+                    "second catch that carried a mark."},
+            {"text": "About 900, by multiplying the 60 marked beetles by the "
+                     "15 recaptured.", "correct": False,
+             "why": "The 15 belong underneath rather than on top — they are "
+                    "the share of the second catch that was marked. Marking "
+                    "more beetles cannot raise the population."},
+            {"text": "About 90, since the second catch is a fair sample of "
+                     "the beetles present.", "correct": False,
+             "why": "The second catch is a sample of the population, not the "
+                    "whole of it. It is the marked share within it that "
+                    "scales the 60 up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-06-h08",
+        "band": "harder",
+        "text": "A charity reports that Britain has lost about 60% of its "
+                "farmland butterflies since 1976. Nobody has ever counted "
+                "them. What must have been done to make a statement like that "
+                "possible?",
+        "options": [
+            {"text": "One very large count in 1976, which later years have "
+                     "been compared against.", "correct": False,
+             "why": "One count, however large, gives one figure. A trend "
+                    "needs the same measurement repeated, year after year."},
+            {"text": "The same sampling method repeated every year, so that "
+                     "the counts can be compared.", "correct": True},
+            {"text": "A count of every butterfly on a few farms, scaled up to "
+                     "the whole country.", "correct": False,
+             "why": "Scaling up gives a total for one year. Claiming a fall "
+                    "needs comparable figures from the start of the period "
+                    "and from now."},
+            {"text": "An estimate of how many there ought to be, compared "
+                     "with how many are seen now.", "correct": False,
+             "why": "How many there ought to be is not something anyone can "
+                    "measure. The claim rests on real counts taken the same "
+                    "way over time."},
+        ],
+        "figure": None,
+    },
 ]

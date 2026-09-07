@@ -402,4 +402,332 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b9-05-e05",
+        "band": "easier",
+        "text": "A pollutant is described as persistent. What does that mean?",
+        "options": [
+            {"text": "It is extremely poisonous, so a very small amount does "
+                     "a great deal of harm.", "correct": False,
+             "why": "That is how toxic it is, which is a separate question. "
+                    "Persistent describes how long it lasts."},
+            {"text": "It is not broken down — by an organism, or in the "
+                     "environment — for years or decades.", "correct": True},
+            {"text": "It keeps being sprayed year after year, so it is always "
+                     "present somewhere.", "correct": False,
+             "why": "That describes how it is used. A persistent chemical "
+                    "stays put after a single application, because nothing "
+                    "breaks it down."},
+            {"text": "It spreads through the water until every organism in "
+                     "the lake has taken some in.", "correct": False,
+             "why": "Spreading is how it reaches the organisms. Persistence "
+                    "is what happens once it is inside one — nothing removes "
+                    "it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-05-e06",
+        "band": "easier",
+        "text": "A chemical is described as fat-soluble. Why does that make "
+                "it dangerous in a food chain?",
+        "options": [
+            {"text": "Because fat-soluble chemicals are more poisonous than "
+                     "water-soluble ones.", "correct": False,
+             "why": "Dissolving in fat says nothing about how poisonous a "
+                    "chemical is. What it decides is whether the body can get "
+                    "rid of it."},
+            {"text": "Because animals with more fat eat more, so they take in "
+                     "more of it.", "correct": False,
+             "why": "How much an animal eats is not the mechanism. Dissolving "
+                    "in fat means the body stores the chemical instead of "
+                    "filtering it out."},
+            {"text": "Because the body stores it in fat instead of filtering "
+                     "it out, so it stays for life.", "correct": True},
+            {"text": "Because it dissolves in the lake water and so reaches "
+                     "every organism there.", "correct": False,
+             "why": "That is what water-soluble means, and the water-soluble "
+                    "case is the safe one — the kidneys remove it within "
+                    "days."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-05-e07",
+        "band": "easier",
+        "text": "Concentrations of a pollutant in water are often given in "
+                "parts per million. Roughly what is 1 part per million?",
+        "options": [
+            {"text": "About 1 milligram in a litre.", "correct": True},
+            {"text": "About 1 gram in a litre.", "correct": False,
+             "why": "A gram in a litre is a thousand times more concentrated "
+                    "— that is a part per thousand. A milligram is a "
+                    "thousandth of a gram."},
+            {"text": "About 1 milligram in a million litres.",
+             "correct": False,
+             "why": "That is a millionth of the concentration meant. Parts "
+                    "per million means one part in a million parts, which in "
+                    "water is about a milligram in a litre."},
+            {"text": "About one millionth of the amount that would cause "
+                     "harm.", "correct": False,
+             "why": "It is a unit of concentration, not a measure of safety. "
+                    "Whether 1 ppm is harmful depends entirely on the "
+                    "substance."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-05-e08",
+        "band": "easier",
+        "text": "A pesticide measures far higher in an osprey than in the "
+                "lake water it came from. Has the chemical become stronger on "
+                "the way up?",
+        "options": [
+            {"text": "Yes — each animal changes it into a more dangerous form "
+                     "as it passes it on.", "correct": False,
+             "why": "Nothing is converted. The molecule leaving a minnow is "
+                    "the same molecule that arrived in it."},
+            {"text": "Yes, because a predator's body concentrates it by "
+                     "reacting it with fat.", "correct": False,
+             "why": "It is stored in fat, not reacted with it. Storing is "
+                    "what makes the concentration climb; the chemical itself "
+                    "is unchanged."},
+            {"text": "No — the concentration is the same all the way up, and "
+                     "only the osprey is harmed.", "correct": False,
+             "why": "The concentration really does climb, by a hundred "
+                    "thousand times in this case. What does not change is the "
+                    "chemical."},
+            {"text": "No — the chemical is unchanged, but it is packed into "
+                     "fewer and fewer bodies at each step.", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b9-05-s05",
+        "band": "standard",
+        "text": "Polar bears eat seals, seals eat fish, and the fish eat "
+                "plankton. Why does a polar bear carry far more of a "
+                "persistent pollutant than a seal does?",
+        "options": [
+            {"text": "Because a polar bear is much larger, and a large body "
+                     "holds more of everything.", "correct": False,
+             "why": "A larger body holds more in total, and what is measured "
+                    "is the concentration — the amount in each kilogram. A "
+                    "basking shark is enormous and carries very little."},
+            {"text": "Because each bear eats many seals over its life and "
+                     "keeps the pollutant from all of them.", "correct": True},
+            {"text": "Because the pollutant becomes more poisonous each time "
+                     "it is passed on.", "correct": False,
+             "why": "The chemical does not change. What changes is how much "
+                    "of it has been packed into one body."},
+            {"text": "Because polar bears swim more than seals do, so they "
+                     "absorb more from the water.", "correct": False,
+             "why": "Almost all of the intake comes through food rather than "
+                    "water, and seals spend far more time in the sea in any "
+                    "case."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-05-s06",
+        "band": "standard",
+        "text": "In one lake the fish-eating birds are dying while the fish "
+                "they eat look healthy. A student concludes the pesticide "
+                "must be poisonous to birds and harmless to fish. What is "
+                "wrong with that?",
+        "options": [
+            {"text": "The birds carry a far higher concentration of the same "
+                     "chemical than the fish do.", "correct": True},
+            {"text": "Nothing is wrong — different animals are harmed by "
+                     "different chemicals.", "correct": False,
+             "why": "They can be, and this case does not show it. The birds "
+                    "are meeting a dose hundreds of times higher than the "
+                    "fish are."},
+            {"text": "The fish are harmed too, but nobody has looked closely "
+                     "enough to notice.", "correct": False,
+             "why": "There may be effects nobody has measured, and the "
+                    "straightforward explanation is concentration. The fish "
+                    "sit lower down the chain that multiplies it."},
+            {"text": "The birds must be eating something else in the lake "
+                     "that is poisoning them.", "correct": False,
+             "why": "Nothing needs adding to the story. Eating many fish, "
+                    "each carrying the chemical, is enough on its own."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-05-s07",
+        "band": "standard",
+        "text": "A persistent pesticide is banned and no more is used "
+                "anywhere near a lake. Why is the level in the ospreys still "
+                "high several years later?",
+        "options": [
+            {"text": "Because farmers went on using it in secret after the "
+                     "ban.", "correct": False,
+             "why": "Nothing has to be assumed about breaking the law. A "
+                    "persistent chemical is still there whether or not any "
+                    "more is added."},
+            {"text": "Because the ospreys keep making more of it inside their "
+                     "own bodies.", "correct": False,
+             "why": "No animal makes it. Every molecule came from the "
+                    "spraying, and none of it has been broken down since."},
+            {"text": "Because nothing breaks it down, so what is already in "
+                     "the lake and in the animals stays there.",
+             "correct": True},
+            {"text": "Because the ban stopped new spraying only, and the "
+                     "chemical evaporates back out of the soil each summer.",
+             "correct": False,
+             "why": "Some movement between soil and air does happen, and it "
+                    "is not the reason. The reason is that neither the "
+                    "environment nor the birds can break it down."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-05-s08",
+        "band": "standard",
+        "text": "Two seabirds feed on the same fish in the same bay. One "
+                "lives about four years, the other about thirty. Which "
+                "carries more of a persistent pollutant, and why?",
+        "options": [
+            {"text": "The four-year bird, because a young body takes a "
+                     "chemical in faster.", "correct": False,
+             "why": "Nothing about being young speeds up the intake. What "
+                    "matters is how long an animal has been taking it in "
+                    "without being able to get rid of it."},
+            {"text": "Both the same, because they eat the same fish at the "
+                     "same concentration.", "correct": False,
+             "why": "The same food does not give the same body burden. A "
+                    "persistent chemical is kept, so it adds up for as long "
+                    "as the animal lives."},
+            {"text": "The thirty-year bird, because a large old bird eats "
+                     "more each day.", "correct": False,
+             "why": "The right bird for not quite the right reason. What "
+                    "counts is the total taken in across a whole life, which "
+                    "goes on adding up whatever the daily amount."},
+            {"text": "The thirty-year bird, because it has been accumulating "
+                     "the chemical for far longer.", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b9-05-h05",
+        "band": "harder",
+        "text": "A persistent chemical measures 0.004 ppm in a lake's water "
+                "and multiplies by about ten at each of five steps up to the "
+                "ospreys. Harm begins at 100 ppm. What is the concentration "
+                "in the ospreys?",
+        "options": [
+            {"text": "0.02 ppm, which is far below the level at which harm "
+                     "begins.", "correct": False,
+             "why": "That multiplies by five once, instead of by ten at each "
+                    "of five steps. Five steps of ten times is a hundred "
+                    "thousand times altogether."},
+            {"text": "400 ppm, which is well above the level at which harm "
+                     "begins.", "correct": True},
+            {"text": "40 ppm, which is below the level at which harm begins.",
+             "correct": False,
+             "why": "That is four steps rather than five. One more step of "
+                    "ten times takes it to 400 ppm, and past the harm "
+                    "level."},
+            {"text": "0.00000004 ppm, which is far too little to matter.",
+             "correct": False,
+             "why": "Going up a chain the concentration multiplies; it is the "
+                    "energy that divides. Dividing five times is the "
+                    "arithmetic from a different lesson."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-05-h06",
+        "band": "harder",
+        "text": "DDT was sprayed on farmland from the 1940s. Twenty years "
+                "later peregrines and ospreys were laying eggs with shells so "
+                "thin they broke under the sitting bird. Why did the damage "
+                "appear in birds that were never sprayed?",
+        "options": [
+            {"text": "Because DDT is far more poisonous to birds than to "
+                     "insects.", "correct": False,
+             "why": "It was made to kill insects and it did. What reached the "
+                    "birds was a concentration hundreds of thousands of times "
+                    "higher than anything in the fields."},
+            {"text": "Because the birds ate the sprayed insects directly and "
+                     "took the spray in with them.", "correct": False,
+             "why": "Those birds eat other birds and fish rather than insects "
+                    "off a crop. The chemical reached them up a chain of "
+                    "several steps, each one multiplying it."},
+            {"text": "Because DDT is persistent and fat-soluble, so it "
+                     "concentrated up every chain it entered.",
+             "correct": True},
+            {"text": "Because the spray drifted on the wind and settled on "
+                     "the birds' nesting cliffs.", "correct": False,
+             "why": "Drift moved some of it about, and drift concentrates "
+                    "nothing. The build-up happened inside the animals, meal "
+                    "by meal."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-05-h07",
+        "band": "harder",
+        "text": "An osprey and a heron feed on the same lake. The osprey eats "
+                "perch, which eat minnows, which eat water fleas. The heron "
+                "eats frogs and water snails, which graze the algae. Which "
+                "bird carries more of a persistent pollutant?",
+        "options": [
+            {"text": "The osprey, because its food comes from two steps "
+                     "further up the chain.", "correct": True},
+            {"text": "The heron, because snails and frogs live in the mud "
+                     "where the chemical settles.", "correct": False,
+             "why": "Some chemicals do settle in sediment, and the build-up "
+                    "here comes from the number of steps. The heron is "
+                    "feeding close to the bottom of the chain."},
+            {"text": "Both the same, because they feed on the same lake at "
+                     "the same concentration in the water.", "correct": False,
+             "why": "The water is the same for both, and neither bird gets it "
+                    "from the water. It arrives through the food, and their "
+                    "foods sit at different levels."},
+            {"text": "The heron, because frogs and snails are eaten whole, so "
+                     "nothing is left behind.", "correct": False,
+             "why": "How the prey is eaten does not decide it. What decides "
+                    "it is how many steps of multiplying have happened before "
+                    "the food reaches the bird."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-05-h08",
+        "band": "harder",
+        "text": "Two persistent chemicals are both found in a lake at "
+                "0.01 ppm. Chemical P multiplies by about ten at each of four "
+                "steps; chemical Q multiplies by about two at each of the "
+                "same four steps. What arrives at the top?",
+        "options": [
+            {"text": "100 ppm and 8 ppm, so a small difference per step makes "
+                     "little difference overall.", "correct": False,
+             "why": "Q is 0.01 doubled four times, which is 0.16 ppm rather "
+                    "than 8. And the gap between them is enormous rather than "
+                    "small."},
+            {"text": "40 ppm and 8 ppm, so P climbs about five times as far "
+                     "as Q does.", "correct": False,
+             "why": "P is 0.01 multiplied by ten four times, which is "
+                    "100 ppm. The two do not finish within five times of each "
+                    "other; they finish hundreds of times apart."},
+            {"text": "100 ppm and 0.16 ppm, and both would be enough to harm "
+                     "a top predator.", "correct": False,
+             "why": "The two concentrations are right and the conclusion is "
+                    "not. One is more than six hundred times the other, which "
+                    "is the difference between reaching a harmful level and "
+                    "coming nowhere near it."},
+            {"text": "100 ppm and 0.16 ppm, so what is kept at each step "
+                     "matters enormously.", "correct": True},
+        ],
+        "figure": None,
+    },
 ]

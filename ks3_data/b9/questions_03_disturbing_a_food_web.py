@@ -386,4 +386,411 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b9-03-e05",
+        "band": "easier",
+        "text": "What does interdependence mean?",
+        "options": [
+            {"text": "Organisms competing with one another for the same food "
+                     "in an ecosystem.", "correct": False,
+             "why": "Competition is one kind of link between organisms. "
+                    "Interdependence is the wider fact that a change in one "
+                    "changes the others."},
+            {"text": "Organisms depending on one another, so that a change in "
+                     "one changes the others.", "correct": True},
+            {"text": "Organisms depending on the weather and the soil of the "
+                     "place they live in.", "correct": False,
+             "why": "Those matter too, and interdependence is about organisms "
+                    "depending on each other — including on ones they never "
+                    "touch."},
+            {"text": "One organism eating another, which is what joins an "
+                     "ecosystem together.", "correct": False,
+             "why": "Feeding is the commonest link and it is not the only "
+                    "one. Bees that eat nothing in a wood can still hold that "
+                    "wood up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e06",
+        "band": "easier",
+        "text": "What does the word generalist mean?",
+        "options": [
+            {"text": "An organism that eats a very large amount of food each "
+                     "day.", "correct": False,
+             "why": "How much it eats is not the point. A generalist eats "
+                    "many different things, whatever the quantity."},
+            {"text": "An organism that lives in many different habitats "
+                     "rather than one.", "correct": False,
+             "why": "That is a wide range, which is a different idea. A "
+                    "generalist is described by the number of foods it "
+                    "eats."},
+            {"text": "An organism that depends on one food and has nothing to "
+                     "fall back on.", "correct": False,
+             "why": "That is a specialist, the opposite. A specialist is the "
+                    "one with most to lose when a food disappears."},
+            {"text": "An organism that feeds on many different things rather "
+                     "than on one.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e07",
+        "band": "easier",
+        "text": "What is a top predator?",
+        "options": [
+            {"text": "An animal at the top of a web, with nothing that hunts "
+                     "it.", "correct": True},
+            {"text": "The largest and strongest animal in an ecosystem.",
+             "correct": False,
+             "why": "Size does not decide it. A ladybird is a predator of "
+                    "aphids, and plenty of top predators are smaller than "
+                    "animals below them."},
+            {"text": "An animal that eats only other predators and never a "
+                     "plant eater.", "correct": False,
+             "why": "Many top predators take plant eaters — an owl eats mice. "
+                    "What puts it at the top is that nothing hunts it."},
+            {"text": "An animal that nothing depends on, because it is at the "
+                     "end of every chain.", "correct": False,
+             "why": "Nothing eats it, and a great deal still depends on it. "
+                    "Removing a top predator is often the change that travels "
+                    "furthest."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e08",
+        "band": "easier",
+        "text": "In a wood, ladybirds eat aphids, blue tits eat caterpillars "
+                "and aphids, owls eat mice, and bees pollinate the "
+                "wildflowers. Which organism is joined to the wood by "
+                "something other than a feeding link?",
+        "options": [
+            {"text": "The owls, because nothing in the wood eats them.",
+             "correct": False,
+             "why": "Nothing eating them is still a feeding link — the arrow "
+                    "running into an owl from a mouse. The owls are in the "
+                    "web the ordinary way."},
+            {"text": "The ladybirds, because they eat only one thing.",
+             "correct": False,
+             "why": "One food is still a feeding link, and a narrow one. "
+                    "Eating a single thing makes the ladybirds a specialist, "
+                    "not an outsider."},
+            {"text": "The bees, joined to the wildflowers by pollination "
+                     "rather than by eating.", "correct": True},
+            {"text": "None of them, because every organism in a web is joined "
+                     "to it by feeding.", "correct": False,
+             "why": "Pollination is the exception this wood is drawn to show. "
+                    "The bees are in no food chain here, and removing them "
+                    "would still empty the wood."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e09",
+        "band": "easier",
+        "text": "Removing one species from a wood changed the numbers of "
+                "seven other species, most of which never touched it. Which "
+                "statement does that support?",
+        "options": [
+            {"text": "Only the species directly above and below a removal are "
+                     "affected by it.", "correct": False,
+             "why": "Seven species changed and most had no direct link. That "
+                    "is exactly the belief this result contradicts."},
+            {"text": "A food web is really a set of separate chains that do "
+                     "not affect one another.", "correct": False,
+             "why": "If the chains were separate the effect could not have "
+                    "reached seven species. They share their members, which "
+                    "is what makes a web a web."},
+            {"text": "Removing a species always damages an ecosystem beyond "
+                     "repair.", "correct": False,
+             "why": "Seven species changed, which is not the same as ruining "
+                    "the wood. The point is how far the effect travelled, not "
+                    "how bad it was."},
+            {"text": "Every organism in a web is connected to every other by "
+                     "some route.", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b9-03-s05",
+        "band": "standard",
+        "text": "Sea otters eat sea urchins, and sea urchins graze the kelp "
+                "that forms underwater forests. Otters are hunted out of a "
+                "bay. What happens?",
+        "options": [
+            {"text": "The urchins fall as well, because otters and urchins "
+                     "depend on one another.", "correct": False,
+             "why": "Depending on one another does not mean rising and "
+                    "falling together. With their predator gone, the urchins "
+                    "are released and their numbers climb."},
+            {"text": "The kelp grows better, because there is one fewer "
+                     "animal in the bay.", "correct": False,
+             "why": "The animal removed was the one holding the urchins down. "
+                    "More urchins means more grazing, so the kelp does "
+                    "worse."},
+            {"text": "The urchins increase and graze the kelp away, so the "
+                     "forest thins.", "correct": True},
+            {"text": "Nothing changes, because otters do not eat kelp and are "
+                     "not part of that chain.", "correct": False,
+             "why": "They are joined to the kelp through the urchins, and two "
+                    "links is quite enough. An effect does not stop at the "
+                    "organisms you would draw a line to."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s06",
+        "band": "standard",
+        "text": "In a lake, perch eat sticklebacks, sticklebacks eat water "
+                "fleas, and water fleas graze the algae that turn the water "
+                "green. Anglers remove most of the perch. What happens to the "
+                "algae?",
+        "options": [
+            {"text": "The algae increase, because more sticklebacks means "
+                     "fewer water fleas grazing them.", "correct": True},
+            {"text": "The algae decrease, because removing a predator lets "
+                     "every level below it rise.", "correct": False,
+             "why": "The levels do not all rise together. Each step reverses "
+                    "the effect: more sticklebacks, fewer water fleas, and so "
+                    "more algae."},
+            {"text": "The algae are unaffected, because perch do not eat "
+                     "algae.", "correct": False,
+             "why": "The perch are joined to the algae through two other "
+                    "species. Three links is a long way and the effect still "
+                    "arrives."},
+            {"text": "The algae increase, because the dead perch rot and feed "
+                     "them.", "correct": False,
+             "why": "The perch were removed rather than left to rot. The "
+                    "route that matters here runs through the sticklebacks "
+                    "and the water fleas."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s07",
+        "band": "standard",
+        "text": "Rats reach an island where seabirds nest on the ground and "
+                "have never had a predator. Twenty years later the colony has "
+                "collapsed, and the plants that grew on soil enriched by the "
+                "birds' droppings are thinner too. What does that show?",
+        "options": [
+            {"text": "That the rats must have eaten the plants as well as the "
+                     "birds' eggs.", "correct": False,
+             "why": "They may have taken some seed, and the plants would have "
+                    "thinned in any case. Their soil was being fed by the "
+                    "seabirds, and the seabirds have gone."},
+            {"text": "That an effect travelled from a predator to plants it "
+                     "never touched, by way of the birds.", "correct": True},
+            {"text": "That plants and seabirds compete, so losing the birds "
+                     "should have helped the plants.", "correct": False,
+             "why": "The birds were not competing with the plants; they were "
+                    "supplying them. Losing them cost the plants their source "
+                    "of minerals."},
+            {"text": "That this web was unusually fragile, since a healthy "
+                     "web is not changed by one new species.", "correct": False,
+             "why": "A web with few alternative routes is more easily "
+                    "changed, and no web is unaffected. Adding a predator "
+                    "where there was none is a large disturbance anywhere."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s08",
+        "band": "standard",
+        "text": "Beavers fell willow and build dams, and the ponds behind "
+                "those dams hold fish, frogs and dragonflies. Trappers remove "
+                "every beaver from a valley, the dams break up and the ponds "
+                "drain. Which statement describes what has happened?",
+        "options": [
+            {"text": "Nothing important, since the pond species neither ate "
+                     "beavers nor were eaten by them.", "correct": False,
+             "why": "Not one of them had a feeding link to a beaver, and all "
+                    "of them depended on it. Feeding is not the only kind of "
+                    "dependence."},
+            {"text": "The willow recovers, so the valley ends up richer than "
+                     "it was before.", "correct": False,
+             "why": "The willow does grow back and the ponds do not. What the "
+                    "valley loses is every species that lived in the water "
+                    "those dams held."},
+            {"text": "The frogs and dragonflies simply move to the river, so "
+                     "nothing is lost.", "correct": False,
+             "why": "Still water and running water are not the same habitat. "
+                    "The animals that needed ponds have lost them."},
+            {"text": "Removing one species removed the habitat several others "
+                     "depended on.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s09",
+        "band": "standard",
+        "text": "Conservation groups usually protect a whole habitat rather "
+                "than a single species. Which reason best explains why?",
+        "options": [
+            {"text": "Because a habitat is easier to fence off and look after "
+                     "than an animal is.", "correct": False,
+             "why": "It may well be, and that is a practical point rather "
+                    "than a biological one. The reason here is that a species "
+                    "cannot be kept without what it depends on."},
+            {"text": "Because every species depends on others through routes "
+                     "that are easy to miss.", "correct": True},
+            {"text": "Because a habitat holds more species, so protecting it "
+                     "saves a larger number of them.", "correct": False,
+             "why": "It does save more, and that is not why a single-species "
+                    "plan fails. It fails because the one species still needs "
+                    "everything it was joined to."},
+            {"text": "Because a species that has been protected can always be "
+                     "put back into a habitat later.", "correct": False,
+             "why": "Putting a species back is the one thing that cannot be "
+                    "relied on. That is an argument for not losing it in the "
+                    "first place."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b9-03-h05",
+        "band": "harder",
+        "text": "Cane toads were released in Queensland in 1935 to eat a "
+                "beetle damaging the sugar cane. The beetles were barely "
+                "affected, and the toads spread widely, poisoning the snakes "
+                "and lizards that tried to eat them. What does the case "
+                "show?",
+        "options": [
+            {"text": "That a species introduced to control a pest will always "
+                     "fail to control it.", "correct": False,
+             "why": "Some biological controls work well. What cannot be "
+                    "assumed is that the new species will only do the job it "
+                    "was brought for."},
+            {"text": "That the toads were the wrong choice, and a different "
+                     "predator would have worked.", "correct": False,
+             "why": "A different predator would also arrive with links of its "
+                    "own. The problem is what an introduction does beyond "
+                    "its target, not which one you choose."},
+            {"text": "That a species added to a web makes its own links, "
+                     "including ones nobody predicted.", "correct": True},
+            {"text": "That the beetles must already have had another predator "
+                     "keeping them in check.", "correct": False,
+             "why": "Nothing in the case says so, and the beetles went on "
+                    "damaging the crop. What the toads did was make new "
+                    "connections of their own."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h06",
+        "band": "harder",
+        "text": "Krill graze the algae of the Southern Ocean, and whales, "
+                "seals, penguins and many fish all feed on them. Why would a "
+                "heavy krill fishery worry ecologists more than the loss of "
+                "one whale species?",
+        "options": [
+            {"text": "Because krill are producers, and removing a producer "
+                     "empties a web.", "correct": False,
+             "why": "Krill eat algae, so they are consumers. What makes them "
+                    "matter so much is how many species feed on them, not "
+                    "where the energy enters."},
+            {"text": "Because krill are small, and small animals are more "
+                     "easily fished out than large ones.", "correct": False,
+             "why": "How easily they are caught is a fishing question. What "
+                    "matters here is how much of the web runs through them."},
+            {"text": "Because whales are protected already, so their loss is "
+                     "unlikely to happen.", "correct": False,
+             "why": "Protection is not the reason. Even if a whale species "
+                    "were lost, few species feed on whales, while almost "
+                    "everything feeds on krill."},
+            {"text": "Because almost everything in that web feeds on krill, "
+                     "with little else to switch to.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h07",
+        "band": "harder",
+        "text": "A farmer takes out the hedges between his fields to make "
+                "them larger. Two summers later his crop has a worse aphid "
+                "problem than before, although he has changed nothing else. "
+                "What is the best explanation?",
+        "options": [
+            {"text": "The hedges held the ladybirds and birds that ate the "
+                     "aphids, so their predators went with them.",
+             "correct": True},
+            {"text": "Aphids breed faster in a large field than in a small "
+                     "one, so the bigger fields suit them.", "correct": False,
+             "why": "Field size does not change how fast an aphid breeds. "
+                    "What changed is what was living in the hedges and eating "
+                    "them."},
+            {"text": "The hedges sheltered the crop from wind, and a "
+                     "wind-blown crop attracts more aphids.", "correct": False,
+             "why": "Shelter affects the crop and does not explain a rise in "
+                    "aphids. Something that was eating them has gone."},
+            {"text": "The aphids were living in the hedges, so cutting them "
+                     "released the aphids into the crop.", "correct": False,
+             "why": "Aphids feed on the crop, which is where they already "
+                    "were. It was their predators that needed the hedge."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h08",
+        "band": "harder",
+        "text": "A wood with many alternative feeding routes absorbs the loss "
+                "of one species with little visible change. Does that mean it "
+                "is safe from disturbance?",
+        "options": [
+            {"text": "Yes — a web with many routes always has an alternative, "
+                     "so little that happens to it matters.", "correct": False,
+             "why": "Alternatives help when the loss is one consumer among "
+                    "many. They do not help when what is lost is the producer "
+                    "everything runs on."},
+            {"text": "No — a loss at the bottom, or of something with no "
+                     "alternative, still runs right through it.",
+             "correct": True},
+            {"text": "No, because every removal damages a web equally, "
+                     "however many routes it has.", "correct": False,
+             "why": "They are not equal, which is the whole point of counting "
+                    "routes. A generalist barely notices losing one food; a "
+                    "specialist does not survive it."},
+            {"text": "Yes, as long as no species in it is a specialist, since "
+                     "specialists are the only weak point.", "correct": False,
+             "why": "Specialists are one weak point and not the only one. "
+                    "Remove the producer and the alternatives above it have "
+                    "nothing left to be alternatives to."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h09",
+        "band": "harder",
+        "text": "On a moor, hen harriers eat voles and also take red grouse. "
+                "A wet winter crashes the vole population. What happens to "
+                "the grouse, and why is it surprising?",
+        "options": [
+            {"text": "Grouse numbers rise, because the harriers are weakened "
+                     "by losing their main food.", "correct": False,
+             "why": "A hungry predator hunts harder rather than less. The "
+                    "grouse are what the harriers turn to."},
+            {"text": "Grouse numbers are unchanged, because nothing has "
+                     "happened to the grouse or to what they eat.",
+             "correct": False,
+             "why": "Nothing happened to them directly, which is what makes "
+                    "it surprising. The effect reaches them through the "
+                    "predator they share with the voles."},
+            {"text": "Grouse numbers fall, because the harriers switch to "
+                     "them — an effect through a shared predator.",
+             "correct": True},
+            {"text": "Grouse numbers fall, because whatever killed the voles "
+                     "must have killed grouse chicks too.", "correct": False,
+             "why": "A wet winter may do some of that, and the route that "
+                    "matters here is the predator. Losing one prey species "
+                    "pushes a predator onto another."},
+        ],
+        "figure": None,
+    },
 ]
