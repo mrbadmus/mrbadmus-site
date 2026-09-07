@@ -576,3 +576,61 @@ Gates at commit: chemistry-only `validate_lesson` clean,
 `verify_answer_positions` OK, `verify_answer_lengths` green on `bank/C7`.
 
 ---
+## C9 — Metals and materials (4 lessons)
+
+**Quota:** 34 needed per band; 36 added, taking every band to **52**. Nine per
+lesson per band across all four lessons, 108 rows.
+
+| lesson | easier | standard | harder |
+|---|---|---|---|
+| 01 the-reactivity-series | e05–e13 | s05–s13 | h05–h13 |
+| 02 predicting-displacement | e05–e13 | s05–s13 | h05–h13 |
+| 03 getting-metals-out-of-rocks | e05–e13 | s05–s13 | h05–h13 |
+| 04 ceramics-polymers-and-composites | e05–e13 | s05–s13 | h05–h13 |
+
+Positions 27 · 27 · 27 · 27. Length tell **22.5%**, against a `BASELINE` of
+88.2% — C9's original twelve are the WORST option-length giveaway cell in the
+whole key stage, and the top-up brings the unit to chance.
+
+Written with C7's lesson in hand: nine rows per lesson per band is at the
+ceiling, and the detector found five near-duplicates rather than C7's twelve.
+`c9-01-e05` and `c9-01-e01` shared an answer; `c9-02-e12` was `c9-02-s03` with
+lead swapped for copper; `c9-03-e11` repeated `c9-03-s01` on melting malachite;
+`c9-04-h11` was `c9-04-h01` word for word in substance; and `c9-03-s07` asked
+for the reasoning behind the definition `c9-03-e01` already gives. All five
+replaced.
+
+### ⚠️ A SCIENCE ERROR IN AN EXISTING ROW — for Mide, not fixed here
+
+**`c9-04-h02` has its answer the wrong way round, and it is live.**
+
+> Reinforced concrete is used for bridges. What is each of the two materials
+> contributing?
+> **Marked correct:** "The concrete takes the pull and the steel spreads the
+> load across it"
+
+That is backwards. Concrete is strong in compression and weak in tension;
+**steel takes the pull** and the concrete holds the bars and spreads the load.
+
+The row contradicts itself: its own distractor 0 ("The steel resists being
+squashed and the concrete resists being pulled") is corrected with *"It is the
+other way round. Concrete is strong in compression and weak in tension"* —
+which states the correct physics while the key states the reverse. The lesson
+page is right as well: the ladder's explain rung asks for "steel is strong when
+stretched … the steel bars are placed where the bridge is being pulled apart …
+the concrete holds the steel in place and spreads the load."
+
+**Not fixed here, deliberately.** `c9-04-h02` sits at `bank_position` 9, inside
+the original twelve that this run is required to leave byte-identical, and
+correcting a shipped answer is science accuracy — Mide's gate, not a content
+lane's. It needs one option's text and one `why` swapped, and it is worth doing
+before the next load: any student drawn this row is being marked wrong for the
+right answer.
+
+No new row in this unit asks about the load-sharing in reinforced concrete, so
+nothing added here stands next to it and contradicts it.
+
+Gates at commit: chemistry-only `validate_lesson` clean,
+`verify_answer_positions` OK, `verify_answer_lengths` green on `bank/C9`.
+
+---
