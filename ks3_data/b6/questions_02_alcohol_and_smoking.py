@@ -363,4 +363,1002 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-335 top-up ──────────────────────────────────────────────────
+    #
+    # Thirty-nine rows across the lesson's own distinct material: the unit as
+    # a measure and the drinks table that uses it, the liver's rate and where
+    # that rate comes from, the six interventions one at a time rather than
+    # six times over, each of the four rows on each long-term card, the three
+    # separate harms in smoke with their three separate mechanisms, the
+    # filter's ventilation holes, and the seven clauses of the vape
+    # paragraph. Nothing states a dose, a threshold or a method; the
+    # arithmetic rows are clearance in HOURS and drinks in UNITS, both of
+    # which the lesson supplies.
+
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b6-02-e05",
+        "band": "easier",
+        "text": "Alcoholic drinks are measured in units. What is a unit for?",
+        "options": [
+            {"text": "It is the number of drinks a person is allowed in an "
+                     "evening.", "correct": False,
+             "why": "A unit is not a permission or a limit. It is a measure of "
+                    "how much alcohol a drink contains."},
+            {"text": "It is the number of hours a drink will affect somebody "
+                     "for.", "correct": False,
+             "why": "The hours follow from the units, at about one unit an "
+                    "hour, but they are not the same thing. A unit measures "
+                    "the alcohol in the glass."},
+            {"text": "It measures the amount of alcohol in a drink, so "
+                     "different drinks can be compared.", "correct": True},
+            {"text": "It measures how strong a drink is, whatever the size of "
+                     "the glass.", "correct": False,
+             "why": "Strength alone would not tell you enough — a small strong "
+                    "drink and a large weak one can hold the same alcohol. "
+                    "Units take the size and the strength together."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e06",
+        "band": "easier",
+        "text": "Which substance in tobacco smoke binds to haemoglobin in "
+                "place of oxygen and holds on?",
+        "options": [
+            {"text": "Carbon monoxide.", "correct": True},
+            {"text": "Nicotine.", "correct": False,
+             "why": "Nicotine acts on the brain's reward pathways and on the "
+                    "heart and vessels. It is not what takes oxygen's place in "
+                    "the blood."},
+            {"text": "Tar.", "correct": False,
+             "why": "Tar is the sticky mixture that damages the airways and "
+                    "the alveoli. It does not travel in the red blood cells."},
+            {"text": "Oxygen itself, once it has been heated by the smoke.",
+             "correct": False,
+             "why": "Heating does not change what oxygen is. The gas that "
+                    "takes oxygen's places in haemoglobin is carbon "
+                    "monoxide."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e07",
+        "band": "easier",
+        "text": "Which part of the body does tar in tobacco smoke damage?",
+        "options": [
+            {"text": "The liver, which has to break it down.",
+             "correct": False,
+             "why": "The liver is the organ that clears alcohol. Tar stays "
+                    "where the smoke goes, and that is the airways and the "
+                    "alveoli."},
+            {"text": "The red blood cells, whose oxygen it takes.",
+             "correct": False,
+             "why": "Taking oxygen's place in the red blood cells is carbon "
+                    "monoxide's doing. Tar damages the airways and the "
+                    "alveoli."},
+            {"text": "The brain, whose reward pathways adapt to expect it.",
+             "correct": False,
+             "why": "That is nicotine, and it is why stopping is hard. Tar "
+                    "does its damage where the smoke passes."},
+            {"text": "The airways and the alveoli.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e08",
+        "band": "easier",
+        "text": "Somebody who has been drinking is put under a cold shower. "
+                "What does the cold water change?",
+        "options": [
+            {"text": "It lowers the alcohol, because alcohol evaporates from "
+                     "the skin.", "correct": False,
+             "why": "The alcohol is dissolved in the blood, not sitting on the "
+                    "skin. Nothing leaves through the surface."},
+            {"text": "Nothing at all — the liver is not on the outside of the "
+                     "body.", "correct": True},
+            {"text": "It speeds the liver up, because the body works harder "
+                     "when it is cold.", "correct": False,
+             "why": "The liver's rate is set by how much enzyme it holds, and "
+                    "shivering does not add any. The rate is unchanged."},
+            {"text": "It slows the alcohol down, so the person sobers up more "
+                     "gradually.", "correct": False,
+             "why": "There is nothing to slow. The alcohol is broken down at "
+                    "the liver's own rate, and cold water on the skin does not "
+                    "reach it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e09",
+        "band": "easier",
+        "text": "A half of beer and a single shot are each counted as one "
+                "unit. How many units is a can of cider?",
+        "options": [
+            {"text": "Half a unit, because cider is not a spirit.",
+             "correct": False,
+             "why": "The kind of drink is not what decides it. Size and "
+                    "strength together do, and a can of cider comes to two "
+                    "units."},
+            {"text": "One unit, the same as a half of beer.", "correct": False,
+             "why": "A can of cider holds more alcohol than a half of beer. It "
+                    "counts as two units."},
+            {"text": "Two units, because it holds more alcohol than a "
+                     "half.", "correct": True},
+            {"text": "Three units, the same as a large wine.", "correct": False,
+             "why": "Three units is a large wine or a pint of strong lager. A "
+                    "can of cider is two."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e10",
+        "band": "easier",
+        "text": "The liver clears alcohol at about one unit an hour. What "
+                "sets that rate?",
+        "options": [
+            {"text": "How much enzyme the liver contains.", "correct": True},
+            {"text": "How much the person wants to sober up.",
+             "correct": False,
+             "why": "The rate does not respond to encouragement. It depends on "
+                    "how much enzyme the liver holds."},
+            {"text": "How much water the person drinks afterwards.",
+             "correct": False,
+             "why": "Water helps the dehydration, the headache and the thirst. "
+                    "It does nothing to the amount of alcohol or to the "
+                    "liver's rate."},
+            {"text": "How strong the drinks were that the person had.",
+             "correct": False,
+             "why": "Strength decides how many units were drunk, which sets "
+                    "how many hours are needed. The rate itself is the same "
+                    "either way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e11",
+        "band": "easier",
+        "text": "What happens to a heavy drinker's brain over many years?",
+        "options": [
+            {"text": "Nothing lasting, because the brain is protected from "
+                     "everything in the blood.", "correct": False,
+             "why": "Alcohol reaches the brain easily — that is why a person "
+                    "gets drunk at all. Over years, brain tissue is lost."},
+            {"text": "The brain produces more of its own reward chemical, "
+                     "permanently.", "correct": False,
+             "why": "That describes nicotine's effect on the reward pathways. "
+                    "Alcohol over years costs the brain tissue."},
+            {"text": "The brain is damaged only in people who are already "
+                     "unwell.", "correct": False,
+             "why": "The damage runs the other way round: memory and judgement "
+                    "are affected long before anyone would call the person "
+                    "unwell."},
+            {"text": "Tissue is lost, and memory and judgement are affected.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e12",
+        "band": "easier",
+        "text": "About how long does nicotine take to reach the brain after "
+                "smoke is inhaled?",
+        "options": [
+            {"text": "About one minute.", "correct": False,
+             "why": "A minute is roughly how long blood takes to go once round "
+                    "the whole body. Nicotine reaches the brain from the lungs "
+                    "in about ten seconds."},
+            {"text": "About ten seconds.", "correct": True},
+            {"text": "About ten minutes, which is why a smoker waits for the "
+                     "effect.", "correct": False,
+             "why": "Ten minutes would be slower than a swallowed drug. "
+                    "Nicotine crosses the alveoli walls and is at the brain in "
+                    "about ten seconds."},
+            {"text": "About an hour, the same as a unit of alcohol.",
+             "correct": False,
+             "why": "An hour is how long the liver takes to clear one unit of "
+                    "alcohol, which is a different measurement altogether."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e13",
+        "band": "easier",
+        "text": "A vape contains no tar and no carbon monoxide. Why not?",
+        "options": [
+            {"text": "Because the nicotine in it has been made in a factory "
+                     "rather than grown.", "correct": False,
+             "why": "Where the nicotine came from makes no difference to what "
+                    "else is in the vapour. Tar and carbon monoxide are absent "
+                    "because nothing is burned."},
+            {"text": "Because a filter removes both of them before the vapour "
+                     "is breathed in.", "correct": False,
+             "why": "No filter removes carbon monoxide, in a vape or in a "
+                    "cigarette. They are absent because there is no burning to "
+                    "produce them."},
+            {"text": "Because nothing is burned, and burning is what "
+                     "produces them.", "correct": True},
+            {"text": "Because both of them are removed by law before a vape "
+                     "can be sold.", "correct": False,
+             "why": "No law could remove them from smoke. They are simply not "
+                    "produced, because a vape burns nothing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e14",
+        "band": "easier",
+        "text": "What does food in the stomach do to alcohol drunk alongside "
+                "it?",
+        "options": [
+            {"text": "It slows the alcohol's absorption into the blood.",
+             "correct": True},
+            {"text": "It soaks the alcohol up, so less of it is ever "
+                     "absorbed.", "correct": False,
+             "why": "Nothing soaks it up. The same alcohol reaches the blood "
+                    "in the end, just more slowly."},
+            {"text": "It speeds the liver up, so the alcohol clears sooner.",
+             "correct": False,
+             "why": "Food does not reach the liver's enzymes. The rate stays "
+                    "at about one unit an hour whatever was eaten."},
+            {"text": "It changes the alcohol into something the body can use "
+                     "as energy.", "correct": False,
+             "why": "Food does not change what alcohol is. All it does is slow "
+                    "down how quickly the alcohol crosses into the blood."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e15",
+        "band": "easier",
+        "text": "What does nicotine do to blood vessels?",
+        "options": [
+            {"text": "It widens them, so blood flows more easily.",
+             "correct": False,
+             "why": "It does the opposite. Vessels narrow, which is why blood "
+                    "pressure rises."},
+            {"text": "It blocks them with tar carried in the blood.",
+             "correct": False,
+             "why": "Tar stays in the airways and the alveoli rather than "
+                    "travelling in the blood. Nicotine narrows the vessels "
+                    "themselves."},
+            {"text": "It has no effect on them, because it acts only on the "
+                     "brain.", "correct": False,
+             "why": "The blood carries nicotine to every organ. The heart and "
+                    "the vessels are among the organs it reaches."},
+            {"text": "It narrows them, so blood pressure rises.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e16",
+        "band": "easier",
+        "text": "Besides the liver, the brain and the gut, what else does "
+                "heavy drinking over years raise the risk of?",
+        "options": [
+            {"text": "Only accidents, since the other effects are all short "
+                     "term.", "correct": False,
+             "why": "Accidents are on the list, but so are several cancers, "
+                    "high blood pressure and stroke. The long-term list is "
+                    "longer than the one-night one."},
+            {"text": "Several cancers, high blood pressure and stroke.",
+             "correct": True},
+            {"text": "Lung disease, from the same damage that smoking does.",
+             "correct": False,
+             "why": "The airways and alveoli are damaged by tar and the other "
+                    "substances in smoke, which is smoking's list rather than "
+                    "alcohol's."},
+            {"text": "Nothing else — the damage is limited to the organs the "
+                     "drink passes through.", "correct": False,
+             "why": "Alcohol goes everywhere the blood goes, so the risks are "
+                    "not limited to the gut and the liver. Cancers, high blood "
+                    "pressure and stroke are all raised."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e17",
+        "band": "easier",
+        "text": "What does the word dependence describe?",
+        "options": [
+            {"text": "The moment when a drug stops having any effect at all.",
+             "correct": False,
+             "why": "Dependence is not the effect disappearing. It is the body "
+                    "having adapted to expect the drug, so that stopping is "
+                    "physically difficult."},
+            {"text": "The damage a drug does to the organ it acts on.",
+             "correct": False,
+             "why": "Damage and dependence are different things — nicotine "
+                    "causes the dependence, and tar and carbon monoxide do "
+                    "most of the damage."},
+            {"text": "The body having adapted to expect a drug, so that "
+                     "stopping is physically difficult.", "correct": True},
+            {"text": "A choice a person makes to keep taking something they "
+                     "enjoy.", "correct": False,
+             "why": "The adaptation is real and physical. Calling it a choice "
+                    "misses what has actually changed in the brain's reward "
+                    "pathways."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b6-02-s05",
+        "band": "standard",
+        "text": "Someone who has been drinking goes for a hard run, saying "
+                "they will sweat the alcohol out. What have they achieved?",
+        "options": [
+            {"text": "They have cleared some of it, because sweat is one of "
+                     "the ways alcohol leaves.", "correct": False,
+             "why": "Nothing worth counting leaves through the skin. Alcohol "
+                    "leaves almost entirely through the liver."},
+            {"text": "They have cleared it faster, because exercise raises the "
+                     "body's rate of everything.", "correct": False,
+             "why": "The liver's rate is set by how much enzyme it holds, and "
+                    "running does not add any. The clock is unmoved."},
+            {"text": "They have slowed the clearing down, because the blood "
+                     "went to the muscles instead.", "correct": False,
+             "why": "The liver is not starved of blood by a run, and the rate "
+                    "is unchanged in either direction — it is fixed."},
+            {"text": "Nothing at all to the alcohol: the same units are still "
+                     "there for the liver.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s06",
+        "band": "standard",
+        "text": "Someone finishes drinking 4 units and then waits 2 hours "
+                "without another drink. Roughly how much is left, and what "
+                "does that mean?",
+        "options": [
+            {"text": "None left — two hours is long enough for an evening of "
+                     "that size.", "correct": False,
+             "why": "Each unit takes about its own hour, so two hours clears "
+                    "about two units. Two of the four are still in the "
+                    "blood."},
+            {"text": "About 2 units left, so reactions and judgement are still "
+                     "affected.", "correct": True},
+            {"text": "About 2 units left, but they are safe to drive because "
+                     "they feel fine.", "correct": False,
+             "why": "Feeling fine is what slowed judgement feels like from the "
+                    "inside. With units still in the blood, reactions and "
+                    "judgement are still affected."},
+            {"text": "About half a unit left, because clearing speeds up as "
+                     "the amount falls.", "correct": False,
+             "why": "The rate does not change as the amount falls. It is about "
+                    "one unit an hour from the first hour to the last."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s07",
+        "band": "standard",
+        "text": "A packet gives a low tar figure, measured by a machine. Why "
+                "might a smoker actually receive more tar than that figure?",
+        "options": [
+            {"text": "Ventilation holes in the paper let the machine draw in "
+                     "air, and fingers and lips cover them.", "correct": True},
+            {"text": "The machine measures a fresh cigarette, and tar builds "
+                     "up in the packet over time.", "correct": False,
+             "why": "Tar is produced by burning, not stored in the packet. The "
+                    "gap comes from ventilation holes that a machine leaves "
+                    "open and a smoker covers."},
+            {"text": "Machines measure in different units from the ones used "
+                     "for people.", "correct": False,
+             "why": "The units are the same. What differs is how the "
+                    "cigarette is held, because covered ventilation holes "
+                    "change what is drawn through."},
+            {"text": "The figure is for one cigarette, and smokers rarely "
+                     "smoke only one.", "correct": False,
+             "why": "That is true of any per-cigarette figure and is not the "
+                    "fault here. Even for one cigarette, covered ventilation "
+                    "holes mean more tar than the machine recorded."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s08",
+        "band": "standard",
+        "text": "The long-term harms of alcohol include accidents and "
+                "injuries, which are not diseases. Why are they on the list?",
+        "options": [
+            {"text": "Because people who drink heavily tend to be careless by "
+                     "nature.", "correct": False,
+             "why": "This is not a claim about the sort of person somebody is. "
+                    "Alcohol slows the nervous system, and judgement is the "
+                    "first thing to go."},
+            {"text": "Because injuries take longer to heal when someone has "
+                     "been drinking.", "correct": False,
+             "why": "Healing is not the reason they are counted. They are "
+                    "counted because a slowed nervous system leads to the "
+                    "injuries happening in the first place."},
+            {"text": "Because judgement goes first, so people do things they "
+                     "otherwise would not.", "correct": True},
+            {"text": "Because alcohol makes the bones and muscles weaker over "
+                     "time.", "correct": False,
+             "why": "Weakened bones are not one of alcohol's long-term "
+                    "effects. Accidents are on the list because impaired "
+                    "judgement and coordination cause them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s09",
+        "band": "standard",
+        "text": "Why can nobody yet say what vaping does to a person over "
+                "forty years?",
+        "options": [
+            {"text": "Because vapour cannot be studied in a laboratory the way "
+                     "smoke can.", "correct": False,
+             "why": "It can be, and it is. What is missing is time, not a way "
+                    "of measuring."},
+            {"text": "Because the companies that make them refuse to allow any "
+                     "research.", "correct": False,
+             "why": "Research is being done. The gap is that the devices are "
+                    "too new for anyone to have used one for forty years."},
+            {"text": "Because vapes contain nothing that could do harm over "
+                     "that length of time.", "correct": False,
+             "why": "That is the very claim nobody can yet make. Not knowing a "
+                    "harm and knowing there is none are different states."},
+            {"text": "Because the devices are too new — the long-term studies "
+                     "do not exist yet.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s10",
+        "band": "standard",
+        "text": "A heavy drinker says they would know if drinking were "
+                "harming them, because they feel perfectly well. Is that "
+                "reasoning sound?",
+        "options": [
+            {"text": "They are right — the body gives clear warnings long "
+                     "before any damage is done.", "correct": False,
+             "why": "There is no such warning. Memory and judgement are "
+                    "affected long before anyone would call the person "
+                    "unwell."},
+            {"text": "Memory and judgement are affected long before anyone "
+                     "would call the person unwell.", "correct": True},
+            {"text": "They are right for the brain, though not for the "
+                     "liver.", "correct": False,
+             "why": "The brain is one of the organs where damage runs ahead of "
+                    "symptoms, not an exception to it."},
+            {"text": "Feeling well proves the liver is still clearing the "
+                     "alcohol properly.", "correct": False,
+             "why": "How a person feels measures nothing about the liver. "
+                    "Scarring builds without announcing itself."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s11",
+        "band": "standard",
+        "text": "Why is alcohol measured in units rather than in glasses or "
+                "cans?",
+        "options": [
+            {"text": "Because glasses and cans differ in size and strength, so "
+                     "units let them be compared.", "correct": True},
+            {"text": "Because a unit is the amount the liver clears in an "
+                     "hour, so glasses would be too big.", "correct": False,
+             "why": "The liver's rate is measured in units because units "
+                    "already existed as a measure, not the other way round. "
+                    "Units exist so that different drinks can be compared."},
+            {"text": "Because units describe how drunk a person will feel "
+                     "rather than what they drank.", "correct": False,
+             "why": "A unit is a measure of the alcohol in the glass, not of "
+                    "how anyone feels. Two people drinking the same units have "
+                    "drunk the same alcohol."},
+            {"text": "Because a unit is the same for everybody, while a glass "
+                     "affects everybody differently.", "correct": False,
+             "why": "The measurement is of the drink, not of the person. Units "
+                    "exist because drinks differ in size and strength."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s12",
+        "band": "standard",
+        "text": "Someone drinks heavily but has been told their liver is "
+                "healthy, and concludes that alcohol is doing them no harm. "
+                "Where is that wrong?",
+        "options": [
+            {"text": "A liver test cannot detect scarring, so the result tells "
+                     "them nothing at all.", "correct": False,
+             "why": "Liver damage can be looked for. The fault in the "
+                    "reasoning is that the liver is only one of the organs "
+                    "alcohol reaches."},
+            {"text": "The liver damage will always come first, so it is only a "
+                     "matter of waiting.", "correct": False,
+             "why": "There is no fixed order. Brain, gut and whole-body risks "
+                    "do not wait for the liver's turn."},
+            {"text": "The brain, the gut and the whole-body risks are not "
+                     "measured by a liver test.", "correct": True},
+            {"text": "Only the liver is at risk, because it is the organ "
+                     "that clears the alcohol.", "correct": False,
+             "why": "It clears the alcohol, but it is not the only organ the "
+                    "blood carried it to. Brain tissue, the gut lining and the "
+                    "whole-body risks are all affected."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s13",
+        "band": "standard",
+        "text": "A pupil says smoking is a lung problem, so somebody with "
+                "clear lungs has nothing to worry about. What has that left "
+                "out?",
+        "options": [
+            {"text": "Only the throat and mouth, which the smoke also "
+                     "passes through.", "correct": False,
+             "why": "Those are affected too, but the far bigger gap is the "
+                    "blood and the heart. Carbon monoxide acts in the blood "
+                    "and nicotine on the heart and vessels."},
+            {"text": "That the lungs recover fully as soon as somebody "
+                     "stops.", "correct": False,
+             "why": "Whether the lungs recover is a separate question. What "
+                    "the claim leaves out is the blood, the heart and the "
+                    "vessels."},
+            {"text": "That the damage takes many years, so a young smoker is "
+                     "safe for now.", "correct": False,
+             "why": "There is no threshold below which smoke stops damaging "
+                    "tissue. And the claim's real gap is that smoke harms far "
+                    "more than the lungs."},
+            {"text": "The blood and the heart: vessels narrow, blood pressure "
+                     "rises and clots form more readily.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s14",
+        "band": "standard",
+        "text": "Why do people who drink heavily over years often bleed and "
+                "vomit?",
+        "options": [
+            {"text": "Because alcohol thins the blood until it leaks out of "
+                     "the vessels.", "correct": False,
+             "why": "Alcohol does not thin blood out of its vessels. The gut "
+                    "symptoms come from the gut itself, whose lining is "
+                    "irritated and inflamed."},
+            {"text": "Because the lining of the stomach and gut is irritated "
+                     "and inflamed.", "correct": True},
+            {"text": "Because the brain's control of swallowing has been "
+                     "damaged.", "correct": False,
+             "why": "Brain tissue is lost over years, and memory and judgement "
+                    "suffer, but the bleeding and vomiting come from the "
+                    "inflamed gut lining."},
+            {"text": "Because the kidneys pass the alcohol back into the "
+                     "stomach.", "correct": False,
+             "why": "The kidneys pass water out as urine and send nothing back "
+                    "to the stomach. The stomach is damaged by the drink it "
+                    "held."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s15",
+        "band": "standard",
+        "text": "Tobacco smoke does three separate kinds of harm. Which "
+                "pairing of substance and harm is right?",
+        "options": [
+            {"text": "Nicotine causes the dependence; carbon monoxide cuts the "
+                     "oxygen carried; tar damages the airways.",
+             "correct": True},
+            {"text": "Nicotine damages the airways; tar cuts the oxygen "
+                     "carried; carbon monoxide causes the dependence.",
+             "correct": False,
+             "why": "All three are swapped. Nicotine works on the brain's "
+                    "reward pathways, carbon monoxide occupies oxygen's places "
+                    "in the blood, and tar damages the airways."},
+            {"text": "Tar causes the dependence; nicotine cuts the oxygen "
+                     "carried; carbon monoxide damages the airways.",
+             "correct": False,
+             "why": "Nothing comes to depend on tar, and nicotine does not "
+                    "touch haemoglobin. The dependence is nicotine's and the "
+                    "oxygen problem is carbon monoxide's."},
+            {"text": "Carbon monoxide causes the dependence; nicotine damages "
+                     "the airways; tar cuts the oxygen carried.",
+             "correct": False,
+             "why": "Carbon monoxide binds to haemoglobin rather than creating "
+                    "a dependence, and the airway damage is tar's rather than "
+                    "nicotine's."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s16",
+        "band": "standard",
+        "text": "Someone says beer must be safer than spirits, because beer "
+                "is weaker. What does the unit tell you?",
+        "options": [
+            {"text": "They are right — a weaker drink always holds less "
+                     "alcohol.", "correct": False,
+             "why": "Strength is only half of it. A pint of strong lager comes "
+                    "to three units and a single shot to one."},
+            {"text": "They are right for the liver, though not for the "
+                     "brain.", "correct": False,
+             "why": "The liver and the brain both deal with the same alcohol. "
+                    "What matters is how many units were drunk, not what they "
+                    "arrived in."},
+            {"text": "Units count the alcohol however it arrives: strong "
+                     "lager is three units a pint.", "correct": True},
+            {"text": "Beer is cleared faster because there is more liquid to "
+                     "dilute it.", "correct": False,
+             "why": "You cannot dilute your way out of a fixed amount, and the "
+                    "liver's rate does not change. The units decide the "
+                    "hours."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s17",
+        "band": "standard",
+        "text": "A shop sells a vape to a 16-year-old and says that is "
+                "allowed, because a vape is not tobacco. Is that right?",
+        "options": [
+            {"text": "No: selling a vape or a cigarette to an under-18 is "
+                     "illegal in the UK.", "correct": True},
+            {"text": "Yes, because the rules were written for tobacco before "
+                     "vapes existed.", "correct": False,
+             "why": "The law covers both. Selling either to an under-18 is "
+                    "illegal in the UK."},
+            {"text": "Yes, because a vape delivers no nicotine at all and so "
+                     "cannot cause any dependence.", "correct": False,
+             "why": "A vape does deliver nicotine, often faster and in larger "
+                    "amounts than a cigarette, so the dependence is the same "
+                    "or stronger."},
+            {"text": "No, but only because this particular vape happened to "
+                     "contain tobacco.", "correct": False,
+             "why": "Nothing turns on what is inside it. The age limit applies "
+                    "to vapes and cigarettes alike."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b6-02-h05",
+        "band": "harder",
+        "text": "Someone finishes 8 units at 2 am and plans to drive at 8 am. "
+                "Using the clearance rate, what is their position at 8 am?",
+        "options": [
+            {"text": "Clear — six hours of sleep is enough for any evening.",
+             "correct": False,
+             "why": "Sleep passes time and nothing else. Six hours clears "
+                    "about six units, and eight were drunk."},
+            {"text": "Clear, because the liver works faster overnight when "
+                     "nothing else is being digested.", "correct": False,
+             "why": "The rate is the same whether the person is asleep, awake "
+                    "or in a hurry. It is set by the liver's enzymes, not by "
+                    "the time of day."},
+            {"text": "About 2 units still in the blood: not clear until "
+                     "about 10 am.", "correct": True},
+            {"text": "About 4 units still in the blood, because clearing slows "
+                     "down during sleep.", "correct": False,
+             "why": "Clearing does not slow during sleep. Six hours at about a "
+                    "unit an hour leaves two of the eight units, not four."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h06",
+        "band": "harder",
+        "text": "Carbon monoxide binds to haemoglobin and holds on. Why does "
+                "that matter more than simply breathing in slightly less "
+                "oxygen for a moment?",
+        "options": [
+            {"text": "Those places stay occupied, so the blood carries less "
+                     "oxygen even in clean air.", "correct": True},
+            {"text": "Because carbon monoxide is poisonous to the lungs, which "
+                     "then take in less oxygen.", "correct": False,
+             "why": "The problem is in the blood rather than the lungs. Lungs "
+                    "that work perfectly still deliver less oxygen if the "
+                    "haemoglobin is occupied."},
+            {"text": "Because carbon monoxide destroys red blood cells, so "
+                     "there are fewer of them.", "correct": False,
+             "why": "The cells are not destroyed. Their haemoglobin is "
+                    "occupied by a gas that will not let go quickly, which is "
+                    "a different problem."},
+            {"text": "Because it makes a person breathe more slowly, so less "
+                     "air is taken in.", "correct": False,
+             "why": "Breathing is not what is limited. The oxygen arrives at "
+                    "the lungs and finds the places it would occupy already "
+                    "taken."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h07",
+        "band": "harder",
+        "text": "Someone who has never smoked takes up vaping and says they "
+                "are better off than a smoker would be. What is the honest "
+                "scientific reply?",
+        "options": [
+            {"text": "They are right, and they should be encouraged, since "
+                     "vaping is known to be safe.", "correct": False,
+             "why": "Vapes are very likely less harmful than cigarettes and "
+                    "are not known to be safe — the long-term studies do not "
+                    "exist yet."},
+            {"text": "They are wrong, because vaping is more harmful to a "
+                     "person than smoking is.", "correct": False,
+             "why": "Overstating the harm is as inaccurate as understating it. "
+                    "The evidence points to vapes being less harmful than "
+                    "cigarettes."},
+            {"text": "They are wrong, because a vape delivers tar and carbon "
+                     "monoxide as a cigarette does.", "correct": False,
+             "why": "It delivers neither, because nothing is burned. The "
+                    "problem with the comparison is elsewhere."},
+            {"text": "They are comparing with the wrong thing: a never-smoker "
+                     "gains nothing and takes on the dependence.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h08",
+        "band": "harder",
+        "text": "Why is one unit an hour described as a model rather than as a "
+                "law that holds for everybody?",
+        "options": [
+            {"text": "Because the rate rises through an evening as the liver "
+                     "warms to the work.", "correct": False,
+             "why": "The rate does not rise as an evening goes on. It is "
+                    "steady, and the model rounds real people to a single "
+                    "figure."},
+            {"text": "Real clearance varies between people, and a damaged "
+                     "liver runs slower still.", "correct": True},
+            {"text": "Because the figure was chosen to make the arithmetic "
+                     "easy and has no basis at all.", "correct": False,
+             "why": "It is close to what livers actually do, which is why it "
+                    "is useful. What it hides is the variation between one "
+                    "person and another."},
+            {"text": "Because a person can change their own rate by drinking "
+                     "regularly.", "correct": False,
+             "why": "Regular heavy drinking scars the liver, which makes "
+                    "clearance slower rather than faster. Nobody trains "
+                    "themselves into a quicker one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h09",
+        "band": "harder",
+        "text": "Heavy drinking and smoking both raise the risk of a stroke, "
+                "by different routes. Which pair of routes is right?",
+        "options": [
+            {"text": "Both raise it by scarring the liver, which then fails to "
+                     "clean the blood.", "correct": False,
+             "why": "Smoke does not scar the liver, and a scarred liver is not "
+                    "how either of them raises stroke risk."},
+            {"text": "Alcohol by damaging the brain directly; smoke by "
+                     "removing oxygen from the brain.", "correct": False,
+             "why": "Both of those are real harms, but neither is the route to "
+                    "a stroke. Raised blood pressure and clots forming more "
+                    "readily are."},
+            {"text": "Alcohol through raised blood pressure among its "
+                     "whole-body risks; smoke through narrowed vessels and "
+                     "clots.", "correct": True},
+            {"text": "Alcohol through dehydration, and smoke through the tar "
+                     "that reaches the blood.", "correct": False,
+             "why": "Dehydration passes with a drink of water, and tar stays "
+                    "in the airways. The stroke risk comes from blood pressure "
+                    "and from vessels and clotting."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h10",
+        "band": "harder",
+        "text": "Alcohol affects judgement on a single night and also over "
+                "many years. What is the difference between the two?",
+        "options": [
+            {"text": "The night's effect passes as the liver clears the "
+                     "alcohol; the years' effect is lost tissue.",
+             "correct": True},
+            {"text": "There is no difference — the long-term effect is simply "
+                     "many short-term ones.", "correct": False,
+             "why": "One passes when the blood is clear. The other is brain "
+                    "tissue that has been lost, and it does not return with "
+                    "the morning."},
+            {"text": "The night's effect is imagined, and only the long-term "
+                     "one is real damage.", "correct": False,
+             "why": "Both are real. On the night, signals between nerve cells "
+                    "genuinely pass less readily; over years, tissue is "
+                    "genuinely lost."},
+            {"text": "The long-term effect appears only after somebody has "
+                     "been told they are unwell.", "correct": False,
+             "why": "It runs the other way round. Memory and judgement are "
+                    "affected long before anyone would call the person "
+                    "unwell."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h11",
+        "band": "harder",
+        "text": "A nicotine patch delivers nicotine through the skin and no "
+                "smoke at all. Using the three harms, what does a patch change "
+                "and what does it not?",
+        "options": [
+            {"text": "It changes nothing at all, because nicotine is the "
+                     "substance that causes the disease.", "correct": False,
+             "why": "Nicotine causes the dependence, not the disease. The "
+                    "damage comes from tar, carbon monoxide and the other "
+                    "substances in smoke."},
+            {"text": "It removes the dependence but leaves the tar and carbon "
+                     "monoxide behind.", "correct": False,
+             "why": "It is the other way round. A patch carries no smoke at "
+                    "all, so no tar and no carbon monoxide, and the nicotine "
+                    "is exactly what it does deliver."},
+            {"text": "It removes everything, because nicotine on the skin "
+                     "cannot reach the blood.", "correct": False,
+             "why": "It reaches the blood — that is the point of a patch. What "
+                    "it leaves behind is the tar and the carbon monoxide."},
+            {"text": "No tar and no carbon monoxide, but the nicotine and the "
+                     "dependence are still there.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h12",
+        "band": "harder",
+        "text": "Someone can feel more affected half an hour after their last "
+                "drink than they did when they put the glass down. How is that "
+                "possible if the liver has been working all along?",
+        "options": [
+            {"text": "The liver stops working once a person stops drinking, so "
+                     "the alcohol builds up.", "correct": False,
+             "why": "The liver works steadily whether or not anyone is still "
+                    "drinking. The rise comes from alcohol still crossing into "
+                    "the blood."},
+            {"text": "Alcohol is still being absorbed from the stomach and "
+                     "gut, so the amount in the blood is still rising.",
+             "correct": True},
+            {"text": "The alcohol has reached the brain by then, having taken "
+                     "half an hour to travel there.", "correct": False,
+             "why": "The blood goes once round the body in under a minute, so "
+                    "the brain was reached long before. What is still "
+                    "happening is absorption."},
+            {"text": "The person has become dehydrated, and dehydration is "
+                     "what causes the impairment.", "correct": False,
+             "why": "Dehydration causes the thirst and the headache. The "
+                    "impairment is the alcohol acting on the nervous system, "
+                    "and more of it is still arriving."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h13",
+        "band": "harder",
+        "text": "One evening is two cans of cider. Another is a large wine and "
+                "a half of beer. Which evening puts more alcohol into the "
+                "blood?",
+        "options": [
+            {"text": "The two cans of cider, because a can is bigger than a "
+                     "glass.", "correct": False,
+             "why": "The size of the container is not the measure. Two cans of "
+                    "cider is 2 + 2 = 4 units, and the wine and beer come to "
+                    "3 + 1 = 4 as well."},
+            {"text": "The wine and beer, because wine is the stronger "
+                     "drink.", "correct": False,
+             "why": "Strength alone does not settle it either. Both evenings "
+                    "come to 4 units, so both hold the same alcohol."},
+            {"text": "Neither — both come to 4 units, so both take about four "
+                     "hours to clear.", "correct": True},
+            {"text": "The wine and beer, because two different drinks are "
+                     "harder for the liver than one.", "correct": False,
+             "why": "The liver deals with alcohol, not with the labels on the "
+                    "bottles. Four units is four units however it arrived."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h14",
+        "band": "harder",
+        "text": "A big meal eaten before drinking is the one popular trick "
+                "that does something real. What does it change, and what does "
+                "it leave alone?",
+        "options": [
+            {"text": "It lowers the peak in the blood, but the number of hours "
+                     "to clear is unchanged.", "correct": True},
+            {"text": "It lowers the number of hours, because there is less "
+                     "alcohol left to break down.", "correct": False,
+             "why": "None of the alcohol is lost — it arrives more slowly. The "
+                    "same units still have to be broken down at the same "
+                    "rate."},
+            {"text": "It raises the peak but shortens the evening, so the two "
+                     "cancel out.", "correct": False,
+             "why": "Food lowers the peak rather than raising it, by slowing "
+                    "absorption. And the hours do not shorten at all."},
+            {"text": "It changes neither, and the belief that it helps is "
+                     "entirely mistaken.", "correct": False,
+             "why": "It does something real: the peak is lower, so the person "
+                    "is less impaired at their worst. What it does not change "
+                    "is the clock."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h15",
+        "band": "harder",
+        "text": "A medicine can have an amount that is safe to take, yet "
+                "there is no safe number of cigarettes. Why the difference?",
+        "options": [
+            {"text": "Because a medicine is tested and tobacco has never been "
+                     "studied properly.", "correct": False,
+             "why": "Tobacco is one of the most heavily studied substances "
+                    "there is. That is how we know the risk rises from the "
+                    "first cigarette."},
+            {"text": "Because smoke is taken in through the lungs, and "
+                     "anything inhaled is harmful.", "correct": False,
+             "why": "Inhaling is not harmful in itself — air is inhaled all "
+                    "day. What matters is that smoke damages tissue with no "
+                    "threshold below which it stops."},
+            {"text": "Because cigarettes contain nicotine, and any amount of "
+                     "an addictive drug is dangerous.", "correct": False,
+             "why": "Nicotine causes the dependence rather than the tissue "
+                    "damage. The reason there is no safe number is that the "
+                    "damage from smoke starts at the first one."},
+            {"text": "A medicine has an amount that treats without harming; "
+                     "smoke damages tissue from the first cigarette.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h16",
+        "band": "harder",
+        "text": "Why might the dependence from a vape be the same as, or "
+                "stronger than, the dependence from cigarettes?",
+        "options": [
+            {"text": "Because a vape contains tar, which the brain also adapts "
+                     "to expect.", "correct": False,
+             "why": "A vape contains no tar, because nothing is burned. And "
+                    "nothing adapts to tar in any case — the dependence is "
+                    "nicotine's."},
+            {"text": "Because it delivers nicotine too, often faster and in "
+                     "larger amounts.", "correct": True},
+            {"text": "Because vapour reaches the brain by a different route "
+                     "that cigarettes cannot use.", "correct": False,
+             "why": "The route is the same: across the thin alveoli walls into "
+                    "the blood. What differs is how quickly and how much "
+                    "nicotine arrives."},
+            {"text": "Because a vape cannot be put out, so a person is never "
+                     "reminded to stop.", "correct": False,
+             "why": "How long a device lasts is not what the dependence "
+                    "rests on. It rests on the nicotine arriving fast and in "
+                    "larger amounts."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h17",
+        "band": "harder",
+        "text": "A newspaper headline sums smoking up as damaging your "
+                "lungs. What does that sentence leave out?",
+        "options": [
+            {"text": "Nothing important — the lungs are where the smoke goes, "
+                     "so that is where the harm is.", "correct": False,
+             "why": "The smoke goes to the lungs, but two of its three harms "
+                    "act elsewhere. Carbon monoxide acts in the blood and "
+                    "nicotine on the brain, heart and vessels."},
+            {"text": "That the damage is done by nicotine rather than by tar.",
+             "correct": False,
+             "why": "It is the other way round: tar and the other substances "
+                    "do the airway damage, and nicotine causes the "
+                    "dependence."},
+            {"text": "The blood and the brain — three harms with three "
+                     "mechanisms, and only one is in the lungs.",
+             "correct": True},
+            {"text": "That lung damage can be reversed, which makes the "
+                     "headline needlessly frightening.", "correct": False,
+             "why": "The airway and alveoli damage is not something that "
+                    "simply reverses. What the headline misses is everything "
+                    "smoke does outside the lungs."},
+        ],
+        "figure": None,
+    },
 ]
