@@ -474,7 +474,7 @@ QUESTIONS = [
                      "escape route to block",
              "correct": True},
             {"text": "Because a loft is the coldest part of a house, so it "
-                     "needs warming first",
+                     "needs warming first of all",
              "correct": False,
              "why": "Insulation warms nothing. It is fitted there because "
                     "that is where most energy leaves."},

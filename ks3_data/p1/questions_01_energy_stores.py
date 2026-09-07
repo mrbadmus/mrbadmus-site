@@ -447,13 +447,13 @@ QUESTIONS = [
         "band": "standard",
         "text": "Why is it wrong to call electricity a store of energy?",
         "options": [
-            {"text": "Because electricity is far too fast to be stored "
-                     "anywhere",
+            {"text": "Because electricity travels much too fast for anything "
+                     "to store it at all",
              "correct": False,
              "why": "Speed has nothing to do with it. A pathway is defined by "
                     "carrying energy, not by how quickly."},
-            {"text": "Because an electric current carries energy between "
-                     "stores rather than holding it",
+            {"text": "Because a current carries energy between stores, not "
+                     "holds it",
              "correct": True},
             {"text": "Because electricity is not really a form of energy at "
                      "all",
@@ -475,13 +475,14 @@ QUESTIONS = [
         "band": "harder",
         "text": "A skydiver falls at a constant speed under an open "
                 "parachute. Which account of the stores is correct?",
-        "options": [            {"text": "The kinetic store empties into the thermal store of the "
+        "options": [
+            {"text": "The kinetic store empties into the thermal store of the "
                      "air",
              "correct": False,
              "why": "The kinetic store stays the same size. What is emptying "
                     "is the gravitational store."},
             {"text": "The gravitational store empties and the kinetic store "
-                     "fills at the same rate",
+                     "fills at exactly the same rate",
              "correct": False,
              "why": "The speed is constant, so the kinetic store is not "
                     "changing at all."},
@@ -489,8 +490,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The skydiver is still losing height, so the "
                     "gravitational store is emptying every second."},
-            {"text": "The gravitational store empties, the kinetic store is "
-                     "unchanged, thermal stores in the air fill",
+            {"text": "The gravitational store empties, the kinetic store "
+                     "holds steady, the air warms",
              "correct": True},
         ],
         "figure": None,
@@ -526,8 +527,8 @@ QUESTIONS = [
                 "hill. A student says it has no energy. What is the right "
                 "account?",
         "options": [
-            {"text": "Its kinetic store is empty, but its gravitational store "
-                     "is at its fullest",
+            {"text": "Its kinetic store is empty, its gravitational store "
+                     "full",
              "correct": True},
             {"text": "It has no energy at all until the brakes are released",
              "correct": False,
@@ -537,7 +538,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Height fills a store whether or not anything is moving, "
                     "which is why the drop works."},
-            {"text": "Its kinetic store is full, because it is about to move",
+            {"text": "Its kinetic store is full, because it is about to move "
+                     "downhill",
              "correct": False,
              "why": "A store counts what is there now. About to move is not "
                     "moving."},

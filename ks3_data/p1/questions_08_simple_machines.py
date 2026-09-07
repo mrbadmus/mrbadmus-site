@@ -361,7 +361,8 @@ QUESTIONS = [
             {"text": "The energy transferred when a force moves through a "
                      "distance",
              "correct": True},
-            {"text": "The force needed to hold something still",
+            {"text": "The force that is needed to hold something still "
+                     "without moving it",
              "correct": False,
              "why": "Holding still moves nothing, so no distance is covered "
                     "and no energy is transferred."},
@@ -473,13 +474,13 @@ QUESTIONS = [
              "correct": False,
              "why": "No lever can pass on more than it was given, however "
                     "well made."},
-            {"text": "That friction has helped rather than hindered on this "
-                     "occasion",
+            {"text": "That friction has somehow helped rather than hindered "
+                     "on this occasion",
              "correct": False,
              "why": "Friction only ever moves energy into thermal stores, so "
                     "it can never add to the output."},
-            {"text": "That there is a measurement error, because it would "
-                     "break conservation of energy",
+            {"text": "That it must be a measurement error — energy is not "
+                     "created",
              "correct": True},
             {"text": "That the load was lighter than the label on it says",
              "correct": False,

@@ -455,13 +455,13 @@ QUESTIONS = [
         "text": "A child on a swing is given one push and then left alone. "
                 "Why does each swing rise a little less high?",
         "options": [
-            {"text": "Because the gravitational store is slowly being used "
-                     "up",
+            {"text": "Because the gravitational store is slowly being used up "
+                     "as the child swings",
              "correct": False,
              "why": "No store is used up. It empties into thermal stores in "
                     "the air and the pivot."},
             {"text": "Because energy is dissipated to thermal stores by air "
-                     "resistance and friction",
+                     "resistance",
              "correct": True},
             {"text": "Because gravity gets stronger the longer the swing "
                      "goes on",
@@ -561,7 +561,8 @@ QUESTIONS = [
             {"text": "The total staying fixed with a useful store staying "
                      "full",
              "correct": True},
-            {"text": "Conservation with efficiency, which are the same idea",
+            {"text": "Conservation with efficiency, which many people think "
+                     "are the same idea",
              "correct": False,
              "why": "They are different: efficiency is the share that goes "
                     "where you wanted, and conservation is about the total."},
@@ -587,10 +588,11 @@ QUESTIONS = [
              "correct": False,
              "why": "A week is no different from a second: energy is not "
                     "destroyed at any rate."},
-            {"text": "The flask is not truly closed, so energy has crossed "
-                     "its boundary",
+            {"text": "The flask is not a truly closed system, so energy "
+                     "escapes",
              "correct": True},
-            {"text": "The law of conservation fails over long periods",
+            {"text": "The law of conservation of energy fails over long "
+                     "enough periods",
              "correct": False,
              "why": "It has been tested over far longer than a week and has "
                     "never failed."},

@@ -445,10 +445,10 @@ QUESTIONS = [
                 "too hot to hold, while a plastic one does not?",
         "options": [
             {"text": "Metal conducts energy up the handle quickly; plastic "
-                     "hardly conducts at all",
+                     "hardly does",
              "correct": True},
-            {"text": "Metal attracts energy towards itself more strongly than "
-                     "plastic",
+            {"text": "Metal attracts energy towards itself much more strongly "
+                     "than plastic does",
              "correct": False,
              "why": "Nothing attracts energy. It flows from hotter to colder, "
                     "and metal simply passes it on faster."},
@@ -475,10 +475,11 @@ QUESTIONS = [
              "correct": False,
              "why": "They genuinely are at several hundred degrees; glowing "
                     "is what that temperature looks like."},
-            {"text": "Embers conduct very slowly, so little energy reaches "
-                     "the feet in the brief contact",
+            {"text": "Embers conduct very slowly, so each step delivers "
+                     "little energy",
              "correct": True},
-            {"text": "The feet are cold enough to cool the embers on contact",
+            {"text": "The feet are cold enough to cool the embers down as "
+                     "soon as they touch them",
              "correct": False,
              "why": "A foot cannot cool a bed of embers. What protects it is "
                     "how slowly they deliver energy."},
@@ -495,8 +496,8 @@ QUESTIONS = [
         "text": "Why do free electrons make a metal conduct faster than "
                 "vibration on its own?",
         "options": [
-            {"text": "Because they are hotter than the atoms they move "
-                     "between",
+            {"text": "Because they are far hotter than the atoms they move "
+                     "between in the metal",
              "correct": False,
              "why": "An electron does not have its own temperature. It is a "
                     "carrier, not a hot object."},
@@ -504,8 +505,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The atoms stay in place. The electrons travel between "
                     "them without moving them along."},
-            {"text": "Because they carry energy right through the structure "
-                     "instead of neighbour to neighbour",
+            {"text": "Because they carry energy right through the metal, not "
+                     "atom to atom",
              "correct": True},
             {"text": "Because there are more electrons than atoms in a metal",
              "correct": False,

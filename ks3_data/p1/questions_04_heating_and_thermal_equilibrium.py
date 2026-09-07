@@ -590,12 +590,12 @@ QUESTIONS = [
                 "not in water at 100 °C. Explain.",
         "options": [
             {"text": "Water is at a higher temperature than the oven air, "
-                     "despite the numbers",
+                     "despite what the numbers say",
              "correct": False,
              "why": "The numbers are the temperatures: 200 °C really is "
                     "hotter than 100 °C."},
             {"text": "Air has far fewer particles per litre, so it delivers "
-                     "far less energy to your skin",
+                     "less energy",
              "correct": True},
             {"text": "Air is a gas, and gases cannot transfer energy at all",
              "correct": False,

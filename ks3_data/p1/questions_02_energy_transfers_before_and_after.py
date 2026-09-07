@@ -464,10 +464,10 @@ QUESTIONS = [
              "correct": False,
              "why": "The 1800 J was measured going in, so the account has to "
                     "explain all of it."},
-            {"text": "It has filled thermal and sound stores in the casing "
-                     "and the room",
+            {"text": "It has filled thermal and sound stores in the casing",
              "correct": True},
-            {"text": "It is still inside the hairdryer, waiting to be used",
+            {"text": "It is still inside the hairdryer somewhere, waiting to "
+                     "be used",
              "correct": False,
              "why": "Nothing in a hairdryer stores energy for later; it "
                     "leaves as fast as it arrives."},
@@ -484,8 +484,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Every charger warms a little. Some waste is normal, not "
                     "a fault."},
-            {"text": "The phone is full and the extra energy has nowhere to "
-                     "go",
+            {"text": "The phone battery is already full, so the extra energy "
+                     "has nowhere to go",
              "correct": False,
              "why": "It warms while charging as well, so this is not about "
                     "the battery being full."},
@@ -493,8 +493,8 @@ QUESTIONS = [
              "correct": False,
              "why": "That thermal store simply drains into the room; nothing "
                     "gets it back."},
-            {"text": "Some of the energy is filling thermal stores instead of "
-                     "the phone's chemical store",
+            {"text": "Some energy is filling thermal stores, not the phone's "
+                     "store",
              "correct": True},
         ],
         "figure": None,
@@ -532,14 +532,15 @@ QUESTIONS = [
         "text": "A kettle takes in 200 kJ and 180 kJ ends up in the water. "
                 "What fraction is wasted, and where has it gone?",
         "options": [
-            {"text": "One tenth, into thermal stores in the kettle body, the "
-                     "worktop and the air",
+            {"text": "One tenth, into thermal stores in the kettle, worktop "
+                     "and air",
              "correct": True},
             {"text": "One tenth, destroyed as the element gets hot",
              "correct": False,
              "why": "The fraction is right but the fate is not: a hot element "
                     "is a thermal store, not a destruction."},
-            {"text": "Nine tenths, because only 20 kJ did the useful job",
+            {"text": "Nine tenths wasted, because only 20 kJ actually did the "
+                     "useful job",
              "correct": False,
              "why": "The two figures are swapped: 180 kJ of the 200 kJ "
                     "reached the water."},
@@ -561,11 +562,10 @@ QUESTIONS = [
              "correct": False,
              "why": "A closed system is where it is easiest to track. It is "
                     "not a place where loss becomes allowed."},
-            {"text": "Because the rest is always somewhere, and naming it "
-                     "finishes the account",
+            {"text": "Because the rest is always somewhere and can be named",
              "correct": True},
-            {"text": "Because the totals never balance in a real experiment "
-                     "anyway",
+            {"text": "Because the totals never quite balance in a real "
+                     "experiment anyway",
              "correct": False,
              "why": "They balance every time, once the thermal stores in the "
                     "surroundings are included."},
@@ -582,8 +582,8 @@ QUESTIONS = [
         "text": "A student writes that a 60 W bulb uses up 60 J each second. "
                 "Which rewrite is correct?",
         "options": [
-            {"text": "It destroys 60 J each second, which is why the bill "
-                     "goes up",
+            {"text": "It destroys 60 J each second, which is why the "
+                     "electricity bill goes up",
              "correct": False,
              "why": "The bill measures energy supplied, not destroyed. "
                     "Nothing destroys any of it."},
@@ -592,7 +592,7 @@ QUESTIONS = [
              "why": "Light is a pathway, and the bulb holds nothing — the "
                     "energy leaves as fast as it arrives."},
             {"text": "It transfers 60 J each second into light and thermal "
-                     "stores in the room",
+                     "stores",
              "correct": True},
             {"text": "It loses 60 J each second to the wires around it",
              "correct": False,
