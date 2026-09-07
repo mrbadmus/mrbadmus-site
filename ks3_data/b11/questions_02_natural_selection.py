@@ -442,21 +442,22 @@ QUESTIONS = [
         "band": "easier",
         "text": "What is meant by one generation of a population?",
         "options": [
-            {"text": "One complete round of a population being born, "
-                     "surviving and reproducing.",
+            {"text": "One round of a population being born, surviving and "
+                     "reproducing.",
              "correct": True},
-            {"text": "One year in the life of a population.",
+            {"text": "One calendar year in the life of a population.",
              "correct": False,
              "why": "A generation is not a fixed length of time. Bacteria "
                     "manage one in twenty minutes and an elephant takes more "
                     "than a decade."},
-            {"text": "The whole time a species exists before it changes into "
-                     "another one.",
+            {"text": "The whole length of time a species goes on existing "
+                     "before it changes into another one.",
              "correct": False,
              "why": "That is far longer than a generation. Almost nothing "
                     "changes in one generation, and a great deal changes "
                     "across fifty."},
-            {"text": "The set of offspring produced by one pair of parents.",
+            {"text": "The set of offspring produced by one pair of parents in "
+                     "a single season.",
              "correct": False,
              "why": "A generation covers the whole population, not one family. "
                     "It is the round of births, deaths and breeding the "
@@ -500,8 +501,8 @@ QUESTIONS = [
         "text": "What does the term natural selection describe?",
         "options": [
             {"text": "Individuals changing to suit their surroundings and "
-                     "passing the change on to the offspring they "
-                     "have later.",
+                     "then passing that change on to the offspring they have "
+                     "later.",
              "correct": False,
              "why": "No individual changes. That is the older explanation this "
                     "one replaced, and it fails because nothing an organism "
@@ -512,14 +513,13 @@ QUESTIONS = [
              "why": "Nothing is choosing. The word selection is the trap here: "
                     "a bird eats what it can see, and no part of the process "
                     "is aiming at a result."},
-            {"text": "The strongest members of a population defeating the "
-                     "weaker ones.",
+            {"text": "The strongest members of a population physically "
+                     "defeating the weaker ones in direct contests.",
              "correct": False,
              "why": "Strength is one variation among many. It is regularly the "
                     "small, the drab and the unimpressive that come through."},
-            {"text": "Individuals whose variations suit the conditions "
-                     "surviving and reproducing more, so those variations "
-                     "become commoner.",
+            {"text": "Variations that suit the conditions becoming commoner, "
+                     "as their carriers survive to breed.",
              "correct": True},
         ],
         "figure": None,
@@ -561,19 +561,19 @@ QUESTIONS = [
                 "generation?",
         "options": [
             {"text": "It changes completely, because only the better-suited "
-                     "form survives at all.",
+                     "form survives long enough to breed.",
              "correct": False,
              "why": "Both forms go on surviving; one simply does so at a "
                     "higher rate. A form that survives 45 times in 100 is not "
                     "being wiped out."},
-            {"text": "It does not change at all until a whole species has been "
-                     "replaced.",
+            {"text": "It does not change at all until a whole species has "
+                     "been replaced by another.",
              "correct": False,
              "why": "It changes a little every generation. What is true is "
                     "that the change in any one of them is too small to "
                     "notice."},
-            {"text": "Very little — the change is small each time and only "
-                     "becomes obvious after many generations.",
+            {"text": "Very little — the change is small and only shows over "
+                     "many generations.",
              "correct": True},
             {"text": "It changes fastest in the first generation and then "
                      "slows down.",
@@ -835,20 +835,20 @@ QUESTIONS = [
                 "moths were better adapted. What needs adding to that "
                 "sentence?",
         "options": [
-            {"text": "Nothing — better adapted is a complete description on "
-                     "its own.",
+            {"text": "Nothing at all — better adapted is a complete "
+                     "description all by itself.",
              "correct": False,
              "why": "Adapted is always adapted to something. Move the same "
                     "dark moth to a clean lichen trunk and it is the one the "
                     "birds find first."},
-            {"text": "That the dark moths became better adapted once the bark "
-                     "darkened.",
+            {"text": "That the dark moths gradually became better adapted "
+                     "once the bark around them darkened.",
              "correct": False,
              "why": "They did not become anything. They were already dark, and "
                     "the bark darkening is what turned that colour into an "
                     "advantage."},
-            {"text": "What they were better adapted to — soot-blackened bark, "
-                     "and nothing else.",
+            {"text": "What they were better adapted to — bark blackened by "
+                     "soot.",
              "correct": True},
             {"text": "That the pale moths were badly adapted from the start.",
              "correct": False,
@@ -1150,7 +1150,7 @@ QUESTIONS = [
                 "population that avoids the predator well?",
         "options": [
             {"text": "The second, because a small population changes faster "
-                     "than a large one.",
+                     "than a large one does.",
              "correct": False,
              "why": "A small population has less variation to draw on, not "
                     "more. Fewer individuals means fewer versions of genes "
@@ -1162,11 +1162,11 @@ QUESTIONS = [
                     "between generations, so a species producing six "
                     "generations in three years gets six chances where the "
                     "other gets one."},
-            {"text": "The first, because it has more variation to draw on and "
-                     "gets through far more generations.",
+            {"text": "The first, because it has more variation and far more "
+                     "generations.",
              "correct": True},
             {"text": "The first, because a large population is stronger and "
-                     "can drive the predator away.",
+                     "can simply drive the predator away.",
              "correct": False,
              "why": "Numbers do not drive a predator off. What numbers and "
                     "quick breeding give is more variation and more "

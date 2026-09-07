@@ -434,21 +434,21 @@ QUESTIONS = [
                 "Biologists call it a generalist. What does that mean?",
         "options": [
             {"text": "A species that is the best in its habitat at everything "
-                     "it does.",
+                     "it does, from feeding to breeding.",
              "correct": False,
              "why": "A generalist is rarely the best at anything. It is very "
                     "hard to get rid of, which is a different quality "
                     "altogether."},
-            {"text": "A species that breeds faster than the other species "
-                     "around it.",
+            {"text": "A species that breeds faster than the species around "
+                     "it.",
              "correct": False,
              "why": "Fast breeding often goes with being a generalist and is "
                     "not what the word means. Generalist describes the range "
                     "of foods and places a species can use."},
             {"text": "A species that can use many different foods and live in "
-                     "many different places.",
+                     "many places.",
              "correct": True},
-            {"text": "A species that has spread beyond the region it "
+            {"text": "A species that has spread well beyond the region it "
                      "originally came from.",
              "correct": False,
              "why": "Spreading is often a consequence of being a generalist "
@@ -607,7 +607,8 @@ QUESTIONS = [
         "band": "easier",
         "text": "What does the term genetic variation mean?",
         "options": [
-            {"text": "The number of different species living in one habitat.",
+            {"text": "The number of different species living alongside one "
+                     "another in a single habitat.",
              "correct": False,
              "why": "That is a count of species. Genetic variation is measured "
                     "inside a single species, between the individuals of one "
@@ -618,12 +619,12 @@ QUESTIONS = [
                     "its life. Variation means the differences between one "
                     "individual and another."},
             {"text": "The differences between a species and its closest "
-                     "relatives.",
+                     "living relatives.",
              "correct": False,
              "why": "That is a comparison between species. Genetic variation "
                     "is about how different the members of one population are "
                     "from each other."},
-            {"text": "The differences in genes between individuals in the same "
+            {"text": "Differences in genes between individuals in the same "
                      "population.",
              "correct": True},
         ],
@@ -821,17 +822,17 @@ QUESTIONS = [
                 "road, and the animals concerned will not cross open tarmac. "
                 "Why is this still a serious problem for them?",
         "options": [
-            {"text": "It is not a serious problem, because almost no habitat "
-                     "has been lost.",
+            {"text": "It is not a serious problem, because almost none of the "
+                     "habitat has been lost.",
              "correct": False,
              "why": "Almost no habitat has been lost and the population has "
                     "still been cut in two. Each half now loses variation on "
                     "its own and can be wiped out on its own."},
-            {"text": "Each half is now a separate small population, losing "
-                     "genetic variation with nothing arriving from the other.",
+            {"text": "Each half is now a small isolated population, losing "
+                     "genetic variation.",
              "correct": True},
-            {"text": "The noise of the traffic will drive the animals out of "
-                     "both halves of the wood.",
+            {"text": "The noise and the light from the traffic will drive the "
+                     "animals out of both halves of the wood.",
              "correct": False,
              "why": "Disturbance is real and is not what makes fragmentation "
                     "so damaging. The damage is that two populations which "
@@ -854,14 +855,14 @@ QUESTIONS = [
                 "recovered and the other has not. Which risk factor explains "
                 "it?",
         "options": [
-            {"text": "A specialist diet, since one of them must be fussier "
-                     "about food.",
+            {"text": "A specialist diet, since one of the two species must be "
+                     "fussier about its food.",
              "correct": False,
              "why": "Nothing has been said about their diets. What separates "
                     "them here is stated plainly — how quickly each can "
                     "replace what it lost."},
-            {"text": "Low genetic variation, since one must have less of it "
-                     "than the other.",
+            {"text": "Low genetic variation, since one of the two must have "
+                     "far less of it than the other one does.",
              "correct": False,
              "why": "Variation matters when a population has to cope with "
                     "something new. This population has to replace numbers, "
@@ -871,8 +872,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Both were nesting on that cliff. The difference you have "
                     "been given is the number of eggs each species lays."},
-            {"text": "Slow reproduction — one species replaces its losses in a "
-                     "year and the other takes decades.",
+            {"text": "Slow reproduction — one replaces its losses in a year, "
+                     "the other in decades.",
              "correct": True},
         ],
         "figure": None,

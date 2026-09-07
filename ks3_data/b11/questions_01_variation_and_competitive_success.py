@@ -440,17 +440,17 @@ QUESTIONS = [
              "why": "Nothing here is worked at together. A resource is simply "
                     "something the animals need, and there is not enough of it "
                     "to go round."},
-            {"text": "It is something an organism produces for the rest of its "
-                     "population to use.",
+            {"text": "It is something an organism produces itself and then "
+                     "supplies to the rest of its population.",
              "correct": False,
              "why": "Resources are not produced by the population that needs "
                     "them. Food, water and shelter are things the surroundings "
                     "supply, in limited amounts."},
             {"text": "It is something an organism needs, and there is not "
-                     "enough of it for everyone born.",
+                     "enough to go round.",
              "correct": True},
-            {"text": "It is anything nearby that can harm an organism if there "
-                     "is too much of it.",
+            {"text": "It is anything around an organism that can harm it if "
+                     "there is too much of it.",
              "correct": False,
              "why": "That describes a hazard rather than a resource. A "
                     "resource is something an organism needs and can run short "
@@ -501,11 +501,12 @@ QUESTIONS = [
              "why": "There is no ladder of advancement in biology. A bacterium "
                     "that thrives where nothing else can is superbly fitted to "
                     "where it lives."},
-            {"text": "Stronger than its competitors.",
+            {"text": "Stronger than the other species it lives alongside.",
              "correct": False,
              "why": "Strength is one variation among many, and it is often the "
                     "wrong one. It is not a general ranking of species."},
-            {"text": "Further along in its evolution.",
+            {"text": "Further along in its evolution than the other species "
+                     "around it.",
              "correct": False,
              "why": "Every living species has been evolving for exactly as "
                     "long as every other. There is no further along to be."},
@@ -520,23 +521,22 @@ QUESTIONS = [
         "text": "In a hard winter with eight weeks of snow, mice with a thick "
                 "coat survive better than any other kind. What is the reason?",
         "options": [
-            {"text": "A thick coat makes a mouse look larger, so predators "
-                     "leave it alone.",
+            {"text": "A thick coat makes a mouse look larger, so the "
+                     "predators around it leave it alone.",
              "correct": False,
              "why": "Nothing here is hunting by size. What kills mice in a "
                     "hard winter is the cold itself, and losing heat is the "
                     "danger a thick coat answers."},
-            {"text": "Growing a thicker coat is how a mouse responds to the "
-                     "cold coming.",
+            {"text": "Growing a thicker coat is how a mouse answers the cold.",
              "correct": False,
              "why": "The mouse grew nothing to order. It has the coat it was "
                     "born with, and that coat happens to suit the winter it is "
                     "in."},
             {"text": "Insulation is exactly what this winter demands, and it "
-                     "costs the mouse almost nothing to carry.",
+                     "costs little.",
              "correct": True},
-            {"text": "A thick coat lets the mouse dig deeper for the food "
-                     "buried under the snow.",
+            {"text": "A thick coat lets the mouse dig deeper and reach the "
+                     "food buried under eight weeks of lying snow.",
              "correct": False,
              "why": "A coat is not a digging tool. It works by keeping heat "
                     "in, which is what matters when losing heat is the main "
@@ -554,17 +554,17 @@ QUESTIONS = [
              "why": "The living things are half of it. The predators, the food "
                     "and the other members of an organism's own species all "
                     "affect it."},
-            {"text": "Everything around an organism that affects it, including "
-                     "the other members of its own species.",
+            {"text": "Everything around an organism that affects it, living "
+                     "and non-living.",
              "correct": True},
-            {"text": "The habitat a species is best suited to, whether or not "
-                     "it lives there.",
+            {"text": "The habitat a species is best suited to living in, "
+                     "whether or not it actually lives there.",
              "correct": False,
              "why": "The environment is where an organism actually is, not "
                     "where it would do well. Change what is around it and the "
                     "ranking of variations changes with it."},
             {"text": "Everything a species has changed about the place it "
-                     "lives in.",
+                     "lives in since it arrived.",
              "correct": False,
              "why": "That is the organism acting on its surroundings, which is "
                     "a much smaller thing. The environment is everything "
@@ -828,15 +828,16 @@ QUESTIONS = [
              "why": "That is a predator and its prey. The owl and the mouse "
                     "are not short of the same thing — one of them is the "
                     "thing."},
-            {"text": "Two mice from the same litter both trying to use the "
-                     "only dry burrow.",
+            {"text": "Two mice from the same litter both needing the only dry "
+                     "burrow.",
              "correct": True},
-            {"text": "A mouse sheltering from a hard frost under a hedge.",
+            {"text": "A single mouse sheltering from a hard frost under a "
+                     "hedge at the field edge.",
              "correct": False,
              "why": "Nothing is being competed for here. Competition needs two "
                     "organisms and one limited resource between them."},
-            {"text": "A virus spreading through a mouse population in a mild "
-                     "year.",
+            {"text": "A virus spreading through a mouse population during a "
+                     "mild year when numbers are high.",
              "correct": False,
              "why": "A disease is not competition either, although it acts as "
                     "the same filter — whichever variations happen to help you "
@@ -1176,8 +1177,8 @@ QUESTIONS = [
                     "the conditions, and that holds however many variations an "
                     "animal carries. Simplifying is how the point is made "
                     "readable."},
-            {"text": "It means a real mouse would survive everything, since it "
-                     "has all five variations.",
+            {"text": "It means a real mouse would survive everything, since "
+                     "it carries all five variations at once.",
              "correct": False,
              "why": "It would carry all five costs as well. A large body needs "
                     "more food and water and a thick coat overheats, so the "
@@ -1188,8 +1189,7 @@ QUESTIONS = [
              "why": "There is no strongest. Different conditions call on "
                     "different variations, and a real animal's chances depend "
                     "on the whole combination at once."},
-            {"text": "The conclusion still holds; what the simplification "
-                     "hides is that real fitness depends on many "
+            {"text": "The conclusion holds; real fitness depends on many "
                      "characteristics at once.",
              "correct": True},
         ],

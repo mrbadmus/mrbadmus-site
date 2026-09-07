@@ -635,8 +635,8 @@ QUESTIONS = [
         "band": "easier",
         "text": "What is the Svalbard Global Seed Vault?",
         "options": [
-            {"text": "The only seed bank in the world, holding every stored "
-                     "crop sample there is.",
+            {"text": "The only seed bank in the world, holding the single "
+                     "stored sample of every crop there is.",
              "correct": False,
              "why": "There are many national seed banks. Svalbard is a backup "
                     "of backups, holding duplicates of what those banks "
@@ -646,11 +646,11 @@ QUESTIONS = [
              "correct": False,
              "why": "Nothing is grown there. It is a cold store cut into rock, "
                     "holding sealed packets of dried seed."},
-            {"text": "A store inside an Arctic mountain holding duplicate seed "
-                     "samples sent by banks worldwide.",
+            {"text": "An Arctic mountain store holding duplicate seed samples "
+                     "from banks worldwide.",
              "correct": True},
             {"text": "A laboratory that creates new crop varieties for "
-                     "countries to plant.",
+                     "countries to plant in future.",
              "correct": False,
              "why": "It creates nothing. It keeps copies of what already "
                     "exists, so that a country losing its own bank has "
@@ -667,14 +667,14 @@ QUESTIONS = [
                 "than any named variety does. Why do commercial farms not "
                 "simply plant landraces?",
         "options": [
-            {"text": "Because a landrace holds too little variation to be "
-                     "worth growing.",
+            {"text": "Because a landrace holds far too little variation to be "
+                     "worth a commercial farm's while.",
              "correct": False,
              "why": "It holds more than any of the alternatives — no two "
                     "plants in it are genetically identical. That is why it "
                     "survives a blight so well."},
-            {"text": "Because it yields less per plant and is nearly "
-                     "impossible to harvest by machine.",
+            {"text": "Because it yields less and cannot easily be harvested "
+                     "by machine.",
              "correct": True},
             {"text": "Because a landrace cannot be replanted from its own "
                      "seed.",
@@ -682,7 +682,7 @@ QUESTIONS = [
              "why": "Replanting from its own seed is exactly how a landrace is "
                     "kept going. The obstacles are yield and harvesting."},
             {"text": "Because a landrace is more likely to carry disease into "
-                     "the field.",
+                     "the field with it.",
              "correct": False,
              "why": "It carries no more disease than any other planting. What "
                     "it carries is variation, and its costs are yield and "
@@ -698,8 +698,8 @@ QUESTIONS = [
                 "Why is the seed from those survivors worth more to the farmer "
                 "than the crop itself?",
         "options": [
-            {"text": "Because seed sells for a higher price than potatoes "
-                     "grown for eating.",
+            {"text": "Because seed sells for a considerably higher price per "
+                     "tonne than potatoes grown for eating.",
              "correct": False,
              "why": "Price is not the point. The value of that seed is what is "
                     "inside it — plants that have already proved they resist "
@@ -710,11 +710,11 @@ QUESTIONS = [
              "why": "Storage life is a convenience. What makes this seed "
                     "valuable is that it came from plants the blight could not "
                     "kill."},
-            {"text": "Because those plants resisted the blight, so next year's "
-                     "field can be planted from them.",
+            {"text": "Because those plants resisted the blight and can seed "
+                     "next year's field.",
              "correct": True},
-            {"text": "Because a quarter of a harvest is not enough food to be "
-                     "worth selling.",
+            {"text": "Because a quarter of a harvest is not nearly enough "
+                     "food to be worth selling.",
              "correct": False,
              "why": "A quarter of a harvest is a bad year and it is still "
                     "food. The seed matters for what it will grow next spring, "
@@ -1173,20 +1173,20 @@ QUESTIONS = [
              "why": "It is enough to grow plants and not enough to hold what "
                     "the species was. Those seeds came from one population on "
                     "one day."},
-            {"text": "The seeds will not be viable after so long, so nothing "
-                     "is really held.",
+            {"text": "The seeds will not still be viable after so long, so "
+                     "nothing is really held.",
              "correct": False,
              "why": "Well-managed samples are tested and regrown, so viability "
                     "is a question of management. The deeper limitation is "
                     "what was collected in the first place."},
             {"text": "The bank holds the plant but not its name, so the "
-                     "species could not be identified.",
+                     "species could not later be identified.",
              "correct": False,
              "why": "Records are careful and identification is the easy part. "
                     "What is missing is the variation held by every population "
                     "that was not sampled."},
-            {"text": "It holds a sample of one population at one moment, not "
-                     "the variation of the whole species.",
+            {"text": "It holds one population at one moment, not the whole "
+                     "species' variation.",
              "correct": True},
         ],
         "figure": None,
