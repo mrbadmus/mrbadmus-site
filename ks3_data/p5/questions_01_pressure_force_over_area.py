@@ -337,18 +337,18 @@ QUESTIONS = [
         "id": "p5-01-e07",
         "band": "easier",
         "text": "Is pressure a force?",
-        "options": [            {"text": "Yes, which is why it is measured in newtons",
+        "options": [
+            {"text": "Yes, which is why it is measured in newtons",
              "correct": False,
              "why": "It is measured in pascals. Newtons measure the force "
                     "before it is divided by an area."},
             {"text": "Yes, but only when it acts downwards", "correct": False,
              "why": "Direction does not change what kind of quantity it is."},
-            {"text": "No — it is an area divided by the force on it",
+            {"text": "No — it is an area divided by the force that acts on it",
              "correct": False,
              "why": "That is the ratio upside down, and it would be measured "
                     "in square metres per newton."},
-            {"text": "No — it is a force divided by the area it is spread "
-                     "over",
+            {"text": "No — it is a force divided by the area it acts on",
              "correct": True},
         ],
         "figure": None,

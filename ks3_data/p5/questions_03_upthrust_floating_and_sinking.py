@@ -399,8 +399,7 @@ QUESTIONS = [
         "band": "easier",
         "text": "An object sinks when…",
         "options": [
-            {"text": "its weight is more than the upthrust even when fully "
-                     "under",
+            {"text": "its weight is more than the upthrust even fully under",
              "correct": True},
             {"text": "it is heavy", "correct": False,
              "why": "A ship is enormously heavy and floats; weight alone "
@@ -408,7 +407,8 @@ QUESTIONS = [
             {"text": "it is solid rather than hollow", "correct": False,
              "why": "A solid block of wood floats and a hollow steel ball can "
                     "sink if it is thick enough."},
-            {"text": "there is no upthrust acting on it at all",
+            {"text": "there is no upthrust acting on it at all, however deep "
+                     "it goes",
              "correct": False,
              "why": "Upthrust acts on it the whole way down; it is simply too "
                     "small."},
@@ -533,7 +533,8 @@ QUESTIONS = [
             {"text": "The lead, because it is heavier", "correct": False,
              "why": "Upthrust does not depend on the object's weight, only on "
                     "the water it pushes aside."},
-            {"text": "The aluminium, because it is lighter", "correct": False,
+            {"text": "The aluminium, because it is much lighter than the lead "
+                     "block", "correct": False,
              "why": "Being lighter makes it easier to float, but the upthrust "
                     "itself is the same."},
             {"text": "The same, because they displace the same volume",

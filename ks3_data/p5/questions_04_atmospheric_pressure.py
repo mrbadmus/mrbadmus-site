@@ -535,12 +535,13 @@ QUESTIONS = [
             {"text": "Nothing, because it is sealed", "correct": False,
              "why": "Being sealed is what makes it happen: the outside "
                     "pressure changes and the inside cannot."},
-            {"text": "It swells, because the air inside expands as it warms",
+            {"text": "It swells, because the air inside expands as it warms "
+                     "on the way down",
              "correct": False,
              "why": "The air inside was at low mountain pressure, so the "
                     "greater outside pressure crushes it."},
             {"text": "It is crushed, because the outside pressure is now "
-                     "higher than the inside",
+                     "higher",
              "correct": True},
             {"text": "It is crushed, because gravity is stronger lower down",
              "correct": False,
@@ -582,13 +583,13 @@ QUESTIONS = [
              "correct": False,
              "why": "A vacuum pulls nothing. What has changed is the push "
                     "from inside, which has gone."},
-            {"text": "Because the metal edges weld together when the air "
-                     "leaves",
+            {"text": "Because the metal edges weld together when the air is "
+                     "pumped out",
              "correct": False,
              "why": "They come apart easily once air is let back in, so "
                     "nothing has welded."},
-            {"text": "Because the atmosphere pushes them together and nothing "
-                     "pushes back from inside",
+            {"text": "Because the atmosphere pushes them together from "
+                     "outside",
              "correct": True},
             {"text": "Because the pump leaves them magnetised",
              "correct": False,
@@ -627,10 +628,11 @@ QUESTIONS = [
         "text": "A forecast says the pressure is falling. What is being "
                 "measured?",
         "options": [
-            {"text": "The push of the atmosphere there, which changes with "
-                     "the weather",
+            {"text": "The push of the atmosphere there, which the weather "
+                     "changes",
              "correct": True},
-            {"text": "How much rain has fallen since the last reading",
+            {"text": "How much rain has fallen at that place since the "
+                     "previous reading",
              "correct": False,
              "why": "Rainfall is measured in millimetres by a rain gauge, not "
                     "by a barometer."},
@@ -650,12 +652,12 @@ QUESTIONS = [
         "band": "standard",
         "text": "Why is an aircraft cabin pressurised at cruising height?",
         "options": [
-            {"text": "To stop the fuselage being crushed by the air outside",
+            {"text": "To stop the fuselage being crushed by the air pressure "
+                     "outside",
              "correct": False,
              "why": "The outside pressure is LOWER up there, so the fuselage "
                     "is pushed outwards, not inwards."},
-            {"text": "Because the pressure outside is far too low to breathe "
-                     "comfortably",
+            {"text": "Because the pressure outside is far too low to breathe",
              "correct": True},
             {"text": "To keep the cabin warm at high altitude",
              "correct": False,
@@ -727,13 +729,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Evaporation is a nuisance in the design, but it is not "
                     "what sets the height."},
-            {"text": "Because mercury is a metal and conducts the pressure "
-                     "better",
+            {"text": "Because mercury is a metal and so conducts the pressure "
+                     "much better",
              "correct": False,
              "why": "Nothing conducts a pressure; the weight of the column is "
                     "what balances the air."},
-            {"text": "Because mercury is far denser, so a much shorter column "
-                     "weighs the same",
+            {"text": "Because mercury is far denser, so a shorter column will "
+                     "do",
              "correct": True},
             {"text": "Because mercury is a liquid metal and so is heavier "
                      "than air",
@@ -754,9 +756,10 @@ QUESTIONS = [
              "why": "The share of oxygen is stated as unchanged; it is the "
                     "total amount of air that has fallen."},
             {"text": "Because the pressure is lower, so each breath contains "
-                     "less air altogether",
+                     "less air",
              "correct": True},
-            {"text": "Because oxygen is heavier and sinks to lower altitudes",
+            {"text": "Because oxygen is heavier than nitrogen and sinks to "
+                     "the lower altitudes",
              "correct": False,
              "why": "The atmosphere is well mixed, which is why the "
                     "percentage stays at 21%."},

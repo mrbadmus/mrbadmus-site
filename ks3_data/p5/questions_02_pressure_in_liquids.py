@@ -629,7 +629,8 @@ QUESTIONS = [
         "text": "Why is the pressure on the SIDE wall of a tank greatest near "
                 "the bottom?",
         "options": [
-            {"text": "Because the water gathers at the bottom of the tank",
+            {"text": "Because the water gathers at the bottom of the tank and "
+                     "presses there",
              "correct": False,
              "why": "The water fills the tank; what varies is how much of it "
                     "is above each point."},
@@ -638,7 +639,7 @@ QUESTIONS = [
              "why": "What supports the wall does not change what pushes on "
                     "it."},
             {"text": "Because the depth is greatest there, and pressure acts "
-                     "sideways as well",
+                     "sideways",
              "correct": True},
             {"text": "Because the water is moving fastest near the bottom",
              "correct": False,
@@ -654,12 +655,12 @@ QUESTIONS = [
                 "which is why the pressure is higher. What is right?",
         "options": [
             {"text": "The packing is right, but it is the temperature that "
-                     "causes it",
+                     "causes it to happen",
              "correct": False,
              "why": "Neither half holds: water barely compresses, whatever "
                     "the temperature."},
-            {"text": "Water is almost impossible to squash; the pressure "
-                     "rises because more water is above",
+            {"text": "Water hardly squashes at all; more water above raises "
+                     "the pressure",
              "correct": True},
             {"text": "Water really is packed tighter, by about a tenth at "
                      "50 m",
@@ -720,7 +721,8 @@ QUESTIONS = [
         "text": "A thin pipe of water rising 10 m above a sealed barrel can "
                 "burst it, though the pipe holds only a few litres. Why?",
         "options": [
-            {"text": "Because the narrow pipe concentrates the water's weight",
+            {"text": "Because the narrow pipe concentrates the water's weight "
+                     "onto the barrel",
              "correct": False,
              "why": "Nothing is concentrated; a wide column 10 m tall gives "
                     "exactly the same pressure."},
@@ -732,8 +734,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The water is standing still; the pressure is there "
                     "whether it flows or not."},
-            {"text": "Because pressure is set by the height of the column, "
-                     "not the amount",
+            {"text": "Because pressure is set by the height, not the amount "
+                     "of water",
              "correct": True},
         ],
         "figure": None,
@@ -871,12 +873,12 @@ QUESTIONS = [
             {"text": "Because the pipe is wider lower down", "correct": False,
              "why": "Pipe width does not set the pressure; the height of "
                     "water above the tap does."},
-            {"text": "Because water gathers at the bottom of the building",
+            {"text": "Because water gathers at the bottom of the building "
+                     "over time",
              "correct": False,
              "why": "The pipes are full at both taps; what differs is the "
                     "depth below the tank."},
-            {"text": "Because the ground-floor tap is further below the "
-                     "storage tank",
+            {"text": "Because the ground-floor tap is further below the tank",
              "correct": True},
             {"text": "Because gravity is stronger at ground level",
              "correct": False,
