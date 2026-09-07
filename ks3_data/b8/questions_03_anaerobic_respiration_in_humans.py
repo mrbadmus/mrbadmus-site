@@ -528,8 +528,8 @@ QUESTIONS = [
              "correct": False,
              "why": "It clears within about an hour of stopping, so two days "
                     "later there is none of it left to cause anything."},
-            {"text": "Neither — lactic acid causes no pain and no "
-                     "breathlessness.",
+            {"text": "Neither — lactic acid causes no pain during exercise "
+                     "and no breathlessness.",
              "correct": False,
              "why": "It does cause the burning during the effort, and "
                     "repaying the oxygen debt it created is why you keep "
@@ -540,8 +540,8 @@ QUESTIONS = [
              "why": "It does not drain slowly. The blood removes it to the "
                     "liver within the hour, and the later ache is damage to "
                     "the muscle fibres."},
-            {"text": "The hard breathing, because oxygen is owed for dealing "
-                     "with the acid.",
+            {"text": "The hard breathing — oxygen is owed for clearing the "
+                     "acid.",
              "correct": True},
         ],
         "figure": None,
@@ -585,8 +585,8 @@ QUESTIONS = [
                 "as at the start, and is visibly slowing down. What is the "
                 "best explanation?",
         "options": [
-            {"text": "Lactic acid has built up in the working muscles and is "
-                     "forcing the slow-down.",
+            {"text": "Lactic acid has built up in the muscles, forcing the "
+                     "slow-down.",
              "correct": True},
             {"text": "They have used up all the glucose stored in their leg "
                      "muscles.",
@@ -594,8 +594,8 @@ QUESTIONS = [
              "why": "Glucose stores are not emptied in twenty seconds. What "
                     "has built up is lactic acid, and that is what limits the "
                     "effort."},
-            {"text": "Their muscles have used up the oxygen they stored "
-                     "before the start.",
+            {"text": "Their muscles have used up the store of oxygen they "
+                     "took in before the start.",
              "correct": False,
              "why": "There was no store to use up. Oxygen has been arriving "
                     "throughout; it has simply never arrived fast enough."},
@@ -676,8 +676,8 @@ QUESTIONS = [
         "text": "After a sprint your heart goes on beating fast as well as "
                 "your lungs working hard. How does the fast heartbeat help?",
         "options": [
-            {"text": "It warms the muscles, which breaks the lactic acid down "
-                     "faster.",
+            {"text": "It warms the working muscles, and the extra warmth "
+                     "breaks the lactic acid down.",
              "correct": False,
              "why": "Temperature is not what deals with lactic acid. The "
                     "blood is needed to move it, and to bring oxygen to the "
@@ -687,8 +687,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Sweat carries no lactic acid away. The blood carries it "
                     "to the liver, and the liver is what deals with it."},
-            {"text": "It delivers oxygen to the muscles and carries the "
-                     "lactic acid to the liver.",
+            {"text": "It brings oxygen in and carries the lactic acid to the "
+                     "liver.",
              "correct": True},
             {"text": "It refills the muscles' store of oxygen ready for the "
                      "next sprint.",
@@ -819,11 +819,11 @@ QUESTIONS = [
              "why": "The muscles do not consume it themselves — the blood "
                     "takes it to the liver. What gentle pedalling does is "
                     "keep that blood moving quickly."},
-            {"text": "Pedalling gently holds demand below what oxygen "
-                     "delivery covers, and keeps the blood moving.",
+            {"text": "Pedalling gently keeps demand below oxygen delivery "
+                     "and the blood moving.",
              "correct": True},
-            {"text": "Stopping dead makes the muscles produce more lactic "
-                     "acid than pedalling does.",
+            {"text": "Stopping dead makes the muscles go on producing more "
+                     "lactic acid than pedalling does.",
              "correct": False,
              "why": "Both riders stop producing it the moment the effort "
                     "ends. The difference is how quickly what is already "

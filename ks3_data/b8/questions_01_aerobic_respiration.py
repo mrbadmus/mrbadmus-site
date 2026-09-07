@@ -682,14 +682,14 @@ QUESTIONS = [
              "why": "There is no store of oxygen inside a cell to fall back "
                     "on. What the blood is delivering at that moment is all "
                     "there is."},
-            {"text": "It speeds up, because the cell is short of energy and "
-                     "needs more.",
+            {"text": "It speeds up, because a cell short of energy respires "
+                     "faster to make it up.",
              "correct": False,
              "why": "Needing energy does not supply oxygen. Demand cannot "
                     "drive a reaction one of whose reactants has stopped "
                     "arriving."},
-            {"text": "It stops, because aerobic respiration cannot run "
-                     "without both reactants.",
+            {"text": "It stops, because aerobic respiration needs both "
+                     "reactants.",
              "correct": True},
         ],
         "figure": None,
@@ -700,8 +700,8 @@ QUESTIONS = [
         "text": "A muscle cell working hard needs more glucose and more "
                 "oxygen. Which parts of the body supply them?",
         "options": [
-            {"text": "The lungs supply both, since air carries oxygen and the "
-                     "glucose dissolves in it.",
+            {"text": "The lungs supply both, since the air breathed in "
+                     "carries oxygen and dissolved glucose.",
              "correct": False,
              "why": "There is no glucose in air. It comes from food, digested "
                     "down to glucose and absorbed into the blood."},
@@ -711,8 +711,8 @@ QUESTIONS = [
              "why": "Blood makes neither. It is the delivery service, "
                     "carrying what the digestive system and the lungs have "
                     "supplied."},
-            {"text": "Digestion releases the glucose, the lungs take in the "
-                     "oxygen, and the blood carries both.",
+            {"text": "Glucose comes from digestion, oxygen from the lungs, "
+                     "blood carries both.",
              "correct": True},
             {"text": "The mitochondria make the glucose and the lungs supply "
                      "the oxygen for it.",

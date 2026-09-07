@@ -626,8 +626,8 @@ QUESTIONS = [
              "why": "A faster supply is not a bigger total. The sealed "
                     "culture gets far less from each sugar molecule, so it "
                     "can build far less."},
-            {"text": "The sealed one, because the ethanol it makes is used to "
-                     "build new cells.",
+            {"text": "The sealed one, because the ethanol it makes is used "
+                     "as material for the new cells.",
              "correct": False,
              "why": "Ethanol is a waste product leaving the cell, not "
                     "building material. It still holds energy, which is "
@@ -638,8 +638,8 @@ QUESTIONS = [
              "why": "The same sugar is not the same energy. Aerobic "
                     "respiration gets about twenty times more out of each "
                     "molecule."},
-            {"text": "The aerated one, because aerobic respiration gets far "
-                     "more from each molecule.",
+            {"text": "The aerated one — aerobic respiration gets far more "
+                     "per molecule.",
              "correct": True},
         ],
         "figure": None,

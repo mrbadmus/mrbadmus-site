@@ -584,9 +584,10 @@ QUESTIONS = [
         "text": "How much oxygen does your body hold in store, ready for an "
                 "emergency?",
         "options": [
-            {"text": "None — only what the blood is carrying at that moment.",
+            {"text": "None — only what the blood is carrying now.",
              "correct": True},
-            {"text": "Enough for a few hours, held inside the muscles.",
+            {"text": "Enough for a few hours, held in a reserve inside the "
+                     "muscles.",
              "correct": False,
              "why": "There is no such store. That is precisely why a few "
                     "minutes without a supply does permanent damage."},
@@ -695,14 +696,13 @@ QUESTIONS = [
              "why": "Food is not energy a cell can spend until it has been "
                     "respired. And building tissue is not transport — it is "
                     "joining small molecules into large ones."},
-            {"text": "Movement, paid for by respiration in the muscles around "
-                     "the bone.",
+            {"text": "Movement, paid for by respiration in the muscles "
+                     "pulling the bone together.",
              "correct": False,
              "why": "The muscles are not what is building the bone. New "
                     "tissue is assembled molecule by molecule, and that is a "
                     "job in its own right."},
-            {"text": "Building large molecules, paid for by respiration in "
-                     "the cells doing it.",
+            {"text": "Building large molecules, paid for by respiration.",
              "correct": True},
             {"text": "Keeping warm, because a healing injury feels warm to "
                      "the touch.",
@@ -783,11 +783,10 @@ QUESTIONS = [
              "correct": False,
              "why": "There is no such state in a living cell. Stop paying the "
                     "bill and it is dead within minutes."},
-            {"text": "It is pumping ions across its membrane and repairing "
-                     "itself constantly.",
+            {"text": "It pumps ions across its membrane and repairs itself.",
              "correct": True},
-            {"text": "It is storing energy up so that it is ready when work "
-                     "arrives.",
+            {"text": "It is storing the energy it releases so that it is "
+                     "ready when work arrives.",
              "correct": False,
              "why": "Energy is not stored once released — it is spent as it "
                     "is transferred. A cell cannot save any for later."},
@@ -977,14 +976,14 @@ QUESTIONS = [
                 "move slowly and their bodies stay at the temperature of the "
                 "water. How does that help them survive on so little food?",
         "options": [
-            {"text": "They have stopped respiring, which is how they manage "
-                     "without food.",
+            {"text": "They have stopped respiring altogether, which is how "
+                     "they manage on so little food.",
              "correct": False,
              "why": "No cell can stop. What is small here is the rate, and it "
                     "is small because two of the four bills come to almost "
                     "nothing."},
-            {"text": "They pay almost nothing for warmth or movement, so the "
-                     "cells' bill is small.",
+            {"text": "Warmth and movement cost them almost nothing, so the "
+                     "bill is tiny.",
              "correct": True},
             {"text": "They respire the water around them, which costs them "
                      "nothing at all.",

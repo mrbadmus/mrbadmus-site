@@ -432,11 +432,10 @@ QUESTIONS = [
              "why": "That is baking powder. Yeast is alive — dried yeast is "
                     "dormant cells, which is why warm water revives it and "
                     "boiling water kills it."},
-            {"text": "A living, single-celled fungus that respires the sugar "
-                     "it is given.",
+            {"text": "A living, single-celled fungus that respires sugar.",
              "correct": True},
-            {"text": "A bacterium, like the ones that turn milk into "
-                     "yoghurt.",
+            {"text": "A bacterium, like the ones that turn milk into yoghurt "
+                     "or cheese.",
              "correct": False,
              "why": "Both are micro-organisms and both ferment, but they are "
                     "different kinds of living thing — and they take "
@@ -601,11 +600,11 @@ QUESTIONS = [
         "text": "Sourdough is made from flour, water and time, with no yeast "
                 "added at all — and it still rises. What must be happening?",
         "options": [
-            {"text": "Micro-organisms already in the flour and the air are "
-                     "respiring the sugars.",
+            {"text": "Micro-organisms in the flour and air respire the "
+                     "sugars.",
              "correct": True},
-            {"text": "The flour reacts with the water, giving off gas as a "
-                     "raising agent.",
+            {"text": "The flour reacts with the water, giving off gas that "
+                     "acts as a raising agent.",
              "correct": False,
              "why": "Flour and water produce no gas between them. Something "
                     "living has to respire the sugars, and in sourdough it "
@@ -827,11 +826,11 @@ QUESTIONS = [
                 "about 40 °C, and only then stirs in the culture. Explain "
                 "both steps.",
         "options": [
-            {"text": "Heating kills what was already in the milk; cooling "
-                     "stops the culture being killed too.",
+            {"text": "Heating kills what was in the milk; cooling spares the "
+                     "culture.",
              "correct": True},
-            {"text": "Heating starts the reaction, and cooling slows it so "
-                     "the yoghurt sets gently.",
+            {"text": "Heating starts the souring reaction, and cooling slows "
+                     "it so the yoghurt sets gently.",
              "correct": False,
              "why": "Heat starts nothing — the bacteria do that when they "
                     "arrive. The boiling is there to clear the milk of "
