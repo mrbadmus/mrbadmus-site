@@ -127,7 +127,32 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 NAV_DEPS = ("tokens.css", "nav.css", "search-index.js", "search.js",
             "nav.js", "class-entry.js")
 
-STAMPED_DEPS = NAV_DEPS + (LIVE_JS_NAME,)
+# ⊕ MRB-337, 8 Sep 2026 — the bell, and it is deliberately NOT in NAV_DEPS.
+# NAV_DEPS is what the retired page loaded, byte for byte, and that sentence
+# above it is the reason this build can say the nav is unchanged; a file added
+# to it would quietly make that claim false. This is a page dep: same <head>,
+# same `defer`, same stamping, its own name.
+#
+# ⊕ AND `config.js` COMES WITH IT, FIRST. This paragraph used to say the
+# opposite — "no config.js here, the bell's defaults are production too" —
+# and it was true about production and wrong about everything else: without
+# the environment switcher the bell resolves the PRODUCTION project ref, looks
+# for `sb-urklkrwevjtlfbwnipjn-auth-token`, and finds nothing on a page opened
+# with `?env=test`. Measured, not reasoned: `student_bell_drive`'s surface
+# sweep reported NO BELL ON THE LEADERBOARD at both widths while the same
+# build had it on every other surface. A page that cannot be driven in the
+# sandbox is a page whose bell is only ever tested in production.
+#
+# ⚠️ IT IS FIRST IN THE TUPLE, and that is load-bearing rather than tidy.
+# These are all `defer`, so they execute in document order, and
+# `class-entry.js` MOUNTS ITSELF on load through `cfg()` — which reads
+# `window.MrBadmusConfig` and falls back to production when it is absent
+# (CLAUDE.md, MRB-267). Emitted after it, the switcher would arrive too late
+# and a page on the test project would point its class-entry affordance at
+# production.
+PAGE_DEPS = ("config.js",) + NAV_DEPS + ("student-bell.js",)
+
+STAMPED_DEPS = PAGE_DEPS + (LIVE_JS_NAME,)
 
 # Design's four editor props, pinned. R27.
 PINNED_PROPS = dict(density="comfortable", topCount=10,
@@ -1682,7 +1707,7 @@ def page_html(roots, imports, logic, nav, fixture, versions):
         ("<link rel=\"stylesheet\" href=\"/shared/%s\">\n" % d)
         if d.endswith(".css") else
         ("<script src=\"/shared/%s\" defer></script>\n" % d)
-        for d in NAV_DEPS)
+        for d in PAGE_DEPS)
 
     return stamp_versions((
         "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"

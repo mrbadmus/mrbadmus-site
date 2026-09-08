@@ -185,8 +185,15 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 # UNSTAMPED rather than erroring, and `/shared/*` is now served
 # `immutable, max-age=31536000`. Unstamped under immutable is a file pinned in
 # a student's browser for a year that no deploy can reach.
+# ⊕ MRB-337, 8 Sep 2026 — `student-bell.js` joins for exactly the reason
+# `rum.js` did: `student-live.js` injects it through `stamped()` rather than
+# through a `<script>` tag this build writes, a name missing from
+# `window.__MRB_ASSET_V__` comes back UNSTAMPED rather than erroring, and
+# `/shared/*` is served `immutable, max-age=31536000`. Unstamped under
+# immutable is a file pinned in a student's browser for a year that no deploy
+# can reach — which for the bell would mean a fix nobody ever receives.
 STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
-                "student-data.js", "rum.js")
+                "student-data.js", "rum.js", "student-bell.js")
 
 
 def asset_hash(text):
