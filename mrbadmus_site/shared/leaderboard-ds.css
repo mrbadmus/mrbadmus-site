@@ -129,22 +129,8 @@
    Fraunces: variable, wght 400–700, optical size 9–144 (display
    quality at topic-title sizes, sturdy at card-title sizes).
    Plus Jakarta Sans: variable, wght 200–800. Latin subsets. */
-@font-face {
-  font-family: 'Fraunces';
-  src: url('/shared/fonts/fraunces-var-latin.woff2') format('woff2');
-  font-weight: 400 700;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Plus Jakarta Sans';
-  src: url('/shared/fonts/plus-jakarta-sans-var-latin.woff2') format('woff2');
-  font-weight: 200 800;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+
+
 
 /* ── KS3's three families (MRB-183, ruled 8 Aug 2026) ──
    KS3 is its own visual world; these carry it and nothing else. KS4's
@@ -165,46 +151,11 @@
    draws them as inline SVG instead of typing them. Do not "fix" this by
    putting the characters back — they will silently fall back to a system
    font mid-badge. Same defect class MRB-130 exists to fix. */
-@font-face {
-  font-family: 'Bricolage Grotesque';
-  src: url('/shared/fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
-  font-weight: 400 800;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Instrument Sans';
-  src: url('/shared/fonts/instrument-sans-var-latin.woff2') format('woff2');
-  font-weight: 400 700;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Instrument Sans';
-  src: url('/shared/fonts/instrument-sans-var-italic-latin.woff2') format('woff2');
-  font-weight: 400 600;
-  font-style: italic;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'DM Mono';
-  src: url('/shared/fonts/dm-mono-400-latin.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'DM Mono';
-  src: url('/shared/fonts/dm-mono-500-latin.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+
+
+
+
+
 
 :root {
   /* ── Surfaces — cream page vs white card is a DELIBERATE pairing.
@@ -3595,3 +3546,25 @@ a:hover { color: var(--st-accent-hover); }
 @import "./tokens/shared-ks3.css";
 @import "./fonts/fonts.css";
 @import "./_ds_bundle.css";
+
+
+/* ── ⊕ MRB-336 R35 — the phone width ── */
+[data-lb-fit="stats"] {
+  /* Design's four-up, folded in half. `minmax(0, 1fr)` rather than `1fr`
+     because `1fr` floors each track at its content's min-content width, which
+     is exactly what pushed the document to 525px at a 390px viewport. */
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+@media (min-width: 720px) {
+  [data-lb-fit="stats"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+[data-lb-fit="table"] {
+  /* The nine-track table is 750px wide and was being CUT OFF at 332px, not
+     scrolled: SCORE, MARKS and TIME were unreachable on a phone. `overflow-y`
+     stays hidden so the frame's border radius still clips. */
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch;
+}

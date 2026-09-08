@@ -77,6 +77,11 @@ import sys
 
 # One stamping scheme, four writers. See build_teacher_port.py's note.
 from build_ks3 import stamp_versions
+# ⊕ MRB-336 — ONE implementation of the @font-face dedupe, not two.
+# Both builds assemble the same six sheets from Design's delivery and
+# both had the same 7-declared-twice duplication; a second copy of the
+# rule here would drift from that one on the first change to either.
+from build_student_port import dedupe_faces
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 REF = os.path.join("docs", "ks3", "design-reference", "leaderboard")
@@ -389,6 +394,51 @@ rule("R31", "The body container's `max-width: 1180px` is removed. The "
       "breakpoint, no re-tuned column list. `margin: 0 auto` is kept "
       "deliberately, so if anyone ever reinstates a cap the block still "
       "centres rather than sticking to the left edge."),
+
+rule("R36", "The week rail's two step buttons are given `aria-label`s "
+            "(`Earlier weeks` / `Later weeks`). Nothing visible changes.",
+      "MRB-336, 8 Sep 2026 — the only two controls on any student surface "
+      "with NO accessible name at all, found by sweeping every button and "
+      "link on eight pages at two widths. Each holds one `<svg "
+      "aria-hidden=\"true\">` chevron and no text, so a screen reader "
+      "announces \"button\" and nothing else, twice, on the one control that "
+      "moves the leaderboard through time. Anchored on Design's own handler "
+      "names — `scrollBack` and `scrollFwd` — rather than on node indices, "
+      "because a handler name is what the control MEANS and an index is only "
+      "where it currently sits. ⚠️ The label is added and nothing is removed: "
+      "the chevrons stay `aria-hidden`, which is right, since the label now "
+      "says what they mean."),
+
+rule("R35", "At a phone width the stats row wraps to TWO columns instead of "
+            "four, and the ranked table's frame scrolls sideways inside "
+            "itself (`overflow-x: auto`) instead of clipping. Both are "
+            "attribute hooks plus one appended block of CSS; neither of "
+            "Design's inline styles loses a declaration.",
+      "MRB-336, 8 Sep 2026 — MEASURED, NOT GUESSED, AND CONFIRMED ON "
+      "PRODUCTION DATA BY TWO INDEPENDENT SWEEPS BEFORE THIS ONE. At a 390px "
+      "viewport `document.scrollWidth` was 525: the page scrolled sideways, "
+      "which on a phone is the most obviously broken thing a page can do, and "
+      "leaderboard.html was the ONLY page in the student walk that did it.\n"
+      "  Two separate causes, and only one of them was the scroll.\n"
+      "  (1) The stats row is `repeat(4, 1fr)` and `1fr` is `minmax(auto, "
+      "1fr)`, so each track's MINIMUM is its content's min-content width. "
+      "`FASTEST PAPER` and `BIGGEST CLIMB` cannot fold into 76px, so the grid "
+      "refused to shrink below 497px inside a 334px container and pushed the "
+      "document to 525. Measured `gridTemplateColumns` at 390: "
+      "`116.45px 105.53px 116.45px 116.45px`. Two columns is Design's own "
+      "four-up rhythm folded in half, not a new layout.\n"
+      "  (2) The ranked table is a nine-track grid measuring 750px inside a "
+      "332px frame whose `overflow: hidden` is there to clip the frame's own "
+      "border radius. It did clip — SCORE, MARKS and TIME were simply not on "
+      "the page at 390 and no gesture could reach them. That is why this is "
+      "not scroll damage but LOST CONTENT, and why the fix is a scroller "
+      "rather than a narrower table: the columns are the leaderboard.\n"
+      "  ⚠️ `overflow: hidden` IS NOT DELETED. `overflow-x` is raised to "
+      "`auto` and `overflow-y` held at `hidden`, so the radius still clips "
+      "and nothing about the frame's shape changes.\n"
+      "  ⚠️ AND R31 IS NOT TOUCHED. The breakpoint restores four columns at "
+      "720px and above, so every width Mide ruled on still looks exactly as "
+      "he left it; this only reaches widths at which the page was broken."),
 
 rule("R34", "The PODIUM FRAME ALONE is capped at 1140px and centred "
             "(`max-width` + `margin-left/right: auto` on the element R31's "
@@ -1317,6 +1367,120 @@ def unwidth(roots):
 
 
 WIDTH_CAPS_EXPECTED = 1
+
+
+# ══════════════════════════════════════════════════════════════════════════
+#  R35 — the phone width
+# ══════════════════════════════════════════════════════════════════════════
+
+# The two elements, anchored on their WHOLE inline style string. Anchoring on
+# the whole string rather than a fragment is deliberate: if Design retunes
+# either element the anchor stops matching and the build says so, instead of
+# a hook silently landing on something else.
+STATS_GRID_STYLE = ("margin-top: 18px; display: grid; "
+                    "grid-template-columns: repeat(4, 1fr); gap: 14px;")
+TABLE_FRAME_STYLE = ("margin-top: 18px; background: var(--st-paper); "
+                     "border: 1px solid var(--st-edge); "
+                     "border-radius: var(--st-r-frame); "
+                     "box-shadow: 0 14px 34px -30px rgba(40,26,10,.55); "
+                     "overflow: hidden;")
+
+FIT_HOOKS = ((STATS_GRID_STYLE, "stats"), (TABLE_FRAME_STYLE, "table"))
+
+# ⚠️ A MEDIA QUERY CANNOT LIVE IN AN INLINE STYLE, which is the whole reason
+# this is an attribute plus a rule rather than a rewritten style string.
+# Appended to the built stylesheet, after Design's own sheets, so it wins on
+# order without `!important` doing any work it does not have to.
+RESPONSIVE_CSS = """
+
+/* ── ⊕ MRB-336 R35 — the phone width ── */
+[data-lb-fit="stats"] {
+  /* Design's four-up, folded in half. `minmax(0, 1fr)` rather than `1fr`
+     because `1fr` floors each track at its content's min-content width, which
+     is exactly what pushed the document to 525px at a 390px viewport. */
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+@media (min-width: 720px) {
+  [data-lb-fit="stats"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+[data-lb-fit="table"] {
+  /* The nine-track table is 750px wide and was being CUT OFF at 332px, not
+     scrolled: SCORE, MARKS and TIME were unreachable on a phone. `overflow-y`
+     stays hidden so the frame's border radius still clips. */
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch;
+}
+"""
+
+
+def fit_hooks(roots):
+    """Tag the stats grid and the table frame so R35's CSS can reach them."""
+    out = json.loads(json.dumps(roots))
+    hits = {}
+
+    def walk(n):
+        if not isinstance(n, dict):
+            return
+        a = n.get("a") or {}
+        st = a.get("style")
+        if isinstance(st, str):
+            for want, name in FIT_HOOKS:
+                if st == want:
+                    a["data-lb-fit"] = name
+                    n["a"] = a
+                    hits[name] = hits.get(name, 0) + 1
+        for c in (n.get("c") or []):
+            walk(c)
+
+    for r in out:
+        walk(r)
+    return out, hits
+
+
+FIT_HOOKS_EXPECTED = {"stats": 1, "table": 1}
+
+
+# ══════════════════════════════════════════════════════════════════════════
+#  R36 — the two controls with no name
+# ══════════════════════════════════════════════════════════════════════════
+
+# Keyed on Design's OWN handler names. A node index says where a control is;
+# a handler name says what it does, and only the second survives her redrawing
+# the rail.
+RAIL_LABELS = {"scrollBack": "Earlier weeks", "scrollFwd": "Later weeks"}
+
+
+def name_rail_steps(roots):
+    """Give the week rail's chevron buttons an accessible name. R36."""
+    out = json.loads(json.dumps(roots))
+    hits = {}
+
+    def walk(n):
+        if not isinstance(n, dict):
+            return
+        h = n.get("on")
+        if h in RAIL_LABELS:
+            a = n.setdefault("a", {})
+            if "aria-label" in a:
+                raise SystemExit(
+                    "build_leaderboard_port.py: R36 names the %r control, and "
+                    "Design already gives it aria-label=%r. She has named it "
+                    "herself; drop the ruling rather than overwriting her "
+                    "words." % (h, a["aria-label"]))
+            a["aria-label"] = RAIL_LABELS[h]
+            hits[h] = hits.get(h, 0) + 1
+        for c in (n.get("c") or []):
+            walk(c)
+
+    for r in out:
+        walk(r)
+    return out, hits
+
+
+RAIL_LABELS_EXPECTED = {"scrollBack": 1, "scrollFwd": 1}
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -2433,7 +2597,7 @@ def ds_css():
             css = css.replace("./", SERVED_FONTS)
         out.append("/* ── %s ── */\n%s" % (rel, css))
         sizes.append((rel, len(css)))
-    return "\n\n".join(out), sizes
+    return dedupe_faces("\n\n".join(out)), sizes
 
 
 _VAR_RE = re.compile(r"var\(\s*(--[A-Za-z0-9_-]+)")
@@ -2575,6 +2739,28 @@ def build():
             % "\n".join("    %-22s expected %d, rewrote %d" % (l, e, g)
                         for l, e, g in wrong))
 
+    roots, n_lab = name_rail_steps(roots)
+    if n_lab != RAIL_LABELS_EXPECTED:
+        raise SystemExit(
+            "build_leaderboard_port.py: R36 expected %s and named %s.\n"
+            "  The two week-step buttons are anchored on Design's handler "
+            "names. A miss means she has renamed or removed one, and the "
+            "control would go back to announcing itself as nothing at all."
+            % (RAIL_LABELS_EXPECTED, n_lab))
+
+    roots, n_fit = fit_hooks(roots)
+    if n_fit != FIT_HOOKS_EXPECTED:
+        raise SystemExit(
+            "build_leaderboard_port.py: R35 expected %s and tagged %s.\n"
+            "  Each hook is anchored on the WHOLE inline style string of one "
+            "element — the stats grid and the ranked table's frame. A miss "
+            "means Design has retuned that element, and the phone-width fix "
+            "would silently stop applying: the page would scroll sideways "
+            "again at 390 and the table's last three columns would go back to "
+            "being unreachable, with nothing saying so. Re-anchor against her "
+            "source; do not relax the count."
+            % (FIT_HOOKS_EXPECTED, n_fit))
+
     roots, n_you = bind_podium_you(roots)
     if n_you != PODIUM_YOU_EXPECTED:
         raise SystemExit(
@@ -2601,6 +2787,7 @@ def build():
     css, sizes = ds_css()
     tpl_json = json.dumps(roots)
     css, topped = check_tokens(css, tpl_json, logic)
+    css = css + RESPONSIVE_CSS      # R35
     print("     ✅ tokens: every var(--…) resolves%s"
           % ((" (%d topped up from shared/tokens.css: %s)"
               % (len(topped), ", ".join(topped))) if topped else ""))

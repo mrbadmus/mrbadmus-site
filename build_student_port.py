@@ -192,8 +192,14 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 # `/shared/*` is served `immutable, max-age=31536000`. Unstamped under
 # immutable is a file pinned in a student's browser for a year that no deploy
 # can reach — which for the bell would mean a fix nobody ever receives.
+# ⊕ MRB-336, 8 Sep 2026 — `shoutouts.js` joins `DEPS` (and therefore this
+# tuple) because a template-only shoutout rendered as a blank praise card, and
+# the six labels that fix it are a locked enum that already lives in that file.
+# Unstamped under `immutable, max-age=31536000` is a year-long pin, so it is
+# stamped for the same reason every name above it is.
 STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
-                "student-data.js", "rum.js", "student-bell.js")
+                "student-data.js", "rum.js", "student-bell.js",
+                "shoutouts.js")
 
 
 def asset_hash(text):
@@ -1410,7 +1416,84 @@ def ds_css():
             css = css.replace("./", SERVED_FONTS)
         out.append("/* ── %s ── */\n%s" % (rel, css))
         sizes.append((rel, len(css)))
-    return "\n\n".join(out), sizes
+    return dedupe_faces("\n\n".join(out)), sizes
+
+
+_FACE_RE = re.compile(r"@font-face\s*\{[^}]*\}", re.S)
+_DESC_RE = re.compile(r"font-(family|weight|style)\s*:\s*([^;}]+)", re.I)
+
+
+def dedupe_faces(css):
+    """One `@font-face` per (family, weight, style) across the whole bundle.
+
+    ⚑ MRB-336, 8 Sep 2026. TWO of Design's six sheets declare the SAME SEVEN
+    faces — `tokens/src-styles-tokens.css` and `fonts/fonts.css` — so
+    concatenating her delivery produced fourteen rules for seven faces on every
+    student page. On leaderboard.html, which links the site's own
+    `shared/tokens.css` as well, it produced twenty-one.
+
+    ⚠️ THE **LAST** DECLARATION OF EACH KEY SURVIVES, NOT THE FIRST, AND THAT
+    IS THE WHOLE CORRECTNESS ARGUMENT. Identical `@font-face` descriptors do
+    not merge: the later rule is the one the browser uses. Keeping the last is
+    therefore a rendering no-op by construction — it deletes only rules that
+    were already being overridden.
+
+    Keeping the FIRST is not, and this function shipped that way for one build
+    before the console caught it. `src-styles-tokens.css` declares its faces
+    with `url('../fonts/…')`, which from `/shared/student-ds.css` resolves to
+    `/fonts/…` and 404s; `fonts/fonts.css` is the copy whose `./` this build
+    rewrites to the served path. Keeping the first threw away the working URL
+    and kept the broken one, and **every student page silently fell back to
+    system fonts** — no error on the page, nothing any gate watches, just the
+    wrong typeface. Hence the assertion below: a surviving face whose `src`
+    is not an absolute site path stops the build.
+
+    ⚠️ NO GLYPH CHANGES. `unicode-range` decides whether a face is CONSIDERED
+    for a codepoint, not whether it HAS the glyph — a missing glyph falls
+    through to the next family either way. That is what the note in
+    `shared/tokens.css` about →, ✓ and ✕ describes, and it is unaffected.
+
+    Deduped here rather than by editing Design's delivery, which is frozen and
+    re-read from disk on every build. Imported by `build_leaderboard_port.py`,
+    which assembles the same six sheets and had the same duplication.
+    """
+    def key_of(block):
+        d = {k.lower(): v.strip().lower() for k, v in _DESC_RE.findall(block)}
+        return (d.get("family", ""), d.get("weight", "normal"),
+                d.get("style", "normal"))
+
+    blocks = list(_FACE_RE.finditer(css))
+    last = {}
+    for m in blocks:
+        k = key_of(m.group(0))
+        if k[0]:
+            last[k] = m.start()
+
+    def keep(m):
+        k = key_of(m.group(0))
+        if not k[0]:
+            return m.group(0)          # not a face we can key; leave it alone
+        return m.group(0) if last.get(k) == m.start() else ""
+
+    out = _FACE_RE.sub(keep, css)
+
+    bad = []
+    for m in _FACE_RE.finditer(out):
+        for u in re.findall(r"url\(\s*['\"]?([^'\")]+)", m.group(0)):
+            if not u.startswith("/") and not u.startswith("data:"):
+                bad.append((key_of(m.group(0))[0], u))
+    if bad:
+        raise SystemExit(
+            "build_student_port.py: %d surviving @font-face rule(s) name a "
+            "RELATIVE source, which from /shared/*.css resolves outside "
+            "/shared/fonts/ and 404s: %s\n"
+            "  The page would not error — it would silently render in a system "
+            "font, which no gate watches and a screenshot only shows if you "
+            "already suspect it. Rewrite the URL where the sheet is read, "
+            "beside the existing `./` \u2192 SERVED_FONTS replacement."
+            % (len(bad), ", ".join("%s \u2192 %s" % b for b in bad[:6])))
+
+    return out
 
 
 # ── every token the page references must resolve ──────────────────────────
@@ -1766,6 +1849,51 @@ def apply_rulings(page, logic, roots, donor=None):
     # is asserted, exactly as `BINDINGS_AT` asserts its literal: an index that
     # has drifted onto a different node would otherwise repoint some other loop
     # at a list that is not its own, and the page would still build.
+    # ── words ruled out of Design's own text ─────────────────────────────
+    #
+    # ⊕ MRB-336, 8 Sep 2026. See `SET_TEXT` in student_rulings.py.
+    #
+    # The OLD string is asserted, so a reworded sentence stops the build rather
+    # than shipping unruled. A node with anything but exactly one text child is
+    # refused: an interpolated string is a binding, and a binding is somebody
+    # else's mechanism.
+    texts = dict(student_rulings.SET_TEXT.get(page, {}))
+    retexted = [0]
+
+    def retext(node):
+        if not isinstance(node, dict):
+            return
+        idx = node.get("i")
+        if idx in texts:
+            old, new = texts[idx]
+            kids = node.get("c") or []
+            got = [k for k in kids if isinstance(k, dict) and k.get("t") == "#"]
+            if len(kids) != 1 or len(got) != 1 or got[0].get("v") != old:
+                raise SystemExit(
+                    "build_student_port.py: the MRB-336 copy ruling for %r "
+                    "replaces the text of node %s, and that node no longer "
+                    "holds exactly the one text child it was anchored on.\n"
+                    "  expected: %r\n  found:    %r\n"
+                    "  Design has redrawn the element. Re-read her delivery "
+                    "and re-anchor: leaving this to pass would ship her new "
+                    "words with the ruling silently not applied, which is the "
+                    "failure this assertion exists for."
+                    % (page, idx, old,
+                       [k.get("v") if isinstance(k, dict) else k for k in kids]))
+            got[0]["v"] = new
+            texts.pop(idx)
+            retexted[0] += 1
+        for kid in node.get("c") or []:
+            retext(kid)
+
+    for root in roots:
+        retext(root)
+    if texts:
+        raise SystemExit(
+            "build_student_port.py: the MRB-336 copy ruling for %r names "
+            "template node(s) %s, and they are not in the template. "
+            "Re-anchor them." % (page, sorted(texts)))
+
     exprs = dict(student_rulings.SET_EXPR.get(page, {}))
     exprd = [0]
 

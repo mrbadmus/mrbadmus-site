@@ -37,10 +37,23 @@
      Fire and forget, deliberately: no retry, no logging, no deadline. A ping
      that fails tells us nothing the real request will not tell us properly a
      moment later, and a console line here would be noise on every page a
-     student opens. */
-  try {
-    fetch("https://mrbadmus-backend.onrender.com/api/health").catch(function () {});
-  } catch (e) {}
+     student opens.
+
+     ⊕ MRB-336, 8 Sep 2026 — IT NAMED PRODUCTION, ON EVERY WORLD.
+     The literal URL meant that in any world but the live one the ping was a
+     cross-origin request to a backend that has never heard of that origin, so
+     every student page opened with a red CORS line in the console — noise on
+     exactly the surface this comment says must not carry any, and one more
+     thing to discount when reading a real failure. It also warmed the wrong
+     dyno, which is the part that actually mattered: the instance the page then
+     talked to stayed asleep.
+
+     ⚠️ MOVED, NOT REWRITTEN, and it had to move. `shared/config.js` is
+     `DEPS[0]` and is not on the page yet at this point in the file, so
+     `MrBadmusConfig` cannot be read here — it is read the moment config.js
+     lands, in `loadDeps()` below, which is still inside the first few
+     milliseconds of the page and still ahead of every Supabase round trip.
+     Fire and forget exactly as before. */
 
   /* The four helpers, in the ONE order that works. `student-data.js` delegates
      `workingAcademicYear()` to `class-entry.js` and throws a named error if it
@@ -56,7 +69,18 @@
        by `build_student_port.py`; see `lesson_index()` there for why the map
        has to be shipped rather than derived. Last in the list because nothing
        above it needs it and it is the only one a page can survive without. */
-    "/shared/ks3-lesson-urls.js"
+    "/shared/ks3-lesson-urls.js",
+    /* ⊕ MRB-336, 8 Sep 2026 — the six shoutout templates, and NOT a
+       seventh copy of them. A shoutout may carry a `template_key` and NO
+       message — the DB CHECK is an OR — and the mapping below rendered
+       `s.message || ""`, so a child was shown a praise card with an avatar, a
+       teacher's name, a timestamp and no words at all. The labels that close
+       it are a locked enum mirroring `class_shoutouts_template_key_chk`, they
+       already live in `shared/shoutouts.js`, and `shared/teacher-live.js`
+       reads them from exactly there rather than retyping them. So does this.
+       Last in the list with `ks3-lesson-urls.js` because nothing above it
+       needs it, and it is loaded in the same parallel wave, not in series. */
+    "/shared/shoutouts.js"
   ];
 
   /* ── plain words, for when the page cannot render ───────────────────────
@@ -112,11 +136,87 @@
     return wrap;
   }
 
+  /* ── ⊕ MRB-336, 8 Sep 2026 — THE DEAD END GETS ITS PAGE BACK ──────────
+     The whole student page IS the mount host: the brand, the header and every
+     link live inside `#mrb-student`, so `say()` emptying it left a child on a
+     bare cream field with one sentence, no brand and no way out — ten DOM
+     nodes on `student/assignment.html`, measured. It is the terminal render
+     for ALL EIGHT states in `SAY`, so a pupil whose class finished last year,
+     whose work is not set, or whose page simply failed all landed there.
+
+     ⚠️ NOTHING IS DRAWN THAT THE PAGE DOES NOT ALREADY DRAW. The mark is
+     Design's own `MrBadmusDS.BrandMark`, read out of `window.__MRB_TPL__
+     .imports` — the very string the compiled header renders — rather than an
+     SVG retyped here, which is the transcription `student_template.py` refuses
+     to make for exactly this reason. The wordmark takes the header's own type
+     ramp. If the template is absent (it never is on these two pages) the mark
+     is simply omitted and the sentence still has a header to sit under.
+
+     ⚠️ AND IT STILL CANNOT SURVIVE THE MOUNT. This appends into the host after
+     clearing it, exactly as before, so `draw()`'s own `host.textContent = ""`
+     still removes every trace of it. The guarantee the boot line's comment
+     makes is untouched. */
+  var BACK = {
+    "class":      {href: "/student/classes.html", label: "Your classes"},
+    "assignment": {href: "/student/class.html",   label: "Your class"}
+  };
+
+  function brandRow() {
+    var head = document.createElement("header");
+    head.setAttribute("data-mrb-chrome", "1");
+    head.style.cssText =
+      "display:flex;align-items:center;gap:9px;box-sizing:border-box;" +
+      "padding:18px 20px;border-bottom:1px solid var(--st-rule,#E0D2B9);";
+
+    var a = document.createElement("a");
+    a.href = "/student/classes.html";
+    a.style.cssText =
+      "display:inline-flex;align-items:center;gap:9px;text-decoration:none;" +
+      "color:var(--st-ink,#1A1714);";
+
+    var tpl = window.__MRB_TPL__;
+    var mark = tpl && tpl.imports && tpl.imports["MrBadmusDS.BrandMark"];
+    if (mark) {
+      var m = document.createElement("span");
+      m.style.cssText = "display:inline-flex;flex:none;";
+      m.innerHTML = mark;                 // Design's own string, not user data
+      a.appendChild(m);
+    }
+    var w = document.createElement("span");
+    w.style.cssText =
+      "font:600 18px/1 var(--st-display,'Bricolage Grotesque',system-ui," +
+      "sans-serif);letter-spacing:-0.025em;";
+    w.textContent = "MrBadmusAI";
+    a.appendChild(w);
+
+    head.appendChild(a);
+    return head;
+  }
+
   function say(line) {
     var el = host();
     if (!el) { return; }
     el.textContent = "";
-    el.appendChild(panel(line, "unavailable", "var(--ks3-ink,#2A2018)"));
+    el.appendChild(brandRow());
+
+    var body = panel(line, "unavailable", "var(--ks3-ink,#2A2018)");
+    /* The header has taken its own height off the top, so the panel no longer
+       needs a full 60vh to sit centred under it. */
+    body.style.minHeight = "52vh";
+    body.style.flexDirection = "column";
+    body.style.gap = "20px";
+
+    var back = BACK[whichPage()] || BACK["class"];
+    var out = document.createElement("a");
+    out.href = back.href;
+    out.textContent = back.label;
+    out.style.cssText =
+      "font:500 15px/1 'IBM Plex Sans',system-ui,-apple-system,'Segoe UI'," +
+      "sans-serif;color:var(--st-accent-text,#A93411);text-decoration:none;" +
+      "border-bottom:1px solid currentColor;padding-bottom:2px;";
+    body.appendChild(out);
+
+    el.appendChild(body);
   }
 
   /* ── the boot line ─────────────────────────────────────────────────────
@@ -382,6 +482,17 @@
       first.push(loadScript(SDK_URL));
     }
     await Promise.all(first);
+
+    /* ⊕ MRB-336 — the warm-up ping, at the first instant its address is
+       knowable. See the long note at the top of this file for why it is here
+       and not there. Fire and forget: nothing waits on it and nothing reads
+       its answer. */
+    try {
+      var beHealth = (window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL)
+                  || "https://mrbadmus-backend.onrender.com";
+      fetch(beHealth + "/api/health").catch(function () {});
+    } catch (e) {}
+
     await Promise.all(DEPS.slice(1).map(function (src) {
       return loadScript(src);
     }));
@@ -2036,8 +2147,45 @@
       cards.forEach(function (c) { byId[c.id] = c; });
       var open = current.week_work.filter(function (w) {
         if (!w || w.source !== "teacher") { return false; }
-        if (current.week != null && w.academic_week != null
-            && w.academic_week !== current.week) { return false; }
+        /* ⊕ MRB-336, 8 Sep 2026 — THE WEEK RE-CHECK IS GONE, AND ITS REMOVAL
+           IS THE FIX RATHER THAN A TIDY-UP.
+
+           It read:
+
+               if (current.week != null && w.academic_week != null
+                   && w.academic_week !== current.week) { return false; }
+
+           `academic_week` is stamped ONCE, from the release instant, and
+           nothing ever moves it. So a piece of teacher-set work that was
+           released, is not done and is not yet due left the bench the moment
+           the teaching week rolled over on Sunday — days before its own
+           deadline. On Mide's own three rows (week 2, due 15 and 16 September)
+           that is Sunday 13 September, two and three days early, on classes
+           whose automatic work is held until the 14th, so nothing would have
+           taken the slot: an empty bench with live, unsubmitted work on it.
+
+           ⚠️ A DEMOTION, NOT A DISAPPEARANCE. The work list below is not
+           week-scoped — `shared/student-data.js` reads every undeleted
+           assignment for the class and buckets it by `due_at` — so the work
+           stayed reachable in the cards list throughout. What was lost was the
+           prominent "do this now" card at the top of the page.
+
+           ⚠️ AND IT IS REMOVED RATHER THAN WIDENED. The backend's
+           `weekWorkFor` now selects `academic_week = week OR (release_at <=
+           now AND due_at > now)`, and every clause of that disjunction is
+           ALREADY enforced below, line for line: the release gate on the next
+           line, `card.is_submitted` and `card.due_at < serverNow` two lines
+           after it, and membership of `cards` — which is the student's own
+           RLS-filtered read — before either. Restating the server's rule here
+           would be a second implementation of one decision, and the two would
+           drift on the first change to either. What is left is a filter that
+           can only ever narrow `week_work` on facts the client can see for
+           itself; it can no longer overturn an inclusion the server made
+           deliberately.
+
+           ⚠️ SAFE IN EITHER DEPLOY ORDER. An older backend's `week_work` is
+           week-filtered already, so on that payload this removal changes
+           nothing at all — every row in it is a current-week row. */
         if (w.release_at && Date.parse(w.release_at) > serverNow) { return false; }
         var card = byId[w.id];
         if (!card || card.is_submitted) { return false; }
@@ -2682,12 +2830,25 @@
       }).map(function (s) {
         var au = s.author || {};
         var who = ((au.first_name || "") + " " + (au.last_name || "")).trim();
+        /* ⊕ MRB-336 — THE TEMPLATE IS THE FALLBACK, NOT AN EMPTY STRING.
+           `text: s.message || ""` put a blank card in front of a child on
+           every template-only shoutout. The label is read from the one place
+           it is defined; if that file somehow did not load, the card is
+           dropped below rather than drawn empty. */
+        var tpl = (window.MrBadmusShoutouts
+                   && window.MrBadmusShoutouts.templateByKey(s.template_key))
+                  || null;
         return {
           who: initials(au.first_name, au.last_name),
-          text: s.message || "",
+          text: s.message || (tpl ? tpl.label : ""),
           meta: [who.toUpperCase(), agoText(s.created_at, serverNow)]
             .filter(Boolean).join(" · ")
         };
+      }).filter(function (c) {
+        /* A card with no words is not a quieter card, it is a bug wearing a
+           child's teacher's name. If neither a message nor a template label
+           could be found, the row leaves the feed. */
+        return !!c.text;
       });
     } catch (shoutErr) {
       console.error("[student-live] shoutouts", shoutErr);
@@ -2809,8 +2970,20 @@
 
       /* The leaderboard opens on THIS week, not on the week Design drew.
          A number, matching the `wk === MRB_DATA('currentWeek')` comparison the
-         scope note makes with `===`. */
-      boardWeek: weekNo == null ? 1 : weekNo,
+         scope note makes with `===`.
+
+         ⊕ MRB-336, 8 Sep 2026 — NULL IS CARRIED, NOT COERCED TO ONE. This
+         read `weekNo == null ? 1 : weekNo`, and one was not a fallback, it was
+         a fabrication: with no teaching week the board headed itself
+         `WEEK 01 \u00B7 FINAL` (the template's `boardScopeNote` reaches that
+         branch whenever `wk !== currentWeek`, and `currentWeek` was coerced to
+         a DIFFERENT number, nought) over rows from a completely different
+         week, and lit the `W01` tab as though the student had chosen it.
+         Null keeps the two in step: `wk === currentWeek` is then true, the
+         note says CURRENT WEEK, and no tab claims to be selected. Every other
+         consumer is a `<=` or `===` against a week number, and null fails both
+         exactly as nought did. */
+      boardWeek: weekNo == null ? null : weekNo,
 
       shoutouts: shoutouts,
 
@@ -2888,7 +3061,11 @@
          carried through verbatim. */
       flashcardsTitle: "FLASHCARDS \u00a0\u00b7\u00a0 " + name,
 
-      currentWeek: weekNo == null ? 0 : weekNo,
+      /* \u2295 MRB-336 \u2014 null, not nought, and for `boardWeek`'s reason:
+         the two are compared against each other. Nought was never a week
+         either, and `n <= null` / `n === null` are false for every real
+         week exactly as `n <= 0` / `n === 0` were. */
+      currentWeek: weekNo == null ? null : weekNo,
       weekNumber: weekNo == null ? "—" : pad2(weekNo),
       weekTotal: "39",
 
@@ -4095,8 +4272,20 @@
             drawHeld(data);
           }
         } catch (err) {
+          /* ⊕ MRB-336, 8 Sep 2026 — A NORMAL STATE IS NOT AN ERROR.
+             `no_current_week` and its siblings reach here as thrown objects
+             because a throw is how this function stops; the comment beside the
+             throw says so in as many words — "It means no work is set, not an
+             error." Logging them through `console.error` put a red line in
+             every pupil's console on the ordinary Monday-morning page and made
+             the one console entry that DOES matter impossible to spot. An
+             error carrying `mrbSay` is a state this file chose to show; only
+             the ones it did not choose are errors. */
+          if (err && err.mrbSay) {
+            console.info("[student-live]", err && err.message ? err.message : err);
+            return say(err.mrbSay);
+          }
           console.error("[student-live]", err);
-          if (err && err.mrbSay) { return say(err.mrbSay); }
           if (err && err.code === "class_not_current") { return say(SAY.pastYear); }
           if (err && (err.code === "not_authorised" ||
                       err.code === "class_not_found" ||

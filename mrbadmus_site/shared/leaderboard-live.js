@@ -52,8 +52,33 @@
 (function () {
   "use strict";
 
-  var RENDER_URL = "https://mrbadmus-backend.onrender.com";
-  var SUPABASE_URL = "https://urklkrwevjtlfbwnipjn.supabase.co";
+  /* ⊕ MRB-336, 8 Sep 2026 — THROUGH shared/config.js, AND READ
+     LAZILY. These two named production outright, so this page could not be
+     pointed at TEST or at a local backend by any means and had never been
+     verified anywhere but live.
+
+     ⚠️ THE READ CANNOT HAPPEN AT PARSE TIME. leaderboard.html loads
+     config.js with `defer` and this file without one, so at the instant
+     these lines run `window.MrBadmusConfig` does not exist. Capturing the
+     value here would silently take the fallback every single time and look
+     exactly like a fix. They are functions for that reason, called from the
+     three places that need a URL, all of which run after the page is up.
+
+     The production literals stay as the fallback: on mrbadmus.com
+     config.js resolves to these same values, so nothing about the live
+     page changes. */
+  function backendUrl() {
+    return (window.MrBadmusConfig && window.MrBadmusConfig.BACKEND_URL)
+        || "https://mrbadmus-backend.onrender.com";
+  }
+  function supabaseUrl() {
+    return (window.MrBadmusConfig && window.MrBadmusConfig.SUPABASE_URL)
+        || "https://urklkrwevjtlfbwnipjn.supabase.co";
+  }
+  function anonKey() {
+    return (window.MrBadmusConfig && window.MrBadmusConfig.SUPABASE_ANON_KEY)
+        || SUPABASE_ANON_KEY;
+  }
   /* Anon keys are designed to be public; this is the same key every other
      page on the site carries inline. See CLAUDE.md. */
   var SUPABASE_ANON_KEY =
@@ -166,7 +191,7 @@
     var s = TO_QUERY[sel.subject];
     if (s) { q += "&subject=" + s; }
     if (sel.week) { q += "&week_start=" + encodeURIComponent(sel.week); }
-    return RENDER_URL + "/api/weekly-leaderboard/board" + q;
+    return backendUrl() + "/api/weekly-leaderboard/board" + q;
   }
 
   var token = null;
@@ -339,7 +364,7 @@
        retired page had it: nothing on this page depends on the result, and
        an unhandled rejection would be console noise the behaviour gate would
        correctly report. */
-    fetch(RENDER_URL + "/api/health").catch(function () {});
+    fetch(backendUrl() + "/api/health").catch(function () {});
 
     var mounted = null;
     store.redraw = function () {
@@ -354,7 +379,7 @@
     if (!window.supabase || !window.supabase.createClient) { go(); return; }
     var sb;
     try {
-      sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      sb = window.supabase.createClient(supabaseUrl(), anonKey());
     } catch (e) { go(); return; }
 
     sb.auth.getSession().then(function (res) {

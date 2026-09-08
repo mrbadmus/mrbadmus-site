@@ -24,8 +24,23 @@
 (function () {
   'use strict';
 
-  var SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
-  var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  /* ⊕ MRB-336, 8 Sep 2026 — THROUGH shared/config.js, AND THE SESSION KEY
+     WITH IT. These named production outright, and one line below they picked
+     the localStorage slot a session is read from — `sb-<project ref>-auth-
+     token`. So on any world but the live one this nav could not find the
+     signed-in student at ALL: it fell through to its own signed-out branch and
+     drew `Sign In / Sign Up` over the head of a pupil who was signed in, on
+     every page that loads it. Measured on four of them in this sweep.
+
+     The production literals stay as the fallback, so a page that somehow loses
+     config.js behaves exactly as it does today, and on mrbadmus.com config.js
+     resolves to these same two values. `shared/student-bell.js` derives its
+     ref from the configured URL the same way; this is the same derivation, not
+     a second rule. */
+  var NAVCFG = window.MrBadmusConfig || {};
+  var SUPA_URL = NAVCFG.SUPABASE_URL || 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  var SUPA_KEY = NAVCFG.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  var SUPA_REF = (SUPA_URL.match(/\/\/([^.]+)\./) || [])[1] || 'urklkrwevjtlfbwnipjn';
 
   function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
 
@@ -52,7 +67,7 @@
     if (!area) return;
 
     try {
-      var raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+      var raw = localStorage.getItem('sb-' + SUPA_REF + '-auth-token');
       if (!raw) return;
       var session = JSON.parse(raw);
       var user = session && session.user;
@@ -97,8 +112,18 @@
         if (dchip) dchip.href = profileHref;
       }).catch(function () {});
 
-      // Fetch avatar (best-effort) and upgrade the chip to show it.
-      fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+      /* Fetch avatar (best-effort) and upgrade the chip to show it.
+
+         ⊕ MRB-336, 8 Sep 2026 — THROUGH config.js, like the two constants at
+         the top of this file. It named production outright, and it is only
+         reached once a session has been FOUND — so while the session lookup
+         above was also pinned to production this line could never run outside
+         the live site, and fixing the lookup is what exposed it. In any other
+         world it is a cross-origin call to a backend that has never heard of
+         the origin: a red CORS line on every page that carries this nav, for a
+         request whose answer is a best-effort avatar. */
+      fetch((NAVCFG.BACKEND_URL || 'https://mrbadmus-backend.onrender.com')
+            + '/api/profile', {
         headers: { 'Authorization': 'Bearer ' + session.access_token }
       }).then(function (r) { return r.ok ? r.json() : null; }).then(function (profile) {
         if (profile && profile.avatar_url) paintChip(profile.avatar_url);

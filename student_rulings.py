@@ -379,8 +379,24 @@ LOGIC = {
             "    const lessons = this.lessonDefs.map((l) => ({\n"
             "      /* ⊕ RULED 22 Aug 2026 — the card opens its lesson. */\n"
             "      open: (e) => {\n"
-            "        if (!l.href) { return; }\n"
+            "        /* ⊕ MRB-336, 8 Sep 2026 — THE GUARD MOVED BELOW THE\n"
+            "           preventDefault, AND THAT ONE LINE IS THE WHOLE FIX.\n"
+            "           It read `if (!l.href) { return; }` FIRST, so a card with no\n"
+            "           page returned before the default was stopped and Design's own\n"
+            "           href=#top fired: the page jumped to the top. That is the exact\n"
+            "           defect the 22 Aug ruling above exists to remove, surviving in\n"
+            "           the one branch the ruling did not take — it called the anchor\n"
+            "           inert and left it live.\n"
+            "           ⚠️ EVERY KS4 CLASS TAKES THAT BRANCH. `lessonHref` resolves\n"
+            "           against MRB_KS3_LESSONS only, so on a KS4 pupil's page all four\n"
+            "           lesson cards have no href and all four scrolled. Measured on\n"
+            "           10X1 Biology, 8 Sep 2026.\n"
+            "           Giving KS4 lessons real URLs is the product fix and is separate\n"
+            "           work: the two key stages share eight byte-identical subtopic\n"
+            "           slugs (MRB-332), so it needs its own map and a key-stage\n"
+            "           argument, never one merged index keyed on the slug alone. */\n"
             "        if (e && e.preventDefault) { e.preventDefault(); }\n"
+            "        if (!l.href) { return; }\n"
             "        window.location.href = l.href;\n"
             "      },\n"
             "      num: l.num, name: l.name, meta: l.meta,",
@@ -2623,6 +2639,56 @@ SET_ATTR = {
 # `cardVals` in LOGIC above emits `cardPips` to match. The expected old value
 # is asserted at build time, so an index that drifts stops the build instead of
 # repointing some other loop at a list that is not its own.
+# ── words Design drew that are not true on this page ──────────────────────
+#
+# ⊕ MRB-336, 8 Sep 2026 — THE NINTH MECHANISM, and the narrowest of them.
+#
+# Every mechanism above rebinds, rewires, prunes or grafts. None can change a
+# WORD, and one word on the class page was both wrong and against CLAUDE.md
+# §8.10 — the rule that a student is told what is true about their class, never
+# about the software.
+#
+# Each entry is `node index: (old, new)`. The OLD string is asserted byte for
+# byte against Design's own text node, so if she rewords the sentence the build
+# stops rather than silently leaving her new words unruled. One text child
+# only; a node with several is refused.
+#
+# ⚠️ THIS IS NOT A COPY DECK AND MUST NOT BECOME ONE. Design's words are
+# Design's. A line belongs here only when it states something the page's own
+# data contradicts, or when it explains the platform to a child.
+SET_TEXT = {
+    "class view": {
+        # ⊕ MRB-336 — THE PAGE CONTRADICTED ITSELF, IN THE SAME SCREENFUL.
+        #
+        # Design's empty-state line for the class leaderboard read:
+        #
+        #     "The leaderboard starts when the first work is marked"
+        #
+        # It sat directly under this page's own `17 MARKED` on 10A and its
+        # `4 MARKED` on 10X1. Both statements cannot be true, and the one a
+        # child would believe is the one that is false.
+        #
+        # It is false because the reason the board is empty has nothing to do
+        # with marking: `roster` and `weekPts` in shared/student-live.js are
+        # RULED empty — there is no per-student per-week points series anywhere
+        # in the schema, and the 23 Aug ruling refuses to invent one rather
+        # than print fabricated points beside a real child's name. So the board
+        # is empty for every class, on every load, however much work is marked,
+        # and the sentence explaining why was describing a rule that does not
+        # exist.
+        #
+        # The replacement says the one thing that IS true, in the words this
+        # page already uses one panel over for the empty flashcard deck, so a
+        # student meets one voice rather than two. It says nothing about
+        # marking, nothing about leaderboards starting, and nothing about the
+        # software.
+        334: ("The leaderboard starts when the first work is marked",
+              "There is nothing to show here yet"),
+    },
+    "assignment": {},
+}
+
+
 SET_EXPR = {
     "class view": {
         10330: ("pips", "cardPips"),
