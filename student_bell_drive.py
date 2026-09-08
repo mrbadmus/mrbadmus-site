@@ -264,7 +264,19 @@ FEED = Feed()
 
 
 def live_backend():
-    for base in LOCAL_BACKENDS:
+    # ⊕ MRB-336/337 RECEIPTS LANE, 8 Sep 2026 — AN EXPLICIT ADDRESS WINS.
+    # `LOCAL_BACKENDS` is a hardcoded list, and the receipts pass ran against a
+    # backend on 3338 — a port that is not on it and deliberately should not be
+    # bolted on, because the comment above earns its keep by naming which
+    # ports mean what on one particular night. The result was `upstream: NONE`
+    # and TEN checks reported NOT EXECUTED, which this file is careful to
+    # print as "green on what ran" rather than as a pass — honest, but it
+    # measured nothing about the class page or the real route.
+    # `MRB_API` is the name `sweep_after_regress.py` already uses for exactly
+    # this. Probed like any other candidate, never trusted: a wrong address
+    # still falls through to the list rather than failing the run.
+    named = os.environ.get("MRB_API") or os.environ.get("MRB_BELL_BACKEND")
+    for base in ((named,) if named else ()) + LOCAL_BACKENDS:
         try:
             req = urllib.request.Request(base + "/api/health")
             with urllib.request.urlopen(req, timeout=3) as r:

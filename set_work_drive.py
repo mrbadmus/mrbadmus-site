@@ -4171,8 +4171,25 @@ def set_one(t_teacher, class_id, tier, scope_ref, title, n=4, **kw):
 # than compared loosely, because "idempotent" here means the SAME SHAPE and not
 # merely another 200 — a second call that dropped `assignment` would break the
 # page's toast, which reads the title out of it.
-DELETE_KEYS = {"ok", "already_deleted", "assignment", "question_count",
-               "submission_count"}
+# ⊕ MRB-336, 8 Sep 2026 — `success` JOINED `ok`, DELIBERATELY, AND THIS SET
+# WAS THE STALE HALF. The receipts pass found this assertion red against the
+# current backend for one reason only: an EXTRA `success: true` alongside
+# `ok: true`. The assignment sub-shape below matched exactly.
+#
+# It is the product that is right and this literal that was out of date.
+# `POST /api/teacher/set-work` has answered `success` since MRB-335 shipped
+# and the sheet's Save path reads it; the two new MRB-336 routes answered only
+# `ok`, so every successful edit toasted the teacher `Not saved`. The backend
+# ADDED the key rather than renaming either (server.js, the `shape()` helper),
+# and `shared/set-work.js` accepts `body.ok === true || body.success === true`
+# because it is the client to both. Adding a key breaks no reader; renaming
+# one breaks the readers you cannot see.
+#
+# ⚠️ STILL EXACT-SET EQUALITY, and that is the point of touching it at all.
+# The assertion is not loosened to a subset — it names the new agreed shape,
+# so the NEXT unreviewed key on this route is red exactly as this one was.
+DELETE_KEYS = {"ok", "success", "already_deleted", "assignment",
+               "question_count", "submission_count"}
 DELETE_ASSIGNMENT_KEYS = {"id", "class_id", "title", "topic", "academic_week",
                           "source", "deleted_at"}
 
