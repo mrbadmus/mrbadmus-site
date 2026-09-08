@@ -53,9 +53,9 @@
   }
   function renderDrawerAuthSignedIn(slot, href, firstName, avatarUrl) {
     if (!slot) return;
-    var inner = avatarUrl
-      ? '<img src="' + esc(avatarUrl) + '" alt="" style="width:26px;height:26px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"/> ' + esc(firstName)
-      : '👤 ' + esc(firstName);
+    var inner = (avatarUrl
+      ? '<img src="' + esc(avatarUrl) + '" alt="" style="width:26px;height:26px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"/> '
+      : '👤 ') + '<span class="nav-chip-name">' + esc(firstName) + '</span>';
     slot.innerHTML = '<a href="' + href + '" class="nav-drawer-chip" style="background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-border);">' + inner + '</a>';
   }
 
@@ -76,8 +76,31 @@
       var expMs = session && session.expires_at ? session.expires_at * 1000 : 0;
       if (!user || (expMs && expMs <= Date.now())) return;
 
-      var firstName = (user.user_metadata && user.user_metadata.first_name) ||
-        (user.email && user.email.split('@')[0]) || 'You';
+      /* ⊕ MRB-337/N5, 8 Sep 2026 — THE EMAIL LOCAL PART IS NOT A NAME.
+         This used to read `... || (user.email && user.email.split('@')[0])`,
+         so a pupil whose sign-up carried no `first_name` in `user_metadata`
+         — which is most of a rostered school, because the roster import
+         writes names to `profiles`, not to the auth metadata — wore their
+         own email address in the top bar: `👤 aiden.cole`.
+
+         Two things were wrong with that, and only one of them is layout.
+         It is a name a shared classroom screen should not be showing at all;
+         and it is unbounded, so on a 390px phone the cluster reached 395.3px
+         and the bar scrolled sideways. `profiles.first_name` is the real
+         name and was already being fetched ONE LINE BELOW for the role
+         route — the same request, the same round trip, one more column.
+
+         So: metadata if the sign-up carried one, else the cached profile
+         name, else the profile fetch when it lands, else a short generic
+         word. The email is not in that ladder at any rung. The cap in
+         `shared/nav.css` (`.nav-chip-name`) is the other half: a fix that
+         depends on names being short is not a fix. */
+      var nameKey = 'mrb-profile-name:' + user.id;
+      var firstName = (user.user_metadata && user.user_metadata.first_name) || '';
+      if (!firstName) {
+        try { firstName = localStorage.getItem(nameKey) || ''; } catch (err) {}
+      }
+      if (!firstName) { firstName = 'You'; }
 
       // Route the chip by advisory role, cached PER USER so a previous
       // account's route can't leak onto a different signed-in user.
@@ -85,10 +108,15 @@
       var profileHref = '/profile-setup.html';
       try { profileHref = localStorage.getItem(hrefKey) || profileHref; } catch (err) {}
 
+      // The avatar the chip is currently wearing, so a NAME change can
+      // repaint without knowing whether an avatar has landed yet.
+      var shownAvatar = null;
+
       function paintChip(avatarUrl) {
+        shownAvatar = avatarUrl || null;
         var inner = avatarUrl
-          ? '<img src="' + esc(avatarUrl) + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);" alt=""/><span style="color:var(--accent);font-weight:700;font-size:0.82rem;">' + esc(firstName) + '</span>'
-          : '👤 ' + esc(firstName);
+          ? '<img src="' + esc(avatarUrl) + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);" alt=""/><span class="nav-chip-name" style="color:var(--accent);font-weight:700;font-size:0.82rem;">' + esc(firstName) + '</span>'
+          : '👤 <span class="nav-chip-name">' + esc(firstName) + '</span>';
         var style = avatarUrl
           ? 'display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;'
           : 'background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-border);padding:5px 12px;border-radius:999px;font-weight:700;font-size:0.82rem;text-decoration:none;white-space:nowrap;';
@@ -100,12 +128,20 @@
 
       // Resolve role → correct profile route (staff vs student). A 401/empty
       // response must NOT overwrite the cached route with the student default.
-      fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {
+      fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role,first_name', {
         headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }
       }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) {
         if (!rows || !rows[0]) return;
         profileHref = (rows[0].role && rows[0].role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
         try { localStorage.setItem(hrefKey, profileHref); } catch (err) {}
+        // The real name, cached per user like the route above it, so the next
+        // page does not have to open on 'You' and then correct itself.
+        var real = rows[0].first_name;
+        if (real && real !== firstName) {
+          firstName = real;
+          try { localStorage.setItem(nameKey, real); } catch (err) {}
+          paintChip(shownAvatar);   // repaints the drawer chip too
+        }
         var link = document.getElementById('nav-profile-link');
         if (link) link.href = profileHref;
         var dchip = drawerAuthSlot && drawerAuthSlot.querySelector('a');

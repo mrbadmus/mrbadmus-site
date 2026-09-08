@@ -59,7 +59,28 @@
 }
 
 /* ── Utility cluster (right) — persistent at all widths ── */
-.nav-cluster { display: flex; align-items: center; gap: var(--sp-1); flex-shrink: 0; }
+/* ⊕ MRB-337/N5, 8 Sep 2026 — `flex-shrink: 0` MOVED FROM THE CLUSTER TO ITS
+   CHILDREN. It used to sit here, on the cluster itself, which made the whole
+   right-hand group rigid: if its contents came to more than the bar had left,
+   the bar simply overflowed and the page scrolled sideways. That is what it
+   did, on four signed-in pages at 390px, once MRB-337 put a bell in the group.
+
+   Every child keeps the rigidity it had — Challenge, the bell, the icons, the
+   burger and both auth buttons are all pinned below and cannot squash. The
+   ONE thing that may give is the signed-in display name, which is user data of
+   unbounded length and the only item in the bar that has no business dictating
+   the width of anything. It gives by truncating with an ellipsis.
+
+   The point is that the width at which it starts giving is not a number
+   anybody had to choose, and must not be. A fixed cap cannot be right across
+   a continuous range: binary-searched on this build, the widest name box a
+   390px phone survives is 63px and a 360px phone 43px, and the answer moves
+   with every pixel between them — so any constant is wrong at one end or the
+   other, and wrong again the next time an item joins the bar. This lets the
+   layout answer the question at every width instead, which is also why the
+   bell could be added without anyone having to re-derive a number. */
+.nav-cluster { display: flex; align-items: center; gap: var(--sp-1); min-width: 0; }
+.nav-cluster > * { flex-shrink: 0; }
 
 .nav-cluster a { text-decoration: none; }
 
@@ -146,6 +167,58 @@
   white-space: nowrap;
 }
 .btn-signin:hover { background: var(--accent-hover); color: var(--on-accent); }
+
+/* ⊕ MRB-337/N5, 8 Sep 2026 — THE DISPLAY NAME TRUNCATES; THE BAR DOES NOT MOVE.
+   The signed-in chip carries whatever name the account has, and before this
+   rule ONE long name was enough to push the whole bar sideways on a phone. It
+   measurably did, and that is what turned the MRB-337 bell red: measured on
+   the pre-fix build with a signed-in pupil, `leaderboard.html` laid out 427px
+   of content inside a 390px viewport and the other three signed-in pages
+   434px. Nor was 390px the worst of it — at 414px, where the Leaderboard and
+   Search icons have not yet collapsed, the same four pages reached 501–508px.
+   The gate only ever asked at 390 and 1280, so that band was never seen.
+
+   `shared/nav.js` no longer falls back to the email local part, and that alone
+   would have cleared the measurement. It is deliberately not the whole fix. A
+   name is user data and can be any length — a double-barrelled name, a long
+   one, a nickname a pupil typed themselves — so the bar has to SURVIVE one
+   arriving, not merely be lucky about what today's accounts are called.
+
+   These three rules are what survives it. The auth area is the only part of
+   the cluster allowed to shrink; inside it the pill may lose width; inside
+   that the name is the text that ellipses. Everything else in the bar — the
+   Challenge chip, the bell, the burger, both auth buttons, the avatar — is
+   pinned and keeps the size it has today. The 150px ceiling is a matter of
+   taste on a wide screen, not a guard: the guard is the shrinking. */
+#nav-auth-area { flex-shrink: 1; min-width: 0; }
+#nav-auth-area > * { min-width: 0; }
+.btn-signin, .btn-signup { flex-shrink: 0; }   /* signed OUT, nothing gives */
+/* The chip is a flex row so the NAME is a flex item and can ellipsis itself.
+   ⚠️ It has to be. With the pill left as a plain block, the name box stayed at
+   its full intrinsic width and was simply CLIPPED by the pill's overflow —
+   which stops the bar moving, and cuts the name off mid-letter with no
+   ellipsis to say it has been cut. `text-overflow` cannot break into an
+   inline-block; the box has to be the one that shrinks. The avatar branch
+   already sets `display:flex` inline and is unaffected either way. */
+#nav-profile-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+#nav-profile-link img { flex: none; }
+.nav-chip-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* The drawer is its own column, is not width-constrained by the bar, and is
+   where a pupil goes to read the name in full. */
+.nav-drawer-auth .nav-chip-name { max-width: 190px; }
 
 /* ── Hamburger button ── */
 .nav-burger {
@@ -320,6 +393,11 @@
    never overflows. Challenge (primary CTA), Sign In and the menu stay put. */
 @media (max-width: 400px) {
   .nav-cluster .nav-icon-link { display: none; }
+  /* The bell (MRB-337) stands where Leaderboard and Search used to, and it is
+     deliberately NOT a .nav-icon-link — a bell that hides on the phone most
+     students carry is a bell nobody reads. Nothing else collapses here: the
+     display name yields the last of the room on its own, by the shrink rule
+     above, which costs a long name some characters and a short one nothing. */
 }
 @media (max-width: 360px) {
   .nav-brand { font-size: 1rem; }
