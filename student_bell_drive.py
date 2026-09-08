@@ -95,13 +95,31 @@ TEACHER = "mrb326_teacher@throwaway.test"
 PW_ENV = "MRB_THROWAWAY_PASSWORD"
 
 SITE_PORT = 5507          # not 5500 — student_controls_drive owns that one
+_SITE = {"base": ""}
+
+
+def base_site():
+    """The local site's origin. Module-level because the real-route phases
+    take the BACKEND's base as their `base` argument and still need this."""
+    return _SITE["base"]
+
 SHOTS = os.path.join(cdp.gate_tmp(), "bell")
 
-# The backend the proxy forwards the rest of the traffic to. The local one if
-# it is up (the class page needs a backend that accepts a TEST JWT, which the
-# production instance does not), else nothing — and the class-page phase then
-# says so rather than reporting a mount failure as a bell defect.
-LOCAL_BACKENDS = ("http://localhost:3336", "http://localhost:3000",
+# The backend the proxy forwards to, and the one the real route is read from.
+# The class page needs a backend that accepts a TEST JWT, which the production
+# instance does not.
+#
+# ⚠️ 3337 IS THE ONE, AND 3336 IS A TRAP. Two local backends were running on
+# 8 Sep: 3337 from the MRB-337 backend worktree, carrying these routes, and
+# 3336 from an earlier pass off backend `main`, which does not. This drive
+# probed 3336 first, got a 404 on `/api/student/notifications`, and reported
+# the route as NOT BUILT — a whole security assertion skipped because the
+# probe was pointed at the wrong process. 3336 is deliberately NOT on this
+# list; another lane is using it and it must not be killed either.
+#
+# The probe below tells the two apart properly now: a REGISTERED route answers
+# 401 unauthenticated, an absent one answers 404.
+LOCAL_BACKENDS = ("http://localhost:3337", "http://localhost:3000",
                   "http://localhost:3100")
 
 results = []          # (name, ok|None, detail)   ok=None → NOT EXECUTED
@@ -219,11 +237,27 @@ class Feed:
         self.reads = []          # ids POSTed to …/read
         self.gets = 0
         self.bearers = []
+        # ⚠️ PASSTHROUGH TURNS THE PROXY INTO A PURE CORS SHIM. In this mode
+        # it synthesises NOTHING: both notification routes are forwarded to
+        # the real backend with the caller's bearer untouched, so the page is
+        # talking to the backend lane's own handler.
+        #
+        # It exists because the backend's CORS allowlist is
+        # `mrbadmus.com`, `localhost:3000` and `localhost:5500` — and this
+        # drive serves the site on 5507, deliberately, so it cannot collide
+        # with `student_controls_drive`. Without the shim every fetch the
+        # class page makes is blocked and the page renders its "could not
+        # load" sentence, which reads exactly like a bell defect and is not
+        # one. (CLAUDE.md's own note: a CORS-blocked page gives a false
+        # layout pass.) The alternative — moving the site onto 5500 — trades
+        # a shim for a port collision with another lane's browser.
+        self.passthrough = False
 
-    def set(self, items):
+    def set(self, items, passthrough=False):
         self.items = items
         self.reads = []
         self.gets = 0
+        self.passthrough = passthrough
 
 
 FEED = Feed()
@@ -241,24 +275,42 @@ def live_backend():
     return None
 
 
-def real_route_exists(base, bearer):
-    """Does the BACKEND LANE's route answer yet? Probed, never assumed.
+def probe_route(base, bearer):
+    """Is the route REGISTERED? Two questions, because one is not enough.
 
-    A 404 means not built. A 401 without a bearer, or a 200 with one, means
-    built — and `route_rls` then runs for real against it.
+    ⚠️ THE UNAUTHENTICATED PROBE IS THE ONE THAT PROVES IT. A registered route
+    behind `getUser()` answers 401 with no bearer; a route Express has never
+    heard of answers 404. Asking only the authenticated question conflates
+    "the route is missing" with "my token was refused", and a single
+    `except: return False` conflates both with "the port was wrong" — which is
+    exactly how this drive skipped `route_rls` on its first pass.
+
+    Returns (registered, how) so the run can PRINT which of the two it saw.
     """
     if not base:
-        return False
+        return False, "no local backend"
+    unauth = None
+    try:
+        req = urllib.request.Request(base + "/api/student/notifications")
+        with urllib.request.urlopen(req, timeout=10) as r:
+            unauth = r.status
+    except urllib.error.HTTPError as e:
+        unauth = e.code
+    except Exception as err:                                 # noqa: BLE001
+        return False, "unreachable: %s" % err
+    if unauth == 404:
+        return False, "404 unauthenticated — not registered on %s" % base
     try:
         req = urllib.request.Request(
             base + "/api/student/notifications",
             headers={"Authorization": "Bearer " + bearer})
-        with urllib.request.urlopen(req, timeout=10) as r:
-            return r.status == 200
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return r.status == 200, ("%s unauthenticated, %s with a bearer"
+                                     % (unauth, r.status))
     except urllib.error.HTTPError as e:
-        return e.code != 404
-    except Exception:                                        # noqa: BLE001
-        return False
+        return False, "%s unauthenticated, %s with a bearer" % (unauth, e.code)
+    except Exception as err:                                 # noqa: BLE001
+        return False, "%s unauthenticated, then %s" % (unauth, err)
 
 
 class Proxy(http.server.BaseHTTPRequestHandler):
@@ -300,13 +352,14 @@ class Proxy(http.server.BaseHTTPRequestHandler):
         if self.path.split("?")[0] == "/api/student/notifications":
             FEED.gets += 1
             FEED.bearers.append(self.headers.get("Authorization", ""))
-            return self._json(200, FEED.items)
+            if not FEED.passthrough:
+                return self._json(200, FEED.items)
         self._forward("GET")
 
     def do_POST(self):                # noqa: N802
         m = re.match(r"^/api/student/notifications/(.+)/read$",
                      self.path.split("?")[0])
-        if m:
+        if m and not FEED.passthrough:
             FEED.reads.append(urllib.parse.unquote(m.group(1)))
             for it in FEED.items:
                 if str(it.get("id")) == FEED.reads[-1]:
@@ -466,8 +519,13 @@ def sample(assignment_id, reminder_id=None):
         {"id": "feedback:22222222-2222-2222-2222-222222222222",
          "kind": "feedback", "text": "Check your units on question 3.",
          "created_at": iso(120), "read": True},
-        {"id": "new_work:44444444-4444-4444-4444-444444444444",
-         "kind": "new_work", "text": "Particle model, due Thursday.",
+        # ⚠️ `work`, NOT `new_work`. `NOTIF_SOURCES` on the backend is
+        # ['reminder','feedback','shoutout','work']; the proxy must speak the
+        # real contract or the frontend claims it proves are claims about a
+        # contract nobody implements. Fed as `new_work` this row rendered
+        # under the heading `Reminder` and nothing said so.
+        {"id": "work:44444444-4444-4444-4444-444444444444",
+         "kind": "work", "text": "Particle model, due Thursday.",
          "created_at": iso(60), "read": True},
     ]
 
@@ -669,7 +727,7 @@ def phase_class(key, sess_a, base, api, aid, seeded):
     try:
         if not plant(b, base, key, sess_a):
             return check("class_session", False, "could not plant the session")
-        FEED.set(sample(aid, seeded if seeded and seeded != "existing" else None))
+        FEED.set(sample(aid, seeded))
         sized(b, 1280)
         page = b.page(url, settle=1.0)
         n = wait_mount(page)
@@ -745,11 +803,6 @@ def phase_class(key, sess_a, base, api, aid, seeded):
         time.sleep(0.3)
 
         # ── the banner, and the join ─────────────────────────────────────
-        if seeded == "existing":
-            return check("banner_lives", None,
-                         "today's reminder row already existed, so its id is "
-                         "not this run's to feed the bell — re-run tomorrow, "
-                         "or pass --keep and read the row id from the log")
         if not seeded:
             check("banner_lives", None,
                   "no reminder row could be seeded for this pupil — see the "
@@ -1032,7 +1085,7 @@ def phase_assignment_header(base, api, aid):
         b.close()
 
 
-def phase_rls(key, sess_a, sess_b, uid_a, uid_b, api_base, real_route):
+def phase_rls(key, sess_a, sess_b, uid_a, uid_b):
     """A pupil cannot read another pupil's rows.
 
     ⚠️ ONE BROWSER PER PERSONA, and this phase uses none at all: it asks the
@@ -1072,101 +1125,369 @@ def phase_rls(key, sess_a, sess_b, uid_a, uid_b, api_base, real_route):
               "pupil B — same class — read %d row(s) and NONE of pupil A's %d"
               % (len(mine), len(a_rows)))
 
-    if not real_route:
-        return check("route_rls", None,
-                     "GET /api/student/notifications does not exist yet on the "
-                     "backend (probed, 404) — this is the BACKEND lane's route "
-                     "and this check could not be executed")
-    req = urllib.request.Request(
-        api_base + "/api/student/notifications",
-        headers={"Authorization": "Bearer " + sess_b["access_token"]})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            rows = json.loads(r.read().decode())
-    except Exception as err:                                 # noqa: BLE001
-        return check("route_rls", False, "the route errored: %s" % err)
-    rows = rows if isinstance(rows, list) else rows.get("notifications", [])
-    leaked = [x for x in rows if uid_a in json.dumps(x)]
-    check("route_rls", not leaked,
-          "the real route gave pupil B %d row(s), %d of them pupil A's"
-          % (len(rows), len(leaked)))
+    # ⊕ The route-level question moved to `phase_route`, which asks it four
+    # ways against the real handler. What stays here is the DATABASE's own
+    # answer, and it is a different claim worth keeping: the route reads with
+    # the SERVICE-ROLE key, so RLS is not what protects it — but RLS is still
+    # what protects every other reader of these tables, including the class
+    # page's own `student_reminders_for_viewer`.
 
 
 # ── seeding one real reminder, so the banner has something to draw ───────
 
-def seed_reminder(key, sess_teacher, uid_a):
-    """Insert ONE reminder for pupil A, as the teacher, under REAL RLS.
+class Seed:
+    """Every row this drive writes, and how to take it all away again.
 
-    Returns (row_id, class_id, assignment_id) or (None, None, None) with the
-    reason printed.
-
-    ⚠️ DELIBERATELY NOT WRITTEN WITH THE SERVICE KEY. `student_notifications`
-    takes an INSERT only from someone who `auth_user_teaches_class(class_id)`
-    and who is `sent_by` themselves, and `class_id`/`assignment_id` are both
-    NOT NULL. A row forced past that policy would be a row no teacher could
-    actually send, and the banner it produced would be proving nothing.
+    ⚠️ WRITTEN AS THE TEACHER, UNDER REAL RLS, NEVER WITH THE SERVICE KEY. A
+    row forced past `student_notifications_teacher_send` or
+    `class_shoutouts_insert` would be a row no teacher could actually send,
+    and every assertion standing on it would be an assertion about a world
+    that does not exist. The service key appears only in `teardown`, which is
+    cleanup and proves nothing.
     """
-    tok = sess_teacher["access_token"]
-    uid_t = sess_teacher["user"]["id"]
 
-    # The teacher's own class that pupil A is in, read as the teacher.
-    st, mine = call("GET", SB_URL + "/rest/v1/class_teachers?select=class_id",
-                    key, tok)
-    class_ids = [r["class_id"] for r in (mine or [])] if st == 200 else []
-    if not class_ids:
-        print("     ⚠️  the throwaway teacher teaches no class on TEST")
-        return None, None, None
-    st, mem = call(
-        "GET", SB_URL + "/rest/v1/class_members?select=class_id&student_id=eq."
-        + uid_a + "&class_id=in.(" + ",".join(class_ids) + ")", key, tok)
-    shared = [r["class_id"] for r in (mem or [])] if st == 200 else []
-    if not shared:
-        print("     ⚠️  the throwaway teacher does not teach pupil A")
-        return None, None, None
-    class_id = shared[0]
+    def __init__(self, key, sess_t, uid_a, uid_b):
+        self.key, self.tok = key, sess_t["access_token"]
+        self.uid_t = sess_t["user"]["id"]
+        self.uid_a, self.uid_b = uid_a, uid_b
+        self.class_id = None
+        self.released = None        # a RELEASED teacher assignment
+        self.unreleased = None      # one released next week
+        self.rem_a = self.rem_b = None
+        self.shout_a = self.shout_b = None
+        self.fb_a = None
+        self.notes = []
+        self.trash = []             # (table, id) in delete order
 
-    # `assignment_id` is NOT NULL, so the reminder has to be ABOUT something.
-    st, asg = call(
-        "GET", SB_URL + "/rest/v1/assignments?select=id&deleted_at=is.null"
-        "&class_id=eq." + class_id + "&order=created_at.desc&limit=1", key, tok)
-    if st != 200 or not asg:
-        print("     ⚠️  that class has no assignment to remind about")
-        return None, None, class_id
-    assignment_id = asg[0]["id"]
+    # ── helpers ─────────────────────────────────────────────────────────
+    def _post(self, table, row):
+        st, body = call("POST", SB_URL + "/rest/v1/" + table, self.key,
+                        self.tok, row, prefer="return=representation")
+        if st in (200, 201) and isinstance(body, list) and body:
+            self.trash.insert(0, (table, body[0]["id"]))
+            return body[0]
+        self.notes.append("%s refused (HTTP %s %s)"
+                          % (table, st, json.dumps(body)[:300]))
+        return None
 
-    st, body = call(
-        "POST", SB_URL + "/rest/v1/student_notifications", key, tok,
-        {"student_id": uid_a, "class_id": class_id,
-         "assignment_id": assignment_id, "kind": "reminder", "sent_by": uid_t},
-        prefer="return=representation")
-    if st in (200, 201) and isinstance(body, list) and body:
-        print("     🌱 seeded reminder %s (class %s, assignment %s)"
-              % (body[0]["id"][:8], class_id[:8], assignment_id[:8]))
-        return body[0]["id"], class_id, assignment_id
-    # A 409 is the unique index `(student_id, assignment_id, sent_on)` — the
-    # drive has already run today. Reuse the row rather than reporting a
-    # collision as a bell defect, and do NOT delete it at the end: it is not
-    # this run's row to remove.
-    if st == 409:
-        print("     ↺ a reminder for pupil A already exists today — reused, "
-              "and it will NOT be deleted by this run")
-        return "existing", class_id, assignment_id
-    print("     ⚠️  could not seed a reminder (HTTP %s %s)"
-          % (st, json.dumps(body)[:200]))
-    return None, None, class_id
+    def build(self):
+        # The teacher's own class that BOTH pupils are in. Same class is the
+        # strong form of the cross-pupil question: not "can a stranger see
+        # it" but "can the pupil sitting next to her".
+        st, mine = call("GET", SB_URL + "/rest/v1/class_teachers?select=class_id",
+                        self.key, self.tok)
+        ids = [r["class_id"] for r in (mine or [])] if st == 200 else []
+        if not ids:
+            self.notes.append("the throwaway teacher teaches no class")
+            return self
+        st, mem = call(
+            "GET", SB_URL + "/rest/v1/class_members?select=class_id,student_id"
+            "&student_id=in.(%s)&class_id=in.(%s)"
+            % (",".join([self.uid_a, self.uid_b]), ",".join(ids)),
+            self.key, self.tok)
+        shared = {}
+        for r in (mem or []):
+            shared.setdefault(r["class_id"], set()).add(r["student_id"])
+        both = [c for c, who in shared.items()
+                if {self.uid_a, self.uid_b} <= who]
+        if not both:
+            self.notes.append("the two pupils share no class this teacher teaches")
+            return self
+        self.class_id = both[0]
+
+        # Shape copied off an existing row rather than guessed: `subject_id`,
+        # `topic` and `quiz_type` are all NOT NULL.
+        st, model = call(
+            "GET", SB_URL + "/rest/v1/assignments?select=subject_id,quiz_type"
+            "&class_id=eq." + self.class_id + "&limit=1", self.key, self.tok)
+        if st != 200 or not model:
+            self.notes.append("no assignment on that class to copy a shape from")
+            return self
+        # ⚠️ `auto_generated=False` IS NOT OPTIONAL. The CHECK
+        # `assignments_source_agrees_with_auto_generated` reads
+        #     (source = 'auto') = COALESCE(auto_generated, true)
+        # so a row with `source='teacher'` and the column left NULL is
+        # refused 23514 — which is what happened on the first pass, and the
+        # message came back truncated to `assignments_so…`. Both are fixed:
+        # the column is set, and `_post` prints enough of the error to name
+        # the constraint.
+        base = dict(class_id=self.class_id, subject_id=model[0]["subject_id"],
+                    quiz_type=model[0]["quiz_type"], topic="MRB-337 drive",
+                    source="teacher", auto_generated=False)
+
+        # ⚠️ `source='teacher'` ON BOTH, and that is what makes the pair a
+        # test. The route synthesises `work` from teacher-set assignments
+        # only; the class's existing row is `source='auto'`, so it is
+        # correctly invisible either way and could not have told these apart.
+        now = time.time()
+        self.released = self._post("assignments", dict(
+            base, title="MRB-337 released",
+            release_at=time.strftime("%Y-%m-%dT%H:%M:%SZ",
+                                     time.gmtime(now - 3600))))
+        self.unreleased = self._post("assignments", dict(
+            base, title="MRB-337 UNRELEASED",
+            release_at=time.strftime("%Y-%m-%dT%H:%M:%SZ",
+                                     time.gmtime(now + 7 * 86400))))
+        if not self.released:
+            return self
+
+        aid = self.released["id"]
+        self.rem_a = self._post("student_notifications", dict(
+            student_id=self.uid_a, class_id=self.class_id, assignment_id=aid,
+            kind="reminder", sent_by=self.uid_t))
+        self.rem_b = self._post("student_notifications", dict(
+            student_id=self.uid_b, class_id=self.class_id, assignment_id=aid,
+            kind="reminder", sent_by=self.uid_t))
+        self.shout_a = self._post("class_shoutouts", dict(
+            class_id=self.class_id, author_id=self.uid_t,
+            recipient_id=self.uid_a, message="MRB-337 drive, pupil A."))
+        self.shout_b = self._post("class_shoutouts", dict(
+            class_id=self.class_id, author_id=self.uid_t,
+            recipient_id=self.uid_b, message="MRB-337 drive, pupil B."))
+
+        # Feedback needs a SUBMISSION, and only pupil A has one on TEST. So
+        # the cross-pupil claim is proved on reminders, shout-outs and work
+        # for both pupils and on feedback for A alone — said, not glossed.
+        st, sub = call(
+            "GET", SB_URL + "/rest/v1/assignment_submissions?select=id"
+            "&student_id=eq." + self.uid_b + "&deleted_at=is.null&limit=1",
+            self.key, self.tok)
+        if st == 200 and sub:
+            self.fb_a = self._post("submission_feedback", dict(
+                submission_id=sub[0]["id"], teacher_id=self.uid_t,
+                body="MRB-337 drive feedback for pupil B."))
+            self.fb_owner = self.uid_b
+        else:
+            self.notes.append("pupil B has no submission, so no feedback row "
+                              "could be seeded for them")
+            self.fb_owner = None
+        return self
+
+    def describe(self):
+        got = [n for n, v in (("released", self.released),
+                              ("unreleased", self.unreleased),
+                              ("reminder A", self.rem_a),
+                              ("reminder B", self.rem_b),
+                              ("shoutout A", self.shout_a),
+                              ("shoutout B", self.shout_b),
+                              ("feedback B", self.fb_a)) if v]
+        return "seeded: %s%s" % (", ".join(got) or "nothing",
+                                 ("  ⚠️ " + "; ".join(self.notes))
+                                 if self.notes else "")
+
+    def teardown(self):
+        """⚠️ EVERY DELETE'S STATUS IS CHECKED AND THE TABLE IS RE-QUERIED.
+        A teardown that prints "torn down" and leaves the world standing is
+        the failure this repo has already paid for once."""
+        svc = service_key()
+        if not svc:
+            print("     ⚠️  NOTHING REMOVED — no TEST service-role key, and "
+                  "student_notifications has no delete policy for anybody. "
+                  "Rows left: %s" % self.trash)
+            return
+        # Read-marks the drive itself created, first: they reference nothing
+        # by FK but they would make the next run's `read` flags wrong.
+        call("DELETE", SB_URL + "/rest/v1/student_message_reads?student_id=in.(%s)"
+             % ",".join([self.uid_a, self.uid_b]), svc, svc)
+        bad = []
+        for table, row_id in self.trash:
+            st, _ = call("DELETE",
+                         SB_URL + "/rest/v1/" + table + "?id=eq." + row_id,
+                         svc, svc)
+            if st not in (200, 204):
+                bad.append("%s/%s HTTP %s" % (table, row_id[:8], st))
+        left = []
+        for table, row_id in self.trash:
+            st, rows = call("GET", SB_URL + "/rest/v1/" + table +
+                            "?select=id&id=eq." + row_id, svc, svc)
+            if st == 200 and rows:
+                left.append("%s/%s" % (table, row_id[:8]))
+        print("     🧹 %d row(s) removed%s%s"
+              % (len(self.trash),
+                 ("; REFUSED: " + ", ".join(bad)) if bad else "",
+                 ("; STILL PRESENT: " + ", ".join(left)) if left
+                 else "; re-queried, none left"))
 
 
-def unseed(row_id):
-    svc = service_key()
-    if not row_id or row_id == "existing":
+def route_get(base, bearer):
+    req = urllib.request.Request(
+        base + "/api/student/notifications",
+        headers={"Authorization": "Bearer " + bearer})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return r.status, json.loads(r.read().decode())
+    except urllib.error.HTTPError as e:
+        return e.code, e.read().decode()[:300]
+
+
+def route_read(base, bearer, notif_id):
+    req = urllib.request.Request(
+        base + "/api/student/notifications/" +
+        urllib.parse.quote(notif_id, safe="") + "/read",
+        headers={"Authorization": "Bearer " + bearer}, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return r.status, json.loads(r.read().decode())
+    except urllib.error.HTTPError as e:
+        return e.code, e.read().decode()[:300]
+
+
+def phase_route(base, key, sess_a, sess_b, seed, registered, how):
+    """THE REAL ROUTE. Not the proxy — the backend lane's own handler.
+
+    ⚠️ THIS IS THE ASSERTION THAT MATTERS MOST IN THIS FILE, and the reason is
+    that RLS IS NOT PROTECTING IT. The route reads with the SERVICE-ROLE key
+    and re-derives the pupil's scope by hand, so every predicate the database
+    would have enforced is a line of JavaScript that can be forgotten. An
+    independent review found and fixed exactly that today — a reminder's title
+    read with no membership, school or release filter, which rendered a
+    foreign assignment's title to a child.
+
+    Four questions, all on rows this drive seeded, with the two pupils in the
+    SAME CLASS:
+
+      route_no_cross_pupil   A's list contains none of B's messages
+      route_read_refused     a POST carrying B's composite id neither marks it
+                             read nor writes a row
+      route_unreleased       an unreleased teacher assignment is not `New work`
+      route_bare_uuid        a bare uuid is refused 400, not guessed at
+    """
+    print("\n  ── phase 7 · the REAL route, read with the service key ──")
+    if not registered:
+        for n in ("route_no_cross_pupil", "route_read_refused",
+                  "route_unreleased", "route_bare_uuid"):
+            check(n, None, "the route is not registered (%s)" % how)
         return
-    if not svc:
-        print("     ⚠️  seeded reminder %s LEFT IN PLACE — no service key, and "
-              "student_notifications has no delete policy for anybody." % row_id)
+    if not seed.released:
+        for n in ("route_no_cross_pupil", "route_read_refused",
+                  "route_unreleased", "route_bare_uuid"):
+            check(n, None, "nothing could be seeded: %s" % "; ".join(seed.notes))
         return
-    st, _ = call("DELETE", SB_URL + "/rest/v1/student_notifications?id=eq."
-                 + row_id, svc, svc)
-    print("     🧹 seeded reminder %s removed (HTTP %s)" % (row_id, st))
+
+    st_a, a = route_get(base, sess_a["access_token"])
+    st_b, b = route_get(base, sess_b["access_token"])
+    if st_a != 200 or st_b != 200:
+        return check("route_no_cross_pupil", False,
+                     "GET answered %s / %s" % (st_a, st_b))
+    a_items = a.get("notifications", [])
+    b_items = b.get("notifications", [])
+    a_ids = {x["id"] for x in a_items}
+    b_ids = {x["id"] for x in b_items}
+
+    # ── B's OWN messages, by id, none of which may be in A's list ───────
+    b_only = set()
+    for row, src in ((seed.rem_b, "reminder"), (seed.shout_b, "shoutout")):
+        if row:
+            b_only.add(src + ":" + row["id"])
+    if seed.fb_a and seed.fb_owner == seed.uid_b:
+        b_only.add("feedback:" + seed.fb_a["id"])
+    leaked = sorted(a_ids & b_only)
+    check("route_no_cross_pupil",
+          bool(b_only) and not leaked and b_only <= b_ids,
+          "A got %d message(s), B got %d; B's own %d (%s) — %s"
+          % (len(a_items), len(b_items), len(b_only),
+             ", ".join(sorted(x.split(":")[0] for x in b_only)),
+             "none in A's list" if not leaked else "LEAKED " + ", ".join(leaked)))
+
+    # ── a mark-read for somebody else's message ─────────────────────────
+    victim = ("reminder:" + seed.rem_b["id"]) if seed.rem_b else None
+    if not victim:
+        check("route_read_refused", None, "no pupil-B reminder was seeded")
+    else:
+        st, body = route_read(base, sess_a["access_token"], victim)
+        # The row must still be unread, read as the SERVICE key so RLS cannot
+        # be what hides the answer.
+        svc = service_key()
+        still = None
+        if svc:
+            _, rows = call("GET", SB_URL + "/rest/v1/student_notifications"
+                           "?select=read_at&id=eq." + seed.rem_b["id"], svc, svc)
+            still = (rows or [{}])[0].get("read_at")
+            _, marks = call(
+                "GET", SB_URL + "/rest/v1/student_message_reads?select=source"
+                "&student_id=eq." + seed.uid_a, svc, svc)
+        else:
+            marks = None
+        check("route_read_refused",
+              st == 404 and still is None and not marks,
+              "A's POST of B's reminder answered %s; B's read_at is %r; "
+              "%s read-mark row(s) written for A"
+              % (st, still, "no" if not marks else len(marks)))
+
+    # ── the unreleased assignment ───────────────────────────────────────
+    if not seed.unreleased:
+        check("route_unreleased", None, "no unreleased assignment was seeded")
+    else:
+        un = "work:" + seed.unreleased["id"]
+        rel = "work:" + seed.released["id"]
+        st_un, _ = route_read(base, sess_a["access_token"], un)
+        check("route_unreleased",
+              un not in a_ids and rel in a_ids and st_un == 404,
+              "the released set IS `New work` in A's list, the unreleased one "
+              "is absent, and marking it read answers %s" % st_un)
+
+    # ── a bare uuid is refused, not guessed ─────────────────────────────
+    st, body = route_read(base, sess_a["access_token"],
+                          seed.rem_a["id"] if seed.rem_a
+                          else "11111111-1111-1111-1111-111111111111")
+    check("route_bare_uuid", st == 400,
+          "a bare uuid with no `<source>:` prefix answered %s — the route "
+          "refuses rather than picking one of four tables" % st)
+
+
+def phase_page_on_real_route(base, api, key, sess_a, seed, registered, how):
+    """The BELL, on the class page, reading the REAL route. No proxy.
+
+    Everything phase 1 proved was proved against a feed this file wrote. This
+    is the same page pointed straight at the backend, so the id shape, the
+    kind spellings, the envelope and the sort order are the backend lane's and
+    not mine — which is the only way `work` vs `new_work` was ever going to be
+    caught by a machine rather than by reading the handler.
+    """
+    print("\n  ── phase 8 · the bell on the class page, real route ──")
+    if not registered or not seed.released:
+        return check("bell_on_real_route", None,
+                     "the route is not registered (%s)" % how if not registered
+                     else "nothing could be seeded")
+    st, body = route_get(base, sess_a["access_token"])
+    want = body.get("notifications", []) if st == 200 else []
+    FEED.set([], passthrough=True)          # the shim forwards, it does not feed
+    b = cdp.Browser().start()
+    try:
+        if not plant(b, base_site(), key, sess_a):
+            return check("bell_on_real_route", False, "could not plant")
+        sized(b, 1280)
+        url = (base_site() + "/student/class.html?env=test&api=" +
+               urllib.parse.quote(api, safe=""))
+        page = b.page(url, settle=1.0)
+        if wait_mount(page) < 20:
+            return check("bell_on_real_route", None,
+                         "the class page did not mount")
+        st_ui = wait_bell(page)
+        page.eval("document.querySelector('[data-mrb-bell]').click()")
+        time.sleep(0.7)
+        ui = page.eval(BELL_STATE)
+        heads = page.eval(
+            "(function(){var r=document.querySelectorAll('.mrb-bell-kind');"
+            "return Array.prototype.map.call(r,function(e){"
+            "return (e.innerText||'').trim();});})()") or []
+        page.screenshot(os.path.join(SHOTS, "class-real-route-1280.png"),
+                        1280, 900)
+        unread = sum(1 for x in want if not x.get("read"))
+        # ⚠️ NO `Message` HEADING ANYWHERE. That is the bell's honest fallback
+        # for a kind it has never heard of, and seeing it here would mean the
+        # contract has moved without this file noticing — which is precisely
+        # what `new_work` did, silently, under the heading `Reminder`.
+        check("bell_on_real_route",
+              FEED.gets >= 1 and ui.get("panelRows") == len(want)
+              and (ui.get("badgeText") == ("9+" if unread > 9 else str(unread)))
+              and "Message" not in heads,
+              "the route returned %d message(s), %d unread; the panel drew "
+              "%d row(s), the badge read %r, headings %s"
+              % (len(want), unread, ui.get("panelRows"), ui.get("badgeText"),
+                 sorted(set(heads))))
+    finally:
+        b.close()
 
 
 # ── main ─────────────────────────────────────────────────────────────────
@@ -1202,44 +1523,54 @@ def main():
     Proxy.upstream = live_backend()
     print("     upstream: %s" % (Proxy.upstream or
                                  "NONE — the class-page phase will not run"))
-    real = real_route_exists(Proxy.upstream, sess_a["access_token"])
-    print("     the real /api/student/notifications: %s"
-          % ("PRESENT — route_rls will run for real" if real
-             else "NOT BUILT YET (probed) — route_rls cannot run"))
+    registered, how = probe_route(Proxy.upstream, sess_a["access_token"])
+    print("     the real /api/student/notifications: %s (%s)"
+          % ("REGISTERED — phases 7 and 8 run for real" if registered
+             else "NOT USABLE — phases 7 and 8 cannot run", how))
 
     srv, api = start_proxy()
     site, port = cdp.serve("mrbadmus_site", port=SITE_PORT)
-    base = "http://localhost:%d" % port
+    _SITE["base"] = base = "http://localhost:%d" % port
     print("     proxy: %s     site: %s" % (api, base))
 
-    # An assignment id to point the reminder at. Pupil A's own, if there is
-    # one — a real id makes `tap_opens` a real navigation.
-    st, rows = call("GET", SB_URL + "/rest/v1/assignments?select=id&limit=1",
-                    key, sess_a["access_token"])
-    aid = (rows[0]["id"] if st == 200 and isinstance(rows, list) and rows
-           else "00000000-0000-0000-0000-0000000000aa")
-
-    seeded = None
+    seed = None
     try:
         try:
             sess_t = sign_in(TEACHER, pw, key)
-            seeded, _cls, seeded_aid = seed_reminder(key, sess_t, uid_a)
-            if seeded_aid:
-                aid = seeded_aid          # a real id, so tap_opens is real
+            seed = Seed(key, sess_t, uid_a, uid_b).build()
+            print("     " + seed.describe())
         except SystemExit as err:
-            print("     ⚠️  no teacher session (%s) — the banner path will "
+            print("     ⚠️  no teacher session (%s) — the seeded phases will "
                   "report NOT EXECUTED" % str(err)[:80])
+
+        # A REAL assignment id, so `tap_opens` is a real navigation.
+        aid = (seed.released["id"] if seed and seed.released
+               else "00000000-0000-0000-0000-0000000000aa")
+        rem_a = seed.rem_a["id"] if seed and seed.rem_a else None
 
         phase_source()
         phase_chrome(key, sess_a, base, api, aid)
-        phase_class(key, sess_a, base, api, aid, seeded)
+        phase_class(key, sess_a, base, api, aid, rem_a)
         phase_surfaces(key, sess_a, base, api, aid)
         phase_assignment_header(base, api, aid)
         phase_signed_out(base, api)
-        phase_rls(key, sess_a, sess_b, uid_a, uid_b, Proxy.upstream, real)
+        phase_rls(key, sess_a, sess_b, uid_a, uid_b)
+        if seed:
+            phase_route(Proxy.upstream, key, sess_a, sess_b, seed,
+                        registered, how)
+            phase_page_on_real_route(Proxy.upstream, api, key, sess_a, seed,
+                                     registered, how)
+        else:
+            for n in ("route_no_cross_pupil", "route_read_refused",
+                      "route_unreleased", "route_bare_uuid",
+                      "bell_on_real_route"):
+                check(n, None, "no teacher session, so nothing was seeded")
     finally:
-        if seeded and not args.keep:
-            unseed(seeded)
+        if seed and not args.keep:
+            seed.teardown()
+        elif seed:
+            print("     --keep: %d row(s) LEFT IN PLACE %s"
+                  % (len(seed.trash), seed.trash))
         srv.shutdown()
         site.shutdown()
 

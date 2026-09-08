@@ -49,12 +49,26 @@
   /* Said about the student's messages, never about a request or a server —
      the same shape as `SAY.generic` in student-live.js. */
   var FAILED  = "We could not load your messages just now.";
+  /* ⚠️ THE FOURTH KIND IS `work`, NOT `new_work`, AND GETTING IT WRONG WAS
+     SILENT. `NOTIF_SOURCES` on the backend is
+     `['reminder','feedback','shoutout','work']` and the composite id is
+     `<source>:<uuid>`, so a `work` entry arriving at a map that only knew
+     `new_work` fell through the `KINDS[r.kind] ? r.kind : "reminder"`
+     normaliser and was RELABELLED `Reminder` — the right message under the
+     wrong heading, with nothing anywhere saying so. `new_work` is kept as a
+     tolerated alias because it costs one line and it means a rename on either
+     side degrades to the right word rather than to the wrong one. */
   var KINDS   = {
     reminder: "Reminder",
     feedback: "Feedback",
     shoutout: "Shoutout",
+    work:     "New work",
     new_work: "New work"
   };
+  /* ⚠️ AN UNKNOWN KIND IS NOT A REMINDER. It used to become one, which is a
+     LIE about who sent the message and what it is about. A kind this build has
+     never heard of gets the only honest heading there is. */
+  var KIND_UNKNOWN = "Message";
 
   var PATH_LIST = "/api/student/notifications";
   var PATH_READ = "/api/student/notifications/";   // + <id> + "/read"
@@ -458,7 +472,7 @@
       kind.appendChild(dot);
     }
     kind.appendChild(document.createTextNode(
-      KINDS[item.kind] || KINDS.reminder));
+      KINDS[item.kind] || KIND_UNKNOWN));
 
     var text = el("span", "", item.text || "");
     text.className = "mrb-bell-text";
@@ -594,7 +608,10 @@
       if (!r.id) { continue; }
       out.push({
         id: String(r.id),
-        kind: KINDS[r.kind] ? r.kind : "reminder",
+        /* Kept VERBATIM. `row()` decides the heading; normalising an unknown
+           kind to a known one here would throw away the only evidence that
+           the contract has moved. */
+        kind: String(r.kind || ""),
         text: typeof r.text === "string" ? r.text : "",
         created_at: r.created_at || null,
         read: !!r.read,
