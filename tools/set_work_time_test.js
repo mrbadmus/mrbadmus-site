@@ -108,5 +108,26 @@ check("1 Jan 2027", SW.londonDateLabel("2027-01-01T09:00:00.000Z"), "1 Jan 2027"
 check("13 Sep 23:30Z is 14 Sep in London",
       SW.londonDateLabel("2026-09-13T23:30:00.000Z"), "14 Sep 2026");
 
+/* ── the school hold is LONDON midnight ────────────────────────────────────
+ * MRB-335 item 4. `schools.assignments_open_from` is a DATE, and
+ * `Date.parse("2026-09-14")` reads it as 00:00 UTC — which in BST is 01:00 on
+ * the morning of the 14th. Work released at 00:30 London on the day a school
+ * opens was therefore judged to be BEFORE the hold, one hour wide, five months
+ * of the year, and only ever at night. `holdMs()` converts the DATE the same
+ * way the release and due fields are converted, so the sheet and the server
+ * cannot disagree about the same midnight. */
+console.log("\nschool hold — London midnight on its own date");
+check("14 Sep 2026 (BST) is 23:00Z on the 13th",
+      SW.londonToUtcIso("2026-09-14", "00:00"), "2026-09-13T23:00:00.000Z");
+check("…so 00:30 London on the 14th is NOT before it",
+      Date.parse(SW.londonToUtcIso("2026-09-14", "00:30")) >=
+      Date.parse(SW.londonToUtcIso("2026-09-14", "00:00")), true);
+check("…and naive UTC midnight would have said it WAS",
+      Date.parse("2026-09-14") > Date.parse(SW.londonToUtcIso("2026-09-14", "00:30")), true);
+check("4 Jan 2027 (GMT) is 00:00Z on the day itself",
+      SW.londonToUtcIso("2027-01-04", "00:00"), "2027-01-04T00:00:00.000Z");
+check("in GMT the naive read agrees",
+      Date.parse("2027-01-04"), Date.parse(SW.londonToUtcIso("2027-01-04", "00:00")));
+
 console.log(failures ? `\n${failures} FAILED` : "\nall checks passed");
 process.exit(failures ? 1 : 0);

@@ -107,15 +107,13 @@
    `position:fixed` with the body padded down to clear it. It is coded here
    rather than left as a note so that turning it on is one class and no
    rebuild. It is OFF: nothing sets this class today. */
-.sw-sheet.sw-fixed-header { position: relative; }
-.sw-sheet.sw-fixed-header .sw-head {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  border-radius: 0;
-}
-.sw-sheet.sw-fixed-header .sw-body { padding-top: 78px; }
+/* ⊕ MRB-335 — SCOPED TO THE NARROW BREAKPOINT, where the sheet is the whole
+   viewport. Unscoped, `position:fixed` on the header pinned it to the
+   VIEWPORT rather than to the 720px sheet, so at 1280px — where the sheet is
+   a centred card with 40px of scrim above it — turning the fallback on would
+   have stretched the header edge to edge across the page and left the card's
+   own top empty. The bug it exists for is an iOS Safari one, and iOS Safari
+   is inside this media query. See the rules at the foot of this file. */
 
 /* ── buttons ─────────────────────────────────────────────────────────────
    Design's footer pair, node 626/627, unchanged. */
@@ -471,6 +469,19 @@
   .sw-btn { padding: 0 12px; font-size: 15.5px; }
   .sw-btn-primary { padding: 0 14px; }
   .sw-kids { margin-left: 8px; padding-left: 8px; }
+
+  /* The iOS sticky fallback, off unless something adds `sw-fixed-header`
+     to the sheet. Declared HERE, inside the narrow breakpoint, for the
+     reason given where the class is introduced above. */
+  .sw-sheet.sw-fixed-header { position: relative; }
+  .sw-sheet.sw-fixed-header .sw-head {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0;
+  }
+  .sw-sheet.sw-fixed-header .sw-body { padding-top: 78px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

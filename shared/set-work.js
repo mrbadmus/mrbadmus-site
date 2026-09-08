@@ -486,14 +486,64 @@
      ═══════════════════════════════════════════════════════════════════ */
   var session = 0;
   var fetchSeq = 0;
+  /* True when the sheet was opened FROM a class — a card, the class screen,
+     the empty state. False from the classes screen, where there is no class
+     and the first tap chooses one. It decides one thing: whether unticking
+     the last class un-anchors. Anchored, the anchor is the page's fact and
+     is not the teacher's to clear by unticking. */
+  var isAnchoredOpen = false;
+  /* Restored on close, so a keyboard user is put back where they were. */
+  var opener = null;
+
+  /* ⊕ MRB-335 — AN IDEMPOTENCY KEY, because "it did not answer" and "it did
+     not happen" are different facts and the network cannot tell them apart.
+
+     A POST that times out after the server has written is indistinguishable
+     here from one that never arrived. Without a key the honest options are
+     both bad: retry and risk two identical assignments for thirty children,
+     or refuse to retry and leave a teacher who pressed Set work unsure
+     whether they did. With one, the server replays the first answer and the
+     retry is free.
+
+     `client_ref` identifies A COMPOSED SET, not a press — so it is minted
+     when the Detail step is first reached, REUSED across retries of the same
+     set, and regenerated whenever the questions change (every `/preview`)
+     or the set lands. Reusing it across a genuinely different set would make
+     the second set silently replay the first. */
+  function uuid() {
+    try {
+      if (window.crypto && window.crypto.randomUUID) {
+        return window.crypto.randomUUID();
+      }
+    } catch (e) { /* falls through */ }
+    /* Not a v4 UUID and does not claim to be — it is a collision-resistant
+       token for one browser tab, and the server treats it as opaque. */
+    return "sw-" + Date.now().toString(36) + "-" +
+           Math.random().toString(36).slice(2, 12) +
+           Math.random().toString(36).slice(2, 12);
+  }
 
   function freshState(classId) {
     return {
+      /* ⊕ MRB-335 — THE ANCHOR MAY BE EMPTY, and on the classes screen it
+         always is. See `open()`. Everything scoped — the tree, the tier
+         list, the cohort — comes from `/scope?class_id=`, so until a class
+         is chosen there is nothing to ask for and step 0 is the only step
+         that can be drawn. */
       classId: classId,
       step: 0,                 // 0 Classes, 1 Topic, 2 Detail
       scope: null,             // the /scope answer
       scopeErr: false,
-      classes: [classId],      // the opening class, preselected
+      /* Anchored (a card, the class screen): that class, ticked. Unanchored
+         (the classes screen): nothing, and the first tap anchors. */
+      classes: classId ? [classId] : [],
+      /* The rows step 0 draws: every class this teacher may set work to,
+         from the page, before any request. `cohortIds` is null until
+         `/scope` answers and then names the ones that may be set TOGETHER. */
+      classPool: [],
+      cohortIds: null,
+      clientRef: "",
+      submitting: false,
       tier: "",
       subject: "all",
       paper: "both",
@@ -713,6 +763,22 @@
     wireShell();
   }
 
+  var FOCUSABLE = "button,[href],input,select,textarea,[tabindex]";
+
+  /* Everything inside the sheet a Tab could legitimately land on, in DOM
+     order: visible, enabled, and not inside a panel that is `hidden`. */
+  function focusables() {
+    var all = els.sheet.querySelectorAll(FOCUSABLE), out = [];
+    for (var i = 0; i < all.length; i++) {
+      var n = all[i];
+      if (n.disabled) { continue; }
+      if (n.getAttribute("tabindex") === "-1") { continue; }
+      if (!n.offsetParent && n !== els.sheet) { continue; }  // hidden subtree
+      out.push(n);
+    }
+    return out;
+  }
+
   function mkInput(type, label, mark) {
     var i = document.createElement("input");
     i.type = type;
@@ -755,7 +821,29 @@
       i.addEventListener("change", dateTimeSync);
     });
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && S) { close(); }
+      if (!S) { return; }
+      if (e.key === "Escape") { close(); return; }
+      /* ⊕ MRB-335 — TAB STAYS INSIDE THE SHEET.
+
+         The overlay is `position:fixed; inset:0` and the page behind it is
+         still in the tab order, so Tab walked out of a modal dialog and
+         down a class list nobody could see or click — `aria-modal="true"`
+         is a promise to assistive technology that the browser does not
+         keep on its own.
+
+         The list is read at the moment of the press rather than cached: the
+         sheet's controls change with every step, and a cached ring would
+         send Tab to a node that is now `hidden`. */
+      if (e.key !== "Tab") { return; }
+      var items = focusables();
+      if (!items.length) { return; }
+      var first = items[0], last = items[items.length - 1];
+      var here = document.activeElement;
+      if (e.shiftKey && (here === first || !els.sheet.contains(here))) {
+        e.preventDefault(); last.focus();
+      } else if (!e.shiftKey && (here === last || !els.sheet.contains(here))) {
+        e.preventDefault(); first.focus();
+      }
     });
   }
 
@@ -904,6 +992,11 @@
       r.count.textContent = String(n);
       var on = (S.scopeKind === r.kind && S.scopeRef === r.ref);
       r.row.classList.toggle("is-on", on);
+      /* ⊕ MRB-335 — the class rows have carried this since they were drawn;
+         the tree rows are the same kind of control (a toggle whose state is
+         a tint) and were announcing nothing at all. Screen-reader users
+         could not tell a chosen topic from an unchosen one. */
+      r.row.setAttribute("aria-pressed", on ? "true" : "false");
       /* A zero-count row is shown with its `0` and refuses to be picked. */
       r.row.setAttribute("aria-disabled", n > 0 ? "false" : "true");
       if (r.kind === "topic") {
@@ -954,6 +1047,27 @@
     return null;
   }
 
+  /* ⊕ MRB-335 — THE SUBJECT OF THE CHOSEN SCOPE, and it is not decoration.
+     `atomic-structure` is a topic id in BOTH chemistry and physics, so on a
+     combined class the server cannot resolve a topic by id alone: it would
+     have to guess, and half its guesses would hand a chemistry class the
+     physics tree. The tree row already carries the answer.
+
+     A subtopic takes its parent topic's subject — a subtopic id is unique
+     today, but sending it costs nothing and means the server never has two
+     resolution paths to keep in step. */
+  function subjectParam() {
+    var subj = subjectOfScope();
+    return subj ? ("&subject=" + encodeURIComponent(subj)) : "";
+  }
+
+  function subjectOfScope() {
+    var r = nodeFor(S.scopeKind, S.scopeRef);
+    if (!r) { return ""; }
+    var top = (r.kind === "topic") ? r : r.parent;
+    return (top && top.data && top.data.subject) ? String(top.data.subject) : "";
+  }
+
   function autoTitle() {
     var r = nodeFor(S.scopeKind, S.scopeRef);
     if (!r) { return ""; }
@@ -967,11 +1081,55 @@
      10. THE CLASS LIST — only cohort matches (RISKS C4).
      ═════════════════════════════════════════════════════════════════════ */
 
+  /* ⊕ MRB-335 — THE ROWS COME FROM THE PAGE FIRST AND THE SERVER SECOND.
+
+     `/scope` needs a class before it can answer, so on the classes screen —
+     where there is no class — the old code drew an empty step 0 and a dead
+     Next. The list of classes a teacher may set work to is already on the
+     page: `teacher-live.js` computes `SET_WORK_CLASSES` for exactly this,
+     and its comment says why it is its own key rather than the render list
+     ("which classes are on screen" and "which classes may be written to"
+     are different questions).
+
+     ⚠️ THE PAGE'S LIST IS NOT AUTHORITY ON THE COHORT and is never treated
+     as one. It says which classes exist; `/scope` says which of them share
+     this one's `(key_stage, science_pathway, science_subject)`, and the
+     server refuses a mismatch with `cohort_mismatch` whatever this draws.
+     What the page's copy buys is a step 0 that is drawn before the first
+     request instead of after it. */
+  function pagePool() {
+    var d = window.__MRB_DATA__;
+    var raw = (d && d.SET_WORK_CLASSES) || [];
+    var out = [];
+    for (var i = 0; i < raw.length; i++) {
+      var c = raw[i];
+      if (!c || !c.id) { continue; }
+      out.push({ id: String(c.id), name: String(c.code || c.name || ""),
+                 pupils: Number(c.n != null ? c.n : c.pupils) || 0 });
+    }
+    return out;
+  }
+
+  /* The cohort, when `/scope` has answered, else the page's list, else the
+     anchor alone — so there is always something to draw. */
+  function classPoolNow() {
+    var coh = S.scope && S.scope.cohort_classes;
+    var page = pagePool();
+    if (page.length) { return page; }
+    if (coh && coh.length) {
+      return coh.map(function (c) {
+        return { id: String(c.id), name: String(c.name || ""),
+                 pupils: Number(c.pupils) || 0 };
+      });
+    }
+    return S.classId ? [{ id: S.classId, name: "", pupils: 0 }] : [];
+  }
+
   function buildClasses() {
     els.classList.textContent = "";
     els.classRows = [];
-    var list = (S.scope && S.scope.cohort_classes) || [];
-    list.forEach(function (c) {
+    S.classPool = classPoolNow();
+    S.classPool.forEach(function (c) {
       var row = btn("sw-row", null);
       row.setAttribute("data-sw", "class");
       row.setAttribute("data-sw-ref", String(c.id));
@@ -986,8 +1144,34 @@
       var rec = { id: String(c.id), node: row, box: box };
       els.classRows.push(rec);
       row.addEventListener("click", function () {
+        if (row.getAttribute("aria-disabled") === "true") { return; }
         var i = S.classes.indexOf(rec.id);
         if (i > -1) { S.classes.splice(i, 1); } else { S.classes.push(rec.id); }
+        /* ⊕ MRB-335 — THE FIRST TAP ANCHORS, and the anchor is what every
+           later request is scoped by. Unanchored, `/scope` has not been
+           asked for anything; this is the moment there is something to ask
+           about. */
+        if (!S.classId && S.classes.length) {
+          S.classId = S.classes[0];
+          els.overlay.setAttribute("data-sw-class", S.classId);
+          syncClasses();
+          syncValidity();
+          loadScope();
+          return;
+        }
+        /* Unticking the last one un-anchors: the cohort was a fact about a
+           class nobody has chosen any more, and leaving the other rows
+           disabled behind it would strand the teacher on a step with
+           nothing selectable. */
+        if (S.classId && !S.classes.length && !isAnchoredOpen) {
+          S.classId = "";
+          S.scope = null;
+          S.cohortIds = null;
+          els.overlay.setAttribute("data-sw-class", "");
+          syncClasses();
+          syncValidity();
+          return;
+        }
         syncClasses();
         syncValidity();
       });
@@ -998,6 +1182,12 @@
   function syncClasses() {
     els.classRows.forEach(function (r) {
       var on = S.classes.indexOf(r.id) > -1;
+      /* Outside the anchor's cohort: shown, and not selectable. A teacher
+         planning a term needs to see that 8r/Sc1 exists and cannot be set
+         the same work as 10a/Bi1; hiding it would answer that with a
+         silence. Same treatment, same reason, as a zero-count topic. */
+      var out = !!(S.cohortIds && !S.cohortIds[r.id]);
+      r.node.setAttribute("aria-disabled", out ? "true" : "false");
       r.node.classList.toggle("is-on", on);
       r.node.setAttribute("aria-pressed", on ? "true" : "false");
       r.box.style.background = on ? "var(--st-accent-text)" : "transparent";
@@ -1086,17 +1276,36 @@
       if (exclude.indexOf(String(p.id)) < 0) { exclude.push(String(p.id)); }
     });
     rec.swap.disabled = true;
-    var mySession = session;
+    var mySession = session, mySeq = fetchSeq;
     apiGet("/api/teacher/set-work/swap?class_id=" + encodeURIComponent(S.classId) +
       "&tier=" + encodeURIComponent(S.tier) +
       "&scope_kind=" + encodeURIComponent(S.scopeKind) +
       "&scope_ref=" + encodeURIComponent(S.scopeRef) +
+      subjectParam() +
       "&exclude=" + encodeURIComponent(exclude.join(","))
     ).then(function (r) {
-      /* A swap that lands after the sheet has moved on would replace a row
-         in somebody else's set. `fetchSeq` is deliberately NOT checked: two
-         swaps on two rows are both legitimate at once. */
-      if (!S || mySession !== session) { return; }
+      /* ⊕ MRB-335 — `fetchSeq` IS CHECKED, AND THE COMMENT THAT SAID IT
+         MUST NOT BE WAS WRONG ABOUT WHICH COUNTER SEPARATES THE TWO CASES.
+
+         It read: "`fetchSeq` is deliberately NOT checked: two swaps on two
+         rows are both legitimate at once." The first half of that is true
+         and is PRESERVED — a swap READS `fetchSeq` and never bumps it, so
+         two swaps in flight on two rows still both land. Only `/scope` and
+         `/preview` bump it.
+
+         What it missed is the other thing that can happen while a swap is
+         in flight: a RE-PREVIEW. Tap a count chip, or go Back to the topic
+         step, change tier and come forward again, and `loadPreview` bumps
+         `fetchSeq` and replaces `S.picked` wholesale. The old swap then
+         resolved into the NEW array at `rec.i` and wrote its stem into
+         `rec.stem`, a node `buildQuestions` had already detached. So the
+         teacher saw the row they were looking at unchanged, and
+         `submit()` sent a question that had never been on their screen —
+         which is the one thing this sheet exists to make impossible.
+
+         `mySeq` is captured, not incremented. Same session, same preview,
+         or the answer is dropped. */
+      if (!S || mySession !== session || mySeq !== fetchSeq) { return; }
       if (r.status === 204 || !r.body || !r.body.id) {
         S.swapDead[rec.i] = true;
         return;                              // stays disabled
@@ -1108,7 +1317,7 @@
       fillOptions(rec.body, q);
       rec.swap.disabled = false;
     }, function () {
-      if (!S || mySession !== session) { return; }
+      if (!S || mySession !== session || mySeq !== fetchSeq) { return; }
       rec.swap.disabled = false;
     });
   }
@@ -1129,6 +1338,18 @@
       var tiers = S.scope.tiers || [];
       S.tier = k.default_tier ||
         (tiers.indexOf("medium") > -1 ? "medium" : (tiers[0] || ""));
+      /* ⊕ MRB-335 — THE COHORT, and the pruning that goes with it. `/scope`
+         is the only authority on which classes may be set the same work; a
+         selection made before it answered can legitimately be outside. */
+      S.cohortIds = {};
+      ((S.scope.cohort_classes) || []).forEach(function (c) {
+        S.cohortIds[String(c.id)] = true;
+      });
+      if (S.classId) { S.cohortIds[S.classId] = true; }
+      S.classes = S.classes.filter(function (id) { return S.cohortIds[id]; });
+      if (S.classId && S.classes.indexOf(S.classId) < 0) {
+        S.classes.push(S.classId);
+      }
       buildClasses();
       buildTierChips();
       buildSubjectChips();
@@ -1185,6 +1406,7 @@
       "&tier=" + encodeURIComponent(S.tier) +
       "&scope_kind=" + encodeURIComponent(S.scopeKind) +
       "&scope_ref=" + encodeURIComponent(S.scopeRef) +
+      subjectParam() +
       "&count=" + encodeURIComponent(want)
     ).then(function (r) {
       if (!S || mySession !== session || mySeq !== fetchSeq) { return false; }
@@ -1195,10 +1417,28 @@
       S.picked.forEach(function (q) { S.shown[String(q.id)] = true; });
       S.swapDead = {};
       S.expanded = {};
+      /* A different set of questions is a different thing to set, so it gets
+         its own key. Without this, changing the count and pressing Set work
+         would replay the FIRST set under the second set's chip. */
+      S.clientRef = uuid();
       /* The server's `available` de-duplicates by normalised stem, so it can
          be smaller than the count /scope sent. Cap again against the number
          that turned out to be true. */
       capCount(S.available);
+      /* ⊕ MRB-335 — AND THE ROWS ARE TRUNCATED TO THE CHIP.
+         `capCount` moves the CHIP down to the largest that fits; it cannot
+         move the rows, and the server can legitimately return more than the
+         chip now reads. Ask for 20 on a scope holding 20, have the server
+         de-duplicate three identical stems, and `available` comes back 17:
+         the chip drops to 15 and seventeen rows stay on screen. `submit()`
+         sends `S.picked`, so pressing Set work there sets SEVENTEEN
+         questions under a chip that says 15 — the same lie the pre-request
+         cap was added to stop, arriving from the other direction.
+         The chip is the teacher's statement of how many the class gets, so
+         the rows follow it and never the reverse. */
+      if (S.picked.length > S.count) {
+        S.picked = S.picked.slice(0, S.count);
+      }
       buildQuestions();
       syncCountChips();
       syncValidity();
@@ -1344,10 +1584,36 @@
      14. THE HOLD LINE — one line, a date, only when it applies.
      ═════════════════════════════════════════════════════════════════════ */
 
+  /* ⊕ MRB-335 — THE HOLD IS LONDON MIDNIGHT ON ITS DATE, NOT UTC MIDNIGHT.
+
+     `schools.assignments_open_from` is a DATE. `Date.parse("2026-09-14")`
+     reads it as 00:00 UTC, which in BST is 01:00 in the morning of the 14th
+     — so work released at 00:30 London on the day the school opens was
+     judged to be BEFORE the hold, and the sheet drew the hold line for an
+     instant the server would have accepted. One hour wide, five months of
+     the year, and only ever at night: the kind of thing that is found in
+     March rather than in testing.
+
+     The same conversion the release and due fields use, so the line and the
+     server cannot disagree. Tolerates a full timestamp as well as a bare
+     date, because `/scope` is free to widen the column later. */
+  function holdMs() {
+    if (!S || !S.holdIso) { return NaN; }
+    var raw = String(S.holdIso);
+    var date = /^\d{4}-\d{2}-\d{2}/.test(raw) ? raw.slice(0, 10) : null;
+    if (!date) {
+      var p = utcToLondonParts(raw);
+      if (!p) { return NaN; }
+      date = p.date;
+    }
+    var iso = londonToUtcIso(date, "00:00");
+    return iso ? Date.parse(iso) : NaN;
+  }
+
   function syncHold() {
     var show = false;
     if (S.holdIso) {
-      var open = Date.parse(S.holdIso);
+      var open = holdMs();
       if (!isNaN(open)) {
         var chosen = (S.release === "later")
           ? Date.parse(londonToUtcIso(S.releaseDate, S.releaseTime) || "")
@@ -1370,6 +1636,28 @@
   }
   function dueIso() { return londonToUtcIso(S.dueDate, S.dueTime); }
 
+  /* ⊕ MRB-335 — THE RELEASE THE SERVER WILL ACTUALLY USE.
+
+     ⛔ The sheet validated `due > release` against the release the teacher
+     TYPED, and the server stores `max(requested, open_from)` — so under a
+     14 Sep hold, Release Now on the 8th with Due on the 12th passed here,
+     was refused there, and the teacher got "Not set" with every field
+     unmarked and nothing to correct. The work was impossible on the day
+     they asked for it and the sheet said so nowhere.
+
+     `effRel` is that clamp, computed the same way, so the disabled primary
+     and the outlined Due field appear while the teacher is still choosing
+     rather than after the server has said no. The hold LINE already draws
+     for this case; this makes the primary agree with it. */
+  function effReleaseMs() {
+    var relMs = (S.release === "later")
+      ? Date.parse(releaseIso() || "")
+      : Date.now();
+    var hold = holdMs();
+    if (!isNaN(hold) && (isNaN(relMs) || hold > relMs)) { return hold; }
+    return relMs;
+  }
+
   function stepValid() {
     /* Nothing is valid before /scope answers. Without this the primary is
        live on step 0 the instant the sheet opens — the opening class is
@@ -1390,7 +1678,8 @@
     var dueMs = Date.parse(due);
     var relMs = S.release === "later" ? Date.parse(releaseIso() || "") : Date.now();
     if (S.release === "later" && isNaN(relMs)) { return false; }
-    if (isNaN(dueMs) || dueMs <= relMs) { return false; }
+    var effRel = effReleaseMs();
+    if (isNaN(dueMs) || isNaN(effRel) || dueMs <= effRel) { return false; }
     if (dueMs > Date.now() + 365 * DAY_MS) { return false; }
     if (S.release === "later" && relMs < Date.now() - 5 * 60000) { return false; }
     return true;
@@ -1407,8 +1696,12 @@
       els.title.classList.toggle("sw-bad", S.badTitle || (S.titleEdited && !t.length));
       var due = dueIso(), dueMs = due ? Date.parse(due) : NaN;
       var relMs = S.release === "later" ? Date.parse(releaseIso() || "") : Date.now();
+      /* The same clamp `stepValid` applies, so the outline and the disabled
+         primary are never in disagreement about the same date. */
+      var effRel = effReleaseMs();
       var dueBad = S.badDue || (!!S.dueDate && !!S.dueTime &&
-        (isNaN(dueMs) || dueMs <= relMs || dueMs > Date.now() + 365 * DAY_MS));
+        (isNaN(dueMs) || (!isNaN(effRel) && dueMs <= effRel) ||
+         dueMs > Date.now() + 365 * DAY_MS));
       els.dueDate.classList.toggle("sw-bad", dueBad);
       els.dueTime.classList.toggle("sw-bad", dueBad);
       var relBad = S.badRelease || (S.release === "later" && !!S.releaseDate &&
@@ -1449,6 +1742,10 @@
       els.dueTime.value = S.dueTime;
       els.relDate.value = S.releaseDate;
       els.relTime.value = S.releaseTime;
+      /* Minted here — the first time the Detail step is reached — so that
+         a retry of the SAME set reuses it. `loadPreview` replaces it
+         whenever the questions themselves change. */
+      S.clientRef = uuid();
       syncStep();
       syncRelease();
       syncHold();
@@ -1458,36 +1755,86 @@
     submit();
   }
 
+  /* ⊕ MRB-335 — WHICH SERVER REFUSAL MARKS WHICH FIELD.
+
+     The three `bad*` flags existed and nothing ever set them: a refusal
+     produced "Not set" and left every field unmarked, so a teacher was told
+     it had failed and not told where. These are the codes `server.js`
+     actually returns from `POST /api/teacher/set-work` — read out of it,
+     not invented — and each one names the field it is about.
+
+     ⚠️ THE CODES WITH NO FIELD ARE DELIBERATELY ABSENT. `cohort_mismatch`,
+     `scope_not_for_class`, `bad_tier`, `questions_not_in_scope` are not
+     about anything on the Detail step; outlining an arbitrary control for
+     them would be worse than the toast alone, which is what they get. */
+  var BAD_FIELD = {
+    bad_title: "badTitle",
+    bad_due_at: "badDue",
+    due_too_far: "badDue",
+    bad_release_at: "badRelease",
+    release_in_past: "badRelease"
+  };
+
   function submit() {
-    if (S.busy) { return; }
+    if (S.busy || S.submitting) { return; }
+    /* One key per composed set. `loadPreview` mints a fresh one whenever the
+       questions change; a RETRY after a network failure reuses this one,
+       which is the entire point. */
+    if (!S.clientRef) { S.clientRef = uuid(); }
     S.busy = true;
+    S.submitting = true;
     syncValidity();
     var payload = {
       class_ids: S.classes.slice(),
       tier: S.tier,
       scope_kind: S.scopeKind,
       scope_ref: S.scopeRef,
+      subject: subjectOfScope() || null,
       question_ids: S.picked.map(function (q) { return q.id; }),
       title: String(S.title || "").trim(),
       release_at: releaseIso(),
-      due_at: dueIso()
+      due_at: dueIso(),
+      client_ref: S.clientRef
     };
     var title = payload.title;
     var classCount = payload.class_ids.length;
     var only = classCount === 1 ? classNameOf(payload.class_ids[0]) : "";
+    /* ⚠️ CAPTURED, NOT READ BACK OFF `S`. A response can arrive after the
+       sheet has closed — that is the whole reason `close()` now refuses
+       mid-flight — and the toast and the refresh must still happen, because
+       the WORK WAS SET whatever the sheet is doing. Everything the success
+       path needs is in these locals. */
+    var mySession = session;
     apiPost("/api/teacher/set-work", payload).then(function (r) {
-      S.busy = false;
-      if (!r.ok || !r.body || !r.body.success) {
-        syncValidity();
+      /* `replayed` is the idempotent path: the server recognised
+         `client_ref` and is handing back what it created the first time.
+         It is a success and is reported as one — a teacher who retried a
+         timeout must not be told it failed, and must not get a second set. */
+      var ok = !!(r.ok && r.body && (r.body.success || r.body.replayed));
+      if (!ok) {
+        if (S && mySession === session) {
+          S.busy = false;
+          S.submitting = false;
+          var code = (r.body && r.body.error) || "";
+          var field = BAD_FIELD[code];
+          if (field) { S[field] = true; }
+          syncValidity();
+        }
         toast(SAY.notSetToast);
         return;
       }
-      if (r.body.clamped) { S.showHold = true; syncHold(); }
       var done = { title: title, classIds: payload.class_ids,
                    assignmentIds: r.body.assignment_ids || [],
                    releaseAt: r.body.release_at || null,
-                   clamped: !!r.body.clamped };
-      close();
+                   clamped: !!r.body.clamped,
+                   replayed: !!r.body.replayed };
+      if (S && mySession === session) {
+        S.busy = false;
+        S.submitting = false;
+        S.clientRef = "";
+        if (r.body.clamped) { S.showHold = true; syncHold(); }
+        close();
+      }
       toast(classCount === 1 && only
         ? SAY.setForClass(title, only)
         : SAY.setForClasses(title, classCount));
@@ -1498,22 +1845,36 @@
          `teacher_rulings.py` and re-reads its own screen through
          `MrBadmusTeacherLive.load` — the same mechanism `MRB_REFRESH_FEED`
          and `MRB_REFRESH_FEEDBACK` already use. A page that has not
-         registered one simply keeps its stale card, exactly as v1 did. */
+         registered one simply keeps its stale card, exactly as v1 did.
+
+         ⚠️ FIRED EVEN WHEN THE SHEET HAS GONE. It is about the PAGE, not
+         about the sheet, and a card left reading "no work set" over work
+         that was set is the defect this closes. */
       if (typeof window.MRB_SET_WORK_DONE === "function") {
         try { window.MRB_SET_WORK_DONE(done); }
         catch (e) { console.error("[set-work] refresh hook", e); }
       }
     }, function () {
-      S.busy = false;
-      syncValidity();
+      /* A transport failure, so `client_ref` is KEPT: pressing Set work
+         again sends the same key, and the server either does the work or
+         replays what it already did. */
+      if (S && mySession === session) {
+        S.busy = false;
+        S.submitting = false;
+        syncValidity();
+      }
       toast(SAY.notSetToast);
     });
   }
 
   function classNameOf(id) {
-    var list = (S.scope && S.scope.cohort_classes) || [];
+    var list = (S && S.classPool) || [];
     for (var i = 0; i < list.length; i++) {
       if (String(list[i].id) === String(id)) { return String(list[i].name || ""); }
+    }
+    var coh = (S && S.scope && S.scope.cohort_classes) || [];
+    for (var j = 0; j < coh.length; j++) {
+      if (String(coh[j].id) === String(id)) { return String(coh[j].name || ""); }
     }
     return "";
   }
@@ -1530,15 +1891,35 @@
      17. OPEN / CLOSE
      ═════════════════════════════════════════════════════════════════════ */
 
+  /* ⊕ MRB-335 — `classId` IS OPTIONAL, AND OMITTING IT IS THE CLASSES
+     SCREEN'S CASE.
+
+     ⛔ IT USED TO OPEN ON `CLASSES[0]`. Design's primary on the classes
+     screen binds to `openSetWork`, and `openSetWork` handed it
+     `klass().id` — and `klass()` on that page is
+     `this.CLASSES[0] || MRB_NO_CLASS()`. So pressing "Set work" over a list
+     of twelve classes silently anchored the whole sheet to whichever one
+     sorted first: its tier, its cohort, its curriculum tree. A teacher who
+     then ticked a different class got that class set work at the FIRST
+     class's tier, and the chip agreed with the wrong answer.
+
+     Ruled: from the classes screen the sheet opens on the Classes step with
+     nothing preselected and every class the teacher has listed. The first
+     tap picks the anchor, `/scope` is fetched for it, and the rows outside
+     its cohort go `aria-disabled`. From a card or the class screen nothing
+     changes — that class arrives ticked, as it always did. */
   function open(opts) {
     var o = opts || {};
-    if (!o.classId) { return; }
     buildShell();
+    isAnchoredOpen = !!o.classId;
+    opener = (document.activeElement &&
+              document.activeElement !== document.body)
+      ? document.activeElement : null;
     /* ⚠️ EVERY IN-FLIGHT ANSWER IS ABANDONED HERE. See the guards above: an
        answer for the class the sheet was showing a moment ago must not paint
        over the class it is showing now. */
     session += 1;
-    S = freshState(String(o.classId));
+    S = freshState(o.classId ? String(o.classId) : "");
     els.title.value = "";
     els.relTime.value = S.releaseTime;
     els.dueTime.value = S.dueTime;
@@ -1551,6 +1932,9 @@
     els.classList.textContent = "";
     els.classRows = [];
     els.hold.hidden = true;
+    /* Drawn from the page before anything is asked for, so step 0 is never
+       an empty panel with a dead Next. `/scope` refines it when it lands. */
+    buildClasses();
     buildCountChips();
     buildReleaseChips();
     syncStep();
@@ -1574,14 +1958,34 @@
        state change. RISKS A1 bans the second, not the first: a dialog that
        does not take focus is unreachable from a keyboard. */
     els.sheet.focus({ preventScroll: true });
-    loadScope();
+    /* Nothing to scope by yet on the classes screen; the first tap does it. */
+    if (S.classId) { loadScope(); }
   }
 
+  /* ⊕ MRB-335 — IT REFUSES WHILE A SET IS IN FLIGHT.
+
+     ⛔ Escape, or a tap on the scrim, between pressing Set work and the
+     server answering used to null `S` — and the response then landed in a
+     handler whose every line reads `S`, threw, and produced no toast, no
+     card refresh and no error. The work HAD been set. The teacher, seeing
+     nothing happen, sets it again: two assignments for thirty children,
+     from one deliberate press and one dismissal.
+
+     The primary is already disabled for the same window, so this closes the
+     other two ways out of the sheet and leaves the teacher exactly one
+     thing to do, which is wait — for at most as long as the POST takes.
+     `submit()` clears the flag on every path, including the failing ones. */
   function close() {
     if (!els) { return; }
+    if (S && S.submitting) { return; }
     session += 1;
     els.overlay.hidden = true;
     S = null;
+    isAnchoredOpen = false;
+    if (opener && opener.focus) {
+      try { opener.focus({ preventScroll: true }); } catch (e) { /* gone */ }
+    }
+    opener = null;
   }
 
   /* ═════════════════════════════════════════════════════════════════════
