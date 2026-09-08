@@ -442,7 +442,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Nothing is weighed. What is watched for is whether a "
                     "reaction happens at all"},
-            {"text": "To separate the top three metals from each other",
+            {"text": "To separate the top three metals from each other, since "
+                     "cold water on its own cannot tell them apart",
              "correct": False,
              "why": "Water already separates the top. Acid reaches further "
                     "down the list"},
@@ -533,7 +534,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The two orders are loosely related and the series is not "
                     "a history. It predicts reactions"},
-            {"text": "Work out how much a metal costs",
+            {"text": "Work out how much a metal costs to buy, by reading its "
+                     "price off the list",
              "correct": False,
              "why": "Cost depends on extraction and demand. The series says "
                     "nothing about price directly"},
@@ -566,7 +568,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The other way round. Universal indicator goes purple, "
                     "which is above 7"},
-            {"text": "A layer of sodium oxide on the bottom",
+            {"text": "A layer of solid sodium oxide on the bottom, because the "
+                     "sodium has combined with oxygen",
              "correct": False,
              "why": "The oxide forms in air. In water the product dissolves "
                     "as a hydroxide"},
@@ -594,7 +597,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Plenty of poisonous substances need no oil. The oil "
                     "keeps a REACTION from happening"},
-            {"text": "That it melts at a low temperature",
+            {"text": "That it melts at a low temperature, and so has to be "
+                     "kept cool as well as covered up",
              "correct": False,
              "why": "Sodium does melt low, and that is not what the oil is "
                     "for"},
@@ -615,7 +619,8 @@ QUESTIONS = [
                     "nothing — a second test does"},
             {"text": "Put each into dilute acid and see which of them fizzes",
              "correct": True},
-            {"text": "Weigh both of them",
+            {"text": "Weigh both of them carefully and compare the two masses "
+                     "you record",
              "correct": False,
              "why": "Mass says nothing about reactivity"},
             {"text": "Heat the water",
@@ -644,7 +649,8 @@ QUESTIONS = [
             {"text": "In the middle — below the metals that manage water, "
                      "above the ones that manage neither",
              "correct": True},
-            {"text": "It cannot be placed from two results",
+            {"text": "It cannot be placed from only two results, because a "
+                     "third test would be needed before deciding anything",
              "correct": False,
              "why": "Two results bracket it between two groups, which is "
                     "exactly what placing means"},
@@ -666,7 +672,8 @@ QUESTIONS = [
             {"text": "That the gas is oxygen",
              "correct": False,
              "why": "Oxygen relights a GLOWING splint. It does not pop"},
-            {"text": "That the acid was too concentrated",
+            {"text": "That the acid was too concentrated, since a more dilute "
+                     "one would not have given a pop",
              "correct": False,
              "why": "The pop happens at any concentration that reacts at "
                     "all"},
@@ -694,7 +701,8 @@ QUESTIONS = [
              "correct": False,
              "why": "There is no link in either direction. The series is "
                     "about chemical behaviour"},
-            {"text": "In the middle",
+            {"text": "In the middle, alongside the other hard and dense metals "
+                     "there",
              "correct": False,
              "why": "Hardness gives no information about position at all, "
                     "middle included"},
@@ -716,7 +724,8 @@ QUESTIONS = [
             {"text": "Cold water, because a reaction there settles the top of "
                      "the series at once",
              "correct": True},
-            {"text": "A displacement against copper sulfate",
+            {"text": "A displacement against copper sulfate, watching for "
+                     "copper to settle out on the metal",
              "correct": False,
              "why": "A useful third test. It compares against one metal "
                     "rather than splitting the series"},
@@ -745,7 +754,8 @@ QUESTIONS = [
             {"text": "That potassium is above sodium, because the same "
                      "reaction runs more violently",
              "correct": True},
-            {"text": "Nothing — both react, so they cannot be separated",
+            {"text": "Nothing — both of them react with water, so this test "
+                     "cannot separate the two of them at all",
              "correct": False,
              "why": "HOW violently is exactly what separates two metals that "
                     "both react"},
@@ -764,7 +774,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Copper reacts with plenty of things — it turns green on "
                     "a roof. What this rules out is water"},
-            {"text": "That copper is at the very bottom of the series",
+            {"text": "That copper is at the very bottom of the series, below "
+                     "every other metal",
              "correct": False,
              "why": "Silver and gold are below it. This test cannot separate "
                     "the bottom three"},
@@ -825,7 +836,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Every group 1 metal reacts with water. That is what "
                     "makes them a family"},
-            {"text": "A different set of products",
+            {"text": "A different set of products altogether, because caesium "
+                     "is far enough down group 1 to behave unlike the rest",
              "correct": False,
              "why": "Same family, same reaction — a hydroxide and hydrogen. "
                     "Only the vigour changes"},
@@ -851,7 +863,8 @@ QUESTIONS = [
              "correct": False,
              "why": "A position that changes with how the sample was cut is "
                     "not a position at all"},
-            {"text": "No, because powder reacts more slowly",
+            {"text": "No, because powder reacts more slowly than a lump of the "
+                     "same metal",
              "correct": False,
              "why": "Right conclusion, wrong observation. Powder reacts "
                     "faster, and it still does not move the metal"},
@@ -998,8 +1011,8 @@ QUESTIONS = [
              "correct": False,
              "why": "There is no unit for it. The series is an ORDER rather "
                     "than a scale"},
-            {"text": "It changes when the metal is heated, exactly as a "
-                     "melting point does",
+            {"text": "It changes when the metal is heated, in exactly the way "
+                     "that a melting point rises with heating",
              "correct": False,
              "why": "A melting point does not change when a substance is "
                     "heated. Both are fixed properties"},

@@ -373,7 +373,7 @@ QUESTIONS = [
             {"text": "Being given off as a gas",
              "correct": False,
              "why": "No gas is produced in a displacement between two metals"},
-            {"text": "Turning into a different compound",
+            {"text": "Turning into a different compound while the metals swap",
              "correct": False,
              "why": "It ends up joined to a different metal and is the same "
                     "sulfate throughout"},
@@ -391,7 +391,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Two DIFFERENT metals is exactly the case displacement "
                     "covers. Magnesium is above zinc"},
-            {"text": "The zinc displaces the magnesium",
+            {"text": "The zinc displaces the magnesium, which then settles out "
+                     "as a grey solid",
              "correct": False,
              "why": "Zinc is below magnesium, so it cannot take its place"},
             {"text": "The magnesium displaces the zinc, which appears as a "
@@ -416,7 +417,8 @@ QUESTIONS = [
              "correct": False,
              "why": "That would be SLOW. Impossible means there is nothing "
                     "going on to detect"},
-            {"text": "The reaction needs equipment a school does not have",
+            {"text": "The reaction needs equipment that no ordinary school "
+                     "laboratory is likely to have",
              "correct": False,
              "why": "No equipment would help. The series rules the reaction "
                     "out entirely"},
@@ -463,7 +465,8 @@ QUESTIONS = [
             {"text": "Two or more elements chemically joined, so neither "
                      "behaves as it did on its own",
              "correct": True},
-            {"text": "A metal that has been dissolved in water",
+            {"text": "A metal that has been stirred into water until none of "
+                     "the solid can be seen any more at all",
              "correct": False,
              "why": "Dissolving spreads something out. A compound is atoms "
                     "joined"},
@@ -485,7 +488,8 @@ QUESTIONS = [
              "correct": False,
              "why": "That is a record of an observation. A prediction comes "
                     "FIRST"},
-            {"text": "Guessing which tube will react",
+            {"text": "Guessing which tube will react, without using any of the "
+                     "evidence you have been given",
              "correct": False,
              "why": "A guess uses nothing. A prediction uses the series"},
             {"text": "Saying what will happen before it happens, from "
@@ -558,7 +562,8 @@ QUESTIONS = [
                     "reaction goes"},
             {"text": "Higher displaces lower, and never the other way round",
              "correct": True},
-            {"text": "Lower displaces higher",
+            {"text": "Lower displaces higher, so the weaker metal takes the "
+                     "other's place",
              "correct": False,
              "why": "Exactly backwards, and it is the misconception the "
                     "half-empty grid exists to kill"},
@@ -587,7 +592,8 @@ QUESTIONS = [
             {"text": "Silver is coming out of the solution and copper is "
                      "going into it",
              "correct": True},
-            {"text": "Copper is coming out and silver is going in",
+            {"text": "The copper is coming out of the wire and the silver is "
+                     "going into the solution",
              "correct": False,
              "why": "The needles are silver, and copper is above silver so it "
                     "is the one that dissolves"},
@@ -636,7 +642,8 @@ QUESTIONS = [
              "correct": False,
              "why": "A predicted absence that turns out to be absent is a "
                     "successful test. The tube could have reacted"},
-            {"text": "Yes, and no further evidence could ever be needed",
+            {"text": "Yes, and no further evidence could ever be needed to "
+                     "settle the question once and for all",
              "correct": False,
              "why": "Surviving one test is not proof for ever. It is "
                     "supporting evidence"},
@@ -665,7 +672,8 @@ QUESTIONS = [
              "correct": False,
              "why": "They are not close, and heating cannot start a reaction "
                     "the order rules out"},
-            {"text": "The zinc sulfate decomposes instead",
+            {"text": "The zinc sulfate decomposes instead, breaking apart into "
+                     "simpler substances as soon as the tube is warmed",
              "correct": False,
              "why": "Nothing decomposes at the temperature of a warmed test "
                     "tube"},
@@ -691,7 +699,8 @@ QUESTIONS = [
                     "decisive"},
             {"text": "A solid appearing on the metal that was added",
              "correct": True},
-            {"text": "Bubbles rising through the liquid",
+            {"text": "Bubbles rising through the liquid from the metal that "
+                     "was added",
              "correct": False,
              "why": "Bubbles would suggest a metal reacting with acid rather "
                     "than a displacement"},
@@ -739,7 +748,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Only four of the sixteen do that. The half-empty shape "
                     "comes from the order running one way"},
-            {"text": "Because half the solutions were too dilute",
+            {"text": "Because half of the solutions were made up far too "
+                     "dilute to react at all",
              "correct": False,
              "why": "All were made the same way. Concentration is not what "
                     "makes the pattern"},
@@ -816,7 +826,8 @@ QUESTIONS = [
             {"text": "Aluminium is above iron, so it takes the oxygen and "
                      "leaves the iron as the element",
              "correct": True},
-            {"text": "Iron is above aluminium, so the iron takes the oxygen",
+            {"text": "Iron is above aluminium, so the iron takes the oxygen "
+                     "and leaves the aluminium as the element",
              "correct": False,
              "why": "The wrong way round, and it would leave aluminium as the "
                     "product rather than iron"},
@@ -868,7 +879,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Two PARTS changed and the total did not. That is what "
                     "conservation means"},
-            {"text": "It cannot be told without weighing the gas",
+            {"text": "It cannot be told without also weighing the gas that "
+                     "comes off during the reaction",
              "correct": False,
              "why": "No gas is produced in a displacement between two "
                     "metals"},
@@ -893,8 +905,8 @@ QUESTIONS = [
              "correct": False,
              "why": "A metal below iron is eaten away more slowly, not "
                     "faster — which is exactly the problem"},
-            {"text": "Because it would react with the seawater instead of the "
-                     "hull",
+            {"text": "Because it would react with the seawater rather than "
+                     "with the hull, and would be used up in doing so",
              "correct": False,
              "why": "That is what a metal ABOVE iron does, and it is the "
                     "whole point of the block"},
@@ -944,7 +956,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The order came from water and acid. That it then fitted "
                     "the others is a finding rather than an adjustment"},
-            {"text": "Because all four are really the same reaction",
+            {"text": "Because all four of them are really the same reaction "
+                     "underneath it all",
              "correct": False,
              "why": "They have different reactants and different products. "
                     "What they share is what drives them"},
@@ -975,7 +988,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Warming speeds up a possible reaction. It cannot start "
                     "an impossible one"},
-            {"text": "That copper and magnesium sulfate never touch properly",
+            {"text": "That the copper and the magnesium sulfate never come "
+                     "into proper contact anywhere inside the tube",
              "correct": False,
              "why": "They are in contact throughout. Contact is not what is "
                     "missing"},
