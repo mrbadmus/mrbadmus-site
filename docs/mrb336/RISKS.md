@@ -5,6 +5,24 @@ letter, a statement, and how it is closed. A risk with no closer is a finding.
 
 ## A. Corrections to the prompt's own assumptions (found in recon, before any code)
 
+**A1. ⊗ CORRECTED 8 Sep 2026 — THE RLS HALF OF THIS WAS FALSE.**
+A cold audit checked this against the policies and I had it wrong. The sentence
+below said the estate already filtered `deleted_at` "plus the RLS policies
+`assignments_student_read` and `aq_student_read`". **Those two policies did NOT
+filter it.** The prior text is in
+`20260906145023_mrb331_release_gates_student_reads.sql`: `assignments_student_read`
+carried the school seal, membership and the release gate and no `deleted_at`
+conjunct at all; `aq_student_read` carried `cm.deleted_at is null`, which is the
+**class_members** column, not the assignment's. That is exactly the misread.
+⚠️ THE ERROR IS IN THE COMPLACENT DIRECTION AND IT IS LOAD-BEARING AT MERGE. As
+written, A1 is an argument for NOT writing migration `20260908065322` — and if
+that migration does not reach production, a soft-deleted assignment stays
+readable by a pupil through a direct PostgREST read. The site's own client
+filters, so the hole would be silent.
+It IS closed, by that migration, which narrows both policies. The claim below is
+kept rather than deleted because the reasoning, not the conclusion, is the thing
+that would mislead the next reader.
+
 **A1. `assignments.deleted_at` ALREADY EXISTS, and every consumer already filters it.**
 The prompt's §5 asks for a migration adding `deleted_at`. It is already there
 (TEST `information_schema` read, 8 Sep), it is `timestamptz null`, and the whole
@@ -70,14 +88,31 @@ join under RLS would also be three round trips on a phone.
 
 ## C. Cards and status (§4)
 
-- **C1. Two different week filters already disagree.** The teacher's week view
-  selects by `due_at` inside the week window; the student's list selects by
-  `academic_week`. Mide's three rows are week 3 with due dates in week 3, so they
-  agree today — but a set released in week 2 and due in week 3 lands in the
-  student's week 2 and the teacher's week 3. → §4.1 defines a card by
-  `release_at ≤ now < due_at`, which removes the teacher side's dependence on the
-  week window. Recorded, not silently reconciled: the student's academic_week
-  filing is untouched by this run.
+- **C1. ⊗ CORRECTED AND UPGRADED — the mechanism was stale and the consequence
+  was understated.** This said the teacher's week view selects by `due_at`. It
+  does not: `assignmentDueGroup` has no live consumer (its only reader is the
+  RETIRED class-detail page), and the live rail is `buildPapers`, which buckets
+  on **`due_at` minus 7 days** (`shared/teacher-live.js:748-751`). So the worked
+  example inverted — the shape that actually diverges is a SHORT set, not a long
+  one.
+  ⚠️ **The consequence that was missing is the one that matters.** The pupil's
+  bench is fed by `weekWorkFor`, hard-filtered on the CURRENT teaching week
+  (`.eq('academic_week', week)`), and `academic_week` is stamped once from the
+  release instant and never moves. **So still-open work drops off the pupil's
+  bench the moment the teaching week rolls, whatever its deadline.**
+  Dated, on Mide's own three rows: repaired to week 2 with due dates of 15 and
+  16 Sep, they leave the bench at **Sunday 13 September 00:00 UK, two and three
+  days before they are due** — and those classes are under the 14 Sep hold, so no
+  automatic assignment takes the slot and the bench is empty on the 13th and
+  14th while live unsubmitted work exists. That recreates the exact complaint
+  this run was convened to fix, one week later.
+  It is a DEMOTION, not a disappearance: the work list is not week-scoped
+  (`shared/student-data.js` reads every undeleted assignment and buckets by
+  `due_at`), so the work stays reachable — what is lost is the prominent
+  "do this now" card.
+  → CLOSED in this run: the bench now also admits work that is released and not
+  yet due, whatever week stamped it. Strictly additive; it can only add a live,
+  undone piece of work, never remove one.
 - **C2. Status computed in device time.** `assignmentDueGroup` compares ISO
   strings against `nowIso`; the SET/DUE columns must render in London. → One
   formatter, London-pinned, no `toLocaleString` with a timeZone on the server
@@ -93,8 +128,17 @@ join under RLS would also be three round trips on a phone.
 
 ## D. Delete and edit (§5, §6)
 
-- **D1. Two consumers do not filter deleted rows.** Found in recon; fixed and
-  listed in the report with file:line.
+- **D1. ⊗ CORRECTED — they were RULED TO STAY, not fixed.** This said "fixed and
+  listed in the report", and "fixed" and "ruled to stay unchanged" are opposite
+  statements. What actually happened: `consumer/email.js:759` and
+  `consumer/report.js:216` were audited against the new delete and deliberately
+  left as they are, each carrying a ⊕ MRB-336 comment saying so. They filter the
+  SUBMISSION's own `deleted_at` and never join `assignments`, so they still count
+  minutes a child spent on work a teacher has since deleted.
+  The ruling is right and consistent with D2 — the minutes are a fact about what
+  the child did, and retracting them from a parent's report because a teacher
+  tidied a duplicate is the worse error. Only the word "fixed" was wrong, and it
+  would send an auditor hunting a code change that does not exist.
 - **D2. Delete after submissions.** Submissions and points are kept; the row
   leaves every teacher and student surface. A deleted set's marks are not
   retracted from a leaderboard total.
