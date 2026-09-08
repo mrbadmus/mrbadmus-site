@@ -5028,7 +5028,17 @@ def check_row_controls(p, base, t_teacher, scopes, shots, ids):
     press("delete")
     time.sleep(0.5)
     press("delete")
-    time.sleep(3.5)
+    # ⚠️ THE TOAST IS READ FIRST, BECAUSE IT IS THE THING THAT EXPIRES. The
+    # row checks below take seconds; a toast read after them is a toast read
+    # after it has dismissed itself, and `None` then means "too late" rather
+    # than "never shown".
+    wait_for(p, "(function(){var t=document.querySelector("
+                "'[data-port-region=\"toast\"]');"
+                "return !!(t && (t.textContent||'').trim());})()")
+    toast = p.eval("""(function(){var t=document.querySelector(
+        '[data-port-region="toast"]');
+        return t ? (t.textContent||'').trim() : null;})()""")
+    time.sleep(3.0)
     after = p.eval(ROWS_JS) or []
     record(target not in [r["title"] for r in after],
            "delete_removes_the_row — the second tap deletes, and the row "
@@ -5039,6 +5049,16 @@ def check_row_controls(p, base, t_teacher, scopes, shots, ids):
     record(isinstance(gone, list) and not gone,
            "…and it is soft-deleted in the database, not merely hidden",
            "%d live row(s)" % (len(gone) if isinstance(gone, list) else -1))
+
+    # ⚠️ THE TOAST IS THE ONLY THING THAT SAYS THE PRESS WORKED, and a row
+    # vanishing is not the same message. Deleting is destructive and silent
+    # success is the worst feedback for a destructive act: a teacher who
+    # meant to press Edit needs to be told, by name, what has just gone.
+    # `FAFF_EXACT` cannot watch this one — it sweeps `MRBSetWork.SAY`, and
+    # this string is composed by the PAGE, not the sheet.
+    record(toast == target + " · Deleted",
+           "delete_toast — the page names what was deleted, in the house's "
+           "'<title> · <verb>' shape", repr(toast))
     if shots:
         p.screenshot(os.path.join(shots, "MRB336-after-delete-390.png"),
                      width=390)
@@ -5243,7 +5263,48 @@ def check_edit_sheet(p, base, shots):
     if shots:                          # ⊕ MRB-336 — last, and with a width
         p.screenshot(os.path.join(shots, "MRB336-edit-locked-390.png"),
                      width=390)
-    p.eval("window.MRBSetWork.close()")
+
+    # ── AND SAVE ACTUALLY SAVES ───────────────────────────────────────
+    #
+    # ⚠️ EVERYTHING ABOVE IS ABOUT WHAT THE SHEET OFFERS. A sheet that
+    # narrowed correctly, said Save, and then wrote nothing would satisfy
+    # every one of those checks — and the API half proves the ROUTE accepts
+    # a title, not that this button reaches it. So the press is made, the
+    # toast is read, and the table underneath is re-read for the new title.
+    # ⚠️ THE SHEET HAS ITS OWN TOAST AND IT IS NOT THE PAGE'S.
+    # `[data-sw="toast"]` belongs to the overlay `shared/set-work.js` appends
+    # to `document.body`; `[data-port-region="toast"]` is the teacher
+    # component's, which is where `this.ping(...)` writes. Reading the wrong
+    # one returns `null` and looks exactly like "no toast was shown".
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    wait_for(p, "(function(){var t=document.querySelector("
+                "'[data-sw=\"toast\"]');return !!(t && !t.hidden);})()")
+    time.sleep(2.5)
+    saved = p.eval("""(function(){
+      var t = document.querySelector('[data-sw="toast"]');
+      var o = document.querySelector('[data-sw="overlay"]');
+      return {toast: t ? (t.textContent||'').trim() : null,
+              open: !!(o && !o.hidden)};})()""")
+    record(saved["toast"] == target + " (renamed) · Saved",
+           "edit_saves — pressing Save toasts '<new title> · Saved'",
+           json.dumps(saved))
+    record(saved["open"] is False,
+           "…and the sheet closes behind it, so the teacher is returned to "
+           "the row they were editing")
+    rows = p.eval(ROWS_JS) or []
+    titles = [r["title"] for r in rows]
+    record((target + " (renamed)") in titles and target not in titles,
+           "…and the row in the table carries the new title — the write "
+           "reached the database and the screen repainted from it",
+           "rows: %s" % [t[-22:] for t in titles])
+    st, back = FX.api("GET", "/rest/v1/assignments?title=eq.%s&deleted_at=is."
+                             "null&select=id"
+                      % urllib.parse.quote(target + " (renamed)"))
+    record(isinstance(back, list) and len(back) == 1,
+           "…and exactly ONE row holds it, so Save edited rather than set a "
+           "second piece of work",
+           "%d row(s)" % (len(back) if isinstance(back, list) else -1))
+    p.eval("if (window.MRBSetWork) { window.MRBSetWork.close(); }")
 
 
 if __name__ == "__main__":

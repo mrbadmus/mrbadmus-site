@@ -2198,6 +2198,14 @@
     els.classNote.hidden = true;
 
     S.step = editFirst();
+    /* ⊕ MRB-336 — ONE KEY PER EDITING SESSION. `PATCH` is replay-guarded on
+       (actor, assignment, client_ref) inside a thirty-minute window, exactly
+       as `POST` is on (actor, client_ref): a retry after a dropped connection
+       must be recognised as the same edit rather than applied twice. Minted
+       HERE, when the sheet opens on a row, so that the retry inside
+       `saveEdit` reuses it and a SECOND, deliberate edit — reopened from the
+       row — gets its own. */
+    S.clientRef = uuid();
     buildClasses();
     buildCountChips();
     buildReleaseChips();
@@ -2272,9 +2280,22 @@
     S.busy = true;
     S.submitting = true;
     syncValidity();
+    /* ⚠️ AND `client_ref` IS REQUIRED — WITHOUT IT NOTHING SAVED AT ALL.
+       `PATCH /api/teacher/set-work/:id` validates `client_ref` as a UUID and
+       answers 400 `bad_client_ref` when it is missing, so every Save this
+       sheet has ever sent was refused before it reached a single field. It
+       failed in the quietest possible way: `BAD_FIELD` has no entry for
+       `bad_client_ref`, so no field was outlined and no reason given — the
+       teacher got `Not saved`, pressed again, and got it again.
+
+       Same discipline as `submit()`: minted when the sheet opens on a row,
+       reused by a retry after a transport failure, cleared on success. */
+    if (!S.clientRef) { S.clientRef = uuid(); }
     var payload = S.locked
-      ? { title: String(S.title || "").trim(), due_at: dueIso() }
-      : { tier: S.tier,
+      ? { title: String(S.title || "").trim(), due_at: dueIso(),
+          client_ref: S.clientRef }
+      : { client_ref: S.clientRef,
+          tier: S.tier,
           scope_kind: S.scopeKind,
           scope_ref: S.scopeRef,
           subject: subjectOfScope() || null,
@@ -2286,7 +2307,30 @@
     var mySession = session;
     apiPatch("/api/teacher/set-work/" + encodeURIComponent(S.editId), payload)
       .then(function (r) {
-        var ok = !!(r.ok && r.body && r.body.success);
+        /* ⚠️ `ok`, NOT `success`, AND THE DIFFERENCE WAS A SILENT FAILURE IN
+           THE WORST DIRECTION. This read `r.body.success`, copied from
+           `submit()` — but `POST /api/teacher/set-work` answers
+           `{ success: true, … }` and `PATCH /api/teacher/set-work/:id`
+           answers `{ ok: true, replayed, assignment_id, changed, assignment }`.
+           There is no `success` key on a PATCH reply at any of its three
+           success branches (fresh, replay, no-op), so this was `undefined`
+           every time and every SUCCESSFUL save took the failure arm: the
+           sheet stayed open, `S.busy` was cleared, and the teacher was
+           toasted `Not saved`.
+
+           ⚠️ IT WAS THE SECOND OF TWO FAULTS ON THIS ONE PRESS, and only
+           the other one was reachable at first: the payload carried no
+           `client_ref`, so the route answered 400 `bad_client_ref` and this
+           line never got the chance to misread a success. Both are fixed
+           here, and both had to be — repairing either alone leaves Save
+           still reporting failure.
+
+           Both keys are accepted rather than just the right one, because the
+           two routes genuinely disagree and this is the client to both.
+           Unifying them on one flag is the backend's call, not a thing to
+           guess at from here; it is written up as an open item. */
+        var body = r.body || {};
+        var ok = !!(r.ok && (body.ok === true || body.success === true));
         if (!ok) {
           if (S && mySession === session) {
             S.busy = false;
@@ -2301,6 +2345,7 @@
         if (S && mySession === session) {
           S.busy = false;
           S.submitting = false;
+          S.clientRef = "";        /* ⊕ MRB-336 — as `submit()` does */
           close();
         }
         toast(SAY.savedFor(title));
