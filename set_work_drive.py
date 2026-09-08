@@ -1487,7 +1487,43 @@ def wait_for(p, expr, tries=60, gap=0.25):
     return False
 
 
+# The page the sheet lives on, remembered once so `open_sheet` can put itself
+# back there. Set by `check_sheet`.
+SHEET_PAGE = {"base": None}
+
+
+def ensure_sheet_page(p, class_id=None):
+    """Make sure the tab is on a page that actually carries the sheet module.
+
+    ⚠️ NOT EVERY TEACHER PAGE LOADS `shared/set-work.js`. `teacher/admin.html`
+    is one of the four HAND-WRITTEN teacher pages and carries no sheet at all,
+    so a check that drove the admin screen left the tab somewhere
+    `window.MRBSetWork` does not exist — and the next check to call
+    `MRBSetWork.open` died with `Cannot read properties of undefined`, out of
+    the middle of a check about a swap race.
+
+    Making the sheet checks depend on the ORDER they are called in is the kind
+    of coupling that survives exactly until somebody inserts a check between
+    two others. So the dependency is stated instead: anything that opens the
+    sheet says so, and gets put back if it needs to be.
+    """
+    try:
+        if p.eval("!!(window.MRBSetWork && window.MRBSetWork.open)"):
+            return True
+    except Exception:                                           # noqa: BLE001
+        pass
+    base = SHEET_PAGE.get("base")
+    if not base:
+        return False
+    p.set_viewport(390, 844)
+    return goto_ready(p, "%s/teacher/class-detail.html?class=%s&env=test&api=%s"
+                      % (base, class_id or FX.C_KS4_COMB, PAGE_API),
+                      "!!(window.MRBSetWork && window.MRBSetWork.open)",
+                      settle=6.0)
+
+
 def open_sheet(p, class_id, wait_tree=True):
+    ensure_sheet_page(p, class_id)
     p.eval("window.MRBSetWork.open({classId: %s})" % json.dumps(class_id))
     if wait_tree:
         return wait_for(p, "document.querySelectorAll('[data-sw=\"topic\"]')"
@@ -1516,6 +1552,7 @@ def check_sheet(b, base, sess, class_ids, shots):
         return
 
     p.set_viewport(390, 844)
+    SHEET_PAGE["base"] = base
     if not goto_ready(p, "%s/teacher/class-detail.html?class=%s&env=test&api=%s"
                       % (base, FX.C_KS4_COMB, PAGE_API),
                       "!!(window.MRBSetWork && window.MRBSetWork.open)",
@@ -2277,12 +2314,24 @@ def check_faff(p, scopes):
     # ⚠️ AND THE THREE v1 SENTENCES MUST BE GONE BY NAME. A general "no long
     # strings" rule would pass a NEW sentence; naming the ones that were there
     # is what makes the check about this ticket.
+    # ⚠️ STRING LITERALS ONLY, NOT THE FILE. Grepping the whole source for
+    # `"Only "` matched a COMMENT — "Only `/scope` and …" — and reported a
+    # sentence the sheet cannot say as a sentence the sheet still says. The
+    # file is mostly prose by volume, and the prose is allowed to discuss the
+    # strings it removed; that is what a superseded note IS. So the literals
+    # are extracted and the phrases tested against those.
     src = open("shared/set-work.js", encoding="utf-8").read()
-    v1 = [s for s in ("This work can't be opened until", "Only ", "Step 1 of 3",
-                      "can't be opened", "You need to")
-          if s in src]
-    record(not v1, "faff_sweep — v1's three sentences are not in the file",
-           "none of them" if not v1 else "still present: %s" % v1)
+    LITERAL = re.compile(r'"((?:[^"\\]|\\.)*)"' + r"|'((?:[^'\\]|\\.)*)'")
+    literals = [(m.group(1) or m.group(2) or "") for m in LITERAL.finditer(src)]
+    V1_FAFF = ("This work can't be opened until", "Step 1 of 3",
+               "can't be opened", "You need to", "available", "Sorry")
+    v1 = sorted({f for f in V1_FAFF
+                 for lit in literals if f.lower() in lit.lower()})
+    record(not v1,
+           "faff_sweep — none of v1's sentences survives as a STRING the "
+           "sheet can say (the prose is free to discuss them)",
+           "%d string literal(s) scanned, none of the six phrases"
+           % len(literals) if not v1 else "still sayable: %s" % v1)
 
     # ── the render sweep, on all three steps ──────────────────────────
     seen, unknown = set(), []
@@ -2759,7 +2808,6 @@ def main():
                     check_toast_and_swap(p, scopes, args.shots)
                     check_hold_validation(p, scopes)
                     check_classes_screen_open(p, base)
-                    check_admin_repaint(p, base, t_admin)
                     # LAST of the sheet checks, both of them: each wraps
                     # `fetch` to make a race deterministic, so nothing that
                     # needs an unhindered network runs behind them.
@@ -2782,6 +2830,20 @@ def main():
                 check_consumers(p2, base, STUDENT_PAGES, "the pupil",
                                 TITLE + " · from the sheet", args.shots)
                 check_student_twenty(p2, base, twenty_title)
+
+            # ⚠️ THE ADMIN IS A THIRD PERSONA AND NEEDS A THIRD BROWSER.
+            # `teacher/admin.html` is a school-operations screen and refuses a
+            # plain teacher — correctly. Driving it in the teacher's tab left
+            # a page with 47 characters on it and a red that said "the admin
+            # screen loads", which is a true sentence about the wrong account.
+            with cdp.Browser() as b3:
+                p3 = b3.attach()
+                p3.set_viewport(390, 900)
+                signed = sign_in_page(p3, base, FX.ADMIN_EMAIL, pw)
+                record(str(signed).startswith("ok"),
+                       "the school admin signs in through auth.html, for real",
+                       signed)
+                check_admin_repaint(p3, base, t_admin)
     finally:
         if server:
             server.__exit__(None, None, None)
@@ -2803,8 +2865,6 @@ def main():
     return 1 if bad else 0
 
 
-if __name__ == "__main__":
-    sys.exit(main())
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -3291,9 +3351,17 @@ def check_classes_screen_open(p, base):
            json.dumps(state))
 
     # ── and after the first pick, the other cohorts go dead ───────────
+    # ⚠️ AN UNSELECTED ROW, DELIBERATELY. Tapping row 0 blind measures a
+    # DESELECTION whenever the preselect defect above is present, so the
+    # second check would report "selected nothing" — which is true, and is
+    # about the wrong thing. One defect, reported once, by the check that owns
+    # it.
     picked = p.eval("""(function(){var rs=document.querySelectorAll(
-        '[data-sw="class"]'); if(!rs.length){return null;}
-        rs[0].click(); return rs[0].getAttribute('data-sw-ref');})()""")
+        '[data-sw="class"]');
+        for(var i=0;i<rs.length;i++){
+          if(rs[i].getAttribute('aria-pressed')!=='true'){
+            rs[i].click(); return rs[i].getAttribute('data-sw-ref');}}
+        return null;})()""")
     time.sleep(0.4)
     after = p.eval("""(function(){
       var rs = document.querySelectorAll('[data-sw="class"]');
@@ -3306,7 +3374,7 @@ def check_classes_screen_open(p, base):
       return {selected: on, dead: dead, live: live, rows: rs.length,
               primary: !!document.querySelector('[data-sw="primary"]').disabled};
       })()""")
-    record(after["selected"] == [picked] and after["primary"] is False,
+    record(picked and after["selected"] == [picked] and after["primary"] is False,
            "…one tap selects exactly that class and nothing else, and Next "
            "comes alive", json.dumps(after))
     record(after["dead"] + after["live"] == after["rows"]
@@ -3487,3 +3555,7 @@ def check_student_twenty(p, base, title):
     record(a["sw"] <= a["cw"] + 1 and not a["bad"] and a["chars"] > 100,
            "…and the assignment page draws at 390px with no null",
            "scrollWidth %d ≤ %d, %d characters" % (a["sw"], a["cw"], a["chars"]))
+
+
+if __name__ == "__main__":
+    sys.exit(main())
