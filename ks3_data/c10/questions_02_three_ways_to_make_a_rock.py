@@ -401,7 +401,8 @@ QUESTIONS = [
             {"text": "How the pieces of a rock fit together — interlocking, "
                      "or separate grains side by side",
              "correct": True},
-            {"text": "How heavy the rock is for its size",
+            {"text": "How heavy the rock is for its size, weighed on a balance "
+                     "and set beside a block of the same size",
              "correct": False,
              "why": "That is density, and it does not decide the group "
                     "either"},
@@ -416,7 +417,8 @@ QUESTIONS = [
             {"text": "Molten rock setting between the grains",
              "correct": False,
              "why": "Nothing melts. The minerals come out of water"},
-            {"text": "Grains being pressed so hard that they fuse",
+            {"text": "Grains being pressed so hard by the weight of everything "
+                     "above them that they fuse into one solid mass",
              "correct": False,
              "why": "Compaction squeezes them together and the cement is what "
                     "holds them"},
@@ -450,7 +452,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Crystals stop growing the moment the melt solidifies. "
                     "Age changes nothing"},
-            {"text": "It is sedimentary",
+            {"text": "It is sedimentary, because only settling sediment makes "
+                     "grains that fine",
              "correct": False,
              "why": "It is stated to be igneous. Fine grain size is about how "
                     "fast it cooled"},
@@ -504,7 +507,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Then both would be fine-grained. The crystal size is the "
                     "clue to depth"},
-            {"text": "Both underground, at different depths only",
+            {"text": "Both underground, at different depths only, with the "
+                     "granite nearer the surface",
              "correct": False,
              "why": "Basalt's tiny crystals mean it cooled far too fast to "
                     "have been buried"},
@@ -517,7 +521,8 @@ QUESTIONS = [
         "text": "Why does texture decide the group, when colour, hardness "
                 "and weight do not?",
         "options": [
-            {"text": "Because texture never varies within a group",
+            {"text": "Because texture never varies within a group, so every "
+                     "igneous rock has exactly the same one",
              "correct": False,
              "why": "It varies a good deal — igneous crystals run from "
                     "invisible to centimetres. What it always records is the "
@@ -604,7 +609,8 @@ QUESTIONS = [
             {"text": "Look at how the pieces fit together, and check for "
                      "layers or fossils",
              "correct": True},
-            {"text": "Assume they are the same kind of rock",
+            {"text": "Assume they are the same kind of rock, since two rocks "
+                     "that look alike must have formed alike",
              "correct": False,
              "why": "That is the misconception this lesson exists to kill. "
                     "Looking alike is not being alike"},
@@ -631,7 +637,8 @@ QUESTIONS = [
             {"text": "Time in order, because each layer settled on top of the "
                      "one before it",
              "correct": True},
-            {"text": "Nothing in order — layers can form in any sequence",
+            {"text": "Nothing in order — layers can form in any sequence, so "
+                     "the order tells you nothing at all",
              "correct": False,
              "why": "Sediment falls downwards, so a layer cannot arrive "
                     "beneath one that is already there"},
@@ -648,7 +655,8 @@ QUESTIONS = [
         "text": "Slate splits into flat sheets. What does the DIRECTION of "
                 "the split record?",
         "options": [
-            {"text": "The direction of the water that carried the mud",
+            {"text": "The direction of the water that carried the mud into "
+                     "place before it was ever buried",
              "correct": False,
              "why": "That is long gone by the time the rock is squeezed. The "
                     "split records the metamorphism"},
@@ -674,8 +682,8 @@ QUESTIONS = [
         "text": "A band of marble runs through limestone beside an old "
                 "igneous intrusion. Put the events in order.",
         "options": [
-            {"text": "The marble formed first and some of it turned back into "
-                     "limestone",
+            {"text": "The marble formed first, and some of it then cooled "
+                     "slowly enough that it turned back into limestone again",
              "correct": False,
              "why": "Metamorphism does not reverse on cooling. Marble stays "
                     "marble"},
@@ -710,8 +718,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Metamorphism happens WITHOUT melting. Melt it and the "
                     "history is erased"},
-            {"text": "Whatever it was before, because melting changes "
-                     "nothing",
+            {"text": "Whatever it was before, because melting changes nothing "
+                     "that decides which group a rock belongs to",
              "correct": False,
              "why": "Melting erases the texture entirely, and texture is what "
                     "the group records"},
@@ -742,7 +750,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Fragments that stay where they fall are angular and all "
                     "sizes together — a scree slope"},
-            {"text": "That they formed as crystals in a melt",
+            {"text": "That they formed as crystals in a melt, and were "
+                     "therefore never carried by water at all",
              "correct": False,
              "why": "Crystals from a melt interlock. These are separate "
                     "grains"},

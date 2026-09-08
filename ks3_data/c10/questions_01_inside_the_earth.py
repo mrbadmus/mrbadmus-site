@@ -372,7 +372,8 @@ QUESTIONS = [
                      "under the load",
              "correct": False,
              "why": "That is strength. Density is mass compared with volume"},
-            {"text": "How hot a material is",
+            {"text": "How hot a material is, and how quickly it warms up in "
+                     "sunlight",
              "correct": False,
              "why": "Temperature is a separate property. A hot rock and a "
                     "cold one have almost the same density"},
@@ -424,7 +425,7 @@ QUESTIONS = [
              "why": "Rock is the mantle and the crust. The core is metal"},
             {"text": "Iron and nickel, and solid",
              "correct": True},
-            {"text": "Rock, and molten",
+            {"text": "Rock, and molten, like the lava that reaches the surface",
              "correct": False,
              "why": "Neither half is right. The core is iron and nickel, and "
                     "the inner part is solid"},
@@ -468,7 +469,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The deepest hole reached about a third of the way "
                     "through the crust. Nothing has sampled the mantle"},
-            {"text": "From what comes out of volcanoes",
+            {"text": "From what comes out of volcanoes when they erupt, "
+                     "sampled at the surface",
              "correct": False,
              "why": "Volcanoes bring up material from small pockets near the "
                     "top of the mantle. They say nothing about the core"},
@@ -499,7 +501,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Spinning helps stir the core and is not enough on its "
                     "own. Venus spins and has no field"},
-            {"text": "Because the Sun magnetises the planet",
+            {"text": "Because the Sun magnetises the planet, in the same way "
+                     "that stroking a nail with a magnet magnetises the nail",
              "correct": False,
              "why": "The Sun's particles are DEFLECTED by the field rather "
                     "than causing it"},
@@ -521,7 +524,8 @@ QUESTIONS = [
             {"text": "It is solid rock that creeps, and melting happens only "
                      "in small pockets",
              "correct": True},
-            {"text": "It is liquid iron rather than liquid rock",
+            {"text": "It is liquid iron rather than liquid rock, which is why "
+                     "a compass needle lines up with it",
              "correct": False,
              "why": "That describes the outer core. The mantle is rock"},
             {"text": "Nothing — the picture is right",
@@ -550,7 +554,8 @@ QUESTIONS = [
             {"text": "Everything anyone has ever dug, mined or drilled has "
                      "stayed in a very thin skin",
              "correct": True},
-            {"text": "The crust is thinner than the atmosphere",
+            {"text": "The crust is thinner than the atmosphere, so there is "
+                     "more air above us than there is rock below",
              "correct": False,
              "why": "The crust is tens of kilometres thick and most of the "
                     "atmosphere is in the first ten"},
@@ -596,7 +601,8 @@ QUESTIONS = [
              "why": "Catching every event matters and is not the point here. "
                     "The pattern of where waves DO NOT arrive is the "
                     "evidence"},
-            {"text": "Because one station's instrument might be faulty",
+            {"text": "Because any one station's instrument might be faulty, "
+                     "and a second reading is needed to check it",
              "correct": False,
              "why": "Checking instruments is good practice. The layers are "
                     "found from the geography of the arrivals"},
@@ -650,7 +656,9 @@ QUESTIONS = [
             {"text": "Because the energy released as it freezes helps drive "
                      "the currents that make the magnetic field",
              "correct": True},
-            {"text": "Because it makes the Earth spin faster",
+            {"text": "Because it makes the Earth spin faster, in the same way "
+                     "that a spinning skater speeds up by pulling their arms "
+                     "in",
              "correct": False,
              "why": "Nothing at the surface would notice. What matters is the "
                     "energy driving the core's currents"},
@@ -674,7 +682,8 @@ QUESTIONS = [
              "why": "The evidence is already strong, and a great deal of "
                     "established science rests on things nobody has "
                     "visited"},
-            {"text": "Volcanoes have brought up samples of the core",
+            {"text": "Volcanoes have brought up samples of the core, so the "
+                     "deepest layers have been examined in a laboratory",
              "correct": False,
              "why": "They bring up material from near the top of the mantle. "
                     "Nothing from the core reaches the surface"},
@@ -704,7 +713,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Then the liquid layer could never have been detected, "
                     "and it was"},
-            {"text": "The waves would arrive sooner everywhere",
+            {"text": "The waves would arrive sooner everywhere, because waves "
+                     "travel faster through a solid",
              "correct": False,
              "why": "Speeds would shift a little, and the decisive change is "
                     "that a wave which currently vanishes would not"},
@@ -733,7 +743,9 @@ QUESTIONS = [
              "correct": False,
              "why": "The spin is smooth and generates almost nothing. The "
                     "heat is left over and radioactive"},
-            {"text": "The pressure at the centre creates heat continuously",
+            {"text": "The pressure at the centre creates heat continuously, in "
+                     "the way a bicycle pump warms up as the air inside it is "
+                     "squeezed",
              "correct": False,
              "why": "Pressure keeps the inner core solid and does not go on "
                     "making new heat"},
