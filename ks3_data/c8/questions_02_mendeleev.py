@@ -375,11 +375,13 @@ QUESTIONS = [
              "correct": False,
              "why": "That is a sample mass and it depends on how much you "
                     "took. Atomic mass is a property of the element"},
-            {"text": "The number of protons in an atom",
+            {"text": "The number of protons in the nucleus of one single atom "
+                     "of the element",
              "correct": False,
              "why": "That is the atomic number, and it is what the MODERN "
                     "table is ordered by"},
-            {"text": "How much space one atom takes up",
+            {"text": "How much space a single atom of the element takes up "
+                     "when it is on its own",
              "correct": False,
              "why": "That is size rather than mass. The two do not run "
                     "together neatly"},
@@ -503,8 +505,8 @@ QUESTIONS = [
             {"text": "Because they form no compounds, so nothing in any "
                      "analysis pointed to them",
              "correct": True},
-            {"text": "Because they are all radioactive and decay too fast to "
-                     "collect",
+            {"text": "Because they are all radioactive and decay far too "
+                     "quickly for anybody to collect them",
              "correct": False,
              "why": "Helium, neon and argon are perfectly stable. Only the "
                     "heaviest of the group is radioactive"},
@@ -527,14 +529,16 @@ QUESTIONS = [
              "correct": False,
              "why": "That is exactly what argon did, and the table absorbed "
                     "it. Adding a group is not a refutation"},
-            {"text": "A gap that stayed empty for a long time",
+            {"text": "A gap in the table that stayed empty for a great many "
+                     "years after it was first drawn",
              "correct": False,
              "why": "An unfilled gap is a prediction still waiting. It is not "
                     "a result at all"},
             {"text": "An element found in a gap whose properties did not "
                      "match the description",
              "correct": True},
-            {"text": "Another chemist proposing a different arrangement",
+            {"text": "Another chemist proposing a different arrangement of "
+                     "exactly the same set of elements",
              "correct": False,
              "why": "A rival arrangement is an alternative, not evidence. "
                     "Evidence comes from measurement"},
@@ -587,8 +591,9 @@ QUESTIONS = [
              "correct": False,
              "why": "That is the mark of a WEAK idea. This table stayed "
                     "testable — the gaps could still have failed"},
-            {"text": "Because argon was the element Mendeleev had predicted "
-                     "all along",
+            {"text": "Because argon was the very element Mendeleev had "
+                     "predicted all along, and its arrival simply confirmed "
+                     "everything he had said",
              "correct": False,
              "why": "He predicted nothing about it. That is what makes its "
                     "absorption interesting"},
@@ -615,11 +620,13 @@ QUESTIONS = [
             {"text": "It looked like adjusting the evidence to fit, because "
                      "he had no reason to give for the swap",
              "correct": True},
-            {"text": "It made the two elements' properties come out wrong",
+            {"text": "It made the properties of both elements come out wrong, "
+                     "so the two columns they were placed in no longer worked",
              "correct": False,
              "why": "The swap made their properties come out RIGHT. That was "
                     "his justification, and it was not a reason"},
-            {"text": "Nothing at all — swaps were normal practice",
+            {"text": "Nothing at all — swaps of that kind were completely "
+                     "normal practice among the chemists working at the time",
              "correct": False,
              "why": "Ordering by mass was the whole basis of the table. "
                     "Breaking it needed defending"},
@@ -647,7 +654,7 @@ QUESTIONS = [
                      "looked for what was wrong with it",
              "correct": True},
             {"text": "Ignored it, since one element out of sixty proves "
-                     "nothing",
+                     "nothing either way about the table taken as a whole",
              "correct": False,
              "why": "The whole case for the table rested on those "
                     "predictions. A failure would have struck at the "
@@ -668,11 +675,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Mass was a means to an end. Keeping the families was the "
                     "point of the table"},
-            {"text": "The swap, because Mendeleev turned out to be right",
+            {"text": "The swap, because Mendeleev turned out in the end to be "
+                     "right about where the two of them really belonged",
              "correct": False,
              "why": "Right verdict, and hindsight is not the reason. The swap "
                     "was defensible on the day it was made"},
-            {"text": "Neither — both are guesses",
+            {"text": "Neither of them — both of the moves are only guesses, "
+                     "and one guess cannot be any better than another one",
              "correct": False,
              "why": "One of them produced testable predictions and the other "
                     "did not. That is what separates them"},

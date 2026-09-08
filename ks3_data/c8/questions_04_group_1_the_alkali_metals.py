@@ -359,11 +359,13 @@ QUESTIONS = [
              "correct": False,
              "why": "The metal is not an alkali. It is named for what it "
                     "leaves behind in the water"},
-            {"text": "Because they are found in alkaline rocks",
+            {"text": "Because they are found in alkaline rocks, and are always "
+                     "dug out from them",
              "correct": False,
              "why": "Where they are found is not the reason. The name comes "
                     "from the reaction"},
-            {"text": "Because they neutralise acids on contact",
+            {"text": "Because they neutralise any acid the moment they come "
+                     "into contact with it",
              "correct": False,
              "why": "Their hydroxides do that. The metals react violently "
                     "with acid rather than gently neutralising it"},
@@ -466,7 +468,8 @@ QUESTIONS = [
              "why": "Density does rise down the group, and lithium, sodium "
                     "and potassium all float. Reactivity is the trend this "
                     "lesson establishes"},
-            {"text": "It reacts less violently than potassium",
+            {"text": "It reacts less violently with water than potassium does, "
+                     "being lower down",
              "correct": False,
              "why": "The wrong way round. Group 1 gets more reactive going "
                     "down"},
@@ -518,7 +521,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Sodium and potassium are both abundant. What they are "
                     "not is UNCOMBINED"},
-            {"text": "That they can only be made artificially",
+            {"text": "That they can only be made artificially, in a laboratory "
+                     "rather than found in rock",
              "correct": False,
              "why": "They are extracted from their compounds rather than "
                     "made. The atoms were always there"},
@@ -548,8 +552,8 @@ QUESTIONS = [
              "why": "Its compounds had been used for centuries and were "
                     "suspected of holding a metal. What was missing was the "
                     "technique"},
-            {"text": "Because sodium is too rare to have been collected in "
-                     "any useful quantity",
+            {"text": "Because sodium is far too rare to have been collected in "
+                     "any useful quantity by anybody before that time",
              "correct": False,
              "why": "It is one of the commonest elements in the crust. "
                     "Getting it OUT was the difficulty"},

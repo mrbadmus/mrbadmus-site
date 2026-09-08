@@ -392,12 +392,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Nothing swaps solvents. What is pushed out is an "
                     "element, out of a compound"},
-            {"text": "A reaction that moves a solid from one tube to "
-                     "another",
+            {"text": "A reaction that moves a solid out of one test tube and "
+                     "across into a second one that is standing beside it",
              "correct": False,
              "why": "Nothing is moved between tubes. The word is about what "
                     "happens inside one"},
-            {"text": "Any reaction that changes the colour of a solution",
+            {"text": "Any reaction at all that changes the colour of the "
+                     "solution that it is taking place in, whatever it is",
              "correct": False,
              "why": "Plenty of colour changes are not displacements, and the "
                     "colour here is a sign rather than the definition"},

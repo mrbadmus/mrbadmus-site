@@ -360,11 +360,13 @@ QUESTIONS = [
              "correct": False,
              "why": "An atom has no surface in that sense. The shell is a "
                     "layer of electrons"},
-            {"text": "The nucleus at the middle of the atom",
+            {"text": "The nucleus right at the middle of the atom, where all "
+                     "of the protons and neutrons sit",
              "correct": False,
              "why": "The nucleus is the centre. The outer shell is as far "
                     "from it as the electrons go"},
-            {"text": "The whole set of electrons the atom has",
+            {"text": "The whole set of electrons that the atom has, counted "
+                     "right across every one of its shells",
              "correct": False,
              "why": "That is all of them across every shell. Only the "
                     "outermost layer is the outer shell"},
@@ -490,7 +492,8 @@ QUESTIONS = [
             {"text": "That elements in one group form compounds with the same "
                      "formulae",
              "correct": True},
-            {"text": "That the three metals have the same atomic mass",
+            {"text": "That the three metals all have very nearly the same "
+                     "atomic mass as each other",
              "correct": False,
              "why": "Their masses differ a great deal. It is the outer "
                     "electron count they share"},
@@ -542,7 +545,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Every group's chemistry follows from its outer electron "
                     "count, not just the full one"},
-            {"text": "The periods would have to be renumbered instead",
+            {"text": "The periods would have to be renumbered instead, and the "
+                     "columns could then be left exactly as they already are",
              "correct": False,
              "why": "The periods count shells and are a separate matter. It "
                     "is the columns that would lose their meaning"},
@@ -568,7 +572,8 @@ QUESTIONS = [
             {"text": "That they are hard, dense and much less reactive than "
                      "the metals on the far left",
              "correct": True},
-            {"text": "That they are found as pure metal in the ground",
+            {"text": "That they are found as the pure metal in the ground, so "
+                     "no smelting of them is needed at all",
              "correct": False,
              "why": "Almost all of them have to be smelted out of an ore. "
                     "Gold is the famous exception"},

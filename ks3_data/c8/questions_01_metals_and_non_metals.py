@@ -377,11 +377,13 @@ QUESTIONS = [
              "correct": False,
              "why": "That is about melting point. Malleable is about "
                     "reshaping a solid"},
-            {"text": "Able to be drawn out into a wire",
+            {"text": "Able to be pulled out into a long thin wire without it "
+                     "snapping part way along",
              "correct": False,
              "why": "Very close, and that word is ductile. Malleable is about "
                     "hammering rather than drawing"},
-            {"text": "Able to carry an electric current",
+            {"text": "Able to carry an electric current from one end of the "
+                     "sample right through to the other",
              "correct": False,
              "why": "That is conducting, and it is a separate property"},
         ],
@@ -576,11 +578,13 @@ QUESTIONS = [
              "why": "Density comes from how the atoms pack rather than from "
                     "the electrons. Two of the five properties are cleaner "
                     "than that"},
-            {"text": "Being solid, and being heavy",
+            {"text": "Being solid at room temperature, and being heavy for the "
+                     "size of it",
              "correct": False,
              "why": "Mercury is neither, and it is a metal. Neither follows "
                     "from free electrons"},
-            {"text": "Being unreactive, and resisting acid",
+            {"text": "Being unreactive, and resisting attack by acids at room "
+                     "temperature",
              "correct": False,
              "why": "Sodium is a metal and does neither. Reactivity comes "
                     "from a different part of the story"},
@@ -606,8 +610,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Cost helps and it is not the reason. A cheap conductor "
                     "would just be a conductor"},
-            {"text": "Because it is brittle, so it can be cut into thin "
-                     "wafers",
+            {"text": "Because it is brittle, so it can be cut into the very "
+                     "thin wafers that a chip is built on",
              "correct": False,
              "why": "Wafers are cut, and brittleness is not what makes "
                     "silicon special. The switching is"},
@@ -626,8 +630,8 @@ QUESTIONS = [
              "correct": False,
              "why": "One property never decides it. Diamond fails every other "
                     "metal test"},
-            {"text": "Conclude that the metal and non-metal lists are "
-                     "useless",
+            {"text": "Conclude that the metal and non-metal lists are useless "
+                     "and ought to be abandoned",
              "correct": False,
              "why": "The lists work for almost everything. Exceptions are why "
                     "the pattern is judged as a whole"},
@@ -653,8 +657,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Copper is the better conductor at any temperature. The "
                     "reason is weight and cost"},
-            {"text": "Copper is a transition metal and cannot be drawn into "
-                     "wire",
+            {"text": "Copper is a transition metal and so cannot be drawn out "
+                     "into a wire long enough to span two pylons",
              "correct": False,
              "why": "Copper wire is the most familiar wire there is. It draws "
                     "beautifully"},
