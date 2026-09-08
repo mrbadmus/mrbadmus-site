@@ -3409,40 +3409,119 @@ def check_classes_screen_open(p, base):
            "the teacher which of %d classes they meant" % state["rows"],
            json.dumps(state))
 
-    # ── and after the first pick, the other cohorts go dead ───────────
-    # ⚠️ AN UNSELECTED ROW, DELIBERATELY. Tapping row 0 blind measures a
-    # DESELECTION whenever the preselect defect above is present, so the
-    # second check would report "selected nothing" — which is true, and is
-    # about the wrong thing. One defect, reported once, by the check that owns
-    # it.
+    # ── THE FIRST TAP IS THE ANCHOR, AND IT IS WHAT ASKS FOR THE SCOPE ──
+    #
+    # ⚠️ DRIVEN ON THE LIVE TEST PAGE, NOT ON A FIXTURE, AND THE DIFFERENCE
+    # DECIDES WHAT THIS CHECK CAN SEE. A fixture page carries no
+    # `MrBadmusTeacherGuard`, so `token()` rejects before `fetch` is ever
+    # called and `/scope` can never SUCCEED there — a fixture can only ever
+    # exercise the failure path. The success path needs a real session, which
+    # is why this runs on `teacher/classes.html` as the signed-in teacher.
+    def scope_calls():
+        return p.eval("performance.getEntriesByType('resource').filter("
+                      "function(r){return r.name.indexOf('set-work/scope')"
+                      ">-1;}).map(function(r){return r.name.split("
+                      "'class_id=')[1].split('&')[0];})") or []
+
+    before_calls = scope_calls()
     picked = p.eval("""(function(){var rs=document.querySelectorAll(
         '[data-sw="class"]');
         for(var i=0;i<rs.length;i++){
           if(rs[i].getAttribute('aria-pressed')!=='true'){
             rs[i].click(); return rs[i].getAttribute('data-sw-ref');}}
         return null;})()""")
+    got = wait_for(p, "!document.querySelector('[data-sw=\"primary\"]').disabled")
+    after_calls = scope_calls()
+    new_calls = after_calls[len(before_calls):]
+
+    record(bool(picked) and picked in new_calls,
+           "classes_screen_anchors_on_first_tap — the first tap is what asks "
+           "for the scope: a /scope request goes out FOR THAT CLASS, and none "
+           "went before it",
+           "%d call(s) before, %d after; the new one is for %s"
+           % (len(before_calls), len(after_calls),
+              (new_calls[0][-3:] if new_calls else "nothing")))
+    record(got, "…and Next comes alive once that scope has RESOLVED — the "
+                "dead end is gone",
+           "primary disabled = %s"
+           % p.eval("document.querySelector('[data-sw=\"primary\"]').disabled"))
+
+    # ⚠️ NEXT BEING ENABLED IS NOT THE SAME CLAIM AS THE NEXT STEP WORKING.
+    # A primary that lights and then lands on an empty topic list is the
+    # defect one step further along.
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    loaded = wait_for(p, "document.querySelectorAll('[data-sw=\"topic\"]')"
+                         ".length > 0")
+    record(loaded,
+           "classes_screen_topic_step_loads — pressing Next reaches the Topic "
+           "step with that class's own tree on it",
+           "%s topic row(s), step %s"
+           % (p.eval("document.querySelectorAll('[data-sw=\"topic\"]').length"),
+              p.eval("document.querySelector('[data-sw=\"overlay\"]')"
+                     ".getAttribute('data-sw-step')")))
+
+    # ── UNTICKING THE LAST CLASS UN-ANCHORS ────────────────────────────
+    #
+    # A sheet that stayed anchored to a class the teacher had just unticked
+    # would offer the rest of the list as though the cohort were still
+    # settled — and would then be refused by the server with `cohort_mismatch`
+    # for a choice the teacher had explicitly undone.
+    p.eval("document.querySelector('[data-sw=\"back\"]').click()")
     time.sleep(0.4)
-    after = p.eval("""(function(){
+    p.eval("""(function(){var rs=document.querySelectorAll(
+        '[data-sw="class"][aria-pressed="true"]');
+        for(var i=0;i<rs.length;i++){rs[i].click();} return true;})()""")
+    time.sleep(0.6)
+    un = p.eval("""(function(){
       var rs = document.querySelectorAll('[data-sw="class"]');
-      var on = [], dead = 0, live = 0;
+      var on = 0, dead = 0;
       for (var i = 0; i < rs.length; i++) {
-        if (rs[i].getAttribute('aria-pressed') === 'true') {
-          on.push(rs[i].getAttribute('data-sw-ref')); }
+        if (rs[i].getAttribute('aria-pressed') === 'true') { on++; }
         if (rs[i].getAttribute('aria-disabled') === 'true' || rs[i].disabled) {
-          dead++; } else { live++; } }
-      return {selected: on, dead: dead, live: live, rows: rs.length,
-              primary: !!document.querySelector('[data-sw="primary"]').disabled};
-      })()""")
-    record(picked and after["selected"] == [picked] and after["primary"] is False,
-           "…one tap selects exactly that class and nothing else, and Next "
-           "comes alive", json.dumps(after))
-    record(after["dead"] + after["live"] == after["rows"]
-           and after["live"] >= 1,
-           "classes_screen_cohort_locks — every row is now either live (same "
-           "cohort) or dead (another cohort); a class the server would refuse "
-           "with `cohort_mismatch` is not offered at all",
-           "%d live, %d dead, of %d"
-           % (after["live"], after["dead"], after["rows"]))
+          dead++; } }
+      return {rows: rs.length, on: on, dead: dead,
+              primary: !!document.querySelector('[data-sw="primary"]').disabled,
+              step: document.querySelector(
+                '[data-sw="overlay"]').getAttribute('data-sw-step')};})()""")
+    record(un["on"] == 0 and un["dead"] == 0 and un["primary"] is True,
+           "classes_screen_unanchors — unticking the last class un-anchors "
+           "the sheet: every row is selectable again and Next goes back to "
+           "disabled", json.dumps(un))
+
+    # …and a DIFFERENT first pick re-anchors, or "un-anchored" would be a
+    # sheet that had simply stopped working.
+    before2 = scope_calls()
+    second = p.eval("""(function(){var rs=document.querySelectorAll(
+        '[data-sw="class"]');
+        for(var i=rs.length-1;i>=0;i--){
+          if(rs[i].getAttribute('aria-pressed')!=='true'){
+            rs[i].click(); return rs[i].getAttribute('data-sw-ref');}}
+        return null;})()""")
+    alive = wait_for(p, "!document.querySelector('[data-sw=\"primary\"]')"
+                        ".disabled")
+    after2 = scope_calls()
+    record(bool(second) and second != picked and alive
+           and second in after2[len(before2):],
+           "classes_screen_reanchors — a different first pick anchors on THAT "
+           "class and fetches its scope, so un-anchoring is a reset and not a "
+           "breakage",
+           "first %s, then %s; %d new /scope call(s)"
+           % (str(picked)[-3:], str(second)[-3:],
+              len(after2) - len(before2)))
+
+    # ── THE ONE WORD A FAILED SCOPE IS ALLOWED TO SAY, ON STEP 0 ───────
+    #
+    # The tree carries the same word one step further in, and a teacher who
+    # cannot get past step 0 was never going to read that one.
+    note = p.eval("""(function(){var n=document.querySelector(
+        '[data-sw="class-note"]');
+        return n ? {hidden: !!n.hidden, text: (n.textContent||'').trim(),
+                    cls: n.className} : null;})()""")
+    record(note is not None and note["text"] == "Unavailable"
+           and note["hidden"] is True,
+           "the class panel carries the one-word failure note, hidden while "
+           "the scope is fine — one word, on the step the teacher is standing "
+           "on", json.dumps(note))
     p.eval("window.MRBSetWork.close()")
 
 
