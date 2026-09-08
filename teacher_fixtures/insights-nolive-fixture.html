@@ -101,6 +101,27 @@ function MRB_HOME(){window.location.href = '/index.html';}
    `#` is fragment text, not a query, so `shared/config.js` would never see it
    and a teacher working against the sandbox would land one navigation later
    in production data. */
+/* ⊕ MRB-336 §4.1 — the Assignments table, brought into view.
+
+   Slot B's "+N more" link, when three or more sets are live at once. The
+   two cards hold two; this is how the rest are reached, and the table one
+   screen below is where all of them already are.
+
+   ⚠️ IT IS A NAMED SEAM HELPER FOR THE REASON EVERY NAVIGATION HERE IS:
+   `teacher_behaviour` stubs these, so the press can be swept without the
+   fixture scrolling out from under the measurement that is still running.
+
+   ⚠️ AND IT TOLERATES THE SECTION NOT BEING THERE. `mrb-class-assignments`
+   is `SET_ATTR`'s id on node 306, and node 306 is inside `klass.hasWork` —
+   a class with no work at all has no table to scroll to. A throw inside a
+   click listener is reported by the gates as a dead control, which is the
+   wrong finding; `false` is the honest one. */
+function MRB_TO_ASSIGNMENTS(){
+  var el=document.getElementById('mrb-class-assignments');
+  if(!el||!el.scrollIntoView){return false;}
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+  return true;}
+
 function MRB_SEATING(classId){
   var env = MRB_ENV();
   window.location.href = '/teacher/seating.html'
@@ -821,6 +842,63 @@ function MRB_SET_WORK_OPEN(classId){
   M.open({classId:classId||''});
   return true;}
 
+/* ⊕ MRB-336 §6 — EDIT. The same sheet, opened on a row that already exists.
+
+   ⚠️ EVERYTHING IT NEEDS IS ALREADY ON THE PAGE. `a` is the assignment row
+   the table drew, built from the paper object `buildPapers` published, so
+   the tier, the scope, the subject and the two instants come off the screen
+   the teacher is looking at rather than out of a second request. Only the
+   QUESTIONS are read, and `shared/set-work.js` does that itself.
+
+   ⚠️ IT TOLERATES THE SCRIPT NOT BEING THERE, exactly as `MRB_SET_WORK_OPEN`
+   does: a page that loaded its HTML and not its JavaScript must not throw
+   inside a click listener. */
+function MRB_SET_WORK_EDIT(row){
+  var M=window.MRBSetWork;
+  if(!M||!M.edit||!row||!row.assignmentId||!row.classId){return false;}
+  return M.edit(row);}
+
+/* ⊕ MRB-336 §5 — DELETE, soft, and the row leaves every surface.
+
+   ⚠️ IT NEVER REJECTS, like every helper around it: resolves
+   {ok, error} and the caller says one sentence for each. A throw here is
+   reported by the gates as a dead control, which is the wrong finding.
+
+   ⚠️ AND IT IS IDEMPOTENT AT THE SERVER, NOT HERE. A second DELETE of a row
+   that is already deleted answers 200 with the same shape, so a double tap
+   — or a teacher on two devices — is not an error to be explained. An
+   AUTOMATIC row answers 409: the weekly producer owns those, and deleting
+   one would simply be re-composed next week. */
+function MRB_DELETE_SET_WORK(assignmentId){
+  var no=function(e){return Promise.resolve({ok:false,error:e});};
+  if(!assignmentId){return no(new Error('teacher page: no assignment'));}
+  return MRB_TOKEN().then(function(t){
+    return fetch(MRB_API()+'/api/teacher/set-work/'
+                 +encodeURIComponent(assignmentId),
+      {method:'DELETE', headers:{Authorization:'Bearer '+t}});
+  }).then(function(res){
+    return res.json().then(function(d){return {res:res,d:d};},
+                           function(){return {res:res,d:null};});
+  }).then(function(r){
+    if(!r.res.ok){
+      throw MRB_API_ERR(r.res,r.d,'/api/teacher/set-work/:id');}
+    return {ok:true, error:null};},
+    function(e){return {ok:false, error:e};});}
+
+/* Why a delete failed, in a sentence a teacher can act on. The companion to
+   MRB_REMIND_WHY and MRB_SHOUTOUT_WHY, separate for the same reason: a
+   different verb and a different set of refusals. */
+function MRB_DELETE_SET_WORK_WHY(e){
+  var m=(e&&e.message)||'', st=(e&&e.mrbStatus)||0, c=(e&&e.mrbCode)||'';
+  if(st===409||c==='auto_assignment'||/auto/i.test(m))
+    return "Automatic weekly work can't be deleted.";
+  if(st===403||/row-level security|permission|policy/i.test(m))
+    return "Couldn't delete - you may no longer teach this class.";
+  if(st===404) return "Couldn't delete - that assignment is no longer there.";
+  if(/read-only|academic year/i.test(m))
+    return "Couldn't delete - that year is read-only.";
+  return "Couldn't delete just now. Try again in a moment.";}
+
 /* ⊕ MRB-335 — THE CARD REFRESHES AFTER A SET, WHICH IT NEVER DID.
 
    v1's `swNext` ended in `this.ping(...)` and nothing else, so a teacher who
@@ -1341,7 +1419,7 @@ class Component extends DCLogic {
     const rows = this.papersFor(k).map(p => {
       const asked = m.colAsked[p.idx] || 0;
       const pct = asked ? Math.round((m.colSub[p.idx] / asked) * 100) : 0;
-      return { label: p.title, sub: (p.when === 'upcoming' ? 'Open · due ' + p.due.replace('Due ', '') : 'Marked · due ' + p.due), value: p.sub, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
+      return { label: p.title, sub: p.statusLabel + ' · due ' + p.due.replace(/^Due /, ''), value: p.sub, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
     });
     const lowP = rows.slice().sort((a, b) => a.pct - b.pct)[0];
     if (!rows.length) {
@@ -1525,29 +1603,109 @@ class Component extends DCLogic {
     const openP = wPapers[0] || null;
     const lastMarked = kMx.markedIdx.filter(i => (kMx.colSub[i] || 0) > 0);
     const lastP = lastMarked.length ? (kPapers[lastMarked[0]] || null) : null;
-    const kChase = (!k || k.state !== 'live' || !wIdxs.length) ? []
-      : kRoster.filter(r => wTally[r.id].in < wTally[r.id].asked);
+    /* ── ⊕ MRB-336 §4.1 · A CARD IS ONE LIVE ASSIGNMENT ─────────────────
 
-    /* ── ⊕ MRB-326 JOB 4c · WHO IS REMINDED, AND ABOUT WHAT ──────────────
-       One group PER PAPER, because a reminder names ONE assignment and the
-       chase list above spans the whole selected week. On a week carrying two
-       assignments, sending everyone in `kChase` a reminder about `openP`
-       would nudge a child about the paper they DID hand in and say nothing
-       about the one they owe. Grouping per paper costs one round trip each
-       and cannot do that.
+       Mide, 8 Sep 2026: "live assignments should take over the reteach from
+       last lesson card. so in the case that teachers set more than one
+       homework, they can see both on those cards instead of only below."
 
-       The union of these groups is exactly `kChase` — a child appears here
-       if and only if they are missing at least one of the week's papers — so
-       "Remind all N" counts the same children the chips name, which is the
-       property the DEAD note on node 236 cared about most. */
-    const kRemind = (!k || k.state !== 'live') ? []
-      : wPapers.map(p => ({
-        assignmentId: p.id,
-        studentIds: kRoster.filter(r => {
+       ⛔ WHAT THE CARD SAID BEFORE. `openTitle` was the newest paper's title
+       with "· +2 more" glued on; `openIn` was every paper in the week summed
+       into one fraction; the chase chips were the children missing ANY of
+       them and "Remind all" nudged about all of them at once. On a week
+       carrying three sets a teacher read "Particle model · +2 more" over
+       "0 of 6 in" and could not tell which of the three nobody had done.
+
+       LIVE is `release_at <= now < due_at`. Scheduled work is not a card —
+       it is work nobody has been shown, and a card for it would be the same
+       untruth §4.2 is fixing in the table. Closed work is not a card either;
+       the reteach card is what closed work is for.
+
+       ⚠️ NEWEST RELEASE FIRST, AND A ROW WITH NO RELEASE INSTANT SORTS LAST.
+       That single rule gives both of the behaviours asked for. Work a
+       teacher set has a release instant and the automatic weekly set does
+       not, so a teacher's own sets take the cards in the order they set
+       them — and when the only live work IS the automatic set, it is alone
+       at the head of the list and slot A is exactly today's card.
+
+       ⚠️ DELETED, kept for BOTH cards. Nothing here reads `wSub`, `wAsk`,
+       `kChase` or `kRemind`: every number, every chip and every reminder is
+       computed from ONE paper's own column of the matrix. That is the whole
+       point — the reminder written into `student_notifications` names the
+       assignment whose card was pressed, not the week's first paper. */
+    const wLive = wPapers.filter(p => p.state === 'open');
+    const wOrder = wLive.slice().sort((a, b) => {
+      if (a.release_at && b.release_at) {
+        return a.release_at === b.release_at
+          ? a.idx - b.idx : (a.release_at < b.release_at ? 1 : -1);
+      }
+      if (a.release_at) return -1;
+      if (b.release_at) return 1;
+      return a.idx - b.idx;
+    });
+    const cardOf = (p) => {
+      const cSub = kMx.colSub[p.idx] || 0;
+      const cAsk = kMx.colAsked[p.idx] || 0;
+      const cMiss = (!k || k.state !== 'live') ? []
+        : kRoster.filter(r => {
           const row = kMx.byId[r.id];
           return !(row && row.submitted[p.idx]);
-        }).map(r => r.id)
-      })).filter(g => g.assignmentId && g.studentIds.length);
+        });
+      const cDue = (p.due || '').replace(/^Due /, '');
+      const cKey = k.id + ':' + wi + ':' + p.id;
+      return {
+        eyebrow: p.source === 'auto'
+          ? (cDue ? "This week's homework · due " + cDue
+                  : "This week's homework")
+          : (cDue ? 'Due ' + cDue : ''),
+        title: p.title,
+        count: cAsk ? cSub + ' of ' + cAsk + ' in' : '—',
+        pct: cAsk ? Math.round((cSub / cAsk) * 100) : 0,
+        hasChase: cMiss.length > 0,
+        chase: cMiss.map(r => ({
+          name: this.shortName(r.name),
+          open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
+        })),
+        remindLabel: (s.remindDone === cKey)
+          ? 'Reminded today' : 'Remind all ' + cMiss.length,
+        remind: () => MRB_REMIND_ALL(k && k.id,
+          [{ assignmentId: p.id, studentIds: cMiss.map(r => r.id) }]).then((r) => {
+          if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
+          this.setState({ remindDone: cKey });
+          if (!r.ok) {
+            this.ping(r.asked === 1
+              ? 'They have already been reminded about this today'
+              : 'They have all already been reminded about this today');
+            return;
+          }
+          if (r.ok < r.asked) {
+            this.ping('Reminded ' + r.ok + ' of ' + r.asked
+              + ' — the rest were already reminded today');
+            return;
+          }
+          this.ping('Reminder sent to ' + r.ok
+            + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
+        }),
+        hasMore: false, moreLabel: '', more: () => {}
+      };
+    };
+    const wCards = wOrder.slice(0, 2).map(cardOf);
+    /* Nothing live is a state and it keeps Design's card rather than
+       emptying the column. `hasChase` is false, so the WRAP takes the
+       footer with it and there is no button offering to remind nobody. */
+    if (!wCards.length) {
+      wCards.push({ eyebrow: "This week's homework",
+        title: 'No work set in this week', count: '—', pct: 0,
+        hasChase: false, chase: [], remindLabel: '', remind: () => {},
+        hasMore: false, moreLabel: '', more: () => {} });
+    }
+    const wRest = Math.max(0, wOrder.length - wCards.length);
+    if (wRest) {
+      const wLastCard = wCards[wCards.length - 1];
+      wLastCard.hasMore = true;
+      wLastCard.moreLabel = '+' + wRest + ' more';
+      wLastCard.more = () => MRB_TO_ASSIGNMENTS();
+    }
     /* ⊕ MRB-306: no timetable data exists; see DROP_FIELDS. */
     const lessonToday = null;
     const g1 = lastP ? this.gridFor(k, lastP.idx) : null;
@@ -1578,38 +1736,8 @@ class Component extends DCLogic {
     if (imp && imp.d > 0 && (!best || imp.r.id !== best.id)) praise.push({ name: imp.r.name, initials: this.initials(imp.r.name), hue: this.hueFor(imp.r.name), reason: 'Up ' + Math.round(imp.d * 12.5) + ' points on the last set', open: () => MRB_GO('student', { student: imp.r.id, 'class': k && k.id }) });
 
     const glance = {
-      openTitle: openP
-        ? (wPapers.length > 1
-          ? openP.title + ' · +' + (wPapers.length - 1) + ' more'
-          : openP.title)
-        : 'No work set in this week',
-      openDue: openP && openP.due ? openP.due.replace(/^Due /, '') : '',
-      openIn: wPapers.length ? wSub + ' of ' + wAsk + ' in' : '—',
-      openPct: wAsk ? Math.round((wSub / wAsk) * 100) : 0,
-      hasChase: kChase.length > 0,
-      chase: kChase.map(r => ({
-        name: this.shortName(r.name),
-        open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
-      })),
-      remindLabel: (s.remindDone === k.id + ':' + wi)
-        ? 'Reminded today' : 'Remind all ' + kChase.length,
-      remind: () => MRB_REMIND_ALL(k && k.id, kRemind).then((r) => {
-        if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
-        this.setState({ remindDone: k.id + ':' + wi });
-        if (!r.ok) {
-          this.ping(r.asked === 1
-            ? 'They have already been reminded about this today'
-            : 'They have all already been reminded about this today');
-          return;
-        }
-        if (r.ok < r.asked) {
-          this.ping('Reminded ' + r.ok + ' of ' + r.asked
-            + ' — the rest were already reminded today');
-          return;
-        }
-        this.ping('Reminder sent to ' + r.ok
-          + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
-      }),
+      cards: wCards,
+      showReteach: wCards.length < 2,
       lastTitle: lastP ? lastP.title : 'Nothing marked yet',
       lastLine: lastP ? 'Marked · ' + lastP.sub + ' submitted' : '',
       worstTwo: worstTwo.map(q => ({ id: q.id, text: q.text, pct: q.pct + '%', bar: q.pct, fill: q.pct < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)' })),
@@ -1669,10 +1797,35 @@ class Component extends DCLogic {
         set: p.set,
         due: p.due.replace('Due ', ''),
         sub: p.sub, mean: p.mean, weak, weakFg,
-        status: markedRow ? 'Marked' : 'Open',
-        stFg: markedRow ? 'var(--st-caption)' : 'var(--st-accent-text)',
-        stBg: markedRow ? 'var(--st-num-well)' : 'var(--st-chip-tint)',
-        stBc: markedRow ? 'var(--st-rule-soft)' : 'var(--st-chip-tint-border)',
+        status: p.statusLabel,
+        stFg: p.state === 'scheduled' ? 'var(--st-muted)'
+          : (markedRow ? 'var(--st-caption)' : 'var(--st-accent-text)'),
+        stBg: p.state === 'open' ? 'var(--st-chip-tint)' : 'var(--st-num-well)',
+        stBc: p.state === 'open' ? 'var(--st-chip-tint-border)'
+          : (p.state === 'scheduled' ? 'var(--st-rule)' : 'var(--st-rule-soft)'),
+        canEdit: p.source === 'teacher' && !!MRB_DATA('canWrite'),
+        showEdit: p.source === 'teacher' && s.delArm !== p.id,
+        armed: s.delArm === p.id,
+        edit: (e) => { e.stopPropagation(); MRB_SET_WORK_EDIT({
+          assignmentId: p.id, classId: k && k.id, title: p.title,
+          tier: p.set_tier, scopeKind: p.scope_kind, scopeRef: p.scope_ref,
+          subject: p.set_subject || 'all',
+          paper: p.paper == null ? 'both' : String(p.paper),
+          releaseAt: p.release_at, dueAt: p.due_at,
+          released: p.released }); },
+        cancelDel: (e) => { e.stopPropagation(); this.setState({ delArm: '' }); },
+        del: (e) => {
+          e.stopPropagation();
+          if (s.delArm !== p.id) { this.setState({ delArm: p.id }); return; }
+          this.setState({ delArm: '' });
+          MRB_DELETE_SET_WORK(p.id).then((r) => {
+            if (!r.ok) { this.ping(MRB_DELETE_SET_WORK_WHY(r.error)); return; }
+            this.ping(p.title + ' · Deleted');
+            if (typeof window.MRB_SET_WORK_DONE === 'function') {
+              window.MRB_SET_WORK_DONE({ title: p.title, deleted: true });
+            }
+          });
+        },
         open: () => MRB_GO('marking', { 'class': k && k.id, paper: p.idx })
       };
     });
@@ -1815,7 +1968,7 @@ class Component extends DCLogic {
       const missing = Math.max(0, (kMx.colAsked[p.idx] || 0) - kMx.colSub[p.idx]);
       return {
         code: p.title,
-        ks: p.when === 'upcoming' ? 'Open' : 'Marked',
+        ks: p.statusLabel,
         sub: p.sub, mean: p.mean,
         ontime: p.when === 'upcoming' ? '—' : kOnTimePct(p.idx),
         needs: missing === 0
@@ -2137,7 +2290,29 @@ class Component extends DCLogic {
 
       paper: pp ? {
         title: pp.title,
-        eyebrow: k.code + ' · Set ' + pp.set + ' · Due ' + pp.due.replace('Due ', ''),
+        eyebrow: k.code + ' · ' + pp.statusLabel
+          + ' · Set ' + pp.set
+          + ' · Due ' + pp.due.replace(/^Due /, ''),
+        canEdit: pp.source === 'teacher' && !!MRB_DATA('canWrite'),
+        showEdit: pp.source === 'teacher' && s.delArm !== pp.id,
+        armed: s.delArm === pp.id,
+        edit: () => MRB_SET_WORK_EDIT({
+          assignmentId: pp.id, classId: k && k.id, title: pp.title,
+          tier: pp.set_tier, scopeKind: pp.scope_kind, scopeRef: pp.scope_ref,
+          subject: pp.set_subject || 'all',
+          paper: pp.paper == null ? 'both' : String(pp.paper),
+          releaseAt: pp.release_at, dueAt: pp.due_at,
+          released: pp.released }),
+        cancelDel: () => this.setState({ delArm: '' }),
+        del: () => {
+          if (s.delArm !== pp.id) { this.setState({ delArm: pp.id }); return; }
+          this.setState({ delArm: '' });
+          MRB_DELETE_SET_WORK(pp.id).then((r) => {
+            if (!r.ok) { this.ping(MRB_DELETE_SET_WORK_WHY(r.error)); return; }
+            this.ping(pp.title + ' · Deleted');
+            MRB_GO('class', { 'class': k && k.id });
+          });
+        },
         hasReteach: !!worst && pp.when === 'marked' && worst.pct < 55,
         reteachLine: worst ? worst.id
           + (worst.text ? ' — ' + worst.text.toLowerCase() : '')
@@ -2452,7 +2627,7 @@ window.__MRB_MOUNT__ = function () {
   }));
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"dc8db888","config.js":"d1fecb43","rum.js":"215c6794","set-work.css":"8cbd95af","set-work.js":"8f030ffe","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"e5af7ed6","teacher-guard.js":"f7fbad7c","teacher-live.js":"b21b674e","teacher-picker.js":"8f2365b7"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"dc8db888","config.js":"d1fecb43","rum.js":"215c6794","set-work.css":"07a56bca","set-work.js":"57b326d7","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"0e614567","teacher-guard.js":"f7fbad7c","teacher-live.js":"3449d35b","teacher-picker.js":"8f2365b7"};</script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script src="teacher-fixture-insights-nolive.js"></script>
 <script>window.__MRB_MOUNT__();</script>

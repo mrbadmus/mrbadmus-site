@@ -525,6 +525,10 @@ window.MrBadmusTeacherData = (function () {
       subject_id: assignment.subject_id,
       subject_name: assignment.subject ? assignment.subject.name : null,
       due_at: assignment.due_at,
+      /* ⊕ MRB-336 — carried through so `assignmentDueGroup` can read it.
+         The stat object is the only thing that function is handed. */
+      release_at: assignment.release_at,
+      source: assignment.source,
       submissions_count: submissions_count,
       total_students: totalMemberCount,
       class_mean_pct: total_max === 0 ? null : Math.round((total_score / total_max) * 100),
@@ -550,7 +554,34 @@ window.MrBadmusTeacherData = (function () {
 
      A class with no students has nothing outstanding by definition, so its
      past-deadline work is `past` rather than permanently `overdue`. */
+  /* ⊕ MRB-336, 8 Sep 2026 — A FIFTH GROUP, AND IT COMES FIRST: `scheduled`.
+
+     ⛔ THIS FUNCTION READ `due_at` AND NOTHING ELSE. Work whose `release_at`
+     is next Monday has a deadline in the future like any other, so it came
+     back `this_week` or `upcoming` — grouped, sorted and counted beside work
+     children can actually see, with nothing anywhere saying it is not out
+     yet. That is the defect in Mide's screenshot, at its source.
+
+     `release_at` is decided BEFORE `due_at` matters, because a row nobody
+     can see is not overdue, not due this week and not finished: it has not
+     started. Every later branch is unchanged, so nothing that is released
+     moves group.
+
+     ⚠️ A NULL `release_at` IS RELEASED, NOT SCHEDULED, and getting that
+     backwards would hide every assignment in the estate. Automatic rows and
+     every row written before Set work existed carry no release instant at
+     all; they are out, and they always were. Only a release instant that
+     EXISTS and is still ahead of now holds work back.
+
+     ⚠️ AND `due_group` IS NOT WHAT THE SCREEN READS. Measured 8 Sep 2026:
+     the only consumer of this value on any live surface is the retired
+     class-detail page. The status a teacher actually sees comes from
+     `buildPapers` in shared/teacher-live.js, which is corrected in the same
+     ticket and by the same rule. This is fixed here anyway — the two must
+     not be allowed to answer the same question differently, which is how
+     one of them ends up being the one nobody checked. */
   function assignmentDueGroup(a, week, nowIso) {
+    if (a.release_at && a.release_at > nowIso) return 'scheduled';
     if (!a.due_at) return 'upcoming';
     if (a.due_at >= week.end_at) return 'upcoming';
     if (a.due_at > nowIso) return 'this_week';
@@ -1016,7 +1047,7 @@ window.MrBadmusTeacherData = (function () {
         .is('deleted_at', null),
       sb.from('assignments')
         .select(
-          'id, title, due_at, subject_id, ' +
+          'id, title, due_at, release_at, source, set_by, subject_id, ' +
           'subject:subject_id ( id, name )'
         )
         .eq('class_id', classId)
@@ -1376,7 +1407,7 @@ window.MrBadmusTeacherData = (function () {
         .is('deleted_at', null),
       sb.from('assignments')
         .select(
-          'id, title, due_at, subject_id, ' +
+          'id, title, due_at, release_at, source, set_by, subject_id, ' +
           'subject:subject_id ( id, name )'
         )
         .eq('class_id', classId)
@@ -1994,8 +2025,19 @@ window.MrBadmusTeacherData = (function () {
         }),
         inChunks(ids, async function (chunk) {
           const r = await sb.from('assignments')
+            /* ⊕ MRB-336 — `release_at`, `source` AND `set_by` JOIN THE SELECT.
+               ⛔ `release_at` was written by Set work and read by NOBODY on the
+               teacher side. So a row released next Monday was drawn "Open",
+               and its Set column said `due_at − 7 days` — a date the teacher
+               never chose, for an instant that had not happened. Mide's
+               screenshot: three assignments no pupil could see, all three
+               reading OPEN, "Set Tue 8 Sep". `source` is what separates an
+               automatic row from one a teacher set, and it decides which rows
+               carry Edit and Delete. */
             .select(
-              'id, class_id, title, due_at, created_at, academic_week, subject_id, ' +
+              'id, class_id, title, due_at, release_at, source, set_by, ' +
+              'set_tier, scope_kind, scope_ref, subject, paper, ' +
+              'created_at, academic_week, subject_id, ' +
               'subject:subject_id ( id, name )'
             )
             .in('class_id', chunk)
@@ -2163,6 +2205,20 @@ window.MrBadmusTeacherData = (function () {
         id: a.id,
         title: a.title,
         due_at: a.due_at,
+        release_at: a.release_at,
+        source: a.source,
+        set_by: a.set_by,
+        /* ⊕ MRB-336 §6 — what Edit re-opens the sheet ON. The row's own
+           answers to the three questions the Topic step asks. Read here so
+           the sheet needs no request for any of them: it is the same row
+           the table drew. ⚠️ `subject` is the SET-WORK subject (a science
+           name), not `subject_id`'s label — the two are different columns
+           and mean different things. */
+        set_tier: a.set_tier,
+        scope_kind: a.scope_kind,
+        scope_ref: a.scope_ref,
+        set_subject: a.subject,
+        paper: a.paper,
         created_at: a.created_at,
         academic_week: a.academic_week,
         subject_id: a.subject_id,

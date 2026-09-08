@@ -301,7 +301,14 @@
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
                 "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-  /* "14 Sep 2026". The hold line's whole vocabulary. */
+  /* "14 Sep 2026".
+
+     ⊕ MRB-336 — EXPORT-ONLY NOW, and deliberately kept. It formatted the
+     hold line, and the hold line is gone: the school hold no longer governs
+     what a teacher sets, so the sheet no longer mentions it. The function
+     stays because `tools/set_work_time_test.js` drives it as London-parts
+     arithmetic — the same arithmetic the release and due fields run on —
+     and those three cases are the only place that arithmetic is pinned. */
   function londonDateLabel(iso) {
     var ms = (iso instanceof Date) ? iso.getTime() : Date.parse(iso);
     if (isNaN(ms)) { return ""; }
@@ -379,6 +386,24 @@
     });
   }
 
+  /* ⊕ MRB-336 — the same envelope as `apiPost`, with a method. A row that
+     already exists is CHANGED, not set again: a second POST would be a
+     second assignment for thirty children. */
+  function apiPatch(path, payload) {
+    return token().then(function (t) {
+      return fetch(apiBase() + path, {
+        method: "PATCH",
+        headers: { Authorization: "Bearer " + t, "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    }).then(function (res) {
+      return res.json().then(
+        function (d) { return { status: res.status, body: d, ok: res.ok }; },
+        function () { return { status: res.status, body: null, ok: res.ok }; }
+      );
+    });
+  }
+
   /* ═════════════════════════════════════════════════════════════════════
      4. STRINGS — the complete set. RISKS A9's list.
      Nouns, labels, numbers, dates and button verbs. No sentences.
@@ -422,7 +447,6 @@
     /* The only composed strings. Each is a label plus a number or a date. */
     weeksAgo: function (n) { return "Set " + n + (n === 1 ? " week ago" : " weeks ago"); },
     pupils: function (n) { return n + " " + (n === 1 ? "student" : "students"); },
-    hold: function (dateLabel) { return "Assignments open " + dateLabel; },
     setForClasses: function (title, n) { return title + " · Set for " + n + " classes"; },
     setForClass: function (title, name) { return title + " · " + name; },
     /* ⚠️ THE TWO REFUSAL LABELS, and they are the judgement call in this
@@ -431,8 +455,17 @@
        class has no topics", which is a lie told by omission. These are noun
        phrases in the tag slot — the same two words a status chip carries —
        and there is no third. */
+    /* ⊕ MRB-336 — EDIT. The primary's verb when the sheet was opened on a
+       row that already exists: a set that is being CHANGED is saved, not
+       set again. One word, and the only string this ticket adds to the
+       sheet's visible vocabulary — the two labels above a released set's
+       read-only values are `labelTier` and `steps[1]`, which are already
+       here because the Topic step uses them. */
+    save: "Save",
     unavailable: "Unavailable",
-    notSetToast: "Not set"
+    notSetToast: "Not set",
+    notSavedToast: "Not saved",
+    savedFor: function (title) { return title + " \u00b7 Saved"; }
   };
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -564,11 +597,20 @@
       releaseTime: "07:00",
       dueDate: "",
       dueTime: "18:00",
-      holdIso: "",
-      showHold: false,
       badTitle: false,
       badDue: false,
-      badRelease: false
+      badRelease: false,
+      /* ⊕ MRB-336 — EDIT. Empty on a new set, which is what every branch
+         below tests. `locked` is "this work has already been released", and
+         the server enforces the same narrowing: after release only `title`
+         and `due_at` are accepted, anything else is `locked_after_release`.
+         `keepPicked` stops arriving at the Detail step from re-rolling
+         questions the teacher never asked to change. */
+      editId: "",
+      locked: false,
+      keepPicked: false,
+      roTier: "",
+      roScope: ""
     };
   }
 
@@ -695,6 +737,34 @@
     /* ── panel 2: Detail ── */
     var pDetail = el("div", "sw-panel");
     pDetail.setAttribute("data-sw", "panel-detail");
+
+    /* ⊕ MRB-336 — WHAT A RELEASED SET SHOWS INSTEAD OF ITS CONTROLS.
+       Its tier and its topic, as values, at the head of the panel — where
+       the teacher would otherwise be reading the answers they had just
+       given on the Topic step. Children have already been given this work;
+       changing either would change the questions underneath a pupil who
+       has started, so the server refuses it (`locked_after_release`) and
+       the sheet does not offer it.
+
+       ⚠️ ABSENT, NOT DISABLED. A greyed-out chip rail with a sentence
+       under it explaining why it is grey is two things this sheet does not
+       do — a dead control and a sentence. A value with a label above it is
+       what "read-only" looks like here. */
+    var roTierLbl = el("div", "sw-label", SAY.labelTier);
+    roTierLbl.setAttribute("data-sw", "ro-tier-label");
+    roTierLbl.hidden = true;
+    var roTier = el("div", "sw-ro");
+    roTier.setAttribute("data-sw", "ro-tier");
+    roTier.hidden = true;
+    var roScopeLbl = el("div", "sw-label", SAY.steps[1]);
+    roScopeLbl.setAttribute("data-sw", "ro-scope-label");
+    roScopeLbl.hidden = true;
+    var roScope = el("div", "sw-ro");
+    roScope.setAttribute("data-sw", "ro-scope");
+    roScope.hidden = true;
+    pDetail.appendChild(roTierLbl); pDetail.appendChild(roTier);
+    pDetail.appendChild(roScopeLbl); pDetail.appendChild(roScope);
+
     pDetail.appendChild(el("div", "sw-label", SAY.labelQuestions));
     var countChips = el("div", "sw-chips");
     countChips.setAttribute("data-sw", "count-chips");
@@ -714,7 +784,8 @@
     titleWrap.appendChild(title);
     pDetail.appendChild(titleWrap);
 
-    pDetail.appendChild(el("div", "sw-label", SAY.labelRelease));
+    var relLbl = el("div", "sw-label", SAY.labelRelease);
+    pDetail.appendChild(relLbl);
     var relChips = el("div", "sw-chips");
     relChips.setAttribute("data-sw", "release-chips");
     pDetail.appendChild(relChips);
@@ -731,11 +802,6 @@
     var dueTime = mkInput("time", SAY.dueTime, "due-time");
     dueFields.appendChild(dueDate); dueFields.appendChild(dueTime);
     pDetail.appendChild(dueFields);
-
-    var hold = el("div", "sw-hold");
-    hold.setAttribute("data-sw", "hold");
-    hold.hidden = true;
-    pDetail.appendChild(hold);
 
     body.appendChild(pClasses); body.appendChild(pTopic); body.appendChild(pDetail);
     sheet.appendChild(head); sheet.appendChild(body);
@@ -761,9 +827,12 @@
       subjLabel: subjLabel, subjChips: subjChips,
       paperLabel: paperLabel, paperChips: paperChips, tree: tree,
       pDetail: pDetail, countChips: countChips, qlist: qlist,
+      relLbl: relLbl,
+      roTierLbl: roTierLbl, roTier: roTier,
+      roScopeLbl: roScopeLbl, roScope: roScope,
       title: title, relChips: relChips, relFields: relFields,
       relDate: relDate, relTime: relTime, dueDate: dueDate, dueTime: dueTime,
-      hold: hold, toast: toast,
+      toast: toast,
       treeRows: [], classRows: [], qRows: []
     };
 
@@ -820,7 +889,6 @@
       S.dueDate = els.dueDate.value;
       S.dueTime = els.dueTime.value;
       S.badDue = false; S.badRelease = false;
-      syncHold();
       syncValidity();
     };
     [els.relDate, els.relTime, els.dueDate, els.dueTime].forEach(function (i) {
@@ -1037,6 +1105,7 @@
     /* Selecting a subtopic deselects its topic and vice versa — one scope. */
     S.scopeKind = kind;
     S.scopeRef = ref;
+    S.keepPicked = false;              // ⊕ MRB-336
     S.picked = [];
     S.expanded = {};
     S.swapDead = {};
@@ -1366,10 +1435,17 @@
       if (!S || mySession !== session || mySeq !== fetchSeq) { return false; }
       S.scope = r.body || {};
       var k = S.scope.class || {};
-      S.holdIso = k.open_from || "";
       var tiers = S.scope.tiers || [];
-      S.tier = k.default_tier ||
-        (tiers.indexOf("medium") > -1 ? "medium" : (tiers[0] || ""));
+      /* ⊕ MRB-336 — AN EDIT KEEPS THE ROW'S OWN TIER. `/scope` answers with
+         the CLASS's default, which is the right opening answer for a new
+         set and the wrong one for a set that already exists: a teacher
+         editing a Foundation revision set for a Higher class would have
+         watched it become Higher a moment after the sheet opened, and
+         `roTier` would then disagree with the chip rail. */
+      if (!(S.editId && S.tier)) {
+        S.tier = k.default_tier ||
+          (tiers.indexOf("medium") > -1 ? "medium" : (tiers[0] || ""));
+      }
       /* ⊕ MRB-335 — THE COHORT, and the pruning that goes with it. `/scope`
          is the only authority on which classes may be set the same work; a
          selection made before it answered can legitimately be outside. */
@@ -1518,6 +1594,9 @@
       S.tier = k;
       S.available = 0;
       S.picked = [];
+      /* ⊕ MRB-336 — a different tier is a different set of questions, so an
+         edit stops keeping the ones the row already holds. */
+      S.keepPicked = false;
       /* A selected node that has dropped to zero at the new tier deselects
          itself, which is what disables Next (RISKS A5). */
       var r = nodeFor(S.scopeKind, S.scopeRef);
@@ -1575,6 +1654,7 @@
       return { key: n, label: String(n) };
     }), function (k) {
       S.count = k;
+      S.keepPicked = false;            // ⊕ MRB-336
       syncCountChips();
       loadPreview();
     });
@@ -1602,7 +1682,6 @@
       S.release = k;
       S.badRelease = false;
       syncRelease();
-      syncHold();
       syncValidity();
     });
     syncRelease();
@@ -1613,51 +1692,24 @@
     els.relFields.hidden = (S.release !== "later");
   }
 
-  /* ═════════════════════════════════════════════════════════════════════
-     14. THE HOLD LINE — one line, a date, only when it applies.
-     ═════════════════════════════════════════════════════════════════════ */
+  /* ⊕ MRB-336 — SECTION 14 WAS THE HOLD LINE, AND IT IS GONE.
 
-  /* ⊕ MRB-335 — THE HOLD IS LONDON MIDNIGHT ON ITS DATE, NOT UTC MIDNIGHT.
+     It drew one factual line — `Assignments open <date>` — whenever the
+     release the teacher had chosen fell before `schools.assignments_open_from`,
+     because the server then stored `max(requested, open_from)` and the work
+     did not appear on the day they asked for it.
 
-     `schools.assignments_open_from` is a DATE. `Date.parse("2026-09-14")`
-     reads it as 00:00 UTC, which in BST is 01:00 in the morning of the 14th
-     — so work released at 00:30 London on the day the school opens was
-     judged to be BEFORE the hold, and the sheet drew the hold line for an
-     instant the server would have accepted. One hour wide, five months of
-     the year, and only ever at night: the kind of thing that is found in
-     March rather than in testing.
+     The server no longer clamps. `schools.assignments_open_from` keeps its
+     whole meaning for AUTOMATIC weekly composition and has none at all for
+     work a teacher sets by hand, so `release_at` is now stored exactly as
+     asked. There is nothing left for the sheet to disclose, and a line
+     describing a rule that no longer applies would be worse than no line.
 
-     The same conversion the release and due fields use, so the line and the
-     server cannot disagree. Tolerates a full timestamp as well as a bare
-     date, because `/scope` is free to widen the column later. */
-  function holdMs() {
-    if (!S || !S.holdIso) { return NaN; }
-    var raw = String(S.holdIso);
-    var date = /^\d{4}-\d{2}-\d{2}/.test(raw) ? raw.slice(0, 10) : null;
-    if (!date) {
-      var p = utcToLondonParts(raw);
-      if (!p) { return NaN; }
-      date = p.date;
-    }
-    var iso = londonToUtcIso(date, "00:00");
-    return iso ? Date.parse(iso) : NaN;
-  }
-
-  function syncHold() {
-    var show = false;
-    if (S.holdIso) {
-      var open = holdMs();
-      if (!isNaN(open)) {
-        var chosen = (S.release === "later")
-          ? Date.parse(londonToUtcIso(S.releaseDate, S.releaseTime) || "")
-          : Date.now();
-        if (!isNaN(chosen) && chosen < open) { show = true; }
-      }
-    }
-    if (S.showHold) { show = true; }       // the server said `clamped`
-    els.hold.hidden = !show;
-    if (show) { els.hold.textContent = SAY.hold(londonDateLabel(S.holdIso)); }
-  }
+     Removed with it: `S.holdIso`, `S.showHold`, `holdMs()`, `syncHold()`,
+     the `.sw-hold` node, the `clamped` field on the POST response, and the
+     hold arm of `effReleaseMs()` — which was the whole of `effReleaseMs()`,
+     so `stepValid` and `syncValidity` now compare Due against the release
+     the teacher TYPED, which is again the release the server will use. */
 
   /* ═════════════════════════════════════════════════════════════════════
      15. VALIDITY — a disabled primary and an outlined field. No sentences.
@@ -1668,28 +1720,6 @@
     return londonToUtcIso(S.releaseDate, S.releaseTime);
   }
   function dueIso() { return londonToUtcIso(S.dueDate, S.dueTime); }
-
-  /* ⊕ MRB-335 — THE RELEASE THE SERVER WILL ACTUALLY USE.
-
-     ⛔ The sheet validated `due > release` against the release the teacher
-     TYPED, and the server stores `max(requested, open_from)` — so under a
-     14 Sep hold, Release Now on the 8th with Due on the 12th passed here,
-     was refused there, and the teacher got "Not set" with every field
-     unmarked and nothing to correct. The work was impossible on the day
-     they asked for it and the sheet said so nowhere.
-
-     `effRel` is that clamp, computed the same way, so the disabled primary
-     and the outlined Due field appear while the teacher is still choosing
-     rather than after the server has said no. The hold LINE already draws
-     for this case; this makes the primary agree with it. */
-  function effReleaseMs() {
-    var relMs = (S.release === "later")
-      ? Date.parse(releaseIso() || "")
-      : Date.now();
-    var hold = holdMs();
-    if (!isNaN(hold) && (isNaN(relMs) || hold > relMs)) { return hold; }
-    return relMs;
-  }
 
   function stepValid() {
     /* ⊕ MRB-335 — STEP 0 IS VALID ONCE `/scope` HAS RESOLVED, WHICH IS NOT
@@ -1727,7 +1757,13 @@
     }
     // Detail
     if (S.busy || S.previewErr) { return false; }
-    if (!S.picked.length || S.picked.length > 20) { return false; }
+    /* ⊕ MRB-336 — A RELEASED SET IS NOT SAVING ITS QUESTIONS, so an empty
+       list is not a reason to refuse. The two fields it CAN change are the
+       title and the deadline, both checked below; the questions are shown
+       because a teacher changing a deadline should see what the deadline is
+       on, and if that read failed the deadline is still theirs to move. */
+    if (!S.locked && (!S.picked.length || S.picked.length > 20)) { return false; }
+    if (S.locked && S.picked.length > 20) { return false; }
     var t = String(S.title || "").trim();
     if (!t.length || t.length > 80) { return false; }
     var due = dueIso();
@@ -1735,8 +1771,7 @@
     var dueMs = Date.parse(due);
     var relMs = S.release === "later" ? Date.parse(releaseIso() || "") : Date.now();
     if (S.release === "later" && isNaN(relMs)) { return false; }
-    var effRel = effReleaseMs();
-    if (isNaN(dueMs) || isNaN(effRel) || dueMs <= effRel) { return false; }
+    if (isNaN(dueMs) || isNaN(relMs) || dueMs <= relMs) { return false; }
     if (dueMs > Date.now() + 365 * DAY_MS) { return false; }
     if (S.release === "later" && relMs < Date.now() - 5 * 60000) { return false; }
     return true;
@@ -1744,8 +1779,15 @@
 
   function syncValidity() {
     els.primary.disabled = !stepValid();
-    els.primary.textContent = (S.step === 2) ? SAY.set : SAY.next;
-    els.back.textContent = (S.step === 0) ? SAY.cancel : SAY.back;
+    /* ⊕ MRB-336 — `Save` on a row that already exists, `Set work` on a new
+       one. Only the LAST step's verb changes: the Topic step still goes
+       Next, because there is still a Detail step after it. */
+    els.primary.textContent = (S.step === 2)
+      ? (S.editId ? SAY.save : SAY.set) : SAY.next;
+    /* Edit has no Classes step — the row belongs to one class and that is
+       not a thing being chosen — so its first step's Back is the way out. */
+    els.back.textContent = (S.step === 0 || (S.editId && S.step === editFirst()))
+      ? SAY.cancel : SAY.back;
     /* The outline: only on a field the teacher has actually filled wrongly,
        never on one they have simply not reached yet. */
     if (S.step === 2) {
@@ -1753,11 +1795,8 @@
       els.title.classList.toggle("sw-bad", S.badTitle || (S.titleEdited && !t.length));
       var due = dueIso(), dueMs = due ? Date.parse(due) : NaN;
       var relMs = S.release === "later" ? Date.parse(releaseIso() || "") : Date.now();
-      /* The same clamp `stepValid` applies, so the outline and the disabled
-         primary are never in disagreement about the same date. */
-      var effRel = effReleaseMs();
       var dueBad = S.badDue || (!!S.dueDate && !!S.dueTime &&
-        (isNaN(dueMs) || (!isNaN(effRel) && dueMs <= effRel) ||
+        (isNaN(dueMs) || (!isNaN(relMs) && dueMs <= relMs) ||
          dueMs > Date.now() + 365 * DAY_MS));
       els.dueDate.classList.toggle("sw-bad", dueBad);
       els.dueTime.classList.toggle("sw-bad", dueBad);
@@ -1778,12 +1817,39 @@
     els.pClasses.hidden = (S.step !== 0);
     els.pTopic.hidden = (S.step !== 1);
     els.pDetail.hidden = (S.step !== 2);
+    /* ⊕ MRB-336 — WHAT A RELEASED SET DOES NOT OFFER. The count chips
+       choose how many questions; Swap changes which ones; Release decides
+       when children see it. All three are decided the moment the work goes
+       out, and the server refuses every one of them after that. They are
+       REMOVED rather than disabled, and the tier and topic appear as values
+       in their place — see the panel's head. */
+    var ro = !!S.locked;
+    els.countChips.hidden = ro;
+    els.qlist.classList.toggle("is-ro", ro);
+    els.relLbl.hidden = ro;
+    els.relChips.hidden = ro;
+    if (ro) { els.relFields.hidden = true; }
+    els.roTierLbl.hidden = !ro;
+    els.roTier.hidden = !ro;
+    els.roScopeLbl.hidden = !ro;
+    els.roScope.hidden = !ro;
+    if (ro) {
+      els.roTier.textContent = S.roTier;
+      els.roScope.textContent = S.roScope;
+    }
     /* A step change is a NEW SCREEN, so the scroller starts at the top —
        which is the one place a scroll reset is correct, and it is not a
        selection. */
     els.sheet.scrollTop = 0;
     syncValidity();
   }
+
+  /* ⊕ MRB-336 — WHICH STEP AN EDIT OPENS ON, and it is the one thing the
+     teacher can still change. Before release nobody has seen the work, so
+     everything is open and the sheet starts where the choosing starts.
+     After release only the title and the deadline move, and both are on the
+     Detail step. */
+  function editFirst() { return S.locked ? 2 : 1; }
 
   function onPrimary() {
     if (!S || els.primary.disabled) { return; }
@@ -1805,10 +1871,24 @@
       S.clientRef = uuid();
       syncStep();
       syncRelease();
-      syncHold();
+      /* ⊕ MRB-336 — AN EDIT DOES NOT RE-ROLL THE QUESTIONS ON THE WAY PAST.
+         `loadPreview` picks a fresh set for the scope; arriving at the
+         Detail step is not a request for different questions, and a teacher
+         correcting a title must not find twenty new ones under it. Any
+         change to tier, scope or count clears `keepPicked` and the preview
+         runs as it always did. */
+      if (S.keepPicked && S.picked.length) {
+        S.keepPicked = false;
+        S.available = Math.max(S.available, S.picked.length);
+        buildQuestions();
+        syncCountChips();
+        syncValidity();
+        return;
+      }
       loadPreview();
       return;
     }
+    if (S.editId) { saveEdit(); return; }
     submit();
   }
 
@@ -1883,13 +1963,11 @@
       var done = { title: title, classIds: payload.class_ids,
                    assignmentIds: r.body.assignment_ids || [],
                    releaseAt: r.body.release_at || null,
-                   clamped: !!r.body.clamped,
                    replayed: !!r.body.replayed };
       if (S && mySession === session) {
         S.busy = false;
         S.submitting = false;
         S.clientRef = "";
-        if (r.body.clamped) { S.showHold = true; syncHold(); }
         close();
       }
       toast(classCount === 1 && only
@@ -1989,7 +2067,6 @@
     els.classList.textContent = "";
     els.classRows = [];
     els.classNote.hidden = true;
-    els.hold.hidden = true;
     /* Drawn from the page before anything is asked for, so step 0 is never
        an empty panel with a dead Next. `/scope` refines it when it lands. */
     buildClasses();
@@ -2047,11 +2124,205 @@
   }
 
   /* ═════════════════════════════════════════════════════════════════════
+     17b. EDIT — the same sheet, opened on a row that already exists
+     ═════════════════════════════════════════════════════════════════════ */
+
+  /* ⊕ MRB-336 §6, 8 Sep 2026.
+
+     ⚠️ IT IS `open()` WITH A ROW, NOT A SECOND SHEET. Everything a teacher
+     changes about a set — the tier, the node, the questions, the title, the
+     two instants — is already in this sheet, already validated here, and
+     already sent from here. A separate edit dialog would be a second
+     implementation of all of that, and the two would agree until the day
+     they did not.
+
+     ⚠️ THE CLASS IS THE ROW'S CLASS AND IS NOT A CHOICE. A multi-class set
+     is N rows, one per class, and Edit acts on the ONE row the teacher is
+     looking at. So the Classes step is not in the flow at all — see
+     `editFirst()` — and the sheet says nothing about the other classes,
+     because a teacher looking at one class's row is acting on one class's
+     row.
+
+     ⚠️ BEFORE RELEASE, EVERYTHING; AFTER RELEASE, THE TITLE AND THE
+     DEADLINE. Nobody can have started work they cannot see, so before
+     release there is nothing to protect. After it, a pupil may be halfway
+     through: changing the questions underneath them is refused at the
+     server (`locked_after_release`) and is not offered here.
+
+     `row` carries what the class page already knows about the assignment —
+     it comes off the same paper object the table row was drawn from, so no
+     request is needed for any of it. Only the QUESTIONS have to be read,
+     and only when they are being shown. */
+  function edit(opts) {
+    var o = opts || {};
+    if (!o.assignmentId || !o.classId) { return false; }
+    buildShell();
+    isAnchoredOpen = true;
+    opener = (document.activeElement &&
+              document.activeElement !== document.body)
+      ? document.activeElement : null;
+    session += 1;
+    S = freshState(String(o.classId));
+    S.editId = String(o.assignmentId);
+    S.locked = !!o.released;
+    S.keepPicked = true;
+    S.tier = o.tier || "";
+    S.scopeKind = o.scopeKind || "";
+    S.scopeRef = o.scopeRef || "";
+    S.subject = o.subject || "all";
+    S.paper = o.paper || "both";
+    S.title = String(o.title || "");
+    S.titleEdited = true;          // never overwritten by `autoTitle`
+    S.roTier = (SAY.tier[S.tier] || S.tier || "");
+    S.roScope = String(o.scopeTitle || o.title || "");
+
+    /* The two instants, back into the fields the teacher set them from. */
+    var rel = o.releaseAt ? utcToLondonParts(o.releaseAt) : null;
+    if (rel) {
+      S.release = "later"; S.releaseDate = rel.date; S.releaseTime = rel.time;
+    }
+    var due = o.dueAt ? utcToLondonParts(o.dueAt) : null;
+    if (due) { S.dueDate = due.date; S.dueTime = due.time; }
+
+    els.title.value = S.title;
+    els.relDate.value = S.releaseDate;
+    els.relTime.value = S.releaseTime;
+    els.dueDate.value = S.dueDate;
+    els.dueTime.value = S.dueTime;
+    els.qlist.textContent = "";
+    els.qRows = [];
+    els.tree.textContent = "";
+    els.treeRows = [];
+    els.classList.textContent = "";
+    els.classRows = [];
+    els.classNote.hidden = true;
+
+    S.step = editFirst();
+    buildClasses();
+    buildCountChips();
+    buildReleaseChips();
+    syncStep();
+    syncRelease();
+    els.overlay.hidden = false;
+    opens += 1;
+    els.overlay.setAttribute("data-sw-opens", String(opens));
+    els.overlay.setAttribute("data-sw-class", S.classId);
+    els.overlay.setAttribute("data-sw-edit", S.editId);
+    els.sheet.focus({ preventScroll: true });
+    loadScope();
+    loadStoredQuestions();
+    return true;
+  }
+
+  /* The questions this set actually holds, so the sheet shows the work the
+     children were given rather than a fresh draw for the same node.
+
+     ⚠️ IT READS THE ROUTE THE CHILD'S OWN PAGE READS, and that is the point:
+     `/api/class/current-assignment` is the one place the questions ON a set
+     are served from, it is already reachable by this teacher, and adding a
+     second read of the same rows would be a second answer to the same
+     question. `bank_position`, tiers, pathway — none of it is re-derived
+     here.
+
+     ⚠️ AND A FAILURE IS NOT FATAL. Before release the teacher can simply
+     step back and pick again; after release the title and the deadline are
+     all that can move anyway, and both are already on screen. So a failed
+     read leaves `Unavailable` where the rows would be and the Save that
+     matters still works. */
+  function loadStoredQuestions() {
+    var mySession = session, want = S.editId;
+    return apiGet("/api/class/current-assignment?class_id=" +
+      encodeURIComponent(S.classId) +
+      "&assignment_id=" + encodeURIComponent(want)
+    ).then(function (r) {
+      if (!S || mySession !== session || S.editId !== want) { return false; }
+      var qs = (r.body && r.body.questions) || [];
+      S.picked = qs.map(function (q) {
+        return { id: q.id, stem: q.stem || q.prompt || "",
+                 options: q.options || [], correct_index: q.correct_index,
+                 lesson: q.lesson || "" };
+      });
+      S.available = Math.max(S.available, S.picked.length);
+      if (S.step === 2) { buildQuestions(); syncCountChips(); }
+      syncValidity();
+      return true;
+    }, function () {
+      if (!S || mySession !== session || S.editId !== want) { return false; }
+      S.keepPicked = false;
+      if (S.step === 2) {
+        els.qlist.textContent = "";
+        els.qRows = [];
+        els.qlist.appendChild(el("div", "sw-row-tag", SAY.unavailable));
+      }
+      syncValidity();
+      return false;
+    });
+  }
+
+  /* ⊕ MRB-336 — SAVE. The same payload as `submit()`, narrowed by what the
+     row's own state allows, and sent to the row rather than to the
+     collection: a second POST would be a second assignment.
+
+     ⚠️ AFTER RELEASE IT SENDS TWO FIELDS AND NOT SEVEN. The server refuses
+     the rest with `locked_after_release`; sending them anyway and relying on
+     that refusal would turn every save into a coin toss about which field
+     the server checked first. */
+  function saveEdit() {
+    if (S.busy || S.submitting) { return; }
+    S.busy = true;
+    S.submitting = true;
+    syncValidity();
+    var payload = S.locked
+      ? { title: String(S.title || "").trim(), due_at: dueIso() }
+      : { tier: S.tier,
+          scope_kind: S.scopeKind,
+          scope_ref: S.scopeRef,
+          subject: subjectOfScope() || null,
+          question_ids: S.picked.map(function (q) { return q.id; }),
+          title: String(S.title || "").trim(),
+          release_at: releaseIso(),
+          due_at: dueIso() };
+    var title = payload.title;
+    var mySession = session;
+    apiPatch("/api/teacher/set-work/" + encodeURIComponent(S.editId), payload)
+      .then(function (r) {
+        var ok = !!(r.ok && r.body && r.body.success);
+        if (!ok) {
+          if (S && mySession === session) {
+            S.busy = false;
+            S.submitting = false;
+            var field = BAD_FIELD[(r.body && r.body.error) || ""];
+            if (field) { S[field] = true; }
+            syncValidity();
+          }
+          toast(SAY.notSavedToast);
+          return;
+        }
+        if (S && mySession === session) {
+          S.busy = false;
+          S.submitting = false;
+          close();
+        }
+        toast(SAY.savedFor(title));
+        if (typeof window.MRB_SET_WORK_DONE === "function") {
+          try { window.MRB_SET_WORK_DONE({ title: title, saved: true }); }
+          catch (e) { /* the refresh seam is best-effort, as at POST */ }
+        }
+      }, function () {
+        if (S && mySession === session) {
+          S.busy = false; S.submitting = false; syncValidity();
+        }
+        toast(SAY.notSavedToast);
+      });
+  }
+
+  /* ═════════════════════════════════════════════════════════════════════
      18. SURFACE
      ═════════════════════════════════════════════════════════════════════ */
 
   window.MRBSetWork = {
     open: open,
+    edit: edit,
     close: close,
     /* Pure, tested by `tools/set_work_time_test.js`. Exported so the test can
        reach them without a browser, and so a drive can assert the conversion

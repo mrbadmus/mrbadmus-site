@@ -160,6 +160,25 @@
 .sw-label:first-child { margin-top: 0; }
 .sw-label[hidden] { display: none; }
 
+/* ── a value that cannot be changed ⊕ MRB-336 ────────────────────────────
+   The tier and the topic of a set that has already been released. It is a
+   VALUE, in the sheet's own body type, under one of the sheet's own labels
+   — not a disabled chip rail. A greyed control invites a press and then
+   refuses it, and the sentence explaining the refusal is the thing this
+   sheet does not write. */
+.sw-ro {
+  margin-top: 9px;
+  font: 600 17px/1.35 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+.sw-ro[hidden] { display: none; }
+
+/* Swap changes WHICH questions a set holds, and a released set's questions
+   are the ones children have. The control goes rather than greying: see
+   `.sw-ro` above. */
+.sw-qlist.is-ro .sw-swap { display: none; }
+
 /* ── chip rails ──────────────────────────────────────────────────────────
    Design's `swCounts` row (node 590): equal-width mono chips, tinted when
    chosen. `flex-wrap` is the 390px answer — four count chips at 14px padding
@@ -408,22 +427,10 @@
 }
 .sw-tree.sw-bad { border: 1px solid var(--st-accent-text); border-radius: 10px; padding: 6px; }
 
-/* ── the hold line ───────────────────────────────────────────────────────
-   The ONE factual line in the sheet, and it is a date (RISKS B6/A9). It says
-   when the school opens work to students and nothing else — no explanation,
-   no apology, no instruction. */
-.sw-hold {
-  margin-top: 14px;
-  padding: 11px 13px;
-  font: 400 13.5px/1.4 var(--st-mono);
-  letter-spacing: .06em;
-  color: var(--st-accent-text);
-  background: var(--st-note-bg);
-  border: 1px solid var(--st-note-border);
-  border-radius: 10px;
-  overflow-wrap: anywhere;
-}
-.sw-hold[hidden] { display: none; }
+/* ⊕ MRB-336 — `.sw-hold` WAS HERE. The sheet emits no such node any more:
+   the school's open date governs automatic composition only, so there is
+   nothing for the sheet to disclose. Deleted rather than left unused, so a
+   future node cannot inherit a style for a rule that no longer exists. */
 
 /* ── the toast ───────────────────────────────────────────────────────────
    Design's `tin` keyframes, redeclared here under our own name because this
