@@ -24,7 +24,7 @@ pool ≥ 51; the banks grew from 3,168 → 3,417 (KS4) and 2,220 → 5,142 (KS3)
 and automatic weekly composition is byte-identical because it reads only the
 first twelve positions of every lesson or subtopic.
 
-92 commits on the site branch, 4 on the backend branch. Four migrations,
+93 commits on the site branch, 4 on the backend branch. Four migrations,
 rehearsed on TEST with rollback pairs. All gates green on the final tree
 (§6). Nothing pushed until §7.
 
@@ -257,7 +257,17 @@ the pull above is the sanctioned database-tool path from CLAUDE.md, and the
 checksum proof is the same one the script would have printed.
 
 ### 7.3 Site
-(written in the follow-up commit after the push and the live stamp proof)
+- Receipts recorded once on the final tree `be5d0d37df67` (02:13–03:04): every slow gate green except the two inherited reds named in the tip commit's `GATE-OVERRIDE` lines — `teacher_admin_foreign_class` (C7 REMINDERS × 3) and `3d_parity` (s06 blocked heart plate + three parity problems), both re-run on the merge-base build `7f03fc8ce` with identical failures. Two gates skipped by name for a credential this run was not given (`student_controls_drive`, `export_ks3_questions_verify` — both want `MRB_TEST_STUDENT_PASSWORD`).
+- The drive re-renders five tracked screenshots on every run; they were restored to the committed bytes so that the measured tree is the pushed tree.
+- `git push origin HEAD:main` from the worktree at 03:10: `7f03fc8ce → 8220b2e01`; the branch `feat/set-work-v2` pushed for the record; the main checkout fast-forwarded to `8220b2e01`.
+- Live proof at 03:12:17 (first poll): `teacher/classes.html`, `teacher/class-detail.html`, `teacher/admin.html` all 200 with every `/shared/*?v=` stamp of the committed build present in the live body; `/shared/set-work.js?v=8f030ffe`, `/shared/set-work.css?v=8cbd95af`, `/shared/teacher-live.js?v=b21b674e` fetched with a nonce and `cmp`-identical to `mrbadmus_site/shared/`.
+- Window: between the backend going live (02:05) and the site (03:12) the v1 sheet's `/topics` call answered 404; no teacher-set work was written on production in that window (the `assignments` count is unchanged at 2).
+
+### 7.4 Production re-reads after everything
+- KS4 classes: 40 rows (38 current-year + 2 last-year duplicates), all tiered by the rule, all 25 triple classes carrying a science, 0 `admin`, 0 disagreeing with the rule.
+- Banks: KS4 3,417, KS3 5,142; aggregate md5 equal to the authored Python; auto windows intact; anon reads `[]`.
+- Availability on production is therefore the §3 "after" table exactly: ≥ 52 in every KS4 cell offered to a class, ≥ 51 in every KS3 (unit, tier).
+- `assignments`: still 2 rows; the 18 Aug 8r/Sc1 fixture row untouched.
 
 ## 8. Rulings you should know, one line each
 
