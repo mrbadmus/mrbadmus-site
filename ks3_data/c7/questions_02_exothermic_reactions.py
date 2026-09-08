@@ -467,7 +467,8 @@ QUESTIONS = [
              "correct": False,
              "why": "That is thermal energy and depends on temperature. The "
                     "chemical store is in the arrangement"},
-            {"text": "The cupboard the chemicals are kept in",
+            {"text": "The cupboard that the chemicals are kept in, out of the "
+                     "way and locked up",
              "correct": False,
              "why": "The word is being used in the scientific sense of an "
                     "energy store"},
@@ -577,7 +578,8 @@ QUESTIONS = [
              "correct": False,
              "why": "It is not radioactive at all. It is the heat of the "
                     "reaction that harms"},
-            {"text": "Because it is heavy enough to fall from scaffolding",
+            {"text": "Because it is heavy enough to do real damage to anybody "
+                     "underneath if a bag of it falls from scaffolding",
              "correct": False,
              "why": "That would be true of any bag of powder. The chemical "
                     "hazard is what makes quicklime particular"},
@@ -726,7 +728,8 @@ QUESTIONS = [
              "correct": False,
              "why": "A large surface would lose heat faster, and a heap needs "
                     "to be damp to work"},
-            {"text": "Nothing but the frost, which insulates the heap",
+            {"text": "Nothing but the frost outside, which insulates the heap "
+                     "and stops the middle of it cooling down",
              "correct": False,
              "why": "Frost does not supply energy. Something inside is "
                     "releasing it"},
@@ -828,7 +831,7 @@ QUESTIONS = [
              "why": "The calcium oxide reaction needs no air. And air would "
                     "be a reactant rather than an energy source"},
             {"text": "There is no correction — a chemical reaction genuinely "
-                     "needs no source",
+                     "needs no source of energy from anywhere else at all",
              "correct": False,
              "why": "Every joule out of it was in the chemicals first. Energy "
                     "is never made"},
@@ -1018,8 +1021,8 @@ QUESTIONS = [
             {"text": "The fast one shows a large rise and the slow one barely "
                      "moves the reading at all",
              "correct": True},
-            {"text": "The slow one shows the larger rise, because it has "
-                     "longer to build up",
+            {"text": "The slow one shows the larger rise, because it has a "
+                     "great deal longer in which to build up",
              "correct": False,
              "why": "Nothing builds up. Heat escapes to the room as it is "
                     "released"},

@@ -449,7 +449,8 @@ QUESTIONS = [
              "correct": False,
              "why": "It sits in a first aid kit at room temperature for "
                     "years. Nothing in it was ever cold"},
-            {"text": "A gas under pressure that cools as it escapes",
+            {"text": "A gas held under pressure that cools sharply as it "
+                     "escapes through the broken seal",
              "correct": False,
              "why": "That is how some sprays work. This one uses a "
                     "dissolving"},
@@ -504,7 +505,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Melting needs heat and one substance. Salt dissolves in "
                     "cold water and melts at 801 °C"},
-            {"text": "A change that always takes energy in",
+            {"text": "A change that always takes energy in from the "
+                     "surroundings around it",
              "correct": False,
              "why": "Some dissolvings take energy in and some give it out"},
         ],
@@ -582,7 +584,8 @@ QUESTIONS = [
             {"text": "It is a control — it shows what the water would have "
                      "done anyway",
              "correct": True},
-            {"text": "To warm the first beaker back up afterwards",
+            {"text": "To warm the first beaker back up again once its reading "
+                     "has finally been taken",
              "correct": False,
              "why": "Nothing is being warmed. The second beaker is measured, "
                     "not used"},
@@ -607,7 +610,8 @@ QUESTIONS = [
              "correct": False,
              "why": "One measures the direction of the transfer directly. The "
                     "other is a clue about it"},
-            {"text": "Neither — only weighing the products would show it",
+            {"text": "Neither of them — only weighing the products before and "
+                     "after the change could possibly settle it",
              "correct": False,
              "why": "Mass says nothing about energy direction. A thermometer "
                     "says a great deal"},
@@ -633,8 +637,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The soil loses almost nothing, which is a famous old "
                     "experiment. The energy came from light"},
-            {"text": "The student is right, because a plant makes its own "
-                     "food",
+            {"text": "The student is right, because a plant makes its own food "
+                     "out of nothing more than air and water",
              "correct": False,
              "why": "Making food is storing energy from elsewhere. It is not "
                     "creating any"},
@@ -665,7 +669,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Cold is not produced. Energy is taken away, which is not "
                     "the same thing"},
-            {"text": "The salt stops the snow reflecting sunlight",
+            {"text": "The salt stops the snow reflecting sunlight, so the road "
+                     "surface takes in more of it",
              "correct": False,
              "why": "It does darken the surface, which would WARM it. The "
                     "cooling is chemical"},
@@ -693,7 +698,7 @@ QUESTIONS = [
                      "the same amount of water",
              "correct": True},
             {"text": "Have no effect, because the water is what is being "
-                     "measured",
+                     "measured and there is the same amount of it",
              "correct": False,
              "why": "The water is what is being measured, and it is losing "
                     "energy to the change. More change means more loss"},
@@ -770,7 +775,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Many are hard or impossible to reverse. When they can be "
                     "reversed, the same joins are involved"},
-            {"text": "Because the temperature returns to where it started",
+            {"text": "Because the temperature returns to where it started, and "
+                     "the same energy must therefore be involved",
              "correct": False,
              "why": "That is a consequence rather than a reason"},
         ],
@@ -847,7 +853,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The reaction finishes. After that only the room is "
                     "acting on the flask"},
-            {"text": "Rises, because the insulation traps energy",
+            {"text": "Rises, because the insulation traps the energy inside "
+                     "the flask rather than letting it escape",
              "correct": False,
              "why": "There is nothing to trap while the reaction is taking "
                     "energy IN. It falls first"},
@@ -874,8 +881,9 @@ QUESTIONS = [
              "correct": False,
              "why": "Almost all the tree's mass comes from the AIR rather "
                     "than the soil. And the point of the pair is the energy"},
-            {"text": "They are unrelated, because one is biology and the "
-                     "other chemistry",
+            {"text": "They are completely unrelated, because one of them is a "
+                     "question for biology and the other one is a question for "
+                     "chemistry",
              "correct": False,
              "why": "The same reaction runs in both, in opposite directions. "
                     "Which subject studies it changes nothing"},

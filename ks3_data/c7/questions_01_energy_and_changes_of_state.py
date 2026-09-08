@@ -376,7 +376,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Plenty of chemical reactions need energy too. This is "
                     "about solid, liquid and gas"},
-            {"text": "A change that cannot be undone",
+            {"text": "A change that cannot be undone once it has happened, "
+                     "whatever you do to the substance afterwards",
              "correct": False,
              "why": "Every change of state can be undone. Melt ice and freeze "
                     "it back"},
@@ -422,7 +423,8 @@ QUESTIONS = [
             {"text": "Particles escaping from the surface of a liquid and "
                      "becoming a gas",
              "correct": True},
-            {"text": "A liquid soaking into a surface",
+            {"text": "A liquid soaking into the surface it is resting on and "
+                     "disappearing down inside it",
              "correct": False,
              "why": "Nothing is soaking in. The particles leave as a gas"},
         ],
@@ -439,7 +441,8 @@ QUESTIONS = [
              "why": "The window feels cold because it IS cold, and that is "
                     "what makes the vapour condense. Condensing gives energy "
                     "OUT"},
-            {"text": "It neither takes energy in nor gives it out",
+            {"text": "It neither takes energy in nor gives any of it out at "
+                     "any point in the change",
              "correct": False,
              "why": "Then there would be no reason for steam to scald worse "
                     "than water at the same temperature"},
@@ -470,7 +473,8 @@ QUESTIONS = [
              "correct": False,
              "why": "That depends on how much substance there is. "
                     "Temperature does not"},
-            {"text": "How fast a substance is heating up",
+            {"text": "How fast a substance is heating up, so a reading that is "
+                     "climbing quickly must mean a high temperature",
              "correct": False,
              "why": "That is a rate. Temperature is a reading at one moment"},
         ],
@@ -538,7 +542,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Boiling takes in a great deal — more than melting the "
                     "same mass"},
-            {"text": "Boiling happens only in a kettle",
+            {"text": "Boiling happens only in a kettle, and never in any other "
+                     "container in a laboratory",
              "correct": False,
              "why": "Any liquid boils at its boiling point, in any container"},
             {"text": "Boiling happens throughout the liquid, with bubbles "
@@ -659,8 +664,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The towel is at air temperature within a minute and goes "
                     "on feeling cold. The cooling comes from evaporation"},
-            {"text": "Because wet cloth conducts heat away faster than dry "
-                     "cloth",
+            {"text": "Because wet cloth conducts heat away from your skin a "
+                     "great deal faster than dry cloth",
              "correct": False,
              "why": "It does conduct better, and that alone would stop once "
                     "you were both at the same temperature. Evaporation keeps "
@@ -747,7 +752,8 @@ QUESTIONS = [
             {"text": "Because evaporation happens at the surface, at any "
                      "temperature",
              "correct": True},
-            {"text": "Because the boiling point falls in the open air",
+            {"text": "Because the boiling point of water falls once it is out "
+                     "in the open air like that",
              "correct": False,
              "why": "It changes very little with altitude and not at all with "
                     "being outdoors"},
@@ -823,7 +829,8 @@ QUESTIONS = [
              "correct": False,
              "why": "That is the same idea at the other plateau, and it is "
                     "not the observation he started from. His was the ice"},
-            {"text": "That a thermometer in melting ice reads 0 °C",
+            {"text": "That a thermometer standing in a beaker of melting ice "
+                     "reads exactly 0 °C and not some other value",
              "correct": False,
              "why": "That was already known. What needed explaining was why "
                     "it STAYED there for so long"},
@@ -848,7 +855,8 @@ QUESTIONS = [
             {"text": "A thermometer cannot see it — the energy goes in and "
                      "the reading does not move",
              "correct": True},
-            {"text": "It is released only later, so it is hidden in time",
+            {"text": "It is released only later on, so it is hidden in time "
+                     "rather than hidden from the thermometer",
              "correct": False,
              "why": "It is released later on freezing, and hidden refers to "
                     "the thermometer not registering it as it goes in"},
@@ -871,7 +879,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The ice was AT the drink's temperature. What has stopped "
                     "is the melting, which was absorbing energy"},
-            {"text": "Because the melted ice warms faster than the drink",
+            {"text": "Because the melted ice warms up faster than the rest of "
+                     "the drink around it does",
              "correct": False,
              "why": "It warms at the same rate as the rest of the liquid. It "
                     "is now just more drink"},
@@ -929,7 +938,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Those are at different temperatures, so they do not "
                     "isolate the point"},
-            {"text": "Two identical cups of water at 40 °C",
+            {"text": "Two identical cups of water, both of them at 40 °C, side "
+                     "by side",
              "correct": False,
              "why": "Identical in both respects, so nothing is compared"},
         ],
@@ -951,7 +961,8 @@ QUESTIONS = [
             {"text": "How much energy each absorbs as it changes state, not "
                      "only how cold it starts",
              "correct": True},
-            {"text": "Nothing — colder always keeps food cold for longer",
+            {"text": "Nothing at all — a colder pack always keeps food cold "
+                     "for longer than any warmer one does",
              "correct": False,
              "why": "Temperature is only half the story. A pack that absorbs "
                     "little energy warms through quickly"},
@@ -1030,7 +1041,8 @@ QUESTIONS = [
              "correct": False,
              "why": "A reversible energy transfer is not the test either. "
                     "Some chemical reactions reverse too"},
-            {"text": "Because the temperature does not change during it",
+            {"text": "Because the temperature does not change at any point "
+                     "during the whole of the melting itself",
              "correct": False,
              "why": "That is a consequence of where the energy goes, and it "
                     "is not what makes a change physical"},
