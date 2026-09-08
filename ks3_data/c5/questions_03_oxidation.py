@@ -414,14 +414,16 @@ QUESTIONS = [
              "correct": False,
              "why": "That is wear, and it is physical. Corrosion is a "
                     "chemical change"},
-            {"text": "Rust, and nothing else",
+            {"text": "Rust forming on iron, and nothing else that happens to "
+                     "any other metal",
              "correct": False,
              "why": "Rusting is one kind of corrosion. Aluminium and zinc "
                     "corrode too, and neither of them rusts"},
             {"text": "A metal being eaten away by reacting with its "
                      "surroundings",
              "correct": True},
-            {"text": "A metal melting in the heat",
+            {"text": "A metal melting away in the heat and running out of the "
+                     "shape it had",
              "correct": False,
              "why": "Melting is a change of state and makes nothing new"},
         ],
@@ -468,7 +470,8 @@ QUESTIONS = [
              "correct": False,
              "why": "That works and is not what the name means. Nothing is "
                     "being sacrificed"},
-            {"text": "Replacing iron with a metal that does not corrode",
+            {"text": "Replacing the iron altogether with some other metal that "
+                     "does not corrode at all in the air",
              "correct": False,
              "why": "Then there would be no iron to protect. The point is to "
                     "keep the iron and lose something else"},
@@ -511,7 +514,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The tube that rusts is the one going as expected. A "
                     "control has a variable taken OUT of it"},
-            {"text": "To repeat the experiment and check the result",
+            {"text": "To repeat the experiment under exactly the same "
+                     "conditions and check that the result comes out the same",
              "correct": False,
              "why": "That is a repeat, and it changes nothing about the "
                     "conditions"},
@@ -696,10 +700,12 @@ QUESTIONS = [
             {"text": "The speed — released slowly at 37 °C, the energy can be "
                      "used instead of setting the cell on fire",
              "correct": True},
-            {"text": "The reactants — a cell uses no oxygen",
+            {"text": "The reactants — a cell uses no oxygen at all, while "
+                     "burning glucose in a crucible obviously does need some",
              "correct": False,
              "why": "A cell uses oxygen, which is most of why you breathe"},
-            {"text": "Nothing at all — they are the same reaction",
+            {"text": "Nothing at all — they are the very same reaction, with "
+                     "the same reactants and the same products in both cases",
              "correct": False,
              "why": "The chemistry is the same and the RATE is not, and the "
                     "rate is what makes one useful and the other fatal"},
@@ -718,7 +724,8 @@ QUESTIONS = [
              "correct": False,
              "why": "It is not a coating. Being eaten away IS the method "
                     "working"},
-            {"text": "Failing, because zinc should not corrode at all",
+            {"text": "Failing, because zinc is a metal that should not have "
+                     "been corroding at all in the first place",
              "correct": False,
              "why": "Zinc is more reactive than iron and corrodes readily. "
                     "That is why it was chosen"},
@@ -775,7 +782,8 @@ QUESTIONS = [
             {"text": "The gate has lost oxygen to the air over the years",
              "correct": False,
              "why": "It has GAINED oxygen. That is what makes it rust"},
-            {"text": "A rusted gate does not weigh less — the observation is "
+            {"text": "A rusted gate does not actually weigh any less than it "
+                     "did when it was brand new, so the observation is "
                      "mistaken",
              "correct": False,
              "why": "A gate really can end up lighter, because the flakes end "
@@ -802,8 +810,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Almost every metal does. Iron's product has its own "
                     "name"},
-            {"text": "Because rusting needs water and other corrosion does "
-                     "not",
+            {"text": "Because rusting needs water to be present, and none of "
+                     "the other kinds of corrosion needs any of it at all",
              "correct": False,
              "why": "A real difference, and not the reason for the word. "
                     "Rust is the name of hydrated iron oxide"},
@@ -822,7 +830,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Neither alone removes the air properly. They do "
                     "different halves of one job"},
-            {"text": "Because the oil would otherwise react with the water",
+            {"text": "Because the oil would otherwise react with the water "
+                     "that is lying underneath it in the tube",
              "correct": False,
              "why": "Oil and water do not react. The oil is a seal"},
             {"text": "Boiling removes the air already dissolved; the oil "

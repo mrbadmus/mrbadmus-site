@@ -434,11 +434,13 @@ QUESTIONS = [
             {"text": "It takes energy in, which is why the heating has to "
                      "keep going",
              "correct": True},
-            {"text": "It gives energy out to the room",
+            {"text": "It gives energy out into the room around it for the "
+                     "whole time that it runs",
              "correct": False,
              "why": "That is the opposite, and it is what combustion and "
                     "displacement do"},
-            {"text": "It uses up the oxygen in the tube",
+            {"text": "It uses up all of the oxygen that happened to be left "
+                     "inside the tube first",
              "correct": False,
              "why": "Absorbing energy is nothing to do with oxygen. A "
                     "decomposition works with no air at all"},
@@ -544,7 +546,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Possible and not the honest first conclusion. A clear "
                     "result rules carbon dioxide out"},
-            {"text": "That the reaction was not a decomposition",
+            {"text": "That the reaction taking place inside the tube was not a "
+                     "decomposition of any kind at all",
              "correct": False,
              "why": "Plenty of decompositions give other gases. What the test "
                     "rules out is carbon dioxide"},
@@ -672,7 +675,8 @@ QUESTIONS = [
             {"text": "One of the two or more substances the single reactant "
                      "breaks into",
              "correct": True},
-            {"text": "The tube's contents at the end, taken together",
+            {"text": "The whole of the tube's contents at the end of the "
+                     "heating, all taken together",
              "correct": False,
              "why": "Each product is named separately, and one of them has "
                     "usually left the tube"},
@@ -718,7 +722,8 @@ QUESTIONS = [
              "correct": False,
              "why": "It needs no oxygen at all, which is exactly what the "
                     "empty tube shows"},
-            {"text": "Because the compound makes its own air as it heats",
+            {"text": "Because the compound makes its own supply of air the "
+                     "moment it begins to heat up inside the tube",
              "correct": False,
              "why": "It makes a gas, and that gas is a product rather than "
                     "something the reaction needed"},
@@ -741,14 +746,16 @@ QUESTIONS = [
              "correct": False,
              "why": "The setting matters and it is not the decomposition. "
                     "What decomposes is the raising agent"},
-            {"text": "The water in the batter turning to steam",
+            {"text": "The water in the batter turning into steam in the heat "
+                     "of the oven itself",
              "correct": False,
              "why": "That is a change of state and it does help the rise. No "
                     "compound has been broken down"},
             {"text": "The baking powder breaking down and releasing carbon "
                      "dioxide",
              "correct": True},
-            {"text": "The sugar browning on the top",
+            {"text": "The sugar on the top of the cake browning as it cooks "
+                     "through in the oven",
              "correct": False,
              "why": "That is a chemical change of its own, and it is not a "
                     "decomposition of one compound into two"},

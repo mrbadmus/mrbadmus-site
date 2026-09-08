@@ -364,11 +364,13 @@ QUESTIONS = [
              "correct": False,
              "why": "The two orders are related and are not the same. The "
                     "series is a measured order of reactivity"},
-            {"text": "A list of metals in order of how heavy they are",
+            {"text": "A list of the metals in order of how heavy each one of "
+                     "them happens to be",
              "correct": False,
              "why": "Mass has nothing to do with it. Sodium is light and near "
                     "the top"},
-            {"text": "The order the metals appear on the periodic table",
+            {"text": "The order that the metals appear in as you read across "
+                     "the periodic table",
              "correct": False,
              "why": "The table is arranged by atomic number. The series cuts "
                     "across it"},
@@ -420,7 +422,8 @@ QUESTIONS = [
             {"text": "Because they are needed to make the metals react",
              "correct": False,
              "why": "Zinc displaces copper with neither of them present"},
-            {"text": "Because they behave like metals in every other way",
+            {"text": "Because they behave exactly like the metals in every "
+                     "other way that has ever been looked at",
              "correct": False,
              "why": "They behave like non-metals in almost every other way. "
                     "Displacement is the exception"},
@@ -492,7 +495,8 @@ QUESTIONS = [
              "correct": False,
              "why": "How much dissolves is a separate property. What follows "
                     "is which metal wins a partner"},
-            {"text": "It is harder and denser than a less reactive metal",
+            {"text": "It is harder and denser than any less reactive metal is, "
+                     "and a great deal harder to scratch too",
              "correct": False,
              "why": "Sodium is soft and light and highly reactive. Hardness "
                     "does not follow"},

@@ -359,11 +359,13 @@ QUESTIONS = [
              "correct": False,
              "why": "Breaking one substance down by heat is thermal "
                     "decomposition, and it needs no oxygen at all"},
-            {"text": "Any reaction that gets hot",
+            {"text": "Any reaction at all that gets hot enough to feel while "
+                     "it runs",
              "correct": False,
              "why": "Plenty of reactions get hot without burning. Combustion "
                     "needs oxygen and a fuel"},
-            {"text": "A solid turning into a gas",
+            {"text": "A solid turning straight into a gas when it is heated "
+                     "strongly",
              "correct": False,
              "why": "That is a change of state. Nothing new is made"},
         ],
@@ -382,11 +384,12 @@ QUESTIONS = [
                     "products comes from the air"},
             {"text": "A compound made of carbon and hydrogen only",
              "correct": True},
-            {"text": "Any fuel that burns with a flame",
+            {"text": "Any fuel at all that burns with a visible flame in the "
+                     "air",
              "correct": False,
              "why": "Hydrogen and charcoal both burn and neither is a "
                     "hydrocarbon"},
-            {"text": "Water with carbon dissolved in it",
+            {"text": "Water with some carbon dissolved right through it evenly",
              "correct": False,
              "why": "Nothing is dissolved. The carbon and hydrogen are "
                     "chemically joined"},
@@ -633,7 +636,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Starve it of air and less of it burns. What it cannot do "
                     "is make soot"},
-            {"text": "Because the water it makes washes the soot away",
+            {"text": "Because the water that it makes washes all the soot away "
+                     "as fast as it can form",
              "correct": False,
              "why": "The water leaves as vapour, and there is no soot for it "
                     "to wash"},
@@ -824,7 +828,9 @@ QUESTIONS = [
              "correct": False,
              "why": "It burns completely to water. The problem is upstream of "
                     "the car"},
-            {"text": "That the car is worse than a petrol one",
+            {"text": "That the car is bound to be worse for the atmosphere "
+                     "than a petrol one, whatever anybody says about its "
+                     "exhaust",
              "correct": False,
              "why": "That depends entirely on how the hydrogen was made, "
                     "which is the point — the question has to be asked"},
