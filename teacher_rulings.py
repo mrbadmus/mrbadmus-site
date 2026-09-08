@@ -1548,6 +1548,16 @@ SET_ATTR = {
     629: {"data-port-region": "overlay-bulk"},
     656: {"data-port-region": "overlay-search"},
     672: {"data-port-region": "toast"},
+
+    # ⊕ MRB-336, 8 Sep 2026 — AN `id`, NOT A REGION, AND THE DIFFERENCE IS
+    # DELIBERATE. `data-port-region` names a SCREEN or an overlay; the
+    # liveness and behaviour gates enumerate those, and adding a section to
+    # that list would make node 306 look like a seventh screen. This is an
+    # anchor for one link: slot B's "+N more" brings the Assignments table
+    # into view, and a `getElementById` needs something stable to find.
+    # `SET_ATTR` refuses to overwrite an attribute Design already wrote, so
+    # this cannot quietly displace one of hers.
+    306: {"id": "mrb-class-assignments"},
     # ⊕ THE TWO COMPOSER FIELDS, so the send can CLEAR them. Design's select
     # and textarea are uncontrolled — neither carries a `value` — and
     # `student-runtime` deliberately carries field values across a redraw, so
@@ -1616,6 +1626,44 @@ SET_ATTR = {
 # computed beside `searchFoot` — Design's own idiom for exactly this sentence
 # one line further down the same overlay.
 BIND_ATTR = {
+    # ── ⊕ MRB-336 §5/§6 · THE ASSIGNMENTS TABLE GROWS AN ACTIONS COLUMN ──
+    #
+    # Edit and Delete belong on the ROW, because a teacher deciding to
+    # change or remove a set is looking at the row that tells them which one
+    # it is. That needs an eighth column, and the column count lives in
+    # Design's own `grid-template-columns` on the header strip and on the
+    # row — the two must stay identical or every cell below the header
+    # slides one to the left.
+    #
+    # ⚠️ `auto`, NOT A FRACTION. The seven Design drew are content columns
+    # and share the width; this one is two text buttons and should take
+    # exactly what they need, at every breakpoint, so the data columns keep
+    # the widths Design gave them.
+    #
+    # ⚠️ ASSERTED, WHICH IS WHY THIS IS `BIND_ATTR` AND NOT `SET_ATTR`.
+    # `SET_ATTR` refuses to touch an attribute Design already wrote — right,
+    # for a region marker, and useless here. `BIND_ATTR` states what the
+    # value is now and fails the build if it is anything else, so a Design
+    # redraw that changes the column widths cannot be silently overwritten
+    # with a stale copy of them.
+    311: ("style",
+          "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr;"
+          "background:var(--st-num-well);"
+          "border-bottom:1px solid var(--st-rule-soft)",
+          "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr auto;"
+          "background:var(--st-num-well);"
+          "border-bottom:1px solid var(--st-rule-soft)",
+          "the Assignments table's header strip — an eighth column for Edit "
+          "and Delete."),
+    320: ("style",
+          "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr;"
+          "align-items:center;border-top:1px solid var(--st-rule-fact);"
+          "cursor:pointer",
+          "display:grid;grid-template-columns:2fr 100px 1fr 1fr 1fr 1fr 1.2fr auto;"
+          "align-items:center;border-top:1px solid var(--st-rule-fact);"
+          "cursor:pointer",
+          "the Assignments table's row, matching the header strip above it."),
+
     # ⊕ RULED, 24 Aug 2026 — THE RECIPIENT SELECT SENDS AN ID, NOT A NAME.
     # Design models the recipient as `pickRecipient: (e) => this.setState({
     # recipient: e.target.value })` over a `<select>` whose options are
@@ -1899,6 +1947,119 @@ BINDINGS_AT = {
 # back once it has one.
 #
 # `{node: (exact literal, replacement text, why)}`.
+# ── ⊕ MRB-336 §4.1 · ONE OF DESIGN'S CARDS, DRAWN ONCE PER LIVE SET ─────
+#
+# ⚑ THE ONLY MECHANISM HERE THAT DRAWS ONE OF DESIGN'S NODES MORE THAN ONCE,
+# and it exists because the alternative was worse. Mide asked for two
+# homework cards where there was one. That needs a second card of exactly the
+# first card's shape, and there were two ways to get one: transcribe Design's
+# subtree into `INSERT_AT` as a second copy, or draw hers twice.
+#
+# A transcribed copy is eighty lines of node dicts that LOOK like Design's
+# and stop being Design's the first time she touches the card — a drift that
+# nothing in this file could see, on the most-read card of the most-read
+# screen. Repeating her own node cannot drift from itself.
+#
+# ⚠️ THE REBINDING IS THE WHOLE OF IT. Design's card reads `glance.openTitle`,
+# `glance.openIn`, `glance.remind` and four more — expressions about THE
+# WEEK. Drawn twice unchanged it would render the same assignment in both
+# cards, each showing the other's chase list and each reminding about the
+# first: a screen that looks entirely correct and is wrong in every number.
+# So `build_teacher_port` refuses to repeat a node while any `owns`
+# expression survives inside it, which is what catches a binding Design ADDS
+# to this card in a future delivery — the case a fixed list cannot see.
+#
+# `{page: {node: dict(expr, alias, owns, keys, rebind, retext, why)}}`
+REPEAT = {
+    "class-detail.html": {
+        224: dict(
+            expr="glance.cards",
+            alias="g",
+            owns="glance.",
+            # Every row key the repeated subtree may produce. An undeclared
+            # one renders as a blank rather than as an error, so it is an
+            # error here.
+            keys=("g.eyebrow", "g.title", "g.count", "g.pct",
+                  "g.hasChase", "g.chase", "g.remindLabel", "g.remind",
+                  "g.hasMore", "g.moreLabel", "g.more"),
+            rebind={
+                "glance.openTitle": "g.title",
+                "glance.openIn": "g.count",
+                "glance.openPct": "g.pct",
+                # Twice: node 230's chip block, and the WRAP on node 235's
+                # footer that takes "Remind all 0" off a class that is in.
+                "glance.hasChase": "g.hasChase",
+                "glance.chase": "g.chase",
+                "glance.remindLabel": "g.remindLabel",
+                "glance.remind": "g.remind",
+            },
+            # ⚠️ THE EYEBROW IS A LITERAL PLUS A BINDING, so a rebind cannot
+            # reach it: "This week's homework · due " is Design's own prose
+            # and it is true of the automatic weekly set and of nothing else.
+            # A card holding work a teacher set on Thursday for Monday is not
+            # "this week's homework", and the second card is not it either.
+            # So the whole string becomes one row value — and the automatic
+            # card still composes Design's exact sentence, byte for byte,
+            # which is what keeps the ordinary single-set screen unchanged.
+            retext={225: ({"parts": ["This week's homework \u00b7 due ",
+                                     {"e": "glance.openDue"}]},
+                          {"parts": [{"e": "g.eyebrow"}]})},
+            why="MRB-336 §4.1 — the class screen's homework card, drawn once "
+                "per LIVE assignment (release_at <= now < due_at), newest "
+                "release first, up to two. Mide, 8 Sep 2026."),
+    },
+}
+
+
+# ⊕ MRB-336 — the "+N more" link's type, copied VERBATIM off Design's own
+# node 253 ("Open the full breakdown"), the quiet underlined link that sits
+# in the reteach card's footer in exactly this position. The two positioning
+# declarations in front of it are the only additions: node 235 is a block,
+# not a flex row, so the link sits under the Remind button rather than
+# beside it.
+# ⊕ MRB-336 §5/§6 — the row controls. `_DEL_TEXT_BTN` further down this file
+# is Design's own quiet text button, already in use on the shoutout sheet;
+# these are that declaration, and that declaration with the accent colour
+# for the armed Delete. A row control is text,
+# not a pill: seven of these in a dense table would be seven buttons
+# competing with the data they sit beside.
+# ⚠️ Written out rather than aliased to `_DEL_TEXT_BTN`, which is the same
+# declaration and is defined two hundred lines BELOW this one. Same value,
+# same register, and moving either constant to satisfy the other would put a
+# shoutout style in the middle of the set-work styles.
+_ROW_ACT = ("flex:none;font:600 14.5px/1.2 var(--st-ui);"
+            "color:var(--st-muted);background:none;border:none;"
+            "padding:0;cursor:pointer")
+_ROW_ACT_ARMED = ("flex:none;font:600 14.5px/1.2 var(--st-ui);"
+                  "color:var(--st-accent-text);background:none;border:none;"
+                  "padding:0;cursor:pointer")
+_ROW_ACTS = ("display:flex;align-items:center;gap:12px;flex-wrap:wrap;"
+             "padding:var(--rowpad,14px 16px)")
+# The marking screen's pair, in Design's own header-action register: the row
+# is node 213's declaration and the buttons are node 215's — the class
+# screen's secondary header button, verbatim.
+_HEAD_ACTS = "display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:16px"
+_HEAD_ACT = ("height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);"
+             "color:var(--st-ink);background:var(--st-paper);"
+             "border:1px solid var(--st-btn-border);border-radius:9px;"
+             "cursor:pointer")
+_HEAD_ACT_ARMED = ("height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);"
+                   "color:var(--st-accent-text);background:var(--st-paper);"
+                   "border:1px solid var(--st-btn-border);border-radius:9px;"
+                   "cursor:pointer")
+# The header cell above them, Design's own header-cell declaration with no
+# text in it. An actions column has no name; giving it one would be a word
+# on the screen that names a control rather than a fact.
+_ROW_ACTS_HEAD = ("padding:12px 16px;font:500 13px/1.2 var(--st-mono);"
+                  "letter-spacing:.14em;text-transform:uppercase;"
+                  "color:var(--st-caption)")
+
+_MORE_LINK = ("display:block;margin-top:14px;"
+              "font:600 16px/1.2 var(--st-ui);color:var(--st-accent-text);"
+              "background:none;border:none;padding:0;cursor:pointer;"
+              "text-decoration:underline;text-underline-offset:3px")
+
+
 RETEXT_AT = {
     # ── ⊕ MIDE, 1 Sep 2026 · THE ROSTER COLUMN IS THE SELECTED WEEK ─────
     #
@@ -2814,6 +2975,139 @@ _CLASS_ACTION_BTN = _PICK_ENTRY_BTN
 
 
 INSERT_AT = {
+    # ── ⊕ MRB-336 §4.1 · THE THIRD LIVE SET AND EVERY ONE AFTER IT ─────
+    #
+    # Two cards, and a class can legitimately have more than two live sets.
+    # The cards do not grow to a third column — Design's grid is three wide
+    # and the third is "Keep an eye on" — so the overflow is stated as a
+    # count and a way to reach them, on the second card, once.
+    #
+    # ⚠️ IT IS INSIDE THE REPEATED SUBTREE AND GATED PER CARD. `REPEAT`
+    # draws node 224 once per live assignment, so this node exists on BOTH
+    # cards; `g.hasMore` is set on the LAST card only, so it renders once.
+    # Setting it on the card model rather than outside the loop is what
+    # keeps "one card, one assignment" true of this link as well.
+    #
+    # ⚠️ AND IT GOES IN THE CARD, NOT IN THE CARD'S FOOTER. It was written
+    # into node 235 first, beside "Remind all N", which looks like the right
+    # place and is not: node 235 is a CHILD of node 230, and Design gates
+    # 230 on `hasChase`. A second live set that everybody had already handed
+    # in would have taken the link to the third one off the screen with it.
+    # Appended to the card itself, it renders on the state it is about.
+    #
+    # The type is Design's own node 253, verbatim — see `_MORE_LINK`.
+    # ── ⊕ MRB-336 §5/§6 · AND ON THE MARKING SCREEN ────────────────────
+    #
+    # The same two controls, on the page that is about ONE assignment. A
+    # teacher who has opened a set to look at it is the teacher most likely
+    # to want to change its deadline; sending them back to the class table
+    # to do it would be a navigation with no purpose.
+    #
+    # ⚠️ DESIGN'S OWN HEADER-ACTION REGISTER, node for node: the row is node
+    # 213's declaration and the buttons are node 215's, which is the class
+    # screen's secondary header button. Node 382 — "Reteach and reset" —
+    # stood in this position in Design's delivery and is on `DEAD`, so the
+    # position is hers and the shape is hers.
+    #
+    # ⚠️ NO `stopPropagation` HERE, and that is not an omission: node 374 is
+    # a heading block with no click handler on it. The table's row has one,
+    # which is why its controls need it and these do not.
+    (374, 376): ({
+        "t": "if", "e": "paper.canEdit",
+        "c": [{
+            "t": "div", "a": {"style": _HEAD_ACTS,
+                              "data-mrb-added": "set-work-paper-actions"},
+            "c": [
+                {"t": "if", "e": "paper.showEdit", "c": [{
+                    "t": "button", "on": "paper.edit",
+                    "a": {"type": "button", "style": _HEAD_ACT,
+                          "data-mrb-added": "set-work-paper-edit"},
+                    "hov": "background:var(--st-note-bg)",
+                    "c": [{"t": "#", "v": "Edit"}]}]},
+                {"t": "button", "on": "paper.del",
+                 "a": {"type": "button", "style": _HEAD_ACT,
+                       "data-mrb-added": "set-work-paper-delete"},
+                 "hov": "background:var(--st-note-bg)",
+                 "c": [{"t": "#", "v": "Delete"}]},
+                {"t": "if", "e": "paper.armed", "c": [{
+                    "t": "button", "on": "paper.cancelDel",
+                    "a": {"type": "button", "style": _HEAD_ACT_ARMED,
+                          "data-mrb-added": "set-work-paper-delete-cancel"},
+                    "c": [{"t": "#", "v": "Cancel"}]}]},
+            ]}]},
+        "the marking screen's Edit and Delete. Same pair, same two-tap "
+        "confirm and same sheet as the class table's row controls; this is "
+        "the screen a teacher is on when they are looking at one set."),
+
+    # ── ⊕ MRB-336 §5/§6 · EDIT AND DELETE, ON THE ROW ──────────────────
+    #
+    # ⚠️ ONLY ON A ROW A TEACHER SET. `a.canEdit` is `source === 'teacher'`.
+    # The automatic weekly producer owns its own rows: deleting one would
+    # simply be re-composed next week, and the server answers 409. A control
+    # that exists and always refuses is worse than no control, so there is
+    # none — the whole cell is absent on an automatic row.
+    #
+    # ⚠️ THE CONFIRM IS THE SAME BUTTON, TWICE, IN PLACE. Tap Delete and the
+    # row's controls become Delete and Cancel; tap Delete again and it goes.
+    # No dialog: a modal over a table to ask about one row of it takes the
+    # teacher off the screen that told them which row it was. No sentence
+    # either — the second Delete IS the question, and Cancel is the answer
+    # to it. Edit steps aside while the row is armed, because an armed row
+    # has exactly two things it can do.
+    #
+    # ⚠️ AND EVERY HANDLER STOPS THE ROW'S OWN CLICK. Node 320 carries
+    # `a.open`, which navigates to the marking screen; without
+    # `stopPropagation` pressing Delete would arm the row and leave the page
+    # in the same gesture.
+    (320, 328): ({
+        "t": "if", "e": "a.canEdit",
+        "c": [{
+            "t": "div", "a": {"style": _ROW_ACTS,
+                              "data-mrb-added": "set-work-row-actions"},
+            "c": [
+                {"t": "if", "e": "a.showEdit", "c": [{
+                    "t": "button", "on": "a.edit",
+                    "a": {"type": "button", "style": _ROW_ACT,
+                          "data-mrb-added": "set-work-edit"},
+                    "hov": "color:var(--st-ink)",
+                    "c": [{"t": "#", "v": "Edit"}]}]},
+                {"t": "button", "on": "a.del",
+                 "a": {"type": "button", "style": _ROW_ACT,
+                       "data-mrb-added": "set-work-delete"},
+                 "hov": "color:var(--st-accent-text)",
+                 "c": [{"t": "#", "v": "Delete"}]},
+                {"t": "if", "e": "a.armed", "c": [{
+                    "t": "button", "on": "a.cancelDel",
+                    "a": {"type": "button", "style": _ROW_ACT_ARMED,
+                          "data-mrb-added": "set-work-delete-cancel"},
+                    "c": [{"t": "#", "v": "Cancel"}]}]},
+            ]}]},
+        "the Assignments table's row controls. Design drew seven columns of "
+        "facts and no way to change any of them; MRB-336 §5 and §6 put Edit "
+        "and Delete on the row they are about."),
+
+    # The header cell above them. No text: an actions column has no name.
+    (311, 318): ({
+        "t": "div", "a": {"style": _ROW_ACTS_HEAD,
+                          "data-mrb-added": "set-work-actions-head"},
+        "c": []},
+        "the eighth header cell, so the header strip and the rows below it "
+        "have the same number of columns. Design's own header-cell "
+        "declaration, with nothing in it."),
+
+    (224, 230): ({
+        "t": "if", "e": "g.hasMore",
+        "c": [{
+            "t": "button", "on": "g.more",
+            "a": {"type": "button", "style": _MORE_LINK,
+                  "data-mrb-added": "live-cards-more"},
+            "c": [{"t": "#", "v": {"parts": [{"e": "g.moreLabel"}]}}],
+        }]},
+        "the second homework card's overflow link, when three or more sets "
+        "are live at once. Design drew two cards and no third; this says how "
+        "many are not on screen and takes the teacher to the table that has "
+        "all of them."),
+
     # ══ ⊕ SUPERSEDED 7 Sep 2026 (MRB-335) · SIX SUBTREES INSERTED INTO A
     #    SHEET THAT IS NO LONGER EMITTED ════════════════════════════════
     #
@@ -4133,6 +4427,30 @@ WRAP = {
         # rather than one that corrupted. That is still not right.
         214: "canSetWork",
         282: "canSetWork",
+
+        # ⊕ MRB-336 §4.1, 8 Sep 2026 — SLOT B IS THE SECOND LIVE
+        # ASSIGNMENT, AND THE RETEACH CARD WHEN THERE IS NOT ONE.
+        #
+        # Mide, 8 Sep: "live assignments should take over the reteach from
+        # last lesson card. so in the case that teachers set more than one
+        # homework, they can see both on those cards instead of only below."
+        #
+        # `REPEAT` draws Design's homework card once per live assignment, up
+        # to two. `showReteach` is `wCards.length < 2`, so the reteach card
+        # keeps the third column exactly as it is today whenever a teacher
+        # has one live set or none — which is every class the estate has had
+        # until now — and steps aside only when there is a second.
+        239: "glance.showReteach",
+
+        # ⊕ MRB-336 — A WRAP ON NODE 235 WAS WRITTEN HERE AND WITHDRAWN
+        # BEFORE IT SHIPPED, and it is recorded because the reasoning was
+        # wrong in a way worth naming. It read: "Remind all 0" is a dead
+        # control on a class that is fully in, so gate the footer on
+        # `hasChase`. The finding was imaginary. Node 235 is a CHILD of node
+        # 230, which Design already gates on `hasChase` — the footer and the
+        # chase chips have always appeared and disappeared together, and
+        # "Remind all 0" cannot render. Dumping the repeated subtree is what
+        # showed it; reading the ruling file alone would not have.
     },
     # ── ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 5) ────────────────────────
     #
@@ -4761,7 +5079,18 @@ DROP_KEYS = (
     # lines above it already reads "4 of 4 in". The key goes with the node so
     # nothing computes a flag no branch reads — an unread flag is exactly
     # what a later reader wires a new node back onto.
-    "allIn",
+    #
+    # ⊕ SUPERSEDED 8 Sep 2026 (MRB-336 §4.1) — AND THE KEY IS OFF THIS LIST
+    # RATHER THAN STILL ON IT. `allIn` sat inside the run of eight `glance`
+    # properties that the live-card model replaces, so it is deleted by that
+    # span and there is nothing left here to drop. `drop_key` on a key that
+    # is already gone is a deletion that deletes nothing — the shape this
+    # file refuses everywhere else — so the entry goes with the property.
+    #
+    # ⚠️ THE RULING ITSELF STANDS. Node 237 is still pruned by `REDUNDANT`
+    # and there is still no flag computed for it. What changed is only WHICH
+    # rewrite removes the flag.
+    #     "allIn",
 
     # ⊕ MRB-335, 7 Sep 2026 — TWELVE OF THE THIRTEEN SET-WORK KEYS ARE
     # BACK ON THIS LIST. Design's node 581 is on `DEAD` again and neither
@@ -9606,6 +9935,412 @@ componentDidUpdate() {
      "  The destination, the `env` thread and the empty-id fallback all live "
      "in `MRB_SEATING` (build_teacher_port.py), beside the other navigation "
      "helpers, rather than being retyped into this handler"),
+
+    # ══ ⊕ MRB-336 §4.1 · THE WEEK'S CHASE LIST BECOMES THE CARDS' ══════
+    #
+    # ⚑ THIS ENTRY REPLACES MRB-326 JOB 4c'S OWN OUTPUT, and it is LAST in
+    # this tuple on purpose rather than written in place. `LOGIC` anchors on
+    # a `renderVals` PROPERTY by its name, and `cardOf` below produces a row
+    # with `remindLabel` and `remind` on it — so emitted any earlier than the
+    # rulings for those two properties, this block gives each of those
+    # anchors two matches and the build stops. Position in this tuple is
+    # WHEN a rewrite runs; the anchor text is WHERE it lands. This runs last
+    # and lands where `kChase` was, which is before `const glance`.
+    #
+    # ⚠️ JOB 4c IS CARRIED FORWARD, NOT UNDONE. Its finding was that a
+    # reminder names ONE assignment while the chase list spanned a whole
+    # week, so it grouped the send per paper. `cardOf` takes that to its
+    # conclusion: the CARD is per paper too, so there is one group and it is
+    # the card's own. `kChase` and `kRemind` go because nothing reads them
+    # once the eight aggregate `glance` properties are gone — and a computed
+    # value nothing reads is what a later reader wires a new node onto.
+    ("""    const kChase = (!k || k.state !== 'live' || !wIdxs.length) ? []
+      : kRoster.filter(r => wTally[r.id].in < wTally[r.id].asked);
+
+    /* ── \u2295 MRB-326 JOB 4c \u00b7 WHO IS REMINDED, AND ABOUT WHAT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+       One group PER PAPER, because a reminder names ONE assignment and the
+       chase list above spans the whole selected week. On a week carrying two
+       assignments, sending everyone in `kChase` a reminder about `openP`
+       would nudge a child about the paper they DID hand in and say nothing
+       about the one they owe. Grouping per paper costs one round trip each
+       and cannot do that.
+
+       The union of these groups is exactly `kChase` \u2014 a child appears here
+       if and only if they are missing at least one of the week's papers \u2014 so
+       "Remind all N" counts the same children the chips name, which is the
+       property the DEAD note on node 236 cared about most. */
+    const kRemind = (!k || k.state !== 'live') ? []
+      : wPapers.map(p => ({
+        assignmentId: p.id,
+        studentIds: kRoster.filter(r => {
+          const row = kMx.byId[r.id];
+          return !(row && row.submitted[p.idx]);
+        }).map(r => r.id)
+      })).filter(g => g.assignmentId && g.studentIds.length);""",
+     """    /* ── ⊕ MRB-336 §4.1 · A CARD IS ONE LIVE ASSIGNMENT ─────────────────
+
+       Mide, 8 Sep 2026: "live assignments should take over the reteach from
+       last lesson card. so in the case that teachers set more than one
+       homework, they can see both on those cards instead of only below."
+
+       ⛔ WHAT THE CARD SAID BEFORE. `openTitle` was the newest paper's title
+       with "· +2 more" glued on; `openIn` was every paper in the week summed
+       into one fraction; the chase chips were the children missing ANY of
+       them and "Remind all" nudged about all of them at once. On a week
+       carrying three sets a teacher read "Particle model · +2 more" over
+       "0 of 6 in" and could not tell which of the three nobody had done.
+
+       LIVE is `release_at <= now < due_at`. Scheduled work is not a card —
+       it is work nobody has been shown, and a card for it would be the same
+       untruth §4.2 is fixing in the table. Closed work is not a card either;
+       the reteach card is what closed work is for.
+
+       ⚠️ NEWEST RELEASE FIRST, AND A ROW WITH NO RELEASE INSTANT SORTS LAST.
+       That single rule gives both of the behaviours asked for. Work a
+       teacher set has a release instant and the automatic weekly set does
+       not, so a teacher's own sets take the cards in the order they set
+       them — and when the only live work IS the automatic set, it is alone
+       at the head of the list and slot A is exactly today's card.
+
+       ⚠️ DELETED, kept for BOTH cards. Nothing here reads `wSub`, `wAsk`,
+       `kChase` or `kRemind`: every number, every chip and every reminder is
+       computed from ONE paper's own column of the matrix. That is the whole
+       point — the reminder written into `student_notifications` names the
+       assignment whose card was pressed, not the week's first paper. */
+    const wLive = wPapers.filter(p => p.state === 'open');
+    const wOrder = wLive.slice().sort((a, b) => {
+      if (a.release_at && b.release_at) {
+        return a.release_at === b.release_at
+          ? a.idx - b.idx : (a.release_at < b.release_at ? 1 : -1);
+      }
+      if (a.release_at) return -1;
+      if (b.release_at) return 1;
+      return a.idx - b.idx;
+    });
+    const cardOf = (p) => {
+      const cSub = kMx.colSub[p.idx] || 0;
+      const cAsk = kMx.colAsked[p.idx] || 0;
+      const cMiss = (!k || k.state !== 'live') ? []
+        : kRoster.filter(r => {
+          const row = kMx.byId[r.id];
+          return !(row && row.submitted[p.idx]);
+        });
+      const cDue = (p.due || '').replace(/^Due /, '');
+      const cKey = k.id + ':' + wi + ':' + p.id;
+      return {
+        eyebrow: p.source === 'auto'
+          ? (cDue ? "This week's homework \u00b7 due " + cDue
+                  : "This week's homework")
+          : (cDue ? 'Due ' + cDue : ''),
+        title: p.title,
+        count: cAsk ? cSub + ' of ' + cAsk + ' in' : '\u2014',
+        pct: cAsk ? Math.round((cSub / cAsk) * 100) : 0,
+        hasChase: cMiss.length > 0,
+        chase: cMiss.map(r => ({
+          name: this.shortName(r.name),
+          open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
+        })),
+        remindLabel: (s.remindDone === cKey)
+          ? 'Reminded today' : 'Remind all ' + cMiss.length,
+        remind: () => MRB_REMIND_ALL(k && k.id,
+          [{ assignmentId: p.id, studentIds: cMiss.map(r => r.id) }]).then((r) => {
+          if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
+          this.setState({ remindDone: cKey });
+          if (!r.ok) {
+            this.ping(r.asked === 1
+              ? 'They have already been reminded about this today'
+              : 'They have all already been reminded about this today');
+            return;
+          }
+          if (r.ok < r.asked) {
+            this.ping('Reminded ' + r.ok + ' of ' + r.asked
+              + ' \u2014 the rest were already reminded today');
+            return;
+          }
+          this.ping('Reminder sent to ' + r.ok
+            + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
+        }),
+        hasMore: false, moreLabel: '', more: () => {}
+      };
+    };
+    const wCards = wOrder.slice(0, 2).map(cardOf);
+    /* Nothing live is a state and it keeps Design's card rather than
+       emptying the column. `hasChase` is false, so the WRAP takes the
+       footer with it and there is no button offering to remind nobody. */
+    if (!wCards.length) {
+      wCards.push({ eyebrow: "This week's homework",
+        title: 'No work set in this week', count: '\u2014', pct: 0,
+        hasChase: false, chase: [], remindLabel: '', remind: () => {},
+        hasMore: false, moreLabel: '', more: () => {} });
+    }
+    const wRest = Math.max(0, wOrder.length - wCards.length);
+    if (wRest) {
+      const wLastCard = wCards[wCards.length - 1];
+      wLastCard.hasMore = true;
+      wLastCard.moreLabel = '+' + wRest + ' more';
+      wLastCard.more = () => MRB_TO_ASSIGNMENTS();
+    }""",
+     "MRB-336 \u00a74.1 \u2014 the live-assignment card model. One card is "
+     "one live assignment: its own submitted count over its own `colAsked`, "
+     "its own chase chips, and a reminder naming ITS assignment id. Replaces "
+     "`kChase` and `kRemind`, which computed the same two things across the "
+     "whole selected week and are read by nothing once the aggregate card is "
+     "gone."),
+
+    # ══ ⊕ MRB-336 §4.1 · THE AGGREGATE CARD IS REPLACED BY THE CARDS ══
+    #
+    # ⚑ ANCHORED ON THE POST-RULING TEXT, NOT ON DESIGN'S. Six of these eight
+    # properties are already rewritten earlier in this tuple — `openTitle`
+    # (the "+N more" suffix), `openDue`, `openIn`, `openPct`, `remindLabel`
+    # and `remind` (MRB-326 JOB 4c) — and `LOGIC` applies in order over one
+    # evolving source, so Design's originals appear zero times by the time
+    # this runs. Same shape as the `goSeating` and insights-chart anchors.
+    #
+    # ⚠️ THOSE SIX RULINGS ARE NOT WITHDRAWN AND THEY STILL RUN. Each one
+    # fixed a real defect — the roster used as a denominator, the reminder
+    # wired to the wrong children, the empty week rendering an em dash — and
+    # every one of those fixes is carried forward into `cardOf` above. What
+    # changes is the UNIT: they answered about a WEEK, and the card is now
+    # one assignment. They are kept in place, ahead of this, so the reasoning
+    # that produced each number stays readable next to the number.
+    #
+    # `hasChase` and `chase` are Design's own and were never ruled; they go
+    # for the same reason, onto the row.
+    ("""      openTitle: openP
+        ? (wPapers.length > 1
+          ? openP.title + ' \u00b7 +' + (wPapers.length - 1) + ' more'
+          : openP.title)
+        : 'No work set in this week',
+      openDue: openP && openP.due ? openP.due.replace(/^Due /, '') : '',
+      openIn: wPapers.length ? wSub + ' of ' + wAsk + ' in' : '\u2014',
+      openPct: wAsk ? Math.round((wSub / wAsk) * 100) : 0,
+      hasChase: kChase.length > 0,
+      allIn: openP != null && kChase.length === 0,
+      chase: kChase.map(r => ({
+        name: this.shortName(r.name),
+        open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
+      })),
+      remindLabel: (s.remindDone === k.id + ':' + wi)
+        ? 'Reminded today' : 'Remind all ' + kChase.length,
+      remind: () => MRB_REMIND_ALL(k && k.id, kRemind).then((r) => {
+        if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
+        this.setState({ remindDone: k.id + ':' + wi });
+        if (!r.ok) {
+          this.ping(r.asked === 1
+            ? 'They have already been reminded about this today'
+            : 'They have all already been reminded about this today');
+          return;
+        }
+        if (r.ok < r.asked) {
+          this.ping('Reminded ' + r.ok + ' of ' + r.asked
+            + ' \u2014 the rest were already reminded today');
+          return;
+        }
+        this.ping('Reminder sent to ' + r.ok
+          + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
+      }),""",
+     """      cards: wCards,
+      showReteach: wCards.length < 2,""",
+     "MRB-336 \u00a74.1 \u2014 the class screen's homework card stops being "
+     "about a week and becomes about an assignment. `cards` is the live "
+     "sets, newest release first, at most two; `showReteach` hands slot B "
+     "back to the reteach card whenever there is not a second one. Mide, "
+     "8 Sep 2026: \"live assignments should take over the reteach from last "
+     "lesson card\". The eight properties this replaces were the aggregate "
+     "\u2014 one title with \"+2 more\" glued on, one fraction summed over "
+     "the week, one chase list spanning all of it and one reminder about the "
+     "first paper in it."),
+
+    # ══ ⊕ MRB-336 · STATUS IS THREE THINGS, AND THE SET COLUMN IS REAL ══
+    #
+    # ⛔ MIDE'S SCREENSHOT, 8 Sep 2026: three assignments no pupil could see,
+    # every one of them drawn OPEN and stamped "Set Tue 8 Sep". Two separate
+    # untruths in one row. Design drew two states because the data she had
+    # carried two; `release_at` has existed since MRB-335 and nothing on this
+    # side had ever read it.
+    #
+    # `shared/teacher-live.js` `buildPapers` now publishes `state`
+    # (scheduled | open | closed), `statusLabel` and a `set` string that is
+    # the RELEASE INSTANT in London with its hour. Four surfaces render one
+    # of those two facts and all four are corrected here, from the one seam,
+    # so they cannot answer differently.
+    #
+    # ⚠️ "MARKED" BECOMES "CLOSED" ON THE PILL, AND NOWHERE ELSE. The pill
+    # names what a CHILD can do with the work — not yet, now, no longer —
+    # and "Marked" was never that claim: `when === 'marked'` is a deadline
+    # test that consults no mark at all, so a paper nobody sat and nobody
+    # marked wore the word. The reteach card's "Marked · 14 submitted" is a
+    # different sentence about a different thing and keeps Design's word.
+    #
+    # ⚠️ SCHEDULED TAKES THE MUTED TOKEN, NOT A NEW ONE. `--st-muted` on
+    # `--st-num-well` inside `--st-rule` — every value already in the sheet.
+    # It is deliberately quieter than Open (accent) and a shade firmer than
+    # Closed (`--st-caption` on `--st-rule-soft`): work that has not started
+    # is not work that has finished, and a teacher scanning the column must
+    # be able to tell the two greys apart.
+    ("""        status: markedRow ? 'Marked' : 'Open',
+        stFg: markedRow ? 'var(--st-caption)' : 'var(--st-accent-text)',
+        stBg: markedRow ? 'var(--st-num-well)' : 'var(--st-chip-tint)',
+        stBc: markedRow ? 'var(--st-rule-soft)' : 'var(--st-chip-tint-border)',""",
+     """        status: p.statusLabel,
+        stFg: p.state === 'scheduled' ? 'var(--st-muted)'
+          : (markedRow ? 'var(--st-caption)' : 'var(--st-accent-text)'),
+        stBg: p.state === 'open' ? 'var(--st-chip-tint)' : 'var(--st-num-well)',
+        stBc: p.state === 'open' ? 'var(--st-chip-tint-border)'
+          : (p.state === 'scheduled' ? 'var(--st-rule)' : 'var(--st-rule-soft)'),""",
+     "MRB-336 — the Assignments table's status pill, on `release_at` as well "
+     "as `due_at`. `markedRow` is `p.when === 'marked'`, which is a deadline "
+     "test and cannot see a release date, so scheduled work was drawn Open. "
+     "The label comes from the seam rather than being re-derived here, which "
+     "is what stops this column and the digest's disagreeing."),
+
+    ("        ks: p.when === 'upcoming' ? 'Open' : 'Marked',",
+     "        ks: p.statusLabel,",
+     "MRB-336 — the digest's per-assignment status, from the same seam. A "
+     "class report listing work as Open that no child has been shown is the "
+     "same untruth on a page a head of department reads."),
+
+    # \u26a0\ufe0f ANCHORED ON THE MRB-306 RULING'S OUTPUT, NOT ON DESIGN'S OWN LINE.
+    # The `insights-single` chart row is rewritten earlier in this tuple (the
+    # `colAsked` denominator, and `value: p.sub`), and LOGIC entries apply in
+    # order over ONE evolving source. Design's original span appears zero
+    # times by the time this runs, and a zero-match is a hard build failure \u2014
+    # correctly, since a ruling that matched nothing is a ruling that is not
+    # in the page. Same shape as the `goSeating` anchor two entries above.
+    ("      return { label: p.title, sub: (p.when === 'upcoming' "
+     "? 'Open \u00b7 due ' + p.due.replace('Due ', '') "
+     ": 'Marked \u00b7 due ' + p.due), value: p.sub, "
+     "pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };",
+     "      return { label: p.title, sub: p.statusLabel + ' \u00b7 due ' + "
+     "p.due.replace(/^Due /, ''), value: p.sub, "
+     "pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };",
+     "MRB-336 — the insights chart's row subtitle, from the same seam. "
+     "⚠️ AND THE PREFIX STRIP IS ANCHORED. Design strips \"Due \" on the "
+     "open arm and not on the closed one, where `p.due` carries no prefix "
+     "anyway; one anchored `replace` is correct on all three states and "
+     "cannot eat a \"Due\" out of the middle of a date. Same correction "
+     "`openDue` already carries."),
+
+    (dict(method="renderVals", key="paper.eyebrow"),
+     """        eyebrow: k.code + ' \u00B7 ' + pp.statusLabel
+          + ' \u00B7 Set ' + pp.set
+          + ' \u00B7 Due ' + pp.due.replace(/^Due /, ''),""",
+     "MRB-336 — the marking screen's eyebrow. It already said Set and Due "
+     "and said nothing about whether the work is out; on a scheduled set "
+     "that made \"Set <a date in the future>\" read as a date that had "
+     "passed. The status word goes first, before the two dates it governs. "
+     "The `Due ` strip is anchored for the same reason as the chart's."),
+    # ⚠️ LAST IN THIS TUPLE, and it has to be: its anchor is the OUTPUT of
+    # the §4.2 status ruling above (`status: p.statusLabel`), because the
+    # controls go in the same `assignments.map` return that the status
+    # pill does. Anchored on Design's own two-state pill it would match
+    # nothing, and a zero-match is a hard build failure by design.
+    # ══ ⊕ MRB-336 §5/§6 · THE ROW'S OWN CONTROLS ═══════════════════════
+    #
+    # ⚠️ `canWrite` GATES BOTH, and it is MRB-261's rule rather than a new
+    # one: a finished academic year offers no write controls, and Edit and
+    # Delete are writes. The four other write paths on this screen are
+    # already wrapped on it (`WRAP`, nodes 215/276/214/282); these are
+    # inside a `<for>` and cannot be, so the gate rides on the row.
+    #
+    # ⚠️ `source === 'teacher'` IS THE OTHER HALF. An automatic row's
+    # controls would be a pair of buttons that always refuse — the server
+    # answers 409 on a delete and the weekly producer would re-compose it
+    # next week regardless.
+    #
+    # ⚠️ THE ARMED STATE IS IN `s`, NOT IN THE ROW, and that is what makes
+    # it single. `s.delArm` holds ONE assignment id, so arming a second row
+    # disarms the first: a teacher cannot leave four rows primed to delete
+    # behind them on a screen they have scrolled away from.
+    #
+    # ⚠️ AND THE REFRESH IS THE MRB-335 SEAM, NOT A SECOND ONE.
+    # `MRB_SET_WORK_DONE` re-reads through `MrBadmusTeacherLive.load` after
+    # `reload()`, which is the only way to make the next read real. The row
+    # leaves, the cards recount and the caption re-adds — all from the same
+    # read, because they are all the same data.
+    ("""        status: p.statusLabel,
+        stFg: p.state === 'scheduled' ? 'var(--st-muted)'
+          : (markedRow ? 'var(--st-caption)' : 'var(--st-accent-text)'),
+        stBg: p.state === 'open' ? 'var(--st-chip-tint)' : 'var(--st-num-well)',
+        stBc: p.state === 'open' ? 'var(--st-chip-tint-border)'
+          : (p.state === 'scheduled' ? 'var(--st-rule)' : 'var(--st-rule-soft)'),""",
+     """        status: p.statusLabel,
+        stFg: p.state === 'scheduled' ? 'var(--st-muted)'
+          : (markedRow ? 'var(--st-caption)' : 'var(--st-accent-text)'),
+        stBg: p.state === 'open' ? 'var(--st-chip-tint)' : 'var(--st-num-well)',
+        stBc: p.state === 'open' ? 'var(--st-chip-tint-border)'
+          : (p.state === 'scheduled' ? 'var(--st-rule)' : 'var(--st-rule-soft)'),
+        canEdit: p.source === 'teacher' && !!MRB_DATA('canWrite'),
+        showEdit: p.source === 'teacher' && s.delArm !== p.id,
+        armed: s.delArm === p.id,
+        edit: (e) => { e.stopPropagation(); MRB_SET_WORK_EDIT({
+          assignmentId: p.id, classId: k && k.id, title: p.title,
+          tier: p.set_tier, scopeKind: p.scope_kind, scopeRef: p.scope_ref,
+          subject: p.set_subject || 'all',
+          paper: p.paper == null ? 'both' : String(p.paper),
+          releaseAt: p.release_at, dueAt: p.due_at,
+          released: p.released }); },
+        cancelDel: (e) => { e.stopPropagation(); this.setState({ delArm: '' }); },
+        del: (e) => {
+          e.stopPropagation();
+          if (s.delArm !== p.id) { this.setState({ delArm: p.id }); return; }
+          this.setState({ delArm: '' });
+          MRB_DELETE_SET_WORK(p.id).then((r) => {
+            if (!r.ok) { this.ping(MRB_DELETE_SET_WORK_WHY(r.error)); return; }
+            this.ping(p.title + ' \u00b7 Deleted');
+            if (typeof window.MRB_SET_WORK_DONE === 'function') {
+              window.MRB_SET_WORK_DONE({ title: p.title, deleted: true });
+            }
+          });
+        },""",
+     "MRB-336 \u00a75/\u00a76 \u2014 Edit and Delete on a teacher-set row. "
+     "Delete arms in place and the second press performs it; Edit reopens "
+     "the Set-work sheet on the row, class locked, and narrows to title and "
+     "deadline once the work has been released. Toasts are "
+     "`<title> \u00b7 Deleted` and `<title> \u00b7 Saved`."),
+    # ══ ⊕ MRB-336 §5/§6 · THE SAME TWO CONTROLS ON THE MARKING SCREEN ══
+    #
+    # ⚠️ ANCHORED ON THE §4.2 EYEBROW RULING'S OUTPUT, for the same reason
+    # as the row's: both land in the `paper` object, and the eyebrow is
+    # rewritten earlier in this tuple. Design's own line appears zero times
+    # by the time this runs.
+    #
+    # ⚠️ `s.delArm` IS THE SAME STATE KEY THE TABLE USES. The logic class is
+    # shared across the six pages and only one of them draws each of these,
+    # so there is nothing to collide; using two keys would be two ways to be
+    # armed and one of them would eventually be left set.
+    ("""        eyebrow: k.code + ' · ' + pp.statusLabel
+          + ' · Set ' + pp.set
+          + ' · Due ' + pp.due.replace(/^Due /, ''),""",
+     """        eyebrow: k.code + ' · ' + pp.statusLabel
+          + ' · Set ' + pp.set
+          + ' · Due ' + pp.due.replace(/^Due /, ''),
+        canEdit: pp.source === 'teacher' && !!MRB_DATA('canWrite'),
+        showEdit: pp.source === 'teacher' && s.delArm !== pp.id,
+        armed: s.delArm === pp.id,
+        edit: () => MRB_SET_WORK_EDIT({
+          assignmentId: pp.id, classId: k && k.id, title: pp.title,
+          tier: pp.set_tier, scopeKind: pp.scope_kind, scopeRef: pp.scope_ref,
+          subject: pp.set_subject || 'all',
+          paper: pp.paper == null ? 'both' : String(pp.paper),
+          releaseAt: pp.release_at, dueAt: pp.due_at,
+          released: pp.released }),
+        cancelDel: () => this.setState({ delArm: '' }),
+        del: () => {
+          if (s.delArm !== pp.id) { this.setState({ delArm: pp.id }); return; }
+          this.setState({ delArm: '' });
+          MRB_DELETE_SET_WORK(pp.id).then((r) => {
+            if (!r.ok) { this.ping(MRB_DELETE_SET_WORK_WHY(r.error)); return; }
+            this.ping(pp.title + ' · Deleted');
+            MRB_GO('class', { 'class': k && k.id });
+          });
+        },""",
+     "MRB-336 §5/§6 — Edit and Delete on the marking screen. "
+     "⚠️ AND DELETING FROM HERE NAVIGATES. The row leaving the table is the "
+     "table's answer; this page IS the row, and a deleted assignment's "
+     "marking screen is a page about nothing. It goes back to the class it "
+     "belonged to, which is where the teacher can see that it has gone."),
+
 )
 
 

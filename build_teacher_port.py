@@ -367,6 +367,12 @@ PAGES = [
          empty_out="assignment-empty-fixture.html",
          empty_js="teacher-fixture-assignment-empty.js",
          title="Assignment \u00b7 MrBadmusAI",
+         # ⊕ MRB-336 §6 — THE SHEET LOADS HERE NOW. Edit reopens it on the
+         # assignment this screen is about, and a button wired to a script
+         # the page does not carry is a dead control — which is exactly what
+         # `teacher_behaviour` reported the first time this shipped without
+         # the flag: "control set-work-paper-edit changed nothing".
+         setwork=True,
          overlays=("searchOpen", "hasToast"),
          retire=None),
     dict(screen="digest", node=312, out="digest.html", admin_nav=True,
@@ -1779,10 +1785,190 @@ def apply_rulings(spec, roots, logic):
             "stays green. Re-anchor teacher_rulings.WRAP[%r]."
             % (spec["out"], sorted(wraps), spec["out"]))
 
+    # ── 7. one of Design's cards, drawn once PER LIVE ASSIGNMENT ─────────
+    #
+    # ⚑ ⊕ MRB-336, 8 Sep 2026. See `teacher_rulings.REPEAT`.
+    #
+    # The node is replaced in its parent by a `<for>` whose single child is
+    # the node itself — exactly the shape step 6 uses for `<if>` — so its
+    # subtree, its index, its handlers and its bindings all survive. It then
+    # renders once per row of the expression instead of once.
+    #
+    # ⚠️ REPEATING A CARD WITHOUT REBINDING IT IS THE FAILURE THIS STEP
+    # EXISTS TO MAKE IMPOSSIBLE. Design's card reads `glance.openTitle`,
+    # `glance.openIn`, `glance.remind` and four more. Drawn twice with those
+    # expressions intact it would render the SAME assignment twice, in two
+    # cards, each with the other's chase list and each reminding about the
+    # first — a screen that looks entirely correct and is wrong in every
+    # number. So the rebinding is not optional and it is not best-effort:
+    #
+    #   · every key in `rebind` must be found at least once, or the ruling
+    #     has drifted off Design's markup and is doing nothing;
+    #   · after rebinding, NO expression under `owns` may remain — that is
+    #     what catches a binding Design ADDS to the card later, which is the
+    #     case a fixed list cannot see;
+    #   · every alias expression that survives must be declared in `keys`,
+    #     so a typo becomes a build failure rather than a blank in one card.
+    #
+    # ⚠️ IT RUNS AFTER THE WRAP, for the same reason the wrap runs after the
+    # inserts: `bindings_for` computes child-index PATHS over the tree that
+    # ships, and both wrappers add a level.
+    repeats = dict(R.REPEAT.get(spec["out"], {}))
+    repeated = [0]
+
+    def _rewrite_exprs(node, fn):
+        """Every expression reference in a subtree, through `fn`.
+
+           Four places carry one: an `<if>`/`<for>`'s `e`, a node's `on`
+           handler, the `{"e": …}` members of a text node's `parts`, and the
+           same inside an interpolated ATTRIBUTE value. The last is the one
+           a scan over strings misses — see the reserved-payload note in
+           student_rulings: an attribute value can be a `parts` dict."""
+        if not isinstance(node, dict):
+            return
+        for key in ("e", "on"):
+            if isinstance(node.get(key), str):
+                node[key] = fn(node[key])
+        v = node.get("v")
+        if isinstance(v, dict) and isinstance(v.get("parts"), list):
+            for part in v["parts"]:
+                if isinstance(part, dict) and isinstance(part.get("e"), str):
+                    part["e"] = fn(part["e"])
+        for _k, av in (node.get("a") or {}).items():
+            if isinstance(av, dict) and isinstance(av.get("parts"), list):
+                for part in av["parts"]:
+                    if isinstance(part, dict) and isinstance(part.get("e"), str):
+                        part["e"] = fn(part["e"])
+        for kid in (node.get("c") or []):
+            _rewrite_exprs(kid, fn)
+
+    for node, rule in sorted(repeats.items()):
+        if node not in here:
+            raise SystemExit(
+                "build_teacher_port.py: %s repeats template node %s over "
+                "`%s`, and that node is not in the tree.\n"
+                "  Either Design has redrawn it or an earlier ruling removed "
+                "it. A silently skipped repeat leaves the class screen "
+                "showing ONE live assignment where a teacher has set two, "
+                "which is the whole of MRB-336 §4.1 — and the build stays "
+                "green. Re-anchor teacher_rulings.REPEAT[%r][%s]. (%s)"
+                % (spec["out"], node, rule["expr"], spec["out"], node,
+                   rule["why"]))
+        root_name = rule["expr"].split(".")[0].strip()
+        if not re.search(r"\b%s\b" % re.escape(root_name), logic):
+            raise SystemExit(
+                "build_teacher_port.py: %s repeats template node %s over "
+                "`<for %s>`, and no `renderVals` key of that name is "
+                "anywhere in the emitted logic.\n"
+                "  `student-runtime` looks a `<for>` expression up the same "
+                "way it looks an `<if>` up — without the miss recorder — so "
+                "a key that does not exist is not an error, it is an EMPTY "
+                "list, and the card simply never renders. Add the key in "
+                "teacher_rulings.LOGIC, or fix the spelling here."
+                % (spec["out"], node, rule["expr"]))
+
+        target = here[node]
+        for tnode, (expect, repl) in (rule.get("retext") or {}).items():
+            if tnode not in here:
+                raise SystemExit(
+                    "build_teacher_port.py: the repeat of node %s retexts "
+                    "node %s, which is not in the tree. (%s)"
+                    % (node, tnode, rule["why"]))
+            kids = here[tnode].get("c") or []
+            text = [x for x in kids if isinstance(x, dict) and x.get("t") == "#"]
+            if len(text) != 1 or text[0].get("v") != expect:
+                raise SystemExit(
+                    "build_teacher_port.py: the repeat of node %s retexts "
+                    "node %s, and that node reads %r, not %r.\n"
+                    "  Design has redrawn it. Re-anchor rather than "
+                    "overwriting: applied blind this replaces one of "
+                    "Design's own strings and the page still builds. (%s)"
+                    % (node, tnode, (text[0].get("v") if len(text) == 1
+                                     else "%d text children" % len(text)),
+                       expect, rule["why"]))
+            text[0]["v"] = json.loads(json.dumps(repl))
+
+        rebind, owns = rule["rebind"], rule["owns"]
+        alias, keys = rule["alias"], set(rule["keys"])
+        hits, left, undeclared = {}, [], []
+
+        def _sub(expr, _rebind=rebind, _hits=hits):
+            if expr in _rebind:
+                _hits[expr] = _hits.get(expr, 0) + 1
+                return _rebind[expr]
+            return expr
+
+        _rewrite_exprs(target, _sub)
+
+        def _check(expr, _owns=owns, _alias=alias, _keys=keys,
+                   _left=left, _und=undeclared):
+            if expr.startswith(_owns):
+                _left.append(expr)
+            elif expr == _alias or expr.startswith(_alias + "."):
+                if expr not in _keys:
+                    _und.append(expr)
+            return expr
+
+        _rewrite_exprs(target, _check)
+
+        missed = sorted(set(rebind) - set(hits))
+        if missed:
+            raise SystemExit(
+                "build_teacher_port.py: the repeat of node %s rebinds %s, "
+                "and none of those appear anywhere in its subtree.\n"
+                "  A rebinding that rebinds nothing means the ruling has "
+                "drifted off Design's markup — the card would then be drawn "
+                "twice reading the SAME data, which looks right and is wrong "
+                "in every number. Re-anchor teacher_rulings.REPEAT. (%s)"
+                % (node, ", ".join(map(repr, missed)), rule["why"]))
+        if left:
+            raise SystemExit(
+                "build_teacher_port.py: the repeat of node %s leaves %s "
+                "inside the repeated subtree, and every `%s` expression in "
+                "it must be rebound onto the row.\n"
+                "  Design has added a binding to this card since the ruling "
+                "was written. Left alone it would read the FIRST card's "
+                "value in every card. Add it to `rebind` (and to `keys`) in "
+                "teacher_rulings.REPEAT."
+                % (node, ", ".join(sorted(set(map(repr, left)))), owns))
+        if undeclared:
+            raise SystemExit(
+                "build_teacher_port.py: the repeat of node %s produces %s, "
+                "which is not in its declared `keys`.\n"
+                "  Either the rebinding has a typo or the row shape has "
+                "grown. An undeclared row key is not an error at runtime — "
+                "it renders as a blank — so it is one here."
+                % (node, ", ".join(sorted(set(map(repr, undeclared))))))
+
+        placed = [0]
+
+        def enfor(parent):
+            if not isinstance(parent, dict) or not parent.get("c"):
+                return
+            kids = parent["c"]
+            for pos, kid in enumerate(kids):
+                if isinstance(kid, dict) and kid.get("i") == node:
+                    kids[pos] = {"t": "for", "e": rule["expr"],
+                                 "as": alias, "c": [kid]}
+                    placed[0] += 1
+                else:
+                    enfor(kid)
+
+        for root in roots:
+            enfor(root)
+        if placed[0] != 1:
+            raise SystemExit(
+                "build_teacher_port.py: the repeat of node %s found %d "
+                "parents to place the `<for>` in, not one. A template ROOT "
+                "has no parent to hold the wrapper; repeat something further "
+                "in. (%s)" % (node, placed[0], rule["why"]))
+        repeated[0] += 1
+
     return roots, dict(pruned=removed[0], attred=attred, wired=wired,
                        attr_bound=attr_bound, nav_checked=checked,
                        retexted=retexted, inserted=inserted,
-                       wrapped=wrapped[0], retargeted=retargeted)
+                       wrapped=wrapped[0], retargeted=retargeted,
+                       repeated=repeated[0])
 
 
 # ── the binding table: text nodes Design typed that are sample data ──────
@@ -2000,7 +2186,45 @@ c.CLASSES.forEach(function (k) {
   const mx = adaptMatrix(k, c.matrixFor(k), papers);
   /* Design's `papersFor` already writes `sub` as `colSub + '/' + k.n`, which
      with `colAsked === k.n` is exactly the seam's `colSub/colAsked`. */
-  out.PAPERS[k.id] = papers;
+  /* ⊕ MRB-336 — THE TEN FIELDS `buildPapers` PUBLISHES AND DESIGN HAS NO
+     CONCEPT OF. Her sample knows a paper is open or marked and nothing
+     about who set it, when it was released, or what it was set FROM.
+
+     ⚠️ THEY ARE DATA HERE, NOT DERIVED. `state` and `statusLabel` are
+     computed in `shared/teacher-live.js` from two instants; a fixture
+     computing them from `Date.now()` would change its own bytes every day
+     and every variant that wanted a third state would be unreachable. The
+     page reads `p.state` and never re-derives it, so handing it the answer
+     is the same contract the seam has.
+
+     ⚠️ INDEX 0 IS THE AUTOMATIC WEEKLY SET. That is the estate's ordinary
+     shape — one auto assignment open, everything behind it closed — and it
+     is what keeps the single-card case in the sweep: with one live paper
+     and no release instant, slot A is Design's card exactly as she drew it
+     and slot B is the reteach card. Every paper behind it is teacher-set,
+     which is what puts Edit and Delete on the rows.
+
+     ⚠️ `release_at` STAYS NULL. It is an instant, and a fixed one goes
+     stale while a computed one moves the bytes. A row without one shows a
+     Set date and no time, which is exactly what the live rule says an
+     assignment carrying no release instant shows. The TIMED column is
+     proved against a real row by `set_work_drive.py`, not here. */
+  out.PAPERS[k.id] = papers.map(function (p, i) {
+    var open = p.when === 'upcoming';
+    return Object.assign({}, p, {
+      source: i === 0 ? 'auto' : 'teacher',
+      set_by: i === 0 ? null : '__MRB_FIXTURE_ME__',
+      release_at: null,
+      released: true,
+      state: open ? 'open' : 'closed',
+      statusLabel: open ? 'Open' : 'Closed',
+      set_tier: 'higher',
+      scope_kind: 'topic',
+      scope_ref: 'fixture-' + k.id + '-' + i,
+      set_subject: 'all',
+      paper: null
+    });
+  });
   out.MATRIX[k.id] = mx;
   out.ROSTER[k.id] = c.rosterFor(k);
   /* ⊕ MRB-306 — THE FIXTURE'S WEEKS ARE WEEKS, not assignments, because the
@@ -3733,6 +3957,27 @@ function MRB_HOME(){window.location.href = '/index.html';}
    `#` is fragment text, not a query, so `shared/config.js` would never see it
    and a teacher working against the sandbox would land one navigation later
    in production data. */
+/* ⊕ MRB-336 §4.1 — the Assignments table, brought into view.
+
+   Slot B's "+N more" link, when three or more sets are live at once. The
+   two cards hold two; this is how the rest are reached, and the table one
+   screen below is where all of them already are.
+
+   ⚠️ IT IS A NAMED SEAM HELPER FOR THE REASON EVERY NAVIGATION HERE IS:
+   `teacher_behaviour` stubs these, so the press can be swept without the
+   fixture scrolling out from under the measurement that is still running.
+
+   ⚠️ AND IT TOLERATES THE SECTION NOT BEING THERE. `mrb-class-assignments`
+   is `SET_ATTR`'s id on node 306, and node 306 is inside `klass.hasWork` —
+   a class with no work at all has no table to scroll to. A throw inside a
+   click listener is reported by the gates as a dead control, which is the
+   wrong finding; `false` is the honest one. */
+function MRB_TO_ASSIGNMENTS(){
+  var el=document.getElementById('mrb-class-assignments');
+  if(!el||!el.scrollIntoView){return false;}
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+  return true;}
+
 function MRB_SEATING(classId){
   var env = MRB_ENV();
   window.location.href = '/teacher/seating.html'
@@ -4452,6 +4697,63 @@ function MRB_SET_WORK_OPEN(classId){
   if(!M||!M.open){return false;}
   M.open({classId:classId||''});
   return true;}
+
+/* ⊕ MRB-336 §6 — EDIT. The same sheet, opened on a row that already exists.
+
+   ⚠️ EVERYTHING IT NEEDS IS ALREADY ON THE PAGE. `a` is the assignment row
+   the table drew, built from the paper object `buildPapers` published, so
+   the tier, the scope, the subject and the two instants come off the screen
+   the teacher is looking at rather than out of a second request. Only the
+   QUESTIONS are read, and `shared/set-work.js` does that itself.
+
+   ⚠️ IT TOLERATES THE SCRIPT NOT BEING THERE, exactly as `MRB_SET_WORK_OPEN`
+   does: a page that loaded its HTML and not its JavaScript must not throw
+   inside a click listener. */
+function MRB_SET_WORK_EDIT(row){
+  var M=window.MRBSetWork;
+  if(!M||!M.edit||!row||!row.assignmentId||!row.classId){return false;}
+  return M.edit(row);}
+
+/* ⊕ MRB-336 §5 — DELETE, soft, and the row leaves every surface.
+
+   ⚠️ IT NEVER REJECTS, like every helper around it: resolves
+   {ok, error} and the caller says one sentence for each. A throw here is
+   reported by the gates as a dead control, which is the wrong finding.
+
+   ⚠️ AND IT IS IDEMPOTENT AT THE SERVER, NOT HERE. A second DELETE of a row
+   that is already deleted answers 200 with the same shape, so a double tap
+   — or a teacher on two devices — is not an error to be explained. An
+   AUTOMATIC row answers 409: the weekly producer owns those, and deleting
+   one would simply be re-composed next week. */
+function MRB_DELETE_SET_WORK(assignmentId){
+  var no=function(e){return Promise.resolve({ok:false,error:e});};
+  if(!assignmentId){return no(new Error('teacher page: no assignment'));}
+  return MRB_TOKEN().then(function(t){
+    return fetch(MRB_API()+'/api/teacher/set-work/'
+                 +encodeURIComponent(assignmentId),
+      {method:'DELETE', headers:{Authorization:'Bearer '+t}});
+  }).then(function(res){
+    return res.json().then(function(d){return {res:res,d:d};},
+                           function(){return {res:res,d:null};});
+  }).then(function(r){
+    if(!r.res.ok){
+      throw MRB_API_ERR(r.res,r.d,'/api/teacher/set-work/:id');}
+    return {ok:true, error:null};},
+    function(e){return {ok:false, error:e};});}
+
+/* Why a delete failed, in a sentence a teacher can act on. The companion to
+   MRB_REMIND_WHY and MRB_SHOUTOUT_WHY, separate for the same reason: a
+   different verb and a different set of refusals. */
+function MRB_DELETE_SET_WORK_WHY(e){
+  var m=(e&&e.message)||'', st=(e&&e.mrbStatus)||0, c=(e&&e.mrbCode)||'';
+  if(st===409||c==='auto_assignment'||/auto/i.test(m))
+    return "Automatic weekly work can't be deleted.";
+  if(st===403||/row-level security|permission|policy/i.test(m))
+    return "Couldn't delete - you may no longer teach this class.";
+  if(st===404) return "Couldn't delete - that assignment is no longer there.";
+  if(/read-only|academic year/i.test(m))
+    return "Couldn't delete - that year is read-only.";
+  return "Couldn't delete just now. Try again in a moment.";}
 
 /* ⊕ MRB-335 — THE CARD REFRESHES AFTER A SET, WHICH IT NEVER DID.
 
@@ -5511,10 +5813,10 @@ def build():
             ruling_seen[_t] |= {n for n in _tbl if n in here}
 
         print("     ✅ %-24s %7d bytes  (%d node(s) pruned, %d inserted, "
-              "%d wrapped, %d retargeted, %d binding(s), %d retext(s), "
+              "%d wrapped, %d repeated, %d retargeted, %d binding(s), %d retext(s), "
               "%d region(s) named, %d live region(s) carried)"
               % (spec["out"], len(body), stats["pruned"], stats["inserted"],
-                 stats["wrapped"], stats["retargeted"], len(table),
+                 stats["wrapped"], stats["repeated"], stats["retargeted"], len(table),
                  stats["retexted"], stats["attred"], len(region_ids)))
         print("        %-30s %7d" % (spec["fixture_out"], len(fix)))
         for v_out, v_body in empties:
