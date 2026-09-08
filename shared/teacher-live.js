@@ -366,6 +366,68 @@
   function dowDayMonth(d) { return DAYS[d.getDay()] + " " + dayMonth(d); }
   function dayMonthYear(d) { return dayMonth(d) + " " + d.getFullYear(); }
 
+  /* ⊕ MRB-336, 8 Sep 2026 — LONDON, FOR THE COLUMNS THAT NAME AN INSTANT.
+
+     The three helpers above read the DEVICE's clock. That was harmless while
+     every date on this surface was a deadline printed to the day: a UK
+     teacher on a UK laptop sees the same day either way, and the week bar's
+     arithmetic is deliberately one clock throughout (see the MONTHS ruling
+     above).
+
+     It stops being harmless the moment a column carries a TIME. `release_at`
+     is an instant, the Set column now prints its hour, and 07:00 London is
+     06:00 UTC — so a teacher whose machine is on UTC, or who is abroad in
+     October, would be shown an hour their pupils never meet. A school runs
+     on one clock and it is London's.
+
+     ⚠️ Intl IS ASKED FOR NUMBERS ONLY, NEVER FOR A SPELLING. `en-GB` writes
+     September as "Sept" — four letters, the only month that is not three —
+     which is the whole reason `MONTHS` above is hand-rolled. Same rule here:
+     the parts come back numeric and the arrays above do the naming.
+
+     ⚠️ AND THE WEEKDAY IS NOT ASKED FOR EITHER. `Date.UTC` on the London
+     calendar parts gives a `getUTCDay()` that is the London weekday by
+     construction, with no second format call and no chance of a locale
+     spelling one and an array spelling the other. */
+  var LDN_PARTS = null;
+  function londonPartsOf(d) {
+    if (!d) { return null; }
+    if (!LDN_PARTS) {
+      try {
+        LDN_PARTS = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Europe/London", year: "numeric", month: "2-digit",
+          day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false
+        });
+      } catch (e) { LDN_PARTS = false; }
+    }
+    if (!LDN_PARTS) { return null; }   /* no Intl: the caller falls back */
+    var o = {};
+    LDN_PARTS.formatToParts(d).forEach(function (x) { o[x.type] = x.value; });
+    /* ICU returns hour "24" for midnight under hour12:false on some builds —
+       the same quirk shared/set-work.js documents at `londonPartsAt`. */
+    var H = parseInt(o.hour, 10) % 24;
+    var y = +o.year, m = +o.month, dd = +o.day;
+    return { y: y, m: m, d: dd, H: H, M: parseInt(o.minute, 10),
+             dow: new Date(Date.UTC(y, m - 1, dd)).getUTCDay() };
+  }
+
+  /* "Mon 14 Sep", in London. Falls back to the device clock only where Intl
+     is absent, which is the same answer for every UK user and is better than
+     a blank column. */
+  function dowDayMonthLdn(d) {
+    var p = londonPartsOf(d);
+    if (!p) { return d ? dowDayMonth(d) : ""; }
+    return DAYS[p.dow] + " " + p.d + " " + MONTHS[p.m - 1];
+  }
+
+  /* "Mon 14 Sep 07:00", in London. The Set column's whole shape. */
+  function dowDayMonthTimeLdn(d) {
+    var p = londonPartsOf(d);
+    if (!p) { return d ? dowDayMonth(d) : ""; }
+    return DAYS[p.dow] + " " + p.d + " " + MONTHS[p.m - 1] + " " +
+           pad2(p.H) + ":" + pad2(p.M);
+  }
+
   /* The Monday and the Friday of the teaching week an instant falls in.
      Sunday is the END of a week to JS (`getDay()` 0) and the START of nothing
      to a school, so it is pulled back to the Monday six days behind it. */
@@ -633,6 +695,31 @@
       // closes, which is what `upcoming` means in teacher-data's own grouping.
       var open = !a.due_at || a.due_at > nowIso;
       var dueD = asDate(a.due_at);
+
+      /* ⊕ MRB-336, 8 Sep 2026 — THE THIRD STATE. Scheduled | Open | Closed.
+
+         ⛔ THE DEFECT, IN MIDE'S OWN SCREENSHOT: three assignments no pupil
+         could see, all three drawn OPEN, all three stamped "Set Tue 8 Sep".
+         Both halves came from here. `when` was computed from `due_at` alone,
+         so work whose release was still a week away had a deadline in the
+         future like any other and read as open; and `set` was invented as
+         `due_at − 7 days`, a date the teacher never chose for an instant
+         that had not happened.
+
+         ⚠️ A NULL `release_at` IS RELEASED. Automatic weekly work carries no
+         release instant, and neither does any row written before Set work
+         existed. Reading "no release_at" as "not yet released" would put
+         every assignment in the school behind a curtain; only an instant
+         that EXISTS and is still ahead of now holds anything back.
+
+         ⚠️ AND `when` KEEPS ITS EXACT MEANING. `markedIdx`, the reteach
+         card, the grid prefetch, `MRB_NEWEST_MARKED` and the charts all
+         branch on `when === 'marked'`, and every one of them is asking
+         "has the deadline passed", not "can a child see it". Narrowing
+         `when` would have quietly changed what gets marked and what gets
+         reteached. `state` is the new answer and it is a new field. */
+      var released = !a.release_at || a.release_at <= nowIso;
+      var state = !released ? "scheduled" : (open ? "open" : "closed");
       /* ⊕ RULED 24 Aug 2026 — THE RAIL IS ANCHORED ON `due_at`, AND `set` IS
          DERIVED FROM IT AS due − 7 DAYS.
 
@@ -656,6 +743,7 @@
          a week out of it.
 
          No deadline, no week: the rail entry is blank rather than invented. */
+      var relD = asDate(a.release_at);
       var setD = null, fri = null;
       if (dueD) {
         setD = new Date(dueD);
@@ -669,12 +757,45 @@
         // Design prefixes the open paper's date with "Due " and leaves the
         // closed ones bare; `renderVals` strips the prefix back off in three
         // places, so the shape has to be exactly this.
-        due: dueD ? (open ? "Due " + dowDayMonth(dueD) : dowDayMonth(dueD)) : "",
-        set: setD ? dowDayMonth(setD) : "",
+        due: dueD ? (open ? "Due " + dowDayMonthLdn(dueD) : dowDayMonthLdn(dueD)) : "",
+        /* ⊕ MRB-336 — THE SET COLUMN IS THE RELEASE INSTANT, WITH ITS HOUR.
+           "Mon 14 Sep 07:00", in London, exactly as the teacher chose it.
+
+           ⚠️ ONLY THE COLUMN MOVES. `setD` — and therefore `range`,
+           `lateShort` and `assignPaperWeeks`' `weekOfYear` — stays anchored
+           on `due_at − 7`, untouched. Re-anchoring the RAIL on `release_at`
+           would re-bucket every assignment in the estate the day this
+           shipped, moving live work between weeks on a teacher's screen for
+           a display fix. RISKS C1 is about exactly that. So the rail keeps
+           Design's model and the column stops lying.
+
+           ⚠️ THE TIME IS OMITTED WHERE THERE IS NO INSTANT TO PRINT. An
+           automatic row has no `release_at`, so it falls back to the derived
+           set date and shows a day and a date and no hour — which is honest
+           about being derived rather than chosen. */
+        set: relD ? dowDayMonthTimeLdn(relD)
+           : (setD ? dowDayMonthLdn(setD) : ""),
         range: weekRangeLabel(setD),
         dueShort: dueD ? dayMonth(dueD) : "",
         lateShort: fri ? dayMonth(fri) : "",
         due_at: a.due_at,
+        release_at: a.release_at || null,
+        /* `teacher` | `auto`. What decides whether a row carries Edit and
+           Delete, and it is re-checked at the server on every write. */
+        source: a.source || "auto",
+        set_by: a.set_by || null,
+        /* ⊕ MRB-336 §6 — the three answers Edit re-opens the sheet on, plus
+           the two chips that narrow the tree. Carried, not re-derived: the
+           row is the authority on what it was set from. */
+        set_tier: a.set_tier || "",
+        scope_kind: a.scope_kind || "",
+        scope_ref: a.scope_ref || "",
+        set_subject: a.set_subject || "",
+        paper: (a.paper == null) ? null : a.paper,
+        released: released,
+        state: state,
+        statusLabel: state === "scheduled" ? "Scheduled"
+                   : (state === "open" ? "Open" : "Closed"),
         created_at: a.created_at,
         academic_week: a.academic_week,
         subject_name: a.subject_name,
