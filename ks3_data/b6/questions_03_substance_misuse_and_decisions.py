@@ -779,19 +779,20 @@ QUESTIONS = [
                 "young people who vape. A councillor says the shops are "
                 "causing it. How good is that reasoning?",
         "options": [
-            {"text": "Sound enough — a shop cannot sell a vape to somebody who "
-                     "never walks into it.", "correct": False,
+            {"text": "Sound enough — a shop cannot sell a vape to a young "
+                     "person who never walks in through the door.", "correct": False,
              "why": "That is an argument for the shops mattering, not "
                     "evidence that they do. The figures on their own cannot "
                     "say which way the arrow points."},
-            {"text": "The figures must be wrong, because vaping happens "
-                     "everywhere equally.", "correct": False,
+            {"text": "The figures must be wrong, because vaping is just as "
+                     "common in one town as another.", "correct": False,
              "why": "There is no reason to doubt the counting. The fault is in "
                     "what is being read into it."},
-            {"text": "Two things happening together does not show which "
-                     "caused which, or whether something else caused both.",
+            {"text": "Two things together cannot show which caused which, or "
+                     "what caused both.",
              "correct": True},
-            {"text": "The study is too small to be worth anything.",
+            {"text": "The study is far too small for its result to mean "
+                     "anything.",
              "correct": False,
              "why": "Nothing here says how many towns were counted, and more "
                     "towns would not settle it. Size fixes noise, not "
@@ -807,15 +808,15 @@ QUESTIONS = [
                 "that a problem?",
         "options": [
             {"text": "The people tested chose themselves, so the result "
-                     "describes them rather than anyone else.",
+                     "describes them.",
              "correct": True},
-            {"text": "Volunteers cannot be trusted to report accurately what "
-                     "they actually felt.", "correct": False,
+            {"text": "Volunteers cannot be trusted to report accurately on "
+                     "what they actually felt afterwards.", "correct": False,
              "why": "Assume every one of them answered honestly. The fault is "
                     "still there, because of how they came to be in the study "
                     "at all."},
-            {"text": "The company should have tested more people before "
-                     "publishing anything.", "correct": False,
+            {"text": "The company should have tested a great many more people "
+                     "before publishing it.", "correct": False,
              "why": "More people chosen the same way gives the same wrong "
                     "answer, measured more precisely. Size fixes noise, not "
                     "confusion."},
@@ -844,13 +845,13 @@ QUESTIONS = [
              "why": "Speed is not the issue. The issue is that expecting an "
                     "improvement can change how a borderline result is "
                     "recorded."},
-            {"text": "Because otherwise they would have to be paid more for "
-                     "the extra responsibility.", "correct": False,
+            {"text": "Because otherwise they would have to be paid a great "
+                     "deal more for the responsibility.", "correct": False,
              "why": "This is a question about the design of the study, not "
                     "about who is paid. Not knowing keeps expectation out of "
                     "the measurement."},
-            {"text": "Because somebody expecting an improvement can read one "
-                     "into a borderline measurement.", "correct": True},
+            {"text": "Expecting an improvement can turn a borderline result "
+                     "into one.", "correct": True},
         ],
         "figure": None,
     },
@@ -942,18 +943,18 @@ QUESTIONS = [
              "why": "They can all be unrepresentative in the same direction, "
                     "because they chose themselves. Size fixes noise, not "
                     "confusion."},
-            {"text": "The survey, because customers have actually used the "
-                     "product.", "correct": False,
+            {"text": "The survey, because its own customers have actually "
+                     "used the product themselves.", "correct": False,
              "why": "Being a customer is exactly what makes them an unfair "
                     "sample. It is the people who never bought it who are "
                     "missing."},
-            {"text": "Neither, because a result can only be trusted when "
-                     "both kinds of study agree.", "correct": False,
+            {"text": "Neither, because a result can only be trusted when both "
+                     "kinds of study agree with each other.", "correct": False,
              "why": "Studies disagreeing is ordinary, and the way through is "
                     "to judge the designs. Sixty people split at random can "
                     "show a real difference."},
-            {"text": "The trial of 60, because randomising removes the "
-                     "differences that the survey cannot.", "correct": True},
+            {"text": "The trial of 60, because randomising evens out the "
+                     "other differences.", "correct": True},
         ],
         "figure": None,
     },
@@ -1044,21 +1045,21 @@ QUESTIONS = [
                 "drink now and follows them forward. Why is the second "
                 "better?",
         "options": [
-            {"text": "Because following people forward always takes more "
-                     "people, and more people is better.", "correct": False,
+            {"text": "Because following people forward always needs a great "
+                     "many more people, and more is better.", "correct": False,
              "why": "It need not take more people at all. What it changes is "
                     "when the information was recorded."},
-            {"text": "Because people who already have a problem look for "
+            {"text": "Because people who already have a problem will look for "
                      "something to blame it on.", "correct": False,
              "why": "Nobody has to be dishonest for the first study to fail. "
                     "Remembering a year of habits is simply unreliable, "
                     "whoever is doing it."},
-            {"text": "Because the first study measures sleep and the second "
-                     "measures drinks.", "correct": False,
+            {"text": "Because the first is about sleep and the second about "
+                     "drinks.", "correct": False,
              "why": "Both measure both. The difference is that one records the "
                     "drinking before anything has gone wrong."},
-            {"text": "Because what people drank was recorded before anyone "
-                     "became unwell, rather than remembered afterwards.",
+            {"text": "Because the drinking was recorded before anyone fell "
+                     "ill, not recalled.",
              "correct": True},
         ],
         "figure": None,
@@ -1075,16 +1076,16 @@ QUESTIONS = [
              "why": "Equal sizes do not help when the two groups were "
                     "measured under different conditions. Tiredness alone "
                     "could produce the whole difference."},
-            {"text": "More than one thing now differs between the groups, so "
-                     "the drink cannot be blamed for the result.",
+            {"text": "Two things differ between the groups, so the drink "
+                     "cannot be blamed.",
              "correct": True},
-            {"text": "Reaction time cannot be measured in a school, so neither "
-                     "result counts.", "correct": False,
+            {"text": "Reaction time cannot be measured properly in a school, "
+                     "so neither result counts.", "correct": False,
              "why": "It can be measured perfectly well in a school. The fault "
                     "is that the two groups were not measured under the same "
                     "conditions."},
-            {"text": "The morning group will always do worse, so the result is "
-                     "the wrong way round.", "correct": False,
+            {"text": "The morning group will always do worse than the "
+                     "afternoon group, so the result is backwards.", "correct": False,
              "why": "Which group does better is not the point, and it is not "
                     "known. The point is that time of day and the drink are "
                     "now tangled together."},
@@ -1129,15 +1130,15 @@ QUESTIONS = [
              "why": "Size is a separate matter, and it was never the "
                     "objection. These two findings are about the shape of the "
                     "result rather than the number of people."},
-            {"text": "More of the suspected cause gives more of the effect, "
-                     "and removing it reduces the effect.", "correct": True},
+            {"text": "More cause gives more effect, and removing the cause "
+                     "reduces it.", "correct": True},
             {"text": "Because they show that doctors are more honest about "
                      "smoking than other people.", "correct": False,
              "why": "Honesty was not what made the study work. What made it "
                     "work was the pattern responding to how much was smoked "
                     "and to stopping."},
-            {"text": "Because they rule out the possibility that anybody "
-                     "misremembered what they smoked.", "correct": False,
+            {"text": "Because they rule out any possibility that the doctors "
+                     "had misremembered what they smoked.", "correct": False,
              "why": "Recording the smoking beforehand is what dealt with "
                     "memory. These two findings do something different: they "
                     "show the effect tracking the cause."},
@@ -1234,15 +1235,15 @@ QUESTIONS = [
              "why": "Alcohol and tobacco are legal here and between them cause "
                     "more illness than every illegal drug combined. Legality "
                     "is not a measure of harm."},
-            {"text": "Legality says what a shop may sell; it is not evidence "
-                     "about what a substance does.", "correct": True},
+            {"text": "Legality says what a shop may sell, not what a drug "
+                     "does.", "correct": True},
             {"text": "It is wrong because illegal substances are always the "
                      "safer of the two.", "correct": False,
              "why": "That is the same mistake stood on its head. Neither "
                     "legality nor illegality tells you what a substance does "
                     "to a body."},
             {"text": "It is wrong only for substances that were legal in the "
-                     "past and are not now.", "correct": False,
+                     "past and are not legal now.", "correct": False,
              "why": "The argument fails whatever the law has done. What a "
                     "molecule does to a body does not change when a "
                     "parliament votes."},
@@ -1336,20 +1337,19 @@ QUESTIONS = [
                 "How did Doll and Hill answer the question without doing "
                 "that?",
         "options": [
-            {"text": "They asked people who already had lung cancer what they "
-                     "had smoked.", "correct": False,
+            {"text": "They asked people with lung cancer what they smoked.", "correct": False,
              "why": "That study would depend on memory and on ill people "
                     "looking for a cause. They recorded the smoking first "
                     "instead."},
-            {"text": "They recorded what people already smoked, then followed "
-                     "the same people forward for decades.", "correct": True},
+            {"text": "They recorded what people smoked, then followed them "
+                     "for decades.", "correct": True},
             {"text": "They compared one country where smoking was common with "
-                     "another where it was rare.", "correct": False,
+                     "another country where it was rare.", "correct": False,
              "why": "Two countries differ in far more than their smoking. "
                     "Following the same people forward is what removed those "
                     "differences."},
-            {"text": "They tested tobacco smoke on cells in a laboratory "
-                     "instead of on people.", "correct": False,
+            {"text": "They tested tobacco smoke on living cells in a "
+                     "laboratory instead of on people.", "correct": False,
              "why": "Laboratory work supports the case, but it was not their "
                     "study. Theirs followed around 40,000 doctors forward for "
                     "decades."},
@@ -1444,19 +1444,18 @@ QUESTIONS = [
                 "faults is that?",
         "options": [
             {"text": "One — the reviews are the only real evidence offered, "
-                     "and they are weak.", "correct": False,
+                     "and they are very weak.", "correct": False,
              "why": "The plant half is offered as evidence too, and it fails "
                     "on its own account: where a molecule came from says "
                     "nothing about what it does."},
-            {"text": "One — both halves are the same mistake of trusting the "
-                     "seller.", "correct": False,
+            {"text": "One — both halves trust the seller in the same way.", "correct": False,
              "why": "Only the reviews come from the seller. The claim about "
                     "the plant is a different fault: origin is not evidence "
                     "about effect."},
-            {"text": "Two — origin is not evidence about effect, and the "
-                     "reviews have nobody to compare against.", "correct": True},
+            {"text": "Two — origin is not evidence of effect, and reviews "
+                     "lack a control.", "correct": True},
             {"text": "None — long use and satisfied customers are two "
-                     "independent kinds of evidence.", "correct": False,
+                     "entirely independent kinds of evidence.", "correct": False,
              "why": "Two weak arguments do not add up to a strong one. Neither "
                     "half tells you what the product does to a body."},
         ],

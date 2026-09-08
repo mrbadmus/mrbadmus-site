@@ -734,18 +734,17 @@ QUESTIONS = [
                 "gets a burning pain in their stomach. What is the best "
                 "explanation?",
         "options": [
-            {"text": "The coffee was too hot, and the caffeine has nothing to "
-                     "do with it", "correct": False,
+            {"text": "The coffee was too hot; the caffeine is not involved", "correct": False,
              "why": "Heat is felt going down rather than as a burning pain "
                     "afterwards. The caffeine reached the stomach and made it "
                     "release more acid."},
-            {"text": "The caffeine was broken down in the stomach, and the "
-                     "pain is that breakdown", "correct": False,
-             "why": "Breaking a drug down is the liver's job, not the "
-                    "stomach's. The pain comes from the extra acid the "
-                    "stomach releases."},
-            {"text": "The caffeine reached the stomach as well as the brain, "
-                     "making it release more acid", "correct": True},
+            {"text": "The caffeine was broken down by the stomach lining, and "
+                     "the burning is that reaction", "correct": False,
+             "why": "Breaking a drug down is the liver's job, not the stomach "
+                    "lining's, and it releases no burning of its own. The "
+                    "pain comes from the extra acid the stomach releases."},
+            {"text": "Caffeine reached the stomach too, and made it release "
+                     "more acid", "correct": True},
             {"text": "The caffeine cannot be absorbed without food, so it "
                      "stayed in the stomach", "correct": False,
              "why": "Caffeine crosses the intestine wall whether or not there "
@@ -846,14 +845,14 @@ QUESTIONS = [
                     "It worsens reactions, coordination and judgement, and "
                     "that is where the harm comes from."},
             {"text": "They are right about alcohol, though not about the "
-                     "sedatives used in anaesthetics", "correct": False,
+                     "sedatives a doctor gives before surgery", "correct": False,
              "why": "Alcohol is the depressant that causes most harm of the "
                     "two, not the least. Slowing a nervous system down is not "
                     "a safe thing to do to it."},
-            {"text": "Slower is not safer — most alcohol harm comes from what "
-                     "a slowed nervous system then does", "correct": True},
-            {"text": "They are wrong, because a depressant speeds the heart "
-                     "up at the same time", "correct": False,
+            {"text": "Slower is not safer: the harm is in what a slowed "
+                     "nervous system does", "correct": True},
+            {"text": "They are wrong: a depressant speeds the heart up as "
+                     "well", "correct": False,
              "why": "Speeding the heart up is a stimulant's effect. A "
                     "depressant's harm comes from worsened reactions, "
                     "coordination and judgement."},
@@ -867,8 +866,8 @@ QUESTIONS = [
                 "the blood, while alcohol swallowed in a drink arrives "
                 "faster. Why?",
         "options": [
-            {"text": "Alcohol crosses the stomach wall as well as the "
-                     "intestine wall; caffeine waits for the intestine",
+            {"text": "Alcohol crosses the stomach wall; caffeine waits for "
+                     "the intestine",
              "correct": True},
             {"text": "There is less alcohol in a drink, so there is less of "
                      "it for the body to deal with", "correct": False,
@@ -880,8 +879,8 @@ QUESTIONS = [
              "why": "The class describes what a drug does to nerve signals, "
                     "not how quickly it is absorbed. Alcohol is fast because "
                     "of where it crosses into the blood."},
-            {"text": "Alcohol is absorbed through the lungs, which is why you "
-                     "can smell it on the breath", "correct": False,
+            {"text": "Alcohol is absorbed through the lungs as you breathe, "
+                     "which is why you can smell it on the breath", "correct": False,
              "why": "The smell on the breath is a trace leaving the blood, "
                     "not alcohol going in. It is absorbed in the stomach and "
                     "the intestine."},
@@ -896,10 +895,11 @@ QUESTIONS = [
                 "treated. Where is that wrong?",
         "options": [
             {"text": "The temperature has not really fallen; the drug only "
-                     "makes the child feel cooler", "correct": False,
-             "why": "The temperature does fall, because the drug acts on the "
-                    "brain's temperature control centre. What has not changed "
-                    "is the infection."},
+                     "makes the child feel cooler to touch", "correct": False,
+             "why": "The temperature really does fall, and a thermometer "
+                    "would show it, because the drug acts on the brain's "
+                    "temperature control centre. What has not changed is the "
+                    "infection."},
             {"text": "The drug shortened the infection, which is why the "
                      "temperature came down", "correct": False,
              "why": "A fever is the body's response, not the infection "
@@ -910,8 +910,8 @@ QUESTIONS = [
              "why": "Paracetamol kills nothing. It acts on the pain pathways "
                     "and on the temperature control centre and leaves the "
                     "infection untouched."},
-            {"text": "The drug acted on the brain's temperature control "
-                     "centre, and the infection is untouched", "correct": True},
+            {"text": "It acted on the brain's temperature centre, not the "
+                     "infection", "correct": True},
         ],
         "figure": None,
     },
@@ -922,20 +922,20 @@ QUESTIONS = [
                 "is surprised to hear that it raises their blood pressure. "
                 "Why does it?",
         "options": [
-            {"text": "Because a stimulant always raises blood pressure before "
-                     "it raises alertness", "correct": False,
+            {"text": "Because a stimulant is bound to raise the blood "
+                     "pressure first and the alertness only afterwards", "correct": False,
              "why": "There is no order of that kind. Blood pressure rises "
                     "because the same dose reached the heart and the blood "
                     "vessels on the same circuit."},
-            {"text": "The same dose reached the heart and the vessels: the "
-                     "heart beats faster and vessels narrow", "correct": True},
+            {"text": "One dose reached the heart and the vessels: faster "
+                     "beat, narrower vessels", "correct": True},
             {"text": "Because nicotine is broken down into a substance that "
-                     "raises blood pressure", "correct": False,
+                     "then raises the blood pressure", "correct": False,
              "why": "It is nicotine itself acting on the heart and vessels it "
                     "reached. Breaking a drug down is how it is removed, not "
                     "how it acts."},
             {"text": "It does not — the raised blood pressure comes from the "
-                     "tar in the smoke", "correct": False,
+                     "tar", "correct": False,
              "why": "Tar damages the airways and the alveoli. The faster "
                     "heart, the narrowed vessels and the raised blood "
                     "pressure are nicotine's."},
@@ -949,19 +949,19 @@ QUESTIONS = [
                 "does caffeine not block pain, and paracetamol not keep you "
                 "awake?",
         "options": [
-            {"text": "Because each drug is broken down before it can reach "
-                     "the second organ", "correct": False,
-             "why": "Breaking down takes hours, long after the circuit is "
-                    "complete. Both drugs really do reach both places."},
-            {"text": "Because the body sends each drug only to the organ that "
-                     "suits it", "correct": False,
+            {"text": "Because each drug is broken down by the liver before it "
+                     "can reach the second organ", "correct": False,
+             "why": "Breaking down in the liver takes hours, long after the "
+                    "circuit is complete. Both drugs really do reach both "
+                    "places."},
+            {"text": "Because the body sends each drug to the right organ", "correct": False,
              "why": "There is no sorting step. Both drugs are offered to "
                     "everything, which is exactly why side effects exist."},
-            {"text": "Because a drug acts only where there is something it "
-                     "fits, and neither fits the other's target",
+            {"text": "A drug acts only where it fits, and neither fits the "
+                     "other's target",
              "correct": True},
-            {"text": "Because the amount of each drug is too small for it to "
-                     "do two different jobs at once", "correct": False,
+            {"text": "Because the amount of each drug is far too small for it "
+                     "to manage two different jobs at once", "correct": False,
              "why": "A larger amount does not give a drug a new kind of "
                     "effect. Where a drug acts is decided by what it fits, "
                     "not by how much of it there is."},
@@ -1139,22 +1139,22 @@ QUESTIONS = [
                 "the body. Why?",
         "options": [
             {"text": "The cream is a weaker version of the drug, so it does "
-                     "less of everything", "correct": False,
+                     "less", "correct": False,
              "why": "Even a weaker tablet would still be carried to every "
                     "organ. What matters is that most of the cream never "
                     "joins the blood at all."},
             {"text": "A drug rubbed on the skin travels through the body to "
-                     "the knee more directly", "correct": False,
+                     "the knee far more directly", "correct": False,
              "why": "There is no direct route from skin to knee. The point is "
                     "that most of the cream does not join the blood, so it is "
                     "never offered to everything."},
-            {"text": "The cream is absorbed more slowly, so the other organs "
-                     "have time to ignore it", "correct": False,
+            {"text": "The cream is absorbed more slowly, giving the other "
+                     "organs time to ignore it as it arrives", "correct": False,
              "why": "No organ ignores anything. An organ is affected if the "
                     "drug reaches it and fits, and how slowly it arrives does "
                     "not change that."},
-            {"text": "Most of the cream never enters the blood, so it is "
-                     "never offered to every other organ", "correct": True},
+            {"text": "Most of the cream never joins the blood, so other "
+                     "organs never get it", "correct": True},
         ],
         "figure": None,
     },
@@ -1191,21 +1191,21 @@ QUESTIONS = [
                 "safe or dangerous, and that all you have to do is find out "
                 "which. Why is that not how it works?",
         "options": [
-            {"text": "Amount decides: digoxin from the foxglove steadies a "
-                     "failing heart, and a little more stops it",
+            {"text": "Amount decides: digoxin steadies a failing heart, a "
+                     "little more stops it",
              "correct": True},
-            {"text": "Because the lists change: what is dangerous in one "
-                     "country is safe in another", "correct": False,
+            {"text": "Because the lists move: a substance that is dangerous "
+                     "in one country is sold legally in another", "correct": False,
              "why": "Laws differ between countries, but what a molecule does "
                     "to a body does not. It is the amount that decides, not "
                     "the border."},
-            {"text": "Because a substance is only dangerous once a person has "
-                     "become addicted to it", "correct": False,
+            {"text": "Because a substance is only dangerous once the person "
+                     "taking it has become addicted", "correct": False,
              "why": "Addiction is a separate property that some drugs have. A "
                     "substance harms the body at the wrong amount whether or "
                     "not anyone is addicted."},
-            {"text": "Because natural substances go on one list and "
-                     "factory-made ones on the other", "correct": False,
+            {"text": "Because natural things are safe and factory-made ones "
+                     "are not", "correct": False,
              "why": "Where a molecule came from tells you nothing about what "
                     "it does. Digoxin grows in a hedgerow, and paracetamol is "
                     "made in a factory."},
@@ -1272,23 +1272,22 @@ QUESTIONS = [
                 "irritated stomach, and still has slowed reactions. Which "
                 "explanation covers all three at once?",
         "options": [
-            {"text": "Three different substances in the drink each did one of "
-                     "the three things", "correct": False,
+            {"text": "Three different substances in the drink, and each did "
+                     "one of the three things", "correct": False,
              "why": "One substance did all three. Alcohol was offered to "
                     "every organ, and it did something different at each of "
                     "them."},
-            {"text": "The liver failed to break the alcohol down, so it built "
-                     "up in three places", "correct": False,
+            {"text": "The liver failed to break the alcohol down overnight, "
+                     "so it built up in three separate places", "correct": False,
              "why": "The liver breaks it down at its own fixed rate, which is "
                     "why the reactions are still slowed. Nothing failed — the "
                     "dose simply reached everything."},
-            {"text": "The dehydration caused the sickness, which in turn "
-                     "slowed the reactions", "correct": False,
+            {"text": "Dehydration caused the sickness and the slow reactions", "correct": False,
              "why": "None of the three caused the others. The blood carried "
                     "the same alcohol to the kidneys, the stomach and the "
                     "brain."},
-            {"text": "One dose reached the kidneys, the stomach and the "
-                     "brain, and acted at each of them", "correct": True},
+            {"text": "One dose reached the kidneys, the stomach and brain, "
+                     "acting at each", "correct": True},
         ],
         "figure": None,
     },
@@ -1406,20 +1405,19 @@ QUESTIONS = [
         "text": "Nicotine reaches the brain in about ten seconds. Why does "
                 "that speed matter for how hard smoking is to stop?",
         "options": [
-            {"text": "The reward release follows the smoke almost at once, "
-                     "and the brain adapts to expect it", "correct": True},
-            {"text": "The faster a drug arrives, the longer it then stays in "
-                     "the body afterwards", "correct": False,
+            {"text": "Reward follows the smoke at once, and the brain adapts "
+                     "to expect it", "correct": True},
+            {"text": "The faster a drug arrives, the longer it will then stay "
+                     "in the body afterwards", "correct": False,
              "why": "How fast a drug arrives and how long it takes to clear "
                     "are separate questions. The speed matters because the "
                     "reward follows the smoke almost immediately."},
-            {"text": "Arriving quickly means less of it is left in the "
-                     "airways to do damage", "correct": False,
+            {"text": "Arriving quickly leaves less in the airways to damage", "correct": False,
              "why": "The airway damage is done by tar and the other "
                     "substances, not by how fast the nicotine travels. The "
                     "speed matters at the brain."},
-            {"text": "A fast drug cannot be broken down by the liver, so it "
-                     "never leaves the body", "correct": False,
+            {"text": "A drug that arrives that quickly cannot be broken down "
+                     "by the liver, so it stays for good", "correct": False,
              "why": "Nicotine is broken down like any other drug. Its speed "
                     "matters because of what it does at the brain, not "
                     "because it stays."},

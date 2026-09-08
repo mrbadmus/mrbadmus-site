@@ -382,19 +382,18 @@ QUESTIONS = [
         "band": "easier",
         "text": "Alcoholic drinks are measured in units. What is a unit for?",
         "options": [
-            {"text": "It is the number of drinks a person is allowed in an "
-                     "evening.", "correct": False,
+            {"text": "It is the number of drinks a person is allowed to have "
+                     "in a single evening.", "correct": False,
              "why": "A unit is not a permission or a limit. It is a measure of "
                     "how much alcohol a drink contains."},
-            {"text": "It is the number of hours a drink will affect somebody "
-                     "for.", "correct": False,
+            {"text": "It is the number of hours a drink will affect you for.", "correct": False,
              "why": "The hours follow from the units, at about one unit an "
                     "hour, but they are not the same thing. A unit measures "
                     "the alcohol in the glass."},
-            {"text": "It measures the amount of alcohol in a drink, so "
-                     "different drinks can be compared.", "correct": True},
+            {"text": "It measures the alcohol a drink holds, so drinks can be "
+                     "compared.", "correct": True},
             {"text": "It measures how strong a drink is, whatever the size of "
-                     "the glass.", "correct": False,
+                     "the glass it happens to come in.", "correct": False,
              "why": "Strength alone would not tell you enough — a small strong "
                     "drink and a large weak one can hold the same alcohol. "
                     "Units take the size and the strength together."},
@@ -740,20 +739,20 @@ QUESTIONS = [
         "text": "A packet gives a low tar figure, measured by a machine. Why "
                 "might a smoker actually receive more tar than that figure?",
         "options": [
-            {"text": "Ventilation holes in the paper let the machine draw in "
-                     "air, and fingers and lips cover them.", "correct": True},
-            {"text": "The machine measures a fresh cigarette, and tar builds "
-                     "up in the packet over time.", "correct": False,
+            {"text": "Ventilation holes let the machine draw in air; fingers "
+                     "and lips cover them.", "correct": True},
+            {"text": "The machine measures a freshly made cigarette, and more "
+                     "tar builds up inside the packet over time.", "correct": False,
              "why": "Tar is produced by burning, not stored in the packet. The "
                     "gap comes from ventilation holes that a machine leaves "
                     "open and a smoker covers."},
-            {"text": "Machines measure in different units from the ones used "
-                     "for people.", "correct": False,
+            {"text": "Machines measure in different units from those used for "
+                     "people.", "correct": False,
              "why": "The units are the same. What differs is how the "
                     "cigarette is held, because covered ventilation holes "
                     "change what is drawn through."},
-            {"text": "The figure is for one cigarette, and smokers rarely "
-                     "smoke only one.", "correct": False,
+            {"text": "The figure printed is for a single cigarette, and "
+                     "smokers very rarely stop at just one.", "correct": False,
              "why": "That is true of any per-cigarette figure and is not the "
                     "fault here. Even for one cigarette, covered ventilation "
                     "holes mean more tar than the machine recorded."},
@@ -892,8 +891,8 @@ QUESTIONS = [
                 "clear lungs has nothing to worry about. What has that left "
                 "out?",
         "options": [
-            {"text": "Only the throat and mouth, which the smoke also "
-                     "passes through.", "correct": False,
+            {"text": "Only the throat and the mouth, which the smoke also "
+                     "passes through on its way.", "correct": False,
              "why": "Those are affected too, but the far bigger gap is the "
                     "blood and the heart. Carbon monoxide acts in the blood "
                     "and nicotine on the heart and vessels."},
@@ -902,13 +901,13 @@ QUESTIONS = [
              "why": "Whether the lungs recover is a separate question. What "
                     "the claim leaves out is the blood, the heart and the "
                     "vessels."},
-            {"text": "That the damage takes many years, so a young smoker is "
-                     "safe for now.", "correct": False,
+            {"text": "That the damage takes many years to build up, so a "
+                     "young smoker has nothing to fear yet.", "correct": False,
              "why": "There is no threshold below which smoke stops damaging "
                     "tissue. And the claim's real gap is that smoke harms far "
                     "more than the lungs."},
-            {"text": "The blood and the heart: vessels narrow, blood pressure "
-                     "rises and clots form more readily.", "correct": True},
+            {"text": "The blood and the heart: vessels narrow, pressure "
+                     "rises, clots form.", "correct": True},
         ],
         "figure": None,
     },
@@ -1077,22 +1076,21 @@ QUESTIONS = [
                 "are better off than a smoker would be. What is the honest "
                 "scientific reply?",
         "options": [
-            {"text": "They are right, and they should be encouraged, since "
-                     "vaping is known to be safe.", "correct": False,
+            {"text": "They are right, and should be encouraged, since vaping "
+                     "is known to be safe.", "correct": False,
              "why": "Vapes are very likely less harmful than cigarettes and "
                     "are not known to be safe — the long-term studies do not "
                     "exist yet."},
-            {"text": "They are wrong, because vaping is more harmful to a "
-                     "person than smoking is.", "correct": False,
+            {"text": "They are wrong: vaping is more harmful than smoking.", "correct": False,
              "why": "Overstating the harm is as inaccurate as understating it. "
                     "The evidence points to vapes being less harmful than "
                     "cigarettes."},
-            {"text": "They are wrong, because a vape delivers tar and carbon "
-                     "monoxide as a cigarette does.", "correct": False,
+            {"text": "They are wrong, because a vape delivers the same tar "
+                     "and carbon monoxide as a cigarette.", "correct": False,
              "why": "It delivers neither, because nothing is burned. The "
                     "problem with the comparison is elsewhere."},
-            {"text": "They are comparing with the wrong thing: a never-smoker "
-                     "gains nothing and takes on the dependence.",
+            {"text": "The comparison is wrong: a never-smoker only gains a "
+                     "dependence.",
              "correct": True},
         ],
         "figure": None,
@@ -1129,20 +1127,19 @@ QUESTIONS = [
         "text": "Heavy drinking and smoking both raise the risk of a stroke, "
                 "by different routes. Which pair of routes is right?",
         "options": [
-            {"text": "Both raise it by scarring the liver, which then fails to "
-                     "clean the blood.", "correct": False,
+            {"text": "Both by scarring the liver, so it cannot clean the "
+                     "blood.", "correct": False,
              "why": "Smoke does not scar the liver, and a scarred liver is not "
                     "how either of them raises stroke risk."},
-            {"text": "Alcohol by damaging the brain directly; smoke by "
-                     "removing oxygen from the brain.", "correct": False,
+            {"text": "Alcohol by damaging the brain tissue directly; smoke by "
+                     "removing the oxygen that the brain needs.", "correct": False,
              "why": "Both of those are real harms, but neither is the route to "
                     "a stroke. Raised blood pressure and clots forming more "
                     "readily are."},
-            {"text": "Alcohol through raised blood pressure among its "
-                     "whole-body risks; smoke through narrowed vessels and "
-                     "clots.", "correct": True},
+            {"text": "Alcohol by raised blood pressure; smoke by narrowed "
+                     "vessels and clots.", "correct": True},
             {"text": "Alcohol through dehydration, and smoke through the tar "
-                     "that reaches the blood.", "correct": False,
+                     "that it carries into the blood.", "correct": False,
              "why": "Dehydration passes with a drink of water, and tar stays "
                     "in the airways. The stroke risk comes from blood pressure "
                     "and from vessels and clotting."},
@@ -1155,21 +1152,20 @@ QUESTIONS = [
         "text": "Alcohol affects judgement on a single night and also over "
                 "many years. What is the difference between the two?",
         "options": [
-            {"text": "The night's effect passes as the liver clears the "
-                     "alcohol; the years' effect is lost tissue.",
+            {"text": "One passes as the liver clears it; the other is brain "
+                     "tissue lost.",
              "correct": True},
             {"text": "There is no difference — the long-term effect is simply "
                      "many short-term ones.", "correct": False,
              "why": "One passes when the blood is clear. The other is brain "
                     "tissue that has been lost, and it does not return with "
                     "the morning."},
-            {"text": "The night's effect is imagined, and only the long-term "
-                     "one is real damage.", "correct": False,
+            {"text": "Only the long-term effect is real; the night's is not.", "correct": False,
              "why": "Both are real. On the night, signals between nerve cells "
                     "genuinely pass less readily; over years, tissue is "
                     "genuinely lost."},
-            {"text": "The long-term effect appears only after somebody has "
-                     "been told they are unwell.", "correct": False,
+            {"text": "The long-term effect only appears once a doctor has "
+                     "told somebody that they are unwell.", "correct": False,
              "why": "It runs the other way round. Memory and judgement are "
                     "affected long before anyone would call the person "
                     "unwell."},
@@ -1214,16 +1210,16 @@ QUESTIONS = [
              "why": "The liver works steadily whether or not anyone is still "
                     "drinking. The rise comes from alcohol still crossing into "
                     "the blood."},
-            {"text": "Alcohol is still being absorbed from the stomach and "
-                     "gut, so the amount in the blood is still rising.",
+            {"text": "Alcohol is still crossing in from the stomach, so the "
+                     "level rises.",
              "correct": True},
-            {"text": "The alcohol has reached the brain by then, having taken "
-                     "half an hour to travel there.", "correct": False,
+            {"text": "The alcohol has only reached the brain by then, having "
+                     "taken a full half hour to travel there.", "correct": False,
              "why": "The blood goes once round the body in under a minute, so "
                     "the brain was reached long before. What is still "
                     "happening is absorption."},
-            {"text": "The person has become dehydrated, and dehydration is "
-                     "what causes the impairment.", "correct": False,
+            {"text": "The person has become dehydrated, and it is dehydration "
+                     "that causes the impairment.", "correct": False,
              "why": "Dehydration causes the thirst and the headache. The "
                     "impairment is the alcohol acting on the nervous system, "
                     "and more of it is still arriving."},
@@ -1287,23 +1283,23 @@ QUESTIONS = [
         "text": "A medicine can have an amount that is safe to take, yet "
                 "there is no safe number of cigarettes. Why the difference?",
         "options": [
-            {"text": "Because a medicine is tested and tobacco has never been "
-                     "studied properly.", "correct": False,
+            {"text": "Because a medicine is tested and tobacco never really "
+                     "was.", "correct": False,
              "why": "Tobacco is one of the most heavily studied substances "
                     "there is. That is how we know the risk rises from the "
                     "first cigarette."},
             {"text": "Because smoke is taken in through the lungs, and "
-                     "anything inhaled is harmful.", "correct": False,
+                     "anything inhaled must be harmful.", "correct": False,
              "why": "Inhaling is not harmful in itself — air is inhaled all "
                     "day. What matters is that smoke damages tissue with no "
                     "threshold below which it stops."},
-            {"text": "Because cigarettes contain nicotine, and any amount of "
-                     "an addictive drug is dangerous.", "correct": False,
+            {"text": "Because cigarettes contain nicotine, and any amount at "
+                     "all of an addictive drug is dangerous.", "correct": False,
              "why": "Nicotine causes the dependence rather than the tissue "
                     "damage. The reason there is no safe number is that the "
                     "damage from smoke starts at the first one."},
-            {"text": "A medicine has an amount that treats without harming; "
-                     "smoke damages tissue from the first cigarette.",
+            {"text": "A medicine has a safe dose; smoke damages tissue from "
+                     "the first one.",
              "correct": True},
         ],
         "figure": None,
