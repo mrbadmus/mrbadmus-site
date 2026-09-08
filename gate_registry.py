@@ -1297,6 +1297,47 @@ GATES = [
              "half runs as the MRB-326 throwaway admin behind "
              "$MRB_THROWAWAY_PASSWORD. Reads only; no row on TEST is "
              "written."),
+
+    # ── ⊕ MRB-337, 8 Sep 2026 · the student's bell ──────────────────────
+
+    dict(name="student_bell_drive",
+         cmd=["python3", "student_bell_drive.py"],
+         speed="slow",
+         needs="mrbadmus_site/student/class.html",
+         needs_env="MRB_THROWAWAY_PASSWORD",
+         why="MRB-337 — THE BELL ON THE STUDENT PAGES, AND EVERY WAY IT CAN "
+             "BE WRONG WITHOUT LOOKING WRONG. Seven named checks: the badge "
+             "is HIDDEN at nought and the bell still present; one unread "
+             "makes it 1 and the aria-label says so; the panel lists every "
+             "message newest-first with kind and London date; tapping a "
+             "message opens its work AND clears its badge; the class page's "
+             "existing banner still draws, still marks read, and the badge "
+             "MOVES WITH IT — Mide's requirement was a bell that leaves the "
+             "banner alone, and 'both present' and 'both agreeing' are "
+             "different facts; a pupil cannot read another pupil's rows, "
+             "under real RLS; and at 390px there is no sideways scroll and "
+             "the panel is full width. "
+             "⚠️ THE ROUTE IS SERVED BY A PASS-THROUGH PROXY, AND THE FILE "
+             "SAYS SO RATHER THAN FAKING A PASS. It stands up its own port, "
+             "serves the two notification routes from a script it controls, "
+             "and FORWARDS everything else unaltered to the real backend via "
+             "config.js's localhost-only `?api=` override — so the page "
+             "mounts on real data while the bell is fed a known set. That "
+             "proves every FRONTEND claim and does not prove the real route "
+             "returns the right rows for the right pupil; the drive probes "
+             "for the real route and reports the backend checks NOT EXECUTED "
+             "when it is absent, which is why 'green on what ran' is printed "
+             "in that case instead of a clean pass. "
+             "⊕ REGISTERED BY THE MRB-336/337 RECEIPTS LANE, 8 Sep 2026. It "
+             "arrived with the build lanes and was neither a gate nor "
+             "excluded, which is the exact gap `gate_coverage` exists to "
+             "make loud — and it caught it. It belongs in GATES rather than "
+             "EXCLUDED because it ASSERTS: it returns 1 when any check "
+             "fails. It seeds and tears down its own rows on TEST behind "
+             "$MRB_THROWAWAY_PASSWORD, for the reason every other "
+             "env-switched drive here is: a push must not depend on the "
+             "network and must never write to a shared project by "
+             "accident."),
 ]
 
 
@@ -1310,6 +1351,45 @@ GATES = [
 # repo root, so a new script cannot be quietly neither.
 
 EXCLUDED = {
+    # ── ⊕ MRB-336/337 §8, 8 Sep 2026 · the sweep's two instruments ──────
+    #
+    # Both arrived with the MRB-336/337 build lanes and neither was
+    # registered; `gate_coverage` caught them on the receipts pass. They are
+    # EXCLUDED and their sibling `student_bell_drive.py` is REGISTERED, and
+    # the line between them is the registry's own: these two MEASURE and
+    # report, that one ASSERTS and returns 1.
+    "sweep_after_drive.py":
+        "the AFTER pass of the MRB-336/337 student sweep — walks every "
+        "student surface at 390 and 1280, signed in, against TEST, presses "
+        "the bell, and writes docs/mrb336/sweep-after.json. It ALWAYS "
+        "returns 0: it is the measurement half of docs/mrb336/sweep-after.md "
+        "and it PRINTS candidates rather than asserting them, deliberately, "
+        "because `student_controls_drive`'s own rule is that a control which "
+        "reports nothing is often correct — the current view's nav item, an "
+        "already-active filter chip. A judgement a human makes is not a gate. "
+        "⚠️ Worth knowing WHY it exists: `student_controls_drive.py` is "
+        "registered above but could not run on this tree, because it "
+        "defaults to MRB_DRIVE_EMAIL=midebolabadmus@gmail.com — Mide's own "
+        "PRODUCTION account — and no TEST identity is wired into it. This "
+        "file asked its control questions against TEST instead, keeping its "
+        "rule intact: a control whose only effect is a change of scroll "
+        "offset is DEAD, not 'changed'. That is a stand-in for one run, not "
+        "a replacement, and registering it would let a printed candidate "
+        "list masquerade as a green gate.",
+    "sweep_after_regress.py":
+        "the four MRB-336/337 regression questions — hold, carried, "
+        "scheduled, deleted, baseline — each printed as one world state and "
+        "written to docs/mrb336/regress-<phase>.json. Excluded because it "
+        "CANNOT run unattended and asserts nothing: it takes a mandatory "
+        "<phase> argument, and THE CALLER moves the world between phases, "
+        "partly by SQL (the school's hold, and a row's stamped "
+        "`academic_week`) that has no product surface a pupil-side drive can "
+        "reach. It always exits 0. What its output feeds is a human reading "
+        "docs/mrb336/, and the standing property behind the 'carried' phase "
+        "— a released row whose academic_week is not the current week must "
+        "still reach the bench — is asserted by the registered drives above, "
+        "not here.",
+
     # ── generators · they WRITE the site, by design ─────────────────────
     "mrb331_fixture.py":
         "the throwaway world MRB-331's drive runs in — it seeds and it tears "
