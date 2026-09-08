@@ -2489,6 +2489,27 @@ SET_ATTR = {
         249: {"data-port-region": "leaderboard"},
         260: {"data-bench-surface": "board"},
         266: {"data-bench-avatar": "1"},
+        # ⊕ MRB-337, 8 Sep 2026 — A NAMED HOST FOR THE BELL.
+        #
+        # 18 is the header's right-hand cluster —
+        # `margin-left:auto;display:flex;align-items:center` — holding the
+        # key chip (20) and the account button (21). Mide asked for the bell
+        # "in the header", and this is the header's controls.
+        #
+        # ⚠️ NAMED RATHER THAN FOUND. `shared/student-bell.js` could have
+        # walked `#mrb-student header` looking for the child with
+        # `margin-left:auto`, and that is exactly the shape of the handler
+        # MRB-330 deleted for failing silently when the markup moved:
+        # `SET_ATTR` STOPS THE BUILD when node 18 is not there, which is the
+        # difference between a bell that is missing loudly and one that is
+        # missing quietly.
+        #
+        # ⚠️ NOT `data-port-region`. That name is Design's own marker and is
+        # how the behaviour gate's AMENDED_ADDITIONS machinery finds a region
+        # (see node 55 above); Design marked no region here, so borrowing the
+        # spelling would put a region into that machinery that Design never
+        # drew. Its own name, like `data-lessons-panel` and `data-card-fit`.
+        18:  {"data-port-bell-host": "1"},
     },
     # The assignment page has no bench, no spine and no leaderboard.
     #
@@ -2556,6 +2577,18 @@ SET_ATTR = {
     "assignment": {
         111: {"data-q-eyebrow": "1"},
         293: {"data-bench-surface": "scorecard"},
+        # ⊕ MRB-337, 8 Sep 2026 — the assignment header's own bell host.
+        #
+        # 25 is the `<span style="margin-left:auto;…">` holding the LATE chip,
+        # the saved tick and the clock. The bell goes in FIRST, so Design's
+        # own three keep their order and the clock stays where she drew it,
+        # hard against the right edge.
+        #
+        # Same node NAME as the class view deliberately: one selector in
+        # `shared/student-bell.js` reaches both headers, so a bell that stops
+        # appearing stops appearing on both at once rather than on one
+        # quietly.
+        25:  {"data-port-bell-host": "1"},
     },
 }
 

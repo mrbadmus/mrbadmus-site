@@ -9,10 +9,18 @@
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
   <link rel="stylesheet" href="/shared/nav.css?v=d1f3d76a"/>
+  <!-- MRB-337 — the student's messages. config.js first (it is the
+       environment switcher shared/student-bell.js reads for the backend URL
+       and the session key; absent, the bell falls back to production, which
+       is what this page already hardcodes). The bell attaches itself to
+       .nav-cluster and does nothing at all without a signed-in session, so a
+       logged-out visitor to this public page sees no change. -->
+  <script src="/shared/config.js?v=d1fecb43"></script>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
   <script src="/shared/nav.js?v=f23df349" defer></script>
   <script src="/shared/class-entry.js?v=dc8db888" defer></script>
+  <script src="/shared/student-bell.js?v=2ab1b713" defer></script>
   <style>
     /* ═══ revision.html — consumes tokens only, no palette literals. Matches
        the redesigned generator pages (light editorial). ═══ */

@@ -3728,6 +3728,84 @@
        markup moves again. */
   }
 
+  /* ⊕ MRB-337, 8 Sep 2026 — WIRING THE BELL TO THIS PAGE.
+
+     Three jobs, and each one is here rather than in the bell so that
+     shared/student-bell.js stays a component the KS4 chrome pages can load
+     with one <script> tag and no page-specific JavaScript.
+
+     1. IT MOUNTS INTO THE HEADER, AND IT IS RE-INSERTED AFTER EVERY REDRAW.
+        `draw()` in shared/student-runtime.js empties `#mrb-student` and
+        rebuilds the whole template on every `setState`, so a button put into
+        the header once is gone the first time the child presses anything —
+        which is precisely the defect MRB-330 found in this file's own
+        reminder banner, where the sentence was correct, the gate was green,
+        and none of it reached the child. `__MRB_AFTER_DRAW__` is the answer
+        that already works here, and `attach()` is idempotent.
+
+        ⚠️ THE BUTTON IS REBUILT; THE COUNT IS NOT. The unread tally lives in
+        the bell's own module state, so a fresh button paints the number the
+        destroyed one had. And the PANEL is never in the host at all — it is a
+        child of `document.body`, the way shared/set-work.js keeps the
+        teacher's sheet out of the compiled runtime — so an open panel and its
+        scroll position survive a redraw that the button does not.
+
+     2. IT HANDS OVER A REAL TOKEN. The guard's client refreshes the session;
+        the bell's own fallback reads the stored one. On the page where a
+        client exists there is no reason to use the weaker path.
+
+     3. IT CLOSES THE BADGE/BANNER LOOP. `markRemindersRead` already tells the
+        bell when the banner is read. This is the return leg: when the bell
+        has read every unread reminder, the banner retires. Guarded on
+        `loaded`, which matters — a bell whose route is not answering has an
+        EMPTY item list, and "no unread reminders" read off an empty list that
+        was never filled would take a banner away that is telling the truth. */
+  function wireBell(sb, page, data) {
+    var bell = window.MrBadmusBell;
+    if (!bell) { return; }
+
+    bell.mount({
+      host: '[data-port-bell-host]',
+      place: "first",
+      tone: "studio",
+      token: function () {
+        return sb.auth.getSession().then(function (r) {
+          return r && r.data && r.data.session
+            ? r.data.session.access_token : null;
+        }, function () { return null; });
+      }
+    });
+
+    window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
+    window.__MRB_AFTER_DRAW__.push(function () {
+      try { bell.attach(); } catch (e) {}
+    });
+
+    if (page !== "class" || !data || !data.hasReminder) { return; }
+    bell.on(function (n, items, loaded) {
+      if (!loaded) { return; }
+      var stillAsking = items.some(function (it) {
+        return !it.read && it.kind === "reminder";
+      });
+      if (!stillAsking) { retireReminder(); }
+    });
+  }
+
+  /* ⊕ MRB-337 — the OTHER half of the badge/banner join (see
+     `markRemindersRead`). Called when the BELL has read every unread reminder
+     — the child opened the message from the panel instead of from the banner
+     — so the banner must not go on asking for something already done.
+
+     `reminderDismissed` rather than a removed node, for the reason the
+     Dismiss handler gives: this banner is redrawn after every render pass, so
+     taking the element away would last until the next one. The flag is what
+     makes it stay gone. */
+  function retireReminder() {
+    reminderDismissed = true;
+    var bar = document.querySelector("[data-mrb-reminder]");
+    if (bar) { bar.remove(); }
+  }
+
   /* ⊕ MRB-330, 6 Sep 2026 — OPENING THE WORK COUNTS AS READING THE REMINDER.
 
      The rule is the one the removed class-page handler stated and never
@@ -3767,6 +3845,27 @@
      exception on a page showing a child's work. */
   function markRemindersRead(sb, ids) {
     if (!sb || !ids || !ids.length) { return; }
+    /* ⊕ MRB-337 — THE BADGE MOVES WITH THE BANNER, and this is one half of
+       how they stay one fact rather than two.
+
+       The bell holds the only tally of "unread" there is (`state.items` in
+       shared/student-bell.js); the banner holds none. So the moment this page
+       marks reminders read — Dismiss on the class page, or arriving on the
+       assignment page at all — the same ids are handed to the bell and the
+       badge drops. It is told LOCALLY, not asked to refetch: the write below
+       is the authority, the bell is already looking at the same rows, and a
+       second round trip to learn a fact this line has just decided would put
+       a visible lag between pressing Dismiss and the number changing.
+
+       The other half is the `change` listener in run(), which takes the
+       banner away when the bell is the one that read the reminder.
+
+       Optional, and silent when absent: the bell is injected after the mount
+       and may not have arrived (or may have failed to load). A banner without
+       a bell behaves exactly as it did before tonight. */
+    try {
+      if (window.MrBadmusBell) { window.MrBadmusBell.markReadLocal(ids); }
+    } catch (e) { /* a bell must never break a mark-read */ }
     try {
       sb.from("student_notifications")
         .update({ read_at: new Date().toISOString() })
@@ -3933,6 +4032,32 @@
               } catch (e) {}
             };
             document.head.appendChild(_rumEl);
+          } catch (e) {}
+
+          /* ⊕ MRB-337, 8 Sep 2026 — THE BELL.
+             Mide: "the student page should have a notification like bell icon
+             where they can check all their messages, but I still like that
+             the message appears at the top the way it does currently, and
+             when they have a new unread message, this should reflect on the
+             bell icon."
+
+             ⚠️ INJECTED LIKE `rum.js`, NOT ADDED TO `DEPS`, and the choice is
+             about blast radius rather than speed. `loadDeps()` awaits its two
+             waves and a rejection there is an unrendered class page; a bell
+             that fails to load must cost a bell and nothing else. So it is
+             fetched after the mount, asynchronously, and every failure path in
+             here is silence.
+
+             ⚠️ IT IS STAMPED, and `student-bell.js` is in
+             `build_student_port.STAMPED_DEPS` for it. `/shared/*` is served
+             `immutable, max-age=31536000`: unstamped, the first copy a student
+             receives is the copy they keep for a year. */
+          try {
+            var _bellEl = document.createElement("script");
+            _bellEl.src = stamped("/shared/student-bell.js");
+            _bellEl.async = true;
+            _bellEl.onload = function () { try { wireBell(sb, page, data); } catch (e) {} };
+            document.head.appendChild(_bellEl);
           } catch (e) {}
 
           /* ⊕ MRB-306 WS-3 — the reminder line, drawn AFTER the mount.
