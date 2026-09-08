@@ -2314,24 +2314,39 @@ def check_faff(p, scopes):
     # ⚠️ AND THE THREE v1 SENTENCES MUST BE GONE BY NAME. A general "no long
     # strings" rule would pass a NEW sentence; naming the ones that were there
     # is what makes the check about this ticket.
-    # ⚠️ STRING LITERALS ONLY, NOT THE FILE. Grepping the whole source for
-    # `"Only "` matched a COMMENT — "Only `/scope` and …" — and reported a
-    # sentence the sheet cannot say as a sentence the sheet still says. The
-    # file is mostly prose by volume, and the prose is allowed to discuss the
-    # strings it removed; that is what a superseded note IS. So the literals
-    # are extracted and the phrases tested against those.
-    src = open("shared/set-work.js", encoding="utf-8").read()
-    LITERAL = re.compile(r'"((?:[^"\\]|\\.)*)"' + r"|'((?:[^'\\]|\\.)*)'")
-    literals = [(m.group(1) or m.group(2) or "") for m in LITERAL.finditer(src)]
-    V1_FAFF = ("This work can't be opened until", "Step 1 of 3",
-               "can't be opened", "You need to", "available", "Sorry")
+    # ⚠️ TESTED AGAINST `SAY`, NOT AGAINST THE SOURCE, and both earlier
+    # attempts are why. Grepping the whole FILE matched `"Only "` inside a
+    # comment. Extracting string literals with a regex matched most of the
+    # file, because a hand-rolled JS literal parser treats the apostrophe in
+    # "the teacher's" as an opening quote and swallows everything after it.
+    #
+    # `SAY` is the complete set of strings this module can emit — the file
+    # says so and `faff_sweep (the table)` above has just proved every one of
+    # them is on the allowed list — so it is the right thing to search, it is
+    # read out of the running page rather than parsed, and prose cannot reach
+    # it. `flat` is that list.
+    # ⚠️ NOT the bare word `available`: it is a substring of `Unavailable`,
+    # which IS allowed and IS in SAY, so the phrase list was reporting the
+    # permitted string as the forbidden one. v1's sentence was "Only N
+    # available" and `Only ` catches it on its own.
+    V1_FAFF = ("can't be opened", "Only ", "Step 1 of", "You need to",
+               "Sorry", "Please ")
     v1 = sorted({f for f in V1_FAFF
-                 for lit in literals if f.lower() in lit.lower()})
+                 for lit in flat if f.lower() in lit.lower()})
     record(not v1,
-           "faff_sweep — none of v1's sentences survives as a STRING the "
-           "sheet can say (the prose is free to discuss them)",
-           "%d string literal(s) scanned, none of the six phrases"
-           % len(literals) if not v1 else "still sayable: %s" % v1)
+           "faff_sweep — none of v1's sentences survives as a string the "
+           "sheet can SAY (the prose is free to discuss them)",
+           "%d emittable string(s), none of the seven phrases" % len(flat)
+           if not v1 else "still sayable: %s" % v1)
+
+    # The two that cannot appear in honest prose either, so the source is
+    # still worth one look for them.
+    src = open("shared/set-work.js", encoding="utf-8").read()
+    gone = [f for f in ("This work can't be opened until", "Step 1 of 3")
+            if f in src]
+    record(not gone,
+           "…and v1's two named sentences are nowhere in the file at all",
+           "neither of them" if not gone else "present: %s" % gone)
 
     # ── the render sweep, on all three steps ──────────────────────────
     seen, unknown = set(), []
@@ -3323,17 +3338,61 @@ def check_classes_screen_open(p, base):
                       settle=6.0):
         return record(False, "the classes screen loads with the sheet module")
 
-    pressed = p.eval(r"""(function(){
-      var bs = document.querySelectorAll('button, a');
+    # ⚠️ THERE ARE TWO "SET WORK" BUTTONS ON THIS SCREEN AND THEY MEAN
+    # DIFFERENT THINGS. The one on a CLASS CARD carries that card's id and is
+    # SUPPOSED to preselect it — the teacher has already said which class. The
+    # one in the header carries none, because the header is not about a class.
+    # Pressing the first match in document order found a card, saw its class
+    # correctly preselected, and reported the header's behaviour as broken.
+    #
+    # So every visible one is pressed in turn and identified by what the sheet
+    # says it opened on (`data-sw-class`), which is the only thing that tells
+    # them apart from out here.
+    opened = p.eval(r"""(async function(){
+      var bs = document.querySelectorAll('button, a'), out = [];
       for (var i = 0; i < bs.length; i++) {
-        if ((bs[i].textContent || '').trim() === 'Set work'
-            && bs[i].offsetParent !== null) { bs[i].click(); return true; }
+        var b = bs[i];
+        if ((b.textContent || '').trim() !== 'Set work') { continue; }
+        if (b.offsetParent === null) { continue; }
+        b.click();
+        await new Promise(function (r) { setTimeout(r, 400); });
+        var o = document.querySelector('[data-sw="overlay"]');
+        out.push({i: i, cls: o ? (o.getAttribute('data-sw-class') || '') : null});
+        if (window.MRBSetWork) { window.MRBSetWork.close(); }
+        await new Promise(function (r) { setTimeout(r, 150); });
       }
-      return false;})()""")
-    if not (pressed and wait_for(p, "document.querySelectorAll("
-                                    "'[data-sw=\"class\"]').length > 0")):
-        return record(False, "the classes screen's Set work opens the sheet",
-                      "pressed %s" % pressed)
+      return out;})()""")
+    # ⚠️ EVERY REACHABLE "Set work" ON THIS SCREEN IS A CLASS CARD'S, and a
+    # card's SHOULD preselect: the teacher has already said which class by
+    # tapping that card. Measured — three cards, each opening on its own id —
+    # so the card behaviour is asserted here and the no-class case is driven
+    # through the page's own seam below.
+    cards = [o for o in (opened or []) if o["cls"]]
+    record(bool(cards) and all(o["cls"] for o in (opened or [])),
+           "every Set work control reachable on the classes screen is a class "
+           "CARD's, and each opens on its own class — a card has already been "
+           "chosen, so preselecting it is right",
+           "%d control(s): %s" % (len(opened or []),
+                                  [o["cls"][-3:] for o in (opened or [])]))
+
+    # ⚠️ THE NO-CLASS CASE IS DRIVEN THROUGH `MRB_SET_WORK_OPEN('')`, WHICH IS
+    # THE PAGE'S OWN SEAM AND NOT A STUB. It is exactly what node 165 — the
+    # header control — is bound to (`openSetWork: () => MRB_SET_WORK_OPEN(
+    # s.classId || '')`), and MRB-335 changed it from `return false` to
+    # passing the empty string through. That control is present in the
+    # compiled page and was NOT reachable in this sweep at 390px; whether it
+    # should be is a question for the site lane. What is measurable from here
+    # is the behaviour it invokes, and that is what this drives.
+    if p.eval("typeof MRB_SET_WORK_OPEN === 'function'"):
+        record(p.eval("MRB_SET_WORK_OPEN('')") is True,
+               "MRB_SET_WORK_OPEN('') opens the sheet rather than refusing — "
+               "an empty class is the classes screen, not an error (it used "
+               "to `return false`, which made that control dead)")
+    else:
+        return record(False, "the page exposes MRB_SET_WORK_OPEN")
+    if not wait_for(p, "document.querySelectorAll('[data-sw=\"class\"]')"
+                       ".length > 0"):
+        return record(False, "the sheet opened on no class lists the classes")
 
     state = p.eval("""(function(){
       var rs = document.querySelectorAll('[data-sw="class"]'), on = [];
