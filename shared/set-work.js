@@ -661,6 +661,13 @@
     var classList = el("div", "sw-tree");
     classList.setAttribute("data-sw", "class-list");
     pClasses.appendChild(classList);
+    /* ⊕ MRB-335 — the scope's failure, on the step the teacher is standing
+       on. The tree carries the same word one step further in; a teacher who
+       cannot get past step 0 was never going to read that one. */
+    var classNote = el("div", "sw-row-tag", SAY.unavailable);
+    classNote.setAttribute("data-sw", "class-note");
+    classNote.hidden = true;
+    pClasses.appendChild(classNote);
 
     /* ── panel 1: Topic ── */
     var pTopic = el("div", "sw-panel");
@@ -749,7 +756,7 @@
     els = {
       overlay: overlay, sheet: sheet, head: head, back: back, step: step,
       primary: primary, body: body,
-      pClasses: pClasses, classList: classList,
+      pClasses: pClasses, classList: classList, classNote: classNote,
       pTopic: pTopic, tierChips: tierChips,
       subjLabel: subjLabel, subjChips: subjChips,
       paperLabel: paperLabel, paperChips: paperChips, tree: tree,
@@ -1167,6 +1174,10 @@
           S.classId = "";
           S.scope = null;
           S.cohortIds = null;
+          /* Cleared, so the next tap is a real retry rather than a repaint
+             of the last failure. */
+          S.scopeErr = false;
+          els.classNote.hidden = true;
           els.overlay.setAttribute("data-sw-class", "");
           syncClasses();
           syncValidity();
@@ -1176,6 +1187,26 @@
         syncValidity();
       });
     });
+    syncClasses();
+  }
+
+  /* ⊕ MRB-335 — REBUILT ONLY WHEN THE LIST ITSELF CHANGED.
+
+     `/scope` lands AFTER the teacher has tapped a row — that tap is what
+     asked for it — so an unconditional `buildClasses()` in its handler
+     destroys every row including the one under their thumb, and replaces it
+     with a fresh node. That is the replace-the-node-you-are-touching mistake
+     this whole sheet exists to stop (see the header), one step earlier than
+     where it was found the first time.
+
+     The pool almost never changes: the page's `SET_WORK_CLASSES` and the
+     cohort are drawn from the same classes, so the ordinary case is a patch
+     and the rebuild is reserved for a list that is genuinely different. */
+  function refreshClasses() {
+    var want = classPoolNow().map(function (c) { return c.id; }).join(",");
+    var have = els.classRows.map(function (r) { return r.id; }).join(",");
+    if (want !== have) { buildClasses(); return; }
+    S.classPool = classPoolNow();
     syncClasses();
   }
 
@@ -1328,6 +1359,7 @@
 
   function loadScope() {
     S.scopeErr = false;
+    els.classNote.hidden = true;
     var mySession = session, mySeq = ++fetchSeq;
     return apiGet("/api/teacher/set-work/scope?class_id=" +
                   encodeURIComponent(S.classId)).then(function (r) {
@@ -1350,7 +1382,7 @@
       if (S.classId && S.classes.indexOf(S.classId) < 0) {
         S.classes.push(S.classId);
       }
-      buildClasses();
+      refreshClasses();
       buildTierChips();
       buildSubjectChips();
       buildPaperChips();
@@ -1362,6 +1394,7 @@
       if (!S || mySession !== session || mySeq !== fetchSeq) { return false; }
       S.scope = null;
       S.scopeErr = true;
+      els.classNote.hidden = false;
       els.tree.textContent = "";
       els.treeRows = [];
       var tag = el("div", "sw-row-tag", SAY.unavailable);
@@ -1659,11 +1692,35 @@
   }
 
   function stepValid() {
-    /* Nothing is valid before /scope answers. Without this the primary is
-       live on step 0 the instant the sheet opens — the opening class is
-       preselected — and a fast press lands on an empty topic list. */
+    /* ⊕ MRB-335 — STEP 0 IS VALID ONCE `/scope` HAS RESOLVED, WHICH IS NOT
+       THE SAME AS ONCE IT HAS SUCCEEDED.
+
+       ⛔ It used to read `if (!S.scope) return false` for every step, and on
+       the classes screen that was a permanent dead end. There is no anchor
+       until the first tap, so `/scope` is not requested until the first tap;
+       if that request then FAILS — an expired session, a moment offline, a
+       500 — `S.scope` stays null for the life of the sheet. The teacher is
+       left looking at a class they have ticked and a Next that will not
+       light, and nothing on the screen says why, because the failure is
+       announced in the TREE, on the step they cannot reach.
+
+       Measured on `teacher_fixtures/classes-fixture.html`, which has no
+       `MrBadmusTeacherGuard` at all, so `token()` rejects before `fetch` is
+       ever called: `{sel:1, pri:true, step:"0"}` with zero network requests
+       — the anchor set, the tree already saying "Unavailable", and no way
+       forward or back to it.
+
+       Resolved-either-way is the honest gate. On the success path it is
+       exactly "once the scope has loaded". On the failure path Next goes
+       forward to the topic step, where the failure is ALREADY stated and
+       where Next is already refused for want of a topic — a legible dead end
+       instead of an illegible one. The class panel says it too now; see
+       `loadScope`. */
+    if (S.step === 0) {
+      if (!S.classes.length) { return false; }
+      return !!(S.scope || S.scopeErr);
+    }
     if (!S.scope) { return false; }
-    if (S.step === 0) { return S.classes.length > 0; }
     if (S.step === 1) {
       if (!S.scopeKind || !S.scopeRef) { return false; }
       return scopeAvailable() > 0;
@@ -1931,6 +1988,7 @@
     els.treeRows = [];
     els.classList.textContent = "";
     els.classRows = [];
+    els.classNote.hidden = true;
     els.hold.hidden = true;
     /* Drawn from the page before anything is asked for, so step 0 is never
        an empty panel with a dead Next. `/scope` refines it when it lands. */
