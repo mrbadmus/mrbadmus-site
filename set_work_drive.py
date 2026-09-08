@@ -369,12 +369,16 @@ def check_scope(t_teacher):
     # seps class in the world, "sees its OWN subject" and "sees the FIRST
     # subject" are the same answer, and a route that had hardcoded biology
     # would pass. 10c/Ph1 exists so the two claims come apart.
+    # ⊕ MRB-336, 8 Sep 2026 — `and body.get("papers") is None` USED TO BE
+    # PART OF THIS CONJUNCTION, and it is the only clause that changed. It
+    # said a separate-sciences class is offered no paper chips. See the
+    # dedicated papers check below for why that was wrong; the SUBJECT half of
+    # this assertion is untouched and is what the check is actually named for.
     for label, key, want in (("10a/Bi1", "bi", "biology"),
                              ("10c/Ph1", "ph", "physics")):
         body = out[key]
         subs = {t.get("subject") for t in body.get("tree") or []}
         record(subs == {want} and body.get("subjects") == [want]
-               and body.get("papers") is None
                and (body.get("class") or {}).get("subject") == want,
                "seps_sees_own_subject_only — %s sees %s and nothing else"
                % (label, want),
@@ -387,6 +391,81 @@ def check_scope(t_teacher):
            ["biology", "chemistry", "physics"] and comb.get("papers") == [1, 2],
            "the combined class gets all three subjects and both paper chips",
            "subjects %s papers %s" % (comb.get("subjects"), comb.get("papers")))
+
+    # ── ⊕ MRB-336 · PAPERS ARE A KEY-STAGE FACT, NOT A PATHWAY FACT ───────
+    #
+    # ⛔ THE OLD ASSERTION LIVED IN THE LOOP ABOVE AND READ
+    # `body.get("papers") is None` FOR BOTH SEPARATE-SCIENCE CLASSES, under
+    # ks4_pool_drive's comment "papers are a combined-only chip". It passed
+    # every run, and what it was pinning was a defect: AQA examines Triple
+    # Biology on Biology Paper 1 and Biology Paper 2, exactly as it examines
+    # Trilogy on two papers per science. So the cohort whose teachers most
+    # often revise BY PAPER — "everything on paper 1 before the mock" — was
+    # the one cohort the sheet would not let filter by it.
+    #
+    # It is superseded here rather than deleted so that a reader meeting
+    # `papers == [1, 2]` on a triple class cannot mistake it for the drift.
+    #
+    # ⚠️ THE OFFER AND THE TREE ARE TWO FACTS AND THIS SPLITS THEM.
+    # `treeForClass` has stamped `paper` on every KS4 topic from `KS4_PAPER`
+    # since it was written, with no pathway branch near it — so the triple
+    # tree ALREADY carried the right paper on every topic and only the OFFER
+    # (`papersFor`) withheld the chips. Asserting only the class-level list
+    # would therefore pass on a build where the per-topic stamp had been lost,
+    # and asserting only the stamp would pass on today's defect. Both, or
+    # neither is a real claim.
+    record(out["bi"].get("papers") == [1, 2]
+           and out["ph"].get("papers") == [1, 2],
+           "⊕ MRB-336: papers_offered_on_triple — a separate-sciences class "
+           "is offered BOTH paper chips, because AQA examines it on two "
+           "papers per science",
+           "10a/Bi1 %s · 10c/Ph1 %s"
+           % (out["bi"].get("papers"), out["ph"].get("papers")))
+    record(out["ks3"].get("papers") is None,
+           "…and KS3 still has none, so the change is keyed on the KEY STAGE "
+           "and not on 'everybody gets papers now'",
+           "8a/Sc1 papers %r" % out["ks3"].get("papers"))
+
+    # ── ⊕ MRB-336 · `space`, THE ONE TOPIC THAT PROVES BOTH DIRECTIONS ────
+    #
+    # All five of `space`'s subtopics are `triple_only`, which makes it the
+    # only topic in the curriculum where the two halves of this change pull
+    # opposite ways at once:
+    #
+    #   · on TRIPLE PHYSICS it is in the tree and must carry a paper 2 chip —
+    #     it IS examined on physics paper 2, and until today a Triple Physics
+    #     teacher revising by paper could not reach it by paper at all;
+    #   · on COMBINED it is not in the tree, so there is nothing there to
+    #     carry a chip (C7 above asserts the absence).
+    #
+    # Neither is a special case in `papersFor`; both fall out of the tree it
+    # is stamped onto. That is exactly why they need asserting separately —
+    # a one-line change cannot tell them apart, and a regression in either
+    # direction would leave the other passing.
+    ph_topics = {t["id"]: t for t in out["ph"].get("tree") or []}
+    sp = ph_topics.get("space")
+    record(sp is not None and sp.get("paper") == 2,
+           "⊕ MRB-336: space_is_paper_two_on_triple — the topic a combined "
+           "class cannot see carries paper 2 on the triple physics tree",
+           "paper %r, %d subtopic(s)"
+           % ((sp or {}).get("paper"), len((sp or {}).get("children") or []))
+           if sp else "⚠️ `space` is absent from the triple physics tree")
+
+    # …and the rail PARTITIONS the tree rather than sampling it. One topic
+    # with `paper: null` is a topic that disappears from both filters, and a
+    # teacher who tapped Paper 1 and then Paper 2 would never see it.
+    unpapered = []
+    for label, key in (("combined", "comb"), ("triple bio", "bi"),
+                       ("triple phys", "ph")):
+        for t in out[key].get("tree") or []:
+            if t.get("paper") not in (1, 2):
+                unpapered.append("%s/%s=%r" % (label, t.get("id"), t.get("paper")))
+    record(not unpapered,
+           "⊕ MRB-336: paper_partitions_the_tree — every KS4 topic on every "
+           "cohort's tree carries paper 1 or paper 2",
+           "%d topic(s) across three cohorts, all papered"
+           % sum(len(out[k].get("tree") or []) for k in ("comb", "bi", "ph"))
+           if not unpapered else "UNPAPERED: %s" % unpapered[:6])
 
     # ── C6 · combined_no_triple_only ──────────────────────────────────
     leaked = [ref for kind, ref, _n, _t, _s, _p, _c in flatten(comb.get("tree") or [])
@@ -736,11 +815,21 @@ def check_write(t_teacher, scopes):
     st, made = post_set(t_teacher, class_ids=[FX.C_KS4_COMB], tier="foundation",
                         scope_ref=topic["id"], question_ids=ids,
                         title=TITLE + " · one class")
+    # ⊕ MRB-336, 8 Sep 2026 — `and made.get("clamped") is False` WAS THE THIRD
+    # CONJUNCT HERE. The field is gone from the response, so the old clause
+    # would now compare `None is False` and fail — but the more useful reading
+    # is that it has nothing left to say: with no clamp anywhere in the route,
+    # "was this set clamped" is not a question the answer needs to carry.
+    # ⚠️ `is None` is asserted rather than merely dropped. A `clamped` key
+    # reappearing would mean a clamp had come back, and a silently-tolerated
+    # extra key is how a removed behaviour returns unnoticed.
     ok = record(st == 200 and len(made.get("assignment_ids") or []) == 1
-                and made.get("clamped") is False,
-                "a teacher sets work on one class",
-                "status %s ids %s clamped %s"
-                % (st, made.get("assignment_ids"), made.get("clamped")))
+                and made.get("clamped") is None,
+                "a teacher sets work on one class, and the answer carries no "
+                "`clamped` field because nothing clamps any more",
+                "status %s ids %s clamped %r keys %s"
+                % (st, made.get("assignment_ids"), made.get("clamped"),
+                   sorted(made.keys()) if isinstance(made, dict) else made))
     if not ok:
         return None
     aid = made["assignment_ids"][0]
@@ -997,13 +1086,74 @@ def week_titles(token, class_id):
 # 5 · THE GO-LIVE HOLD, AND THE CHILD ON THE OTHER SIDE OF IT
 # ════════════════════════════════════════════════════════════════════════
 def check_hold(t_teacher, t_pupil_b):
-    print("\n5 · work set before the school's go-live date")
+    """⊕ MRB-336, 8 Sep 2026 — MIDE'S RULING, AND BOTH HALVES OF IT AT ONCE.
+
+    ⛔ THIS CHECK USED TO ASSERT THE DEFECT. Three of its assertions are
+    reversed here, and they are named so a reader can find what they used to
+    say (the whole prior body is at `docs/mrb336/` in the report, and in git
+    at 44dadd96c):
+
+      1. `record(made.get("clamped") is True, "hold_clamp_single_line — the
+         answer says `clamped`, which is the ONLY thing that makes the sheet
+         show its one line", …)`
+      2. `record(st == 400 and early.get("error") == "bad_due_at", "a due date
+         falling before the hold releases the work is refused", …)`
+      3. `record(TITLE + " · held" not in titles, "student_404_before_release
+         — the child cannot see it in the week", …)` and its companion
+         asserting a 404 on the id.
+
+    Every one of those was a correct description of the code, and the code was
+    wrong. `schools.assignments_open_from` was written as Mide's dial for
+    delaying the day a school starts COMPOSING; it had grown a second job,
+    silently, by being read inside the teacher's own write path. A teacher who
+    set work in the week before term and chose Release Now had the release
+    shoved to the school's open date, which also re-filed the row under a
+    LATER academic week — so the work was invisible twice over, and the sheet
+    told them it had been set. That is what Mide's three rows on production
+    were, and his sentence is the definition rather than an exception to it:
+
+        "the point of setting work is so that students can do assignments
+         even though the automatic assignments hasn't gone live yet"
+
+    ⚠️ THE RULING HAS TWO HALVES AND ONLY ONE OF THEM IS THE CHANGE. The hold
+    keeps its ENTIRE meaning for automatic composition. A gate that proved
+    only the new half would pass just as happily on a build that had deleted
+    the hold outright, which would silently start composing for every school
+    Mide is holding back — including on the morning of a live dry run.
+
+    ⚠️ SO BOTH HALVES ARE PROVED IN ONE SCENARIO, FROM ONE RESPONSE, ON ONE
+    CLASS, AT ONE INSTANT. `/api/class/current-assignment` answers both
+    questions at once: `reason` and `assignment` describe the AUTOMATIC
+    producer, and `week_work` lists what the child can actually open. Read
+    separately — a held school here and a released row there — the two could
+    disagree about the clock, the week, or the class and still both be green.
+    Read from one payload they cannot.
+
+    The seam that makes that possible is `.eq('source', 'auto')` on the
+    "already composed?" branch (server.js:1636): a teacher's row never
+    satisfies it, so the hold branch at 1d is genuinely reached even on a
+    class that has teacher-set work sitting on it.
+
+    ⚠️ AND THIS VERSION NEVER LIFTS THE HOLD. The old one PATCHed
+    `schools.assignments_open_from` into the past to show the child the work,
+    then PATCHed it back. That was the only way to make the point when release
+    was clamped, and it left a window in which a crash between the two writes
+    would leave the fixture's held school permanently open — every later run
+    of this drive would then pass while testing nothing. Nothing here writes
+    to `schools` at all.
+    """
+    print("\n5 · the school's go-live hold, and the child on the other side")
     st, scope = scope_of(t_teacher, FX.C_KS3_HELD)
     open_from = ((scope or {}).get("class") or {}).get("open_from")
     record(bool(open_from),
-           "hold_clamp_single_line (data half) — /scope tells the sheet the "
-           "school's open date, which is what makes the one factual line "
-           "renderable without a second request", "open_from %s" % open_from)
+           "/scope still reports the school's open date on the class — it is "
+           "the fact the AUTOMATIC producer acts on, and what "
+           "teacher/admin.html renders",
+           "open_from %s" % open_from)
+    # ⚠️ NOTHING IN THE SHEET READS IT ANY MORE, and that is asserted on the
+    # other side rather than here: `hold_line_gone` in `check_toast_and_swap`
+    # proves the overlay carries no hold node and none of the words. A field
+    # that is served and unread is only safe while something says so.
 
     got = pick_topic(scope, 1, "medium")
     if not got:
@@ -1011,109 +1161,151 @@ def check_hold(t_teacher, t_pupil_b):
     _n, unit, _s = got
     st, prev = preview(t_teacher, FX.C_KS3_HELD, "medium", "topic", unit["id"], 3)
     ids = [q["id"] for q in (prev.get("picked") or [])]
+    if len(ids) < 3:
+        return record(False, "three questions to set on the held class",
+                      "got %d" % len(ids))
 
-    # ⚠️ FIRST, THE REFUSAL THAT LOOKS LIKE A BUG AND IS NOT. The hold moves
-    # RELEASE forward. A due date before the work even appears would give a
-    # child an assignment already overdue on the day it arrives, so it is
-    # refused — and the fixture's hold is eight days out, so an ordinary +7 due
-    # date is legitimately refused here. MRB-331's first run read this as a
-    # defect; it was the code being right.
-    st, early = post_set(t_teacher, class_ids=[FX.C_KS3_HELD], tier="medium",
-                         scope_ref=unit["id"], question_ids=ids,
-                         title=TITLE + " · due before release",
-                         due_at=DUE.isoformat())
-    record(st == 400 and (early or {}).get("error") == "bad_due_at",
-           "a due date falling before the hold releases the work is refused",
-           "status %s %s" % (st, json.dumps(early)[:160]))
-
+    # ── (1) THE REFUSAL THAT USED TO FIRE, AND MUST NOT ───────────────
+    #
+    # ⊕ REVERSED. `DUE` is seven days out and the fixture's hold is EIGHT, so
+    # this is precisely the request the old code answered 400 `bad_due_at` on:
+    # the server moved release to the open date, the due date then fell before
+    # it, and the work would have arrived already overdue. With no clamp there
+    # is no such conflict — the teacher's release is now, the due date is a
+    # week away, and the two are in the order the teacher chose them in.
+    #
+    # ⚠️ THE ASSERTION IS ON THE STATUS *AND* ON THE ERROR BEING ABSENT. A 200
+    # alone would also be returned by a route that had stopped validating
+    # `due_at` at all, and the refusal that remains (below) is what keeps that
+    # honest.
     st, made = post_set(t_teacher, class_ids=[FX.C_KS3_HELD], tier="medium",
                         scope_ref=unit["id"], question_ids=ids,
-                        title=TITLE + " · held", due_at=DUE_HELD.isoformat())
+                        title=TITLE + " · released into the hold",
+                        due_at=DUE.isoformat())
     if not record(st == 200 and made.get("assignment_ids"),
-                  "the teacher CAN set work before the school opens",
-                  "status %s %s" % (st, json.dumps(made)[:160])):
+                  "hold_does_not_refuse_the_due_date — Release Now with a due "
+                  "date INSIDE the school's hold window is accepted; it used "
+                  "to be 400 `bad_due_at`, because the clamp had moved release "
+                  "past it",
+                  "status %s %s" % (st, json.dumps(made)[:200])):
         return False
     aid = made["assignment_ids"][0]
-    record(made.get("clamped") is True,
-           "hold_clamp_single_line — the answer says `clamped`, which is the "
-           "ONLY thing that makes the sheet show its one line",
-           "clamped %s release_at %s" % (made.get("clamped"),
-                                         made.get("release_at")))
+    record(made.get("clamped") is None,
+           "…and the answer carries no `clamped` field, on the one class in "
+           "the world where it used to be True",
+           "keys %s" % (sorted(made.keys()) if isinstance(made, dict) else made))
 
-    # ⚠️ THE CLAMPED INSTANT IS STORED, NOT RE-APPLIED AT READ TIME. A school
-    # that lifted its hold in October would otherwise release September's held
-    # work to everybody at once, and one that moved the hold forward would
-    # retract work children had already seen. So the value on the ROW is the
-    # claim, and it is read back rather than taken from the POST's own report.
+    # ── (2) `release_at` IS STORED EXACTLY AS ASKED ───────────────────
     #
-    # ⚠️ READ THROUGH THE ROUTE, NOT THROUGH PostgREST, AND THE REASON IS A
-    # PROPERTY OF THE FIXTURE RATHER THAN A DEFECT. This teacher's profile is
-    # in the OPEN school and this class is in the HELD one — the fixture gives
-    # her both so that one sign-in can drive both sides of the hold — and
-    # `assignments`' SELECT policy is sealed on `school_id =
-    # auth_user_school_id()`. So PostgREST correctly returns her an empty list
-    # here, and asserting on it would be asserting on RLS working. Measured:
-    # the same query against her own school returns rows. The route is her real
-    # read path and it answers.
+    # ⊕ REVERSED. This used to assert the stored instant was LONDON MIDNIGHT
+    # ON THE SCHOOL'S OPEN DATE — computed here in `Europe/London` precisely
+    # because comparing the date strings read the correct clamp as an
+    # off-by-one-day bug. The arithmetic was right and the behaviour it
+    # measured is gone.
+    #
+    # ⚠️ READ OFF THE ROW THROUGH THE ROUTE, NOT OUT OF THE POST'S OWN REPORT.
+    # A route that answered `release_at: <now>` and stored something else
+    # would pass a check on its own payload. And read through the route rather
+    # than PostgREST for a reason that is a property of the fixture: this
+    # teacher's profile is in the OPEN school while this class is in the HELD
+    # one — deliberately, so one sign-in drives both sides — and `assignments`'
+    # SELECT policy is sealed on `school_id = auth_user_school_id()`, so
+    # PostgREST correctly hands her an empty list here.
     st, back_h = call("GET", "/api/class/current-assignment?class_id=%s"
                       "&assignment_id=%s" % (FX.C_KS3_HELD, aid), t_teacher)
     stored = ((back_h or {}).get("assignment") or {}).get("release_at")
+    got_at = (datetime.fromisoformat(str(stored).replace("Z", "+00:00"))
+              if stored else None)
+    # Release Now sends `release_at: null` and the server stamps its own
+    # `now`, so this is a window rather than an equality. Five minutes is the
+    # route's own past-grace and is wide enough for a slow sign-in and narrow
+    # enough that a clamp to a date EIGHT DAYS away could never fit inside it.
+    drift = abs((got_at - NOW).total_seconds()) if got_at else None
+    record(got_at is not None and drift is not None and drift < 300,
+           "release_at_stored_as_asked — Release Now on a held school stores "
+           "an instant that IS now, not the school's open date",
+           "stored %s · %s from the drive's clock"
+           % (stored, ("%.0fs" % drift) if drift is not None else "—"))
 
-    # ⚠️ LONDON MIDNIGHT, NOT THE DATE STRING. `open_from` is a CALENDAR DATE
-    # and `release_at` is an INSTANT, and in September London is an hour ahead
-    # of UTC: midnight on the 15th is `2026-09-14T23:00:00Z`. Comparing the two
-    # as `[:10]` strings reads that correct answer as an off-by-one-day bug —
-    # which is what the first version of this check did, and it is the same
-    # class of mistake `londonMidnightInstant` exists to stop the SERVER
-    # making. So the expected instant is computed here, in London, and the two
-    # are compared as moments.
+    # …and the negative, stated as the thing it used to be. The two are not
+    # the same assertion: a route that stored `now + 3 days` would satisfy
+    # neither, but a route that stored midnight tonight would satisfy the
+    # first at a certain hour and never this one.
     from zoneinfo import ZoneInfo
     y, m, d = (int(x) for x in str(open_from)[:10].split("-"))
-    want = datetime(y, m, d, 0, 0, tzinfo=ZoneInfo("Europe/London")).astimezone(
+    was = datetime(y, m, d, 0, 0, tzinfo=ZoneInfo("Europe/London")).astimezone(
         timezone.utc)
-    got = (datetime.fromisoformat(str(stored).replace("Z", "+00:00"))
-           if stored else None)
-    record(got is not None and got == want,
-           "…and the instant STORED on the row is LONDON MIDNIGHT on the "
-           "school's open date — not 'now', not the teacher's request, and "
-           "not UTC midnight",
-           "stored %s · London midnight on %s is %s"
-           % (stored, open_from, want.isoformat()))
+    record(got_at is not None and got_at != was,
+           "…and specifically NOT London midnight on the school's open date, "
+           "which is exactly what it used to be",
+           "stored %s · the old clamp would have stored %s"
+           % (stored, was.isoformat()))
 
-    # ── D4 · student_404_before_release ───────────────────────────────
+    # ── (3) BOTH HALVES OF THE RULING, FROM ONE PUPIL'S ONE READ ──────
     #
-    # ⚠️ THE CHILD IS THE PROOF, NOT THE PAYLOAD. The route could report a
-    # future release and still hand the questions over.
-    titles = week_titles(t_pupil_b, FX.C_KS3_HELD)
-    record(TITLE + " · held" not in titles,
-           "student_404_before_release — the child cannot see it in the week",
-           "child's week_work: %s" % titles)
+    # ⊕ REVERSED, and this is the assertion Mide's ticket is actually about.
+    # It used to read `student_404_before_release — the child cannot see it in
+    # the week`, with a companion demanding 404 on the id. Both passed. Both
+    # described work a teacher had set, been told was set, and no child could
+    # open.
+    #
+    # ⚠️ ONE REQUEST, TWO CLAIMS, AND THEY ARE ABOUT DIFFERENT THINGS.
+    #   `week_work`             → what the child can open        (must CONTAIN it)
+    #   `reason` + `assignment` → the AUTOMATIC producer          (must be HELD)
+    # Split across two requests these could disagree about the clock, the
+    # teaching week or the class and both still be green.
+    st, seen = call("GET", "/api/class/current-assignment?class_id=" +
+                    FX.C_KS3_HELD, t_pupil_b)
+    titles = [w.get("title") for w in ((seen or {}).get("week_work") or [])]
+    record(st == 200 and (TITLE + " · released into the hold") in titles,
+           "student_sees_teacher_work_during_the_hold — the child in the HELD "
+           "school sees the work IMMEDIATELY, with no clock moved and the "
+           "hold still standing",
+           "status %s · week_work: %s" % (st, titles))
+
+    record((seen or {}).get("reason") == "assignments_not_open_yet"
+           and (seen or {}).get("assignment") is None,
+           "auto_still_held_in_the_same_breath — and in the SAME response the "
+           "AUTOMATIC producer is still refusing to compose for that school",
+           "reason %r · assignment %r"
+           % ((seen or {}).get("reason"),
+              ((seen or {}).get("assignment") or {}).get("id")))
+    record(((seen or {}).get("detail") or {}).get("opens_on") == open_from,
+           "…and it names the same open date /scope reported, so the two "
+           "halves are talking about one hold rather than two",
+           "opens_on %r · open_from %r"
+           % (((seen or {}).get("detail") or {}).get("opens_on"), open_from))
+
+    # ⚠️ AND THE CHILD CAN ACTUALLY OPEN IT, not merely see the title. A route
+    # can list work in a week and still 404 the questions — which is exactly
+    # what the old behaviour did, and listing without opening would be a
+    # crueller version of the same bug.
     st, direct = call("GET", "/api/class/current-assignment?class_id=%s"
                       "&assignment_id=%s" % (FX.C_KS3_HELD, aid), t_pupil_b)
-    record(st == 404,
-           "…and cannot reach it by its id either — 404, not 403, so the "
-           "refusal does not disclose that work exists", "status %s" % st)
+    record(st == 200 and (direct.get("assignment") or {}).get("id") == aid
+           and len(direct.get("questions") or []) == len(ids),
+           "…and can OPEN it by its id, with its questions, while the school "
+           "is still held",
+           "status %s · %d question(s)"
+           % (st, len(direct.get("questions") or [])))
 
-    # ── D4 · student_sees_after_release ───────────────────────────────
+    # ── (4) THE REFUSAL THAT REMAINS, AND WHY IT IS ASSERTED HERE ─────
     #
-    # Nothing about the assignment changes; only the clock does.
-    FX.api("PATCH", "/rest/v1/schools?id=eq." + FX.SCHOOL_HELD,
-           {"assignments_open_from": (FX.date.today() -
-                                      FX.timedelta(days=1)).isoformat()})
-    FX.api("PATCH", "/rest/v1/assignments?id=eq." + aid,
-           {"release_at": (NOW - timedelta(minutes=1)).isoformat()})
-    st, direct2 = call("GET", "/api/class/current-assignment?class_id=%s"
-                       "&assignment_id=%s" % (FX.C_KS3_HELD, aid), t_pupil_b)
-    record(st == 200 and (direct2.get("assignment") or {}).get("id") == aid,
-           "student_sees_after_release — once the release passes, the same "
-           "child CAN reach the same work", "status %s" % st)
-    record(len(direct2.get("questions") or []) == len(ids),
-           "…with its questions, which RLS was hiding a moment ago",
-           "%d question(s)" % len(direct2.get("questions") or []))
-    # Put the hold back, so a re-run of this drive meets the world it expects.
-    FX.api("PATCH", "/rest/v1/schools?id=eq." + FX.SCHOOL_HELD,
-           {"assignments_open_from": (FX.date.today() +
-                                      FX.timedelta(days=8)).isoformat()})
+    # ⚠️ REMOVING THE CLAMP REMOVES THE ONLY REASON `bad_due_at` EVER FIRED IN
+    # PRACTICE, and a validator with nothing left to refuse is a validator
+    # nobody notices losing. Due BEFORE the release the TEACHER typed is still
+    # impossible and still 400s — nothing to do with any school.
+    st, bad = post_set(t_teacher, class_ids=[FX.C_KS3_HELD], tier="medium",
+                       scope_ref=unit["id"], question_ids=ids,
+                       title=TITLE + " · due before its own release",
+                       release_at=(NOW + timedelta(days=7)).isoformat(),
+                       due_at=(NOW + timedelta(days=1)).isoformat())
+    record(st == 400 and (bad or {}).get("error") == "bad_due_at",
+           "due_before_release_still_refused — release next week, due "
+           "tomorrow: 400 `bad_due_at`, so the validator did not leave with "
+           "the clamp",
+           "status %s %s" % (st, json.dumps(bad)[:160]))
+
     return aid
 
 
@@ -1619,10 +1811,103 @@ def check_sheet(b, base, sess, class_ids, shots):
            "seps_sees_own_subject_only (rendered) — 10c/Ph1 gets NO subject "
            "chips at all, and opens on Higher",
            "subject rail hidden %s, tier chip %r" % (hidden, ph_on))
-    papers_hidden = p.eval("(function(){var c=document.querySelector("
-                           "'[data-sw=\"paper-chips\"]');"
-                           "return !!(c && c.hidden);})()")
-    record(papers_hidden, "…and no paper chips either — papers are a combined idea")
+    # ── ⊕ MRB-336, 8 Sep 2026 · THE PAPER CHIPS COME TO TRIPLE ───────
+    #
+    # ⛔ This read the other way round and passed:
+    #
+    #     papers_hidden = p.eval(… "[data-sw=\"paper-chips\"]" … ".hidden")
+    #     record(papers_hidden,
+    #            "…and no paper chips either — papers are a combined idea")
+    #
+    # Papers are not a combined idea. AQA examines Triple Physics on Physics
+    # Paper 1 and Physics Paper 2, with their own dates, and "everything on
+    # paper 1 before the mock" is the single most common thing a separate-
+    # sciences teacher wants to set. The rail was withheld from the one cohort
+    # that most needed it.
+    #
+    # ⚠️ THE RAIL IS DATA-DRIVEN AND THAT IS WHY THIS IS A SEPARATE CHECK FROM
+    # THE `/scope` ONE. `syncPapers` renders whatever `S.scope.papers` holds
+    # (`shared/set-work.js`: `show = !!(papers && papers.length)`), so the
+    # data check above and this one could in principle come apart — a build
+    # that served the list and left the rail `hidden` would pass the first and
+    # fail here, which is exactly the failure a data-only gate would miss.
+    ph_papers = p.eval("""(function(){
+        var c = document.querySelector('[data-sw="paper-chips"]');
+        return {hidden: !!(c && c.hidden), present: !!c,
+                chips: c ? Array.prototype.map.call(
+                  c.querySelectorAll('.sw-chip'),
+                  function(n){return n.textContent;}) : []};})()""")
+    record(ph_papers["present"] and not ph_papers["hidden"]
+           and ph_papers["chips"] == ["Paper 1", "Paper 2", "Both"],
+           "⊕ MRB-336: paper_chips_on_triple — 10c/Ph1 DOES get the paper "
+           "rail, with both papers and Both, even though it gets no subject "
+           "chips at all", json.dumps(ph_papers))
+
+    # ⚠️ AND THE RAIL FILTERS. A chip that renders and does nothing is worse
+    # than no chip: the teacher taps Paper 1, the list does not change, and
+    # they set the whole subject believing they narrowed it. `space` is the
+    # row to watch — physics paper 2, triple-only, and the topic the combined
+    # tree cannot see at all.
+    # ⚠️ VISIBILITY IS ASKED OF THE LAYOUT, NOT OF THE ELEMENT'S OWN
+    # `hidden` PROPERTY, and the difference cost a red on the first run.
+    # `syncTree` hides the topic's WRAPPER (`r.wrap.hidden = …`, set-work.js
+    # :1078), not the `[data-sw="topic"]` row inside it — so `row.hidden` is
+    # `false` on every row whatever the filter is doing, because `.hidden`
+    # reflects the attribute on THAT element and says nothing about an
+    # ancestor. Reading it made a working filter look broken.
+    #
+    # ⚠️ AND THE FAILURE DIRECTION WOULD HAVE BEEN THE OTHER WAY ROUND
+    # ANYWHERE ELSE. Here the mistake produced a red on correct code, which is
+    # the safe kind; a check written the same way but asserting something IS
+    # hidden would have gone GREEN on a filter that had stopped filtering.
+    # `getClientRects()` is empty for anything not laid out, for any reason.
+    def _rows():
+        return p.eval("""(function(){
+            var out = [];
+            var rs = document.querySelectorAll('[data-sw="topic"]');
+            for (var i = 0; i < rs.length; i++) {
+              if (rs[i].getClientRects().length) {
+                out.push(rs[i].getAttribute('data-sw-ref')
+                         || rs[i].textContent.trim()); }}
+            return out;})()""")
+
+    def _tap(label):
+        p.eval("""(function(){var cs=document.querySelectorAll(
+            '[data-sw="paper-chips"] .sw-chip');
+            for(var i=0;i<cs.length;i++){
+              if(cs[i].textContent===%s){cs[i].click();return true;}}
+            return false;})()""" % json.dumps(label))
+        time.sleep(0.4)
+
+    # ⚠️ ADVANCE TO THE TOPIC STEP FIRST. The sheet opens on the CLASSES
+    # step and the topic panel is `display:none` until Next is pressed — so
+    # the rows exist, carry their refs, and are laid out nowhere. Measuring
+    # there returns zero rows under every chip, which reads as "the filter
+    # hides everything" rather than as "nothing is on screen yet".
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    time.sleep(0.6)
+    wait_for(p, "(function(){var r=document.querySelector('[data-sw=\"topic\"]');"
+                "return !!r && r.getClientRects().length > 0;})()")
+    _tap("Both")
+    both = _rows()
+    _tap("Paper 1")
+    p1 = _rows()
+    _tap("Paper 2")
+    p2 = _rows()
+    _tap("Both")
+    joined = sorted(set(p1) | set(p2))
+    record(both and p1 and p2 and set(p1) & set(p2) == set()
+           and joined == sorted(set(both)),
+           "⊕ MRB-336: paper_chips_partition_the_triple_tree — Paper 1 and "
+           "Paper 2 are disjoint and together are exactly the whole tree, so "
+           "no topic is unreachable by paper",
+           "both %d · p1 %d · p2 %d · overlap %s"
+           % (len(both), len(p1), len(p2), sorted(set(p1) & set(p2))[:3]))
+    record(any("space" in str(r).lower() for r in p2)
+           and not any("space" in str(r).lower() for r in p1),
+           "…and `space` — triple-only, and invisible to a combined class — "
+           "is reachable under Paper 2 and only under Paper 2",
+           "paper 2 rows: %s" % [r for r in p2 if "space" in str(r).lower()])
 
     p.eval("window.MRBSetWork.close()")
     open_sheet(p, FX.C_KS4_COMB)
@@ -2313,15 +2598,33 @@ def check_faff(p, scopes):
            if not (stray or leaked)
            else "unlisted: %s · visible: %s" % (stray, leaked))
     # And the composed ones, evaluated rather than read.
+    #
+    # ⊕ MRB-336, 8 Sep 2026 — `S.hold('14 Sep 2026')` WAS THE FIFTH AND THIS
+    # CALL CRASHED THE DRIVE. `SAY.hold` went with the hold line, and its
+    # `FAFF_PATTERNS` entry went with it — but the call stayed, so the sweep
+    # died on `TypeError: S.hold is not a function` and took every check after
+    # it down. That is worth a line rather than a silent edit: a gate that
+    # THROWS is not a gate that fails, it is a gate that stops, and the eleven
+    # sections behind this one reported nothing at all.
+    #
+    # ⚠️ SO THE ABSENCE IS ASSERTED RATHER THAN JUST NOT CALLED. `SAY` is the
+    # complete set of strings this module can emit; a `hold` key coming back
+    # would mean the sentence had returned, and deleting the call without
+    # saying so would leave nothing watching for that.
+    record(p.eval("typeof window.MRBSetWork.SAY.hold") == "undefined",
+           "⊕ MRB-336: hold_string_is_gone — `SAY` has no `hold` at all, so "
+           "the sheet cannot compose a sentence about a school hold that no "
+           "longer governs anything a teacher does",
+           "typeof SAY.hold is %r"
+           % p.eval("typeof window.MRBSetWork.SAY.hold"))
     composed = p.eval("""(function(){var S=window.MRBSetWork.SAY;
-        return [S.weeksAgo(1), S.weeksAgo(3), S.pupils(1), S.pupils(24),
-                S.hold('14 Sep 2026')];})()""")
+        return [S.weeksAgo(1), S.weeksAgo(3), S.pupils(1), S.pupils(24)];})()""")
     bad = [c for c in composed
            if c not in FAFF_EXACT
            and not any(r.match(c) for r in FAFF_PATTERNS)]
     record(not bad,
-           "faff_sweep — the five composed strings are each a label plus a "
-           "number or a date", "; ".join(composed) if not bad else str(bad))
+           "faff_sweep — the four composed strings are each a label plus a "
+           "number", "; ".join(composed) if not bad else str(bad))
 
     # ⚠️ AND THE THREE v1 SENTENCES MUST BE GONE BY NAME. A general "no long
     # strings" rule would pass a NEW sentence; naming the ones that were there
@@ -2790,6 +3093,7 @@ def main():
     server = None
     site = None
     twenty_title = None
+    deleted_title = None          # ⊕ MRB-336, set by check_delete_surfaces
     try:
         site, site_port = cdp.serve("mrbadmus_site", port=SITE_PORT)
         base = "http://localhost:%d" % site_port
@@ -2810,6 +3114,11 @@ def main():
         check_idempotent_submit(t_teacher, scopes)
         check_tier_write_seal(t_teacher, t_admin)
         check_figures_and_counts(t_teacher, scopes)
+        # ⊕ MRB-336 — the API half of Delete and Edit, and their audit.
+        deleted_id = check_delete(t_teacher, t_pupil, t_admin, scopes)
+        edited = check_edit(t_teacher, scopes)
+        check_delete_edit_audited(t_admin, deleted_id,
+                                  edited[0] if isinstance(edited, tuple) else None)
         twenty_title = set_twenty(t_teacher, scopes)
 
         if not args.api_only:
@@ -2842,6 +3151,46 @@ def main():
                     check_consumers(p, base, CONSUMERS, "the teacher",
                                     TITLE + " · from the sheet", args.shots)
 
+            # ⊕ MRB-336 §4/§6 — THE CARDS, THE STATUS PILL, THE SET COLUMN
+            # AND THE ROW CONTROLS, IN A BROWSER OF THEIR OWN.
+            #
+            # ⚠️ THEY CANNOT SHARE THE SHEET'S TAB, and the reason is written
+            # three lines above this in the sheet block: `check_swap_count_race`
+            # and `check_stale_guard` each REPLACE `window.fetch` to make a
+            # race deterministic, and the restore at the end of the second one
+            # puts back what it found — which is the FIRST one's wrapper, not
+            # the native function. That tab's network is deliberately
+            # instrumented for the rest of its life, and the existing comment
+            # already says nothing needing an unhindered network may run behind
+            # them.
+            #
+            # Everything below needs a completely ordinary network: it sets
+            # work, reloads a generated page, presses a control that writes,
+            # and reads the result back. Run in that tab, `open_class_page`
+            # timed out five times waiting for a table that was correct in
+            # every other context — a red about a wrapper, wearing the name of
+            # a product defect.
+            with cdp.Browser() as bc:
+                pc = bc.attach()
+                pc.set_viewport(390, 900)
+                signed = sign_in_page(pc, base, FX.TEACHER_EMAIL, pw)
+                record(str(signed).startswith("ok"),
+                       "the teacher signs in again, in a clean tab, for the "
+                       "class-page checks", signed)
+                cards_made = check_cards(pc, base, t_teacher, scopes,
+                                         args.shots)
+                check_remind_names_its_own_card(pc, base, cards_made)
+                check_card_counts_are_per_card(pc, base, cards_made)
+                check_status_and_set_column(pc, base, t_teacher, scopes,
+                                            args.shots)
+                check_edit_sheet(pc, base, args.shots)
+                check_row_controls(pc, base, t_teacher, scopes, args.shots,
+                                   None)
+                surf = check_delete_surfaces(pc, base, t_teacher, scopes)
+                deleted_title = surf[1] if isinstance(surf, tuple) else None
+                check_wide(pc, base, [("8a/Sc1", FX.C_KS3_A),
+                                      ("9a/Sc1", FX.C_KS3_NOAUTO)])
+
             with cdp.Browser() as b2:
                 p2 = b2.attach()
                 p2.set_viewport(390, 900)
@@ -2851,6 +3200,10 @@ def main():
                 check_consumers(p2, base, STUDENT_PAGES, "the pupil",
                                 TITLE + " · from the sheet", args.shots)
                 check_student_twenty(p2, base, twenty_title)
+                # ⊕ MRB-336 — the child's half of the delete sweep. It needs
+                # the PUPIL's browser, which is why it is here and not beside
+                # the teacher's four screens.
+                check_delete_student_surfaces(p2, base, deleted_title)
 
             # ⚠️ THE ADMIN IS A THIRD PERSONA AND NEEDS A THIRD BROWSER.
             # `teacher/admin.html` is a school-operations screen and refuses a
@@ -3710,6 +4063,17 @@ def check_student_twenty(p, base, title):
     print("\n   the child opens a twenty-question set")
     if not title:
         return
+    # ⚠️ ⊕ MRB-336, 8 Sep 2026 — SET THE VIEWPORT, DO NOT INHERIT IT. This
+    # function asserts `scrollWidth <= clientWidth` twice and had no
+    # `set_viewport` of its own: it was reading whatever width the previous
+    # check happened to leave behind. That was 390 today and correct today,
+    # for a reason nothing here states — and `ks3_browser.screenshot()`
+    # (ks3_browser.py:572-577) takes `width=1280` as its DEFAULT and calls
+    # `set_viewport(width, height)`, so ONE screenshot taken without an
+    # explicit width, anywhere upstream, silently turns every "clean at
+    # 390px" assertion below into a desktop measurement that passes because
+    # a desktop has room. A width assertion has to name its own width.
+    p.set_viewport(390, 900)
     if not goto_ready(p, "%s/student/class.html?class=%s&env=test&api=%s"
                       % (base, FX.C_KS3_A, PAGE_API),
                       "document.body && document.body.innerText.length > 200",
@@ -3734,6 +4098,7 @@ def check_student_twenty(p, base, title):
                                                    got["chars"]))
 
     # Open the assignment itself and count what the child is actually given.
+    p.set_viewport(390, 900)          # ⊕ MRB-336 — see above; never inherit
     if not goto_ready(p, "%s/student/assignment.html?class=%s&env=test&api=%s"
                       % (base, FX.C_KS3_A, PAGE_API),
                       "document.body && document.body.innerText.length > 100",
@@ -3748,6 +4113,1137 @@ def check_student_twenty(p, base, title):
     record(a["sw"] <= a["cw"] + 1 and not a["bad"] and a["chars"] > 100,
            "…and the assignment page draws at 390px with no null",
            "scrollWidth %d ≤ %d, %d characters" % (a["sw"], a["cw"], a["chars"]))
+
+
+# ════════════════════════════════════════════════════════════════════════
+# 11 · ⊕ MRB-336 — DELETE AND EDIT, AND THE SURFACES THAT MUST FORGET
+# ════════════════════════════════════════════════════════════════════════
+#
+# ⚠️ WHY THIS IS HERE AND NOT ONLY IN THE BACKEND'S OWN TESTS.
+# `test_set_work_v2.js` drives both routes hard, and this does not repeat it
+# for the sake of a second green tick. What the backend cannot see is the half
+# that Mide actually asked for — "delete an assignment" is not a route, it is a
+# row leaving SEVEN SCREENS. A route that answers 200 while the class page,
+# the marking screen, the digest, the chase list and the child's own week all
+# go on showing the work is a route that did nothing a teacher would call
+# deleting. Only a browser, on the built pages, against a real row, can say so.
+#
+# So this section splits deliberately:
+#   · the API half below proves the CONTRACT the pages are written against —
+#     the shapes, the refusals, the idempotency and the audit;
+#   · `check_delete_surfaces` and `check_row_controls` prove the CONSEQUENCE.
+
+def api_delete(token, aid):
+    return call("DELETE", "/api/teacher/set-work/" + str(aid), token)
+
+
+def api_patch(token, aid, **fields):
+    body = dict(fields)
+    # ⚠️ A FRESH `client_ref` PER CALL, for `post_set`'s reason: PATCH is
+    # replay-guarded on (actor, target, client_ref) inside a 30-minute window,
+    # so a reused ref makes the SECOND edit a no-op that answers 200 and
+    # writes nothing — and a check that asserted only the status would pass
+    # having proved the opposite of what it says.
+    body.setdefault("client_ref", str(uuid.uuid4()))
+    return call("PATCH", "/api/teacher/set-work/" + str(aid), token, body)
+
+
+def set_one(t_teacher, class_id, tier, scope_ref, title, n=4, **kw):
+    """Set one piece of work and hand back (id, question_ids). None on failure."""
+    st, prev = preview(t_teacher, class_id, tier, kw.get("scope_kind", "topic"),
+                       scope_ref, n)
+    ids = [q["id"] for q in (prev.get("picked") or [])]
+    if len(ids) < n:
+        record(False, "%d question(s) to set for %r" % (n, title),
+               "got %d" % len(ids))
+        return None, []
+    st, made = post_set(t_teacher, class_ids=[class_id], tier=tier,
+                        scope_ref=scope_ref, question_ids=ids, title=title,
+                        **{k: v for k, v in kw.items() if k in
+                           ("release_at", "due_at", "scope_kind", "subject")})
+    if st != 200 or not (made or {}).get("assignment_ids"):
+        record(False, "set %r" % title, "status %s %s" % (st, json.dumps(made)[:200]))
+        return None, []
+    return made["assignment_ids"][0], ids
+
+
+# The keys a DELETE answer carries, first call and second. Written out rather
+# than compared loosely, because "idempotent" here means the SAME SHAPE and not
+# merely another 200 — a second call that dropped `assignment` would break the
+# page's toast, which reads the title out of it.
+DELETE_KEYS = {"ok", "already_deleted", "assignment", "question_count",
+               "submission_count"}
+DELETE_ASSIGNMENT_KEYS = {"id", "class_id", "title", "topic", "academic_week",
+                          "source", "deleted_at"}
+
+
+def check_delete(t_teacher, t_pupil, t_admin, scopes):
+    print("\n11 · ⊕ MRB-336 · deleting a set")
+    got = pick_topic(scopes["ks3"], 1, "medium")
+    if not got:
+        return record(False, "a KS3 unit to set work on")
+    _n, unit, _s = got
+
+    title = TITLE + " · to delete"
+    aid, ids = set_one(t_teacher, FX.C_KS3_A, "medium", unit["id"], title, 4)
+    if not aid:
+        return False
+
+    # The child can see it, or "it disappeared" is not a claim about anything.
+    before = week_titles(t_pupil, FX.C_KS3_A)
+    record(title in before,
+           "the child can see the work BEFORE it is deleted, or the delete "
+           "proves nothing", "week_work: %s" % before)
+
+    # ── the delete ────────────────────────────────────────────────────
+    st, out = api_delete(t_teacher, aid)
+    a = (out or {}).get("assignment") or {}
+    record(st == 200 and out.get("ok") is True
+           and out.get("already_deleted") is False
+           and a.get("id") == aid and a.get("deleted_at")
+           and out.get("question_count") == len(ids),
+           "delete_answers_the_row — 200, `already_deleted` false, and the "
+           "deleted row is described back with its own question count",
+           "status %s %s" % (st, json.dumps(out)[:220]))
+    record(set(out.keys()) == DELETE_KEYS
+           and set(a.keys()) == DELETE_ASSIGNMENT_KEYS,
+           "…with exactly the keys the page's toast and refresh are written "
+           "against, no more and no fewer",
+           "top %s · assignment %s" % (sorted(out.keys()), sorted(a.keys())))
+
+    # ── D4 · IDEMPOTENT, AND THAT MEANS THE SAME SHAPE ────────────────
+    #
+    # ⚠️ A DOUBLE TAP IS THE ORDINARY CASE, not an edge one: the control is a
+    # two-tap arm-then-confirm on a row that disappears underneath the second
+    # tap, and a phone that fires the confirm twice is a phone. The second
+    # answer has to be a success the page can render, not a 404 it would show
+    # as "that assignment is no longer there" about work the teacher HAS just
+    # deleted.
+    st2, out2 = api_delete(t_teacher, aid)
+    a2 = (out2 or {}).get("assignment") or {}
+    record(st2 == 200 and out2.get("ok") is True
+           and out2.get("already_deleted") is True
+           and set(out2.keys()) == DELETE_KEYS
+           and set(a2.keys()) == DELETE_ASSIGNMENT_KEYS
+           and a2.get("id") == aid and a2.get("title") == title,
+           "delete_idempotent — the second call is 200 with the SAME shape "
+           "and the same row, flagged `already_deleted`",
+           "status %s %s" % (st2, json.dumps(out2)[:220]))
+    record(a2.get("deleted_at") == a.get("deleted_at"),
+           "…and it does not re-stamp `deleted_at`, so 'when was this "
+           "deleted' survives a double tap",
+           "first %s · second %s" % (a.get("deleted_at"), a2.get("deleted_at")))
+
+    # ── the child ─────────────────────────────────────────────────────
+    after = week_titles(t_pupil, FX.C_KS3_A)
+    record(title not in after,
+           "delete_leaves_the_childs_week — the work is gone from the child's "
+           "week", "week_work: %s" % after)
+    st, direct = call("GET", "/api/class/current-assignment?class_id=%s"
+                      "&assignment_id=%s" % (FX.C_KS3_A, aid), t_pupil)
+    record(st == 404,
+           "…and cannot be reached by its id either — 404, not 403, so the "
+           "refusal does not disclose that deleted work exists", "status %s" % st)
+
+    # ⚠️ D2 · THE SUBMISSIONS AND THE MARKS ARE KEPT. Soft delete, not a
+    # cascade. A teacher tidying a mis-set piece of work must not silently
+    # retract points a child has already earned — the row leaves the screens,
+    # the history stays in the table.
+    st, qrows = FX.api("GET", "/rest/v1/assignment_questions?assignment_id=eq.%s"
+                              "&select=id" % aid)
+    record(isinstance(qrows, list) and len(qrows) == len(ids),
+           "delete_is_soft — the question rows survive the delete; nothing "
+           "cascades", "%d row(s) still there"
+           % (len(qrows) if isinstance(qrows, list) else -1))
+
+    # ── D4 · AN AUTOMATIC ROW IS NOT A TEACHER'S TO DELETE ────────────
+    st, comp = call("GET", "/api/class/current-assignment?class_id=" +
+                    FX.C_KS3_A, t_pupil)
+    auto_id = ((comp or {}).get("assignment") or {}).get("id")
+    if not auto_id:
+        record(False, "an automatic assignment exists on 8a/Sc1 to refuse",
+               "reason %r" % (comp or {}).get("reason"))
+    else:
+        st, refused = api_delete(t_teacher, auto_id)
+        record(st == 409
+               and (refused or {}).get("error") == "auto_assignment_not_editable"
+               and ((refused or {}).get("detail") or {}).get("source") == "auto",
+               "delete_refuses_an_auto_row — 409 "
+               "`auto_assignment_not_editable`, and it names the source so the "
+               "page can say WHICH rule it hit",
+               "status %s %s" % (st, json.dumps(refused)[:180]))
+        # …and the refusal did not delete it anyway.
+        st, still = call("GET", "/api/class/current-assignment?class_id=%s"
+                         "&assignment_id=%s" % (FX.C_KS3_A, auto_id), t_pupil)
+        record(st == 200,
+               "…and the automatic assignment is still there afterwards, so "
+               "the 409 refused rather than merely reported", "status %s" % st)
+
+    # ── D4 · WHO MAY NOT ──────────────────────────────────────────────
+    live_title = TITLE + " · survives the refusals"
+    live_id, _live_ids = set_one(t_teacher, FX.C_KS3_A, "medium", unit["id"],
+                                 live_title, 3)
+    if live_id:
+        st, p403 = api_delete(t_pupil, live_id)
+        record(st == 403 and (p403 or {}).get("error") == "not_authorised_for_class",
+               "delete_refuses_a_pupil — a child enrolled in the class cannot "
+               "delete its work", "status %s %s" % (st, json.dumps(p403)[:140]))
+
+        # ⚠️ THE CROSS-SCHOOL CASE, AND THE FIXTURE MAKES IT REAL RATHER THAN
+        # SYNTHETIC. `t_admin` is a school_admin — of the OPEN school — and a
+        # school admin CAN delete work in their own school. So the refusal
+        # below is not "an admin cannot delete", it is "not in THAT school":
+        # the row is on the HELD school's class. A crafted uuid from another
+        # tenant is exactly this shape, and this proves it on a real account
+        # with real standing rather than on a random string.
+        held_title = TITLE + " · in the other school"
+        held_scope = scope_of(t_teacher, FX.C_KS3_HELD)[1]
+        held_pick = pick_topic(held_scope, 1, "medium")
+        held_id = None
+        if held_pick:
+            held_id, _h = set_one(t_teacher, FX.C_KS3_HELD, "medium",
+                                  held_pick[1]["id"], held_title, 3,
+                                  due_at=DUE.isoformat())
+        if held_id:
+            st, x403 = api_delete(t_admin, held_id)
+            record(st == 403
+                   and (x403 or {}).get("error") == "not_authorised_for_class",
+                   "delete_refuses_another_school — a real school_admin, with "
+                   "real standing in their OWN school, is refused a row in "
+                   "another one", "status %s %s" % (st, json.dumps(x403)[:140]))
+            st, ok_admin = api_delete(t_admin, live_id)
+            record(st == 200 and (ok_admin or {}).get("ok") is True,
+                   "…and the same admin CAN delete a row in the school they "
+                   "actually administer, or the refusal above would pass by "
+                   "the account being powerless",
+                   "status %s" % st)
+
+    st, n404 = api_delete(t_teacher, str(uuid.uuid4()))
+    record(st == 404 and (n404 or {}).get("error") == "assignment_not_found",
+           "delete_unknown_uuid — 404 `assignment_not_found`, which is the "
+           "same answer a foreign row gives, so the 404 discloses nothing",
+           "status %s %s" % (st, json.dumps(n404)[:140]))
+    st, nbad = api_delete(t_teacher, "not-a-uuid")
+    record(st == 404 and (nbad or {}).get("error") == "assignment_not_found",
+           "…and a string that is not a uuid gets the same 404 rather than a "
+           "500 from the database", "status %s %s" % (st, json.dumps(nbad)[:140]))
+    return aid
+
+
+def check_edit(t_teacher, scopes):
+    print("\n12 · ⊕ MRB-336 · editing a set, before and after release")
+    got = pick_topic(scopes["ks3"], 2, "medium")
+    if not got:
+        return record(False, "a KS3 unit with two stocked lessons")
+    _n, unit, _s = got
+    kids = [c["id"] for c in (unit.get("children") or [])
+            if (c.get("counts") or {}).get("medium", 0) >= 3]
+    if len(kids) < 1:
+        return record(False, "a stocked lesson to move the scope to")
+
+    # ── D3 · BEFORE RELEASE, EVERYTHING MOVES ─────────────────────────
+    #
+    # Nobody can have started, because nobody can see it. So the teacher who
+    # picked the wrong topic at eleven at night can fix it rather than delete
+    # it and set it again.
+    later = (NOW + timedelta(days=3)).isoformat()
+    title = TITLE + " · scheduled, then edited"
+    aid, ids = set_one(t_teacher, FX.C_KS3_A, "medium", unit["id"], title, 4,
+                       release_at=later)
+    if not aid:
+        return False
+
+    st, prev2 = preview(t_teacher, FX.C_KS3_A, "hard", "subtopic", kids[0], 3)
+    new_ids = [q["id"] for q in (prev2.get("picked") or [])]
+    if len(new_ids) < 3:
+        return record(False, "three replacement questions", "%d" % len(new_ids))
+    st, ed = api_patch(t_teacher, aid, tier="hard", scope_kind="subtopic",
+                       scope_ref=kids[0], question_ids=new_ids,
+                       title=title + " (moved)")
+    changed = set((ed or {}).get("changed") or [])
+    record(st == 200 and (ed or {}).get("ok") is True
+           and {"scope_ref", "scope_kind", "set_tier", "title"} <= changed,
+           "edit_before_release_moves_everything — tier, scope kind, scope "
+           "and title all change on an unreleased row",
+           "status %s changed %s" % (st, sorted(changed)))
+
+    # ⚠️ READ THE QUESTIONS BACK. `changed` is the server's own report; the
+    # only proof that the child would meet different questions is the child's
+    # own read path.
+    st, back = call("GET", "/api/class/current-assignment?class_id=%s"
+                    "&assignment_id=%s" % (FX.C_KS3_A, aid), t_teacher)
+    got_ids = [q.get("question_ref") for q in (back or {}).get("questions") or []]
+    record(got_ids == new_ids,
+           "…and the STORED questions are the replacements, in the order "
+           "chosen — not merely a `changed` list saying so",
+           "wanted %s\n        got    %s" % (new_ids, got_ids))
+    record(((back or {}).get("assignment") or {}).get("title")
+           == title + " (moved)",
+           "…and the new title is stored verbatim",
+           ((back or {}).get("assignment") or {}).get("title"))
+
+    # ── D3 · AFTER RELEASE, THE QUESTIONS ARE SEALED ──────────────────
+    #
+    # ⚠️ THIS IS THE HALF THAT PROTECTS THE CHILD, and it is the reason Edit
+    # narrows rather than simply existing. A pupil halfway through eight
+    # questions must not have them swapped underneath them: their answers are
+    # already filed against ids, and the marking would be against a paper they
+    # never sat.
+    live_title = TITLE + " · already out"
+    live_id, live_ids = set_one(t_teacher, FX.C_KS3_A, "medium", unit["id"],
+                                live_title, 4)
+    if not live_id:
+        return False
+    for field, value in (("question_ids", new_ids),
+                         ("scope_ref", kids[0]),
+                         ("tier", "hard"),
+                         ("release_at", (NOW + timedelta(days=2)).isoformat())):
+        st, ref = api_patch(t_teacher, live_id, **{field: value})
+        ok = (st == 400 and (ref or {}).get("error") == "locked_after_release")
+        det = (ref or {}).get("detail") or {}
+        record(ok and det.get("fields") == [field]
+               and det.get("editable") == ["title", "due_at"],
+               "edit_locked_after_release — `%s` is refused 400 "
+               "`locked_after_release`, and the refusal NAMES what is still "
+               "editable" % field,
+               "status %s %s" % (st, json.dumps(ref)[:200]))
+
+    new_due = (NOW + timedelta(days=9)).isoformat()
+    st, ok_ed = api_patch(t_teacher, live_id, title=live_title + " (retitled)",
+                          due_at=new_due)
+    record(st == 200 and (ok_ed or {}).get("ok") is True
+           and set((ok_ed or {}).get("changed") or []) == {"title", "due_at"},
+           "…while the title and the due date DO change on the same released "
+           "row — a teacher can extend a deadline and fix a typo",
+           "status %s changed %s" % (st, (ok_ed or {}).get("changed")))
+    st, back2 = call("GET", "/api/class/current-assignment?class_id=%s"
+                     "&assignment_id=%s" % (FX.C_KS3_A, live_id), t_teacher)
+    a2 = (back2 or {}).get("assignment") or {}
+    got2 = [q.get("question_ref") for q in (back2 or {}).get("questions") or []]
+    record(a2.get("title") == live_title + " (retitled)" and got2 == live_ids,
+           "…and the questions are UNTOUCHED by that edit, which is the whole "
+           "of the rule",
+           "title %r · %d question(s), unchanged %s"
+           % (a2.get("title"), len(got2), got2 == live_ids))
+
+    # A deleted row cannot be edited back into existence.
+    api_delete(t_teacher, live_id)
+    st, dead = api_patch(t_teacher, live_id, title=live_title + " (zombie)")
+    record(st == 409 and (dead or {}).get("error") == "assignment_deleted",
+           "edit_refuses_a_deleted_row — 409 `assignment_deleted`, so Edit "
+           "cannot resurrect what Delete removed",
+           "status %s %s" % (st, json.dumps(dead)[:140]))
+    return aid, live_id
+
+
+def check_delete_edit_audited(t_admin, aid, edited_id):
+    """⚠️ AN AUDIT ROW IS THE ONLY THING THAT SURVIVES A SOFT DELETE.
+
+    The row itself keeps `deleted_by`, but nothing on any screen shows it, and
+    a school asking "who removed Tuesday's homework and when" has one place to
+    look. Read as a REAL school_admin under RLS, not on the service key: an
+    audit trail only the server can read is not an audit trail anybody has.
+    """
+    print("\n13 · ⊕ MRB-336 · the audit trail behind Delete and Edit")
+    for action, target, want in (("assignment.deleted", aid,
+                                  ("question_count", "submission_count")),
+                                 ("assignment.edited", edited_id,
+                                  ("changed", "from", "to"))):
+        if not target:
+            record(False, "an id to look %s up by" % action)
+            continue
+        st, rows = rest("GET", "/rest/v1/audit_log?target_id=eq.%s&action=eq.%s"
+                               "&select=action,target_table,payload"
+                               "&order=created_at.desc&limit=1"
+                        % (target, action), t_admin)
+        row = rows[0] if isinstance(rows, list) and rows else {}
+        pay = row.get("payload") or {}
+        record(row.get("action") == action
+               and row.get("target_table") == "assignments"
+               and all(k in pay for k in want),
+               "%s is audited — the row names the table, the target and %s"
+               % (action, " and ".join("`%s`" % k for k in want)),
+               "status %s %s" % (st, json.dumps(pay)[:220]))
+
+
+# ════════════════════════════════════════════════════════════════════════
+# 14 · ⊕ MRB-336 §4 — THE CARDS, THE STATUS PILL AND THE ROW CONTROLS
+# ════════════════════════════════════════════════════════════════════════
+#
+# ⚠️ 9a/Sc1 IS THE CLASS FOR THIS AND THE CHOICE IS LOAD-BEARING. It is the
+# fixture's `auto_assignments = false` class, so nothing composes on it and
+# `glance.cards` holds exactly the rows this check sets — one, then two, then
+# three — with no automatic set silently occupying a slot. On 8a/Sc1 the auto
+# row sorts LAST (it has no `release_at`) and would take slot B on the
+# one-set case, so "two cards" there would be true for a reason that has
+# nothing to do with what is being measured.
+#
+# ⚠️ AND IT HAS EXACTLY ONE PUPIL, which is what makes the chase chips and
+# `Remind all N` countable rather than merely present.
+
+CARDS_JS = """(function(){
+  var g = document.querySelector('div[style*="minmax(330px,1fr)"]');
+  if (!g) { return null; }
+  return Array.prototype.map.call(g.children, function (card) {
+    var c = card.children;
+    var chaseBox = card.querySelector('div[style*="flex-wrap:wrap;gap:6px"]');
+    var footer = card.querySelector('div[style*="margin-top:auto"]');
+    var more = card.querySelector('[data-mrb-added="live-cards-more"]');
+    return {
+      eyebrow: ((c[0] && c[0].textContent) || '').trim(),
+      title:   ((c[1] && c[1].textContent) || '').trim(),
+      count:   ((c[2] && c[2].textContent) || '').trim(),
+      chase: chaseBox ? Array.prototype.map.call(
+        chaseBox.querySelectorAll('button'),
+        function (b) { return (b.textContent || '').trim(); }) : [],
+      remind: footer ? ((footer.textContent) || '').trim() : null,
+      more: more ? ((more.textContent) || '').trim() : null
+    };
+  });
+})()"""
+
+# ⚠️ THE ROWS ARE FOUND BY THEIR OWN GRID, NOT BY DESCENDING FROM THE ANCHOR.
+# `mrb-class-assignments` is on node 307 — the `<h2>Assignments</h2>` header
+# row — because that is the FIRST REAL ELEMENT inside `<if klass.hasWork>` and
+# the right thing for "+N more" to scroll to. The table itself (node 310) is
+# its SIBLING, not its child, so `anchor.querySelectorAll(...)` searches inside
+# a heading and returns nothing. It did, silently: eleven checks reported
+# `row null` and `0 row(s)` about a table that was on the screen, and two of
+# them PASSED vacuously ("the row leaves the table" is trivially true of a
+# table you cannot see).
+#
+# The eight-column grid template is unique to this table on the page, so it
+# identifies it without needing a hook the page does not have.
+ROW_GRID = '2fr 100px 1fr 1fr 1fr 1fr 1.2fr auto'
+
+ROWS_JS = """(function(){
+  var all = document.querySelectorAll('div[style*=%s]');
+  var out = [];
+  for (var i = 0; i < all.length; i++) {
+    var r = all[i];
+    if ((r.getAttribute('style') || '').indexOf('cursor:pointer') === -1) {
+      continue;                                  /* the header strip */
+    }
+    var c = r.children;
+    out.push({
+      title:  ((c[0] && c[0].textContent) || '').trim(),
+      status: ((c[1] && c[1].textContent) || '').trim(),
+      set:    ((c[2] && c[2].textContent) || '').trim(),
+      due:    ((c[3] && c[3].textContent) || '').trim(),
+      edit:   !!r.querySelector('[data-mrb-added="set-work-edit"]'),
+      del:    !!r.querySelector('[data-mrb-added="set-work-delete"]'),
+      cancel: !!r.querySelector('[data-mrb-added="set-work-delete-cancel"]')
+    });
+  }
+  return out;
+})()""" % json.dumps(ROW_GRID)
+
+
+def press_row(p, title, kind):
+    """Press one row's Edit / Delete / Cancel, found by its title."""
+    return p.eval("""(function(){
+      var all = document.querySelectorAll('div[style*=%s]');
+      for (var i = 0; i < all.length; i++) {
+        var r = all[i];
+        if ((r.getAttribute('style')||'').indexOf('cursor:pointer') === -1) {
+          continue; }
+        if (((r.children[0]||{}).textContent||'').trim() !== %s) { continue; }
+        var b = r.querySelector('[data-mrb-added="set-work-%s"]');
+        if (!b) { return 'no control'; }
+        b.click(); return 'clicked'; }
+      return 'no row';})()"""
+                  % (json.dumps(ROW_GRID), json.dumps(title), kind))
+
+
+def ldn(dt):
+    """The Set column's own format, computed independently in London.
+
+    ⚠️ COMPUTED HERE RATHER THAN READ BACK. Asserting that the page's London
+    string matches the page's own idea of London is a tautology; the point of
+    the column is that a teacher in Rainford reads the instant in the time
+    their school keeps.
+    """
+    from zoneinfo import ZoneInfo
+    x = dt.astimezone(ZoneInfo("Europe/London"))
+    return "%s %d %s %02d:%02d" % (
+        ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][x.weekday()],
+        x.day, ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
+                "Sep", "Oct", "Nov", "Dec"][x.month - 1], x.hour, x.minute)
+
+
+def clear_teacher_work(t_teacher, class_id):
+    """Every teacher-set row on this class, removed THROUGH THE ROUTE.
+
+    ⚠️ THROUGH THE ROUTE, NOT THROUGH THE SERVICE KEY, on purpose: the checks
+    below are about how many cards a class has, so the drive's earlier
+    sections must not be able to leave one behind — and doing the tidy-up with
+    the very endpoint under test means a broken DELETE fails here loudly
+    rather than by making a later count wrong for an unrelated-looking reason.
+    """
+    st, rows = FX.api("GET", "/rest/v1/assignments?class_id=eq.%s&source=eq."
+                             "teacher&deleted_at=is.null&select=id" % class_id)
+    n = 0
+    for r in (rows if isinstance(rows, list) else []):
+        st2, _ = api_delete(t_teacher, r["id"])
+        n += 1 if st2 == 200 else 0
+    return n
+
+
+def open_class_page(p, base, class_id, width=390, settle=6.5):
+    """⚠️ WAIT FOR THE TABLE ITSELF, NOT FOR 'SOME TEXT'.
+
+    This read `getElementById('mrb-class-assignments') || innerText.length >
+    400` and took the second branch every time: the page paints its header,
+    roster and glance well before the assignments table exists, and
+    `student-runtime.js` `draw()` empties and rebuilds the whole mount host on
+    every `setState`, so there is a real window in which the class page is
+    fully readable and the table is not on it. Four checks went red reporting
+    `row null` about a table that was correct a second later.
+
+    ⚠️ A DISJUNCTION IS THE WRONG SHAPE FOR A READINESS TEST when one branch
+    is strictly weaker than the other. It cannot fail — which is the point of
+    a readiness test — it can only be satisfied early.
+    """
+    p.set_viewport(width, 900)
+    url = ("%s/teacher/class-detail.html?class=%s&env=test&api=%s"
+           % (base, class_id, PAGE_API))
+    if not goto_ready(p, url,
+                      "!!document.getElementById('mrb-class-assignments')",
+                      settle=settle, tries=3):
+        return False
+    # …and let the rebuild settle, so the node read is not the one about to
+    # be thrown away.
+    time.sleep(0.8)
+    return wait_for(p, "!!document.getElementById('mrb-class-assignments')",
+                    tries=40)
+
+
+def check_cards(p, base, t_teacher, scopes, shots):
+    print("\n14 · ⊕ MRB-336 §4.1 · a card is ONE live assignment")
+    cid = FX.C_KS3_NOAUTO
+    got = pick_topic(scopes["ks3"], 2, "medium")
+    if not got:
+        return record(False, "a KS3 unit for the card checks")
+    _n, unit, _s = got
+    kids = [c["id"] for c in (unit.get("children") or [])
+            if (c.get("counts") or {}).get("medium", 0) >= 3]
+    clear_teacher_work(t_teacher, cid)
+
+    made = []
+    # ⚠️ THREE DIFFERENT QUESTION COUNTS, and that is the per-card assertion.
+    # The card that MRB-336 replaces summed the week: three sets of 3, 5 and 7
+    # read "0 of 15 in" on one card, over a title reading "…· +2 more". If the
+    # three cards below all said the same number, this check would pass on the
+    # aggregate it exists to have removed.
+    for label, n in (("A", 3), ("B", 5), ("C", 7)):
+        title = "%s · card %s" % (TITLE, label)
+        # ⚠️ RELEASE NOW, AND NOT A COMPUTED PAST INSTANT. The first version
+        # of this passed `NOW - 8 minutes` so that "newest release first"
+        # would have something to order by — and every set was refused
+        # `release_in_past`. `NOW` is the drive's START clock, read once at
+        # import (deliberately: half this file is about "before or after the
+        # hold" and two clocks would make those checks flap), and by the time
+        # section 14 runs the drive has been going for ten minutes. The
+        # route's grace is five.
+        #
+        # Release Now is also the truer test: the server stamps its own
+        # instant, the three sets land seconds apart in the order a teacher
+        # made them, and slot A is the newest for the same reason it will be
+        # in a classroom.
+        aid, _ids = set_one(t_teacher, cid, "medium",
+                            kids[len(made) % len(kids)] if kids else unit["id"],
+                            title, n,
+                            scope_kind="subtopic" if kids else "topic")
+        time.sleep(1.2)     # distinct release instants, so the order is real
+        if not aid:
+            return False
+        made.append((label, title, n, aid))
+
+        if not open_class_page(p, base, cid):
+            return record(False, "the class page loads with %d live set(s)"
+                          % len(made))
+        cards = p.eval(CARDS_JS)
+        if cards is None:
+            return record(False, "the live-card grid is on the class page")
+        live = [c for c in cards if c["title"].startswith(TITLE)]
+
+        want_n = min(len(made), 2)
+        record(len(live) == want_n,
+               "cards_are_slots_A_and_B — %d live set(s) on the class, %d "
+               "card(s) drawn (never more than two)" % (len(made), want_n),
+               "titles %s" % [c["title"] for c in cards])
+
+        # ⚠️ NEWEST RELEASE FIRST. Slot A must be the set the teacher made
+        # most recently, not the first one the read happened to return.
+        newest = made[-1][1]
+        record(live and live[0]["title"] == newest,
+               "…and slot A is the NEWEST release, which is the set the "
+               "teacher just made",
+               "slot A %r · expected %r"
+               % (live[0]["title"] if live else None, newest))
+
+        # ⚠️ EACH CARD'S OWN DENOMINATOR. One pupil is enrolled, so every
+        # card reads "0 of 1 in" — and the aggregate would have read
+        # "0 of %d in" by now. The number that matters is the SECOND one.
+        bad_count = [c["count"] for c in live if c["count"] != "0 of 1 in"]
+        record(not bad_count,
+               "…and every card counts its OWN column — '0 of 1 in' on each, "
+               "not the week summed into one fraction",
+               "counts %s" % [c["count"] for c in live])
+
+        # No card's TITLE carries the retired aggregate suffix.
+        record(not any(" · +" in c["title"] and "more" in c["title"]
+                       for c in cards),
+               "…and no card title carries the retired '· +N more' suffix — "
+               "the overflow is a link, not a lie in the heading",
+               "titles %s" % [c["title"] for c in cards])
+
+        if len(made) <= 2:
+            record(all(c["more"] is None for c in cards),
+                   "…and with %d live set(s) there is no overflow link"
+                   % len(made),
+                   "more: %s" % [c["more"] for c in cards])
+        else:
+            rest_n = len(made) - 2
+            record(live and live[-1]["more"] == "+%d more" % rest_n,
+                   "…and the THIRD set becomes '+%d more' on the LAST card, "
+                   "rather than a third card" % rest_n,
+                   "more: %s" % [c["more"] for c in cards])
+
+        # Per-card chase and per-card reminder button.
+        record(all(len(c["chase"]) == 1 for c in live)
+               and all(c["remind"] == "Remind all 1" for c in live),
+               "…with its OWN chase chip and its OWN 'Remind all 1' — one "
+               "pupil, one chip, per card",
+               "chase %s · remind %s"
+               % ([c["chase"] for c in live], [c["remind"] for c in live]))
+
+        # ⚠️ THE ONLY SCREENSHOT IN THIS LOOP IS ON THE LAST PASS, AFTER
+        # EVERY ASSERTION OF THAT PASS. `ks3_browser.screenshot()` sets the
+        # viewport and leaves it set (ks3_browser.py:577, default 1280), and
+        # `open_class_page` sets it again at the top of the next pass — but
+        # a capture in the middle of a measured pass would be measuring one
+        # width and photographing another.
+        if shots and len(made) == 3:
+            p.screenshot(os.path.join(shots, "MRB336-cards-three-390.png"),
+                         width=390)
+    # The next check reads this page; put the width back where the shot
+    # found it rather than leaving 1280 behind for it.
+    p.set_viewport(390, 900)
+    time.sleep(0.4)
+
+    # ── ⊕ MRB-336 · '+N more' HAS SOMEWHERE TO GO ─────────────────────
+    #
+    # ⚠️ THIS ASSERTS THE ANCHOR ELEMENT, NOT THE PRESS, AND THAT IS THE
+    # POINT. `MRB_TO_ASSIGNMENTS()` answers `false` both when there is no
+    # Assignments section to scroll to (legitimate — a class with no work)
+    # and when the anchor simply is not in the DOM (a dead control), and from
+    # outside the two are the same `false`. The id was first put on node 306,
+    # which is the `<if>` — control flow, not an element — so it was dropped
+    # by the runtime with no error, the generated HTML still contained the
+    # string, and "+N more" did nothing at all on every class in the school.
+    # It is the only route to the third and later live sets of a week.
+    anchor = p.eval("""(function(){
+      var el = document.getElementById('mrb-class-assignments');
+      return {present: !!el, tag: el ? el.tagName : null,
+              text: el ? (el.textContent||'').trim().slice(0, 40) : null,
+              press: (typeof MRB_TO_ASSIGNMENTS === 'function')
+                     ? MRB_TO_ASSIGNMENTS() : 'no helper'};})()""")
+    record(anchor["present"] and anchor["press"] is True,
+           "class_page_anchor — the Assignments section carries the id "
+           "'+N more' scrolls to, and the press finds it",
+           json.dumps(anchor))
+    return made
+
+
+def check_remind_names_its_own_card(p, base, made):
+    """RISKS C4 — Remind on card A reminds about set A.
+
+    ⚠️ THE ONLY PLACE THIS IS VISIBLE IS THE ROW IT WRITES. The button says
+    'Remind all 1' on both cards, the toast says the same sentence on both,
+    and the aggregate version — which nudged about every set in the week at
+    once — was indistinguishable from the correct one on screen. The
+    `assignment_id` on the `student_notifications` row is the whole claim.
+    """
+    print("\n   ⊕ MRB-336 · the reminder names the card it was pressed on")
+    if not made or len(made) < 2:
+        return record(False, "two cards to tell apart")
+    cid = FX.C_KS3_NOAUTO
+    FX.api("DELETE", "/rest/v1/student_notifications?class_id=eq." + cid)
+
+    cards = p.eval(CARDS_JS) or []
+    live = [c for c in cards if c["title"].startswith(TITLE)]
+    if len(live) < 2:
+        return record(False, "two live cards on the page",
+                      "%d" % len(live))
+    slot_a_title = live[0]["title"]
+    slot_b_title = live[1]["title"]
+    by_title = {t: aid for _l, t, _n, aid in made}
+
+    # Press slot B's button, NOT slot A's. Pressing the first card would pass
+    # against an implementation that always reminded about the first.
+    pressed = p.eval("""(function(){
+      var g = document.querySelector('div[style*="minmax(330px,1fr)"]');
+      var cards = Array.prototype.filter.call(g.children, function (c) {
+        var t = c.children[1];
+        return t && (t.textContent || '').indexOf(%s) === 0; });
+      var card = cards[1];
+      if (!card) { return 'no second card'; }
+      var f = card.querySelector('div[style*="margin-top:auto"] button');
+      if (!f) { return 'no remind button'; }
+      f.click();
+      return 'clicked';})()""" % json.dumps(TITLE))
+    if pressed != "clicked":
+        return record(False, "the second card's Remind button is pressable",
+                      pressed)
+    time.sleep(3.0)
+
+    st, rows = FX.api("GET", "/rest/v1/student_notifications?class_id=eq.%s"
+                             "&select=assignment_id,student_id" % cid)
+    got = sorted({r.get("assignment_id") for r in (rows or [])})
+    want_b = by_title.get(slot_b_title)
+    want_a = by_title.get(slot_a_title)
+    record(got == [want_b],
+           "remind_names_its_own_assignment — pressing slot B's 'Remind all' "
+           "writes ONE reminder, and it names slot B's assignment",
+           "wrote %s · slot B %s · slot A %s" % (got, want_b, want_a))
+    record(want_a not in got,
+           "…and specifically NOT slot A's, which is what the week-wide "
+           "reminder used to do", "slot A id %s" % want_a)
+    record(p.eval("(function(){var g=document.querySelector("
+                  "'div[style*=\"minmax(330px,1fr)\"]');"
+                  "return (g.textContent||'').indexOf('Reminded today')!==-1;})()"),
+           "…and that card, and the teacher's screen, says 'Reminded today'")
+    FX.api("DELETE", "/rest/v1/student_notifications?class_id=eq." + cid)
+
+
+def check_card_counts_are_per_card(p, base, made):
+    """C4's other half — the DENOMINATOR and the CHASE are per card too.
+
+    ⚠️ WITHOUT THIS THE COUNT ASSERTION IN `check_cards` IS WEAK AND I WOULD
+    RATHER SAY SO THAN LET IT LOOK STRONG. 9a/Sc1 has one pupil and nobody has
+    submitted, so every card reads `0 of 1 in` — which is exactly what a
+    surviving AGGREGATE card would read too. Three cards all saying the same
+    true thing cannot distinguish "each card counted its own column" from
+    "one number was copied onto three cards".
+    """
+    print("\n   ⊕ MRB-336 · the count and the chase are per card, not per week")
+    if not made or len(made) < 2:
+        return record(False, "two cards to tell apart")
+    cards = p.eval(CARDS_JS) or []
+    live = [c for c in cards if c["title"].startswith(TITLE)]
+    if len(live) < 2:
+        return record(False, "two live cards on the page", "%d" % len(live))
+    by_title = {t: aid for _l, t, _n, aid in made}
+    a_title, b_title = live[0]["title"], live[1]["title"]
+    a_id = by_title.get(a_title)
+
+    # ⚠️ THE SUBMISSION IS BUILT BY THE FIXTURE, NOT SUBMITTED BY A CHILD.
+    # Driving a real pupil through a real assignment is `student_api_drive`'s
+    # job and would take a browser, a sign-in and twenty answers to establish
+    # one number here. `FX` is the service key and building the world is
+    # exactly what it is for; nothing in the CHECK runs on it.
+    pupil = FX.find_user(FX.PUPIL_EMAIL)
+    sub_id = str(uuid.uuid4())
+    st, _ = FX.api("POST", "/rest/v1/assignment_submissions",
+                   {"id": sub_id, "assignment_id": a_id, "student_id": pupil,
+                    "score": 3, "max_score": 3, "attempts": 1,
+                    "submitted_at": datetime.now(timezone.utc).isoformat()})
+    if st not in (200, 201, 204):
+        return record(False, "a submission can be planted on slot A",
+                      "status %s" % st)
+    try:
+        if not open_class_page(p, base, FX.C_KS3_NOAUTO):
+            return record(False, "the class page reloads with a submission on it")
+        cards = p.eval(CARDS_JS) or []
+        live = [c for c in cards if c["title"].startswith(TITLE)]
+        got = {c["title"]: c for c in live}
+        a, b = got.get(a_title), got.get(b_title)
+        record(a and b and a["count"] == "1 of 1 in" and b["count"] == "0 of 1 in",
+               "card_counts_are_per_card — ONE pupil submits ONE of the two "
+               "live sets, and the two cards now read DIFFERENT numbers; the "
+               "aggregate card would have read '1 of 2 in' on both",
+               "%r → %r · %r → %r"
+               % (a_title[-12:], (a or {}).get("count"),
+                  b_title[-12:], (b or {}).get("count")))
+        record(a and b and a["chase"] == [] and b["chase"] == ["Pip T"],
+               "…and the chase list follows the same column — the child who "
+               "has done slot A is chased for slot B and not for slot A",
+               "slot A chase %s · slot B chase %s"
+               % ((a or {}).get("chase"), (b or {}).get("chase")))
+        record(a and a["remind"] in (None, ""),
+               "…and slot A offers no 'Remind all' at all, because there is "
+               "nobody left on it to remind",
+               "slot A footer %r" % (a or {}).get("remind"))
+    finally:
+        # ⚠️ REMOVED HERE RATHER THAN LEFT TO TEARDOWN. `--keep` exists so a
+        # run can be inspected, and a planted submission left standing would
+        # make the NEXT run's `0 of 1 in` assertions fail for a reason that
+        # has nothing to do with the code.
+        FX.api("DELETE", "/rest/v1/assignment_submissions?id=eq." + sub_id)
+
+
+def check_status_and_set_column(p, base, t_teacher, scopes, shots):
+    """§4.2 — Scheduled / Open / Closed, and the Set column in London.
+
+    ⚠️ THIS IS THE SCREENSHOT MIDE SENT. A row released on the 14th and shown
+    as OPEN on the 8th is the untruth the whole ticket started from: the table
+    was grouping by DUE date and calling everything not yet due 'Open', so
+    work no child could see was reported as work every child had.
+    """
+    print("\n15 · ⊕ MRB-336 §4.2 · Scheduled / Open / Closed, and the Set column")
+    cid = FX.C_KS3_NOAUTO
+    got = pick_topic(scopes["ks3"], 1, "medium")
+    if not got:
+        return record(False, "a KS3 unit for the status checks")
+    _n, unit, _s = got
+    clear_teacher_work(t_teacher, cid)
+
+    # ── SCHEDULED, at a London boundary that is a DIFFERENT DAY in UTC ─
+    #
+    # ⚠️ 23:30 UTC IS THE NEXT DAY IN LONDON THROUGH BRITISH SUMMER TIME, and
+    # that is the whole of this assertion. A Set column rendered in UTC — or
+    # in whatever zone the teacher's laptop happens to be in — reads
+    # "Mon 14 Sep 23:30" for an instant a Rainford teacher would call half
+    # past midnight on Tuesday the 15th. One day out, on the column whose
+    # only job is to say when the work appears.
+    boundary = (NOW + timedelta(days=10)).replace(
+        hour=23, minute=30, second=0, microsecond=0)
+    sched_title = TITLE + " · scheduled"
+    sched_id, _s1 = set_one(t_teacher, cid, "medium", unit["id"], sched_title, 3,
+                            release_at=boundary.isoformat(),
+                            due_at=(boundary + timedelta(days=5)).isoformat())
+
+    open_title = TITLE + " · open now"
+    open_id, _s2 = set_one(t_teacher, cid, "medium", unit["id"], open_title, 3)
+
+    # ── CLOSED ────────────────────────────────────────────────────────
+    #
+    # ⚠️ AGED BY THE FIXTURE, NOT BY THE ROUTE, and the reason is that the
+    # route is RIGHT to refuse: `release_in_past` and `bad_due_at` exist so a
+    # teacher cannot set work that arrives already overdue. There is no
+    # request that legitimately creates a closed row, so the world is built
+    # rather than requested — the same posture `FX` takes everywhere else.
+    closed_title = TITLE + " · closed"
+    closed_id, _s3 = set_one(t_teacher, cid, "medium", unit["id"], closed_title, 3)
+    if closed_id:
+        FX.api("PATCH", "/rest/v1/assignments?id=eq." + closed_id,
+               {"release_at": (NOW - timedelta(days=6)).isoformat(),
+                "due_at": (NOW - timedelta(days=1)).isoformat()})
+
+    if not open_class_page(p, base, cid):
+        return record(False, "the class page loads for the status checks")
+    rows = p.eval(ROWS_JS) or []
+    by = {r["title"]: r for r in rows}
+
+    for title, want, why in (
+            (sched_title, "Scheduled",
+             "released in the FUTURE — no child can see it, so it is not Open"),
+            (open_title, "Open",
+             "released and not yet due"),
+            (closed_title, "Closed",
+             "past its due date — 'Marked' was a claim about the teacher, not "
+             "about the work")):
+        r = by.get(title)
+        record(r is not None and r["status"] == want,
+               "status_is_release_and_due — %r reads %s (%s)"
+               % (title.replace(TITLE + " · ", ""), want, why),
+               "row %s" % json.dumps(r))
+
+    r = by.get(sched_title)
+    want_set = ldn(boundary)
+    record(r is not None and r["set"] == want_set,
+           "set_column_is_london — the Set column reads %r for an instant "
+           "that is the day BEFORE in UTC" % want_set,
+           "column %r · the UTC instant is %s"
+           % ((r or {}).get("set"), boundary.isoformat()))
+
+    # ⚠️ AND THE CARDS DISAGREE WITH THE TABLE ON PURPOSE. A Scheduled row is
+    # in the table (it IS set) and is NOT a card (nobody has been shown it).
+    # C5 — a card for scheduled work would be the same untruth one screen up.
+    cards = p.eval(CARDS_JS) or []
+    titles = [c["title"] for c in cards]
+    record(open_title in titles and sched_title not in titles
+           and closed_title not in titles,
+           "scheduled_and_closed_are_not_cards — only the OPEN set has a "
+           "card; the scheduled one is in the table and the closed one "
+           "belongs to reteach", "cards %s" % titles)
+    # ⚠️ THE SCREENSHOT IS LAST, AND THAT IS NOT TIDINESS.
+    # `ks3_browser.screenshot()` sets the viewport as a side effect
+    # (ks3_browser.py:577) and leaves it set, so a capture taken BEFORE a
+    # read is a capture that changes the page the read then measures. Every
+    # screenshot in this section goes after the last assertion that depends
+    # on the width, and every one names its width explicitly.
+    if shots:
+        p.screenshot(os.path.join(shots, "MRB336-status-390.png"), width=390)
+    return sched_id, open_id, closed_id
+
+
+def check_row_controls(p, base, t_teacher, scopes, shots, ids):
+    """§6 — Edit, Delete, the two-tap arm, and the toast."""
+    print("\n16 · ⊕ MRB-336 §6 · the row controls")
+    cid = FX.C_KS3_NOAUTO
+    if not open_class_page(p, base, cid):
+        return record(False, "the class page loads for the row controls")
+    rows = p.eval(ROWS_JS) or []
+    mine = [r for r in rows if r["title"].startswith(TITLE)]
+    record(mine and all(r["edit"] and r["del"] for r in mine),
+           "row_controls_present — every teacher-set row carries Edit and "
+           "Delete", "%d row(s): %s"
+           % (len(mine), [(r["title"][-16:], r["edit"], r["del"]) for r in mine]))
+    record(all(not r["cancel"] for r in rows),
+           "…and none is armed until it is pressed, so Cancel is nowhere yet")
+
+    target = TITLE + " · closed"
+
+    def press(kind):
+        return press_row(p, target, kind)
+
+    # ── THE TWO-TAP ARM. One tap must not delete. ─────────────────────
+    #
+    # ⚠️ THE ROW IS ITSELF A LINK — tapping it opens the marking screen — so
+    # a Delete that fired on one press would sit a few pixels from a control a
+    # teacher taps all day, with no dialogue in between. The arm IS the
+    # confirmation, and `Cancel` appearing is how a teacher knows they are one
+    # tap from losing the work.
+    record(press("delete") == "clicked", "the first Delete tap lands")
+    time.sleep(0.6)
+    armed = [r for r in (p.eval(ROWS_JS) or []) if r["title"] == target]
+    record(armed and armed[0]["cancel"] and not armed[0]["edit"],
+           "delete_arms_before_it_deletes — one tap shows Cancel and hides "
+           "Edit; it does not delete", "row %s" % json.dumps(armed[:1]))
+    st, alive = FX.api("GET", "/rest/v1/assignments?title=eq.%s&deleted_at=is."
+                              "null&select=id" % urllib.parse.quote(target))
+    record(isinstance(alive, list) and len(alive) == 1,
+           "…and the row is still there in the database after that first tap",
+           "%d live row(s)" % (len(alive) if isinstance(alive, list) else -1))
+
+    record(press("delete-cancel") == "clicked", "Cancel is pressable")
+    time.sleep(0.5)
+    back = [r for r in (p.eval(ROWS_JS) or []) if r["title"] == target]
+    record(back and back[0]["edit"] and not back[0]["cancel"],
+           "…and Cancel disarms it — Edit is back and Cancel is gone")
+
+    # ── AND NOW, FOR REAL ─────────────────────────────────────────────
+    press("delete")
+    time.sleep(0.5)
+    press("delete")
+    time.sleep(3.5)
+    after = p.eval(ROWS_JS) or []
+    record(target not in [r["title"] for r in after],
+           "delete_removes_the_row — the second tap deletes, and the row "
+           "leaves the table WITHOUT a reload",
+           "rows now: %s" % [r["title"][-18:] for r in after])
+    st, gone = FX.api("GET", "/rest/v1/assignments?title=eq.%s&deleted_at=is."
+                             "null&select=id" % urllib.parse.quote(target))
+    record(isinstance(gone, list) and not gone,
+           "…and it is soft-deleted in the database, not merely hidden",
+           "%d live row(s)" % (len(gone) if isinstance(gone, list) else -1))
+    if shots:
+        p.screenshot(os.path.join(shots, "MRB336-after-delete-390.png"),
+                     width=390)
+
+
+def check_delete_surfaces(p, base, t_teacher, scopes):
+    """A deleted set leaves EVERY screen, and that is what deleting means.
+
+    ⚠️ RISKS A1 INVERTED THE DANGER HERE. `assignments.deleted_at` already
+    existed and thirty-odd consumers already filtered it, so the risk is not
+    "somebody forgot to exclude deleted rows" — it is that a reader assumes
+    every consumer needs editing and edits one that was already right. So this
+    check is a SWEEP rather than a list: it deletes one row and then reads
+    every teacher screen and both student pages looking for its title.
+    """
+    print("\n17 · ⊕ MRB-336 · a deleted set leaves every screen")
+    cid = FX.C_KS3_A
+    got = pick_topic(scopes["ks3"], 1, "medium")
+    if not got:
+        return record(False, "a KS3 unit for the surface sweep")
+    _n, unit, _s = got
+    title = TITLE + " · vanishes everywhere"
+    aid, _ids = set_one(t_teacher, cid, "medium", unit["id"], title, 4)
+    if not aid:
+        return False
+
+    pages = [("class-detail", "/teacher/class-detail.html?class=%s"),
+             ("assignment (marking)", "/teacher/assignment.html?class=%s"),
+             ("digest", "/teacher/digest.html?class=%s"),
+             ("insights", "/teacher/insights.html?class=%s")]
+
+    def sweep(when):
+        seen = {}
+        for label, path in pages:
+            p.set_viewport(390, 900)
+            if not goto_ready(p, base + (path % cid) + "&env=test&api=" + PAGE_API,
+                              "document.body && document.body.innerText.length > 300",
+                              settle=6.5, tries=2):
+                seen[label] = None
+                continue
+            seen[label] = title in (p.eval("document.body.innerText") or "")
+        return seen
+
+    before = sweep("before")
+    record(any(v is True for v in before.values()),
+           "the set is ON the teacher's screens before it is deleted, or the "
+           "sweep below proves nothing", json.dumps(before))
+
+    st, out = api_delete(t_teacher, aid)
+    record(st == 200, "…and it is deleted", "status %s" % st)
+
+    after = sweep("after")
+    still = sorted(k for k, v in after.items() if v is True)
+    record(not still,
+           "delete_leaves_every_teacher_screen — the title is on none of "
+           "class-detail, the marking screen, the digest or insights",
+           json.dumps(after) if not still else "STILL SHOWING ON: %s" % still)
+    # ⚠️ `None` MEANS A PAGE DID NOT LOAD, WHICH IS NOT A PASS. A page that
+    # 404s or CORS-fails renders nothing, contains no title, and would satisfy
+    # "the title is absent" while proving the opposite of what is claimed.
+    dead = sorted(k for k, v in after.items() if v is None)
+    record(not dead,
+           "…and every one of those four pages actually LOADED, so 'absent' "
+           "means absent rather than blank",
+           "loaded: %s" % sorted(k for k, v in after.items() if v is not None)
+           if not dead else "DID NOT LOAD: %s" % dead)
+    return aid, title
+
+
+def check_delete_student_surfaces(p, base, title):
+    """The child's side of the same delete. One browser, the pupil's."""
+    print("\n   …and the child's pages forget it too")
+    if not title:
+        return
+    for label, path in (("student class", "/student/class.html?class=%s"),
+                        ("student assignment", "/student/assignment.html?class=%s")):
+        p.set_viewport(390, 900)
+        ok = goto_ready(p, base + (path % FX.C_KS3_A) + "&env=test&api=" + PAGE_API,
+                        "document.body && document.body.innerText.length > 200",
+                        settle=7.0, tries=2)
+        body = (p.eval("document.body.innerText") or "") if ok else ""
+        record(ok and title not in body,
+               "delete_leaves_the_childs_%s — the deleted set is not on it"
+               % label.replace(" ", "_"),
+               "%d characters, title absent" % len(body) if ok
+               else "the page did not load, so absence proves nothing")
+
+
+def check_wide(p, base, class_ids):
+    """1280px. ⚠️ A DESKTOP WIDTH IS NOT 'THE PHONE BUT ROOMIER'.
+
+    The Assignments table gained an EIGHTH column today and the card grid is
+    `auto-fit minmax(330px, 1fr)` — at 390 it is one column and every failure
+    mode of a wide grid is invisible. Both widths, or neither is measured.
+    """
+    print("\n18 · ⊕ MRB-336 · the teacher's screens at 1280px")
+    for label, cid in class_ids:
+        p.set_viewport(1280, 900)
+        if not goto_ready(p, "%s/teacher/class-detail.html?class=%s&env=test&api=%s"
+                          % (base, cid, PAGE_API),
+                          "document.body && document.body.innerText.length > 300",
+                          settle=6.5, tries=2):
+            record(False, "class-detail loads at 1280px for %s" % label)
+            continue
+        got = p.eval("""(function(){
+          var d = document.documentElement;
+          var box = document.getElementById('mrb-class-assignments');
+          var g = document.querySelector('div[style*="minmax(330px,1fr)"]');
+          return {sw: d.scrollWidth, cw: d.clientWidth, iw: window.innerWidth,
+                  boxOver: box ? (box.scrollWidth - box.clientWidth) : 0,
+                  cards: g ? g.children.length : -1,
+                  bad: /\\bnull\\b|\\bundefined\\b|\\bNaN\\b/.test(
+                         document.body.innerText || '')};})()""")
+        # ⚠️ ⊕ MRB-336 — THE WIDTH IS ASSERTED, NOT ASSUMED. A viewport
+        # override can be undone by something else in the run —
+        # `ks3_browser.screenshot()` resets it as a side effect
+        # (ks3_browser.py:572-577, `width` defaulting to 1280) — and a
+        # sideways-scroll check taken at the wrong width is the worst kind of
+        # green: a desktop has the room, so it passes, and it passes hardest
+        # on exactly the pages a phone cannot fit. `innerWidth` is the page's
+        # own report of the width it was laid out at.
+        record(got["iw"] == 1280,
+               "…measured at 1280 — the page says so itself, so this is not a "
+               "phone measurement wearing a desktop label",
+               "window.innerWidth %s" % got["iw"])
+        record(got["sw"] <= got["cw"] + 1 and not got["bad"],
+               "wide_no_sideways — class-detail for %s does not scroll "
+               "sideways at 1280px and says no null" % label,
+               json.dumps(got))
+        record(got["boxOver"] <= 1,
+               "…and the eight-column Assignments table fits its own box "
+               "rather than overflowing it",
+               "%dpx over" % got["boxOver"])
+
+
+def check_edit_sheet(p, base, shots):
+    """§6 rendered — Edit opens the sheet on the row, and it NARROWS.
+
+    ⚠️ THE API HALF PROVES THE SERVER REFUSES; THIS PROVES THE TEACHER IS NOT
+    OFFERED IT. Those are different failures and only one of them is rude. A
+    sheet that let a teacher restyle the questions on live work, take twenty
+    seconds over it and then answer `locked_after_release` has told them the
+    truth at the worst possible moment.
+    """
+    print("\n19 · ⊕ MRB-336 §6 · Edit, in the sheet")
+    cid = FX.C_KS3_NOAUTO
+    if not open_class_page(p, base, cid):
+        return record(False, "the class page loads for the Edit check")
+    target = TITLE + " · open now"
+    clicked = press_row(p, target, "edit")
+    if clicked != "clicked":
+        return record(False, "Edit is pressable on the released row", clicked)
+    if not wait_for(p, "!!document.querySelector('[data-sw=\"overlay\"]')"
+                       "&& !document.querySelector('[data-sw=\"overlay\"]')"
+                       ".hidden"):
+        return record(False, "the sheet opens on Edit")
+    time.sleep(1.2)
+
+    st = p.eval("""(function(){
+      var o = document.querySelector('[data-sw="overlay"]');
+      var q = function(s){return o.querySelector(s);};
+      var vis = function(n){return !!n && !n.hidden
+        && getComputedStyle(n).display !== 'none';};
+      return {edit: o.getAttribute('data-sw-edit') || '',
+              primary: (q('[data-sw="primary"]')||{}).textContent || '',
+              roTier: (q('[data-sw="ro-tier"]')||{}).textContent || null,
+              roScope: (q('[data-sw="ro-scope"]')||{}).textContent || null,
+              relChips: vis(q('[data-sw="release-chips"]')),
+              qlistRo: !!q('[data-sw="qlist"].is-ro'),
+              swaps: o.querySelectorAll('[data-sw="qlist"].is-ro .sw-swap')
+                      .length,
+              swapVisible: (function(){
+                var s = o.querySelector('[data-sw="qlist"].is-ro .sw-swap');
+                return s ? getComputedStyle(s).display !== 'none' : false;})(),
+              title: (q('[data-sw="title"]')||{}).value || ''};})()""")
+    record(bool(st["edit"]) and st["title"] == target,
+           "edit_opens_on_the_row — the overlay is stamped with the "
+           "assignment id and the title field holds THAT row's title",
+           json.dumps({k: st[k] for k in ("edit", "title")}))
+    record(st["primary"] == "Save",
+           "…and the primary says Save, not Set — the verb for a row that "
+           "already exists", repr(st["primary"]))
+    record(st["roTier"] and st["roScope"],
+           "edit_after_release_narrows — the tier and the topic are shown as "
+           "FACTS rather than as controls",
+           "tier %r · topic %r" % (st["roTier"], st["roScope"]))
+    record(st["relChips"] is False,
+           "…and the release chips are gone: an instant that has already "
+           "passed is not a choice any more")
+    record(st["qlistRo"] and st["swapVisible"] is False,
+           "…and Swap is not offered on any question, so the pupil halfway "
+           "through cannot have one changed underneath them",
+           "%d swap control(s), none visible" % st["swaps"])
+    # The title and the due date DO still move, or Edit would be a viewer.
+    p.eval("""(function(){var t=document.querySelector('[data-sw="title"]');
+        t.value=%s; t.dispatchEvent(new Event('input',{bubbles:true}));})()"""
+           % json.dumps(target + " (renamed)"))
+    time.sleep(0.3)
+    record(p.eval("!document.querySelector('[data-sw=\"primary\"]').disabled"),
+           "…while the title field is still live and Save is pressable, so "
+           "the narrowing is a narrowing and not a lock")
+    if shots:                          # ⊕ MRB-336 — last, and with a width
+        p.screenshot(os.path.join(shots, "MRB336-edit-locked-390.png"),
+                     width=390)
+    p.eval("window.MRBSetWork.close()")
 
 
 if __name__ == "__main__":

@@ -449,12 +449,84 @@ def check_scope(token):
            "tree subjects=%s, subjects=%s"
            % (sorted(comb_subs), comb.get("subjects")))
 
-    # Papers are a combined-only chip (RISKS C8 / PLAN §4).
-    record(comb.get("papers") == [1, 2] and trip.get("papers") is None
-           and seps.get("papers") is None,
-           "papers: [1,2] on Combined, null on both Triple classes",
+    # ── ⊕ MRB-336, 8 Sep 2026 — PAPERS ARE NOT A COMBINED-ONLY CHIP ──────
+    #
+    # ⛔ This check used to read:
+    #
+    #     # Papers are a combined-only chip (RISKS C8 / PLAN §4).
+    #     record(comb.get("papers") == [1, 2] and trip.get("papers") is None
+    #            and seps.get("papers") is None,
+    #            "papers: [1,2] on Combined, null on both Triple classes", …)
+    #
+    # It is kept, rather than deleted, because it is a check that PASSED while
+    # describing a defect, and a reader meeting the new assertion cold would
+    # otherwise have no way to tell which of the two readings is the mistake.
+    #
+    # The old comment carried the whole error in four words. AQA examines the
+    # separate sciences on two papers per science, exactly as Trilogy is
+    # examined on two per science — Biology Paper 1 and Biology Paper 2 are
+    # real papers with real dates. Withholding the chip from Triple meant the
+    # one cohort whose teachers most often revise BY PAPER ("everything on
+    # paper 1 before the mock") was the only cohort that could not filter by
+    # it. Mide called it "a simple fix" and it is: `papersFor` returns [1, 2]
+    # for every KS4 class and null only at KS3.
+    #
+    # ⚠️ THE TREE NEVER HAD THIS BUG — only the OFFER did. `treeForClass` has
+    # stamped `paper` on every KS4 topic from `KS4_PAPER` since it was written,
+    # with no pathway branch anywhere near it, so a triple class's tree already
+    # carried the paper on every topic it could see and the chips were simply
+    # not offered. That is why the fix is one line and why the assertion below
+    # tests the OFFER (`papers`) and the TREE (`paper` per topic) separately:
+    # they were never the same fact, and a future regression could break either
+    # one without the other.
+    record(comb.get("papers") == [1, 2] and trip.get("papers") == [1, 2]
+           and seps.get("papers") == [1, 2],
+           "papers: [1,2] on Combined AND on both Triple classes — AQA "
+           "examines the separate sciences on two papers per science too",
            "combined=%s triple=%s seps=%s"
            % (comb.get("papers"), trip.get("papers"), seps.get("papers")))
+
+    # ── ⊕ MRB-336 · `space` IS THE CASE THAT COMES OUT RIGHT BOTH WAYS ────
+    #
+    # All five of `space`'s subtopics are `triple_only`, which makes it the
+    # only topic in the curriculum that exercises both halves of the change at
+    # once, and the two halves pull in opposite directions:
+    #
+    #   · on TRIPLE PHYSICS it is in the tree and must now carry a paper 2
+    #     chip — it is examined on physics paper 2, and before today a Triple
+    #     Physics teacher revising by paper could not reach it by paper;
+    #   · on COMBINED it is dropped from the tree entirely (RISKS C7, asserted
+    #     above), so there is no topic there to carry a chip at all.
+    #
+    # A one-line `papersFor` change cannot distinguish those, and neither can
+    # a check that only reads the class-level `papers` list. This reads the
+    # PER-TOPIC stamp on the node itself.
+    seps_topics = tree_topics(seps)
+    space = seps_topics.get("space")
+    record(space is not None and space.get("paper") == 2,
+           "⊕ MRB-336: `space` is on the Triple Physics tree AND carries "
+           "paper 2 — the topic the combined tree cannot see is examined on "
+           "physics paper 2, and now says so",
+           "paper=%r, %d subtopic(s)"
+           % ((space or {}).get("paper"), len((space or {}).get("children") or []))
+           if space else "⚠️ `space` is not on the Triple Physics tree at all")
+
+    # …and every KS4 topic a teacher is offered carries a paper, on every
+    # cohort. A chip rail is only usable if the partition is total: one topic
+    # with `paper: null` is a topic that vanishes from both filters.
+    unpapered = []
+    for label, body in (("combined", comb), ("triple bio", trip),
+                        ("triple phys", seps)):
+        for tid, topic in tree_topics(body).items():
+            if topic.get("paper") not in (1, 2):
+                unpapered.append("%s/%s=%r" % (label, tid, topic.get("paper")))
+    record(not unpapered,
+           "⊕ MRB-336: every KS4 topic on every cohort's tree carries paper 1 "
+           "or paper 2 — the chip rail partitions the tree, it does not "
+           "sample it",
+           "%d topic(s) across three cohorts, all papered"
+           % sum(len(tree_topics(b)) for b in (comb, trip, seps))
+           if not unpapered else "UNPAPERED: %s" % unpapered[:6])
 
     # ── RISKS C11 — the default tier is the class-NAME rule's answer ──────
     #

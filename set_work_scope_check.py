@@ -299,6 +299,90 @@ def ks4_nodes(tree, pathway, subject):
     return out
 
 
+# ── ⊕ MRB-336, 8 Sep 2026 — THE PAPER CHIP IS A FILTER, AND A FILTER CAN
+#    BE A DEAD END ──────────────────────────────────────────────────────
+#
+# ⛔ THERE WAS NO PAPER DIMENSION IN THIS GATE AT ALL BEFORE TODAY, and until
+# today that was defensible: `papersFor` returned `[1, 2]` for combined and
+# `null` for triple, so on the only cohort that had chips the paper split was
+# a re-partition of a tree this gate already walked node by node, and the
+# exporter refuses a topic with no paper (`export_curriculum_tree.py:146`) so
+# the map cannot be incomplete.
+#
+# MRB-336 gave every KS4 cohort the chips, and that adds a question none of
+# the four properties above asks: **is anything left after the chip.** The
+# cells this gate measures are (cohort, node, tier); a paper chip is a fifth
+# axis over the COHORT, and a cohort × paper with no topics in it is a chip a
+# teacher taps and gets an empty list from — the same failure as an empty
+# cell, one level up, and invisible from every other angle. `space` is the
+# case that makes it real rather than theoretical: it is physics paper 2 and
+# triple-only, so it exists under one cohort's paper 2 chip and under no
+# other's, and it is the topic most likely to be dropped by a future filter
+# written for combined.
+#
+# ⚠️ IT IS A REACHABILITY CHECK, NOT A SECOND FLOOR. The fifty floor already
+# applies per topic, and a paper is not a thing a teacher sets work ON — they
+# tap it to narrow the list and then pick a topic inside it. So what is
+# asserted is that the narrowing leaves something, at every tier, on every
+# cohort; the depth of what it leaves is the topic floor's business.
+def ks4_paper_cells(tree, pathway, subject):
+    """{paper: [(topic_id, [slugs], all_higher)]} for one cohort."""
+    cells = {1: [], 2: []}
+    subjects = [subject] if subject else list(SUBJECTS)
+    for subj in subjects:
+        for topic in tree["ks4"][subj]:
+            paper = topic.get("paper")
+            slugs = [st["slug"] for st in topic["subtopics"]
+                     if pathway == "triple" or not st["triple_only"]]
+            if not slugs:
+                continue
+            if paper not in cells:
+                fail("papers", "%s/%s carries paper %r, which is neither 1 "
+                               "nor 2 — the chip rail cannot partition a tree "
+                               "with a topic outside it" % (subj, topic["id"],
+                                                            paper))
+                continue
+            kept = [st for st in topic["subtopics"] if st["slug"] in slugs]
+            cells[paper].append((topic["id"], slugs,
+                                 all(st["tier"] == "higher" for st in kept)))
+    return cells
+
+
+def report_papers(label, tree, pathway, subject, index, keep):
+    """Every (cohort, paper, tier) leaves a teacher something to pick."""
+    cells = ks4_paper_cells(tree, pathway, subject)
+    smallest = None
+    for paper in (1, 2):
+        topics = cells[paper]
+        if not topics:
+            fail(label, "paper %d offers NO topic at all — the chip is a dead "
+                        "end on this cohort" % paper)
+            continue
+        for tier in KS4_TIERS:
+            # The derived exception from property 1 applies unchanged: a topic
+            # every subtopic of which is classified `higher` holds no
+            # foundation row by construction, so it is not counted against the
+            # foundation cell. The PAPER cell only fails if EVERY topic under
+            # it is empty at that tier, which is a chip with nothing behind it.
+            total = 0
+            for _tid, slugs, all_higher in topics:
+                if tier == "foundation" and all_higher:
+                    continue
+                for slug in slugs:
+                    total += sum(1 for r in index.get(slug, []) if keep(r, tier))
+            if not total:
+                fail(label, "paper %d at %s has NO question behind any of its "
+                            "%d topic(s) — tapping the chip and then the tier "
+                            "leaves the teacher nothing"
+                     % (paper, tier, len(topics)))
+            elif smallest is None or total < smallest[0]:
+                smallest = (total, "%s paper %d %s" % (label, paper, tier))
+    if smallest:
+        notes.append("%s: thinnest paper cell %d questions (%s)"
+                     % (label, smallest[0], smallest[1]))
+    return smallest
+
+
 def ks3_nodes(tree):
     out = []
     for subj in SUBJECTS:
@@ -449,6 +533,18 @@ def main():
                args.quiet)
     if s:
         ks4_small.append(s)
+
+    # ⊕ MRB-336 — the paper chips, on the cohort that has had them all along
+    # and on the three that got them today.
+    report_papers("KS4 combined", tree, "combined", None, ks4_index,
+                  lambda r, t: ks4_row_in_tier(r, t)
+                  and ks4_row_in_pathway(r, "combined"))
+
+    for subject in SUBJECTS:
+        report_papers("KS4 triple %s" % subject, tree, "triple", subject,
+                      ks4_index,
+                      lambda r, t: ks4_row_in_tier(r, t)
+                      and ks4_row_in_pathway(r, "triple"))
 
     for subject in SUBJECTS:
         s = report("KS4 triple %s" % subject,

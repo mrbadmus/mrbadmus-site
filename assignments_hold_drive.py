@@ -367,6 +367,57 @@ def main():
                   "ahead: says assignments are ON HOLD", repr(s["text"]))
             check("14 Sep 2026" in (s["text"] or ""),
                   "ahead: names the date in words", repr(s["text"]))
+
+            # ══ ⊕ MRB-336, 8 Sep 2026 — WHAT THE HOLD NOW GOVERNS ═══════
+            #
+            # ⛔ THE CARD USED TO SAY, IN THE HELD STATE:
+            #
+            #     'Until then no new work is set, and students see “No work
+            #      has been set for this week yet.”'
+            #
+            # It was true when `schools.assignments_open_from` was read inside
+            # the teacher's own write path as well as inside the automatic
+            # producer. Mide ruled that second job away: the hold keeps its
+            # entire meaning for AUTOMATIC weekly composition and has none at
+            # all for work a teacher sets by hand, which now reaches the class
+            # the moment the teacher asks it to.
+            #
+            # ⚠️ THIS IS THE ONE SCREEN WHERE THAT DISTINCTION IS A DECISION
+            # RATHER THAN A DETAIL. A school admin reads this card and decides
+            # whether to hold a whole school back. A card promising that
+            # nothing reaches pupils, on a platform where a teacher can set
+            # revision the week before term and have it arrive, is a promise
+            # the product does not keep — and neither of them would find out
+            # until a parent asked.
+            #
+            # ⚠️ AND THIS DRIVE CANNOT PROVE THE BEHAVIOUR, ONLY THE SENTENCE.
+            # Read the header: every network call here is stubbed, `fetch` is
+            # replaced before the page's own script runs, supabase.co is
+            # blocked at the protocol level and there is no backend, no
+            # database and no pupil anywhere in the process. "A held school's
+            # teacher-set work reaches the child while the automatic producer
+            # is still refusing" is a claim about a real row, real RLS and a
+            # real child, and asserting it against this stub would be a green
+            # tick in front of nothing. It is proved where it can be — in
+            # `set_work_drive.check_hold`, from ONE response of
+            # `/api/class/current-assignment` on the held school's class, so
+            # that the two halves cannot disagree about the clock or the week.
+            # What belongs HERE is the sentence this card shows the person
+            # making the decision, and that is what is asserted.
+            check("Automatic weekly work" in (s["text"] or ""),
+                  "ahead: the hold is described as governing the AUTOMATIC "
+                  "weekly work, not all work", repr(s["text"]))
+            check("straight away" in (s["text"] or ""),
+                  "ahead: and the card says work a teacher sets by hand still "
+                  "reaches their classes straight away", repr(s["text"]))
+            check("no new work is set" not in (s["text"] or ""),
+                  "ahead: the retired promise that NO new work is set is gone",
+                  repr(s["text"]))
+            check("No work has been set for this week yet"
+                  not in (s["text"] or ""),
+                  "ahead: and so is the pupil sentence it misquoted — the "
+                  "note below has carried the right one since MRB-330",
+                  repr(s["text"]))
             check(s["input"] == AHEAD,
                   "ahead: the picker is PRE-FILLED with the date that is set",
                   repr(s["input"]))

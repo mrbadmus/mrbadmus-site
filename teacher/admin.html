@@ -426,9 +426,11 @@
            it quoted was the one for a week with no work set, not for a school
            that has not opened. The ruled held-school line is the one below, and
            `benchHeldLine` in shared/student-live.js is where it is written. -->
-      Before this date no new weekly assignments are created, and students see
-      “This week’s work isn’t live yet.” Work that has already been set
-      stays visible either way. You can change this date as often as you like.
+      Before this date no new weekly assignments are created automatically, and
+      a class with no other work set sees “This week’s work isn’t live yet.”
+      Work a teacher sets by hand is unaffected — it reaches the class when
+      they choose, hold or no hold. Work that has already been set stays
+      visible either way. You can change this date as often as you like.
     </div>
   </div>
 
@@ -898,10 +900,28 @@ function paintHold(value) {
       'they started on <strong>' + escapeHtml(dateLabel(value + 'T12:00:00')) + '</strong>.';
     input.value = value;
   } else {
-    state.innerHTML = 'Assignments are <span class="held">on hold</span> until ' +
-      '<strong>' + escapeHtml(dateLabel(value + 'T12:00:00')) + '</strong>. ' +
-      'Until then no new work is set, and students see “No work has been set ' +
-      'for this week yet.”';
+    /* ⊕ MRB-336, 8 Sep 2026 — THIS SENTENCE BECAME FALSE TODAY, and it
+       is the sentence a school admin decides on. It used to read:
+
+         'Until then no new work is set, and students see “No work has been
+          set for this week yet.”'
+
+       Both halves were true when the hold also governed the teacher's own
+       write path. Mide ruled that path out: `schools.assignments_open_from`
+       keeps its whole meaning for AUTOMATIC weekly composition and has none
+       at all for work a teacher sets by hand, which now reaches the class
+       the instant the teacher asks it to. Left as it was, this card would
+       promise an admin that nothing reaches pupils while the hold stands —
+       and a teacher setting revision the week before term would break that
+       promise without either of them knowing it had been made.
+
+       The quoted pupil sentence was also the wrong one; the note below has
+       carried the right one since MRB-330. So the quotation goes rather than
+       being corrected in two places. */
+    state.innerHTML = 'Automatic weekly work is <span class="held">on hold' +
+      '</span> until <strong>' +
+      escapeHtml(dateLabel(value + 'T12:00:00')) + '</strong>. ' +
+      'Work a teacher sets by hand still reaches their classes straight away.';
     input.value = value;
   }
   document.getElementById('hold-card').style.display = 'block';

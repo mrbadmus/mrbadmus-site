@@ -141,10 +141,20 @@ function MRB_HOME(){window.location.href = '/index.html';}
    fixture scrolling out from under the measurement that is still running.
 
    ⚠️ AND IT TOLERATES THE SECTION NOT BEING THERE. `mrb-class-assignments`
-   is `SET_ATTR`'s id on node 306, and node 306 is inside `klass.hasWork` —
-   a class with no work at all has no table to scroll to. A throw inside a
+   is `SET_ATTR`'s id on node **307**, which is inside `klass.hasWork` — a
+   class with no work at all has no table to scroll to. A throw inside a
    click listener is reported by the gates as a dead control, which is the
-   wrong finding; `false` is the honest one. */
+   wrong finding; `false` is the honest one.
+
+   ⚠️ AND THAT TOLERANCE HID A REAL DEFECT FOR THE LENGTH OF ONE AFTERNOON.
+   The id was first put on node **306**, which is the `<if>` itself — control
+   flow, not an element — so it never reached the DOM at all and this
+   function returned `false` on every class, work or no work. "+N more" is
+   the only route to the third and later live sets of a week, and it did
+   nothing. A `false` that means "there is nothing to scroll to" and a
+   `false` that means "the anchor does not exist" are indistinguishable from
+   here, which is why `class_page_anchor` in `set_work_drive.py` asserts the
+   element rather than the press. See the ⛔ note on `SET_ATTR[307]`. */
 function MRB_TO_ASSIGNMENTS(){
   var el=document.getElementById('mrb-class-assignments');
   if(!el||!el.scrollIntoView){return false;}
@@ -922,10 +932,10 @@ function MRB_DELETE_SET_WORK_WHY(e){
   if(st===409||c==='auto_assignment'||/auto/i.test(m))
     return "Automatic weekly work can't be deleted.";
   if(st===403||/row-level security|permission|policy/i.test(m))
-    return "Couldn't delete - you may no longer teach this class.";
-  if(st===404) return "Couldn't delete - that assignment is no longer there.";
+    return "Couldn't delete · you no longer teach this class.";
+  if(st===404) return "Couldn't delete · that assignment is no longer there.";
   if(/read-only|academic year/i.test(m))
-    return "Couldn't delete - that year is read-only.";
+    return "Couldn't delete · that year is read-only.";
   return "Couldn't delete just now. Try again in a moment.";}
 
 /* ⊕ MRB-335 — THE CARD REFRESHES AFTER A SET, WHICH IT NEVER DID.

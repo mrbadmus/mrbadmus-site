@@ -1552,12 +1552,39 @@ SET_ATTR = {
     # ⊕ MRB-336, 8 Sep 2026 — AN `id`, NOT A REGION, AND THE DIFFERENCE IS
     # DELIBERATE. `data-port-region` names a SCREEN or an overlay; the
     # liveness and behaviour gates enumerate those, and adding a section to
-    # that list would make node 306 look like a seventh screen. This is an
-    # anchor for one link: slot B's "+N more" brings the Assignments table
-    # into view, and a `getElementById` needs something stable to find.
+    # that list would make it look like a seventh screen. This is an anchor
+    # for one link: slot B's "+N more" brings the Assignments table into
+    # view, and a `getElementById` needs something stable to find.
     # `SET_ATTR` refuses to overwrite an attribute Design already wrote, so
     # this cannot quietly displace one of hers.
-    306: {"id": "mrb-class-assignments"},
+    #
+    # ⛔ IT WAS ON NODE **306** AND NODE 306 IS AN `<if>`, WHICH IS NOT AN
+    # ELEMENT. Corrected the same day, by the drive lane, before merge.
+    # `{"t":"if","e":"klass.hasWork","i":306}` is control flow: the runtime
+    # evaluates it and renders its CHILDREN, so an `a` on it has nothing to
+    # land on and is dropped — silently, with no error anywhere, and the
+    # generated HTML still contains the string `"id":"mrb-class-assignments"`
+    # so it greps as present. Measured on the built page: eight elements
+    # carry an id and none of them is this one.
+    #
+    # ⚠️ THE CONSEQUENCE WAS A DEAD CONTROL, NOT A COSMETIC MISS.
+    # `MRB_TO_ASSIGNMENTS()` is `getElementById(...)` and returns `false`
+    # when it finds nothing — so "+N more", the ONLY way to reach the third
+    # and later live sets of a week, did nothing at all, on every class, for
+    # every teacher. And its own comment excused exactly that: "it tolerates
+    # the section not being there … a class with no work has no table to
+    # scroll to". The tolerance was written for a case that cannot arise —
+    # the link only renders when there are three live sets — and it turned
+    # the failure into a no-op instead of a throw the gates would have seen.
+    #
+    # ⚠️ SO IT MOVES TO **307**, the header row (`<h2>Assignments</h2>` plus
+    # the paper line), which is the first REAL element inside the `if` and
+    # therefore keeps the property the old placement was chosen for: it
+    # exists only when `klass.hasWork` is true, so `MRB_TO_ASSIGNMENTS`'s
+    # tolerance still describes something real. Scrolling to it brings the
+    # heading and the table into view; scrolling to 310 would have put the
+    # heading off the top of the screen.
+    307: {"id": "mrb-class-assignments"},
     # ⊕ THE TWO COMPOSER FIELDS, so the send can CLEAR them. Design's select
     # and textarea are uncontrolled — neither carries a `value` — and
     # `student-runtime` deliberately carries field values across a redraw, so
