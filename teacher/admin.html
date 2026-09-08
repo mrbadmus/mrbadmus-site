@@ -708,11 +708,25 @@ async function setClassTier(row, touched) {
     try { body = await res.json(); } catch (e) { body = null; }
     if (!res.ok) { throw new Error('class-tier ' + res.status); }
 
-    /* What the row now holds is what came back, not what was chosen. */
+    /* What the row now holds is what came back, not what was chosen.
+
+       ⚠️ THE ROUTE ANSWERS UNDER `class`, AND THIS READ THE TOP LEVEL.
+       `POST /api/admin/class-tier` returns
+       `{ ok, class: { id, name, tier, pathway, subject, tier_pathway_source },
+          previous, rule }` — verified against server.js, not assumed — so
+       `body.tier` was `undefined` on every successful save and both
+       selectors blanked the moment the write SUCCEEDED. The value was in
+       the database and gone from the screen, which reads as "it did not
+       take" and invites a second attempt.
+
+       `(body.class || body)` rather than `body.class`: this page and that
+       route deploy separately, and a shape that works against both is one
+       fewer ordering constraint at merge. */
+    var got = (body && body.class) || body || {};
     var next = {
-      tier: (body && body.tier) || '',
-      pathway: (body && body.pathway) || '',
-      subject: (body && body.subject) || '',
+      tier: got.tier || '',
+      pathway: got.pathway || '',
+      subject: got.subject || '',
     };
     classTierState[classId] = next;
     tierSel.value = next.tier;
