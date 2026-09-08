@@ -8342,7 +8342,7 @@ componentDidUpdate() {
     #      "precisely so a teacher CAN set a second piece of work in a week."),
 
     (dict(method="renderVals", key="openSetWork"),
-     """      openSetWork: () => MRB_SET_WORK_OPEN(k && k.id),
+     """      openSetWork: () => MRB_SET_WORK_OPEN(s.classId || ''),
       canSetWork: MRB_DATA('canWrite') && !!(k && k.id),
       autoCan: MRB_DATA('canWrite') && MRB_DATA('autoAssignments') !== null &&
                !!(k && k.id),
@@ -8368,11 +8368,28 @@ componentDidUpdate() {
      "`MRB_SET_WORK_OPEN` is the seam helper, so `teacher_behaviour` "
      "can stub it exactly as it stubs `MRB_GO`.\n"
      "\n"
-     "        ⚠️ THE EMPTY-STRING CLASS ID IS STILL THE POINT OF THE "
-     "GUARD, and it has moved INTO the module: on `classes.html` `k` "
-     "is `MRB_NO_CLASS()` and `k.id` is the empty string, and "
-     "`MRBSetWork.open` returns without drawing for a falsy `classId`. "
-     "Design seeded a selection with an id that matches nothing.\n"
+     "        ⊕ MRB-335, 8 Sep 2026 — `s.classId`, NOT `k.id`, AND THE "
+     "DIFFERENCE IS A WHOLE CLASS'S CURRICULUM. `k` is `this.klass()`, and on "
+     "`classes.html` that is `this.CLASSES[0] || MRB_NO_CLASS()` — so the "
+     "classes screen's primary silently anchored the sheet to whichever class "
+     "sorted first, and served its tier, its cohort and its tree to a teacher "
+     "who had chosen nothing. A teacher who then ticked a different class got "
+     "that class set work at the FIRST class's tier, with the chip agreeing.\n"
+     "\n"
+     "        `s.classId` is the page's own class: the real one on "
+     "`class-detail.html` (nodes 214 and 282 are both on the class screen, "
+     "where the URL carries `?class=`), and the EMPTY STRING on `classes.html`, "
+     "where there is no class and there never was one. `MRBSetWork.open` treats "
+     "an empty anchor as its own state — step 0 with nothing preselected and "
+     "every class listed, the first tap anchors and fetches `/scope`, and the "
+     "rows outside that cohort go `aria-disabled`. Node 194 (the card) is "
+     "unaffected: it passes `c.id` and always names a class.\n"
+     "\n"
+     "        ⚠️ `canSetWork` STILL READS `k`, ON PURPOSE. It asks whether the "
+     "teacher has ANY class to set work to, which on `classes.html` is exactly "
+     "\"is `CLASSES[0]` there\" — so the button is absent for a teacher with "
+     "no classes and present for one who has some, while the sheet it opens "
+     "still preselects none.\n"
      "\n"
      "        ⊕ SUPERSEDED (MRB-331 UNIT B) — the body read:\n"
      "\n"

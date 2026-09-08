@@ -802,16 +802,23 @@ function MRB_API_ERR(res,d,path){
    STUBS the helpers, so a swept press can be recorded without a sheet
    opening over the fixture it is still measuring.
 
-   ⚠️ IT TOLERATES THE SCRIPT NOT BEING THERE. A falsy `classId` is the
-   `classes.html` case — `k` is `MRB_NO_CLASS()` and `k.id` is '' — and a
-   missing `window.MRBSetWork` is a page that loaded its HTML but not its
-   JavaScript. Neither throws inside a click listener, because a throw there
-   is reported by the gates as a dead control, which is the wrong finding. */
+   ⊕ MRB-335, 8 Sep 2026 — AN EMPTY `classId` IS NO LONGER A REFUSAL, IT IS
+   THE CLASSES SCREEN. It used to `return false`, which made that screen's
+   primary a dead button; the ruling now is that the sheet opens there with
+   NO class preselected and the first tap chooses one. So the empty string is
+   passed straight through and `MRBSetWork.open` owns the state. What still
+   protects a teacher with no classes at all is `canSetWork` in
+   `teacher_rulings.WRAP`, which removes the button rather than leaving one
+   that opens an empty list.
+
+   ⚠️ IT STILL TOLERATES THE SCRIPT NOT BEING THERE. A missing
+   `window.MRBSetWork` is a page that loaded its HTML but not its JavaScript,
+   and it must not throw inside a click listener: a throw there is reported
+   by the gates as a dead control, which is the wrong finding. */
 function MRB_SET_WORK_OPEN(classId){
-  if(!classId){return false;}
   var M=window.MRBSetWork;
   if(!M||!M.open){return false;}
-  M.open({classId:classId});
+  M.open({classId:classId||''});
   return true;}
 
 /* ⊕ MRB-335 — THE CARD REFRESHES AFTER A SET, WHICH IT NEVER DID.
@@ -2374,7 +2381,7 @@ class Component extends DCLogic {
       goBackFromDigest: () => MRB_BACK(),
       doPrint: () => window.print(),
       openSearch: () => this.setState({ modal: 'search', search: '' }),
-      openSetWork: () => MRB_SET_WORK_OPEN(k && k.id),
+      openSetWork: () => MRB_SET_WORK_OPEN(s.classId || ''),
       canSetWork: MRB_DATA('canWrite') && !!(k && k.id),
       autoCan: MRB_DATA('canWrite') && MRB_DATA('autoAssignments') !== null &&
                !!(k && k.id),
@@ -2445,7 +2452,7 @@ window.__MRB_MOUNT__ = function () {
   }));
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"dc8db888","config.js":"d1fecb43","rum.js":"215c6794","set-work.css":"189e00f3","set-work.js":"98a1531d","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"e5af7ed6","teacher-guard.js":"f7fbad7c","teacher-live.js":"b21b674e","teacher-picker.js":"8f2365b7"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"dc8db888","config.js":"d1fecb43","rum.js":"215c6794","set-work.css":"8cbd95af","set-work.js":"9695de9b","shoutouts.js":"23393220","teacher-admin-nav.js":"4f7c99b7","teacher-data.js":"e5af7ed6","teacher-guard.js":"f7fbad7c","teacher-live.js":"b21b674e","teacher-picker.js":"8f2365b7"};</script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <script src="teacher-fixture-assignment-written.js"></script>
 <script>window.__MRB_MOUNT__();</script>

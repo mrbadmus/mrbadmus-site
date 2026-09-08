@@ -4434,16 +4434,23 @@ function MRB_API_ERR(res,d,path){
    STUBS the helpers, so a swept press can be recorded without a sheet
    opening over the fixture it is still measuring.
 
-   ⚠️ IT TOLERATES THE SCRIPT NOT BEING THERE. A falsy `classId` is the
-   `classes.html` case — `k` is `MRB_NO_CLASS()` and `k.id` is '' — and a
-   missing `window.MRBSetWork` is a page that loaded its HTML but not its
-   JavaScript. Neither throws inside a click listener, because a throw there
-   is reported by the gates as a dead control, which is the wrong finding. */
+   ⊕ MRB-335, 8 Sep 2026 — AN EMPTY `classId` IS NO LONGER A REFUSAL, IT IS
+   THE CLASSES SCREEN. It used to `return false`, which made that screen's
+   primary a dead button; the ruling now is that the sheet opens there with
+   NO class preselected and the first tap chooses one. So the empty string is
+   passed straight through and `MRBSetWork.open` owns the state. What still
+   protects a teacher with no classes at all is `canSetWork` in
+   `teacher_rulings.WRAP`, which removes the button rather than leaving one
+   that opens an empty list.
+
+   ⚠️ IT STILL TOLERATES THE SCRIPT NOT BEING THERE. A missing
+   `window.MRBSetWork` is a page that loaded its HTML but not its JavaScript,
+   and it must not throw inside a click listener: a throw there is reported
+   by the gates as a dead control, which is the wrong finding. */
 function MRB_SET_WORK_OPEN(classId){
-  if(!classId){return false;}
   var M=window.MRBSetWork;
   if(!M||!M.open){return false;}
-  M.open({classId:classId});
+  M.open({classId:classId||''});
   return true;}
 
 /* ⊕ MRB-335 — THE CARD REFRESHES AFTER A SET, WHICH IT NEVER DID.
