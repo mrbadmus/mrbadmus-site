@@ -1329,6 +1329,12 @@ FAFF_EXACT = {
     "A.", "B.", "C.", "D.",
     "Now", "Later",
     "Not set yet", "Set this week", "Unavailable", "Not set",
+    # ⊕ MRB-336 §6 — EDIT. `Save` is the primary's verb on a row that
+    # already exists; `Not saved` is the refusal toast beside `Not set`, and
+    # is a second failure WORD rather than a third sentence — a teacher who
+    # pressed Save has to be told that nothing was saved, and "Not set"
+    # would be a lie about a set that is already out.
+    "Save", "Not saved",
 }
 # ⚠️ A SECOND SET, AND SPLITTING THEM IS THE POINT RATHER THAN A CONCESSION.
 # These four are `aria-label`s on the date and time inputs and are never
@@ -1344,11 +1350,17 @@ FAFF_EXACT = {
 # and each is actually carried by an input, so the exemption is paying for
 # itself rather than being a hole four strings wide.
 FAFF_ARIA = {"Release date", "Release time", "Due date", "Due time"}
-# The five composed strings, each a label plus a number or a date.
+# The four composed strings, each a label plus a number.
+#
+# ⊕ MRB-336 — `Assignments open <date>` WAS THE FIFTH, and it is deleted
+# rather than merely unused. The school hold no longer governs work a teacher
+# sets by hand, so the sheet has nothing to disclose about it and emits no
+# `.sw-hold` node at all. Left in this list it would be a permission for a
+# string the sheet can no longer produce — which is how a faff sweep quietly
+# stops sweeping.
 FAFF_PATTERNS = [
     re.compile(r"^Set \d+ weeks? ago$"),
     re.compile(r"^\d+ students?$"),
-    re.compile(r"^Assignments open \d{1,2} [A-Z][a-z]{2} \d{4}$"),
     re.compile(r"^\d+\.$"),                      # the question number, "1."
     re.compile(r"^.{1,80} · .+$"),               # the toast: title · class(es)
 ]
@@ -2487,9 +2499,16 @@ def check_toast_and_swap(p, scopes, shots):
                "toast_after_set — several classes: '<title> · Set for N "
                "classes'", repr(toast2))
 
-    # ── B6 · hold_clamp_single_line, rendered ─────────────────────────
+    # ── ⊕ MRB-336 · THE HELD SCHOOL'S SHEET SAYS NOTHING ──────────────
     #
-    # ONE LINE, AND IT IS A DATE. v1 said "This work can't be opened until…".
+    # v1 said "This work can't be opened until…"; MRB-335 cut that to one
+    # factual date. MRB-336 cuts the date too, because the fact stopped being
+    # true: the hold governs AUTOMATIC composition and no longer touches work
+    # a teacher sets, so `release_at` is stored exactly as asked.
+    #
+    # ⚠️ THE ASSERTION IS ON THE NODE, NOT ON THE TEXT. A hidden node still
+    # carrying "Assignments open 14 Sep 2026" would pass a text check and
+    # would be one CSS change away from being visible again.
     open_sheet(p, FX.C_KS3_HELD)
     time.sleep(0.5)
     st_scope = p.eval("document.querySelectorAll('[data-sw=\"topic\"]').length")
@@ -2504,32 +2523,19 @@ def check_toast_and_swap(p, scopes, shots):
         p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
         wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]')"
                     ".length > 0")
-        hold = p.eval("""(function(){var h=document.querySelector(
-            '[data-sw="hold"]');
-            return {hidden: !!h.hidden, text: (h.textContent||'').trim(),
-                    lines: (h.textContent||'').trim().split('\\n').length};})()""")
-        record(hold["hidden"] is False
-               and re.match(r"^Assignments open \d{1,2} [A-Z][a-z]{2} \d{4}$",
-                            hold["text"])
-               and hold["lines"] == 1,
-               "hold_clamp_single_line — the held school shows exactly one "
-               "line, and it is a date", repr(hold["text"]))
+        held = p.eval("""(function(){
+            var o = document.querySelector('[data-sw="overlay"]');
+            return {node: !!document.querySelector('[data-sw="hold"]'),
+                    cls: o.querySelectorAll('.sw-hold').length,
+                    open: (o.textContent||'').indexOf('Assignments open')};})()""")
+        record(held["node"] is False and held["cls"] == 0
+               and held["open"] == -1,
+               "hold_line_gone — the held school's sheet carries no hold node, "
+               "no `.sw-hold`, and the words nowhere in the overlay",
+               json.dumps(held))
         if shots:
-            p.screenshot(os.path.join(shots, "B6-hold-line-390.png"), width=390)
-    open_sheet(p, FX.C_KS3_A)
-    time.sleep(0.6)
-    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
-    time.sleep(0.3)
-    p.eval("""(function(){var rs=document.querySelectorAll('[data-sw="topic"]');
-        for(var i=0;i<rs.length;i++){
-          if(rs[i].getAttribute('aria-disabled')!=='true'){
-            rs[i].click();return true;}} return false;})()""")
-    time.sleep(0.3)
-    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
-    wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]').length > 0")
-    record(p.eval("!!document.querySelector('[data-sw=\"hold\"]').hidden"),
-           "…and a school with no hold shows NOTHING, which is what makes the "
-           "one line factual rather than decorative")
+            p.screenshot(os.path.join(shots, "B6-no-hold-line-390.png"),
+                         width=390)
 
 
 # ── C12/A5 rendered · the tier chip re-counts, and a zero refuses ──────
@@ -3248,14 +3254,27 @@ def check_swap_race_stored(t_teacher, stems):
                 % (sorted(set(on) - set(db))[:2], sorted(set(db) - set(on))[:2]))
 
 
-# ── (h) DUE BEFORE THE HOLD IS REFUSED IN THE SHEET, NOT BY THE SERVER ─
+# ── (h) ⊕ MRB-336 · THE HELD SCHOOL SETS WORK FOR TODAY ────────────────
 #
-# The held school opens in eight days. A teacher choosing Release Now and a due
-# date inside that window has chosen work that is overdue on the day it appears.
-# The server refuses it (`bad_due_at`), and a sheet that let the press happen
-# would show a teacher a failure they could have been shown a second earlier.
+# ⛔ THIS CHECK USED TO ASSERT THE OPPOSITE, and the thing it asserted was the
+# defect. The held school opens in eight days; a teacher choosing Release Now
+# and a due date inside that window was refused (`bad_due_at`), because the
+# server moved the release to the open date and the work was then overdue on
+# the day it appeared. The sheet disabled the primary to say so a second
+# earlier. Both halves were correct implementations of a rule Mide has now
+# deleted: "the point of setting work is so that students can do assignments
+# even though the automatic assignments hasn't gone live yet."
+#
+# So the same two taps are now the ORDINARY case, and this check proves it —
+# no hold node, a live primary, a clean Due field.
+#
+# ⚠️ AND THE SECOND HALF IS WHY THIS CHECK STAYS RATHER THAN BEING DELETED.
+# Removing the clamp removes the sheet's only reason to refuse a date, and a
+# validator with nothing left to refuse is a validator nobody notices losing.
+# Due BEFORE the release the teacher typed is still impossible, still stops
+# the primary, still outlines the field, and still sends nothing.
 def check_hold_validation(p, scopes):
-    print("\n   Release Now, due before the school opens")
+    print("\n   the held school: Release Now, due inside the hold window")
 
     got = pick_topic(scopes["ks3"], 1, "medium")
     if not got:
@@ -3266,7 +3285,7 @@ def check_hold_validation(p, scopes):
 
     p.eval("""(function(){var t=document.querySelector('[data-sw="title"]');
         t.value=%s; t.dispatchEvent(new Event('input',{bubbles:true}));})()"""
-           % json.dumps(TITLE + " · must not send"))
+           % json.dumps(TITLE + " · inside the hold"))
     # Release Now, and a due date two days out — inside the eight-day hold.
     p.eval("""(function(){var cs=document.querySelectorAll(
         '[data-sw="release-chips"] .sw-chip');
@@ -3284,23 +3303,59 @@ def check_hold_validation(p, scopes):
     time.sleep(0.5)
 
     state = p.eval("""(function(){
+      var o = document.querySelector('[data-sw="overlay"]');
       var pri = document.querySelector('[data-sw="primary"]');
       var dd = document.querySelector('[data-sw="due-date"]');
       var dt = document.querySelector('[data-sw="due-time"]');
-      var h = document.querySelector('[data-sw="hold"]');
       return {disabled: !!pri.disabled,
               dueOutlined: dd.classList.contains('sw-bad')
                         || dt.classList.contains('sw-bad'),
-              holdShown: !h.hidden, holdText: (h.textContent||'').trim(),
+              holdNode: !!document.querySelector('[data-sw="hold"]'),
+              open: (o.textContent||'').indexOf('Assignments open'),
               due: dd.value};})()""")
-    record(state["disabled"] and state["dueOutlined"],
-           "hold_due_before_release — the primary is DISABLED and the Due "
-           "field is outlined; the teacher is stopped before the press, not "
-           "after it", json.dumps(state))
-    record(state["holdShown"]
-           and state["holdText"].startswith("Assignments open"),
-           "…and the one factual line says WHEN, which is the only thing that "
-           "makes the refusal actionable", repr(state["holdText"]))
+    record(state["disabled"] is False and state["dueOutlined"] is False,
+           "hold_does_not_stop_the_teacher — Release Now with a due date "
+           "inside the school's hold window: the primary is LIVE and the Due "
+           "field is clean", json.dumps(state))
+    record(state["holdNode"] is False and state["open"] == -1,
+           "…and the sheet says nothing about the hold, because the hold no "
+           "longer decides anything the teacher can see", json.dumps(state))
+
+    # ── the refusal that REMAINS: due before the release itself ───────
+    #
+    # Release Later, next week; Due tomorrow. Nothing to do with the school.
+    later = p.eval("""(function(){
+        var f=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',
+          year:'numeric',month:'2-digit',day:'2-digit'});
+        var o={}; f.formatToParts(new Date()).forEach(function(x){o[x.type]=x.value;});
+        var base=Date.UTC(+o.year,+o.month-1,+o.day);
+        return {rel: new Date(base+7*86400000).toISOString().slice(0,10),
+                due: new Date(base+1*86400000).toISOString().slice(0,10)};})()""")
+    p.eval("""(function(){var cs=document.querySelectorAll(
+        '[data-sw="release-chips"] .sw-chip');
+        for(var i=0;i<cs.length;i++){if(cs[i].textContent==='Later'){
+          cs[i].click();}} return true;})()""")
+    time.sleep(0.3)
+    p.eval("""(function(){var v=%s;
+        var r=document.querySelector('[data-sw="release-date"]');
+        var d=document.querySelector('[data-sw="due-date"]');
+        r.value=v.rel; d.value=v.due;
+        [r,d].forEach(function(n){
+          n.dispatchEvent(new Event('input',{bubbles:true}));
+          n.dispatchEvent(new Event('change',{bubbles:true}));});})()"""
+           % json.dumps(later))
+    time.sleep(0.5)
+    bad = p.eval("""(function(){
+      var pri = document.querySelector('[data-sw="primary"]');
+      var dd = document.querySelector('[data-sw="due-date"]');
+      var dt = document.querySelector('[data-sw="due-time"]');
+      return {disabled: !!pri.disabled,
+              dueOutlined: dd.classList.contains('sw-bad')
+                        || dt.classList.contains('sw-bad')};})()""")
+    record(bad["disabled"] and bad["dueOutlined"],
+           "due_before_release_still_refused — Release next week with Due "
+           "tomorrow: the primary is DISABLED and the Due field is outlined",
+           json.dumps(bad))
 
     # ⚠️ AND NOTHING WAS SENT. A disabled button that still fires would look
     # identical from the screen.
