@@ -374,8 +374,8 @@ QUESTIONS = [
         "options": [
             "The wall holds the loop of circular DNA in place, and the DNA "
             "escapes without it",
-            "The wall stores the cell's water, so the water is lost the "
-            "moment the wall goes",
+            "The wall stores all of the cell's water, so that store floods "
+            "out the moment the wall goes",
             "The wall carries out respiration, so the cell runs out of "
             "energy and splits open",
             "The wall supports the cell, so without it the membrane cannot "
@@ -393,10 +393,10 @@ QUESTIONS = [
         "triple_only": False,
         "text": "Suggest one advantage to a bacterium of having a capsule.",
         "options": [
-            "It allows the bacterium to swim towards food",
-            "It carries the extra genes the bacterium needs to divide",
+            "It allows the bacterium to swim towards a source of food",
+            "It carries the extra genes a bacterium needs before it can divide",
             "It protects the cell from attack and helps it stick to surfaces",
-            "It provides the enzymes that digest the bacterium's food",
+            "It provides the enzymes the bacterium uses to digest its food",
         ],
         "correct_index": 2,
         "why": "A capsule is a slimy outer layer that protects the bacterium "
@@ -530,7 +530,7 @@ QUESTIONS = [
         "text": "A cell is 50 µm across and contains a nucleus, "
                 "chloroplasts and a cell wall. Classify it.",
         "options": [
-            "A prokaryotic cell, because it has a cell wall",
+            "A prokaryotic cell, because only prokaryotes are built with a cell wall",
             "A prokaryotic cell, because 50 µm is a normal bacterial size",
             "A eukaryotic animal cell, because it has a nucleus",
             "A eukaryotic plant cell, because it has a nucleus and "
@@ -818,9 +818,9 @@ QUESTIONS = [
         "options": [
             "Prokaryotic, because its genetic material is not enclosed in a "
             "nucleus",
-            "Eukaryotic, because its wall is not made of peptidoglycan",
-            "Eukaryotic, because only eukaryotes hold DNA in the cytoplasm",
-            "Prokaryotic, because peptidoglycan defines a prokaryotic cell",
+            "Eukaryotic, because a wall that is not peptidoglycan must be a plant wall",
+            "Eukaryotic, because only a eukaryote keeps its DNA loose in the cytoplasm",
+            "Prokaryotic, because peptidoglycan is what defines a prokaryotic cell",
         ],
         "correct_index": 0,
         "why": "The defining test is whether the DNA is enclosed in a "
@@ -940,9 +940,12 @@ QUESTIONS = [
         "text": "A pupil converts 5 µm into metres and writes 5 × 10⁻³ m. "
                 "Identify the error.",
         "options": [
-            "They should have written 5 × 10⁻³ mm, not metres",
-            "There is no error, because 1 µm really is 1 × 10⁻³ m",
-            "They have used the conversion for nanometres instead",
+            "They should have written 5 × 10⁻³ mm, since micro is the prefix "
+            "meaning one thousandth",
+            "There is no error, because 1 µm really is 1 × 10⁻³ m, as a "
+            "micrometre is a thousandth",
+            "They have used the conversion for nanometres instead, so the answer "
+            "is far too small",
             "They have used the millimetre conversion, so the answer is a "
             "thousand times too large",
         ],

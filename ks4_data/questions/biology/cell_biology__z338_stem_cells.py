@@ -156,10 +156,10 @@ QUESTIONS = [
         "text": "State what is meant by rejection when a patient is given "
                 "cells from a donor.",
         "options": [
-            "The donated cells refuse to divide once inside the patient",
+            "The donated cells refuse to divide once they have been placed inside the patient",
             "The patient's immune system recognises the donated cells as foreign and attacks them",
-            "The donated cells attack the patient's own red blood cells",
-            "The donated cells differentiate into the wrong specialised type",
+            "The donated cells attack the patient's own red blood cells and break them down",
+            "The donated cells differentiate into the wrong specialised type for the tissue",
         ],
         "correct_index": 1,
         "why": "Rejection is the immune system treating the donated cells as "
@@ -350,7 +350,8 @@ QUESTIONS = [
                 "dividing is its own special job. Explain why this is wrong.",
         "options": [
             "It has not yet developed a structure suited to one particular job, so it is undifferentiated",
-            "It is specialised, but only for the short time before it next divides",
+            "It is specialised, but only for the short while that passes between one "
+            "division and the next",
             "It is specialised for dividing, which is exactly why it is called a stem cell",
             "It has no nucleus, so it cannot be specialised for anything at all",
         ],

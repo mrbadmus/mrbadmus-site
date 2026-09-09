@@ -79,10 +79,10 @@ QUESTIONS = [
         "text": "Name the short branching fibres of a nerve cell that receive "
                 "signals from other nerve cells.",
         "options": [
-            "The axon",
+            "The axon, the single long fibre that carries a signal away",
             "The dendrites, which branch out to meet many other nerve cells",
-            "The myelin sheath",
-            "The synaptic terminals",
+            "The myelin sheath, the fatty coat wrapped along the fibre",
+            "The synaptic terminals, the endings that pass a signal on",
         ],
         "correct_index": 1,
         "why": "Dendrites are the short branched fibres that carry incoming "
@@ -133,9 +133,9 @@ QUESTIONS = [
                 "of an embryo from one fertilised egg.",
         "options": [
             "Mitosis, which makes genetically identical body cells",
-            "Meiosis",
-            "Differentiation",
-            "Fertilisation",
+            "Meiosis, which halves the chromosome number each time",
+            "Differentiation, which is a cell splitting into two",
+            "Fertilisation, which repeats at every later division",
         ],
         "correct_index": 0,
         "why": "A zygote divides repeatedly by mitosis, producing identical "
@@ -738,9 +738,9 @@ QUESTIONS = [
                 "Determine how much longer the unmyelinated axon takes.",
         "options": [
             "0.99 s longer, because the times are 1.0 s and 0.010 s",
-            "99 s longer",
-            "1.01 s longer",
-            "0.010 s longer",
+            "99 s longer, because the times are 100 s and 1.0 s",
+            "1.01 s longer, because the times are 1.0 s and 0.010 s",
+            "0.010 s longer, because that is the myelinated axon's time",
         ],
         "correct_index": 0,
         "why": "The times are 1.0 s and 0.010 s, so the myelinated axon saves "
@@ -853,11 +853,14 @@ QUESTIONS = [
                 "Evaluate the conclusion that cell X must therefore be the "
                 "more specialised of the two.",
         "options": [
-            "The conclusion is right, because specialising always adds organelles and bulk",
+            "The conclusion is right, because specialising always adds organelles and "
+            "bulk, so of any two cells seen together the larger is always the one "
+            "that has taken on a job",
             "The conclusion is right, unless cell Y happens to be a plant cell",
             "The conclusion is unsafe; specialisation is judged by the structures a cell has for "
             "its job, and a sperm cell is among the smallest and most specialised there is",
-            "The conclusion is wrong, because the smaller cell is always the more specialised",
+            "The conclusion is wrong, because the smaller cell is always the more "
+            "specialised, so cell Y has taken on a particular job and cell X has not",
         ],
         "correct_index": 2,
         "why": "Size is not evidence either way; what marks specialisation is "
@@ -875,7 +878,8 @@ QUESTIONS = [
         "options": [
             "From the soil water, taken in alongside the mineral ions",
             "From the chloroplasts in the root, working by the light that reaches the topsoil",
-            "From the mineral ions, which the cell joins together into glucose",
+            "From the mineral ions, which the cell joins together into glucose in "
+            "its own cytoplasm",
             "From the leaves, where photosynthesis makes it; the phloem then carries it down to "
             "the root",
         ],
