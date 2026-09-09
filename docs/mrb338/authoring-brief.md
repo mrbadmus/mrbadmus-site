@@ -194,6 +194,44 @@ A band is a rung of **demand**, not a different topic and not a different child.
 A pupil who cannot answer picks the longest option. Across the rows YOU write
 in one leaf:
 
+### ⚠️ Measure it the way the gate measures it — the 6-character margin
+
+**Do not count "how often is the key the longest option".** That is not the
+question `verify_answer_lengths` asks, and counting it that way will tell you
+you are fine when you are not.
+
+The gate throws away every set whose top two options are within **6
+characters** of each other — those have no *visibly* longest option, so they
+give a pupil nothing — and then asks, **of the sets that remain**, how often
+the key is the long one. Chance is 25%; **32% is the ceiling**.
+
+Those two measures come apart badly. Park the key at rank 2 in most rows but
+let it run away whenever it *is* longest, and "key is longest" reads a healthy
+20% while the gate reads **65%**. Two lanes did exactly that before this was
+written down, and a third shipped a leaf at 66.7%.
+
+So count it like this:
+
+```python
+MARGIN = 6
+visible = correct = 0
+for q in my_rows:
+    lens = sorted((len(o) for o in options(q)), reverse=True)
+    if lens[0] - lens[1] < MARGIN:
+        continue                      # no visibly longest option — skip it
+    visible += 1
+    if len(key(q)) == lens[0]:
+        correct += 1
+print(correct, "/", visible, "=", 100.0 * correct / visible, "%")   # aim <= 32
+```
+
+⚠️ **And note which way the fix runs.** Lengthening the key to escape the
+"key is shortest" tell pushes this number UP. The fix for both is the same and
+it is not trimming keys: **give the distractors their own reasons, at the
+key's level of detail**, so that the top two options are usually within six
+characters of each other and there is no visibly longest option at all. A leaf
+where most sets have no long option is a leaf where length answers nothing.
+
 - the key is the **longest** option about **one time in four** — not more;
 - the key's length **rank** (1 = longest … 4 = shortest) **varies** across the
   leaf, roughly evenly — **no single rank may hold more than 40% of the keys.**
