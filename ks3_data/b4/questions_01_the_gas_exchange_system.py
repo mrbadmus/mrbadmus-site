@@ -1047,4 +1047,1899 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── easier ────────────────────────────────────────────────────────
+    {
+        "id": "b4-01-e12",
+        "band": "easier",
+        "text": "One part of the airway has muscle in its walls where the "
+                "tubes above it have cartilage. Which part is it?",
+        "options": [
+            {"text": "The trachea, whose C-shaped rings are made of muscle "
+                     "rather than cartilage.",
+             "correct": False,
+             "why": "The trachea's rings are cartilage — stiff, and "
+                    "holding the tube permanently open. Muscle would let "
+                    "it change width, which is the last thing the single "
+                    "main airway needs to do."},
+            {"text": "The bronchioles, the narrowest branches at the end "
+                     "of the airway.",
+             "correct": True},
+            {"text": "The alveoli, whose walls squeeze to push the air "
+                     "back out again.",
+             "correct": False,
+             "why": "An alveolus wall is one cell thick and contains no "
+                    "muscle at all. Nothing about an alveolus squeezes; "
+                    "the air is moved by machinery well outside the lungs."},
+            {"text": "The bronchi, which are the widest tubes inside a "
+                     "lung and so need the most support.",
+             "correct": False,
+             "why": "The bronchi are still ringed with cartilage, like the "
+                    "trachea above them. The switch from cartilage to "
+                    "muscle happens further down, at the bronchioles."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e13",
+        "band": "easier",
+        "text": "Where does the trachea run, and how many tubes is it?",
+        "options": [
+            {"text": "One tube, running down the front of the neck from "
+                     "the throat towards the lungs.",
+             "correct": True},
+            {"text": "Two tubes, one running down each side of the neck "
+                     "and into a lung of its own.",
+             "correct": False,
+             "why": "That describes the bronchi, which are what the "
+                    "trachea divides into at its lower end. Above that "
+                    "division there is only ever one tube."},
+            {"text": "One tube, running down the back of the throat and on "
+                     "towards the stomach.",
+             "correct": False,
+             "why": "The tube that carries food down to the stomach is the "
+                    "oesophagus, and it sits behind the trachea. Air and "
+                    "food take separate routes."},
+            {"text": "A network of narrow branching tubes spread all "
+                     "through both lungs.",
+             "correct": False,
+             "why": "That is the bronchioles, right at the far end of the "
+                    "route. The trachea is the single wide tube the whole "
+                    "network starts from."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e14",
+        "band": "easier",
+        "text": "Rings of cartilage hold parts of the airway open. Which "
+                "parts carry them?",
+        "options": [
+            {"text": "The bronchioles and the alveoli, the two narrowest "
+                     "parts of the route.",
+             "correct": False,
+             "why": "The bronchioles have muscle in their walls instead of "
+                    "cartilage, and an alveolus has neither — its wall is "
+                    "a single cell thick."},
+            {"text": "Every part of the airway, from the nose all the way "
+                     "down to the alveoli.",
+             "correct": False,
+             "why": "Cartilage stops well before the end. If it ran all "
+                    "the way down, the alveolus wall could never be the "
+                    "single cell that gas has to cross."},
+            {"text": "The alveoli only, because they are the part where a "
+                     "collapse would matter most.",
+             "correct": False,
+             "why": "Nothing in an alveolus is stiffened. The rings are on "
+                    "the wide tubes higher up, where a collapse would shut "
+                    "off the whole route."},
+            {"text": "The trachea and the bronchi, the two widest tubes of "
+                     "the route.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e15",
+        "band": "easier",
+        "text": "What are cilia, and which way do they sweep?",
+        "options": [
+            {"text": "Tiny hairs lining the airway, sweeping the mucus up "
+                     "towards the throat.",
+             "correct": True},
+            {"text": "Tiny hairs lining the airway, sweeping mucus down "
+                     "towards the alveoli.",
+             "correct": False,
+             "why": "Sweeping downwards would carry every trapped speck of "
+                    "dust to the one surface in the body that has to stay "
+                    "clear. Cilia beat the other way, away from the lungs."},
+            {"text": "Rings of stiff cartilage that hold the trachea open "
+                     "as air rushes down it.",
+             "correct": False,
+             "why": "That is the cartilage, and it does not move at all. "
+                    "Cilia are hairs, and their whole job is movement."},
+            {"text": "Tiny blood vessels that carry trapped dust away from "
+                     "the airway in the blood.",
+             "correct": False,
+             "why": "Dust is never taken into the blood. It is trapped in "
+                    "mucus on the surface of the airway and moved back out "
+                    "along that surface."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e16",
+        "band": "easier",
+        "text": "The inside of the airway is lined with sticky mucus. What "
+                "is the mucus there for?",
+        "options": [
+            {"text": "To dissolve oxygen out of the air so that the blood "
+                     "can pick it up more easily.",
+             "correct": False,
+             "why": "Oxygen crosses into the blood at the alveoli, and the "
+                    "mucus higher up plays no part in it. Mucus is there "
+                    "to catch things, not to pass anything on."},
+            {"text": "To make the tubes slippery so that air can travel "
+                     "down them faster.",
+             "correct": False,
+             "why": "The airway is not trying to speed air up. Mucus is "
+                    "sticky for a reason: anything that lands in it stops "
+                    "there."},
+            {"text": "To trap dust and bacteria in the airway before they "
+                     "reach the alveoli.",
+             "correct": True},
+            {"text": "To keep the rings of cartilage soft enough to bend "
+                     "as you turn your head.",
+             "correct": False,
+             "why": "Cartilage is already flexible on its own, and the "
+                    "mucus lies on the inner surface of the tube rather "
+                    "than in its wall."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e17",
+        "band": "easier",
+        "text": "How thick is the wall between the air inside an alveolus "
+                "and the blood outside it?",
+        "options": [
+            {"text": "About a millimetre, thick enough to feel between "
+                     "your fingers.",
+             "correct": False,
+             "why": "That is thousands of times too thick. A wall like "
+                    "that would slow the crossing so much that the lungs "
+                    "could not keep up with the body."},
+            {"text": "One cell thick.",
+             "correct": True},
+            {"text": "Several layers of muscle thick, so that the sac can "
+                     "squeeze the air out.",
+             "correct": False,
+             "why": "There is no muscle anywhere in an alveolus, and "
+                    "nothing there squeezes. The thinness is the point: it "
+                    "is what the gases have to cross."},
+            {"text": "Thick enough to see with the naked eye, like the "
+                     "skin on the back of your hand.",
+             "correct": False,
+             "why": "A single alveolus is far too small to see without a "
+                    "microscope, let alone its wall. Thin is exactly what "
+                    "it has to be."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e18",
+        "band": "easier",
+        "text": "Roughly what share of the air you breathe in is nitrogen?",
+        "options": [
+            {"text": "About 21%, the same share as the oxygen beside it.",
+             "correct": False,
+             "why": "21% is the oxygen figure. Nitrogen is nearly four "
+                    "times that, and it is the largest thing in every "
+                    "breath you have ever taken."},
+            {"text": "About 4%, a little more than the carbon dioxide.",
+             "correct": False,
+             "why": "4% is the carbon dioxide figure for exhaled air. "
+                    "Nitrogen is far and away the biggest share of the "
+                    "bag, going in and coming out."},
+            {"text": "Almost none of it, because air is very nearly all "
+                     "oxygen.",
+             "correct": False,
+             "why": "Air is not mostly oxygen — oxygen is only about a "
+                    "fifth of it. Most of what you take in and pass back "
+                    "out is nitrogen."},
+            {"text": "About 78%.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e19",
+        "band": "easier",
+        "text": "Which gas is the largest part of the air a person "
+                "breathes out?",
+        "options": [
+            {"text": "Nitrogen, at about 78%, which is the same share it "
+                     "had going in.",
+             "correct": True},
+            {"text": "Carbon dioxide, because that is the gas the body "
+                     "makes and gets rid of.",
+             "correct": False,
+             "why": "Carbon dioxide is only about 4% of exhaled air — the "
+                    "smallest of the four things listed here. It is the "
+                    "gas that changes most, not the gas there is most of."},
+            {"text": "Oxygen, because most of what goes in comes straight "
+                     "back out again.",
+             "correct": False,
+             "why": "Most of the oxygen really does come back out, and 16% "
+                    "makes it the second largest figure in the bag. "
+                    "Nitrogen, at 78%, is far larger still."},
+            {"text": "Water vapour, because exhaled air is saturated with "
+                     "it.",
+             "correct": False,
+             "why": "Exhaled air is saturated, but saturated air still "
+                    "holds only a few per cent water vapour. Nitrogen is "
+                    "the bulk of the breath."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e20",
+        "band": "easier",
+        "text": "At an alveolus, which gas moves into the blood and which "
+                "moves out of it?",
+        "options": [
+            {"text": "Carbon dioxide moves in, and oxygen moves out into "
+                     "the air in the sac.",
+             "correct": False,
+             "why": "That is the right pair of gases going the wrong way. "
+                    "Blood arriving at the lungs is short of oxygen and "
+                    "loaded with carbon dioxide, and both are put right."},
+            {"text": "Nitrogen moves in, and carbon dioxide moves out into "
+                     "the air in the sac.",
+             "correct": False,
+             "why": "Nitrogen crosses nowhere: it goes in at 78% and comes "
+                    "out at 78%. The gas moving into the blood is oxygen."},
+            {"text": "Oxygen moves into the blood, and carbon dioxide "
+                     "moves out of it.",
+             "correct": True},
+            {"text": "Both gases move into the blood, and the lungs get "
+                     "rid of them together later on.",
+             "correct": False,
+             "why": "Carbon dioxide is already in the blood when it "
+                    "arrives — it was made by the body's cells. The "
+                    "alveolus is where it leaves, not where it is "
+                    "collected."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e21",
+        "band": "easier",
+        "text": "Breathing is called a mechanical process rather than a "
+                "chemical one. What does breathing itself involve?",
+        "options": [
+            {"text": "Releasing energy from glucose inside every cell of "
+                     "the body.",
+             "correct": False,
+             "why": "That is respiration, and it is a chemical reaction. "
+                    "It happens in cells in your toes as much as in your "
+                    "chest."},
+            {"text": "Moving air in and out of the lungs, using muscles "
+                     "outside them.",
+             "correct": True},
+            {"text": "Swapping oxygen and carbon dioxide between the "
+                     "alveoli and the blood.",
+             "correct": False,
+             "why": "That is gas exchange, which happens only at the "
+                    "alveoli. Breathing is what delivers the air to them."},
+            {"text": "Warming, moistening and filtering the air on its way "
+                     "down the airway.",
+             "correct": False,
+             "why": "That is conditioning, done by the nose and the airway "
+                    "lining. It changes the state of the air, not where "
+                    "the air is."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e22",
+        "band": "easier",
+        "text": "Cilia sweep mucus up the airway until it reaches the top "
+                "of the throat. What happens to it there?",
+        "options": [
+            {"text": "It passes into the blood, which carries the trapped "
+                     "dust away to be broken down.",
+             "correct": False,
+             "why": "Nothing trapped in mucus enters the blood. Keeping it "
+                    "out of the blood is the whole point of catching it on "
+                    "a surface."},
+            {"text": "It drips back down into the lungs as soon as the "
+                     "cilia stop beating.",
+             "correct": False,
+             "why": "Cilia beat continuously, and the mucus travels one "
+                    "way. It is a conveyor belt running steadily away from "
+                    "the lungs."},
+            {"text": "It stays at the top of the airway permanently, which "
+                     "is why the throat feels rough.",
+             "correct": False,
+             "why": "Mucus is made and cleared all the time. If it "
+                    "collected at the throat and stayed there, the belt "
+                    "would jam within a day."},
+            {"text": "It is swallowed.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e23",
+        "band": "easier",
+        "text": "A breath of air has just travelled through the "
+                "bronchioles. Which part does it reach next?",
+        "options": [
+            {"text": "The bronchi, which the bronchioles feed back into.",
+             "correct": False,
+             "why": "Air reaches the bronchi before the bronchioles, not "
+                    "after. The route only ever gets narrower on the way "
+                    "in."},
+            {"text": "The trachea, on its way back up towards the throat.",
+             "correct": False,
+             "why": "The trachea is passed near the start of the journey "
+                    "in. The question follows the air inwards, and the "
+                    "bronchioles are almost at the end of that route."},
+            {"text": "The alveoli.",
+             "correct": True},
+            {"text": "The capillaries, which the air flows straight into "
+                     "from the bronchioles.",
+             "correct": False,
+             "why": "Air never flows into a blood vessel. It stops in the "
+                    "air sacs, and only the gases cross the wall between "
+                    "the sac and the blood."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e24",
+        "band": "easier",
+        "text": "What is an alveolus?",
+        "options": [
+            {"text": "A tiny air sac at the end of the airway, wrapped in "
+                     "capillaries.",
+             "correct": True},
+            {"text": "A narrow tube with muscle in its wall, deep inside "
+                     "the lung.",
+             "correct": False,
+             "why": "That is a bronchiole. It carries air towards the sacs "
+                    "but nothing crosses into the blood along it."},
+            {"text": "One of the two large air spaces that a lung is made "
+                     "up of.",
+             "correct": False,
+             "why": "A lung is not made of two large spaces — it holds "
+                    "around 500 million alveoli, which is why it feels "
+                    "like a sponge rather than a bag."},
+            {"text": "A ring of cartilage that holds the smallest airways "
+                     "open.",
+             "correct": False,
+             "why": "The cartilage rings are on the trachea and bronchi, "
+                    "and they are not sacs at all. An alveolus is a space "
+                    "with a wall one cell thick."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e25",
+        "band": "easier",
+        "text": "Inhaled air is about 0.04% carbon dioxide. About what is "
+                "the figure for exhaled air?",
+        "options": [
+            {"text": "About 0.04% — unchanged, in the same way the "
+                     "nitrogen figure is unchanged.",
+             "correct": False,
+             "why": "Nitrogen is the gas that comes back unchanged. Carbon "
+                    "dioxide is the one that changes most of all, rising a "
+                    "hundredfold."},
+            {"text": "About 4%.",
+             "correct": True},
+            {"text": "About 40%, a thousand times what went in.",
+             "correct": False,
+             "why": "The rise is a hundredfold, not a thousandfold, and "
+                    "40% would leave almost no room for the nitrogen that "
+                    "actually fills most of the bag."},
+            {"text": "About 96%, with the last few per cent being leftover "
+                     "oxygen.",
+             "correct": False,
+             "why": "This is the bagful-of-carbon-dioxide picture, and the "
+                    "figures kill it: exhaled air is still 78% nitrogen "
+                    "and 16% oxygen."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e26",
+        "band": "easier",
+        "text": "Mouth-to-mouth resuscitation keeps a casualty alive on "
+                "air that has already been through the rescuer's lungs. "
+                "Which fact about exhaled air explains why it works?",
+        "options": [
+            {"text": "The rescuer's lungs add fresh oxygen before the air "
+                     "is breathed out.",
+             "correct": False,
+             "why": "Nothing in the body adds oxygen to air. The rescuer's "
+                    "lungs take some out — the point is how much is left."},
+            {"text": "It carries no oxygen, but its carbon dioxide can be "
+                     "used in an emergency.",
+             "correct": False,
+             "why": "Carbon dioxide is a waste gas and no cell can use it. "
+                    "What keeps the casualty alive is the oxygen still in "
+                    "the bag."},
+            {"text": "Exhaled air is warm, and warmth is what a casualty "
+                     "needs most.",
+             "correct": False,
+             "why": "The air is warmer, but warmth is not what is being "
+                    "delivered. The casualty needs oxygen, and exhaled air "
+                    "still has plenty."},
+            {"text": "It still contains about 16% oxygen, which is most of "
+                     "the 21% that went in.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e27",
+        "band": "easier",
+        "text": "Put these three tubes in order of width, widest first: "
+                "bronchiole, bronchus, trachea.",
+        "options": [
+            {"text": "Bronchiole, bronchus, trachea.",
+             "correct": False,
+             "why": "These are the right three tubes in the wrong "
+                    "direction. The trachea is the single widest tube and "
+                    "the bronchioles are the narrowest branches at the far "
+                    "end."},
+            {"text": "Bronchus, trachea, bronchiole.",
+             "correct": False,
+             "why": "The bronchi are what the trachea divides into, so "
+                    "they must be narrower than it, never wider."},
+            {"text": "Trachea, bronchus, bronchiole.",
+             "correct": True},
+            {"text": "Trachea, bronchiole, bronchus.",
+             "correct": False,
+             "why": "The trachea is right in first place, but the last two "
+                    "are swapped: a bronchus divides many times over "
+                    "before the tubes become bronchioles."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e28",
+        "band": "easier",
+        "text": "Two things inside the nose filter the air on its way in. "
+                "What are they?",
+        "options": [
+            {"text": "Hairs, and a coating of sticky mucus.",
+             "correct": True},
+            {"text": "Cilia and rings of cartilage.",
+             "correct": False,
+             "why": "Cilia do move trapped dust, but they are lower down "
+                    "and they move what the mucus has already caught. "
+                    "Cartilage holds tubes open and traps nothing."},
+            {"text": "A network of capillaries and a layer of muscle.",
+             "correct": False,
+             "why": "Capillaries in the nose help warm the air rather than "
+                    "clean it, and there is no filtering muscle anywhere "
+                    "in the airway."},
+            {"text": "The bones of the skull and a lining of thin dry "
+                     "skin.",
+             "correct": False,
+             "why": "The lining of the nose is wet, not dry — that is what "
+                    "lets it hold on to dust. Bone gives the nose its "
+                    "shape and does no filtering."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e29",
+        "band": "easier",
+        "text": "Of the two main gases in the air you breathe in, which "
+                "does your body take and use, and which passes straight "
+                "through?",
+        "options": [
+            {"text": "Nitrogen is taken and used; oxygen passes straight "
+                     "through.",
+             "correct": False,
+             "why": "This has the two gases the wrong way round. The "
+                    "nitrogen figure is 78% in and 78% out, which is what "
+                    "passing straight through looks like."},
+            {"text": "Oxygen is taken and used; nitrogen passes straight "
+                     "through.",
+             "correct": True},
+            {"text": "Both are taken and used, which is why both of their "
+                     "figures fall between the two bags.",
+             "correct": False,
+             "why": "Only one figure falls. Oxygen drops from 21% to 16%, "
+                    "while nitrogen is 78% in both bags."},
+            {"text": "Neither is used: the body only ever adds carbon "
+                     "dioxide to the air passing through.",
+             "correct": False,
+             "why": "Carbon dioxide is added, but oxygen is genuinely "
+                    "taken as well — about a quarter of what goes in stays "
+                    "behind."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e30",
+        "band": "easier",
+        "text": "Oxygen goes in at 21% and comes out at 16%. Roughly how "
+                "much of the oxygen you breathe in do you keep?",
+        "options": [
+            {"text": "About three quarters of it, leaving only a little to "
+                     "come back out.",
+             "correct": False,
+             "why": "That is the wrong way round: about three quarters "
+                    "comes back out, and it is the quarter you keep that "
+                    "does the work."},
+            {"text": "All of it, which is why exhaled air contains no "
+                     "oxygen.",
+             "correct": False,
+             "why": "Exhaled air is 16% oxygen — most of what went in. If "
+                    "none came back out, mouth-to-mouth resuscitation "
+                    "could not work."},
+            {"text": "About a twentieth of it, which is where the 4% "
+                     "carbon dioxide comes from.",
+             "correct": False,
+             "why": "The oxygen figure falls by 5 percentage points out of "
+                    "21, which is about a quarter of it, not a twentieth."},
+            {"text": "About a quarter of it, with the rest coming straight "
+                     "back out.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e31",
+        "band": "easier",
+        "text": "Breathing, gas exchange and respiration are three "
+                "different things. Which of them happens inside every cell "
+                "of the body?",
+        "options": [
+            {"text": "Gas exchange, which is the reason the lungs are "
+                     "needed at all.",
+             "correct": False,
+             "why": "Gas exchange happens in one place only — the alveoli. "
+                    "It is what supplies the cells rather than what "
+                    "happens inside them."},
+            {"text": "Breathing, because every cell in the body needs air "
+                     "brought to it.",
+             "correct": False,
+             "why": "Breathing is muscles moving air in and out of the "
+                    "lungs. Air never reaches a cell; dissolved oxygen "
+                    "does, carried in the blood."},
+            {"text": "Respiration.",
+             "correct": True},
+            {"text": "Gas exchange and respiration together, since both of "
+                     "them involve oxygen.",
+             "correct": False,
+             "why": "Both involve oxygen, but only one of them is inside a "
+                    "cell. Gas exchange stays at the alveoli."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-e32",
+        "band": "easier",
+        "text": "Sort the airway into the tubes that transport air and the "
+                "surface where gas is exchanged. Which grouping is right?",
+        "options": [
+            {"text": "Trachea, bronchi and bronchioles transport; the "
+                     "alveoli exchange.",
+             "correct": True},
+            {"text": "Trachea and bronchi transport; the bronchioles and "
+                     "alveoli both exchange.",
+             "correct": False,
+             "why": "The bronchioles are transport tubes like the ones "
+                    "above them — narrower, and walled with muscle, but "
+                    "still carrying air rather than exchanging it."},
+            {"text": "The nose transports, and every part below it "
+                     "exchanges a little.",
+             "correct": False,
+             "why": "This is the commonest version of the mistake. "
+                    "Exchange happens at one place only, and every tube "
+                    "before it is moving or conditioning the air."},
+            {"text": "The alveoli transport air on to the bronchioles, "
+                     "which are where it is exchanged.",
+             "correct": False,
+             "why": "This reverses the route as well as the jobs. The "
+                    "alveoli are the end of the road, not a stage on the "
+                    "way to one."},
+        ],
+        "figure": None,
+    },
+    # ── standard ──────────────────────────────────────────────────────
+    {
+        "id": "b4-01-s12",
+        "band": "standard",
+        "text": "A sample of air taken from inside the trachea during a "
+                "breath in has the same composition as the air in the "
+                "room. Explain why.",
+        "options": [
+            {"text": "The trachea replaces any oxygen that has already "
+                     "been taken, so the sample looks untouched.",
+             "correct": False,
+             "why": "Nothing in the body puts oxygen back into air. The "
+                    "sample is unchanged because nothing has been removed "
+                    "from it yet."},
+            {"text": "Some exchange has happened, but far too little of it "
+                     "to show up on the equipment used.",
+             "correct": False,
+             "why": "It is not a matter of the amount being small. No "
+                    "oxygen at all crosses into the blood anywhere above "
+                    "the alveoli."},
+            {"text": "No gas has crossed into the blood yet: the trachea "
+                     "is a transport tube, not an exchange surface.",
+             "correct": True},
+            {"text": "The air has already been to the alveoli and back, "
+                     "arriving at the trachea at 21% oxygen again.",
+             "correct": False,
+             "why": "Air that has been to the alveoli comes back at 16% "
+                    "oxygen, not 21%. On a breath in, this air has not "
+                    "been anywhere yet."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s13",
+        "band": "standard",
+        "text": "Air enters the nose at room temperature and leaves the "
+                "mouth at body temperature. Explain what has warmed it.",
+        "options": [
+            {"text": "Respiration in the alveoli, which releases its heat "
+                     "straight into the air in the sacs.",
+             "correct": False,
+             "why": "Respiration happens inside cells all over the body, "
+                    "not in the air. The air is warmed by touching a warm "
+                    "surface, not by a reaction happening in it."},
+            {"text": "Friction, as the air rushes down the narrow tubes of "
+                     "the airway.",
+             "correct": False,
+             "why": "Quiet breathing moves air slowly and gently. The "
+                    "warming happens just as much on a slow breath as on a "
+                    "fast one, which rules friction out."},
+            {"text": "The carbon dioxide added to it on the way, which is "
+                     "a warmer gas than the oxygen it replaces.",
+             "correct": False,
+             "why": "A gas does not carry a temperature of its own into a "
+                    "mixture, and the carbon dioxide added is only about "
+                    "4% of the breath in any case."},
+            {"text": "The warm, wet lining of the nose and airway, which "
+                     "the air is touching the whole way down.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s14",
+        "band": "standard",
+        "text": "Oxygen from a hospital cylinder is completely dry, and it "
+                "is bubbled through water before a patient breathes it. "
+                "Suggest why.",
+        "options": [
+            {"text": "It does the moistening the nose would normally do, "
+                     "so the airway lining does not dry out.",
+             "correct": True},
+            {"text": "Water is needed before oxygen will dissolve into the "
+                     "blood at the alveoli.",
+             "correct": False,
+             "why": "The alveoli have their own moist lining and supply "
+                    "that themselves. The water is added for the tubes the "
+                    "gas travels through, not for the crossing at the end."},
+            {"text": "Bubbling it through water puts back the carbon "
+                     "dioxide the patient still needs to breathe in.",
+             "correct": False,
+             "why": "Water does not add carbon dioxide, and a patient "
+                    "needs none breathed in — carbon dioxide is a waste "
+                    "gas made by their own cells."},
+            {"text": "Wet air carries more oxygen than dry air, so each "
+                     "breath delivers a larger dose.",
+             "correct": False,
+             "why": "Adding water vapour to a gas does not increase its "
+                    "oxygen. If anything the water takes up room the "
+                    "oxygen would otherwise fill."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s15",
+        "band": "standard",
+        "text": "Two joiners work all day in the same dusty workshop. One "
+                "breathes through the nose and the other through the "
+                "mouth. Predict the difference, and give the reason.",
+        "options": [
+            {"text": "The nose breather takes in more, because dust "
+                     "settles in the nose and is drawn down later.",
+             "correct": False,
+             "why": "Dust caught in the nose is held in mucus and moved "
+                    "back out, not released later. Catching it there is "
+                    "what keeps it out of the lungs."},
+            {"text": "The mouth breather takes in more dust, because the "
+                     "nose's hairs and mucus filter it out.",
+             "correct": True},
+            {"text": "There is no difference, because the trachea does all "
+                     "the filtering below both routes anyway.",
+             "correct": False,
+             "why": "The trachea does trap dust in its mucus, but it is "
+                    "the second line rather than the first. Air through "
+                    "the mouth arrives at it dirtier."},
+            {"text": "The mouth breather takes in less, because the mouth "
+                     "is a wider opening and dust falls out of slow air.",
+             "correct": False,
+             "why": "A wider opening filters less, not more. Nothing about "
+                    "the mouth traps particles the way nose hairs and "
+                    "mucus do."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s16",
+        "band": "standard",
+        "text": "A student writes that nitrogen goes into your lungs and "
+                "stays inside your body. Use the two nitrogen figures to "
+                "correct them.",
+        "options": [
+            {"text": "It goes in at 78% and comes out at 16%, so most of "
+                     "it really does stay behind.",
+             "correct": False,
+             "why": "16% is the oxygen figure for exhaled air. Nitrogen "
+                    "reads 78% in both bags."},
+            {"text": "The figures cannot settle it, because a percentage "
+                     "says nothing about how much gas there is.",
+             "correct": False,
+             "why": "Both bags hold the same volume of air, so the same "
+                    "percentage means the same amount. That is exactly why "
+                    "the comparison works."},
+            {"text": "It goes in at 78% and comes out at 78%, so "
+                     "essentially all of it comes straight back out.",
+             "correct": True},
+            {"text": "The student is right, and the figure is rounded to "
+                     "78% because the amount absorbed is small.",
+             "correct": False,
+             "why": "There is no slow absorption hiding in the rounding. "
+                    "Your body has no way of taking nitrogen out of air at "
+                    "all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s17",
+        "band": "standard",
+        "text": "The trachea is ringed with cartilage while the "
+                "bronchioles have muscle instead. Explain why the two need "
+                "different walls.",
+        "options": [
+            {"text": "Cartilage is simply stronger than muscle, and only a "
+                     "tube as wide as the trachea is able to carry rings "
+                     "of it.",
+             "correct": False,
+             "why": "Width is not the reason — the bronchi are narrower "
+                    "than the trachea and are ringed too. The question is "
+                    "whether a tube needs to change width or never to "
+                    "close."},
+            {"text": "The bronchioles are where gas exchange happens, and "
+                     "rings of cartilage would get in its way.",
+             "correct": False,
+             "why": "No exchange happens in a bronchiole; it is a "
+                    "transport tube like the ones above it. Exchange "
+                    "begins only at the alveoli."},
+            {"text": "Cartilage wears out in narrow tubes, so the body "
+                     "switches to muscle wherever a tube is small.",
+             "correct": False,
+             "why": "Cartilage does not wear out with use, and the switch "
+                    "is not about durability. It is about what each tube "
+                    "has to be able to do."},
+            {"text": "The trachea is the one route for all the air and "
+                     "must never close, while muscle lets bronchioles "
+                     "change width.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s18",
+        "band": "standard",
+        "text": "A student says the alveoli squeeze oxygen across into the "
+                "blood. What is wrong with that picture?",
+        "options": [
+            {"text": "Nothing in an alveolus moves: the gases cross a wall "
+                     "one cell thick on their own.",
+             "correct": True},
+            {"text": "It is the capillaries that squeeze, pushing the "
+                     "oxygen out of the air and into the blood.",
+             "correct": False,
+             "why": "A capillary wall is one cell thick as well, and it "
+                    "does no pushing. The gases move without anything "
+                    "driving them across."},
+            {"text": "The alveoli do squeeze, but only during exercise, "
+                     "when much more oxygen is needed each minute.",
+             "correct": False,
+             "why": "Exercise changes how fast air is moved in and out, "
+                    "not what an alveolus does. An alveolus has no muscle "
+                    "to squeeze with at any time."},
+            {"text": "The squeezing happens in the bronchioles, and the "
+                     "alveoli only store the air until it is needed.",
+             "correct": False,
+             "why": "Bronchiole muscle changes the width of a tube; it "
+                    "never drives gas across a wall. And the alveoli are "
+                    "the exchange surface, not a store."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s19",
+        "band": "standard",
+        "text": "A breath in is 500 ml of air, and inhaled air is 21% "
+                "oxygen. Calculate the volume of oxygen taken in with that "
+                "breath.",
+        "options": [
+            {"text": "21 ml",
+             "correct": False,
+             "why": "This treats the 21 as a volume rather than as a "
+                    "percentage. The percentage has to be taken of the 500 "
+                    "ml: 500 × 0.21 = 105 ml."},
+            {"text": "105 ml",
+             "correct": True},
+            {"text": "1050 ml",
+             "correct": False,
+             "why": "This is ten times too large, and larger than the "
+                    "breath itself. A power of ten has slipped: 500 × 0.21 "
+                    "= 105 ml."},
+            {"text": "395 ml",
+             "correct": False,
+             "why": "This is 500 − 105, the volume of everything that is "
+                    "not oxygen. The question asks for the oxygen itself."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s20",
+        "band": "standard",
+        "text": "Exhaled air is about 4% carbon dioxide, and a breath out "
+                "is 500 ml. Calculate the volume of carbon dioxide in it.",
+        "options": [
+            {"text": "4 ml",
+             "correct": False,
+             "why": "This reads the 4 as a volume instead of a percentage. "
+                    "Four per cent of 500 ml is 500 × 0.04 = 20 ml."},
+            {"text": "125 ml",
+             "correct": False,
+             "why": "This divides 500 by 4 rather than taking 4% of it. "
+                    "Dividing by 4 would be finding a quarter, which is "
+                    "25%, not 4%."},
+            {"text": "20 ml",
+             "correct": True},
+            {"text": "200 ml",
+             "correct": False,
+             "why": "This is 40% of the breath, not 4%. The decimal point "
+                    "has moved one place."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s21",
+        "band": "standard",
+        "text": "A student believes the air inside an alveolus is pure "
+                "oxygen by the time it gets there. Explain what is "
+                "actually in it.",
+        "options": [
+            {"text": "Pure oxygen, because the airway strips out the other "
+                     "gases on the way down.",
+             "correct": False,
+             "why": "The airway removes nothing from the air except dust. "
+                    "Air arrives at the alveoli with the same gases it "
+                    "started with."},
+            {"text": "Pure carbon dioxide, because the blood has already "
+                     "unloaded its carbon dioxide there.",
+             "correct": False,
+             "why": "Carbon dioxide does arrive from the blood, but it "
+                    "only ever reaches about 4% of the air in the sac."},
+            {"text": "Nothing at all until the blood arrives, because an "
+                     "alveolus is empty between breaths.",
+             "correct": False,
+             "why": "An alveolus never empties. Air stays in it between "
+                    "breaths, which is why fresh air mixes with air "
+                    "already there."},
+            {"text": "Mostly nitrogen, as every breath is, with some "
+                     "oxygen and a little carbon dioxide.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s22",
+        "band": "standard",
+        "text": "You breathe out about a hundred times more carbon dioxide "
+                "than you breathe in. Where in the body was it made, and "
+                "how did it reach the alveoli?",
+        "options": [
+            {"text": "In respiring cells all over the body; the blood "
+                     "carried it to the alveoli.",
+             "correct": True},
+            {"text": "In the alveoli, where oxygen is turned into carbon "
+                     "dioxide as it crosses the wall.",
+             "correct": False,
+             "why": "Nothing is turned into anything at an alveolus. "
+                    "Oxygen crosses one way and carbon dioxide crosses the "
+                    "other, unchanged."},
+            {"text": "In the lungs, which manufacture it from the air that "
+                     "arrives there each breath.",
+             "correct": False,
+             "why": "Lungs make no gases. They are the place where a gas "
+                    "made elsewhere in the body finally leaves it."},
+            {"text": "In the stomach, from food, and it travels up the "
+                     "oesophagus into the airway.",
+             "correct": False,
+             "why": "Food and air take separate tubes, and the carbon "
+                    "dioxide you breathe out has come through the blood "
+                    "rather than up the gullet."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s23",
+        "band": "standard",
+        "text": "A patient has one whole lung removed. Predict the effect "
+                "on their total gas exchange surface, and whether they can "
+                "still exchange gases.",
+        "options": [
+            {"text": "Gas exchange stops altogether, because both lungs "
+                     "are needed for the two gases to cross over.",
+             "correct": False,
+             "why": "Each alveolus does the whole job on its own — oxygen "
+                    "in, carbon dioxide out. Half as many of them is "
+                    "fewer, not incapable."},
+            {"text": "The surface is roughly halved, but exchange carries "
+                     "on: one lung still holds millions of alveoli.",
+             "correct": True},
+            {"text": "The surface is unchanged, because the trachea and "
+                     "the bronchi are both left exactly as they were.",
+             "correct": False,
+             "why": "The exchange surface is the alveoli, not the tubes "
+                    "that lead to them. Taking a lung away takes about "
+                    "half of those sacs with it."},
+            {"text": "The remaining lung at once grows enough new alveoli "
+                     "to replace every single one that was lost.",
+             "correct": False,
+             "why": "A lung cannot rebuild half an exchange surface on "
+                    "demand. The patient manages because one lung's "
+                    "surface is still very large."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s24",
+        "band": "standard",
+        "text": "Sample A is 78% nitrogen, 21% oxygen and 0.04% carbon "
+                "dioxide. Sample B is 78% nitrogen, 16% oxygen and 4% "
+                "carbon dioxide. Which sample was breathed out, and which "
+                "figures decide it?",
+        "options": [
+            {"text": "Sample A, because its carbon dioxide figure is the "
+                     "lower of the two.",
+             "correct": False,
+             "why": "A low carbon dioxide reading is the mark of air that "
+                    "has not been in anyone. Breathing out raises that "
+                    "figure a hundredfold."},
+            {"text": "Sample B, because its nitrogen has changed while "
+                     "sample A's nitrogen has not.",
+             "correct": False,
+             "why": "Both samples read 78% nitrogen — that gas is the one "
+                    "thing breathing leaves alone. It is the oxygen and "
+                    "carbon dioxide that give the answer."},
+            {"text": "Sample B: its oxygen has fallen and its carbon "
+                     "dioxide has risen.",
+             "correct": True},
+            {"text": "It cannot be decided, because the two samples share "
+                     "the same nitrogen figure.",
+             "correct": False,
+             "why": "The shared figure is the uninformative one. Two of "
+                    "the three gases differ, and both differ in the "
+                    "direction that breathing predicts."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s25",
+        "band": "standard",
+        "text": "A student says the nose cleans the air completely, so "
+                "nothing dirty ever gets past it. Evaluate that claim.",
+        "options": [
+            {"text": "It is correct, and it is why the alveoli need no "
+                     "cleaning system of their own.",
+             "correct": False,
+             "why": "The alveoli have no cleaning system, which is true, "
+                    "but that is a weakness rather than a sign that "
+                    "everything upstream has been caught."},
+            {"text": "It is far too weak: the nose removes nothing, and "
+                     "all the cleaning is done lower down the airway.",
+             "correct": False,
+             "why": "The nose's hairs and mucus do a great deal, which is "
+                    "why mouth breathing in a dusty place is worse for "
+                    "you."},
+            {"text": "It cannot be judged either way, because there is no "
+                     "means of telling how clean the air is.",
+             "correct": False,
+             "why": "The evidence is in the airway itself: mucus and cilia "
+                    "lining the trachea and bronchi are there because "
+                    "particles get past the nose."},
+            {"text": "It is too strong: the nose removes a lot, which is "
+                     "why the trachea and bronchi still carry mucus and "
+                     "cilia.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s26",
+        "band": "standard",
+        "text": "Exhaled air is saturated with water vapour even when the "
+                "air breathed in was dry. Where has that water come from?",
+        "options": [
+            {"text": "From the moist lining of the airway and alveoli, "
+                     "from which water evaporates into the passing air.",
+             "correct": True},
+            {"text": "From the blood, which releases liquid water directly "
+                     "into each alveolus.",
+             "correct": False,
+             "why": "Blood does not empty water into the air sacs — they "
+                    "would fill up. The lining is already wet, and water "
+                    "leaves it as vapour."},
+            {"text": "From respiration, which happens inside the alveoli "
+                     "and is the only place water is ever made.",
+             "correct": False,
+             "why": "Respiration does make water, but it happens in cells "
+                    "all over the body rather than in the alveoli."},
+            {"text": "From the oxygen taken out of the air, which turns "
+                     "into water as it crosses the wall.",
+             "correct": False,
+             "why": "Oxygen crosses the wall unchanged and is still oxygen "
+                    "on the other side. Nothing is converted at the "
+                    "exchange surface."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s27",
+        "band": "standard",
+        "text": "Trace one molecule of oxygen from the air outside to the "
+                "blood. Which list of parts does it pass through?",
+        "options": [
+            {"text": "Nose, trachea, bronchiole, bronchus, alveolus, then "
+                     "across into a capillary.",
+             "correct": False,
+             "why": "The two branching tubes are the wrong way round. A "
+                    "bronchus divides into bronchioles, so the wide one "
+                    "comes first."},
+            {"text": "Nose, trachea, bronchus, bronchiole, alveolus, then "
+                     "across into a capillary.",
+             "correct": True},
+            {"text": "Nose, trachea, bronchus, bronchiole, then straight "
+                     "into a capillary in the bronchiole wall.",
+             "correct": False,
+             "why": "This stops one stage short. Nothing crosses into the "
+                    "blood from a bronchiole; the molecule has to reach an "
+                    "alveolus first."},
+            {"text": "Mouth, oesophagus, stomach, then across into the "
+                     "blood along with the food.",
+             "correct": False,
+             "why": "That is the route food takes. Oxygen is not absorbed "
+                    "from the gut, and the oesophagus carries no air to "
+                    "the lungs."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s28",
+        "band": "standard",
+        "text": "A pupil's notes say the air is cleaned in the trachea and "
+                "warmed in the alveoli. Which two corrections does that "
+                "need?",
+        "options": [
+            {"text": "Cleaning happens only in the alveoli, and warming "
+                     "happens only in the trachea.",
+             "correct": False,
+             "why": "This swaps the two claims round rather than "
+                    "correcting them. The alveoli neither clean nor warm — "
+                    "both jobs are finished before the air arrives."},
+            {"text": "The cleaning claim is right, and warming happens in "
+                     "the blood once the oxygen has crossed.",
+             "correct": False,
+             "why": "Cleaning starts in the nose, above the trachea. And "
+                    "the air is warmed by the airway lining rather than by "
+                    "anything happening in the blood."},
+            {"text": "Cleaning starts in the nose and continues along the "
+                     "airway, and warming happens before the alveoli "
+                     "rather than at them.",
+             "correct": True},
+            {"text": "The warming claim is right, and cleaning happens in "
+                     "the bronchioles, where the muscle squeezes particles "
+                     "out.",
+             "correct": False,
+             "why": "Bronchiole muscle changes the width of a tube and "
+                    "traps nothing, and the alveoli are not where air is "
+                    "warmed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s29",
+        "band": "standard",
+        "text": "Compare what happens to a dust particle that lands in the "
+                "trachea with one that reaches an alveolus.",
+        "options": [
+            {"text": "Both are caught in mucus and swept back up, because "
+                     "the whole airway is lined the same way.",
+             "correct": False,
+             "why": "The lining changes at the end of the route. Alveoli "
+                    "have no cilia and no mucus belt — they are a bare "
+                    "exchange surface."},
+            {"text": "The one in the trachea passes into the blood, and "
+                     "the one in an alveolus is coughed back out.",
+             "correct": False,
+             "why": "This has both fates backwards. Nothing crosses into "
+                    "the blood from the trachea, and a particle in an "
+                    "alveolus is past the reach of a cough."},
+            {"text": "Neither can settle for long, because the moving air "
+                     "blows both of them straight back out again on the "
+                     "very next breath.",
+             "correct": False,
+             "why": "Mucus is sticky precisely so that particles do "
+                    "settle. If air movement cleared the airway, there "
+                    "would be no need for cilia."},
+            {"text": "The one in the trachea is trapped in mucus and swept "
+                     "back up, while the one in an alveolus has no cilia "
+                     "to move it.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s30",
+        "band": "standard",
+        "text": "A patient breathes pure oxygen through a sealed mask for "
+                "several minutes. Predict what happens to the nitrogen "
+                "figure in the air they breathe out.",
+        "options": [
+            {"text": "It falls towards zero, because no nitrogen is going "
+                     "in for them to breathe back out.",
+             "correct": True},
+            {"text": "It stays at 78%, because the body always gives back "
+                     "the nitrogen it is holding.",
+             "correct": False,
+             "why": "The body holds no store of nitrogen gas to give back. "
+                    "The 78% in an ordinary breath out is simply the 78% "
+                    "that went in."},
+            {"text": "It rises above 78%, because taking the oxygen out "
+                     "leaves the nitrogen more concentrated.",
+             "correct": False,
+             "why": "That effect is real when air is breathed, but it is "
+                    "tiny, and here there is no nitrogen going in to "
+                    "become concentrated."},
+            {"text": "It stays at 78%, because nitrogen is produced in the "
+                     "lungs as a waste gas.",
+             "correct": False,
+             "why": "The lungs make no gases at all. The only waste gas "
+                    "leaving at the alveoli is carbon dioxide, made by "
+                    "respiring cells."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s31",
+        "band": "standard",
+        "text": "Two students argue about whether the lungs and the gas "
+                "exchange system mean the same thing. Who is right, and "
+                "why?",
+        "options": [
+            {"text": "They are the same, because everything to do with "
+                     "breathing happens inside the lungs.",
+             "correct": False,
+             "why": "The nose, the trachea and the bronchi all sit outside "
+                    "the lungs, and every breath passes through them "
+                    "first."},
+            {"text": "They differ: the lungs are organs, and the system "
+                     "also takes in the airway above them.",
+             "correct": True},
+            {"text": "They differ: the gas exchange system is only the "
+                     "alveoli, and the lungs are everything else.",
+             "correct": False,
+             "why": "The alveoli are the exchange surface, but a system is "
+                    "the organs working together — the tubes that deliver "
+                    "the air belong to it too."},
+            {"text": "They differ: the lungs are a tissue, and the gas "
+                     "exchange system is the single organ built from it.",
+             "correct": False,
+             "why": "This has the levels of organisation inverted. A lung "
+                    "is an organ, built from tissues, and several organs "
+                    "together make the system."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-s32",
+        "band": "standard",
+        "text": "A pupil draws the trachea leading straight into one large "
+                "air sac in each lung. Name the two things the drawing "
+                "leaves out.",
+        "options": [
+            {"text": "The rings of cartilage, and the muscle that squeezes "
+                     "each large sac empty again.",
+             "correct": False,
+             "why": "The rings are worth drawing, but a lung holds no "
+                    "muscle of its own to squeeze with — so the second "
+                    "half puts in something that is not there."},
+            {"text": "The nose above the trachea, and the mucus that lines "
+                     "the inside of the large sac.",
+             "correct": False,
+             "why": "The nose is a fair addition, but an exchange surface "
+                    "lined with mucus would be a contradiction: mucus is "
+                    "for the tubes, not the sacs."},
+            {"text": "The branching into bronchi and bronchioles, and the "
+                     "alveoli they end in.",
+             "correct": True},
+            {"text": "The capillaries wrapped around the sac, and the ribs "
+                     "that would be drawn outside it.",
+             "correct": False,
+             "why": "Both are real, but neither is the structural point. "
+                    "The drawing's mistake is the single hollow bag where "
+                    "there should be branching ending in millions of sacs."},
+        ],
+        "figure": None,
+    },
+    # ── harder ────────────────────────────────────────────────────────
+    {
+        "id": "b4-01-h12",
+        "band": "harder",
+        "text": "The trachea and bronchi are lined with a moist membrane, "
+                "just as the alveoli are. A student argues that gas "
+                "exchange must therefore happen there too, only more "
+                "slowly. Give the two reasons it does not.",
+        "options": [
+            {"text": "Their lining is moist but never warm enough, and the "
+                     "air moves past it far too quickly to exchange "
+                     "anything.",
+             "correct": False,
+             "why": "Air in the trachea is already close to body "
+                    "temperature, and speed is not the obstacle. The "
+                    "obstacles are the thickness of the wall and the "
+                    "absence of capillaries against it."},
+            {"text": "Their mucus seals the surface, and the rings of "
+                     "cartilage around them block any gas from crossing.",
+             "correct": False,
+             "why": "Gases pass through mucus perfectly well, and the "
+                    "rings are open C shapes with gaps between them. "
+                    "Neither is what stops exchange."},
+            {"text": "The air there is still 21% oxygen, and gas will only "
+                     "cross once that figure has begun to fall.",
+             "correct": False,
+             "why": "This gets the direction backwards. A high oxygen "
+                    "figure beside oxygen-poor blood is the best possible "
+                    "condition for crossing — what is missing is somewhere "
+                    "to cross to."},
+            {"text": "Their walls are many cells thick, and no dense "
+                     "network of capillaries is pressed against the "
+                     "lining.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h13",
+        "band": "harder",
+        "text": "A student says gas exchange would work just as well if "
+                "the blood beside the alveoli stood still, since the wall "
+                "is thin either way. Evaluate that claim.",
+        "options": [
+            {"text": "It would soon stop: moving blood carries the oxygen "
+                     "away, which is what keeps the difference across the "
+                     "wall large.",
+             "correct": True},
+            {"text": "It would work just as well, because a thin wall is "
+                     "the only thing oxygen needs in order to cross it.",
+             "correct": False,
+             "why": "A thin wall is necessary but not sufficient. Once the "
+                    "standing blood filled up with oxygen, there would be "
+                    "no difference left across the wall and crossing would "
+                    "stop."},
+            {"text": "It would work better than before, because standing "
+                     "blood has longer beside the air to pick oxygen up.",
+             "correct": False,
+             "why": "Longer contact does not help once the blood is full. "
+                    "What matters is that fresh, oxygen-poor blood keeps "
+                    "arriving."},
+            {"text": "It would stop at once, because it is the movement of "
+                     "the blood that physically drags oxygen through the "
+                     "wall.",
+             "correct": False,
+             "why": "Nothing drags the oxygen across — it moves on its "
+                    "own. The flow matters because of what it takes away, "
+                    "not because of any pull it exerts."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h14",
+        "band": "harder",
+        "text": "One person's alveoli give a total exchange surface of "
+                "about 70 m², while their skin covers about 2 m². "
+                "Determine how many times greater the alveolar surface is, "
+                "and say why the body needs it.",
+        "options": [
+            {"text": "About 35 times greater, because the lungs must hold "
+                     "35 times more air than the body has skin.",
+             "correct": False,
+             "why": "The arithmetic is right and the reason is not. "
+                    "Surface area is not a volume of air: the point is how "
+                    "much gas can cross at once."},
+            {"text": "About 35 times greater, because how much gas can "
+                     "cross depends on the area available.",
+             "correct": True},
+            {"text": "About 68 times greater, since the two areas are "
+                     "subtracted to compare them.",
+             "correct": False,
+             "why": "Comparing how many times bigger means dividing, not "
+                    "subtracting. 70 ÷ 2 = 35."},
+            {"text": "About 140 times greater, because each of the two "
+                     "lungs has a surface of 70 m² of its own.",
+             "correct": False,
+             "why": "The 70 m² figure is already the total for both lungs "
+                    "together, so it must not be doubled."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h15",
+        "band": "harder",
+        "text": "An insect has no lungs. Air enters holes along its sides "
+                "and travels down fine tubes that reach its tissues "
+                "directly. Compare that with the human arrangement.",
+        "options": [
+            {"text": "The insect exchanges gases through its skin, while a "
+                     "human exchanges them in the alveoli.",
+             "correct": False,
+             "why": "The insect's gases still cross at the end of a tube, "
+                    "not through its outer surface. The real difference is "
+                    "what the tubes deliver to."},
+            {"text": "The insect's tubes are its alveoli, so both animals "
+                     "exchange gases at the end of an airway.",
+             "correct": False,
+             "why": "The tubes end at the tissues themselves rather than "
+                    "at a sac beside a blood vessel, which is the whole "
+                    "point of the comparison."},
+            {"text": "The insect's tubes take air to the cells themselves, "
+                     "so no blood need carry it; a human exchanges at one "
+                     "surface.",
+             "correct": True},
+            {"text": "Neither system relies on the gases moving on their "
+                     "own: the insect pumps its air and the human pumps "
+                     "its blood.",
+             "correct": False,
+             "why": "The gases move on their own in both animals. Pumping "
+                    "brings the air or the blood close; the crossing "
+                    "itself is never pumped."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h16",
+        "band": "harder",
+        "text": "A diver breathes a mixture that is 40% oxygen. If their "
+                "body removes about a quarter of the oxygen in each "
+                "breath, predict the oxygen percentage of the air they "
+                "breathe out.",
+        "options": [
+            {"text": "About 10%, since a quarter of what went in is what "
+                     "is left.",
+             "correct": False,
+             "why": "A quarter is removed, so three quarters remain. This "
+                    "keeps the quarter and throws away the rest."},
+            {"text": "About 16%, the same figure as for ordinary air.",
+             "correct": False,
+             "why": "16% is what is left of 21%. Start from 40% and three "
+                    "quarters of it is 30%."},
+            {"text": "About 35%, because the fall is always the 5 "
+                     "percentage points seen with ordinary air.",
+             "correct": False,
+             "why": "The 5-point fall is a quarter of 21, not a fixed "
+                    "amount. Take a quarter of 40 and the fall is 10 "
+                    "points."},
+            {"text": "About 30%.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h17",
+        "band": "harder",
+        "text": "Someone absorbs 300 ml of oxygen a minute. Each breath is "
+                "500 ml, and 5% of a breath's volume is absorbed as "
+                "oxygen. Determine how many breaths they take in a minute.",
+        "options": [
+            {"text": "12 breaths a minute",
+             "correct": True},
+            {"text": "25 breaths a minute",
+             "correct": False,
+             "why": "25 ml is the oxygen absorbed from one breath (500 × "
+                    "0.05), not the number of breaths. Divide 300 by that "
+                    "to get 12."},
+            {"text": "60 breaths a minute",
+             "correct": False,
+             "why": "This divides 300 by 5, using the percentage as though "
+                    "it were the volume per breath. The volume per breath "
+                    "is 25 ml."},
+            {"text": "6 breaths a minute",
+             "correct": False,
+             "why": "This divides 300 by 50, which is ten times the oxygen "
+                    "each breath actually supplies."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h18",
+        "band": "harder",
+        "text": "A newborn baby has about 50 million alveoli and an adult "
+                "about 500 million, while an adult's body mass is roughly "
+                "twenty times a newborn's. Compare the two changes.",
+        "options": [
+            {"text": "The alveoli increase about twentyfold, exactly "
+                     "keeping pace with the rise in body mass.",
+             "correct": False,
+             "why": "500 million is ten times 50 million, not twenty. The "
+                    "two figures deliberately do not match."},
+            {"text": "The alveoli increase about tenfold, so they do not "
+                     "keep pace with body mass.",
+             "correct": True},
+            {"text": "The alveoli increase about 450 million times, "
+                     "because the two numbers are subtracted.",
+             "correct": False,
+             "why": "Subtracting gives the extra number of alveoli, not "
+                    "how many times more there are. For that, divide: 500 "
+                    "÷ 50 = 10."},
+            {"text": "The alveoli do not increase at all, because a baby "
+                     "is born with every alveolus it will ever have and "
+                     "each one simply grows larger.",
+             "correct": False,
+             "why": "The two figures in the question rule this out on "
+                    "their own — 50 million becomes 500 million, so new "
+                    "sacs are made after birth as well as bigger ones."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h19",
+        "band": "harder",
+        "text": "Of every 600 ml breath, about 150 ml stays in the airway "
+                "and never reaches an alveolus. At 15 breaths a minute, "
+                "calculate the volume of air that does reach the alveoli "
+                "each minute.",
+        "options": [
+            {"text": "9000 ml",
+             "correct": False,
+             "why": "This is 600 × 15, the whole volume moved. It ignores "
+                    "the 150 ml of each breath that stops in the tubes."},
+            {"text": "2250 ml",
+             "correct": False,
+             "why": "This is 150 × 15, the air left behind in the airway "
+                    "rather than the air that gets past it."},
+            {"text": "6750 ml",
+             "correct": True},
+            {"text": "450 ml",
+             "correct": False,
+             "why": "This is the useful volume of a single breath (600 − "
+                    "150). It still has to be multiplied by the 15 "
+                    "breaths."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h20",
+        "band": "harder",
+        "text": "Two people each move 6 litres of air a minute. One takes "
+                "12 breaths of 500 ml; the other takes 24 shallow breaths "
+                "of 250 ml. About 150 ml of every breath stays in the "
+                "airway for both. Determine which gets more air to their "
+                "alveoli.",
+        "options": [
+            {"text": "The 250 ml breather, because more breaths a minute "
+                     "means more chances for fresh air to arrive.",
+             "correct": False,
+             "why": "Each shallow breath wastes the same 150 ml, so taking "
+                    "more of them multiplies the waste. Working it through "
+                    "gives 2400 ml against 4200 ml."},
+            {"text": "Neither: both reach 6000 ml, because the total "
+                     "volume of air moved is the same for the two of them.",
+             "correct": False,
+             "why": "The totals moved are equal, which is exactly what "
+                    "makes this worth asking. The 150 ml of dead space is "
+                    "subtracted from every breath, so the number of "
+                    "breaths decides it."},
+            {"text": "The 250 ml breather, because only the extra 100 ml "
+                     "of each of their breaths is wasted.",
+             "correct": False,
+             "why": "The waste is 150 ml of each breath, not 100 ml, and "
+                    "it is the useful part that is left over: 250 − 150 = "
+                    "100 ml per breath, which is the smaller share."},
+            {"text": "The 500 ml breather, at 4200 ml a minute against "
+                     "2400 ml.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h21",
+        "band": "harder",
+        "text": "Rescue breaths deliver air that is only 16% oxygen, while "
+                "ordinary air is 21%. Explain how a casualty's blood can "
+                "still gain oxygen from it.",
+        "options": [
+            {"text": "Their blood arrives at the alveoli with less oxygen "
+                     "than that, so oxygen still crosses into the blood.",
+             "correct": True},
+            {"text": "The 16% figure climbs back to 21% inside the "
+                     "casualty's airway before the air arrives at the "
+                     "alveoli.",
+             "correct": False,
+             "why": "No part of the airway puts oxygen back into air. What "
+                    "is in the breath when it goes in is what reaches the "
+                    "sacs."},
+            {"text": "The casualty's lungs work harder than usual to make "
+                     "up the difference between 16% and 21%.",
+             "correct": False,
+             "why": "A casualty being given rescue breaths is not "
+                    "breathing at all, and a lung cannot work harder in "
+                    "any case — it contains no muscle."},
+            {"text": "Oxygen always moves into blood whatever the amounts "
+                     "on each side, because blood pulls it across the "
+                     "wall.",
+             "correct": False,
+             "why": "Blood pulls nothing across. Oxygen moves from where "
+                    "there is more of it to where there is less, and it "
+                    "would not move at all if the blood already held more."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h22",
+        "band": "harder",
+        "text": "Carbon dioxide rises from 0.04% of inhaled air to 4% of "
+                "exhaled air. State that rise as a ratio, and state what "
+                "percentage of exhaled air is still something else.",
+        "options": [
+            {"text": "A rise of just 4 to 1, and 96% of the exhaled air is "
+                     "something else.",
+             "correct": False,
+             "why": "The second figure is right but the ratio is not. 4 "
+                    "divided by 0.04 is 100, not 4."},
+            {"text": "A rise of 100 to 1, and 96% of the exhaled air is "
+                     "something else.",
+             "correct": True},
+            {"text": "A rise of 100 to 1, and 4% of the exhaled air is "
+                     "something else.",
+             "correct": False,
+             "why": "The ratio is right, but the last figure is the carbon "
+                    "dioxide itself. Everything else is 100 − 4 = 96%."},
+            {"text": "A rise of 400 to 1, and 60% of the exhaled air is "
+                     "something else.",
+             "correct": False,
+             "why": "Neither number works. 4 ÷ 0.04 = 100, and what is "
+                    "left of the bag is 96%, most of it nitrogen."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h23",
+        "band": "harder",
+        "text": "Air sampled at the mouth during a breath in is 21% "
+                "oxygen, but air sampled from inside an alveolus is only "
+                "about 14%. Suggest why the alveolar figure is lower.",
+        "options": [
+            {"text": "The airway takes the oxygen out of the air on the "
+                     "way down, so the figure has already fallen before "
+                     "the air arrives.",
+             "correct": False,
+             "why": "No oxygen crosses anywhere above the alveoli. Air "
+                    "reaches them at the same 21% it started at."},
+            {"text": "The measurement must be wrong, because alveolar air "
+                     "stays at 21% until the blood takes some.",
+             "correct": False,
+             "why": "The blood is taking oxygen continuously, all day, so "
+                    "there is no moment at which alveolar air sits "
+                    "untouched at 21%."},
+            {"text": "Fresh air does not replace alveolar air completely: "
+                     "it mixes with air already there, which has been "
+                     "giving up oxygen.",
+             "correct": True},
+            {"text": "The blood adds nitrogen to the alveoli, which "
+                     "dilutes the oxygen down from 21%.",
+             "correct": False,
+             "why": "Nitrogen crosses in neither direction — it is the one "
+                    "gas that is 78% in both bags."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h24",
+        "band": "harder",
+        "text": "A frog can exchange gases through its moist skin as well "
+                "as through its lungs. Suggest why a human cannot rely on "
+                "skin in the same way.",
+        "options": [
+            {"text": "Human skin has no blood supply, so there would be "
+                     "nothing on the far side for the gases to cross into.",
+             "correct": False,
+             "why": "Skin is well supplied with blood — that is why it "
+                    "flushes and why a cut bleeds. Its problem is that it "
+                    "is dry, thick and small by comparison."},
+            {"text": "Humans use far less oxygen than frogs do, so the "
+                     "skin route was lost as it was never needed.",
+             "correct": False,
+             "why": "A human uses far more oxygen than a frog, being much "
+                    "larger and much warmer. That is the reason a "
+                    "dedicated exchange surface is needed."},
+            {"text": "Gas can only ever cross a surface inside the body, "
+                     "so no animal exchanges gases at its skin.",
+             "correct": False,
+             "why": "The frog in the question is doing exactly that, and "
+                    "so do earthworms. Inside or outside is not what "
+                    "decides it."},
+            {"text": "Human skin is dry, thick, and tiny in area beside "
+                     "the alveoli, so almost no gas can cross it.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h25",
+        "band": "harder",
+        "text": "Air at the top of a high mountain is still 21% oxygen, "
+                "yet climbers there are short of oxygen. Explain how both "
+                "of those can be true.",
+        "options": [
+            {"text": "The air is thinner, so a breath of the same volume "
+                     "holds fewer molecules of every gas in it.",
+             "correct": True},
+            {"text": "Percentages are measured differently at altitude, so "
+                     "21% up there is not the same as 21% at sea level.",
+             "correct": False,
+             "why": "A percentage means the same thing everywhere. What "
+                    "changes is how much gas there is in total for that "
+                    "percentage to be a share of."},
+            {"text": "The cold makes the alveoli work more slowly, so less "
+                     "of the oxygen present is taken up.",
+             "correct": False,
+             "why": "Alveoli do no work and have no rate to slow down, and "
+                    "the incoming air is warmed to body temperature before "
+                    "it gets there."},
+            {"text": "The oxygen at altitude is too spread out to travel "
+                     "the length of the airway to the alveoli.",
+             "correct": False,
+             "why": "The air travels down as a whole and reaches the "
+                    "alveoli perfectly well. There is simply less in it "
+                    "when it arrives."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h26",
+        "band": "harder",
+        "text": "Put the stages of one carbon dioxide molecule's journey "
+                "into order, from the muscle cell that made it to the air "
+                "outside.",
+        "options": [
+            {"text": "Cell, alveolus, blood, bronchiole, bronchus, "
+                     "trachea.",
+             "correct": False,
+             "why": "The blood is what carries the molecule from the cell "
+                    "to the alveolus, so it cannot come after it."},
+            {"text": "Cell, blood, alveolus, bronchiole, bronchus, "
+                     "trachea.",
+             "correct": True},
+            {"text": "Cell, blood, trachea, bronchus, bronchiole, "
+                     "alveolus.",
+             "correct": False,
+             "why": "This is the route in, run backwards. On the way out "
+                    "the tubes widen: bronchiole, then bronchus, then "
+                    "trachea."},
+            {"text": "Cell, blood, alveolus, bronchus, bronchiole, "
+                     "trachea.",
+             "correct": False,
+             "why": "The two branching tubes are swapped. An alveolus "
+                    "opens into a bronchiole, and many bronchioles join to "
+                    "make a bronchus."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h27",
+        "band": "harder",
+        "text": "Room air is bubbled through one tube of limewater and "
+                "exhaled air through another, using the same volume of air "
+                "in each. Predict the result and explain it.",
+        "options": [
+            {"text": "Only the exhaled tube changes, because ordinary room "
+                     "air contains no carbon dioxide at all.",
+             "correct": False,
+             "why": "Room air is about 0.04% carbon dioxide, which is "
+                    "small but not nothing. The difference between the "
+                    "tubes is a matter of how much, not of all or none."},
+            {"text": "Only the room air tube changes, because exhaled air "
+                     "is mostly nitrogen and oxygen.",
+             "correct": False,
+             "why": "Exhaled air is mostly nitrogen and oxygen, but it "
+                    "also holds a hundred times more carbon dioxide than "
+                    "room air, so it is the tube that turns milky."},
+            {"text": "The exhaled tube turns milky; the room tube hardly "
+                     "changes, holding a hundred times less.",
+             "correct": True},
+            {"text": "Neither tube changes, because 4% is far too small a "
+                     "share of the bag to be detected.",
+             "correct": False,
+             "why": "Limewater is a sensitive test and 4% is easily "
+                    "enough. Being a small share of the bag does not make "
+                    "a gas hard to detect."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h28",
+        "band": "harder",
+        "text": "In that limewater comparison, one variable has to be kept "
+                "the same for the result to mean anything. Which, and why?",
+        "options": [
+            {"text": "The temperature of the limewater, because carbon "
+                     "dioxide only turns it milky when it is warm.",
+             "correct": False,
+             "why": "Limewater goes milky at room temperature perfectly "
+                    "well. Temperature is worth keeping steady, but it is "
+                    "not what would wreck this comparison."},
+            {"text": "The person doing the breathing, because different "
+                     "people breathe out different gases.",
+             "correct": False,
+             "why": "Everyone breathes out the same gases, at close to the "
+                    "same percentages. Who breathes is not the variable "
+                    "that decides the result."},
+            {"text": "The colour of the limewater at the start, because it "
+                     "must be clear before any air is added.",
+             "correct": False,
+             "why": "Both tubes starting clear is a condition of the test "
+                    "rather than a variable to be matched. What must match "
+                    "is how much air goes through each."},
+            {"text": "The volume of air through each tube, because more "
+                     "air carries more carbon dioxide whatever its share.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h29",
+        "band": "harder",
+        "text": "A pupil tests exhaled air with dry cobalt chloride paper "
+                "and it turns pink. Held in the room instead, the paper "
+                "also turns pink, only far more slowly. Explain what that "
+                "means for their conclusion.",
+        "options": [
+            {"text": "Room air already holds water vapour, so the claim "
+                     "must be that exhaled air holds more, not that it "
+                     "alone does.",
+             "correct": True},
+            {"text": "The paper is faulty, because it should only respond "
+                     "to air that has been inside a person.",
+             "correct": False,
+             "why": "The paper is doing its job. It responds to water "
+                    "vapour wherever the water vapour comes from, which is "
+                    "what makes the room result meaningful."},
+            {"text": "The room air must have come out of someone else's "
+                     "lungs earlier in the day, so the two samples are "
+                     "really the same.",
+             "correct": False,
+             "why": "Outdoor air holds water vapour too, on a day nobody "
+                    "has breathed near it. Air does not need to have been "
+                    "exhaled to be damp."},
+            {"text": "It means nothing at all, because cobalt chloride "
+                     "paper turns pink over time in any air whatever.",
+             "correct": False,
+             "why": "Speed is the whole of the evidence here. The paper "
+                    "turns much faster in exhaled air, and that difference "
+                    "is the result."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h30",
+        "band": "harder",
+        "text": "Air collected at the very start of a breath out is 21% "
+                "oxygen, while air collected at the end of the same breath "
+                "out is 16%. Suggest why the two differ.",
+        "options": [
+            {"text": "The equipment drifts during a measurement, so the "
+                     "two figures are really one reading taken twice.",
+             "correct": False,
+             "why": "The difference is repeatable and has a cause. Two "
+                    "readings 5 percentage points apart are not instrument "
+                    "drift."},
+            {"text": "The first air out is airway air that never reached "
+                     "an alveolus, while the last has come from them.",
+             "correct": True},
+            {"text": "The first air out is alveolar air, and the last air "
+                     "out is room air that followed the breath in.",
+             "correct": False,
+             "why": "This has the order reversed. The air nearest the "
+                    "mouth leaves first, and that is the air that never "
+                    "got as far as a sac."},
+            {"text": "Oxygen is added to the air as the breath out goes "
+                     "on, which is why the early figure is the higher one.",
+             "correct": False,
+             "why": "Nothing adds oxygen to air inside the body, and here "
+                    "the early figure is high because that air was never "
+                    "used, not because anything was put into it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h31",
+        "band": "harder",
+        "text": "Evaluate this claim: because nitrogen passes through the "
+                "body unchanged, a supply of 21% oxygen and 79% helium "
+                "would keep a person alive just as well as ordinary air.",
+        "options": [
+            {"text": "The claim fails, because the body needs nitrogen "
+                     "from the air in order to build its proteins.",
+             "correct": False,
+             "why": "You are built from nitrogen, but every atom of it "
+                    "comes from food. The nitrogen you breathe in comes "
+                    "straight back out."},
+            {"text": "The claim fails, because helium is much lighter than "
+                     "nitrogen and so cannot travel down to the alveoli.",
+             "correct": False,
+             "why": "A gas mixture travels down the airway as a whole and "
+                    "does not separate out by weight on the way."},
+            {"text": "The claim holds: the body uses neither gas, so what "
+                     "matters is that the oxygen share is unchanged.",
+             "correct": True},
+            {"text": "The claim fails, because without nitrogen the "
+                     "alveoli would have nothing to hold them open between "
+                     "breaths.",
+             "correct": False,
+             "why": "Helium fills the space just as nitrogen did. Swapping "
+                    "one unused gas for another leaves the sacs exactly as "
+                    "full as before."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b4-01-h32",
+        "band": "harder",
+        "text": "A pupil says the job of the gas exchange system is to get "
+                "oxygen to every cell in the body. Evaluate how much of "
+                "that job the system actually does.",
+        "options": [
+            {"text": "It does the whole job, because the airway branches "
+                     "so finely that it reaches every part of the body.",
+             "correct": False,
+             "why": "The branching is all inside the lungs. No tube of the "
+                    "airway goes anywhere near a muscle cell in your leg."},
+            {"text": "It does none of it, because the blood collects the "
+                     "oxygen it needs from food in the gut.",
+             "correct": False,
+             "why": "No oxygen is absorbed from food. All of it crosses at "
+                    "the alveoli, which is the part of the job this system "
+                    "does."},
+            {"text": "It does the whole job as far as the cell wall, where "
+                     "respiration takes the oxygen the rest of the way in.",
+             "correct": False,
+             "why": "The system hands over long before the cell. Oxygen "
+                    "crosses into the blood at the alveoli and is carried "
+                    "the rest of the way."},
+            {"text": "It gets oxygen only as far as the blood; the "
+                     "circulatory system carries it to the cells.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]
