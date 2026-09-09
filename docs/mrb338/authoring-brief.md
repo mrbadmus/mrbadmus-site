@@ -52,9 +52,22 @@ literally.
 
 ## 2 · KS4 — where the rows go
 
-File: **`ks4_data/questions/<subject>/<topic_with_underscores>__mrb338.py`** — a
-NEW file per topic. The loader maps everything before `__` to the topic, so
-`energy__mrb338.py` is the `energy` topic. Start it:
+File: **`ks4_data/questions/<subject>/<topic>__z338_<subtopic>.py`**, both with
+underscores for hyphens — a NEW file, yours alone. The loader maps everything
+before the double underscore to the topic, so
+`cell_biology__z338_stem_cells.py` is the `cell-biology` topic.
+
+⚠️ **The name starts `z338` for a load-bearing reason, not a decorative one.**
+`load_pool` assigns `bank_position` in module load order, which is filename
+sort order: the first four of each band take positions 0–11, and *everything
+after that is positioned in the order the files are read*. A file named
+`analysis__m338_…` sorts BEFORE the existing `analysis__setwork.py`, so it
+would insert its rows ahead of that file's and push already-shipped rows to
+new positions — mutating rows this programme is supposed to leave alone. `z`
+sorts after `a`, `b`, `c` and `setwork`, so new rows always land last and no
+existing row moves. Do not rename it.
+
+Start the file:
 
 ```python
 """<Subject> · <Topic> — the MRB-338 expansion.
