@@ -274,3 +274,141 @@ it. Log every fix you made in your report.
 - the six self-check results, with numbers
 - every cold-read fix
 - anything you could not do, and why — **never pad to hit a number**
+
+---
+
+# 9 · STANDING RULES — everything night 1 learned the hard way
+
+Ruled into the brief 9 Sep 2026. Every rule below cost a real defect to find.
+Read this section before you write a row; it is not a summary of §1–8, it is
+the set of things §1–8 did not say and should have.
+
+## 9.1 · Measure length parity the way the gate measures it
+
+Restating §6 because it is the one that got shipped wrong. **Not** "how often
+is the key the longest option" — that number can read 20% while the real one
+reads 65%. Discard every set whose top two options are within **6 characters**;
+of the sets that remain, the key must be the long one **no more than 32%** of
+the time (chance is 25%).
+
+```python
+MARGIN = 6
+visible = correct = 0
+for q in my_rows:
+    lens = sorted((len(o) for o in options(q)), reverse=True)
+    if lens[0] - lens[1] < MARGIN:
+        continue
+    visible += 1
+    if len(key(q)) == lens[0]:
+        correct += 1
+```
+
+⚠️ **Do not drive the denominator to zero.** A leaf where four sets are
+visible and two are giveaways reads 50% on n=4, which the gate's binomial test
+cannot even speak to. Flattening every set hides the number rather than
+earning it. Aim for a real population of visible sets in which the long option
+is usually a **distractor**.
+
+⚠️ **Check the mirror too.** The gate fails below `LO = 0.12` as well. A key
+that is reliably *not* the long option is exactly as learnable as one that is.
+Sweep margins 3–10, not just 6, the way the gate's own sweep does.
+
+## 9.2 · The fix is always the distractors
+
+**Never trim a key. Never lengthen a key.** A key that states less than its
+distractors is a worse question, and lengthening keys is what drives 9.1's
+number up in the first place. Give the **distractors** their own reasons at the
+key's level of detail.
+
+For calculations: if the key carries the working and the distractors are bare
+values, the answer is the long option every time. **Keep working in the `why`,
+never in an option.**
+
+## 9.3 · No length edit may touch an option marked correct — prove it
+
+A lane rewriting option text for parity replaced the text of a **correct**
+option with distractor prose. The row briefly stated something false as its
+answer and the true answer was no longer among the four. **Nothing in the
+estate catches this**: `question_bank` checks that exactly one option carries
+`correct: True` and that the key has no `why`; `ks4_pool_check` checks that
+`correct_index` is in range. Neither asks whether the key is still true.
+
+So: no parity edit touches a key, and you **prove** it before reporting, by
+comparing every row's key text against `git show HEAD:<file>`. At KS3 also
+prove no `why` travelled onto a key and none fell off a distractor.
+
+## 9.4 · Sweep for duplicates across the whole UNIT or TOPIC, never the leaf
+
+`set_work_scope_check` treats a whole KS3 unit and a whole KS4 topic as **one
+cell** and fails on a repeated stem anywhere inside it. Two rows written on
+one night duplicated a stem in a *different leaf* — and neither a per-leaf
+check nor the lanes' own measurements could see it, because lanes cannot read
+each other's uncommitted files.
+
+Measure duplicate stems, duplicate option-sets and Jaccard across **every row
+of your unit or topic**, including leaves other lanes are writing right now.
+
+⚠️ And watch for the shared-fact case: three leaves of `cell-biology` each
+wanted the same easier unit-conversion row. Only one may own it. If your leaf
+needs a fact a neighbour has, ask it as a **different task**, or take a
+different fact.
+
+## 9.5 · Run `set_work_scope_check.py` before every commit
+
+It is the only gate that sees 9.4. It is not optional and it is not slow.
+
+## 9.6 · A stem must not state another row's keyed answer
+
+Two stems in one leaf quoted "about two million every second" and "last about
+four months" — both the keyed answers to other rows in the same leaf. A pupil
+meeting them in one assignment is handed two answers free.
+
+⚠️ Duplicate-stem and duplicate-option checks are **blind** to this: the
+collision is between one row's STEM and another row's KEY. Check it yourself.
+
+## 9.7 · All four options must read as though one hand wrote them
+
+A short key beside three long explanatory distractors passes 9.1 easily — the
+key is nowhere near longest — and still gives the answer away, because a pupil
+spots the odd one out instantly and it is the right one.
+
+Length parity is a proxy. The rule it stands for is that **nothing about an
+option's shape, register, grammar or length should mark it out**. Other tells
+found in one night: the key was the only option not beginning "They"; the key
+was the only option naming a route; three distractors confessed their own
+arithmetic error in the option text.
+
+## 9.8 · Never reproduce a lesson's own rung, even when the brief names it
+
+If a coverage list hands you a teachable point that **is** a ladder rung's task
+— the germinating-peas and boiled-seed control, say — you do not write it. That
+is a hard `pool_ownership` failure and the brief is wrong, not the rule. Write
+the rung's underlying skill without its apparatus instead, and say in your
+report what you declined and why.
+
+## 9.9 · A distractor must be unarguably wrong, not merely not-the-best
+
+Distractors thrown out in one night for being **defensible**: bacteria really
+do take up DNA from their surroundings; surface-area-to-volume really does
+fall then rise once a cell divides; a cell wall really is a barrier water
+crosses; 0.1 mm really is about the naked-eye limit; the diaphragm really does
+attach to the lower ribs; a marrow transplant really can change a blood group.
+
+Also reject the **creditable** distractor — one that reaches a wrong conclusion
+through a true clause an examiner would credit — and the distractor that is
+wrong in your leaf but defensible **elsewhere in the unit** ("respiration needs
+no oxygen" is wrong for aerobic respiration and arguable once the unit reaches
+anaerobic).
+
+⚠️ If you must lengthen a distractor for 9.1, lengthen it with a **false**
+justification. Padding a wrong option with a true clause strengthens it.
+
+## 9.10 · Every stem is read away from the lesson
+
+No diagram, no graph, no table, no "the picture above", no "in this lesson".
+A shipped row asking "which fact **from the table** explains that?" had no
+table on the assignment page. If a stem needs a fact, the stem carries it.
+
+⚠️ And write real characters: a stem carrying a literal `\n` becomes a real
+newline plus indentation inside the question. Sweep your file for `\n` and
+`<sub>` before reporting.

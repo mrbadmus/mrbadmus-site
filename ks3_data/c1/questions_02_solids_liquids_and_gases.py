@@ -622,7 +622,8 @@ QUESTIONS = [
         "id": "c1-02-s09",
         "band": "standard",
         "text": "You can stand on a frozen pond but not on the water "
-                "underneath it. Which fact from the table explains that?",
+                "underneath it. Which difference between a solid and a "
+                "liquid explains that?",
         "options": [
             {"text": "A solid's particles are heavier, so they can carry more "
                      "weight.",
