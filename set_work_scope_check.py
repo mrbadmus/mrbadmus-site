@@ -498,11 +498,103 @@ def report(cohort, res, quiet):
     return smallest
 
 
+# ── ⊕ MRB-338, 9 Sep 2026 — THE LEAF TABLE ─────────────────────────────
+#
+# The floor above is on TOPICS and UNITS, and the long comment at property 5
+# says why: a KS4 subtopic held twelve to forty and a KS3 lesson four to
+# sixteen, so flooring the leaves would have been a red on every run.
+#
+# ⚠️ THAT WAS A STATEMENT ABOUT THE CONTENT, NOT ABOUT THE PRODUCT. Mide's
+# ruling of 8 Sep is that the leaf is what a teacher actually taps — "teachers
+# will most likely set assignment on each topic, but these topics don't have
+# enough questions" — so the leaf has to be deep too, and MRB-338 is the
+# programme that makes it so. Until that programme finishes, this REPORTS and
+# does not gate: `--leaf` prints the per-leaf gap, `--leaf --strict` turns the
+# gap red, and only the finishing night runs it strict.
+#
+# The KS4 leaf floor is stated per (subtopic, tier) under the MRB-335 pool
+# spec, re-using `ks4_row_in_tier` rather than restating it — a leaf table
+# that measured the pool differently from the cell table would be measuring a
+# pool the sheet never serves. Pathway is not an axis here on purpose: a
+# subtopic's rows carry ONE triple_only flag, so `triple_only` decides whether
+# a cohort sees the leaf at all and never how many rows it sees.
+KS4_LEAF_FLOOR = 50
+
+# ⚠️ ONE CONSTANT, deliberately — Mide may raise 30 to 50, and when he does it
+# is this line that moves and nothing else.
+KS3_LEAF_FLOOR = 30
+
+
+def leaf_cells(tree, ks4_index, ks3_index):
+    """(stage, subject, where, tier, have, floor) for every leaf a teacher taps."""
+    out = []
+    for subj in SUBJECTS:
+        for topic in tree["ks4"][subj]:
+            for st in topic["subtopics"]:
+                rows = ks4_index.get(st["slug"], [])
+                where = "%s/%s" % (topic["id"], st["slug"])
+                for tier in KS4_TIERS:
+                    # Property 1's derived exception, unchanged: a subtopic
+                    # `classify()` puts at `higher` holds no foundation row by
+                    # construction, so its foundation cell is not a gap.
+                    if tier == "foundation" and st["tier"] == "higher":
+                        continue
+                    have = sum(1 for r in rows if ks4_row_in_tier(r, tier))
+                    out.append(("ks4", subj, where, tier, have, KS4_LEAF_FLOOR))
+    for subj in SUBJECTS:
+        for unit in tree["ks3"][subj]:
+            for lesson in unit["lessons"]:
+                rows = ks3_index.get(lesson["slug"], [])
+                where = "%s/%s" % (unit["code"], lesson["slug"])
+                for tier in KS3_TIERS:
+                    have = sum(1 for r in rows
+                               if r["band"] == KS3_BAND_BY_TIER[tier])
+                    out.append(("ks3", subj, where, tier, have, KS3_LEAF_FLOOR))
+    return out
+
+
+def report_leaves(cells, strict, quiet, only=None):
+    """The per-leaf gap table. Reports; fails only under --strict."""
+    print("\n📏  leaf floors — KS4 subtopic %d per tier, KS3 lesson %d per band%s"
+          % (KS4_LEAF_FLOOR, KS3_LEAF_FLOOR,
+             "   [STRICT: gaps are failures]" if strict else "   [reporting only]"))
+    if only:
+        cells = [c for c in cells if c[2] in only or c[2].split("/")[-1] in only]
+        print("    filtered to %d cell(s) by --leaf-only" % len(cells))
+    for stage in ("ks4", "ks3"):
+        mine = [c for c in cells if c[0] == stage]
+        if not mine:
+            continue
+        short = [c for c in mine if c[4] < c[5]]
+        gap = sum(c[5] - c[4] for c in short)
+        leaves = len({c[2] for c in mine})
+        print("\n   %s — %d leaves, %d cells, %d short, %d row(s) to author"
+              % (stage.upper(), leaves, len(mine), len(short), gap))
+        if short:
+            worst = sorted(short, key=lambda c: (c[5] - c[4]), reverse=True)
+            head = worst if quiet or len(worst) <= 40 else worst[:40]
+            for _st, subj, where, tier, have, floor in head:
+                print("        · %-9s %-46s %-10s %3d/%-3d  +%d"
+                      % (subj, where, tier, have, floor, floor - have))
+            if len(worst) > len(head):
+                print("        · … and %d more" % (len(worst) - len(head)))
+            if strict:
+                fail("%s leaves" % stage.upper(),
+                     "%d leaf cell(s) below the floor, %d rows short"
+                     % (len(short), gap))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--db", action="store_true",
                     help="measure the TEST database instead of the Python source")
     ap.add_argument("--quiet", action="store_true")
+    ap.add_argument("--leaf", action="store_true",
+                    help="also report the per-leaf gap (MRB-338)")
+    ap.add_argument("--strict", action="store_true",
+                    help="with --leaf, a leaf below its floor is a FAILURE")
+    ap.add_argument("--leaf-only", default=None,
+                    help="comma-separated leaf slugs to restrict --leaf to")
     args = ap.parse_args()
 
     sys.path.insert(0, os.path.join(REPO, "tools"))
@@ -565,6 +657,11 @@ def main():
                                            if ks4_small else "—"))
     print("   smallest cell, KS3: %s" % (("%d — %s" % min(ks3_small))
                                          if ks3_small else "—"))
+
+    if args.leaf:
+        report_leaves(leaf_cells(tree, ks4_index, ks3_index),
+                      args.strict, args.quiet,
+                      only=set(filter(None, (args.leaf_only or "").split(","))) or None)
 
     for n in notes:
         print("   ℹ️  %s" % n)
