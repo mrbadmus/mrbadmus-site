@@ -1052,4 +1052,1369 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ══ MRB-338 expansion ══════════════════════════════════════════════
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "b2-01-e14",
+        "band": "easier",
+        "text": "The vertebrae are a chain of small bones running down your "
+                "back. Which part of the body do they shield?",
+        "options": [
+            {"text": "The heart and the lungs, which sit in the chest in front "
+                     "of them", "correct": False,
+             "why": "The heart and lungs are caged by the ribs. The vertebrae "
+                    "are behind them, and what runs through the vertebrae is "
+                    "the spinal cord."},
+            {"text": "The brain, which is joined onto the top of the spinal "
+                     "column", "correct": False,
+             "why": "The brain sits inside the cranium. The spine begins below "
+                    "it and shields the cord that leaves it."},
+            {"text": "The spinal cord, which threads down a tunnel through "
+                     "them", "correct": True},
+            {"text": "The bladder and the intestines, low down in the "
+                     "body", "correct": False,
+             "why": "Those sit inside the bowl of the pelvis, much lower down "
+                    "and further forward than the vertebrae."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e15",
+        "band": "easier",
+        "text": "The pelvis is a broad bowl of bone at the base of the body. "
+                "Which organs sit inside that bowl?",
+        "options": [
+            {"text": "The lungs, which need a rigid case around them to "
+                     "work", "correct": False,
+             "why": "The lungs sit high in the chest, inside the ribcage. "
+                    "Nothing in the pelvis is anywhere near them."},
+            {"text": "The brain, which is the softest organ in the whole "
+                     "body", "correct": False,
+             "why": "The brain is shielded by the cranium at the top of the "
+                    "body. The pelvis is at the bottom of it."},
+            {"text": "The bladder and the lower part of the "
+                     "intestines", "correct": True},
+            {"text": "The spinal cord, which runs down through the middle of "
+                     "the back", "correct": False,
+             "why": "The spinal cord runs through a tunnel in the vertebrae "
+                    "and ends above the pelvis."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e16",
+        "band": "easier",
+        "text": "Which bone of the skeleton is the case around the brain?",
+        "options": [
+            {"text": "The sternum, the flat bone down the front of the "
+                     "chest", "correct": False,
+             "why": "The sternum is the breastbone. The ribs join onto it, and "
+                    "it shields the chest rather than the head."},
+            {"text": "The vertebrae, the chain of bones running all the way "
+                     "down the back", "correct": False,
+             "why": "The vertebrae shield the spinal cord. The brain sits "
+                    "above them, inside the cranium."},
+            {"text": "The cranium, the domed box at the top of the "
+                     "skeleton", "correct": True},
+            {"text": "The scapula, the flat blade at the back of the "
+                     "shoulder", "correct": False,
+             "why": "The scapula is the shoulder blade. Muscles anchor to it, "
+                    "and it shields nothing at the head."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e17",
+        "band": "easier",
+        "text": "Where in the body is the femur, and what is it usually "
+                "called?",
+        "options": [
+            {"text": "In the upper arm, and it is called the arm "
+                     "bone", "correct": False,
+             "why": "The bone of the upper arm is the humerus. The femur is in "
+                    "the leg."},
+            {"text": "In the thigh, and it is called the thigh "
+                     "bone", "correct": True},
+            {"text": "In the lower leg, and it is called the shin "
+                     "bone", "correct": False,
+             "why": "The shin bone is the tibia. The femur is above the knee, "
+                    "not below it."},
+            {"text": "In the chest, and it is called the "
+                     "breastbone", "correct": False,
+             "why": "The breastbone is the sternum. The femur is the long bone "
+                    "of the thigh."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e18",
+        "band": "easier",
+        "text": "Which of these pairs a bone correctly with its everyday name?",
+        "options": [
+            {"text": "Scapula — the breastbone, down the front of the "
+                     "chest", "correct": False,
+             "why": "The scapula is the shoulder blade. The breastbone is the "
+                    "sternum."},
+            {"text": "Sternum — the long bone of the upper "
+                     "arm", "correct": False,
+             "why": "The bone of the upper arm is the humerus. The sternum is "
+                    "the breastbone."},
+            {"text": "Cranium — the bowl of bone at the base of the "
+                     "body", "correct": False,
+             "why": "That bowl is the pelvis. The cranium is the box around "
+                    "the brain."},
+            {"text": "Patella — the kneecap, at the front of the "
+                     "knee", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e19",
+        "band": "easier",
+        "text": "About how many bones are there in an adult human skeleton?",
+        "options": [
+            {"text": "About 20, because only the big limb bones are "
+                     "counted", "correct": False,
+             "why": "There are more than twenty in one hand alone. The adult "
+                    "total is a little over two hundred."},
+            {"text": "About 60, one for each part of the body you can "
+                     "name", "correct": False,
+             "why": "Still far too few. The spine on its own is built from "
+                    "more than thirty separate bones."},
+            {"text": "About 2000, because each bone is really built from many "
+                     "smaller ones", "correct": False,
+             "why": "A bone is one piece of tissue, not a stack of little "
+                    "bones. The adult total is around 206."},
+            {"text": "About 206, from the cranium down to the bones of the "
+                     "toes", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e20",
+        "band": "easier",
+        "text": "A newborn baby has about 300 bones and an adult has about "
+                "206. What has happened in between?",
+        "options": [
+            {"text": "Separate bones have grown together into single "
+                     "bones", "correct": True},
+            {"text": "Bones have worn away and been lost as the child moved "
+                     "about", "correct": False,
+             "why": "Nothing is lost. Bone grows stronger where it is used, "
+                    "and it does not wear away to nothing."},
+            {"text": "The baby's count includes the teeth, which an adult's "
+                     "leaves out", "correct": False,
+             "why": "Teeth are not bones and are in neither count. The drop "
+                    "comes from bones fusing together."},
+            {"text": "Some bones have dissolved, because a baby takes in very "
+                     "little calcium", "correct": False,
+             "why": "The drop happens in every healthy child, whatever they "
+                    "eat. Separate bones simply join up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e21",
+        "band": "easier",
+        "text": "Which mineral does the body need from food to keep bone hard "
+                "and strong?",
+        "options": [
+            {"text": "Iron, which the body uses to build the hard part of "
+                     "bone", "correct": False,
+             "why": "Iron is needed for the red blood cells the marrow turns "
+                    "out, not for hardening the bone around them."},
+            {"text": "Calcium, which is laid down in bone and makes it "
+                     "hard", "correct": True},
+            {"text": "Sodium, which the body takes in as ordinary table "
+                     "salt", "correct": False,
+             "why": "Salt plays no part in hardening bone. The mineral bone is "
+                    "built with is calcium."},
+            {"text": "Carbon, which every living thing is largely built "
+                     "from", "correct": False,
+             "why": "Carbon is in every tissue you have. What makes bone "
+                    "specifically hard is calcium."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e22",
+        "band": "easier",
+        "text": "Which of these meals gives the best supply of the mineral "
+                "that hardens bone?",
+        "options": [
+            {"text": "Milk, cheese and yoghurt, with green leafy "
+                     "vegetables", "correct": True},
+            {"text": "Rice, pasta and bread, which are all rich in starch and "
+                     "energy", "correct": False,
+             "why": "Starchy foods are a good energy supply, but they carry "
+                    "very little calcium."},
+            {"text": "Fruit juice and sweets, which are both rich in sugar and "
+                     "quick energy", "correct": False,
+             "why": "Sugars release energy quickly and supply almost no "
+                    "calcium at all."},
+            {"text": "Chicken and eggs, which are both rich in "
+                     "protein", "correct": False,
+             "why": "Protein is needed for growth and repair, but dairy and "
+                    "leafy greens carry far more calcium."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e23",
+        "band": "easier",
+        "text": "Where in the body is bone marrow found?",
+        "options": [
+            {"text": "In a layer just under the skin, all over the "
+                     "body", "correct": False,
+             "why": "Marrow is sealed inside bone. There is none of it "
+                    "anywhere under the skin."},
+            {"text": "In the gaps where one bone meets the next "
+                     "one", "correct": False,
+             "why": "Marrow sits in the hollow shaft of a bone, not in the "
+                    "spaces between bones."},
+            {"text": "In the soft hollow middle of the bigger "
+                     "bones", "correct": True},
+            {"text": "In the hard outer wall of every bone in the "
+                     "body", "correct": False,
+             "why": "The outer wall is the hard part that carries load. Marrow "
+                    "is the soft tissue it surrounds."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e24",
+        "band": "easier",
+        "text": "What does bone marrow make?",
+        "options": [
+            {"text": "New bone, which is how a broken bone knits itself back "
+                     "together again", "correct": False,
+             "why": "Repair is done by the bone's own living cells. What the "
+                    "marrow turns out is blood cells."},
+            {"text": "New blood cells, which are then carried away in the "
+                     "blood", "correct": True},
+            {"text": "The energy that a cell needs, released from the food you "
+                     "eat", "correct": False,
+             "why": "That is respiration, and it happens inside every cell in "
+                    "the body. Marrow makes cells."},
+            {"text": "The calcium that the body lays down to harden "
+                     "bone", "correct": False,
+             "why": "Calcium comes in through the diet. Marrow does not make "
+                    "minerals, it makes cells."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e25",
+        "band": "easier",
+        "text": "Bone has its own blood supply running inside it. What does "
+                "that blood deliver to the bone's cells?",
+        "options": [
+            {"text": "Calcium only, because calcium is all that a bone is made "
+                     "out of", "correct": False,
+             "why": "Blood does carry calcium, but bone cells need oxygen and "
+                    "food like any other living cell."},
+            {"text": "Oxygen and food, so those cells can respire and "
+                     "work", "correct": True},
+            {"text": "Nothing — the blood is only passing through to the "
+                     "marrow", "correct": False,
+             "why": "Bone is built from living cells, and a living cell has to "
+                    "be supplied wherever it sits."},
+            {"text": "Air, which is pumped along the hollow middle of the "
+                     "bone", "correct": False,
+             "why": "No air is pumped anywhere inside you. Oxygen travels in "
+                    "the blood, carried by red blood cells."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e26",
+        "band": "easier",
+        "text": "A student says that cartilage is just soft bone. Why is that "
+                "wrong?",
+        "options": [
+            {"text": "Cartilage is a tissue of its own, not a softer version "
+                     "of bone", "correct": True},
+            {"text": "Cartilage is soft bone, but only in children — in adults "
+                     "it hardens", "correct": False,
+             "why": "Adults keep cartilage for life, in the ears and the nose "
+                    "among other places. It is its own tissue."},
+            {"text": "Cartilage is not a tissue at all, because it is really a "
+                     "fluid", "correct": False,
+             "why": "Cartilage is firm and holds its shape. A fluid would "
+                    "simply flow away from where it was needed."},
+            {"text": "Cartilage is bone that has gone soft because it was "
+                     "never used", "correct": False,
+             "why": "Bone does thin where it is not loaded, but it never turns "
+                    "into cartilage. They are separate tissues."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e27",
+        "band": "easier",
+        "text": "Much of a newborn baby's skeleton is cartilage rather than "
+                "bone. What happens to it as the child grows?",
+        "options": [
+            {"text": "It stays exactly as it is, and new bones grow up around "
+                     "it", "correct": False,
+             "why": "The cartilage itself is replaced. The skeleton a child "
+                    "ends up with is very largely bone."},
+            {"text": "It dries out and is absorbed, leaving the skeleton "
+                     "hollow", "correct": False,
+             "why": "Nothing is left hollow by it. Bone tissue takes the "
+                    "cartilage's place as the child grows."},
+            {"text": "It hardens into a tougher cartilage, and that is what "
+                     "bone really is", "correct": False,
+             "why": "Bone is not a tough kind of cartilage. They are two "
+                    "different tissues, and one replaces the other."},
+            {"text": "It is gradually replaced by bone, and the skeleton "
+                     "hardens", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e28",
+        "band": "easier",
+        "text": "A jellyfish has no skeleton at all. Which of these is it "
+                "therefore unable to do?",
+        "options": [
+            {"text": "Move any part of its body, in water or out of "
+                     "it", "correct": False,
+             "why": "It swims perfectly well by squeezing its bell. What it "
+                    "cannot do is hold a shape out of water."},
+            {"text": "Grow larger than a few millimetres across, at any "
+                     "depth", "correct": False,
+             "why": "Some grow more than a metre across. The water supports "
+                    "them, so size in the sea is not the problem."},
+            {"text": "Hold its own shape once it is out of the "
+                     "water", "correct": True},
+            {"text": "Take in any food at all, or get rid of its "
+                     "waste", "correct": False,
+             "why": "Feeding and waste have nothing to do with a skeleton. The "
+                    "limit is holding a shape out of water."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e29",
+        "band": "easier",
+        "text": "An insect's skeleton is a hard case on the outside of its "
+                "body. What is that kind of skeleton called?",
+        "options": [
+            {"text": "A hydrostatic skeleton, because it is filled with "
+                     "fluid", "correct": False,
+             "why": "A hydrostatic skeleton is fluid held under pressure, as "
+                    "in an earthworm. An insect's case is hard and dry."},
+            {"text": "An endoskeleton, which is the same kind of skeleton you "
+                     "have", "correct": False,
+             "why": "Endo means inside. Yours is inside you; an insect's is "
+                    "the case wrapped around it."},
+            {"text": "A cartilage skeleton, because it is not made out of "
+                     "bone", "correct": False,
+             "why": "Not being bone does not make something cartilage. A "
+                    "skeleton on the outside is an exoskeleton."},
+            {"text": "An exoskeleton, because it is on the outside of the "
+                     "animal", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e30",
+        "band": "easier",
+        "text": "An earthworm has no hard parts anywhere in its body, yet it "
+                "pushes through soil. What do its muscles squeeze against?",
+        "options": [
+            {"text": "A row of tiny bones running along its "
+                     "back", "correct": False,
+             "why": "There are no bones anywhere in an earthworm. What its "
+                    "muscles squeeze is the fluid held inside it."},
+            {"text": "Fluid held under pressure inside its "
+                     "body", "correct": True},
+            {"text": "A hard case wrapped around the outside of its "
+                     "body", "correct": False,
+             "why": "That is an insect's exoskeleton. An earthworm has no hard "
+                    "parts on the outside or the inside."},
+            {"text": "Nothing at all — the soil pulls the worm along as it "
+                     "moves", "correct": False,
+             "why": "Soil does not pull anything along. The worm squeezes the "
+                    "fluid inside it and drives itself forward."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e31",
+        "band": "easier",
+        "text": "Muscles pull, but a pull on its own moves nothing. What does "
+                "the skeleton give a muscle so that movement happens?",
+        "options": [
+            {"text": "The energy for the pull, which is stored up inside the "
+                     "bone itself", "correct": False,
+             "why": "That energy comes from respiration inside the muscle's "
+                    "own cells. Bone supplies rigidity, not energy."},
+            {"text": "The signal that tells the muscle the moment to "
+                     "contract", "correct": False,
+             "why": "That signal arrives along a nerve. What bone supplies is "
+                    "a rigid part to pull on."},
+            {"text": "Something rigid to pull against, so the pull becomes "
+                     "movement", "correct": True},
+            {"text": "Extra length, because bone stretches when a muscle pulls "
+                     "on it", "correct": False,
+             "why": "Bone does not stretch at all. Being rigid is exactly what "
+                    "makes it useful to a muscle."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-e32",
+        "band": "easier",
+        "text": "Why is the skeleton built from many separate bones rather "
+                "than one solid piece?",
+        "options": [
+            {"text": "So that a break in one bone can spread safely to the "
+                     "others", "correct": False,
+             "why": "Damage spreading would be a disadvantage, not a design. "
+                    "Separate bones are what allow movement."},
+            {"text": "So that the whole thing weighs less than one piece "
+                     "would", "correct": False,
+             "why": "Weight is saved by hollow shafts, not by cutting the "
+                    "frame into pieces. The reason is movement."},
+            {"text": "So that there is somewhere for the marrow to be "
+                     "stored", "correct": False,
+             "why": "Marrow sits in the hollow middle of a bone, and a single "
+                    "piece could have a hollow too."},
+            {"text": "So that parts of it can move relative to each "
+                     "other", "correct": True},
+        ],
+        "figure": None,
+    },
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b2-01-s14",
+        "band": "standard",
+        "text": "Someone damages a vertebra low in their back. Explain why the "
+                "trouble that follows can show up in the legs.",
+        "options": [
+            {"text": "The vertebrae carry the weight of the legs, so the legs "
+                     "have lost the support they stood on", "correct": False,
+             "why": "The legs carry the body, not the other way round. What "
+                    "the vertebrae carry through them is the spinal cord."},
+            {"text": "The marrow in the vertebrae supplies blood to the legs "
+                     "and to nothing else", "correct": False,
+             "why": "Marrow makes blood cells for the whole body, and blood "
+                    "reaches the legs through arteries wherever it was made."},
+            {"text": "The spinal cord threads through the vertebrae, and the "
+                     "signals that reach the legs travel along "
+                     "it", "correct": True},
+            {"text": "The leg muscles are anchored to the vertebrae, so their "
+                     "pull can no longer reach the leg", "correct": False,
+             "why": "Leg muscles anchor to the pelvis and to the leg bones. "
+                    "What the back carries down to the legs is the cord."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s15",
+        "band": "standard",
+        "text": "The pelvis is shaped as a bowl rather than a flat plate. Give "
+                "one thing that shape does which a flat plate could not.",
+        "options": [
+            {"text": "It holds far more marrow than any other bone in the "
+                     "body, because of all the space inside "
+                     "it", "correct": False,
+             "why": "The hollow of the pelvis is filled by organs, not by "
+                    "marrow. Its shape is about surrounding them."},
+            {"text": "It curves round the organs low in the body, shielding "
+                     "them from the sides as well as from "
+                     "below", "correct": True},
+            {"text": "It stretches as the body moves, which a flat plate of "
+                     "bone could never do", "correct": False,
+             "why": "Bone does not stretch, whatever shape it has been built "
+                    "into. The bowl surrounds and shields."},
+            {"text": "It makes blood cells, which a flat plate of bone would "
+                     "have no room to do", "correct": False,
+             "why": "Flat bones hold marrow too — the sternum is one of them. "
+                    "The bowl shape is about what it can surround."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s16",
+        "band": "standard",
+        "text": "The ribs are curved bars with gaps between them rather than "
+                "one continuous plate of bone. Why is that the better design?",
+        "options": [
+            {"text": "Bars with gaps can swing up and outwards, so the cage "
+                     "shields and still moves", "correct": True},
+            {"text": "Bars with gaps use less calcium than a solid plate, so "
+                     "less has to come in from food", "correct": False,
+             "why": "The saving is real but tiny. The gaps are there because "
+                    "the cage has to change shape with every breath."},
+            {"text": "Bars with gaps let air pass straight through the chest "
+                     "wall to the lungs", "correct": False,
+             "why": "Air reaches the lungs along the windpipe. Nothing enters "
+                    "through the wall of the chest."},
+            {"text": "Bars with gaps leave room for marrow that a solid plate "
+                     "would squeeze out", "correct": False,
+             "why": "Marrow sits inside each rib itself. The gaps between the "
+                    "ribs are what let the cage change shape."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s17",
+        "band": "standard",
+        "text": "A textbook says a child has more bones than their parent, and "
+                "yet the child has lost none. Explain how both can be true.",
+        "options": [
+            {"text": "Separate bones grow together into single bones, so the "
+                     "count falls without anything being "
+                     "lost", "correct": True},
+            {"text": "The child's bones are smaller, and small bones are left "
+                     "out of the adult count", "correct": False,
+             "why": "Size does not decide what gets counted. The count falls "
+                    "because separate bones fuse into one."},
+            {"text": "The parent's bones have slowly worn down over the years "
+                     "until some of them have disappeared", "correct": False,
+             "why": "Bone is rebuilt continuously throughout life. None of it "
+                    "wears away to nothing."},
+            {"text": "The child's count includes cartilage, which is counted "
+                     "as bone until it hardens", "correct": False,
+             "why": "Cartilage is not counted as bone at any age. The drop "
+                    "comes from bones fusing together."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s18",
+        "band": "standard",
+        "text": "Two people eat the same amount of food, but one takes in far "
+                "less calcium. Predict the difference in their skeletons over "
+                "several years.",
+        "options": [
+            {"text": "The one taking in less makes fewer red blood cells, "
+                     "because calcium is what the marrow builds them "
+                     "from", "correct": False,
+             "why": "The marrow builds blood cells and calcium hardens bone. "
+                    "Two different jobs going on in the same bone."},
+            {"text": "Neither skeleton changes at all, because bone stops "
+                     "changing once you are fully grown", "correct": False,
+             "why": "You rebuild bone throughout life, so what you take in "
+                    "keeps mattering long after growing has stopped."},
+            {"text": "The one taking in less has shorter bones, because "
+                     "calcium is what makes a bone grow "
+                     "longer", "correct": False,
+             "why": "Length is set by growth at the ends of a bone. Calcium "
+                    "decides how hard and strong that bone is."},
+            {"text": "The one taking in less builds weaker bone, because "
+                     "calcium is what the body lays down to harden "
+                     "it", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s19",
+        "band": "standard",
+        "text": "Astronauts come back from months in orbit with weaker bones "
+                "than they left with, even though they exercise every day. "
+                "Explain why.",
+        "options": [
+            {"text": "Bone is dead material, and dead material slowly decays "
+                     "once it is away from the Earth", "correct": False,
+             "why": "Bone is living tissue and is rebuilt all the time. What "
+                    "has changed in orbit is the force going through it."},
+            {"text": "There is no calcium in the food they eat while they are "
+                     "in orbit, so no new bone can be built", "correct": False,
+             "why": "Their food carries calcium as usual. The missing thing is "
+                    "the load that bone responds to."},
+            {"text": "In orbit almost no force passes through their bones, so "
+                     "less material is laid down", "correct": True},
+            {"text": "Their marrow stops making blood cells in orbit, so the "
+                     "bone around it thins", "correct": False,
+             "why": "Marrow makes blood cells, not bone. Bone thickness "
+                    "follows the force going through the bone."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s20",
+        "band": "standard",
+        "text": "A crab has to shed its whole hard case in order to grow, and "
+                "is soft and vulnerable for days afterwards. What does that "
+                "show about an exoskeleton?",
+        "options": [
+            {"text": "It cannot grow with the animal, so it has to be thrown "
+                     "off and replaced", "correct": True},
+            {"text": "It is made of cartilage, which cannot harden again once "
+                     "it has been shed", "correct": False,
+             "why": "A crab's case is not cartilage, and it does harden again. "
+                    "The trouble is that the old case could not get bigger."},
+            {"text": "It is not really a skeleton, because a skeleton has to "
+                     "be inside the animal", "correct": False,
+             "why": "A skeleton is whatever holds the body in shape and gives "
+                    "muscles something to pull on. It can be inside or "
+                    "outside."},
+            {"text": "It holds no marrow, so the crab cannot repair it while "
+                     "it is being worn", "correct": False,
+             "why": "No exoskeleton holds marrow. What forces the shed is "
+                    "simply that a hard case cannot grow."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s21",
+        "band": "standard",
+        "text": "Compare an insect's exoskeleton with your own skeleton. Give "
+                "one advantage that each design has over the other.",
+        "options": [
+            {"text": "The case grows along with the animal, while a skeleton "
+                     "inside has to be shed and then "
+                     "replaced", "correct": False,
+             "why": "That is the wrong way round. A hard outer case cannot get "
+                    "bigger, which is why it has to be shed."},
+            {"text": "The case shields the whole animal at once; a skeleton "
+                     "inside grows along with the body", "correct": True},
+            {"text": "The case makes the blood cells; a skeleton inside has to "
+                     "take them in from the gut instead", "correct": False,
+             "why": "Blood cells are made in the marrow inside bone, and no "
+                    "skeleton takes them in from anywhere."},
+            {"text": "The case is living tissue; a skeleton inside is dead "
+                     "material laid down once", "correct": False,
+             "why": "Bone is living tissue and is rebuilt throughout life. "
+                    "That is one of the advantages of a skeleton inside."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s22",
+        "band": "standard",
+        "text": "An earthworm squeezes the fluid inside one end of its body, "
+                "and that end becomes long and thin. Explain how squeezing "
+                "changes the shape.",
+        "options": [
+            {"text": "The fluid is compressed into a smaller space, so the "
+                     "body around it shrinks to fit", "correct": False,
+             "why": "A fluid barely compresses at all. Squeezing it in one "
+                    "direction pushes it out in another."},
+            {"text": "The fluid drains away into the soil, so that part of the "
+                     "body collapses inwards", "correct": False,
+             "why": "The fluid is sealed inside the worm. It moves about "
+                    "within the body rather than leaving it."},
+            {"text": "Fluid cannot be squashed smaller, so it moves and pushes "
+                     "the body out somewhere else", "correct": True},
+            {"text": "The fluid hardens wherever it is squeezed, giving the "
+                     "worm a temporary bone", "correct": False,
+             "why": "Nothing hardens anywhere. The stiffness comes from fluid "
+                    "held under pressure, which is why it is called "
+                    "hydrostatic."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s23",
+        "band": "standard",
+        "text": "A slug the size of a horse could not exist on land. Give the "
+                "reason that comes from the skeleton.",
+        "options": [
+            {"text": "It would have no marrow, so it could not make enough "
+                     "blood cells for a body that size", "correct": False,
+             "why": "Plenty of animals with no bone make blood without any "
+                    "marrow. The problem is holding the shape up."},
+            {"text": "With nothing rigid inside it, a body that size would "
+                     "spread out under its own weight", "correct": True},
+            {"text": "Its muscles would not be strong enough to contract at "
+                     "all at that size", "correct": False,
+             "why": "Muscle strength rises with muscle size. What it lacks is "
+                    "anything rigid for a muscle to pull on."},
+            {"text": "It could not take in enough calcium to harden a body of "
+                     "that size", "correct": False,
+             "why": "There would be nothing there to harden. A slug has no "
+                    "bone to lay calcium into in the first place."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s24",
+        "band": "standard",
+        "text": "A student writes: 'The skeleton moves the body.' Rewrite that "
+                "sentence so that it is correct.",
+        "options": [
+            {"text": "The skeleton moves the body by shortening its own bones, "
+                     "and the muscles simply hold it all "
+                     "steady", "correct": False,
+             "why": "A bone cannot shorten or change shape at all. Being rigid "
+                    "is precisely what makes it useful."},
+            {"text": "Muscles move the body by pulling on the skeleton, which "
+                     "is rigid enough to be pulled", "correct": True},
+            {"text": "The skeleton moves the body, and the muscles protect the "
+                     "bones from wearing themselves out", "correct": False,
+             "why": "Muscles are the parts that pull. Protecting bone from "
+                    "wear is not a job they do."},
+            {"text": "Muscles move the body on their own, without needing the "
+                     "skeleton at all", "correct": False,
+             "why": "A pull needs something rigid at the far end of it. "
+                    "Without the skeleton, a contraction moves nothing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s25",
+        "band": "standard",
+        "text": "The ends of a femur are filled with a light honeycomb of "
+                "bone, while the shaft is a hollow tube. Suggest why the two "
+                "parts are built differently.",
+        "options": [
+            {"text": "The ends spread the load over a wider area, and a "
+                     "honeycomb does that for very little "
+                     "weight", "correct": True},
+            {"text": "The ends are where all the marrow is, and a honeycomb is "
+                     "exactly what that marrow is made of", "correct": False,
+             "why": "Marrow is a soft tissue sitting in the spaces. The "
+                    "honeycomb around it is bone."},
+            {"text": "The ends have to be soft, so that they can be squashed "
+                     "each time you land", "correct": False,
+             "why": "The honeycomb is hardened bone and it is stiff. It "
+                    "spreads a load rather than squashing under it."},
+            {"text": "The ends are still growing, so they are bone that has "
+                     "not yet been hardened", "correct": False,
+             "why": "It is fully hardened bone. Its structure is about "
+                    "spreading load, not about being unfinished."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s26",
+        "band": "standard",
+        "text": "Using the levels of organisation, state what bone is and what "
+                "the whole skeleton is.",
+        "options": [
+            {"text": "Bone is a tissue, and the whole skeleton is an organ "
+                     "system", "correct": True},
+            {"text": "Bone is a cell, and the whole skeleton is one single "
+                     "large organ", "correct": False,
+             "why": "Bone is built from many cells working together. One cell "
+                    "is far too small to be a bone."},
+            {"text": "Bone is an organ system, and the whole skeleton is an "
+                     "organism", "correct": False,
+             "why": "An organism is a whole living thing. The skeleton is one "
+                    "system inside one."},
+            {"text": "Bone is an organ, and the whole skeleton is one very "
+                     "large tissue", "correct": False,
+             "why": "It is the other way up. A tissue is the smaller unit and "
+                    "a system is the larger one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s27",
+        "band": "standard",
+        "text": "The marrow turns out new red blood cells every second of your "
+                "life. Explain why it has to keep working at that rate for a "
+                "whole lifetime.",
+        "options": [
+            {"text": "The body keeps on growing all through life, so it needs "
+                     "more and more red blood cells each "
+                     "year", "correct": False,
+             "why": "Growth stops in early adulthood. The demand carries on "
+                    "because existing cells wear out and are removed."},
+            {"text": "Red blood cells are used up each time they deliver "
+                     "oxygen to a cell", "correct": False,
+             "why": "One red blood cell delivers oxygen over and over again "
+                    "for months before it wears out."},
+            {"text": "Blood is constantly leaking away, so the cells that are "
+                     "lost have to be made good again", "correct": False,
+             "why": "Blood is held inside a closed set of vessels. What is "
+                    "lost is cells wearing out, not blood escaping."},
+            {"text": "Red blood cells wear out after about four months and "
+                     "have to be replaced constantly", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s28",
+        "band": "standard",
+        "text": "Name the bone that shields the front of the chest and also "
+                "holds marrow, and say which two jobs it is doing.",
+        "options": [
+            {"text": "The sternum — protection, and making blood "
+                     "cells", "correct": True},
+            {"text": "The scapula — support, and the making of blood "
+                     "cells", "correct": False,
+             "why": "The scapula is the shoulder blade, at the back. Nothing "
+                    "at the front of the chest is shielded by it."},
+            {"text": "The patella — protection, and movement at the "
+                     "knee", "correct": False,
+             "why": "The patella is the kneecap. It sits at the knee, nowhere "
+                    "near the chest."},
+            {"text": "The cranium — protection, and support for the "
+                     "head", "correct": False,
+             "why": "The cranium shields the brain, and it is the bones of the "
+                    "neck that hold the head up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s29",
+        "band": "standard",
+        "text": "Two bones break in one fall. One knits quickly; the other, "
+                "where the blood vessels running into it were torn, takes far "
+                "longer. Explain the difference.",
+        "options": [
+            {"text": "Bone is dead material, so repair depends only on how "
+                     "tightly the two ends are held "
+                     "together", "correct": False,
+             "why": "Bone is living tissue. Holding the ends still does help, "
+                    "but it is living cells that do the knitting."},
+            {"text": "Torn vessels mean less calcium arrives, and calcium is "
+                     "what does the knitting on its own", "correct": False,
+             "why": "Calcium hardens new bone, but the bone's own cells build "
+                    "it, and those cells have to be supplied."},
+            {"text": "The marrow was torn too, so no new blood cells were made "
+                     "to go and repair the break", "correct": False,
+             "why": "Repair is not done by blood cells. The break is slower "
+                    "because the bone's own cells are poorly supplied."},
+            {"text": "Repair is done by living cells, and cells cannot work "
+                     "without a supply of oxygen and food", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s30",
+        "band": "standard",
+        "text": "Your ear and the end of your nose bend and spring back, and "
+                "neither contains any bone. Suggest why cartilage suits those "
+                "parts better.",
+        "options": [
+            {"text": "They are not important enough to be given bone, since "
+                     "nothing very much depends on them", "correct": False,
+             "why": "A tissue is chosen for what the part has to do, never for "
+                    "how important the part is."},
+            {"text": "Bone cannot be grown that far out from the centre of the "
+                     "body, whatever its shape", "correct": False,
+             "why": "The bones of your fingers and toes sit further out than "
+                    "your ears do. Distance is not the reason."},
+            {"text": "They need to hold a shape and still bend without "
+                     "breaking, which bone cannot do", "correct": True},
+            {"text": "They will turn into bone later on, once the rest of the "
+                     "skeleton has finished all its growing", "correct": False,
+             "why": "They stay as cartilage for life. Not all cartilage is on "
+                    "its way to becoming bone."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s31",
+        "band": "standard",
+        "text": "An engineer proposes a one-piece moulded shell in place of a "
+                "skeleton: same shape, same strength, no separate bones. State "
+                "two things the body could no longer do.",
+        "options": [
+            {"text": "Carry any weight at all, and shield the organs from a "
+                     "knock", "correct": False,
+             "why": "A rigid shell of the same strength would do both of those "
+                    "perfectly well. Moving and growing are what it rules "
+                    "out."},
+            {"text": "Make blood cells, and lay calcium down wherever it was "
+                     "needed", "correct": False,
+             "why": "A shell could be hollow and hold marrow just as a bone "
+                    "does. Moving and growing are the losses."},
+            {"text": "Respire, and get the oxygen in the blood through to the "
+                     "cells", "correct": False,
+             "why": "Respiration happens inside cells and does not depend on "
+                    "the shape of the skeleton at all."},
+            {"text": "Bend or move at all, and grow any larger than the shell "
+                     "it was given", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-s32",
+        "band": "standard",
+        "text": "A car has a rigid chassis, and that is all it has. Using that "
+                "comparison, explain what a skeleton does that a chassis does "
+                "not.",
+        "options": [
+            {"text": "It shields organs, gives muscles something to pull "
+                     "against, and makes the body's blood "
+                     "cells", "correct": True},
+            {"text": "It carries load without bending, which a chassis could "
+                     "never manage to do", "correct": False,
+             "why": "A chassis carries load extremely well. Carrying load is "
+                    "the one job the two designs share."},
+            {"text": "It is heavier than a chassis, so the body is a good deal "
+                     "more stable when it moves about", "correct": False,
+             "why": "A skeleton is remarkably light for its strength. What it "
+                    "adds is three jobs a chassis has no part in."},
+            {"text": "It is rigid, which is the one thing that a chassis is "
+                     "not", "correct": False,
+             "why": "A chassis is rigid; that is its whole purpose. The "
+                    "difference lies in everything else the skeleton does."},
+        ],
+        "figure": None,
+    },
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b2-01-h14",
+        "band": "harder",
+        "text": "The cranium is a sealed box and the vertebrae are a chain of "
+                "separate rings. Both shield nervous tissue. Explain why the "
+                "two are built so differently.",
+        "options": [
+            {"text": "The head does not have to bend, but the back does, so "
+                     "its shield is built in segments", "correct": True},
+            {"text": "The spinal cord is tougher than the brain, so it can "
+                     "manage with a weaker shield", "correct": False,
+             "why": "Both are nervous tissue and neither replaces what it "
+                    "loses. The difference is that the back has to bend."},
+            {"text": "The rings hold marrow and the box does not, so the rings "
+                     "had to be kept separate", "correct": False,
+             "why": "Both of them hold marrow. What decides the shape is "
+                    "whether that part of the body has to move."},
+            {"text": "The box is the later design, and the chain of rings is "
+                     "what the body started out with", "correct": False,
+             "why": "Neither is a later design than the other. Each shape "
+                    "suits what its part of the body has to do."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h15",
+        "band": "harder",
+        "text": "Bone holds most of the body's calcium, and the body draws "
+                "calcium back out of bone when the blood runs short. Explain "
+                "what that shows about the skeleton.",
+        "options": [
+            {"text": "It is a dead frame, and calcium simply leaks out of it "
+                     "when there is less in the blood", "correct": False,
+             "why": "Nothing leaks. Living cells take the calcium out and put "
+                    "it back, which a dead frame could not do."},
+            {"text": "It is a store first, and carrying load is a side effect "
+                     "of being packed with calcium", "correct": False,
+             "why": "The skeleton carries load, shields organs and anchors "
+                    "muscles. Storing calcium is one job among several."},
+            {"text": "The calcium in bone is fixed once it has been laid down, "
+                     "so the blood has to find its own "
+                     "elsewhere", "correct": False,
+             "why": "It is not fixed at all. Bone gives calcium up to the "
+                    "blood and takes it back again."},
+            {"text": "It is a living store as well as a frame — material moves "
+                     "into it and back out of it", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h16",
+        "band": "harder",
+        "text": "A robot designer wants a gripping arm with no rigid parts, "
+                "and copies an earthworm: a sealed sleeve of fluid with "
+                "muscles wound around it. Predict one advantage and one limit.",
+        "options": [
+            {"text": "It can lift more than a rigid arm, but it cannot change "
+                     "shape once it has been filled", "correct": False,
+             "why": "Fluid under pressure is far less stiff than a rigid bar. "
+                    "Changing shape is the thing it is good at."},
+            {"text": "It needs no energy to hold a shape, but it can only be "
+                     "used under water", "correct": False,
+             "why": "Holding a shape means holding muscles contracted, which "
+                    "costs energy, and the fluid is sealed in."},
+            {"text": "It is rigid in every direction, but the fluid inside has "
+                     "to be replaced regularly", "correct": False,
+             "why": "It is not rigid at all, which is the whole point of the "
+                    "design. The fluid stays sealed inside."},
+            {"text": "It can squeeze into gaps a rigid arm cannot, but it "
+                     "cannot hold a heavy load steady", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h17",
+        "band": "harder",
+        "text": "A marionette has rigid wooden limbs below and strings running "
+                "up to a crossbar the puppeteer holds. Which part plays the "
+                "skeleton's role, and which the muscle's?",
+        "options": [
+            {"text": "The strings are the skeleton, because they run the whole "
+                     "length of the puppet", "correct": False,
+             "why": "The strings do the pulling and they are not rigid. The "
+                    "wooden limbs play the skeleton's part."},
+            {"text": "The wooden limbs are the skeleton, and the strings that "
+                     "pull on them are the muscles", "correct": True},
+            {"text": "The crossbar is the skeleton, because everything else "
+                     "hangs down from it", "correct": False,
+             "why": "The crossbar is what does the pulling, so it belongs on "
+                    "the muscle's side of the comparison."},
+            {"text": "The wooden limbs are the muscles, because they are the "
+                     "parts that move", "correct": False,
+             "why": "Being moved is not the same as doing the moving. The "
+                    "limbs are pulled about, exactly as bones are."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h18",
+        "band": "harder",
+        "text": "An archaeologist can tell a child's skeleton from an adult's "
+                "without measuring the length of a single bone. Suggest how.",
+        "options": [
+            {"text": "A child's bones hold no marrow, because blood cells are "
+                     "only made once you are grown", "correct": False,
+             "why": "Marrow is at work from before birth. What gives the age "
+                    "away is the count of separate bones."},
+            {"text": "The number of separate bones is higher in a child, "
+                     "because fusing is not finished", "correct": True},
+            {"text": "A child's bones contain no calcium yet, so the whole "
+                     "skeleton is a great deal lighter to "
+                     "lift", "correct": False,
+             "why": "A child's bones contain calcium and are already "
+                    "hardening. What differs is how many separate pieces there "
+                    "are."},
+            {"text": "A child's bones are made of cartilage the whole way "
+                     "through until adulthood", "correct": False,
+             "why": "Much of a newborn's skeleton is cartilage, but bone "
+                    "replaces it steadily right through childhood."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h19",
+        "band": "harder",
+        "text": "A child's long bones lengthen at plates near their ends, and "
+                "those plates turn to bone once growth is over. Explain why an "
+                "adult cannot grow taller by eating more calcium.",
+        "options": [
+            {"text": "Adults take in no calcium at all, so there is nothing "
+                     "available to build with", "correct": False,
+             "why": "Adults take calcium in and use it to maintain bone. "
+                    "Height stops because the growth plates have closed."},
+            {"text": "Calcium only hardens bone in children, and does nothing "
+                     "to an adult skeleton", "correct": False,
+             "why": "Calcium goes on hardening bone throughout life. It is "
+                    "length, not hardness, that can no longer change."},
+            {"text": "Length comes from those plates, and once they are bone "
+                     "there is nowhere left to lengthen", "correct": True},
+            {"text": "Adult bone is dead, so nothing whatever can be added to "
+                     "it after growth", "correct": False,
+             "why": "Adult bone is living and is rebuilt constantly. What has "
+                    "gone is the plate where lengthening happened."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h20",
+        "band": "harder",
+        "text": "A student says a human skeleton made entirely of cartilage "
+                "would be better, because cartilage bends instead of breaking. "
+                "Evaluate that.",
+        "options": [
+            {"text": "It would be better in every way, because a tissue that "
+                     "bends can never be damaged", "correct": False,
+             "why": "Cartilage tears and wears away. And a skeleton that bends "
+                    "under load cannot hold a body up at all."},
+            {"text": "It would be worse only because cartilage cannot repair "
+                     "itself once it is damaged", "correct": False,
+             "why": "Cartilage does repair, though slowly. The larger problem "
+                    "is that it is not rigid enough to carry a body."},
+            {"text": "It would make no difference, because cartilage is simply "
+                     "bone that has not hardened", "correct": False,
+             "why": "Cartilage is a separate tissue, not unhardened bone. Its "
+                    "properties differ from bone's throughout life."},
+            {"text": "It would bend under load rather than hold the body up, "
+                     "and it would hold no marrow", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h21",
+        "band": "harder",
+        "text": "The marrow makes about two million red blood cells every "
+                "second. Calculate roughly how many that is in one hour.",
+        "options": [
+            {"text": "About 120,000,000", "correct": False,
+             "why": "That is one minute's worth. An hour is 3,600 seconds, so "
+                    "multiply by 3,600 and not by 60."},
+            {"text": "About 7,200,000", "correct": False,
+             "why": "A power of ten has been dropped: two million multiplied "
+                    "by 3,600 is seven thousand two hundred million."},
+            {"text": "About 2,000,000", "correct": False,
+             "why": "That is one second's worth, which is the number the "
+                    "question started from."},
+            {"text": "About 7,200,000,000", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h22",
+        "band": "harder",
+        "text": "Red blood cells wear out after a set time, and the number of "
+                "them in the blood stays steady. What must therefore be true "
+                "of the rate the marrow works at?",
+        "options": [
+            {"text": "It must work in bursts every four months, replacing the "
+                     "whole lot at once", "correct": False,
+             "why": "The cells are not all the same age, so they are not all "
+                    "lost together. Losses happen continuously."},
+            {"text": "It must replace them as fast as they are lost, day after "
+                     "day", "correct": True},
+            {"text": "It must speed up steadily, because there are more cells "
+                     "to replace each month", "correct": False,
+             "why": "The number in the blood stays steady, so the number lost "
+                    "each day stays steady as well."},
+            {"text": "It must slow down over the years, because cells last "
+                     "longer as a person ages", "correct": False,
+             "why": "Lifespan does not lengthen with age. A steady number "
+                    "means a steady rate of replacement."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h23",
+        "band": "harder",
+        "text": "Standing still, the weight of the upper body passes down the "
+                "vertebrae, into the pelvis and on into the legs. State one "
+                "job the pelvis does that the vertebrae do not, and one they "
+                "share.",
+        "options": [
+            {"text": "The pelvis makes blood cells and the vertebrae do not; "
+                     "both shield nervous tissue", "correct": False,
+             "why": "Both of them hold marrow, and no spinal cord runs through "
+                    "the pelvis."},
+            {"text": "The pelvis lets the body bend and the vertebrae do not; "
+                     "both shield the spinal cord", "correct": False,
+             "why": "It is the other way round: the chain of vertebrae bends, "
+                    "and an adult pelvis is solid."},
+            {"text": "The pelvis anchors muscles and the vertebrae do not; "
+                     "both make blood cells", "correct": False,
+             "why": "Muscles anchor to the vertebrae as well as to the pelvis, "
+                    "so that half is wrong."},
+            {"text": "The pelvis surrounds and shields the organs low in the "
+                     "body; both carry the load downwards", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h24",
+        "band": "harder",
+        "text": "A student argues that a one-piece skeleton could never break, "
+                "because there would be no weak points where bones meet. "
+                "Evaluate that.",
+        "options": [
+            {"text": "One piece would still break, and the body could then "
+                     "neither move nor grow", "correct": True},
+            {"text": "It is right — a single piece has no weak points, so it "
+                     "could not break at all", "correct": False,
+             "why": "Any material breaks if the force on it is large enough. "
+                    "Being in one piece changes nothing about that."},
+            {"text": "It is right, and the body would still move, because bone "
+                     "bends a little under load", "correct": False,
+             "why": "Bone barely bends. Movement comes from separate bones "
+                    "moving against each other, not from bending."},
+            {"text": "One piece would not break, but it would hold no marrow "
+                     "and so make no blood cells", "correct": False,
+             "why": "A single piece could be hollow and hold marrow. What it "
+                    "truly rules out is movement and growth."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h25",
+        "band": "harder",
+        "text": "A deep-sea animal with no skeleton keeps its shape a "
+                "kilometre down, but collapses into a puddle when it is "
+                "brought up to the surface. Explain what was holding its "
+                "shape.",
+        "options": [
+            {"text": "The pressure inside it, which was released as soon as it "
+                     "was lifted out", "correct": False,
+             "why": "The pressure inside matched the water outside. What it "
+                    "lost at the surface was the water around it."},
+            {"text": "A skeleton of cartilage, which dissolves as soon as it "
+                     "meets the air", "correct": False,
+             "why": "It has no skeleton of any kind, and no tissue of an "
+                    "animal dissolves in air."},
+            {"text": "The water around it, which supported a body its own "
+                     "tissue could not", "correct": True},
+            {"text": "Its muscles, which stop contracting the moment the "
+                     "animal leaves the water", "correct": False,
+             "why": "Muscles pull; they cannot hold a soft body in shape "
+                    "without something rigid. The water was doing that."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h26",
+        "band": "harder",
+        "text": "A student says the skeleton cannot be an organ system, "
+                "because a system has to do one job and the skeleton does "
+                "four. Evaluate that.",
+        "options": [
+            {"text": "They are right, so the skeleton is better described as "
+                     "one very large organ", "correct": False,
+             "why": "The skeleton is many organs working together, and that is "
+                    "exactly what a system is."},
+            {"text": "They are right, and it is really four systems that "
+                     "happen to share the same bones", "correct": False,
+             "why": "One set of parts doing several jobs is still one system, "
+                    "not four separate ones."},
+            {"text": "They are wrong, because the skeleton really only does "
+                     "one job — holding you up", "correct": False,
+             "why": "It does four jobs. And the definition of a system never "
+                    "required there to be only one."},
+            {"text": "An organ system is a set of organs working together, and "
+                     "it may do several jobs", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h27",
+        "band": "harder",
+        "text": "Someone claims that eating twice as much calcium would make "
+                "their bones twice as strong. Explain why that does not "
+                "follow.",
+        "options": [
+            {"text": "Bone is built to match the force going through it, and "
+                     "extra calcium is not laid down without "
+                     "it", "correct": True},
+            {"text": "It does follow, because the hardness of bone rises with "
+                     "every extra gram of calcium taken in", "correct": False,
+             "why": "Bone is built by living cells to match the load on it. It "
+                    "is not simply filled up with whatever arrives."},
+            {"text": "It does not follow, because calcium plays no part in "
+                     "building bone at all", "correct": False,
+             "why": "Calcium is exactly what hardens bone. The point is that "
+                    "more of it does not automatically mean more bone."},
+            {"text": "It does not follow, because calcium is used to make red "
+                     "blood cells instead", "correct": False,
+             "why": "Red blood cells are made in the marrow, and calcium is "
+                    "not the material they are built from."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h28",
+        "band": "harder",
+        "text": "Compare an exoskeleton with a skeleton inside the body, for a "
+                "small animal that must not dry out in a hot, dry place. Which "
+                "suits it better, and why?",
+        "options": [
+            {"text": "The skeleton inside, because it grows with the animal "
+                     "and never has to be shed", "correct": False,
+             "why": "Growing without a shed is a genuine advantage, but at "
+                    "small size the case's waterproofing matters more here."},
+            {"text": "The exoskeleton, because it is living tissue and repairs "
+                     "itself between moults", "correct": False,
+             "why": "It is the skeleton inside that is living tissue. A hard "
+                    "outer case is largely non-living once it has formed."},
+            {"text": "The exoskeleton, because a hard case around the whole "
+                     "body also holds water in", "correct": True},
+            {"text": "The skeleton inside, because it holds marrow and "
+                     "therefore supplies more oxygen", "correct": False,
+             "why": "Marrow is an advantage of bone, but it has nothing at all "
+                    "to do with surviving somewhere dry."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h29",
+        "band": "harder",
+        "text": "A bone can be built as a long tube, a curved plate or a broad "
+                "bowl. Match each shape to the job it does best, naming a bone "
+                "for each.",
+        "options": [
+            {"text": "Tube for protection, as the femur; plate for support, as "
+                     "the cranium; bowl for movement, as the "
+                     "pelvis", "correct": False,
+             "why": "The femur carries load along its length, and the curved "
+                    "plates of the cranium are there to keep impacts out."},
+            {"text": "Tube for making blood, as the femur; plate for support, "
+                     "as the sternum; bowl for protection, as the "
+                     "pelvis", "correct": False,
+             "why": "All three of those bones hold marrow, so the tube shape "
+                    "is not what makes blood. A tube carries load."},
+            {"text": "Tube for support, as the femur; plate for protection, as "
+                     "the cranium; bowl for surrounding, as the "
+                     "pelvis", "correct": True},
+            {"text": "Tube for movement, as the femur; plate for making blood, "
+                     "as the cranium; bowl for support, as the "
+                     "pelvis", "correct": False,
+             "why": "Shape follows the load or the impact, not the marrow, "
+                    "since all three of those bones hold marrow."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h30",
+        "band": "harder",
+        "text": "Three animals: one with bone inside, one with a hard case "
+                "outside, and one held up by fluid under pressure. Which can "
+                "grow largest on land, and why?",
+        "options": [
+            {"text": "The one with the case outside, because a shell is "
+                     "stronger than anything held inside a "
+                     "body", "correct": False,
+             "why": "A case has to thicken as an animal grows, until its own "
+                    "weight defeats it. That is why land insects stay small."},
+            {"text": "The one with bone inside, because it grows with the "
+                     "animal and is strong for its weight", "correct": True},
+            {"text": "The one held up by fluid, because fluid will fill a body "
+                     "of any size at all", "correct": False,
+             "why": "Fluid under pressure is far less stiff than bone, so a "
+                    "large body would spread out under its own weight."},
+            {"text": "All three could reach the same size, because size "
+                     "depends only on the food supply", "correct": False,
+             "why": "Food matters, but on land the skeleton sets a ceiling, "
+                    "and both the case and the fluid reach theirs sooner."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h31",
+        "band": "harder",
+        "text": "An engineer says bone is the best material she knows: it "
+                "repairs itself, it adapts to load, and it is light for its "
+                "size. Which of the three would a steel bar of the same size "
+                "also manage?",
+        "options": [
+            {"text": "All three, because steel is stronger than bone in just "
+                     "about every way that matters", "correct": False,
+             "why": "Steel is strong, but it cannot repair a crack or lay down "
+                    "more material where the force goes."},
+            {"text": "None of the three — steel repairs nothing, adapts to "
+                     "nothing, and is far heavier for its "
+                     "size", "correct": True},
+            {"text": "Only the repairing, because a small crack in steel "
+                     "closes up again under load", "correct": False,
+             "why": "A crack in steel grows under load, it does not close. "
+                    "Repair needs living cells."},
+            {"text": "Only the adapting, because steel hardens in the places "
+                     "where it is worked hardest", "correct": False,
+             "why": "Steel can harden a little with working, but it does not "
+                    "add material where the force goes. Bone does."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b2-01-h32",
+        "band": "harder",
+        "text": "A skeleton is found with a cranium, a sternum, a pelvis and "
+                "two femurs, and nothing else. Which of the four jobs can you "
+                "still find evidence for?",
+        "options": [
+            {"text": "All four — between them those bones support, shield, "
+                     "anchor muscles and hold marrow", "correct": True},
+            {"text": "Only support and protection, because marrow is only ever "
+                     "found inside the long limb bones", "correct": False,
+             "why": "The sternum and the pelvis are flat bones, and both of "
+                    "them hold marrow."},
+            {"text": "Only protection, because not one of those bones has "
+                     "anything at all attached to pull on "
+                     "it", "correct": False,
+             "why": "Muscles anchor to every one of them, and the femur "
+                    "carries the whole body's load."},
+            {"text": "None of them, because a skeleton with parts missing "
+                     "cannot show any of its jobs at all", "correct": False,
+             "why": "The question asks what the bones themselves show, and "
+                    "each of these four shows something."},
+        ],
+        "figure": None,
+    },
 ]
