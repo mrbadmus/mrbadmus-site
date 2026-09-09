@@ -196,7 +196,17 @@ in one leaf:
 
 - the key is the **longest** option about **one time in four** — not more;
 - the key's length **rank** (1 = longest … 4 = shortest) **varies** across the
-  leaf, roughly evenly. Never park it at rank 2 with a wide gap.
+  leaf, roughly evenly — **no single rank may hold more than 40% of the keys.**
+  Never park it at rank 2 with a wide gap.
+
+  ⚠️ **This is a floor as well as a ceiling, and the floor is the one that gets
+  missed.** Driving "the key is longest" down towards zero is easy, and it lands
+  straight in the opposite tell: a key that is the *shortest* option most of the
+  time is exactly as learnable as one that is the longest, and a pupil finds it
+  just as fast. The first KS3 leaf authored under this brief came back with the
+  key shortest in 42 of 69 rows while its longest-is-correct rate looked
+  healthy at 15%. Aim for the key sitting at each of the four ranks about a
+  quarter of the time.
 - **three times in four the longest option is a DISTRACTOR**, written to the
   key's level of detail — if the key earns a "…, because …" clause, give the
   distractors their own reason too, rather than trimming the key.
