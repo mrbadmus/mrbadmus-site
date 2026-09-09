@@ -337,6 +337,31 @@ So: no parity edit touches a key, and you **prove** it before reporting, by
 comparing every row's key text against `git show HEAD:<file>`. At KS3 also
 prove no `why` travelled onto a key and none fell off a distractor.
 
+## 9.3b · ⚠️ A PARITY PATCH TABLE ADDRESSED BY POSITION GOES STALE
+
+Two of the three defects this programme has caused itself came from the same
+pass — rewriting option text for length — and neither was caught by a gate.
+
+The first overwrote a key (§9.3). The second is subtler and is the reason this
+rule is separate: a lane collected its edits into a patch table keyed on
+**(row id, option index)**, then replaced one row's content late in the run.
+The earlier patch still matched that id and index, so it landed on the **new**
+row and dropped *"Push the container along the bench, or roll it over onto its
+side"* into a question about an aerosol.
+
+**Every gate passes that row.** Four options, exactly one correct, index in
+range, ids unique, no duplicate stem. It is a perfectly well-formed question
+whose third option is about something else entirely. Only a cold read finds it.
+
+So:
+
+- **Address a patch by its CONTENT, not its position** — match the exact option
+  string you intend to replace, and assert it matched exactly once.
+- **Re-derive the patch table after any row is replaced.** A table built before
+  a content change is a table about a file that no longer exists.
+- **Assert the target is not the key** on every entry, as §9.3 requires.
+- **Cold-read every row you patched**, not only the ones you rewrote by hand.
+
 ## 9.4 · Sweep for duplicates across the whole UNIT or TOPIC, never the leaf
 
 `set_work_scope_check` treats a whole KS3 unit and a whole KS4 topic as **one
