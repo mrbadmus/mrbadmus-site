@@ -498,3 +498,73 @@ teacher_admin_foreign_class — C7. REMINDERS — the control is drawn on the
 `$MRB_THROWAWAY_PASSWORD`; `mrb328_card_prefetch` wants
 `$MRB_TEST_TEACHER_PASSWORD`. Reported by name, as the harness is designed to
 do — the same two-credential gap MRB-335 recorded.
+
+---
+
+## 12 · The production load — the outcome ruled as §7.3
+
+Both banks are on production, verified. **The production project's reference
+ends in november**, said in words before each write, and proved on every call
+from the key's own JWT `ref` claim rather than from a URL beside it.
+
+| | before | after |
+|---|---|---|
+| `ks3_assignment_bank` | 5,142 | **5,931** |
+| `ks4_assignment_bank` | 3,417 | **3,781** |
+
+### The proof
+
+| check | result |
+|---|---|
+| KS4 row-for-row (`--verify --project prod`) | 3,781 live, **0 missing, 0 extra, 0 differing**, sha256 equal |
+| KS3 aggregate md5, Python ↔ production | `619e52ca889600c6e0b96947b86fbba2` — **equal** |
+| KS4 aggregate md5, Python ↔ production | `8bad52f1b7eecd324d67b70ba8d39765` — **equal** |
+| KS3 auto windows | **0** lessons whose window is anything but 4/4/4 below position 12 |
+| KS4 auto windows | **0** subtopics whose window is anything but exactly 12 rows |
+| anon read, `ks3_assignment_bank` | `[]` — refused to the public |
+| anon read, `ks4_assignment_bank` | `[]` — refused to the public |
+| `--leaf` against production | **19 leaves at floor** (KS4 14 cells = 7 leaves × 2 tiers; KS3 36 cells = 12 lessons × 3 bands) |
+
+⚠️ **The first md5 comparison failed on BOTH banks and the data was fine.** I
+compared a Python `json.dumps` against a Postgres `::text`, and the two render
+containers differently — `jsonb` reorders object keys by length, and
+`ks4_assignment_bank.options` is a `text[]` rather than jsonb at all, so it
+renders `{"a","b"}`. KS4's own `--verify` was saying the rows were identical at
+the same moment. The fix is that **neither side renders a container**: options
+are flattened to their scalar fields in authored order, so the checksum
+depends on the data and not on either engine's printing.
+
+### §12.1 · `export_ks3_questions.py` gained `--load {test,prod}`
+
+Ruled by Mide, 9 Sep. It mirrors `export_ks4_questions.py` exactly — the same
+three guards, the same `Prefer: resolution=merge-duplicates` header, 250-row
+chunks — and defaults to **bank only**: `--pools` must name `ladder` or
+`cards` explicitly, because MRB-338 changed the bank alone and the ladder
+mirror is what the class page's practice round serves.
+
+**Why the sanctioned route could not be used unattended, recorded in the
+function so it is not rediscovered:** `ks3_pools_ingest(pool, payload)` guards
+on `auth.jwt() ->> 'email' = 'midebolabadmus@gmail.com'`. That is deliberate —
+its own comment says it exists so a refresh needs no service-role key on the
+export machine, and a student holding a valid JWT must not be able to rewrite
+the bank. But a service-role key carries **no `email` claim at all**, so an
+unattended run is refused: `HTTP 400, P0001, "ks3_pools_ingest: not
+permitted"`. Verified with an **empty payload**, so nothing could have been
+written either way. The generated SQL is the documented alternative and is
+5.2 MB across 24 statements, which cannot go through an MCP round trip.
+
+Rehearsed on TEST first, as ruled: TEST also held 5,142, went to 5,931, and
+read back with 0 broken auto windows and 12 lessons at floor — the same shape
+production then produced.
+
+### §12.2 · A gate that misnamed the database it had read
+
+`set_work_scope_check.py --db` printed *"measuring the TEST database"*
+unconditionally, while `$MRB_BACKEND_ENV` decides what it actually reads. Run
+against production it reported a production measurement under the word TEST.
+
+⚠️ That mattered on exactly this night: TEST and production held **identical
+row counts** in both banks, so the label was the only thing on screen
+distinguishing them. It now names the project from the URL it really used —
+`the PRODUCTION database` / `the TEST database` / the bare ref for anything
+else.

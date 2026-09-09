@@ -858,9 +858,38 @@ into the current ticket.** Avatar bank → MRB-55. Multi-attempts →
 comment on Stage 4 ticket. Brand drift → MRB-54. The thing in front
 of us stays the thing in front of us.
 
-**8. Production-touching work uses the MCP swap dance.** Both
-Supabase MCPs (prod + test) are never live simultaneously.
-`claude mcp remove supabase-test` before any prod step, re-add after.
+**8. Production-touching work names the project on every call.**
+⊕ Superseded 9 Sep 2026 (MRB-338, ruled by Mide). This used to read
+*"Production-touching work uses the MCP swap dance. Both Supabase MCPs
+(prod + test) are never live simultaneously. `claude mcp remove
+supabase-test` before any prod step, re-add after."* It is kept here
+rather than deleted because following it now would mean tearing down a
+connector for no gain, and because the reason it changed is the useful
+part.
+
+The swap dance protected against ONE mistake: a call landing on the
+wrong project because the wrong MCP happened to be live. A connector
+that takes an explicit `project_id` on **every** call cannot make that
+mistake — there is no ambient default to be wrong about. So the rule is
+now:
+
+> **State the target project in words before every production write, and
+> prove it from the credential rather than from a label beside it.** A
+> service-role key is a JWT whose payload carries `{"ref": "<project>"}`;
+> read the ref out of the key. `export_ks4_questions.py` and
+> `export_ks3_questions.py` both do this, and refuse on any mismatch.
+
+⚠️ **Why proving beats stating.** On 9 Sep 2026 TEST and production held
+*identical* row counts in both question banks — 5,142 and 3,417 — so no
+count, and no glance at a table, could have told them apart. The key's
+own ref claim could. On the same night `set_work_scope_check --db` was
+found printing "the TEST database" while reading production, which is
+the same failure in the other direction: a label that is not derived
+from the thing it names.
+
+The swap dance remains correct for any tool that carries an ambient
+project. It is simply no longer the only way, and is not required of a
+connector that is scoped per call.
 
 **9. You push, one unit at a time.** ⊕ Superseded 16 Aug 2026 (MRB-228) —
 this item used to read "Never `git push` from terminal. GitHub Desktop

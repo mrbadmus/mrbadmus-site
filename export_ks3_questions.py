@@ -644,6 +644,186 @@ CARD_COLUMNS = ["id", "unit_code", "lesson_slug", "kind", "card_position",
                 "equation_condition_over", "equation_condition_under"]
 
 
+# ── ⊕ MRB-338, 9 Sep 2026 — THE LOAD PATH THIS EXPORTER DID NOT HAVE ────
+#
+# KS4's exporter has had `--load {test,prod}` since MRB-332; this one emitted
+# SQL and stopped, because `ks3_pools_ingest(pool, payload)` was meant to be
+# the fast path. On night 1 of MRB-338 that path turned out to be unusable
+# unattended, and the reason is worth keeping rather than rediscovering:
+#
+#   ⚠️ `ks3_pools_ingest` guards on
+#      `auth.jwt() ->> 'email' = 'midebolabadmus@gmail.com'`.
+#      That is deliberate — its own comment says it exists so a pool refresh
+#      needs no service-role key on the machine doing the export, and an
+#      ordinary student holding a valid JWT must not be able to rewrite the
+#      bank. But a SERVICE-ROLE key carries no `email` claim at all, so an
+#      unattended run is refused: HTTP 400, P0001,
+#      "ks3_pools_ingest: not permitted". Verified with an empty payload, so
+#      nothing could have been written either way.
+#
+#   The generated SQL is the documented alternative, and at 5.2 MB across 24
+#   statements it cannot go through an MCP round trip either.
+#
+# So this mirrors KS4's loader exactly — same three guards, same header, same
+# chunking — and leaves `ks3_pools_ingest` in place for Mide, who is the
+# operator it was written for.
+
+
+def _jwt_ref(token):
+    """The Supabase project ref a JWT was issued for, or None.
+
+    Decodes the payload only. It does NOT verify the signature and must never
+    be used to decide whether a token is authentic — that is the server's job,
+    and here the token is our own. What it answers is the one question a
+    signature cannot: WHICH PROJECT this key opens.
+
+    ⚠️ This matters more here than it looks. On 9 Sep 2026 TEST and PRODUCTION
+    both held exactly 5,142 KS3 rows and 3,417 KS4 rows, so no count, and no
+    glance at a table, could have told the two apart. The ref claim could.
+
+    Returns None rather than raising on anything unreadable, so the caller
+    reports "the project could not be established" and refuses, instead of a
+    traceback three frames from a production write.
+    """
+    import base64
+    try:
+        payload = token.split(".")[1]
+        payload += "=" * (-len(payload) % 4)
+        claims = json.loads(base64.urlsafe_b64decode(payload).decode("utf-8"))
+    except Exception:
+        return None
+    ref = claims.get("ref")
+    return ref if isinstance(ref, str) and ref else None
+
+
+def load_rows(project, pools, bank, ladder, cards):
+    """Upsert the named pools into TEST or PRODUCTION over PostgREST.
+
+    Guarded the three independent ways `export_ks4_questions.py --load` is,
+    because they fail for different reasons and one guard is one thing to get
+    wrong:
+
+      1. THE VALUE IS TYPED IN FULL. The raw argv must carry the exact token
+         `prod`; no abbreviation, no default, no environment variable.
+      2. THE KEY COMES FROM ~/.mrbadmus/prod.env AND NOWHERE ELSE — not this
+         repo, not the backend .env, not the environment. It is never printed:
+         not in a success line, not in an error, not in a traceback.
+      3. THE TARGET IS PROVED FROM THE KEY, NOT STATED BESIDE IT. A URL in a
+         file is somebody's note about where a key belongs; the key's own
+         `ref` claim is what the credential actually opens. ~/.mrbadmus/prod.env
+         carries the key alone and no URL, so on the prod path this is not a
+         convenience — it is the only thing that knows where the load is going,
+         and the URL is DERIVED from it.
+
+    ⚠️ BANK ONLY BY DEFAULT. MRB-338 changed the bank and nothing else, and a
+    load that quietly rewrote `ks3_ladder_questions` and `ks3_cards` as well
+    would be touching two pools nobody had reviewed that night — with the
+    ladder mirror in particular being what the class page's practice round
+    serves. `--pools` must name them explicitly.
+    """
+    # Imported here rather than at module scope, matching `verify()` below:
+    # every other entry point in this file runs without touching the network.
+    import ssl
+    import urllib.error
+    import urllib.request
+
+    if project == "prod":
+        if "prod" not in sys.argv:
+            print("\n     ⛔ --load prod: the literal token `prod` is not in "
+                  "the command line.\n        Production is never reached by "
+                  "an abbreviation. Refusing.")
+            return 3
+        env = os.path.expanduser("~/.mrbadmus/prod.env")
+        expect_ref = "urklkrwevjtlfbwnipjn"
+        label = "PRODUCTION"
+    else:
+        env = "/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env"
+        expect_ref = "qeppkiswvclkkwbxmlok"
+        label = "TEST"
+
+    conf = {}
+    try:
+        with open(env, encoding="utf-8") as fh:
+            for line in fh:
+                if "=" in line and not line.lstrip().startswith("#"):
+                    k, v = line.split("=", 1)
+                    conf[k.strip()] = v.strip()
+    except OSError as exc:
+        if project == "prod":
+            print("\n     ⛔ --load prod: %s is not readable (%s)." % (env, exc))
+            print("        This is the ONLY place the production service key "
+                  "is read from, on purpose.")
+            print("        Exit 4 — apply build/ks3-questions/*.sql by hand "
+                  "instead, or call")
+            print("        ks3_pools_ingest signed in as the content owner. Do "
+                  "not put a production key anywhere in this repo.\n")
+            return 4
+        print("\n     ⛔ --load cannot read %s (%s)" % (env, exc))
+        return 3
+
+    url = conf.get("SUPABASE_URL", "")
+    key = conf.get("SUPABASE_SERVICE_ROLE_KEY", "")
+    if not key:
+        print("\n     ⛔ --load %s: %s sets no SUPABASE_SERVICE_ROLE_KEY."
+              % (project, env))
+        return 3
+
+    key_ref = _jwt_ref(key)
+    if key_ref is None:
+        print("\n     ⛔ --load %s: the SUPABASE_SERVICE_ROLE_KEY in %s is not "
+              "a readable JWT,\n        so the project it belongs to cannot be "
+              "established. Refusing." % (project, env))
+        return 3
+    if key_ref != expect_ref:
+        print("\n     ⛔ --load %s: that key belongs to project %r, not the %s "
+              "project %r.\n        Refusing — this is exactly the mix-up the "
+              "guard exists for." % (project, key_ref, label, expect_ref))
+        return 3
+    if url and expect_ref not in url:
+        print("\n     ⛔ --load %s: %s sets a SUPABASE_URL that does not match "
+              "its own key.\n        Key says %r; URL says %s. Refusing."
+              % (project, env, key_ref, url))
+        return 3
+    url = url or ("https://%s.supabase.co" % key_ref)
+
+    TABLES = [("bank", "ks3_assignment_bank", BANK_COLUMNS, bank)]
+    if "ladder" in pools:
+        TABLES.append(("ladder", "ks3_ladder_questions", LADDER_COLUMNS, ladder))
+    if "cards" in pools:
+        TABLES.append(("cards", "ks3_cards", CARD_COLUMNS, cards))
+
+    ctx = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
+    BATCH = 250
+    print("\n     target project proved from the key's own ref claim: %s (%s)"
+          % (key_ref, label))
+    for name, table, columns, rows in TABLES:
+        endpoint = url.rstrip("/") + "/rest/v1/" + table
+        sent = 0
+        print("     loading %d %s row(s) into %s…" % (len(rows), name, label))
+        for i in range(0, len(rows), BATCH):
+            chunk = [{c: r[c] for c in columns} for r in rows[i:i + BATCH]]
+            rq = urllib.request.Request(
+                endpoint, data=json.dumps(chunk, ensure_ascii=False).encode("utf-8"),
+                method="POST")
+            rq.add_header("apikey", key)
+            rq.add_header("Authorization", "Bearer " + key)
+            rq.add_header("Content-Type", "application/json")
+            # merge-duplicates makes this the same upsert the SQL files are.
+            rq.add_header("Prefer", "resolution=merge-duplicates,return=minimal")
+            try:
+                with urllib.request.urlopen(rq, context=ctx, timeout=120) as r:
+                    r.read()
+            except urllib.error.HTTPError as e:
+                print("\n     ⛔ --load failed on %s rows %d-%d: HTTP %s\n        %s"
+                      % (name, i, i + len(chunk) - 1, e.code,
+                         e.read().decode("utf-8", "replace")[:400]))
+                return 1
+            sent += len(chunk)
+            print("        %d / %d" % (sent, len(rows)))
+        print("     ✅ %d %s row(s) upserted into %s." % (sent, name, label))
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--stdout", action="store_true",
@@ -660,6 +840,14 @@ def main():
     # and the gate registry keep pointing where they did.
     ap.add_argument("--project", choices=("prod", "test"), default="prod",
                     help="which Supabase project --verify reads (default prod)")
+    # ⊕ MRB-338. See load_rows() for why the ingest RPC could not be used
+    # unattended, and for the three guards on the prod path.
+    ap.add_argument("--load", choices=("test", "prod"), default=None,
+                    help="apply the rows straight to the database over "
+                         "PostgREST (bank only unless --pools says otherwise)")
+    ap.add_argument("--pools", default="bank",
+                    help="comma-separated pools to --load: bank,ladder,cards "
+                         "(default bank — MRB-338 changed the bank alone)")
     args = ap.parse_args()
 
     bank = bank_rows()
@@ -740,6 +928,16 @@ def main():
         print("\n     Apply with ks3_pools_ingest(pool, payload). See the "
               "migration for the guard.\n")
         return
+
+    if args.load:
+        pools = {p.strip() for p in args.pools.split(",") if p.strip()}
+        unknown = pools - {"bank", "ladder", "cards"}
+        if unknown:
+            raise SystemExit("export_ks3_questions: unknown pool(s) %s"
+                             % ", ".join(sorted(unknown)))
+        if "bank" not in pools:
+            raise SystemExit("export_ks3_questions: --pools must include bank")
+        sys.exit(load_rows(args.load, pools, bank, ladder, cards))
 
     stmts = (upsert_statements("ks3_assignment_bank", BANK_COLUMNS, bank, "id")
              + upsert_statements("ks3_ladder_questions", LADDER_COLUMNS,

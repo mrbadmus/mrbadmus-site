@@ -265,7 +265,20 @@ def load_db():
             "text": r.get("text"), "n_options": len(opts),
             "n_correct": sum(1 for o in opts if isinstance(o, dict) and o.get("correct")),
         })
-    return ks4, ks3, "the TEST database"
+    # ⊕ MRB-338, 9 Sep 2026. This said "the TEST database" unconditionally,
+    # and `--db` honours $MRB_BACKEND_ENV — so pointing it at production
+    # printed a production measurement under the word TEST. A gate that
+    # misnames which database it read is a gate whose green means nothing, and
+    # on 9 Sep the two projects held identical row counts, so the label was the
+    # only thing distinguishing them on screen. Name the project from the URL
+    # actually used.
+    import re as _re
+    _m = _re.search(r"https://([a-z0-9]+)\.supabase\.co", url)
+    _ref = _m.group(1) if _m else "?"
+    _name = {"urklkrwevjtlfbwnipjn": "the PRODUCTION database",
+             "qeppkiswvclkkwbxmlok": "the TEST database"}.get(
+                 _ref, "the database at %s" % _ref)
+    return ks4, ks3, _name
 
 
 # ── the cohorts, and the nodes each of them can reach ──────────────────
