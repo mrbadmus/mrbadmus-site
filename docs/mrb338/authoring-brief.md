@@ -134,6 +134,29 @@ never round again:
 **Two stems in one leaf sharing ≥ 70% of their tokens is a defect.** So is
 asking the same fact with the options shuffled.
 
+## 3.5 · Pool ownership — read the lesson for the SCIENCE, never lift its tasks
+
+You will read the lesson to find the teachable points. That is intended. What
+is forbidden is carrying its **questions** across:
+
+- **KS3**: the lesson's own ladder rungs (recall / apply / explain / produce)
+  in `ks3_data/<unit>/lesson_<nn>_<slug>.py`.
+- **KS4**: the `quiz` entries and the `fifas` worked examples in
+  `all_subtopics_<subject>*.py`.
+
+A `quiz` item and a `fifas` worked example are **tasks**, and reproducing one —
+even reworded, even with the numbers changed — is a **hard failure** in
+`pool_ownership.py`, not a warning. The lesson already prints them with their
+answers, so a child who revised the page has seen the answer to your question.
+
+A **fact** is different: if the spec point is genuinely the only thing there is
+to say, you may examine the fact, in your own task, from your own angle. The
+test is *"is this the same thing to DO, or the same thing to KNOW?"*
+
+⚠️ Do not open a lesson's questions in order to avoid them. Derive the
+teachable points from the lesson's **prose, keywords, practical and
+misconceptions**, then write your own tasks from the specification.
+
 ## 4 · Content standards
 
 - AQA (8461/8462/8463) or KS3 National Curriculum wording, at the right depth
