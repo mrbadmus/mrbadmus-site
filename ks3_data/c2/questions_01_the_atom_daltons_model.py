@@ -957,7 +957,8 @@ QUESTIONS = [
     {
         "id": "c2-01-e19",
         "band": "easier",
-        "text": "What is a molecule?",
+        "text": "What has to be true of a particle before it can be "
+                "called a molecule?",
         "options": [
             {"text": "A single atom sitting on its own", "correct": False,
              "why": "One atom on its own is just an atom. A molecule needs at "

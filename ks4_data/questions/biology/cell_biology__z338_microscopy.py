@@ -156,22 +156,24 @@ QUESTIONS = [
         "why": "In a TEM the electrons travel through the specimen, so the "
                "image shows what lies inside it.",
     },
-    {
+        {
         "id": "ks4-microscopy-e12",
         "subtopic_slug": "microscopy",
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "State how many nanometres there are in one micrometre.",
+        "text": "Place these three units in order, from the largest to the "
+                "smallest.",
         "options": [
-            "10",
-            "100",
-            "1000",
-            "1 000 000",
+            "Nanometre, micrometre, millimetre",
+            "Micrometre, millimetre, nanometre",
+            "Millimetre, micrometre, nanometre",
+            "Millimetre, nanometre, micrometre",
         ],
         "correct_index": 2,
-        "why": "There are 1000 nm in 1 µm, just as there are 1000 µm in "
-               "1 mm.",
+        "why": "A millimetre is a thousand micrometres, and a micrometre is a "
+               "thousand nanometres, so each step down is a thousand times "
+               "smaller.",
     },
 
     # ══ standard · s05–s26 ═══════════════════════════════════════════════
