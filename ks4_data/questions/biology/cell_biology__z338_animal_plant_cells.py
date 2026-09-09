@@ -195,8 +195,8 @@ QUESTIONS = [
         "text": "Explain why the cellulose cell wall cannot be the structure "
                 "that controls which substances enter a plant cell.",
         "options": [
-            "The wall lies inside the membrane, so substances meet the "
-            "membrane first",
+            "The wall lies inside the membrane, so any dissolved substance "
+            "meets the membrane first",
             "The wall is only present in plant cells that are exposed to "
             "light",
             "The wall dissolves away whenever the cell takes in water by "
@@ -388,8 +388,8 @@ QUESTIONS = [
         "text": "Explain how a healthy young plant stands upright without "
                 "any skeleton.",
         "options": [
-            "Its cell walls contain bone-like fibres that stiffen as the "
-            "plant grows",
+            "Its cell walls contain bone-like fibres of mineral that stiffen "
+            "as the plant grows",
             "Full vacuoles press the cell contents out against rigid walls, "
             "making the cells firm",
             "Its chloroplasts swell in the light and push the stem straight",
@@ -534,7 +534,7 @@ QUESTIONS = [
                 "the advantage of those folds to the cell.",
         "options": [
             "They make the mitochondrion strong enough to resist the "
-            "pressure inside the cell",
+            "pressure of the surrounding cytoplasm",
             "They trap light so that the mitochondrion can photosynthesise "
             "as well",
             "They store the glucose that the mitochondrion will respire "

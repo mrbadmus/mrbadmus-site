@@ -1016,8 +1016,8 @@ QUESTIONS = [
              "correct": False,
              "why": "It is crowded, not empty, and nearly all of the cell's "
                     "reactions happen in it."},
-            {"text": "Air, which is what stops the cell collapsing inwards.",
-             "correct": False,
+            {"text": "Air, drawn in through the membrane, which keeps the "
+                     "cell inflated.", "correct": False,
              "why": "There is no air inside a cell. The cytoplasm is a "
                     "jelly, crowded with dissolved substances."},
             {"text": "Water only, with everything else floating on top.",
@@ -1267,7 +1267,8 @@ QUESTIONS = [
                      "enough to be separated at ×400 while the "
                      "mitochondrion is not.", "correct": True},
             {"text": "The mitochondrion is not in a plant cell at all, so "
-                     "there is nothing there to see.", "correct": False,
+                     "at ×400 there is nothing there for the lens to pick "
+                     "up.", "correct": False,
              "why": "Every plant cell has mitochondria. They are simply "
                     "below the size the microscope can separate."},
             {"text": "The chloroplast is stained during the practical and "
@@ -1407,7 +1408,8 @@ QUESTIONS = [
                 "for mitochondria, and still sees none. Explain why.",
         "options": [
             {"text": "The mitochondria were destroyed by the stain used on "
-                     "the slide.", "correct": False,
+                     "the slide, so by ×1000 there was nothing left there "
+                     "to find.", "correct": False,
              "why": "A stain adds colour and destroys nothing. The limit "
                     "here belongs to the microscope."},
             {"text": "Mitochondria are only in animal cells, and this is "
@@ -1481,8 +1483,8 @@ QUESTIONS = [
              "correct": False,
              "why": "A wall neither softens nor hardens — it was stiff "
                     "throughout. What refills is the vacuole."},
-            {"text": "New chloroplasts have been built now that there is "
-                     "water again.", "correct": False,
+            {"text": "New chloroplasts have been built now that the stalk "
+                     "has taken up water.", "correct": False,
              "why": "Chloroplasts are about food, not firmness, and celery "
                     "in a beaker is building none."},
             {"text": "Water has moved back into the vacuoles, which press "
@@ -1557,8 +1559,9 @@ QUESTIONS = [
             {"text": "An onion cell has a stiff wall thick enough to see, "
                      "while a cheek cell has only a membrane, which is far "
                      "too thin.", "correct": True},
-            {"text": "Onion cells are dead, so they hold still while you "
-                     "look at them.", "correct": False,
+            {"text": "Onion cells are dead, so they hold still under the "
+                     "lens, while a living cheek cell keeps drifting out of "
+                     "focus.", "correct": False,
              "why": "Neither cell is moving on the slide. The wall is what "
                     "draws the outline you can see."},
         ],
@@ -1675,8 +1678,9 @@ QUESTIONS = [
         "text": "Down a school microscope you can make out five parts of a "
                 "leaf cell but only two of a cheek cell. Explain why.",
         "options": [
-            {"text": "A cheek cell is too small for a school microscope to "
-                     "show anything of.", "correct": False,
+            {"text": "A cheek cell is far too small for a school microscope "
+                     "to separate any one part of it from the next one "
+                     "along.", "correct": False,
              "why": "You can see its outline and, once stained, its nucleus. "
                     "Size is not what makes the difference."},
             {"text": "The parts of a cheek cell are packed too tightly "
@@ -1733,8 +1737,9 @@ QUESTIONS = [
                      "not arise.", "correct": False,
              "why": "They are plant cells — walls, vacuoles and all. What is "
                     "missing underground is the light."},
-            {"text": "The chloroplasts were washed out while the slide was "
-                     "being prepared.", "correct": False,
+            {"text": "The chloroplasts were washed out of the cells by the "
+                     "water used to mount the slide, leaving them "
+                     "colourless.", "correct": False,
              "why": "Nothing washes chloroplasts out. Cells grown in the "
                     "dark never build any."},
             {"text": "The stain used on the slide hides green colours.",
@@ -1871,8 +1876,9 @@ QUESTIONS = [
                      "cells.", "correct": False,
              "why": "Nothing turns sugar into light. Sugar is food, and its "
                     "energy is released by respiration."},
-            {"text": "Sugar keeps the vacuoles full, and full vacuoles are "
-                     "all a plant needs.", "correct": False,
+            {"text": "Sugar keeps its vacuoles full, and a plant with full "
+                     "vacuoles needs nothing else at all to stay alive.",
+             "correct": False,
              "why": "Full vacuoles stop it wilting, but a plant needs energy "
                     "as well — released from that sugar in the "
                     "mitochondria."},
@@ -1924,7 +1930,8 @@ QUESTIONS = [
                      "stands up while its vacuoles are pressing out on "
                      "them.", "correct": True},
             {"text": "Completely wrong: a plant is held up by its "
-                     "chloroplasts pushing outwards.", "correct": False,
+                     "chloroplasts, which swell in the light and push "
+                     "outwards.", "correct": False,
              "why": "Chloroplasts trap light and press on nothing. The "
                     "outward push comes from sap in the vacuoles."},
         ],
@@ -1989,7 +1996,8 @@ QUESTIONS = [
              "why": "Every cell here has a membrane. This one is simply far "
                     "too thin to see."},
             {"text": "Because that line is a cell wall, which a cheek cell "
-                     "builds as it dries out.", "correct": False,
+                     "builds around itself once it dries out.",
+             "correct": False,
              "why": "No animal cell has a wall, dried out or otherwise."},
             {"text": "Because a membrane is only a few molecules thick; that "
                      "line simply marks where the cell ends.",
@@ -2101,8 +2109,9 @@ QUESTIONS = [
                      "slide.", "correct": False,
              "why": "Chloroplasts stay inside their cells. The trouble is "
                     "that there are too many layers to see through."},
-            {"text": "The cells were destroyed by the blade, leaving only "
-                     "their contents behind.", "correct": False,
+            {"text": "The blade destroyed the cells right through the "
+                     "section, leaving only their contents.",
+             "correct": False,
              "why": "A blade damages the cut edge only. The rest of the "
                     "section is many cells deep."},
             {"text": "Several layers of cells lie on top of one another, so "
@@ -2175,8 +2184,9 @@ QUESTIONS = [
                      "same length.", "correct": False,
              "why": "They are not the same length. There are 1000 µm in a "
                     "millimetre."},
-            {"text": "Wrong, because cells are larger than a millimetre and "
-                     "need a bigger unit.", "correct": False,
+            {"text": "Wrong, because a typical cell is several millimetres "
+                     "across and needs a bigger unit than that.",
+             "correct": False,
              "why": "Cells are far smaller than a millimetre — around 50 µm "
                     "— which is why a smaller unit is used."},
             {"text": "Wrong: most cells are around 0.05 mm, so micrometres "
