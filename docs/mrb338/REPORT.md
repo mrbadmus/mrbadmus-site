@@ -1,18 +1,28 @@
 # MRB-338 · Bank expansion programme — NIGHT 1 REPORT
 
-**9 Sep 2026.** Branch `feat/bank-expansion-1` off `origin/main` `d6c5d0ec8`.
-Content only. Mide's rulings of 9 Sep are carried out in §7 and §8.
+**9–12 Sep 2026.** Branch `feat/bank-expansion-1` off `origin/main`
+`d6c5d0ec8`. Content only. Mide's rulings of 9 Sep are carried out in §7
+and §8.
+
+⊕ **The second batch landed 12 Sep 2026** as `f816e3caa`, under Mide's ruling
+of that date. Five more leaves, both banks reloaded to production, and **every
+figure in this report is the one that holds after that load** — §1, §7 and §8
+were rewritten rather than appended to, so there is one set of numbers here
+and not two. The second push is §11.1 and the second load is §12.3.
 
 ---
 
 ## 1 · What shipped
 
-**19 of the 83 Autumn-1 leaves are at their floor.** 1,153 rows authored.
+**24 of the 83 Autumn-1 leaves are at their floor.** 1,467 rows authored.
 
 | | before | after | added |
 |---|---|---|---|
-| `ks3_assignment_bank` | 5,142 | 5,931 | **+789** |
-| `ks4_assignment_bank` | 3,417 | 3,781 | **+364** |
+| `ks3_assignment_bank` | 5,142 | 6,141 | **+999** |
+| `ks4_assignment_bank` | 3,417 | 3,885 | **+468** |
+
+Of that, the 12 Sep batch is +210 KS3 and +104 KS4 — 314 rows across five
+leaves, taking the count at floor from 19 to 24.
 
 Every KS3 diff is insertions-only with the pre-existing rows byte-identical,
 and `ks4_pool_check` confirms bank positions 0–11 are still four of each band
@@ -42,6 +52,13 @@ changes**, which is the invariant the whole programme is written around.
 | KS4 `chromosomes-mitosis` | 4/4/4 | 12/26/26 | +52 |
 | KS4 `stem-cells` | 4/4/4 | 12/26/26 | +52 |
 | KS4 `microscopy` | 4/4/4 | 12/26/26 | +52 |
+| KS3 `C1/changes-of-state` ⊕ | 9/9/9 | 32/32/32 | +69 |
+| KS3 `C1/gas-pressure` ⊕ | 9/9/9 | 32/32/32 | +69 |
+| KS3 `C1/diffusion` ⊕ | 8/8/8 | 32/32/32 | +72 |
+| KS4 `digestive-system` ⊕ | 4/4/4 | 12/26/26 | +52 |
+| KS4 `enzymes` ⊕ | 4/4/4 | 12/26/26 | +52 |
+
+⊕ marks the five leaves of the 12 Sep batch.
 
 A KS4 **base** subtopic at 12/26/26 gives a Foundation pool of 64 and a Higher
 pool of 52; both clear fifty, which is what Mide asked for. A KS3 lesson at
@@ -127,7 +144,11 @@ wrong" is stronger than one where length is merely uninformative.**
 
 ### 2.5 · Where every leaf finished
 
-All nineteen sit between **8.0% and 29.6%** against a 32% ceiling.
+All twenty-four sit between **8.0% and 29.6%** against a 32% ceiling. ⊕ The
+12 Sep five came in at 23.8% (`changes-of-state`), 25.0% (`gas-pressure`),
+25.0% (`diffusion`), 17.9% (`digestive-system`) and 21.4% (`enzymes`) — every
+one of them inside that band, and four of the five within seven points of
+chance.
 
 ---
 
@@ -295,9 +316,6 @@ asserted. Brief §9.3.
 | KS3 | biology | B6 | `what-drugs-do-to-the-body` | 18/18/18 | 42 |
 | KS3 | biology | B8 | `anaerobic-respiration-in-humans` | 10/10/10 | 66 |
 | KS3 | biology | B8 | `fermentation` | 10/10/10 | 66 |
-| KS3 | chemistry | C1 | `changes-of-state` | 9/9/9 | 69 |
-| KS3 | chemistry | C1 | `diffusion` | 8/8/8 | 72 |
-| KS3 | chemistry | C1 | `gas-pressure` | 9/9/9 | 69 |
 | KS3 | chemistry | C2 | `compounds` | 9/9/9 | 69 |
 | KS3 | chemistry | C3 | `chromatography` | 7/7/7 | 75 |
 | KS3 | chemistry | C3 | `distillation` | 7/7/7 | 75 |
@@ -316,8 +334,6 @@ asserted. Brief §9.3.
 | KS4 | biology | ecology | `food-chains-webs` | 4/4/4 | 52 |
 | KS4 | biology | ecology | `population-competition` | 4/4/4 | 52 |
 | KS4 | biology | ecology | `trophic-levels` | 4/4/4 | 52 |
-| KS4 | biology | organisation | `digestive-system` | 4/4/4 | 52 |
-| KS4 | biology | organisation | `enzymes` | 4/4/4 | 52 |
 | KS4 | biology | organisation | `principles-of-organisation` | 4/4/4 | 52 |
 | KS4 | chemistry | analysis | `carbonates-halides-sulfates` | 4/4/4 | 52 |
 | KS4 | chemistry | analysis | `chromatography` | 6/10/9 | 39 |
@@ -354,13 +370,17 @@ asserted. Brief §9.3.
 | KS4 | physics | waves | `sound-waves-hearing` | 4/4/4 | 42 |
 | KS4 | physics | waves | `waves-detection-exploration` | 4/4/4 | 42 |
 
-**64 leaves, 3565 rows remaining of the Autumn-1 must-complete.**
+**59 leaves, 3251 rows remaining of the Autumn-1 must-complete.**
 
 - KS3 biology — 6 leaves, 342 rows
-- KS3 chemistry — 15 leaves, 1086 rows
-- KS4 biology — 9 leaves, 468 rows
+- KS3 chemistry — 12 leaves, 876 rows
+- KS4 biology — 7 leaves, 364 rows
 - KS4 chemistry — 21 leaves, 1035 rows
 - KS4 physics — 13 leaves, 634 rows
+
+⊕ 12 Sep: five leaves left this table — C1's `changes-of-state`,
+`gas-pressure` and `diffusion`, and `organisation`'s `digestive-system` and
+`enzymes`. It stood at 64 leaves / 3,565 rows after night 1's first batch.
 
 ---
 
@@ -369,14 +389,16 @@ asserted. Brief §9.3.
 **Rainford is still the clock.** Y7 and Y8 are in calendar weeks 1–4 of the KS3
 carousel now; chemistry starts at calendar week 5 and physics at week 9.
 
-1. **KS3 chemistry, C1 and C3 first** — 15 leaves, 1,086 rows, and the largest
-   single block still open. C1 `changes-of-state`, `gas-pressure`, `diffusion`
-   then C3's separation set (`pure-or-mixture`, `filtration`,
-   `evaporation-and-crystallisation`, `distillation`, `chromatography`). Y7
-   meets these within a fortnight.
-2. **KS4 biology `organisation`** — 9 leaves, 468 rows. Y10 is on
-   `principles-of-organisation`, `digestive-system` and `enzymes` in lesson
-   slots 1–8 right now, and those three alone are 156 rows.
+1. **KS3 chemistry, C3 first** — 12 leaves, 876 rows, and still the largest
+   single block open. ⊕ C1's `changes-of-state`, `gas-pressure` and
+   `diffusion` were the 12 Sep batch and are done, so the block now opens on
+   C3's separation set (`pure-or-mixture`, `filtration`,
+   `evaporation-and-crystallisation`, `distillation`, `chromatography`),
+   which Y7 meets within a fortnight, with C2 `compounds`, C4
+   `mass-in-a-reaction`, C6 `catalysts` and C8's four behind it.
+2. **KS4 biology `organisation`** — ⊕ 7 leaves, 364 rows. `digestive-system`
+   and `enzymes` were the other half of the 12 Sep batch; of the three lesson
+   slots Y10 is in now, only `principles-of-organisation` is left, at 52 rows.
 3. **KS3 biology's remaining 6** — B2 `antagonistic-muscle-pairs`, B4
    `exercise-asthma-and-smoking`, B6 and B8's tail. 342 rows.
 4. **KS4 chemistry, 21 leaves / 1,035 rows** — the biggest lane, and the one
@@ -496,8 +518,45 @@ teacher_admin_foreign_class — C7. REMINDERS — the control is drawn on the
 
 `mrb328_import_picker_real` and `student_bell_drive` want
 `$MRB_THROWAWAY_PASSWORD`; `mrb328_card_prefetch` wants
-`$MRB_TEST_TEACHER_PASSWORD`. Reported by name, as the harness is designed to
-do — the same two-credential gap MRB-335 recorded.
+`mrb328_card_prefetch` wants `$MRB_TEST_TEACHER_PASSWORD`. Reported by name, as the
+harness is designed to do — the same two-credential gap MRB-335 recorded.
+
+### §11.1 · The second push, 12 Sep 2026
+
+Rebasing `feat/bank-expansion-1` onto `origin/main` `dd7deaf30` was a **no-op**
+— the branch already sat directly on it, nought behind, and nothing replayed.
+Receipts were then recorded fresh on tree `41d27ad3e893`, because a receipt
+attests a tree and night 1's attested a different one.
+
+**Same picture as 9 Sep, gate for gate: 17 of 18 measurable slow gates green,
+every fast gate green.** One improvement — `MRB_BACKEND` was set to the
+deployed backend checkout (on `main`, not a colleague's branch), so
+`pool_ownership`, `week_truth` and `set_work_unit` **measured instead of
+skipping**, and all three pass. That is three gates of coverage night 1 did
+not have.
+
+The red is the same red, and it reproduced with the identical signature:
+
+```
+teacher_admin_foreign_class — C7. REMINDERS — the control is drawn on the
+                              foreign class · 3 check(s) failed
+```
+
+The two-sided proof holds unchanged and is now narrower than it was. Every
+file this branch changes against `origin/main` is one of five question-data
+files (`ks3_data/c1/questions_0{3,4,5}_*.py`,
+`ks4_data/questions/biology/organisation__z338_{digestive_system,enzymes}.py`)
+plus `docs/mrb338/authoring-brief.md`. **Nothing under `teacher/`, `student/`,
+`shared/`, `supabase/` or the site tree at all** — and that gate drives
+teacher pages under real RLS. Shipped under the same override, on the tip
+commit, where `prepush_gate` reads it.
+
+⚠️ Six gates SKIPPED by name for credentials this run was not given
+(`$MRB_SET_WORK_PASSWORD` × 2, `$MRB_DRIVE_PASSWORD`/`$MRB_TEST_STUDENT_PASSWORD`
+× 2, `$MRB_TEST_TEACHER_PASSWORD` × 2, `$MRB_THROWAWAY_PASSWORD` × 3, counting
+`export_ks3_questions_verify`) and two for the absent `3d-studio/dist`. **A
+skip is not a pass**, none was overridden, and none is claimed as coverage
+here.
 
 ---
 
@@ -568,3 +627,46 @@ row counts** in both banks, so the label was the only thing on screen
 distinguishing them. It now names the project from the URL it really used —
 `the PRODUCTION database` / `the TEST database` / the bare ref for anything
 else.
+
+---
+
+### §12.3 · The second load, 12 Sep 2026
+
+Ruled by Mide for that night: both banks to production after the push, with
+the MRB-335 proof. **Stated in words before the write — the target is the
+PRODUCTION project — and proved on every call from the service key's own JWT
+`ref` claim, `urklkrwevjtlfbwnipjn`**, never from a URL or a label beside it.
+
+| | before | after | added |
+|---|---|---|---|
+| `ks3_assignment_bank` | 5,931 | **6,141** | +210 |
+| `ks4_assignment_bank` | 3,781 | **3,885** | +104 |
+
+The proof, every check:
+
+| check | result |
+|---|---|
+| KS4 aggregate checksum, Python ↔ production | `f036bfcd68b19b87cc7d581d3e13e3594b3cb1f10e04841ccbb46c8d4d0f6651` — **equal**, 3,885 rows both sides |
+| KS3 aggregate checksum, Python ↔ production | `5a820ef624bd6037350649572cd4b51c54d5f96161961c5348d93759864ecbe4` — **equal**, 6,141 rows both sides |
+| KS4 auto windows | **0** subtopics whose window below position 12 is anything but exactly 12 rows |
+| KS3 auto windows | **0** lessons whose window below position 12 is anything but 4/4/4 |
+| anon read, both banks | `[]` — refused to the public, HTTP 200 with an empty body |
+| `--leaf` against production | KS4 18 cells at floor (9 leaves × 2 tiers), KS3 45 cells (15 lessons × 3 bands) — **24 leaves**, up from 19 |
+
+⚠️ **The checksum comparison was written to sidestep §12's own trap.** Both
+sides run through the exporters' OWN `checksum()`, so neither side renders a
+container: `jsonb` key reordering and `text[]` printing cannot reach the
+answer. It was equal first time on both banks, which is the outcome §12
+predicts once containers stop being compared as text.
+
+**§12.2's fix earned itself on the first run that used it.**
+`set_work_scope_check --db --leaf` printed *"measuring the PRODUCTION
+database: 3885 KS4 rows, 6141 KS3 rows"* — naming the project from the URL it
+actually read, and matching Python exactly. Under the old unconditional label
+that line would have read TEST while reading production.
+
+The temporary env file needed to point that gate at production (it requires
+`SUPABASE_URL` and the key in one file, and `~/.mrbadmus/prod.env` deliberately
+carries the key alone) was written mode 600 into the session scratch directory,
+derived its URL from the key's own ref, refused to write itself on any
+mismatch, and was **deleted immediately after the run**.
