@@ -265,6 +265,38 @@ def check_constraint_migration():
 
 
 # ── 5 · composition (the Node backend) ──────────────────────────────────
+def _strip_js_comments(src):
+    """JavaScript source with // and /* */ comments removed, strings intact.
+
+    Used by the pool seals: a comment NAMING a forbidden table is
+    documentation, a read of it is a defect, and only one of those should
+    fail a gate. Deliberately simple — it does not parse JS — but it never
+    removes a string literal, so it cannot hide a real read.
+    """
+    out, i, n = [], 0, len(src)
+    quote = None
+    while i < n:
+        c = src[i]
+        if quote:
+            out.append(c)
+            if c == "\\" and i + 1 < n:
+                out.append(src[i + 1]); i += 2; continue
+            if c == quote:
+                quote = None
+            i += 1; continue
+        if c in "'\"`":
+            quote = c; out.append(c); i += 1; continue
+        if c == "/" and i + 1 < n and src[i + 1] == "/":
+            while i < n and src[i] != "\n":
+                i += 1
+            continue
+        if c == "/" and i + 1 < n and src[i + 1] == "*":
+            j = src.find("*/", i + 2)
+            i = n if j < 0 else j + 2
+            continue
+        out.append(c); i += 1
+    return "".join(out)
+
 def check_backend():
     server = read(os.path.join(BACKEND, "server.js"))
     compose = read(os.path.join(BACKEND, "assignment-compose.js"))
@@ -293,7 +325,18 @@ def check_backend():
                 fail("server.js", "bankFor() reads %s — composition serving "
                      "from a pool it does not own" % other)
 
-    if "ks3_cards" in server:
+    # ⊕ 12 Sep 2026 — THIS USED TO TEST THE RAW FILE, COMMENTS INCLUDED, and
+    # it was wrong in the permissive-to-strict direction. MRB-342's worksheet
+    # route carries the line
+    #     // nothing else. Never the ladder mirror, never `ks3_cards`.
+    # which documents the seal this very check exists to enforce — and the
+    # substring test read that COMMENT as a read and failed the gate. A check
+    # that cannot tell code from prose punishes the documentation that prevents
+    # the defect, which is the wrong incentive to build into a seal.
+    #
+    # Comments are stripped; string literals are NOT, so `from('ks3_cards')`
+    # is still caught exactly as before. Proven both ways when this changed.
+    if "ks3_cards" in _strip_js_comments(server):
         fail("server.js", "reads ks3_cards; the flashcard deck is served "
              "client-side from its owner pool and the backend has no business "
              "in it")

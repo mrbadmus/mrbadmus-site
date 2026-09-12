@@ -76,9 +76,39 @@ student receives.
                measure reports no defects, which is not the same as having
                none.
 
+── THE SCOPES, AND WHY A THIRD ONE WAS ADDED ────────────────────────────
+
+⊕ ADDED 12 Sep 2026 (MRB-338 night 2, REPORT §2.3). **This gate used to score
+only two scopes: the whole corpus, and the UNIT.** That was the right pair
+when a leaf held twelve rows — too few for the binomial test to say anything —
+and a unit held a few hundred.
+
+**It stopped being the right pair the day Set work v2 shipped, because a
+teacher sets a LEAF.** MRB-338 night 1 authored `B1/animal-and-plant-cells` up
+to 64 rows with the long option correct **two times in three**, and every gate
+in the estate reported green: B1 as a whole read 27.3%, because 156 balanced
+pre-existing rows diluted 279 skewed new ones. The unit was never the thing a
+class receives. A class receives the leaf, and the leaf was a giveaway.
+
+So the `bank` corpus is now tallied under THREE scopes:
+
+  · `whole corpus PHYSICS` / `whole corpus BIO+CHEM`
+  · the unit — `B1`, `C10`, `P7`
+  · **the leaf — `B1/animal-and-plant-cells`**, one per lesson slug
+
+⚠️ **Leaves are for the `bank` corpus ONLY.** The ladder and the hook are a
+different pool and are not what Set work serves — a ladder scope is four rungs
+on one page, which no binomial test can speak to and which no teacher sets as
+a set. Their scoping is unchanged.
+
+The leaf goes through the SAME `verdict()` — same `HI`, same `LO`, same
+`ALPHA`, same binomial test, same `BASELINE` mechanism. No second rule was
+invented, because a second rule is a second thing to tune.
+
 ── HOW IT FAILS ─────────────────────────────────────────────────────────
 
-A scope (one corpus, whole or one unit within it) is RED when the rate is both
+A scope (one corpus, whole or one unit or one leaf within it) is RED when the
+rate is both
 
   · **practically** bad — above `HI` (or below `LO`, see below); and
   · **statistically** real — a one-sided binomial test against p = 0.25
@@ -158,6 +188,48 @@ BASELINE = {
     ("bank", "C8"): (27, 20), ("bank", "C9"): (17, 15), ("bank", "C10"): (28, 24),
     # bio/chem ladder — baked into lesson pages a student reads today
     ("ladder", "whole corpus BIO+CHEM"): (99, 46),
+
+    # ── LEAF DEBTS · measured 12 Sep 2026 · INHERITED, not written here ──
+    #
+    # ⊕ The leaf scope was added on 12 Sep 2026 (see "THE SCOPES" above) and
+    # went red on its first run against six leaves. **Every one of the six
+    # predates this branch** — they are inherited exactly as the 31 Aug
+    # bio/chem rows above were: measured, recorded at the (n, k) they were
+    # found at, and failing the moment they get worse. A third value is the
+    # date the row was taken, so the printed line cannot claim 31 Aug for a
+    # measurement made later.
+    #
+    # ⚠️ MEASURED IN A CLEAN DETACHED CHECKOUT OF `origin/main` dc9235797,
+    # NOT IN THE WORKING TREE, and that distinction is the whole value of the
+    # rows. Fourteen content lanes were appending rows to
+    # `ks3_data/**/questions_*.py` while this was written. A baseline taken
+    # from the working tree would have recorded tonight's half-written rows as
+    # the state the leaf INHERITED — which is backwards, and is how a defect
+    # this programme creates gets excused by the gate written to catch it.
+    # `git worktree add --detach /tmp/... origin/main`, measured there, then
+    # removed. The two measurements agreed leaf for leaf and (n, k) for
+    # (n, k), so no lane had yet moved one — but that was an outcome, not an
+    # assumption, and the next person to add a row here should measure the
+    # same way rather than trusting that it stays true.
+    #
+    # ⚠️ These are LIVE. All six are in `ks3_assignment_bank` on production
+    # and a teacher can set any of them as a single assignment today — which
+    # is the whole reason this scope now exists. Five are biology, one is
+    # physics. Deleting a row is how this debt gets paid; raising one is not
+    # a fix.
+    #
+    # ⚠️ ONE OF THE SIX IS ON NIGHT 2'S OWN LIST. `B4/exercise-asthma-and-
+    # smoking` is 10/10/10 and is queued for 66 more rows (REPORT §7). The
+    # baseline is 10 of 16 = 62.5%, so a lane could add 66 rows, leave the ten
+    # existing giveaways untouched, and still pass — the debt is recorded, not
+    # discharged. **That leaf's lane fixes the ten as well as writing the 66,
+    # and deletes this row.** The other five belong to no queued lane.
+    ("bank", "B9/sampling-an-ecosystem"):       (10, 9, "12 Sep 2026"),
+    ("bank", "B3/food-tests"):                  (7, 6, "12 Sep 2026"),
+    ("bank", "B5/gestation-placenta-and-birth"): (9, 6, "12 Sep 2026"),
+    ("bank", "B4/exercise-asthma-and-smoking"): (16, 10, "12 Sep 2026"),
+    ("bank", "P10/the-earth-is-a-magnet"):      (15, 9, "12 Sep 2026"),
+    ("bank", "B10/what-makes-a-species"):       (20, 11, "12 Sep 2026"),
 }
 
 # ── rank baselines · same rule as BASELINE above: only a scope that is RED
@@ -407,10 +479,18 @@ def visibly_longest(opts):
 
 
 def collect(skipped=None):
-    """(corpus, unit, where, options, correct_idx) per measurable set.
+    """(corpus, unit, where, options, correct_idx, leaf) per measurable set.
 
     `skipped`, if given, is a dict this fills with the sets it could NOT
     measure — see `report_skipped` for why that is not optional.
+
+    ⊕ 12 Sep 2026 — THE TUPLE GAINED A SIXTH FIELD, `leaf`. It used to be a
+    5-tuple and the bank's lesson slug was thrown away: `rec` from
+    `load_bank()` carries `unit` AND `lesson`, and only `unit` was read. That
+    is the discard that made the unit the finest scope this gate could score,
+    and REPORT §2.3 is the story of what it cost. `leaf` is
+    `"<UNIT>/<lesson-slug>"` for the bank and **None for the ladder and the
+    hook**, which are a different pool and are not what Set work serves.
     """
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import ks3_data
@@ -429,13 +509,13 @@ def collect(skipped=None):
                 if not (isinstance(a, int) and 0 <= a < len(r["options"])):
                     continue
                 sets.append(("ladder", code, "%s/%s" % (l["slug"], rung),
-                             texts(r["options"]), a))
+                             texts(r["options"]), a, None))
             ph = l.get("phenomenon")
             if isinstance(ph, dict) and ph.get("options"):
                 a = ph.get("answer")
                 if isinstance(a, int) and 0 <= a < len(ph["options"]):
                     sets.append(("hook", code, l["slug"],
-                                 texts(ph["options"]), a))
+                                 texts(ph["options"]), a, None))
                 elif skipped is not None:
                     # No `answer` index, so nothing here knows which option is
                     # right and the set cannot be measured. It is RECORDED,
@@ -446,12 +526,14 @@ def collect(skipped=None):
                     if visibly_longest(texts(ph["options"])) is not None:
                         b[1] += 1
     for rec in qb.load_bank():
+        # ⊕ 12 Sep 2026 — `rec["lesson"]` is read now. It was always there.
+        leaf = "%s/%s" % (rec["unit"], rec["lesson"])
         for q in rec["questions"]:
             ci = [i for i, o in enumerate(q["options"]) if o.get("correct")]
             if len(ci) != 1:
                 continue
             sets.append(("bank", rec["unit"], q.get("id"),
-                         texts(q["options"]), ci[0]))
+                         texts(q["options"]), ci[0], leaf))
     return sets
 
 
@@ -622,7 +704,7 @@ def report_sweep(sets):
         cells = {}
       for M in SWEEP_MARGINS:
           tal = collections.defaultdict(lambda: [0, 0, 0, 0])
-          for corpus, unit, _w, opts, ans in sets:
+          for corpus, unit, _w, opts, ans, _leaf in sets:
               if len(opts) != 4:
                   continue
               grp = "PHYSICS" if unit in PHYS else "BIO+CHEM"
@@ -762,11 +844,43 @@ def report_skipped(skipped):
     print()
 
 
+def can_speak(n):
+    """(giveaway_can_fire, mirror_can_fire) at this many visible sets.
+
+    ⊕ ADDED 12 Sep 2026, and it exists because of the sentence this whole
+    file was written around: **a scope nothing can measure reports no defects,
+    which is not the same as having none.**
+
+    The two-condition rule (above `HI`/below `LO`, AND significant at `ALPHA`)
+    simply cannot fire below a certain `n`, whatever the data does. A leaf
+    with 3 visible sets and all 3 giveaways prints 100.0% and a green tick,
+    because P(3 of 3 | p=0.25) = 0.0156 does not clear `ALPHA` = 0.01. That
+    tick is not a finding of health; it is the test declining to speak. Every
+    line now says which of the two halves could have fired at its own `n`, so
+    the reader can tell "measured, clean" from "too few sets to speak to".
+
+    Measured, not assumed: the giveaway half first becomes reachable at n = 4
+    (k = 4), the mirror half at n = 17 (k = 0).
+    """
+    give = any(k / n > HI and binom_tail_ge(k, n, CHANCE) < ALPHA
+               for k in range(n + 1))
+    mirror = any(k / n < LO and binom_tail_le(k, n, CHANCE) < ALPHA
+                 for k in range(n + 1))
+    return give, mirror
+
+
 def verdict(corpus, scope, n, k):
     """(ok, line). Applies HI/LO, ALPHA, and any recorded baseline."""
     if n == 0:
-        return True, "%-6s %-24s no set has a visibly longest option" % (
-            corpus, scope)
+        # ⚠️ ⊕ 12 Sep 2026 — THIS USED TO STOP AT "no set has a visibly
+        # longest option", AND ON A LEAF THAT READS AS A CLEAN BILL. It is
+        # not one. Brief §9.1 names the exact way to manufacture it: flatten
+        # every set until the denominator collapses, and the gate has nothing
+        # to measure and nothing to say. A leaf where length is uninformative
+        # is weaker than one where the long option is usually a distractor.
+        return True, ("%-6s %-36s no set has a visibly longest option "
+                      "· ⚠️ nothing measurable here — not a clean bill" % (
+                          corpus, scope))
     rate = k / n
     base = BASELINE.get((corpus, scope))
     tag = ""
@@ -777,14 +891,32 @@ def verdict(corpus, scope, n, k):
         hot = "the long option is never right — the mirror tell"
     ok = not hot
     if hot and base:
-        bn, bk = base
+        # ⊕ 12 Sep 2026 — a row may carry a third value, the date it was
+        # measured. The old tag hard-coded "31 Aug 2026" for every row, which
+        # was true when every row was taken that day and became a false claim
+        # the moment the leaf rows were added on 12 Sep.
+        bn, bk = base[0], base[1]
+        when = base[2] if len(base) > 2 else "31 Aug 2026"
         if rate <= bk / bn + 1e-9:
             ok = True
-            tag = " · BASELINED %.1f%% (31 Aug 2026), not worse — a live defect awaiting its own run" % (
-                100.0 * bk / bn)
+            tag = " · BASELINED %.1f%% (%s), not worse — a live defect awaiting its own run" % (
+                100.0 * bk / bn, when)
         else:
-            tag = " · WORSE THAN ITS BASELINE %.1f%%" % (100.0 * bk / bn)
-    line = "%-6s %-24s %3d set(s), longest-is-correct %3d = %5.1f%%%s%s" % (
+            tag = " · WORSE THAN ITS BASELINE %.1f%% (%s)" % (
+                100.0 * bk / bn, when)
+    elif not hot:
+        # Say what the test could and could not have said at this n.
+        give, mirror = can_speak(n)
+        if not give and not mirror:
+            tag = (" · ⚠️ only %d visible set(s) — NEITHER half of the test "
+                   "can fire at this n, so this tick means nothing" % n)
+        elif not mirror:
+            tag = (" · ⚠️ thin: at n=%d only the giveaway half can fire "
+                   "(needs %d of %d); the mirror half cannot" % (
+                       n, min(j for j in range(n + 1)
+                              if j / n > HI
+                              and binom_tail_ge(j, n, CHANCE) < ALPHA), n))
+    line = "%-6s %-36s %3d set(s), longest-is-correct %3d = %5.1f%%%s%s" % (
         corpus, scope, n, k, 100.0 * rate, (" · " + hot) if hot else "", tag)
     return ok, line
 
@@ -799,17 +931,33 @@ def main():
     ranks_all = collections.defaultdict(lambda: [0, 0, 0, 0])
     skipped = {}
     sets = list(collect(skipped))
-    for corpus, unit, _where, opts, ans in sets:
+    for corpus, unit, _where, opts, ans, leaf in sets:
         grp = "PHYSICS" if unit in PHYS else "BIO+CHEM"
         if len(opts) == 4:
             ranks_all[(corpus, grp)][rank_all(opts, ans)] += 1
             r = rank_of(opts, ans)
             if r is not None:
                 ranks[(corpus, grp)][r] += 1
+        # ⚠️ ⊕ 12 Sep 2026 — THE LEAF SCOPE IS REGISTERED BEFORE THE SKIP, and
+        # the unit and corpus scopes still are not. A leaf whose every set is
+        # flat has n = 0, and a scope that is never touched prints no line at
+        # all — which is the "silence reads as clean" failure this file exists
+        # to catch, and brief §9.1 names flattening as the way to fake the
+        # number. So every bank leaf gets a line whether or not it has one
+        # measurable set. `verdict()` says plainly that n = 0 is not a pass.
+        if leaf is not None:
+            tally[("bank", leaf)]
         j = visibly_longest(opts)
         if j is None:
             continue
-        for scope in ("whole corpus %s" % grp, unit):
+        # ⊕ 12 Sep 2026 — `leaf` is the third scope, and the bank's alone.
+        # See "THE SCOPES" in the docstring: Set work sets a leaf, so a leaf
+        # is what has to be clean. The ladder and the hook pass `leaf = None`
+        # and are scored exactly as before.
+        scopes = ["whole corpus %s" % grp, unit]
+        if leaf is not None:
+            scopes.append(leaf)
+        for scope in scopes:
             tally[(corpus, scope)][0] += 1
             tally[(corpus, scope)][1] += (j == ans)
 
@@ -835,15 +983,23 @@ def main():
             print("  ✅ %s" % verdict(corpus, "whole corpus", 0, 0)[1])
             continue
 
-        def sortkey(k):
-            s = k[1]
+        # ⊕ 12 Sep 2026 — this used to be `(1, s[0], int(s[1:]))` for every
+        # non-corpus scope, which raises ValueError the moment a scope is
+        # "B1/animal-and-plant-cells". Units and their leaves now sort
+        # together — unit line first, then its leaves alphabetically — so
+        # ~185 leaf lines stay readable instead of becoming a flat wall.
+        def sortkey(key):
+            s = key[1]
             if s.startswith("whole"):
-                return (0, s, 0)
-            return (1, s[0], int(s[1:]))
+                return (0, "", 0, "", s)
+            unit, _, slug = s.partition("/")
+            return (1, unit[0], int(unit[1:]), slug, "")
         for key in sorted(keys, key=sortkey):
             n, k = tally[key]
             ok, line = verdict(corpus, key[1], n, k)
-            print("  %s %s" % ("✅" if ok else "❌", line))
+            # Leaf lines are indented under the unit they belong to.
+            indent = "    " if "/" in key[1] else ""
+            print("  %s%s %s" % (indent, "✅" if ok else "❌", line))
             if not ok:
                 FAIL.append("%s/%s" % (corpus, key[1]))
 
