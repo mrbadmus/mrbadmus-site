@@ -254,7 +254,15 @@ TEST was returned to the state it was found in and **re-queried, not assumed**:
 0 week-3 assignments, 13 auto assignments (as before), throwaway class and
 membership gone, `assignments_open_from` NULL on both schools.
 
-## 4. ⚠️ THE ONE THING TO KNOW FOR MONDAY — the fifteen triple classes compose NOTHING in week 3
+## 4. ⊕ SUPERSEDED — the fifteen triple classes compose TWELVE in week 3, not nothing
+
+⊕ **Rewritten 12 Sep 2026 by Mide's follow-on ruling (see §5).** The heading
+above used to read *"THE ONE THING TO KNOW FOR MONDAY — the fifteen triple
+classes compose NOTHING in week 3"*, and the section below described that as
+the shipped behaviour. It is kept rather than deleted because the ARITHMETIC is
+unchanged and still explains why these classes are different; only the
+composer's response to it changed. **These classes now receive a short set of
+twelve.** Read on for why twelve, and see §5 for what changed.
 
 This is a consequence of the ruling, not a defect in the change, and it is
 arithmetic:
@@ -276,10 +284,14 @@ Measured on production, read-only, for all 15 triple classes with pupils
 
 | week | slugs (own science) | standard rows | composes |
 |---|---|---|---|
-| 3 (Sun 13 – Sat 19 Sep) | 3 | 12 | ✗ short |
+| 3 (Sun 13 – Sat 19 Sep) | 3 | 12 | ✓ **12, a short set** |
 | 4 (Sun 20 Sep) | 4 | **16** | ✓ 15 |
-| 5 | 5 | 20 | ✓ |
-| 6 | 6 | 24 | ✓ |
+| 5 | 5 | 20 | ✓ 15 |
+| 6 | 6 | 24 | ✓ 15 |
+
+Re-measured read-only on production 12 Sep for all 15 classes: week 3 = 12
+standard-band rows in their own subject (clears the floor of 8), week 4 = 16
+(fills 15). Not one of them refuses.
 
 **Why this was still the right thing to ship.** The alternative on the table was
 turning `auto_assignments` off for every triple class — which produces the
@@ -311,18 +323,47 @@ only option that put wrong-subject work in front of 379 children.
 
 Nothing changed for the 32 combined and KS3 classes, proved byte-identical.
 
-## 5. OPEN ON MIDE — one product call, and it is worth making before Monday
+## 5. ⊕ RULED AND SHIPPED, 12 Sep 2026 — short sets, floor of eight
 
-**Should a separate-sciences class be allowed a SHORT set in the weeks where
-its own science cannot fill fifteen?** Today those classes get nothing; a short
-set would give them **twelve right-subject questions** instead. Week one is
-already allowed to be short (`weekOne`), so the machinery exists — it is one
-condition, and it is your ruling to make, not mine. It affects week 3 only,
-after which the question disappears for the rest of the year.
+This section asked: *"Should a separate-sciences class be allowed a SHORT set in
+the weeks where its own science cannot fill fifteen?"* **Mide ruled yes**, with
+a floor: compose the whole pool when it is smaller than the set size, and refuse
+only below **eight**. The week-one-only allowance is replaced by that general
+one. Shipped the same evening — backend `31732f4`, deployed as `e4fc690`.
 
-If you want it, say so and it is a small change Monday morning; the fallback in
-the meantime is that those fifteen teachers set work by hand, which the Set work
-sheet already does correctly per subject.
+- **Week one is exempt from the floor.** It has nothing behind it in the scheme
+  by definition, so no fill is possible and a single-lesson week one holds four
+  questions — it has always shipped them. Applying the floor there would remove
+  work that ships today, which the ruling does not ask for, and
+  `verify_questions.py` check (c) pins that behaviour independently.
+- **One log line per short set**, no student data:
+  `[compose] short set composed — class <id> week <n> pool <n> of 15`.
+- The response gains `short` and `pool`; `short_week_one` is kept unchanged
+  because API-CONTRACT.md published it. The refusal `detail` gains `floor: 8`
+  beside the unchanged `needed: 15`.
+- ⚠️ **`ks3_data/question_bank.py` deliberately does NOT mirror this.** Its
+  `ShortAssignment` is the AUTHORING invariant — "can the corpus supply a full
+  assignment?" — and `verify_questions.py` check (d) pins it at exactly this
+  boundary ("two lessons hold 8 standard questions and this is not week one, so
+  it must raise"). Relaxing it to match would weaken a content gate to make a
+  serving change pass. The two answer different questions on purpose and both
+  are green. **If you would rather they agree, that is a second ruling** — it
+  means accepting a looser corpus target, and I would keep them apart.
+
+Proved on the pinned-clock harness against TEST, with the then-live build
+`8217010` as the baseline and week-2/3/4 rows wiped between every run:
+
+| clock | separate-sciences classes | combined + 3× KS3 |
+|---|---|---|
+| week 2 | 0 → **8** (the floor exactly) | byte-identical |
+| week 3 | 0 → **12** | byte-identical |
+| week 4 | 15 → 15 (unchanged) | byte-identical |
+
+And the boundary from below: moving one standard row of `changes-in-energy` out
+of the auto window (position 7 → 99) makes the week-2 pool **seven**, and the
+route refuses — `available: 7, needed: 15, floor: 8`. The row was restored and
+re-queried. The auto window itself is untouched: every row the composer can see
+is still `bank_position < 12`.
 
 ## 6. Deviations
 
@@ -345,3 +386,28 @@ sheet already does correctly per subject.
   function` of the same name **silently replaces** the earlier declaration
   rather than erroring, so the composer would have called whichever came last in
   the file. One name, one function — noted in the code so it is not re-added.
+
+### 6b. Deviations on the follow-on (12 Sep, evening)
+
+- **"Keep the week-one behaviour as a special case of it" was ambiguous**, and
+  the two readings differ materially: does the floor of eight apply to week one
+  too? It does not, and the evidence decided it rather than my preference —
+  `verify_questions.py` check (c) requires a one-lesson week one to ship its
+  four questions, and check (d) requires eight-outside-week-one to raise. A
+  uniform floor would contradict (c) and remove work that ships today. Week one
+  is therefore the case with no floor, which is also the only reading under
+  which its behaviour is genuinely "kept".
+- **The Python mirror was left divergent on purpose** — see §5. This is the one
+  place I did not follow the ruling to the letter, because following it there
+  would have meant weakening `verify_questions.py`. Flagged for a second ruling
+  rather than decided quietly.
+- **`fakeclock.js` was committed to the backend repo by mistake** (a `git add
+  -A` swept in the harness's clock shim) and removed in the next commit,
+  `e4fc690`. It changed no behaviour — `npm start` never preloads it, so Render
+  never evaluated it — but a file whose purpose is to replace the global `Date`
+  does not belong one `-r` away in the deployed tree, and the clock decides
+  which week a child's work is composed for. It is gitignored now.
+- **The `build` field added earlier the same day immediately paid for itself**:
+  the deploy was watched walking `8217010 → 31732f4 → e4fc690` in real time,
+  which is the first time a Render deploy on this project has been observable
+  rather than assumed.

@@ -36,41 +36,37 @@ ONE reversible action. None of the actions needs Code.
 - **Wrong looks like:** a banner or bell item naming work that is deleted or not yet released.
 - **Action:** none available on the page; it is read-only. Report which class and pupil.
 
-## 4b. ⚠️ The fifteen separate-science classes will show NOTHING this week — expected
+## 4b. The fifteen separate-science classes get 12 questions this week, not 15
 
-Shipped Sat 12 Sep (MRB-341). Until now a triple class was composed all three
-sciences: `10h/Ph1`, a physics class, was getting eight of its fifteen questions
-from biology and chemistry, and its set was byte-identical to the combined
-classes'. It now draws its own science only.
+Shipped Sat 12 Sep (MRB-341 + its follow-on). Until now a triple class was
+composed all three sciences: `10h/Ph1`, a physics class, was getting eight of
+its fifteen questions from biology and chemistry, and its set was
+byte-identical to the combined classes'. It now draws its own science only.
 
-**The consequence for THIS WEEK, and only this week:** at week 3 a class's own
-science has three lessons behind it, which is twelve questions in the pool
-against a set size of fifteen. Short sets are not allowed outside week one, so
-these classes compose nothing and their pupils' pages say
-`No work has been set for this week yet.` **That is correct, not broken.**
-From **Sunday 20 September (week 4)** there are four lessons, sixteen
-questions, and they compose normally with no action from anyone.
+Because one science has three lessons behind it at week 3 rather than nine, the
+pool is twelve. **The composer now ships a short set rather than refusing**
+(floor: eight), so these classes receive **12 questions this week and 15 from
+week 4** — measured on production for all fifteen. **No teacher action is
+needed and nothing needs switching.**
 
-- **Should show:** no automatic card on these fifteen classes; pupils see "no
-  work set yet"; teacher-set work is unaffected and appears as normal.
-- **Wrong looks like:** one of these classes showing an automatic card whose
-  title names a science it is not taught (e.g. `10h/Ph1` titled
-  `Cell Biology · …`). That would mean Render is still serving the old build —
-  check `https://mrbadmus-backend.onrender.com/api/health`, whose `build` field
-  should read `8217010…`.
-- **Action:** tell those fifteen teachers to set this week's work by hand. The
-  Set work sheet already scopes correctly to their subject, so it is the normal
-  three taps. Nothing to switch, nothing to reverse.
+- **Should show:** an automatic card on these fifteen classes like any other,
+  titled with ONE science's topic (e.g. `10h/Ph1` → `Energy`), `0 of N in`, due
+  Thu 17 Sep 18:00 — with twelve questions rather than fifteen.
+- **Wrong looks like:** a card on one of these classes titled with a science it
+  is not taught (e.g. `10h/Ph1` titled `Cell Biology · …`), or three sciences
+  joined by `·`. That means Render is serving an old build — check
+  `https://mrbadmus-backend.onrender.com/api/health`, whose `build` field should
+  read `e4fc690…`. Also wrong: these classes showing NO card once a pupil has
+  opened their page.
+- **Action:** none. If the wrong-science case appears, that is a deploy problem,
+  not a data one — report it; no dial on any page fixes it.
 
 10A/Bi1 · 10D/Bi1 · 10r/Ch1 · 10r/Ch3 · 10h/Ph1 · 10r/Ph2 · 10r/Ph3 ·
 11A/Bi1 · 11D/Bi1 · 11h/Ch1 · 11r/Ch1 · 11r/Ch3 · 11h/Ph1 · 11r/Ph1 · 11r/Ph2
 (379 pupil-places; all higher tier, all auto on.)
 
-**One decision waiting on you** (READINESS.md §5, MRB-341): allow these classes
-a SHORT twelve-question set in week 3 instead of nothing? Twelve right-subject
-questions beats none, week one is already allowed to be short, and it is one
-condition in the composer. Say the word Monday morning and it ships that
-evening. It stops mattering after this week either way.
+⚠️ A twelve-question set is **not** a fault and does not need reporting. Combined
+and KS3 classes are unaffected and still get fifteen, proved byte-identical.
 
 ## 5. The leaderboard — /leaderboard.html
 
