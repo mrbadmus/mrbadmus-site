@@ -172,3 +172,176 @@ Nothing. No §4 fix was warranted: no defect found would make Monday fail.
 - The "roll the clock" mechanism: the drives pin `window.Date` in the page; the
   hold and the week are computed on the SERVER, so the backend was pinned the
   same way with a preload shim, restarted per instant.
+
+---
+
+# MRB-341 — separate-science classes compose from their own science
+
+Shipped 12 September 2026, the evening before go-live. This section closes
+§5.3 above, and it changes what §1.2 predicts for the fifteen triple classes.
+
+## 1. What was wrong, measured
+
+`schemeLessons()` (backend `server.js`) filtered the scheme by key stage, year
+group, tier and pathway, and **never by subject**. At KS3 that is right — a KS3
+week really is three lessons, one per science. At KS4 it is right for Trilogy
+and wrong for separate sciences, where `10h/Ph1` is a physics class taught by a
+physics teacher.
+
+Driven end to end on TEST at week 3, on the pinned-clock harness, against the
+unmodified `origin/main` (7490ca9):
+
+| class | composed | biology | chemistry | physics |
+|---|---|---|---|---|
+| 10Z Physics (KS4 triple physics) | 15 | 4 | 4 | 7 |
+| 10X1 Biology (KS4 triple biology) | 15 | 4 | 4 | 7 |
+| 10A (KS4 combined) | 15 | 4 | 4 | 7 |
+
+⚠️ **All three sets were byte-identical** — same fifteen `source_ref`s in the
+same order. A physics class was getting **eight of its fifteen questions from
+two courses it does not sit with that teacher**. Real questions, correct
+science, well authored, and nothing anywhere saying so — the worst shape a
+content bug takes, because every individual question passes review.
+
+## 2. The fix
+
+- `schemeLessons(cls, week, subjectId)` now takes the subject and applies it.
+  **Pass nothing and the query is byte-identical to the one it sent before**,
+  which is what every KS3 and Trilogy caller does — and what
+  `/api/class/practice` keeps doing. This is a ruling about the AUTOMATIC
+  COMPOSER and nothing else.
+- The composer refuses when a triple class has no `science_subject`
+  (`no_science_subject_for_class`, one log line, no student data) rather than
+  widening back to all three. Set work's tree makes the opposite choice on
+  purpose: it OFFERS a teacher a menu, composition CHOOSES for the child.
+  ⚠️ On production this refusal fires on **nothing**: all 24 triple classes
+  carry a `science_subject`, stamped `tier_pathway_source = 'rule'`.
+- The subject resolves **by name** through the existing `scienceSubjectId`.
+  The `subjects` UUIDs **differ between TEST and production** (Physics is
+  `b7cc103d…` on TEST, `9aad49e5…` on production), so a hardcoded id would pass
+  on one database and silently match nothing on the other.
+- **KS3 has no equivalent to mirror, as expected.** `ks3_data/question_bank.py`
+  `compose_assignment()` receives its lesson list from the caller and does no
+  scheme read at all — no pathway, no subject, nothing to filter. KS3 has no
+  pathway to be triple on. Nothing was changed there.
+
+## 3. Proof
+
+Gate `test_compose_subject_scope.js` (new, backend) drives the real
+`schemeLessons` against the real TEST scheme across all 38 weeks and **writes
+nothing**. Its central assertion is the PAIR — triple narrows AND nothing else
+moves — because a filter applied one branch too wide would satisfy the first on
+its own and quietly halve every KS3 and Trilogy assignment in the school.
+
+End to end on the harness (two servers, same pinned clock — Mon 14 Sep 07:30
+UK, week 3 — one at `origin/main`, one at the fix, week-3 rows wiped between
+runs so the second server composed rather than serving the first's):
+
+| class | before | after |
+|---|---|---|
+| 10Z Physics (triple physics) | composed 15, three sciences | **refuses** · `not_enough_banked_questions` · `subject: physics, slugs: 3, available 12 of 15` |
+| 10X1 Biology (triple biology) | composed 15, three sciences | **refuses** · same, `subject: biology` |
+| 10A (combined) | composed 15 | **byte-identical 15** |
+| 7z/Sc9, 8X1, 9Y1 (KS3) | composed 15 each | **byte-identical 15 each** |
+| throwaway triple, NULL subject | composed 15, three sciences | **refuses** · `no_science_subject_for_class` |
+
+Green: `test_compose_subject_scope` 28, `test_assignment_compose` 109,
+`test_generate_week_guard` 16, `test_set_work_v2` 177, `test_ks4_bank_read` 35,
+`verify_week_truth` PASS, `assignments_hold_drive` PASS. Auto window unchanged —
+every row the composer can see is still `bank_position < 12`.
+
+TEST was returned to the state it was found in and **re-queried, not assumed**:
+0 week-3 assignments, 13 auto assignments (as before), throwaway class and
+membership gone, `assignments_open_from` NULL on both schools.
+
+## 4. ⚠️ THE ONE THING TO KNOW FOR MONDAY — the fifteen triple classes compose NOTHING in week 3
+
+This is a consequence of the ruling, not a defect in the change, and it is
+arithmetic:
+
+- A separate-sciences class draws from **a third of the slugs** a Trilogy class
+  does. At week 3 the scheme holds one lesson per science per week, so its own
+  science gives **3 slugs**.
+- Bank positions 0–11 hold **four standard-band rows per slug**, and
+  `composeFromBank` draws the standard band only.
+- 3 × 4 = **12, against an assignment size of 15**. Short outside week one is
+  the one outcome Mide's ruling forbids, so the class composes nothing and the
+  page says "No work has been set for this week yet" — which is true.
+
+Measured on production, read-only, for all 15 triple classes with pupils
+(**379 pupil-places**): every one has 3 slugs, 36 eligible rows at
+`bank_position < 12` across all bands, and **12 of them standard**.
+
+**It heals itself at week 4**, for every cohort, measured on production:
+
+| week | slugs (own science) | standard rows | composes |
+|---|---|---|---|
+| 3 (Sun 13 – Sat 19 Sep) | 3 | 12 | ✗ short |
+| 4 (Sun 20 Sep) | 4 | **16** | ✓ 15 |
+| 5 | 5 | 20 | ✓ |
+| 6 | 6 | 24 | ✓ |
+
+**Why this was still the right thing to ship.** The alternative on the table was
+turning `auto_assignments` off for every triple class — which produces the
+**same** student-facing week 3 (no automatic work) while also requiring a
+production data change to make and to reverse, and it would still be wrong in
+week 4 and every week after. Shipping the fix gives the same quiet week 3, no
+production write, and correct work from week 4 forward. Doing nothing was the
+only option that put wrong-subject work in front of 379 children.
+
+**The classes (all higher tier, all auto on, all with `science_subject` set):**
+
+| year | class | science | pupils |
+|---|---|---|---|
+| 10 | 10A/Bi1 | biology | 25 |
+| 10 | 10D/Bi1 | biology | 29 |
+| 10 | 10r/Ch1 | chemistry | 30 |
+| 10 | 10r/Ch3 | chemistry | 27 |
+| 10 | 10h/Ph1 | physics | 17 |
+| 10 | 10r/Ph2 | physics | 28 |
+| 10 | 10r/Ph3 | physics | 27 |
+| 11 | 11A/Bi1 | biology | 26 |
+| 11 | 11D/Bi1 | biology | 22 |
+| 11 | 11h/Ch1 | chemistry | 18 |
+| 11 | 11r/Ch1 | chemistry | 27 |
+| 11 | 11r/Ch3 | chemistry | 31 |
+| 11 | 11h/Ph1 | physics | 17 |
+| 11 | 11r/Ph1 | physics | 27 |
+| 11 | 11r/Ph2 | physics | 28 |
+
+Nothing changed for the 32 combined and KS3 classes, proved byte-identical.
+
+## 5. OPEN ON MIDE — one product call, and it is worth making before Monday
+
+**Should a separate-sciences class be allowed a SHORT set in the weeks where
+its own science cannot fill fifteen?** Today those classes get nothing; a short
+set would give them **twelve right-subject questions** instead. Week one is
+already allowed to be short (`weekOne`), so the machinery exists — it is one
+condition, and it is your ruling to make, not mine. It affects week 3 only,
+after which the question disappears for the rest of the year.
+
+If you want it, say so and it is a small change Monday morning; the fallback in
+the meantime is that those fifteen teachers set work by hand, which the Set work
+sheet already does correctly per subject.
+
+## 6. Deviations
+
+- **The prompt's prod check was "≥ 36 eligible bank rows for week 3 in its own
+  subject". Every class has exactly 36 — and it still cannot compose**, because
+  36 is the count across all three bands and the composer draws only the
+  standard band's 12. Reported both numbers rather than the passing one.
+- **A second commit was needed to prove the first.** MRB-341's change is
+  auth-gated AND sits behind the assignments hold (production's
+  `assignments_open_from` is 2026-09-14, checked before the scheme read), so on
+  12 Sep there was **no request anyone could make that would tell the old build
+  from the new one** — `/api/health` answered `status: ok` either way. Added
+  `build` and `branch` to `/api/health` from Render's own
+  `RENDER_GIT_COMMIT`/`RENDER_GIT_BRANCH`. The deploy was then proved
+  behaviourally: `build: null` → `build: 8217010e6ba59fa978fe2c1726bcca5513183244`,
+  `branch: main`. Every future deploy is now provable the same way.
+- The same hold is why shipping the night before was safe: the changed path is
+  unreachable on production until 01:00 UK on Monday.
+- A duplicate `scienceSubjectId` was written and then removed. A second `async
+  function` of the same name **silently replaces** the earlier declaration
+  rather than erroring, so the composer would have called whichever came last in
+  the file. One name, one function — noted in the code so it is not re-added.
