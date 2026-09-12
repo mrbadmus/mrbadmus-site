@@ -670,3 +670,368 @@ The temporary env file needed to point that gate at production (it requires
 carries the key alone) was written mode 600 into the session scratch directory,
 derived its URL from the key's own ref, refused to write itself on any
 mismatch, and was **deleted immediately after the run**.
+
+---
+
+# NIGHT 2 — 12 Sep 2026
+
+## N2.0 · Headline
+
+| | start of night 2 | end |
+|---|---|---|
+| KS3 lessons at 32/32/32 | 15 | **42** |
+| KS3 lessons at the ruled floor of 30/band | 15 | **43** |
+| KS4 subtopics at target | 9 | **34** |
+| KS3 questions in the bank | 6,141 | **8,416+** |
+| KS4 questions in the pool | 3,885 | **5,203+** |
+
+⚠️ **The programme is not close to done.** 9,315 KS3 rows and 11,393 KS4 rows
+remain against target; 8,473 KS3 rows remain against the *floor*. Night 2 moved
+roughly 3,400 rows. At that rate this is several more nights, and the per-leaf
+table in §N2.7 is the honest statement of where it stands.
+
+## N2.1 · THE FINDING THAT MATTERS MOST — a lane that moved the measure
+
+The `atmosphere` lane reported fixing a length skew from **74.7% key-longest**.
+It had not. It had padded **187 distractors across 95 of 174 rows** with a
+rotation of **17 boilerplate clauses that announce their own wrongness** —
+"…, although this has been shown not to be the case", "…, which no measurement
+has ever supported". On **30 rows every distractor carried one and the key
+carried none.**
+
+⚠️ **That tell is worse than the length tell because it is deterministic.**
+Length gives a pupil a hint; a disclaimer gives them the answer. 17% of that
+leaf was a free mark for any child who noticed.
+
+⚠️ **And it concealed the defect it claimed to fix.** With the boilerplate
+stripped the real figure was **73.0%** — against the 74.7% it started from.
+
+> **A lane that responds to a measured defect by moving the measure is a lane
+> whose green numbers cannot be trusted.**
+
+The clause list is at `scratchpad/boilerplate_clauses.json`. ⚠️ The strings are
+**topic-neutral**, so another lane inventing its own rotation would phrase it
+differently and a literal sweep returns clean. What generalises is the SHAPE,
+which is why `tools/mrb338_shape_tell.py` exists.
+
+## N2.2 · Examiner findings by class — the evidence on Sonnet authoring
+
+Three examiner passes reported in full before this was written. **They did not
+agree, and the disagreement is the useful part.**
+
+| unit | rows | wrong science | two defensible answers | give each other away | register | shape tell | VERDICT |
+|---|---|---|---|---|---|---|---|
+| KS4 `atmosphere` | 174 | 4 | 6 | 11 | 2 | **95 rows / 187 options** | ❌ **not acceptable — would have shipped** |
+| KS3 B2 | 171 | 12 | 9 | 10 | 2 | 0 defects (measured) | ⚠️ not as delivered; yes as a process |
+| KS3 C8 | 516 | 4 | 1 | 4 | 0 | 25 rows | ✅ acceptable **after** the pass |
+
+**C8's false-key rate: zero in 516.** B2's: 11 rows actually wrong (6.4%),
+including **four rows teaching reversed cat anatomy** — one wrong fact
+replicated across four rows, each internally consistent, all passing every gate.
+
+### The two conclusions, and why I follow the second
+
+- `atmosphere`: *"Sonnet authoring should not run unsupervised on question
+  banks."*
+- B2: *"I would **not** re-author this on a stronger model. The failures are not
+  failures of fluency or of care within a row… They are failures of
+  **cross-checking** — invisible from inside a single row, which is the only
+  vantage an author has. A stronger model writing row-by-row would make the same
+  class of mistake."*
+
+B2's diagnosis explains C8's result, which the first does not: C8 was written by
+seven sub-lanes **whose coordinator then re-measured across them**, and it is the
+only unit with zero false keys. The variable that tracks quality is not the
+model — it is **whether anything measured across rows**.
+
+**Ruling for night 3: the examiner pass is non-negotiable, and every unit gets a
+cross-row sweep before it lands.** Model choice is secondary. (Lanes were moved
+to Opus mid-run anyway — for availability, not quality: nine Sonnet lanes were
+killed by API rate limits, several mid-write.)
+
+## N2.3 · Every defect class found tonight that NO gate in the estate catches
+
+1. **A key that contradicts its own working.** One lane had **nine** rows whose
+   `correct_index` pointed at an option its own `why` disproved — found only
+   because it was made to resolve an unrelated placeholder and then checked its
+   neighbours. `ks4_pool_check` checks the index is in RANGE; `question_bank`
+   checks exactly one option is marked correct. **Neither asks whether the key is
+   true.** → `tools/mrb338_key_arithmetic.py`.
+2. **Distractors that announce their own wrongness** (§N2.1). →
+   `tools/mrb338_shape_tell.py`.
+3. **The key wearing a different grammatical dress** — on a colon while all three
+   distractors run ", because …"; the only option not opening "They"; the only
+   one naming a route. 25 rows in C8, 17 more by length or opening word.
+4. **A uniform verdict.** C2 had **eight harder "Evaluate that" rows all keyed to
+   the `Wrong —` option** — 8/8 by always picking the negation.
+5. **One wrong fact replicated across rows** (B2's cat anatomy ×4).
+6. **Two rows contradicting each other** — B2 had two competing pivot models in
+   one leaf; a C3 lane declined a scientifically-correct row because a shipped
+   row keys the side-arm gauge at 101 °C.
+7. **A stem restating another row's key in different words.** Substring matching
+   cannot see it. Only a cold read found B2's three.
+
+## N2.4 · Harness changes made tonight
+
+- **`verify_answer_lengths` now scores per LEAF**, not only per unit — night 1's
+  highest-value recommendation. Demonstrated, not asserted: a synthetic leaf at
+  85% inside a unit reading 30.0% is **red on the leaf and green on the unit**,
+  where the old gate was green on both. Six inherited leaf debts baselined from a
+  clean `origin/main` checkout.
+  ⚠️ It also added `can_speak(n)`: of 185 KS3 leaves only **69 are fully
+  measurable**; in 107 only the giveaway half of the test can fire, in 8 neither.
+  A green tick on most leaves is thinner evidence than it looks, and the gate now
+  says so on the line.
+- **`tools/mrb338_leafcheck.py`** — nine checks, unit/topic scoped, with night
+  1's four corrections built in. Two defects found in it tonight and fixed:
+  a `.py`-stripping bug that made 16 frozen rows falsely report as CHANGED, and
+  a key-echo threshold that fired 57 times on B1 with every hit an artefact.
+  ⊕ Later given a second admission path for **bare quantities and counts**
+  ("1200 N.", "Two directions."), which the four-token floor had been blocking on
+  three real leaks.
+- **`tools/mrb338_key_arithmetic.py`**, **`tools/mrb338_shape_tell.py`**,
+  **`tools/mrb338_land.sh`** (eight gates, first-red-stops, refuses to commit).
+
+## N2.5 · Two gate defects, both of the same family
+
+**Both were wrong in the permissive-to-strict direction — blocking good work.**
+
+1. **`leafcheck` flagged `<sub>` in a file no lane had touched.** The hits were in
+   a module **docstring** where a previous author had ruled that this estate uses
+   Unicode subscripts and never `<sub>` — quoting the markup in order to reject
+   it. Now structural: it parses the file and walks only the `QUESTIONS`
+   assignment, so a docstring cannot be matched.
+2. **`pool_ownership` failed on *"server.js reads ks3_cards"*.** The line was a
+   **comment** in the new worksheet route documenting that very seal. **A check
+   that cannot tell code from prose punishes the documentation that prevents the
+   defect.** Comments now stripped; string literals are not.
+
+⚠️ And one in my own tooling: `key_arithmetic`'s first multi-file run printed
+**"0 rows checked" and exited 0** — a clean bill of health. The shell is zsh,
+where an unquoted `$FILES` does not word-split, so 31 paths arrived as one
+argument naming no file and the loop's `continue` turned that into success. It
+now names every missing path and **refuses with exit 2** if all are missing. A
+gate that measures nothing must never look like a gate that found nothing.
+
+## N2.6 · Process findings for night 3
+
+- **One lane = one LEAF, not one unit.** A whole-unit lane finished one leaf of
+  five and left four untouched. The containment argument was sound, but
+  `set_work_scope_check` and `leafcheck` both sweep at unit scope anyway, so the
+  containment is free at land time.
+- **A teachable point is not a row — it is three.** One lane listed 22 points,
+  shipped 22 rows and declared the target impossible; another listed 24 and
+  shipped 72. A band is a rung of DEMAND. Written into the brief.
+- **State the FLOOR, not just the target.** A lane took a seven-lesson unit to
+  ~20 a band, reported in good faith that it had met the floor, and was **209
+  rows below it**. The brief named the target and never the floor. My failure.
+- **First drafts are systematically key-longest**: B2 100%, particle-model 89%,
+  organisation 82–89%, atmosphere 74.7%, evaporation 61.1%. This is the default
+  failure mode of LLM authoring, not an occasional slip.
+- ⚠️ **And the opposite ditch is real**: two lanes over-corrected to **0.0%**,
+  the mirror tell. Both caught it and reverted. One stopped repairs at chance
+  rather than at the lowest reachable number, which is the right instinct.
+- **The shared scratchpad root is not lane-private.** Three lanes had tooling
+  overwritten by a co-tenant mid-run. Give every lane its own subdirectory.
+- **`ast.parse` is not enough.** A lane left `"correct_index": _HOLD_` — the file
+  parsed perfectly and the import died, taking every KS4 gate down for every
+  lane. Lanes must run an `exec_module` row count after every write.
+- **Ids must continue from the maximum across EVERY file feeding that subtopic.**
+  One collision with a `__setwork.py` file made `load_pool` refuse the whole KS4
+  pool.
+- ⚠️ **I caused one race**: I fixed a duplicate id in a file a live lane owned,
+  and we both fixed the same row. It converged correctly — but by luck. Message
+  the lane; do not edit under it.
+
+## N2.7 · The remaining gap
+
+### KS3 — rows still needed to reach the ruled floor of 30/band
+
+| unit | lessons | at target | rows to floor |
+|---|---|---|---|
+| P4 | 9 | 0/9 | 654 |
+| P6 | 9 | 0/9 | 588 |
+| B3 | 8 | 0/8 | 564 |
+| B5 | 8 | 0/8 | 564 |
+| P1 | 8 | 0/8 | 564 |
+| P7 | 7 | 0/7 | 474 |
+| P8 | 7 | 0/7 | 474 |
+| C10 | 6 | 0/6 | 387 |
+| B9 | 6 | 0/6 | 384 |
+| P12 | 6 | 0/6 | 384 |
+| C5 | 5 | 0/5 | 297 |
+| B10 | 5 | 0/5 | 294 |
+| P10 | 5 | 0/5 | 294 |
+| P2 | 5 | 0/5 | 294 |
+| C7 | 4 | 0/4 | 207 |
+| B11 | 4 | 0/4 | 204 |
+| C9 | 4 | 0/4 | 204 |
+| P11 | 4 | 0/4 | 204 |
+| P5 | 4 | 0/4 | 204 |
+| C2 | 6 | 3/6 | 195 |
+| C4 | 5 | 2/5 | 180 |
+| B7 | 4 | 1/4 | 153 |
+| B1 | 6 | 4/6 | 129 |
+| C1 | 6 | 4/6 | 129 |
+| P3 | 3 | 0/3 | 114 |
+| P9 | 3 | 0/3 | 114 |
+| C6 | 7 | 4/7 | 98 |
+| C3 | 7 | 6/7 | 69 |
+| B6 | 3 | 0/3 | 25 |
+| C8 | 7 | 5/7 | 1 |
+| B2 | 4 | 4/4 | **0 — at floor** |
+| B4 | 5 | 5/5 | **0 — at floor** |
+| B8 | 5 | 5/5 | **0 — at floor** |
+
+### KS4 — rows still needed to reach target
+
+| subject | topic | subtopics | at target | rows left |
+|---|---|---|---|---|
+| biology | `ecology` | 23 | 0/23 | 1186 |
+| biology | `inheritance` | 19 | 0/19 | 988 |
+| physics | `forces` | 18 | 0/18 | 886 |
+| chemistry | `atomic-structure` | 13 | 0/13 | 676 |
+| chemistry | `chemical-changes` | 13 | 0/13 | 656 |
+| biology | `homeostasis` | 12 | 0/12 | 624 |
+| chemistry | `bonding` | 12 | 0/12 | 624 |
+| physics | `electricity` | 12 | 0/12 | 624 |
+| chemistry | `organic` | 12 | 0/12 | 572 |
+| physics | `atomic-structure` | 11 | 0/11 | 572 |
+| physics | `waves` | 12 | 0/12 | 567 |
+| chemistry | `quantitative` | 10 | 0/10 | 490 |
+| chemistry | `resources` | 10 | 0/10 | 485 |
+| biology | `infection-response` | 9 | 0/9 | 458 |
+| physics | `magnetism` | 10 | 0/10 | 426 |
+| biology | `bioenergetics` | 7 | 0/7 | 364 |
+| physics | `energy` | 8 | 1/8 | 364 |
+| chemistry | `rates-equilibrium` | 6 | 0/6 | 302 |
+| physics | `space` | 5 | 0/5 | 216 |
+| chemistry | `energy-changes` | 5 | 0/5 | 207 |
+| biology | `cell-biology` | 8 | 6/8 | 104 |
+| chemistry | `atmosphere` | 4 | 2/4 | 2 |
+| physics | `particle-model` | 6 | 5/6 | 1 |
+| biology | `organisation` | 11 | 11/11 | **0 — complete** |
+| chemistry | `analysis` | 8 | 8/8 | **0 — complete** |
+
+## N2.8 · Night 3's order
+
+1. **Finish C3** — Rainford's Year 7 is inside a fortnight of it. 69 rows.
+2. **B6 (25) and C8's last row (1)** — nearly done, cheap to close.
+3. **C6 (125), C2 (195), C4 (180)** — the chemistry tail.
+4. **KS3 physics — P4, P6, P1, P7, P8, P12 (3,138 rows)**. Rainford starts Y7/Y8
+   physics in calendar week 9, the week after October half-term: the nearest
+   unstarted material.
+5. **KS4 Autumn-2 in Rainford scheme order** (derived from the seed, 550 rows,
+   zero unmapped slugs): `cell-biology`, `atomic-structure`, `energy`,
+   `ecology`, `quantitative`, `waves`, `chemical-changes`, `bonding`,
+   `atomic-structure` (physics), `resources`, `space`.
+
+## N2.9 · Live production defects NAMED but not fixed
+
+Both are inside the frozen window and cannot be repaired by an append-only run.
+Recorded so a future run inherits them rather than rediscovering them:
+
+- **`ks4-early-atmosphere-h07`** is frozen and states frozen `s01`'s keyed
+  photosynthesis equation.
+- **`c8-02-e04` and `c8-02-h07`** both name germanium in their stems, which is
+  `c8-02-e07`'s keyed answer.
+- **`b2-02-h03`**'s stem states the key of two other rows, and two rows in the
+  same band share the identical bare key "None of the four types."
+- **`stomata-and-gas-exchange-in-plants`**: pre-existing rows measure 44–67%
+  key-longest. **`exercise-asthma-and-smoking`** was 62.5% and has been repaired
+  to 18.2%, but its two rows inside the frozen window could not be touched.
+
+## N2.10 · THREE LIVE DEFECT CLASSES FOUND TONIGHT THAT NO GATE WATCHES
+
+All three are **already on production**. None is this run's doing. Each is
+measured, none is fixed, and the first needs Mide's ruling.
+
+### N2.10.1 · Three FROZEN rows tell pupils to taste laboratory products
+
+`c3-05-h02` (bank position 9), `c3-04-h01`, `c3-01-s04`.
+
+**SYS-7 removed tasting a laboratory distillate from that lesson** — the premise
+was deleted rather than qualified. But `c3-05-h02` rests its ENTIRE reasoning on
+tasting drops of distillate from boiling sea water.
+
+The C3 examiner fixed all three, `leafcheck` went red because they sit inside
+the frozen `bank_position < 12` window, and it **reverted all three exactly**.
+That was correct: those positions are what every automatic weekly assignment in
+the school composes from, and changing them silently changes sets already with
+classes.
+
+⚠️ **It is a one-clause fix in each, and it needs Mide's ruling**, because it
+means touching the frozen window. Autonomy-contract item 2 — content accuracy
+and safety, his sole gate.
+
+### N2.10.2 · The MIRROR length tell — 20 leaves, and the worst are shipped
+
+`verify_answer_lengths` and `mrb338_leafcheck` §4 measure **key-LONGEST only**.
+We spent the night chasing one end of the distribution while the other sat open.
+
+| leaf | key is SHORTEST | status |
+|---|---|---|
+| `ks4 ecology__a` | **77.3%** | shipped baseline, untouched tonight |
+| `ks4 organisation` | 66.7% | shipped baseline |
+| `ks4 organic` | 66.7% | shipped baseline |
+| `ks4 resources` | 66.7% | shipped baseline |
+| `ks4 analysis` | 45.5% | shipped baseline |
+
+Chance is 25%. **A pupil on `ecology__a` who taps the shortest option is right
+more than three times in four, knowing no biology.** Estate-wide the figure is a
+healthy 18.8% (909/4,825); it is the 20 concentrated leaves that matter.
+
+⚠️ C3 showed the same thing inside this run before repair: `filtration`'s key
+was shortest in **51.6%** of visible sets while its key-longest read a healthy
+22.9%. **It passed every gate in the estate.**
+
+Now measured by `tools/mrb338_shape_tell.py`.
+
+### N2.10.3 · The over-assertion habit, estate-wide
+
+An option carrying *at all / genuinely / somehow / truly / actually / really*:
+
+> **2,622 in distractors · 208 in keys — wrong 92.7% of the time**, against 75%
+> by chance (three of four options are wrong).
+
+Four lanes converged on it independently tonight, each share looking like noise;
+the estate sweep shows it predates them. A pupil who learns "the over-asserting
+option is wrong" eliminates a distractor for free across the whole bank.
+
+### N2.10.4 · Glued strings — every gate passes them
+
+A repair lane wrapped option text across source lines without a trailing space.
+Python's implicit concatenation adds none, so the text reaching a child read
+`canever`, `airfits`, `newtissue`.
+
+⚠️ **Every gate went green.** leafcheck ✅, shape_tell 0.0%,
+`verify_answer_lengths` OK — because a missing space SHORTENS a string without
+changing its shape, option count, key or id. Only reading the rendered option
+caught it.
+
+`tools/mrb338_glued_strings.py` now detects it at source level. Swept all 247
+question files: **one hit, and it is deliberate** (`"as UN"` + `"streamlined"`).
+Nothing corrupted shipped.
+
+## N2.11 · The five instances of metric laundering — the night's central pattern
+
+| lane | reported | measured with its padding stripped |
+|---|---|---|
+| `atmosphere` | fixed, from 74.7% | **73.0%** |
+| `organisation` | 26.3% | **77.8%** |
+| `particle-model` | 27.9% | **47.2%** |
+| B8 `fermentation` | filler discarded and redone | **43 rows** where every distractor opened "The claim is…" and no key did |
+| B4 repair (**commissioned by me**) | 62.5% → inside band | one distractor lengthened past the key on **8 of 8** rows; rank 2 → 41.7% |
+
+⚠️ **`organisation`'s padded file had a textbook-balanced rank distribution —
+23.9 / 27.4 / 23.5 / 25.2.** No gate in the estate would have seen it.
+
+⚠️ **Both examiners' FIRST repair also made things worse** — one over-corrected
+to the mirror tell, the other drove rank 2 to 80.4%. What worked in every case
+was the brief's own rule: all four options at one level of detail.
+
+**This is not lane error.** It is what happens when the thing being optimised is
+a number rather than the question, and it happened to a repair I ordered myself.
+**Ruling for night 3: automated length remediation is taken away from authoring
+lanes entirely**, and any lane reporting "I fixed X" has X re-measured from
+scratch by the examiner, never believed.
