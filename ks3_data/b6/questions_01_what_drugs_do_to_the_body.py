@@ -1475,4 +1475,1017 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-]
+
+    # ── MRB-338 expansion (12 Sep 2026) ─────────────────────────────────
+    # 38 new rows (14 easier / 13 standard / 11 harder) continuing the
+    # band id sequences from e19/s19/h19, against a target of 14/14/14.
+    # New teachable points not covered by the original 54 rows or by the
+    # mastery ladder: nicotine's effect on heart rate and blood pressure,
+    # its reward-chemical mechanism, legal-vs-biological status across all
+    # four drugs, paracetamol's kidney elimination route and the "every
+    # other organ, no use for it" clause, the foxglove/digoxin
+    # dose-response numbers, water as a dose-response example, and
+    # cross-drug comparisons (entry mechanism, stomach irritation, kidney
+    # effects, class labels). See the MRB-338 authoring report for the
+    # full coverage list and the length/position self-checks. Standard is
+    # one row short and harder three short of the 14-row target -
+    # declined rather than padded once fresh, non-duplicating,
+    # non-task-reproducing points ran out on an already densely-covered
+    # lesson; see the report.
+
+    {
+        "id": "b6-01-e19",
+        "band": "easier",
+        "text": "Nicotine makes the heart beat faster and narrows blood vessels. What "
+"does that combination do to blood pressure?",
+        "options": [
+            {"text": "It rises, because both a faster heart and narrower vessels push it "
+"upward",
+             "correct": True},
+            {"text": "It falls, because a faster heart needs to pump against less "
+"resistance",
+             "correct": False,
+             "why": "Narrower vessels add resistance rather than removing it, so the "
+"pressure needed to pump blood does not fall."},
+            {"text": "It stays the same, because the two effects cancel each other out",
+             "correct": False,
+             "why": "The two effects act in the same direction rather than opposite ones, "
+"so they add together instead of cancelling."},
+            {"text": "It only rises in people who already have heart problems",
+             "correct": False,
+             "why": "The lesson describes this as something nicotine does to the body in "
+"general, not a risk limited to one group."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e20",
+        "band": "easier",
+        "text": "Cigarettes and vapes are illegal to sell to under-18s in the UK. Is "
+"nicotine legal for an adult to buy?",
+        "options": [
+            {"text": "No, nicotine is illegal for anyone of any age to buy",
+             "correct": False,
+             "why": "It is legal to sell nicotine to an adult; only sale to under-18s "
+"is illegal."},
+            {"text": "Yes, it is legal to sell to an adult in the UK",
+             "correct": True},
+            {"text": "Only with a doctor's prescription",
+             "correct": False,
+             "why": "No prescription is needed to buy cigarettes or vapes; the "
+"restriction on them is an age limit."},
+            {"text": "It depends on whether the nicotine is smoked or vaped",
+             "correct": False,
+             "why": "Both carry the same legal status: legal for adults, illegal to "
+"sell to under-18s."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e21",
+        "band": "easier",
+        "text": "After paracetamol has been broken down by the liver, what job do the "
+"kidneys do with it?",
+        "options": [
+            {"text": "They break it down a second time to finish the job",
+             "correct": False,
+             "why": "The lesson gives the liver the breaking-down job; the kidneys' part "
+"is filtering it out, not repeating that step."},
+            {"text": "They store it in case the body needs the drug again later",
+             "correct": False,
+             "why": "No organ is described as storing a drug for later use anywhere in "
+"the lesson."},
+            {"text": "They filter the broken-down drug out into the urine",
+             "correct": True},
+            {"text": "They send it back into the blood so it can reach the brain again",
+             "correct": False,
+             "why": "The kidneys' job is described as removing the drug from the body, "
+"the opposite of returning it to circulation."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e22",
+        "band": "easier",
+        "text": "Besides the liver and kidneys, paracetamol also reaches every other "
+"organ in the body through the blood. What happens to it at those "
+"other organs?",
+        "options": [
+            {"text": "Each one stores a small amount in case it is needed later",
+             "correct": False,
+             "why": "No organ stores a drug for later use; these organs simply had no "
+"use for it."},
+            {"text": "Each one breaks down a share of the drug, alongside the liver",
+             "correct": False,
+             "why": "Breaking the drug down is the liver's job alone, not something "
+"spread across every organ."},
+            {"text": "Each one actively blocks the drug from having any effect",
+             "correct": False,
+             "why": "These organs do not resist the drug at all; they simply receive it "
+"and have no use for it."},
+            {"text": "They receive the drug and have no use for it at all",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e23",
+        "band": "easier",
+        "text": "Which of these drugs is legal to buy at any age in the UK?",
+        "options": [
+            {"text": "Caffeine",
+             "correct": True},
+            {"text": "Alcohol",
+             "correct": False,
+             "why": "Alcohol is legal for adults, with age limits on buying it, not for "
+"any age."},
+            {"text": "Nicotine",
+             "correct": False,
+             "why": "Nicotine products are illegal to sell to under-18s, so they are not "
+"legal at any age."},
+            {"text": "Digoxin",
+             "correct": False,
+             "why": "Digoxin is prescribed by a doctor for a failing heart, so it "
+"cannot be bought over a counter at any age."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e24",
+        "band": "easier",
+        "text": "Roughly how long has digoxin been prescribed as a heart medicine?",
+        "options": [
+            {"text": "About ten years",
+             "correct": False,
+             "why": "Digoxin has been in medical use for far longer than ten years."},
+            {"text": "About two hundred years",
+             "correct": True},
+            {"text": "About fifty years",
+             "correct": False,
+             "why": "Digoxin has been in medical use for considerably longer than fifty "
+"years."},
+            {"text": "Only since it was made in a factory",
+             "correct": False,
+             "why": "Digoxin comes from the foxglove plant rather than a factory, and it "
+"was in use as a medicine long before anything was made in one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e25",
+        "band": "easier",
+        "text": "At the right dose, digoxin steadies a failing heart. What does a "
+"dose a little above that do?",
+        "options": [
+            {"text": "It has no further effect, since the heart is already steadied",
+             "correct": False,
+             "why": "A slightly higher dose becomes dangerous rather than simply doing "
+"nothing more."},
+            {"text": "It steadies the heart even more effectively",
+             "correct": False,
+             "why": "A small increase in this dose becomes dangerous rather than more "
+"effective."},
+            {"text": "It stops the heart",
+             "correct": True},
+            {"text": "It is broken down before it can reach the heart",
+             "correct": False,
+             "why": "The body does not neutralise a higher dose before it acts; that is "
+"exactly why the dose matters so much."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e26",
+        "band": "easier",
+        "text": "Using the dose-response idea, can drinking water ever be "
+"dangerous?",
+        "options": [
+            {"text": "No, water carries no risk at any amount",
+             "correct": False,
+             "why": "Water is the clearest example of the opposite: a substance nobody "
+"calls a drug that is still dangerous at a high enough amount."},
+            {"text": "Yes, but only when it is drunk alongside another drug",
+             "correct": False,
+             "why": "No other substance needs to be present; a large enough amount of "
+"water alone is the risk."},
+            {"text": "Only tap water is a risk; bottled water is not",
+             "correct": False,
+             "why": "Tap water and bottled water behave identically here; the amount is "
+"what matters, not the source."},
+            {"text": "Yes, several litres in an hour can dangerously dilute the blood",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e27",
+        "band": "easier",
+        "text": "Caffeine's job is keeping you alert, yet it also makes the heart "
+"beat faster. Is a faster heart caffeine's main job?",
+        "options": [
+            {"text": "No, the heart was simply on the route the dose travelled, not the "
+"target",
+             "correct": True},
+            {"text": "Yes, alertness and a faster heartbeat are really the same effect",
+             "correct": False,
+             "why": "The lesson treats them as two separate things: one is caffeine's "
+"target effect on the brain, the other is an effect on an organ the "
+"dose simply passed through."},
+            {"text": "No, and caffeine has no real effect on the heart at all",
+             "correct": False,
+             "why": "The lesson states plainly that caffeine does speed the heart up; "
+"what it denies is that this is caffeine's purpose."},
+            {"text": "Yes, because a faster heart is what makes the brain feel alert",
+             "correct": False,
+             "why": "The lesson gives the brain its own separate mechanism for alertness "
+"and does not say the heart causes that feeling."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e28",
+        "band": "easier",
+        "text": "What does nicotine trigger in the brain?",
+        "options": [
+            {"text": "A release of the chemical that normally makes you feel sleepy",
+             "correct": False,
+             "why": "That chemical signal is caffeine's target, not nicotine's; nicotine "
+"triggers a reward chemical instead."},
+            {"text": "A release of the brain's own reward chemical",
+             "correct": True},
+            {"text": "A drop in the chemical responsible for pain signals",
+             "correct": False,
+             "why": "Pain signals belong to the painkiller class's mechanism, not to "
+"nicotine's."},
+            {"text": "A slowing of the signals passing between nerve cells",
+             "correct": False,
+             "why": "Slowing signals is what a depressant such as alcohol does, the "
+"opposite of a stimulant such as nicotine."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e29",
+        "band": "easier",
+        "text": "Why are some stimulants prescribed by doctors, even though caffeine "
+"and nicotine are stimulants too?",
+        "options": [
+            {"text": "Because prescribed stimulants are not really drugs at all",
+             "correct": False,
+             "why": "A drug is any substance that changes how the body works, and being "
+"prescribed does not take a substance out of that definition."},
+            {"text": "Because a doctor's approval removes any risk from the drug",
+             "correct": False,
+             "why": "What makes the effect useful is a controlled dose; a doctor's "
+"approval does not remove the risk altogether."},
+            {"text": "Because the effect is useful when the dose is carefully controlled",
+             "correct": True},
+            {"text": "Because prescribed stimulants belong to a different class entirely",
+             "correct": False,
+             "why": "A prescribed stimulant is still a stimulant; what changes is how "
+"carefully the dose is controlled."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e30",
+        "band": "easier",
+        "text": "Beer, wine and spirits are legal for adults in the UK, with age "
+"limits on buying them. Who are they NOT legally sold to?",
+        "options": [
+            {"text": "Nobody; anyone of any age may buy them",
+             "correct": False,
+             "why": "There are age limits on buying alcohol, so it is not open to "
+"anyone of any age."},
+            {"text": "Only people who already own a medical prescription",
+             "correct": False,
+             "why": "No prescription is involved in buying alcohol; the restriction is "
+"an age limit."},
+            {"text": "Only people who have never tried it before",
+             "correct": False,
+             "why": "The restriction is about age, not about whether someone has drunk "
+"before."},
+            {"text": "People under the legal buying age",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e31",
+        "band": "easier",
+        "text": "When a painkiller stops you feeling pain, has the underlying "
+"problem gone away?",
+        "options": [
+            {"text": "Not necessarily, pain that stops being felt has not stopped being a "
+"warning",
+             "correct": True},
+            {"text": "Yes, because painkillers treat the cause of the pain as well as the "
+"feeling",
+             "correct": False,
+             "why": "A painkiller leaves the cause of the pain untouched; only the "
+"signal is reduced or blocked."},
+            {"text": "Yes, because pain always stops once the injury has healed",
+             "correct": False,
+             "why": "The question is about what the drug does, not about healing time; "
+"the two are separate things."},
+            {"text": "No, painkillers make the underlying problem worse while hiding it",
+             "correct": False,
+             "why": "A painkiller does not worsen the injury or infection; it blocks "
+"the signal reporting it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-e32",
+        "band": "easier",
+        "text": "Nicotine's class label is more than just 'stimulant'. What extra "
+"word goes with it?",
+        "options": [
+            {"text": "Extremely dangerous",
+             "correct": False,
+             "why": "The word that goes with nicotine's label is addictive, not a "
+"general danger warning."},
+            {"text": "Strongly addictive",
+             "correct": True},
+            {"text": "Completely illegal",
+             "correct": False,
+             "why": "Nicotine is legal for adults to buy, so illegal is not the word "
+"that goes with it."},
+            {"text": "Medically prescribed",
+             "correct": False,
+             "why": "Nicotine in cigarettes and vapes is not something a doctor "
+"prescribes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s19",
+        "band": "standard",
+        "text": "Someone tries a cigarette once, feels little effect, but a week "
+"later finds themselves wanting one badly. Using what nicotine does "
+"in the brain, explain what has changed.",
+        "options": [
+            {"text": "Nicotine triggered the brain's reward chemical, and the brain "
+"adapted to expect that release",
+             "correct": True},
+            {"text": "Nothing has changed inside the body at all; wanting a cigarette "
+"again is simply a decision, not a chemical reaction",
+             "correct": False,
+             "why": "The lesson describes the wanting as a physical adaptation of the "
+"nervous system, not a decision with no biological cause."},
+            {"text": "The nicotine from that first cigarette has stayed in the blood for a "
+"week, still acting on the brain",
+             "correct": False,
+             "why": "The tracer describes a single dose leaving the body within hours, "
+"not lingering for a week to cause a craving."},
+            {"text": "Their body has grown more sensitive to the tar in the smoke, which "
+"is what is now driving the craving",
+             "correct": False,
+             "why": "The reward-chemical mechanism the lesson describes belongs to "
+"nicotine, not to tar."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s20",
+        "band": "standard",
+        "text": "A doctor prescribes digoxin at a fixed, carefully measured dose to a "
+"patient with a failing heart. Using the dose-response idea, explain "
+"why the same substance can also be one of the most dangerous plants "
+"in Britain.",
+        "options": [
+            {"text": "Digoxin from the plant is dangerous, but the medicine made in a "
+"factory is a chemically different, safer substance",
+             "correct": False,
+             "why": "The lesson treats it as the same molecule at different amounts, not "
+"a different, safer substance."},
+            {"text": "The effect depends on the amount: the prescribed dose steadies the "
+"heart, a little more stops it",
+             "correct": True},
+            {"text": "The plant is dangerous because it is natural, while the medicine is "
+"safe simply because a doctor prescribed it",
+             "correct": False,
+             "why": "The lesson's point is that natural tells you nothing about safety; "
+"only the dose does."},
+            {"text": "The danger from a higher dose only applies to people who already "
+"have an existing heart problem",
+             "correct": False,
+             "why": "The lesson ties the danger to the amount taken by anyone, not to a "
+"pre-existing condition."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s21",
+        "band": "standard",
+        "text": "Someone who has been drinking becomes tearful and says alcohol "
+"obviously works on people's emotions. Using what a depressant actually "
+"does, is that the correct explanation?",
+        "options": [
+            {"text": "Yes, depressant is simply another word in biology for a drug that "
+"lowers a person's mood directly",
+             "correct": False,
+             "why": "A depressant is defined by its effect on nerve signal speed, not "
+"by an effect on mood."},
+            {"text": "No, alcohol has no effect on the brain at all, and acts only on the "
+"liver instead",
+             "correct": False,
+             "why": "Alcohol's target is the brain, where it slows the signals passing "
+"between nerve cells."},
+            {"text": "Not quite, a depressant slows nerve signal speed; it is not defined "
+"as acting on mood",
+             "correct": True},
+            {"text": "Yes, every depressant is specifically designed by its chemistry to "
+"make people feel sad",
+             "correct": False,
+             "why": "A depressant does not make you sad; the word is about signalling "
+"speed, not mood."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s22",
+        "band": "standard",
+        "text": "Alcohol and nicotine both reach the blood unusually quickly for "
+"their route into the body. Which pairing of reasons is correct?",
+        "options": [
+            {"text": "Alcohol is inhaled in the same way as nicotine, which explains why "
+"both act within seconds of use",
+             "correct": False,
+             "why": "Alcohol is swallowed, not inhaled; only nicotine's route into the "
+"blood is through the lungs."},
+            {"text": "Both drugs cross the thin walls of the alveoli on the way in, which "
+"is why both act within seconds of being taken",
+             "correct": False,
+             "why": "Only nicotine is described as crossing the alveoli walls; alcohol's "
+"route is through the stomach and gut."},
+            {"text": "Nicotine dissolves in saliva before being swallowed, reaching the "
+"blood through the mouth lining",
+             "correct": False,
+             "why": "The lesson describes nicotine as inhaled, crossing the alveoli "
+"walls, not swallowed or absorbed through the mouth."},
+            {"text": "Alcohol crosses the stomach wall as well as the intestine; nicotine "
+"crosses the thin walls of the alveoli",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s23",
+        "band": "standard",
+        "text": "After exercise, someone drinks several litres of water very quickly, "
+"believing more water is always better for the body. Using the "
+"dose-response idea, is that necessarily true?",
+        "options": [
+            {"text": "No, even water can dangerously dilute the blood if enough is drunk "
+"quickly",
+             "correct": True},
+            {"text": "Yes, water is not classed as a drug, so no amount of it can ever "
+"cause any harm",
+             "correct": False,
+             "why": "Water shows exactly the opposite: a substance nobody calls a drug "
+"can still be dangerous at a high enough dose."},
+            {"text": "Yes, the kidneys are able to safely process any amount of water in "
+"any length of time",
+             "correct": False,
+             "why": "Several litres drunk in an hour is a genuine risk; the kidneys "
+"cannot clear water at any rate at all."},
+            {"text": "No, plain water only becomes dangerous once it has been contaminated "
+"by something else",
+             "correct": False,
+             "why": "The danger described comes from the amount of plain water itself, "
+"not from any contamination."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s24",
+        "band": "standard",
+        "text": "A doctor prescribes a stimulant medicine, and a friend says this is "
+"strange because stimulants are the same as the ones in cigarettes "
+"and energy drinks. Using the dose-response idea, explain what makes "
+"the prescribed one different.",
+        "options": [
+            {"text": "A prescribed stimulant stops being a drug at all once a doctor is "
+"the one giving it",
+             "correct": False,
+             "why": "A drug is defined by what it does to the body; being prescribed does "
+"not remove it from that definition."},
+            {"text": "The dose is carefully controlled, which is what makes the stimulant "
+"effect useful rather than harmful",
+             "correct": True},
+            {"text": "Prescribed stimulants act on a completely different part of the "
+"nervous system altogether",
+             "correct": False,
+             "why": "The lesson ties the difference to the controlled dose, not to a "
+"different mechanism."},
+            {"text": "The friend is right, and there genuinely is no real difference "
+"between the two at all",
+             "correct": False,
+             "why": "The lesson explicitly says the prescribed stimulant's usefulness "
+"comes from its dose being controlled."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s25",
+        "band": "standard",
+        "text": "Someone argues that alcohol's danger lies entirely in slower "
+"reactions and coordination themselves. Where does a large part of "
+"alcohol's short-term harm also come from?",
+        "options": [
+            {"text": "From the particular taste and smell of the alcoholic drink itself",
+             "correct": False,
+             "why": "A drink's taste and smell have nothing to do with any harm it "
+"causes."},
+            {"text": "From the extra calories that alcoholic drinks happen to contain",
+             "correct": False,
+             "why": "The harm here is about nerve signalling and judgement, not about "
+"calories."},
+            {"text": "From what a person with impaired judgement then goes on to do",
+             "correct": True},
+            {"text": "Entirely from the slower reactions and coordination themselves, "
+"exactly as the argument claims",
+             "correct": False,
+             "why": "Judgement fails first, and the actions that follow are a large "
+"part of the harm on the night."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s26",
+        "band": "standard",
+        "text": "Paracetamol reaches many organs that do nothing whatever with it "
+"once it arrives, and other organs, like the kidneys, that actively "
+"act on it. What is the key difference between the two?",
+        "options": [
+            {"text": "There is really no difference at all; every single organ the blood "
+"carries the drug to is harmed by it in exactly the same way",
+             "correct": False,
+             "why": "Organs with no use for the drug are not harmed by simply "
+"receiving it; the kidneys, by contrast, actively do something with it."},
+            {"text": "Organs with no use for the drug are the ones that break it down "
+"and remove it from the body",
+             "correct": False,
+             "why": "Breaking the drug down and filtering it out is exactly what the "
+"second group does; an organ with no use for it does neither."},
+            {"text": "The kidneys have no use for paracetamol either, exactly like every "
+"other organ the drug happens to reach",
+             "correct": False,
+             "why": "The kidneys have a specific job here, filtering the broken-down "
+"drug into urine, unlike organs with no use for it."},
+            {"text": "One group simply receives the drug and does nothing with it; the "
+"other group acts on it, breaking it down or filtering it out",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s27",
+        "band": "standard",
+        "text": "Caffeine and alcohol are opposites in one specific way, according to "
+"their classes. What is it?",
+        "options": [
+            {"text": "Caffeine speeds nerve signals up; alcohol slows them down",
+             "correct": True},
+            {"text": "Caffeine is illegal for under-18s to buy; alcohol is legal at any "
+"age at all",
+             "correct": False,
+             "why": "The legal facts are the other way round in the lesson: caffeine is "
+"legal at any age, alcohol has age limits."},
+            {"text": "Caffeine works by treating pain directly; alcohol works by causing "
+"pain instead",
+             "correct": False,
+             "why": "Neither drug is classed as a painkiller in the lesson; that is a "
+"separate class entirely."},
+            {"text": "Caffeine is a drug that is swallowed; alcohol is a drug that is "
+"inhaled instead",
+             "correct": False,
+             "why": "Both caffeine and alcohol are described in the lesson as swallowed "
+"drinks."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s28",
+        "band": "standard",
+        "text": "Digoxin has been used safely as a medicine for around two hundred "
+"years, yet the foxglove it comes from is still one of the most "
+"dangerous plants in Britain. Explain how both statements can be "
+"true.",
+        "options": [
+            {"text": "The plant only became dangerous recently, well after the medicine "
+"had already been established",
+             "correct": False,
+             "why": "No timeline is given in which the plant's danger changed; both are "
+"the same molecule at different amounts."},
+            {"text": "The medicine is a small, controlled dose; the dangerous plant is an "
+"uncontrolled, unmeasured amount",
+             "correct": True},
+            {"text": "Doctors actually use a chemically different, purified substance with "
+"nothing to do with the plant",
+             "correct": False,
+             "why": "Digoxin is described as coming from the foxglove, the same molecule, "
+"not a chemically unrelated substitute."},
+            {"text": "Two hundred years of safe medical use proves the substance cannot "
+"really be dangerous at all",
+             "correct": False,
+             "why": "The lesson uses this exact substance to make the opposite point: "
+"safety depends on dose, not on a long history of use."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s29",
+        "band": "standard",
+        "text": "Caffeine and nicotine both make the heart beat faster, but only one "
+"of them is also described as narrowing blood vessels and raising "
+"blood pressure. Which one, and how do you know?",
+        "options": [
+            {"text": "Caffeine, since a faster heart, narrowed blood vessels and raised "
+"blood pressure are all caffeine's effects",
+             "correct": False,
+             "why": "Caffeine's listed effects are a faster heart, more urine and more "
+"stomach acid; narrowed vessels are not among them."},
+            {"text": "Both drugs equally, since the two have an identical list of "
+"effects on the heart and vessels",
+             "correct": False,
+             "why": "The two drugs' lists of effects on the body are different from each "
+"other, not identical."},
+            {"text": "Nicotine, whose effects include narrowed blood vessels and raised "
+"blood pressure alongside the faster heartbeat",
+             "correct": True},
+            {"text": "Neither drug at all, since blood pressure is never once mentioned "
+"for either of the two substances",
+             "correct": False,
+             "why": "Blood pressure rising is one of nicotine's own listed effects."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s30",
+        "band": "standard",
+        "text": "Nicotine products are illegal to sell to under-18s, while caffeine "
+"is legal to buy at any age. Does this legal difference mean nicotine "
+"changes the body more strongly than caffeine does?",
+        "options": [
+            {"text": "Yes, the law would never restrict nicotine unless it were truly the "
+"biologically stronger of the two drugs",
+             "correct": False,
+             "why": "The lesson's argument is that legal rules and biological effects are "
+"separate questions that need not line up."},
+            {"text": "Yes, anything sold with an age limit is always more addictive than "
+"anything sold without one",
+             "correct": False,
+             "why": "No general rule links an age limit to addictiveness; the lesson "
+"treats law and biology as separate."},
+            {"text": "No, the two drugs actually have identical effects on the body, and "
+"only the law differs",
+             "correct": False,
+             "why": "The lesson lists different effects for caffeine and nicotine; it "
+"does not claim they act identically."},
+            {"text": "Not necessarily, legality is a rule made by people, a separate "
+"question from what a drug does to the body",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-s31",
+        "band": "standard",
+        "text": "Caffeine and alcohol both upset the stomach, but by different "
+"mechanisms. Which pairing is correct?",
+        "options": [
+            {"text": "Caffeine makes the stomach release more acid; alcohol irritates the "
+"stomach lining directly",
+             "correct": True},
+            {"text": "Caffeine irritates the stomach lining directly; alcohol makes it "
+"release more acid instead",
+             "correct": False,
+             "why": "These two mechanisms belong the other way round: it is caffeine "
+"that raises the acid."},
+            {"text": "Both drugs work by releasing more stomach acid, in exactly the same "
+"way as each other",
+             "correct": False,
+             "why": "Alcohol works by directly irritating the lining rather than by "
+"releasing more acid."},
+            {"text": "Neither drug has any effect on the stomach at all",
+             "correct": False,
+             "why": "Both caffeine and alcohol reach the stomach and upset it, by two "
+"different routes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-h19",
+        "band": "harder",
+        "text": "Nicotine's class label is 'Stimulant, strongly addictive', while "
+"caffeine's is simply 'Stimulant'. Why might that extra word matter "
+"to someone trying to help a person stop using each?",
+        "options": [
+            {"text": "Stopping nicotine involves overcoming an adaptation the brain has "
+"made, which caffeine's label does not describe",
+             "correct": True},
+            {"text": "It means caffeine has no effect on the brain whatsoever, quite "
+"unlike nicotine's clear and immediate effect there",
+             "correct": False,
+             "why": "Caffeine is described as acting directly on the brain to block a "
+"sleep signal; the difference is about addiction, not brain effect."},
+            {"text": "It means nicotine is an illegal substance while caffeine remains "
+"completely legal to sell",
+             "correct": False,
+             "why": "Both are legal; nicotine carries an age restriction on sale, but "
+"neither drug is illegal outright."},
+            {"text": "It simply means caffeine is a much weaker stimulant overall compared "
+"with nicotine's stronger and longer-lasting effect",
+             "correct": False,
+             "why": "The extra word describes addictiveness, not the relative strength of "
+"the stimulant effect."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-h20",
+        "band": "harder",
+        "text": "A simple five-stage model follows one dose from being swallowed to "
+"leaving the body. Does a model like that show exactly how quickly a "
+"real drug clears from every person?",
+        "options": [
+            {"text": "Yes, the five stages are stated to apply identically and exactly the "
+"same way to every single person, no matter who",
+             "correct": False,
+             "why": "The real processes overlap in time and differ between people, "
+"which is why the model is only a simplification."},
+            {"text": "No, it is a simplified model, and real absorption, distribution "
+"and breakdown differ between people",
+             "correct": True},
+            {"text": "Yes, but only for the four drugs the model happens to be drawn "
+"for",
+             "correct": False,
+             "why": "The simplification is general; it is not something that applies to "
+"four named drugs and no others."},
+            {"text": "No, because such a model only ever shows a drug entering the "
+"body, never leaving it again",
+             "correct": False,
+             "why": "The five stages run all the way to the drug leaving; the model is "
+"a simplification because of individual differences and timing, not "
+"because a stage is missing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-h21",
+        "band": "harder",
+        "text": "A company advertises a new painkiller capsule with a special coating "
+"claimed to 'send the drug straight to the sore joint and nowhere "
+"else.' Is that consistent with how a swallowed drug actually travels "
+"round the body?",
+        "options": [
+            {"text": "Yes, a special coating on a capsule genuinely changes exactly where "
+"in the body the blood chooses to deliver a drug",
+             "correct": False,
+             "why": "The blood carries every dissolved drug to every organ whatever "
+"the coating was; a coating affects the gut, not what happens after."},
+            {"text": "Yes, the joint has its own separate blood supply that only pain "
+"relief is able to enter",
+             "correct": False,
+             "why": "There is one blood system, reaching every organ; no route is "
+"reserved for pain relief."},
+            {"text": "No, once dissolved in the blood, the dose has no address and reaches "
+"every organ the circulation reaches",
+             "correct": True},
+            {"text": "It cannot be judged at all without knowing which painkiller is "
+"inside the capsule",
+             "correct": False,
+             "why": "Every drug dissolved in the blood travels the same way, so the "
+"claim can be judged without naming the drug."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-h22",
+        "band": "harder",
+        "text": "Digoxin's dose decides whether it heals or kills. Does the AMOUNT "
+"of a drug change how strong or dangerous its effect is, while its "
+"class stays the same?",
+        "options": [
+            {"text": "No, a large enough dose of any stimulant turns it into a "
+"depressant instead, so the class changes rather than the strength",
+             "correct": False,
+             "why": "No drug switches class with dose; what changes is the strength or "
+"danger of its own effect."},
+            {"text": "No, every drug becomes a painkiller once its dose is raised high "
+"enough, whatever it started as",
+             "correct": False,
+             "why": "The three classes are tied to what a drug does to nerve signals or "
+"to pain, not to a threshold every drug eventually crosses."},
+            {"text": "It cannot be answered, since a drug's class is never fixed until "
+"the dose has been chosen",
+             "correct": False,
+             "why": "A drug's class is settled by what it does to nerve signals or "
+"pain, and that is the same at every dose."},
+            {"text": "Yes, the class describes the kind of effect a drug produces, and "
+"the dose decides how strong or dangerous that effect is",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-h23",
+        "band": "harder",
+        "text": "Nicotine is described as triggering a release of the brain's reward "
+"chemical, while caffeine is described as blocking a chemical signal "
+"that would otherwise build up. Both are called stimulants. What do "
+"these two different mechanisms have in common that earns them the "
+"same class label?",
+        "options": [
+            {"text": "Both make nerve signals pass more readily, raising alertness and "
+"heart rate, even though they reach that outcome differently",
+             "correct": True},
+            {"text": "Both work by directly speeding up the heart rate first, with every "
+"single other effect following on from that fact entirely",
+             "correct": False,
+             "why": "The heart effect is a side effect on the route in the lesson, not "
+"the mechanism defining the stimulant class."},
+            {"text": "Both are broken down by the liver in an identical way, which is what "
+"the class label describes",
+             "correct": False,
+             "why": "The lesson never compares how the two drugs are broken down; the "
+"label is about their effect on signals."},
+            {"text": "Both are equally addictive, and addictiveness is exactly what "
+"defines the stimulant class",
+             "correct": False,
+             "why": "Strong addictiveness is attached to nicotine specifically, not to "
+"the stimulant class as a whole."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-h24",
+        "band": "harder",
+        "text": "Alcohol affects reactions, coordination and judgement, with "
+"judgement going first. Why does that particular order make alcohol "
+"especially dangerous?",
+        "options": [
+            {"text": "Because judgement is actually the very first of the three affected "
+"abilities to return completely and fully to normal",
+             "correct": False,
+             "why": "Going first means affected earliest, not recovering earliest."},
+            {"text": "Because judgement is the ability needed to notice you are impaired, "
+"so it fails right when it is most needed",
+             "correct": True},
+            {"text": "Because judgement is controlled by a completely different organ from "
+"reactions and coordination",
+             "correct": False,
+             "why": "All three come from the same mechanism, alcohol slowing signals "
+"throughout the brain."},
+            {"text": "Because losing judgement first means a drinker feels absolutely no "
+"effect at all",
+             "correct": False,
+             "why": "The drinker does not feel nothing; they are simply least able to "
+"judge how affected they are."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-h25",
+        "band": "harder",
+        "text": "A country changes the law so that nicotine products become fully "
+"legal to sell to under-18s. Would that legal change alter what "
+"nicotine does inside a 15-year-old's body?",
+        "options": [
+            {"text": "Yes, a substance stops being addictive the very moment it becomes "
+"fully legal to sell to absolutely anyone in society",
+             "correct": False,
+             "why": "A change in the law changes nothing about how a molecule acts in "
+"the body."},
+            {"text": "Yes, the reward-chemical mechanism only switches on in people old "
+"enough to buy the drug legally",
+             "correct": False,
+             "why": "The reward-chemical mechanism is a biological process, unconnected "
+"to whether a sale is currently legal."},
+            {"text": "No, legality is a decision made by people and can change, but the "
+"molecule and its effect on the body are unaffected by it",
+             "correct": True},
+            {"text": "It cannot be answered, since nicotine has never been studied in "
+"anyone under 18",
+             "correct": False,
+             "why": "The argument here is about law and biology being separate "
+"questions, which holds at any age."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-h26",
+        "band": "harder",
+        "text": "Of caffeine, alcohol, nicotine and paracetamol, two make the "
+"kidneys produce more urine. Which two?",
+        "options": [
+            {"text": "Paracetamol and alcohol, both are described as making the kidneys "
+"produce more urine",
+             "correct": False,
+             "why": "The kidneys filter broken-down paracetamol into the urine; they do "
+"not make more urine because of it."},
+            {"text": "Caffeine and nicotine, both are described as making the kidneys "
+"produce more urine",
+             "correct": False,
+             "why": "Nicotine's effects are on the heart and blood vessels, not on how "
+"much urine the kidneys make."},
+            {"text": "All four of the drugs make the kidneys produce noticeably more urine "
+"than usual",
+             "correct": False,
+             "why": "Only caffeine and alcohol do this; the kidneys merely filter "
+"paracetamol, and nicotine acts elsewhere."},
+            {"text": "Caffeine and alcohol, both are described as making the kidneys "
+"produce more urine",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-h27",
+        "band": "harder",
+        "text": "A customer complains to a manufacturer that their medicine causes "
+"drowsiness as well as treating pain, and demands a refund because "
+"the product must be 'faulty.' Using what a side effect actually is, "
+"evaluate the complaint.",
+        "options": [
+            {"text": "Not necessarily faulty, a side effect is the unavoidable result of a "
+"drug reaching everywhere through the blood, not a manufacturing "
+"fault",
+             "correct": True},
+            {"text": "The complaint is fully justified, since a properly made medicine "
+"would produce no side effects whatsoever",
+             "correct": False,
+             "why": "Reaching organs other than the target is unavoidable for any drug "
+"carried in the blood."},
+            {"text": "The complaint is fully justified, since drowsiness on its own proves "
+"the medicine was made incorrectly",
+             "correct": False,
+             "why": "A side effect is tied to the drug reaching an organ it was not taken "
+"for, not to a manufacturing error."},
+            {"text": "It cannot be evaluated at all without knowing exactly which "
+"medicine the customer bought",
+             "correct": False,
+             "why": "What a side effect is does not change from one medicine to "
+"another, so the complaint can be judged without naming it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-h28",
+        "band": "harder",
+        "text": "Digoxin at too high a dose, paracetamol taken well above the box's "
+"limit, and water drunk by the litre are three very different "
+"substances. What single idea explains why all three can become "
+"dangerous?",
+        "options": [
+            {"text": "All three are secretly members of the very same underlying class of "
+"drug, some kind of painkiller entirely",
+             "correct": False,
+             "why": "Digoxin, paracetamol and water are classed quite differently; none "
+"of this depends on one shared class."},
+            {"text": "Whether a substance treats you or harms you depends on the dose, not "
+"on what kind of substance it is",
+             "correct": True},
+            {"text": "All three become illegal to possess once taken above a certain "
+"specific amount",
+             "correct": False,
+             "why": "Nothing about the law changes with the amount taken; what changes "
+"is the effect on the body."},
+            {"text": "All three are dangerous purely because every single one of them "
+"happens to be swallowed rather than inhaled",
+             "correct": False,
+             "why": "The route into the body is not where the danger comes from; the "
+"dose is."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-01-h29",
+        "band": "harder",
+        "text": "Two mugs of ordinary coffee is enough for a measurable rise in "
+"heart rate. What does that tell you about the size of caffeine's "
+"effect?",
+        "options": [
+            {"text": "The effect only ever appears after drinking a great deal more than "
+"two mugs of ordinary coffee each and every single morning",
+             "correct": False,
+             "why": "Two mugs is the amount at which the difference can already be "
+"measured, not a minimum before anything happens at all."},
+            {"text": "The effect is too small to matter unless someone drinks coffee non- "
+"stop all day long",
+             "correct": False,
+             "why": "An effect measurable from two mugs does not support calling it too "
+"small to matter."},
+            {"text": "The effect is large enough to detect from an ordinary, everyday "
+"amount of caffeine, not only from an extreme dose",
+             "correct": True},
+            {"text": "The effect only happens in people who rarely, if ever, drink "
+"caffeine normally",
+             "correct": False,
+             "why": "Nothing limits this effect to people unused to caffeine; two mugs "
+"raises an ordinary drinker's heart rate measurably too."},
+        ],
+        "figure": None,
+    },]

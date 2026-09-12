@@ -467,4 +467,381 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-03-e07",
+        "band": "easier",
+        "text": "Every sound, whatever makes it, begins with something…",
+        "options": [
+            {"text": "heating up", "correct": False,
+             "why": "Temperature has nothing to do with starting a sound; "
+                    "vibration does."},
+            {"text": "glowing", "correct": False,
+             "why": "Sound has nothing to do with light or glowing; it "
+                    "starts with something moving to and fro."},
+            {"text": "cooling down", "correct": False,
+             "why": "Temperature has nothing to do with starting a sound; "
+                    "vibration does."},
+            {"text": "vibrating", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-e08",
+        "band": "easier",
+        "text": "In a microphone, the thin stretched sheet that is set "
+                "moving by arriving air is called the…",
+        "options": [
+            {"text": "diaphragm", "correct": True},
+            {"text": "amplitude", "correct": False,
+             "why": "Amplitude is a measurement of a wave, not a part "
+                    "inside a microphone."},
+            {"text": "cone", "correct": False,
+             "why": "A cone is the moving part of a loudspeaker, not the "
+                    "sheet inside a microphone."},
+            {"text": "wavelength", "correct": False,
+             "why": "Wavelength is a measurement of a wave, not a part "
+                    "inside a microphone."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-e09",
+        "band": "easier",
+        "text": "The stretched sheet inside your ear that vibrates when "
+                "sound arrives, doing the same job as a microphone's "
+                "diaphragm, is the…",
+        "options": [
+            {"text": "eardrum", "correct": True},
+            {"text": "eyelid", "correct": False,
+             "why": "The eyelid has nothing to do with hearing; it is part "
+                    "of the eye."},
+            {"text": "vocal folds", "correct": False,
+             "why": "Vocal folds are in the throat and are used to make "
+                    "sound, not to detect it arriving."},
+            {"text": "elbow", "correct": False,
+             "why": "The elbow plays no part in hearing at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-e10",
+        "band": "easier",
+        "text": "A plucked ruler, resting over the edge of a desk, is "
+                "buzzing loudly. A hand presses down firmly on the free "
+                "end. What happens to the sound?",
+        "options": [
+            {"text": "It stops at once, because the ruler can no longer "
+                     "vibrate", "correct": True},
+            {"text": "It carries on for a while, because the sound was "
+                     "already released into the room", "correct": False,
+             "why": "Sound is not released and then left drifting; it "
+                    "exists only while the source keeps vibrating."},
+            {"text": "It gets louder, because the hand pushes more air",
+             "correct": False,
+             "why": "The hand stops the ruler moving; it does not push "
+                    "air the way the vibrating ruler was doing."},
+            {"text": "It changes to a completely different sound, made now "
+                     "by the hand instead of the ruler", "correct": False,
+             "why": "The hand is not vibrating and making a new sound; it "
+                    "is simply stopping the ruler's own vibration."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-e11",
+        "band": "easier",
+        "text": "A drum is struck once and its skin buzzes for a short "
+                "time before falling silent. While the skin is buzzing, "
+                "where is the sound coming from?",
+        "options": [
+            {"text": "It was stored inside the drum from an earlier hit, "
+                     "and this strike simply released it", "correct": False,
+             "why": "Nothing is stored up inside a drum; the sound exists "
+                    "only while the skin is actually vibrating."},
+            {"text": "From the drummer's hand, which somehow keeps on "
+                     "making the sound long after the strike itself",
+             "correct": False,
+             "why": "The hand only delivers the strike; the drum skin is "
+                    "what carries on vibrating afterwards."},
+            {"text": "From the air trapped inside the drum, which starts "
+                     "making sound on its own once disturbed",
+             "correct": False,
+             "why": "The air only carries the disturbance; it is the "
+                    "vibrating skin that is making the sound happen."},
+            {"text": "From the skin, vibrating and disturbing the air next "
+                     "to it, fresh each moment", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-e12",
+        "band": "easier",
+        "text": "A struck tuning fork sounds much quieter held in the air "
+                "than when its base is pressed onto a table top. What has "
+                "been added to the fork to make it louder on the table?",
+        "options": [
+            {"text": "Extra energy from the table", "correct": False,
+             "why": "The table does not add energy to the fork; the fork "
+                    "still only has the energy it was struck with."},
+            {"text": "A bigger vibration", "correct": False,
+             "why": "The fork's own vibration is not made bigger by "
+                    "touching the table."},
+            {"text": "Nothing has been added to the fork itself",
+             "correct": True},
+            {"text": "A higher frequency of vibration overall", "correct": False,
+             "why": "Touching the table does not change how fast the fork "
+                    "is vibrating."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-03-s07",
+        "band": "standard",
+        "text": "A struck tuning fork is quiet held in the air but loud "
+                "once its base is pressed onto a table top, and nothing "
+                "about the fork's own vibration has changed. Why does it "
+                "sound louder on the table?",
+        "options": [
+            {"text": "The table top is being driven by the fork and pushes "
+                     "far more air than the fork's own thin prongs could "
+                     "on their own", "correct": True},
+            {"text": "The table absorbs the vibration and makes its own "
+                     "fresh, louder sound", "correct": False,
+             "why": "The table does not make its own sound; it simply "
+                    "transmits the fork's vibration to a much larger area "
+                    "of air."},
+            {"text": "The table reflects the fork's sound back directly "
+                     "towards the listener, which is what doubles how "
+                     "loud it seems to be", "correct": False,
+             "why": "Nothing here is being reflected back towards a "
+                    "listener; the whole table top is itself being made to "
+                    "push the air."},
+            {"text": "Pressing the fork onto the table increases the "
+                     "fork's own frequency of vibration", "correct": False,
+             "why": "The fork's frequency is unchanged by touching the "
+                    "table; only how much air gets pushed changes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-s08",
+        "band": "standard",
+        "text": "The louder, table-driven version of a struck tuning "
+                "fork's note also dies away faster than the quiet, "
+                "held-in-air version. Explain why, in terms of energy.",
+        "options": [
+            {"text": "The table version uses up the fork's fixed store of "
+                     "vibration energy more quickly, because it is being "
+                     "handed to a much larger amount of air each moment",
+             "correct": True},
+            {"text": "The table version has more total energy to begin "
+                     "with, so naturally there is more of it to use up",
+             "correct": False,
+             "why": "Both versions start with exactly the same energy from "
+                    "the same strike; nothing extra was given to either "
+                    "one."},
+            {"text": "The table absorbs energy from the surrounding room "
+                     "as well as from the fork itself, and this combined "
+                     "absorption is what somehow speeds up the fading",
+             "correct": False,
+             "why": "The room does not feed extra energy into the system; "
+                    "the fading is about how fast the fork's own energy is "
+                    "given up, not about energy coming in from elsewhere."},
+            {"text": "Louder sounds always fade faster than quiet ones, "
+                     "regardless of what is making either of them",
+             "correct": False,
+             "why": "That is not a general rule; it is specifically about "
+                    "how quickly a particular source is handing its energy "
+                    "to the air, not about loudness on its own."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-s09",
+        "band": "standard",
+        "text": "A loudspeaker cone is playing a very high, quiet note, "
+                "vibrating so fast and by such a tiny distance that its "
+                "movement cannot be seen at all by eye. Is the cone "
+                "actually vibrating?",
+        "options": [
+            {"text": "No — if the movement cannot be seen, there is no "
+                     "real vibration happening", "correct": False,
+             "why": "Sound is coming out, and sound only exists while "
+                    "something is genuinely vibrating; the movement is "
+                    "simply too fast and small to see."},
+            {"text": "It depends on whether the note is loud enough to "
+                     "hear clearly", "correct": False,
+             "why": "Loudness comes from the size of the vibration, not "
+                    "from whether the cone is vibrating in the first "
+                    "place."},
+            {"text": 'No — a note this quiet and high is produced '
+                     'electronically, without the cone having to move, since '
+                     'the speaker only passes the signal onward to the room', "correct": False,
+             "why": "A loudspeaker always makes sound by moving its cone; "
+                    "there is no way for it to produce sound without any "
+                    "movement."},
+            {"text": "Yes — the sound coming out is only possible because "
+                     "the cone really is vibrating, whether or not that "
+                     "movement is visible", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-s10",
+        "band": "standard",
+        "text": "A cheap intercom uses a single small loudspeaker at each "
+                "end, wired so either one can act as the microphone while "
+                "the other plays the sound. What makes it possible for one "
+                "loudspeaker to work as a microphone at all?",
+        "options": [
+            {"text": "The two loudspeakers are secretly connected by radio "
+                     "as well as by wire, and the radio link carries the "
+                     "sound", "correct": False,
+             "why": "No radio link is needed or used; the ordinary wire "
+                    "connection is doing the whole job."},
+            {"text": "A speaker's cone moving in response to arriving "
+                     "sound can generate an electrical signal, the same "
+                     "way a microphone diaphragm does", "correct": True},
+            {"text": 'Loudspeakers and microphones are built from identical '
+                     'parts, with no difference between them anywhere', "correct": False,
+             "why": "They are built for different jobs, even though the "
+                    "underlying moving-coil idea can run in either "
+                    "direction."},
+            {"text": "The intercom's electronics fake the microphone function "
+                     "on their own, reading the tiny currents in the wire "
+                     "without the loudspeaker's cone moving at all",
+             "correct": False,
+             "why": "It is the loudspeaker's own cone and coil, moved by "
+                    "the arriving sound, that genuinely generates the "
+                    "signal — nothing is faked."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-s11",
+        "band": "standard",
+        "text": "A large table top and a small tuning fork are both made "
+                "to vibrate by the same struck fork, at the very same "
+                "frequency. Which pushes more air, and why?",
+        "options": [
+            {"text": "The tuning fork, because it is vibrating fastest",
+             "correct": False,
+             "why": "Both are vibrating at the same frequency here; "
+                    "speed of vibration is not what is different between "
+                    "them."},
+            {"text": "The table top, because it has a much larger surface "
+                     "in contact with the air", "correct": True},
+            {"text": "Neither one, since both push exactly the same air",
+             "correct": False,
+             "why": "Frequency being equal does not make the amount of air "
+                    "pushed equal; surface area in contact with the air "
+                    "matters too."},
+            {"text": 'The tuning fork, because metal pushes air more easily '
+                     'than wood does, whatever the size of the surface doing '
+                     'the pushing', "correct": False,
+             "why": "The material of the surface is not what decides this "
+                    "here; how much surface area is moving the air is."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-03-h07",
+        "band": "harder",
+        "text": "A struck tuning fork sounds louder pressed onto a table, "
+                "and a student concludes the fork itself must be "
+                "vibrating with a bigger amplitude while touching the "
+                "table. Assess this conclusion.",
+        "options": [
+            {"text": "The conclusion is right, since a louder sound "
+                     "always means a bigger amplitude of vibration "
+                     "somewhere within the whole system", "correct": False,
+             "why": "The extra loudness comes from the table pushing more "
+                    "air, not from the fork's own amplitude growing."},
+            {"text": "The conclusion is wrong — the fork's own vibration is "
+                     "unchanged; the table simply pushes far more air with "
+                     "the same movement", "correct": True},
+            {"text": "The conclusion is right, but only because the table "
+                     "physically presses the prongs further apart",
+             "correct": False,
+             "why": "Nothing about resting the base on a table changes how "
+                    "far apart the prongs swing."},
+            {"text": "The conclusion cannot be judged without measuring "
+                     "the fork's frequency as well as its loudness",
+             "correct": False,
+             "why": "Frequency is not in question here; the fork's "
+                    "amplitude — not its frequency — is what the "
+                    "conclusion is actually about."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-h08",
+        "band": "harder",
+        "text": "Old headphones plugged into a microphone socket and "
+                "shouted into will pick up a faint, poor-quality signal, "
+                "even though they were built only to turn a signal into "
+                "sound. Explain why this works at all.",
+        "options": [
+            {"text": 'It does not work — any faint signal picked up this way is '
+                     'random electrical noise from the socket, and it only '
+                     'seems to follow the shouting because the socket is being '
+                     'jogged', "correct": False,
+             "why": "The headphones genuinely do generate a real, if poor, "
+                    "signal from the sound arriving at them."},
+            {"text": "A coil moving near a magnet generates a voltage "
+                     "whether or not that was the intended use, so shouted "
+                     "sound moving the headphone's own coil produces a "
+                     "signal too", "correct": True},
+            {"text": "Headphones secretly contain a hidden microphone "
+                     "circuit built in alongside the speaker part",
+             "correct": False,
+             "why": "No separate microphone circuit is needed; it is the "
+                    "very same coil-and-magnet part doing an unintended "
+                    "second job."},
+            {"text": "Shouting into headphones works only because modern "
+                     "electronics automatically convert the sound for "
+                     "them", "correct": False,
+             "why": "No conversion electronics are involved; the physical "
+                    "coil-and-magnet movement itself is what generates the "
+                    "signal."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-03-h09",
+        "band": "harder",
+        "text": "A student claims a struck tuning fork keeps sounding "
+                "forever, because striking it started the vibration and "
+                "nothing afterwards acts to stop it. Assess this claim.",
+        "options": [
+            {"text": "The claim is right — struck once, a tuning fork "
+                     "genuinely never stops vibrating on its own",
+             "correct": False,
+             "why": "A struck fork's note is heard to fade away and "
+                    "eventually stop; it does not vibrate forever."},
+            {"text": 'The claim is right, but only because sound is inaudible '
+                     'once too quiet, while the fork still vibrates as hard as '
+                     'at the start, with nothing touching it to slow it', "correct": False,
+             "why": "The fork's vibration itself genuinely weakens over "
+                    "time; it is not simply becoming too quiet to hear "
+                    "while staying just as strong."},
+            {"text": "The claim is wrong, but only because friction "
+                     "between the prongs eventually welds them together",
+             "correct": False,
+             "why": "Nothing about the prongs welding together is "
+                    "involved; the fading comes from energy being handed "
+                    "to the air, not from the prongs sticking."},
+            {"text": "The claim is wrong — the fork continually hands its "
+                     "vibration energy to the surrounding air, so the "
+                     "vibration and the sound both gradually die away",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

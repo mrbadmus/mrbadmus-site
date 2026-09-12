@@ -860,4 +860,1677 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 expansion ───────────────────────────────────────────
+    {
+        "id": "c4-04-e11",
+        "band": "easier",
+        "text": "Yeast and sugar solution are left to ferment in an open "
+                "flask standing on a balance. Carbon dioxide bubbles steadily "
+                "out of the neck. What happens to the balance reading?",
+        "options": [
+            {"text": "It falls, because the gas has left the pan",
+             "correct": True},
+            {"text": "It rises, because bubbles are being made",
+             "correct": False,
+             "why": "Bubbles are gas being made, not mass being made. That "
+                    "gas comes out of the sugar that was already on the pan"},
+            {"text": "It does not change, because a gas weighs nothing at all",
+             "correct": False,
+             "why": "A gas has mass like anything else. Once it is out of the "
+                    "neck it is simply no longer on the pan"},
+            {"text": "It falls, then rises back as the fizzing stops",
+             "correct": False,
+             "why": "Nothing brings the escaped gas back. The reading stays "
+                    "down once the bubbling has finished"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e12",
+        "band": "easier",
+        "text": "An indigestion tablet is dropped into water in an open "
+                "beaker on a balance, and the reading falls by 1.30 g. Where "
+                "is the missing 1.30 g now?",
+        "options": [
+            {"text": "Destroyed by the reaction",
+             "correct": False,
+             "why": "Nothing is destroyed by a reaction. The atoms are all "
+                    "still there, joined up differently"},
+            {"text": "Still dissolved in the water, which hides its mass",
+             "correct": False,
+             "why": "Anything still in the water is still on the pan, so it "
+                    "could not be part of a fall in the reading"},
+            {"text": "In the air of the room, as escaped gas",
+             "correct": True},
+            {"text": "Turned into the heat the beaker gave out",
+             "correct": False,
+             "why": "Heat carries no mass a balance can read. The missing "
+                    "1.30 g is matter, and it went out as gas"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e13",
+        "band": "easier",
+        "text": "Copper turnings are heated strongly in an open crucible "
+                "until they have all turned into black copper oxide. The "
+                "black powder has a greater mass than the copper did. What "
+                "has been added to the copper?",
+        "options": [
+            {"text": "Heat from the Bunsen, which has mass",
+             "correct": False,
+             "why": "Heat starts the reaction off but adds no mass to the "
+                    "crucible"},
+            {"text": "Oxygen taken from the air",
+             "correct": True},
+            {"text": "Nitrogen from the air",
+             "correct": False,
+             "why": "Most of the air is nitrogen, but it takes no part here. "
+                    "The product is copper OXIDE"},
+            {"text": "Water vapour from the air",
+             "correct": False,
+             "why": "Copper oxide contains no hydrogen, so no water went into "
+                    "it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e14",
+        "band": "easier",
+        "text": "A reaction in an open beaker gives off hydrogen gas. The "
+                "beaker and everything in it have a mass of 86.40 g at the "
+                "start and 86.20 g at the end. Calculate the mass of hydrogen "
+                "given off.",
+        "options": [
+            {"text": "0.02 g",
+             "correct": False,
+             "why": "A place-value slip. 86.40 − 86.20 is 0.20, not 0.02"},
+            {"text": "86.20 g",
+             "correct": False,
+             "why": "That is everything LEFT in the beaker, not the part that "
+                    "escaped from it"},
+            {"text": "172.60 g",
+             "correct": False,
+             "why": "The two readings have been added. The gas is the "
+                    "difference between them"},
+            {"text": "0.20 g",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e15",
+        "band": "easier",
+        "text": "A student says that mass is only conserved when a reaction "
+                "is carried out in a sealed flask. Is that right?",
+        "options": [
+            {"text": "Yes, because an open flask always loses mass to the "
+                     "room",
+             "correct": False,
+             "why": "An open flask can gain instead, and either way the total "
+                    "including the gas is unchanged"},
+            {"text": "Yes, because sealing stops the gas being made in the "
+                     "first place",
+             "correct": False,
+             "why": "Sealing changes nothing about the reaction. The gas is "
+                    "still made; it just cannot leave"},
+            {"text": "No — mass is conserved only when a flask is left open",
+             "correct": False,
+             "why": "This has the rule the wrong way round, and the rule has "
+                    "no such condition on it at all"},
+            {"text": "No — mass is always conserved; sealing only lets the "
+                     "balance show it",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e16",
+        "band": "easier",
+        "text": "A fizzing reaction is run in a flask with a balloon "
+                "stretched tightly over its neck, so no gas can escape. The "
+                "flask and balloon stay on the balance. What happens to the "
+                "reading?",
+        "options": [
+            {"text": "It falls, because the gas is now in the balloon",
+             "correct": False,
+             "why": "The balloon is on the pan too, so the gas inside it is "
+                    "still being weighed"},
+            {"text": "It stays the same, because the gas is still on the pan",
+             "correct": True},
+            {"text": "It rises, because the balloon is bigger",
+             "correct": False,
+             "why": "Taking up more room is not the same as having more mass. "
+                    "Nothing has joined from outside"},
+            {"text": "It falls, because gas weighs less than liquid",
+             "correct": False,
+             "why": "The gas came out of what was already there, so the total "
+                    "on the pan cannot have dropped"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e17",
+        "band": "easier",
+        "text": "A flask of acid and a dish of marble chips are weighed "
+                "together on a balance: 178.40 g in total. The chips are then "
+                "tipped into the flask, which is left open while it fizzes. "
+                "What is the final reading?",
+        "options": [
+            {"text": "Less than 178.40 g, because gas has left the flask",
+             "correct": True},
+            {"text": "Exactly 178.40 g, because mass is always conserved",
+             "correct": False,
+             "why": "Mass IS conserved, but the balance only weighs what is "
+                    "left on the pan, and the gas is not"},
+            {"text": "More than 178.40 g, because a new substance is made",
+             "correct": False,
+             "why": "New substances are made from the atoms already there, so "
+                    "they add nothing to the total"},
+            {"text": "More than 178.40 g, because the gas made inside adds "
+                     "weight",
+             "correct": False,
+             "why": "The gas made inside pushes out of the open neck, and "
+                    "filling a space adds no mass anyway"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e18",
+        "band": "easier",
+        "text": "Which of these reactions, run in an open container on a "
+                "balance, would make the reading go UP?",
+        "options": [
+            {"text": "A carbonate giving off carbon dioxide when heated",
+             "correct": False,
+             "why": "Gas leaves the dish here, so this reading goes down"},
+            {"text": "An indigestion tablet fizzing hard in a beaker of warm "
+                     "water",
+             "correct": False,
+             "why": "The fizzing is gas escaping from the beaker, so this "
+                    "reading goes down"},
+            {"text": "A metal burning and taking in oxygen from the air",
+             "correct": True},
+            {"text": "Zinc reacting with acid to give off hydrogen",
+             "correct": False,
+             "why": "Hydrogen bubbles away out of the dish, so this reading "
+                    "goes down"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e19",
+        "band": "easier",
+        "text": "Magnesium burns in oxygen to make magnesium oxide. In the "
+                "conservation-of-mass sum for this reaction, which masses are "
+                "added together on the reactant side?",
+        "options": [
+            {"text": "The magnesium oxide only, since it holds all of the "
+                     "mass now",
+             "correct": False,
+             "why": "The oxide is the product. It belongs on the other side "
+                    "of the equals sign"},
+            {"text": "The magnesium and the oxygen it took from the air",
+             "correct": True},
+            {"text": "The magnesium only, since nobody weighed the oxygen",
+             "correct": False,
+             "why": "A reactant counts whether or not anybody weighed it out. "
+                    "Leave the oxygen out and the sum will not balance"},
+            {"text": "The magnesium oxide and the oxygen from the air",
+             "correct": False,
+             "why": "This puts a product and a reactant on the same side. The "
+                    "oxide is what the other two became"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e20",
+        "band": "easier",
+        "text": "In a sealed flask, 2.30 g of sodium reacts completely with "
+                "3.55 g of chlorine to make sodium chloride and nothing else. "
+                "What mass of sodium chloride is made?",
+        "options": [
+            {"text": "1.25 g",
+             "correct": False,
+             "why": "The two reactant masses have been subtracted. Both of "
+                    "them ended up in the product, so they add"},
+            {"text": "3.55 g",
+             "correct": False,
+             "why": "That is the chlorine alone. The sodium is in the product "
+                    "too"},
+            {"text": "5.85 g",
+             "correct": True},
+            {"text": "2.30 g",
+             "correct": False,
+             "why": "That is the sodium alone. The chlorine did not vanish "
+                    "when it joined on"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e21",
+        "band": "easier",
+        "text": "An empty crucible has a mass of 82.20 g. A 2.40 g strip of "
+                "magnesium is put inside it. What does the balance read with "
+                "the crucible and the magnesium both on the pan?",
+        "options": [
+            {"text": "2.40 g",
+             "correct": False,
+             "why": "A balance weighs everything on the pan, and the crucible "
+                    "is on the pan too"},
+            {"text": "82.20 g",
+             "correct": False,
+             "why": "That is the crucible on its own, before the magnesium "
+                    "was added to it"},
+            {"text": "79.80 g",
+             "correct": False,
+             "why": "Adding magnesium cannot make the reading smaller. These "
+                    "two masses add, they do not subtract"},
+            {"text": "84.60 g",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e22",
+        "band": "easier",
+        "text": "Chemists say that mass is conserved in a chemical reaction. "
+                "What does the word conserved mean here?",
+        "options": [
+            {"text": "The total stays exactly the same",
+             "correct": True},
+            {"text": 'It is stored up somewhere and given back later',
+             "correct": False,
+             "why": "Nothing is stored and returned. The total is the same at "
+                    "every moment, not just at the end"},
+            {"text": "The mass is used up slowly as it reacts",
+             "correct": False,
+             "why": "Reactants are used up, but their mass is not: it is in "
+                    "the products"},
+            {"text": 'It is shared out evenly between the products',
+             "correct": False,
+             "why": "Products can have very different masses. What is fixed "
+                    "is the total, not the share"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e23",
+        "band": "easier",
+        "text": "Green copper carbonate is heated in an open test tube. It "
+                "turns black, and carbon dioxide is driven off into the room. "
+                "How does the mass of solid left in the tube compare with the "
+                "copper carbonate at the start?",
+        "options": [
+            {"text": "Greater, because a black solid is denser than a green "
+                     "one",
+             "correct": False,
+             "why": "Density is about how tightly packed a substance is, not "
+                    "how much of it there is"},
+            {"text": "Smaller, because the carbon dioxide has gone",
+             "correct": True},
+            {"text": "The same — the solid stayed in the tube",
+             "correct": False,
+             "why": "The solid stayed, but part of what it was made of left "
+                    "as a gas"},
+            {"text": "Greater, because heating always adds energy, and energy "
+                     "adds mass",
+             "correct": False,
+             "why": "Energy put in by a Bunsen adds no mass a balance can "
+                    "read"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e24",
+        "band": "easier",
+        "text": "A reaction gives off a gas. In which of these containers, "
+                "standing on a balance, would the reading show the gas "
+                "leaving?",
+        "options": [
+            {"text": "An open beaker",
+             "correct": True},
+            {"text": "A sealed flask",
+             "correct": False,
+             "why": "Nothing can cross a seal, so the gas stays on the pan "
+                    "and the reading does not move"},
+            {"text": "A flask with a balloon tied over the neck",
+             "correct": False,
+             "why": "The balloon holds the gas, and the balloon is on the pan "
+                    "as well"},
+            {"text": "A stoppered test tube",
+             "correct": False,
+             "why": "A stopper keeps the gas inside, so the balance has "
+                    "nothing to report"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e25",
+        "band": "easier",
+        "text": "A sealed flask holds 40 carbon atoms before a reaction "
+                "starts. The reaction makes several new substances. How many "
+                "carbon atoms are in the flask afterwards?",
+        "options": [
+            {"text": "Fewer than 40",
+             "correct": False,
+             "why": "Atoms are not used up in a reaction; they are joined "
+                    "together differently"},
+            {"text": "More than 40",
+             "correct": False,
+             "why": "A sealed flask cannot gain atoms, and a reaction cannot "
+                    "make them"},
+            {"text": "40",
+             "correct": True},
+            {"text": "It cannot be said",
+             "correct": False,
+             "why": "It can, and without knowing the reaction: in a sealed "
+                    "flask the count of each kind of atom is fixed"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e26",
+        "band": "easier",
+        "text": "Hydrogen peroxide solution in an open beaker slowly breaks "
+                "down into water and oxygen gas. The beaker stands on a "
+                "balance throughout. What happens to the reading?",
+        "options": [
+            {"text": "It rises, because two substances are made where there "
+                     "was one",
+             "correct": False,
+             "why": "Splitting one substance into two shares the mass out; it "
+                    "does not add any"},
+            {"text": "It stays the same, because a liquid stays a liquid",
+             "correct": False,
+             "why": "Part of the liquid leaves as oxygen gas, and that gas is "
+                    "off the pan"},
+            {"text": "It rises, because oxygen joins from the air",
+             "correct": False,
+             "why": "The oxygen comes out of the hydrogen peroxide, not out "
+                    "of the air"},
+            {"text": "It falls, because the oxygen leaves the beaker",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e27",
+        "band": "easier",
+        "text": "Two reactants are weighed into a sealed flask: 10.00 g of "
+                "one and 6.00 g of the other. They react completely. What is "
+                "the total mass of everything in the flask at the end?",
+        "options": [
+            {"text": "16.00 g",
+             "correct": True},
+            {"text": "4.00 g",
+             "correct": False,
+             "why": "The two masses have been subtracted. Both reactants are "
+                    "still in the flask, as products"},
+            {"text": "10.00 g",
+             "correct": False,
+             "why": "That is one reactant on its own. The other one did not "
+                    "disappear when it reacted"},
+            {"text": "Less than 16.00 g",
+             "correct": False,
+             "why": "Nothing can leave a sealed flask, so the total inside it "
+                    "cannot drop"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e28",
+        "band": "easier",
+        "text": "The air in an ordinary classroom has a mass of about 150 "
+                "kilograms. Which idea does that fact support?",
+        "options": [
+            {"text": "Gases have no mass until they are squeezed into a "
+                     "cylinder",
+             "correct": False,
+             "why": "Squeezing a gas puts more of it in a smaller space. It "
+                    "does not give it mass it did not have"},
+            {"text": "Gases have mass, even though you cannot feel it",
+             "correct": True},
+            {"text": "Only heavy gases such as carbon dioxide have any mass",
+             "correct": False,
+             "why": "Classroom air is mostly nitrogen and oxygen, and those "
+                    "150 kilograms are nearly all of them"},
+            {"text": "A gas gains mass when it is warmed up by a heater",
+             "correct": False,
+             "why": "Warming a gas spreads it out. The same gas, warm or "
+                    "cold, has the same mass"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e29",
+        "band": "easier",
+        "text": "Steel wool is burned in air. Which of these takes part in "
+                "the reaction, and so has to be counted in the mass sum?",
+        "options": [
+            {"text": "The nitrogen in the air",
+             "correct": False,
+             "why": "Most of the air is nitrogen and it takes no part here, "
+                    "so its mass is the same before and after"},
+            {"text": "Heat from the flame",
+             "correct": False,
+             "why": "Heat is not a substance and has no mass to put in a sum"},
+            {"text": "The oxygen in the air",
+             "correct": True},
+            {"text": "The tongs that hold the wool in the flame",
+             "correct": False,
+             "why": "The tongs are apparatus. They do not react, so they "
+                    "belong in no part of the sum"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e30",
+        "band": "easier",
+        "text": "A carbonate is heated in an open crucible until no more gas "
+                "comes off. The crucible and its contents have a mass of "
+                "12.50 g before heating and 7.30 g afterwards. What mass of "
+                "gas escaped?",
+        "options": [
+            {"text": "19.80 g",
+             "correct": False,
+             "why": "The two readings have been added. The gas is what is "
+                    "missing between them"},
+            {"text": "5.20 g",
+             "correct": True},
+            {"text": "7.30 g",
+             "correct": False,
+             "why": "That is the crucible and what stayed in it, not the part "
+                    "that left"},
+            {"text": "12.50 g",
+             "correct": False,
+             "why": "That is everything before heating, gas included. Only "
+                    "part of it escaped"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e31",
+        "band": "easier",
+        "text": "A student says that when a firework burns there is less left "
+                "afterwards, so burning must destroy matter. What is the "
+                "correct reply?",
+        "options": [
+            {"text": "The products were gases, and they went into the air",
+             "correct": True},
+            {"text": "Burning really does destroy a little matter",
+             "correct": False,
+             "why": "No reaction destroys matter. Every atom in the firework "
+                    "is still somewhere after it has gone off"},
+            {"text": "The missing mass was turned into the light and sound "
+                     "given out",
+             "correct": False,
+             "why": "Light and sound are not substances and carry no mass "
+                    "away from the firework"},
+            {"text": "Firework chemicals are too light for a balance to weigh",
+             "correct": False,
+             "why": "They weigh perfectly well. What escaped a weighing was "
+                    "the gas, not the solid"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-e32",
+        "band": "easier",
+        "text": "A reaction has two reactants and one product. Which line "
+                "writes the conservation-of-mass rule correctly for it?",
+        "options": [
+            {"text": "reactant 1 = reactant 2 + product",
+             "correct": False,
+             "why": "This puts one reactant on its own against the other "
+                    "reactant plus the product, which is not what happened"},
+            {"text": "reactant 1 × reactant 2 = product",
+             "correct": False,
+             "why": "Conservation of mass is a sum. Two masses are never "
+                    "multiplied together"},
+            {"text": "reactant 1 + reactant 2 + product = 0",
+             "correct": False,
+             "why": "A total mass is never zero. The reactants add up to the "
+                    "product, not to nothing"},
+            {"text": "reactant 1 + reactant 2 = product",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s11",
+        "band": "standard",
+        "text": "A student heats 6.35 g of copper in air until it has all "
+                "become 7.95 g of black copper oxide. Her partner repeats the "
+                "experiment with twice as much copper. What mass of oxygen "
+                "joins the copper in the partner's run?",
+        "options": [
+            {"text": "1.60 g",
+             "correct": False,
+             "why": "That is the oxygen for the first run. The partner used "
+                    "twice as much copper, so twice as much oxygen joins"},
+            {"text": "12.70 g",
+             "correct": False,
+             "why": "That is the partner's copper, not the oxygen that joined "
+                    "it"},
+            {"text": "3.20 g",
+             "correct": True},
+            {"text": "15.90 g",
+             "correct": False,
+             "why": "That is the partner's copper oxide. The oxygen is the "
+                    "part of it that came out of the air"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s12",
+        "band": "standard",
+        "text": "18.00 g of blue hydrated copper sulfate is heated in an open "
+                "dish until 11.50 g of white powder is left. The rest was "
+                "driven off as water vapour. What mass of water vapour was "
+                "driven off, and where is it now?",
+        "options": [
+            {"text": "6.50 g, now in the air of the room",
+             "correct": True},
+            {"text": "6.50 g, destroyed by the heating",
+             "correct": False,
+             "why": "The arithmetic is right and the conclusion is not. "
+                    "Heating drove the water off; it did not destroy it"},
+            {"text": "29.50 g, now spread through the air of the room",
+             "correct": False,
+             "why": "The two readings have been added. What left is the "
+                    "difference between them"},
+            {"text": "11.50 g, now in the air of the room",
+             "correct": False,
+             "why": "That is the white powder still sitting in the dish, not "
+                    "the part that went into the air"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s13",
+        "band": "standard",
+        "text": "The marble-and-acid reaction is run in a conical flask "
+                "plugged with cotton wool instead of a stopper. The balance "
+                "reading still falls. Why?",
+        "options": [
+            {"text": "The cotton wool soaks up some of the acid",
+             "correct": False,
+             "why": "Soaked-up acid is still inside the flask and still on "
+                    "the pan, so it cannot make a reading fall"},
+            {"text": "Cotton wool lets gas through, so the flask is not "
+                     "sealed",
+             "correct": True},
+            {"text": "The gas is destroyed as it passes through the cotton "
+                     "wool",
+             "correct": False,
+             "why": "Cotton wool destroys nothing. The gas goes straight "
+                    "through it and into the room"},
+            {"text": "The cotton wool adds mass of its own, which hides the "
+                     "real change",
+             "correct": False,
+             "why": "The plug is on the pan before and after, so its mass "
+                    "cancels — and this reaction gains nothing anyway"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s14",
+        "band": "standard",
+        "text": "Magnesium is burned in a crucible whose lid is lifted from "
+                "time to time to let air in. The magnesium burns completely, "
+                "but the measured gain in mass is smaller than it should be. "
+                "Suggest why.",
+        "options": [
+            {"text": "Heat escaped through the gap, and heat has mass",
+             "correct": False,
+             "why": "Heat carries no mass a balance can read, so letting it "
+                    "out changes no reading"},
+            {"text": "The gap let oxygen out, so no oxide formed",
+             "correct": False,
+             "why": "The magnesium burned completely, so oxide plainly did "
+                    "form. Lifting the lid lets air IN, which is the point"},
+            {"text": "Some magnesium oxide smoke escaped and was not weighed",
+             "correct": True},
+            {"text": "The lid was on the pan at the start anyway",
+             "correct": False,
+             "why": "The lid is on the pan before and after, so its mass "
+                    "cancels out and cannot explain a gain that came out too "
+                    "small"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s15",
+        "band": "standard",
+        "text": "In a sealed flask, 4.60 g of substance A reacts with an "
+                "unknown mass of substance B. The reaction makes 5.40 g of "
+                "one product and 1.90 g of another, and nothing is left over. "
+                "What mass of B was used?",
+        "options": [
+            {"text": "7.30 g",
+             "correct": False,
+             "why": "That is both products together, which equals A and B "
+                    "added. B is what is left when A is taken off it"},
+            {"text": "0.80 g",
+             "correct": False,
+             "why": "Only one product has been used. Both of them came from A "
+                    "and B, so both count"},
+            {"text": "11.90 g",
+             "correct": False,
+             "why": "A has been added to the products instead of taken away "
+                    "from them"},
+            {"text": "2.70 g",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s16",
+        "band": "standard",
+        "text": "Two students each burn 2.40 g of magnesium completely: one "
+                "in an open crucible, one in a sealed tube holding plenty of "
+                "air. Whose magnesium oxide has the greater mass?",
+        "options": [
+            {"text": "The open one, because it has an unlimited supply of air",
+             "correct": False,
+             "why": "Both had enough air to burn all the magnesium, and the "
+                    "magnesium decides how much oxide there can be"},
+            {"text": "The sealed one, because nothing at all can escape from "
+                     "the tube",
+             "correct": False,
+             "why": "Sealing changes what the BALANCE sees, not how much "
+                    "oxide the reaction makes"},
+            {"text": "It cannot be told without the readings",
+             "correct": False,
+             "why": "It can: the same mass of magnesium burned completely "
+                    "gives the same mass of oxide every time"},
+            {"text": "Neither — both make 4.00 g of magnesium oxide",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s17",
+        "band": "standard",
+        "text": "A student claims that any reaction giving off a gas must "
+                "lose mass. Which case disproves the claim?",
+        "options": [
+            {"text": "The same reaction run in a sealed flask, which loses "
+                     "nothing",
+             "correct": True},
+            {"text": "A reaction that makes no gas at all, so nothing can be "
+                     "lost",
+             "correct": False,
+             "why": "The claim is only about reactions that DO give off a "
+                    "gas, so this case never tests it"},
+            {"text": 'Any hot reaction, because the heat given out replaces the '
+                     'lost mass',
+             "correct": False,
+             "why": "Heat replaces nothing on a balance. A hot flask that has "
+                    "lost gas still reads lower"},
+            {"text": 'Any reaction giving off its gas very slowly indeed',
+             "correct": False,
+             "why": "Slow gas is still gas leaving. Wait long enough and the "
+                    "reading falls by just as much"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s18",
+        "band": "standard",
+        "text": "A student says that a reaction which gives out a lot of heat "
+                "must lose mass, because energy has left the flask. What is "
+                "the correct reply?",
+        "options": [
+            {"text": "A reaction that gets hot always loses some of its mass",
+             "correct": False,
+             "why": "Warm a sealed flask's reaction as much as you like: the "
+                    "reading does not move"},
+            {"text": "That is true, unless the flask has been sealed "
+                     "beforehand",
+             "correct": False,
+             "why": "Sealing is not what saves the mass. Heat takes no "
+                    "measurable mass out of an open flask either"},
+            {"text": "Heat carries no mass a balance can read; the atoms all "
+                     "stay",
+             "correct": True},
+            {"text": "The mass rises instead, because the heat is added to "
+                     "the products",
+             "correct": False,
+             "why": "Heat is not a substance being added to anything, so it "
+                    "cannot push a reading up"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s19",
+        "band": "standard",
+        "text": "A student weighs a beaker holding the reactants: 24.00 g. "
+                "The reaction is run in the open, and the reading falls to "
+                "22.60 g. What mass of gas escaped, and does the beaker's own "
+                "mass matter?",
+        "options": [
+            {"text": "1.40 g, and yes — the beaker has to be weighed on its "
+                     "own first",
+             "correct": False,
+             "why": "The mass of gas is a difference, and any fixed mass in "
+                    "both readings drops out of a difference"},
+            {"text": "1.40 g, and no — the beaker's mass is in both readings",
+             "correct": True},
+            {"text": "22.60 g, and no — the beaker never needs weighing",
+             "correct": False,
+             "why": "22.60 g is what is still in the beaker. The gas is what "
+                    "is missing between the two readings"},
+            {"text": "46.60 g, and no — the two readings should be added up",
+             "correct": False,
+             "why": "Adding them gives a mass that was never on the pan. The "
+                    "gas is the fall, not the sum"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s20",
+        "band": "standard",
+        "text": "A candle in an open room burns away until almost nothing is "
+                "left of it. Which substances make up the missing mass, and "
+                "where are they now?",
+        "options": [
+            {"text": "Soot and ash, now sitting on the candle holder",
+             "correct": False,
+             "why": "A clean candle flame leaves almost no solid behind, and "
+                    "anything on the holder was never missing"},
+            {"text": "Heat and light, now spread out through the room",
+             "correct": False,
+             "why": "Heat and light are not substances and have no mass to "
+                    "account for the wax that has gone"},
+            {"text": "Nothing — the wax was destroyed as it burned",
+             "correct": False,
+             "why": "Every atom of the wax is still in the room, joined to "
+                    "oxygen from the air"},
+            {"text": "Carbon dioxide and water vapour, now in the air",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s21",
+        "band": "standard",
+        "text": "A decomposition is run twice, starting with 10.00 g of the "
+                "same solid each time. In an open crucible the contents end "
+                "at 6.40 g; in a sealed tube they end at 10.00 g. What mass "
+                "of gas was made in the SEALED tube?",
+        "options": [
+            {"text": "0.00 g, because the balance did not move",
+             "correct": False,
+             "why": "An unmoved balance means nothing crossed the seal, not "
+                    "that nothing was made"},
+            {"text": "10.00 g, because everything stayed inside",
+             "correct": False,
+             "why": "That is everything in the tube, solid included, not the "
+                    "gas on its own"},
+            {"text": "3.60 g — the same reaction makes the same gas",
+             "correct": True},
+            {"text": "It cannot be worked out from a sealed tube",
+             "correct": False,
+             "why": "It can, from the open run: the same solid decomposing "
+                    "the same way makes the same mass of gas"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s22",
+        "band": "standard",
+        "text": "6.00 g of a metal is heated in a sealed flask of air. "
+                "Afterwards the flask holds 7.00 g of metal oxide and 2.00 g "
+                "of metal that never reacted. What mass of oxygen joined the "
+                "metal?",
+        "options": [
+            {"text": "3.00 g",
+             "correct": True},
+            {"text": "5.00 g",
+             "correct": False,
+             "why": "The unreacted metal has been taken off the oxide. Only "
+                    "the 4.00 g that DID react is inside that oxide"},
+            {"text": "1.00 g",
+             "correct": False,
+             "why": "This compares the oxide with all 6.00 g of metal, "
+                    "including the 2.00 g that never took any oxygen"},
+            {"text": "9.00 g",
+             "correct": False,
+             "why": "The leftover metal has been added instead of set aside. "
+                    "It is not part of the oxide at all"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s23",
+        "band": "standard",
+        "text": "A reaction gives off 0.004 g of gas into the room. Balance A "
+                "reads to the nearest 0.01 g and balance B reads to the "
+                "nearest 0.001 g. Which balance would show a change, and what "
+                "does that tell you about the rule?",
+        "options": [
+            {"text": "A only, because a bigger step on the scale shows a "
+                     "bigger loss",
+             "correct": False,
+             "why": "A bigger step hides small changes rather than showing "
+                    "them. Balance A cannot resolve 0.004 g at all"},
+            {"text": "B only — the rule is exact even when an instrument "
+                     "cannot show it",
+             "correct": True},
+            {"text": "Both, because a balance always shows whatever has "
+                     "happened",
+             "correct": False,
+             "why": "Every instrument has a smallest step it can read, and "
+                    "anything under it is invisible to it"},
+            {"text": "Neither, because a loss that small is not really a loss "
+                     "at all",
+             "correct": False,
+             "why": "The gas is real and so is its mass. What is limited is "
+                    "the balance, not the loss"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s24",
+        "band": "standard",
+        "text": "The same reaction is run twice with the same masses of "
+                "reactants: once at room temperature and once warmed so that "
+                "it goes much faster. How do the total masses of the products "
+                "compare?",
+        "options": [
+            {"text": "More in the warm one — it reacted faster",
+             "correct": False,
+             "why": "Speed changes how long it takes, not how much there is "
+                    "to make it from"},
+            {"text": "The same in both, because the same atoms are rearranged",
+             "correct": True},
+            {"text": "Less in the warm one, because heat carried some mass "
+                     "away",
+             "correct": False,
+             "why": "Heat carries no mass a balance can read, warm reaction "
+                    "or cold"},
+            {"text": "More in the warm one, because the heat was added into "
+                     "the products",
+             "correct": False,
+             "why": "Energy going in is not matter going in. The products "
+                    "hold only the atoms the reactants brought"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s25",
+        "band": "standard",
+        "text": "Why is a conservation-of-mass experiment usually run in a "
+                "sealed flask rather than an open one?",
+        "options": [
+            {"text": "So that the reaction runs faster and finishes sooner",
+             "correct": False,
+             "why": "Sealing does not speed a reaction up. It changes what "
+                    "can cross the neck, nothing else"},
+            {"text": "So that no air can get in and slow the reaction down "
+                     "midway",
+             "correct": False,
+             "why": "Air getting in would make some reactions go further, not "
+                    "slower — and either way the point of the seal is the gas "
+                    "leaving"},
+            {"text": "So that any gas made stays on the pan and is weighed",
+             "correct": True},
+            {"text": "So that the heat cannot escape and change the mass",
+             "correct": False,
+             "why": "Escaping heat changes no reading, so there is nothing to "
+                    "keep in"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s26",
+        "band": "standard",
+        "text": "A student weighs 25.00 g of reactants into a sealed flask, "
+                "runs the reaction, then unseals the flask and weighs it "
+                "again, getting 23.80 g. Explain the two readings.",
+        "options": [
+            {"text": "The reaction destroyed 1.20 g once the flask was opened",
+             "correct": False,
+             "why": "Opening a flask does not start destroying anything. The "
+                    "reaction had already finished"},
+            {"text": "The balance must have drifted between the first and "
+                     "second weighing",
+             "correct": False,
+             "why": "1.20 g is far too big for drift, and the same experiment "
+                    "gives the same fall every time"},
+            {"text": "1.20 g of air got in and then left again",
+             "correct": False,
+             "why": "Air moving in and out again would leave the reading "
+                    "where it started"},
+            {"text": "Mass was conserved; 1.20 g of gas escaped on opening",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s27",
+        "band": "standard",
+        "text": "A sealed flask and its contents have a mass of 310.00 g. A "
+                "reaction inside makes a gas, and the flask gets hot. What is "
+                "the mass of the flask and contents while the reaction is "
+                "still going on?",
+        "options": [
+            {"text": "310.00 g, because nothing has entered or left",
+             "correct": True},
+            {"text": "More than 310.00 g, because the gas takes up room",
+             "correct": False,
+             "why": "Taking up room is volume, not mass. The gas was made "
+                    "from what was already in the flask"},
+            {"text": "Less than 310.00 g, because heat is leaving the flask",
+             "correct": False,
+             "why": "Heat leaves through the glass all the time and takes no "
+                    "measurable mass with it"},
+            {"text": "310.00 g only once the reaction has finished",
+             "correct": False,
+             "why": "The total is unchanged at every moment, including "
+                    "halfway through"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s28",
+        "band": "standard",
+        "text": "Two flasks run the same gas-producing reaction, one open and "
+                "one sealed. Which one can be used to measure the mass of gas "
+                "given off, and why?",
+        "options": [
+            {"text": "The sealed one, because nothing is ever lost out of it "
+                     "at all",
+             "correct": False,
+             "why": "Nothing lost means nothing to measure: its reading is "
+                    "the same before and after"},
+            {"text": "The sealed one — its reading is more accurate",
+             "correct": False,
+             "why": "Both readings are equally accurate. Only one of them "
+                    "changes by the mass of the gas"},
+            {"text": "The open one — the fall in its reading is the gas",
+             "correct": True},
+            {"text": "Neither, because a gas can never be weighed directly",
+             "correct": False,
+             "why": "A gas is weighed the same way as anything else: by the "
+                    "difference it makes to a reading"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s29",
+        "band": "standard",
+        "text": "In a sealed flask, 3.20 g of sulfur burns completely with "
+                "3.20 g of oxygen to make sulfur dioxide. What mass of sulfur "
+                "dioxide is made, and what would the same burn in an open "
+                "dish have shown?",
+        "options": [
+            {"text": "6.40 g, and an open dish would have shown no change",
+             "correct": False,
+             "why": "In an open dish the sulfur dioxide drifts away, so the "
+                    "reading drops"},
+            {"text": "6.40 g, and an open dish would have shown a loss",
+             "correct": True},
+            {"text": "3.20 g, and an open dish would have shown a gain",
+             "correct": False,
+             "why": "Both reactants are in the product, so it is heavier than "
+                    "either of them"},
+            {"text": "0.00 g, and an open dish would have shown a loss",
+             "correct": False,
+             "why": "A sealed flask that does not change its reading is still "
+                    "full of product"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s30",
+        "band": "standard",
+        "text": "Iron filings and sulfur are heated together in a test tube "
+                "open at the top. They make iron sulfide, and the mass on the "
+                "balance hardly changes. Why is that what you would expect?",
+        "options": [
+            {"text": "Because iron sulfide weighs the same as the iron",
+             "correct": False,
+             "why": "The sulfur is in the sulfide too, so it is heavier than "
+                    "the iron was"},
+            {"text": "Because the tube is too narrow for gas to get out",
+             "correct": False,
+             "why": "A narrow tube is still open. A gas would leave it "
+                    "perfectly well if one were made"},
+            {"text": "Because solids never change mass when heated",
+             "correct": False,
+             "why": "Plenty of solids do — a carbonate loses mass and a metal "
+                    "gains it. It depends on whether a gas crosses"},
+            {"text": "Because no gas is made or used, so nothing crosses the "
+                     "mouth",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s31",
+        "band": "standard",
+        "text": "Conservation applies to the MASS of the reactants and "
+                "products, and not to the space they take up. Why does the "
+                "rule not work for volume?",
+        "options": [
+            {"text": "A gas takes up far more room than the solid it came "
+                     "from",
+             "correct": True},
+            {"text": "Volume is conserved too, but it is harder to measure "
+                     "well",
+             "correct": False,
+             "why": "It is not conserved at all: a carbonate the size of a "
+                    "pea makes gas that fills a jar"},
+            {"text": "The volume of a gas cannot be measured in a school lab",
+             "correct": False,
+             "why": "A gas syringe measures it easily. Measuring it is not "
+                    "the problem; it simply is not conserved"},
+            {"text": "Mass and volume are really the same thing for a gas",
+             "correct": False,
+             "why": "They are different quantities with different units, for "
+                    "a gas as much as for anything else"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-s32",
+        "band": "standard",
+        "text": "The gas from a reaction is led into a syringe that was "
+                "weighed empty and weighed again when full. The reaction "
+                "flask loses 0.88 g and the syringe gains 0.88 g. What do the "
+                "two measurements together show?",
+        "options": [
+            {"text": "The gas gained mass as it travelled along the rubber "
+                     "tube",
+             "correct": False,
+             "why": "Travelling changes nothing. The syringe gained exactly "
+                    "what the flask lost, with nothing added on the way"},
+            {"text": "The syringe made the gas heavier by squashing it into a "
+                     "smaller space",
+             "correct": False,
+             "why": "Squashing a gas changes the room it takes up, not its "
+                    "mass"},
+            {"text": "All the gas that left the flask is still there, so mass "
+                     "is conserved",
+             "correct": True},
+            {"text": "The flask must have leaked, since two different masses "
+                     "changed",
+             "correct": False,
+             "why": "A leak would mean the syringe gained LESS than the flask "
+                    "lost. The two figures matching is the proof there was no "
+                    "leak"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h11",
+        "band": "harder",
+        "text": "A tree grows from a seedling into 400 kg of wood, while the "
+                "soil in its tub loses only a few kilograms over the same "
+                "years. Where has almost all of the tree's mass come from?",
+        "options": [
+            {"text": "From the soil, which rain replaces",
+             "correct": False,
+             "why": "The tub would have had to lose 400 kg of soil, and it "
+                    "lost a few. Rain carries no soil into a tub"},
+            {"text": "From carbon dioxide in the air, and from water",
+             "correct": True},
+            {"text": "From the sunlight the leaves took in",
+             "correct": False,
+             "why": "Light is the energy for the reaction, not the matter. "
+                    "Light has no mass to build wood out of"},
+            {"text": "From the water the roots draw up",
+             "correct": False,
+             "why": "Water supplies part of it, but most of the dry wood is "
+                    "carbon, and that carbon came out of the air"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h12",
+        "band": "harder",
+        "text": "A car airbag inflates when a solid inside it decomposes into "
+                "a gas. The bag stays sealed all the way through. How does "
+                "the mass of the inflated bag compare with the bag before it "
+                "fired?",
+        "options": [
+            {"text": "The same, because the gas came from the solid inside",
+             "correct": True},
+            {"text": "Greater, because the gas fills a much larger volume",
+             "correct": False,
+             "why": "Volume is the space something takes up. Spreading the "
+                    "same matter out further adds no mass"},
+            {"text": "Greater, because air rushed in to fill the bag out",
+             "correct": False,
+             "why": "The bag is sealed, so no air can get in. The gas inside "
+                    "it was made from the solid"},
+            {"text": "Smaller, because a gas is lighter than a solid",
+             "correct": False,
+             "why": "A gas is less dense, not lighter overall. All of the "
+                    "solid's atoms are still in the bag"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h13",
+        "band": "harder",
+        "text": "A sealed flask and its contents have a mass of 96.00 g. A "
+                "reaction inside makes a gas. The flask is then opened, all "
+                "the gas escapes, and it reads 93.60 g. The whole experiment "
+                "is repeated with half as much of every reactant. What mass "
+                "of gas escapes the second time?",
+        "options": [
+            {"text": "2.40 g",
+             "correct": False,
+             "why": "That is the first run's gas. Half of everything makes "
+                    "half as much gas"},
+            {"text": "4.80 g",
+             "correct": False,
+             "why": "This doubles the first run instead of halving it"},
+            {"text": "46.80 g",
+             "correct": False,
+             "why": "A balance reading has been halved rather than the mass "
+                    "of gas, and most of that reading is the flask"},
+            {"text": "1.20 g",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h14",
+        "band": "harder",
+        "text": "Before Lavoisier, chemists weighed a burning candle and "
+                "watched the mass fall, then weighed a burning metal and "
+                "watched it rise. Why did those two results make burning so "
+                "hard to explain with a single idea?",
+        "options": [
+            {"text": "Metals and candles are made of two completely different "
+                     "elements",
+             "correct": False,
+             "why": "They are, but that is true of most pairs of substances "
+                    "and explains neither reading"},
+            {"text": "Nobody could weigh a candle accurately enough back then",
+             "correct": False,
+             "why": "Balances of the time managed it well. The readings were "
+                    "real; it was the explanation that was missing"},
+            {"text": "One looked like matter leaving and the other like "
+                     "matter arriving",
+             "correct": True},
+            {"text": "A metal will not burn at all unless it is sealed in",
+             "correct": False,
+             "why": "Metals burn in open air perfectly well, and they gain "
+                    "mass when they do"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h15",
+        "band": "harder",
+        "text": "A rocket carries 3.0 tonnes of fuel and 12.0 tonnes of "
+                "liquid oxygen, and its total mass on the launch pad is 20.0 "
+                "tonnes. All the fuel and oxygen burn, and every bit of the "
+                "exhaust leaves the rocket. What is the rocket's mass then?",
+        "options": [
+            {"text": "8.0 tonnes",
+             "correct": False,
+             "why": "Only the oxygen has been taken off. The fuel left as "
+                    "part of the exhaust too"},
+            {"text": "5.0 tonnes",
+             "correct": True},
+            {"text": "15.0 tonnes",
+             "correct": False,
+             "why": "That is the exhaust that left, not the rocket that "
+                    "stayed"},
+            {"text": "20.0 tonnes",
+             "correct": False,
+             "why": "That was the mass on the pad. Fifteen tonnes of it has "
+                    "gone out of the nozzle"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h16",
+        "band": "harder",
+        "text": "24.00 g of a metal is sealed in a tube with 16.00 g of "
+                "sulfur and heated. Afterwards the tube holds 35.00 g of "
+                "metal sulfide, along with whatever did not react. What mass "
+                "of unreacted material is in the tube?",
+        "options": [
+            {"text": "5.00 g",
+             "correct": True},
+            {"text": "11.00 g",
+             "correct": False,
+             "why": "Only the metal has been compared with the sulfide. The "
+                    "sulfur was sealed in as well"},
+            {"text": "19.00 g",
+             "correct": False,
+             "why": "Only the sulfur has been compared with the sulfide, "
+                    "leaving the metal out of the total"},
+            {"text": "75.00 g",
+             "correct": False,
+             "why": "The sulfide has been added to the reactants. It is made "
+                    "OF them, so it is part of the same 40.00 g"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h17",
+        "band": "harder",
+        "text": "One open reaction makes a balance reading rise, and another "
+                "makes it fall. State what is the same about the two "
+                "reactions.",
+        "options": [
+            {"text": "In both, a gas has left the pan and gone into the room",
+             "correct": False,
+             "why": "That is true of the falling one only. In the rising one "
+                    "a gas joined from the air"},
+            {"text": "In both, oxygen from the air has taken part in the "
+                     "reaction",
+             "correct": False,
+             "why": "A carbonate fizzing in acid takes no oxygen from the "
+                    "air, and its reading still falls"},
+            {"text": "In both, the products weigh more than the reactants did",
+             "correct": False,
+             "why": "Products never weigh more than the reactants. Counted "
+                    "properly the two are equal"},
+            {"text": "In both, the total mass of everything involved is "
+                     "unchanged",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h18",
+        "band": "harder",
+        "text": "A sealed flask on a balance reads 240.00 g. The reaction "
+                "inside pushes the stopper out, gas escapes into the room, "
+                "and the stopper lands on the pan beside the flask. What does "
+                "the balance read now?",
+        "options": [
+            {"text": "240.00 g, because the stopper is still on the pan",
+             "correct": False,
+             "why": "The stopper is, and the gas is not. It is the gas "
+                    "leaving that moves the reading"},
+            {"text": "Less than 240.00 g, by the mass of the stopper",
+             "correct": False,
+             "why": "The stopper never left the pan, so its mass is still in "
+                    "the reading"},
+            {"text": "Less than 240.00 g, by the mass of gas that escaped",
+             "correct": True},
+            {"text": "More than 240.00 g, because the stopper now presses "
+                     "down",
+             "correct": False,
+             "why": "Resting somewhere else on the pan does not change what "
+                    "the pan is carrying"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h19",
+        "band": "harder",
+        "text": "A hand warmer holds iron powder that rusts once the packet "
+                "is opened to the air. The packet is weighed sealed, then "
+                "opened and left on the balance until it stops giving out "
+                "heat, then weighed again. Predict the two readings.",
+        "options": [
+            {"text": "The second is lower, because heat has been given out",
+             "correct": False,
+             "why": "Heat leaving takes no measurable mass with it, however "
+                    "warm the packet gets"},
+            {"text": "The second is higher, because oxygen has joined the "
+                     "iron",
+             "correct": True},
+            {"text": "The second is the same, because it was sealed at the "
+                     "start",
+             "correct": False,
+             "why": "It was opened before the rusting, so the oxygen that "
+                    "joined came from outside the pan"},
+            {"text": "The second is lower, because the iron has been used up",
+             "correct": False,
+             "why": "The iron is used up into rust, which is still in the "
+                    "packet and is heavier than the iron was"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h20",
+        "band": "harder",
+        "text": 'A manager argues that if 100 tonnes of raw material goes into '
+                'a chemical works, 100 tonnes must come out of it, counting '
+                'product and waste together. Evaluate the argument.',
+        "options": [
+            {"text": 'Right — the mass is all still there, though not all of it '
+                     'is product',
+             "correct": True},
+            {"text": 'Wrong — whatever leaves as waste is lost from the total',
+             "correct": False,
+             "why": 'Waste is matter in the wrong place, not matter gone '
+                    'missing. It still counts towards the 100 tonnes'},
+            {"text": 'Wrong — the heat the works gives out carries away part of '
+                     'the mass',
+             "correct": False,
+             "why": 'Heat carries no mass a balance can read, so nothing leaves '
+                    'the total that way'},
+            {"text": 'Right, but only for a works that makes no waste at all',
+             "correct": False,
+             "why": 'The total holds whether or not there is waste; waste is '
+                    'simply part of what comes out'},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h21",
+        "band": "harder",
+        "text": "In a sealed flask, 5.00 g of A reacts with 8.00 g of B to "
+                "give 9.00 g of C and a second product, D. The reaction is "
+                "repeated with 10.00 g of A and 16.00 g of B. What mass of D "
+                "is made the second time?",
+        "options": [
+            {"text": "4.00 g",
+             "correct": False,
+             "why": "That is D from the first run. Twice as much of "
+                    "everything makes twice as much D"},
+            {"text": "18.00 g",
+             "correct": False,
+             "why": "That is C for the second run, not D"},
+            {"text": "26.00 g",
+             "correct": False,
+             "why": "That is everything put into the second flask, C included"},
+            {"text": "8.00 g",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h22",
+        "band": "harder",
+        "text": "The conservation-of-mass rule puts the word total on each "
+                "side of the equals sign. Why is that word needed?",
+        "options": [
+            {"text": "Because the total is always larger than any single one "
+                     "of the masses",
+             "correct": False,
+             "why": "Size is not the point. A reaction with one reactant and "
+                    "one product still obeys the rule"},
+            {"text": "Because a balance can only ever read one total at a "
+                     "time",
+             "correct": False,
+             "why": "What a balance can read has nothing to do with how the "
+                    "rule is written"},
+            {"text": "Because there may be several reactants or products, and "
+                     "all count",
+             "correct": True},
+            {"text": "Because the rule only works when there are exactly two "
+                     "reactants",
+             "correct": False,
+             "why": "It works whatever the number. That is precisely why the "
+                    "word total is there"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h23",
+        "band": "harder",
+        "text": "3.00 g of magnesium is burned completely on an open balance, "
+                "and some of the white smoke drifts off the pan. The measured "
+                "mass of oxygen that joined in comes out at 1.40 g, when the "
+                "true value is 2.00 g. Why is the measured value too low?",
+        "options": [
+            {"text": "Because the smoke was weighed twice",
+             "correct": False,
+             "why": "Weighing something twice would push the figure up, not "
+                    "down, and the smoke was never weighed at all"},
+            {"text": "Because some magnesium oxide left the pan as smoke",
+             "correct": True},
+            {"text": "Because some oxygen escaped before it could react with "
+                     "the metal",
+             "correct": False,
+             "why": "The magnesium burned completely, so it got all the "
+                    "oxygen it needed"},
+            {"text": "Because the ash left behind is lighter than the oxide "
+                     "is",
+             "correct": False,
+             "why": "What is left IS the oxide. There is simply less of it on "
+                    "the pan than was made"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h24",
+        "band": "harder",
+        "text": "A carbonate is heated in an open crucible, cooled and "
+                "weighed: 9.40 g. It is heated, cooled and weighed a second "
+                "time, and reads 9.40 g again. Why is the second weighing "
+                "done, and what does the repeat tell you?",
+        "options": [
+            {"text": "To check the decomposition is finished — no more gas is "
+                     "coming off",
+             "correct": True},
+            {"text": "To give the reaction a second chance to start",
+             "correct": False,
+             "why": "It had already started and run. The second heating tests "
+                    "whether it had anything left to do"},
+            {"text": "Because a hot crucible always has to be weighed twice "
+                     "over",
+             "correct": False,
+             "why": "There is no such rule. What is repeated is the HEATING, "
+                    "until two weighings agree, and that is about the "
+                    "reaction rather than the crucible"},
+            {"text": "To let the escaped gas find its way back in",
+             "correct": False,
+             "why": "Gas that has gone into the room does not come back, and "
+                    "nobody would want it to"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h25",
+        "band": "harder",
+        "text": "A bottle of fizzy water is weighed with its cap on: 520.00 "
+                "g. The cap is taken off, the water goes flat over a day, and "
+                "the bottle is weighed again: 519.30 g. The cap is screwed "
+                "back on and it is weighed once more. What is the third "
+                "reading?",
+        "options": [
+            {"text": "520.00 g, because the cap has been put back on",
+             "correct": False,
+             "why": "Replacing the cap keeps the rest in. It cannot bring "
+                    "back gas that is already in the room"},
+            {"text": "518.60 g, because more gas escapes each time",
+             "correct": False,
+             "why": "The water is flat, so there is no more gas to lose, and "
+                    "the cap is on"},
+            {"text": "It cannot be predicted until it is measured",
+             "correct": False,
+             "why": "It can: nothing has crossed the neck since the second "
+                    "weighing"},
+            {"text": "519.30 g, because the escaped gas cannot come back",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h26",
+        "band": "harder",
+        "text": "Reaction X in an open flask makes a reading fall by 2.00 g. "
+                "Reaction Y, in a separate open flask on another bench, makes "
+                "a reading rise by 2.00 g. A student says the two reactions "
+                "swapped 2.00 g between them. Evaluate.",
+        "options": [
+            {"text": "Correct, because the two changes must always balance "
+                     "out",
+             "correct": False,
+             "why": "Nothing makes two unrelated flasks balance each other. "
+                    "The match here is a coincidence"},
+            {"text": "Correct, because gas moves from a falling flask to a "
+                     "rising one",
+             "correct": False,
+             "why": "Y takes oxygen from the whole room's air, not from one "
+                    "flask across the lab"},
+            {"text": "Wrong — one lost gas to the room and the other took gas "
+                     "from it",
+             "correct": True},
+            {"text": "Wrong — a balance reading cannot rise during a reaction "
+                     "at all",
+             "correct": False,
+             "why": "It can, and Y just did. A metal taking oxygen from the "
+                    "air gains mass on the pan"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h27",
+        "band": "harder",
+        "text": "Three students run the same sealed reaction and record mass "
+                "changes of 0.00 g, −0.01 g and +0.01 g. What do the results "
+                "show?",
+        "options": [
+            {"text": "That mass was destroyed in one run and created in "
+                     "another",
+             "correct": False,
+             "why": "A hundredth of a gram either way is the balance's last "
+                    "digit wavering, not matter appearing"},
+            {"text": "That mass was conserved, within what the balance can "
+                     "read",
+             "correct": True},
+            {"text": "That the seal failed in two of the three runs",
+             "correct": False,
+             "why": "A failed seal loses gas, so it would show a fall — and a "
+                    "much bigger one than this"},
+            {"text": "That the results are too scattered to mean anything",
+             "correct": False,
+             "why": "They agree to a hundredth of a gram, which is as close "
+                    "as these balances get"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h28",
+        "band": "harder",
+        "text": "A gas cylinder is weighed full: 42.30 kg. After a heater has "
+                "run for a while it weighs 38.10 kg. Burning that gas used "
+                "16.80 kg of oxygen from the air. What mass of exhaust gases "
+                "went up the flue?",
+        "options": [
+            {"text": "21.00 kg",
+             "correct": True},
+            {"text": "4.20 kg",
+             "correct": False,
+             "why": "That is the gas burned. The oxygen it burned with is in "
+                    "the exhaust too"},
+            {"text": "12.60 kg",
+             "correct": False,
+             "why": "The gas has been subtracted from the oxygen. Both of "
+                    "them went into the exhaust, so they add"},
+            {"text": "16.80 kg",
+             "correct": False,
+             "why": "That is the oxygen alone, leaving out the fuel it "
+                    "combined with"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h29",
+        "band": "harder",
+        "text": "In one experiment 7.00 g of iron combines with 4.00 g of "
+                "sulfur and nothing is left over. A second experiment uses "
+                "21.00 g of iron with plenty of sulfur. What mass of iron "
+                "sulfide is made in the second experiment?",
+        "options": [
+            {"text": "25.00 g",
+             "correct": False,
+             "why": "The first experiment's sulfur has been used with the "
+                    "second experiment's iron. Three times the iron takes "
+                    "three times the sulfur"},
+            {"text": "11.00 g",
+             "correct": False,
+             "why": "That is the first experiment's sulfide, not the second's"},
+            {"text": "63.00 g",
+             "correct": False,
+             "why": "That is three times the iron alone, which is not a mass "
+                    "of sulfide at all"},
+            {"text": "33.00 g",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h30",
+        "band": "harder",
+        "text": "A student argues that conservation of mass cannot really be "
+                "tested in a school lab, because every reaction worth "
+                "watching gives off a gas. Evaluate the argument.",
+        "options": [
+            {"text": "It is right: a school balance cannot weigh a gas at all",
+             "correct": False,
+             "why": "A balance weighs a gas as readily as anything else, so "
+                    "long as the gas is on the pan"},
+            {"text": "It is right: school glassware cannot be sealed properly",
+             "correct": False,
+             "why": "A bung seals a conical flask well enough for this, which "
+                    "is why the sealed run works"},
+            {"text": "It overstates the case: many good reactions make no gas "
+                     "at all",
+             "correct": True},
+            {"text": "It is wrong: a gas leaving does not change a reading "
+                     "anyway",
+             "correct": False,
+             "why": "A gas leaving is exactly what makes an open reading fall"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h31",
+        "band": "harder",
+        "text": "The rule is written with an equals sign. What would chemists "
+                "have to find before they gave it up?",
+        "options": [
+            {"text": "A reaction whose reading falls in an open flask",
+             "correct": False,
+             "why": "Readings fall in open flasks every day, and the rule "
+                    "explains why"},
+            {"text": "A sealed reaction whose total mass really changed, "
+                     "again and again",
+             "correct": True},
+            {"text": "A reaction giving out much more heat than any other "
+                     "known",
+             "correct": False,
+             "why": "How much heat comes out says nothing about how much "
+                    "matter there is"},
+            {"text": "A reaction making more products than reactants",
+             "correct": False,
+             "why": "The number of substances is free to change. It is the "
+                    "total MASS that may not"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c4-04-h32",
+        "band": "harder",
+        "text": "In a sealed flask, 14.00 g of reactant A reacts completely "
+                "with 6.00 g of reactant B. The products are 4.50 g of a "
+                "solid, 9.00 g of a liquid and a gas. The flask is opened and "
+                "all the gas escapes. By how much does the reading fall?",
+        "options": [
+            {"text": "6.50 g",
+             "correct": True},
+            {"text": "13.50 g",
+             "correct": False,
+             "why": "That is the solid and the liquid, which both stayed in "
+                    "the flask"},
+            {"text": "20.00 g",
+             "correct": False,
+             "why": "That is everything that was in the flask. Only the gas "
+                    "left it"},
+            {"text": "2.00 g",
+             "correct": False,
+             "why": "Only one reactant has been compared with one product. "
+                    "All three products came from both reactants"},
+        ],
+        "figure": None,
+    },
 ]

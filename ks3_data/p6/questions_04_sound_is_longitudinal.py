@@ -454,4 +454,283 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-04-e07",
+        "band": "easier",
+        "text": 'As a sound wave passes one fixed point in the air, what '
+                'happens to the pressure there?',
+        "options": [
+            {"text": 'It rises and falls repeatedly, above and below the normal '
+                     'pressure', "correct": True},
+            {"text": 'It rises and then stays high for as long as the sound '
+                     'lasts', "correct": False,
+             "why": 'The pressure does not hold at one high value; compressions '
+                    'and rarefactions pass the point one after another.'},
+            {"text": 'It stays the same throughout, and only the particles move', "correct": False,
+             "why": 'The particles moving back and forth is exactly what '
+                    'bunches them up and spreads them out, so the pressure '
+                    'there does change.'},
+            {"text": 'It falls to nothing in the gap between one compression '
+                     'and the next',
+             "correct": False,
+             "why": 'A rarefaction is air spread thinner than usual, not air '
+                    'removed; the pressure dips below normal rather than to '
+                    'nothing.'},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-04-e08",
+        "band": "easier",
+        "text": "A rarefaction in a sound wave is best described as…",
+        "options": [
+            {"text": "a gap where the air is more spread out than usual",
+             "correct": True},
+            {"text": "a downward dip where the air presses down harder "
+                     "than usual", "correct": False,
+             "why": "A rarefaction is a spreading-out of the particles, not "
+                    "a downward dip."},
+            {"text": "a place with no air at all", "correct": False,
+             "why": "The air is thinner there, not completely absent."},
+            {"text": "the same thing as a compression", "correct": False,
+             "why": "A rarefaction and a compression are opposites: one is "
+                    "bunched up, the other spread out."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-04-e09",
+        "band": "easier",
+        "text": "Sound travelling through air, through water, and through "
+                "steel is, in every one of those materials, a…",
+        "options": [
+            {"text": "transverse wave", "correct": False,
+             "why": "Sound moves the particles along its own direction of "
+                    "travel, which makes it longitudinal, not transverse."},
+            {"text": "standing wave", "correct": False,
+             "why": "A standing wave is a special pattern from two waves "
+                    "overlapping, not simply how sound normally travels."},
+            {"text": "wave with no fixed type — it depends on the "
+                     "material", "correct": False,
+             "why": "Sound is longitudinal in every material it travels "
+                    "through, whatever that material is."},
+            {"text": "longitudinal wave", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-04-e10",
+        "band": "easier",
+        "text": "For a sound wave, the wavelength is the distance from…",
+        "options": [
+            {"text": "one compression to the next compression",
+             "correct": True},
+            {"text": 'from one compression to the next rarefaction along the '
+                     'wave', "correct": False,
+             "why": "That distance is only half a wavelength."},
+            {"text": "the speaker to the ear", "correct": False,
+             "why": "That is simply how far the sound has to travel, not "
+                    "the length of one wave."},
+            {"text": "start to stop", "correct": False,
+             "why": "That is a measure of time, not a distance along the "
+                    "wave."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-04-e11",
+        "band": "easier",
+        "text": "Does a longitudinal sound wave have an amplitude?",
+        "options": [
+            {"text": "No — only transverse waves have an amplitude",
+             "correct": False,
+             "why": "A longitudinal wave has an amplitude too; it is just "
+                    "measured differently from a transverse wave's."},
+            {"text": "No — a longitudinal wave only has a wavelength",
+             "correct": False,
+             "why": "It has both a wavelength and an amplitude, just like "
+                    "a transverse wave does."},
+            {"text": "Yes — it is a measure of how far the air itself "
+                     "moves up and down as the sound wave passes by",
+             "correct": False,
+             "why": "Sound does not move the air up and down; the "
+                    "amplitude is about how much the pressure changes, not "
+                    "an up-and-down movement."},
+            {"text": "Yes — it is the size of the pressure change at a "
+                     "compression or rarefaction", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-04-s07",
+        "band": "standard",
+        "text": "A sound wave has compressions 34 cm apart. What is the "
+                "distance between one rarefaction and the next?",
+        "options": [
+            {"text": "17 cm", "correct": False,
+             "why": "That is compression to rarefaction, which is half a "
+                    "wavelength."},
+            {"text": "34 cm", "correct": True},
+            {"text": "68 cm", "correct": False,
+             "why": "That doubles the wavelength rather than finding the "
+                    "rarefaction-to-rarefaction spacing, which matches the "
+                    "compression-to-compression spacing."},
+            {"text": "It cannot be found without knowing the amplitude",
+             "correct": False,
+             "why": "Amplitude is about the size of the pressure change, "
+                    "not the spacing between rarefactions."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-04-s08",
+        "band": "standard",
+        "text": "A student says a compression must be hotter than the "
+                "surrounding air, since it is where the air is squeezed "
+                "together. What is wrong with this?",
+        "options": [
+            {"text": 'Nothing is wrong — squeezing air together always heats it '
+                     'up, which is why a compression is the warmer part of a '
+                     'sound wave', "correct": False,
+             "why": "A compression is described by how bunched the "
+                    "particles are, not by any noticeable change in "
+                    "temperature."},
+            {"text": "A compression is a region of higher pressure and "
+                     "density, not a region of higher temperature",
+             "correct": True},
+            {"text": "It is colder, not hotter", "correct": False,
+             "why": "Temperature is not what a compression describes "
+                    "either way — it is about pressure and density."},
+            {"text": 'It is wrong because sound cannot create compressions in '
+                     'air at all; only a pump squeezing air into a cylinder can '
+                     'do that', "correct": False,
+             "why": "Sound genuinely does create compressions in air; "
+                    "that is exactly how a longitudinal wave is built."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-04-s09",
+        "band": "standard",
+        "text": "At a compression, does any single particle of air travel "
+                "all the way from the speaker to your ear?",
+        "options": [
+            {"text": "Yes — the compression is a lump of air that moves "
+                     "the whole distance", "correct": False,
+             "why": "A compression is a pattern that travels; the "
+                    "individual particles only shift back and forth a "
+                    "short distance."},
+            {"text": 'Yes, but only right at a compression — everywhere else, a '
+                     'rarefaction included, the particles stay still, because '
+                     'nothing there is pushing them along', "correct": False,
+             "why": "Particles keep moving back and forth throughout the "
+                    "wave, in both compressions and rarefactions."},
+            {"text": "No — nothing at all moves anywhere in a sound wave",
+             "correct": False,
+             "why": "The particles do move, just not all the way from the "
+                    "speaker to the ear; only the pattern travels that "
+                    "far."},
+            {"text": "No — each particle moves back and forth a short "
+                     "distance, and the compression pattern is what "
+                     "travels the whole way", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-04-s10",
+        "band": "standard",
+        "text": "A textbook draws a sound wave as a graph of pressure "
+                "against distance, which looks like a wavy line going up "
+                "and down. Does this mean the air itself moves up and "
+                "down as sound passes through it?",
+        "options": [
+            {"text": "Yes — the rising and falling shape of the graph "
+                     "shows that the air itself is genuinely rising and "
+                     "falling as the sound passes through it", "correct": False,
+             "why": "The graph plots pressure, not height; the air itself "
+                    "moves along the direction of travel, not up and "
+                    "down."},
+            {"text": "No — the graph plots pressure against distance, and "
+                     "the air itself moves back and forth along the "
+                     "direction of travel", "correct": True},
+            {"text": "It depends on how loud the sound is", "correct": False,
+             "why": "Loudness changes the size of the pressure change, not "
+                    "which direction the air particles move in."},
+            {"text": 'Yes, but only for very low-pitched sounds, whose long '
+                     'wavelengths give the air time to rise and fall before the '
+                     'next wave arrives',
+             "correct": False,
+             "why": "Pitch does not change the direction air particles "
+                    "move in; sound is longitudinal at every pitch."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-04-h07",
+        "band": "harder",
+        "text": "An earthquake sends out longitudinal P waves and "
+                "transverse S waves through the Earth at once. Seismometers "
+                "on the far side of the planet detect the P waves but "
+                "record no S waves at all. What does this suggest about "
+                "the material the S waves would have had to cross?",
+        "options": [
+            {"text": "That material must be a solid, since solids block S "
+                     "waves completely", "correct": False,
+             "why": "It is the opposite — solids CAN carry S waves; it is "
+                    "a liquid that an S wave cannot cross."},
+            {"text": "That material must be liquid, since a transverse "
+                     "wave needs the material to resist being sheared "
+                     "sideways, and a liquid does not", "correct": True},
+            {"text": 'That material must be moving faster than the P waves '
+                     'themselves, which is why the S waves never catch up and '
+                     'reach the far side of the planet', "correct": False,
+             "why": "Nothing here is about relative speed catching up; S "
+                    "waves are missing entirely, not simply delayed."},
+            {"text": 'The missing S waves show nothing about the material, '
+                     'since P and S waves travel identical paths through the '
+                     'Earth', "correct": False,
+             "why": "P and S waves behave differently in different "
+                    "materials, which is exactly why the missing S waves "
+                    "are meaningful evidence."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-04-h08",
+        "band": "harder",
+        "text": "On deep water, a floating patch actually travels round a "
+                "small circle rather than straight up and down as a wave "
+                "passes. A student says this proves a water wave cannot "
+                "really be transverse at all. Assess this.",
+        "options": [
+            {"text": "The student is right — a water wave must actually "
+                     "be purely longitudinal, and calling it transverse is "
+                     "simply a mistake", "correct": False,
+             "why": "A water wave is not purely longitudinal either; the "
+                    "circular motion mixes both kinds of movement."},
+            {"text": 'The student is right, and this shows the transverse and '
+                     'longitudinal idea never applied to water, or to any wave '
+                     'on a liquid surface', "correct": False,
+             "why": "The transverse/longitudinal distinction still "
+                    "applies to water waves — it is just that a real one "
+                    "is a mixture of both rather than purely one or the "
+                    "other."},
+            {"text": 'The student is wrong, but only because the circular '
+                     'motion is too small to matter in a real wave', "correct": False,
+             "why": "The circular motion is a genuine, measurable feature "
+                    "of a real water wave, not something too small to "
+                    "matter."},
+            {"text": "The student is wrong — the simple straight up-and-"
+                     "down picture is close enough for most purposes, "
+                     "even though a real surface wave is partly transverse "
+                     "and partly longitudinal at once", "correct": True},
+        ],
+        "figure": None,
+    },
 ]

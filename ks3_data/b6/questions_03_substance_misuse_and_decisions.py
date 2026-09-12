@@ -1461,4 +1461,766 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-]
+
+    # ── MRB-338 expansion (12 Sep 2026) ─────────────────────────────────
+    # 28 new rows (15 easier / 8 standard / 5 harder) continuing the band
+    # id sequences from e18/s18/h18, against a target of 15/15/15. New
+    # teachable points not covered by the original 51 rows or by the
+    # mastery ladder: the herbal supplement's missing dose as a fourth
+    # flaw, the energy-drink study's own numbers, the order of the four
+    # questions, the "Who is telling me?" card's not-automatically-
+    # disqualified nuance, each claim's own "what would settle it"
+    # answer (cannabis, herbal cure, grandad), Doll and Hill's
+    # record-before-illness timing used to rule out recall bias, the
+    # required comparison drink for the energy-drink trial, correlation
+    # as a starting point rather than an ending one, the "how they were
+    # chosen matters as much as how many" clause, the DRUG-01 legal-vs-
+    # biological reappearance via the hook's own reveal, a comparison
+    # group needing the same measurement method, and the "clear minority"
+    # /normalisation-belief-changes-behaviour claim from flag 13. See the
+    # MRB-338 authoring report for the full coverage list and the
+    # length/position self-checks. Standard is seven short and harder ten
+    # short of the 15-row target - declined rather than padded once
+    # fresh, non-duplicating, non-task-reproducing points ran out; see
+    # the report. Harder's rank-spread and margin checks run on only 5
+    # rows and are noisy at that sample size; see the report for the
+    # honest numbers. e21/e22 deliberately share a stem frame ("which one
+    # is asked first / last") with two different answers - a
+    # discrimination pair, not a duplicate.
+
+    {
+        "id": "b6-03-e18",
+        "band": "easier",
+        "text": "A herbal supplement is sold on customer reviews alone. Besides "
+"having no comparison group, and reviews chosen by the seller, what "
+"third problem does that evidence have?",
+        "options": [
+            {"text": "No dose is stated at all",
+             "correct": True},
+            {"text": "No customers are named",
+             "correct": False,
+             "why": "Naming the customers would change nothing about how the evidence "
+"was gathered."},
+            {"text": "No date is given for the reviews",
+             "correct": False,
+             "why": "The date of a review is not what makes this evidence weak."},
+            {"text": "No price is listed for the product",
+             "correct": False,
+             "why": "The price of the product says nothing about whether it works."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e19",
+        "band": "easier",
+        "text": "In the energy-drinks study, how many sixth-formers were involved, "
+"and how many marks higher did the energy-drink group score on "
+"average?",
+        "options": [
+            {"text": "300 students, scoring six marks higher",
+             "correct": False,
+             "why": "Both figures in this option are different from the ones the lesson "
+"gives for this study."},
+            {"text": "500 students, scoring four marks higher",
+             "correct": True},
+            {"text": "500 students, scoring ten marks higher",
+             "correct": False,
+             "why": "The lesson gives four marks higher, not ten, for this study."},
+            {"text": "50 students, scoring four marks higher",
+             "correct": False,
+             "why": "The lesson gives 500 students, not 50, for this study."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e20",
+        "band": "easier",
+        "text": "Do national surveys put regular use of alcohol, tobacco or vaping "
+"at this age as a majority activity or a clear minority?",
+        "options": [
+            {"text": "A large majority",
+             "correct": False,
+             "why": "National surveys put regular use at this age in a clear minority, "
+"not a majority."},
+            {"text": "Exactly half",
+             "correct": False,
+             "why": "Regular use at this age is a clear minority, not an even split."},
+            {"text": "A clear minority",
+             "correct": True},
+            {"text": "It cannot be answered, since nobody has ever surveyed this",
+             "correct": False,
+             "why": "National surveys ask exactly this, every year, and put regular use "
+"at this age in a clear minority."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e21",
+        "band": "easier",
+        "text": "Four checking questions are used, in a set order, on any claim "
+"made about a substance. Which one is asked first?",
+        "options": [
+            {"text": "Compared with what?",
+             "correct": False,
+             "why": "This is the second of the four, not the first."},
+            {"text": "Who is telling me?",
+             "correct": False,
+             "why": "This is the third of the four, not the first."},
+            {"text": "Together, or because?",
+             "correct": False,
+             "why": "This is the fourth and last of them, not the first."},
+            {"text": "How many, and who?",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e22",
+        "band": "easier",
+        "text": "A trial is described as double-blind. Who is kept from knowing "
+"which group a person was put in?",
+        "options": [
+            {"text": "Both the people taking part and the people assessing them",
+             "correct": True},
+            {"text": "Only the people taking part",
+             "correct": False,
+             "why": "That is single-blind. Double-blind keeps the assessors in the dark "
+"as well, so their expectations cannot colour the result."},
+            {"text": "Only the people assessing the results",
+             "correct": False,
+             "why": "The people taking part are kept from knowing too, or their own "
+"expectations colour what they report."},
+            {"text": "Only whoever paid for the trial",
+             "correct": False,
+             "why": "Who paid may well know the design; the blinding is about the "
+"participants and the assessors."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e23",
+        "band": "easier",
+        "text": "Someone who profits from an answer publishes evidence for it. "
+"Should that evidence be checked by someone without that interest?",
+        "options": [
+            {"text": "No, profiting from an answer makes evidence worthless, so there "
+"is nothing left to check",
+             "correct": False,
+             "why": "Profiting does not disqualify the evidence; it is a reason to check "
+"it rather than to throw it away."},
+            {"text": "Yes, because an interest in the answer is a reason to check, not "
+"a reason to dismiss",
+             "correct": True},
+            {"text": "No, published evidence has already been checked by definition",
+             "correct": False,
+             "why": "Publishing is not the same as independent checking; who did the "
+"checking is exactly the question."},
+            {"text": "Only if the seller also names a price",
+             "correct": False,
+             "why": "The price has nothing to do with it; the interest in the answer is "
+"what calls for an independent check."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e24",
+        "band": "easier",
+        "text": "What would settle the claim that cannabis is safe because it is "
+"natural and has been used for centuries?",
+        "options": [
+            {"text": "A single expert's opinion published in a newspaper",
+             "correct": False,
+             "why": "The lesson names a study following many people over years, not a "
+"single expert's opinion."},
+            {"text": "A vote among people who already use the substance",
+             "correct": False,
+             "why": "The lesson never suggests a vote as a way of settling this kind of "
+"claim."},
+            {"text": "Long-term studies following large numbers of users and non-users "
+"forward over years",
+             "correct": True},
+            {"text": "Asking the same 30 friends who were already used as the original "
+"evidence for it",
+             "correct": False,
+             "why": "The lesson's suggested way to settle it involves a large, forward- "
+"looking study, not the same small group again."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e25",
+        "band": "easier",
+        "text": "A herbal cure is sold on customer reviews alone. What would "
+"settle whether it works?",
+        "options": [
+            {"text": "More reviews collected from the same website",
+             "correct": False,
+             "why": "More of the same kind of review has the same fault as the first "
+"batch; what is needed is a trial."},
+            {"text": "A much larger number of the seller's own customers being surveyed as "
+"well",
+             "correct": False,
+             "why": "The seller's own customers are the sample that caused the problem; "
+"asking more of them does not fix it."},
+            {"text": "A statement from the seller guaranteeing the results",
+             "correct": False,
+             "why": "A guarantee from the seller is not evidence at all; an "
+"independent, blinded trial is."},
+            {"text": "A double-blind trial published by someone with nothing to sell",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e26",
+        "band": "easier",
+        "text": "What would settle the claim that daily drinking cannot be that "
+"harmful because one person's grandad drank every day and lived to "
+"90?",
+        "options": [
+            {"text": "Comparing death and illness rates for many thousands of daily "
+"drinkers with similar non-drinkers",
+             "correct": True},
+            {"text": "Finding a second person who also drank daily and lived a long life",
+             "correct": False,
+             "why": "A second single case would have exactly the same problem as the "
+"first; the lesson calls for rates across many people."},
+            {"text": "Asking the grandad himself how he felt about his health",
+             "correct": False,
+             "why": "One person's own opinion about their health is not the large-scale "
+"comparison the lesson calls for."},
+            {"text": "Checking how many units the grandad drank each day",
+             "correct": False,
+             "why": "Knowing the exact daily amount would not settle the claim; the "
+"lesson asks for a comparison across many people instead."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e27",
+        "band": "easier",
+        "text": "Doll and Hill recorded what each doctor smoked before any of them "
+"became ill. Does that timing make it easier or harder to dismiss the "
+"results as sick people's faulty memories?",
+        "options": [
+            {"text": "Easier, because doctors are more likely to misremember than other "
+"people",
+             "correct": False,
+             "why": "The lesson gives no reason to think doctors misremember more than "
+"anyone else; the timing is what matters."},
+            {"text": "Harder, because the smoking was recorded years before anyone was ill",
+             "correct": True},
+            {"text": "It makes no difference either way to that particular objection",
+             "correct": False,
+             "why": "The lesson uses this exact timing to rule out that objection, so it "
+"does make a difference."},
+            {"text": "Easier, because the study only asked doctors once, right at the very "
+"end",
+             "correct": False,
+             "why": "The lesson describes the study as following the same doctors forward "
+"for decades, not asking them once at the end."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e28",
+        "band": "easier",
+        "text": "What must the comparison drink be, in a fair test of whether an "
+"energy drink improves exam results?",
+        "options": [
+            {"text": "A completely different drink, so the two are easy to tell apart",
+             "correct": False,
+             "why": "An easily distinguishable drink would let people guess which group "
+"they were in, defeating the point of a fair comparison."},
+            {"text": "The same energy drink, but drunk at a different time of day",
+             "correct": False,
+             "why": "Changing only the time would not remove the active ingredient being "
+"tested."},
+            {"text": "Identical-tasting, but with the caffeine left out",
+             "correct": True},
+            {"text": "Any drink at all, as long as it also contains sugar",
+             "correct": False,
+             "why": "The lesson's fair-test drink is specifically identical-tasting with "
+"no caffeine, not simply any sugary drink."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e29",
+        "band": "easier",
+        "text": "Does a correlation sit at the start of an investigation or at its "
+"finish?",
+        "options": [
+            {"text": "At the finish, not the start",
+             "correct": False,
+             "why": "A correlation is where an investigation starts, not where it "
+"finishes."},
+            {"text": "Neither; a correlation ends an investigation immediately",
+             "correct": False,
+             "why": "A correlation is a starting point for further investigation, not "
+"an ending."},
+            {"text": "It depends entirely on the substance being studied",
+             "correct": False,
+             "why": "What a correlation is does not change from one substance to "
+"another."},
+            {"text": "At the start, not the finish",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e30",
+        "band": "easier",
+        "text": "In a study, what matters as much as how many people were asked?",
+        "options": [
+            {"text": "How they were chosen",
+             "correct": True},
+            {"text": "What time of day they were asked",
+             "correct": False,
+             "why": "Time of day is not raised anywhere in the lesson as mattering as "
+"much as sample size."},
+            {"text": "How old the people asking the questions were",
+             "correct": False,
+             "why": "The age of the researchers is not discussed anywhere in the lesson."},
+            {"text": "Whether the questions were asked in person or online",
+             "correct": False,
+             "why": "The method of asking is not discussed anywhere in the lesson as "
+"mattering this much."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e31",
+        "band": "easier",
+        "text": "Someone offers 'it is legal to buy in this country' as a test of "
+"whether a substance is harmful. Is that a fact about the substance's "
+"effect on the body?",
+        "options": [
+            {"text": "Yes, legality is decided based on how a substance affects the body",
+             "correct": False,
+             "why": "Legality is a fact about the world around a substance, not about "
+"what it does inside the body."},
+            {"text": "No, it is a fact about the world around the substance",
+             "correct": True},
+            {"text": "Yes, but only for substances that are already well studied",
+             "correct": False,
+             "why": "How well studied a substance is does not turn a legal rule into a "
+"biological fact."},
+            {"text": "It cannot be answered, since legality and harm have never been "
+"compared",
+             "correct": False,
+             "why": "They can be compared, and they come apart: caffeine is legal at any "
+"age and digoxin is dangerous at the wrong dose."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-e32",
+        "band": "easier",
+        "text": "For a comparison group to be useful, must it be measured in the same "
+"way as the group that received the treatment?",
+        "options": [
+            {"text": "No, it only needs to be roughly similar in size",
+             "correct": False,
+             "why": "The lesson's definition ties usefulness to being measured the same "
+"way, not merely to matching size."},
+            {"text": "No, measuring it differently makes the comparison more thorough",
+             "correct": False,
+             "why": "Measuring the two groups differently would undermine the comparison "
+"rather than strengthen it."},
+            {"text": "Yes, it must be measured the same way",
+             "correct": True},
+            {"text": "It cannot be answered, since no two groups are ever measured "
+"identically in practice",
+             "correct": False,
+             "why": "Measuring both groups the same way is exactly what a trial is "
+"designed to do, and is what makes the comparison mean anything."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s18",
+        "band": "standard",
+        "text": "A student reads the herbal supplement's reviews and says the missing "
+"comparison group is the only real weakness in the evidence. Is that "
+"the whole picture?",
+        "options": [
+            {"text": "No, the seller also chose which reviews to publish and gave no dose "
+"at all, on top of having no comparison group",
+             "correct": True},
+            {"text": "Yes, once a proper comparison group is added on top, the evidence "
+"becomes completely reliable and needs nothing further",
+             "correct": False,
+             "why": "The lesson lists further problems beyond the missing comparison "
+"group, including who chose the reviews and the absence of any stated "
+"dose."},
+            {"text": "No, the only other weakness is that anxiety naturally varies week to "
+"week",
+             "correct": False,
+             "why": "That is one further weakness the lesson names, but it also names the "
+"seller choosing reviews and no dose being stated."},
+            {"text": "No, the only other weakness is that no dose is stated",
+             "correct": False,
+             "why": "No dose is one further weakness, but the lesson also names the "
+"seller choosing which reviews to publish."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s19",
+        "band": "standard",
+        "text": "A teacher wants to test whether a new revision technique genuinely "
+"raises exam scores. Using the energy-drink study's own fix, design "
+"the key feature their test needs.",
+        "options": [
+            {"text": "Ask students who already use the technique how helpful they found it",
+             "correct": False,
+             "why": "Self-reported helpfulness from people who chose the technique has "
+"the same self-selection problem the energy-drink study had."},
+            {"text": "Split students at random into two groups, one using the technique "
+"and one not, then compare their results",
+             "correct": True},
+            {"text": "Compare this year's overall exam results directly with last year's "
+"overall exam results across the whole school",
+             "correct": False,
+             "why": "Comparing different year groups introduces other differences between "
+"the years, rather than isolating the technique itself."},
+            {"text": "Survey teachers about which students seem to be doing better",
+             "correct": False,
+             "why": "A teacher's impression is not the controlled comparison the lesson's "
+"fix calls for."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s20",
+        "band": "standard",
+        "text": "Correcting a wrong belief about how common vaping is can change "
+"behaviour on its own, with nothing else changing. Explain why an "
+"inaccurate estimate of how common something is would have that "
+"effect.",
+        "options": [
+            {"text": "Peer pressure disappears completely once the correct number is made "
+"known to everyone",
+             "correct": False,
+             "why": "Peer pressure does not vanish; what changes is the belief about "
+"how normal the activity is."},
+            {"text": "The corrected number makes the activity sound more exciting because "
+"it is rarer than thought",
+             "correct": False,
+             "why": "It works the other way: showing an activity is less common than "
+"believed removes a reason to start, rather than adding excitement."},
+            {"text": "Believing something is normal is one of the strongest predictors of "
+"starting it, so a corrected estimate removes part of the reason "
+"someone might start",
+             "correct": True},
+            {"text": "National surveys are simply more accurate than personal experience "
+"in every single situation",
+             "correct": False,
+             "why": "This is about the effect of believing something is normal, not a "
+"general claim that surveys beat personal experience."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s21",
+        "band": "standard",
+        "text": "A student argues that because a company paid for a study, its "
+"result must be worthless. Evaluate that.",
+        "options": [
+            {"text": "Correct, any study paid for by a company can simply be ignored",
+             "correct": False,
+             "why": "Profiting from an answer does not disqualify the evidence; it "
+"means the evidence needs independent checking."},
+            {"text": "Incorrect, a company's own funding of a study actually makes its "
+"published result considerably more trustworthy than any fully "
+"independent one would ever be",
+             "correct": False,
+             "why": "Funding by an interested party is a reason to check the evidence "
+"more carefully, not a reason to trust it more."},
+            {"text": "It cannot be evaluated, since who funded a study is always kept "
+"secret",
+             "correct": False,
+             "why": "Funding is normally declared, and asking who profits from the answer "
+"is one of the four checking questions."},
+            {"text": "Not necessarily, paying for a study does not disqualify it, but it "
+"does mean the evidence needs checking by someone without that "
+"interest",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s22",
+        "band": "standard",
+        "text": "Doll and Hill recorded each doctor's smoking years before any of "
+"them became ill. Explain why that timing matters for ruling out one "
+"particular objection.",
+        "options": [
+            {"text": "It rules out the idea that sick doctors were simply misremembering "
+"their past smoking, since the smoking was written down long before "
+"any illness appeared",
+             "correct": True},
+            {"text": "It matters mainly because doctors, taken as a professional group, "
+"are generally understood to be far more honest than most other "
+"ordinary people are about their own personal habits",
+             "correct": False,
+             "why": "The lesson does not rely on doctors being unusually honest; it "
+"relies on the timing of when the smoking was recorded."},
+            {"text": "It matters only because doctors are easier to contact for a long "
+"study",
+             "correct": False,
+             "why": "Ease of contact is not the reason the lesson gives for the timing "
+"mattering; the reason is ruling out faulty memory."},
+            {"text": "It does not really matter, since memory problems affect everyone "
+"equally regardless of timing",
+             "correct": False,
+             "why": "The lesson uses this specific timing precisely because it removes "
+"the chance of memory affecting the result."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s23",
+        "band": "standard",
+        "text": "A fair test of an energy drink's effect on exam results needs a "
+"comparison drink. Explain what that drink must be, and why an "
+"obviously different drink would not work.",
+        "options": [
+            {"text": "It must be a completely different flavour, so researchers can tell "
+"the two groups apart at a glance",
+             "correct": False,
+             "why": "Researchers telling the groups apart is not the point; the drink "
+"needs to be indistinguishable to the participants themselves."},
+            {"text": "It must taste identical with the caffeine left out, because an "
+"obviously different drink would let people guess their group and "
+"behave differently as a result",
+             "correct": True},
+            {"text": "It must contain noticeably more sugar than the energy drink itself, "
+"in order to balance out the caffeine properly",
+             "correct": False,
+             "why": "Adding more sugar is not part of the lesson's design for a fair "
+"comparison drink."},
+            {"text": "It does not matter what the comparison drink is, as long as a "
+"comparison exists at all",
+             "correct": False,
+             "why": "The lesson is specific that the comparison drink must be identical- "
+"tasting with no caffeine, not simply any comparison."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s24",
+        "band": "standard",
+        "text": "A pupil says a correlation and a cause are basically the same thing, "
+"just described with different words. Correct that.",
+        "options": [
+            {"text": "They are really the same idea underneath, since anything ever shown "
+"to correlate with something else must also, by that very fact, be "
+"causing that other thing to happen",
+             "correct": False,
+             "why": "A correlation is a starting point, not proof of a cause; the two "
+"are separate things."},
+            {"text": "They are different, but a correlation is actually stronger evidence "
+"than a cause",
+             "correct": False,
+             "why": "A correlation is weaker, unfinished evidence, not stronger than an "
+"established cause."},
+            {"text": "They are not the same: a correlation is two things changing "
+"together, and is only where an investigation starts, not proof that "
+"one causes the other",
+             "correct": True},
+            {"text": "They are different only when the study involves more than one "
+"substance",
+             "correct": False,
+             "why": "The distinction between correlation and cause applies to every "
+"study, whatever it is about."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s25",
+        "band": "standard",
+        "text": "A comparison group in one study is measured by a questionnaire, "
+"while the treated group is measured by a blood test. A student says "
+"this is still a fair comparison group. Evaluate this.",
+        "options": [
+            {"text": "Correct, as long as both groups are asked at the same point in time",
+             "correct": False,
+             "why": "Being asked at the same time does not fix the problem of using two "
+"different measuring methods for the two groups."},
+            {"text": "Correct, since using two entirely different measuring methods for "
+"each group actually gives more useful information overall",
+             "correct": False,
+             "why": "Using two different methods undermines the comparison rather than "
+"adding useful information to it."},
+            {"text": "It cannot be evaluated, since a questionnaire and a blood test "
+"measure the same thing anyway",
+             "correct": False,
+             "why": "They measure quite different things, which is exactly why the "
+"comparison fails."},
+            {"text": "Not really, since a comparison group needs to be measured the same "
+"way as the treated group for the comparison to mean anything",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h18",
+        "band": "harder",
+        "text": "A student claims that once a company is shown to have funded a "
+"supplement study, nothing in that study can ever be trusted again, "
+"whatever else is checked. Evaluate that.",
+        "options": [
+            {"text": "Too strong, funding is a reason to check the evidence more "
+"carefully, not a reason to dismiss it outright regardless of what "
+"else is verified",
+             "correct": True},
+            {"text": "Fully justified, since funding from an interested party removes all "
+"possible value from a study",
+             "correct": False,
+             "why": "Funding is a prompt for independent checking, not something that "
+"removes all value from a study on its own."},
+            {"text": "Not justified at all, since who funds a study has no bearing on how "
+"carefully it should be read",
+             "correct": False,
+             "why": "A funder's interest is a real reason to check the evidence more "
+"carefully."},
+            {"text": "It cannot be evaluated at all, since funding only matters for "
+"herbal supplements and not for other products",
+             "correct": False,
+             "why": "Asking who profits from an answer applies to any claim about any "
+"product, not to one kind of product alone."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h19",
+        "band": "harder",
+        "text": "A newspaper reports 'a landmark drug trial proves the medicine "
+"works,' citing a company-run study with a comparison group, random "
+"assignment, and a dummy drink, but no mention of who assessed the "
+"results. Using the four questions, identify the one still unanswered "
+"and explain why it matters.",
+        "options": [
+            {"text": "Compared with what is unanswered, since no comparison group is "
+"mentioned in the report",
+             "correct": False,
+             "why": "A comparison group and random assignment are both stated in the "
+"scenario as already present; the missing detail is about who did the "
+"assessing."},
+            {"text": "Who is telling me is unanswered; without knowing whether the people "
+"assessing the results knew who received the real drug, the result "
+"could still be biased by that knowledge",
+             "correct": True},
+            {"text": "How many, and who is unanswered, since the newspaper report never "
+"actually states anywhere at all how many people took part in the "
+"trial or who those people exactly were",
+             "correct": False,
+             "why": "The scenario states random assignment and a comparison group exist, "
+"implying numbers were involved; the missing detail is about who "
+"assessed the results."},
+            {"text": "Together, or because is unanswered, since no explanation of a "
+"mechanism is given",
+             "correct": False,
+             "why": "A controlled trial with random assignment already addresses cause "
+"versus correlation; the gap here is about knowledge of group "
+"assignment during assessment."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h20",
+        "band": "harder",
+        "text": "A vaccine study follows 100,000 people over ten years without ever "
+"splitting anyone into groups by force, since it would be unethical "
+"to deliberately withhold a vaccine to create a comparison group. "
+"Explain why that study can still produce strong evidence despite "
+"the limit.",
+        "options": [
+            {"text": "Because ethics rules do not actually apply to the strongest kind of "
+"scientific evidence",
+             "correct": False,
+             "why": "Ethics cannot be set aside for the sake of evidence; what "
+"strengthens a study is its size and its design."},
+            {"text": "Because with as many as 100,000 people involved, the sample itself "
+"is so enormously large that no separate comparison group is ever "
+"needed at all",
+             "correct": False,
+             "why": "A very large sample with no real comparison is still weak "
+"evidence; size alone does not replace a comparison group."},
+            {"text": "Because a very large, carefully designed study can still compare "
+"naturally vaccinated and unvaccinated people over time, even without "
+"researchers forcing the split themselves",
+             "correct": True},
+            {"text": "Because a study that runs for ten years is automatically strong "
+"evidence regardless of how the groups are chosen",
+             "correct": False,
+             "why": "Duration alone does not make evidence strong; how the comparison "
+"is formed matters just as much."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h21",
+        "band": "harder",
+        "text": "A pupil argues that because the 'everyone vapes' claim and the drug- "
+"trial volunteer example share the same underlying sampling fault, "
+"every weak claim about a substance must ultimately reduce to that "
+"one fault. Evaluate that, using all five claims.",
+        "options": [
+            {"text": "Fully supported, since every single one of the five separate claims "
+"can ultimately, if you look closely enough, be traced back to some "
+"biased sample hidden somewhere in its evidence",
+             "correct": False,
+             "why": "Each of the five claims is let down by a different fault; only one "
+"of the five is a sampling fault."},
+            {"text": "Not supported, because none of the five claims actually shares any "
+"fault with any other claim",
+             "correct": False,
+             "why": "Each claim has a different main fault, which is not the same as no "
+"two claims sharing any feature at all; the point is that there are "
+"five distinct faults, not one universal one."},
+            {"text": "It cannot be evaluated, since two faults can never be told apart "
+"in practice",
+             "correct": False,
+             "why": "They can be told apart: a biased sample, an appeal to origin and a "
+"single case are three plainly different weaknesses."},
+            {"text": "Not supported, the five claims are built around five distinct "
+"faults, sampling, origin, cause, control and a single case, so they "
+"do not all reduce to one",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h22",
+        "band": "harder",
+        "text": "A student says Doll and Hill's study and the sleep-supplement's "
+"94%-of-reviewers claim are equally strong evidence, since both "
+"involve a large number of people. Evaluate that.",
+        "options": [
+            {"text": "Not equally strong, Doll and Hill's study recorded smoking before "
+"illness across tens of thousands of doctors, while the supplement's "
+"reviewers were self-selected with no comparison group at all",
+             "correct": True},
+            {"text": "Equally strong, since both examples genuinely involve very large "
+"numbers of ordinary people honestly and quite sincerely reporting "
+"directly on their own personal lived experience over a long time",
+             "correct": False,
+             "why": "The reviewers chose themselves and were never compared with "
+"anybody; Doll and Hill followed tens of thousands of doctors forward "
+"from before any of them fell ill."},
+            {"text": "The supplement's evidence is actually the stronger of the two, since "
+"its result is more recent",
+             "correct": False,
+             "why": "How recent a result is does not make it strong; the design does, "
+"including its timing and its comparison group."},
+            {"text": "It cannot be evaluated, since two studies on different subjects "
+"can never be compared for strength",
+             "correct": False,
+             "why": "Two studies on quite different subjects can still be compared for "
+"design: who was chosen, when they were measured, and against what."},
+        ],
+        "figure": None,
+    },]

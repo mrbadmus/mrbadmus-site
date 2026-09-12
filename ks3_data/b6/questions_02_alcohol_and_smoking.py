@@ -1357,4 +1357,783 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-]
+
+    # ── MRB-338 expansion (12 Sep 2026) ─────────────────────────────────
+    # 30 new rows (15 easier / 10 standard / 5 harder) continuing the
+    # band id sequences from e18/s18/h18, against a target of 15/15/15.
+    # New teachable points not covered by the original 51 rows or by the
+    # mastery ladder: the wine/lager and single-shot unit values, "only
+    # time changes the hours" as its own fact, early liver damage being
+    # reversible where scarring is not, nicotine's clotting effect linked
+    # to heart attack and stroke, brain damage preceding visible
+    # unwellness, nicotine as the driver of addiction rather than most of
+    # smoking's disease, a tar-vs-carbon-monoxide mechanism comparison,
+    # the vape "not known to be safe" conclusion stated flatly, and the
+    # clock model's own stated limits (convention_note) used to evaluate
+    # claims about fitness to drive and matched body mass/sex. See the
+    # MRB-338 authoring report for the full coverage list and the
+    # length/position self-checks. Standard is five short and harder ten
+    # short of the 15-row target - declined rather than padded once
+    # fresh, non-duplicating, non-task-reproducing points ran out; see
+    # the report. Harder's rank-spread check runs on only 5 rows and is
+    # noisy at that sample size; see the report for the honest numbers.
+
+    {
+        "id": "b6-02-e18",
+        "band": "easier",
+        "text": "A large glass of wine and a pint of strong lager are each counted "
+"as the same number of alcohol units. How many?",
+        "options": [
+            {"text": "Three units each",
+             "correct": True},
+            {"text": "Two units",
+             "correct": False,
+             "why": "Two units is a can of cider; a large wine and a pint of strong "
+"lager each count for more than that."},
+            {"text": "Four units",
+             "correct": False,
+             "why": "Both of these drinks count for one unit fewer than four."},
+            {"text": "One unit",
+             "correct": False,
+             "why": "One unit is a half of beer or a single shot, not a large wine or a "
+"pint of strong lager."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e19",
+        "band": "easier",
+        "text": "Black coffee, a cold shower, fresh air, a big meal, exercise and "
+"simply waiting: how many of these six actually change the number of "
+"hours needed to clear alcohol from the blood?",
+        "options": [
+            {"text": "None of them",
+             "correct": False,
+             "why": "Waiting is the one thing that does change it; the liver needs the "
+"hours and nothing else supplies them."},
+            {"text": "Only one",
+             "correct": True},
+            {"text": "Three of them",
+             "correct": False,
+             "why": "Only waiting changes the hours; the other five leave the number "
+"completely unchanged."},
+            {"text": "All six of them",
+             "correct": False,
+             "why": "Five of the six leave the number of hours completely unchanged."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e20",
+        "band": "easier",
+        "text": "Early liver damage from heavy drinking can recover if drinking "
+"stops. Is that also true once scarring has actually set in?",
+        "options": [
+            {"text": "Yes, scar tissue clears within months",
+             "correct": False,
+             "why": "The lesson draws a clear line: early damage recovers, but scarring "
+"is described as not reversing."},
+            {"text": "Yes, if caffeine stops too",
+             "correct": False,
+             "why": "No such condition about caffeine is placed on liver recovery "
+"anywhere in the lesson."},
+            {"text": "No, scarring does not reverse",
+             "correct": True},
+            {"text": "It cannot be answered; the two are never distinguished",
+             "correct": False,
+             "why": "The lesson draws exactly that distinction, between damage that "
+"recovers and scarring that does not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e21",
+        "band": "easier",
+        "text": "Besides narrowing blood vessels and raising blood pressure, what "
+"else does nicotine make more likely over years of smoking?",
+        "options": [
+            {"text": "Bones breaking more easily",
+             "correct": False,
+             "why": "Nicotine's long-term effects are on the heart and blood vessels, "
+"not on bone strength."},
+            {"text": "Muscles cramping badly",
+             "correct": False,
+             "why": "Muscle cramps are not among nicotine's long-term effects."},
+            {"text": "Blood sugar rising sharply",
+             "correct": False,
+             "why": "Blood sugar is not what nicotine acts on; its long-term effects "
+"are on the vessels and the blood's ability to clot."},
+            {"text": "Blood clots forming",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e22",
+        "band": "easier",
+        "text": "Does drinking black coffee make a drunk person any less drunk?",
+        "options": [
+            {"text": "No, only more awake",
+             "correct": True},
+            {"text": "Yes, it lowers the alcohol directly",
+             "correct": False,
+             "why": "Coffee does nothing at all to the alcohol already in the blood."},
+            {"text": "Yes, if strong",
+             "correct": False,
+             "why": "A stronger coffee makes someone more awake, not less drunk; the "
+"alcohol is untouched either way."},
+            {"text": "It depends on the water drunk with it",
+             "correct": False,
+             "why": "Water alongside the coffee changes nothing either; only the liver "
+"removes the alcohol, at its own rate."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e23",
+        "band": "easier",
+        "text": "Can memory and judgement damage from heavy drinking appear before "
+"someone would be called noticeably unwell?",
+        "options": [
+            {"text": "No, only once visibly unwell",
+             "correct": False,
+             "why": "The lesson states the opposite: this damage is affected long before "
+"anyone would call the person unwell."},
+            {"text": "Yes, well before that point",
+             "correct": True},
+            {"text": "No, these are affected last",
+             "correct": False,
+             "why": "The lesson lists memory and judgement among the effects that appear "
+"early, not last."},
+            {"text": "Only once the liver has scarred",
+             "correct": False,
+             "why": "No such condition linking brain effects to liver scarring is made "
+"anywhere in the lesson."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e24",
+        "band": "easier",
+        "text": "Smoking causes both addiction and disease. Is nicotine mainly "
+"responsible for the addiction?",
+        "options": [
+            {"text": "No, nicotine has nothing to do with the addiction",
+             "correct": False,
+             "why": "Nicotine is what the brain adapts to, and that adaptation is what "
+"makes stopping hard."},
+            {"text": "No, the addiction comes mainly from the tar",
+             "correct": False,
+             "why": "Tar damages the airways and alveoli; it is nicotine the brain "
+"adapts to."},
+            {"text": "Yes, and most of the disease comes from tar and the other "
+"substances in the smoke",
+             "correct": True},
+            {"text": "Yes, and nicotine causes most of the disease as well",
+             "correct": False,
+             "why": "Nicotine drives the addiction; most of the disease comes from tar "
+"and the other substances in the smoke."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e25",
+        "band": "easier",
+        "text": "Why are drinks compared in units rather than by counting glasses?",
+        "options": [
+            {"text": "Because every glass of every drink holds the same amount of "
+"alcohol",
+             "correct": False,
+             "why": "Glasses differ enormously in size, and drinks differ in strength; "
+"that is exactly the problem units solve."},
+            {"text": "Because the word unit is shorter than millilitres",
+             "correct": False,
+             "why": "A unit is not a shorter name for a volume; it counts the alcohol "
+"inside the volume."},
+            {"text": "Because shops are required by law to print units on a glass",
+             "correct": False,
+             "why": "What a label says is not why the measurement exists; it exists so "
+"different drinks can be compared at all."},
+            {"text": "Because a unit measures the alcohol itself, whatever the size or "
+"strength of the drink",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e26",
+        "band": "easier",
+        "text": "Someone has five units of alcohol in their blood and drinks nothing "
+"more. At one unit an hour, roughly how many hours until it is "
+"cleared?",
+        "options": [
+            {"text": "About five hours",
+             "correct": True},
+            {"text": "About two hours",
+             "correct": False,
+             "why": "One unit an hour against five units in the blood takes longer than "
+"two hours to clear."},
+            {"text": "About ten hours",
+             "correct": False,
+             "why": "One unit an hour against five units in the blood takes fewer than "
+"ten hours to clear."},
+            {"text": "It cannot be worked out at all",
+             "correct": False,
+             "why": "The units already tell you the amount to clear at a fixed hourly "
+"rate."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e27",
+        "band": "easier",
+        "text": "A breath test measures alcohol in the air someone breathes out. "
+"Does that mean a trace of alcohol really does leave through the "
+"lungs?",
+        "options": [
+            {"text": "No, a breath test measures something else entirely",
+             "correct": False,
+             "why": "A breath test measures alcohol itself, carried out of the blood in "
+"the breath."},
+            {"text": "Yes, and breathing harder is therefore a way to clear it faster",
+             "correct": False,
+             "why": "Only a trace leaves this way, so breathing harder clears nothing; "
+"the liver does nearly all of the work."},
+            {"text": "Yes, but only a trace, which is why breathing harder clears "
+"nothing",
+             "correct": True},
+            {"text": "No, alcohol never reaches the lungs at all",
+             "correct": False,
+             "why": "Dissolved alcohol reaches every organ the blood reaches, the lungs "
+"among them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e28",
+        "band": "easier",
+        "text": "What does a vape often deliver faster, and in larger amounts, than "
+"a cigarette does?",
+        "options": [
+            {"text": "Tar",
+             "correct": False,
+             "why": "A vape contains no tar at all; tar comes from burning tobacco."},
+            {"text": "Carbon monoxide",
+             "correct": False,
+             "why": "A vape contains no carbon monoxide; that comes from burning."},
+            {"text": "Nicotine",
+             "correct": True},
+            {"text": "Oxygen",
+             "correct": False,
+             "why": "Neither a vape nor a cigarette delivers oxygen; smoking in fact "
+"lowers how much oxygen the blood can carry."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e29",
+        "band": "easier",
+        "text": "Smoking's effect on the heart and blood vessels raises the risk of "
+"stroke. What other serious event does that same effect make more "
+"likely?",
+        "options": [
+            {"text": "Kidney failure",
+             "correct": False,
+             "why": "Narrowed vessels and clotting act on the heart and brain; the "
+"kidneys are not what this effect is tied to."},
+            {"text": "Broken bones",
+             "correct": False,
+             "why": "Bone injuries have nothing to do with narrowed vessels or "
+"clotting."},
+            {"text": "Hearing loss",
+             "correct": False,
+             "why": "Hearing is not among the risks tied to narrowed vessels and "
+"clotting."},
+            {"text": "Heart attack",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e30",
+        "band": "easier",
+        "text": "Alcohol reaches the blood from the stomach and the small "
+"intestine. Which organ then does nearly all the work of breaking it "
+"down?",
+        "options": [
+            {"text": "The liver",
+             "correct": True},
+            {"text": "The kidneys",
+             "correct": False,
+             "why": "The kidneys filter waste into the urine; breaking alcohol down is "
+"the liver's job."},
+            {"text": "The lungs",
+             "correct": False,
+             "why": "Only a trace of alcohol leaves in the breath; the lungs break none "
+"of it down."},
+            {"text": "The stomach",
+             "correct": False,
+             "why": "The stomach is where much of it is absorbed, not where it is "
+"broken down."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e31",
+        "band": "easier",
+        "text": "According to the vape paragraph, is switching from cigarettes to "
+"vapes known to be completely safe?",
+        "options": [
+            {"text": "Yes, removing tar and CO makes it safe",
+             "correct": False,
+             "why": "The lesson states plainly that vaping is not known to be safe, even "
+"though it removes those two harms."},
+            {"text": "No, not known to be safe",
+             "correct": True},
+            {"text": "Yes, for beginners",
+             "correct": False,
+             "why": "The lesson does not describe vaping as safe for anyone; the long- "
+"term studies simply do not exist yet."},
+            {"text": "It cannot be answered; no view is given",
+             "correct": False,
+             "why": "The lesson takes a clear position: very likely less harmful than "
+"cigarettes, and not known to be safe."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-e32",
+        "band": "easier",
+        "text": "Is it illegal in the UK to sell a vape to someone under 18?",
+        "options": [
+            {"text": "No, it may be sold to anyone",
+             "correct": False,
+             "why": "Selling either cigarettes or vapes to an under-18 is illegal in "
+"the UK."},
+            {"text": "No, only cigarettes are restricted",
+             "correct": False,
+             "why": "Vapes carry the same restriction as cigarettes: illegal to sell to "
+"under-18s."},
+            {"text": "Yes, it is illegal",
+             "correct": True},
+            {"text": "It depends on the flavour",
+             "correct": False,
+             "why": "The law makes no distinction based on flavour; the age limit "
+"applies to all of them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s18",
+        "band": "standard",
+        "text": "Black coffee is sometimes called 'worse than useless' for a drunk "
+"person, rather than simply useless. What makes it worse rather than "
+"merely useless?",
+        "options": [
+            {"text": "It hides the outward signs of drunkenness, so an impaired person "
+"feels able to drive or take other risks",
+             "correct": True},
+            {"text": "It reacts with the alcohol to make a new, more harmful substance in "
+"the stomach",
+             "correct": False,
+             "why": "Coffee and alcohol do not react together in the stomach to make "
+"anything new."},
+            {"text": "It speeds up the liver's rate, so the impairment simply lasts for "
+"less total time",
+             "correct": False,
+             "why": "Caffeine does not touch the alcohol at all, and the liver's rate "
+"is unchanged by it."},
+            {"text": "It adds a second drug on top of the first, and two drugs together in "
+"the body are always worse than one",
+             "correct": False,
+             "why": "This is not a general rule about combining drugs; it is "
+"specifically about masking impairment that is still there."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s19",
+        "band": "standard",
+        "text": "A heavy drinker seems completely fine at work and shows no obvious "
+"signs of ill health. Does that mean their brain has not yet been "
+"affected?",
+        "options": [
+            {"text": "Yes, the brain is the very last organ heavy drinking ever reaches or "
+"affects",
+             "correct": False,
+             "why": "The lesson does not rank organs by when they are affected; it says "
+"brain effects can appear early, not last."},
+            {"text": "Not necessarily, since memory and judgement damage can appear well "
+"before someone seems unwell",
+             "correct": True},
+            {"text": "Yes, since brain damage cannot occur at all without some visible "
+"physical symptom appearing clearly first",
+             "correct": False,
+             "why": "The lesson explicitly separates visible unwellness from the damage "
+"itself, which can occur without visible signs."},
+            {"text": "It cannot be judged at all, since brain damage cannot be measured "
+"in a living person",
+             "correct": False,
+             "why": "Memory and judgement can be tested in a living person, which is how "
+"early damage is picked up at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s20",
+        "band": "standard",
+        "text": "Someone cuts down their drinking after a doctor warns about early "
+"liver damage. Is the existing damage likely to reverse?",
+        "options": [
+            {"text": "Yes, any liver damage from alcohol reverses completely, no matter "
+"how far it has gone",
+             "correct": False,
+             "why": "There is a line between early damage, which can recover, and "
+"scarring, which does not reverse."},
+            {"text": "No, once any damage occurs the liver never recovers any function "
+"again at all",
+             "correct": False,
+             "why": "Early damage does recover if drinking stops; it is only scarring "
+"that does not."},
+            {"text": "It depends, early damage can recover if drinking stops, but scarring "
+"itself does not reverse",
+             "correct": True},
+            {"text": "It cannot be judged, since early damage and scarring are really "
+"the same thing under two names",
+             "correct": False,
+             "why": "They are genuinely different: one recovers if drinking stops and "
+"the other does not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s21",
+        "band": "standard",
+        "text": "Nicotine narrows blood vessels, raises blood pressure and makes "
+"clots form more readily. Which two serious events does that "
+"combination make more likely?",
+        "options": [
+            {"text": "Liver scarring and stomach bleeding",
+             "correct": False,
+             "why": "Those are alcohol's long-term effects, not the result of narrowed "
+"vessels and clotting."},
+            {"text": "Hearing loss and joint pain",
+             "correct": False,
+             "why": "Neither follows from narrowed blood vessels or from blood clotting "
+"more readily."},
+            {"text": "Memory loss and slower reactions",
+             "correct": False,
+             "why": "Those belong to alcohol's long-term effects on the brain, not to "
+"nicotine's effect on the vessels."},
+            {"text": "Heart attack and stroke",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s22",
+        "band": "standard",
+        "text": "Someone drinks two single shots and a can of cider, finishing at "
+"9pm, and has nothing more. At one unit an hour, roughly when is it "
+"cleared?",
+        "options": [
+            {"text": "About 1am, since two shots and a cider make four units at one unit "
+"an hour",
+             "correct": True},
+            {"text": "About 11pm, since every drink is assumed to clear in a fixed two "
+"hours",
+             "correct": False,
+             "why": "The rate is one unit an hour, not a fixed two hours whatever the "
+"total; four units takes about four hours."},
+            {"text": "About midnight, since only the cider's units count toward the "
+"clearance time",
+             "correct": False,
+             "why": "All the units drunk count toward the total; the two shots add to it "
+"exactly as the cider does."},
+            {"text": "It cannot be worked out at all without knowing the person's body "
+"weight",
+             "correct": False,
+             "why": "This estimate works from the units and the fixed hourly rate "
+"alone; body weight is not part of it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s23",
+        "band": "standard",
+        "text": "A shop assures a customer that vapes are safe because they contain "
+"no tar and no carbon monoxide. Is that assurance accurate?",
+        "options": [
+            {"text": "Yes, removing tar and carbon monoxide is what being safe means",
+             "correct": False,
+             "why": "These are two separate claims: those two harms are removed, and "
+"separately, vaping is not known to be safe."},
+            {"text": "Not quite, removing two harms does not make something safe, and "
+"vaping is not known to be safe",
+             "correct": True},
+            {"text": "No, because a vape is considerably more harmful overall than an "
+"ordinary cigarette",
+             "correct": False,
+             "why": "A vape is very likely less harmful than a cigarette; that is a "
+"separate question from whether it is safe."},
+            {"text": "It cannot be judged, since nothing is known about vaping at all",
+             "correct": False,
+             "why": "Two things are known: a vape avoids tar and carbon monoxide, and "
+"its long-term effects have not yet been established."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s24",
+        "band": "standard",
+        "text": "A nicotine patch delivers nicotine through the skin, with no smoke "
+"and no burning at all. Does it still narrow the blood vessels the "
+"way nicotine does?",
+        "options": [
+            {"text": "No, narrowing only happens when nicotine arrives dissolved in "
+"tobacco smoke",
+             "correct": False,
+             "why": "Narrowing the vessels is something nicotine itself does, however it "
+"reaches the blood."},
+            {"text": "No, a patch cannot cause any effect a cigarette causes, since it "
+"carries no smoke at all",
+             "correct": False,
+             "why": "A patch does avoid the harms that come from burning, tar and carbon "
+"monoxide among them, but nicotine's own effect on the vessels remains."},
+            {"text": "Yes, because narrowing the vessels is nicotine's own effect, not "
+"the smoke's",
+             "correct": True},
+            {"text": "It cannot be answered, since nicotine's own effects cannot be told "
+"apart from the smoke's",
+             "correct": False,
+             "why": "They can: nicotine narrows the vessels, while tar and carbon "
+"monoxide come from the smoke."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s25",
+        "band": "standard",
+        "text": "Someone eats a large meal, then drinks six units, the same amount "
+"they would have drunk on an empty stomach. Will they need fewer "
+"hours to fully clear it?",
+        "options": [
+            {"text": "Yes, since food speeds up how quickly the liver can process each "
+"unit",
+             "correct": False,
+             "why": "The lesson states plainly that the total amount to break down has "
+"not changed, so the hours have not changed."},
+            {"text": "Yes, since some of the alcohol is absorbed by the food rather than "
+"the blood",
+             "correct": False,
+             "why": "The lesson describes food as slowing absorption and lowering the "
+"peak, not as removing any alcohol from the total."},
+            {"text": "It cannot be judged, since nobody knows what eating first does",
+             "correct": False,
+             "why": "Eating first is the one popular trick that does something real: it "
+"slows absorption and lowers the peak, without changing the total."},
+            {"text": "No, the meal lowers how drunk they feel at their worst, but the "
+"total hours needed stays the same",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s26",
+        "band": "standard",
+        "text": "Compare what tar does to the body with what carbon monoxide does. "
+"Which pairing is correct?",
+        "options": [
+            {"text": "Tar damages the airways and alveoli directly; carbon monoxide binds "
+"to haemoglobin instead",
+             "correct": True},
+            {"text": "Tar binds to haemoglobin instead; carbon monoxide damages the "
+"airways and alveoli directly",
+             "correct": False,
+             "why": "These two mechanisms belong the other way round."},
+            {"text": "Both substances bind to haemoglobin in exactly the same way, "
+"reducing oxygen equally",
+             "correct": False,
+             "why": "Only carbon monoxide binds to haemoglobin; tar damages the airways "
+"and alveoli directly."},
+            {"text": "Neither substance reaches the blood at all",
+             "correct": False,
+             "why": "Carbon monoxide enters the blood and binds to haemoglobin there."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s27",
+        "band": "standard",
+        "text": "A student says a large wine must contain more alcohol than a pint of "
+"strong lager, because wine 'sounds stronger'. Using the two drinks' "
+"unit values, evaluate this.",
+        "options": [
+            {"text": "Correct, since a large wine carries a higher unit value than a "
+"pint of strong lager",
+             "correct": False,
+             "why": "Both drinks carry the same value, three units, not a higher one for "
+"wine."},
+            {"text": "Not supported, since both drinks carry the identical value of "
+"three units each",
+             "correct": True},
+            {"text": "Correct, but only because wine is usually served in a larger glass "
+"than a pint",
+             "correct": False,
+             "why": "A unit value already takes the size of the serving into account; a "
+"large wine and a pint of strong lager work out the same."},
+            {"text": "It cannot be evaluated, since neither drink has a unit value at "
+"all",
+             "correct": False,
+             "why": "Both a large wine and a pint of strong lager have a unit value, and "
+"it is three each."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h18",
+        "band": "harder",
+        "text": "The one-unit-an-hour estimate ignores body mass and sex, among "
+"other things. Does that mean it is exactly correct for any two "
+"people who happen to share the same body mass and sex?",
+        "options": [
+            {"text": "Not necessarily, since the model is a general simplification and "
+"real clearance varies for reasons beyond just those two",
+             "correct": True},
+            {"text": "Yes, matching body mass and sex is enough on its own to guarantee "
+"an identical clearance rate every single time",
+             "correct": False,
+             "why": "Body mass and sex are two of several things the estimate ignores; "
+"matching just those two settles nothing."},
+            {"text": "No, because the estimate already accounts for both body mass and "
+"sex directly",
+             "correct": False,
+             "why": "It accounts for neither; it also ignores medication, food already "
+"eaten and drinking speed."},
+            {"text": "It cannot be judged at all, since nothing is known about what the "
+"estimate leaves out",
+             "correct": False,
+             "why": "What it leaves out is known and listed: body mass, sex, medication, "
+"food already eaten and drinking speed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h19",
+        "band": "harder",
+        "text": "A one-unit-an-hour estimate must never be used to judge whether "
+"anyone is fit to drive. Using what such an estimate leaves out, "
+"explain why.",
+        "options": [
+            {"text": "Because no estimate of this kind has ever been compared against a "
+"real drinker's blood test, so the hourly figure is a guess rather "
+"than a measurement anybody has actually checked",
+             "correct": False,
+             "why": "The objection is about the specific factors real clearance depends "
+"on that the estimate ignores, not about whether it has been tested."},
+            {"text": "Real clearance can be slower once the liver is already damaged, and "
+"varies with mass, sex, medication and drinking speed, none of which "
+"the hourly rate accounts for",
+             "correct": True},
+            {"text": "Because the estimate already builds in a safety margin, making it "
+"overly cautious",
+             "correct": False,
+             "why": "There is no safety margin in it; real clearance can be slower than "
+"the estimate, which would understate how impaired someone still is."},
+            {"text": "Because the estimate covers alcohol alone and says nothing about "
+"any other drug in the body",
+             "correct": False,
+             "why": "The reason it cannot be trusted here is individual variation in "
+"clearing alcohol itself, not other drugs being present."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h20",
+        "band": "harder",
+        "text": "A vape user switches to smoking cigarettes 'just for special "
+"occasions', reasoning that because a vape avoids tar and carbon "
+"monoxide, the occasional cigarette on top of it must still be low- "
+"risk overall. Evaluate that reasoning.",
+        "options": [
+            {"text": "Well supported, since a vape's advantages carry straight over to "
+"any cigarettes smoked alongside it",
+             "correct": False,
+             "why": "A vape avoiding tar and carbon monoxide says nothing at all about a "
+"cigarette smoked on top of it; the smoke still carries both."},
+            {"text": "Well supported, since occasional use of any substance carries no "
+"meaningful risk at all",
+             "correct": False,
+             "why": "Risk comes from what a substance does to the body, and an "
+"occasional cigarette still delivers tar and carbon monoxide."},
+            {"text": "Not well supported, since the occasional cigarettes still carry "
+"tar and carbon monoxide, and the nicotine dependence is unchanged",
+             "correct": True},
+            {"text": "It cannot be evaluated without knowing exactly how many cigarettes "
+"count as occasional",
+             "correct": False,
+             "why": "What a vape avoids and what a cigarette contains is enough to judge "
+"the reasoning, whatever the number."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h21",
+        "band": "harder",
+        "text": "Two smokers have identical cigarette habits, but one also starts "
+"using a nicotine patch to help manage cravings while still smoking "
+"the same amount. Would the patch be expected to lower their risk "
+"from tar and carbon monoxide?",
+        "options": [
+            {"text": "Yes, because the patch supplies the nicotine the body is asking "
+"for, and someone who is not craving nicotine draws less deeply on "
+"each cigarette and so takes in less tar and carbon monoxide",
+             "correct": False,
+             "why": "Nicotine does nothing about tar or carbon monoxide; those come from "
+"the smoke regardless of where the nicotine came from."},
+            {"text": "Yes, because a patch automatically replaces some of a person's "
+"cigarettes",
+             "correct": False,
+             "why": "In this case their smoking amount stays the same, so the patch only "
+"adds a second source of nicotine alongside it."},
+            {"text": "It cannot be answered without knowing the strength of the patch",
+             "correct": False,
+             "why": "The strength of the patch changes nothing here: tar and carbon "
+"monoxide come from the smoke, and the smoking has not changed."},
+            {"text": "No, the patch adds nicotine through the skin without changing how "
+"much they still smoke, and tar and CO come from the smoke itself",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h22",
+        "band": "harder",
+        "text": "A student claims that someone who drank ten units and then 'slept it "
+"off' overnight must have zero alcohol left in their blood by "
+"morning, since a full night's sleep is surely long enough. Using "
+"only the one-unit-an-hour rate, evaluate this for someone who fell "
+"asleep at midnight.",
+        "options": [
+            {"text": "Not necessarily, since ten units at one unit an hour takes about ten "
+"hours, so they may not be clear until roughly 10am",
+             "correct": True},
+            {"text": "Correct, since sleep itself is described as speeding up how quickly "
+"the liver clears alcohol",
+             "correct": False,
+             "why": "The lesson states the liver works at the same rate whether a person "
+"is asleep or awake; sleep does not speed anything up."},
+            {"text": "Correct, since ten units is well within what any healthy adult liver "
+"clears in one ordinary night, regardless of the exact timing "
+"involved",
+             "correct": False,
+             "why": "At one unit an hour, ten units takes about ten hours, which a "
+"night's sleep from midnight would only just cover, if at all."},
+            {"text": "It cannot be worked out at all, since the model genuinely never "
+"states how long any given night's sleep actually lasts",
+             "correct": False,
+             "why": "The model needs only the units and the fixed hourly rate; the length "
+"of sleep can be compared directly against the hours required."},
+        ],
+        "figure": None,
+    },]

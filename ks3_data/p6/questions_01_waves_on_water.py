@@ -464,4 +464,602 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p6-01-e07",
+        "band": "easier",
+        "text": "In a water wave, the amplitude is measured from…",
+        "options": [
+            {"text": "the bottom of a trough up to the top of the next crest",
+             "correct": False,
+             "why": "That distance is twice the amplitude, not the "
+                    "amplitude itself."},
+            {"text": "one crest along to the next crest", "correct": False,
+             "why": "That is the wavelength, a distance along the wave, not "
+                    "a height above it."},
+            {"text": "the still water level up to the top of a crest",
+             "correct": True},
+            {"text": "one edge of the ripple tank to the other",
+             "correct": False,
+             "why": "The size of the tank has nothing to do with how far "
+                    "the water itself rises."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-e08",
+        "band": "easier",
+        "text": "Before any wave has reached it, the level the water sits at "
+                "is called the…",
+        "options": [
+            {"text": "trough", "correct": False,
+             "why": "A trough only exists once a wave is passing through; "
+                    "it is a low point on a moving wave."},
+            {"text": "amplitude", "correct": False,
+             "why": "Amplitude is a distance measured from this level, not "
+                    "the level itself."},
+            {"text": "crest", "correct": False,
+             "why": "A crest is a high point on a moving wave, not the "
+                    "undisturbed water."},
+            {"text": "still level", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-e09",
+        "band": "easier",
+        "text": "A wave's crest stands 6 cm above the still water level. What "
+                "is the amplitude of this wave?",
+        "options": [
+            {"text": "3 cm", "correct": False,
+             "why": "Halving isn't needed here — 6 cm above the still "
+                    "level already is the amplitude."},
+            {"text": "12 cm", "correct": False,
+             "why": "That would be trough to crest. Only one crest height "
+                    "above still level is given."},
+            {"text": "6 cm", "correct": True},
+            {"text": "It cannot be found without the wavelength",
+             "correct": False,
+             "why": "Amplitude only needs the height above the still "
+                    "level; the wavelength plays no part in it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-e10",
+        "band": "easier",
+        "text": "In science, a water wave is best described as…",
+        "options": [
+            {"text": "a single lump of water that gets carried steadily "
+                     "along, moving all the way from one place to another "
+                     "as the wave itself travels forward", "correct": False,
+             "why": "The water itself does not travel along; only the "
+                    "disturbance does."},
+            {"text": "a fixed shape that always stays over the same patch "
+                     "of water", "correct": False,
+             "why": "A wave's whole point is that the shape moves onward "
+                    "across the water, not that it stays put."},
+            {"text": "a gust of wind blowing just above the surface",
+             "correct": False,
+             "why": "Wind can start waves, but the wave itself is a "
+                    "disturbance in the water, not moving air."},
+            {"text": "a disturbance that carries energy from place to "
+                     "place without carrying the water itself",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-e11",
+        "band": "easier",
+        "text": "Which pair correctly matches a wave measurement to what it "
+                "tells you?",
+        "options": [
+            {"text": "Wavelength tells you how far the water rises "
+                     "above the still level with each wave that passes; "
+                     "amplitude tells you the spacing between one crest "
+                     "and the next crest along the wave",
+             "correct": False,
+             "why": "The two are swapped: amplitude is the rise, "
+                    "wavelength is the spacing."},
+            {"text": "Both amplitude and wavelength tell you exactly the "
+                     "same thing about a wave", "correct": False,
+             "why": "They measure two different things — a height and a "
+                    "length — and one can change without the other."},
+            {"text": "Amplitude tells you how fast the wave is travelling",
+             "correct": False,
+             "why": "How far the water rises says nothing about the "
+                    "wave's speed across the tank."},
+            {"text": "Amplitude tells you how far the water rises above "
+                     "still level; wavelength tells you the spacing "
+                     "between one crest and the next", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-e12",
+        "band": "easier",
+        "text": "Two points on a wave are exactly one wavelength apart. "
+                "Which pair could they be?",
+        "options": [
+            {"text": "A crest, and the trough right next to it",
+             "correct": False,
+             "why": "A crest and its neighbouring trough are only half a "
+                    "wavelength apart."},
+            {"text": "A crest, and the still level directly beneath it",
+             "correct": False,
+             "why": "That is a height above the water, not a distance "
+                    "along the wave."},
+            {"text": "A crest, and the very next crest along",
+             "correct": True},
+            {"text": "The top and the bottom of a single crest",
+             "correct": False,
+             "why": "A single crest does not have a 'bottom' of its own — "
+                    "that phrase does not describe a real distance on the "
+                    "wave."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-e13",
+        "band": "easier",
+        "text": "A stone is dropped into one corner of a large, still pond. "
+                "Half a second later, has the water at the far corner of "
+                "the pond moved yet?",
+        "options": [
+            {"text": "Yes, the whole pond starts moving the instant the "
+                     "stone lands", "correct": False,
+             "why": "The disturbance has to travel across the pond first; "
+                    "it cannot act on distant water straight away."},
+            {"text": "Yes, but only right at the very edge",
+             "correct": False,
+             "why": "Edges are not special; the disturbance reaches every "
+                    "part of the pond in the order it travels, starting "
+                    "nearest the stone."},
+            {"text": "It depends only on how big the pond is",
+             "correct": False,
+             "why": "Size sets the distance to cross, but it is still the "
+                    "travel time that decides whether the disturbance has "
+                    "arrived yet."},
+            {"text": "No — the water there stays still until the "
+                     "disturbance has had time to reach it", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-e14",
+        "band": "easier",
+        "text": "A stone is dropped into a still pond and ripples spread "
+                "outward from where it landed. Where did the energy "
+                "carried by those ripples originally come from?",
+        "options": [
+            {"text": "The stone, as it fell and struck the water",
+             "correct": True},
+            {"text": "The water, which already held the energy before the "
+                     "stone arrived", "correct": False,
+             "why": "The pond was still beforehand, so it had no wave "
+                    "energy of its own to give up."},
+            {"text": "The air pressing down on the surface of the pond",
+             "correct": False,
+             "why": "Nothing about still air pressing on the water starts "
+                    "a ripple; the stone's impact does."},
+            {"text": "The waves generate their own energy as they spread "
+                     "outward", "correct": False,
+             "why": "Energy cannot appear from nothing; it has to come "
+                    "from somewhere, and here that is the falling stone."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p6-01-s07",
+        "band": "standard",
+        "text": "Wave A and Wave B both have an amplitude of 8 cm, but "
+                "Wave A has a wavelength of 2 m and Wave B has a "
+                "wavelength of 0.5 m. How do they compare?",
+        "options": [
+            {"text": "They rise the same height above the still level, "
+                     "but Wave B's crests are closer together",
+             "correct": True},
+            {"text": "Wave B rises higher above the still level, because "
+                     "its crests are packed closer together",
+             "correct": False,
+             "why": "Amplitude is stated as equal for both — wavelength "
+                    "does not change how high either one rises."},
+            {"text": "Wave A must be travelling faster, since it has the "
+                     "longer wavelength", "correct": False,
+             "why": "Nothing about either wave's speed has been given; "
+                    "amplitude and wavelength alone don't decide it."},
+            {"text": "The two waves cannot really have the same amplitude "
+                     "if their wavelengths are different",
+             "correct": False,
+             "why": "Amplitude and wavelength are independent — either one "
+                    "can be set without changing the other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-s08",
+        "band": "standard",
+        "text": "A garden pond ripple has a wavelength of about 5 cm. An "
+                "ocean swell has a wavelength of over 100 m. To say the "
+                "swell is definitely a 'bigger' wave than the ripple in "
+                "every sense, what extra information would you need?",
+        "options": [
+            {"text": "Nothing else — a much longer wavelength always means "
+                     "a bigger wave in every way", "correct": False,
+             "why": "That treats wavelength and amplitude as the same "
+                    "thing, and they are two separate measurements."},
+            {"text": "The depth of water each wave was measured in",
+             "correct": False,
+             "why": "Water depth isn't one of the two measurements that "
+                    "decide whether a wave counts as 'bigger'."},
+            {"text": "The direction each wave happens to be travelling in",
+             "correct": False,
+             "why": "Which way a wave travels says nothing about how tall "
+                    "or how spread out it is."},
+            {"text": "The amplitude of each wave", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-s09",
+        "band": "standard",
+        "text": "A ripple 2 cm high and a storm wave 3 m high cross the same "
+                "stretch of open water. Which correctly compares the "
+                "energy they carry?",
+        "options": [
+            {"text": "They carry the same energy, because energy does not "
+                     "depend on the size of a wave", "correct": False,
+             "why": "A wave's amplitude is directly linked to how much "
+                    "energy it carries, so equal energy isn't right here."},
+            {"text": "The ripple carries more energy, because smaller "
+                     "waves always travel faster", "correct": False,
+             "why": "Nothing here says the ripple is faster, and even a "
+                    "fast small wave would not out-carry a much taller "
+                    "one."},
+            {"text": "Neither carries any energy unless their wavelengths "
+                     "are also known", "correct": False,
+             "why": "Amplitude alone is enough to say the taller wave "
+                    "carries more energy here."},
+            {"text": "The storm wave carries far more energy, because it "
+                     "has a much larger amplitude", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-s10",
+        "band": "standard",
+        "text": "Three floating buoys are anchored 4 m apart in a line, "
+                "with Buoy 1 nearest a distant wave source. Which buoy "
+                "starts bobbing first as the waves arrive?",
+        "options": [
+            {"text": "All three bob at exactly the same instant",
+             "correct": False,
+             "why": "The disturbance takes time to travel between them, so "
+                    "it cannot reach all three at once."},
+            {"text": "Buoy 1, because the disturbance reaches the nearest "
+                     "buoy first", "correct": True},
+            {"text": "Buoy 2, because it sits between the other two",
+             "correct": False,
+             "why": "Being in the middle of the line does not make the "
+                    "disturbance arrive there first."},
+            {"text": "Buoy 3, because waves speed up the further they "
+                     "travel", "correct": False,
+             "why": "A travelling wave does not simply speed up on its "
+                    "own; nothing here changes its speed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-s11",
+        "band": "standard",
+        "text": "A wave of amplitude 3 cm travels 2 m across a pond in five "
+                "seconds. In that time, how far sideways — in the "
+                "direction the wave travels — does a floating cork end up "
+                "moving?",
+        "options": [
+            {"text": "Roughly 2 m, the same as the wave", "correct": False,
+             "why": "The cork rises and falls; it does not get carried "
+                    "sideways along with the wave."},
+            {"text": "About 3 cm, matching the amplitude", "correct": False,
+             "why": "3 cm is a height the cork rises by, not a sideways "
+                    "distance it travels."},
+            {"text": "Close to 0 m — it finishes almost where it started",
+             "correct": True},
+            {"text": "It moves 2 m in the opposite direction to the wave",
+             "correct": False,
+             "why": "There is no reason for the cork to be pushed "
+                    "backwards; it simply returns to about where it "
+                    "began."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-s12",
+        "band": "standard",
+        "text": "A splash sends ripples 10 m to a floating duck, and the "
+                "same disturbance then carries on another 15 m to the far "
+                "bank. How far in total has the disturbance itself "
+                "travelled by the time it reaches the far bank?",
+        "options": [
+            {"text": "10 m", "correct": False,
+             "why": "That only counts the first stretch, up to the duck."},
+            {"text": "15 m", "correct": False,
+             "why": "That only counts the second stretch, from the duck to "
+                    "the bank."},
+            {"text": "25 m", "correct": True},
+            {"text": "It cannot have travelled the full distance, because "
+                     "the duck absorbs some of the disturbance",
+             "correct": False,
+             "why": "A floating duck does not soak up the disturbance — it "
+                    "simply bobs and lets it carry on."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-s13",
+        "band": "standard",
+        "text": "The simple picture of a wave shows a floating object moving "
+                "straight up and down as the wave passes. A closer look "
+                "shows the water actually moves in small loops — forward "
+                "near the crest, backward in the trough — before ending up "
+                "close to where it began. Which statement fits both "
+                "pictures?",
+        "options": [
+            {"text": "The closer look proves the simple picture is "
+                     "completely wrong, and the water really is carried "
+                     "along by the wave", "correct": False,
+             "why": "The water still ends up close to where it began, so "
+                    "it is not being carried along."},
+            {"text": "The straight up-and-down picture is a simplified "
+                     "version; the looping picture is more detailed, but "
+                     "the water still finishes where it started either way",
+             "correct": True},
+            {"text": "The two pictures must describe two different kinds "
+                     "of wave, not the same swell seen in two ways",
+             "correct": False,
+             "why": "Both pictures are describing the very same water "
+                    "wave, just at different levels of detail."},
+            {"text": 'The looping picture shows the water travelling forward '
+                     'with the wave from one end of the pond to the other, only '
+                     'more slowly than it first looks', "correct": False,
+             "why": "The water in the loops still ends up close to its "
+                    "starting point, so it is not travelling forward with "
+                    "the wave."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p6-01-h07",
+        "band": "harder",
+        "text": "A student argues: 'Since a wave transfers energy without "
+                "transferring matter, nothing physical ever actually moves "
+                "when a wave passes.' What is wrong with this claim?",
+        "options": [
+            {"text": "Nothing is wrong — 'wave' just means a pattern, and "
+                     "no real movement happens anywhere", "correct": False,
+             "why": "The water genuinely rises and falls as the "
+                    "disturbance passes; that is real physical movement."},
+            {"text": "The water itself does physically move — rising and "
+                     "falling — while what does NOT happen is the water "
+                     "being carried onward with the wave", "correct": True},
+            {"text": "The claim is true for water waves only, and false "
+                     "for every other kind of wave, because only water is "
+                     "heavy enough to carry energy without moving along "
+                     "with it", "correct": False,
+             "why": "The same distinction — energy moves on, matter stays "
+                    "roughly put — is exactly what applies here too."},
+            {"text": "The water actually does flow steadily along with the "
+                     "wave from one end of the pond to the other, which "
+                     "would mean energy cannot travel without matter "
+                     "travelling too", "correct": False,
+             "why": "The water does not flow along with the wave; it rises "
+                    "and falls and returns to about where it started."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-h08",
+        "band": "harder",
+        "text": "Wave A has amplitude 0.5 m and wavelength 20 m. Wave B has "
+                "amplitude 1.5 m and wavelength 8 m. A student claims Wave "
+                "A must carry more energy, because it has the longer "
+                "wavelength. Assess this claim.",
+        "options": [
+            {"text": "The claim is correct, since a longer wavelength "
+                     "always means more energy", "correct": False,
+             "why": "Wavelength on its own does not decide how much "
+                    "energy a wave carries; amplitude is the key "
+                    "measurement here."},
+            {"text": "The claim does not hold up — energy relates to "
+                     "amplitude, and Wave B's much larger amplitude means "
+                     "it is the one more likely carrying more energy",
+             "correct": True},
+            {"text": "Both waves must carry exactly identical energy, since "
+                     "the sea as a whole fixes the total energy, whatever "
+                     "amplitude or wavelength any one wave happens to "
+                     "have", "correct": False,
+             "why": "Different waves on the same sea can carry very "
+                    "different amounts of energy; nothing fixes them to be "
+                    "equal."},
+            {"text": "The claim is only correct if the two waves also "
+                     "happen to be travelling at different speeds, since "
+                     "otherwise neither one could carry more energy than "
+                     "the other",
+             "correct": False,
+             "why": "Speed is not part of what makes the claim true or "
+                    "false here — amplitude is the deciding factor either "
+                    "way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-h09",
+        "band": "harder",
+        "text": "A cork bobs on a pond as waves pass beneath it, always "
+                "returning to the same height between waves. A student "
+                "says: 'because the cork keeps returning to the same "
+                "height, the water underneath it must never really move "
+                "at all — it only looks like it moves.' What is wrong "
+                "with this reasoning?",
+        "options": [
+            {"text": "Nothing is wrong — the water only appears to move "
+                     "because of the way light reflects off a rippling "
+                     "surface", "correct": False,
+             "why": "The water is genuinely rising and falling; that is "
+                    "not a trick of the light."},
+            {"text": "It is wrong because corks float in such an "
+                     "unnaturally light way that a cork could never truly "
+                     "show what the real water underneath it is actually "
+                     "doing", "correct": False,
+             "why": "The cork's lightness isn't the issue — it faithfully "
+                    "follows the water's real up-and-down motion."},
+            {"text": "It is wrong because the water genuinely does rise "
+                     "and fall as the disturbance passes; only its "
+                     "average position over time stays the same",
+             "correct": True},
+            {"text": "It is wrong because the premise is false — the cork "
+                     "actually is carried steadily forward with each "
+                     "wave, ending up further along the pond every time "
+                     "one passes",
+             "correct": False,
+             "why": "The premise given is true: the cork really does "
+                    "return to the same height each time, so this option "
+                    "denies something that is correct."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-h10",
+        "band": "harder",
+        "text": "A sailor claims a wave only counts as 'rough' when its "
+                "wavelength is short, whatever its amplitude happens to "
+                "be. Assess this using amplitude and wavelength as two "
+                "separate measurements.",
+        "options": [
+            {"text": 'The sailor is correct — wavelength alone decides how '
+                     'rough a wave feels, and amplitude makes no difference to '
+                     'how choppy the water seems', "correct": False,
+             "why": "A long-wavelength wave can still have a large "
+                    "amplitude and feel rough; wavelength alone doesn't "
+                    "settle it."},
+            {"text": "Roughness is really about amplitude — a long-"
+                     "wavelength swell can still feel rough if it has a "
+                     "large amplitude, and a short ripple can feel calm if "
+                     "its amplitude is tiny", "correct": True},
+            {"text": 'Roughness depends only on how fast the wave is '
+                     'travelling, and neither amplitude nor wavelength has '
+                     'anything to do with how rough it feels', "correct": False,
+             "why": "Speed is not one of the two measurements given, and "
+                    "the question asks about amplitude and wavelength "
+                    "specifically."},
+            {"text": "Roughness cannot be linked to any single property of a "
+                     "wave, so the sailor's claim and one resting on amplitude "
+                     "are equally meaningless", "correct": False,
+             "why": "Roughness clearly tracks amplitude — how far the "
+                    "water is displaced up and down — so it is not "
+                    "meaningless."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-h11",
+        "band": "harder",
+        "text": "A becalmed sea has no waves at all. A single passing boat "
+                "sends out one wave that lifts a distant gull once and "
+                "then dies away, leaving the sea calm again. A student "
+                "says: 'since only one wave passed, no real energy "
+                "transfer happened — you need a whole train of waves for "
+                "that.' Assess this claim.",
+        "options": [
+            {"text": "The claim is correct, since one single wave alone "
+                     "has amplitude but no wavelength of its own to carry "
+                     "any real energy along with it as it travels forward",
+             "correct": False,
+             "why": "A single wave still has both a height and a length; "
+                    "it is not missing a wavelength."},
+            {"text": "The claim is correct, because energy can only ever "
+                     "be transferred continuously over many repeated "
+                     "waves, and never delivered in a single one-off "
+                     "pulse of disturbance",
+             "correct": False,
+             "why": "There is no such rule — a single pulse of "
+                    "disturbance is perfectly able to carry energy."},
+            {"text": "The claim is wrong — a single wave is still a real "
+                     "disturbance carrying energy, and lifting the gull is "
+                     "itself evidence that energy reached it", "correct": True},
+            {"text": "The claim is wrong, but only because the boat's own "
+                     "engine happened to still be running loudly at the "
+                     "exact moment that the wave itself was made", "correct": False,
+             "why": "The boat's engine has nothing to do with whether the "
+                    "single wave itself carried energy to the gull."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-h12",
+        "band": "harder",
+        "text": "Out in the deep ocean, a tsunami can have an amplitude of "
+                "well under 1 m spread over a wavelength of about 200 km, "
+                "so a ship crossing it notices nothing unusual. As the "
+                "same tsunami reaches shallow water near a coast, it slows "
+                "and becomes a far shorter, far taller wave. What has "
+                "happened to its energy?",
+        "options": [
+            {"text": "It is the same energy as before, now repacked into "
+                     "a shorter, taller wave instead of a long, low one",
+             "correct": True},
+            {"text": "The energy has increased hugely near the coast, "
+                     "which is why the wave becomes dangerous",
+             "correct": False,
+             "why": "No new energy is added near the coast; the same "
+                    "energy is simply reshaped."},
+            {"text": "The energy has spread out even further as the wave "
+                     "nears the coast, which is why it grows taller",
+             "correct": False,
+             "why": "Spreading the same energy over more space would make "
+                    "a wave lower, not taller."},
+            {"text": "It used its energy on the way, and the shallow water "
+                     "tops it back up", "correct": False,
+             "why": "Shallow water does not supply the wave with fresh "
+                    "energy from below."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p6-01-h13",
+        "band": "harder",
+        "text": "A deep-ocean tsunami can have a steepness (amplitude "
+                "compared with wavelength) of roughly 1 in 200,000, "
+                "flatter than an ordinary ripple, and yet it can be one of "
+                "the most destructive waves there is. What does this show "
+                "about steepness and the energy a wave carries?",
+        "options": [
+            {"text": 'It shows that only steep waves are dangerous, so a wave '
+                     'as flat as this one cannot be a real tsunami',
+             "correct": False,
+             "why": "This directly contradicts the fact given — the flat, "
+                    "low tsunami really is dangerous once it reaches "
+                    "shallow water."},
+            {"text": "It shows that a wave's steepness alone does not tell "
+                     "you how much energy it carries — a very flat-"
+                     "looking wave can still carry enormous energy",
+             "correct": True},
+            {"text": 'It shows that steepness and energy are the same '
+                     'underlying quantity, measured in two different ways',
+             "correct": False,
+             "why": "Steepness compares two lengths on the wave; energy is "
+                    "a completely different quantity from either of them."},
+            {"text": 'It shows the figure must be a mistake, since a wave of '
+                     'such tiny amplitude could not be a tsunami', "correct": False,
+             "why": "The tiny deep-ocean amplitude is a genuine, well-"
+                    "measured feature of real tsunamis, not an error."},
+        ],
+        "figure": None,
+    },
 ]
