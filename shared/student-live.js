@@ -105,7 +105,24 @@
     notMine:    "That class is not one of yours.",
     noPractice: "There is nothing to look back over yet. Check again after your next lesson.",
     noWork:     "No work has been set for this week yet.",
-    workNotSet: "This week’s work is not ready yet. Check again later today."
+    workNotSet: "This week’s work is not ready yet. Check again later today.",
+    /* ⊕ MRB-340, 12 Sep 2026 — A SET THAT WAS DELETED WHILE A CHILD WAS
+       DOING IT.
+
+       ⚠️ IT IS NOT `noWork`, AND THE DIFFERENCE IS THE WHOLE POINT.
+       "No work has been set for this week yet" is true of a week nobody
+       set anything in. A child who is halfway through a set, whose
+       answers have stopped saving because a teacher deleted it under
+       them, has watched work EXIST and then stop existing; telling them
+       none was ever set is a lie about something they were just doing,
+       and the natural next thing they do is answer the rest of it into
+       a queue that will never drain.
+
+       ⚠️ AND IT SAYS NOTHING ABOUT WHY. A child does not need to be
+       told that their teacher deleted it, or that a request 404'd
+       (CLAUDE.md §8.10). "Withdrawn" is the fact, in the passive, and it
+       is all of it. */
+    withdrawn:  "This work has been withdrawn"
   };
 
   function host() { return document.getElementById(HOST_ID); }
@@ -1650,7 +1667,15 @@
           var t = Date.parse(stamp);
           if (!isNaN(t)) { serverNow = t; }
         }
-        if (!res.ok) { throw new Error("backend " + res.status + " on " + path); }
+        if (!res.ok) {
+          /* ⊕ MRB-340 — THE STATUS TRAVELS WITH THE ERROR. The drain below
+             has to tell "this could not be delivered yet" from "there is
+             nothing left to deliver it to", and a message string is not a
+             thing to match on. */
+          var bad = new Error("backend " + res.status + " on " + path);
+          bad.status = res.status;
+          throw bad;
+        }
         return res.json();
       });
     }
@@ -1709,10 +1734,37 @@
           }
         }
       } catch (err) {
-        /* Nothing is lost here. The entry is still in `pending` AND still on
-           the device, and the next `online`, the next answer, or simply the
-           next time this page opens will send it. */
-        console.error("[student-live] answer not saved yet", err);
+        /* ⊕ MRB-340 — EXCEPT WHEN THERE IS NOTHING LEFT TO DELIVER TO.
+
+           ⚠️ THE RETRY IS THE DEFECT HERE, NOT THE SAFETY NET IT USUALLY IS.
+           A teacher can delete a set a child is halfway through; the answer
+           route then refuses every write for an assignment that is not
+           there, and the paragraph below is exactly wrong about it — the
+           next `online`, the next answer and the next page load all send it
+           again, for ever, while the page goes on drawing ticks over answers
+           that are going nowhere. The child sits the rest of a set that has
+           stopped existing.
+
+           So a `404` — the assignment is gone — ENDS the queue for this
+           assignment, on the device as well as in memory, and the page says
+           so. Every other failure keeps the old behaviour unchanged: nothing
+           is lost, and it is sent later.
+
+           ⚠️ `404` ONLY. A `403`, a `409` or a `500` are all "not now" and
+           are all still retried; widening this to any 4xx would throw away a
+           child's answers over a transient refusal. */
+        if (err && err.status === 404) {
+          Object.keys(pending).forEach(function (k) { delete pending[k]; });
+          persist();
+          console.info("[student-live] assignment " + assignment.id +
+                       " is gone; answers for it are not retried");
+          say(SAY.withdrawn);
+        } else {
+          /* Nothing is lost here. The entry is still in `pending` AND still on
+             the device, and the next `online`, the next answer, or simply the
+             next time this page opens will send it. */
+          console.error("[student-live] answer not saved yet", err);
+        }
       } finally {
         flushing = false;
         flushWait = null;

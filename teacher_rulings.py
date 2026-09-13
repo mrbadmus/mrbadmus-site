@@ -1538,6 +1538,30 @@ NAV = {
 # were, below.
 SET_ATTR = {
     10:  {"data-port-region": "topbar"},
+
+    # ── ⊕ MRB-340, 12 Sep 2026 · A HOOK FOR THE NARROW TOP BAR ─────────
+    #
+    # ⚠️ A CLASS, BECAUSE THERE IS NOTHING ELSE TO AIM AT. Design's top bar
+    # is built out of inline style strings, node by node — there is no
+    # selector for "the search trigger" and none for "its label", so
+    # `shared/teacher-ds.css` had no way to reach either. Nodes 19/23/24 are
+    # the button, the words "Find a student" and the `/` shortcut chip.
+    #
+    # ⚠️ AND IT CHANGES NOTHING ON ITS OWN. `SET_ATTR` refuses to overwrite
+    # an attribute Design already wrote, and none of these three carries a
+    # `class`; the styling is entirely in the `@media (max-width: 560px)`
+    # block at the foot of `shared/teacher-ds.css`, so at every width above
+    # it the bar is byte-identical to what Design drew.
+    #
+    # WHY 560: the bar already loses its nav tabs at 1023 and tightens at
+    # 699. Below about 560 the crumb, the tabs' remains and a 150px labelled
+    # search button stop fitting on one line, and the search is the piece
+    # with an obvious smaller form — the same 38px square the library
+    # drawer's own trigger (`.libtrigger--square`) already uses.
+    19:  {"class": "mrb-findbtn"},
+    23:  {"class": "mrb-findlabel"},
+    24:  {"class": "mrb-findkey"},
+
     158: {"data-port-region": "classes"},
     208: {"data-port-region": "class"},
     330: {"data-port-region": "student"},
@@ -2062,6 +2086,11 @@ _ROW_ACT_ARMED = ("flex:none;font:600 14.5px/1.2 var(--st-ui);"
                   "padding:0;cursor:pointer")
 _ROW_ACTS = ("display:flex;align-items:center;gap:12px;flex-wrap:wrap;"
              "padding:var(--rowpad,14px 16px)")
+# ⊕ MRB-340 — the setter's name, under the title. Design's own caption
+# register: the mono eyebrow she uses for a fact about a row rather than a
+# value in it, at the size the table's own secondary text already runs at.
+_ROW_SETBY = ("margin-top:4px;font:400 12px/1.3 var(--st-mono);"
+              "letter-spacing:.08em;color:var(--st-caption)")
 # The marking screen's pair, in Design's own header-action register: the row
 # is node 213's declaration and the buttons are node 215's — the class
 # screen's secondary header button, verbatim.
@@ -2080,6 +2109,54 @@ _HEAD_ACT_ARMED = ("height:40px;padding:0 16px;font:600 17px/1.2 var(--st-ui);"
 _ROW_ACTS_HEAD = ("padding:12px 16px;font:500 13px/1.2 var(--st-mono);"
                   "letter-spacing:.14em;text-transform:uppercase;"
                   "color:var(--st-caption)")
+
+# ══ ⊕ MRB-340, 12 Sep 2026 · THE PORT'S OWN STYLESHEET TAIL ═════════════
+#
+# ⚠️ IT IS HERE AND NOT IN `shared/teacher-ds.css`, BECAUSE THAT FILE IS
+# GENERATED. `build_teacher_port.ds_css()` rewrites it from Design's six
+# sheets on every build, so a rule typed into it survives until the next
+# `python3 build_all.py` and no longer — the same trap the six generated
+# teacher PAGES carry. The build appends this after `top_up`, so it is the
+# last thing in the cascade and cannot be overwritten by Design's own file.
+#
+# ⚠️ AND IT IS THE ONLY PLACE THE PORT ADDS CSS. Everything else the port
+# draws carries its style inline, in Design's own register, on the node —
+# `_ROW_ACT`, `_HEAD_ACT` and the rest above. An inline style cannot hold a
+# media query, which is what this block is for and the only thing it is for.
+PORT_CSS = """
+
+/* ── ⊕ MRB-340 · SEARCH COLLAPSES INTO THE DRAWER AT 560px ───────────────
+   The top bar already sheds its nav tabs at 1023 and tightens at 699. Below
+   560 what is left — the brand, whatever the tab strip still holds, the
+   crumb and a ~150px labelled search button — stops fitting on one line, and
+   the row wraps or scrolls sideways.
+
+   ⚠️ THE CONTROL IS NOT REMOVED, IT CHANGES SHAPE. A search a phone cannot
+   reach is a feature that quietly does not exist below 560px. What goes is
+   the words and the `/` shortcut chip — and the chip is doubly pointless
+   there, because a phone has no keyboard to press it on. What is left is the
+   magnifying glass in the 38px square the library drawer's own trigger
+   already uses (`.libtrigger--square`), so the two narrow-width entry points
+   on this bar are the same object.
+
+   ⚠️ EXPLICIT DECLARATIONS, NOT A SHORTHAND RESET. Design's button carries
+   its whole appearance in an inline `style`, so every property here has to
+   win over one of hers by name. Nothing above 560px is touched, so the bar
+   is byte-identical at every width Design drew it at. The three class hooks
+   are `SET_ATTR` nodes 19, 23 and 24. */
+@media (max-width: 560px) {
+  .mrb-findbtn {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+    border-radius: 10px;
+  }
+  .mrb-findlabel,
+  .mrb-findkey { display: none; }
+}
+"""
 
 _MORE_LINK = ("display:block;margin-top:14px;"
               "font:600 16px/1.2 var(--st-ui);color:var(--st-accent-text);"
@@ -3051,20 +3128,44 @@ INSERT_AT = {
                           "data-mrb-added": "set-work-paper-edit"},
                     "hov": "background:var(--st-note-bg)",
                     "c": [{"t": "#", "v": "Edit"}]}]},
-                {"t": "button", "on": "paper.del",
-                 "a": {"type": "button", "style": _HEAD_ACT,
-                       "data-mrb-added": "set-work-paper-delete"},
-                 "hov": "background:var(--st-note-bg)",
-                 "c": [{"t": "#", "v": "Delete"}]},
+                # ⊕ MRB-342 — the same two-tap Download as the row's, for
+                # the same reason and in Design's header register.
+                {"t": "if", "e": "paper.showDl", "c": [{
+                    "t": "button", "on": "paper.dl",
+                    "a": {"type": "button", "style": _HEAD_ACT,
+                          "data-mrb-added": "set-work-paper-download"},
+                    "hov": "background:var(--st-note-bg)",
+                    "c": [{"t": "#", "v": "Download"}]}]},
+                {"t": "if", "e": "paper.dlArmed", "c": [
+                    {"t": "button", "on": "paper.dlPdf",
+                     "a": {"type": "button", "style": _HEAD_ACT_ARMED,
+                           "data-mrb-added": "set-work-paper-download-pdf"},
+                     "c": [{"t": "#", "v": "PDF"}]},
+                    {"t": "button", "on": "paper.dlWord",
+                     "a": {"type": "button", "style": _HEAD_ACT_ARMED,
+                           "data-mrb-added": "set-work-paper-download-word"},
+                     "c": [{"t": "#", "v": "Word"}]},
+                    {"t": "button", "on": "paper.cancelDl",
+                     "a": {"type": "button", "style": _HEAD_ACT,
+                           "data-mrb-added": "set-work-paper-download-cancel"},
+                     "c": [{"t": "#", "v": "Cancel"}]},
+                ]},
+                {"t": "if", "e": "paper.showDel", "c": [{
+                    "t": "button", "on": "paper.del",
+                    "a": {"type": "button", "style": _HEAD_ACT,
+                          "data-mrb-added": "set-work-paper-delete"},
+                    "hov": "background:var(--st-note-bg)",
+                    "c": [{"t": "#", "v": "Delete"}]}]},
                 {"t": "if", "e": "paper.armed", "c": [{
                     "t": "button", "on": "paper.cancelDel",
                     "a": {"type": "button", "style": _HEAD_ACT_ARMED,
                           "data-mrb-added": "set-work-paper-delete-cancel"},
                     "c": [{"t": "#", "v": "Cancel"}]}]},
             ]}]},
-        "the marking screen's Edit and Delete. Same pair, same two-tap "
-        "confirm and same sheet as the class table's row controls; this is "
-        "the screen a teacher is on when they are looking at one set."),
+        "the marking screen's Edit, Download and Delete. Same controls, same "
+        "two-tap confirms and same sheet as the class table's row controls; "
+        "this is the screen a teacher is on when they are looking at one "
+        "set."),
 
     # ── ⊕ MRB-336 §5/§6 · EDIT AND DELETE, ON THE ROW ──────────────────
     #
@@ -3098,11 +3199,49 @@ INSERT_AT = {
                           "data-mrb-added": "set-work-edit"},
                     "hov": "color:var(--st-ink)",
                     "c": [{"t": "#", "v": "Edit"}]}]},
-                {"t": "button", "on": "a.del",
-                 "a": {"type": "button", "style": _ROW_ACT,
-                       "data-mrb-added": "set-work-delete"},
-                 "hov": "color:var(--st-accent-text)",
-                 "c": [{"t": "#", "v": "Delete"}]},
+                # ── ⊕ MRB-342 · DOWNLOAD, AS THE SAME TWO-TAP ───────────
+                #
+                # ⚠️ IT IS THE DELETE CONFIRM'S OWN IDIOM, REUSED, AND NOT A
+                # MENU. The generated pages are drawn by
+                # `shared/student-runtime.js`, whose `draw()` empties the
+                # mount host and rebuilds the whole template on every
+                # `setState` — so a popover appended into a table row by
+                # `shared/set-work.js` would be destroyed by the next redraw
+                # and its listeners with it. The row already answers a
+                # two-way question in place (Delete → Delete · Cancel); this
+                # asks a two-way question the same way, and the template
+                # renders both states so a redraw simply redraws them.
+                #
+                # ⚠️ `Answers` IS NOT OFFERED HERE. The contract's default is
+                # `answers: true` and a table row is not the place to choose
+                # a property of a file; the sheet's own Download carries the
+                # toggle. One less control in a seven-column row.
+                {"t": "if", "e": "a.showDl", "c": [{
+                    "t": "button", "on": "a.dl",
+                    "a": {"type": "button", "style": _ROW_ACT,
+                          "data-mrb-added": "set-work-download"},
+                    "hov": "color:var(--st-ink)",
+                    "c": [{"t": "#", "v": "Download"}]}]},
+                {"t": "if", "e": "a.dlArmed", "c": [
+                    {"t": "button", "on": "a.dlPdf",
+                     "a": {"type": "button", "style": _ROW_ACT_ARMED,
+                           "data-mrb-added": "set-work-download-pdf"},
+                     "c": [{"t": "#", "v": "PDF"}]},
+                    {"t": "button", "on": "a.dlWord",
+                     "a": {"type": "button", "style": _ROW_ACT_ARMED,
+                           "data-mrb-added": "set-work-download-word"},
+                     "c": [{"t": "#", "v": "Word"}]},
+                    {"t": "button", "on": "a.cancelDl",
+                     "a": {"type": "button", "style": _ROW_ACT,
+                           "data-mrb-added": "set-work-download-cancel"},
+                     "c": [{"t": "#", "v": "Cancel"}]},
+                ]},
+                {"t": "if", "e": "a.showDel", "c": [{
+                    "t": "button", "on": "a.del",
+                    "a": {"type": "button", "style": _ROW_ACT,
+                          "data-mrb-added": "set-work-delete"},
+                    "hov": "color:var(--st-accent-text)",
+                    "c": [{"t": "#", "v": "Delete"}]}]},
                 {"t": "if", "e": "a.armed", "c": [{
                     "t": "button", "on": "a.cancelDel",
                     "a": {"type": "button", "style": _ROW_ACT_ARMED,
@@ -3111,7 +3250,30 @@ INSERT_AT = {
             ]}]},
         "the Assignments table's row controls. Design drew seven columns of "
         "facts and no way to change any of them; MRB-336 §5 and §6 put Edit "
-        "and Delete on the row they are about."),
+        "and Delete on the row they are about, and MRB-342 puts Download "
+        "beside them."),
+
+    # ── ⊕ MRB-340 · WHO SET IT, ON THE ROW ─────────────────────────────
+    #
+    # ⚠️ A SECOND LINE IN THE TITLE CELL, NOT AN EIGHTH COLUMN. The table is
+    # already seven columns of facts plus a controls cell, and a school with
+    # co-teaching wants this on one row in four rather than on a column that
+    # is blank the rest of the time. Design's own caption register.
+    #
+    # ⚠️ AND IT IS ABSENT WHEN THERE IS NO NAME TO PRINT. `setByLine` is the
+    # empty string on an automatically composed set (nobody set it) and on a
+    # colleague's set whose profile this teacher cannot read under RLS. "Set
+    # by" over a blank is worse than nothing — see `set_by_name` in
+    # `shared/teacher-live.js` for what can and cannot be resolved.
+    (321, None): ({
+        "t": "if", "e": "a.setByLine",
+        "c": [{"t": "div", "a": {"style": _ROW_SETBY,
+                                 "data-mrb-added": "set-work-set-by"},
+               "c": [{"t": "#", "v": {"parts": [{"e": "a.setByLine"}]}}]}]},
+        "MRB-340 — who set this work, under its title. The table said when "
+        "a set was released and never who released it, which on a shared "
+        "class is the first question a teacher asks about a row they do not "
+        "recognise."),
 
     # The header cell above them. No text: an actions column has no name.
     (311, 318): ({
@@ -10298,8 +10460,20 @@ componentDidUpdate() {
         stBc: p.state === 'open' ? 'var(--st-chip-tint-border)'
           : (p.state === 'scheduled' ? 'var(--st-rule)' : 'var(--st-rule-soft)'),
         canEdit: p.source === 'teacher' && !!MRB_DATA('canWrite'),
-        showEdit: p.source === 'teacher' && s.delArm !== p.id,
+        showEdit: p.source === 'teacher' && s.delArm !== p.id
+          && s.dlArm !== p.id,
         armed: s.delArm === p.id,
+        setByLine: p.set_by_name ? ('Set by ' + p.set_by_name) : '',
+        showDl: s.delArm !== p.id && s.dlArm !== p.id,
+        showDel: s.dlArm !== p.id,
+        dlArmed: s.dlArm === p.id,
+        dl: (e) => { e.stopPropagation();
+          this.setState({ dlArm: p.id, delArm: '' }); },
+        cancelDl: (e) => { e.stopPropagation(); this.setState({ dlArm: '' }); },
+        dlPdf: (e) => { e.stopPropagation(); this.setState({ dlArm: '' });
+          MRB_WORKSHEET(p, k, 'pdf'); },
+        dlWord: (e) => { e.stopPropagation(); this.setState({ dlArm: '' });
+          MRB_WORKSHEET(p, k, 'docx'); },
         edit: (e) => { e.stopPropagation(); MRB_SET_WORK_EDIT({
           assignmentId: p.id, classId: k && k.id, title: p.title,
           tier: p.set_tier, scopeKind: p.scope_kind, scopeRef: p.scope_ref,
@@ -10343,8 +10517,18 @@ componentDidUpdate() {
           + ' · Set ' + pp.set
           + ' · Due ' + pp.due.replace(/^Due /, ''),
         canEdit: pp.source === 'teacher' && !!MRB_DATA('canWrite'),
-        showEdit: pp.source === 'teacher' && s.delArm !== pp.id,
+        showEdit: pp.source === 'teacher' && s.delArm !== pp.id
+          && s.dlArm !== pp.id,
         armed: s.delArm === pp.id,
+        showDl: s.delArm !== pp.id && s.dlArm !== pp.id,
+        showDel: s.dlArm !== pp.id,
+        dlArmed: s.dlArm === pp.id,
+        dl: () => this.setState({ dlArm: pp.id, delArm: '' }),
+        cancelDl: () => this.setState({ dlArm: '' }),
+        dlPdf: () => { this.setState({ dlArm: '' });
+          MRB_WORKSHEET(pp, k, 'pdf'); },
+        dlWord: () => { this.setState({ dlArm: '' });
+          MRB_WORKSHEET(pp, k, 'docx'); },
         edit: () => MRB_SET_WORK_EDIT({
           assignmentId: pp.id, classId: k && k.id, title: pp.title,
           tier: pp.set_tier, scopeKind: pp.scope_kind, scopeRef: pp.scope_ref,

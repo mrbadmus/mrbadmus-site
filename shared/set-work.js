@@ -465,7 +465,29 @@
     unavailable: "Unavailable",
     notSetToast: "Not set",
     notSavedToast: "Not saved",
-    savedFor: function (title) { return title + " \u00b7 Saved"; }
+    savedFor: function (title) { return title + " \u00b7 Saved"; },
+    /* \u2295 MRB-342 \u2014 SIX WORDS, AND NOT A SEVENTH. Multi-topic picking needs
+       one verb (`Add topic`); the worksheet needs its own noun (`Worksheet`),
+       its verb (`Download`), the two formats (`PDF`, `Word`) and the one
+       thing a teacher chooses about the file (`Answers`). Every one is a
+       noun or a button verb, so A9 holds without an exception.
+
+       \u26a0\ufe0f THERE IS NO SEVENTH FOR "THE DOWNLOAD FAILED", deliberately. The
+       refusal reuses `unavailable`, which is already the sheet's word for
+       "this could not be got" and is already on the allowed list. A new
+       failure string here would be a second way of saying the same thing.
+
+       \u26a0\ufe0f AND THERE IS NO "REMOVE". A scope is taken back out by the gesture
+       that put it in \u2014 tapping its row again on the Topic step, which is
+       only a toggle once a second scope exists \u2014 and by Back, which drops a
+       slot the teacher never filled. A control whose label is a word this
+       list does not have is not a control this sheet can draw. */
+    download: "Download",
+    addTopic: "Add topic",
+    worksheet: "Worksheet",
+    pdf: "PDF",
+    word: "Word",
+    answers: "Answers"
   };
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -556,6 +578,81 @@
            Math.random().toString(36).slice(2, 12);
   }
 
+  /* ⊕ MRB-342 — ONE SCOPE'S WHOLE STATE, AND WHY IT IS NOT ON `S`.
+
+     A teacher setting Energy changes AND Rates picks a number for each, gets
+     a list for each, and swaps rows inside each. Those are three facts per
+     scope, not three facts per sheet: with `count`, `picked` and `swapDead`
+     on `S`, adding a second topic would silently overwrite the first one's
+     answers, and the teacher would press Set work over a list they had
+     already replaced without seeing it happen.
+
+     `seq` is the per-scope half of the staleness guard. The global `fetchSeq`
+     is bumped by `/scope` only now, because two scopes' previews are two
+     legitimate requests at once and a global bump would make the second kill
+     the first — the same shape of bug the swap guard above was written for,
+     one level out. A preview answer is kept when the session, the global
+     `fetchSeq` AND its own scope's `seq` are all unchanged. */
+  function freshScope() {
+    return {
+      kind: "",                // 'topic' | 'subtopic'
+      ref: "",
+      count: 10,
+      available: 0,
+      picked: [],
+      expanded: {},
+      swapDead: {},
+      previewErr: false,
+      busy: false,
+      seq: 0,
+      els: null                // the section's nodes, built once per scope
+    };
+  }
+
+  /* The slot the Topic step is answering for. Never null: `freshState` opens
+     with one, and `Add topic` appends before it moves `si`. */
+  function cur() { return S.scopes[S.si] || S.scopes[0]; }
+
+  /* Every scope that has actually been given a node. A slot the teacher
+     added and then walked away from is not part of the set.
+
+     ⚠️ AN EDIT'S SLOT 0 ALWAYS COUNTS, WHATEVER IT HOLDS, AND THAT IS NOT A
+     CONVENIENCE. `edit()` fills the scope from the ROW — `p.scope_kind` and
+     `p.scope_ref` off the table — and a row written before MRB-335 added
+     those columns carries neither. Under a strict filter such a row would
+     have no scope at all, so `syncScopes` would draw no section for it,
+     `loadStoredQuestions` would have nowhere to render the work the children
+     were actually given, and `pickedTotal()` would be 0 — which disables
+     Save on the one screen where a teacher is only trying to move a
+     deadline. An edit is single-scope by construction (`Add topic` is hidden
+     for the whole of one), so counting its only slot can never widen a set.
+
+     ⚠️ IT DOES NOT LEAK INTO WHAT IS SENT. `submit()` maps over this list and
+     is never reached in edit mode; `saveEdit()` reads `cur()` directly; and
+     `download()` drops any scope with no `scope_kind`/`scope_ref` of its own
+     before it builds a body. */
+  function filledScopes() {
+    return S.scopes.filter(function (sc, i) {
+      return (!!sc.kind && !!sc.ref) || (!!S.editId && i === 0);
+    });
+  }
+
+  function pickedTotal() {
+    var n = 0;
+    filledScopes().forEach(function (sc) { n += sc.picked.length; });
+    return n;
+  }
+
+  /* The questions every OTHER scope is already spending, so a count chip
+     that would push the set past the server's twenty is not offered. */
+  function othersTotal(scope) {
+    var n = 0;
+    filledScopes().forEach(function (sc) { if (sc !== scope) { n += sc.picked.length; } });
+    return n;
+  }
+
+  var MAX_QUESTIONS = 20;
+
   function freshState(classId) {
     return {
       /* ⊕ MRB-335 — THE ANCHOR MAY BE EMPTY, and on the classes screen it
@@ -580,16 +677,15 @@
       tier: "",
       subject: "all",
       paper: "both",
-      scopeKind: "",           // 'topic' | 'subtopic'
-      scopeRef: "",
-      count: 10,
-      available: 0,
-      picked: [],
+      /* ⊕ MRB-342 — THE SCOPE IS NOW A LIST, AND EVERY SCOPE OWNS ITS OWN
+         COUNT, ITS OWN ROWS AND ITS OWN SWAPS. See `freshScope` below for
+         why none of that can live on `S`. `si` is the slot the Topic step
+         is currently answering for; on the ordinary one-topic path it is 0
+         from open to close and nothing about the sheet changes. */
+      scopes: [freshScope()],
+      si: 0,
       shown: {},               // every question id shown this sheet SESSION
-      expanded: {},
-      swapDead: {},
-      previewErr: false,
-      busy: false,
+      busy: false,             // the SUBMIT gate; a preview's busy is per scope
       title: "",
       titleEdited: false,
       release: "now",          // 'now' | 'later'
@@ -691,7 +787,18 @@
     step.setAttribute("data-sw", "step");
     var primary = btn("sw-btn sw-btn-primary", SAY.next);
     primary.setAttribute("data-sw", "primary");
-    head.appendChild(back); head.appendChild(step); head.appendChild(primary);
+    /* ⊕ MRB-342 — DOWNLOAD SITS BESIDE THE PRIMARY AND IS NOT THE PRIMARY.
+       A worksheet is a thing a teacher takes away; setting work is a thing
+       thirty children receive. They are next to each other because they are
+       about the same composed set, and they are different weights because
+       only one of them writes anything. Nothing about a download reaches
+       `assignments`. */
+    var dl = makeDownload({
+      mark: "download",
+      request: function (format, answers) { return sheetWorksheet(format, answers); }
+    });
+    head.appendChild(back); head.appendChild(step);
+    head.appendChild(dl.node); head.appendChild(primary);
 
     var body = el("div", "sw-body");
     body.setAttribute("data-sw", "body");
@@ -765,13 +872,24 @@
     pDetail.appendChild(roTierLbl); pDetail.appendChild(roTier);
     pDetail.appendChild(roScopeLbl); pDetail.appendChild(roScope);
 
-    pDetail.appendChild(el("div", "sw-label", SAY.labelQuestions));
-    var countChips = el("div", "sw-chips");
-    countChips.setAttribute("data-sw", "count-chips");
-    pDetail.appendChild(countChips);
-    var qlist = el("div", "sw-qlist");
-    qlist.setAttribute("data-sw", "qlist");
-    pDetail.appendChild(qlist);
+    /* ⊕ MRB-342 — THE QUESTIONS EYEBROW IS DRAWN ONCE, OVER ALL THE SCOPES.
+       One topic keeps exactly the DOM it had: this label, a `count-chips`
+       rail and a `qlist`, in that order, with the same `data-sw` marks. What
+       changed is that the last two now live inside a `.sw-scope` section, and
+       a second topic adds a SECOND section rather than replacing the first. */
+    var qLbl = el("div", "sw-label", SAY.labelQuestions);
+    qLbl.setAttribute("data-sw", "questions-label");
+    pDetail.appendChild(qLbl);
+    var scopesHost = el("div", "sw-scopes");
+    scopesHost.setAttribute("data-sw", "scopes");
+    pDetail.appendChild(scopesHost);
+    /* Back to the Topic step for a further scope. Disabled — not hidden —
+       when the set is already at the server's twenty, because "there is no
+       room for another topic" is a fact about the set the teacher has
+       composed and a control that vanishes states it as an absence. */
+    var addTopic = btn("sw-btn sw-add", SAY.addTopic);
+    addTopic.setAttribute("data-sw", "add-topic");
+    pDetail.appendChild(addTopic);
 
     pDetail.appendChild(el("div", "sw-label", SAY.labelTitle));
     var titleWrap = el("div", "sw-fields");
@@ -826,14 +944,15 @@
       pTopic: pTopic, tierChips: tierChips,
       subjLabel: subjLabel, subjChips: subjChips,
       paperLabel: paperLabel, paperChips: paperChips, tree: tree,
-      pDetail: pDetail, countChips: countChips, qlist: qlist,
+      pDetail: pDetail,
+      qLbl: qLbl, scopesHost: scopesHost, addTopic: addTopic, dl: dl,
       relLbl: relLbl,
       roTierLbl: roTierLbl, roTier: roTier,
       roScopeLbl: roScopeLbl, roScope: roScope,
       title: title, relChips: relChips, relFields: relFields,
       relDate: relDate, relTime: relTime, dueDate: dueDate, dueTime: dueTime,
       toast: toast,
-      treeRows: [], classRows: [], qRows: []
+      treeRows: [], classRows: []
     };
 
     wireShell();
@@ -871,8 +990,28 @@
     els.back.addEventListener("click", function () {
       if (!S) { return; }
       if (S.step === 0) { return close(); }
+      /* ⊕ MRB-342 — BACK OUT OF A SLOT THE TEACHER NEVER FILLED, AND IT IS
+         THE ONLY WAY TO UNDO `Add topic`. Pressing Add topic appends an
+         empty scope and comes here; pressing Back with it still empty must
+         drop it and return to the Detail step, not walk the teacher down to
+         the Classes step of a set they are in the middle of composing. */
+      if (S.step === 1 && S.scopes.length > 1 && !cur().kind) {
+        dropScope(S.si);
+        S.step = 2;
+        syncStep();
+        return;
+      }
       S.step -= 1;
       syncStep();
+    });
+    els.addTopic.addEventListener("click", function () {
+      if (!S || els.addTopic.disabled) { return; }
+      S.scopes.push(freshScope());
+      S.si = S.scopes.length - 1;
+      S.step = 1;
+      syncStep();
+      syncTree();
+      syncTierChips();
     });
     els.primary.addEventListener("click", onPrimary);
     els.title.addEventListener("input", function () {
@@ -1065,7 +1204,11 @@
     els.treeRows.forEach(function (r) {
       var n = countAt(r.data, tier);
       r.count.textContent = String(n);
-      var on = (S.scopeKind === r.kind && S.scopeRef === r.ref);
+      /* ⊕ MRB-342 — EVERY SCOPE IN THE SET IS TINTED, not only the slot the
+         teacher is answering for. Coming back to the Topic step to add a
+         third topic and seeing no mark on the two already chosen would be
+         the sheet forgetting them on screen while still holding them. */
+      var on = scopeHolding(r.kind, r.ref) !== null;
       r.row.classList.toggle("is-on", on);
       /* ⊕ MRB-335 — the class rows have carried this since they were drawn;
          the tree rows are the same kind of control (a toggle whose state is
@@ -1079,13 +1222,40 @@
       }
     });
     /* A filter that hides the chosen topic clears the choice rather than
-       leaving Next live over a row nobody can see. */
-    var sel = nodeFor(S.scopeKind, S.scopeRef);
+       leaving Next live over a row nobody can see.
+
+       ⚠️ THE CURRENT SLOT ONLY. A subject chip narrowing the tree says
+       nothing about a topic the teacher already committed two steps ago;
+       clearing those would delete part of the set as a side effect of a
+       filter. */
+    var sc = cur();
+    var sel = nodeFor(sc.kind, sc.ref);
     if (sel) {
       var top = (sel.kind === "topic") ? sel : sel.parent;
-      if (top && top.wrap.hidden) { S.scopeKind = ""; S.scopeRef = ""; }
+      if (top && top.wrap.hidden) { sc.kind = ""; sc.ref = ""; }
     }
     els.tree.classList.remove("sw-bad");
+  }
+
+  /* The scope holding this node, or null. ⊕ MRB-342. */
+  function scopeHolding(kind, ref) {
+    for (var i = 0; i < S.scopes.length; i++) {
+      var sc = S.scopes[i];
+      if (sc.kind === kind && sc.ref === ref) { return sc; }
+    }
+    return null;
+  }
+
+  /* Drop a slot and leave `si` pointing at something real. */
+  function dropScope(i) {
+    if (S.scopes.length < 2) { return; }
+    var sc = S.scopes[i];
+    if (sc && sc.els && sc.els.wrap && sc.els.wrap.parentNode) {
+      sc.els.wrap.parentNode.removeChild(sc.els.wrap);
+    }
+    S.scopes.splice(i, 1);
+    if (S.si >= S.scopes.length) { S.si = S.scopes.length - 1; }
+    syncScopes();
   }
 
   /* Subject and paper are FILTERS over the tree /scope already sent, applied
@@ -1102,17 +1272,56 @@
   }
 
   function pickScope(kind, ref) {
-    /* Selecting a subtopic deselects its topic and vice versa — one scope. */
-    S.scopeKind = kind;
-    S.scopeRef = ref;
+    var sc = cur();
+    var held = scopeHolding(kind, ref);
+    /* ⊕ MRB-342 — A NODE ALREADY IN THE SET IS NOT PICKED TWICE.
+
+       If it belongs to ANOTHER slot the tap is ignored: the topic is already
+       in the set, and moving it into this slot would leave the other one
+       empty without saying so. If it belongs to THIS slot the tap is a
+       deselect — which is how a scope is taken back out, and it is why there
+       is no Remove button and no word for one.
+
+       ⚠️ THE DESELECT ONLY EXISTS ONCE THERE ARE TWO SCOPES. On the ordinary
+       one-topic path a second tap on the chosen row still re-picks it,
+       byte for byte as before, so nothing that presses this sheet today
+       meets a behaviour it has not met. */
+    if (held && held !== sc) { return; }
+    if (held === sc && S.scopes.length > 1) {
+      sc.kind = ""; sc.ref = "";
+      resetScopeQuestions(sc);
+      syncTree();
+      /* ⚠️ THE TIER RAIL FOLLOWS THE SELECTION, NOT THE STEP. Measured: the
+         lock is a fact about how many scopes are FILLED, and filling one
+         happens here — so syncing it only in `addTopic` left the other tier
+         live on the step where a teacher would actually press it, and the
+         lock appeared a step later, after the damage. */
+      syncTierChips();
+      syncValidity();
+      return;
+    }
+    /* Selecting a subtopic deselects its topic and vice versa — one node per
+       scope. */
+    sc.kind = kind;
+    sc.ref = ref;
     S.keepPicked = false;              // ⊕ MRB-336
-    S.picked = [];
-    S.expanded = {};
-    S.swapDead = {};
-    S.previewErr = false;
+    resetScopeQuestions(sc);
     if (!S.titleEdited) { S.title = autoTitle(); els.title.value = S.title; }
     syncTree();
+    /* The lock is a fact about how many scopes are FILLED, and this is where
+       one gets filled. Syncing the rail only in the `Add topic` handler left
+       the other tier live on the step a teacher would actually press it on,
+       and the lock appeared one step later — after the damage. */
+    syncTierChips();
     syncValidity();
+  }
+
+  function resetScopeQuestions(sc) {
+    sc.picked = [];
+    sc.expanded = {};
+    sc.swapDead = {};
+    sc.previewErr = false;
+    sc.available = 0;
   }
 
   function nodeFor(kind, ref) {
@@ -1132,25 +1341,39 @@
      A subtopic takes its parent topic's subject — a subtopic id is unique
      today, but sending it costs nothing and means the server never has two
      resolution paths to keep in step. */
-  function subjectParam() {
-    var subj = subjectOfScope();
+  function subjectParam(sc) {
+    var subj = subjectOfScope(sc);
     return subj ? ("&subject=" + encodeURIComponent(subj)) : "";
   }
 
-  function subjectOfScope() {
-    var r = nodeFor(S.scopeKind, S.scopeRef);
+  function subjectOfScope(sc) {
+    var s = sc || cur();
+    var r = nodeFor(s.kind, s.ref);
     if (!r) { return ""; }
     var top = (r.kind === "topic") ? r : r.parent;
     return (top && top.data && top.data.subject) ? String(top.data.subject) : "";
   }
 
-  function autoTitle() {
-    var r = nodeFor(S.scopeKind, S.scopeRef);
+  /* The name of one scope's node, as the teacher reads it in the tree. It is
+     DATA — a topic name — so it is drawn in `.sw-scope-name` and never in a
+     `.sw-label`, which is chrome and is swept against the allowed words. */
+  function scopeName(sc) {
+    var r = nodeFor(sc.kind, sc.ref);
     if (!r) { return ""; }
-    if (r.kind === "topic") { return String(r.data.name || "").slice(0, 80); }
+    if (r.kind === "topic") { return String(r.data.name || ""); }
     var parent = r.parent ? String(r.parent.data.name || "") : "";
     var own = String(r.data.name || "");
-    return (parent ? parent + " · " + own : own).slice(0, 80);
+    return parent ? parent + " · " + own : own;
+  }
+
+  /* ⊕ MRB-342 — THE TITLE IS THE FIRST SCOPE'S NAME, and it stays the first
+     scope's name when a second is added. A title that grew a topic every
+     time one was picked would be a composed sentence in a sheet that does
+     not write them, and would blow the 80-character field on the third. The
+     teacher may type whatever they like over it. */
+  function autoTitle() {
+    var first = filledScopes()[0] || cur();
+    return scopeName(first).slice(0, 80);
   }
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -1302,15 +1525,96 @@
   var COUNTS = [5, 10, 15, 20];
   var LETTERS = ["A", "B", "C", "D"];
 
-  function buildQuestions() {
-    els.qlist.textContent = "";
-    els.qRows = [];
-    S.picked.forEach(function (q, i) {
-      els.qlist.appendChild(buildQuestionRow(q, i));
+  /* ⊕ MRB-342 — A SCOPE'S SECTION, AND WHY EACH ONE IS ITS OWN SUBTREE.
+
+     The patching rule in this file's header — "the question DOM is built
+     ONCE PER DATA LOAD" — has to be read per SCOPE once there can be more
+     than one. A preview landing for the second topic must not touch the
+     first topic's rows: the teacher may be reading them, and rebuilding the
+     list they are scrolled into is the exact defect this whole module was
+     written to remove, one topic further along.
+
+     So a scope owns a `.sw-scope` wrapper for its whole life and only the
+     `qlist` inside it is refilled. The `data-sw` marks are Design's and the
+     drive's existing ones — `count-chips`, `qlist`, `question`, `stem`,
+     `swap` — so a single-topic sheet is the same DOM it was before, with one
+     wrapper around the part that can now repeat. */
+  function buildScopeSection(sc) {
+    var wrap = el("div", "sw-scope");
+    wrap.setAttribute("data-sw", "scope");
+    var name = el("div", "sw-scope-name", "");
+    name.setAttribute("data-sw", "scope-name");
+    var chips = el("div", "sw-chips");
+    chips.setAttribute("data-sw", "count-chips");
+    var qlist = el("div", "sw-qlist");
+    qlist.setAttribute("data-sw", "qlist");
+    wrap.appendChild(name); wrap.appendChild(chips); wrap.appendChild(qlist);
+    els.scopesHost.appendChild(wrap);
+    sc.els = { wrap: wrap, name: name, chips: chips, qlist: qlist,
+               countList: null, qRows: [] };
+    buildCountChips(sc);
+    return sc.els;
+  }
+
+  /* Sections in, sections out, names and chips patched. BUILDS ONLY WHAT IS
+     MISSING — an existing section is never replaced, for the reason above. */
+  function syncScopes() {
+    var list = filledScopes();
+    /* An abandoned slot draws nothing: the teacher pressed Add topic, picked
+       nothing, and came back. */
+    S.scopes.forEach(function (sc) {
+      if (sc.els && list.indexOf(sc) < 0) {
+        if (sc.els.wrap.parentNode) {
+          sc.els.wrap.parentNode.removeChild(sc.els.wrap);
+        }
+        sc.els = null;
+      }
+    });
+    list.forEach(function (sc) {
+      if (!sc.els) { buildScopeSection(sc); }
+      sc.els.wrap.setAttribute("data-sw-ref", sc.ref);
+      sc.els.name.textContent = scopeName(sc);
+      /* One topic needs no heading — the Questions eyebrow above it and the
+         Title field below it both already name it. Two topics need to say
+         which rows belong to which. */
+      sc.els.name.hidden = (list.length < 2);
+      sc.els.chips.hidden = !!S.locked;
+      sc.els.qlist.classList.toggle("is-ro", !!S.locked);
+      syncCountChips(sc);
+    });
+    /* ⚠️ NOT OFFERED ON AN EDIT. A row in `assignments` carries ONE scope
+       triple, and `PATCH /api/teacher/set-work/:id` takes one; a second
+       topic added to an existing set would have nowhere to be written. */
+    els.addTopic.hidden = !!S.editId;
+    els.addTopic.disabled = !S.scope || anyBusy() ||
+      pickedTotal() >= MAX_QUESTIONS;
+  }
+
+  function anyBusy() {
+    for (var i = 0; i < S.scopes.length; i++) {
+      if (S.scopes[i].busy) { return true; }
+    }
+    return false;
+  }
+
+  function anyPreviewErr() {
+    var list = filledScopes();
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].previewErr) { return true; }
+    }
+    return false;
+  }
+
+  function buildQuestions(sc) {
+    if (!sc.els) { return; }
+    sc.els.qlist.textContent = "";
+    sc.els.qRows = [];
+    sc.picked.forEach(function (q, i) {
+      sc.els.qlist.appendChild(buildQuestionRow(sc, q, i));
     });
   }
 
-  function buildQuestionRow(q, i) {
+  function buildQuestionRow(sc, q, i) {
     var wrap = el("div", "sw-q");
     wrap.setAttribute("data-sw", "question");
     var head = el("div", "sw-q-head");
@@ -1329,8 +1633,8 @@
 
     wrap.appendChild(head); wrap.appendChild(body);
 
-    var rec = { i: i, wrap: wrap, stem: stem, body: body, swap: swap };
-    els.qRows.push(rec);
+    var rec = { sc: sc, i: i, wrap: wrap, stem: stem, body: body, swap: swap };
+    sc.els.qRows.push(rec);
 
     stem.addEventListener("click", function () { toggleQ(rec); });
     swap.addEventListener("click", function () { doSwap(rec); });
@@ -1361,27 +1665,35 @@
     var open = !rec.body.hidden;
     rec.body.hidden = open;
     rec.wrap.classList.toggle("is-open", !open);
-    S.expanded[rec.i] = !open;
+    rec.sc.expanded[rec.i] = !open;
   }
 
   /* ⚠️ SWAP REPLACES THE ROW'S TEXT, NEVER THE ROW. `exclude` is everything
      picked PLUS everything shown at any point this sheet session, so a swap
      can never hand back a question the teacher has already read and
      rejected (RISKS A6). A 204 means the pool is spent for this scope and
-     tier, and that row's Swap goes dead rather than lying. */
+     tier, and that row's Swap goes dead rather than lying.
+
+     ⊕ MRB-342 — `exclude` IS STILL THE WHOLE SHEET'S SHOWN-SET, ACROSS
+     SCOPES. Two topics can hold the same subtopic's questions at KS4, and a
+     worksheet with the same question twice under two headings is worse than
+     one short of it. */
   function doSwap(rec) {
+    var sc = rec.sc;
     if (rec.swap.disabled || S.busy) { return; }
     var exclude = Object.keys(S.shown);
-    S.picked.forEach(function (p) {
-      if (exclude.indexOf(String(p.id)) < 0) { exclude.push(String(p.id)); }
+    S.scopes.forEach(function (other) {
+      other.picked.forEach(function (p) {
+        if (exclude.indexOf(String(p.id)) < 0) { exclude.push(String(p.id)); }
+      });
     });
     rec.swap.disabled = true;
-    var mySession = session, mySeq = fetchSeq;
+    var mySession = session, mySeq = fetchSeq, myScopeSeq = sc.seq;
     apiGet("/api/teacher/set-work/swap?class_id=" + encodeURIComponent(S.classId) +
       "&tier=" + encodeURIComponent(S.tier) +
-      "&scope_kind=" + encodeURIComponent(S.scopeKind) +
-      "&scope_ref=" + encodeURIComponent(S.scopeRef) +
-      subjectParam() +
+      "&scope_kind=" + encodeURIComponent(sc.kind) +
+      "&scope_ref=" + encodeURIComponent(sc.ref) +
+      subjectParam(sc) +
       "&exclude=" + encodeURIComponent(exclude.join(","))
     ).then(function (r) {
       /* ⊕ MRB-335 — `fetchSeq` IS CHECKED, AND THE COMMENT THAT SAID IT
@@ -1389,35 +1701,39 @@
 
          It read: "`fetchSeq` is deliberately NOT checked: two swaps on two
          rows are both legitimate at once." The first half of that is true
-         and is PRESERVED — a swap READS `fetchSeq` and never bumps it, so
-         two swaps in flight on two rows still both land. Only `/scope` and
-         `/preview` bump it.
+         and is PRESERVED — a swap READS the counters and never bumps one, so
+         two swaps in flight on two rows still both land.
 
          What it missed is the other thing that can happen while a swap is
          in flight: a RE-PREVIEW. Tap a count chip, or go Back to the topic
-         step, change tier and come forward again, and `loadPreview` bumps
-         `fetchSeq` and replaces `S.picked` wholesale. The old swap then
-         resolved into the NEW array at `rec.i` and wrote its stem into
-         `rec.stem`, a node `buildQuestions` had already detached. So the
-         teacher saw the row they were looking at unchanged, and
-         `submit()` sent a question that had never been on their screen —
-         which is the one thing this sheet exists to make impossible.
+         step, change tier and come forward again, and `loadPreview` replaces
+         that scope's `picked` wholesale. The old swap then resolved into the
+         NEW array at `rec.i` and wrote its stem into `rec.stem`, a node
+         `buildQuestions` had already detached. So the teacher saw the row
+         they were looking at unchanged, and `submit()` sent a question that
+         had never been on their screen — which is the one thing this sheet
+         exists to make impossible.
 
-         `mySeq` is captured, not incremented. Same session, same preview,
-         or the answer is dropped. */
-      if (!S || mySession !== session || mySeq !== fetchSeq) { return; }
+         ⊕ MRB-342 — AND IT IS THE SCOPE'S OWN `seq` THAT ANSWERS IT NOW.
+         `fetchSeq` belongs to `/scope` alone, because two scopes' previews
+         are two legitimate requests at once and a global bump would make
+         the second one kill the first's rows. Both counters are captured,
+         not incremented. */
+      if (!S || mySession !== session || mySeq !== fetchSeq ||
+          myScopeSeq !== sc.seq) { return; }
       if (r.status === 204 || !r.body || !r.body.id) {
-        S.swapDead[rec.i] = true;
+        sc.swapDead[rec.i] = true;
         return;                              // stays disabled
       }
       var q = r.body;
       S.shown[String(q.id)] = true;
-      S.picked[rec.i] = q;
+      sc.picked[rec.i] = q;
       setFormula(rec.stem, q.stem);
       fillOptions(rec.body, q);
       rec.swap.disabled = false;
     }, function () {
-      if (!S || mySession !== session || mySeq !== fetchSeq) { return; }
+      if (!S || mySession !== session || mySeq !== fetchSeq ||
+          myScopeSeq !== sc.seq) { return; }
       rec.swap.disabled = false;
     });
   }
@@ -1464,6 +1780,7 @@
       buildPaperChips();
       buildTree();
       syncTree();
+      syncScopes();
       syncValidity();
       return true;
     }, function () {
@@ -1483,27 +1800,50 @@
   /* The cap the count chips obey. Before /preview answers it is the count
      /scope already sent for this node at this tier — which IS the
      availability — so the normal path costs one request, not two. */
-  function scopeAvailable() {
-    var r = nodeFor(S.scopeKind, S.scopeRef);
+  function scopeAvailable(sc) {
+    var s = sc || cur();
+    var r = nodeFor(s.kind, s.ref);
     return r ? countAt(r.data, S.tier) : 0;
   }
 
-  function loadPreview() {
-    var cap = S.available || scopeAvailable();
+  /* ⊕ MRB-342 — ONE SCOPE'S PREVIEW, and every line of it is that scope's.
+     Two of these can legitimately be in flight together, so the guard is
+     `session` + `fetchSeq` (which only `/scope` moves) + this scope's own
+     `seq`. A preview for the second topic can no longer discard the first
+     topic's rows, and vice versa. */
+  function loadPreview(scope) {
+    var sc = scope || cur();
+    if (!sc.kind || !sc.ref) { return Promise.resolve(false); }
+    if (!sc.els) { syncScopes(); }
+    var cap = sc.available || scopeAvailable(sc);
     /* ⚠️ THE COUNT IS CAPPED BEFORE THE REQUEST, NOT AFTER IT. ⊕ MRB-335.
        This used to ask for `min(S.count, cap)` and then call `capCount()`
        on the answer, which left the two disagreeing: on a scope holding
        eight, the sheet asked for eight, rendered eight rows, and moved the
        selected chip to 5. The chip is not decoration — it is the teacher's
        statement of how many questions the class gets, and `submit()` sends
-       `S.picked`, so pressing Set work there would have set EIGHT under a
-       chip reading 5. Capping first makes the number on the chip and the
-       number of rows the same number. */
-    capCount(cap);
-    var want = Math.min(S.count, cap > 0 ? cap : S.count);
-    var mySession = session, mySeq = ++fetchSeq;
-    S.busy = true;
-    S.previewErr = false;
+       the picked rows, so pressing Set work there would have set EIGHT under
+       a chip reading 5. Capping first makes the number on the chip and the
+       number of rows the same number.
+
+       ⊕ MRB-342 — AND THE OTHER SCOPES' ROWS ARE PART OF THE CEILING. The
+       server takes at most twenty questions for one assignment; a second
+       topic asking for ten over a first topic's twenty is a set that cannot
+       be written, and the sheet must not compose one. */
+    capCount(sc, Math.min(cap > 0 ? cap : MAX_QUESTIONS,
+                          MAX_QUESTIONS - othersTotal(sc)));
+    var room = MAX_QUESTIONS - othersTotal(sc);
+    var want = Math.min(sc.count, cap > 0 ? cap : sc.count, room);
+    if (want < 1) {
+      sc.picked = [];
+      buildQuestions(sc);
+      syncScopes();
+      syncValidity();
+      return Promise.resolve(false);
+    }
+    var mySession = session, mySeq = fetchSeq, myScopeSeq = ++sc.seq;
+    sc.busy = true;
+    sc.previewErr = false;
     syncValidity();
     /* ⚠️ NO `exclude` HERE, DELIBERATELY. `exclude` is /swap's contract: it
        stops a swap handing back a question the teacher has already read.
@@ -1513,19 +1853,20 @@
     return apiGet("/api/teacher/set-work/preview?class_id=" +
       encodeURIComponent(S.classId) +
       "&tier=" + encodeURIComponent(S.tier) +
-      "&scope_kind=" + encodeURIComponent(S.scopeKind) +
-      "&scope_ref=" + encodeURIComponent(S.scopeRef) +
-      subjectParam() +
+      "&scope_kind=" + encodeURIComponent(sc.kind) +
+      "&scope_ref=" + encodeURIComponent(sc.ref) +
+      subjectParam(sc) +
       "&count=" + encodeURIComponent(want)
     ).then(function (r) {
-      if (!S || mySession !== session || mySeq !== fetchSeq) { return false; }
+      if (!S || mySession !== session || mySeq !== fetchSeq ||
+          myScopeSeq !== sc.seq) { return false; }
       var d = r.body || {};
-      S.busy = false;
-      S.picked = d.picked || [];
-      S.available = (typeof d.available === "number") ? d.available : cap;
-      S.picked.forEach(function (q) { S.shown[String(q.id)] = true; });
-      S.swapDead = {};
-      S.expanded = {};
+      sc.busy = false;
+      sc.picked = d.picked || [];
+      sc.available = (typeof d.available === "number") ? d.available : cap;
+      sc.picked.forEach(function (q) { S.shown[String(q.id)] = true; });
+      sc.swapDead = {};
+      sc.expanded = {};
       /* A different set of questions is a different thing to set, so it gets
          its own key. Without this, changing the count and pressing Set work
          would replay the FIRST set under the second set's chip. */
@@ -1533,33 +1874,37 @@
       /* The server's `available` de-duplicates by normalised stem, so it can
          be smaller than the count /scope sent. Cap again against the number
          that turned out to be true. */
-      capCount(S.available);
+      capCount(sc, Math.min(sc.available, MAX_QUESTIONS - othersTotal(sc)));
       /* ⊕ MRB-335 — AND THE ROWS ARE TRUNCATED TO THE CHIP.
          `capCount` moves the CHIP down to the largest that fits; it cannot
          move the rows, and the server can legitimately return more than the
          chip now reads. Ask for 20 on a scope holding 20, have the server
          de-duplicate three identical stems, and `available` comes back 17:
          the chip drops to 15 and seventeen rows stay on screen. `submit()`
-         sends `S.picked`, so pressing Set work there sets SEVENTEEN
+         sends the picked rows, so pressing Set work there sets SEVENTEEN
          questions under a chip that says 15 — the same lie the pre-request
          cap was added to stop, arriving from the other direction.
          The chip is the teacher's statement of how many the class gets, so
          the rows follow it and never the reverse. */
-      if (S.picked.length > S.count) {
-        S.picked = S.picked.slice(0, S.count);
+      if (sc.picked.length > sc.count) {
+        sc.picked = sc.picked.slice(0, sc.count);
       }
-      buildQuestions();
-      syncCountChips();
+      buildQuestions(sc);
+      syncScopes();
       syncValidity();
       return true;
     }, function () {
-      if (!S || mySession !== session || mySeq !== fetchSeq) { return false; }
-      S.busy = false;
-      S.previewErr = true;
-      S.picked = [];
-      els.qlist.textContent = "";
-      els.qRows = [];
-      els.qlist.appendChild(el("div", "sw-row-tag", SAY.unavailable));
+      if (!S || mySession !== session || mySeq !== fetchSeq ||
+          myScopeSeq !== sc.seq) { return false; }
+      sc.busy = false;
+      sc.previewErr = true;
+      sc.picked = [];
+      if (sc.els) {
+        sc.els.qlist.textContent = "";
+        sc.els.qRows = [];
+        sc.els.qlist.appendChild(el("div", "sw-row-tag", SAY.unavailable));
+      }
+      syncScopes();
       syncValidity();
       return false;
     });
@@ -1568,17 +1913,17 @@
   /* Chips above availability are disabled, and a default that is now above
      it drops to the largest chip that is not (RISKS A4).
 
-     ⚠️ THE CAP IS AN ARGUMENT, NOT `S.available`. ⊕ MRB-335. It has to run
-     BEFORE the first request, when `S.available` is still 0 and the only
+     ⚠️ THE CAP IS AN ARGUMENT, NOT `sc.available`. ⊕ MRB-335. It has to run
+     BEFORE the first request, when `sc.available` is still 0 and the only
      number available is /scope's count for the node — and a cap of 0 means
      "no ceiling known", which is not the same as "a ceiling of nothing". */
-  function capCount(cap) {
-    if (cap > 0 && S.count > cap) {
+  function capCount(sc, cap) {
+    if (cap > 0 && sc.count > cap) {
       var best = COUNTS[0];
       for (var i = 0; i < COUNTS.length; i++) {
         if (COUNTS[i] <= cap) { best = COUNTS[i]; }
       }
-      S.count = best;
+      sc.count = best;
     }
   }
 
@@ -1592,20 +1937,41 @@
       return { key: t, label: SAY.tier[t] || t };
     }), function (k) {
       S.tier = k;
-      S.available = 0;
-      S.picked = [];
       /* ⊕ MRB-336 — a different tier is a different set of questions, so an
          edit stops keeping the ones the row already holds. */
       S.keepPicked = false;
-      /* A selected node that has dropped to zero at the new tier deselects
-         itself, which is what disables Next (RISKS A5). */
-      var r = nodeFor(S.scopeKind, S.scopeRef);
-      if (r && countAt(r.data, S.tier) === 0) { S.scopeKind = ""; S.scopeRef = ""; }
+      /* ⊕ MRB-342 — THE TIER IS THE SET'S, NOT A SCOPE'S, so changing it
+         throws away every scope's rows and not just the current one. A set
+         holding Foundation questions from one topic and Higher from another
+         is not a thing this sheet can write: the assignment carries ONE
+         `set_tier`. */
+      S.scopes.forEach(function (sc) {
+        resetScopeQuestions(sc);
+        /* A selected node that has dropped to zero at the new tier
+           deselects itself, which is what disables Next (RISKS A5). */
+        var r = nodeFor(sc.kind, sc.ref);
+        if (r && countAt(r.data, S.tier) === 0) { sc.kind = ""; sc.ref = ""; }
+      });
       syncTree();                        // re-counts IN PLACE, no request
-      syncChips(els.tierList, S.tier);
+      syncTierChips();
+      syncScopes();
       syncValidity();
     });
-    syncChips(els.tierList, S.tier);
+    syncTierChips();
+  }
+
+  /* ⊕ MRB-342 — THE TIER LOCKS ONCE THERE IS MORE THAN ONE SCOPE.
+
+     An assignment carries one `set_tier`, so a second topic is set at the
+     first topic's tier or not at all. The rule is enforced by not OFFERING
+     the other tiers rather than by refusing a press: a live chip that
+     silently does nothing is the control this sheet does not draw, and a
+     sentence explaining why is the sentence it does not write. */
+  function syncTierChips() {
+    var locked = filledScopes().length > 1;
+    syncChips(els.tierList, S.tier, function (k) {
+      return locked && String(k) !== String(S.tier);
+    });
   }
 
   function buildSubjectChips() {
@@ -1649,29 +2015,41 @@
     syncChips(els.paperList, S.paper);
   }
 
-  function buildCountChips() {
-    els.countList = buildChips(els.countChips, COUNTS.map(function (n) {
+  /* ⊕ MRB-342 — ONE RAIL PER SCOPE, inside that scope's own section. */
+  function buildCountChips(sc) {
+    sc.els.countList = buildChips(sc.els.chips, COUNTS.map(function (n) {
       return { key: n, label: String(n) };
     }), function (k) {
-      S.count = k;
+      sc.count = k;
       S.keepPicked = false;            // ⊕ MRB-336
-      syncCountChips();
-      loadPreview();
+      syncCountChips(sc);
+      loadPreview(sc);
     });
-    syncCountChips();
+    syncCountChips(sc);
   }
 
-  function syncCountChips() {
-    var cap = S.available || scopeAvailable();
-    var off = function (k) { return cap > 0 && Number(k) > cap; };
+  function syncCountChips(sc) {
+    if (!sc || !sc.els || !sc.els.countList) { return; }
+    var cap = sc.available || scopeAvailable(sc);
+    /* ⊕ MRB-342 — AND THE ROOM THE OTHER SCOPES HAVE LEFT. The server takes
+       at most twenty questions in one assignment, so on a set already
+       holding fifteen the only live chip on a second topic is 5. Offering
+       10 and letting the POST come back `too_many_questions` would be a
+       control that composes a set the sheet knows cannot be written. */
+    var room = MAX_QUESTIONS - othersTotal(sc);
+    var off = function (k) {
+      var n = Number(k);
+      if (cap > 0 && n > cap) { return true; }
+      return n > room;
+    };
     /* ⚠️ A DISABLED CHIP IS NEVER SHOWN AS SELECTED. ⊕ MRB-335. On a scope
        holding fewer than five — a KS3 lesson at one tier holds four — every
        chip is above the ceiling, so `capCount` has nothing to drop to and
-       leaves `S.count` at 5. Highlighting a 5 the teacher cannot press, over
+       leaves `sc.count` at 5. Highlighting a 5 the teacher cannot press, over
        four rendered rows, states a number that is wrong and unreachable at
        once. Nothing selected is the honest rendering of "there are four here
        and none of the sizes apply". */
-    syncChips(els.countList, off(S.count) ? null : S.count, off);
+    syncChips(sc.els.countList, off(sc.count) ? null : sc.count, off);
   }
 
   function buildReleaseChips() {
@@ -1752,18 +2130,26 @@
     }
     if (!S.scope) { return false; }
     if (S.step === 1) {
-      if (!S.scopeKind || !S.scopeRef) { return false; }
-      return scopeAvailable() > 0;
+      var sc = cur();
+      if (!sc.kind || !sc.ref) { return false; }
+      return scopeAvailable(sc) > 0;
     }
     // Detail
-    if (S.busy || S.previewErr) { return false; }
+    if (S.busy || anyBusy() || anyPreviewErr()) { return false; }
     /* ⊕ MRB-336 — A RELEASED SET IS NOT SAVING ITS QUESTIONS, so an empty
        list is not a reason to refuse. The two fields it CAN change are the
        title and the deadline, both checked below; the questions are shown
        because a teacher changing a deadline should see what the deadline is
        on, and if that read failed the deadline is still theirs to move. */
-    if (!S.locked && (!S.picked.length || S.picked.length > 20)) { return false; }
-    if (S.locked && S.picked.length > 20) { return false; }
+    /* ⊕ MRB-342 — EVERY SCOPE MUST HAVE ROWS, AND THE TOTAL IS THE
+       SERVER'S TWENTY. A scope the teacher added and left empty would be a
+       heading over nothing in the assignment and a section over nothing in
+       the worksheet; the count rails already refuse to compose past twenty,
+       so this is the assertion behind them rather than a second rule. */
+    var total = pickedTotal();
+    var empty = filledScopes().some(function (sc) { return !sc.picked.length; });
+    if (!S.locked && (!total || total > MAX_QUESTIONS || empty)) { return false; }
+    if (S.locked && total > MAX_QUESTIONS) { return false; }
     var t = String(S.title || "").trim();
     if (!t.length || t.length > 80) { return false; }
     var due = dueIso();
@@ -1773,7 +2159,30 @@
     if (S.release === "later" && isNaN(relMs)) { return false; }
     if (isNaN(dueMs) || isNaN(relMs) || dueMs <= relMs) { return false; }
     if (dueMs > Date.now() + 365 * DAY_MS) { return false; }
-    if (S.release === "later" && relMs < Date.now() - 5 * 60000) { return false; }
+    /* ⊕ MRB-342, 12 Sep 2026 — A FOUND DEFECT, AND IT DISABLED SAVE ON
+       EVERY RELEASED SET.
+
+       ⛔ This read `if (S.release === "later" && …)` with no `locked` guard.
+       `edit()` sets `S.release = "later"` whenever the row carries a
+       `release_at`, and a RELEASED row's release instant is in the past by
+       definition — that is what "released" means. So the rule meant to stop
+       a teacher SCHEDULING work into the past was being applied to a release
+       nobody was changing, and `Save` was dead on exactly the screen
+       MRB-336 §6 built it for: a released set, whose title and deadline are
+       the only two things left to move.
+
+       Measured on a stub, 12 Sep 2026: a set released 1 Sep, due 8 Sep, at
+       the Detail step with eight questions drawn, a valid title and a valid
+       deadline — `{t:"Save", off:true}`. Nothing on the screen said why,
+       because the release fields are REMOVED on a released set (`syncStep`),
+       so the field the rule was complaining about was not even drawn.
+
+       The check is right for a set that is not out yet and wrong for one
+       that is, so it is scoped to the first. `dueMs <= relMs` above still
+       holds in both cases, which is the part that is genuinely about the
+       teacher's new deadline. */
+    if (!S.locked && S.release === "later" &&
+        relMs < Date.now() - 5 * 60000) { return false; }
     return true;
   }
 
@@ -1788,6 +2197,15 @@
        not a thing being chosen — so its first step's Back is the way out. */
     els.back.textContent = (S.step === 0 || (S.editId && S.step === editFirst()))
       ? SAY.cancel : SAY.back;
+    /* ⊕ MRB-342 — DOWNLOAD IS A DETAIL-STEP ACTION AND NOTHING ELSE. There
+       is no worksheet to make before the questions have been drawn, and a
+       control that is present on three steps and only works on one is a
+       control that lies twice. It is enabled on the same fact the worksheet
+       needs — at least one question on screen — and NOT on `stepValid`,
+       because a missing deadline stops work being SET and has nothing to do
+       with a file a teacher prints. */
+    els.dl.node.hidden = (S.step !== 2);
+    els.dl.setEnabled(!S.busy && !anyBusy() && pickedTotal() > 0);
     /* The outline: only on a field the teacher has actually filled wrongly,
        never on one they have simply not reached yet. */
     if (S.step === 2) {
@@ -1800,8 +2218,12 @@
          dueMs > Date.now() + 365 * DAY_MS));
       els.dueDate.classList.toggle("sw-bad", dueBad);
       els.dueTime.classList.toggle("sw-bad", dueBad);
-      var relBad = S.badRelease || (S.release === "later" && !!S.releaseDate &&
-        !!S.releaseTime && (isNaN(relMs) || relMs < Date.now() - 5 * 60000));
+      /* ⊕ MRB-342 — `!S.locked`, for the reason given in `stepValid`: a
+         released set is not changing its release, and outlining a field
+         that is not on the screen is an outline nobody can act on. */
+      var relBad = S.badRelease || (!S.locked && S.release === "later" &&
+        !!S.releaseDate && !!S.releaseTime &&
+        (isNaN(relMs) || relMs < Date.now() - 5 * 60000));
       els.relDate.classList.toggle("sw-bad", relBad);
       els.relTime.classList.toggle("sw-bad", relBad);
     }
@@ -1824,8 +2246,8 @@
        REMOVED rather than disabled, and the tier and topic appear as values
        in their place — see the panel's head. */
     var ro = !!S.locked;
-    els.countChips.hidden = ro;
-    els.qlist.classList.toggle("is-ro", ro);
+    /* The per-scope rails and lists take this in `syncScopes`. */
+    syncScopes();
     els.relLbl.hidden = ro;
     els.relChips.hidden = ro;
     if (ro) { els.relFields.hidden = true; }
@@ -1856,7 +2278,7 @@
     if (S.step === 0) { S.step = 1; syncStep(); syncTree(); return; }
     if (S.step === 1) {
       S.step = 2;
-      S.available = 0;
+      cur().available = 0;
       if (!S.titleEdited) { S.title = autoTitle(); els.title.value = S.title; }
       S.dueDate = S.dueDate || londonDatePlus(7);
       S.dueTime = S.dueTime || "18:00";
@@ -1877,15 +2299,26 @@
          correcting a title must not find twenty new ones under it. Any
          change to tier, scope or count clears `keepPicked` and the preview
          runs as it always did. */
-      if (S.keepPicked && S.picked.length) {
+      if (S.keepPicked && cur().picked.length) {
         S.keepPicked = false;
-        S.available = Math.max(S.available, S.picked.length);
-        buildQuestions();
-        syncCountChips();
+        var k = cur();
+        k.available = Math.max(k.available, k.picked.length);
+        syncScopes();
+        buildQuestions(k);
+        syncCountChips(k);
         syncValidity();
         return;
       }
-      loadPreview();
+      /* ⊕ MRB-342 — ONLY THE SCOPES THAT HAVE NO ROWS ARE ASKED FOR.
+         Arriving at the Detail step after adding a second topic must not
+         re-roll the first one: the teacher has already read those questions
+         and may have swapped two of them, and replacing the list they
+         approved is the same defect as replacing the node they are
+         scrolled into. */
+      syncScopes();
+      filledScopes().forEach(function (sc) {
+        if (!sc.picked.length) { loadPreview(sc); }
+      });
       return;
     }
     if (S.editId) { saveEdit(); return; }
@@ -1921,13 +2354,39 @@
     S.busy = true;
     S.submitting = true;
     syncValidity();
+    /* ⊕ MRB-342 — ONE ASSIGNMENT PER CLASS, CARRYING EVERY SCOPE'S
+       QUESTIONS, and the flat scope fields are the FIRST scope's.
+
+       ⚠️ THE FLAT FIELDS ARE NOT REDUNDANT WITH `scopes[0]`. `assignments`
+       has one `scope_kind`, one `scope_ref`, one `subject` and one `paper`,
+       and the ruling is that they hold the first scope. Sending them is
+       what makes a server that has not yet learned about `scopes` write the
+       same row it wrote yesterday rather than a NULL one — the two halves
+       of this ticket ship separately and the site half must not depend on
+       arriving second.
+
+       ⚠️ AND `question_ids` IS THE WHOLE SET, IN SCOPE ORDER. It is the
+       column the assignment is actually made of; `scopes` exists so the
+       audit payload can say which topic each block came from. Pathway is
+       not here and never is — the server reads it from the class. */
+    var scopes = filledScopes().map(function (sc) {
+      return {
+        scope_kind: sc.kind,
+        scope_ref: sc.ref,
+        subject: subjectOfScope(sc) || null,
+        question_ids: sc.picked.map(function (q) { return q.id; })
+      };
+    });
+    var allIds = [];
+    scopes.forEach(function (s) { allIds = allIds.concat(s.question_ids); });
     var payload = {
       class_ids: S.classes.slice(),
       tier: S.tier,
-      scope_kind: S.scopeKind,
-      scope_ref: S.scopeRef,
-      subject: subjectOfScope() || null,
-      question_ids: S.picked.map(function (q) { return q.id; }),
+      scope_kind: scopes.length ? scopes[0].scope_kind : "",
+      scope_ref: scopes.length ? scopes[0].scope_ref : "",
+      subject: scopes.length ? scopes[0].subject : null,
+      scopes: scopes,
+      question_ids: allIds,
       title: String(S.title || "").trim(),
       release_at: releaseIso(),
       due_at: dueIso(),
@@ -2023,6 +2482,301 @@
   }
 
   /* ═════════════════════════════════════════════════════════════════════
+     16b. THE WORKSHEET — ⊕ MRB-342
+
+     ⚠️ A DOWNLOAD WRITES NOTHING. `POST /api/teacher/worksheet` composes a
+     file out of questions the teacher is already looking at and hands it
+     back; no row reaches `assignments`, no child sees anything, and the
+     sheet stays exactly where it was. That is the whole reason it is a
+     SECOND action beside Set work rather than a step inside it: a teacher
+     printing a cover lesson is not setting one.
+
+     ⚠️ AND `pathway` IS NEVER IN THE BODY. Every Set-work route re-derives
+     the class's pathway server-side and refuses to accept one; this route
+     is the same contract and the same refusal. The body carries the class,
+     the tier the teacher asked for, the scopes, and the ids — nothing that
+     would let a browser widen what it may see.
+
+     ⚠️ THE RESPONSE IS BYTES, NOT JSON. `apiPost` parses JSON and would
+     swallow a PDF, so this has its own envelope. A non-2xx answer leaves the
+     sheet untouched and says `Unavailable` — the word it already uses for
+     "this could not be got" — rather than inventing a seventh string. */
+
+  var DOWNLOAD_PATH = "/api/teacher/worksheet";
+
+  /* A filename the operating system will accept, from a title a teacher
+     typed. Not a security boundary — the file never leaves this browser —
+     but a title with a slash in it produces a download nobody can find. */
+  function fileNameFor(title, format) {
+    var base = String(title || SAY.worksheet)
+      .replace(/[^0-9A-Za-zÀ-ɏ ._-]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 80) || SAY.worksheet;
+    return base + (format === "docx" ? ".docx" : ".pdf");
+  }
+
+  /* ⚠️ REVOKED ON A TIMER, NOT IMMEDIATELY. Safari starts the download
+     asynchronously after the synthetic click, and revoking the object URL in
+     the same tick cancels it. The anchor is detached straight away; only the
+     URL waits. */
+  function saveBlob(blob, name) {
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    a.rel = "noopener";
+    a.style.cssText = "position:fixed;left:-9999px;top:0";
+    document.body.appendChild(a);
+    a.click();
+    if (a.parentNode) { a.parentNode.removeChild(a); }
+    setTimeout(function () {
+      try { URL.revokeObjectURL(url); } catch (e) { /* already gone */ }
+    }, 20000);
+  }
+
+  /* The server's own filename when it is readable, ours when it is not.
+     `Content-Disposition` is not a CORS-safelisted response header, so on a
+     cross-origin deploy this is empty and the fallback is what ships — which
+     is why the fallback is a real name rather than "download". */
+  function nameFromHeaders(res, title, format) {
+    var cd = "";
+    try { cd = res.headers.get("Content-Disposition") || ""; }
+    catch (e) { cd = ""; }
+    var m = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(cd);
+    if (m && m[1]) {
+      try { return decodeURIComponent(m[1]); } catch (e) { return m[1]; }
+    }
+    return fileNameFor(title, format);
+  }
+
+  function postWorksheet(payload) {
+    return token().then(function (t) {
+      return fetch(apiBase() + DOWNLOAD_PATH, {
+        method: "POST",
+        headers: { Authorization: "Bearer " + t,
+                   "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    }).then(function (res) {
+      if (!res.ok) { throw new Error("worksheet: " + res.status); }
+      return res.blob().then(function (b) {
+        return { blob: b, name: nameFromHeaders(res, payload.title,
+                                                payload.format) };
+      });
+    });
+  }
+
+  /* The public one-shot: build the body, get the bytes, save them. Resolves
+     true or false and NEVER rejects — every caller is a click listener, and
+     a throw inside one is reported by the gates as a dead control. */
+  function download(opts) {
+    var o = opts || {};
+    var scopes = (o.scopes || []).filter(function (s) {
+      return s && s.scope_kind && s.scope_ref &&
+             (s.question_ids || []).length;
+    });
+    if (!o.classId || !o.tier || !scopes.length) {
+      return Promise.resolve(false);
+    }
+    var payload = {
+      class_id: String(o.classId),
+      tier: String(o.tier),
+      scopes: scopes.map(function (s) {
+        return { scope_kind: String(s.scope_kind),
+                 scope_ref: String(s.scope_ref),
+                 subject: s.subject || null,
+                 question_ids: s.question_ids.map(String) };
+      }),
+      format: (o.format === "docx" || o.format === "word") ? "docx" : "pdf",
+      answers: o.answers !== false
+    };
+    if (o.title) { payload.title = String(o.title).slice(0, 80); }
+    return postWorksheet(payload).then(function (r) {
+      saveBlob(r.blob, r.name);
+      return true;
+    }, function (e) {
+      console.error("[set-work] worksheet", e);
+      toast(SAY.unavailable);
+      return false;
+    });
+  }
+
+  /* The sheet's own body, out of the scopes the teacher has composed. */
+  function sheetWorksheet(format, answers) {
+    if (!S) { return null; }
+    return {
+      classId: S.classId,
+      tier: S.tier,
+      title: String(S.title || "").trim(),
+      format: format,
+      answers: answers,
+      scopes: filledScopes().map(function (sc) {
+        return { scope_kind: sc.kind, scope_ref: sc.ref,
+                 subject: subjectOfScope(sc) || null,
+                 question_ids: sc.picked.map(function (q) { return q.id; }) };
+      })
+    };
+  }
+
+  /* ⊕ MRB-342 — ONE DOWNLOAD CONTROL, USED IN THREE PLACES.
+
+     The sheet's header, the class table's assignment row and the marking
+     screen all offer the same thing, so they are the same component rather
+     than three. `request(format, answers)` is the only thing that differs:
+     the sheet has the questions in hand, and a row has to read them first,
+     so it may return a payload OR a promise of one.
+
+     ⚠️ IT IS A MENU, NOT TWO BUTTONS. `PDF` is the default and `Word` is the
+     other one; a row with two download buttons side by side reads as two
+     different downloads. `Answers` is a toggle inside the same menu because
+     it is a property of the file, not a third format.
+
+     ⚠️ AND IT CLOSES ON AN OUTSIDE PRESS. A menu left open over a table is
+     a menu that will eventually be pressed by accident. */
+  function makeDownload(opts) {
+    var o = opts || {};
+    var state = { answers: true, busy: false };
+
+    var wrap = el("div", "sw-dl");
+    var b = btn("sw-btn sw-dl-btn", SAY.download);
+    b.setAttribute("data-sw", o.mark || "download");
+    b.setAttribute("aria-haspopup", "true");
+    b.setAttribute("aria-expanded", "false");
+
+    var menu = el("div", "sw-dl-menu");
+    menu.hidden = true;
+    menu.setAttribute("data-sw", "download-menu");
+    menu.setAttribute("role", "menu");
+
+    var head = el("div", "sw-dl-title", SAY.worksheet);
+    var ans = btn("sw-dl-opt sw-dl-check", SAY.answers);
+    ans.setAttribute("data-sw", "dl-answers");
+    ans.setAttribute("role", "menuitemcheckbox");
+    var ansTick = svgTick();
+    ans.appendChild(ansTick);
+    var pdf = btn("sw-dl-opt", SAY.pdf);
+    pdf.setAttribute("data-sw", "dl-pdf");
+    pdf.setAttribute("role", "menuitem");
+    var word = btn("sw-dl-opt", SAY.word);
+    word.setAttribute("data-sw", "dl-word");
+    word.setAttribute("role", "menuitem");
+
+    menu.appendChild(head); menu.appendChild(ans);
+    menu.appendChild(pdf); menu.appendChild(word);
+    wrap.appendChild(b); wrap.appendChild(menu);
+
+    function syncAnswers() {
+      ans.setAttribute("aria-checked", state.answers ? "true" : "false");
+      ans.classList.toggle("is-on", state.answers);
+      ansTick.hidden = !state.answers;
+    }
+
+    function setOpen(on) {
+      menu.hidden = !on;
+      b.setAttribute("aria-expanded", on ? "true" : "false");
+    }
+
+    function go(format) {
+      if (state.busy) { return; }
+      var body;
+      try { body = o.request ? o.request(format, state.answers) : null; }
+      catch (e) { body = null; }
+      if (!body) { setOpen(false); toast(SAY.unavailable); return; }
+      state.busy = true;
+      b.disabled = true;
+      setOpen(false);
+      Promise.resolve(body).then(function (payload) {
+        if (!payload) { toast(SAY.unavailable); return false; }
+        payload.format = format;
+        payload.answers = state.answers;
+        return download(payload);
+      }, function () {
+        toast(SAY.unavailable);
+        return false;
+      }).then(function () {
+        state.busy = false;
+        b.disabled = false;
+      });
+    }
+
+    b.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (b.disabled) { return; }
+      setOpen(menu.hidden);
+    });
+    ans.addEventListener("click", function (e) {
+      e.stopPropagation();
+      state.answers = !state.answers;
+      syncAnswers();
+    });
+    pdf.addEventListener("click", function (e) { e.stopPropagation(); go("pdf"); });
+    word.addEventListener("click", function (e) { e.stopPropagation(); go("docx"); });
+    menu.addEventListener("click", function (e) { e.stopPropagation(); });
+    document.addEventListener("click", function () { setOpen(false); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { setOpen(false); }
+    });
+
+    syncAnswers();
+    return {
+      node: wrap,
+      setEnabled: function (on) { b.disabled = !on || state.busy; },
+      reset: function () { state.answers = true; syncAnswers(); setOpen(false); }
+    };
+  }
+
+  /* ⊕ MRB-342 — A SET THAT ALREADY EXISTS, DOWNLOADED FROM ITS ROW.
+
+     ⚠️ IT READS THE ROUTE THE CHILD'S OWN PAGE READS, for the reason `edit`
+     does: `/api/class/current-assignment` is the one place the questions ON
+     a set are served from, and a second read of the same rows would be a
+     second answer to the same question.
+
+     ⚠️ THE READ HAPPENS ON THE PRESS. A class table draws a dozen rows;
+     pre-reading every set's questions on the chance one is downloaded would
+     be twelve requests for no clicks.
+
+     ⚠️ AND THERE IS NO MOUNTED COMPONENT HERE, DELIBERATELY. The generated
+     teacher pages are drawn by `shared/student-runtime.js`, whose `draw()`
+     empties the mount host and rebuilds the whole template on every
+     `setState` — so a menu this module appended into a table row would be
+     destroyed by the next redraw and its listeners with it. The row offers
+     the two formats the way that page already offers a delete confirm:
+     the same button, twice, in place, rendered by the template. This is the
+     ACTION behind those presses and owns no DOM at all. */
+  function downloadAssignment(row) {
+    var o = row || {};
+    if (!o.assignmentId || !o.classId) { return Promise.resolve(false); }
+    return apiGet("/api/class/current-assignment?class_id=" +
+      encodeURIComponent(o.classId) +
+      "&assignment_id=" + encodeURIComponent(o.assignmentId)
+    ).then(function (r) {
+      var body = r.body || {};
+      var qs = body.questions || [];
+      var a = body.assignment || {};
+      if (!qs.length) { toast(SAY.unavailable); return false; }
+      return download({
+        classId: o.classId,
+        tier: o.tier || a.set_tier || "",
+        title: o.title || a.title || "",
+        format: o.format,
+        answers: o.answers !== false,
+        scopes: [{
+          scope_kind: o.scopeKind || a.scope_kind || "",
+          scope_ref: o.scopeRef || a.scope_ref || "",
+          subject: (o.subject && o.subject !== "all")
+            ? o.subject : (a.subject || null),
+          question_ids: qs.map(function (q) { return q.id; })
+        }]
+      });
+    }, function () {
+      toast(SAY.unavailable);
+      return false;
+    });
+  }
+
+  /* ═════════════════════════════════════════════════════════════════════
      17. OPEN / CLOSE
      ═════════════════════════════════════════════════════════════════════ */
 
@@ -2060,8 +2814,8 @@
     els.dueTime.value = S.dueTime;
     els.relDate.value = "";
     els.dueDate.value = "";
-    els.qlist.textContent = "";
-    els.qRows = [];
+    els.scopesHost.textContent = "";
+    els.dl.reset();
     els.tree.textContent = "";
     els.treeRows = [];
     els.classList.textContent = "";
@@ -2070,7 +2824,6 @@
     /* Drawn from the page before anything is asked for, so step 0 is never
        an empty panel with a dead Next. `/scope` refines it when it lands. */
     buildClasses();
-    buildCountChips();
     buildReleaseChips();
     syncStep();
     els.overlay.hidden = false;
@@ -2167,8 +2920,12 @@
     S.locked = !!o.released;
     S.keepPicked = true;
     S.tier = o.tier || "";
-    S.scopeKind = o.scopeKind || "";
-    S.scopeRef = o.scopeRef || "";
+    /* ⊕ MRB-342 — AN EDIT IS ONE SCOPE, and slot 0 is where it goes. The row
+       in `assignments` carries one scope triple and `PATCH` takes one, so
+       `Add topic` is hidden for the whole of an edit (see `syncScopes`). */
+    S.scopes[0].kind = o.scopeKind || "";
+    S.scopes[0].ref = o.scopeRef || "";
+    S.si = 0;
     S.subject = o.subject || "all";
     S.paper = o.paper || "both";
     S.title = String(o.title || "");
@@ -2189,8 +2946,8 @@
     els.relTime.value = S.releaseTime;
     els.dueDate.value = S.dueDate;
     els.dueTime.value = S.dueTime;
-    els.qlist.textContent = "";
-    els.qRows = [];
+    els.scopesHost.textContent = "";
+    els.dl.reset();
     els.tree.textContent = "";
     els.treeRows = [];
     els.classList.textContent = "";
@@ -2207,7 +2964,6 @@
        row — gets its own. */
     S.clientRef = uuid();
     buildClasses();
-    buildCountChips();
     buildReleaseChips();
     syncStep();
     syncRelease();
@@ -2245,22 +3001,24 @@
     ).then(function (r) {
       if (!S || mySession !== session || S.editId !== want) { return false; }
       var qs = (r.body && r.body.questions) || [];
-      S.picked = qs.map(function (q) {
+      var sc = cur();
+      sc.picked = qs.map(function (q) {
         return { id: q.id, stem: q.stem || q.prompt || "",
                  options: q.options || [], correct_index: q.correct_index,
                  lesson: q.lesson || "" };
       });
-      S.available = Math.max(S.available, S.picked.length);
-      if (S.step === 2) { buildQuestions(); syncCountChips(); }
+      sc.available = Math.max(sc.available, sc.picked.length);
+      if (S.step === 2) { syncScopes(); buildQuestions(sc); syncCountChips(sc); }
       syncValidity();
       return true;
     }, function () {
       if (!S || mySession !== session || S.editId !== want) { return false; }
       S.keepPicked = false;
-      if (S.step === 2) {
-        els.qlist.textContent = "";
-        els.qRows = [];
-        els.qlist.appendChild(el("div", "sw-row-tag", SAY.unavailable));
+      var bad = cur();
+      if (S.step === 2 && bad.els) {
+        bad.els.qlist.textContent = "";
+        bad.els.qRows = [];
+        bad.els.qlist.appendChild(el("div", "sw-row-tag", SAY.unavailable));
       }
       syncValidity();
       return false;
@@ -2296,10 +3054,10 @@
           client_ref: S.clientRef }
       : { client_ref: S.clientRef,
           tier: S.tier,
-          scope_kind: S.scopeKind,
-          scope_ref: S.scopeRef,
-          subject: subjectOfScope() || null,
-          question_ids: S.picked.map(function (q) { return q.id; }),
+          scope_kind: cur().kind,
+          scope_ref: cur().ref,
+          subject: subjectOfScope(cur()) || null,
+          question_ids: cur().picked.map(function (q) { return q.id; }),
           title: String(S.title || "").trim(),
           release_at: releaseIso(),
           due_at: dueIso() };
@@ -2369,6 +3127,11 @@
     open: open,
     edit: edit,
     close: close,
+    /* ⊕ MRB-342 — the worksheet, for callers that are not the sheet.
+       `download` takes a composed body; `downloadAssignment` takes a row
+       that already exists and reads its questions first. */
+    download: download,
+    downloadAssignment: downloadAssignment,
     /* Pure, tested by `tools/set_work_time_test.js`. Exported so the test can
        reach them without a browser, and so a drive can assert the conversion
        rather than infer it from a rendered date. */

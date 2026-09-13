@@ -2214,6 +2214,14 @@ c.CLASSES.forEach(function (k) {
     return Object.assign({}, p, {
       source: i === 0 ? 'auto' : 'teacher',
       set_by: i === 0 ? null : '__MRB_FIXTURE_ME__',
+      /* ⊕ MRB-340 — THE NAME, NOT THE ID, AND THE FIXTURE HAS TO CARRY IT.
+         `set_by_name` is computed in `shared/teacher-live.js` from the
+         signed-in profile; a fixture runs no seam, so without this the
+         `Set by` line is absent on every fixture row and the ruling that
+         draws it is never rendered by anything the gates drive. Index 0 is
+         the automatic set and nobody set it, which is the OTHER state the
+         line has — so the fixture holds both. */
+      set_by_name: i === 0 ? '' : 'Mide',
       release_at: null,
       released: true,
       state: open ? 'open' : 'closed',
@@ -4724,6 +4732,32 @@ function MRB_SET_WORK_EDIT(row){
   if(!M||!M.edit||!row||!row.assignmentId||!row.classId){return false;}
   return M.edit(row);}
 
+/* ⊕ MRB-342 — DOWNLOAD. A worksheet made from a set that already exists.
+
+   ⚠️ IT WRITES NOTHING, and that is what makes it a different kind of
+   control from the two beside it. `POST /api/teacher/worksheet` composes a
+   file out of the questions the set already holds and hands it back; no row
+   reaches `assignments` and no child sees anything. It rides inside the
+   row's controls group — which IS gated on `canWrite` — so on a finished
+   academic year it is absent with the rest of them. That is the group's
+   rule rather than this helper's, and it is the conservative direction.
+
+   ⚠️ THE QUESTIONS ARE READ BY `shared/set-work.js`, from the route the
+   child's own page reads. Everything else comes off the paper object the
+   table drew, exactly as `MRB_SET_WORK_EDIT`'s arguments do.
+
+   ⚠️ AND IT TOLERATES THE SCRIPT NOT BEING THERE, exactly as the two above
+   do: a page that loaded its HTML and not its JavaScript must not throw
+   inside a click listener — a throw there is reported by the gates as a
+   dead control, which is the wrong finding. */
+function MRB_WORKSHEET(p,k,format){
+  var M=window.MRBSetWork;
+  if(!M||!M.downloadAssignment||!p||!p.id||!k||!k.id){return false;}
+  M.downloadAssignment({assignmentId:p.id, classId:k.id, title:p.title||'',
+    tier:p.set_tier||'', scopeKind:p.scope_kind||'', scopeRef:p.scope_ref||'',
+    subject:p.set_subject||'', format:format||'pdf', answers:true});
+  return true;}
+
 /* ⊕ MRB-336 §5 — DELETE, soft, and the row leaves every surface.
 
    ⚠️ IT NEVER REJECTS, like every helper around it: resolves
@@ -5420,6 +5454,17 @@ def build():
     css, sizes = ds_css()
     wanted = referenced_tokens(tpl)
     css, topped = top_up(css, wanted, tpl)
+    # ⊕ MRB-340 — THE PORT'S OWN TAIL, LAST IN THE CASCADE.
+    #
+    # ⚠️ AFTER `top_up`, NOT BEFORE. `top_up` appends the custom properties
+    # Design's bundle does not define; a rule that uses one has to come after
+    # the declaration it reads, and `--st-*` tokens are all on `:root`.
+    #
+    # ⚠️ AND IT LIVES IN `teacher_rulings.py`, NOT HERE. This file emits;
+    # that file rules. The same split every other decision on these six pages
+    # follows, and it is what makes "changes go in teacher_rulings.py" true
+    # of the stylesheet as well as of the markup.
+    css += R.PORT_CSS
     print("     %d token(s) referenced by the six pages; %d not in "
           "Design's bundle and topped up from shared/tokens.css%s"
           % (len(wanted), len(topped),

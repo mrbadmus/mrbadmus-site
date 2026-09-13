@@ -3595,3 +3595,36 @@ a:hover { color: var(--st-accent-hover); }
 @import "./tokens/shared-ks3.css";
 @import "./fonts/fonts.css";
 @import "./_ds_bundle.css";
+
+
+/* ── ⊕ MRB-340 · SEARCH COLLAPSES INTO THE DRAWER AT 560px ───────────────
+   The top bar already sheds its nav tabs at 1023 and tightens at 699. Below
+   560 what is left — the brand, whatever the tab strip still holds, the
+   crumb and a ~150px labelled search button — stops fitting on one line, and
+   the row wraps or scrolls sideways.
+
+   ⚠️ THE CONTROL IS NOT REMOVED, IT CHANGES SHAPE. A search a phone cannot
+   reach is a feature that quietly does not exist below 560px. What goes is
+   the words and the `/` shortcut chip — and the chip is doubly pointless
+   there, because a phone has no keyboard to press it on. What is left is the
+   magnifying glass in the 38px square the library drawer's own trigger
+   already uses (`.libtrigger--square`), so the two narrow-width entry points
+   on this bar are the same object.
+
+   ⚠️ EXPLICIT DECLARATIONS, NOT A SHORTHAND RESET. Design's button carries
+   its whole appearance in an inline `style`, so every property here has to
+   win over one of hers by name. Nothing above 560px is touched, so the bar
+   is byte-identical at every width Design drew it at. The three class hooks
+   are `SET_ATTR` nodes 19, 23 and 24. */
+@media (max-width: 560px) {
+  .mrb-findbtn {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+    border-radius: 10px;
+  }
+  .mrb-findlabel,
+  .mrb-findkey { display: none; }
+}

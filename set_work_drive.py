@@ -1527,6 +1527,18 @@ FAFF_EXACT = {
     # pressed Save has to be told that nothing was saved, and "Not set"
     # would be a lie about a set that is already out.
     "Save", "Not saved",
+    # ⊕ MRB-342 — MULTI-TOPIC PICKING AND THE WORKSHEET. Six, and no
+    # seventh. `Add topic` is the verb that returns to the Topic step for a
+    # further scope; `Download`, `Worksheet`, `PDF`, `Word` and `Answers`
+    # are the whole vocabulary of the file a teacher takes away.
+    #
+    # ⚠️ THERE IS DELIBERATELY NO WORD FOR "REMOVE" AND NONE FOR A FAILED
+    # DOWNLOAD. A scope comes back out by the gesture that put it in — its
+    # own row, tapped again — and a download that could not be got says
+    # `Unavailable`, which is already on this list and is already the
+    # sheet's word for exactly that. A second failure string would be a
+    # second way of saying one thing.
+    "Download", "Add topic", "Worksheet", "PDF", "Word", "Answers",
 }
 # ⚠️ A SECOND SET, AND SPLITTING THEM IS THE POINT RATHER THAN A CONCESSION.
 # These four are `aria-label`s on the date and time inputs and are never

@@ -784,6 +784,27 @@
            Delete, and it is re-checked at the server on every write. */
         source: a.source || "auto",
         set_by: a.set_by || null,
+        /* ⊕ MRB-340 — WHO SET IT, AS A NAME, AND ONLY WHEN IT IS TRUE.
+
+           ⚠️ `set_by` IS A PROFILE ID AND MOST OF THEM CANNOT BE RESOLVED
+           HERE. A teacher has no RLS read on a COLLEAGUE's `profiles` row —
+           `class_shoutouts_for_viewer` exists as a SECURITY DEFINER function
+           for exactly that reason, and there is no equivalent for
+           assignments. So the only name this layer can honestly produce is
+           the signed-in teacher's own, off the profile the guard already
+           resolved.
+
+           ⚠️ AND THE FALLBACK IS NOTHING, NOT A GUESS AND NOT AN ID. The
+           row's ruling draws the line only when this is non-empty, so an
+           automatic set and a colleague's set carry no line at all rather
+           than "Set by" over a blank or over a UUID.
+
+           OPEN: resolving a colleague's name needs either a definer function
+           beside `class_shoutouts_for_viewer` or the name on the assignments
+           read. Both are backend work and neither is in this lane. */
+        set_by_name: (a.source === "teacher" && profile && a.set_by &&
+                      String(a.set_by) === String(profile.id))
+          ? (profile.first_name || "") : "",
         /* ⊕ MRB-336 §6 — the three answers Edit re-opens the sheet on, plus
            the two chips that narrow the tree. Carried, not re-derived: the
            row is the authority on what it was set from. */

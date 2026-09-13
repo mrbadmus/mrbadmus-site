@@ -15,7 +15,7 @@
        (measured — it is a strict subset), so the order of these two links
        changes nothing, and its later @font-face block points at the same
        /shared/fonts/ URLs. -->
-  <link rel="stylesheet" href="/shared/teacher-ds.css?v=fba5f719"/>
+  <link rel="stylesheet" href="/shared/teacher-ds.css?v=d6e74d32"/>
   <style>
     html { background: var(--st-ground); }
     :root {
@@ -418,20 +418,24 @@
       <button class="hold-btn" id="hold-open" type="button">Start now</button>
     </div>
     <div class="hold-msg" id="hold-msg"></div>
-    <div class="hold-note">
-      <!-- ⊕ MRB-330, 6 Sep 2026 — this promise is now KEPT, and it quotes what
-           a child actually reads. Until today a held school's student saw a card
-           badged OPEN with a live "Open the assignment" button (MRB-329 F3), so
-           this paragraph described a behaviour that did not exist; the sentence
-           it quoted was the one for a week with no work set, not for a school
-           that has not opened. The ruled held-school line is the one below, and
-           `benchHeldLine` in shared/student-live.js is where it is written. -->
-      Before this date no new weekly assignments are created automatically, and
-      a class with no other work set sees “This week’s work isn’t live yet.”
-      Work a teacher sets by hand is unaffected — it reaches the class when
-      they choose, hold or no hold. Work that has already been set stays
-      visible either way. You can change this date as often as you like.
-    </div>
+    <!-- ⊕ MRB-340, 12 Sep 2026 — THE EXPLANATORY PARAGRAPH IS GONE.
+
+         Five sentences under three controls, describing what the date
+         does to automatic composition, to hand-set work, to work already
+         out, and to a child's screen. Every one of them was true. None of
+         them was a fact about THIS school that the panel could not already
+         show: `#hold-state` prints the school's own answer, the date field
+         holds it, and `#hold-msg` says what a press did.
+
+         The standing rule on these surfaces is that a staff page states
+         facts and does not explain the platform to the adult using it. A
+         paragraph teaching the rule is also the thing that goes stale
+         silently — this one already had, once: it described a held
+         school's student card for months while that card was badged OPEN
+         with a live button (MRB-329 F3), and was only corrected at
+         MRB-330 when somebody read both at the same time. The behaviour it
+         described lives in `benchHeldLine` in `shared/student-live.js`,
+         which is the file that owns the sentence a child actually reads. -->
   </div>
 
   <div class="card">

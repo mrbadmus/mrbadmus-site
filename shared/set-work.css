@@ -495,3 +495,109 @@
   .sw-toast { animation: none; }
   .sw-chev svg { transition: none; }
 }
+
+/* ── ⊕ MRB-342 · SEVERAL SCOPES, AS SECTIONS ─────────────────────────────
+   One topic keeps the layout it had: the Questions eyebrow, a chip rail and
+   a list. A second topic adds a second section under the same eyebrow, with
+   a name on each so the rows are attributable. The rule above the section is
+   the only new ink — Design's `--st-rule-soft`, the same hairline the sticky
+   header sits on. */
+.sw-scopes { display: flex; flex-direction: column; }
+.sw-scope { min-width: 0; }
+.sw-scope + .sw-scope {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--st-rule-soft);
+}
+/* ⚠️ A TOPIC NAME IS DATA AND NOT CHROME, so it is NOT `.sw-label` — that
+   class is swept against the sheet's allowed words and a topic name is not
+   one of them. Same treatment as `.sw-row-name` in the tree, which is the
+   other place the same string is drawn. */
+.sw-scope-name {
+  margin-top: 14px;
+  font: 600 16px/1.3 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+.sw-scope-name[hidden] { display: none; }
+
+/* Back to the Topic step for a further scope. Full width so it reads as an
+   action ON the list above it rather than as a third header button, and
+   `.sw-btn`'s own disabled alpha when the set is already at twenty. */
+.sw-add {
+  width: 100%;
+  margin-top: 16px;
+  color: var(--st-accent-text);
+}
+.sw-add[hidden] { display: none; }
+
+/* ── ⊕ MRB-342 · THE DOWNLOAD MENU ───────────────────────────────────────
+   One control, three places: the sheet's header, the class table's
+   assignment row, the marking screen. `position:relative` on the wrapper is
+   what the menu hangs off, and the menu is `absolute` so opening it moves
+   nothing around it — a menu that pushed the rows down would take the row
+   the teacher pressed out from under their thumb.
+
+   ⚠️ RIGHT-ALIGNED. It opens under the last control in a header whose right
+   edge is the sheet's, so anchoring it left would put it off the screen at
+   390px. */
+.sw-dl { position: relative; flex: none; }
+.sw-dl[hidden] { display: none; }
+.sw-dl-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 3;
+  min-width: 168px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--st-paper);
+  border: 1px solid var(--st-edge);
+  border-radius: 11px;
+  box-shadow: var(--st-shadow-pop);
+}
+.sw-dl-menu[hidden] { display: none; }
+.sw-dl-title {
+  padding: 4px 8px 8px;
+  font: 500 12px/1.2 var(--st-mono);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+}
+.sw-dl-opt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 10px;
+  text-align: left;
+  font: 500 15px/1.2 var(--st-ui);
+  color: var(--st-ink);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.sw-dl-opt:hover { background: var(--st-note-bg); }
+/* The Answers row is a toggle, not a format, so it carries the tick the
+   question list already uses for "this is the one" and a rule under it
+   separating it from the two things that actually start a download. */
+.sw-dl-check {
+  justify-content: space-between;
+  border-bottom: 1px solid var(--st-rule-soft);
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 4px;
+}
+.sw-dl-check.is-on { color: var(--st-accent-text); }
+
+/* ── ⊕ MRB-342 · 390px ───────────────────────────────────────────────────
+   Four controls in a 362px header: Cancel, the step word, Download and the
+   primary. The step word is `flex:1 1 auto; min-width:0` and yields first;
+   these trims buy it back enough room to stay legible. */
+@media (max-width: 520px) {
+  .sw-dl-btn { padding: 0 11px; }
+  .sw-dl-menu { min-width: 156px; }
+  .sw-scope + .sw-scope { margin-top: 16px; padding-top: 14px; }
+}
