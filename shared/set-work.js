@@ -2569,7 +2569,15 @@
 
   /* The public one-shot: build the body, get the bytes, save them. Resolves
      true or false and NEVER rejects — every caller is a click listener, and
-     a throw inside one is reported by the gates as a dead control. */
+     a throw inside one is reported by the gates as a dead control.
+
+     ⚠️ `opts.quiet` SUPPRESSES THE TOAST AND NOTHING ELSE, and it exists for
+     exactly one caller: `downloadAssignment`, which has a SECOND thing to
+     try when the first is refused (see its comment). A failure the caller is
+     about to recover from must not put `Unavailable` on the screen for a
+     second and then produce the file anyway — that is a control that says it
+     failed and then succeeds, which is worse than either. Every other caller
+     leaves it unset and is told. */
   function download(opts) {
     var o = opts || {};
     var scopes = (o.scopes || []).filter(function (s) {
@@ -2597,7 +2605,7 @@
       return true;
     }, function (e) {
       console.error("[set-work] worksheet", e);
-      toast(SAY.unavailable);
+      if (!o.quiet) { toast(SAY.unavailable); }
       return false;
     });
   }
@@ -2756,19 +2764,121 @@
       var qs = body.questions || [];
       var a = body.assignment || {};
       if (!qs.length) { toast(SAY.unavailable); return false; }
-      return download({
+      /* ⚠️ `question_ref`, NOT `id`, AND THIS WAS A REAL DEFECT (found by the
+         real-bytes drive, 13 Sep 2026). `/api/class/current-assignment`
+         builds each question as
+         `{ position, question_ref, band, rung, lesson_slug, text, options }` —
+         there is NO `id` on it, and there never was. `qs.map(q => q.id)`
+         therefore produced `[undefined, undefined, …]`, which
+         `JSON.stringify` writes as `[null, null, …]`, which the route's
+         `isStrList` refuses with `bad_question_ids`. So EVERY download from
+         an assignment row and from the marking screen answered 400 and
+         toasted `Unavailable`.
+         ⚠️ IT SURVIVED ITS OWN DRIVE BECAUSE THE DRIVE WAS A STUB: a stub
+         accepts any body, so a body of nulls looked exactly like a body of
+         ids. Nothing short of the real route could have told them apart.
+         The falsy filter is not defensive padding — a RETIRED question comes
+         back as `{ question_ref, retired: true }` with no text, and a body
+         carrying an empty id would be refused for the wrong reason. */
+      var ids = qs.map(function (q) { return q.question_ref || q.id; })
+                  .filter(function (x) { return !!x; });
+      if (!ids.length) { toast(SAY.unavailable); return false; }
+
+      var common = {
         classId: o.classId,
         tier: o.tier || a.set_tier || "",
         title: o.title || a.title || "",
         format: o.format,
-        answers: o.answers !== false,
-        scopes: [{
-          scope_kind: o.scopeKind || a.scope_kind || "",
-          scope_ref: o.scopeRef || a.scope_ref || "",
-          subject: (o.subject && o.subject !== "all")
-            ? o.subject : (a.subject || null),
-          question_ids: qs.map(function (q) { return q.id; })
-        }]
+        answers: o.answers !== false
+      };
+      /* ⚠️ A SUBJECT THAT IS NOT A STRING IS NOT A SUBJECT. The route's
+         `validateBody` refuses a non-string `subject` with `bad_scope`, and
+         a caller handing one over is a caller whose 400 says nothing about
+         what it did wrong. `shared/teacher-data.js` really did hand this an
+         object — a PostgREST embed shadowing the column of the same name —
+         and the whole marking-screen Download was dead because of it. That
+         is fixed at the source; this is the boundary refusing to pass on a
+         shape it cannot use, so the next producer to get it wrong loses the
+         subject rather than the download. */
+      var subjIn = o.subject || a.subject;
+      var subject = (typeof subjIn === "string" && subjIn && subjIn !== "all")
+        ? subjIn : null;
+      var stored = [{
+        scope_kind: o.scopeKind || a.scope_kind || "",
+        scope_ref: o.scopeRef || a.scope_ref || "",
+        subject: subject,
+        question_ids: ids
+      }];
+
+      /* ⛔ A SET MADE FROM SEVERAL TOPICS CANNOT BE PRINTED FROM ITS ROW
+         UNDER ONE SCOPE, and that is a consequence of MRB-342's own
+         multi-scope write rather than a bug in either half on its own.
+
+         `assignments` has ONE scope triple. A two-topic set therefore
+         records only the FIRST topic, by design (`docs/mrb342/REPORT.md`
+         §3) — so posting all of its questions under that one scope asks the
+         worksheet route for ids the first topic's pool does not contain, and
+         the route correctly answers `questions_not_in_scope`. Found by the
+         real-bytes drive, 13 Sep 2026; it cannot be reproduced against a
+         stub, which has no pool to be outside of.
+
+         ⚠️ THE STORED SCOPE IS TRIED FIRST, AND THAT IS THE POINT OF DOING
+         IT THIS WAY ROUND. Every single-topic set — which is nearly all of
+         them — still posts exactly the body it posted before, so its
+         worksheet is unchanged: one scope means the renderer draws NO
+         section heading, and splitting unconditionally would chop an
+         ordinary topic-level set into one heading per subtopic.
+
+         Only when that is refused does it fall back to the questions' OWN
+         subtopics, which `/api/class/current-assignment` supplies as
+         `lesson_slug` on every row (KS3 lesson, KS4 subtopic — the backend
+         normalises both to that name). That body is always in scope, because
+         a question is by definition inside its own subtopic. The cost of the
+         fallback is one refused request, on the rarer path, and the teacher
+         sees nothing of it. */
+      var byLesson = {}, order = [];
+      var splittable = true;
+      for (var i = 0; i < qs.length; i++) {
+        var ref = qs[i].lesson_slug;
+        var qid = qs[i].question_ref || qs[i].id;
+        if (!ref || !qid) { splittable = false; break; }
+        if (!byLesson[ref]) { byLesson[ref] = []; order.push(ref); }
+        byLesson[ref].push(String(qid));
+      }
+      /* ⚠️ AND THE FALLBACK CARRIES NO `subject`, WHICH IS NOT AN
+         OVERSIGHT. `assignments` records ONE subject as well as one scope,
+         so a two-topic set across two sciences — the ordinary KS3 case,
+         where a unit of chemistry and a unit of biology sit in the same
+         week — stamps the row `chemistry` and would then send `chemistry`
+         with the BIOLOGY subtopic, which `findScope` cannot find:
+         `scope_not_for_class`, on the body built to avoid a refusal. Found
+         one refusal further in by the same drive.
+
+         `subject` is only ever a DISAMBIGUATOR, and the one thing it
+         disambiguates is `atomic-structure`, which is a TOPIC id in both
+         chemistry and physics. Every SUBTOPIC ref in the curriculum is
+         unique, and these are all subtopic refs, so omitting it can only
+         resolve to the node the question actually came from. */
+      var split = splittable && order.length > 1
+        ? order.map(function (ref) {
+            return { scope_kind: "subtopic", scope_ref: ref,
+                     subject: null, question_ids: byLesson[ref] };
+          })
+        : null;
+
+      var one = {}, k;
+      for (k in common) { if (common.hasOwnProperty(k)) { one[k] = common[k]; } }
+      one.scopes = stored;
+      if (!split) { return download(one); }
+      one.quiet = true;
+      return download(one).then(function (ok) {
+        if (ok) { return true; }
+        var two = {};
+        for (var kk in common) {
+          if (common.hasOwnProperty(kk)) { two[kk] = common[kk]; }
+        }
+        two.scopes = split;
+        return download(two);
       });
     }, function () {
       toast(SAY.unavailable);
@@ -3002,10 +3112,44 @@
       if (!S || mySession !== session || S.editId !== want) { return false; }
       var qs = (r.body && r.body.questions) || [];
       var sc = cur();
+      /* ⛔ THE ROUTE'S SHAPE IS NOT THE SHEET'S SHAPE, AND READING IT AS IF
+         IT WERE RENDERED FIVE BLANK ROWS. (Pre-existing — MRB-336 — found
+         by MRB-342's real-bytes drive on 13 Sep 2026 and fixed here because
+         it is the same root cause as `downloadAssignment`'s.)
+
+         `/api/class/current-assignment` serves a question as
+
+             { position, question_ref, band, rung, lesson_slug, unit_code,
+               text, figure, options: [{ letter, text, correct, why }] }
+
+         There is no `id`, no `stem` and no `correct_index` on it. So
+         `q.stem || q.prompt || ""` was ALWAYS the empty string, `q.options`
+         was an array of OBJECTS handed to a renderer that expects strings,
+         and `q.correct_index` was always undefined — which is why pressing
+         Edit on a set showed five numbered rows with no question in them
+         and no tick against the answer. Measured in a browser before it was
+         touched: `n: 5`, every `stem: ""`.
+
+         ⚠️ THE ANSWER IS CARRIED PER OPTION, NOT AS AN INDEX. `correct` is a
+         boolean on each option, so the index has to be found rather than
+         read — and `-1` (nothing marked) must stay `-1` rather than becoming
+         0, or the sheet would tick option A on a question whose key the
+         bank no longer has. */
       sc.picked = qs.map(function (q) {
-        return { id: q.id, stem: q.stem || q.prompt || "",
-                 options: q.options || [], correct_index: q.correct_index,
-                 lesson: q.lesson || "" };
+        var raw = q.options || [];
+        var texts = raw.map(function (o) {
+          return (o && typeof o === "object") ? (o.text || "") : String(o);
+        });
+        var ci = (typeof q.correct_index === "number") ? q.correct_index : -1;
+        if (ci < 0) {
+          for (var k = 0; k < raw.length; k++) {
+            if (raw[k] && raw[k].correct) { ci = k; break; }
+          }
+        }
+        return { id: q.question_ref || q.id,
+                 stem: q.text || q.stem || q.prompt || "",
+                 options: texts, correct_index: ci,
+                 lesson: q.lesson_slug || q.lesson || "" };
       });
       sc.available = Math.max(sc.available, sc.picked.length);
       if (S.step === 2) { syncScopes(); buildQuestions(sc); syncCountChips(sc); }

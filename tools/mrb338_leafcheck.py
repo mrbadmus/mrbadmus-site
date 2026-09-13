@@ -700,6 +700,71 @@ def check_text_defects(paths, rows, scope_name):
 
 # ── 9 · the frozen window ───────────────────────────────────────────────
 
+# ── 10 · over-assertion: does an absolute MARK the wrong options? ─────────
+
+# ⊕ Ruled by Mide, 13 Sep 2026. Swept across the whole estate on 12 Sep:
+# "at all / genuinely / somehow / truly / actually / really / always / never /
+# only" appeared **2,622 times in distractors and 208 times in keys** — wrong
+# 92.7% of the time, against 75% by chance (three of four options are wrong).
+#
+# ⚠️ Four lanes converged on the habit independently in one night, each one's
+# share looking like noise. It is only visible per LEAF and above, which is why
+# it belongs here rather than in an author's head. A pupil who learns "the
+# over-asserting option is wrong" eliminates a distractor for free.
+#
+# THE RULE (Mide, 13 Sep): in NEW rows, an absolute may appear in a distractor
+# no more often than it appears in a key, per leaf. Repair of SHIPPED rows is
+# night-3 work and is deliberately NOT enforced here.
+OVER_ASSERT = re.compile(
+    r"\b(at all|genuinely|somehow|whatever|truly|secretly|after all|actually|"
+    r"in fact|really|always|never|only|every single|no exception)\b", re.I)
+
+
+def check_over_assertion(rows, new_ids, scope_name):
+    print("\n10 · OVER-ASSERTION (Mide, 13 Sep) — an absolute must not MARK the "
+          "wrong\n     options. Measured on NEW rows only; shipped rows are "
+          "night-3 repair work.")
+    per = collections.defaultdict(lambda: [0, 0])     # leaf -> [in distractors, in keys]
+    for r in rows:
+        if new_ids and r["id"] not in new_ids:
+            continue
+        leaf = r.get("leaf") or scope_name
+        for i, o in enumerate(r["options"]):
+            if not OVER_ASSERT.search(o or ""):
+                continue
+            per[leaf][1 if i == r["key"] else 0] += 1
+    if not per:
+        print("     ✅ no new row uses an absolute")
+        return
+    bad = 0
+    for leaf, (d, k) in sorted(per.items()):
+        tot = d + k
+        rate = 100.0 * d / tot if tot else 0.0
+        # chance is 75%: three of four options are wrong.
+        # ⚠️ HOW THE RULING IS READ, and why it is not read literally.
+        # Mide's words on 13 Sep: "absolutes in a distractor no more often than
+        # in the key, per leaf". Taken literally that is d <= k — but every row
+        # has THREE distractors to ONE key, so pure chance already gives d ≈ 3k
+        # (75%), and a literal reading would fail every leaf in the estate
+        # including flawless ones. The DEFECT the ruling is aimed at is the
+        # estate-wide 92.7% against that 75% baseline: the absolute MARKING the
+        # wrong options. So the test is "significantly above chance", not
+        # "d <= k". Flagged at 85% with n >= 12 — comfortably clear of chance,
+        # and it catches every leaf in the 12 Sep sweep that was a real tell.
+        over = tot >= 12 and rate > 85.0
+        flag = ("  ← ABOVE 85%: the absolute marks the wrong options"
+                if over else "")
+        if over:
+            bad += 1
+        print("     %-34s %3d in distractors · %3d in keys · %5.1f%%%s"
+              % (leaf, d, k, rate, flag))
+    if bad:
+        NOTE.append("over-assertion: %d leaf/leaves where an absolute appears "
+                    "only in distractors (%d+ times) and never in a key"
+                    % (bad, 4))
+    else:
+        print("     ✅ no leaf uses an absolute only on the wrong side")
+
 def check_frozen(stage, rows, leaves, new_ids, old_by_leaf):
     print("\n9 · THE FROZEN WINDOW — bank_position 0..11 is every automatic "
           "assignment this")
@@ -950,6 +1015,7 @@ def main():
 
     check_key_echo(rows, scope_name)
     check_text_defects(paths, rows, scope_name)
+    check_over_assertion(rows, new_ids, scope_name)
     check_frozen(stage, rows, leaves, new_ids, old_by_leaf)
 
     print("\n" + "=" * 72)

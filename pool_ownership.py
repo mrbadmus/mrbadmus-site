@@ -457,6 +457,22 @@ def check_backend():
                                          "own filters, so an out-of-scope id "
                                          "is NOT FOUND rather than "
                                          "found-and-then-rejected",
+        # ⊕ MRB-342, 13 Sep 2026 — THE WORKSHEET IS THE FIFTH SURFACE, and it
+        # is named here now that the thing this guards actually exists. The
+        # site lane deliberately did not widen the seal before the route
+        # shipped (`docs/mrb342/REPORT.md` §6); it has shipped, so it is named.
+        #
+        # ⚠️ IT DOES NOT CALL `bankForScope` DIRECTLY, AND MUST NOT START.
+        # It reaches the pool through `setWorkContent` — the SAME helper the
+        # set route and the edit route use — which is what makes "a worksheet
+        # cannot obtain a question the set route would refuse" true by
+        # construction rather than by two implementations agreeing. The
+        # assertion below pins that; this entry exists so that a future
+        # direct call is reported as a NAMED surface rather than as a stray.
+        "/api/teacher/worksheet":        "the printable worksheet — the same "
+                                         "picking and the same seal as the "
+                                         "write, through setWorkContent, and "
+                                         "then it writes nothing",
     }
     ROUTE_RE = re.compile(r"app\.(get|post)\('(/api/[^']+)'")
     bounds = [(m.start(), m.group(2)) for m in ROUTE_RE.finditer(server)]
@@ -520,6 +536,39 @@ def check_backend():
                  "hold rows above 11 that exist for Set work; an arm without "
                  "the ceiling recomposes every automatic assignment in the "
                  "school for that key stage, silently (RISKS D7)." % arms)
+    # ── ⊕ MRB-342 · THE WORKSHEET REACHES THE POOL THROUGH THE SEAL ─────
+    #
+    # ⚠️ A SECOND IMPLEMENTATION OF THE FOUR CHECKS IS THE FAILURE MODE HERE,
+    # not a missing one. `POST /api/teacher/worksheet` hands a teacher the
+    # actual text of questions, so if it ever re-derived "is this id in this
+    # class's pool" for itself, the two derivations would drift and the
+    # worksheet would become a way of READING a question out of a pool the
+    # class cannot have. The route is therefore required to call
+    # `setWorkContent` and required to name no bank table of its own.
+    ws = re.search(r"app\.post\('/api/teacher/worksheet'.*?\n\}\);",
+                   server, re.S)
+    if not ws:
+        fail("server.js", "POST /api/teacher/worksheet is not in the backend "
+             "this gate is reading. It shipped on 12 Sep 2026 (ddaa639); if it "
+             "has been removed, remove it from SET_WORK_READERS too — a named "
+             "surface that does not exist is a seal watching nothing.")
+    else:
+        body = ws.group(0)
+        if "setWorkContent(" not in body:
+            fail("server.js", "the worksheet route no longer calls "
+                 "setWorkContent(). That helper IS the seal — it re-derives "
+                 "the cohort, the tree, the pool and every id from the class "
+                 "row. A worksheet that decides scope for itself is a second "
+                 "implementation of the same four checks, and the thing being "
+                 "protected against is precisely the two drifting apart.")
+        for tbl in ("ks3_assignment_bank", "ks4_assignment_bank",
+                    "ks3_ladder_questions", "ks3_cards"):
+            if ("from('%s')" % tbl) in body:
+                fail("server.js", "the worksheet route reads `%s` directly. "
+                     "Its only pool read is `setWorkContent`; a read of its "
+                     "own is a new serving surface and breaks MRB-288's one "
+                     "bank per surface." % tbl)
+
     scope_fn = re.search(r"async function bankForScope.*?\n}", server, re.S)
     if scope_fn and "AUTO_MAX_BANK_POSITION" in scope_fn.group(0):
         fail("server.js", "bankForScope applies the AUTO ceiling. It must "

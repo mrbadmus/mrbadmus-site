@@ -310,9 +310,9 @@ QUESTIONS = [
         "id": "c3-05-h02",
         "band": "harder",
         "text": "A cold plate held just above a pan of hard-boiling sea water "
-                "collects drops that taste salty. Held high above the same "
-                "pan, it collects drops that taste of nothing. Why the "
-                "difference?",
+                "collects drops that dry to a white crust. Held high above "
+                "the same pan, it collects drops that dry to nothing. Why "
+                "the difference?",
         "options": [
             {"text": "Low down the steam is hotter, and hotter steam can "
                      "carry more salt", "correct": False,

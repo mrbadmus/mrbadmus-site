@@ -437,3 +437,36 @@ table on the assignment page. If a stem needs a fact, the stem carries it.
 ⚠️ And write real characters: a stem carrying a literal `\n` becomes a real
 newline plus indentation inside the question. Sweep your file for `\n` and
 `<sub>` before reporting.
+
+
+## 9.11 · AN ABSOLUTE MUST NOT MARK THE WRONG OPTIONS
+
+⊕ Ruled by Mide, 13 Sep 2026, after a sweep of the whole estate.
+
+Words like **always, never, only, at all, genuinely, truly, actually, in fact,
+every single, without exception** appeared **2,622 times in distractors and 208
+times in keys** across the bank — wrong **92.7%** of the time, against a **75%**
+chance baseline (three of four options are wrong).
+
+⚠️ **That is a free mark.** Distrusting absolutes is the oldest test-wiseness
+heuristic there is; a pupil who has been taught it eliminates a distractor
+without reading the science.
+
+⚠️ **Four lanes converged on the habit independently in a single night**, and
+each lane's own share looked like noise. It is only visible per LEAF and above,
+which is why you cannot catch it by reading your own rows one at a time.
+
+**The rule for new rows:** across a leaf, an absolute must not appear in the
+distractors at a rate meaningfully above chance. `tools/mrb338_leafcheck.py`
+check 10 measures it and flags a leaf above **85%** on twelve or more
+occurrences.
+
+**The fix is never to strip absolutes from distractors alone** — that inverts
+the tell rather than removing it. If a claim genuinely turns on "always" or
+"never", write it that way **in whichever option it belongs to, key included**.
+A key that says "never" when never is the truth is a good key.
+
+⚠️ **Repair of already-shipped rows is night-3 work and is not yours.** Do not
+sweep the pre-existing baseline in an authoring lane; check 10 measures NEW rows
+only for exactly that reason.
+

@@ -264,7 +264,7 @@ QUESTIONS = [
             {"text": "The water that left the solution is still water, and "
                      "can be turned back to liquid", "correct": True},
             {"text": "Some of the salt evaporated along with the water, "
-                     "so the drops on the plate will taste salty",
+                     "so the drops on the plate will leave a white crust when dried",
              "correct": False,
              "why": "The drops are fresh. Salt does not evaporate at these "
                     "temperatures, so only the solvent ever reached the "

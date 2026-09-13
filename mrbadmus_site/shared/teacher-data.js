@@ -2034,9 +2034,31 @@ window.MrBadmusTeacherData = (function () {
                reading OPEN, "Set Tue 8 Sep". `source` is what separates an
                automatic row from one a teacher set, and it decides which rows
                carry Edit and Delete. */
+            /* ⛔ `set_subject:subject` — ALIASED, AND THE ALIAS IS THE FIX.
+               This asked for the scalar column `subject` AND embedded
+               `subject:subject_id ( id, name )` under the SAME name, and
+               PostgREST resolves the embed: `a.subject` came back as
+               `{ id, name }` and the Set-work subject column was silently
+               dropped from the answer entirely.
+
+               ⚠️ IT FAILED AS A WRONG TYPE, NOT AS A MISSING VALUE, which is
+               why nothing noticed. `set_subject` was handed on to
+               `MRB_WORKSHEET` and `MRB_SET_WORK_EDIT` as an OBJECT, and the
+               worksheet route's `validateBody` refuses a non-string
+               `subject` with `bad_scope` — so Download on the marking screen
+               (and on a single-topic row) answered 400 every time and said
+               `Unavailable`. Found by MRB-342's real-bytes drive, 13 Sep
+               2026; a stub accepts an object as happily as a string.
+
+               ⚠️ AND THE TWO REALLY ARE DIFFERENT FACTS. `subject` is the
+               SET-WORK subject — a science name the pool is scoped by —
+               while `subject_id` is the SCHOOL's filing subject, whose name
+               for a KS3 combined class is "Science" and matches no node in
+               any tree. Sending the second where the first belongs would not
+               have been a fix. */
             .select(
               'id, class_id, title, due_at, release_at, source, set_by, ' +
-              'set_tier, scope_kind, scope_ref, subject, paper, ' +
+              'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
               'created_at, academic_week, subject_id, ' +
               'subject:subject_id ( id, name )'
             )
@@ -2217,7 +2239,7 @@ window.MrBadmusTeacherData = (function () {
         set_tier: a.set_tier,
         scope_kind: a.scope_kind,
         scope_ref: a.scope_ref,
-        set_subject: a.subject,
+        set_subject: a.set_subject || "",
         paper: a.paper,
         created_at: a.created_at,
         academic_week: a.academic_week,

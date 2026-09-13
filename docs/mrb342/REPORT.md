@@ -112,6 +112,11 @@ own JWT `ref` claim (`qeppkiswvclkkwbxmlok`), never from a label.
 
 ## 6 · What has NOT shipped, and what is open
 
+⊕ **Superseded in part, 13 Sep 2026 — see §8.** The first two bullets below are
+kept rather than deleted because they are the reason §8 exists, and because
+each named a thing that turned out to be BROKEN the moment it met real bytes.
+The third is now done.
+
 - **The site half is not merged.** Sheet UI, multi-scope state, `Add topic`,
   `Download` on the sheet/row/marking screen, and the four MRB-340 tidy-ups are
   built and driven (52/52 at 390px and 1280px, 13/13 on the real fixture, 6/6 on
@@ -119,9 +124,8 @@ own JWT `ref` claim (`qeppkiswvclkkwbxmlok`), never from a label.
 - ⚠️ **Blob handling, `Content-Disposition` parsing and the `<a download>` save
   are untested against real bytes.** The stub returned a Blob and the save path
   did not throw; that is not the same as a PDF landing in Downloads.
-- **`pool_ownership`'s `SET_WORK_READERS` needs the worksheet route added.** The
-  site lane deliberately did not widen the seal before the thing it guards
-  existed — that judgement was right.
+- ~~**`pool_ownership`'s `SET_WORK_READERS` needs the worksheet route added.**~~
+  Done, 13 Sep — and with a positive assertion rather than just a name; see §8.
 - **`Set by <first name>` resolves only for the signed-in teacher's own sets.**
   `assignments.set_by` is a profile id and a teacher has no RLS read on a
   colleague's `profiles` row. The line is ABSENT on a colleague's set — never
@@ -145,3 +149,178 @@ file, comments included. **A check that cannot tell code from prose punishes the
 documentation that prevents the defect**, which is the wrong incentive to build
 into a seal. Comments are now stripped; string literals are not, so
 `from('ks3_cards')` is still caught. Proven both ways.
+
+
+---
+
+## 8 · Driven for real, 13 Sep 2026 — and the three defects that found
+
+§6's second bullet was right to be nervous — **four defects were waiting
+behind it, three of them in code that had already been driven 52/52.** The sheet was driven against the
+real `POST /api/teacher/worksheet` — this run's code, the build that is live on
+production (`ddaa639`), run locally against TEST on a real signed-in teacher's
+JWT, exactly as `set_work_drive.py` already runs every other Set-work route —
+and the bytes that came back were opened and parsed. Chrome's own download
+behaviour was armed at a directory, the real `Download` control was pressed,
+and the file that landed on disk was read back.
+
+**`set_work_drive.py`: 392 checks, 0 failed**, ~56 of them new here.
+
+### 8.1 · Four defects, and none of them was reachable from a stub
+
+**⛔ 1. `downloadAssignment` read `q.id`, which does not exist.**
+`/api/class/current-assignment` serves a question as
+`{ position, question_ref, band, rung, lesson_slug, unit_code, text, options }`.
+There is no `id` on it. So the row's Download and the marking screen's posted
+`question_ids: [null, null, …]` and were refused `bad_question_ids` —
+**every download from an existing set failed, and said `Unavailable`.** A stub
+accepts any body, so a body of nulls and a body of ids are the same request to
+it; nothing short of the real route could tell them apart.
+
+**⛔ 2. A multi-topic set could not be printed from its row at all.**
+`assignments` holds ONE scope triple, so a two-topic set records only the first
+topic (§3, by design). Posting all of its questions under that one scope asks
+the worksheet route for ids the first topic's pool does not contain, and the
+route correctly answers `questions_not_in_scope`. MRB-342 created this by
+shipping multi-scope writes; §6 noticed the EDIT consequence and not this one.
+Fixed by trying the stored scope first — so every single-topic set posts exactly
+the body it posted before and its worksheet is unchanged — and falling back to
+one scope per the questions' own `lesson_slug`, which the row read already
+supplies. ⚠️ The fallback sends no `subject`: a KS3 set spanning chemistry and
+biology stamps the row `chemistry`, and sending `chemistry` with the BIOLOGY
+subtopic is `scope_not_for_class` — a second refusal, one further in, that only
+a real tree could produce.
+
+**⛔ 3. `set_subject` was an OBJECT, so the marking screen's Download was dead
+— and so was a single-topic row's.** `shared/teacher-data.js` asked PostgREST
+for the scalar column `subject` AND embedded `subject:subject_id ( id, name )`
+**under the same name**. The embed wins, so `a.subject` came back as
+`{ id, name }` and the Set-work subject column was dropped from the answer
+entirely. That object travelled through `set_subject` into `MRB_WORKSHEET` and
+into `downloadAssignment`, and `validateBody` refuses a non-string `subject`
+with `bad_scope` — **400 every time, `Unavailable` every time.**
+
+⚠️ **This one nearly escaped, and how it nearly escaped is the lesson.** The
+first row-download check used the TWO-topic set, which takes defect 2's
+fallback body — one scope per lesson, and no `subject` on any of them — so it
+sailed straight past a bug that lives entirely in the subject the STORED body
+carries. A green check about the ordinary case that only ever exercised the
+rare one. `row_download_single` was added for the case the first check masked.
+
+Fixed at the source (`set_subject:subject`, aliased, with the column and the
+embed now distinct) and again at the boundary: `downloadAssignment` treats a
+non-string `subject` as absent, so the next producer to get it wrong loses the
+subject rather than the download. ⚠️ The two really are different facts —
+`subject` is the SET-WORK subject the pool is scoped by, `subject_id` is the
+SCHOOL's filing subject, whose name for a KS3 combined class is "Science" and
+matches no node in any tree.
+
+**⛔ 4. (Pre-existing, MRB-336) The Edit sheet showed five BLANK rows.**
+`loadStoredQuestions` read the same serving route as if it spoke the POOL's
+language — `q.stem`, options as strings, `q.correct_index` — and it speaks
+`text`, option OBJECTS and a `correct` boolean per option. Measured in a browser
+before it was touched: `n: 5`, every `stem: ""`. Fixed here because it is the
+same root cause as defect 1, and pinned by three new assertions in
+`check_edit_sheet` — which had passed all along, because it asserted that the
+sheet NARROWS (read-only tier, no release chips, no Swap) and all of that was
+true of a panel with no questions on it.
+
+### 8.2 · What the real bytes proved that the stub could not
+
+- A download writes **nothing**: `assignments` snapshotted by id and
+  **re-queried** on the service key before and after — six times, on the sheet,
+  on a two-topic sheet, on a row, and twice through the API.
+- The PDF parses: page count, every question drawn once with its stem, four
+  options each, an `Answers` page when `answers: true` and **no page beginning
+  `Answers`** when false — and a shorter document, so the key is absent rather
+  than unlabelled.
+- **No question straddles a page boundary** — stem AND all four options on ONE
+  page. Mutation-tested: with the guard stripped the check reports
+  `q6: stem on page 1, 1 option(s) not on it` and `q19: … 4 option(s)`, and it
+  passes on the healthy control.
+- The .docx parses to the same question count, options as four paragraphs, key
+  present/absent — compared **byte for byte**, since OOXML has no extractor to
+  invent spacing.
+- **A KS3 row's real U+2082 survives to the drawn text**, in the PDF and in the
+  .docx, and all the way to the file saved on disk.
+- **KS4 stays flat** — and the assertion is *verbatim round-trip*, not "no
+  subscripts". Three KS4 rows legitimately carry an authored subscript in a
+  subscripted VARIABLE (`T₂`, `p₁`, `n₁` in `particle-motion-pressure` and
+  `sampling-techniques`), so "a KS4 sheet contains no U+2082" is a FALSE claim
+  that would go red on correct data.
+- The saved file wears the **server's** filename, not the page's fallback —
+  proved with a title (`Café ₂ sheet`) whose two naming rules disagree, so
+  `nameFromHeaders` is shown to have really read `Content-Disposition`
+  cross-origin. ⚠️ `₂` arrives as `2`, not as a space: NFKD maps SUBSCRIPT TWO
+  onto DIGIT TWO.
+- Refusals: a teacher who does not teach the class (**in the same school**, so
+  the school conjunct cannot pass it for the wrong reason) and a signed-in
+  CHILD both get 403 and no document bytes — and **neither writes an audit
+  line**, so the journal cannot be used to learn that a class exists.
+- The audit line that IS written names the class, every scope, the count, the
+  format, the tier and whether the key was on, and its total agrees with the
+  sum of its scopes.
+- The limit is **keyed on the user**: the teacher is 429'd at 30, and a second
+  account calling from the same address in the same second is served with 29 of
+  its own hour left.
+- 390px and 1280px with the menu open: no sideways scroll.
+- Six new strings, all six really drawn, and no seventh. ⚠️ The first version of
+  that sweep read only elements with no children and so skipped `Answers`,
+  which contains an inline `<svg>` tick — a check that would have reported five.
+
+### 8.3 · Three harness artefacts, named, because each mimicked a defect
+
+None of these was a product fault, and each first appeared as a red wearing a
+product defect's name.
+
+- **`pypdf` inserts a space at a kerning pair.** See §8.4.
+- **Two downloads in one directory under the same filename.** The marking
+  screen shows the class's NEWEST paper, which was the single-topic set the
+  previous check had just saved — same title, same filename. Chrome wrote it
+  straight over the existing file, `listdir − before` was empty, and
+  `take_download` waited out forty seconds and reported "nothing landed" about
+  a download that had completed. The marking check now gets a directory of its
+  own.
+- **Measuring the second scope's rows before its `/preview` answered.** The
+  section is drawn as soon as the scope exists, so `Add topic` briefly shows
+  two sections and one topic's questions. The check waited on the section and
+  reported "two sections, and the same ten questions".
+
+And one selection fault of the same family: the KS3 subscript scope was chosen
+by "a lesson that has some", and `/preview` draws a SUBSET — so a lesson with
+two subscript rows in ninety-six legitimately offered none, and the one check
+MRB-302's KS3 half rests on went red for the draw. Candidates are now ranked by
+density and walked until a preview really offers one; a new
+`ks3_subscript_offered` check states that precondition out loud rather than
+letting it be assumed.
+
+### 8.4 · One thing about measuring a PDF, worth keeping
+
+`pypdf` reconstructs words from the TJ arrays PDFKit emits, and PDFKit emits a
+kern adjustment between the `T` and the `a` of "Tap" — which the reader takes
+for a word gap and hands back as `T ap water holds…`. The glyphs on the page are
+perfect. So a "verbatim" comparison against extracted PDF text must mean *every
+character, in order*, not *every byte including spacing*; `squeeze()` in the
+drive removes whitespace and nothing else, so `₂` and `2` stay different and
+`CO2` still does not match `CO₂`. The .docx half keeps the strict comparison,
+which is why both formats are checked rather than one standing in for the other.
+
+### 8.5 · The seal
+
+`pool_ownership` now names `/api/teacher/worksheet` as Set work's fifth surface
+AND asserts positively that it reaches the pool through `setWorkContent` and
+reads no bank table of its own. Mutation-tested: renaming that one call makes
+the gate fail with the reason. `teacher_behaviour` is green (24 fixtures, 952
+controls) after the `teacher-data.js` change, and `build_all.py` has been run.
+
+### 8.6 · Still open
+
+- **The marking screen's Word path is not driven.** `PDF` is pressed there and
+  parsed; `Word` is wired by the same ruling tuple and the same helper, and is
+  asserted only through the sheet's own menu. Named rather than counted.
+- **The fallback body is a client-side repair for a database shape.**
+  `assignments` records one scope triple, so a multi-topic set's own row cannot
+  say what it was made from. The honest fix is a scopes table (or a JSON column)
+  on `assignments`, at which point both the fallback and §6's "an edit is still
+  single-scope" go away together. **OPEN ON MIDE** — it is a schema decision,
+  not a lane's call.

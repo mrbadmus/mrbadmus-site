@@ -226,8 +226,8 @@ QUESTIONS = [
         "id": "c3-01-s04",
         "band": "standard",
         "text": "Pure sodium will set fire to your hand. Distilled water is "
-                "pure and tastes of nothing at all. What do those two facts "
-                "together show about the word pure?",
+                "pure and is completely harmless to handle. What do those "
+                "two facts together show about the word pure?",
         "options": [
             {"text": "It says how many substances are in the sample, and "
                      "nothing about whether it is good for you",

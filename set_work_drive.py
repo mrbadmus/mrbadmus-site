@@ -59,6 +59,8 @@ Every check name below is a row in `docs/mrb335/RISKS.md`.
 """
 
 import argparse
+import html
+import io
 import json
 import os
 import re
@@ -70,6 +72,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
+import zipfile
 from datetime import datetime, timedelta, timezone
 
 REPO = os.path.dirname(os.path.abspath(__file__))
@@ -3101,6 +3104,9 @@ def main():
     t_pupil_b = sign_in(FX.PUPIL_B_EMAIL, pw)["access_token"]
     teacher_id = FX.find_user(FX.TEACHER_EMAIL)
     admin_id = FX.find_user(FX.ADMIN_EMAIL)
+    # ⊕ MRB-342 — the child's id, so "a refused request writes no audit line"
+    # can be asserted about the CHILD's actor row as well as the teacher's.
+    pupil_id = FX.find_user(FX.PUPIL_EMAIL)
 
     server = None
     site = None
@@ -3132,6 +3138,19 @@ def main():
         check_delete_edit_audited(t_admin, deleted_id,
                                   edited[0] if isinstance(edited, tuple) else None)
         twenty_title = set_twenty(t_teacher, scopes)
+        # ⊕ MRB-342 — THE WORKSHEET, AGAINST THE REAL ROUTE AND REAL BYTES.
+        # Everything above this line was already driven; this is the half
+        # `docs/mrb342/REPORT.md` §6 says had only ever met a stub.
+        ws_first = check_worksheet(t_teacher, t_pupil, t_admin, teacher_id,
+                                   scopes)
+        ws_made = None
+        if ws_first:
+            ws_made = check_worksheet_multi(t_teacher, teacher_id, scopes,
+                                            ws_first)
+            check_worksheet_from_row(t_teacher, ws_made)
+            check_worksheet_refusals(t_teacher, t_pupil, teacher_id, pupil_id,
+                                     ws_first)
+            check_worksheet_audit(teacher_id, ws_first)
 
         if not args.api_only:
             # ⚠️ ONE BROWSER PER PERSONA, SEQUENTIALLY. The teacher's browser
@@ -3149,6 +3168,10 @@ def main():
                     check_faff(p, scopes)
                     check_toast_and_swap(p, scopes, args.shots)
                     check_hold_validation(p, scopes)
+                    # ⊕ MRB-342 — Chrome actually SAVES the file here, so this
+                    # must run while the tab's network is still the browser's
+                    # own: the two checks below replace `window.fetch`.
+                    check_worksheet_sheet(p, base, ws_first, args.shots)
                     check_classes_screen_open(p, base)
                     # LAST of the sheet checks, both of them: each wraps
                     # `fetch` to make a race deterministic, so nothing that
@@ -3189,6 +3212,12 @@ def main():
                 record(str(signed).startswith("ok"),
                        "the teacher signs in again, in a clean tab, for the "
                        "class-page checks", signed)
+                # ⊕ MRB-342 — FIRST IN THIS TAB, DELIBERATELY. The row it
+                # presses is the two-topic set written in the API half, and
+                # `check_delete_surfaces` further down this block deletes
+                # rows; running after it would be a check about whichever
+                # row happened to survive.
+                check_row_download(pc, base, t_teacher, scopes, ws_made)
                 cards_made = check_cards(pc, base, t_teacher, scopes,
                                          args.shots)
                 check_remind_names_its_own_card(pc, base, cards_made)
@@ -3230,6 +3259,13 @@ def main():
                        "the school admin signs in through auth.html, for real",
                        signed)
                 check_admin_repaint(p3, base, t_admin)
+
+        # ⊕ MRB-342 — ⚠️ THE VERY LAST THING, AND IT HAS TO BE. It spends the
+        # teacher's hour of worksheets on purpose, so anything after it in
+        # this process would meet a 429 that says nothing about what it was
+        # testing.
+        if ws_first:
+            check_worksheet_rate_limit(t_teacher, t_admin, ws_first)
     finally:
         if server:
             server.__exit__(None, None, None)
@@ -5281,11 +5317,71 @@ def check_edit_sheet(p, base, shots):
            "…and Swap is not offered on any question, so the pupil halfway "
            "through cannot have one changed underneath them",
            "%d swap control(s), none visible" % st["swaps"])
+
+    # ── ⛔ AND THE ROWS HAVE QUESTIONS IN THEM (⊕ MRB-342, 13 Sep 2026) ──
+    #
+    # ⚠️ THIS CHECK EXISTS BECAUSE EVERYTHING ABOVE IT PASSED WHILE THE SHEET
+    # SHOWED FIVE BLANK ROWS. `loadStoredQuestions` read the serving route as
+    # if it spoke the POOL's language — `q.stem`, `q.options` as strings,
+    # `q.correct_index` — and it speaks `text`, option OBJECTS and a `correct`
+    # boolean per option. So every stem was the empty string, every option
+    # rendered through a string renderer, and nothing was ticked. Measured in
+    # a browser before the fix: `n: 5`, every `stem: ""`.
+    #
+    # The section above asserted the sheet NARROWS correctly — read-only tier,
+    # no release chips, no Swap — and all of that was true of a panel with no
+    # questions on it. "The right controls are absent" and "the content is
+    # there" are two claims, and only one of them was being made.
+    body = p.eval("""(function(){
+      var rows=document.querySelectorAll('[data-sw="overlay"] [data-sw="question"]');
+      var out={n:rows.length, blank:0, opts:0, ticked:0, first:''};
+      for(var i=0;i<rows.length;i++){
+        var s=rows[i].querySelector('[data-sw="stem"]');
+        var t=(s&&s.textContent||'').trim();
+        if(!t){out.blank++;} else if(!out.first){out.first=t.slice(0,48);}
+        var os=rows[i].querySelectorAll('[data-sw="options"] .sw-opt');
+        out.opts+=os.length;
+        if(rows[i].querySelector('[data-sw="options"] .sw-opt.is-right')){
+          out.ticked++;}
+        for(var k=0;k<os.length;k++){
+          if((os[k].textContent||'').indexOf('[object Object]')>=0){
+            out.objects=(out.objects||0)+1;}}}
+      return out;})()""")
+    record(body["n"] > 0 and body["blank"] == 0,
+           "edit_shows_the_questions — every row on the Edit sheet carries "
+           "the stem of the question that set actually holds; a teacher "
+           "editing live work is not looking at blank numbered rows",
+           "%d row(s), %d blank · first: %r"
+           % (body["n"], body["blank"], body["first"]))
+    record(body["opts"] == 4 * body["n"] and not body.get("objects"),
+           "…and its four options are four strings, not four `[object "
+           "Object]` — the serving route hands options as OBJECTS and the "
+           "sheet renders strings",
+           "%d option row(s) across %d question(s), %d stringified object(s)"
+           % (body["opts"], body["n"], body.get("objects") or 0))
+    record(body["ticked"] == body["n"],
+           "…and the answer is ticked on every one — the route carries "
+           "`correct` per option rather than a `correct_index`, so the index "
+           "has to be FOUND; reading it directly ticked nothing",
+           "%d of %d question(s) show their key" % (body["ticked"], body["n"]))
     # The title and the due date DO still move, or Edit would be a viewer.
     p.eval("""(function(){var t=document.querySelector('[data-sw="title"]');
         t.value=%s; t.dispatchEvent(new Event('input',{bubbles:true}));})()"""
            % json.dumps(target + " (renamed)"))
-    time.sleep(0.3)
+    # ⊕ 13 Sep 2026 — WAIT ON THE FACT, NOT ON 300ms. This went red once in two
+    # full runs while `edit_saves`, the very next check, pressed Save happily —
+    # so it was reporting the sheet's `syncValidity()` not having run yet, under
+    # the name of a product defect. That is the shape this file already refuses
+    # everywhere else (`goto_ready`, `wait_for`): a fixed sleep is a guess about
+    # somebody else's scheduler.
+    #
+    # ⚠️ AND THE ASSERTION STILL READS THE LIVE VALUE, so waiting for the
+    # condition does not make the check unfalsifiable: a Save that is genuinely
+    # locked never becomes enabled, `wait_for` exhausts its 5s, and the record
+    # below reads `disabled` and goes red — which is the failure this check is
+    # for.
+    wait_for(p, "!document.querySelector('[data-sw=\"primary\"]').disabled",
+             tries=20)
     record(p.eval("!document.querySelector('[data-sw=\"primary\"]').disabled"),
            "…while the title field is still live and Save is pressable, so "
            "the narrowing is a narrowing and not a lock")
@@ -5334,6 +5430,1808 @@ def check_edit_sheet(p, base, shots):
            "second piece of work",
            "%d row(s)" % (len(back) if isinstance(back, list) else -1))
     p.eval("if (window.MRBSetWork) { window.MRBSetWork.close(); }")
+
+
+# ════════════════════════════════════════════════════════════════════════
+# 11 · THE WORKSHEET (⊕ MRB-342) — REAL BYTES, AND NOTHING WRITTEN
+# ════════════════════════════════════════════════════════════════════════
+#
+# ⚠️ THE WHOLE POINT OF THIS SECTION IS THAT IT IS NOT A STUB. The site half
+# of MRB-342 shipped driven 52/52 — against a STUB backend that returned a
+# Blob and did not throw. `docs/mrb342/REPORT.md` §6 says so in as many words:
+# "Blob handling, `Content-Disposition` parsing and the `<a download>` save are
+# untested against real bytes." A stub cannot be wrong about a PDF, because it
+# never makes one; every claim about what is IN the file was, until this
+# section, a claim about a fixture agreeing with itself.
+#
+# So everything below drives `POST /api/teacher/worksheet` — this run's real
+# code, the build that is live on production — on a real teacher's JWT against
+# the real TEST project, and then PARSES THE BYTES THAT COME BACK. The page
+# count, the question count, the four options, the answers page, the page
+# boundaries and the subscripts are all read out of the file itself. The
+# browser half goes one further and lets Chrome actually SAVE the download to
+# disk, which is the sentence §6 said nobody had yet proved.
+#
+# ⚠️ AND THE FIRST CLAIM IS THE ONE THAT MATTERS MOST: a download WRITES
+# NOTHING. `assignments` is snapshotted by id BEFORE and re-queried AFTER on
+# the SERVICE key — service role, so RLS cannot hide a row from the check the
+# way it could hide one from the teacher — and the query's own `error` is
+# read. Four assertions in this feature's backend suite discarded exactly that
+# error and would have gone green on data that was never read.
+
+WS_PATH = "/api/teacher/worksheet"
+
+# ⚠️ A MISSING PARSER FAILS. IT DOES NOT SKIP. This is the `fontkit` lesson
+# from the backend's own fix pass, applied here: a missing dependency made the
+# one load-bearing subscript proof SKIP while the suite still exited 0, so the
+# assertion could vanish without anything saying so. If `pypdf` is not
+# installed this section goes RED and names the install, rather than quietly
+# proving less than it says it does.
+def pdf_reader():
+    try:
+        import pypdf                                            # noqa: PLC0415
+        return pypdf
+    except ImportError:
+        return None
+
+
+def pdf_pages(data):
+    """The text of every page, page by page.
+
+    ⚠️ PAGE BY PAGE IS THE WHOLE REASON THIS IS NOT ONE `extract_text()`.
+    "no question is split across a page boundary" is a claim about WHICH page
+    a string was drawn on, and a whole-document extraction cannot answer it —
+    a stem at the foot of page one and its options at the head of page two
+    concatenate into something that looks perfect.
+    """
+    rdr = pdf_reader().PdfReader(io.BytesIO(data))
+    return [(pg.extract_text() or "") for pg in rdr.pages]
+
+
+def docx_paragraphs(data):
+    """Every paragraph of a .docx, in order, as text.
+
+    A .docx is a zip of XML; `word/document.xml` holds the body. A paragraph's
+    text can be split across several `<w:t>` runs — the same sentence in two
+    pieces because one word changed colour — so the runs are JOINED rather
+    than taken one at a time, and the XML entities are unescaped.
+    """
+    z = zipfile.ZipFile(io.BytesIO(data))
+    xml = z.read("word/document.xml").decode("utf-8")
+    out = []
+    for para in re.findall(r"<w:p[ >].*?</w:p>", xml, re.S):
+        runs = re.findall(r"<w:t[^>]*>(.*?)</w:t>", para, re.S)
+        out.append(html.unescape("".join(runs)))
+    return out
+
+
+def norm(s):
+    """One line of whitespace, so a wrapped stem compares against the stored
+    one. ⚠️ NOT A CHARACTER TRANSFORM — `₂` and `2` stay different, which is
+    the entire subscript claim. Only runs of space, non-breaking space and
+    newline are collapsed."""
+    return re.sub(r"\s+", " ", (s or "").replace(" ", " ")).strip()
+
+def squeeze(s):
+    """Every character, in order, with the whitespace taken out.
+
+    ⚠️ THIS IS NOT A WEAKER `norm`, IT IS THE ONLY HONEST WAY TO COMPARE
+    AGAINST TEXT LIFTED OUT OF A PDF — and finding that out cost a red.
+    `pypdf` reconstructs words from the TJ arrays PDFKit emits, and PDFKit
+    emits a KERN ADJUSTMENT between the `T` and the `a` of "Tap"; the reader
+    takes that displacement for a word gap and hands back "T ap water
+    holds…". The glyphs on the page are perfect. The spacing in the
+    EXTRACTION is an artefact of the reader — so asserting on it means a
+    correct sheet goes red because a real stem happened to start with a
+    kerning pair.
+
+    Containment is therefore tested with the whitespace removed. That
+    tolerates a space the reader invented and tolerates NOTHING ELSE: every
+    character is still present and still in order. ⚠️ `₂` and `2` stay
+    different, which is the whole of MRB-302's claim, and `CO2` still does
+    not match `CO₂`.
+
+    ⚠️ THE .docx HALF DOES NOT USE THIS. Its paragraphs come out of the XML
+    exactly as written, so that side is compared byte for byte and is the
+    stricter of the two — which is also why both formats are checked rather
+    than one standing in for the other.
+    """
+    return re.sub(r"\s+", "", (s or "").replace(" ", " "))
+
+
+
+def call_bytes(method, path, token, body=None, timeout=120):
+    """`call`, but the answer is BYTES and the headers are kept.
+
+    ⚠️ `call` PARSES JSON AND WOULD SWALLOW A PDF — which is exactly why
+    `shared/set-work.js` gave the worksheet its own envelope rather than
+    reusing `apiPost`. The drive needs the same separation for the same
+    reason, plus the headers: `Content-Type`, `Content-Disposition` and
+    `RateLimit-*` are all things this section asserts on.
+    """
+    req = urllib.request.Request(
+        API + path, method=method,
+        headers={"Authorization": "Bearer " + token,
+                 "Content-Type": "application/json"},
+        data=json.dumps(body).encode() if body is not None else None)
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return (r.status, {k.lower(): v for k, v in r.headers.items()},
+                    r.read())
+    except urllib.error.HTTPError as e:
+        return (e.code, {k.lower(): v for k, v in (e.headers or {}).items()},
+                e.read())
+
+
+def ws_body(class_id, tier, scopes, fmt="pdf", answers=True, title=None):
+    """The body `shared/set-work.js` posts, built the way it builds it.
+
+    ⚠️ NO `pathway`, EVER — not even to prove it is ignored. That proof is the
+    backend suite's (it crafted one and got a byte-identical document); what
+    this drive establishes is that the SHEET's own body is accepted, and the
+    sheet has no such field to send.
+    """
+    body = {"class_id": class_id, "tier": tier, "format": fmt,
+            "answers": answers,
+            "scopes": [{"scope_kind": s["kind"], "scope_ref": s["ref"],
+                        "subject": s.get("subject"),
+                        "question_ids": [q["id"] for q in s["questions"]]}
+                       for s in scopes]}
+    if title is not None:
+        body["title"] = title
+    return body
+
+
+def fixture_assignment_ids():
+    """Every assignment id on the fixture classes, on the service key.
+
+    Returns `(ids, err)`. ⚠️ `err` IS NOT DECORATION. A read that failed and a
+    class with no assignments both look like "nothing there", and a caller that
+    treats the first as the second proves that a download wrote nothing by
+    never having looked. Every call site here checks it.
+    """
+    cids = ",".join(c[0] for c in FX.CLASSES)
+    st, rows = FX.api("GET", "/rest/v1/assignments?class_id=in.(%s)&select=id"
+                             % cids)
+    if st != 200 or not isinstance(rows, list):
+        return None, "assignments read answered %s: %s" % (st, str(rows)[:200])
+    return {r["id"] for r in rows}, None
+
+
+def fixture_question_row_count():
+    """How many `assignment_questions` rows hang off the fixture classes."""
+    ids, err = fixture_assignment_ids()
+    if err:
+        return None, err
+    if not ids:
+        return 0, None
+    st, rows = FX.api("GET", "/rest/v1/assignment_questions"
+                             "?assignment_id=in.(%s)&select=id"
+                      % ",".join(sorted(ids)))
+    if st != 200 or not isinstance(rows, list):
+        return None, "assignment_questions read answered %s: %s" % (st, str(rows)[:200])
+    return len(rows), None
+
+
+def worksheet_audit_rows(actor_id):
+    """Every `worksheet.downloaded` line this actor has written."""
+    st, rows = FX.api(
+        "GET", "/rest/v1/audit_log?actor_id=eq.%s&action=eq.worksheet.downloaded"
+               "&select=id,target_table,target_id,payload,created_at"
+               "&order=created_at.desc" % actor_id)
+    if st != 200 or not isinstance(rows, list):
+        return None, "audit_log read answered %s: %s" % (st, str(rows)[:200])
+    return rows, None
+
+
+def ws_pick(token, class_id, tier, kind, ref, count, subject=None):
+    """The questions a teacher would be looking at, from `/preview` — the same
+    read the sheet does. Returns the `picked` list, or []."""
+    st, body = preview(token, class_id, tier, kind, ref, count=count,
+                       subject=subject)
+    if st != 200 or not isinstance(body, dict):
+        return []
+    return body.get("picked") or []
+
+
+SUB = "₂"          # U+2082 SUBSCRIPT TWO — the character the whole
+                        # MRB-302 ruling is about, named once.
+
+
+def ks3_subscript_lesson(scopes):
+    """A KS3 lesson whose BANK ROWS really carry a real subscript.
+
+    ⚠️ DERIVED, NOT NAMED IN THIS FILE. A hardcoded slug is a check that goes
+    red the day a content lane retires a lesson, and — worse — a check that
+    stays GREEN while silently proving nothing if that lesson's subscripts are
+    edited away. So the bank is asked which lessons carry U+2082 (service key,
+    error checked), and the answer is intersected with the tree this class is
+    actually offered. If the estate ever holds none, this returns None and the
+    caller records a FAILURE rather than skipping: "KS3 has no subscripts to
+    survive" is a finding about MRB-302, not a reason to prove less.
+    """
+    st, rows = FX.api("GET", "/rest/v1/ks3_assignment_bank"
+                             "?select=lesson_slug,band&text=like.*%E2%82%82*"
+                             "&limit=1000")
+    if st != 200 or not isinstance(rows, list) or not rows:
+        return None
+    # ⚠️ ORDERED BY HOW MANY SUBSCRIPT ROWS THE (lesson, band) HOLDS, AND
+    # THAT IS NOT TIDINESS. `/preview` draws a SUBSET of the band — up to
+    # twenty of thirty-two — so a lesson holding two subscript rows in
+    # ninety-six can legitimately offer none, and this check went red once on
+    # exactly that. Ranking puts the densest pool first (`formulae` carries
+    # ten across eight-row bands, so it cannot miss), and the caller walks the
+    # list until a preview really offers one. A lesson that never does is then
+    # a fact about the estate rather than about the draw.
+    want = {}
+    for r in rows:
+        want[(r["lesson_slug"], r["band"])] = want.get(
+            (r["lesson_slug"], r["band"]), 0) + 1
+    tier_of = {v: k for k, v in KS3_BAND_BY_TIER.items()}
+    in_tree = {}
+    for t in (scopes.get("ks3") or {}).get("tree") or []:
+        for c in t.get("children") or []:
+            in_tree[c["id"]] = t.get("subject")
+    out = []
+    for (slug, band), n in sorted(want.items(), key=lambda kv: -kv[1]):
+        if slug in in_tree and band in tier_of:
+            out.append(("subtopic", slug, tier_of[band], in_tree[slug], n))
+    return out or None
+
+
+def ks4_flat_subtopic(scopes):
+    """A KS4 subtopic whose bank rows carry a FLAT formula (`CO2`).
+
+    The mirror of the function above, and the reason both exist: CLAUDE.md
+    deliberately excludes KS4 from the subscript pass, because there `N2` is
+    Newton's second law and `F2` the second filial generation. The worksheet
+    must therefore draw KS4 exactly as stored — which is a claim that needs a
+    KS4 row with a flat formula in it to be a claim about anything.
+    """
+    st, rows = FX.api("GET", "/rest/v1/ks4_assignment_bank"
+                             "?select=subtopic_slug,tier,triple_only"
+                             "&text=like.*CO2*&tier=eq.foundation"
+                             "&triple_only=is.false&limit=500")
+    if st != 200 or not isinstance(rows, list) or not rows:
+        return None
+    slugs = {r["subtopic_slug"] for r in rows}
+    for t in (scopes.get("comb") or {}).get("tree") or []:
+        for c in t.get("children") or []:
+            if c["id"] in slugs and (c.get("counts") or {}).get("foundation", 0):
+                return ("subtopic", c["id"], "foundation", t.get("subject"))
+    return None
+
+
+def answers_page_index(pages):
+    """The index of the answers page, or -1.
+
+    ⚠️ FOUND BY BEING THE PAGE'S FIRST LINE, not by the word appearing
+    anywhere. "Answers" is an ordinary English word and a stem is free to use
+    it; a substring search would report an answer key on a worksheet that has
+    none, which is the direction that matters — `answers: false` is a teacher
+    about to hand the sheet to thirty children.
+    """
+    for i, t in enumerate(pages):
+        lines = [ln for ln in (t or "").splitlines() if ln.strip()]
+        if lines and norm(lines[0]) == "Answers":
+            return i
+    return -1
+
+
+def ws_questions(scopes):
+    """Every question the file must carry, in the order it was asked for —
+    which is the order the renderer numbers them in, continuously across
+    sections."""
+    return [q for s in scopes for q in s["questions"]]
+
+
+def pdf_findings(data, scopes, answers):
+    """Everything this drive asserts about a rendered PDF, measured once.
+
+    Returns a dict of findings rather than recording them, so the caller can
+    name each one in its own check. A single "the PDF is fine" assertion is a
+    check whose failure tells you nothing.
+    """
+    pages = pdf_pages(data)
+    npages = [squeeze(t) for t in pages]
+    whole = "".join(npages)
+    want = ws_questions(scopes)
+    ans_i = answers_page_index(pages)
+    # The body pages are every page that is not the answer key's. A question
+    # must be found on one of those; an answer line, on one of the others.
+    body_pages = [t for i, t in enumerate(npages)
+                  if ans_i < 0 or i < ans_i]
+
+    missing, split, wrong_opts, straddled = [], [], [], []
+    for i, q in enumerate(want):
+        n = i + 1
+        stem_line = squeeze("%d.  %s" % (n, q.get("stem") or ""))
+        opts = [squeeze("%s.  %s" % (L, o))
+                for L, o in zip("ABCD", (q.get("options") or []))]
+        if len(q.get("options") or []) != 4:
+            wrong_opts.append("q%d has %d option(s) in the POOL"
+                              % (n, len(q.get("options") or [])))
+            continue
+        on = [j for j, t in enumerate(body_pages) if stem_line in t]
+        if not on:
+            # It is either absent, or drawn across a page break — and those are
+            # different findings, so they are reported differently.
+            if squeeze(q.get("stem") or "") in whole:
+                split.append("q%d's stem is in the file but on no single page"
+                             % n)
+            else:
+                missing.append("q%d (%s…)" % (n, (q.get("stem") or "")[:40]))
+            continue
+        if len(on) > 1:
+            missing.append("q%d is drawn on %d pages" % (n, len(on)))
+            continue
+        page = body_pages[on[0]]
+        elsewhere = [o for o in opts if o not in page]
+        if elsewhere:
+            # The stem is on this page and at least one option is not: that is
+            # precisely the split the guard exists to prevent.
+            straddled.append("q%d: stem on page %d, %d option(s) not on it — "
+                             "first missing %r"
+                             % (n, on[0] + 1, len(elsewhere), elsewhere[0][:44]))
+
+    # ── the answer key ────────────────────────────────────────────────
+    key_missing = []
+    if answers and ans_i >= 0:
+        key_text = "".join(npages[ans_i:])
+        for i, q in enumerate(want):
+            ci = q.get("correct_index")
+            opts = q.get("options") or []
+            if ci is None or ci >= len(opts):
+                key_missing.append("q%d has no correct_index in the pool" % (i + 1))
+                continue
+            line = squeeze("%d.  %s  —  %s" % (i + 1, "ABCD"[ci], opts[ci]))
+            if line not in key_text:
+                key_missing.append("q%d: %r" % (i + 1, line[:56]))
+
+    return {
+        "pages": pages, "npages": npages, "whole": whole, "want": want,
+        "answers_page": ans_i, "body_page_count": len(body_pages),
+        "missing": missing, "split": split, "straddled": straddled,
+        "wrong_opts": wrong_opts, "key_missing": key_missing,
+        "footer_pages": sum(1 for t in npages if "MrBadmusAI" in t),
+    }
+
+
+def check_worksheet(t_teacher, t_pupil, t_admin, teacher_id, scopes):
+    """⊕ MRB-342 — the worksheet, driven against the real route, and the bytes
+    it returns opened and read."""
+    print("\n11 · the worksheet — real bytes, and nothing written")
+
+    if pdf_reader() is None:
+        record(False, "pdf_reader_available — `pypdf` is importable, so every "
+                      "claim this section makes about a PDF is measured rather "
+                      "than skipped",
+               "pypdf is not installed: `python3 -m pip install pypdf`. A "
+               "missing parser FAILS here rather than skipping, for the reason "
+               "a missing fontkit made the backend's one subscript proof "
+               "vanish at exit 0.")
+        return None
+
+    cands = ks3_subscript_lesson(scopes)
+    if not cands:
+        record(False, "a KS3 lesson carrying a real subscript is reachable "
+                      "from 8a/Sc1's own tree",
+               "no lesson in `ks3_assignment_bank` carries U+2082 inside this "
+               "class's tree — MRB-302's KS3 half would then be unprovable")
+        return None
+
+    # ── the questions a teacher is looking at, from the sheet's own read ──
+    #
+    # Walk the ranked candidates until a preview really hands over a row
+    # carrying the character. Bounded at four so a run cannot spend itself
+    # here; if none of the four offers one, that is recorded as a failure
+    # with the candidates named, never skipped.
+    ks3 = picked = subs = None
+    tried = []
+    for cand in cands[:4]:
+        c_kind, c_ref, c_tier, c_subj, c_n = cand
+        got = ws_pick(t_teacher, FX.C_KS3_A, c_tier, c_kind, c_ref, 20,
+                      subject=c_subj)
+        hits = [q for q in got
+                if SUB in (q.get("stem") or "")
+                or any(SUB in (o or "") for o in (q.get("options") or []))]
+        tried.append("%s@%s: %d row(s), %d with %s (bank holds %d)"
+                     % (c_ref, c_tier, len(got), len(hits), SUB, c_n))
+        if got and hits:
+            ks3 = (c_kind, c_ref, c_tier, c_subj)
+            picked, subs = got, hits
+            break
+        if got and picked is None:
+            ks3, picked, subs = (c_kind, c_ref, c_tier, c_subj), got, hits
+    if not picked:
+        record(False, "/preview answers for a KS3 subscript lesson",
+               " · ".join(tried))
+        return None
+    record(bool(subs),
+           "ks3_subscript_offered — the sheet's own `/preview` really hands "
+           "the teacher a row carrying a real U+2082, so everything below is "
+           "a claim about a subscript rather than about its absence",
+           " · ".join(tried))
+    k_kind, k_ref, k_tier, k_subj = ks3
+    # A worksheet of the subscript-carrying rows plus enough others to make a
+    # multi-page document — the page-boundary claim needs more than one page.
+    rest = [q for q in picked if q not in subs]
+    chosen = (subs + rest)[:12]
+    ks3_scope = [{"kind": k_kind, "ref": k_ref, "subject": k_subj,
+                  "questions": chosen}]
+
+    # ── 1 · A DOWNLOAD WRITES NOTHING ─────────────────────────────────
+    #
+    # The single most important claim on the page, and the only one measured
+    # by asking the DATABASE rather than by reading the route.
+    before, err = fixture_assignment_ids()
+    q_before, qerr = fixture_question_row_count()
+    aud_before, aerr = worksheet_audit_rows(teacher_id)
+    if err or qerr or aerr:
+        record(False, "the world can be read before the download",
+               err or qerr or aerr)
+        return None
+
+    st, hdr, data = call_bytes("POST", WS_PATH, t_teacher,
+                              ws_body(FX.C_KS3_A, k_tier, ks3_scope,
+                                      "pdf", True, TITLE + " · KS3"))
+    if st != 200:
+        record(False, "the route answers 200 with a PDF for a teacher who "
+                      "teaches the class",
+               "status %s · %s" % (st, data[:300]))
+        return None
+    record(True, "worksheet_200 — `POST /api/teacher/worksheet` answers a real "
+                 "teacher with bytes, from this run's code",
+           "%d byte(s), %s" % (len(data), hdr.get("content-type")))
+
+    after, err = fixture_assignment_ids()
+    q_after, qerr = fixture_question_row_count()
+    if err or qerr:
+        record(False, "the world can be re-queried after the download",
+               err or qerr)
+    else:
+        record(after == before and q_after == q_before,
+               "download_writes_nothing — `assignments` is byte-for-byte the "
+               "same set of rows after a download as before it, RE-QUERIED on "
+               "the service key rather than assumed",
+               "%d assignment(s) and %d question row(s) before, %d and %d "
+               "after" % (len(before), q_before, len(after), q_after)
+               if after == before and q_after == q_before
+               else "appeared: %s · question rows %s → %s"
+                    % (sorted(after - before), q_before, q_after))
+
+    # ── 2 · THE HEADERS ───────────────────────────────────────────────
+    record(hdr.get("content-type") == "application/pdf",
+           "worksheet_content_type — a PDF is served as `application/pdf`",
+           hdr.get("content-type"))
+    cd = hdr.get("content-disposition") or ""
+    record(cd.startswith("attachment;") and 'filename="' in cd
+           and "filename*=UTF-8''" in cd,
+           "worksheet_disposition — the header carries BOTH an ASCII "
+           "`filename` and an RFC 8187 `filename*`, so a client that reads "
+           "either gets a real name", cd[:160])
+    record(hdr.get("cache-control") == "no-store",
+           "worksheet_no_store — one class's questions are never held by "
+           "anything between the server and the teacher",
+           hdr.get("cache-control"))
+    record((hdr.get("access-control-expose-headers") or "").lower()
+           .find("content-disposition") >= 0,
+           "worksheet_disposition_is_readable — `Content-Disposition` is on "
+           "`Access-Control-Expose-Headers`, so the sheet's `nameFromHeaders` "
+           "can actually read it cross-origin instead of always falling back",
+           hdr.get("access-control-expose-headers"))
+
+    # ── 3 · THE PDF, PARSED ───────────────────────────────────────────
+    f = pdf_findings(data, ks3_scope, True)
+    record(len(f["pages"]) >= 2 and f["answers_page"] >= 0,
+           "pdf_parses — the bytes are a real PDF, with pages and an answer "
+           "key at the end",
+           "%d page(s); the answers page is page %d"
+           % (len(f["pages"]), f["answers_page"] + 1))
+    record(not f["missing"] and not f["wrong_opts"],
+           "pdf_question_count — every one of the %d questions the teacher "
+           "picked is drawn, exactly once, with its stem verbatim"
+           % len(chosen),
+           "%d question(s) across %d body page(s)"
+           % (len(chosen), f["body_page_count"])
+           if not (f["missing"] or f["wrong_opts"])
+           else "missing: %s %s" % (f["missing"][:3], f["wrong_opts"][:3]))
+    record(not f["straddled"] and not f["split"],
+           "pdf_no_question_split_across_pages — every question's stem AND "
+           "all four of its options are on ONE page",
+           "%d question(s) checked, %d body page(s), none straddling a break"
+           % (len(chosen), f["body_page_count"])
+           if not (f["straddled"] or f["split"])
+           else "; ".join((f["straddled"] + f["split"])[:3]))
+    record(not f["key_missing"],
+           "pdf_answers_page_present — with `answers: true` the key names the "
+           "stored correct option for every question, by letter and by text",
+           "%d answer line(s) on page %d"
+           % (len(chosen), f["answers_page"] + 1) if not f["key_missing"]
+           else "not found: %s" % f["key_missing"][:3])
+    record(f["footer_pages"] == len(f["pages"]),
+           "pdf_brand_footer — the MrBadmusAI wordmark is on every page, and "
+           "it is the plain STAFF wordmark with no logo asset",
+           "%d of %d page(s)" % (f["footer_pages"], len(f["pages"])))
+    record("🐙" not in f["whole"] and "⚗" not in f["whole"],
+           "…and neither retired placeholder reaches the page a teacher prints")
+
+    # ── 4 · MRB-302 · A REAL SUBSCRIPT SURVIVES TO THE DRAWN TEXT ─────
+    #
+    # ⚠️ THIS IS THE CLAIM THE BUNDLED FONT EXISTS FOR. PDFKit's built-in
+    # Helvetica is WinAnsi-encoded and cannot draw U+2082 AT ALL — a sheet
+    # rendered in it loses the character silently. So the assertion is made on
+    # the DECODED text of the finished file, through the embedded font's own
+    # `/ToUnicode` map, not on the model handed to the renderer.
+    if subs:
+        drawn = [q for q in subs
+                 if squeeze(q.get("stem") or "") in f["whole"]
+                 or any(squeeze(o) in f["whole"]
+                        for o in (q.get("options") or []))]
+        record(SUB in f["whole"] and len(drawn) == len(subs),
+               "ks3_subscript_survives — a KS3 bank row's real U+2082 reaches "
+               "the drawn page: database → pool → embedded font → decoded text",
+               "%d of %d subscript-carrying row(s) round-trip verbatim; the "
+               "file contains %d U+2082"
+               % (len(drawn), len(subs), f["whole"].count(SUB)))
+    else:
+        record(False, "ks3_subscript_survives — the preview offered a "
+                      "subscript-carrying row to assert on",
+               "lesson %s at %s returned %d row(s), none carrying U+2082"
+               % (k_ref, k_tier, len(picked)))
+
+    # ── 5 · ANSWERS: FALSE REALLY OMITS THE KEY ───────────────────────
+    st2, _h2, data2 = call_bytes("POST", WS_PATH, t_teacher,
+                                ws_body(FX.C_KS3_A, k_tier, ks3_scope,
+                                        "pdf", False, TITLE + " · no key"))
+    if st2 != 200:
+        record(False, "the route answers with `answers: false`", str(data2[:200]))
+    else:
+        f2 = pdf_findings(data2, ks3_scope, False)
+        record(f2["answers_page"] < 0 and not f2["missing"],
+               "pdf_answers_absent_when_false — `answers: false` produces the "
+               "same questions and NO answer key, which is the file a teacher "
+               "hands to thirty children",
+               "%d page(s), no page begins 'Answers', all %d question(s) still "
+               "drawn" % (len(f2["pages"]), len(chosen))
+               if f2["answers_page"] < 0 and not f2["missing"]
+               else "answers page at %d · missing %s"
+                    % (f2["answers_page"], f2["missing"][:2]))
+        record(len(f2["pages"]) < len(f["pages"]),
+               "…and it is a SHORTER document, so the key really is absent "
+               "rather than merely unlabelled",
+               "%d page(s) without the key, %d with it"
+               % (len(f2["pages"]), len(f["pages"])))
+
+    # ── 6 · THE WORD DOCUMENT, PARSED ─────────────────────────────────
+    #
+    # ⚠️ A SECOND FORMAT IS A SECOND RENDERER, not a setting. `renderDocx`
+    # builds its own paragraphs, its own numbering and its own answer key out
+    # of the same model, so every claim made about the PDF has to be made
+    # again about the .docx or half the feature is unmeasured.
+    for want_answers in (True, False):
+        stD, hD, dataD = call_bytes(
+            "POST", WS_PATH, t_teacher,
+            ws_body(FX.C_KS3_A, k_tier, ks3_scope, "docx", want_answers,
+                    TITLE + " · docx"))
+        if stD != 200:
+            record(False, "docx_parses — the route answers 200 for `docx` "
+                          "(answers=%s)" % want_answers, str(dataD[:200]))
+            continue
+        if want_answers:
+            record(hD.get("content-type") ==
+                   "application/vnd.openxmlformats-officedocument."
+                   "wordprocessingml.document",
+                   "docx_content_type — a Word file is served as the "
+                   "OOXML wordprocessing type, so Word opens it rather than "
+                   "offering to download it again", hD.get("content-type"))
+            record((hD.get("content-disposition") or "").endswith(".docx")
+                   or ".docx" in (hD.get("content-disposition") or ""),
+                   "…and the filename it names ends `.docx`",
+                   (hD.get("content-disposition") or "")[:120])
+        paras = docx_paragraphs(dataD)
+        flat = [norm(p) for p in paras]
+        blob = " ".join(flat)
+        miss, optmiss = [], []
+        for i, q in enumerate(chosen):
+            if norm("%d.  %s" % (i + 1, q.get("stem") or "")) not in flat:
+                miss.append("q%d" % (i + 1))
+            for L, o in zip("ABCD", q.get("options") or []):
+                if norm("%s.  %s" % (L, o)) not in flat:
+                    optmiss.append("q%d%s" % (i + 1, L))
+        has_key = "Answers" in flat
+        keymiss = []
+        if want_answers:
+            for i, q in enumerate(chosen):
+                ci = q.get("correct_index")
+                opts = q.get("options") or []
+                if ci is None or ci >= len(opts):
+                    continue
+                if norm("%d.  %s  —  %s" % (i + 1, "ABCD"[ci], opts[ci])) not in flat:
+                    keymiss.append("q%d" % (i + 1))
+        record(not miss and not optmiss,
+               "docx_question_count (answers=%s) — every question is its own "
+               "paragraph, with its four options as four more" % want_answers,
+               "%d question(s), %d paragraph(s)" % (len(chosen), len(paras))
+               if not (miss or optmiss)
+               else "missing stems %s · missing options %s"
+                    % (miss[:4], optmiss[:4]))
+        if want_answers:
+            record(has_key and not keymiss,
+                   "docx_answers_present — the key is there, on its own page, "
+                   "naming the stored correct option",
+                   "%d answer line(s)" % len(chosen) if not keymiss
+                   else "missing: %s" % keymiss[:4])
+            record(SUB in blob,
+                   "…and the subscript survives into Word too — the same "
+                   "DejaVu face is embedded in the .docx",
+                   "%d U+2082 in the document body" % blob.count(SUB))
+        else:
+            record(not has_key,
+                   "docx_answers_absent_when_false — no `Answers` paragraph "
+                   "at all when the teacher turned the key off",
+                   "%d paragraph(s), none of them 'Answers'" % len(paras))
+
+    # ── 7 · KS4 STAYS FLAT ────────────────────────────────────────────
+    #
+    # ⚠️ THE ASSERTION IS *VERBATIM*, NOT "NO SUBSCRIPTS". CLAUDE.md excludes
+    # KS4 from the subscript pass because `N2` is Newton's second law there —
+    # but three KS4 bank rows legitimately carry an AUTHORED subscript in a
+    # subscripted VARIABLE (`T₂`, `p₁`, `n₁` in `particle-motion-pressure` and
+    # `sampling-techniques`). So "a KS4 sheet contains no U+2082" is a FALSE
+    # claim that would go red on correct data. What is true, and what is
+    # asserted, is that the renderer applies no conversion in either
+    # direction: the drawn string is the stored string.
+    ks4 = ks4_flat_subtopic(scopes)
+    if not ks4:
+        record(False, "a KS4 subtopic carrying a flat `CO2` is reachable from "
+                      "10b/Sc5's tree",
+               "none found — the KS4-stays-flat claim would be unfalsifiable")
+    else:
+        f4_kind, f4_ref, f4_tier, f4_subj = ks4
+        k4 = ws_pick(t_teacher, FX.C_KS4_COMB, f4_tier, f4_kind, f4_ref, 12,
+                     subject=f4_subj)
+        flat_rows = [q for q in k4
+                     if re.search(r"\b(CO2|H2O|O2|CH4|N2|H2)\b",
+                                  (q.get("stem") or "")
+                                  + " ".join(q.get("options") or []))]
+        k4_scope = [{"kind": f4_kind, "ref": f4_ref, "subject": f4_subj,
+                     "questions": (flat_rows + [q for q in k4
+                                                if q not in flat_rows])[:10]}]
+        st4, _h4, d4 = call_bytes("POST", WS_PATH, t_teacher,
+                                 ws_body(FX.C_KS4_COMB, f4_tier, k4_scope,
+                                         "pdf", True, TITLE + " · KS4"))
+        if st4 != 200:
+            record(False, "the route answers for a KS4 combined class",
+                   str(d4[:200]))
+        else:
+            f4 = pdf_findings(d4, k4_scope, True)
+            drift = []
+            for q in k4_scope[0]["questions"]:
+                for s in [q.get("stem") or ""] + list(q.get("options") or []):
+                    if squeeze(s) and squeeze(s) not in f4["whole"]:
+                        drift.append(norm(s)[:48])
+            record(not drift and not f4["missing"],
+                   "ks4_drawn_verbatim — every KS4 stem and option is drawn "
+                   "EXACTLY as the bank stores it: the worksheet applies no "
+                   "subscript pass in either direction",
+                   "%d question(s), %d string(s) round-tripped byte for byte"
+                   % (len(k4_scope[0]["questions"]),
+                      5 * len(k4_scope[0]["questions"]))
+                   if not drift else "did not round-trip: %s" % drift[:3])
+            if flat_rows:
+                sample = re.findall(r"(?:CO2|H2O|O2|CH4|N2|H2)",
+                                    f4["whole"])
+                record(bool(sample),
+                       "ks4_stays_flat — a stored `CO2` is drawn `CO2`, never "
+                       "`CO₂`; on KS4 `N2` means Newton's second law and the "
+                       "subscript pass is deliberately not wired here",
+                       "%d flat formula token(s) drawn: %s"
+                       % (len(sample), sorted(set(sample))[:6]))
+            else:
+                record(False, "ks4_stays_flat — the preview offered a row "
+                              "carrying a flat formula to assert on",
+                       "%s at %s returned %d row(s), none with CO2/H2O/O2"
+                       % (f4_ref, f4_tier, len(k4)))
+            record(not f4["straddled"] and not f4["split"],
+                   "…and no KS4 question straddles a page break either",
+                   "%d question(s) over %d body page(s)"
+                   % (len(k4_scope[0]["questions"]), f4["body_page_count"]))
+
+    return {"ks3": ks3, "ks3_scope": ks3_scope, "ks4": ks4,
+            "chosen": chosen}
+
+
+def post_set_scopes(token, class_ids, tier, scopes, title, **kw):
+    """`POST /api/teacher/set-work` with the v2 `scopes[]` body the sheet now
+    sends, plus the flat compatibility fields it also sends.
+
+    ⚠️ BOTH HALVES ON PURPOSE. `shared/set-work.js` posts `scopes[]` AND the
+    first scope's flat fields, so a backend that has not learned `scopes`
+    writes yesterday's row rather than a NULL one. A drive that sent only the
+    new shape would not be driving the body the sheet actually sends.
+    """
+    body = {
+        "class_ids": class_ids,
+        "tier": tier,
+        "scope_kind": scopes[0]["kind"],
+        "scope_ref": scopes[0]["ref"],
+        "question_ids": [q["id"] for s in scopes for q in s["questions"]],
+        "scopes": [{"scope_kind": s["kind"], "scope_ref": s["ref"],
+                    "subject": s.get("subject"),
+                    "question_ids": [q["id"] for q in s["questions"]]}
+                   for s in scopes],
+        "title": title,
+        "release_at": kw.get("release_at"),
+        "due_at": kw.get("due_at", DUE.isoformat()),
+        "client_ref": kw.get("client_ref") or str(uuid.uuid4()),
+    }
+    st, out = call("POST", "/api/teacher/set-work", token, body)
+    if st == 200 and isinstance(out, dict):
+        made_assignments.extend(out.get("assignment_ids") or [])
+    return st, out
+
+
+def check_worksheet_multi(t_teacher, teacher_id, scopes, first):
+    """Several topics in one file, and then the same several set as one piece
+    of work."""
+    print("\n   several topics, one file — and then one assignment")
+
+    k_kind, k_ref, k_tier, k_subj = first["ks3"]
+    # A SECOND KS3 lesson at the same tier, in the same class's tree, that is
+    # not the first. The cohort and the tier travel with it by construction.
+    second = None
+    for t in (scopes.get("ks3") or {}).get("tree") or []:
+        for c in t.get("children") or []:
+            if c["id"] == k_ref:
+                continue
+            if (c.get("counts") or {}).get(k_tier, 0) >= 4:
+                second = ("subtopic", c["id"], t.get("subject"))
+                break
+        if second:
+            break
+    if not second:
+        record(False, "a second stocked KS3 lesson exists at the same tier to "
+                      "compose a two-topic set from")
+        return None
+    s2_kind, s2_ref, s2_subj = second
+
+    q1 = first["chosen"][:5]
+    q2 = ws_pick(t_teacher, FX.C_KS3_A, k_tier, s2_kind, s2_ref, 5,
+                 subject=s2_subj)[:5]
+    if not q2:
+        record(False, "/preview answers for the second lesson %s" % s2_ref)
+        return None
+    two = [{"kind": k_kind, "ref": k_ref, "subject": k_subj, "questions": q1},
+           {"kind": s2_kind, "ref": s2_ref, "subject": s2_subj, "questions": q2}]
+
+    before, err = fixture_assignment_ids()
+    if err:
+        record(False, "the world can be read before the multi-scope download",
+               err)
+        return None
+
+    st, hdr, data = call_bytes("POST", WS_PATH, t_teacher,
+                              ws_body(FX.C_KS3_A, k_tier, two, "pdf", True,
+                                      None))
+    if st != 200:
+        record(False, "multi_scope_download — two scopes in one worksheet",
+               "status %s · %s" % (st, data[:250]))
+        return None
+
+    f = pdf_findings(data, two, True)
+    record(not f["missing"] and not f["wrong_opts"],
+           "multi_scope_download — BOTH scopes' questions are in the one "
+           "file, numbered continuously 1…%d across the two sections"
+           % len(q1 + q2),
+           "%d + %d question(s) over %d page(s)"
+           % (len(q1), len(q2), len(f["pages"]))
+           if not f["missing"] else "missing: %s" % f["missing"][:4])
+    # The section headings are the tree's own names, so they are asserted as a
+    # pair of DISTINCT headings rather than against a hardcoded string.
+    heads = [h for h in (f["whole"],) if h]
+    record(len(two) == 2 and f["body_page_count"] >= 1 and not f["straddled"],
+           "…and no question straddles a page break in a sectioned file "
+           "either — the heading is measured with its first question, so a "
+           "heading can never be the last thing on a page",
+           "%d body page(s)" % f["body_page_count"]
+           if not f["straddled"] else "; ".join(f["straddled"][:2]))
+
+    after, err = fixture_assignment_ids()
+    if err:
+        record(False, "the world can be re-queried after the multi-scope "
+                      "download", err)
+    else:
+        record(after == before,
+               "…and a TWO-topic download still writes nothing, re-queried "
+               "rather than assumed",
+               "%d assignment(s) before and after" % len(before)
+               if after == before else "appeared: %s" % sorted(after - before))
+
+    # ── and now SET the same two scopes ───────────────────────────────
+    title = TITLE + " · two topics"
+    st, out = post_set_scopes(t_teacher, [FX.C_KS3_A, FX.C_KS3_B], k_tier,
+                              two, title)
+    if st != 200:
+        record(False, "multi_scope_set — the same two scopes can be SET",
+               "status %s · %s" % (st, json.dumps(out)[:250]))
+        return None
+    aids = (out or {}).get("assignment_ids") or []
+    record(len(aids) == 2,
+           "multi_scope_set — setting two topics on two classes writes ONE "
+           "assignment per class, not one per scope",
+           "%d assignment(s) for 2 class(es)" % len(aids))
+
+    st, rows = FX.api("GET", "/rest/v1/assignment_questions"
+                             "?assignment_id=in.(%s)&select=assignment_id,"
+                             "source_ref,position,band,rung&order=position"
+                      % ",".join(aids))
+    if st != 200 or not isinstance(rows, list):
+        record(False, "the question rows of the two assignments can be read",
+               "%s %s" % (st, str(rows)[:200]))
+    else:
+        per = {}
+        for r in rows:
+            per.setdefault(r["assignment_id"], []).append(r)
+        want_ids = [q["id"] for q in q1 + q2]
+        ok = len(per) == len(aids) and all(
+            [x["source_ref"] for x in sorted(v, key=lambda z: z["position"])]
+            == want_ids for v in per.values())
+        record(ok,
+               "…and each of those assignments carries ALL %d questions from "
+               "BOTH topics, in the order the teacher arranged them"
+               % len(want_ids),
+               "%s" % {k[-6:]: len(v) for k, v in per.items()}
+               if ok else "rows: %s" % {k[-6:]: [x["source_ref"] for x in v]
+                                        for k, v in per.items()})
+        # ⚠️ `rung` IS A COLUMN, SO THE CLAIM IS THAT IT IS NULL. Asserting
+        # the KEY is absent would pass on every row PostgREST ever returns and
+        # would be watching nothing; `one_pool_per_assignment` is a CHECK on
+        # the VALUE — band set and rung null, never both.
+        record(all(r.get("band") is not None for r in rows)
+               and all(r.get("rung") is None for r in rows),
+               "…and every question row carries a `band` and no `rung`, so it "
+               "stays the right side of `one_pool_per_assignment`",
+               "%d row(s)" % len(rows))
+
+    # ── the audit line for a multi-scope SET names both scopes ────────
+    st, aud = FX.api("GET", "/rest/v1/audit_log?actor_id=eq.%s"
+                            "&action=eq.assignment.set_by_teacher&select=payload"
+                            "&order=created_at.desc&limit=1" % teacher_id)
+    if st == 200 and isinstance(aud, list) and aud:
+        pay = aud[0].get("payload") or {}
+        got = pay.get("scopes")
+        record(isinstance(got, list) and len(got) == 2,
+               "…and the journal line for that set lists BOTH scopes — the "
+               "list appears only when there is more than one, so a "
+               "single-scope set's payload is byte-identical to what it was "
+               "before MRB-342",
+               "scopes: %s" % json.dumps(got)[:200])
+    else:
+        record(False, "the `assignment.set_by_teacher` audit line can be "
+                      "read back",
+               "%s %s" % (st, str(aud)[:160]))
+
+    return {"assignment_ids": aids, "title": title, "tier": k_tier,
+            "scopes": two, "question_ids": [q["id"] for q in q1 + q2]}
+
+
+def check_worksheet_from_row(t_teacher, made):
+    """⊕ MRB-342 — a set that ALREADY EXISTS, downloaded from its row.
+
+    ⚠️ THIS IS THE SHEET'S OWN PATH, NOT A SHORTCUT TO IT.
+    `downloadAssignment` reads `/api/class/current-assignment` — the route the
+    CHILD's own page reads, deliberately, so there is one answer to "what
+    questions are on this set" — and posts the ids it finds. Driving it with
+    ids read from the database instead would prove the worksheet route works
+    and say nothing about the control a teacher presses.
+    """
+    print("\n   a worksheet made from a set that already exists")
+    if not made or not made.get("assignment_ids"):
+        record(False, "there is an existing assignment to download from")
+        return
+    aid = made["assignment_ids"][0]
+
+    st, body = call("GET", "/api/class/current-assignment?class_id=%s"
+                           "&assignment_id=%s" % (FX.C_KS3_A, aid), t_teacher)
+    if st != 200 or not isinstance(body, dict):
+        record(False, "row_download_reads_the_set — the teacher can read the "
+                      "questions on an existing set through the route "
+                      "`downloadAssignment` uses",
+               "status %s · %s" % (st, json.dumps(body)[:250]))
+        return
+    qs = body.get("questions") or []
+    a = body.get("assignment") or {}
+    record(len(qs) == len(made["question_ids"]),
+           "row_download_reads_the_set — `/api/class/current-assignment` "
+           "hands the teacher all %d questions on the row"
+           % len(made["question_ids"]),
+           "%d question(s)" % len(qs))
+    if not qs:
+        return
+
+    # ── ⛔ THE DEFECT THIS CHECK EXISTS FOR, PINNED BY NAME ────────────
+    #
+    # `/api/class/current-assignment` builds each question as
+    # `{ position, question_ref, band, rung, lesson_slug, text, options }`.
+    # There is NO `id` on it and there never was — and `downloadAssignment`
+    # in `shared/set-work.js` shipped reading `q.id`, so every Download from
+    # an assignment row and from the marking screen posted
+    # `question_ids: [null, null, …]` and was refused `bad_question_ids`.
+    #
+    # ⚠️ A STUB COULD NOT HAVE CAUGHT IT, and that is the whole argument for
+    # this section: a stub accepts any body, so a body of nulls and a body of
+    # real ids are the same request to it. The shape is asserted here so the
+    # fix cannot be undone by a well-meant "tidy the accessor" later.
+    record(all(q.get("question_ref") for q in qs)
+           and not any("id" in q for q in qs),
+           "current_assignment_question_shape — every question the route "
+           "serves is keyed `question_ref`, and NONE of them carries an "
+           "`id`; a caller reading `q.id` gets undefined on every row",
+           "keys: %s" % sorted(qs[0].keys()))
+
+    ids = [q.get("question_ref") or q.get("id") for q in qs]
+    ids = [i for i in ids if i]
+    record(len(ids) == len(qs),
+           "…and reading them the way the fixed `downloadAssignment` does "
+           "yields a full set of real ids",
+           "%d of %d" % (len(ids), len(qs)))
+
+    # ── ⛔ AND THE SECOND DEFECT, WHICH ONLY A REAL POOL CAN SHOW ──────
+    #
+    # `assignments` has ONE scope triple, so a TWO-topic set records only the
+    # first topic. Posting all of its questions under that one scope asks the
+    # route for ids the first topic's pool does not hold, and it correctly
+    # refuses `questions_not_in_scope`. The refusal is asserted DELIBERATELY —
+    # it is the reason `downloadAssignment` needs a second body at all, and a
+    # future change that made the route accept it would be a hole rather than
+    # a fix.
+    stored = [{"kind": a.get("scope_kind") or made["scopes"][0]["kind"],
+               "ref": a.get("scope_ref") or made["scopes"][0]["ref"],
+               "subject": a.get("subject") or made["scopes"][0].get("subject"),
+               "questions": [{"id": i} for i in ids]}]
+    st0, _h0, d0 = call_bytes("POST", WS_PATH, t_teacher,
+                             ws_body(FX.C_KS3_A, a.get("set_tier")
+                                     or made["tier"], stored, "pdf", True,
+                                     made["title"]))
+    record(st0 == 400 and b"questions_not_in_scope" in d0,
+           "row_download_single_scope_is_refused — a MULTI-topic set's "
+           "questions posted under the one scope the row could record are "
+           "refused, because the other topic's ids are outside that pool",
+           "status %s · %s" % (st0, d0[:120]))
+
+    # The body the fixed `downloadAssignment` falls back to: one scope per the
+    # questions' OWN subtopic, which `lesson_slug` names on every row.
+    by_lesson, order = {}, []
+    for q in qs:
+        ref = q.get("lesson_slug")
+        qid = q.get("question_ref") or q.get("id")
+        if not ref or not qid:
+            continue
+        by_lesson.setdefault(ref, []).append({"id": qid})
+        if ref not in order:
+            order.append(ref)
+    record(len(order) > 1 and sum(len(v) for v in by_lesson.values()) == len(qs),
+           "…and every question names its own subtopic in `lesson_slug`, so "
+           "the fallback body can be built entirely from what the row read "
+           "already returned — no second request to work out where a question "
+           "came from",
+           "%d subtopic(s): %s" % (len(order), order))
+    # ⚠️ NO `subject` ON THE FALLBACK SCOPES, and that is the second refusal
+    # this path had to be taught. `assignments` records ONE subject as well as
+    # one scope, so a KS3 set spanning chemistry and biology stamps the row
+    # `chemistry` — and sending `chemistry` with the BIOLOGY subtopic answers
+    # `scope_not_for_class`. `subject` disambiguates exactly one id in the
+    # curriculum (`atomic-structure`, a TOPIC in two sciences); every subtopic
+    # ref is unique, so omitting it can only resolve to the right node.
+    scope = [{"kind": "subtopic", "ref": ref, "subject": None,
+              "questions": by_lesson[ref]} for ref in order]
+    before, err = fixture_assignment_ids()
+    if err:
+        record(False, "the world can be read before the row download", err)
+        return
+    st, hdr, data = call_bytes(
+        "POST", WS_PATH, t_teacher,
+        ws_body(FX.C_KS3_A, a.get("set_tier") or made["tier"], scope, "pdf",
+                True, a.get("title") or made["title"]))
+    if st != 200:
+        record(False, "row_download — a worksheet can be made from an "
+                      "existing assignment row",
+               "status %s · %s" % (st, data[:250]))
+        return
+    # ⚠️ MEASURED BY THE NUMBERING, NOT BY THE STEMS. The row read hands back
+    # `text` and option OBJECTS, not the `stem`/`options[]` strings the pool
+    # read gives — so the content comparison the other checks make has no
+    # material here. What it can prove, and does, is that all of the set's
+    # questions are drawn, with four options each.
+    pages = pdf_pages(data)
+    nums, opts, ans_i = pdf_numbering(pages)
+    record(nums == list(range(1, len(qs) + 1)) and opts == 4 * len(qs),
+           "row_download — the set that is already out prints as a worksheet: "
+           "all %d of its questions, four options each" % len(qs),
+           "%d numbered question(s), %d option line(s) over %d page(s)"
+           % (len(nums), opts, len(pages)))
+    record(ans_i >= 0,
+           "…and the answers page is on it", "page %d of %d"
+           % (ans_i + 1, len(pages)))
+    after, err = fixture_assignment_ids()
+    if err:
+        record(False, "the world can be re-queried after the row download", err)
+    else:
+        record(after == before,
+               "…and printing an existing set does not set it a SECOND time",
+               "%d assignment(s) before and after" % len(before)
+               if after == before else "appeared: %s" % sorted(after - before))
+
+
+def check_worksheet_refusals(t_teacher, t_pupil, teacher_id, pupil_id, first):
+    """Who cannot have a worksheet, and the silence of the journal about them.
+
+    ⚠️ `8z/Sc1` IS IN THE SAME SCHOOL AS THE TEACHER, and that is the whole
+    design of the fixture: a refusal proved against a class in ANOTHER school
+    passes for the wrong reason, because the school conjunct refuses before the
+    TEACHING one is ever reached. That check would stay green with the teaching
+    test deleted.
+    """
+    print("\n   who is refused, and what the journal says about them")
+    k_kind, k_ref, k_tier, k_subj = first["ks3"]
+    scope = [{"kind": k_kind, "ref": k_ref, "subject": k_subj,
+              "questions": first["chosen"][:4]}]
+    body = ws_body(FX.C_KS3_A, k_tier, scope, "pdf", True, TITLE + " · refused")
+
+    aud_t, err1 = worksheet_audit_rows(teacher_id)
+    aud_p, err2 = worksheet_audit_rows(pupil_id) if pupil_id else (None, "no pupil id")
+    if err1 or err2:
+        record(False, "the journal can be read before the refusals",
+               err1 or err2)
+        return
+
+    # ── a teacher who does not teach the class ────────────────────────
+    foreign = ws_body(FX.C_FOREIGN, k_tier, scope, "pdf", True,
+                      TITLE + " · foreign")
+    st, hdr, data = call_bytes("POST", WS_PATH, t_teacher, foreign)
+    record(st == 403,
+           "worksheet_refuses_not_taught — a teacher asking for a class in "
+           "their OWN school that they do not teach is refused 403, and gets "
+           "no bytes",
+           "status %s, %d byte(s), content-type %s"
+           % (st, len(data), hdr.get("content-type")))
+    record(b"%PDF" not in data[:8],
+           "…and the body of that refusal is not a document",
+           data[:80].decode("utf-8", "replace"))
+
+    # ── a child ───────────────────────────────────────────────────────
+    st, hdr, data = call_bytes("POST", WS_PATH, t_pupil, body)
+    record(st in (401, 403),
+           "worksheet_refuses_student — a signed-in CHILD asking for their "
+           "own class's worksheet is refused; the answer key is on it",
+           "status %s, %d byte(s)" % (st, len(data)))
+    record(b"%PDF" not in data[:8],
+           "…and a child gets no document bytes either",
+           data[:80].decode("utf-8", "replace"))
+
+    # ── and the journal recorded neither ──────────────────────────────
+    aud_t2, err1 = worksheet_audit_rows(teacher_id)
+    aud_p2, err2 = worksheet_audit_rows(pupil_id) if pupil_id else (None, "no pupil id")
+    if err1 or err2:
+        record(False, "the journal can be re-read after the refusals",
+               err1 or err2)
+        return
+    record(len(aud_t2) == len(aud_t) and len(aud_p2) == len(aud_p),
+           "worksheet_no_audit_on_refusal — a refused request writes NO "
+           "`worksheet.downloaded` line, so the journal cannot be used to "
+           "learn that a class exists",
+           "teacher %d → %d, pupil %d → %d"
+           % (len(aud_t), len(aud_t2), len(aud_p), len(aud_p2)))
+
+
+def check_worksheet_audit(teacher_id, first):
+    """The one row a download DOES write."""
+    print("\n   the one row a download does write")
+    rows, err = worksheet_audit_rows(teacher_id)
+    if err:
+        record(False, "the `worksheet.downloaded` lines can be read", err)
+        return
+    record(bool(rows),
+           "worksheet_audited — a download writes exactly one "
+           "`worksheet.downloaded` line per request",
+           "%d line(s) so far this run" % len(rows))
+    if not rows:
+        return
+    r = rows[0]
+    pay = r.get("payload") or {}
+    want = ("class_id", "scopes", "count", "format", "set_tier", "answers")
+    absent = [k for k in want if k not in pay]
+    sc = pay.get("scopes") or []
+    record(not absent and r.get("target_table") == "classes"
+           and r.get("target_id") == pay.get("class_id"),
+           "worksheet_audit_shape — the line names the class, the scopes, the "
+           "question count, the format, the tier asked for and whether the "
+           "key was on",
+           json.dumps(pay)[:280] if not absent
+           else "missing from the payload: %s" % absent)
+    record(bool(sc) and all(
+               set(("scope_kind", "scope_ref", "question_count")) <= set(s)
+               for s in sc),
+           "…and every scope in it says what it was and how many questions "
+           "came from it",
+           json.dumps(sc)[:220])
+    record(isinstance(pay.get("count"), int)
+           and pay["count"] == sum(s.get("question_count", 0) for s in sc),
+           "…and the total agrees with the sum of the scopes, so the line "
+           "cannot quietly under-report a multi-topic download",
+           "count %s over %d scope(s)" % (pay.get("count"), len(sc)))
+
+
+def check_worksheet_rate_limit(t_teacher, t_admin, first):
+    """⚠️ RUN LAST, AND ONLY LAST. It deliberately exhausts the teacher's hour
+    of worksheets, so anything after it in this process would meet a 429 that
+    has nothing to do with what it is testing.
+
+    ⚠️ AND THE CLAIM IS ABOUT THE KEY, NOT THE CEILING. An IP key would be
+    wrong in a way no unit test notices: a secondary school leaves the
+    building through ONE public address, so the first teacher to print in
+    period one would spend the department's whole allowance. Both accounts
+    here call from 127.0.0.1, so a second account still being served AFTER the
+    first is exhausted is the proof that the bucket is the USER.
+    """
+    print("\n   the rate limit, and what it is keyed on")
+    k_kind, k_ref, k_tier, k_subj = first["ks3"]
+    tiny = ws_body(FX.C_KS3_A, k_tier,
+                   [{"kind": k_kind, "ref": k_ref, "subject": k_subj,
+                     "questions": first["chosen"][:1]}],
+                   "pdf", False, TITLE + " · limit")
+
+    limit_hdr = None
+    hit = 0
+    for i in range(60):
+        st, hdr, _d = call_bytes("POST", WS_PATH, t_teacher, tiny)
+        if limit_hdr is None:
+            limit_hdr = hdr.get("ratelimit-limit")
+        if st == 429:
+            hit = i + 1
+            break
+        if st != 200:
+            record(False, "worksheet_rate_limited — the teacher's requests "
+                          "are answered while under the ceiling",
+                   "call %d answered %s" % (i + 1, st))
+            return
+    record(hit > 0,
+           "worksheet_rate_limited — the route stops serving one teacher at "
+           "its ceiling of %s an hour and answers 429" % limit_hdr,
+           "429 on call %d of this burst (the drive had already spent part of "
+           "the hour)" % hit if hit else "never refused in 60 calls")
+
+    st, hdr, data = call_bytes("POST", WS_PATH, t_admin, tiny)
+    remaining = hdr.get("ratelimit-remaining")
+    record(st != 429,
+           "worksheet_limit_is_keyed_on_the_user — a SECOND account calling "
+           "from the same address, in the same second, is not refused: the "
+           "bucket is the user, never the IP a whole school shares",
+           "the second account was answered %s with %s of its own hour left"
+           % (st, remaining))
+
+
+# ════════════════════════════════════════════════════════════════════════
+# 11b · THE SHEET'S OWN DOWNLOAD — Chrome saves the file, for real
+# ════════════════════════════════════════════════════════════════════════
+#
+# ⚠️ THIS IS THE SENTENCE §6 SAID NOBODY HAD PROVED: "the stub returned a Blob
+# and the save path did not throw; that is not the same as a PDF landing in
+# Downloads." So Chrome's own download behaviour is armed at a directory, the
+# real `Download` control is pressed, and the file that lands on disk is
+# opened and parsed. Nothing in the path is replaced — `fetch`, the Blob, the
+# `Content-Disposition` read and the `<a download>` click are all the shipped
+# ones.
+
+WS_NEW_STRINGS = ("Download", "Add topic", "Worksheet", "PDF", "Word",
+                  "Answers")
+
+
+def arm_downloads(p, path):
+    """Let this tab actually save files, into `path`.
+
+    ⚠️ HEADLESS CHROME DISCARDS A DOWNLOAD BY DEFAULT and says nothing. A
+    drive that pressed the button without this would watch the click succeed,
+    the promise resolve and no file appear, and would have to call that a
+    pass — which is how "the save path did not throw" came to stand in for
+    "the file arrived".
+    """
+    os.makedirs(path, exist_ok=True)
+    for method in ("Browser.setDownloadBehavior", "Page.setDownloadBehavior"):
+        try:
+            p.send(method, {"behavior": "allow", "downloadPath": path})
+            return method
+        except Exception:                                       # noqa: BLE001
+            continue
+    return None
+
+
+def drop_downloads(path):
+    """Remove the directory this run saved into.
+
+    ⚠️ THE PROFILE SWEEPER DOES NOT COVER IT. `ks3_browser` removes orphaned
+    `cdp-profile-*` directories and nothing else, so a download directory left
+    behind accumulates one worksheet per run, for ever, on a machine where
+    disk exhaustion has already produced fake gate crashes. It is removed by
+    the NAME this run made, never by a pattern — a `rm -rf` over a shared tmp
+    root is how another lane's work disappears.
+    """
+    # ⚠️ TWO PASSES, AND IT SAYS SO WHEN IT FAILS. The first version removed
+    # the files and then `os.rmdir`'d, and left an EMPTY directory behind on
+    # one run in three — Chrome is still alive at this point and puts a
+    # `.crdownload` back between the listing and the remove. Silence about a
+    # failed tidy-up is how the last accumulation started.
+    import shutil                                               # noqa: PLC0415
+    for _ in range(3):
+        shutil.rmtree(path, ignore_errors=True)
+        if not os.path.isdir(path):
+            return
+        time.sleep(0.4)
+    print("        ⚠️  could not remove the download directory %s — remove it "
+          "by hand; it is not swept by anything else" % path)
+
+
+def take_download(path, before, tries=160, gap=0.25):
+    """The next file to finish landing in `path`. Returns `(name, bytes, err)`.
+
+    ⚠️ IT IDENTIFIES THE DOWNLOAD BY A NEW NAME APPEARING, so two downloads
+    that would land under the SAME filename must not share a directory:
+    Chrome writes the second straight over the first, `names - before` is
+    empty, and this waits out its timeout reporting "nothing landed" about a
+    download that completed. The marking-screen check gets a directory of its
+    own for exactly that reason.
+
+    ⚠️ AND IT WAITS FOR THE SIZE TO STOP CHANGING, not merely for the name to
+    appear. Chrome writes `<name>.crdownload` while a file is in flight and
+    renames it at the end, but a small file can be renamed before the last
+    write is flushed, and a PDF read one byte short parses as a corrupt file —
+    a red that looks exactly like a renderer defect.
+    """
+    stable = {}
+    for _ in range(tries):
+        try:
+            names = set(os.listdir(path)) - before
+        except OSError as e:
+            return None, None, str(e)
+        done = sorted(n for n in names if not n.endswith(".crdownload"))
+        for n in done:
+            try:
+                size = os.path.getsize(os.path.join(path, n))
+            except OSError:
+                continue
+            if stable.get(n) == size and size > 0:
+                with open(os.path.join(path, n), "rb") as fh:
+                    return n, fh.read(), None
+            stable[n] = size
+        time.sleep(gap)
+    return None, None, ("nothing finished landing in %ds; the directory holds %s"
+                        % (int(tries * gap), sorted(set(os.listdir(path)) - before)))
+
+
+def pdf_numbering(pages):
+    """How many questions a rendered sheet actually shows, read off the page.
+
+    ⚠️ COUNTED FROM THE DRAWN NUMBERS, NOT FROM THE DOM. The sheet renders a
+    KS3 stem through MRB-302's display pass — `CO2` becomes `CO<sub>2</sub>`,
+    whose `textContent` is `CO2` — while the BANK stores a real `CO₂`. So the
+    string on the screen and the string in the file are legitimately
+    different, and a check that compared them would report a defect that is
+    two correct behaviours meeting. The numbering and the option letters are
+    the same on both sides whatever the characters are.
+    """
+    ans = answers_page_index(pages)
+    body = [t for i, t in enumerate(pages) if ans < 0 or i < ans]
+    nums, opts = set(), 0
+    for t in body:
+        for line in (t or "").splitlines():
+            m = re.match(r"\s*(\d+)\.\s", line)
+            if m:
+                nums.add(int(m.group(1)))
+            elif re.match(r"\s*[ABCD]\.\s", line):
+                opts += 1
+    return sorted(nums), opts, ans
+
+
+def sheet_question_rows(p):
+    return p.eval("document.querySelectorAll('[data-sw=\"question\"]').length")
+
+
+def press_download(p, which):
+    """Open the menu and press one of its items, the way a teacher does."""
+    p.eval("document.querySelector('[data-sw=\"download\"]').click()")
+    time.sleep(0.2)
+    ok = sw_click(p, '[data-sw="%s"]' % which)
+    return ok
+
+
+def set_sheet_title(p, text):
+    p.eval("""(function(){var t=document.querySelector('[data-sw="title"]');
+        if(!t){return false;} t.value=%s;
+        t.dispatchEvent(new Event('input',{bubbles:true})); return true;})()"""
+           % json.dumps(text))
+
+
+# ⚠️ A TITLE CHOSEN SO THE TWO NAMING PATHS CANNOT AGREE.
+#
+# `shared/set-work.js` has a fallback name for when `Content-Disposition` is
+# unreadable, and the server has its own ASCII name. For almost any title the
+# two produce the SAME string — which makes the filename useless as evidence
+# that the header was read at all. These two characters split them: the
+# server's `safeFilename` NFKD-decomposes and strips combining marks, so `é`
+# becomes `e`, while the page's `fileNameFor` allows the whole `À-ɏ` range and
+# keeps it. Both turn `₂` into a space.
+#
+#     server  →  "Cafe sheet.pdf"      (the header was read)
+#     page    →  "Café sheet.pdf"      (the header was NOT read)
+#
+# So the name on disk says which path ran, which is the only way to prove
+# `nameFromHeaders` is doing anything at all on a cross-origin deploy.
+DL_TITLE = "Café ₂ sheet"
+
+
+def server_filename(title, fmt):
+    """`worksheet.js`'s `safeFilename`, re-derived here rather than read.
+
+    ⚠️ NFKD IS WHY `₂` COMES OUT AS `2` AND NOT AS A SPACE. Compatibility
+    decomposition maps SUBSCRIPT TWO onto DIGIT TWO, so the character survives
+    the ASCII filter as an ordinary `2` — which is why the expected name is
+    computed here from the same rule instead of typed out. The first version
+    of this check typed "Cafe sheet.pdf", went red, and was measuring the
+    author's guess rather than the product.
+    """
+    import unicodedata                                          # noqa: PLC0415
+    base = unicodedata.normalize("NFKD", str(title or "worksheet"))
+    base = "".join(c for c in base if not unicodedata.combining(c))
+    base = re.sub(r"[^A-Za-z0-9 ._-]+", " ", base)
+    base = re.sub(r"\s+", " ", base).strip()[:80]
+    base = re.sub(r"[ .]+$", "", base)
+    return (base or "worksheet") + "." + fmt
+
+
+def page_filename(title, fmt):
+    """`shared/set-work.js`'s `fileNameFor` — the FALLBACK, for when
+    `Content-Disposition` cannot be read. It keeps the whole `À-ɏ` range, so
+    an accent survives it and does not survive the server's."""
+    base = re.sub(r"[^0-9A-Za-zÀ-ɏ ._-]+", " ", str(title or "Worksheet"))
+    base = re.sub(r"\s+", " ", base).strip()[:80] or "Worksheet"
+    return base + (".docx" if fmt == "docx" else ".pdf")
+
+
+def check_worksheet_sheet(p, base, first, shots):
+    print("\n   the sheet's own Download, saving a real file to disk")
+    if pdf_reader() is None:
+        record(False, "pdf_reader_available (the browser half)",
+               "pypdf is not installed")
+        return
+    if not first:
+        record(False, "the API half chose a KS3 scope for the sheet to drive")
+        return
+    k_kind, k_ref, k_tier, k_subj = first["ks3"]
+
+    dl_dir = os.path.join(cdp.gate_tmp(), "mrb342-downloads-%d" % os.getpid())
+    armed = arm_downloads(p, dl_dir)
+    record(bool(armed),
+           "the tab is allowed to save downloads, so a file that does not "
+           "arrive is a finding rather than the default", str(armed))
+    if not armed:
+        return
+    seen = set(os.listdir(dl_dir))
+
+    if not goto_detail(p, FX.C_KS3_A, k_tier, k_kind, k_ref):
+        record(False, "reach %s in the sheet for the download" % k_ref)
+        return
+    rows = sheet_question_rows(p)
+    set_sheet_title(p, DL_TITLE)
+    time.sleep(0.2)
+
+    before, err = fixture_assignment_ids()
+    if err:
+        record(False, "the world can be read before the sheet download", err)
+        return
+
+    # ── PDF, with the key ─────────────────────────────────────────────
+    record(press_download(p, "dl-pdf") is True,
+           "the sheet's `Download` opens its menu and `PDF` is pressable")
+    name, data, err = take_download(dl_dir, seen)
+    if err:
+        record(False, "sheet_download_lands — pressing PDF puts a real file "
+                      "on disk", err)
+        return
+    seen.add(name)
+    record(data[:5] == b"%PDF-",
+           "sheet_download_lands — the real `fetch` → Blob → `<a download>` "
+           "path saves a genuine PDF, not an empty file and not a JSON error",
+           "%s · %d byte(s), starts %r" % (name, len(data), data[:8]))
+    want_srv = server_filename(DL_TITLE, "pdf")
+    want_pg = page_filename(DL_TITLE, "pdf")
+    record(want_srv != want_pg,
+           "…and the title chosen for this check really does split the two "
+           "naming paths, so the filename is evidence rather than a "
+           "coincidence",
+           "server would say %r, the page's fallback %r" % (want_srv, want_pg))
+    record(name == want_srv,
+           "sheet_download_filename_from_server — the saved file wears the "
+           "SERVER's name, so `nameFromHeaders` really parsed "
+           "`Content-Disposition` cross-origin; the page's own fallback would "
+           "have kept the accent",
+           "saved as %r (the fallback would have been %r)" % (name, want_pg))
+
+    pages = pdf_pages(data)
+    nums, opts, ans_i = pdf_numbering(pages)
+    record(nums == list(range(1, rows + 1)) and opts == 4 * rows,
+           "sheet_download_contents — the file holds exactly the %d questions "
+           "the teacher was looking at, numbered 1…%d, four options each"
+           % (rows, rows),
+           "%d numbered question(s), %d option line(s) over %d page(s)"
+           % (len(nums), opts, len(pages)))
+    record(ans_i >= 0,
+           "…and the answer key is on it, because the menu's `Answers` is on "
+           "by default", "answers page %d of %d" % (ans_i + 1, len(pages)))
+    whole = " ".join(norm(t) for t in pages)
+    record(SUB in whole,
+           "…and the KS3 subscript survives all the way to the file on disk",
+           "%d U+2082 in the saved document" % whole.count(SUB))
+
+    after, err = fixture_assignment_ids()
+    if err:
+        record(False, "the world can be re-queried after the sheet download",
+               err)
+    else:
+        record(after == before,
+               "sheet_download_writes_nothing — a teacher who pressed "
+               "Download and never pressed Set work has set NOTHING; "
+               "`assignments` is re-queried to say so",
+               "%d assignment(s) before and after" % len(before)
+               if after == before else "appeared: %s" % sorted(after - before))
+
+    # ── Word, with the key turned OFF ─────────────────────────────────
+    p.eval("document.querySelector('[data-sw=\"download\"]').click()")
+    time.sleep(0.2)
+    record(sw_click(p, '[data-sw="dl-answers"]') is True,
+           "the `Answers` toggle inside the menu is pressable")
+    time.sleep(0.15)
+    checked = p.eval("(document.querySelector('[data-sw=\"dl-answers\"]')||{})"
+                     ".getAttribute('aria-checked')")
+    record(checked == "false",
+           "…and it really turns off — it is a `menuitemcheckbox` and says so",
+           "aria-checked=%r" % checked)
+    record(sw_click(p, '[data-sw="dl-word"]') is True, "`Word` is pressable")
+    name2, data2, err = take_download(dl_dir, seen)
+    if err:
+        record(False, "sheet_download_word — pressing Word puts a .docx on "
+                      "disk", err)
+    else:
+        seen.add(name2)
+        record(name2.endswith(".docx") and data2[:2] == b"PK",
+               "sheet_download_word — the Word path saves a real OOXML "
+               "document (a zip, as every .docx is)",
+               "%s · %d byte(s)" % (name2, len(data2)))
+        try:
+            paras = [norm(x) for x in docx_paragraphs(data2)]
+        except Exception as e:                                  # noqa: BLE001
+            paras = None
+            record(False, "the saved .docx opens as OOXML", str(e))
+        if paras is not None:
+            stems = sum(1 for x in paras if re.match(r"^\d+\.\s", x))
+            record(stems == rows and "Answers" not in paras,
+                   "sheet_download_word_no_answers — the same %d questions, "
+                   "and NO answer key, because the teacher turned it off "
+                   "before pressing" % rows,
+                   "%d numbered paragraph(s), %d paragraph(s) total, no "
+                   "'Answers'" % (stems, len(paras))
+                   if stems == rows and "Answers" not in paras
+                   else "numbered %d, has key: %s"
+                        % (stems, "Answers" in paras))
+
+    # ── the words the menu is allowed to say ──────────────────────────
+    p.eval("document.querySelector('[data-sw=\"download\"]').click()")
+    time.sleep(0.2)
+    # ⚠️ THE MENU'S DIRECT CHILDREN, NOT ITS LEAVES. `Answers` is a
+    # `menuitemcheckbox` that CONTAINS an inline `<svg>` tick, so it has a
+    # child element — and a sweep that only read elements with no children
+    # skipped it and then reported that one of the six new strings was never
+    # drawn. An `<svg>` contributes nothing to `textContent`, so reading the
+    # item itself is both simpler and right.
+    said = p.eval("""(function(){
+      var out=[], push=function(n){ if(!n){return;}
+        var t=(n.textContent||'').trim(); if(t){out.push(t);} };
+      push(document.querySelector('[data-sw="download"]'));
+      push(document.querySelector('[data-sw="add-topic"]'));
+      var m=document.querySelector('[data-sw="download-menu"]');
+      if(m){ var ks=m.children;
+        for(var i=0;i<ks.length;i++){ push(ks[i]); } }
+      return out;})()""") or []
+    said = sorted(set(said))
+    stray = [s for s in said if s not in FAFF_EXACT]
+    record(not stray,
+           "worksheet_strings — every word the Download control and the "
+           "`Add topic` button render is on RISKS A9's allowed list",
+           "rendered: %s" % said if not stray else "NOT ON THE LIST: %s" % stray)
+    record(set(WS_NEW_STRINGS) <= set(said),
+           "…and all six of MRB-342's new strings are really drawn, so the "
+           "list is not carrying an entry nothing renders",
+           "six of six: %s" % list(WS_NEW_STRINGS)
+           if set(WS_NEW_STRINGS) <= set(said)
+           else "never drawn: %s" % sorted(set(WS_NEW_STRINGS) - set(said)))
+    record(len(said) == len(WS_NEW_STRINGS),
+           "…and a SEVENTH has not crept in beside them",
+           "%d string(s) across the two controls: %s" % (len(said), said))
+    check_sideways(p, "the Download menu open", shots)
+    p.eval("document.body.click()")
+
+    # ── `Add topic`, and a two-topic file saved from the sheet ────────
+    before2, err = fixture_assignment_ids()
+    if err:
+        record(False, "the world can be read before the two-topic download",
+               err)
+        return
+    added = p.eval("""(function(){var b=document.querySelector(
+        '[data-sw="add-topic"]'); if(!b||b.disabled){return false;}
+        b.click(); return true;})()""")
+    record(added is True,
+           "add_topic_returns_to_the_topic_step — `Add topic` is live on a "
+           "composed set and goes back for another one")
+    if added is True:
+        time.sleep(0.5)
+        picked = p.eval("""(function(){
+            var rs=document.querySelectorAll('[data-sw="subtopic"]');
+            for(var i=0;i<rs.length;i++){
+              if(rs[i].getAttribute('aria-disabled')==='true'){continue;}
+              if(rs[i].getAttribute('aria-selected')==='true'){continue;}
+              rs[i].click(); return rs[i].getAttribute('data-sw-ref');}
+            return null;})()""")
+        if not picked:
+            record(False, "a second lesson can be chosen on the Topic step "
+                          "for the two-topic download")
+        else:
+            time.sleep(0.3)
+            p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+            wait_for(p, "document.querySelectorAll('[data-sw=\"scope\"]')"
+                        ".length > 1")
+            # ⚠️ THE SECTION APPEARS BEFORE ITS QUESTIONS DO, and measuring
+            # between the two is how this check first reported "two sections,
+            # and the same ten questions". `/preview` for the new scope is a
+            # second request; the section is drawn as soon as the scope exists
+            # so the teacher can see where the rows are about to land. Wait for
+            # the ROWS, which is the fact the next assertion is about.
+            wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]')"
+                        ".length > %d" % rows, tries=80)
+            scopes_n = p.eval("document.querySelectorAll('[data-sw=\"scope\"]')"
+                              ".length")
+            rows2 = sheet_question_rows(p)
+            record(scopes_n == 2 and rows2 > rows,
+                   "add_topic_second_section — the Detail step now draws TWO "
+                   "sections and more questions than one topic held",
+                   "%d section(s), %d question row(s) (was %d)"
+                   % (scopes_n, rows2, rows))
+            set_sheet_title(p, TITLE + " · two from the sheet")
+            time.sleep(0.2)
+            press_download(p, "dl-pdf")
+            name3, data3, err = take_download(dl_dir, seen)
+            if err:
+                record(False, "sheet_multi_scope_download — a two-topic file "
+                              "saves from the sheet", err)
+            else:
+                seen.add(name3)
+                n3, o3, a3 = pdf_numbering(pdf_pages(data3))
+                record(n3 == list(range(1, rows2 + 1)) and o3 == 4 * rows2,
+                       "sheet_multi_scope_download — the file a teacher gets "
+                       "from a two-topic sheet holds BOTH topics' questions, "
+                       "numbered continuously across the sections",
+                       "%s · %d question(s), %d option line(s)"
+                       % (name3, len(n3), o3))
+            after2, err = fixture_assignment_ids()
+            if err:
+                record(False, "the world can be re-queried after the "
+                              "two-topic download", err)
+            else:
+                record(after2 == before2,
+                       "…and that wrote nothing either",
+                       "%d assignment(s) before and after" % len(before2)
+                       if after2 == before2
+                       else "appeared: %s" % sorted(after2 - before2))
+    p.eval("if (window.MRBSetWork) { window.MRBSetWork.close(); }")
+    drop_downloads(dl_dir)
+
+
+def check_row_download(p, base, t_teacher, scopes, made):
+    """⊕ MRB-342 — the class table's own Download, pressed, and the file it
+    saves opened.
+
+    ⚠️ THE ROW'S CONTROL OWNS NO DOM AND ARMS IN PLACE. The generated teacher
+    pages are drawn by `shared/student-runtime.js`, whose `draw()` empties the
+    mount host on every `setState`, so a menu appended into a table row would
+    be destroyed by the next redraw with its listeners. The row offers the two
+    formats the way it offers a delete confirm: the same button, twice, in
+    place, rendered by the template. So this presses TWICE — arm, then choose —
+    which is the gesture a teacher makes.
+    """
+    print("\n   Download on an existing row, in the class table")
+    if pdf_reader() is None:
+        record(False, "pdf_reader_available (the row half)",
+               "pypdf is not installed")
+        return
+    if not made or not made.get("title"):
+        record(False, "there is a set in the table to download from")
+        return
+    title = made["title"]
+
+    dl_dir = os.path.join(cdp.gate_tmp(), "mrb342-row-%d" % os.getpid())
+    armed = arm_downloads(p, dl_dir)
+    record(bool(armed), "the class-page tab is allowed to save downloads",
+           str(armed))
+    if not armed:
+        return
+    seen = set(os.listdir(dl_dir))
+
+    if not open_class_page(p, base, FX.C_KS3_A):
+        record(False, "the class page opens for the row download")
+        return
+    rows = p.eval(ROWS_JS) or []
+    if title not in [r["title"] for r in rows]:
+        record(False, "the two-topic set is a row in the class table",
+               "rows: %s" % [r["title"][-26:] for r in rows])
+        return
+
+    before, err = fixture_assignment_ids()
+    if err:
+        record(False, "the world can be read before the row download", err)
+        return
+
+    record(press_row(p, title, "download") == "clicked",
+           "row_download_arms — the row carries a `Download` beside Edit and "
+           "Delete, and pressing it arms the two formats in place")
+    time.sleep(0.4)
+    record(press_row(p, title, "download-pdf") == "clicked",
+           "…and the armed row offers `PDF`")
+    name, data, err = take_download(dl_dir, seen)
+    if err:
+        record(False, "row_download_lands — pressing PDF on the row saves a "
+                      "real file", err)
+        return
+    record(data[:5] == b"%PDF-",
+           "row_download_lands — the row's Download saves a genuine PDF, "
+           "through `/api/class/current-assignment` and then the worksheet "
+           "route", "%s · %d byte(s)" % (name, len(data)))
+    nums, opts, ans_i = pdf_numbering(pdf_pages(data))
+    want_n = len(made.get("question_ids") or [])
+    record(nums == list(range(1, want_n + 1)) and opts == 4 * want_n,
+           "row_download_contents — the file holds all %d questions the set "
+           "carries, from BOTH of its topics" % want_n,
+           "%d numbered question(s), %d option line(s)" % (len(nums), opts))
+
+    after, err = fixture_assignment_ids()
+    if err:
+        record(False, "the world can be re-queried after the row download",
+               err)
+    else:
+        record(after == before,
+               "row_download_writes_nothing — printing a set that is already "
+               "out does not set a second one",
+               "%d assignment(s) before and after" % len(before)
+               if after == before else "appeared: %s" % sorted(after - before))
+
+    # ── ⛔ AND A SINGLE-TOPIC ROW, WHICH THE TWO-TOPIC ONE MASKED ──────
+    #
+    # ⚠️ THE CHECK ABOVE PASSED WHILE THIS WAS BROKEN, and that is worth more
+    # than the assertion. A two-topic set takes `downloadAssignment`'s
+    # FALLBACK body — one scope per lesson, and no `subject` on any of them —
+    # so it sailed past a bug that lives entirely in the subject the STORED
+    # body carries. A single-topic set has no fallback to be rescued by: it
+    # posts the stored scope, with the stored subject, once. Which is the
+    # ordinary case, and was answering 400.
+    single = None
+    got = pick_topic(scopes["ks3"], 2, "medium")
+    if got:
+        _n, unit, _stocked = got
+        stitle = TITLE + " · one topic, from its row"
+        aid, sids = set_one(t_teacher, FX.C_KS3_A, "medium", unit["id"],
+                            stitle, 4)
+        if aid:
+            single = (stitle, len(sids or []))
+    if not single:
+        record(False, "a single-topic set can be made for the row download")
+    else:
+        stitle, n_single = single
+        seen1 = set(os.listdir(dl_dir))
+        if not open_class_page(p, base, FX.C_KS3_A):
+            record(False, "the class page reloads for the single-topic row")
+        else:
+            record(press_row(p, stitle, "download") == "clicked",
+                   "row_download_single_arms — the one-topic row offers "
+                   "`Download` too")
+            time.sleep(0.4)
+            press_row(p, stitle, "download-pdf")
+            name1, data1, err1 = take_download(dl_dir, seen1)
+            if err1:
+                record(False, "row_download_single — a ONE-topic set "
+                              "downloads from its row, posting the stored "
+                              "scope and the stored subject", err1)
+            else:
+                n1, o1, a1 = pdf_numbering(pdf_pages(data1))
+                record(data1[:5] == b"%PDF-"
+                       and n1 == list(range(1, n_single + 1))
+                       and o1 == 4 * n_single,
+                       "row_download_single — a ONE-topic set downloads from "
+                       "its row: the stored scope and the stored subject go "
+                       "to the route as they are, and there is no fallback "
+                       "body to rescue them",
+                       "%s · %d question(s), %d option line(s)"
+                       % (name1, len(n1), o1))
+
+    # ── AND THE THIRD PLACE THE SAME CONTROL LIVES ────────────────────
+    #
+    # ⚠️ THE MARKING SCREEN IS NOT THE ROW, and proving one says nothing
+    # about the other. `teacher_rulings.py` wires the same `MRB_WORKSHEET`
+    # helper twice, from two different ruling tuples, against two different
+    # objects (`p` in the table, `pp` on the marking screen) with two
+    # different sets of `data-mrb-added` marks. A typo in either is a dead
+    # control on one screen and a working one on the other — which is exactly
+    # the shape of defect that ships.
+    # ⚠️ A DIRECTORY OF ITS OWN, AND THAT IS NOT FUSSINESS. The marking screen
+    # shows the class's NEWEST paper — which is the single-topic set the check
+    # above has just downloaded, under the same title and therefore the same
+    # filename. Chrome saved it straight over the existing file, so
+    # `listdir - before` was EMPTY and `take_download` waited out its forty
+    # seconds and reported "nothing landed" about a download that had in fact
+    # completed. The control was fine; the measurement was not. A fresh
+    # directory makes "a new file appeared" mean what it says.
+    mark_dir = os.path.join(cdp.gate_tmp(), "mrb342-mark-%d" % os.getpid())
+    if not arm_downloads(p, mark_dir):
+        record(False, "the tab can be re-pointed at a fresh download "
+                      "directory for the marking screen")
+        drop_downloads(dl_dir)
+        return
+    seen2 = set(os.listdir(mark_dir))
+    if not goto_ready(p, base + "/teacher/assignment.html?class=%s" % FX.C_KS3_A
+                      + "&env=test&api=" + PAGE_API,
+                      "!!document.querySelector("
+                      "'[data-mrb-added=\"set-work-paper-download\"]')",
+                      settle=6.5, tries=3):
+        record(False, "marking_download_present — the marking screen offers "
+                      "`Download` on the paper it is showing",
+               "the control never rendered on /teacher/assignment.html")
+    else:
+        record(True, "marking_download_present — the marking screen offers "
+                     "`Download` on the paper it is showing")
+        sw_click(p, '[data-mrb-added="set-work-paper-download"]')
+        time.sleep(0.5)
+        pressed = sw_click(p, '[data-mrb-added="set-work-paper-download-pdf"]')
+        record(pressed is True,
+               "…and arming it offers `PDF`, as the row does")
+        name2, data2, err2 = take_download(mark_dir, seen2)
+        if err2:
+            # ⚠️ SAY WHY, FROM THE PAGE ITSELF. "No file appeared" is true of
+            # a dead control, a refused request and a control that was never
+            # really pressed, and those are three different findings. The
+            # sheet logs `[set-work] worksheet <status>` on a refusal, so the
+            # console is read — a read, not a wrapper, because this is the
+            # FIRST check in this tab and everything after it needs an
+            # unhindered network.
+            why = [e for e in (p.console_errors() or [])
+                   if "set-work" in e or "worksheet" in e][:3]
+            armed_state = p.eval("""(function(){
+              var b=document.querySelector(
+                '[data-mrb-added="set-work-paper-download"]');
+              var pdf=document.querySelector(
+                '[data-mrb-added="set-work-paper-download-pdf"]');
+              return {hasArm:!!b, hasPdf:!!pdf,
+                      text:(document.body.innerText||'').slice(0,120)};})()""")
+            record(False, "marking_download_lands — the marking screen's "
+                          "Download saves a real file",
+                   "%s · console: %s · %s" % (err2, why, json.dumps(armed_state)[:220]))
+            drop_downloads(mark_dir)
+        else:
+            n2, o2, a2 = pdf_numbering(pdf_pages(data2))
+            record(data2[:5] == b"%PDF-" and len(n2) > 0 and o2 == 4 * len(n2),
+                   "marking_download_lands — the marking screen's Download "
+                   "saves a genuine PDF of the paper it is showing, four "
+                   "options a question",
+                   "%s · %d byte(s), %d question(s), %d option line(s)"
+                   % (name2, len(data2), len(n2), o2))
+            drop_downloads(mark_dir)
+    drop_downloads(dl_dir)
 
 
 if __name__ == "__main__":
