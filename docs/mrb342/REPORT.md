@@ -324,3 +324,56 @@ controls) after the `teacher-data.js` change, and `build_all.py` has been run.
   on `assignments`, at which point both the fallback and §6's "an edit is still
   single-scope" go away together. **OPEN ON MIDE** — it is a schema decision,
   not a lane's call.
+
+---
+
+## 8 · The rate-limit constraint, and a follow-up for the next product run
+
+### 8.1 · `set_work_drive`'s rate-limit check cannot run twice in an hour
+
+The worksheet route is limited to **30 downloads per hour per user**, and the
+drive proves that by making a burst of calls until it is refused. That works
+once. On a second run inside the same hour the bucket is already part-spent, so
+the burst is refused early and the check fails:
+
+```
+❌  392 checks, 1 failed
+    429 on call 15 of this burst (the drive had already spent part of the hour)
+```
+
+⚠️ **This is the limiter working, not a defect**, and the proof is the very next
+check, which PASSED:
+
+```
+✅ worksheet_limit_is_keyed_on_the_user — a SECOND account calling from the same
+   address, in the same second, is not refused: the bucket is the user, never
+   the IP a whole school shares
+   the second account was answered 200 with 29 of its own hour left
+```
+
+A fresh account has its full 30. The first account was simply spent — by **my own
+repeated runs** (receipts at 14:45 and 15:53, plus a standalone drive).
+
+**No override was written for it.** Ruled by Mide, 13 Sep: wait for the bucket and
+re-record `set_work` alone. An override is a permanent line in `git log` asserting
+a gate shipped red, and writing one for a self-inflicted 429 would put a false
+claim in the history.
+
+⚠️ **Anyone re-running this drive will hit this**, and the natural reading —
+"the rate limiter is broken" or "the route is refusing valid calls" — is wrong in
+the direction that wastes a night.
+
+### 8.2 · FOLLOW-UP for the next product run (deliberately NOT in this tree)
+
+> **Give the rate-limit checks a FRESH throwaway account per run**, so a re-run
+> can never exhaust its own bucket and block receipts.
+
+The drive already creates a throwaway world per run and tears it down by a
+snapshotted id list; the rate-limit burst should draw on an actor from that
+world rather than on the standing test teacher. Then the check is idempotent
+across runs, which is what every other check in the drive already is.
+
+⚠️ **Not done tonight, on purpose**: receipts are bound to a tree, and this
+tree's receipts are already recorded. Changing the drive now would invalidate
+them and cost another full slow-gate pass. It is a one-file change for the next
+product run.
