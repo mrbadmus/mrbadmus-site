@@ -1035,3 +1035,151 @@ a number rather than the question, and it happened to a repair I ordered myself.
 **Ruling for night 3: automated length remediation is taken away from authoring
 lanes entirely**, and any lane reporting "I fixed X" has X re-measured from
 scratch by the examiner, never believed.
+
+---
+
+# NIGHT 2 · FINAL — what is on production, and three defects for the chat to ticket
+
+## F1 · Production counts, proved
+
+| bank | before | after | added |
+|---|---|---|---|
+| `ks3_assignment_bank` | 6,141 | **8,578** | +2,437 |
+| `ks4_assignment_bank` | 3,885 | **5,202** | +1,317 |
+| | | | **+3,754** |
+
+Target proved on every call from the service key's own JWT `ref` claim —
+`urklkrwevjtlfbwnipjn (PRODUCTION)` — never from a label beside it.
+
+| proof | result |
+|---|---|
+| KS3 aggregate checksum, Python ↔ production | `8fefbecd1480d71a143428ef51ddfabef24ed6dbcf5764baeb33a63900f66825` — **equal** |
+| KS4 aggregate checksum, Python ↔ production | `d7dc981f8ef47118537fe6d87d16416f4ca696515dea762e75b356f8a84d11fc` — **equal** |
+| KS3 auto windows | **0** lessons whose window below position 12 is anything but 4/4/4 |
+| KS4 auto windows | **0** subtopics whose window below 12 is anything but exactly 12 |
+| anon read, both banks | **`[]`** — HTTP 200, empty body, refused to the public |
+
+⚠️ Both sides run through the exporters' OWN `checksum()`, so neither engine's
+way of printing a container can reach the answer. Equal first time on both banks
+— the outcome §12 predicts once containers stop being compared as text.
+
+⚠️ **Every lesson and subtopic grew and NOT ONE automatic weekly assignment
+changes**, because `bank_position < 12` is byte-identical.
+
+⚠️ **One check could not run**: `--verify` (row-for-row, read through a
+STUDENT's session) needs `MRB_TEST_STUDENT_PASSWORD`, which is Mide's own
+account password and deliberately not shared. The tool refuses to call its
+absence a pass — "Exit 3 — this is NOT a pass." Night 1 recorded the same gap.
+The checksum is strong evidence, but it is read with a service key, not by the
+path a child reads by.
+
+## F2 · Shipped
+
+- **`main` `b3ca95d8a`** — 12 content commits + 4 MRB-342 commits.
+- **Backend `ddaa639`** live: build sha, branch `main`, `db: ok`.
+- **Live stamp proof**: the page flipped to `set-work.js?v=72c57e3d` on the
+  third poll, and the live asset is **byte-identical to the committed build**
+  by `cmp` (150,776 bytes). ⚠️ Page map checked FIRST — fetching a stamped asset
+  before its deploy pins stale bytes for a year under `_headers`' `immutable`.
+- **Unauthenticated live-check**: `POST /api/teacher/worksheet` → **401**;
+  `GET /api/class/worksheet` → **404**, no student route; teacher page 200.
+
+## F3 · SYS-7 — fixed and live (ruled by Mide, 13 Sep)
+
+Three frozen rows told pupils to taste laboratory products. Safety overrode the
+frozen-window rule; the hold to 21 Sep means no automatic set had drawn them.
+
+| row | before | after |
+|---|---|---|
+| `c3-05-h02` stem | drops that **taste salty** / **taste of nothing** | drops that **dry to a white crust** / **dry to nothing** |
+| `c3-04-h01` distractor | the drops will **taste salty** | will **leave a white crust when dried** |
+| `c3-01-s04` stem | Distilled water is pure and **tastes of nothing at all** | …and **is completely harmless to handle** |
+
+**288 keys compared, 0 changed.** Ids, positions and bands identical (9, 8, 7).
+Read back from production by id: no taste claim on any of the three.
+
+⚠️ Two of the three patches matched ZERO times on first attempt because the
+stems wrap across source lines, and the content-addressed guard refused rather
+than guessing — §9.3b earning itself.
+
+⊕ A narrow sweep confirms these three are the COMPLETE set of laboratory-product
+tasting rows. A broad taste/drink sweep hits 202 rows, but those are digestion,
+food chains, fermentation and alcohol units — legitimate science. And one row
+written tonight, `c6-01-h12`, teaches the rule rather than breaking it: its key
+is *"Unsound, because the bottle is unidentified and only known substances can
+be judged safe."*
+
+---
+
+# F4 · THE THREE DEFECTS — ticket-ready
+
+## ⓵ Shortest-option giveaway on 20 shipped leaves — NIGHT 3, before 21 Sep
+
+> **MRB-3xx · A pupil who always taps the shortest option beats guessing on 20
+> shipped leaves.** `verify_answer_lengths` and `mrb338_leafcheck` §4 measure
+> key-LONGEST only, so the mirror tell has never been watched. Repair is
+> distractor text only, keys untouched; frozen rows allowed (same reason as
+> SYS-7); each leaf re-measured from scratch by the examiner. Do not drive any
+> leaf below ~20% — that is the tell in the other direction.
+
+| # | leaf | key is shortest | of visible sets |
+|---|---|---|---|
+| 1 | `ks4_data/questions/biology/ecology__a.py` | **77.3%** | 17/22 |
+| 2 | `ks4_data/questions/biology/organisation.py` | **66.7%** | 6/9 |
+| 3 | `ks4_data/questions/chemistry/organic.py` | **66.7%** | 20/30 |
+| 4 | `ks4_data/questions/chemistry/resources.py` | **66.7%** | 10/15 |
+| 5 | `ks4_data/questions/biology/cell_biology__z338_stem_cells.py` | **64.7%** | 11/17 |
+| 6 | `ks4_data/questions/biology/ecology__b.py` | **52.6%** | 10/19 |
+| 7 | `ks3_data/b8/questions_01_aerobic_respiration.py` | **50.0%** | 9/18 |
+| 8 | `ks3_data/c2/questions_04_chemical_symbols.py` | **50.0%** | 4/8 |
+| 9 | `ks4_data/questions/chemistry/atmosphere.py` | **50.0%** | 4/8 |
+| 10 | `ks3_data/c6/questions_03_neutralisation.py` | **48.6%** | 17/35 |
+| 11 | `ks4_data/questions/chemistry/analysis.py` | **45.5%** | 10/22 |
+| 12 | `ks3_data/c6/questions_04_acid_plus_metal.py` | **44.4%** | 16/36 |
+| 13 | `ks4_data/questions/biology/cell_biology__z338_chromosomes_mitosis.py` | **44.4%** | 8/18 |
+| 14 | `ks3_data/c8/questions_02_mendeleev.py` | **42.9%** | 18/42 |
+| 15 | `ks4_data/questions/biology/cell_biology__z338_animal_plant_cells.py` | **42.1%** | 8/19 |
+| 16 | `ks3_data/p12/questions_03_gravity_earth_moon_and_sun.py` | **41.7%** | 5/12 |
+| 17 | `ks4_data/questions/chemistry/atmosphere__z338_atmosphere.py` | **39.1%** | 36/92 |
+| 18 | `ks3_data/c6/questions_05_acids_and_carbonates.py` | **38.9%** | 14/36 |
+| 19 | `ks4_data/questions/biology/infection_response.py` | **38.9%** | 7/18 |
+| 20 | `ks3_data/b1/questions_01_life_processes.py` | **35.7%** | 5/14 |
+
+**20 leaves above 35%** (chance is 25%).
+
+⚠️ **Most of the worst are SHIPPED baseline, untouched tonight.** `ecology__a`
+at 77.3% means a child tapping the shortest option is right more than three
+times in four, knowing no biology. Estate-wide the figure is a healthy 18.8%
+(909/4,825) — it is the concentration in these 20 that matters.
+
+## ⓶ Over-assertion — detector and rule DONE tonight; repair is NIGHT 3
+
+> **MRB-3xx · An absolute marks the wrong option across the shipped bank.**
+> "always / never / only / at all / genuinely / truly / actually" appears
+> **2,622 times in distractors against 208 in keys** — wrong **92.7%** of the
+> time against a **75%** chance baseline. A pupil who distrusts absolutes
+> eliminates a distractor for free. Repair shipped rows in the same night-3 lane
+> as ⓵; do not strip absolutes from distractors alone, which inverts the tell
+> rather than removing it.
+
+**Done tonight as ruled:** `mrb338_leafcheck` **check 10** measures it per leaf
+on NEW rows only, and `docs/mrb338/authoring-brief.md` **§9.11** is the rule.
+⚠️ The ruling's literal wording is "no more often than in the key" (d ≤ k), but
+every row has three distractors to one key, so chance alone gives d ≈ 3k. The
+test is therefore "significantly above chance", flagged above 85% on n ≥ 12 —
+the reasoning is in the code to be overruled rather than rediscovered.
+
+## ⓷ `set_work_drive` is unreliable — NIGHT 3, product lane
+
+> **MRB-3xx · A gate that answers differently on identical input.** Six runs on
+> 13 Sep gave five outcomes, with the CHECK COUNT varying 302 / 304 / 392 and
+> different checks failing each time — including `edit_shows_the_questions`,
+> which exists to pin the MRB-336 blank-rows fix. Two causes known: (a) the
+> rate-limit burst spends a 30/hour bucket shared across runs, so a re-run
+> cannot pass; (b) a 429 is parsed as a PDF, so exhaustion surfaces as a `pypdf`
+> traceback instead of a message. **Fix:** a fresh throwaway account per run for
+> the rate-limit checks, and check the HTTP status before parsing bytes.
+
+⚠️ It nearly cost in both directions tonight: an override was nearly written for
+a defect that did not exist, and a red worth reading could easily have been
+dismissed as more flakiness.
