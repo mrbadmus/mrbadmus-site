@@ -42,8 +42,8 @@ QUESTIONS = [
         "text": "State where in a cell most of its chemical reactions take "
                 "place.",
         "options": [
-            "In the nucleus, alongside the chromosomes",
-            "Inside the phospholipid layer of the cell membrane",
+            "In the nucleus",
+            "In the cell membrane",
             "In the cytoplasm",
             "In the permanent vacuole, among the cell sap",
         ],
@@ -61,9 +61,9 @@ QUESTIONS = [
                 "together to build a protein.",
         "options": [
             "A ribosome",
-            "A mitochondrion, using the energy released by respiration",
-            "The nuclear envelope, at one of its pores",
-            "A chloroplast, using the glucose made in photosynthesis",
+            "A nuclear pore",
+            "The nucleus",
+            "The cell membrane",
         ],
         "correct_index": 0,
         "why": "Ribosomes are the site of protein synthesis, joining amino "
@@ -221,8 +221,7 @@ QUESTIONS = [
             "Mitochondria store the glucose the plant made before it was put "
             "in the dark",
             "All living cells respire all the time, in their mitochondria",
-            "Mitochondria take over photosynthesis whenever no light is "
-            "available",
+            "Mitochondria take over photosynthesis when light is absent",
             "Mitochondria make the chlorophyll the plant will need when the "
             "light returns",
         ],
@@ -286,11 +285,9 @@ QUESTIONS = [
                 "and very many mitochondria, but no wall. Suggest what kind "
                 "of cell it is.",
         "options": [
-            "A plant cell taken from a root, where no light ever reaches it",
-            "A bacterial cell, because bacteria respire more quickly than "
-            "anything else",
-            "A plant cell from a potato tuber, which is storing starch "
-            "underground",
+            "A plant cell from a root, where the wall is very thin",
+            "A bacterial cell, since it has a nucleus too",
+            "A potato tuber cell, which stores starch instead of a wall",
             "An animal cell with a high energy demand",
         ],
         "correct_index": 3,
