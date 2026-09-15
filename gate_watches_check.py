@@ -23,6 +23,16 @@ mechanically, on every push:
      checked both by pattern text (so a pattern that's obviously docs-shaped
      is refused outright) and empirically, against this repo's own
      `README.md`, which must never match any gate's `watches`.
+  4. ⊕ MRB-346 follow-up, 15 Sep 2026. NOTHING outside `BANK_CONTENT_GATES`
+     matches a real question-bank file, checked empirically against one KS3
+     sample (`ks3_data/b2/questions_02_joints.py`) and one KS4 sample
+     (`ks4_data/questions/biology/organisation__z338_topic.py`). Proven
+     MRB-338 night 1: no site generator reads a `questions_*.py`/
+     `ks4_data/questions/**` file, so a gate outside that allowlist has no
+     legitimate reason to be selected — or to keep a stale-but-valid
+     receipt — over a bank-only edit. A gate that genuinely reads the bank
+     (a content audit, `set_work`, `ks4_pool_drive`, …) is named in the
+     allowlist below instead of being exempted by omission.
 
 ⚠️ A gate whose real source-of-truth genuinely lives under `docs/` (Design's
 `.dc.html` deliveries, a hand-maintained register) cannot close rule 3 and
@@ -39,6 +49,24 @@ import sys
 import gate_registry as g
 
 SENTINEL_NON_TRIGGER = "README.md"
+
+# ⊕ MRB-346 follow-up. Every gate here has been read and genuinely opens a
+# question-bank file (directly, or via `ks3_data.question_bank`/
+# `ks4_data.load_pool`) as part of what it asserts — see
+# `docs/mrb346/REPORT.md` for the read-by-read justification of each. A gate
+# NOT in this set may still watch `ks3_data/**`/`ks4_data/**` broadly for its
+# lesson/structure content, but must carry a `!.../questions_*.py`-style
+# exclusion so a bank-only edit cannot select it or stale a receipt for it.
+BANK_CONTENT_GATES = frozenset({
+    "verify_questions", "answer_positions", "answer_lengths",
+    "pool_ownership", "ks4_pool_check", "set_work_scope_check",
+    "export_ks3_questions_verify", "set_work", "ks4_pool_drive",
+})
+
+_QUESTIONS_SAMPLES = (
+    "ks3_data/b2/questions_02_joints.py",
+    "ks4_data/questions/biology/organisation__z338_topic.py",
+)
 
 
 def _looks_docs_shaped(pattern):
@@ -98,6 +126,25 @@ def check():
                 "gate's own code would not select it."
                 % (gate["name"], script))
 
+        if gate["name"] not in BANK_CONTENT_GATES:
+            for sample in _QUESTIONS_SAMPLES:
+                if g.matches_any(sample, watches):
+                    problems.append(
+                        "%s's `watches` matches %r, a question-bank file, "
+                        "but it is not in BANK_CONTENT_GATES — no site "
+                        "generator reads the bank (MRB-338 night 1), so this "
+                        "gate has no legitimate dependency on it. Add a "
+                        "`!.../questions_*.py`-style exclusion, or add the "
+                        "gate to BANK_CONTENT_GATES if it genuinely reads "
+                        "the bank." % (gate["name"], sample))
+
+    for name in sorted(BANK_CONTENT_GATES):
+        if name not in {gate["name"] for gate in g.GATES}:
+            problems.append(
+                "BANK_CONTENT_GATES names %r, which is not a registered "
+                "gate — delete the entry so this allowlist stays a "
+                "description of the registry." % name)
+
     return problems
 
 
@@ -110,8 +157,9 @@ def main():
         print()
         return 1
     print("✅ gate_watches_check: %d gate(s) — each watches its own "
-          "script, and none watch anything under docs/**, *.md, or README*."
-          % len(g.GATES))
+          "script, none watch anything under docs/**, *.md, or README*, and "
+          "only %d BANK_CONTENT_GATES can be selected by a question-bank "
+          "edit." % (len(g.GATES), len(BANK_CONTENT_GATES)))
     return 0
 
 

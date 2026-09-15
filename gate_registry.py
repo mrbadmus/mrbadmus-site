@@ -93,7 +93,14 @@ duplicated in `prepush_gate.py` and `gate_watches_check.py`.
 Pattern syntax: `**` matches anything including further `/`; `*` matches
 anything except `/` (one path segment); `?` matches one character except
 `/`. Every pattern is matched against a path from the repo root with no
-leading `/` (the same shape `git ls-tree`/`git diff --name-only` print).
+leading `/` (the same shape `git ls-tree`/`git diff --name-only` print). A
+pattern prefixed `!` is an EXCLUSION: a path must match at least one
+non-`!` pattern AND no `!` pattern to count as watched — the same sense as
+`.gitignore`'s negation. ⊕ MRB-346 follow-up, 15 Sep 2026: the question
+banks (`ks3_data/**/questions_*.py`, `ks4_data/questions/**`) are never
+read by any site generator (proven MRB-338 night 1), so a page-building
+gate that watches `ks3_data/**`/`ks4_data/**` broadly names an exclusion for
+them rather than listing every lesson/structure module by hand.
 
 RULE, UNCONDITIONAL: no gate's `watches` may name anything under `docs/**`,
 match `**/*.md`, or match `README*`. A docs-only change must never
@@ -128,8 +135,13 @@ def glob_to_regex(pattern):
 
 def matches_any(path, patterns):
     """Whether `path` (repo-root-relative, no leading `/`) matches any of
-    `patterns`."""
-    return any(glob_to_regex(p).match(path) for p in patterns)
+    `patterns` — a `!`-prefixed pattern EXCLUDES rather than includes; see
+    the module docstring."""
+    positive = [p for p in patterns if not p.startswith("!")]
+    negative = [p[1:] for p in patterns if p.startswith("!")]
+    if not any(glob_to_regex(p).match(path) for p in positive):
+        return False
+    return not any(glob_to_regex(p).match(path) for p in negative)
 
 
 def own_script(gate):
@@ -156,8 +168,14 @@ GATES = [
          cmd=["python3", "ks3_smoke.py", "--static"],
          speed="fast",
          watches=["ks3_smoke.py", "ks3_browser.py", "build_ks3.py",
-                  "ks3_art/**", "ks3_data/**", "shared/ks3.js",
-                  "shared/ks3.css", "mrbadmus_site/ks3/**"],
+                  "ks3_art/**", "ks3_data/**", "!ks3_data/**/questions_*.py",
+                  "shared/ks3.js", "shared/ks3.css", "mrbadmus_site/ks3/**"],
+         # ⊕ MRB-346 follow-up, 15 Sep 2026. This gate scans BUILT pages for
+         # garbage strings — it imports no `ks3_data` module at all, and
+         # `build_ks3.py` never reads a `questions_*.py` file (MRB-338 night
+         # 1), so a bank edit cannot change one byte of the pages this gate
+         # scans. Excluded rather than removing `ks3_data/**` outright,
+         # because the lesson/structure modules under it DO feed the build.
          why="garbage strings in the built key stage — unsubstituted "
              "placeholders, stray markup, `undefined` reaching a page."),
 
@@ -261,10 +279,21 @@ GATES = [
          watches=["verify_ks3.py", "ks3_parity.py", "ks3_canvas.py",
                   "ks3_figure_sweep.py", "ks3_overflow.py", "ks3_browser.py",
                   "build_ks3.py", "ks3_art/**", "ks3_data/**",
+                  "!ks3_data/**/questions_*.py",
                   "generate_site_v5.py", "shared/ks3.js", "shared/ks3.css",
                   "shared/class-entry.js", "shared/mrbadmus.v2.js",
                   "shared/nav.css", "shared/styles.css", "shared/tokens.css",
                   "mrbadmus_site/ks3/**", "mrbadmus_site/shared/**"],
+         # ⊕ MRB-346 follow-up, 15 Sep 2026. The bank IS read here — the
+         # embedded MRB-278 answer-position check at the bottom of
+         # `verify_ks3.py` opens `ks3_data.question_bank.load_bank()` — but
+         # that check's own comment (`verify_answer_positions.py`: "thresholds
+         # match verify_ks3's MRB-278 check exactly") and the standalone
+         # `answer_positions` gate (kept watching the full bank, unchanged)
+         # measure the identical property. A bank-only edit that moves an
+         # answer position is still caught, just by the gate built for it.
+         # `build_ks3.py` itself never reads a `questions_*.py` file at all
+         # (MRB-338 night 1), so nothing else this umbrella drives can move.
          why="the §9 slice gates — the umbrella. Rebuilds the key stage and "
              "drives every lesson in headless Chrome."),
 
@@ -273,10 +302,22 @@ GATES = [
          speed="slow",
          watches=["student_parity.py", "ks3_parity.py", "ks3_browser.py",
                   "build_student.py", "student_switches.json", "ks3_data/**",
+                  "!ks3_data/**/questions_*.py",
                   "shared/student-breakpoints.js", "shared/student-ds.css",
                   "mrbadmus_site/student/class-preview.html",
                   "mrbadmus_site/student/assignment-preview.html"],
          needs="student_parity.py",
+         # ⊕ MRB-346 follow-up, 15 Sep 2026. Layer H's
+         # `run_no_generic_right_answer_line` genuinely opens
+         # `ks3_data.question_bank.load_bank()` looking for a CORRECT option
+         # with a `why` — but `ks3_data/question_bank.py:407` (enforced by
+         # `verify_questions`, kept watching the full bank) refuses any
+         # correct option that carries a `why` at all, unconditionally. A
+         # bank edit can never give Layer H's bank-side branch anything to
+         # find; the check's only live coverage is the LADDER half, which
+         # `lesson_*.py` files (still watched) feed. Nothing else in this
+         # gate touches the bank — it previews Design's file, which
+         # `build_student.py` builds without ever reading a `questions_*.py`.
          why="the generated student previews against Design's own file, "
              "layers A-H at 360/390/820/1460."),
 
@@ -856,9 +897,18 @@ GATES = [
          cmd=["python3", "tools/export_curriculum_tree.py", "--check"],
          speed="fast",
          watches=["tools/export_curriculum_tree.py", "ks3_data/**",
-                  "ks4_data/**", "ks4_seed_sow.py", "generate_site_v5.py",
+                  "!ks3_data/**/questions_*.py",
+                  "ks4_data/**", "!ks4_data/questions/**",
+                  "ks4_seed_sow.py", "generate_site_v5.py",
                   "all_subtopics_*.py"],
          needs="tools/export_curriculum_tree.py",
+         # ⊕ MRB-346 follow-up, 15 Sep 2026. `build_ks3()` reads only
+         # `ks3_data.build_units()` (unit/lesson STRUCTURE); `build_ks4()`
+         # reads `ks4_data.classify()`, which imports `ks4_seed_sow` and
+         # nothing under `ks4_data/questions/` — confirmed by reading
+         # `classify()` itself, which never imports `ks4_data.questions`.
+         # This tree mirrors topic/subtopic/tier/paper metadata, never a
+         # question row, so a bank-only edit changes nothing it exports.
          why="MRB-335 — THE BACKEND'S COPY OF THE CURRICULUM HAS NOT DRIFTED. "
              "The curriculum is authored in this repo's Python — "
              "`PATHWAY_TOPIC_MAP` orders the topics, `ks4_data.classify()` "
@@ -1089,9 +1139,15 @@ GATES = [
     dict(name="ks3_key_audit",
          cmd=["python3", "ks3_key_audit.py"],
          speed="fast",
-         watches=["ks3_key_audit.py", "ks3_data/**", "ks3_art/**",
+         watches=["ks3_key_audit.py", "ks3_data/**",
+                  "!ks3_data/**/questions_*.py", "ks3_art/**",
                   "build_ks3.py", "shared/ks3.js", "shared/ks3.css",
                   "ks3_parity.py", "verify_ks3.py", "ks3_statutory.py"],
+         # ⊕ MRB-346 follow-up, 15 Sep 2026. `SOURCES` (this file's own
+         # inventory of what it audits) names `build_ks3.py`, `ks3_art/**`
+         # and each unit's `__init__.py` — never a `questions_*.py`. A
+         # payload key is read by a renderer or it is not; the bank has no
+         # renderer.
          why="every authored data key against the code that reads it. An "
              "authored key nothing reads is teaching that was written and "
              "never rendered — invisible in a screenshot, because what is "
@@ -1121,8 +1177,14 @@ GATES = [
          cmd=["python3", "ks3_instrument_liveness.py"],
          speed="slow",
          watches=["ks3_instrument_liveness.py", "ks3_browser.py",
-                  "ks3_art/**", "ks3_data/**", "build_ks3.py",
-                  "shared/ks3.js", "shared/ks3.css", "mrbadmus_site/ks3/**"],
+                  "ks3_art/**", "ks3_data/**", "!ks3_data/**/questions_*.py",
+                  "build_ks3.py", "shared/ks3.js", "shared/ks3.css",
+                  "mrbadmus_site/ks3/**"],
+         # ⊕ MRB-346 follow-up, 15 Sep 2026. Derives its unit/lesson list
+         # from `ks3_data.build_units()` (structure only) and presses
+         # instruments on BUILT pages; `build_ks3.py` never reads a
+         # `questions_*.py`, so an instrument this gate can press cannot be
+         # changed by a bank edit.
          why="the only gate that PRESSES THE BUTTONS. Every other KS3 gate "
              "measures the page at rest, so a dead instrument passes parity, "
              "overflow and contrast and does nothing when a student touches "
