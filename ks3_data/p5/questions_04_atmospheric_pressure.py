@@ -323,7 +323,7 @@ QUESTIONS = [
              "correct": False,
              "why": "Birds are held up by their wings pushing air down, not "
                     "by an upward-only pressure."},
-            {"text": "only on surfaces facing the sky", "correct": False,
+            {"text": "only on surfaces that are facing the open sky", "correct": False,
              "why": "A vertical window has the same air pressure on it as a "
                     "horizontal one."},
         ],
@@ -532,9 +532,9 @@ QUESTIONS = [
         "text": "A sealed plastic bottle is emptied at the top of a mountain, "
                 "capped, and carried down. What happens to it?",
         "options": [
-            {"text": "Nothing, because it is sealed", "correct": False,
+            {"text": "Nothing, because a sealed bottle keeps its own air", "correct": False,
              "why": "Being sealed is what makes it happen: the outside "
-                    "pressure changes and the inside cannot."},
+                    "pressure changes and the air inside cannot."},
             {"text": "It swells, because the air inside expands as it warms "
                      "on the way down",
              "correct": False,
@@ -555,7 +555,8 @@ QUESTIONS = [
         "band": "standard",
         "text": "Why would a rubber suction cup be useless on the Moon?",
         "options": [
-            {"text": "Because the Moon's gravity is too weak to hold it on",
+            {"text": "Because the Moon's gravity is far too weak to hold "
+                     "the cup against the surface",
              "correct": False,
              "why": "It is not gravity that holds a suction cup on; "
                     "atmospheric pressure is."},
@@ -663,7 +664,7 @@ QUESTIONS = [
              "correct": False,
              "why": "Warmth comes from the heating system; pressurising is "
                     "about breathing."},
-            {"text": "To stop the wings icing up", "correct": False,
+            {"text": "To stop ice forming on the wings up there", "correct": False,
              "why": "De-icing is handled separately and has nothing to do "
                     "with cabin pressure."},
         ],
@@ -725,7 +726,8 @@ QUESTIONS = [
         "text": "A mercury barometer stands about 760 mm tall, but a water "
                 "one would need to be over 10 m. Why?",
         "options": [
-            {"text": "Because water evaporates and mercury does not",
+            {"text": "Because water evaporates out of the tube and mercury "
+                     "does not",
              "correct": False,
              "why": "Evaporation is a nuisance in the design, but it is not "
                     "what sets the height."},
@@ -787,11 +789,11 @@ QUESTIONS = [
             {"text": "Gravity barely changes; the air pressure OUTSIDE the "
                      "bag has fallen",
              "correct": True},
-            {"text": "The bag does not swell at all — it stays exactly as it "
-                     "was",
+            {"text": "The bag does not swell at all — it stays exactly the "
+                     "size it was down on the ground",
              "correct": False,
-             "why": "It swells noticeably, which is why the question is worth "
-                    "asking."},
+             "why": "It swells noticeably, which is why the question is "
+                    "worth asking."},
         ],
         "figure": None,
     },
@@ -900,7 +902,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The plunger touches only the air, and a liquid cannot be "
                     "pulled from a distance."},
-            {"text": "A vacuum forms and draws the liquid up",
+            {"text": "A vacuum forms inside the barrel and draws the liquid "
+                     "up",
              "correct": False,
              "why": "A vacuum draws nothing; it simply stops pushing back."},
             {"text": "The pressure inside falls, so the atmosphere pushes the "
@@ -911,6 +914,1133 @@ QUESTIONS = [
              "correct": False,
              "why": "The liquid is far heavier than air, which is why it "
                     "needs the atmosphere to push it."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p5-04-e14",
+        "band": "easier",
+        "text": "A barometer reads 75 kPa. Written in pascals, that is…",
+        "options": [
+            {"text": "75 000 Pa", "correct": True},
+            {"text": "7500 Pa", "correct": False,
+             "why": "That multiplies by a hundred. A kilopascal is a thousand "
+                    "pascals."},
+            {"text": "0.075 Pa", "correct": False,
+             "why": "That divides by a thousand, when the kilopascal is the "
+                    "larger unit of the two."},
+            {"text": "75 Pa", "correct": False,
+             "why": "That drops the kilo altogether, leaving a pressure a "
+                    "thousand times too small."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e15",
+        "band": "easier",
+        "text": "A football is weighed flat, then pumped up hard and weighed "
+                "again. What happens to the reading?",
+        "options": [
+            {"text": "It drops, because the ball is now full of nothing but "
+                     "air",
+             "correct": False,
+             "why": "Air is light, but it is not weightless, so adding it "
+                    "cannot take weight away."},
+            {"text": "It stays exactly where it was, because air weighs "
+                     "nothing", "correct": False,
+             "why": "Air has weight, which is the whole reason the atmosphere "
+                    "presses on us."},
+            {"text": "It rises slightly, because air has weight",
+             "correct": True},
+            {"text": "It rises sharply, roughly doubling once the ball is "
+                     "hard",
+             "correct": False,
+             "why": "The air squeezed into a ball weighs a few grams, so "
+                    "the change is small."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e16",
+        "band": "easier",
+        "text": "What makes the wind blow?",
+        "options": [
+            {"text": "The Earth turning underneath the air", "correct": False,
+             "why": "The air turns with the Earth, so the spin by itself "
+                    "produces no wind."},
+            {"text": "Air moving from where the pressure is higher to where "
+                     "it is lower", "correct": True},
+            {"text": "Clouds pushing the air along in front of them",
+             "correct": False,
+             "why": "Clouds are carried by the wind rather than being what "
+                    "drives it."},
+            {"text": "The air being pulled towards whichever place is coldest "
+                     "at the time", "correct": False,
+             "why": "Temperature shifts the pressure about, and it is the "
+                    "pressure difference that moves the air."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e17",
+        "band": "easier",
+        "text": "The layer of air pressing on you at sea level is roughly…",
+        "options": [
+            {"text": "1 km deep, with empty space above that", "correct": False,
+             "why": "There is plenty of air above 1 km; an airliner cruises "
+                    "eleven times higher and still meets some."},
+            {"text": "10 km deep, ending sharply at the top", "correct": False,
+             "why": "Ten kilometres up is roughly cruising height, and the "
+                    "air carries on well above it."},
+            {"text": "1000 km deep, and just as thick all the way",
+             "correct": False,
+             "why": "Nothing like that much air is above us, and what there "
+                    "is thins out rather than staying even."},
+            {"text": "100 km deep, thinning out towards the top",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p5-04-s14",
+        "band": "standard",
+        "text": "A walker's watch shows their height above sea level from a "
+                "pressure sensor. How can that work?",
+        "options": [
+            {"text": "The watch counts each step and works the height out "
+                     "from that", "correct": False,
+             "why": "Counting steps is a separate trick, and it would not "
+                    "need a pressure sensor at all."},
+            {"text": "Air pressure falls steadily with height, so a reading "
+                     "can be turned into a height", "correct": True},
+            {"text": "Air pressure rises with height, so the biggest reading "
+                     "of the day is the summit itself", "correct": False,
+             "why": "The reading falls as a walker climbs, because less air "
+                    "is left above them."},
+            {"text": "The sensor measures how hard the wind is pressing on "
+                     "the watch", "correct": False,
+             "why": "Wind is a separate matter, and the reading changes on a "
+                    "still day as a walker climbs."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s15",
+        "band": "standard",
+        "text": "Food cooks faster in a sealed pressure cooker than in an "
+                "open pan. Why?",
+        "options": [
+            {"text": "The lid traps the steam, so no heat can leave the pan "
+                     "at all", "correct": False,
+             "why": "Heat still leaves through the metal, and a tightly "
+                    "lidded ordinary pan does not cook nearly as fast."},
+            {"text": "The higher pressure inside forces the food apart from "
+                     "the outside in", "correct": False,
+             "why": "The pressure is not squeezing the food; it is changing "
+                    "the temperature the water reaches."},
+            {"text": "The pressure pushes the heat into the food from every "
+                     "side of the pan at once", "correct": False,
+             "why": "Pressure does not carry heat about. What it changes is "
+                    "the point at which the water boils."},
+            {"text": "The higher pressure inside raises the temperature at "
+                     "which the water boils", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s16",
+        "band": "standard",
+        "text": "A climber's tent has a flat panel of area 3 m². At 5500 m "
+                "the air presses with 50 kPa. What force acts on the panel?",
+        "options": [
+            {"text": "150 000 N", "correct": True},
+            {"text": "150 N", "correct": False,
+             "why": "That multiplies 50 by 3 and leaves the pressure in "
+                    "kilopascals, so the answer is a thousand times too "
+                    "small."},
+            {"text": "16 667 N", "correct": False,
+             "why": "That divides 50 000 by 3, where the rearrangement "
+                    "multiplies."},
+            {"text": "50 000 N", "correct": False,
+             "why": "That is the converted pressure with the unit swapped, "
+                    "before the panel area is multiplied in."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s17",
+        "band": "standard",
+        "text": "A sink plunger that grips a smooth tile refuses to grip a "
+                "rough brick. Why?",
+        "options": [
+            {"text": "Brick is far too heavy for a plunger to lift off a wall",
+             "correct": False,
+             "why": "The plunger is not lifting the wall, and it fails on a "
+                    "loose rough tile as well."},
+            {"text": "Rubber cannot bend far enough to reach into brick",
+             "correct": False,
+             "why": "The rubber shapes itself readily; the trouble is the "
+                    "gaps that are left when it does."},
+            {"text": "Air leaks in through the rough surface, so the push "
+                     "from inside comes back", "correct": True},
+            {"text": "Brick soaks up the air squeezed out of the cup, so "
+                     "there is nothing to hold on to", "correct": False,
+             "why": "Nothing soaks up air. It simply seeps back in through "
+                    "the gaps under the rim."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p5-04-h14",
+        "band": "harder",
+        "text": "Air pressure drops by about 11 kPa over the first kilometre "
+                "of a climb, but by 8 kPa between 8.85 km and 11 km. Why?",
+        "options": [
+            {"text": "Gravity weakens with height, so the upper air presses "
+                     "less than it would", "correct": False,
+             "why": "Gravity is within a fraction of a per cent of its ground "
+                    "value at these heights."},
+            {"text": "The upper air is colder, and cold air presses less "
+                     "whatever else is true", "correct": False,
+             "why": "Cold air is denser for its volume, so on its own that "
+                    "would work the other way."},
+            {"text": "Air is squashable, so most of its mass is packed into "
+                     "the lowest few kilometres", "correct": True},
+            {"text": "The atmosphere comes to an end at about 11 km, so there "
+                     "is very little left to lose", "correct": False,
+             "why": "The air carries on far above 11 km, thinning out without "
+                    "stopping."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h15",
+        "band": "harder",
+        "text": "A mercury barometer standing 760 mm tall at a beach is "
+                "carried to a mountain hut. What does the column do?",
+        "options": [
+            {"text": "It falls, because less air is pushing down on the dish",
+             "correct": True},
+            {"text": "It rises, because the thinner air lets the mercury "
+                     "climb further", "correct": False,
+             "why": "Thin air gives a weaker push on the dish, so it holds up "
+                    "a shorter column."},
+            {"text": "It stays at 760 mm, because the instrument is sealed",
+             "correct": False,
+             "why": "The dish at the bottom is open to the air, which is what "
+                    "the instrument is weighing."},
+            {"text": "It rises, because the mercury weighs less higher up",
+             "correct": False,
+             "why": "Mercury weighs practically the same on a summit as on a "
+                    "beach."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h16",
+        "band": "harder",
+        "text": "Sealing an empty can at room temperature leaves it in one "
+                "piece, yet sealing it full of steam and cooling it crushes "
+                "it. What is the difference?",
+        "options": [
+            {"text": "Cooling makes thin metal weak, so a chilled can gives "
+                     "way under its own weight", "correct": False,
+             "why": "A can in a fridge does not fold, so cooling the metal is "
+                    "not what does it."},
+            {"text": "Sealing warm air in leaves a partial vacuum that grips "
+                     "the can's walls from inside", "correct": False,
+             "why": "There is nothing to grip with: a vacuum has no pull of "
+                    "any kind."},
+            {"text": "Steam is heavier than air, so as it cools it drags the "
+                     "can's walls inwards with it", "correct": False,
+             "why": "Steam is lighter than air for its volume, and a gas "
+                    "cannot drag a wall anywhere."},
+            {"text": "The sealed air presses out as hard as the air outside, "
+                     "and cooled steam does not", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h17",
+        "band": "harder",
+        "text": "Atmospheric pressure at sea level is about 100 000 Pa. "
+                "Roughly what does the air above one square metre of ground "
+                "weigh?",
+        "options": [
+            {"text": "About 100 N, since a column of air is light",
+             "correct": False,
+             "why": "A column of air a hundred kilometres tall is not light, "
+                    "and 100 N would be a small bag of shopping."},
+            {"text": "About 100 000 N", "correct": True},
+            {"text": "About 1 N, because the air is spread so thinly",
+             "correct": False,
+             "why": "Thin at the top, thick at the bottom, and the whole "
+                    "column comes to far more than a newton."},
+            {"text": "Nothing at all, because a gas has no weight",
+             "correct": False,
+             "why": "A gas has weight, and this weight is exactly what the "
+                    "pressure is measuring."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up, second pass · easier ─────────────────────────────
+    {
+        "id": "p5-04-e18",
+        "band": "easier",
+        "text": "A pressure of 50 000 Pa written in kilopascals is…",
+        "options": [
+            {"text": "50 kPa", "correct": True},
+            {"text": "500 kPa", "correct": False,
+             "why": "That divides by a hundred; a kilopascal is a thousand "
+                    "pascals."},
+            {"text": "5 kPa", "correct": False,
+             "why": "That divides by ten thousand, which is an area "
+                    "conversion rather than a prefix."},
+            {"text": "50 000 000 kPa", "correct": False,
+             "why": "That multiplies by a thousand, when going to the larger "
+                    "unit makes the number smaller."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e19",
+        "band": "easier",
+        "text": "At about 2500 m up a mountain, water in an open pan boils "
+                "at roughly…",
+        "options": [
+            {"text": "100 °C", "correct": False,
+             "why": "100 °C is the sea-level figure, and it is a fact about "
+                    "sea level rather than about water."},
+            {"text": "92 °C", "correct": True},
+            {"text": "108 °C", "correct": False,
+             "why": "A boiling point above 100 °C needs a pressure higher "
+                    "than sea level's, not lower."},
+            {"text": "71 °C", "correct": False,
+             "why": "71 °C is roughly the figure at the summit of Everest, "
+                    "three times as high up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e20",
+        "band": "easier",
+        "text": "At sea level the atmosphere can hold up a column of mercury "
+                "about…",
+        "options": [
+            {"text": "76 mm tall", "correct": False,
+             "why": "That is a tenth of the real height, which would be about "
+                    "the length of a thumb."},
+            {"text": "76 m tall", "correct": False,
+             "why": "That is a hundred times too tall; water is the liquid "
+                    "that needs metres rather than millimetres."},
+            {"text": "760 mm tall", "correct": True},
+            {"text": "7600 mm tall", "correct": False,
+             "why": "That is ten times too tall, and a barometer that size "
+                    "would not fit in a room."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e21",
+        "band": "easier",
+        "text": "On a weather map, a place marked as a 'low' is one where…",
+        "options": [
+            {"text": "the ground is lower than the land around it",
+             "correct": False,
+             "why": "A weather map marks pressure rather than the shape of "
+                    "the land."},
+            {"text": "the air is colder than usual", "correct": False,
+             "why": "Temperature is shown separately; a low is named for its "
+                    "pressure."},
+            {"text": "the cloud is lower than usual", "correct": False,
+             "why": "Cloud height is a different measurement, and the map "
+                    "lines are pressure lines."},
+            {"text": "the air pressure at the ground is below normal",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e22",
+        "band": "easier",
+        "text": "How does a vacuum cleaner pick up dust?",
+        "options": [
+            {"text": "It sucks the dust in through the nozzle",
+             "correct": False,
+             "why": "Nothing sucks. The cleaner lowers a pressure and the "
+                    "outside air does the pushing."},
+            {"text": "It lowers the pressure inside, so the outside air "
+                     "pushes air and dust in", "correct": True},
+            {"text": "It charges the dust so that the bag attracts it",
+             "correct": False,
+             "why": "Some air cleaners do use charge, and an ordinary vacuum "
+                    "cleaner works by moving air."},
+            {"text": "It blows air out of the nozzle to lift the dust",
+             "correct": False,
+             "why": "Air is drawn in at the nozzle; blowing out would scatter "
+                    "the dust instead."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e23",
+        "band": "easier",
+        "text": "A tied party balloon is put inside a jar and the air is "
+                "pumped out of the jar. What does the balloon do?",
+        "options": [
+            {"text": "It shrinks, because there is less to hold it up",
+             "correct": False,
+             "why": "It was the outside air that held it in, and there is "
+                    "less of that now."},
+            {"text": "It swells", "correct": True},
+            {"text": "It stays exactly as it was, because it is tied",
+             "correct": False,
+             "why": "Being tied keeps the air in; it does not stop the skin "
+                    "stretching when the outside push falls."},
+            {"text": "It floats to the top of the jar", "correct": False,
+             "why": "Removing the air removes the upthrust as well, so it "
+                    "will not float."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e24",
+        "band": "easier",
+        "text": "At the bottom of a deep mine shaft, the air pressure is…",
+        "options": [
+            {"text": "lower than at the surface", "correct": False,
+             "why": "Going down puts more air above you, and it is the air "
+                    "above that presses."},
+            {"text": "the same as at the surface", "correct": False,
+             "why": "The extra depth of air above makes a real, measurable "
+                    "difference."},
+            {"text": "higher than at the surface", "correct": True},
+            {"text": "zero, because the shaft is sealed from the sky",
+             "correct": False,
+             "why": "A mine shaft is open to the air above it, and the "
+                    "atmosphere reaches all the way down."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e25",
+        "band": "easier",
+        "text": "An airliner's cabin at cruising height is held at roughly the "
+                "air pressure found at…",
+        "options": [
+            {"text": "sea level", "correct": False,
+             "why": "Holding a full sea-level pressure would make the hull "
+                    "fight a much larger difference than it need."},
+            {"text": "2000 to 2400 m", "correct": True},
+            {"text": "8850 m, the summit of Everest", "correct": False,
+             "why": "Summit pressure is about a third of sea level's, far too "
+                    "little for passengers to be comfortable."},
+            {"text": "11 000 m, the height it is flying at", "correct": False,
+             "why": "The air at cruising height is about 23 kPa, too little "
+                    "to keep anyone conscious."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e26",
+        "band": "easier",
+        "text": "As a weather balloon climbs, the gas sealed inside it…",
+        "options": [
+            {"text": "shrinks, because the cold squeezes it", "correct": False,
+             "why": "Cold does shrink a gas a little, and the fall in outside "
+                    "pressure more than outweighs it."},
+            {"text": "stays exactly the same size, because it is sealed",
+             "correct": False,
+             "why": "Being sealed keeps the gas in; it does not stop the skin "
+                    "stretching as the outside push falls."},
+            {"text": "expands, because the air outside presses less",
+             "correct": True},
+            {"text": "leaks away, because low pressure pulls it out",
+             "correct": False,
+             "why": "Low pressure pulls on nothing, and a sealed balloon has "
+                    "nowhere for the gas to go."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e27",
+        "band": "easier",
+        "text": "What would a barometer read if it were set down on the "
+                "surface of the Moon?",
+        "options": [
+            {"text": "About 101 kPa, the same as on Earth", "correct": False,
+             "why": "101 kPa is the push of Earth's atmosphere, and the Moon "
+                    "has none to speak of."},
+            {"text": "About half of its Earth reading", "correct": False,
+             "why": "Half would still need a substantial atmosphere, which "
+                    "the Moon does not have."},
+            {"text": "Almost nothing", "correct": True},
+            {"text": "More than on Earth, because there is no air in the way",
+             "correct": False,
+             "why": "It is air in the way that a barometer measures, so no "
+                    "air means no reading."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e28",
+        "band": "easier",
+        "text": "The air pressure at the summit of Everest is roughly what "
+                "share of the sea-level value?",
+        "options": [
+            {"text": "About nine tenths", "correct": False,
+             "why": "Nine tenths would be reached after about a kilometre of "
+                    "climbing, not nine."},
+            {"text": "About a half", "correct": False,
+             "why": "Half is reached at about 5500 m, which is Everest base "
+                    "camp rather than the summit."},
+            {"text": "About a hundredth", "correct": False,
+             "why": "A hundredth is far higher still, well above anywhere a "
+                    "person can climb."},
+            {"text": "About a third", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e29",
+        "band": "easier",
+        "text": "Tightly packed pressure lines on a weather map mean…",
+        "options": [
+            {"text": "a strong wind", "correct": True},
+            {"text": "still air", "correct": False,
+             "why": "Still air sits where the pressure hardly changes from "
+                    "place to place, so the lines are far apart."},
+            {"text": "heavy rain", "correct": False,
+             "why": "Rain is shown separately; the lines themselves are about "
+                    "pressure and wind."},
+            {"text": "high ground", "correct": False,
+             "why": "Height is marked on a different kind of map altogether."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-e30",
+        "band": "easier",
+        "text": "Where on Earth is atmospheric pressure greatest?",
+        "options": [
+            {"text": "At the top of the highest mountains", "correct": False,
+             "why": "That is where it is least, because most of the air is "
+                    "below you there."},
+            {"text": "At sea level", "correct": True},
+            {"text": "Halfway up a mountain", "correct": False,
+             "why": "Halfway up, some of the air is already below you, so the "
+                    "reading has fallen."},
+            {"text": "At the top of the atmosphere", "correct": False,
+             "why": "Almost nothing is left above you up there, so almost "
+                    "nothing is pressing."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up, second pass · standard ───────────────────────────
+    {
+        "id": "p5-04-s18",
+        "band": "standard",
+        "text": "Two metal hemispheres are pumped empty and held together "
+                "across a flat circle of 0.05 m². Air presses with "
+                "100 000 Pa. What force is needed to part them?",
+        "options": [
+            {"text": "2 000 000 N", "correct": False,
+             "why": "That divides by the area, where force = pressure × area "
+                    "multiplies."},
+            {"text": "5000 N", "correct": True},
+            {"text": "100 000 N", "correct": False,
+             "why": "That is the pressure with the unit swapped, before the "
+                    "circle's area is multiplied in."},
+            {"text": "0.05 N", "correct": False,
+             "why": "That is the area with a newton written after it, with no "
+                    "pressure used at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s19",
+        "band": "standard",
+        "text": "An egg takes longer to boil soft at an Alpine village 2500 m "
+                "up than it does at the coast. Why?",
+        "options": [
+            {"text": "Stoves burn less strongly in thin air, so a pan of "
+                     "water up there takes far longer to heat up", "correct": False,
+             "why": "A stronger stove makes no difference: the water still "
+                    "cannot get past its boiling point."},
+            {"text": "The water boils at about 92 °C there, so the egg cooks "
+                     "at a lower temperature", "correct": True},
+            {"text": "The water starts out colder up a mountain, so it has "
+                     "further to go", "correct": False,
+             "why": "The starting temperature changes how long the heating "
+                    "takes, not how hot the boiling water gets."},
+            {"text": "The lower pressure squeezes the shell, so heat gets in "
+                     "more slowly", "correct": False,
+             "why": "Lower pressure squeezes less, not more, and a shell is "
+                    "not what limits the cooking."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s20",
+        "band": "standard",
+        "text": "A weather balloon released at sea level has burst by the time "
+                "it reaches 30 km. Why?",
+        "options": [
+            {"text": "The air up there is so cold that the rubber freezes "
+                     "hard and shatters like thin glass",
+             "correct": False,
+             "why": "Rubber does not shatter at altitude, and the balloon "
+                    "is stretched far past its limit whatever the "
+                    "temperature."},
+            {"text": "The air outside thins, so the gas inside expands until "
+                     "the skin splits", "correct": True},
+            {"text": "The balloon is struck by something at that height",
+             "correct": False,
+             "why": "There is nothing to strike it, and every such balloon "
+                    "bursts at a similar height."},
+            {"text": "The low pressure outside pulls the skin apart",
+             "correct": False,
+             "why": "Low pressure pulls on nothing; the push from inside is "
+                    "what stretches the skin."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s21",
+        "band": "standard",
+        "text": "A cabin door on an airliner is almost impossible to open "
+                "during a flight. Why?",
+        "options": [
+            {"text": "The cabin is at a higher pressure than the air outside, "
+                     "so a large force presses the door into its frame",
+             "correct": True},
+            {"text": "The air rushing past the aircraft holds the door shut",
+             "correct": False,
+             "why": "The airflow outside is not what holds it; a parked "
+                    "aircraft with a pressurised cabin behaves the same way."},
+            {"text": "The door is locked mechanically and cannot be moved at "
+                     "all", "correct": False,
+             "why": "It is locked as well, and the pressure difference alone "
+                    "would make it immovable."},
+            {"text": "The air outside presses harder at cruising height "
+                     "than it does down on the ground, and that push holds "
+                     "the door firmly shut", "correct": False,
+             "why": "The outside air presses far less at cruising height; "
+                    "the cabin is the high-pressure side."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s22",
+        "band": "standard",
+        "text": "Water in a flask can be made to boil at room temperature by "
+                "pumping the air out above it. Why?",
+        "options": [
+            {"text": "The pump heats the water as it works", "correct": False,
+             "why": "The water stays at room temperature throughout, which is "
+                    "the point of the demonstration."},
+            {"text": "Water boils whenever it is disturbed enough, and a "
+                     "working pump shakes the flask hard",
+             "correct": False,
+             "why": "Stirring or shaking water does not boil it; the "
+                    "pressure above it is what has changed."},
+            {"text": "The vapour can push the thin air away at a much lower "
+                     "temperature", "correct": True},
+            {"text": "The vacuum pulls the water apart into a gas",
+             "correct": False,
+             "why": "A vacuum pulls on nothing; what has gone is the push "
+                    "that was holding the vapour back."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s23",
+        "band": "standard",
+        "text": "A sealed rigid tin and a sealed foil bag are both carried "
+                "from sea level up to 5500 m. What happens to each?",
+        "options": [
+            {"text": "Both swell up until they split open", "correct": False,
+             "why": "A rigid tin holds its shape; only something that can "
+                    "stretch shows the change."},
+            {"text": "The bag swells while the tin keeps its shape",
+             "correct": True},
+            {"text": "The tin swells while the bag stays flat", "correct": False,
+             "why": "That is the wrong way round: the bag is the one that can "
+                    "stretch."},
+            {"text": "Both are crushed inwards by the thin air",
+             "correct": False,
+             "why": "Thin air presses less, so anything sealed at sea level "
+                    "is pushed outwards rather than inwards."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s24",
+        "band": "standard",
+        "text": "A window in a mountain hut is 0.8 m². The air outside presses "
+                "with 75 kPa and the air inside with 75 kPa. What is the net "
+                "force on the glass?",
+        "options": [
+            {"text": "60 000 N, pushing inwards", "correct": False,
+             "why": "60 000 N is the push from one side alone, and the other "
+                    "side pushes back just as hard."},
+            {"text": "120 000 N, pushing inwards", "correct": False,
+             "why": "That adds the two pushes, when they act against each "
+                    "other."},
+            {"text": "Zero", "correct": True},
+            {"text": "60 000 N, pushing outwards", "correct": False,
+             "why": "The inside push is real, and so is the outside one; "
+                    "neither wins when the two pressures match."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s25",
+        "band": "standard",
+        "text": "A straw still works at the top of a mountain, where the air "
+                "presses far less. Why?",
+        "options": [
+            {"text": "Because a straw does not need air pressure to work at "
+                     "all", "correct": False,
+             "why": "It needs it entirely: on the Moon nothing would rise up "
+                    "the straw."},
+            {"text": "Because the drink is closer to the top of the straw up "
+                     "there", "correct": False,
+             "why": "The drink sits in its glass exactly as it does at sea "
+                    "level."},
+            {"text": "Because breathing in harder makes up for the thinner "
+                     "air", "correct": False,
+             "why": "How hard you breathe in sets the pressure in your mouth, "
+                    "and it is the outside air that has to do the pushing."},
+            {"text": "Because there is still air pressing on the drink, just "
+                     "less of it", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s26",
+        "band": "standard",
+        "text": "At 5500 m a barometer reads about half its sea-level value. "
+                "What does that tell you about the atmosphere?",
+        "options": [
+            {"text": "That about half its weight is below that height",
+             "correct": True},
+            {"text": "That the atmosphere ends at about 11 000 m",
+             "correct": False,
+             "why": "It thins out gradually and does not end; it is only half "
+                    "gone by 5500 m."},
+            {"text": "That the air up there is half as cold", "correct": False,
+             "why": "A barometer reads a pressure, and temperature is a "
+                    "separate measurement."},
+            {"text": "That half the oxygen has been used up by that height",
+             "correct": False,
+             "why": "The share of oxygen stays at about 21% all the way up; "
+                    "it is the total amount of air that has halved."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s27",
+        "band": "standard",
+        "text": "At the bottom of a 1 km mine shaft a barometer reads about "
+                "113 kPa, against 101 kPa at the surface. Explain the "
+                "difference.",
+        "options": [
+            {"text": "The rock around the shaft presses on the air",
+             "correct": False,
+             "why": "Rock presses on rock; the air in the shaft is pressed by "
+                    "the air standing above it."},
+            {"text": "There is an extra kilometre of air standing above you "
+                     "down there", "correct": True},
+            {"text": "The air down at the bottom is warmer, and warmer air "
+                     "presses harder than cool air", "correct": False,
+             "why": "It is warmer, and warm air is thinner for its volume, "
+                    "so on its own that would lower the reading."},
+            {"text": "Gravity is stronger at the bottom of a shaft",
+             "correct": False,
+             "why": "Gravity changes far too little over a kilometre to "
+                    "explain a 12 kPa difference."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s28",
+        "band": "standard",
+        "text": "A rubber sucker that holds a towel rail firmly at the coast "
+                "keeps dropping off at an Alpine hut. What has changed?",
+        "options": [
+            {"text": "The rubber has gone hard in the mountain cold", "correct": False,
+             "why": "It fails indoors in a warm hut as well, so the rubber "
+                    "is not the difference."},
+            {"text": "The air pressing it against the tile is weaker up "
+                     "there", "correct": True},
+            {"text": "Gravity pulls the rail down harder at altitude",
+             "correct": False,
+             "why": "Gravity is very slightly weaker higher up, and far too "
+                    "little to matter either way."},
+            {"text": "There is more vacuum behind the sucker up there",
+             "correct": False,
+             "why": "What holds a sucker on is the push from outside, and "
+                    "that is what has fallen."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s29",
+        "band": "standard",
+        "text": "A car tyre is pumped up to about 200 kPa. How does that "
+                "compare with the air around it?",
+        "options": [
+            {"text": "About twice as much", "correct": True},
+            {"text": "About the same", "correct": False,
+             "why": "The air around it is about 101 kPa, so the tyre holds "
+                    "roughly twice that."},
+            {"text": "About half as much", "correct": False,
+             "why": "A tyre at half the outside pressure would be squashed "
+                    "flat by the air."},
+            {"text": "About two hundred times as much", "correct": False,
+             "why": "That would be true only if the outside air were about "
+                    "1 kPa, which it is not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-s30",
+        "band": "standard",
+        "text": "A sensitive barometer is carried up in the lift of a tall "
+                "office block. What does it do, and why?",
+        "options": [
+            {"text": "It rises, because the lift pushes upwards as it "
+                     "climbs",
+             "correct": False,
+             "why": "The lift's push acts on the floor of the car, not on "
+                    "the air above the instrument."},
+            {"text": "It stays exactly the same, because the building is "
+                     "indoors", "correct": False,
+             "why": "The air inside a building is open to the air outside and "
+                    "thins with height in just the same way."},
+            {"text": "It falls slightly, because there is a little less air "
+                     "above at the top", "correct": True},
+            {"text": "It falls sharply, because lifts are sealed against the "
+                     "air", "correct": False,
+             "why": "A lift car is not airtight, and the change over a few "
+                    "tens of metres is small."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up, second pass · harder ─────────────────────────────
+    {
+        "id": "p5-04-h18",
+        "band": "harder",
+        "text": "Mercury is held up 760 mm by the air, while water would be "
+                "pushed up more than 10 m. What does that say about the two "
+                "liquids?",
+        "options": [
+            {"text": "Mercury is about thirteen times denser than water",
+             "correct": True},
+            {"text": "Mercury is about thirteen times lighter than water",
+             "correct": False,
+             "why": "A lighter liquid needs a taller column to press as hard, "
+                    "so it would be the one measured in metres."},
+            {"text": "Mercury conducts the air's push better than water does",
+             "correct": False,
+             "why": "Nothing conducts a pressure; the weight of the column is "
+                    "what balances the air."},
+            {"text": "Mercury boils at a lower temperature than water does",
+             "correct": False,
+             "why": "Mercury boils far higher than water, and boiling point "
+                    "is not what sets the height."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h19",
+        "band": "harder",
+        "text": "A sealed syringe of trapped air is carried from sea level to "
+                "5500 m, where the outside pressure is about half. What does "
+                "the plunger do?",
+        "options": [
+            {"text": "It is pulled in, because the thin air outside the "
+                     "syringe draws the plunger towards it",
+             "correct": False,
+             "why": "Thin air draws on nothing; it simply pushes back less "
+                    "than the trapped air pushes out."},
+            {"text": "It stays put, because the syringe is sealed",
+             "correct": False,
+             "why": "Sealing keeps the air in and does not stop the plunger "
+                    "sliding when the two pushes stop matching."},
+            {"text": "It slides out until the air inside fills about twice "
+                     "its old volume", "correct": True},
+            {"text": "It slides out a little and then springs back",
+             "correct": False,
+             "why": "There is nothing to spring it back; the outside pressure "
+                    "stays low while the syringe is up there."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h20",
+        "band": "harder",
+        "text": "A pump at the top of a pipe cannot raise water more than "
+                "about 10 m, yet a pump at the bottom can send it up a tower "
+                "block. Why the difference?",
+        "options": [
+            {"text": "A pump at the bottom supplies the push itself, while "
+                     "one at the top can only let the atmosphere push",
+             "correct": True},
+            {"text": "A pump at the bottom is always a more powerful machine",
+             "correct": False,
+             "why": "Power is not the limit: however powerful a top pump is, "
+                    "the ceiling stays at about 10 m."},
+            {"text": "Water flows more easily upwards than downwards in a "
+                     "narrow pipe", "correct": False,
+             "why": "Water runs downhill readily and has to be forced up, "
+                    "whichever end the pump sits at."},
+            {"text": "A pump at the top makes a stronger vacuum, and strong "
+                     "vacuums leak", "correct": False,
+             "why": "The best possible vacuum still leaves the atmosphere "
+                    "doing the lifting, and it can manage only about 10 m."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h21",
+        "band": "harder",
+        "text": "A barometer falls by about 3.5 kPa when carried up a 300 m "
+                "tower, and it can move that much in a day without leaving "
+                "the ground. What does that mean for using one as an "
+                "altimeter?",
+        "options": [
+            {"text": "It cannot measure height at all, since the readings "
+                     "overlap", "correct": False,
+             "why": "It measures height perfectly well over a short time; it "
+                    "is drift across a day that has to be handled."},
+            {"text": "It must be reset against the local pressure, or the "
+                     "height it shows will drift", "correct": True},
+            {"text": "It will read too low in the morning and too high in the "
+                     "evening", "correct": False,
+             "why": "Pressure does not follow a fixed daily pattern; it "
+                    "follows the weather."},
+            {"text": "It only works indoors, where the weather cannot reach "
+                     "it", "correct": False,
+             "why": "Indoor air is at the same pressure as outdoor air, so "
+                    "moving inside changes nothing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h22",
+        "band": "harder",
+        "text": "If nothing lies above the top of the atmosphere to hold it "
+                "down, why has the air not drifted away into space?",
+        "options": [
+            {"text": "Because the air is sealed in by a layer of cloud",
+             "correct": False,
+             "why": "Cloud is patchy, thin and made of the same atmosphere; "
+                    "it seals nothing."},
+            {"text": "Because space presses inwards on the atmosphere from "
+                     "above", "correct": False,
+             "why": "Space is very nearly empty and presses with almost "
+                    "nothing."},
+            {"text": "Because gravity pulls every part of it towards the "
+                     "Earth", "correct": True},
+            {"text": "Because the Earth's spin holds the air against the "
+                     "ground", "correct": False,
+             "why": "Spinning tends to throw things outwards, so on its own "
+                    "it would work the other way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h23",
+        "band": "harder",
+        "text": "A student argues that because the atmosphere is about 100 km "
+                "deep and the deepest ocean only 11 km, the air must press "
+                "harder than the sea. What is wrong?",
+        "options": [
+            {"text": "The ocean is deeper than 100 km in places, so the "
+                     "comparison is the wrong way round", "correct": False,
+             "why": "Nowhere in the ocean is anything like that deep; the "
+                    "depths quoted are right."},
+            {"text": "Depth has nothing whatever to do with the pressure "
+                     "inside either a liquid or a gas", "correct": False,
+             "why": "Depth is exactly what sets the pressure in both; the "
+                    "student has left out the other half."},
+            {"text": "The atmosphere thins with height, so all the air "
+                     "above the first few kilometres is too thin to press "
+                     "on anything below it", "correct": False,
+             "why": "It does thin, and every part of it still presses on "
+                    "what lies below."},
+            {"text": "Air weighs far less per cubic metre, so 100 km of it "
+                     "presses about a thousand times less than 11 km of "
+                     "water", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h24",
+        "band": "harder",
+        "text": "At 11 km an aircraft cabin is held at 75 kPa while the air "
+                "outside is 23 kPa. What force acts on a window of 0.09 m²?",
+        "options": [
+            {"text": "4680 N", "correct": True},
+            {"text": "6750 N", "correct": False,
+             "why": "That uses the cabin pressure alone and forgets that the "
+                    "outside air pushes back."},
+            {"text": "8820 N", "correct": False,
+             "why": "That adds the two pressures, when they act against each "
+                    "other."},
+            {"text": "578 N", "correct": False,
+             "why": "That divides the difference by the area, where force = "
+                    "pressure × area multiplies."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h25",
+        "band": "harder",
+        "text": "Two barometers stand at the foot and the top of a 500 m "
+                "hill, reading 101 kPa and 95 kPa. What does the 6 kPa "
+                "difference measure?",
+        "options": [
+            {"text": "How much colder the air is at the top of the hill",
+             "correct": False,
+             "why": "A barometer reads a pressure; temperature is measured on "
+                    "a separate instrument."},
+            {"text": "The weight of the air between the two, spread over each "
+                     "square metre", "correct": True},
+            {"text": "The weight of the hill itself, spread over its base",
+             "correct": False,
+             "why": "The rock is not being weighed; the instruments read the "
+                    "air standing above them."},
+            {"text": "How much faster the wind blows at the top",
+             "correct": False,
+             "why": "Wind speed is a different quantity, and both readings "
+                    "would hold on a still day."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h26",
+        "band": "harder",
+        "text": "A climber gets about half the oxygen per breath at 5500 m "
+                "and about a third at 8850 m, though the air is 21% oxygen at "
+                "both. Explain both figures from one quantity.",
+        "options": [
+            {"text": "The share of oxygen in the air falls off with height, "
+                     "from 21% at the coast down towards 7% at the summit", "correct": False,
+             "why": "The question states the share stays at 21%; the "
+                    "atmosphere stays well mixed all the way up."},
+            {"text": "The air pressure there is about a half and about a "
+                     "third of the sea-level value", "correct": True},
+            {"text": "The lungs work less well the colder the air gets",
+             "correct": False,
+             "why": "Cold air is uncomfortable, and it is the amount of air "
+                    "per breath that has changed."},
+            {"text": "Oxygen is heavier than nitrogen, so it settles low down",
+             "correct": False,
+             "why": "The atmosphere is stirred far too well for the gases to "
+                    "separate out by weight."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h27",
+        "band": "harder",
+        "text": "A student predicts that a sink plunger would grip even better "
+                "inside a vacuum chamber, since there is 'more vacuum'. What "
+                "would really happen?",
+        "options": [
+            {"text": "It would grip harder, as the student says",
+             "correct": False,
+             "why": "The grip comes from the outside air, and inside a "
+                    "chamber there is none left to supply it."},
+            {"text": "It would grip exactly as well, since the vacuum inside "
+                     "the cup is unchanged", "correct": False,
+             "why": "The cup's own low pressure holds nothing on; the push "
+                    "from outside does, and that has gone."},
+            {"text": "It would fall off, because no outside air is left to "
+                     "push it on", "correct": True},
+            {"text": "It would be crushed flat by the chamber's vacuum",
+             "correct": False,
+             "why": "A vacuum crushes nothing, since it does no pushing at "
+                    "all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h28",
+        "band": "harder",
+        "text": "Why would a barometric altimeter be useless for a rover "
+                "measuring its height on the Moon?",
+        "options": [
+            {"text": "Because the Moon's gravity is too weak for the "
+                     "instrument to work", "correct": False,
+             "why": "Weak gravity would change the readings a little, and the "
+                    "real trouble is that there is nothing to read."},
+            {"text": "Because the Moon has almost no atmosphere, so there is "
+                     "no pressure to fall with height", "correct": True},
+            {"text": "Because the Moon's mountains are too low to measure",
+             "correct": False,
+             "why": "The Moon has mountains of thousands of metres, easily "
+                    "big enough to measure."},
+            {"text": "Because the Moon has no weather to change the pressure",
+             "correct": False,
+             "why": "Steady pressure would make an altimeter easier to use, "
+                    "not impossible."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h29",
+        "band": "harder",
+        "text": "A foil bag holding 200 cm³ of air is sealed at sea level and "
+                "carried to 5500 m, where the pressure is about half. Roughly "
+                "what volume does it hold there?",
+        "options": [
+            {"text": "100 cm³", "correct": False,
+             "why": "That halves the volume, when it is the outside push that "
+                    "has halved and the bag that swells."},
+            {"text": "200 cm³", "correct": False,
+             "why": "A sealed bag can stretch, and the outside push on it has "
+                    "fallen by half."},
+            {"text": "400 cm³", "correct": True},
+            {"text": "2000 cm³", "correct": False,
+             "why": "That is ten times the starting volume, far more than a "
+                    "halving of the outside pressure gives."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-04-h30",
+        "band": "harder",
+        "text": "One sealed can is filled and closed at a mountain summit and "
+                "brought down; a second is closed at the beach and carried "
+                "up. Predict what each does.",
+        "options": [
+            {"text": "Both are crushed, because sealed cans cannot cope with "
+                     "a change", "correct": False,
+             "why": "Crushing needs the outside push to win, and for one of "
+                    "these two the inside push is the winner."},
+            {"text": "The summit can swells and the beach can is crushed",
+             "correct": False,
+             "why": "That is the wrong way round: the can sealed high up has "
+                    "the weaker air inside it."},
+            {"text": "Both swell, because the air inside each is trapped",
+             "correct": False,
+             "why": "Trapped air swells only where the outside push has "
+                    "fallen, which is true of just one of them."},
+            {"text": "The summit can is crushed and the beach can swells",
+             "correct": True},
         ],
         "figure": None,
     },

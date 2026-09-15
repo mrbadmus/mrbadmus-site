@@ -851,4 +851,1066 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p5-01-e14",
+        "band": "easier",
+        "text": "In pressure = force ÷ area, which force goes into the "
+                "calculation?",
+        "options": [
+            {"text": "The largest force acting anywhere on the object",
+             "correct": False,
+             "why": "A force acting somewhere else does not press on this "
+                    "surface, so it is not the one being shared out."},
+            {"text": "The force needed to lift the object off the ground",
+             "correct": False,
+             "why": "That force would act upwards, away from the surface, and "
+                    "it presses on nothing."},
+            {"text": "The force acting at right angles to the surface",
+             "correct": True},
+            {"text": "The force of friction acting along the surface",
+             "correct": False,
+             "why": "Friction slides along a surface; pressure uses the force "
+                    "pushing squarely into it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e15",
+        "band": "easier",
+        "text": "Two boxes stand on a floor on bases of exactly the same area, "
+                "but one is heavier. Which puts the greater pressure on the "
+                "floor?",
+        "options": [
+            {"text": "The heavier box, because a bigger force acts on the same "
+                     "area", "correct": True},
+            {"text": "The lighter box, because it rests more gently",
+             "correct": False,
+             "why": "Resting gently is not a measurement. A smaller force on "
+                    "the same area gives a smaller pressure."},
+            {"text": "Both the same, because the bases cover equal areas",
+             "correct": False,
+             "why": "Equal areas settle nothing on their own; the forces "
+                    "pressing on them differ."},
+            {"text": "Neither, until you know how tall each box is",
+             "correct": False,
+             "why": "Height does not appear in pressure = force ÷ area, so it "
+                    "cannot change the answer."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e16",
+        "band": "easier",
+        "text": "An area of 0.05 m² written in square centimetres is…",
+        "options": [
+            {"text": "5 cm²", "correct": False,
+             "why": "That moves the decimal point two places, as though a "
+                    "metre held 100 centimetres of area."},
+            {"text": "50 cm²", "correct": False,
+             "why": "That multiplies by 1000, which is a volume step rather "
+                    "than an area one."},
+            {"text": "0.000005 cm²", "correct": False,
+             "why": "That divides by 10 000. Square centimetres are the "
+                    "smaller unit, so the number gets bigger."},
+            {"text": "500 cm²", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e17",
+        "band": "easier",
+        "text": "Which of these is shaped to give the highest pressure it can "
+                "on what it meets?",
+        "options": [
+            {"text": "A snowshoe", "correct": False,
+             "why": "A snowshoe is built to spread a weight out over soft "
+                    "snow, which lowers the pressure."},
+            {"text": "The point of a nail", "correct": True},
+            {"text": "A concrete footing", "correct": False,
+             "why": "A footing hands the weight of a house to the ground over "
+                    "enough square metres for the ground to take it."},
+            {"text": "A broad tractor tyre", "correct": False,
+             "why": "A broad tyre exists to keep the pressure low so the "
+                    "tractor stays on top of soft soil."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p5-01-s14",
+        "band": "standard",
+        "text": "A tractor tyre presses on soil with 45 000 Pa through a "
+                "contact patch of 0.08 m². What force is on that patch?",
+        "options": [
+            {"text": "562 500 N", "correct": False,
+             "why": "That is 45 000 ÷ 0.08, dividing where the rearrangement "
+                    "multiplies."},
+            {"text": "45 000 N", "correct": False,
+             "why": "That is the pressure with the unit swapped; the patch "
+                    "area still has to be multiplied in."},
+            {"text": "3600 N", "correct": True},
+            {"text": "0.0000018 N", "correct": False,
+             "why": "That is 0.08 ÷ 45 000, which is neither the formula nor "
+                    "its rearrangement."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s15",
+        "band": "standard",
+        "text": "A crate of weight 600 N rests on four small feet, each "
+                "covering 0.0050 m². What pressure is on the floor?",
+        "options": [
+            {"text": "30 000 Pa", "correct": True},
+            {"text": "120 000 Pa", "correct": False,
+             "why": "That uses one foot's area. All four feet are carrying "
+                    "the crate, so their areas add up first."},
+            {"text": "12 Pa", "correct": False,
+             "why": "That multiplies the weight by the total area instead of "
+                    "dividing by it."},
+            {"text": "150 Pa", "correct": False,
+             "why": "That shares the weight between the four feet and then "
+                    "forgets to divide by an area at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s16",
+        "band": "standard",
+        "text": "A shelf is rated to take 8000 Pa. A tin weighing 24 N is "
+                "stood on it on a base of 0.0020 m². Is the shelf safe?",
+        "options": [
+            {"text": "Yes — the tin puts 1200 Pa on it, well under the "
+                     "rating", "correct": False,
+             "why": "That divides by 0.020 rather than 0.0020, so a decimal "
+                    "place has been lost."},
+            {"text": "Yes — 24 N is a small weight, so any shelf will hold it",
+             "correct": False,
+             "why": "The rating is a pressure, and a small weight on a tiny "
+                    "base can still break it."},
+            {"text": "It cannot be decided from a weight and an area alone",
+             "correct": False,
+             "why": "Those two are exactly what the pressure is worked out "
+                    "from, so it can be decided."},
+            {"text": "No — the tin puts 12 000 Pa on it, over the rating",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s17",
+        "band": "standard",
+        "text": "A student works out a pressure and writes the answer as "
+                "40 N/m². Is that an acceptable unit?",
+        "options": [
+            {"text": "No — a pressure has to be written in newtons, since a "
+                     "push is a force", "correct": False,
+             "why": "A pressure is never written in newtons. The area has "
+                    "already been divided in."},
+            {"text": "Yes — one pascal is one newton per square metre",
+             "correct": True},
+            {"text": "No — N/m² is the unit of an area, so the answer means "
+                     "something else", "correct": False,
+             "why": "Area is measured in square metres on their own. N/m² has "
+                    "a force divided by that area."},
+            {"text": "Yes, but the number has to be divided by 10 000 to turn "
+                     "it into pascals", "correct": False,
+             "why": "No conversion is needed, because the two units are the "
+                    "same size as each other."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p5-01-h14",
+        "band": "harder",
+        "text": "A box puts 4000 Pa on the floor. It is repacked so that it "
+                "weighs half as much and stands on a third of the area. What "
+                "is the new pressure?",
+        "options": [
+            {"text": "2000 Pa", "correct": False,
+             "why": "That halves for the lighter load and then ignores the "
+                    "smaller area, which pushes the pressure back up."},
+            {"text": "666 Pa", "correct": False,
+             "why": "That divides by three for the area, when a smaller area "
+                    "raises the pressure rather than lowering it."},
+            {"text": "24 000 Pa", "correct": False,
+             "why": "That trebles and doubles together, using the lighter "
+                    "load as though it were heavier."},
+            {"text": "6000 Pa", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h15",
+        "band": "harder",
+        "text": "A skater of weight 600 N balances on one blade whose edge "
+                "touches the ice over 0.0003 m². What is the pressure under "
+                "the blade?",
+        "options": [
+            {"text": "2 000 000 Pa", "correct": True},
+            {"text": "0.18 Pa", "correct": False,
+             "why": "That multiplies the weight by the area, where the "
+                    "formula divides."},
+            {"text": "200 000 Pa", "correct": False,
+             "why": "That divides by 0.003 rather than 0.0003, losing one "
+                    "decimal place."},
+            {"text": "600 Pa", "correct": False,
+             "why": "That is the weight with the unit changed, before the "
+                    "area has been divided in."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h16",
+        "band": "harder",
+        "text": "Two skaters stand on thin ice. One weighs 500 N on boots "
+                "covering 0.040 m²; the other weighs 700 N on boots covering "
+                "0.070 m². Who presses harder on the ice?",
+        "options": [
+            {"text": "The 700 N skater, because they are the heavier of the "
+                     "two", "correct": False,
+             "why": "Their boots cover proportionally more ice, so the extra "
+                    "weight is more than shared out."},
+            {"text": "Neither — equal weights on equal boots give equal "
+                     "pressures", "correct": False,
+             "why": "Nothing here is equal: the weights differ and so do the "
+                    "boot areas."},
+            {"text": "The 500 N skater, at 12 500 Pa against 10 000 Pa",
+             "correct": True},
+            {"text": "The 700 N skater, at 17 500 Pa against 12 500 Pa",
+             "correct": False,
+             "why": "17 500 comes from dividing 700 by 0.040, using the other "
+                    "skater's boot area."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h17",
+        "band": "harder",
+        "text": "Asked for the pressure from a force of 30 N on 150 cm², a "
+                "student writes 0.2 Pa. What went wrong, and what is the "
+                "right answer?",
+        "options": [
+            {"text": "They divided by 150 rather than by 0.0150, and it comes "
+                     "to 4500 Pa", "correct": False,
+             "why": "The fault is named correctly and the arithmetic is not: "
+                    "4500 is 30 × 150."},
+            {"text": "They divided by 150 rather than by 0.0150, and it comes "
+                     "to 2000 Pa", "correct": True},
+            {"text": "They used the wrong formula, and it comes to 0.2 N",
+             "correct": False,
+             "why": "The formula was right. It was the area that went in "
+                    "unconverted, and a pressure is not in newtons."},
+            {"text": "They divided by 1.50 rather than by 0.0150, and it "
+                     "comes to 20 Pa", "correct": False,
+             "why": "150 cm² is 0.0150 m², so 1.50 is a hundred times too "
+                    "large and 20 Pa follows from it."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up, second pass · easier ─────────────────────────────
+    {
+        "id": "p5-01-e18",
+        "band": "easier",
+        "text": "A block has a mass of 5 kg. Taking gravity as 10 N/kg, what "
+                "is its weight?",
+        "options": [
+            {"text": "50 N", "correct": True},
+            {"text": "5 N", "correct": False,
+             "why": "That is the mass with a newton written after it; the "
+                    "10 N/kg still has to be used."},
+            {"text": "0.5 N", "correct": False,
+             "why": "That divides by 10 instead of multiplying by it."},
+            {"text": "50 kg", "correct": False,
+             "why": "The arithmetic is right and the unit is wrong: a weight "
+                    "is a force, so it is in newtons."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e19",
+        "band": "easier",
+        "text": "A box has a base measuring 0.5 m by 0.4 m. What is the area "
+                "of that base?",
+        "options": [
+            {"text": "0.9 m²", "correct": False,
+             "why": "That adds the two sides. An area comes from multiplying "
+                    "them."},
+            {"text": "0.20 m²", "correct": True},
+            {"text": "1.8 m²", "correct": False,
+             "why": "That adds all four sides, which gives the distance round "
+                    "the edge rather than the area."},
+            {"text": "1.25 m²", "correct": False,
+             "why": "That divides one side by the other, which gives no area "
+                    "at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e20",
+        "band": "easier",
+        "text": "Which change would raise the pressure a crate puts on the "
+                "floor?",
+        "options": [
+            {"text": "Standing it on a wider pallet", "correct": False,
+             "why": "A wider pallet spreads the same weight further, which "
+                    "lowers the pressure."},
+            {"text": "Sliding it along instead of leaving it still",
+             "correct": False,
+             "why": "Sliding adds a push along the floor, not into it, so the "
+                    "pressure is unchanged."},
+            {"text": "Standing it on a smaller face", "correct": True},
+            {"text": "Painting it a darker colour", "correct": False,
+             "why": "Colour changes neither the weight nor the area touching "
+                    "the floor."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e21",
+        "band": "easier",
+        "text": "A push of 80 N is spread over 0.4 m². What pressure does it "
+                "give?",
+        "options": [
+            {"text": "32 Pa", "correct": False,
+             "why": "That multiplies the two, where sharing a force out over "
+                    "an area divides."},
+            {"text": "80.4 Pa", "correct": False,
+             "why": "That adds them, and a force cannot be added to an area."},
+            {"text": "0.005 Pa", "correct": False,
+             "why": "That is 0.4 ÷ 80, the ratio upside down."},
+            {"text": "200 Pa", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e22",
+        "band": "easier",
+        "text": "How many square millimetres are there in one square metre?",
+        "options": [
+            {"text": "1 000 000", "correct": True},
+            {"text": "1000", "correct": False,
+             "why": "1000 is how many millimetres make a metre. An area needs "
+                    "that figure squared."},
+            {"text": "10 000", "correct": False,
+             "why": "10 000 is the number of square centimetres in a square "
+                    "metre, not square millimetres."},
+            {"text": "100 000", "correct": False,
+             "why": "That is a factor of ten short: a metre holds 1000 "
+                    "millimetres, and 1000 squared is a million."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e23",
+        "band": "easier",
+        "text": "A bed of nails has hundreds of points. Why does it not pierce "
+                "someone lying on it?",
+        "options": [
+            {"text": "The points are blunted so that they cannot enter skin",
+             "correct": False,
+             "why": "The points are sharp. It is how many of them share the "
+                    "weight that saves the person."},
+            {"text": "The weight is shared between so many points that each "
+                     "takes only a small force", "correct": True},
+            {"text": "Lying down makes a person weigh less than standing does",
+             "correct": False,
+             "why": "Weight does not change with posture; the area in contact "
+                    "does."},
+            {"text": "The nails hold each other up, so none of them reaches "
+                     "the skin", "correct": False,
+             "why": "Every point touches. The saving is that each carries a "
+                    "tiny share of the weight."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e24",
+        "band": "easier",
+        "text": "A pressure of 500 Pa means that each square metre of the "
+                "surface carries…",
+        "options": [
+            {"text": "500 square metres", "correct": False,
+             "why": "Square metres measure the area a force is spread over, "
+                    "and the question asks what that area carries."},
+            {"text": "500 kg", "correct": False,
+             "why": "Kilograms measure mass, and the pascal is built from "
+                    "newtons and square metres."},
+            {"text": "500 N", "correct": True},
+            {"text": "500 Pa", "correct": False,
+             "why": "That is the pressure itself. What each square metre "
+                    "carries is a force, in newtons."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e25",
+        "band": "easier",
+        "text": "The force pressing on a surface is doubled while the area "
+                "stays the same. The pressure…",
+        "options": [
+            {"text": "halves", "correct": False,
+             "why": "Halving would need the force to fall, or the area to "
+                    "grow."},
+            {"text": "stays the same", "correct": False,
+             "why": "Both numbers matter, and one of them has changed."},
+            {"text": "goes up four times", "correct": False,
+             "why": "Nothing here is squared: twice the force on the same "
+                    "area is twice the pressure."},
+            {"text": "doubles", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e26",
+        "band": "easier",
+        "text": "A tall stack of boxes stands on a pallet. Which area is used "
+                "to work out the pressure on the floor?",
+        "options": [
+            {"text": "The area actually touching the floor", "correct": True},
+            {"text": "The area of the whole stack, from top to bottom",
+             "correct": False,
+             "why": "The sides of the stack touch nothing, so they carry no "
+                    "share of the weight."},
+            {"text": "The area of the largest box in the stack",
+             "correct": False,
+             "why": "Only the part in contact with the floor matters, "
+                    "whichever box happens to be biggest."},
+            {"text": "The area of the room the stack is standing in",
+             "correct": False,
+             "why": "The rest of the floor is carrying nothing from this "
+                    "stack."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e27",
+        "band": "easier",
+        "text": "A second identical brick is stacked on top of the first, on "
+                "the same base. What happens to the pressure on the floor?",
+        "options": [
+            {"text": "It halves, because the weight is now shared between two "
+                     "bricks", "correct": False,
+             "why": "Both bricks press down through the same base, so the "
+                    "floor takes the whole of both weights."},
+            {"text": "It doubles", "correct": True},
+            {"text": "It stays the same, because the base has not changed",
+             "correct": False,
+             "why": "The base is unchanged and the force on it is not, so the "
+                    "pressure rises."},
+            {"text": "It goes up four times, because there are two bricks on "
+                     "one base", "correct": False,
+             "why": "Twice the weight on the same area is twice the pressure, "
+                    "not four times."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e28",
+        "band": "easier",
+        "text": "A student says the pressure under a box depends only on how "
+                "heavy the box is. What has been left out?",
+        "options": [
+            {"text": "How tall the box is", "correct": False,
+             "why": "Height does not appear in the relationship, and a tall "
+                    "box on a wide base presses gently."},
+            {"text": "What the box is made of", "correct": False,
+             "why": "The material matters only through the weight, which the "
+                    "student has already counted."},
+            {"text": "The area it is standing on", "correct": True},
+            {"text": "How long the box has been standing there",
+             "correct": False,
+             "why": "Time does not enter into it: the pressure is the same "
+                    "after an hour as after a second."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e29",
+        "band": "easier",
+        "text": "The same force is spread over twice as much area. What "
+                "happens to the pressure?",
+        "options": [
+            {"text": "It doubles, because there is more surface for it to act "
+                     "on", "correct": False,
+             "why": "More area to share the force between means each square "
+                    "metre carries less, not more."},
+            {"text": "It stays the same, because the force has not changed",
+             "correct": False,
+             "why": "The force is only half the calculation; the area has "
+                    "changed."},
+            {"text": "It falls to a quarter, because the area has grown",
+             "correct": False,
+             "why": "Nothing here is squared: twice the area gives half the "
+                    "pressure."},
+            {"text": "It halves", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-e30",
+        "band": "easier",
+        "text": "Sand gives way when the pressure on it goes above 6000 Pa. A "
+                "block standing on it makes 2000 Pa. What happens?",
+        "options": [
+            {"text": "The sand holds the block", "correct": True},
+            {"text": "The block sinks in, because 2000 Pa is a large pressure",
+             "correct": False,
+             "why": "Whether it is large is beside the point: it is below the "
+                    "figure at which this sand gives way."},
+            {"text": "The sand gives way, because any pressure at all will "
+                     "move sand", "correct": False,
+             "why": "Sand carries plenty of pressure without moving, up to "
+                    "the stated limit."},
+            {"text": "It cannot be said without knowing the block's weight",
+             "correct": False,
+             "why": "The weight has already been used: the pressure it gives "
+                    "is the figure quoted."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up, second pass · standard ───────────────────────────
+    {
+        "id": "p5-01-s18",
+        "band": "standard",
+        "text": "A paint tin of mass 5 kg rests on a shelf through a base of "
+                "0.0040 m². Gravity is 10 N/kg. Work out the pressure.",
+        "options": [
+            {"text": "1250 Pa", "correct": False,
+             "why": "That divides the mass in kilograms by the area, without "
+                    "turning it into a weight in newtons first."},
+            {"text": "12 500 Pa", "correct": True},
+            {"text": "0.2 Pa", "correct": False,
+             "why": "That multiplies the weight by the area, where the "
+                    "formula divides."},
+            {"text": "50 Pa", "correct": False,
+             "why": "That is the weight in newtons with the unit swapped; the "
+                    "base area still has to be divided in."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s19",
+        "band": "standard",
+        "text": "A crate weighs 800 N and its base measures 0.50 m by 0.40 m. "
+                "What pressure does it put on the floor?",
+        "options": [
+            {"text": "1778 Pa", "correct": False,
+             "why": "That divides by 0.45, which is the average of the two "
+                    "sides rather than the area."},
+            {"text": "160 Pa", "correct": False,
+             "why": "That divides by 5, using the sides as whole numbers and "
+                    "ignoring the decimal point."},
+            {"text": "4000 Pa", "correct": True},
+            {"text": "889 Pa", "correct": False,
+             "why": "That divides by 0.90, which is the two sides added "
+                    "together rather than multiplied."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s20",
+        "band": "standard",
+        "text": "Ground can take 50 000 Pa before it gives way. A machine's "
+                "feet cover 0.40 m² in total. How heavy can the machine be?",
+        "options": [
+            {"text": "125 000 N", "correct": False,
+             "why": "That is 50 000 ÷ 0.40, dividing where the rearrangement "
+                    "multiplies."},
+            {"text": "50 000 N", "correct": False,
+             "why": "That is the pressure limit with the unit swapped; the "
+                    "foot area has to be multiplied in."},
+            {"text": "0.000008 N", "correct": False,
+             "why": "That is 0.40 ÷ 50 000, which matches neither the formula "
+                    "nor its rearrangement."},
+            {"text": "20 000 N", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s21",
+        "band": "standard",
+        "text": "A pressure of 1 N/cm² is the same as how many pascals?",
+        "options": [
+            {"text": "10 000 Pa", "correct": True},
+            {"text": "1 Pa", "correct": False,
+             "why": "A pascal needs the force spread over a square METRE, and "
+                    "a square centimetre is far smaller."},
+            {"text": "100 Pa", "correct": False,
+             "why": "100 is the length conversion between centimetres and "
+                    "metres; an area needs it squared."},
+            {"text": "0.0001 Pa", "correct": False,
+             "why": "That divides where the conversion multiplies: the same "
+                    "force on a bigger area gives a bigger count per metre."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s22",
+        "band": "standard",
+        "text": "A load is doubled and, at the same time, the area it stands "
+                "on is doubled. What happens to the pressure?",
+        "options": [
+            {"text": "It doubles", "correct": False,
+             "why": "The extra load is carried by exactly as much extra area, "
+                    "so nothing per square metre has changed."},
+            {"text": "It stays the same", "correct": True},
+            {"text": "It goes up four times", "correct": False,
+             "why": "The two changes work against each other rather than "
+                    "multiplying together."},
+            {"text": "It halves", "correct": False,
+             "why": "That counts the bigger area and forgets the heavier "
+                    "load."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s23",
+        "band": "standard",
+        "text": "A wheelbarrow wheel carries 400 N on 0.0020 m². A plank under "
+                "it spreads the same 400 N over 0.20 m². By what factor does "
+                "the pressure fall?",
+        "options": [
+            {"text": "By 10 times", "correct": False,
+             "why": "The area has grown a hundredfold, not tenfold, so the "
+                    "pressure falls by the same hundred."},
+            {"text": "It does not fall — the weight has not changed",
+             "correct": False,
+             "why": "The weight sets the force; the area sets how "
+                    "concentrated it is, and the area has grown."},
+            {"text": "By 100 times", "correct": True},
+            {"text": "By 1000 times", "correct": False,
+             "why": "0.20 divided by 0.0020 is 100, so the factor is a "
+                    "hundred."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s24",
+        "band": "standard",
+        "text": "A drawing pin is pushed with 20 N and its point touches the "
+                "wood over 0.000001 m². What pressure is under the point?",
+        "options": [
+            {"text": "20 000 Pa", "correct": False,
+             "why": "That divides by 0.001 rather than by 0.000001, losing "
+                    "three decimal places."},
+            {"text": "0.00002 Pa", "correct": False,
+             "why": "That multiplies the force by the area, where the formula "
+                    "divides."},
+            {"text": "20 Pa", "correct": False,
+             "why": "That is the push in newtons with the unit changed, "
+                    "before the area has been divided in."},
+            {"text": "20 000 000 Pa", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s25",
+        "band": "standard",
+        "text": "A force of 100 N on 0.5 m² gives 200 Pa. Which of these gives "
+                "the same pressure?",
+        "options": [
+            {"text": "400 N on 2 m²", "correct": True},
+            {"text": "200 N on 0.5 m²", "correct": False,
+             "why": "Doubling the force on the same area gives 400 Pa, twice "
+                    "as much."},
+            {"text": "100 N on 1 m²", "correct": False,
+             "why": "The same force on twice the area gives 100 Pa, half as "
+                    "much."},
+            {"text": "50 N on 0.5 m²", "correct": False,
+             "why": "Halving the force on the same area gives 100 Pa."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s26",
+        "band": "standard",
+        "text": "A student reads that the pressure under a crate is 3000 Pa "
+                "and says that means 3000 N is pushing down. What is right?",
+        "options": [
+            {"text": "3000 N is pushing down, since a pascal is a newton",
+             "correct": False,
+             "why": "A pascal is a newton on every square metre, which is not "
+                    "the same as a newton."},
+            {"text": "3000 N is carried by each square metre, so the whole "
+                     "force depends on the area", "correct": True},
+            {"text": "The student is right, as long as the crate is standing "
+                     "on exactly two square metres", "correct": False,
+             "why": "On two square metres the whole force would be 6000 N, so "
+                    "the figures would not match."},
+            {"text": "Nothing can be said about the force from a pressure on "
+                     "its own", "correct": False,
+             "why": "The pressure gives the force on every square metre, and "
+                    "the area turns that into the whole force."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s27",
+        "band": "standard",
+        "text": "Two crates weigh 300 N each. One stands on 0.05 m² and the "
+                "other on 0.15 m². What is the difference in the pressures?",
+        "options": [
+            {"text": "2000 Pa", "correct": False,
+             "why": "That is the pressure under the crate on 0.15 m², not the "
+                    "gap between the two."},
+            {"text": "6000 Pa", "correct": False,
+             "why": "That is the pressure under the crate on 0.05 m², not the "
+                    "gap between the two."},
+            {"text": "4000 Pa", "correct": True},
+            {"text": "8000 Pa", "correct": False,
+             "why": "That adds the two pressures together, where the question "
+                    "asks for the difference."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s28",
+        "band": "standard",
+        "text": "A snowboard spreads a rider's weight of 700 N over 0.14 m² of "
+                "snow. What pressure is that?",
+        "options": [
+            {"text": "98 Pa", "correct": False,
+             "why": "That is 700 × 0.14, a multiplication where the formula "
+                    "divides."},
+            {"text": "0.0002 Pa", "correct": False,
+             "why": "That is 0.14 ÷ 700, the ratio the wrong way up."},
+            {"text": "700 Pa", "correct": False,
+             "why": "That is the rider's weight with the unit swapped, before "
+                    "the area has been divided in."},
+            {"text": "5000 Pa", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s29",
+        "band": "standard",
+        "text": "A machine puts 8000 Pa on ground that gives way above "
+                "6000 Pa. Which change would let it stand?",
+        "options": [
+            {"text": "Fitting wider feet, so the same weight covers more area",
+             "correct": True},
+            {"text": "Fitting narrower feet, so the weight is carried more "
+                     "firmly", "correct": False,
+             "why": "Narrower feet concentrate the same weight and push the "
+                    "pressure higher still."},
+            {"text": "Parking it more gently, so it settles rather than drops",
+             "correct": False,
+             "why": "Once it is standing still, how it got there has no "
+                    "effect on the pressure."},
+            {"text": "Painting the feet, so they slide rather than dig",
+             "correct": False,
+             "why": "Sliding is about friction along the ground, not the push "
+                    "into it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-s30",
+        "band": "standard",
+        "text": "A block is turned from its largest face onto its smallest. "
+                "Which of these has NOT changed?",
+        "options": [
+            {"text": "The area touching the floor", "correct": False,
+             "why": "That is exactly what turning it changes, and it is why "
+                    "the pressure changes."},
+            {"text": "Its weight", "correct": True},
+            {"text": "The pressure under it", "correct": False,
+             "why": "The same weight on a smaller area gives a higher "
+                    "pressure."},
+            {"text": "The force carried by each square metre of floor",
+             "correct": False,
+             "why": "That is another way of saying the pressure, and it has "
+                    "gone up."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up, second pass · harder ─────────────────────────────
+    {
+        "id": "p5-01-h18",
+        "band": "harder",
+        "text": "A block of mass 8 kg has a base 0.25 m by 0.16 m. Taking "
+                "gravity as 10 N/kg, what pressure does it put on the floor?",
+        "options": [
+            {"text": "200 Pa", "correct": False,
+             "why": "That divides the mass by the area, leaving out the step "
+                    "that turns kilograms into newtons."},
+            {"text": "3.2 Pa", "correct": False,
+             "why": "That multiplies the weight by the area rather than "
+                    "dividing by it."},
+            {"text": "2000 Pa", "correct": True},
+            {"text": "320 Pa", "correct": False,
+             "why": "That divides by 0.25 alone, using one side of the base "
+                    "instead of the area."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h19",
+        "band": "harder",
+        "text": "Three identical bricks are stacked on the base of the bottom "
+                "one, giving 9000 Pa on the floor. What would one brick alone "
+                "give on the same face?",
+        "options": [
+            {"text": "9000 Pa", "correct": False,
+             "why": "The base is the same and the weight on it is a third of "
+                    "what it was, so the pressure falls."},
+            {"text": "27 000 Pa", "correct": False,
+             "why": "That trebles instead of dividing by three; one brick is "
+                    "the lightest case of the two."},
+            {"text": "4500 Pa", "correct": False,
+             "why": "One brick out of three is a third of the stack, not a "
+                    "half."},
+            {"text": "3000 Pa", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h20",
+        "band": "harder",
+        "text": "Ground gives way above 30 000 Pa. A crate weighs 18 000 N and "
+                "stands on four feet. What is the smallest area each foot can "
+                "have?",
+        "options": [
+            {"text": "0.15 m²", "correct": True},
+            {"text": "0.60 m²", "correct": False,
+             "why": "0.60 m² is the total area all four feet need between "
+                    "them, so each one needs a quarter of it."},
+            {"text": "2.4 m²", "correct": False,
+             "why": "That multiplies the total area by four instead of "
+                    "dividing it, which points the wrong way."},
+            {"text": "1.67 m²", "correct": False,
+             "why": "That is 30 000 ÷ 18 000, the division the wrong way "
+                    "round, and the four feet are not used at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h21",
+        "band": "harder",
+        "text": "Two solid blocks are cut from the same material and have the "
+                "same base, but one is twice as tall. How do their pressures "
+                "on the floor compare?",
+        "options": [
+            {"text": "The same, because the bases are the same",
+             "correct": False,
+             "why": "Equal bases carry unequal weights here, so the pressures "
+                    "differ."},
+            {"text": "The taller one gives twice the pressure", "correct": True},
+            {"text": "The taller one gives half the pressure, because its "
+                     "weight is spread further up", "correct": False,
+             "why": "Height does not spread a weight out; all of it still "
+                    "reaches the same base."},
+            {"text": "The shorter one gives four times the pressure",
+             "correct": False,
+             "why": "The shorter block is the lighter of the two on an equal "
+                    "base, so it gives the lower pressure."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h22",
+        "band": "harder",
+        "text": "A lorry tyre's contact patch is 0.03 m² and the pressure "
+                "under it is 200 000 Pa. How many such tyres would a 24 000 N "
+                "lorry need?",
+        "options": [
+            {"text": "Two", "correct": False,
+             "why": "Each patch carries 6000 N, so two of them would leave "
+                    "half the lorry unsupported."},
+            {"text": "Six", "correct": False,
+             "why": "Six would mean each tyre carrying 4000 N, which needs a "
+                    "smaller patch or a lower pressure than the figures give."},
+            {"text": "Four", "correct": True},
+            {"text": "Eight", "correct": False,
+             "why": "Eight would mean each tyre carrying 3000 N, half of what "
+                    "200 000 Pa on 0.03 m² comes to."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h23",
+        "band": "harder",
+        "text": "Why is a pressure in pascals often a very large number even "
+                "when the force causing it is small?",
+        "options": [
+            {"text": "Because pascals are a smaller unit than newtons, so "
+                     "there are more of them", "correct": False,
+             "why": "The two measure different quantities, so neither is a "
+                    "smaller version of the other."},
+            {"text": "Because a pressure counts the force twice, once for "
+                     "each direction it acts in", "correct": False,
+             "why": "The force is counted once. Nothing in the relationship "
+                    "doubles it."},
+            {"text": "Because a small force is spread over a tiny fraction of "
+                     "a square metre, so each whole square metre would carry "
+                     "a great deal", "correct": True},
+            {"text": "Because pressures are always written in bigger units "
+                     "than the forces that cause them", "correct": False,
+             "why": "A large force on a large area gives a small pressure, so "
+                    "the numbers can run either way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h24",
+        "band": "harder",
+        "text": "A crate weighing 600 N has a base of 50 cm by 40 cm. A "
+                "student works out 600 ÷ 2000 = 0.3. What is the pressure "
+                "really?",
+        "options": [
+            {"text": "3000 Pa", "correct": True},
+            {"text": "0.3 Pa", "correct": False,
+             "why": "That keeps the student's working. 2000 is the base in "
+                    "square centimetres, and a pascal needs square metres."},
+            {"text": "30 Pa", "correct": False,
+             "why": "That reads 2000 cm² as 20 m². Dividing by 10 000 makes "
+                    "the number smaller, not larger."},
+            {"text": "300 000 Pa", "correct": False,
+             "why": "That divides by 10 000 twice over, giving 0.0020 m²; one "
+                    "pass gives 0.20 m²."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h25",
+        "band": "harder",
+        "text": "A student claims that the number given for a pressure can "
+                "never be bigger than the number given for the force causing "
+                "it. Which case settles it?",
+        "options": [
+            {"text": "A force of 10 N acting on 5 m², which gives 2 Pa",
+             "correct": False,
+             "why": "Here the pressure is the smaller number, which is the "
+                    "case the student already believes."},
+            {"text": "A force of 10 N acting on 0.001 m², which gives "
+                     "10 000 Pa", "correct": True},
+            {"text": "A force of 10 N acting on 1 m², which gives 10 Pa",
+             "correct": False,
+             "why": "The two numbers match here, so this neither supports the "
+                    "claim nor breaks it."},
+            {"text": "A force of 10 N acting on 10 m², which gives 1 Pa",
+             "correct": False,
+             "why": "This is another case where the pressure comes out "
+                    "smaller, so the claim survives it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h26",
+        "band": "harder",
+        "text": "A machine's tracks give 25 000 Pa. They are replaced by "
+                "tracks half as wide and twice as long. What happens to the "
+                "pressure?",
+        "options": [
+            {"text": "It doubles", "correct": False,
+             "why": "The extra length is cancelled by the lost width, so the "
+                    "area is where it started."},
+            {"text": "It halves", "correct": False,
+             "why": "That counts the narrower width and forgets the extra "
+                    "length."},
+            {"text": "It stays at 25 000 Pa", "correct": True},
+            {"text": "It falls to a quarter", "correct": False,
+             "why": "The two changes work against each other rather than "
+                    "multiplying together."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h27",
+        "band": "harder",
+        "text": "A car weighing 15 000 N stands on four tyres of 0.02 m² each. "
+                "A lorry weighing 108 000 N stands on twelve of 0.05 m² each. "
+                "Which presses harder on the road?",
+        "options": [
+            {"text": "The lorry, because it is far heavier", "correct": False,
+             "why": "Its twelve wide tyres give it 0.60 m² of road, which is "
+                    "more than enough to take the extra weight."},
+            {"text": "The lorry, because it has more tyres touching the road",
+             "correct": False,
+             "why": "More tyres lower the pressure rather than raising it, "
+                    "which is why lorries have so many."},
+            {"text": "Neither, because both are designed for the same roads",
+             "correct": False,
+             "why": "Being allowed on the same road does not make two "
+                    "pressures equal, and these two are not."},
+            {"text": "The car, at 187 500 Pa against 180 000 Pa",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h28",
+        "band": "harder",
+        "text": "A 2000 N crate sits on a pallet measuring 1.2 m², but only "
+                "the pallet's feet touch the floor, over 0.05 m². What "
+                "pressure reaches the floor?",
+        "options": [
+            {"text": "40 000 Pa", "correct": True},
+            {"text": "1667 Pa", "correct": False,
+             "why": "That uses the whole pallet. Its body is held clear of "
+                    "the floor, so no weight passes through it."},
+            {"text": "2400 Pa", "correct": False,
+             "why": "That multiplies the pallet's area by the weight, where "
+                    "the formula divides, and it uses the wrong area too."},
+            {"text": "100 Pa", "correct": False,
+             "why": "That shares the weight between the pallet and its feet. "
+                    "All of it travels through whatever is touching."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h29",
+        "band": "harder",
+        "text": "A tracked machine sinks deeper into soft ground as it is "
+                "loaded, although nothing about its tracks is altered. Why?",
+        "options": [
+            {"text": "The tracks spread out under a load, so less of them "
+                     "touches", "correct": False,
+             "why": "Tracks do not shrink under load, and the question says "
+                    "they are unaltered."},
+            {"text": "The weight rises while the track area stays the same, "
+                     "so the pressure rises", "correct": True},
+            {"text": "The load pushes the machine along, and moving machines "
+                     "press harder", "correct": False,
+             "why": "A load does not drive a machine forward, and standing "
+                    "still gives the same pressure as moving."},
+            {"text": "The ground gets softer as a machine stands on it for "
+                     "longer", "correct": False,
+             "why": "The question ties the sinking to the loading, and the "
+                    "pressure is what the loading changes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-01-h30",
+        "band": "harder",
+        "text": "A heavy crate is dragged across a floor instead of being left "
+                "standing. Does that change the pressure it puts on the "
+                "floor?",
+        "options": [
+            {"text": "Yes — dragging adds a force, so the pressure rises",
+             "correct": False,
+             "why": "The added force acts along the floor, and pressure uses "
+                    "the force acting into it."},
+            {"text": "Yes — a moving object presses more lightly, so the "
+                     "pressure falls", "correct": False,
+             "why": "Moving does not lift any weight off the floor."},
+            {"text": "No — the force pressing into the floor and the area "
+                     "touching it are both unchanged", "correct": True},
+            {"text": "No — a pressure can only be worked out for something "
+                     "standing still", "correct": False,
+             "why": "The relationship holds whether the crate is moving or "
+                    "not; nothing in it mentions motion."},
+        ],
+        "figure": None,
+    },
 ]

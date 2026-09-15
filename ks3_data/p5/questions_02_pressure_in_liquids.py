@@ -887,4 +887,1070 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 top-up · easier ──────────────────────────────────────────
+    {
+        "id": "p5-02-e14",
+        "band": "easier",
+        "text": "Which change would double the pressure at the bottom of a "
+                "tank of water?",
+        "options": [
+            {"text": "Doubling the depth of the water", "correct": True},
+            {"text": "Doubling the width of the tank", "correct": False,
+             "why": "A wider tank puts the extra water over extra base, so "
+                    "each square metre carries what it did before."},
+            {"text": "Doubling the area of the tank's base", "correct": False,
+             "why": "The base area cancels out: twice the area carries twice "
+                    "the water, at the same pressure."},
+            {"text": "Doubling the thickness of the tank's walls",
+             "correct": False,
+             "why": "Thicker walls change what the tank can survive, not what "
+                    "the water pushes with."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e15",
+        "band": "easier",
+        "text": "Water is poured into a container made of a wide arm and a "
+                "narrow arm joined at the base. Where does it settle?",
+        "options": [
+            {"text": "Higher in the narrow arm", "correct": False,
+             "why": "A taller column in the narrow arm would press harder at "
+                    "the join, and the water would flow back."},
+            {"text": "Higher in the wide arm", "correct": False,
+             "why": "The wide arm's extra weight sits over extra base, so it "
+                    "presses no harder at the join."},
+            {"text": "All of it in the wide arm", "correct": False,
+             "why": "Water is not drawn towards the roomier side. It settles "
+                    "where the pressures at the join match."},
+            {"text": "At the same level in both arms", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e16",
+        "band": "easier",
+        "text": "Two points in one tank of water are the same distance below "
+                "the surface, but at opposite ends. Compare the pressures.",
+        "options": [
+            {"text": "Greater at the end nearer the tank's wall",
+             "correct": False,
+             "why": "A wall neither adds to nor takes from the water above a "
+                    "point."},
+            {"text": "The two are equal", "correct": True},
+            {"text": "Greater at the end with more water beside it",
+             "correct": False,
+             "why": "Water beside a point rests on its own patch of floor, "
+                    "not on that point."},
+            {"text": "It depends which end the tank was filled from",
+             "correct": False,
+             "why": "Once the water is still, how it got in leaves no trace "
+                    "on the pressure."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e17",
+        "band": "easier",
+        "text": "When a pressure in a liquid is worked out, the depth of a "
+                "point means…",
+        "options": [
+            {"text": "how far above the base of the container it sits",
+             "correct": False,
+             "why": "Measured from the base, a deeper point would give a "
+                    "smaller figure, and the pressure would come out "
+                    "backwards."},
+            {"text": "how wide the container is at that point", "correct": False,
+             "why": "Width is a distance across, and it makes no difference "
+                    "to the pressure."},
+            {"text": "how far below the surface it sits", "correct": True},
+            {"text": "how many litres of liquid the container holds",
+             "correct": False,
+             "why": "A volume is not a depth, and the total held is what the "
+                    "pressure does not depend on."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · standard ────────────────────────────────────────
+    {
+        "id": "p5-02-s14",
+        "band": "standard",
+        "text": "A probe is swapped for one with a much larger face and held "
+                "at the same depth in the same tank. What does it read?",
+        "options": [
+            {"text": "More, because a bigger face has more water sitting on "
+                     "it", "correct": False,
+             "why": "It carries more water AND has more area for that water "
+                    "to press on, so the two grow together."},
+            {"text": "Less, because the weight above is shared over a bigger "
+                     "face", "correct": False,
+             "why": "The weight above grows with the face, so nothing is "
+                    "shared more thinly than before."},
+            {"text": "Less, because a large face is harder for water to push "
+                     "on", "correct": False,
+             "why": "Water pushes on every square metre of it just as hard as "
+                    "on a small face."},
+            {"text": "The same, because the extra weight is spread over the "
+                     "extra area", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s15",
+        "band": "standard",
+        "text": "A diving bell has a window of 0.25 m². At the depth it is "
+                "working, the water pressure is 80 000 Pa. What force is on "
+                "the window?",
+        "options": [
+            {"text": "20 000 N", "correct": True},
+            {"text": "320 000 N", "correct": False,
+             "why": "That is 80 000 ÷ 0.25, dividing where the rearrangement "
+                    "multiplies."},
+            {"text": "80 000 N", "correct": False,
+             "why": "That is the pressure read as a force, before the window "
+                    "area has been multiplied in."},
+            {"text": "0.0000031 N", "correct": False,
+             "why": "That is 0.25 ÷ 80 000, which matches neither the formula "
+                    "nor its rearrangement."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s16",
+        "band": "standard",
+        "text": "A pool is 1 m deep at the shallow end and 3 m deep at the "
+                "other. How do the pressures on the floor compare?",
+        "options": [
+            {"text": "The same at both ends, because it is one pool of water",
+             "correct": False,
+             "why": "One pool, but two depths, and depth is what sets the "
+                    "pressure."},
+            {"text": "Twice as great at the deep end", "correct": False,
+             "why": "The depth is three times as great, and the pressure "
+                    "follows the depth."},
+            {"text": "Three times as great at the deep end", "correct": True},
+            {"text": "Nine times as great at the deep end", "correct": False,
+             "why": "Nothing here is squared: three times the depth gives "
+                    "three times the pressure."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s17",
+        "band": "standard",
+        "text": "A probe 5 m down in an open tank reads 50 000 Pa of liquid "
+                "pressure. What is the total pressure on its face?",
+        "options": [
+            {"text": "About 50 000 Pa", "correct": False,
+             "why": "That is the probe's own reading. It measures the liquid "
+                    "alone, and the air on the surface is pressing as well."},
+            {"text": "About 150 000 Pa", "correct": True},
+            {"text": "About 100 000 Pa", "correct": False,
+             "why": "That treats the air as replacing the liquid reading. It "
+                    "adds to it rather than standing in for it."},
+            {"text": "About 25 000 Pa", "correct": False,
+             "why": "Nothing is halved. The air's push is added to the "
+                    "liquid's, not split with it."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · harder ──────────────────────────────────────────
+    {
+        "id": "p5-02-h14",
+        "band": "harder",
+        "text": "A pipe 20 m tall stands full of water above a valve of area "
+                "0.02 m². Water gives 10 000 Pa for every metre of depth. "
+                "What force is on the valve?",
+        "options": [
+            {"text": "200 000 N", "correct": False,
+             "why": "200 000 is the pressure in pascals. It still has to be "
+                    "multiplied by the valve's area."},
+            {"text": "4000 N", "correct": True},
+            {"text": "200 N", "correct": False,
+             "why": "That uses one metre of water rather than the full 20 m "
+                    "standing above the valve."},
+            {"text": "10 000 000 N", "correct": False,
+             "why": "That divides the pressure by the area, where the "
+                    "rearrangement multiplies."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h15",
+        "band": "harder",
+        "text": "A U-shaped tube holds water in one arm and cooking oil in "
+                "the other. The oil stands taller. Why?",
+        "options": [
+            {"text": "Oil is stickier, so it climbs further up the glass",
+             "correct": False,
+             "why": "Sticking to glass lifts a liquid a millimetre or two, "
+                    "nowhere near the difference seen here."},
+            {"text": "Oil floats, so it is pushed upwards out of the tube",
+             "correct": False,
+             "why": "The two are in separate arms and are not stacked, so "
+                    "neither floats on the other."},
+            {"text": "Oil weighs less for its size, so a taller column is "
+                     "needed to press as hard", "correct": True},
+            {"text": "Oil flows more slowly, so it has not finished settling "
+                     "yet", "correct": False,
+             "why": "The difference stays for as long as you watch, so it is "
+                    "not a liquid still on the move."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h16",
+        "band": "harder",
+        "text": "A probe reads 30 000 Pa at 3 m down in water. Paraffin "
+                "weighs 800 kg per cubic metre against water's 1000. At what "
+                "depth in paraffin would it read the same?",
+        "options": [
+            {"text": "3.75 m", "correct": True},
+            {"text": "2.4 m", "correct": False,
+             "why": "That takes four fifths of the depth. A lighter liquid "
+                    "needs a deeper column, not a shallower one."},
+            {"text": "3 m", "correct": False,
+             "why": "Equal depths in the two liquids give different "
+                    "pressures, which is why the question can be asked."},
+            {"text": "24 m", "correct": False,
+             "why": "That multiplies the depth by eight, reading the 800 as a "
+                    "factor rather than as a comparison with 1000."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h17",
+        "band": "harder",
+        "text": "A tank holds water 4 m deep. One hatch sits in the base and "
+                "an identical one in the side wall, 1 m below the surface. "
+                "Which takes the greater force?",
+        "options": [
+            {"text": "The side hatch, because a wall is pushed harder than a "
+                     "floor", "correct": False,
+             "why": "A liquid pushes as hard sideways as downwards at one "
+                    "depth, so the wall gains nothing from being a wall."},
+            {"text": "Neither, because the two hatches are the same size",
+             "correct": False,
+             "why": "Equal areas at unequal depths take unequal forces, "
+                    "because the pressures differ."},
+            {"text": "The side hatch, because the water above it has further "
+                     "to fall", "correct": False,
+             "why": "Nothing is falling. The pressure comes from the weight "
+                    "of water standing above the point."},
+            {"text": "The base hatch, because it is deeper and the pressure "
+                     "there is greater", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up, second pass · easier ─────────────────────────────
+    {
+        "id": "p5-02-e18",
+        "band": "easier",
+        "text": "Going down through water, roughly how much does the pressure "
+                "rise for every metre?",
+        "options": [
+            {"text": "About 10 000 Pa", "correct": True},
+            {"text": "About 10 Pa", "correct": False,
+             "why": "10 Pa is the push of a layer a millimetre thick, not a "
+                    "whole metre of water."},
+            {"text": "About 1000 Pa", "correct": False,
+             "why": "That is a tenth of the real figure, which would make a "
+                    "10 m dive feel like 1 m."},
+            {"text": "About 1 000 000 Pa", "correct": False,
+             "why": "That much would be reached at about 100 m down, not "
+                    "after one metre."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e19",
+        "band": "easier",
+        "text": "Water gives 10 000 Pa for each metre of depth. What is the "
+                "pressure on a probe 6 m down?",
+        "options": [
+            {"text": "1667 Pa", "correct": False,
+             "why": "That divides where the two figures should be "
+                    "multiplied."},
+            {"text": "60 000 Pa", "correct": True},
+            {"text": "10 006 Pa", "correct": False,
+             "why": "That adds the depth on, and a distance cannot be added "
+                    "to a pressure."},
+            {"text": "6 Pa", "correct": False,
+             "why": "That is the depth in metres with a pressure unit written "
+                    "after it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e20",
+        "band": "easier",
+        "text": "A tank is drained until the water standing in it is half as "
+                "deep. The pressure on its base…",
+        "options": [
+            {"text": "stays the same", "correct": False,
+             "why": "The tank is the same and the depth of water above the "
+                    "base is not."},
+            {"text": "doubles", "correct": False,
+             "why": "The space left above the water presses with nothing; it "
+                    "is the liquid above a point that counts."},
+            {"text": "halves", "correct": True},
+            {"text": "falls to a quarter", "correct": False,
+             "why": "Nothing here is squared: half the depth gives half the "
+                    "pressure."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e21",
+        "band": "easier",
+        "text": "A builder fills a long clear hose with water and holds both "
+                "ends up to mark two heights. Why does that work?",
+        "options": [
+            {"text": "Because water flows to whichever end is warmer",
+             "correct": False,
+             "why": "Temperature does not decide where water settles; the "
+                    "pressures at the bottom do."},
+            {"text": "Because a hose keeps water at whatever height it was "
+                     "poured in at", "correct": False,
+             "why": "Water moves freely inside the hose until the two columns "
+                    "press equally."},
+            {"text": "Because the water is pushed along by the builder's grip "
+                     "on the ends", "correct": False,
+             "why": "Nothing is being squeezed; the water settles on its own "
+                    "once it is still."},
+            {"text": "Because water settles at the same level at both open "
+                     "ends", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e22",
+        "band": "easier",
+        "text": "Counting the liquid alone, what is the pressure right at the "
+                "surface of a tank of water?",
+        "options": [
+            {"text": "Zero", "correct": True},
+            {"text": "10 000 Pa", "correct": False,
+             "why": "That is one metre's worth of water, and no water at all "
+                    "stands above the surface."},
+            {"text": "100 000 Pa", "correct": False,
+             "why": "That is roughly the air's own push, which a reading of "
+                    "the liquid alone leaves out."},
+            {"text": "Half the base value", "correct": False,
+             "why": "Half the base pressure is found halfway down, not at the "
+                    "top."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e23",
+        "band": "easier",
+        "text": "One cubic metre of water has a mass of 1000 kg. Taking "
+                "gravity as 10 N/kg, what does it weigh?",
+        "options": [
+            {"text": "100 N", "correct": False,
+             "why": "That divides by 10 where the two figures should be "
+                    "multiplied."},
+            {"text": "10 000 N", "correct": True},
+            {"text": "1000 N", "correct": False,
+             "why": "That is the mass in kilograms with a newton written "
+                    "after it; the 10 N/kg is still to be used."},
+            {"text": "1010 N", "correct": False,
+             "why": "That adds the two figures, and a mass cannot be added to "
+                    "a gravity value."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e24",
+        "band": "easier",
+        "text": "Two hatches sit at the same depth in a tank, but one has "
+                "twice the area of the other. Compare the forces on them.",
+        "options": [
+            {"text": "The same force on both", "correct": False,
+             "why": "The pressure is the same, and the bigger hatch has twice "
+                    "as many square metres for it to act on."},
+            {"text": "The smaller hatch takes twice the force",
+             "correct": False,
+             "why": "Nothing concentrates onto a smaller hatch; each square "
+                    "metre takes the same share."},
+            {"text": "The bigger hatch takes twice the force", "correct": True},
+            {"text": "The bigger hatch takes half the force", "correct": False,
+             "why": "Spreading the same pressure over more area gives more "
+                    "total force, not less."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e25",
+        "band": "easier",
+        "text": "Three metres down, a liquid gives 24 000 Pa. What does nine "
+                "metres down give?",
+        "options": [
+            {"text": "8000 Pa", "correct": False,
+             "why": "That divides by three, and going deeper raises the "
+                    "pressure rather than lowering it."},
+            {"text": "24 009 Pa", "correct": False,
+             "why": "That adds the depth on, and metres cannot be added to "
+                    "pascals."},
+            {"text": "27 000 Pa", "correct": False,
+             "why": "That adds another 3000 Pa, when each metre is worth "
+                    "8000 Pa in this liquid."},
+            {"text": "72 000 Pa", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e26",
+        "band": "easier",
+        "text": "A diver's depth gauge works by measuring…",
+        "options": [
+            {"text": "the pressure of the water, which rises with depth",
+             "correct": True},
+            {"text": "how long the diver has been under the water",
+             "correct": False,
+             "why": "Time is on a separate dial and says nothing about how "
+                    "far down the diver is."},
+            {"text": "the temperature of the water, which falls with depth",
+             "correct": False,
+             "why": "Temperature does change, but far too unreliably to give "
+                    "a depth."},
+            {"text": "how much air is left in the diver's cylinder",
+             "correct": False,
+             "why": "That is a different gauge measuring a different thing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e27",
+        "band": "easier",
+        "text": "Ten metres down in water, the pressure of the water alone is "
+                "about…",
+        "options": [
+            {"text": "1000 Pa", "correct": False,
+             "why": "1000 Pa is reached after about a tenth of a metre, not "
+                    "after ten."},
+            {"text": "10 000 Pa", "correct": False,
+             "why": "10 000 Pa is one metre's worth, and there are ten metres "
+                    "here."},
+            {"text": "100 000 Pa", "correct": True},
+            {"text": "10 Pa", "correct": False,
+             "why": "That is the depth in metres with a pressure unit written "
+                    "after it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e28",
+        "band": "easier",
+        "text": "A liquid presses on…",
+        "options": [
+            {"text": "the base of its container and nothing else",
+             "correct": False,
+             "why": "Water squirts out of a hole in the side of a can, so it "
+                    "presses on the walls too."},
+            {"text": "only the surfaces below it", "correct": False,
+             "why": "It pushes up on anything held underneath it as well as "
+                    "down."},
+            {"text": "everything it touches", "correct": True},
+            {"text": "whatever is moving through it", "correct": False,
+             "why": "Still water in a sealed tank presses on the walls with "
+                    "nothing moving at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e29",
+        "band": "easier",
+        "text": "A tower holds its water 30 m above the ground. Water gives "
+                "10 000 Pa for each metre. What pressure does that give at "
+                "ground level?",
+        "options": [
+            {"text": "3000 Pa", "correct": False,
+             "why": "That divides by ten where the two figures should be "
+                    "multiplied."},
+            {"text": "10 030 Pa", "correct": False,
+             "why": "That adds the height on, and metres cannot be added to "
+                    "pascals."},
+            {"text": "333 Pa", "correct": False,
+             "why": "That is 10 000 ÷ 30, the division the wrong way round."},
+            {"text": "300 000 Pa", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-e30",
+        "band": "easier",
+        "text": "The pressure at a point in a liquid comes from the weight of "
+                "the liquid…",
+        "options": [
+            {"text": "above that point", "correct": True},
+            {"text": "below that point", "correct": False,
+             "why": "The liquid underneath is resting on the base, not on the "
+                    "point in question."},
+            {"text": "beside that point", "correct": False,
+             "why": "Liquid off to the sides rests on its own patch of floor "
+                    "rather than on this point."},
+            {"text": "in the whole container", "correct": False,
+             "why": "A wide tank holds far more liquid than a narrow tube and "
+                    "gives the same pressure at the same depth."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up, second pass · standard ───────────────────────────
+    {
+        "id": "p5-02-s18",
+        "band": "standard",
+        "text": "A probe reads 45 000 Pa in water, which gives 10 000 Pa for "
+                "each metre. How deep is the probe?",
+        "options": [
+            {"text": "45 m", "correct": False,
+             "why": "That reads the pascals as metres; each metre is worth "
+                    "10 000 of them."},
+            {"text": "4.5 m", "correct": True},
+            {"text": "450 000 m", "correct": False,
+             "why": "That multiplies the two, which points the wrong way: a "
+                    "bigger per-metre figure means a shallower depth."},
+            {"text": "0.22 m", "correct": False,
+             "why": "That is 10 000 ÷ 45 000, the division the wrong way "
+                    "round."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s19",
+        "band": "standard",
+        "text": "A probe with a face of 0.03 m² reads 25 000 Pa. What does the "
+                "water standing above its face weigh?",
+        "options": [
+            {"text": "833 333 N", "correct": False,
+             "why": "That is 25 000 ÷ 0.03, dividing where the rearrangement "
+                    "multiplies."},
+            {"text": "25 000 N", "correct": False,
+             "why": "That is the pressure with the unit swapped, before the "
+                    "face area is multiplied in."},
+            {"text": "750 N", "correct": True},
+            {"text": "0.0000012 N", "correct": False,
+             "why": "That is 0.03 ÷ 25 000, which matches neither the "
+                    "relationship nor its rearrangement."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s20",
+        "band": "standard",
+        "text": "At one depth the pressure is 30 000 Pa. Two hatches sit "
+                "there, of 0.10 m² and 0.40 m². What forces do they take?",
+        "options": [
+            {"text": "300 N and 1200 N", "correct": False,
+             "why": "Those are a hundred times too small; 30 000 × 0.10 is "
+                    "3000, not 300."},
+            {"text": "3000 N on each, because the pressure is the same",
+             "correct": False,
+             "why": "Equal pressure on unequal areas gives unequal forces."},
+            {"text": "300 000 N and 75 000 N", "correct": False,
+             "why": "Those come from dividing by the areas, where the "
+                    "rearrangement multiplies."},
+            {"text": "3000 N and 12 000 N", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s21",
+        "band": "standard",
+        "text": "A reservoir's surface stands 40 m above a village tap. Water "
+                "gives 10 000 Pa per metre. What pressure reaches the tap?",
+        "options": [
+            {"text": "400 000 Pa", "correct": True},
+            {"text": "40 000 Pa", "correct": False,
+             "why": "That uses four metres rather than forty, losing a factor "
+                    "of ten."},
+            {"text": "250 Pa", "correct": False,
+             "why": "That is 10 000 ÷ 40, the division the wrong way round."},
+            {"text": "10 040 Pa", "correct": False,
+             "why": "That adds the height on, and metres cannot be added to "
+                    "pascals."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s22",
+        "band": "standard",
+        "text": "Why is a dam's sluice gate hardest to open when the reservoir "
+                "behind it is full?",
+        "options": [
+            {"text": "Because a full reservoir holds far more water "
+                     "altogether", "correct": False,
+             "why": "The total held never enters into it; the depth above the "
+                    "gate does."},
+            {"text": "Because the water is deepest then, so the pressure and "
+                     "the force on the gate are greatest", "correct": True},
+            {"text": "Because the gate swells when it is wet for a long time",
+             "correct": False,
+             "why": "A steel gate does not swell, and the same gate opens "
+                    "easily when the reservoir is low."},
+            {"text": "Because a full reservoir is colder, and cold water "
+                     "presses harder", "correct": False,
+             "why": "Temperature is not what sets the pressure; the depth and "
+                    "the liquid are."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s23",
+        "band": "standard",
+        "text": "Sea water gives about 10 250 Pa for each metre and fresh "
+                "water 10 000. How much more pressure does a diver meet 20 m "
+                "down in the sea?",
+        "options": [
+            {"text": "250 Pa more", "correct": False,
+             "why": "250 Pa is the extra from one metre; twenty metres give "
+                    "twenty times that."},
+            {"text": "2500 Pa more", "correct": False,
+             "why": "That uses ten metres rather than twenty."},
+            {"text": "5000 Pa more", "correct": True},
+            {"text": "No more, because the depth is the same in both",
+             "correct": False,
+             "why": "Depth is only half of it; which liquid it is matters "
+                    "too, and sea water is heavier for its size."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s24",
+        "band": "standard",
+        "text": "A tank's base measures 2 m by 1.5 m and holds water 1 m deep, "
+                "giving 10 000 Pa there. What force is on the base?",
+        "options": [
+            {"text": "3333 N", "correct": False,
+             "why": "That divides the pressure by the area, where force = "
+                    "pressure × area multiplies."},
+            {"text": "10 000 N", "correct": False,
+             "why": "That is the pressure with the unit swapped; the base "
+                    "area still has to be multiplied in."},
+            {"text": "35 000 N", "correct": False,
+             "why": "That uses 3.5 m², which adds the two sides instead of "
+                    "multiplying them."},
+            {"text": "30 000 N", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s25",
+        "band": "standard",
+        "text": "A liquid 2 m deep gives 16 000 Pa at its base, where water "
+                "would give 20 000 Pa. What does that say about the liquid?",
+        "options": [
+            {"text": "It weighs less than water for the same volume",
+             "correct": True},
+            {"text": "It weighs more than water for the same volume",
+             "correct": False,
+             "why": "A heavier liquid would press harder than water at that "
+                    "depth, not less hard."},
+            {"text": "There is less of it than there would be water",
+             "correct": False,
+             "why": "The amount held never sets the pressure, and both fill "
+                    "the same depth."},
+            {"text": "It is at a lower temperature than water would be",
+             "correct": False,
+             "why": "Temperature shifts a liquid's weight per cubic metre "
+                    "very slightly, far too little to explain this gap."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s26",
+        "band": "standard",
+        "text": "A diver's ears hurt while they swim downwards but settle "
+                "again while they swim along at one depth. Why?",
+        "options": [
+            {"text": "Because swimming along is gentler on the body than "
+                     "swimming down", "correct": False,
+             "why": "The effort involved is not what presses on an eardrum; "
+                    "the water is."},
+            {"text": "Because the pressure changes as the depth changes and "
+                     "holds steady along one depth", "correct": True},
+            {"text": "Because water presses downwards, so it only reaches the "
+                     "ears on the way down", "correct": False,
+             "why": "A liquid presses equally in every direction at any one "
+                    "depth."},
+            {"text": "Because the ears seal themselves once a diver stops "
+                     "going deeper", "correct": False,
+             "why": "Nothing seals. The push on the eardrum simply stops "
+                    "changing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s27",
+        "band": "standard",
+        "text": "A hatch 3 m below the surface takes a force of 6000 N. What "
+                "force does an identical hatch 6 m down take?",
+        "options": [
+            {"text": "6000 N", "correct": False,
+             "why": "The hatches are the same size at different depths, and "
+                    "the deeper one meets a greater pressure."},
+            {"text": "3000 N", "correct": False,
+             "why": "Being further from the surface means more water above, "
+                    "so the force rises rather than falling."},
+            {"text": "12 000 N", "correct": True},
+            {"text": "36 000 N", "correct": False,
+             "why": "That multiplies by six. Doubling the depth doubles the "
+                    "pressure, and so the force."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s28",
+        "band": "standard",
+        "text": "A bucket and a swimming pool are both filled to 0.5 m deep. "
+                "Compare the FORCE the water puts on each base.",
+        "options": [
+            {"text": "The same on both", "correct": False,
+             "why": "The pressures match; the pool's base has thousands of "
+                    "times more square metres for that pressure to act on."},
+            {"text": "Greater on the bucket, because its base is smaller",
+             "correct": False,
+             "why": "A smaller base takes the same pressure over less area, "
+                    "so it takes less force."},
+            {"text": "Far greater on the pool's base", "correct": True},
+            {"text": "It cannot be compared, since one holds far more water "
+                     "than the other", "correct": False,
+             "why": "It can: the pressure is equal and the areas are known to "
+                    "differ hugely, which settles the forces."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s29",
+        "band": "standard",
+        "text": "Oil gives 8000 Pa for each metre of depth. What pressure does "
+                "it give 5 m down?",
+        "options": [
+            {"text": "40 000 Pa", "correct": True},
+            {"text": "1600 Pa", "correct": False,
+             "why": "That divides where the two figures should be "
+                    "multiplied."},
+            {"text": "8005 Pa", "correct": False,
+             "why": "That adds the depth on, and metres cannot be added to "
+                    "pascals."},
+            {"text": "50 000 Pa", "correct": False,
+             "why": "That uses water's 10 000 Pa per metre instead of the "
+                    "8000 Pa the question gives for oil."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-s30",
+        "band": "standard",
+        "text": "A student says the force on a hatch depends only on how deep "
+                "it is. What have they left out?",
+        "options": [
+            {"text": "How long it has been under", "correct": False,
+             "why": "Time makes no difference; the force is the same after an "
+                    "hour as after a second."},
+            {"text": "The area of the hatch", "correct": True},
+            {"text": "The tank's width", "correct": False,
+             "why": "The tank's width never enters into it, for the pressure "
+                    "or for the force."},
+            {"text": "Which way up it faces", "correct": False,
+             "why": "A liquid presses equally in every direction at one "
+                    "depth, so the facing does not matter."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up, second pass · harder ─────────────────────────────
+    {
+        "id": "p5-02-h18",
+        "band": "harder",
+        "text": "A tank holds 1 m of oil, giving 8000 Pa per metre, floating "
+                "on 2 m of water, giving 10 000 Pa per metre. What is the "
+                "pressure at the base?",
+        "options": [
+            {"text": "20 000 Pa", "correct": False,
+             "why": "That counts the water alone. The oil is stacked above "
+                    "it, so its weight presses on the base as well."},
+            {"text": "18 000 Pa", "correct": False,
+             "why": "That adds one metre of each. There are two metres of "
+                    "water, which contribute 20 000 Pa."},
+            {"text": "28 000 Pa", "correct": True},
+            {"text": "8000 Pa", "correct": False,
+             "why": "That counts the oil alone. Being on top means its weight "
+                    "is added to the water's, not that it replaces it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h19",
+        "band": "harder",
+        "text": "A straight-sided tank has a base of 4 m² and the water gives "
+                "15 000 Pa there. What does the water in the tank weigh?",
+        "options": [
+            {"text": "3750 N", "correct": False,
+             "why": "That divides the pressure by the area, where force = "
+                    "pressure × area multiplies."},
+            {"text": "15 000 N", "correct": False,
+             "why": "That is the pressure with the unit swapped, before the "
+                    "base area is multiplied in."},
+            {"text": "60 000 N", "correct": True},
+            {"text": "It cannot be found without knowing how deep the water "
+                     "is", "correct": False,
+             "why": "The depth is already inside the 15 000 Pa; the base area "
+                    "turns that into a force."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h20",
+        "band": "harder",
+        "text": "A diver is 20 m down in sea water, which gives 10 250 Pa per "
+                "metre. Their mask window is 0.010 m². What force does the "
+                "water put on it?",
+        "options": [
+            {"text": "205 000 N", "correct": False,
+             "why": "205 000 is the pressure in pascals; the window's area "
+                    "still has to be multiplied in."},
+            {"text": "2050 N", "correct": True},
+            {"text": "102 N", "correct": False,
+             "why": "That uses one metre of depth rather than twenty."},
+            {"text": "20 500 000 N", "correct": False,
+             "why": "That divides by the area rather than multiplying by it, "
+                    "which sends the answer the wrong way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h21",
+        "band": "harder",
+        "text": "Water 6 m deep presses on one face of a canal gate and "
+                "nothing presses on the other. Water gives 10 000 Pa per "
+                "metre. What is the pressure difference at the gate's foot?",
+        "options": [
+            {"text": "10 000 Pa", "correct": False,
+             "why": "That is what one metre gives. The foot of the gate is "
+                    "six metres down, with six metres of water above it."},
+            {"text": "60 000 Pa", "correct": True},
+            {"text": "Nothing", "correct": False,
+             "why": "Both faces of the gate are at that depth, and only one "
+                    "of them has water standing above it."},
+            {"text": "30 000 Pa", "correct": False,
+             "why": "That averages over the gate's height. The foot itself is "
+                    "at the full depth."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h22",
+        "band": "harder",
+        "text": "A probe reads 36 000 Pa at 4 m down in an unknown liquid. "
+                "Taking gravity as 10 N/kg, what is the liquid's mass per "
+                "cubic metre?",
+        "options": [
+            {"text": "1000 kg, the same as water", "correct": False,
+             "why": "Water would give 40 000 Pa at 4 m, so this liquid is "
+                    "lighter for its size."},
+            {"text": "9000 kg", "correct": False,
+             "why": "That reads the 9000 Pa each metre gives as a mass "
+                    "directly, without dividing by the 10 N/kg."},
+            {"text": "900 kg", "correct": True},
+            {"text": "144 000 kg", "correct": False,
+             "why": "That multiplies the reading by the depth, where the two "
+                    "should be divided."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h23",
+        "band": "harder",
+        "text": "A funnel of water is wide at the top and narrow at the "
+                "bottom. Why does the pressure at its tip match that at the "
+                "base of a straight tube filled to the same height?",
+        "options": [
+            {"text": "Because the sloping sides carry part of the water's "
+                     "weight down to the tip", "correct": False,
+             "why": "The sides carry some weight, and that is why the tip "
+                    "does not take the whole funnel's load."},
+            {"text": "Because the funnel holds less water, and less water "
+                     "presses less", "correct": False,
+             "why": "It does hold less, and the amount held is not what sets "
+                    "the pressure."},
+            {"text": "Because the pressure at a point is set by the height of "
+                     "liquid above it, not by the amount", "correct": True},
+            {"text": "Because a narrow opening concentrates the push into a "
+                     "smaller space", "correct": False,
+             "why": "Nothing is concentrated by a narrowing; each square "
+                    "metre carries the column directly above it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h24",
+        "band": "harder",
+        "text": "An aquarium window is 1 m tall, with its top 1 m below the "
+                "surface and its bottom 2 m below. Water gives 10 000 Pa per "
+                "metre. Compare the pressures at the two edges.",
+        "options": [
+            {"text": "Equal, because they are part of the same window",
+             "correct": False,
+             "why": "One edge is a metre deeper than the other, and depth is "
+                    "what sets the pressure."},
+            {"text": "The bottom edge takes 10 000 Pa more", "correct": True},
+            {"text": "The top edge takes 10 000 Pa more, because the water "
+                     "above it is nearer the air", "correct": False,
+             "why": "The shallower edge has less water above it, so it takes "
+                    "less pressure."},
+            {"text": "The bottom edge takes 20 000 Pa more, because it is "
+                     "twice as deep", "correct": False,
+             "why": "Twice the depth gives twice the pressure, which here is "
+                    "20 000 Pa against 10 000 Pa — a gap of 10 000 Pa."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h25",
+        "band": "harder",
+        "text": "A tap must be supplied at 250 000 Pa. Water gives 10 000 Pa "
+                "for each metre of depth. How far above the tap must the "
+                "water surface stand?",
+        "options": [
+            {"text": "25 m", "correct": True},
+            {"text": "250 m", "correct": False,
+             "why": "That treats each metre as worth 1000 Pa rather than "
+                    "10 000 Pa."},
+            {"text": "2.5 m", "correct": False,
+             "why": "2.5 m of water gives 25 000 Pa, a tenth of what is "
+                    "wanted."},
+            {"text": "2 500 000 m", "correct": False,
+             "why": "That multiplies the two figures, where finding a depth "
+                    "from a pressure divides."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h26",
+        "band": "harder",
+        "text": "A sealed rigid box is fine on the deck of a boat but is "
+                "crushed when it is lowered to 50 m. Why?",
+        "options": [
+            {"text": "Because the water is colder down there, and cold metal "
+                     "gives way", "correct": False,
+             "why": "A box in a freezer keeps its shape; it is the push from "
+                    "the water that crushes this one."},
+            {"text": "Because the box gets heavier the deeper it goes",
+             "correct": False,
+             "why": "Its weight is unchanged at any depth; the pressure "
+                    "around it is not."},
+            {"text": "Because the water outside now presses with about "
+                     "500 000 Pa while the air sealed inside does not",
+             "correct": True},
+            {"text": "Because a sealed box has nothing inside it to hold its "
+                     "walls apart", "correct": False,
+             "why": "It has air inside, which is why it survives at the "
+                    "surface at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h27",
+        "band": "harder",
+        "text": "A thin plastic bottle held open-end-up under water crumples "
+                "from the bottom first. Why?",
+        "options": [
+            {"text": "Because the plastic is thinnest at the bottom of a "
+                     "bottle", "correct": False,
+             "why": "A bottle's base is usually its thickest part, so it "
+                    "would give way last if thickness decided it."},
+            {"text": "Because water reaches the bottom of the bottle before "
+                     "the top", "correct": False,
+             "why": "The bottle is already under; nothing is filling it in "
+                    "order."},
+            {"text": "Because the deepest part meets the greatest pressure",
+             "correct": True},
+            {"text": "Because the bottle's weight rests on its base",
+             "correct": False,
+             "why": "A plastic bottle's own weight is tiny beside the push "
+                    "the water gives it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h28",
+        "band": "harder",
+        "text": "A U-tube of mercury has one arm open to the air and the "
+                "other joined to a pump. The mercury stands 20 mm higher in "
+                "the open arm. What does that show?",
+        "options": [
+            {"text": "The pump's pressure is greater than the air's",
+             "correct": True},
+            {"text": "The pump's pressure is lower than the air's",
+             "correct": False,
+             "why": "A weaker pump would let the air push the mercury back "
+                    "towards it, raising the column on the pump's side."},
+            {"text": "The two pressures are equal, since the mercury has "
+                     "stopped moving", "correct": False,
+             "why": "It stops moving when the pressures balance including the "
+                    "extra column, which means they are not equal."},
+            {"text": "The mercury in the open arm has become less dense",
+             "correct": False,
+             "why": "It is one body of mercury at one temperature, so both "
+                    "arms hold the same stuff."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h29",
+        "band": "harder",
+        "text": "A pipe runs from a reservoir down a hill to a village 60 m "
+                "below it. Water gives 10 000 Pa per metre. What is the "
+                "pressure at the village, and would a longer, more winding "
+                "pipe change it?",
+        "options": [
+            {"text": "600 000 Pa, and a longer pipe would raise it, since the "
+                     "water travels further", "correct": False,
+             "why": "Distance travelled adds nothing; only the height "
+                    "difference counts."},
+            {"text": "60 000 Pa, and the pipe's route makes no difference",
+             "correct": False,
+             "why": "The figure is a tenth of the right one: sixty metres at "
+                    "10 000 Pa each is 600 000 Pa."},
+            {"text": "600 000 Pa, and the pipe's route makes no difference",
+             "correct": True},
+            {"text": "It depends on the pipe's length, since a longer column "
+                     "of water weighs more", "correct": False,
+             "why": "What presses is the height of water above the tap, and a "
+                    "winding pipe does not change that height."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p5-02-h30",
+        "band": "harder",
+        "text": "Why is it the distance BELOW the surface, rather than the "
+                "height above the base, that decides the pressure at a point "
+                "in a liquid?",
+        "options": [
+            {"text": "Because the base of a container is where the pressure "
+                     "is worked out from", "correct": False,
+             "why": "The base is simply the deepest point; nothing is "
+                    "measured from it."},
+            {"text": "Because liquids are measured downwards by convention, "
+                     "whichever end you start at", "correct": False,
+             "why": "This is not a matter of convention: measuring from the "
+                    "base gives the wrong answer."},
+            {"text": "Because a container's base moves when it is refilled",
+             "correct": False,
+             "why": "The base stays where it is; it is the surface that moves "
+                    "when a tank is filled or drained."},
+            {"text": "Because it is the liquid above a point that rests on "
+                     "it, and the liquid below rests on the base instead",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]
