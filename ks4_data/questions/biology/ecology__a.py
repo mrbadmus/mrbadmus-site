@@ -142,8 +142,7 @@ QUESTIONS = [
                 "what happens to the shrew population.",
         "options": [
             "It falls, because the shrews' main food supply has been reduced",
-            "It rises, because the earthworms were competing with the "
-            "shrews for food",
+            "It rises, because earthworms competed with the shrews",
             "It rises, because more leaf litter is left uneaten for the "
             "shrews to feed on",
             "It stays the same, because a soil pollutant can only affect "
@@ -187,8 +186,7 @@ QUESTIONS = [
             "ecosystem",
             "The canopy is the robin's population, because only one species "
             "nests there",
-            "The canopy is the robin's community, because many species live "
-            "there",
+            "The canopy is the robin's community of nesting birds",
             "The canopy is the robin's habitat, not its whole ecosystem",
         ],
         "correct_index": 3,
@@ -257,8 +255,7 @@ QUESTIONS = [
             "Less plant growth means fewer rabbits, so foxes have less prey",
             "Foxes must drink rainwater directly, so a drought kills them "
             "within a few weeks",
-            "Dry soil forces the foxes to move to a habitat where the "
-            "ground is much softer",
+            "Dry soil drives the foxes away to find softer ground",
             "Low rainfall reduces the oxygen in the air, so the foxes "
             "cannot respire properly",
         ],
@@ -690,8 +687,7 @@ QUESTIONS = [
             "overheat in summer",
             "The banding lets other hoverflies recognise it when they are "
             "looking for a mate",
-            "The banding camouflages the hoverfly against the flowers that "
-            "it feeds on",
+            "The banding camouflages it against the flowers it visits",
             "Predators avoid it because they mistake it for a stinging "
             "species",
         ],
@@ -847,7 +843,7 @@ QUESTIONS = [
         "text": "State what all producers have in common.",
         "options": [
             "They are eaten by every consumer in the food chain",
-            "They are the smallest organisms in the food chain",
+            "They are the smallest living things",
             "They make their own food using light energy",
             "They break down dead material and release nutrients",
         ],
@@ -883,7 +879,7 @@ QUESTIONS = [
                 "trophic level and the next?",
         "options": [
             "Energy is released as heat when organisms respire",
-            "Energy is destroyed each time one organism eats another",
+            "Energy is destroyed at each feeding step",
             "Energy is used up entirely by the producer before it is eaten",
             "Energy leaks out of the food chain into the soil as light",
         ],
@@ -1329,8 +1325,7 @@ QUESTIONS = [
             "limits deer numbers",
             "It may raise numbers until another resource, such as space, "
             "runs short",
-            "It will lower deer numbers, because the feeding stations "
-            "attract more predators",
+            "It will lower numbers, because predators gather at the food",
         ],
         "correct_index": 2,
         "why": "A population is held at whichever resource runs out first, "
@@ -1613,7 +1608,7 @@ QUESTIONS = [
         "text": "Complete the sentence. Pollution reduces biodiversity "
                 "because it...",
         "options": [
-            "forces organisms to migrate for a season and then return",
+            "makes organisms migrate for one season",
             "raises the number of different species living in the area",
             "damages habitats and kills plants and animals",
             "only affects the appearance of a habitat, not its species",
@@ -2418,7 +2413,7 @@ QUESTIONS = [
             "It destroys the ozone layer that shields the Earth from "
             "harmful rays",
             "It traps heat energy near the Earth's surface",
-            "It reacts with oxygen and warms the air by burning",
+            "It reacts with oxygen, warming the air",
         ],
         "correct_index": 2,
         "why": "Greenhouse gases hold heat energy near the surface instead "
@@ -2609,8 +2604,7 @@ QUESTIONS = [
         "text": "A country cuts its own carbon dioxide emissions to zero, "
                 "but global temperatures keep rising. Explain why.",
         "options": [
-            "Cutting emissions in one place makes every other country emit "
-            "far more",
+            "Cuts in one country make every other country emit more",
             "Carbon dioxide is not actually a cause of the rise in global "
             "temperature",
             "Warming depends on emissions worldwide, not from one country",
@@ -3036,8 +3030,8 @@ QUESTIONS = [
             "They breathe it straight back out as a gas as soon as they "
             "take it in",
             "They use it to build calcium carbonate shells",
-            "They convert it into oxygen inside their own gills",
-            "They store it as a layer of fat beneath their outer skin",
+            "They turn it into oxygen in their gills",
+            "They store it as a layer of fat in the skin",
         ],
         "correct_index": 1,
         "why": "Shell-building organisms take dissolved carbon out of the "
@@ -3053,10 +3047,8 @@ QUESTIONS = [
         "text": "Explain why manufacturing cement adds carbon dioxide to "
                 "the atmosphere.",
         "options": [
-            "The workers who make the cement breathe out carbon dioxide as "
-            "they work",
-            "Cement absorbs carbon dioxide first, then releases it once the "
-            "mixing stops",
+            "The workers at the cement plant breathe out the gas",
+            "Cement absorbs carbon dioxide first, then releases it",
             "Cement is made from crude oil, which is burned throughout the "
             "whole process",
             "Heating limestone breaks it down and releases carbon dioxide",
@@ -3122,8 +3114,7 @@ QUESTIONS = [
                 "the amount of carbon in the atmosphere is rising. Explain "
                 "how both of these statements can be true.",
         "options": [
-            "Carbon is being created inside power stations as the fuel is "
-            "burned",
+            "Carbon is created inside the power station furnace",
             "Some carbon is destroyed in the oceans, so the total does in "
             "fact fall",
             "The atmosphere is shrinking, so the same carbon is more "
