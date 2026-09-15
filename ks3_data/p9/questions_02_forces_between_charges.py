@@ -1174,4 +1174,911 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 night 3 · easier ────────────────────────────────────────
+    {
+        "id": "p9-02-e18",
+        "band": "easier",
+        "text": "Two objects, each of which can be positive, negative or "
+                "neutral, are brought close together — nine combinations in "
+                "all. In how many of them do the two objects attract?",
+        "options": [
+            {"text": "Two", "correct": False,
+             "why": "Two is the number that repel: positive with positive, "
+                    "and negative with negative."},
+            {"text": "Six", "correct": True},
+            {"text": "Four", "correct": False,
+             "why": "Four of them are attraction by induction, but the two "
+                    "unlike-charge cases attract as well."},
+            {"text": "Eight", "correct": False,
+             "why": "Eight would leave only one case out, and three of the "
+                    "nine are not attraction."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e19",
+        "band": "easier",
+        "text": "A charged rod attracts a neutral scrap of foil. Compared "
+                "with the pull between two oppositely charged objects the "
+                "same distance apart, this pull is…",
+        "options": [
+            {"text": "much stronger, because a neutral object cannot push "
+                     "back at all", "correct": False,
+             "why": "Nothing about being neutral strengthens the pull. The "
+                    "induced charges are small."},
+            {"text": "exactly the same, because the separation is what "
+                     "decides the force", "correct": False,
+             "why": "Separation is one factor, but the charges involved "
+                    "matter too, and the induced ones are tiny."},
+            {"text": "the same size but pointing the opposite "
+                     "way", "correct": False,
+             "why": "Both cases are attraction, so the directions agree. It "
+                    "is the sizes that differ."},
+            {"text": "much weaker", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e20",
+        "band": "easier",
+        "text": "There is one thing a charged object can never do to an "
+                "uncharged one. What is it?",
+        "options": [
+            {"text": "Pull it towards itself", "correct": False,
+             "why": "That is exactly what it does do — it is the reason a "
+                    "rubbed rod picks things up."},
+            {"text": "Push it away", "correct": True},
+            {"text": "Move the charges about inside it", "correct": False,
+             "why": "Moving the other object's own charges to one side is how "
+                    "the attraction comes about."},
+            {"text": "Act on it across a gap", "correct": False,
+             "why": "No contact is needed. The effect happens at a distance, "
+                    "as it does between two charges."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e21",
+        "band": "easier",
+        "text": "Two socks come out of a tumble dryer clinging tightly to "
+                "each other. What must be true of their charges?",
+        "options": [
+            {"text": "They carry the same charge as each "
+                     "other", "correct": False,
+             "why": "Two like charges would push apart, so the socks would "
+                    "fall away rather than cling."},
+            {"text": "Neither of them carries any charge", "correct": False,
+             "why": "Two uncharged objects do nothing to each other at all, "
+                    "so nothing would hold them together."},
+            {"text": "One has lost the protons the other "
+                     "gained", "correct": False,
+             "why": "Protons never move between objects. Only electrons "
+                    "change sides."},
+            {"text": "They carry opposite charges", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e22",
+        "band": "easier",
+        "text": "Dust settles onto a charged plastic screen far faster than "
+                "onto the wooden frame around it. Does that show the dust is "
+                "charged?",
+        "options": [
+            {"text": "No — an uncharged speck of dust is pulled in just as "
+                     "well", "correct": True},
+            {"text": "Yes, because only a charged speck could be pulled "
+                     "in", "correct": False,
+             "why": "An uncharged speck is pulled in as well, which is why "
+                    "attraction proves nothing."},
+            {"text": "Yes, because the dust has taken charge from the "
+                     "air", "correct": False,
+             "why": "The dust needs no charge of its own for the screen to "
+                    "attract it."},
+            {"text": "No, because the dust is blown onto the screen by the "
+                     "air", "correct": False,
+             "why": "Moving air would land dust on the frame too. The screen "
+                    "is picked out because it is charged."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e23",
+        "band": "easier",
+        "text": "A positively charged rod is held near a neutral ball. What "
+                "do the ball's own electrons do?",
+        "options": [
+            {"text": "They are driven to the side furthest from the "
+                     "rod", "correct": False,
+             "why": "A positive rod pulls electrons towards it. Driving them "
+                    "away is what a negative rod does."},
+            {"text": "They are pulled towards the side nearest the "
+                     "rod", "correct": True},
+            {"text": "They leave the ball and cross over onto the "
+                     "rod", "correct": False,
+             "why": "Nothing crosses the gap. The ball's total charge is the "
+                    "same throughout."},
+            {"text": "They stay exactly where they were, as the ball is "
+                     "neutral", "correct": False,
+             "why": "Neutral means balanced, not fixed. The charges inside "
+                    "can still be moved about."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e24",
+        "band": "easier",
+        "text": "Two positively charged spheres are held near each other. In "
+                "which directions do the two forces point?",
+        "options": [
+            {"text": "Both of them in the same direction along the "
+                     "line", "correct": False,
+             "why": "The two forces are opposite in direction, so the spheres "
+                    "move apart rather than together."},
+            {"text": "One sphere is pushed and the other one is "
+                     "pulled", "correct": False,
+             "why": "Like charges push both ways. Neither sphere is pulled "
+                    "towards the other."},
+            {"text": "Each sphere is pushed directly away from the "
+                     "other", "correct": True},
+            {"text": "Each sphere is pulled directly towards the "
+                     "other", "correct": False,
+             "why": "Pulling together is what unlike charges do. Two "
+                    "positives push apart."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e25",
+        "band": "easier",
+        "text": "Two charged objects are moved further apart. Which of these "
+                "does not change?",
+        "options": [
+            {"text": "The size of the force on each of them", "correct": False,
+             "why": "The force falls quickly as the gap grows; that is the "
+                    "thing this change is about."},
+            {"text": "The charge on each of them", "correct": True},
+            {"text": "The distance between their centres", "correct": False,
+             "why": "That is precisely what has been changed by moving them "
+                    "apart."},
+            {"text": "Whether the force is big enough to move "
+                     "them", "correct": False,
+             "why": "A force that moved them at a small gap may well be too "
+                    "weak at a larger one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e26",
+        "band": "easier",
+        "text": "What does it mean to say that two objects repel?",
+        "options": [
+            {"text": "They pull each other together", "correct": False,
+             "why": "That is attraction, which is what unlike charges do."},
+            {"text": "They swap charge until both are "
+                     "neutral", "correct": False,
+             "why": "No charge crosses between them; they simply push without "
+                    "touching."},
+            {"text": "They stay exactly where they are", "correct": False,
+             "why": "A force acts on each of them, and if they are free to "
+                    "move they do."},
+            {"text": "They push each other apart", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e27",
+        "band": "easier",
+        "text": "A charged rod attracts a neutral scrap of foil. Whose "
+                "electrons have moved?",
+        "options": [
+            {"text": "The rod's, which have crossed onto the "
+                     "foil", "correct": False,
+             "why": "Nothing crosses the gap. Both objects keep the charge "
+                    "they had."},
+            {"text": "The foil's, which have crossed onto the "
+                     "rod", "correct": False,
+             "why": "The foil's total charge does not change, so none of its "
+                    "electrons leave it."},
+            {"text": "The foil's, which have moved within the "
+                     "foil", "correct": True},
+            {"text": "Neither object's, since neither has any to "
+                     "spare", "correct": False,
+             "why": "The foil's own electrons do shift to one side, and that "
+                    "is what produces the pull."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e28",
+        "band": "easier",
+        "text": "Two oppositely charged spheres attract each other. Two "
+                "like-charged spheres of the same size, the same distance "
+                "apart, repel. How do the two forces compare in size?",
+        "options": [
+            {"text": "The attraction is the bigger of the "
+                     "two", "correct": False,
+             "why": "Attraction and repulsion between the same charges at the "
+                    "same gap come out the same size."},
+            {"text": "The two forces are the same size", "correct": True},
+            {"text": "The repulsion is the bigger of the "
+                     "two", "correct": False,
+             "why": "Only the direction changes when the signs change; the "
+                    "size does not."},
+            {"text": "It depends which of the spheres you look "
+                     "at", "correct": False,
+             "why": "Both spheres in a pair always feel the same size of "
+                    "force as each other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e29",
+        "band": "easier",
+        "text": "Which of these would a negatively charged rod push away?",
+        "options": [
+            {"text": "A positively charged ball", "correct": False,
+             "why": "Unlike charges pull together, so a positive ball is "
+                    "attracted."},
+            {"text": "A neutral scrap of paper", "correct": False,
+             "why": "A neutral object is always attracted, never pushed "
+                    "away."},
+            {"text": "Another negatively charged ball", "correct": True},
+            {"text": "Any light object put in front of it", "correct": False,
+             "why": "Light objects that carry no charge are pulled in, not "
+                    "pushed away."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-e30",
+        "band": "easier",
+        "text": "A charged balloon stuck to a wall falls off half an hour "
+                "later. What has happened?",
+        "options": [
+            {"text": "The wall has taken on the same charge as the "
+                     "balloon", "correct": False,
+             "why": "The wall stays neutral throughout. It is the balloon "
+                    "that changes."},
+            {"text": "Moving air has slowly pushed the balloon off the "
+                     "wall", "correct": False,
+             "why": "A still room would give the same result. The pull itself "
+                    "has faded."},
+            {"text": "The balloon's charge has turned into the opposite "
+                     "one", "correct": False,
+             "why": "A charge does not flip sign on its own; the balloon "
+                    "would have been pushed off if it had."},
+            {"text": "Its charge has leaked away, so the attraction has "
+                     "gone", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · standard ──────────────────────────────────────
+    {
+        "id": "p9-02-s18",
+        "band": "standard",
+        "text": "A charged rod lifts small scraps of tissue paper easily but "
+                "will not lift a steel paper clip of about the same size. Why "
+                "not?",
+        "options": [
+            {"text": "The clip weighs far more, and the pull is too small to "
+                     "lift it", "correct": True},
+            {"text": "A metal object cannot be attracted by a charged "
+                     "rod", "correct": False,
+             "why": "Metals are attracted particularly well, because their "
+                    "electrons move so freely."},
+            {"text": "The clip carries the same sign of charge as the rod "
+                     "does", "correct": False,
+             "why": "The clip came out of a box uncharged, and an uncharged "
+                    "object is attracted, not repelled."},
+            {"text": "The clip conducts, so the rod's charge flows into it "
+                     "and stops", "correct": False,
+             "why": "No charge crosses the gap, and the clip conducting is "
+                    "what makes the pull stronger, not weaker."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s19",
+        "band": "standard",
+        "text": "In a power-station chimney the ash particles are given a "
+                "charge and the collecting plates are given the opposite "
+                "charge. Explain how that takes the ash out of the smoke.",
+        "options": [
+            {"text": "Like charges repel, so the charged ash is pushed on up "
+                     "the chimney and straight out into the "
+                     "air", "correct": False,
+             "why": "Pushing the ash up the chimney would send it into the "
+                    "air, which is what the plates are there to stop."},
+            {"text": "Unlike charges attract, so the ash is pulled onto the "
+                     "plates on the way past", "correct": True},
+            {"text": "The charge makes each ash particle heavier, so it falls "
+                     "out of the smoke", "correct": False,
+             "why": "Charging something does not weigh it down. The plates "
+                    "have to pull the ash sideways."},
+            {"text": "The charged plates burn the ash away as the smoke "
+                     "passes them", "correct": False,
+             "why": "Nothing is burned. The ash is collected on the plates "
+                    "and cleared off later."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s20",
+        "band": "standard",
+        "text": "Cling film peeled off a roll sticks firmly to a clean glass "
+                "bowl that nobody has charged. Explain what holds it there.",
+        "options": [
+            {"text": "Peeling leaves the film charged, and a charged object "
+                     "attracts an uncharged one", "correct": True},
+            {"text": "Peeling leaves the film and the bowl oppositely charged "
+                     "as they meet", "correct": False,
+             "why": "The bowl takes no charge from being touched by the film; "
+                    "it is neutral the whole time."},
+            {"text": "The film is sticky, so the force has nothing to do with "
+                     "charge", "correct": False,
+             "why": "Fresh film will cling before it touches anything, across "
+                    "a small gap, which glue cannot do."},
+            {"text": "The bowl must have been charged already by being washed "
+                     "and dried", "correct": False,
+             "why": "The film sticks to a bowl straight out of the cupboard. "
+                    "Only the film needs to be charged."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s21",
+        "band": "standard",
+        "text": "Two identical neutral metal spheres, each on an insulating "
+                "stand, are touched in turn by the same charged rod. What do "
+                "the two spheres then do to each other?",
+        "options": [
+            {"text": "Attract, because one of them will have taken more "
+                     "charge than the other", "correct": False,
+             "why": "Two objects with the same sign of charge repel however "
+                    "unequal the amounts are."},
+            {"text": "Nothing, because both of them are still neutral "
+                     "overall", "correct": False,
+             "why": "Touching a charged rod leaves charge behind on each "
+                    "sphere, so neither is neutral now."},
+            {"text": "Repel, because both now carry the rod's sign of "
+                     "charge", "correct": True},
+            {"text": "Attract, because touching a rod leaves an object "
+                     "oppositely charged", "correct": False,
+             "why": "Contact leaves the same sign behind, not the opposite "
+                    "one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s22",
+        "band": "standard",
+        "text": "A charged rod is held near a light foil ball hanging on a "
+                "thread. The ball swings across to the rod, while the rod "
+                "does not visibly move. Why not?",
+        "options": [
+            {"text": "The force acts only on the ball, because the ball is "
+                     "much the lighter of the two objects", "correct": False,
+             "why": "A force acts on both. Which one moves depends on their "
+                    "masses and what is holding them."},
+            {"text": "The rod feels a much smaller force, being the one that "
+                     "is charged", "correct": False,
+             "why": "The two forces are always equal in size, whichever "
+                    "object carries the charge."},
+            {"text": "The rod feels no force at all, being the one doing the "
+                     "attracting", "correct": False,
+             "why": "There is no such thing as one object attracting without "
+                    "being attracted back."},
+            {"text": "The rod feels an equal force, but it is heavier and "
+                     "held in the hand", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s23",
+        "band": "standard",
+        "text": "A positively charged rod is held near one end of a long "
+                "neutral metal bar resting on insulating supports. Describe "
+                "the charge on the two ends of the bar.",
+        "options": [
+            {"text": "Near end positive, far end negative, with no charge "
+                     "overall", "correct": False,
+             "why": "A positive rod pulls the bar's electrons towards it, so "
+                    "the near end comes out negative."},
+            {"text": "Both ends positive, because charge has come across from "
+                     "the rod", "correct": False,
+             "why": "No charge crosses the gap. Only the bar's own electrons "
+                    "move, and they stay in the bar."},
+            {"text": "Both ends neutral, because the bar is a "
+                     "conductor", "correct": False,
+             "why": "Being a conductor is what lets its electrons gather at "
+                    "one end so easily."},
+            {"text": "Near end negative, far end positive, with no charge "
+                     "overall", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s24",
+        "band": "standard",
+        "text": "Two objects attract, but far more weakly than two charged "
+                "objects the same distance apart would. What must they be?",
+        "options": [
+            {"text": "Both charged, with opposite signs", "correct": False,
+             "why": "Two opposite charges give the full-strength pull, not a "
+                    "weak one."},
+            {"text": "One charged and one uncharged", "correct": True},
+            {"text": "Both charged, with the same sign", "correct": False,
+             "why": "Two like charges push apart, so there would be no "
+                    "attraction to measure."},
+            {"text": "Both of them uncharged", "correct": False,
+             "why": "Two uncharged objects give no force at all — the one "
+                    "case in the table that does nothing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s25",
+        "band": "standard",
+        "text": "A student says an uncharged object has no charges in it at "
+                "all, so a charged rod can do nothing to it. Where is the "
+                "flaw?",
+        "options": [
+            {"text": "It has no charges, but the air in the gap carries the "
+                     "force across", "correct": False,
+             "why": "The air does no carrying, and the object certainly has "
+                    "charges of both kinds inside it."},
+            {"text": "It holds equal amounts of both charges, and those can "
+                     "be moved about", "correct": True},
+            {"text": "It really does feel nothing, so the rod has to be "
+                     "touching it", "correct": False,
+             "why": "A rubbed rod lifts paper without ever touching it, so "
+                    "something does act across the gap."},
+            {"text": "It takes a little charge from the rod, which is why it "
+                     "moves", "correct": False,
+             "why": "Nothing crosses the gap, and its total charge is the "
+                    "same before and after."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s26",
+        "band": "standard",
+        "text": "Two charged spheres on insulating stands are repelling each "
+                "other. One of them is touched briefly with a finger. What "
+                "happens next?",
+        "options": [
+            {"text": "The repulsion stops, and nothing acts between them at "
+                     "all", "correct": False,
+             "why": "A charged sphere and an uncharged one still attract "
+                    "weakly, by induction."},
+            {"text": "The repulsion carries on exactly as it was "
+                     "before", "correct": False,
+             "why": "The touched sphere loses its charge through you to "
+                    "earth, so the like-charge push has gone."},
+            {"text": "The repulsion becomes an attraction of exactly the same "
+                     "strength as the push had been", "correct": False,
+             "why": "Induced attraction is very much weaker than the push "
+                    "between two charged spheres."},
+            {"text": "The repulsion stops, and the two attract each other "
+                     "weakly instead", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s27",
+        "band": "standard",
+        "text": "A charged rod attracts object X and repels object Y. Which "
+                "object's charge do you now know?",
+        "options": [
+            {"text": "X's, and it is the opposite sign to the "
+                     "rod's", "correct": False,
+             "why": "X might be oppositely charged, or it might carry no "
+                    "charge at all; attraction cannot separate the two."},
+            {"text": "Both of their charges", "correct": False,
+             "why": "Only one of the two results settles anything, and it is "
+                    "not the attraction."},
+            {"text": "Neither of their charges", "correct": False,
+             "why": "The repulsion is conclusive: nothing but a like charge "
+                    "can push."},
+            {"text": "Y's, and it is the same sign as the "
+                     "rod's", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s28",
+        "band": "standard",
+        "text": "Why can a charged rod attract almost any light object, while "
+                "it can only repel a charged one?",
+        "options": [
+            {"text": "Attraction between charges is simply a stronger force "
+                     "than repulsion is, whatever the distance between "
+                     "them", "correct": False,
+             "why": "At the same gap with the same charges the two come out "
+                    "the same size."},
+            {"text": "Everything holds charges that can be pushed to one "
+                     "side, but only a like charge pushes "
+                     "back", "correct": True},
+            {"text": "Light objects are all slightly charged to begin "
+                     "with", "correct": False,
+             "why": "Paper out of a drawer carries no charge, and it is still "
+                    "picked up."},
+            {"text": "The rod passes a small charge to whatever it comes "
+                     "near", "correct": False,
+             "why": "Nothing crosses the gap; the other object's total charge "
+                    "is unchanged."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s29",
+        "band": "standard",
+        "text": "How could you show that the two forces between a pair of "
+                "charged balls are equal in size?",
+        "options": [
+            {"text": "Hang the heavier ball on a stronger thread and then "
+                     "check that it swings out by a smaller "
+                     "angle", "correct": False,
+             "why": "Different threads and different masses would tell you "
+                    "nothing about the two forces."},
+            {"text": "Hang both on identical threads and check that they "
+                     "swing out by the same angle", "correct": True},
+            {"text": "Move one of them further away and watch the other one "
+                     "stop moving", "correct": False,
+             "why": "Both forces fall together when the gap grows, so this "
+                    "compares nothing."},
+            {"text": "Put twice the charge on one of them and compare how far "
+                     "each swings", "correct": False,
+             "why": "Changing one charge changes both forces by the same "
+                    "amount, so the comparison is lost."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-s30",
+        "band": "standard",
+        "text": "A hanging ball is attracted to a positively charged rod, and "
+                "then attracted to a negatively charged one as well. What "
+                "does that prove?",
+        "options": [
+            {"text": "That the ball carries a positive "
+                     "charge", "correct": False,
+             "why": "A positive ball would have been pushed away by the "
+                    "positive rod."},
+            {"text": "That the ball carries no charge", "correct": True},
+            {"text": "That nothing can be told from those two "
+                     "results", "correct": False,
+             "why": "Taken together they are conclusive: a charged ball would "
+                    "have been repelled by one of the two rods."},
+            {"text": "That the ball carries a negative "
+                     "charge", "correct": False,
+             "why": "A negative ball would have been pushed away by the "
+                    "negative rod."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · harder ────────────────────────────────────────
+    {
+        "id": "p9-02-h18",
+        "band": "harder",
+        "text": "Ball A repels ball B, and ball B attracts ball C. What can "
+                "be said about A and C?",
+        "options": [
+            {"text": "They will push each other apart, since both of them act "
+                     "on B", "correct": False,
+             "why": "A and B share a sign, and C is either opposite to B or "
+                    "uncharged — so C cannot share A's sign."},
+            {"text": "Nothing at all, until C has been tested against a known "
+                     "charge", "correct": False,
+             "why": "The two results are enough. Both of the possibilities "
+                    "left for C give attraction with A."},
+            {"text": "They will do nothing to each other, as C's charge is "
+                     "unknown", "correct": False,
+             "why": "C is either oppositely charged or uncharged, and A "
+                    "attracts either of those."},
+            {"text": "They will pull towards each other, whether or not C is "
+                     "charged", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h19",
+        "band": "harder",
+        "text": "However carefully you keep your hand uncharged, a charged "
+                "rod is still drawn towards it. Explain why.",
+        "options": [
+            {"text": "A hand is always left slightly charged by the clothes "
+                     "you are wearing, and that charge pulls the rod "
+                     "across", "correct": False,
+             "why": "Even a hand with no charge on it at all is attracted, so "
+                    "this cannot be the reason."},
+            {"text": "Your hand conducts, so the rod pushes its charges to "
+                     "one side and pulls on the near ones", "correct": True},
+            {"text": "Your hand is warm, and warm air rises and carries the "
+                     "rod with it", "correct": False,
+             "why": "Warmth and air currents have nothing to do with it; the "
+                    "effect works through a cold hand too."},
+            {"text": "The rod takes charge from your hand as soon as it comes "
+                     "close", "correct": False,
+             "why": "No charge crosses the gap. The hand's own charges simply "
+                    "shift within it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h20",
+        "band": "harder",
+        "text": "Three objects are each attracted to a negatively charged "
+                "rod, and a student concludes that all three carry positive "
+                "charge. Describe the test that would settle it.",
+        "options": [
+            {"text": "Bring a positively charged rod near each: only a "
+                     "charged one is pushed away", "correct": True},
+            {"text": "Bring the same negative rod nearer: a charged object is "
+                     "attracted more strongly", "correct": False,
+             "why": "Every one of them is attracted more strongly at a "
+                    "smaller gap, charged or not."},
+            {"text": "Weigh each object carefully: a charged object comes out "
+                     "slightly heavier", "correct": False,
+             "why": "There is no weighing that separates them; charge is not "
+                    "what a balance measures."},
+            {"text": "Touch each object to the rod: a charged one sticks to "
+                     "it and stays there", "correct": False,
+             "why": "Touching leaves an object with the rod's own sign, so it "
+                    "is thrown off whatever it started as."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h21",
+        "band": "harder",
+        "text": "Light bags on a plastic conveyor belt jump about and cling "
+                "to its sides. The engineer replaces one roller with an "
+                "earthed metal one. Explain why that helps.",
+        "options": [
+            {"text": "The metal roller charges the belt the other way and "
+                     "cancels it out", "correct": False,
+             "why": "An earthed roller does not charge anything. It gives "
+                    "charge a route away."},
+            {"text": "Charge separated by the belt can now run to earth "
+                     "instead of building up on it", "correct": True},
+            {"text": "The metal roller stops the belt rubbing against "
+                     "anything at all", "correct": False,
+             "why": "The belt keeps rubbing against the bags and the rollers. "
+                    "What changes is where the charge goes."},
+            {"text": "Earthing takes some of the weight off the bags, so they "
+                     "are no longer light enough to jump "
+                     "about", "correct": False,
+             "why": "Earthing changes nothing about weight. The bags jump "
+                    "because the belt is charged."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h22",
+        "band": "harder",
+        "text": "The electric force between two protons is enormously bigger "
+                "than the gravitational pull between them. Why do you never "
+                "notice electric forces between everyday objects?",
+        "options": [
+            {"text": "Everyday objects are too heavy for an electric force to "
+                     "shift", "correct": False,
+             "why": "A rubbed rod lifts paper against the whole Earth's pull, "
+                    "so the force is far from feeble."},
+            {"text": "Everyday matter has its positive and negative charges "
+                     "almost exactly balanced", "correct": True},
+            {"text": "The electric force reaches only across distances "
+                     "smaller than an atom, so it cannot get from one object "
+                     "to another", "correct": False,
+             "why": "It reaches across a room. It is simply very much weaker "
+                    "by the time it gets there."},
+            {"text": "The air between everyday objects cancels the electric "
+                     "force out", "correct": False,
+             "why": "Air does no cancelling; the force is just as strong with "
+                    "the air pumped away."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h23",
+        "band": "harder",
+        "text": "In electrostatic paint spraying every droplet leaves the gun "
+                "carrying the same charge. Besides being pulled onto the car, "
+                "what does that do to the spray itself?",
+        "options": [
+            {"text": "The droplets pull together, so they join into larger "
+                     "drops on the way", "correct": False,
+             "why": "Like charges push apart. Joining into big drops is what "
+                    "a sprayer is trying to avoid."},
+            {"text": "The droplets push each other apart, so the spray "
+                     "spreads into a fine even mist", "correct": True},
+            {"text": "The droplets travel faster, since like charges drive "
+                     "them forwards", "correct": False,
+             "why": "The push between droplets acts in all directions and "
+                    "does not drive the spray along."},
+            {"text": "The droplets lose their charge to each other and drop "
+                     "out of the air", "correct": False,
+             "why": "Charge does not leak between droplets in flight; they "
+                    "keep it until they land."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h24",
+        "band": "harder",
+        "text": "Put these in order of the force on the right-hand object, "
+                "largest first: two charged spheres 4 cm apart; the same two "
+                "8 cm apart; one charged sphere and one uncharged one 8 cm "
+                "apart.",
+        "options": [
+            {"text": "The uncharged pair, then the pair at 4 cm, then the "
+                     "pair at 8 cm", "correct": False,
+             "why": "Induced attraction is the weakest of the three, not the "
+                    "strongest."},
+            {"text": "The pair at 8 cm, then the pair at 4 cm, then the "
+                     "uncharged pair", "correct": False,
+             "why": "The force falls as the gap grows, so the closer pair "
+                    "comes first."},
+            {"text": "The pair at 4 cm, then the pair at 8 cm, then the "
+                     "uncharged pair", "correct": True},
+            {"text": "All three of them the same, as the charges are the same "
+                     "size", "correct": False,
+             "why": "Separation matters, and so does whether the second "
+                    "object carries a charge at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h25",
+        "band": "harder",
+        "text": "A student says induction cannot be real, because an "
+                "uncharged object's total charge never changes, so nothing "
+                "has happened to it. Refute that.",
+        "options": [
+            {"text": "Its total charge does change — it takes a little from "
+                     "the rod", "correct": False,
+             "why": "Nothing crosses the gap. The student is right about the "
+                    "total and wrong about what follows."},
+            {"text": "Its charges have been moved onto opposite faces, and "
+                     "that is what produces the pull", "correct": True},
+            {"text": "Nothing does happen to the object; it is the rod that "
+                     "moves across towards it instead, because the rod is the "
+                     "charged one", "correct": False,
+             "why": "Both feel a force, and the light object is the one you "
+                    "see move."},
+            {"text": "The object was never really uncharged in the first "
+                     "place", "correct": False,
+             "why": "Paper straight from a drawer is uncharged and is still "
+                    "picked up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h26",
+        "band": "harder",
+        "text": "The rule that like repels and unlike attracts holds for "
+                "magnetic poles as well as for charges. What is a real "
+                "difference between the two cases?",
+        "options": [
+            {"text": "Magnetic forces need contact, while electric forces act "
+                     "across a gap", "correct": False,
+             "why": "A magnet picks up a pin before touching it. Neither "
+                    "force needs contact."},
+            {"text": "A magnet attracts only magnetic materials, while a "
+                     "charged object attracts almost anything "
+                     "light", "correct": True},
+            {"text": "Magnetic forces stay exactly the same at any distance "
+                     "at all, while electric ones fall away quickly with the "
+                     "gap", "correct": False,
+             "why": "A magnet's pull weakens sharply with distance too, as "
+                    "anyone moving one away from a pin can feel."},
+            {"text": "Magnetic poles can be found on their own, while charges "
+                     "cannot be", "correct": False,
+             "why": "It is the other way round: a single charge is easy to "
+                    "make, and a single pole has never been found."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h27",
+        "band": "harder",
+        "text": "Two charged spheres are held a fixed distance apart. If the "
+                "sign of both charges were reversed at the same moment, what "
+                "would happen to the force between them?",
+        "options": [
+            {"text": "It would reverse, so an attraction would become a "
+                     "repulsion", "correct": False,
+             "why": "Reversing both keeps them like or unlike as they were, "
+                    "so the direction is unchanged."},
+            {"text": "Nothing at all — it would be the same size and in the "
+                     "same direction", "correct": True},
+            {"text": "It would double, because both of the charges have "
+                     "changed", "correct": False,
+             "why": "Neither charge has changed in size, so neither has the "
+                    "force."},
+            {"text": "It would drop to zero while the two charges swapped "
+                     "over", "correct": False,
+             "why": "There is no moment with no charge; the pair are reversed "
+                    "together."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h28",
+        "band": "harder",
+        "text": "Two students hold charged rods about 30 cm apart and feel "
+                "nothing at all. Does that mean there is no force between the "
+                "rods?",
+        "options": [
+            {"text": "Yes — the force only exists once the objects are close "
+                     "enough to touch", "correct": False,
+             "why": "The force acts across any gap. Touching has nothing to "
+                    "do with whether it is there."},
+            {"text": "Yes — over that distance the air between them cancels "
+                     "the force out", "correct": False,
+             "why": "Air cancels nothing. The force is the same with the air "
+                    "pumped away."},
+            {"text": "No — the force is there, but it acts on the students "
+                     "rather than the rods", "correct": False,
+             "why": "The force acts on the charged rods themselves, and their "
+                    "hands simply hold them still."},
+            {"text": "No — there is a force, but at that gap it is far too "
+                     "weak to feel", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h29",
+        "band": "harder",
+        "text": "Two uncharged objects each hold huge numbers of positive and "
+                "negative charges. Why do they not attract each other by "
+                "induction?",
+        "options": [
+            {"text": "Their charges are held in place and none of them can "
+                     "move", "correct": False,
+             "why": "The charges in each object can move perfectly well; the "
+                    "trouble is that nothing is moving them."},
+            {"text": "Neither of them has a spare charge to push the other's "
+                     "charges to one side", "correct": True},
+            {"text": "They push each other apart instead, because their "
+                     "charges match", "correct": False,
+             "why": "Two uncharged objects neither push nor pull — this is "
+                    "the one case that gives no force."},
+            {"text": "The air between them blocks any effect that the two of "
+                     "them could otherwise have on each "
+                     "other", "correct": False,
+             "why": "Air blocks nothing, which is why a charged object "
+                    "reaches an uncharged one across the same gap."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-02-h30",
+        "band": "harder",
+        "text": "A student argues that in induction the near face is pulled "
+                "and the far face is pushed by the same amount, so the two "
+                "should cancel and nothing should happen. Where is the flaw?",
+        "options": [
+            {"text": "The far face is left carrying no charge at all, so "
+                     "there is nothing there for the rod to push "
+                     "on", "correct": False,
+             "why": "The far face does end up charged, with the same sign as "
+                    "the rod, and it genuinely is pushed."},
+            {"text": "The two faces are at different distances, and the force "
+                     "falls off very quickly", "correct": True},
+            {"text": "A push between charges is always smaller than a pull "
+                     "between them", "correct": False,
+             "why": "Push and pull come out the same size for the same "
+                    "charges at the same gap."},
+            {"text": "The charge on the far face leaks away before it can act "
+                     "on anything", "correct": False,
+             "why": "It stays there as long as the rod is held nearby, and it "
+                    "does push — just from further off."},
+        ],
+        "figure": None,
+    },
 ]

@@ -1186,4 +1186,918 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 night 3 · easier ────────────────────────────────────────
+    {
+        "id": "p9-01-e18",
+        "band": "easier",
+        "text": "A material sits higher up the triboelectric series than the "
+                "one it is rubbed against. What happens to it?",
+        "options": [
+            {"text": "It loses electrons and is left positively "
+                     "charged", "correct": True},
+            {"text": "It gains electrons and is left negatively "
+                     "charged", "correct": False,
+             "why": "That is what happens to the lower material. The higher "
+                    "one holds its electrons less tightly."},
+            {"text": "It loses protons and is left negatively "
+                     "charged", "correct": False,
+             "why": "Protons stay in their nuclei, and losing them would not "
+                    "leave an object negative."},
+            {"text": "It stays neutral and only the lower one is "
+                     "charged", "correct": False,
+             "why": "Both objects change. Every electron that leaves one "
+                    "arrives on the other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e19",
+        "band": "easier",
+        "text": "Two materials from opposite ends of the triboelectric series "
+                "are rubbed together. Compared with two that sit side by side "
+                "on it, the charge produced is…",
+        "options": [
+            {"text": "smaller, because materials that differ so much barely "
+                     "swap electrons", "correct": False,
+             "why": "It is the other way round. A big difference in how "
+                    "tightly the electrons are held drives more of them "
+                    "across."},
+            {"text": "the same, because only the number of strokes decides "
+                     "the charge", "correct": False,
+             "why": "Strokes matter, but so does how far apart the two "
+                    "materials sit on the series."},
+            {"text": "zero, because materials that far apart cannot charge "
+                     "each other", "correct": False,
+             "why": "They charge each other most strongly of all. Nothing "
+                    "about the series stops a distant pair working."},
+            {"text": "larger, because more electrons cross between "
+                     "them", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e20",
+        "band": "easier",
+        "text": "A polythene rod is rubbed with a cotton cloth. Polythene is "
+                "lower down the triboelectric series than cotton. Which "
+                "object becomes negatively charged?",
+        "options": [
+            {"text": "The cotton cloth", "correct": False,
+             "why": "Cotton is the higher of the two, so it gives electrons "
+                    "up and is left positive."},
+            {"text": "The polythene rod", "correct": True},
+            {"text": "Both of them equally", "correct": False,
+             "why": "They end up opposite, not the same. Electrons that leave "
+                    "one arrive on the other."},
+            {"text": "Neither of them at all", "correct": False,
+             "why": "Two different insulators rubbed together always end up "
+                    "charged, one each way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e21",
+        "band": "easier",
+        "text": "Electrons cross at the points where two rubbed surfaces "
+                "touch. What happens to those electrons once the surfaces are "
+                "pulled apart again?",
+        "options": [
+            {"text": "They stay on the surface they crossed "
+                     "to", "correct": True},
+            {"text": "They travel straight back where they came "
+                     "from", "correct": False,
+             "why": "Nothing carries them back — both materials are "
+                    "insulators, so the electrons are stuck where they "
+                    "landed."},
+            {"text": "They are shared out evenly between the "
+                     "surfaces", "correct": False,
+             "why": "Sharing would leave both objects neutral, and both are "
+                    "measurably charged."},
+            {"text": "They escape into the air as the gap between the "
+                     "surfaces opens", "correct": False,
+             "why": "Dry air is a very poor conductor, which is exactly why "
+                    "the charge stays put."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e22",
+        "band": "easier",
+        "text": "Which object gains electrons when a glass rod and an acetate "
+                "strip are rubbed together, given that glass is the higher of "
+                "the two on the series?",
+        "options": [
+            {"text": "The glass rod, because glass is higher "
+                     "up", "correct": False,
+             "why": "Higher up means it holds its electrons less tightly, so "
+                    "glass is the one that loses them."},
+            {"text": "Both of them, from the friction between "
+                     "them", "correct": False,
+             "why": "Friction supplies contact, not electrons. One object "
+                    "gains only what the other loses."},
+            {"text": "The acetate strip", "correct": True},
+            {"text": "Neither, since both are insulators", "correct": False,
+             "why": "Being insulators is what makes this work: the charge "
+                    "stays where the rubbing put it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e23",
+        "band": "easier",
+        "text": "Which of these would put the biggest charge on a polythene "
+                "rod?",
+        "options": [
+            {"text": "Wiping it along a wet hand several "
+                     "times", "correct": False,
+             "why": "A wet hand conducts, so any charge separated runs "
+                    "straight away through you."},
+            {"text": "Rubbing it hard with a dry woollen "
+                     "duster", "correct": True},
+            {"text": "Rubbing it hard with a damp cotton "
+                     "cloth", "correct": False,
+             "why": "Damp material lets charge leak away as fast as the "
+                    "rubbing separates it."},
+            {"text": "Holding it close to a warm radiator", "correct": False,
+             "why": "Warmth does nothing here. Charging needs two surfaces "
+                    "pressed into contact and pulled apart."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e24",
+        "band": "easier",
+        "text": "A charged plastic rod is left lying on a bench in a damp "
+                "room. What happens to its charge over the next few minutes?",
+        "options": [
+            {"text": "It grows, because damp air supplies extra "
+                     "electrons", "correct": False,
+             "why": "Air is not a store of spare electrons. Damp air takes "
+                    "charge away rather than adding it."},
+            {"text": "It stays exactly as it was, because plastic "
+                     "insulates", "correct": False,
+             "why": "Plastic does insulate, but the film of water on its "
+                    "surface conducts and lets the charge go."},
+            {"text": "It changes sign as water lands on the "
+                     "surface", "correct": False,
+             "why": "Water does not reverse a charge. It provides a route for "
+                    "the charge to escape."},
+            {"text": "It leaks away, because damp air lets charge "
+                     "escape", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e25",
+        "band": "easier",
+        "text": "A rubbed rod is found to carry a charge of −4.0 nC. What "
+                "charge is on the duster that rubbed it?",
+        "options": [
+            {"text": "−4.0 nC", "correct": False,
+             "why": "Both objects cannot be negative. The electrons the rod "
+                    "gained came off the duster."},
+            {"text": "0.0 nC", "correct": False,
+             "why": "The duster is charged too, by exactly as much as the rod "
+                    "and in the opposite direction."},
+            {"text": "+4.0 nC", "correct": True},
+            {"text": "+8.0 nC", "correct": False,
+             "why": "The two charges match in size. Nothing doubles the "
+                    "duster's share."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e26",
+        "band": "easier",
+        "text": "A metal rod is fitted with a thick plastic handle and rubbed "
+                "with a dry cloth while being held only by that handle. Can "
+                "it be charged?",
+        "options": [
+            {"text": "Yes, because the plastic handle gives the charge no "
+                     "route to earth", "correct": True},
+            {"text": "No, because a metal is unable to hold any "
+                     "charge", "correct": False,
+             "why": "A metal holds charge perfectly well once it is insulated "
+                    "from earth."},
+            {"text": "No, because rubbing a metal destroys the charge it "
+                     "makes", "correct": False,
+             "why": "Charge is never destroyed. It simply flows away when "
+                    "there is a route for it."},
+            {"text": "Yes, but only while the cloth stays in contact with "
+                     "it", "correct": False,
+             "why": "The charge stays behind after the cloth is taken away, "
+                    "which is the whole point."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e27",
+        "band": "easier",
+        "text": "In this topic, what does calling a material an insulator "
+                "tell you about it?",
+        "options": [
+            {"text": "It contains no electrons of its own", "correct": False,
+             "why": "It is full of electrons. They are just held in place "
+                    "instead of being free to travel."},
+            {"text": "Its electrons are free to move about inside it, so a "
+                     "rubbed charge spreads out over it", "correct": False,
+             "why": "That describes a conductor, which is why a conductor "
+                    "cannot hold a rubbed charge."},
+            {"text": "Charge cannot travel through it, so it stays where the "
+                     "rubbing put it", "correct": True},
+            {"text": "It cannot be given any charge at all", "correct": False,
+             "why": "Insulators are the only things rubbing does charge. "
+                    "Conductors are the awkward ones."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e28",
+        "band": "easier",
+        "text": "Rubbing two insulators together changes several things. "
+                "Which of these does it leave exactly as it was?",
+        "options": [
+            {"text": "How many electrons sit on each object", "correct": False,
+             "why": "This is the thing that does change: one object ends up "
+                    "with more and the other with fewer."},
+            {"text": "How many protons sit in each object", "correct": True},
+            {"text": "Whether each object will lift a scrap of "
+                     "paper", "correct": False,
+             "why": "Before rubbing neither would; afterwards both will, "
+                    "because both are charged."},
+            {"text": "Whether each object is positive or "
+                     "negative", "correct": False,
+             "why": "Both start neutral and end charged, one each way, so "
+                    "this changes for both of them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e29",
+        "band": "easier",
+        "text": "What do you need if rubbing is going to charge something?",
+        "options": [
+            {"text": "Two pieces of the same insulator, both of them "
+                     "dry", "correct": False,
+             "why": "Identical materials hold their electrons equally "
+                    "tightly, so none of them cross."},
+            {"text": "An insulator and a metal rod held in the bare "
+                     "hand", "correct": False,
+             "why": "The metal and your hand conduct, so the charge runs away "
+                    "as fast as it is separated."},
+            {"text": "Two different insulators, both of them "
+                     "dry", "correct": True},
+            {"text": "Two different insulators, one of them slightly "
+                     "damp", "correct": False,
+             "why": "A damp surface conducts, so the charge leaks off before "
+                    "it can build up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-e30",
+        "band": "easier",
+        "text": "Wool holds its electrons less tightly than PVC does. After a "
+                "PVC pipe has been rubbed with a wool duster, the duster is…",
+        "options": [
+            {"text": "negatively charged, having collected "
+                     "electrons", "correct": False,
+             "why": "The wool is the looser of the two, so it gives electrons "
+                    "away rather than collecting them."},
+            {"text": "positively charged, having given electrons "
+                     "away", "correct": True},
+            {"text": "still neutral, since cloth cannot hold a "
+                     "charge", "correct": False,
+             "why": "Wool is an insulator and holds a charge perfectly well — "
+                    "it is charged as much as the pipe is."},
+            {"text": "charged, but too weakly for a sign to be "
+                     "given", "correct": False,
+             "why": "The sign is set by which material holds electrons more "
+                    "tightly, whatever the size of the charge."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · standard ──────────────────────────────────────
+    {
+        "id": "p9-01-s18",
+        "band": "standard",
+        "text": "Acetate and PVC sit at opposite ends of a classroom set of "
+                "materials, while wool and cotton sit side by side in it. "
+                "Each pair is rubbed with the same number of strokes. Which "
+                "pair ends up more strongly charged?",
+        "options": [
+            {"text": "The wool and the cotton, because similar materials "
+                     "trade electrons more readily", "correct": False,
+             "why": "Similar materials hold their electrons about equally "
+                    "tightly, so very few of them cross."},
+            {"text": "The acetate and the PVC, because they sit further apart "
+                     "on the series", "correct": True},
+            {"text": "Both pairs the same, because both were given the same "
+                     "number of strokes", "correct": False,
+             "why": "Strokes are only half of it. How far apart the materials "
+                    "sit matters just as much."},
+            {"text": "The wool and the cotton, because natural fibres charge "
+                     "better than plastics", "correct": False,
+             "why": "Being natural has nothing to do with it. Position on the "
+                    "series is what decides the transfer."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s19",
+        "band": "standard",
+        "text": "An acetate strip is rubbed with a polythene rod, and acetate "
+                "is the higher of the two on the triboelectric series. "
+                "Predict what charge each of them ends up with.",
+        "options": [
+            {"text": "Acetate positive and polythene "
+                     "negative", "correct": True},
+            {"text": "Acetate negative and polythene "
+                     "positive", "correct": False,
+             "why": "That is the transfer the wrong way round. The higher "
+                    "material is the one that loses electrons."},
+            {"text": "Both of them negative, since rubbing adds "
+                     "electrons", "correct": False,
+             "why": "Rubbing adds nothing. It only moves electrons that were "
+                    "already on the two objects."},
+            {"text": "Acetate charged and polythene left "
+                     "neutral", "correct": False,
+             "why": "Whatever one object loses the other gains, so the two "
+                    "always end up charged together."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s20",
+        "band": "standard",
+        "text": "A rod given eight strokes ends up at −2.4 nC. It is then "
+                "given eight more strokes in exactly the same way. Which "
+                "final charge is most likely?",
+        "options": [
+            {"text": "Exactly −4.8 nC, since the strokes have "
+                     "doubled", "correct": False,
+             "why": "The gain per stroke gets smaller as the charge builds, "
+                    "so it never quite doubles."},
+            {"text": "About −3.7 nC", "correct": True},
+            {"text": "About −1.2 nC, as the charge spreads over more "
+                     "strokes", "correct": False,
+             "why": "More rubbing separates more charge. Nothing spreads it "
+                    "thinner."},
+            {"text": "About −9.6 nC, because each stroke adds more than the "
+                     "last", "correct": False,
+             "why": "Each stroke adds less than the one before, not more — "
+                    "the charge is levelling off."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s21",
+        "band": "standard",
+        "text": "A student charges a polythene rod along its whole length, "
+                "then runs a finger along one end of it. The other end still "
+                "lifts paper. What does that show?",
+        "options": [
+            {"text": "The whole rod was discharged, and friction is lifting "
+                     "the paper now", "correct": False,
+             "why": "Friction cannot lift paper across a gap. The far end is "
+                    "still charged."},
+            {"text": "Charge cannot move along polythene, so only the part "
+                     "touched was discharged", "correct": True},
+            {"text": "Charge creeps slowly along an insulator, so the far end "
+                     "will go in a moment", "correct": False,
+             "why": "It will not. Charge on an insulator stays exactly where "
+                    "it was put."},
+            {"text": "Only the inside of the rod was charged, and the finger "
+                     "took the outside", "correct": False,
+             "why": "Rubbing charges the surface, and the finger removed the "
+                    "surface charge it touched and no more."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s22",
+        "band": "standard",
+        "text": "One wool duster is used first on a polythene rod and then on "
+                "a glass rod. Wool sits below glass but above polythene on "
+                "the series. What charge does the duster end up with each "
+                "time?",
+        "options": [
+            {"text": "Positive after the polythene, then negative after the "
+                     "glass", "correct": True},
+            {"text": "Negative after the polythene, then positive after the "
+                     "glass", "correct": False,
+             "why": "The signs are the wrong way round: wool loses electrons "
+                    "to polythene and gains them from glass."},
+            {"text": "Positive both times, because wool gives electrons up to "
+                     "anything", "correct": False,
+             "why": "Wool gives electrons up only to a material below it. "
+                    "Glass is above it."},
+            {"text": "Negative both times, because wool collects electrons "
+                     "from anything", "correct": False,
+             "why": "Wool collects electrons only from a material above it, "
+                    "and polythene is below."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s23",
+        "band": "standard",
+        "text": "A student wants the largest charge they can get on a rod. "
+                "Which set of choices is best?",
+        "options": [
+            {"text": "Two materials side by side on the series, dry, with "
+                     "many strokes", "correct": False,
+             "why": "Materials close together barely differ in how tightly "
+                    "they hold electrons, so little crosses."},
+            {"text": "Two materials far apart on the series, dry, with many "
+                     "strokes", "correct": True},
+            {"text": "Two materials far apart on the series, slightly damp, "
+                     "with many strokes", "correct": False,
+             "why": "Damp surfaces conduct, so the charge leaks off as fast "
+                    "as it is separated."},
+            {"text": "Two pieces of one material, dry, with as many strokes "
+                     "as possible", "correct": False,
+             "why": "Identical materials hold their electrons equally "
+                    "tightly, so no strokes will charge them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s24",
+        "band": "standard",
+        "text": "Waving a duster about a centimetre from a rod, without ever "
+                "touching it, leaves the rod uncharged. Why must the rubbing "
+                "be done in contact?",
+        "options": [
+            {"text": "Moving air strips the charge off the rod as fast as it "
+                     "is separated", "correct": False,
+             "why": "No charge is separated in the first place, so there is "
+                    "nothing for the air to strip."},
+            {"text": "The air in the gap soaks up any electrons that try to "
+                     "cross over it", "correct": False,
+             "why": "Dry air is a very poor conductor and absorbs nothing of "
+                    "the sort."},
+            {"text": "Electrons only cross where the two surfaces genuinely "
+                     "touch", "correct": True},
+            {"text": "The duster must be warmed by friction before it gives "
+                     "electrons up", "correct": False,
+             "why": "Warmth plays no part. What matters is surfaces pressed "
+                    "together and pulled apart."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s25",
+        "band": "standard",
+        "text": "Investigating how the charge depends on the number of "
+                "strokes, one group uses wool on polythene and another uses "
+                "cotton on polythene. Their results disagree. What is the "
+                "problem?",
+        "options": [
+            {"text": "One group must have counted its strokes "
+                     "wrongly", "correct": False,
+             "why": "Both counts can be perfectly correct and the results "
+                    "still differ, because the cloths differ."},
+            {"text": "Nothing — different groups are expected to "
+                     "disagree", "correct": False,
+             "why": "A disagreement with a known cause is a fault in the "
+                    "design, not a result to accept."},
+            {"text": "They changed the pair of materials as well as the "
+                     "strokes, so the results cannot be "
+                     "compared", "correct": True},
+            {"text": "Cotton cannot charge polythene, so that group's "
+                     "readings are meaningless and ought to be thrown "
+                     "out", "correct": False,
+             "why": "Cotton does charge polythene — it sits above it on the "
+                    "series — just less strongly than wool."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s26",
+        "band": "standard",
+        "text": "A charged polythene rod is pressed firmly against a second "
+                "polythene rod that has never been rubbed. What happens?",
+        "options": [
+            {"text": "The charge spreads itself out evenly over both of the "
+                     "rods until the two carry the same "
+                     "amount", "correct": False,
+             "why": "Charge spreads out over a metal, which conducts. It "
+                    "cannot travel through polythene."},
+            {"text": "Almost nothing moves, because charge cannot flow along "
+                     "an insulator", "correct": True},
+            {"text": "All of the charge crosses onto the second "
+                     "rod", "correct": False,
+             "why": "There is no route for it to travel along, and no reason "
+                    "for it to prefer the other rod."},
+            {"text": "Both rods are left neutral, as the charges cancel "
+                     "out", "correct": False,
+             "why": "The second rod has no charge to cancel the first one "
+                    "with; it is neutral to start with."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s27",
+        "band": "standard",
+        "text": "A rod wiped with a clean dry cloth first charges strongly, "
+                "while an identical rod taken straight from a dusty drawer "
+                "charges far more weakly. Suggest why.",
+        "options": [
+            {"text": "Dust adds extra protons to the rod's "
+                     "surface", "correct": False,
+             "why": "Protons never move between objects, and nothing adds "
+                    "them to a surface."},
+            {"text": "Dirt on the surface changes how the two materials meet "
+                     "and hold their electrons", "correct": True},
+            {"text": "A layer of dust turns the rod into a conductor, so any "
+                     "charge separated runs straight off it", "correct": False,
+             "why": "A layer of dust does not turn polythene into a "
+                    "conductor; the rod charges, just less well."},
+            {"text": "Dust makes the rod heavier, so more strokes are "
+                     "needed", "correct": False,
+             "why": "Mass has nothing to do with how many electrons cross "
+                    "between two surfaces."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s28",
+        "band": "standard",
+        "text": "A long strip of plastic film is pulled quickly off a roll. "
+                "It crackles, and afterwards it is charged, although nobody "
+                "rubbed it. How was the charge separated?",
+        "options": [
+            {"text": "Stretching the film as it is pulled creates charge "
+                     "inside it", "correct": False,
+             "why": "Stretching creates nothing. Charge is only ever moved "
+                    "from one surface to another."},
+            {"text": "The two layers were pressed together on the roll and "
+                     "then peeled apart", "correct": True},
+            {"text": "Air rushing past the film carries electrons onto "
+                     "it", "correct": False,
+             "why": "Air is a very poor conductor and is not a supply of "
+                    "spare electrons."},
+            {"text": "The speed of the pull heats the film and frees "
+                     "electrons in it", "correct": False,
+             "why": "Warming an insulator does not release electrons in any "
+                    "useful number."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s29",
+        "band": "standard",
+        "text": "A PVC pipe and an acetate strip are each rubbed with the "
+                "same cotton cloth. Cotton sits between the two of them on "
+                "the series. What charges do the pipe and the strip end up "
+                "with?",
+        "options": [
+            {"text": "Both of them positive", "correct": False,
+             "why": "Cotton is above acetate but below PVC, so the two rods "
+                    "cannot come out the same way."},
+            {"text": "The PVC positive and the acetate "
+                     "negative", "correct": False,
+             "why": "The signs are reversed: PVC is below cotton, so PVC "
+                    "gains electrons and the acetate loses them."},
+            {"text": "The PVC negative and the acetate "
+                     "positive", "correct": True},
+            {"text": "Both of them negative", "correct": False,
+             "why": "Acetate sits above cotton, so acetate gives electrons up "
+                    "and comes out positive."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-s30",
+        "band": "standard",
+        "text": "With no meter available, how could you compare the charge on "
+                "a rod after five strokes with the charge after fifteen?",
+        "options": [
+            {"text": "Measure how much warmer the rod has become after each "
+                     "of the rubbings", "correct": False,
+             "why": "Warmth from friction tells you about the rubbing, not "
+                    "about how much charge was separated."},
+            {"text": "Count how many small scraps of paper each one "
+                     "lifts", "correct": True},
+            {"text": "Look for a glow on the surface of the "
+                     "rod", "correct": False,
+             "why": "A rubbed rod gives off no light at these charges; there "
+                    "is nothing to see."},
+            {"text": "Compare how quickly each rod cools "
+                     "afterwards", "correct": False,
+             "why": "Cooling depends on the rod and the room, and says "
+                    "nothing about its charge."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · harder ────────────────────────────────────────
+    {
+        "id": "p9-01-h18",
+        "band": "harder",
+        "text": "A new plastic is tested. Rubbed with wool it comes out "
+                "negative, and rubbed with polythene it comes out positive. "
+                "Where does it belong on the series?",
+        "options": [
+            {"text": "Above both wool and polythene", "correct": False,
+             "why": "Above wool it would lose electrons to wool and come out "
+                    "positive, not negative."},
+            {"text": "Below wool but above polythene", "correct": True},
+            {"text": "Below both wool and polythene", "correct": False,
+             "why": "Below polythene it would take electrons from polythene "
+                    "and come out negative, not positive."},
+            {"text": "Level with wool, since it takes the opposite charge to "
+                     "it", "correct": False,
+             "why": "Two materials level with each other would swap no "
+                    "electrons and neither would be charged."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h19",
+        "band": "harder",
+        "text": "A polythene rod holds something like a million million "
+                "million million electrons, and rubbing moves about ten "
+                "thousand million of them. What does that tell you?",
+        "options": [
+            {"text": "Only a tiny fraction of the rod's electrons take "
+                     "part", "correct": True},
+            {"text": "The rod has given up most of the electrons it "
+                     "held", "correct": False,
+             "why": "It has given up a fantastically small share of them — "
+                    "the count that crosses is far smaller."},
+            {"text": "The rod is close to running out of electrons "
+                     "entirely", "correct": False,
+             "why": "It is nowhere near. Rubbing touches only the outermost "
+                    "layer of atoms."},
+            {"text": "The rod's material has been chemically changed by the "
+                     "rubbing", "correct": False,
+             "why": "No new substance is made. The polythene is the same "
+                    "material, with a slight imbalance of charge."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h20",
+        "band": "harder",
+        "text": "Objects A, B and C all start neutral. A is rubbed with B, "
+                "and then B is rubbed with C. A is left at +2.0 nC and C at "
+                "−5.0 nC. What charge is B left with?",
+        "options": [
+            {"text": "−3.0 nC", "correct": False,
+             "why": "Add the three charges and you would get −6.0 nC, but the "
+                    "total has to come back to zero."},
+            {"text": "+3.0 nC", "correct": True},
+            {"text": "−7.0 nC", "correct": False,
+             "why": "That is A and C subtracted rather than added; the three "
+                    "charges must sum to zero."},
+            {"text": "+7.0 nC", "correct": False,
+             "why": "The three together would then be +4.0 nC, and nothing "
+                    "created any charge."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h21",
+        "band": "harder",
+        "text": "Flour is blown along a long plastic pipe into a silo, and a "
+                "large charge builds up on the pipe. The firm is told to fit "
+                "an earthed metal pipe instead. Explain why that helps.",
+        "options": [
+            {"text": "Metal does not rub against flour, so no charge is "
+                     "separated at all", "correct": False,
+             "why": "Flour rubs against metal just as it does against "
+                    "plastic. The difference is what happens next."},
+            {"text": "Metal conducts, so the separated charge runs to earth "
+                     "instead of building up", "correct": True},
+            {"text": "Earthing destroys the charge at the moment it is "
+                     "separated", "correct": False,
+             "why": "Charge is never destroyed. Earthing gives it somewhere "
+                    "to go."},
+            {"text": "Metal stores charge far better than plastic does, so it "
+                     "holds the charge safely out of harm's "
+                     "way", "correct": False,
+             "why": "An earthed metal pipe stores nothing — that is exactly "
+                    "the point of earthing it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h22",
+        "band": "harder",
+        "text": "A student records the charge after 5, 10, 15 and 20 strokes "
+                "as 1.8, 3.2, 4.2 and 4.8 nC, and draws a straight line "
+                "through the four points. Evaluate that.",
+        "options": [
+            {"text": "The rises are 1.4, 1.0 and 0.6 nC, so a curve that "
+                     "flattens off fits far better", "correct": True},
+            {"text": "A straight line fits, because the charge rises every "
+                     "time", "correct": False,
+             "why": "Rising is not enough for a straight line; the rises have "
+                    "to be equal, and these are not."},
+            {"text": "A straight line fits, because the strokes went up in "
+                     "equal steps", "correct": False,
+             "why": "Equal steps along the bottom are what let you see that "
+                    "the rises are getting smaller."},
+            {"text": "The last reading is anomalous and ought to be left "
+                     "out", "correct": False,
+             "why": "It is exactly what the levelling-off predicts, so it is "
+                    "the most telling reading of the four."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h23",
+        "band": "harder",
+        "text": "After rubbing, a rod measures −8.0 nC and the duster that "
+                "rubbed it measures +6.0 nC. What is the most likely "
+                "explanation?",
+        "options": [
+            {"text": "The rod took more electrons off the duster than the "
+                     "duster actually gave up to it", "correct": False,
+             "why": "Every electron on the rod came off the duster, so the "
+                    "two counts cannot differ."},
+            {"text": "Some charge has leaked off the duster, since the two "
+                     "ought to match", "correct": True},
+            {"text": "Charge was created on the rod as well as "
+                     "separated", "correct": False,
+             "why": "Charge is never created. An imbalance in the readings "
+                    "means some of it has gone somewhere."},
+            {"text": "Protons moved from the duster across onto the "
+                     "rod", "correct": False,
+             "why": "Protons are locked in nuclei and take no part in any of "
+                    "this."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h24",
+        "band": "harder",
+        "text": "Could you strip every electron off a rod by rubbing it for "
+                "long enough?",
+        "options": [
+            {"text": "Yes, given enough strokes and a dry enough "
+                     "room", "correct": False,
+             "why": "The charge levels off long before that, however dry the "
+                    "room and however long you rub."},
+            {"text": "No — the charge levels off, leaking away as fast as "
+                     "more of it is separated", "correct": True},
+            {"text": "Yes, but only with two materials from opposite ends of "
+                     "the series", "correct": False,
+             "why": "A distant pair separates more charge, and it still "
+                    "levels off at a ceiling."},
+            {"text": "No, because rubbing stops working as soon as the rod "
+                     "has taken on some charge of its own", "correct": False,
+             "why": "Rubbing keeps working; each stroke simply adds less than "
+                    "the one before it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h25",
+        "band": "harder",
+        "text": "Two identical polythene rods are rubbed the same number of "
+                "times, one with a wool duster and one with a cotton cloth. "
+                "Wool sits two places above polythene on the series and "
+                "cotton one place. Which rod ends up more strongly charged?",
+        "options": [
+            {"text": "The one rubbed with wool", "correct": True},
+            {"text": "The one rubbed with cotton", "correct": False,
+             "why": "Cotton is only one place from polythene, so fewer "
+                    "electrons cross than with wool."},
+            {"text": "Both the same, since the strokes were the "
+                     "same", "correct": False,
+             "why": "Equal strokes are only half the story; the gap between "
+                    "the materials matters too."},
+            {"text": "Neither, because cotton cannot charge "
+                     "polythene", "correct": False,
+             "why": "Cotton sits above polythene, so it does charge it — just "
+                    "less strongly than wool does."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h26",
+        "band": "harder",
+        "text": "A charged rod slowly loses its charge overnight, and a "
+                "student writes that the charge has been used up. Why is \"it "
+                "leaked away into the air\" the better statement?",
+        "options": [
+            {"text": "The two statements come to the same thing in the "
+                     "end", "correct": False,
+             "why": "They do not. One says charge can vanish, and the other "
+                    "says it went somewhere."},
+            {"text": "Charge is never used up; it has moved onto the air and "
+                     "the surroundings", "correct": True},
+            {"text": "Charge is used up whenever it does the work of lifting "
+                     "paper", "correct": False,
+             "why": "Lifting paper uses energy, not charge. The charge on the "
+                    "rod is unchanged by it."},
+            {"text": "The charge has turned back into the electrons that it "
+                     "was made out of in the first place", "correct": False,
+             "why": "Charge was never made from anything. The electrons were "
+                    "there the whole time."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h27",
+        "band": "harder",
+        "text": "Charging something by rubbing needs insulators, while "
+                "getting rid of unwanted static needs conductors. Which "
+                "statement explains both?",
+        "options": [
+            {"text": "Insulators make charge and conductors destroy "
+                     "it", "correct": False,
+             "why": "Neither makes nor destroys charge. Both only affect "
+                    "whether it can travel."},
+            {"text": "Insulators hold on to their electrons, while conductors "
+                     "have no electrons of their own to "
+                     "hold", "correct": False,
+             "why": "Conductors are full of electrons; theirs are simply free "
+                    "to move."},
+            {"text": "Whether charge can travel through a material decides "
+                     "whether it stays or escapes", "correct": True},
+            {"text": "Conductors are easier to rub than insulators "
+                     "are", "correct": False,
+             "why": "How easily something is rubbed is not the issue; where "
+                    "the charge can go afterwards is."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h28",
+        "band": "harder",
+        "text": "How does the movement of electrons when a rod is charged by "
+                "rubbing differ from the movement of electrons in a wire "
+                "carrying a current?",
+        "options": [
+            {"text": "Protons move as well as electrons on the rod, while "
+                     "only electrons move in the wire", "correct": False,
+             "why": "Protons move in neither case. They are held in nuclei in "
+                    "both."},
+            {"text": "On the rod they cross once and stay put; in the wire "
+                     "they keep flowing round", "correct": True},
+            {"text": "Nothing really moves on the rod, while electrons do "
+                     "move in the wire", "correct": False,
+             "why": "Electrons genuinely cross between the surfaces; that is "
+                    "what leaves the rod charged."},
+            {"text": "They are the same, except that the rod's electrons "
+                     "travel faster", "correct": False,
+             "why": "They are not the same: a current keeps going, while a "
+                    "rubbed charge sits where it landed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h29",
+        "band": "harder",
+        "text": "Why is it especially worth repeating this experiment several "
+                "times and taking a mean?",
+        "options": [
+            {"text": "A single result would not be allowed in any science "
+                     "experiment", "correct": False,
+             "why": "Plenty of measurements are trustworthy first time. This "
+                    "one is not, and there is a reason why."},
+            {"text": "The charge varies a good deal from try to try with the "
+                     "surfaces and the air", "correct": True},
+            {"text": "The rod needs several rubbings before it will take any "
+                     "charge", "correct": False,
+             "why": "A rod charges on the first stroke; repeats are about the "
+                    "spread in the readings."},
+            {"text": "The charge is too small to be read at all the first "
+                     "time round", "correct": False,
+             "why": "It is readable straight away. The trouble is that the "
+                    "reading is not reliably the same twice."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-01-h30",
+        "band": "harder",
+        "text": "A duster is rubbed on rod A and loses sixty thousand million "
+                "electrons, then rubbed on rod B and loses forty thousand "
+                "million more. How does the duster's charge compare with rod "
+                "A's?",
+        "options": [
+            {"text": "The duster's positive charge is the larger of the "
+                     "two", "correct": True},
+            {"text": "They are equal, since the duster rubbed rod A "
+                     "first", "correct": False,
+             "why": "They matched after the first rubbing, and the second one "
+                    "took the duster further from neutral."},
+            {"text": "The duster's charge is the smaller, having lost "
+                     "electrons twice", "correct": False,
+             "why": "Losing electrons twice leaves it further from neutral, "
+                    "so its charge is bigger."},
+            {"text": "The duster's charge is zero, as the two rubbings cancel "
+                     "out", "correct": False,
+             "why": "Both rubbings took electrons off the duster in the same "
+                    "direction, so they add."},
+        ],
+        "figure": None,
+    },
 ]
