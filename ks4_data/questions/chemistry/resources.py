@@ -54,7 +54,7 @@ QUESTIONS = [
             "Air",
             "Crude oil",
             "Metal ores",
-            "Sea water",
+            "Brine",
         ],
         "correct_index": 0,
         "why": "Air is about 78% nitrogen and 21% oxygen, and the two are "
@@ -128,7 +128,7 @@ QUESTIONS = [
             "Less agricultural land will be needed as farming becomes "
             "more efficient",
             "More ore must be mined, so finite reserves run out sooner",
-            "Metal ores will become renewable because more of them are found",
+            "Metal ores will become renewable",
         ],
         "correct_index": 2,
         "why": "More people need more materials, and every extra tonne of "
@@ -594,7 +594,7 @@ QUESTIONS = [
                 "stage is the 'hot spot'?",
         "options": [
             "The use stage, because it dominates the lifetime energy",
-            "The manufacturing stage, because that is where energy is bought",
+            "The manufacturing stage, because 8% is biggest",
             "The disposal stage, because the remaining 3% is hardest to "
             "control",
             "The raw materials stage, because metals must first be extracted",
@@ -961,7 +961,7 @@ QUESTIONS = [
         "text": "Which two substances must BOTH be present for iron to rust?",
         "options": [
             "Oxygen and carbon dioxide",
-            "Water and carbon dioxide",
+            "Water and nitrogen",
             "Oxygen and water",
             "Water and dissolved salt",
         ],
@@ -1350,7 +1350,7 @@ QUESTIONS = [
             "Alloys are elements, not compounds, because they contain metals",
             "An alloy is a mixture - the proportions can be varied",
             "An alloy contains only one metal plus a non-metal such as carbon",
-            "Alloys form ionic bonds, not covalent bonds, between the metals",
+            "Alloys form ionic bonds, not metallic",
         ],
         "correct_index": 1,
         "why": "The atoms in an alloy are simply mixed into the metallic "
@@ -1510,7 +1510,7 @@ QUESTIONS = [
         "text": "Racing bicycle frames are made from carbon fibre reinforced "
                 "plastic. Which pair of properties explains this choice?",
         "options": [
-            "High density and high electrical conductivity",
+            "High mass and low cost",
             "High strength and low density",
             "Low melting point and high transparency",
             "High flexibility and high thermal conductivity",
@@ -2085,8 +2085,8 @@ QUESTIONS = [
         "options": [
             "Hyperaccumulator plants",
             "Bacteria",
-            "Fungi grown on the ore",
-            "Algae in a shallow pond",
+            "Fungi",
+            "Algae",
         ],
         "correct_index": 1,
         "why": "Bacteria oxidise the metal sulfide compounds in the ore, "
