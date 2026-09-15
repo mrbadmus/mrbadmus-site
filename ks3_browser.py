@@ -117,9 +117,14 @@ MAX_CLIP_HEIGHT = 30000
 #
 # Two changes keep that from recurring.
 #
-# 1. Profiles go under a NAMED, dedicated root — `$KS3_GATE_TMP`, or
+# 1. Profiles go under a NAMED, dedicated root — `$MRB_SHOTS` (the project-wide
+#    scratch/artefact dir, MRB-346), else the older `$KS3_GATE_TMP`, else
 #    `~/tmp/ks3-gates` — so debris is identifiable as ours, sweepable without
 #    guessing, and not sharing a directory with the harness's lifeline.
+#    ⚠️ The default is OUTSIDE the repo on purpose: committing evidence is a
+#    deliberate `--shots docs/...` flag, never a side effect of running a gate.
+#    `KS3_GATE_TMP` is kept as a fallback so anything already setting it keeps
+#    working; `MRB_SHOTS` wins when both are set.
 #
 # 2. `close()` and the `atexit` hook both remove a profile, but neither runs on
 #    SIGKILL, and SIGKILL is EXACTLY what a full disk produces. So the root is
@@ -127,8 +132,8 @@ MAX_CLIP_HEIGHT = 30000
 #    any whose maker is gone is removed before this run adds more. A crash now
 #    costs one run's profiles, not an unbounded pile.
 
-GATE_TMP = os.environ.get("KS3_GATE_TMP") or os.path.join(
-    os.path.expanduser("~"), "tmp", "ks3-gates")
+GATE_TMP = (os.environ.get("MRB_SHOTS") or os.environ.get("KS3_GATE_TMP")
+            or os.path.join(os.path.expanduser("~"), "tmp", "ks3-gates"))
 
 _PROFILE_PREFIX = "cdp-profile-"
 _OWNER_FILE = ".owner-pid"

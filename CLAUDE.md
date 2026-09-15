@@ -799,6 +799,99 @@ Then prefix CLI commands with `SUPABASE_ACCESS_TOKEN="$(cat /tmp/sb_token)"`. DB
 
 ---
 
+## Gate machinery — the pre-push guard (MRB-346, 15 Sep 2026)
+
+Every push is guarded by `hooks/pre-push` → `prepush_gate.py --check`, against
+the gate list in `gate_registry.py`. This section is new — there was no
+dedicated write-up of the receipt contract here before MRB-346, only an
+incidental mention under "How the Site is Generated" (still accurate: a
+receipt still refuses to record against a dirty tree) — so treat everything
+below as the first full statement, not a rewrite of something longer.
+
+### The problem this replaced
+
+Before MRB-346, a receipt bound to the WHOLE-TREE git hash (`HEAD^{tree}`).
+That meant any tracked change anywhere — a docs commit, an unrelated
+subsystem's one-line fix — invalidated every slow gate's receipt at once, and
+a brand-new worktree or a content-only branch had to run the ENTIRE slow-gate
+suite (teacher dashboards, leaderboard, 3D, Set work drives — all of it) to
+push a change that touched none of it. The MRB-338/worksheet landing lost
+real hours to exactly this: docs commits invalidating all 18 receipts twice,
+and a content-only branch running drives that provably read nothing from the
+question bank.
+
+### The new contract
+
+1. **Every gate in `gate_registry.py` carries a `watches` list** — glob
+   patterns naming every tracked file that can change its outcome (its own
+   script, what it imports, the generator and shared assets behind the
+   page it drives). `docs/**`, `**/*.md`, `docs/**/shots/**`, and `README*`
+   can **never** appear in any gate's `watches` — enforced by the
+   `gate_watches_check` fast gate, which also refuses an empty `watches`
+   list and a gate that doesn't watch its own script.
+2. **A receipt binds to a `watch_hash`** — a fingerprint of the CONTENT
+   (blob sha) of every tracked file matching a gate's `watches`, not the
+   rest of the tree. A gate's receipt survives any commit that doesn't touch
+   a path in its own `watches`. Proof: after a green `--record-all`, a
+   docs-only commit pushes with zero re-runs.
+3. **`--record-all` and `--check` (the pre-push hook) select AFFECTED gates
+   only.** Both compute the paths this branch's commits touch since the
+   merge-base with `origin/main`, and a slow gate with no already-valid
+   receipt is only required to run if one of those paths falls in its
+   `watches` — otherwise it's reported SKIPPED BY RULE, printed by name,
+   never silently absent. A branch touching only `ks3_data/**` runs the
+   content gates only; nothing this branch did could have moved a teacher
+   dashboard drive's outcome. `--force` bypasses selection and requires
+   every slow gate fresh, for the rare case a full sweep is deliberately
+   wanted (e.g. the first run after `watches` itself changes). If the
+   merge-base can't be determined, everything is treated as affected — the
+   safe direction for "don't know" is "run it", never "skip it".
+4. **A transient failure retries once before it counts.** A DNS blip, Chrome
+   closing its websocket mid-frame, a Render cold start — none of these are
+   findings about the code. `prepush_gate.py` retries a gate exactly once
+   when its failure output matches a known transient signature, and the
+   receipt/printed line says `retried` either way. A second failure, of any
+   shape, is a real red — there is no loop.
+5. **Drives never write into the repo tree by default.** Screenshots and
+   artefacts go to a scratch dir outside the repo — `$MRB_SHOTS`, falling
+   back to the older `$KS3_GATE_TMP`, falling back to `~/tmp/ks3-gates` — set
+   centrally in `ks3_browser.py`'s `gate_tmp()`. Writing evidence INTO the
+   tree (e.g. `docs/mrb335/shots/`) is a deliberate `--shots docs/...` flag a
+   caller passes on purpose, never a default. `set_work_drive.py`'s
+   `--shots` used to default straight into `docs/mrb335/shots` — fixed as
+   part of this same ticket, after it was caught live overwriting eighteen
+   committed reference screenshots during this very landing.
+6. **A rate-limited drive check uses a fresh throwaway account per run.**
+   `set_work_drive.py`'s worksheet rate-limit burst used to spend the
+   STANDING throwaway teacher's hourly bucket, so a re-run inside the same
+   hour inherited a part-spent allowance and refused early — a false red
+   with nothing wrong. It now mints a `BurstActor` (a uniquely-named
+   throwaway teacher, granted class access, and torn down by its own
+   captured ids — never a predicate delete) for that one check, per run.
+
+### What did NOT change
+
+No gate had its assertions weakened — `watches` only changes WHICH gates run
+and WHAT invalidates a receipt, never what a gate checks once it does run.
+The inherited red (`teacher_admin_foreign_class`, C7 REMINDERS × 3) is still
+inherited and still red; MRB-346 did not touch its target, and a full/forced
+run still needs the same `GATE-OVERRIDE:` line it always did. `3d_*` gates
+still skip cleanly without `3d-studio/dist`.
+
+### A named, accepted gap
+
+A few gates' real source-of-truth genuinely lives under `docs/` (Design's
+`.dc.html` deliveries for `ks3_rail_manifest`, the register `ks3_statutory`
+compares against, `student_switches`' reference standalones). Rule 1 above is
+unconditional, so those gates' `watches` cannot fully close on their real
+dependency — a change to a Design delivery or a hand-edited register will not
+select them. `ks3_rail_manifest` and `ks3_statutory` are both `fast`, so the
+pre-push hook's "run every fast gate regardless" backstops the gap;
+`student_switches` is `slow` and does not have that backstop. See
+`docs/mrb346/REPORT.md` for the full list and reasoning.
+
+---
+
 ## Working with Mide
 
 Mide is a teacher and creative founder, not a developer. Keep this in mind at all times:

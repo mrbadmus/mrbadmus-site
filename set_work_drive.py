@@ -1706,6 +1706,68 @@ def wait_for(p, expr, tries=60, gap=0.25):
     return False
 
 
+def js_literal(value):
+    """`value` as a JS string literal holding its JSON, spelled the way
+    `JSON.stringify` spells it — for polls of the form "this has changed".
+
+    ⚠️ PYTHON'S DEFAULT SPACING IS NOT `JSON.stringify`'S. `json.dumps` writes
+    `{"a": 1}` where the browser writes `{"a":1}`, and it escapes non-ASCII
+    where the browser does not. A "has it changed yet" poll built on the
+    default spelling is true on its very first reading, returns instantly and
+    waits for nothing — which is the fixed sleep it replaced, now invisible
+    instead of merely blunt. The separators and `ensure_ascii=False` are what
+    make the two spellings the same; the outer `json.dumps` is what makes the
+    result safe to paste into JS source.
+    """
+    return json.dumps(json.dumps(value, separators=(",", ":"),
+                                 ensure_ascii=False))
+
+
+_MISSING = object()
+
+
+def wait_stable(p, expr, tries=30, gap=0.05, needed=2):
+    """Poll `expr` until the SAME value comes back `needed` times running.
+
+    ⊕ MRB-346. `wait_for` covers a condition that BECOMES TRUE; this covers the
+    other half — a number that SETTLES. A scroll position, a scrollHeight, a
+    measured geometry: there is no boolean to wait on, and the old code waited
+    on a fixed `time.sleep` instead, which is slower than it needs to be on a
+    healthy run and still too short on a loaded machine. Both of those are the
+    same bug wearing different clothes.
+
+    ⚠️ `needed` IS THE QUIET WINDOW, AND ON A NEGATIVE ASSERTION IT IS THE
+    WHOLE CHECK. Most of the scroll properties here are of the form "the
+    scroller did NOT move", and for those a poll that returns on its first
+    reading proves nothing — it can answer before the re-render that would
+    have moved it has even begun. So those callers ask for several consecutive
+    identical readings: anything landing inside the window resets the run, and
+    the value only comes back once the sheet has been quiet for `needed * gap`
+    seconds. That floor is kept at or above the fixed sleep it replaced, so
+    this can only ever be MORE patient than what it replaces, never less.
+
+    A read that throws (a node not yet in the DOM, a context being replaced
+    mid-navigation) breaks the run rather than ending it, exactly as a changed
+    value would. Returns the settled value, or the last value seen if it never
+    settled inside `tries * gap`.
+    """
+    val, run = _MISSING, 0
+    for _ in range(tries):
+        try:
+            cur = p.eval(expr)
+        except Exception:                                       # noqa: BLE001
+            cur = _MISSING
+        if cur is not _MISSING and cur is not None and cur == val:
+            run += 1
+            if run >= needed - 1:
+                return cur
+        else:
+            run = 0
+        val = cur
+        time.sleep(gap)
+    return None if val is _MISSING else val
+
+
 # The page the sheet lives on, remembered once so `open_sheet` can put itself
 # back there. Set by `check_sheet`.
 SHEET_PAGE = {"base": None}
@@ -1961,8 +2023,11 @@ def check_scroll(p, shots):
 
     # Step 0 is the class list and is short; the tree on step 1 is the long one.
     p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
-    time.sleep(0.4)
-    geom = p.eval(SCROLL_JS)
+    # The tree has to be BUILT before its height means anything, and then the
+    # height has to stop moving. Two conditions, both polled. (was sleep 0.4)
+    wait_for(p, "document.querySelectorAll('[data-sw=\"topic\"]').length > 0",
+             tries=40, gap=0.05)
+    geom = wait_stable(p, SCROLL_JS, tries=30, gap=0.05, needed=3)
     if not geom or geom["h"] <= geom["c"] + 40:
         record(False, "the topic list is long enough to scroll at 390px",
                "scrollHeight %s clientHeight %s" % (geom and geom["h"],
@@ -1974,16 +2039,19 @@ def check_scroll(p, shots):
     # Scroll a long way down, then tap things. Nothing may move the scroller.
     target = int((geom["h"] - geom["c"]) * 0.6)
     p.eval("document.querySelector('[data-sw=\"sheet\"]').scrollTop = %d" % target)
-    time.sleep(0.3)
-    start = p.eval(SCROLL_JS)["top"]
+    start = wait_stable(p, SCROLL_JS, tries=30, gap=0.05, needed=3)["top"]
 
     moves = []
 
     def tap(label, expr):
         before = p.eval(SCROLL_JS)["top"]
         did = p.eval(expr)
-        time.sleep(0.35)
-        after = p.eval(SCROLL_JS)["top"]
+        # ⚠️ THE ASSERTION IS THAT NOTHING MOVED, so this waits for a QUIET
+        # WINDOW rather than for a condition: 0.3s of identical readings, the
+        # run reset by anything that lands inside it, up to 1.5s. A first
+        # glance would answer before a re-render had begun and call a jumping
+        # sheet still. (was sleep 0.35)
+        after = wait_stable(p, SCROLL_JS, tries=30, gap=0.05, needed=7)["top"]
         moves.append((label, did, before, after))
         return did, before, after
 
@@ -2043,13 +2111,18 @@ def check_scroll(p, shots):
     # sits at the new end" — which is also the check that would catch a
     # filter that silently reset to the top.
     before = p.eval(SCROLL_JS)
+    rows_before = p.eval(
+        "document.querySelectorAll('[data-sw=\"topic\"]').length")
     picked = p.eval("""(function(){var cs=document.querySelectorAll(
         '[data-sw="subject-chips"] .sw-chip');
         for(var i=0;i<cs.length;i++){if(!cs[i].classList.contains('is-on')
           && cs[i].textContent!=='All'){cs[i].click(); return cs[i].textContent;}}
         return false;})()""")
-    time.sleep(0.4)
-    after = p.eval(SCROLL_JS)
+    # The filter has landed when the row count has moved; then the scroller is
+    # given a quiet window to settle into its clamp. (was sleep 0.4)
+    wait_for(p, "document.querySelectorAll('[data-sw=\"topic\"]').length !== %d"
+                % rows_before, tries=40, gap=0.05)
+    after = wait_stable(p, SCROLL_JS, tries=30, gap=0.05, needed=5)
     new_max = max(0, after["h"] - after["c"])
     record(bool(picked) and after["top"] == min(before["top"], new_max),
            "scroll_unchanged_on_select — a SUBJECT filter keeps the "
@@ -2073,7 +2146,10 @@ def check_scroll(p, shots):
         p.eval("(function(){var s=document.querySelector('[data-sw=\"sheet\"]');"
                "s.scrollTop = Math.round((s.scrollHeight - s.clientHeight) * %s);"
                "})()" % frac)
-        time.sleep(0.3)
+        # The sticky header is measured against a scroller that has stopped
+        # moving, not one that is 0.3s into moving. (was sleep 0.3)
+        wait_stable(p, "document.querySelector('[data-sw=\"sheet\"]').scrollTop",
+                    tries=30, gap=0.05, needed=3)
         tops.append(p.eval("""(function(){
           var s = document.querySelector('[data-sw="sheet"]');
           var h = s.querySelector('.sw-head');
@@ -2102,7 +2178,12 @@ def check_sideways(p, label, shots=None):
     out = []
     for w in (390, 1280):
         p.set_viewport(w, 900)
-        time.sleep(0.35)
+        # The reflow is done when the window REPORTS the new width and the
+        # document's own widths have stopped changing. (was sleep 0.35)
+        wait_for(p, "window.innerWidth === %d" % w, tries=30, gap=0.05)
+        wait_stable(p, "[document.documentElement.scrollWidth,"
+                       "document.documentElement.clientWidth]",
+                    tries=30, gap=0.05, needed=4)
         r = p.eval("""(function(){
           var d = document.documentElement, b = document.body;
           var wide = [];
@@ -2374,16 +2455,19 @@ def check_detail(p, scopes, shots):
         if g and g["h"] > g["c"] + 40:
             p.eval("document.querySelector('[data-sw=\"sheet\"]').scrollTop"
                    " = %d" % int((g["h"] - g["c"]) * 0.5))
-            time.sleep(0.3)
-            before = p.eval(SCROLL_JS)["top"]
+            # (was sleep 0.3) the baseline is read once the scroller has
+            # actually arrived where it was put.
+            before = wait_stable(p, SCROLL_JS, tries=30, gap=0.05,
+                                 needed=3)["top"]
             p.eval("""(function(){var cs=document.querySelectorAll(
                 '[data-sw="count-chips"] .sw-chip');
                 for(var i=0;i<cs.length;i++){if(cs[i].textContent==='15'){
                   cs[i].click();}} return true;})()""")
             wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]')"
                         ".length === 15")
-            time.sleep(0.4)
-            after = p.eval(SCROLL_JS)
+            # The row count has already landed; this is the quiet window that
+            # would catch a scroller still being reset behind it. (was 0.4)
+            after = wait_stable(p, SCROLL_JS, tries=30, gap=0.05, needed=7)
             new_max = max(0, after["h"] - after["c"])
             record(after["top"] == min(before, new_max),
                    "scroll_unchanged_on_select — a COUNT chip rebuilds the "
@@ -2408,7 +2492,15 @@ def check_detail(p, scopes, shots):
                    "conservation-of-mass"):
         p.eval("""(function(){var ss=document.querySelectorAll('[data-sw="stem"]');
             for(var i=0;i<ss.length;i++){ss[i].click();} return true;})()""")
-        time.sleep(0.5)
+        # Every stem has finished expanding when the total rendered text of
+        # the question rows stops growing — polled for, with a 0.3s quiet
+        # window so a re-render a few frames behind the click cannot be
+        # mistaken for the end of one. (was sleep 0.5)
+        wait_stable(p, "(function(){var rs=document.querySelectorAll("
+                       "'[data-sw=\"question\"]');var n=0;"
+                       "for(var i=0;i<rs.length;i++){"
+                       "n+=(rs[i].textContent||'').length;}return n;})()",
+                    tries=40, gap=0.05, needed=6)
         got = p.eval(r"""(function(){
           var rows = document.querySelectorAll('[data-sw="question"]');
           var withFormula = 0, withSub = 0, flat = [];
@@ -2861,15 +2953,24 @@ def check_tier_and_zero(p, scopes):
     print("\n   the tier chip, and a node with nothing at that tier")
     open_sheet(p, FX.C_KS4_COMB)
     p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
-    time.sleep(0.4)
+
+    COUNTS_JS = """(function(){var out={};var rs=document.querySelectorAll(
+        '[data-sw="topic"]');
+        for(var i=0;i<rs.length;i++){out[rs[i].getAttribute('data-sw-ref')]=
+          rs[i].querySelector('.sw-count').textContent;} return out;})()"""
 
     def counts():
-        return p.eval("""(function(){var out={};var rs=document.querySelectorAll(
-            '[data-sw="topic"]');
-            for(var i=0;i<rs.length;i++){out[rs[i].getAttribute('data-sw-ref')]=
-              rs[i].querySelector('.sw-count').textContent;} return out;})()""")
+        return p.eval(COUNTS_JS)
 
-    found = counts()
+    # (was sleep 0.4) The baseline is every topic's count, so it is read once
+    # the counts have stopped being written rather than 0.4s after the click.
+    # ⚠️ THE ROWS ARE WAITED FOR FIRST, and that is not belt-and-braces. Step 0
+    # is the class list and has no `[data-sw="topic"]` in it at all, so
+    # `COUNTS_JS` answers `{}` there — a perfectly stable value that a settle
+    # poll would return in 0.1s, before the topic step had drawn anything.
+    wait_for(p, "document.querySelectorAll('[data-sw=\"topic\"] .sw-count')"
+                ".length > 0", tries=60, gap=0.05)
+    found = wait_stable(p, COUNTS_JS, tries=40, gap=0.05, needed=3) or counts()
     reqs_before = p.eval("performance.getEntriesByType('resource').filter("
                          "function(r){return r.name.indexOf('set-work/scope')"
                          ">-1;}).length")
@@ -2877,8 +2978,13 @@ def check_tier_and_zero(p, scopes):
         '[data-sw="tier-chips"] .sw-chip');
         for(var i=0;i<cs.length;i++){if(cs[i].textContent==='Higher'){
           cs[i].click();return true;}} return false;})()""")
-    time.sleep(0.5)
-    higher = counts()
+    # ⚠️ THE RE-COUNT IS THE THING BEING MEASURED, so this polls for it rather
+    # than sleeping past it: the counts must STOP being what they were, and
+    # then stop moving. If they never move, the budget is spent and `record`
+    # below says so — which is the finding. (was sleep 0.5)
+    wait_for(p, "JSON.stringify(%s) !== %s" % (COUNTS_JS, js_literal(found)),
+             tries=40, gap=0.05)
+    higher = wait_stable(p, COUNTS_JS, tries=30, gap=0.05, needed=3) or counts()
     reqs_after = p.eval("performance.getEntriesByType('resource').filter("
                         "function(r){return r.name.indexOf('set-work/scope')"
                         ">-1;}).length")
@@ -3077,8 +3183,22 @@ def main():
                     help="leave the throwaway world and this run's rows standing")
     ap.add_argument("--api-only", action="store_true",
                     help="skip the browser half (no Chrome)")
-    ap.add_argument("--shots", default="docs/mrb335/shots",
-                    help="where the 390px screenshots go")
+    # ⊕ MRB-346. THIS USED TO DEFAULT TO `docs/mrb335/shots` — inside the
+    # repo, in the committed evidence tree — so merely RUNNING the drive
+    # rewrote twenty checked-in reference PNGs. The damage is the quiet kind:
+    # the run is green, the shots are new and plausible, and what shows up
+    # afterwards is twenty modified binaries in `git status` that look like a
+    # concurrent session interfering (it was read exactly that way on 14 Sep
+    # 2026) and that `prepush_gate.py` then refuses to record a receipt over.
+    # Evidence gets committed when somebody MEANS to commit it, so the default
+    # goes to the scratch root (`$MRB_SHOTS`, else `$KS3_GATE_TMP`, else
+    # `~/tmp/ks3-gates`) and refreshing the reference set stays available as an
+    # explicit `--shots docs/mrb335/shots`.
+    ap.add_argument("--shots",
+                    default=os.path.join(cdp.gate_tmp(), "set-work"),
+                    help="where the 390px screenshots go (default: outside "
+                         "the repo; pass --shots docs/mrb335/shots to "
+                         "deliberately refresh the committed evidence)")
     args = ap.parse_args()
 
     pw = os.environ.get(FX.ENV_SWITCH, "")
@@ -3265,7 +3385,7 @@ def main():
         # this process would meet a 429 that says nothing about what it was
         # testing.
         if ws_first:
-            check_worksheet_rate_limit(t_teacher, t_admin, ws_first)
+            check_worksheet_rate_limit(t_admin, ws_first)
     finally:
         if server:
             server.__exit__(None, None, None)
@@ -3597,18 +3717,30 @@ def check_swap_count_race(p, scopes):
         for(var i=0;i<cs.length;i++){if(cs[i].textContent==='5'){cs[i].click();}}
         return true;})()""")
     wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]').length === 5")
-    time.sleep(3.0)          # the held swap lands here, into the new list
 
     # ⚠️ THE SUBMITTED IDS ARE READ FROM THE SHEET'S OWN PAYLOAD, and the rows
     # from the DOM. Comparing the DOM with itself would prove nothing.
-    got = p.eval(r"""(function(){
+    STEMS_JS = r"""(function(){
       var rows = document.querySelectorAll('[data-sw="question"]');
       var onScreen = [];
       for (var i = 0; i < rows.length; i++) {
         onScreen.push((rows[i].querySelector('[data-sw="stem"]').textContent
                        || '').trim());
       }
-      return {rows: onScreen.length, stems: onScreen};})()""")
+      return {rows: onScreen.length, stems: onScreen};})()"""
+
+    # ⊕ MRB-346 (was `time.sleep(3.0)`, "the held swap lands here"). The swap
+    # is held 2s behind the chip BY THIS CHECK, so the old wait was 3s every
+    # run whatever happened. The queue length was already polled above; what
+    # is actually being waited for now is the ROW — the held reply landing
+    # rewrites one stem, so this polls for the stem list to change and then
+    # for it to stop changing. A run where the swap is simply discarded spends
+    # the budget and reads the unchanged list, which is what it should do: the
+    # assertions below, and `check_swap_race_stored`, are what judge it.
+    pre = p.eval(STEMS_JS)
+    wait_for(p, "JSON.stringify(%s) !== %s" % (STEMS_JS, js_literal(pre)),
+             tries=80, gap=0.05)
+    got = wait_stable(p, STEMS_JS, tries=40, gap=0.05, needed=4) or pre
 
     # Set it, and read back what actually reached the database.
     p.eval("""(function(){var t=document.querySelector('[data-sw="title"]');
@@ -3701,9 +3833,8 @@ def check_hold_validation(p, scopes):
     p.eval("""(function(){var d=document.querySelector('[data-sw="due-date"]');
         d.value=%s; d.dispatchEvent(new Event('input',{bubbles:true}));
         d.dispatchEvent(new Event('change',{bubbles:true}));})()""" % json.dumps(soon))
-    time.sleep(0.5)
 
-    state = p.eval("""(function(){
+    HOLD_STATE_JS = """(function(){
       var o = document.querySelector('[data-sw="overlay"]');
       var pri = document.querySelector('[data-sw="primary"]');
       var dd = document.querySelector('[data-sw="due-date"]');
@@ -3713,7 +3844,12 @@ def check_hold_validation(p, scopes):
                         || dt.classList.contains('sw-bad'),
               holdNode: !!document.querySelector('[data-sw="hold"]'),
               open: (o.textContent||'').indexOf('Assignments open'),
-              due: dd.value};})()""")
+              due: dd.value};})()"""
+    # ⚠️ EVERY ASSERTION BELOW IS AN ABSENCE — not disabled, not outlined, no
+    # hold node — so there is no condition to poll UNTIL. This waits for the
+    # validator to go QUIET instead: 0.35s of identical state, reset by any
+    # late refusal landing inside it, up to 1.5s. (was sleep 0.5)
+    state = wait_stable(p, HOLD_STATE_JS, tries=30, gap=0.05, needed=8)
     record(state["disabled"] is False and state["dueOutlined"] is False,
            "hold_does_not_stop_the_teacher — Release Now with a due date "
            "inside the school's hold window: the primary is LIVE and the Due "
@@ -3745,14 +3881,20 @@ def check_hold_validation(p, scopes):
           n.dispatchEvent(new Event('input',{bubbles:true}));
           n.dispatchEvent(new Event('change',{bubbles:true}));});})()"""
            % json.dumps(later))
-    time.sleep(0.5)
-    bad = p.eval("""(function(){
+    BAD_STATE_JS = """(function(){
       var pri = document.querySelector('[data-sw="primary"]');
       var dd = document.querySelector('[data-sw="due-date"]');
       var dt = document.querySelector('[data-sw="due-time"]');
       return {disabled: !!pri.disabled,
               dueOutlined: dd.classList.contains('sw-bad')
-                        || dt.classList.contains('sw-bad')};})()""")
+                        || dt.classList.contains('sw-bad')};})()"""
+    # This one IS a presence — the refusal must appear — so it is polled for
+    # directly and resolves the moment the validator marks the field. A
+    # validator that never refuses spends the budget and records the red,
+    # which is the finding. (was sleep 0.5)
+    wait_for(p, "(function(){var s=%s;return s.disabled && s.dueOutlined;})()"
+                % BAD_STATE_JS, tries=30, gap=0.05)
+    bad = p.eval(BAD_STATE_JS)
     record(bad["disabled"] and bad["dueOutlined"],
            "due_before_release_still_refused — Release next week with Due "
            "tomorrow: the primary is DISABLED and the Due field is outlined",
@@ -3760,14 +3902,24 @@ def check_hold_validation(p, scopes):
 
     # ⚠️ AND NOTHING WAS SENT. A disabled button that still fires would look
     # identical from the screen.
-    n = p.eval("performance.getEntriesByType('resource').filter(function(r){"
-               "return r.name.indexOf('/api/teacher/set-work') > -1 "
-               "&& r.name.indexOf('set-work/') < 0;}).length")
-    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
-    time.sleep(1.0)
-    n2 = p.eval("performance.getEntriesByType('resource').filter(function(r){"
+    POSTS_JS = ("performance.getEntriesByType('resource').filter(function(r){"
                 "return r.name.indexOf('/api/teacher/set-work') > -1 "
                 "&& r.name.indexOf('set-work/') < 0;}).length")
+    n = p.eval(POSTS_JS)
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    # ⚠️ NOT CONVERTED TO A poll-until-true, DELIBERATELY. This proves an
+    # ABSENCE: the condition being waited for is one that must NEVER become
+    # true, so a poll that returned as soon as it was satisfied would return
+    # on its first reading and prove nothing at all. The window is sampled
+    # instead — ten readings over a second, the highest kept — which catches a
+    # POST landing anywhere inside it rather than only at the far end where
+    # the single fixed read looked. Same duration as the sleep it replaces,
+    # because with an absence the duration IS the strength of the check.
+    # (was sleep 1.0 then one read)
+    n2 = n
+    for _ in range(10):
+        time.sleep(0.1)
+        n2 = max(n2, p.eval(POSTS_JS))
     record(n2 == n,
            "…and pressing the disabled primary sends NOTHING — a POST count "
            "of %d before and after" % n, "%d → %d" % (n, n2))
@@ -3998,6 +4150,21 @@ def check_admin_repaint(p, base, t_admin):
                       settle=7.0):
         return record(False, "the admin screen loads")
 
+    # ⊕ MRB-346. ⚠️ `goto_ready`'S READINESS CONDITION IS NOT THIS CHECK'S.
+    # It waits for 200 characters of body text, which the admin shell has the
+    # moment it paints — and the cohort selectors are drawn by a LATER fetch
+    # of the school's classes. So the read below was racing that fetch, and
+    # lost intermittently: measured red once here on 14 Sep 2026 with
+    # `0 select(s): []`, on a tree whose only other difference was that it ran
+    # faster. It then returns early, so `admin_repaint_after_save` and the
+    # database read never run at all and the total silently drops from 392
+    # checks to 390 — a check that vanishes rather than failing.
+    # The selectors are what every assertion here depends on, so they are what
+    # is waited for. A screen that genuinely draws none spends the budget and
+    # records the red below, which is the finding.
+    wait_for(p, "document.querySelectorAll('select').length > 0",
+             tries=100, gap=0.05)
+
     found = p.eval("""(function(){
       var sels = document.querySelectorAll('select');
       var out = [];
@@ -4033,14 +4200,26 @@ def check_admin_repaint(p, base, t_admin):
         return record(False, "a tier selector with both tiers exists on the "
                              "admin screen", json.dumps(before)[:220])
     time.sleep(0.4)
+    SAVES_JS = ("performance.getEntriesByType('resource').filter(function(r){"
+                "return r.name.indexOf('class-tier') > -1;}).length")
+    saves_before = p.eval(SAVES_JS)
     p.eval("""(function(){var bs=document.querySelectorAll('button');
         for(var i=0;i<bs.length;i++){var t=(bs[i].textContent||'').trim();
           if(/^(Save|Apply|Update)/i.test(t) && bs[i].offsetParent!==null){
             bs[i].click(); return t;}} return false;})()""")
-    time.sleep(2.5)
-
-    after = p.eval("""(function(){var sels=document.querySelectorAll('select');
-        var s=sels[%d]; return s ? s.value : null;})()""" % changed["idx"])
+    # ⚠️ THE DEFECT THIS WATCHES FOR IS A SNAP-BACK, so it must NOT poll until
+    # the selector shows the saved value — it already does, locally, the
+    # instant the change event fired. What has to finish first is the ROUND
+    # TRIP: wait for the save request to leave and come back, then for the
+    # selector to hold one value for 0.4s. A repaint that arrives late and
+    # reverts lands inside that window and resets the run. (was sleep 2.5)
+    VALUE_JS = ("(function(){var sels=document.querySelectorAll('select');"
+                "var s=sels[%d]; return s ? s.value : null;})()"
+                % changed["idx"])
+    wait_for(p, "%s > %d" % (SAVES_JS, saves_before), tries=60, gap=0.05)
+    after = wait_stable(p, VALUE_JS, tries=40, gap=0.05, needed=8)
+    if after is None:
+        after = p.eval(VALUE_JS)
     record(after == changed["to"],
            "admin_repaint_after_save — the selector still shows the value that "
            "was saved, rather than snapping back to the old one",
@@ -5280,7 +5459,34 @@ def check_edit_sheet(p, base, shots):
                        "&& !document.querySelector('[data-sw=\"overlay\"]')"
                        ".hidden"):
         return record(False, "the sheet opens on Edit")
-    time.sleep(1.2)
+    # ⚠️ THE OVERLAY BEING VISIBLE IS NOT THE OVERLAY BEING LOADED, AND ITS
+    # SHELL ARRIVING IS NOT ITS QUESTIONS ARRIVING. `wait_for` above proves
+    # only that the node is on screen. Edit mode then stamps `data-sw-edit`
+    # and draws the read-only header — tier, scope, title — and `loadStored
+    # Questions` fetches the set's questions SEPARATELY and re-renders after.
+    #
+    # ⚠️ AND THAT SECOND GAP IS A TRAP A QUIET-WINDOW POLL WALKS STRAIGHT
+    # INTO (measured, 14 Sep 2026). The shell settles in about 0.4s and then
+    # nothing moves until the fetch lands, so a poll waiting for the overlay
+    # to "stop changing" answers during the gap, and `edit_shows_the_questions`
+    # reads `n: 0` — the exact shape of the MRB-342 defect §5494 describes,
+    # manufactured by the harness rather than by the product. So the question
+    # rows are waited for POSITIVELY and generously (3s), and only then is the
+    # state allowed to settle. A sheet that genuinely draws no questions spends
+    # the budget and records the red, which is the finding.
+    # (was sleep 1.2 — this is patient where that was merely long)
+    wait_for(p, "(function(){var o=document.querySelector("
+                "'[data-sw=\"overlay\"]');"
+                "return !!o && !!(o.getAttribute('data-sw-edit')||'');})()",
+             tries=40, gap=0.05)
+    wait_for(p, "document.querySelectorAll('[data-sw=\"overlay\"] "
+                "[data-sw=\"question\"]').length > 0", tries=60, gap=0.05)
+    wait_stable(p, "(function(){var o=document.querySelector("
+                   "'[data-sw=\"overlay\"]'); return o ? "
+                   "(o.getAttribute('data-sw-edit')||'') + '|' + "
+                   "o.querySelectorAll('[data-sw=\"question\"]').length + '|' + "
+                   "(o.textContent||'').length : null;})()",
+                tries=40, gap=0.05, needed=8)
 
     st = p.eval("""(function(){
       var o = document.querySelector('[data-sw="overlay"]');
@@ -5404,18 +5610,51 @@ def check_edit_sheet(p, base, shots):
     p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
     wait_for(p, "(function(){var t=document.querySelector("
                 "'[data-sw=\"toast\"]');return !!(t && !t.hidden);})()")
-    time.sleep(2.5)
-    saved = p.eval("""(function(){
+    SAVED_JS = """(function(){
       var t = document.querySelector('[data-sw="toast"]');
       var o = document.querySelector('[data-sw="overlay"]');
       return {toast: t ? (t.textContent||'').trim() : null,
-              open: !!(o && !o.hidden)};})()""")
+              open: !!(o && !o.hidden)};})()"""
+    # The toast being VISIBLE is not the save being FINISHED — the sheet
+    # closes behind it and the table repaints, and both are asserted below. So
+    # this waits for the sheet to have closed with a toast still carrying
+    # text, then for the pair to hold still. A save that never closes the
+    # sheet spends the budget and records the red. (was sleep 2.5)
+    wait_for(p, "(function(){var s=%s;return !s.open && !!s.toast;})()"
+                % SAVED_JS, tries=60, gap=0.05)
+    saved = wait_stable(p, SAVED_JS, tries=30, gap=0.05, needed=4) \
+        or p.eval(SAVED_JS)
     record(saved["toast"] == target + " (renamed) · Saved",
            "edit_saves — pressing Save toasts '<new title> · Saved'",
            json.dumps(saved))
     record(saved["open"] is False,
            "…and the sheet closes behind it, so the teacher is returned to "
            "the row they were editing")
+    # ⚠️ THE TOAST IS NOT THE TABLE. Closing the sheet and repainting the row
+    # underneath it are two different moments, and the row's is the later one:
+    # the component re-reads the class's assignments after the save returns.
+    # The 2.5s sleep this section used to open with was covering that gap by
+    # accident, and tightening the wait above onto the toast exposed it —
+    # measured red once in five runs on 15 Sep 2026, with the NEXT check
+    # (which re-reads) already showing the renamed row. So the repaint is
+    # waited for explicitly. It stays falsifiable: a screen that never
+    # repaints spends the budget and records the red below, exactly as one
+    # that repainted wrong would.
+    # ⚠️ COMPARED EXACTLY, NEVER BY `indexOf`. The new title is the old one
+    # with " (renamed)" on the end, so a substring test for the old title is
+    # true FOREVER once the new row is there — the poll would never resolve
+    # and would spend its whole budget on every healthy run. This mirrors the
+    # Python assertion below, which is exact list membership.
+    wait_for(p, """(function(){
+      var ts = (%s || []).map(function (r) { return r.title; });
+      var neu = %s, old = %s, has = false, still = false;
+      for (var i = 0; i < ts.length; i++) {
+        if (ts[i] === neu) { has = true; }
+        if (ts[i] === old) { still = true; } }
+      return has && !still;})()"""
+             % (ROWS_JS, json.dumps(target + " (renamed)"),
+                json.dumps(target)),
+             tries=60, gap=0.05)
     rows = p.eval(ROWS_JS) or []
     titles = [r["title"] for r in rows]
     record((target + " (renamed)") in titles and target not in titles,
@@ -6563,10 +6802,99 @@ def check_worksheet_audit(teacher_id, first):
            "count %s over %d scope(s)" % (pay.get("count"), len(sc)))
 
 
-def check_worksheet_rate_limit(t_teacher, t_admin, first):
-    """⚠️ RUN LAST, AND ONLY LAST. It deliberately exhausts the teacher's hour
-    of worksheets, so anything after it in this process would meet a 429 that
-    has nothing to do with what it is testing.
+class BurstActor:
+    """A teacher account that exists for ONE rate-limit burst and is then gone.
+
+    ⊕ MRB-346. The burst used to be spent on `FX.TEACHER_EMAIL` — the STANDING
+    throwaway teacher every other check in this file also uses — and that made
+    the check's result depend on the HOUR rather than on the code. The bucket
+    is keyed on the user and is an hour long; the account survives a `--keep`
+    run and is re-created under the same email by `ensure_user` on a fresh one,
+    but GoTrue re-uses the existing auth user when the email is already there,
+    so the SAME user id — and therefore the same half-spent bucket — came back.
+    A re-run inside the hour then met 429 on call 15 instead of call ~30 and
+    the drive reported a ceiling that was really just the leftovers of the
+    previous run. A false red nobody can distinguish from a real one is worse
+    than no check.
+
+    So the burst gets an account nobody has ever called from: a random email,
+    created, used, and removed inside this one call. A fresh user id is a fresh
+    bucket, by construction, on any clock.
+
+    ⚠️ IT TEARS ITSELF DOWN BY THE IDS IT CAPTURED, NEVER BY A PREDICATE. The
+    fixture's own teardown carries this discipline for a reason (12 Sep 2026: a
+    predicate wipe took four pre-existing TEST rows with it, and an end-of-run
+    `count(*)` hid the damage). This actor deletes exactly the three records it
+    made, each by its own id, and checks every status — `audit_log` first,
+    because the worksheet route audits every one of these ~30 calls and
+    `audit_log.actor_id` references the profile; then `class_teachers`; then
+    the profile; then the auth user last, because `profiles_id_fkey` points at
+    it and GoTrue answers a bare 500 when it is removed first.
+    """
+
+    def __init__(self):
+        self.email = "mrb331_burst_%s@throwaway.test" % uuid.uuid4().hex[:10]
+        self.uid = None
+        self.ct_id = None
+        self.token = None
+
+    def create(self):
+        pw = FX.password()
+        self.uid = FX.ensure_user(self.email, pw)
+        # The same school as the class the burst prints from, and the same
+        # timetable subject `seed()` would file that class's link under.
+        cls = dict((c[0], c) for c in FX.CLASSES)[FX.C_KS3_A]
+        FX.upsert("profiles", [
+            {"id": self.uid, "role": "teacher", "school_id": FX.SCHOOL_OPEN,
+             "first_name": "Burst", "last_name": "Thrower"}])
+        self.ct_id = str(uuid.uuid4())
+        FX.upsert("class_teachers", [
+            {"id": self.ct_id, "class_id": FX.C_KS3_A,
+             "teacher_id": self.uid, "role": "subject_teacher",
+             "subject_id": FX.timetable_subject(cls[1])}], on_conflict="id")
+        self.token = sign_in(self.email, pw)["access_token"]
+        return self.token
+
+    def remove(self):
+        """⚠️ NEVER RAISES. A tidy-up failure must not turn a green burst red —
+        but it must never be silent either, because unswept throwaway accounts
+        are how the last accumulation on TEST started."""
+        problems = []
+
+        def rm(path, what):
+            st, d = FX.api("DELETE", "/rest/v1/" + path)
+            if st not in (200, 204):
+                problems.append("%s → %s %s" % (what, st, str(d)[:160]))
+
+        try:
+            if self.uid:
+                rm("audit_log?actor_id=eq." + self.uid, "audit rows")
+            if self.ct_id:
+                rm("class_teachers?id=eq." + self.ct_id, "class_teachers row")
+            if self.uid:
+                rm("profiles?id=eq." + self.uid, "profile")
+                st, d = FX.api("DELETE", "/auth/v1/admin/users/" + self.uid)
+                if st not in (200, 204):
+                    problems.append("auth user → %s %s" % (st, str(d)[:160]))
+        except Exception as e:                                  # noqa: BLE001
+            problems.append("%s: %s" % (type(e).__name__, e))
+        if problems:
+            print("        ⚠️ burst actor cleanup: %s (%s) — remove it by "
+                  "hand; nothing else sweeps it"
+                  % ("; ".join(problems), self.email))
+
+
+def check_worksheet_rate_limit(t_admin, first):
+    """⚠️ RUN LAST, AND ONLY LAST. It deliberately exhausts an hour of
+    worksheets, so anything after it in this process would meet a 429 that has
+    nothing to do with what it is testing.
+
+    ⊕ MRB-346: THE BURST IS SPENT ON A FRESH ACCOUNT, NOT ON `t_teacher`. The
+    ceiling is per user per hour, so re-using the standing throwaway teacher
+    made a re-run inside the hour inherit a part-spent bucket and refuse on
+    call 15 rather than at the real ceiling. `BurstActor` above gives every run
+    a user id nobody has ever called from, and removes it on the way out.
+    `t_teacher` is therefore no longer exhausted by this check at all.
 
     ⚠️ AND THE CLAIM IS ABOUT THE KEY, NOT THE CEILING. An IP key would be
     wrong in a way no unit test notices: a secondary school leaves the
@@ -6582,25 +6910,34 @@ def check_worksheet_rate_limit(t_teacher, t_admin, first):
                      "questions": first["chosen"][:1]}],
                    "pdf", False, TITLE + " · limit")
 
+    actor = BurstActor()
     limit_hdr = None
     hit = 0
-    for i in range(60):
-        st, hdr, _d = call_bytes("POST", WS_PATH, t_teacher, tiny)
-        if limit_hdr is None:
-            limit_hdr = hdr.get("ratelimit-limit")
-        if st == 429:
-            hit = i + 1
-            break
-        if st != 200:
-            record(False, "worksheet_rate_limited — the teacher's requests "
-                          "are answered while under the ceiling",
-                   "call %d answered %s" % (i + 1, st))
-            return
+    try:
+        t_burst = actor.create()
+        print("        the burst runs on a fresh account, %s" % actor.email)
+        for i in range(60):
+            st, hdr, _d = call_bytes("POST", WS_PATH, t_burst, tiny)
+            if limit_hdr is None:
+                limit_hdr = hdr.get("ratelimit-limit")
+            if st == 429:
+                hit = i + 1
+                break
+            if st != 200:
+                record(False, "worksheet_rate_limited — the teacher's requests "
+                              "are answered while under the ceiling",
+                       "call %d answered %s" % (i + 1, st))
+                return
+    finally:
+        # Removed whether the burst passed, failed or threw — an actor left
+        # standing is litter on TEST that nothing else sweeps.
+        actor.remove()
     record(hit > 0,
            "worksheet_rate_limited — the route stops serving one teacher at "
            "its ceiling of %s an hour and answers 429" % limit_hdr,
-           "429 on call %d of this burst (the drive had already spent part of "
-           "the hour)" % hit if hit else "never refused in 60 calls")
+           "429 on call %d of this burst, on an account created for it, so the "
+           "hour was whole when it started (MRB-346)" % hit
+           if hit else "never refused in 60 calls")
 
     st, hdr, data = call_bytes("POST", WS_PATH, t_admin, tiny)
     remaining = hdr.get("ratelimit-remaining")

@@ -1,37 +1,101 @@
 """prepush_gate.py — refuses a push while any gate is red, and names which.
 
 ⊕ MRB-277, 21 Aug 2026. Read `gate_registry.py` first; it explains the defect
-this exists to stop.
+this exists to stop, and (⊕ MRB-346) now carries a `watches` list on every
+gate — the data everything below is built on.
 
 ── WHAT IT DOES ────────────────────────────────────────────────────────
 
-    python3 prepush_gate.py --check          # the guard. exit 0 = safe to push
-    python3 prepush_gate.py --record NAME    # run a slow gate, keep a receipt
-    python3 prepush_gate.py --record-all     # run every slow gate
+    python3 prepush_gate.py --check              # the guard. exit 0 = safe
+    python3 prepush_gate.py --record NAME         # run one gate, keep a receipt
+    python3 prepush_gate.py --record-all          # run every AFFECTED slow gate
+    python3 prepush_gate.py --record-all --force  # run every slow gate, period
+    python3 prepush_gate.py --check --force       # require a fresh receipt for
+                                                   # every slow gate, ignore
+                                                   # "unaffected" as an excuse
 
-`--check` is what the `pre-push` hook calls. It:
+`--check` is what the `pre-push` hook calls (see `hooks/pre-push`). It:
 
   1. refuses outright if tracked files are dirty — a gate result cannot be
      attributed to a tree that has changed since it ran;
-  2. RUNS every `fast` gate, so those can never be skipped;
-  3. requires a RECEIPT for every `slow` gate, matching the exact tree being
-     pushed;
-  4. reports every gate that is missing a precondition as SKIPPED, by name —
-     a missing path (`needs`) or a missing credential (`needs_env`).
+  2. RUNS every `fast` gate, so those can never be skipped or selected away;
+  3. for every `slow` gate, either finds a receipt that's still valid (see
+     below), or decides — from this branch's own commits — whether the gate
+     is even reachable by what changed, and reports one of PASS / SKIPPED /
+     RED accordingly, never silently;
+  4. reports every gate whose precondition (`needs` / `needs_env`) is absent
+     as SKIPPED, by name — never silently, and never as a pass.
 
-── THE RECEIPT, AND WHY IT IS KEYED ON THE TREE ────────────────────────
+── ⊕ MRB-346, 15 Sep 2026 · RECEIPTS BIND TO WATCHED PATHS, NOT THE TREE ─
 
-A receipt records that a named gate exited 0 against a specific git TREE
-object. The tree sha changes if any tracked byte changes, so a receipt cannot
-survive an edit — not a content fix, not a whitespace change, not a "tiny"
-one. This is the whole mechanism: it converts "I ran the gates" from
-something a tired person remembers into something the repo can check.
+A receipt used to record the whole-tree sha (`HEAD^{tree}`) a gate passed
+against, which meant ANY tracked change anywhere — a docs commit, an
+unrelated subsystem's one-line fix — invalidated EVERY slow gate's receipt
+at once. The night-2/worksheet landing spent real hours on exactly this:
+docs commits invalidating all 18 receipts, twice, and a content-only branch
+running the full site-drive suite that provably reads nothing from the
+question bank.
+
+A receipt now binds to a `watch_hash` — a fingerprint of the CONTENT (blob
+sha) of every tracked file matching that gate's `watches` glob list, not the
+rest of the tree. A gate's receipt survives any commit that doesn't touch a
+path in its own `watches`. `docs/**`, `**/*.md`, `docs/**/shots/**`, and
+`README*` can never appear in a `watches` list at all (`gate_watches_check`
+enforces this), so a docs-only commit can never move any gate's `watch_hash`
+— proof: after a green `--record-all`, a docs-only commit pushes with zero
+re-runs.
+
+This is only as honest as `watches` is complete. A `watches` list that's too
+narrow means a real change the gate should have caught leaves its
+fingerprint alone and a stale receipt keeps passing — which is why
+`gate_watches_check` (a FAST gate, always run) asserts every gate at least
+watches its own script, and an Opus-reviewed pass checked every gate's real
+dependencies by hand before this shipped. It is not proof of completeness;
+it is the best mechanical floor available.
+
+── ⊕ MRB-346 · AFFECTED GATES ONLY ──────────────────────────────────────
+
+`--record-all` and `--check` (the pre-push hook) both compute the paths this
+branch's own commits touch — `git diff --name-only` from the merge-base with
+`origin/main` to `HEAD` — and, for any SLOW gate with no already-valid
+receipt, ask whether any of those paths falls inside that gate's `watches`.
+If none does, the gate is reported SKIPPED BY RULE rather than RED: nothing
+this branch did could have changed what it would find. A branch that only
+touches `ks3_data/**` therefore only has to run the KS3 content gates; one
+that only touches `shared/set-work.js` only has to run the Set-work and
+teacher gates.
+
+If the merge-base can't be determined (no local `origin/main`, a detached
+history), the honest answer is "don't know", and the safe reading of "don't
+know" is "affected", never "unaffected" — nothing is silently skipped for a
+computation that failed. `--force` bypasses this and treats every slow gate
+as affected, for the rare case a full sweep is deliberately wanted (e.g. the
+first run after `watches` itself changed, when the list can't yet be trusted
+to select correctly).
+
+This selection only ever widens what runs on top of an already-red gate — it
+never makes a genuinely red gate look green. An inherited red the branch
+truly cannot reach (see the OVERRIDE mechanism below) still needs the same
+override it always did whenever a full/forced run reaches it.
+
+── ⊕ MRB-346 · ONE RETRY ON A TRANSIENT FAILURE ─────────────────────────
+
+A DNS blip, Chrome closing its websocket mid-frame, a Render cold start —
+none of these are findings about the code, and treating them as red the
+first time turned nine unrelated gates red from one blip. Any gate whose
+failing output matches a known transient signature (see
+`_TRANSIENT_SIGNATURES`) is retried exactly once before it counts. The
+retry is never hidden: a receipt records `"retried": true`, and the printed
+PASS/FAIL line says so either way. A SECOND failure — whether or not it
+matches a transient signature — is a real red, full stop; there is no loop.
+
+── THE RECEIPT, AND WHY IT IS NOT COMMITTED ─────────────────────────────
 
 Receipts live in `.gate-receipts/` and are NOT committed. They are evidence
 about one working copy at one moment, and a committed receipt would be a
 receipt for somebody else's machine.
 
-── THE OVERRIDE, AND WHY IT LANDS IN THE COMMIT MESSAGE ────────────────
+── THE OVERRIDE, AND WHY IT LANDS IN THE COMMIT MESSAGE ─────────────────
 
 There is an override, because a guard with no escape hatch gets deleted the
 first night it is wrong at 2am, and a deleted guard protects nothing.
@@ -50,6 +114,7 @@ An override that names no gate, or names a gate that is not red, is refused:
 it would otherwise become a blanket the next person copies forward.
 """
 
+import hashlib
 import json
 import os
 import subprocess
@@ -79,6 +144,28 @@ _REPO = os.path.dirname(os.path.abspath(__file__))
 RECEIPTS = os.path.join(_REPO, ".gate-receipts")
 OVERRIDE = "GATE-OVERRIDE:"
 
+# ⊕ MRB-346. Substrings (matched case-insensitively against a failed gate's
+# combined stdout+stderr) that mark a failure as plausibly TRANSIENT rather
+# than a finding about the code. Deliberately generous — over-matching costs
+# one wasted retry on a genuine red; under-matching leaves real flakiness
+# blocking a push, which is the thing this exists to stop. A second failure,
+# whatever the signature, always counts.
+_TRANSIENT_SIGNATURES = (
+    "urlerror",
+    "connection refused",
+    "connection reset",
+    "temporary failure in name resolution",
+    "getaddrinfo failed",
+    "nodename nor servname provided",
+    "name or service not known",
+    "closed the websocket mid-frame",
+    "timed out",
+    "timeout",
+    "[errno 60]",
+    "[errno 61]",
+    "sslerror",
+)
+
 
 def _git(*args):
     # `cwd=_REPO` is load-bearing: without it the tree this gate attests is
@@ -95,6 +182,65 @@ def _tracked_dirty():
 
 def _tree():
     return _git("rev-parse", "HEAD^{tree}")
+
+
+def _tracked_files(ref="HEAD"):
+    """{path: blob_sha} for every tracked file at `ref`, repo-root-relative,
+    the same path shape `watches` patterns are matched against."""
+    out = _git("ls-tree", "-r", ref)
+    files = {}
+    for line in out.splitlines():
+        if not line.strip():
+            continue
+        meta, path = line.split("\t", 1)
+        _mode, _type, sha = meta.split()
+        files[path] = sha
+    return files
+
+
+def _watch_hash(gate, files):
+    """A fingerprint of every tracked file this gate's `watches` cover, at
+    the tree `files` was built from. THIS, not the whole-tree sha, is what a
+    receipt now binds to — see the module docstring."""
+    matched = sorted(p for p in files
+                     if gate_registry.matches_any(p, gate["watches"]))
+    h = hashlib.sha1()
+    for p in matched:
+        h.update(p.encode("utf-8"))
+        h.update(b"\0")
+        h.update(files[p].encode("utf-8"))
+        h.update(b"\n")
+    return h.hexdigest()
+
+
+def _merge_base():
+    """Where this branch forked from `origin/main`, or None if that can't be
+    determined. Never fetches — a push guard must not depend on the network,
+    and a slightly stale local `origin/main` only ever makes MORE gates look
+    affected, never fewer, which is the safe direction to be wrong in."""
+    base = _git("merge-base", "HEAD", "origin/main")
+    return base or None
+
+
+def _changed_since_merge_base():
+    """Paths this branch's own commits touch, or None meaning "unknown" —
+    which `_affected` treats as "yes, affected", never "no"."""
+    base = _merge_base()
+    if not base:
+        return None
+    out = _git("diff", "--name-only", base, "HEAD")
+    return [l for l in out.splitlines() if l.strip()]
+
+
+def _affected(gate, changed):
+    """Whether `gate` needs to run for THIS branch's push. `changed is None`
+    means the merge-base couldn't be found, and the safe reading of "don't
+    know" is "yes" — a gate silently skipped because a computation failed
+    would be the exact failure this whole file exists to prevent, one level
+    down."""
+    if changed is None:
+        return True
+    return any(gate_registry.matches_any(p, gate["watches"]) for p in changed)
 
 
 def _receipt_path(name):
@@ -129,23 +275,49 @@ def _skip_reason(gate):
     return None
 
 
-def _run(gate):
+def _looks_transient(output):
+    low = output.lower()
+    return any(sig in low for sig in _TRANSIENT_SIGNATURES)
+
+
+def _run_once(gate):
     print("  running %-20s %s" % (gate["name"], " ".join(gate["cmd"])))
     r = subprocess.run(gate["cmd"], capture_output=True, text=True)
     return r.returncode, (r.stdout or "") + (r.stderr or "")
 
 
-def record(names):
-    """Run the named gates and keep a receipt for each that passes."""
+def _run(gate):
+    """Run a gate, retrying ONCE if it fails with a transient signature.
+    Returns (exit_code, output, retried) — `retried` is True the moment a
+    retry was ATTEMPTED, whether or not it then passed."""
+    code, out = _run_once(gate)
+    if code == 0 or not _looks_transient(out):
+        return code, out, False
+    print("  RETRY   %-20s transient failure signature matched — retrying "
+          "once" % gate["name"])
+    code2, out2 = _run_once(gate)
+    return code2, out2, True
+
+
+def record(names, force=False):
+    """Run the named gates and keep a receipt for each that passes.
+
+    `force=False` narrows to gates AFFECTED by this branch's own commits
+    (see `_affected`) — an unaffected slow gate is reported SKIPPED BY RULE
+    and not run. `--record NAME` (one explicit gate) always passes
+    `force=True`: naming a gate by hand means you want IT run, not a
+    computed opinion about whether it's needed.
+    """
     dirty = _tracked_dirty()
     if dirty:
         print("REFUSING TO RECORD — %d tracked file(s) are modified.\n"
-              "A receipt attests a gate against a TREE. With the tree moving "
-              "under it, it would attest nothing.\n  %s"
+              "A receipt attests a gate against its WATCHED FILES' content. "
+              "With those moving under it, it would attest nothing.\n  %s"
               % (len(dirty), "\n  ".join(dirty[:10])))
         return 1
     os.makedirs(RECEIPTS, exist_ok=True)
-    tree = _tree()
+    files = _tracked_files()
+    changed = None if force else _changed_since_merge_base()
     bad = 0
     for name in names:
         gate = gate_registry.by_name(name)
@@ -153,35 +325,45 @@ def record(names):
         if why:
             print("  SKIP    %-20s %s" % (name, why))
             continue
-        code, out = _run(gate)
+        if not force and gate["speed"] == "slow" and not _affected(gate, changed):
+            print("  SKIP-BY-RULE %-14s unaffected — no path this branch's "
+                  "commits changed is in its `watches`" % name)
+            continue
+        code, out, retried = _run(gate)
         if code == 0:
+            wh = _watch_hash(gate, files)
             with open(_receipt_path(name), "w", encoding="utf-8") as fh:
-                json.dump({"gate": name, "tree": tree, "exit": 0}, fh, indent=2)
-            print("  PASS    %s — receipt written for tree %s"
-                  % (name, tree[:12]))
+                json.dump({"gate": name, "watch_hash": wh,
+                          "tree_at_record": _tree(), "exit": 0,
+                          "retried": retried}, fh, indent=2)
+            print("  PASS    %s — receipt written%s"
+                  % (name, " (retried once)" if retried else ""))
         else:
             bad += 1
             # A failing gate must not leave a stale PASS receipt behind it.
             if os.path.exists(_receipt_path(name)):
                 os.remove(_receipt_path(name))
-            print("  FAIL    %s (exit %d)\n%s"
-                  % (name, code, "\n".join(out.strip().splitlines()[-15:])))
+            print("  FAIL    %s (exit %d)%s\n%s"
+                  % (name, code, " [retried once, still red]" if retried
+                     else "", "\n".join(out.strip().splitlines()[-15:])))
     return 1 if bad else 0
 
 
-def check():
-    print("── pre-push gate guard (MRB-277) " + "─" * 34)
+def check(force=False):
+    print("── pre-push gate guard (MRB-277/346) " + "─" * 30)
     dirty = _tracked_dirty()
     if dirty:
         print("\n❌ REFUSED — %d tracked file(s) are modified.\n"
-              "   Every gate result describes a tree. Commit or stash first, "
-              "so that what was\n   measured is what is being pushed.\n\n   %s"
+              "   Every gate result describes its watched files. Commit or "
+              "stash first, so that\n   what was measured is what is being "
+              "pushed.\n\n   %s"
               % (len(dirty), "\n   ".join(dirty[:10])))
         return 1
 
-    tree = _tree()
+    files = _tracked_files()
     msg = _git("log", "-1", "--format=%B")
-    red, skipped = [], []
+    changed = None if force else _changed_since_merge_base()
+    red, skipped, ran, via_receipt = [], [], 0, 0
 
     for gate in gate_registry.GATES:
         why = _skip_reason(gate)
@@ -189,36 +371,56 @@ def check():
             skipped.append((gate["name"], why))
             continue
         if gate["speed"] == "fast":
-            code, out = _run(gate)
+            code, out, retried = _run(gate)
             if code != 0:
-                red.append((gate["name"], "exit %d — %s"
-                            % (code, (out.strip().splitlines() or [""])[-1])))
+                red.append((gate["name"], "exit %d — %s%s"
+                            % (code, (out.strip().splitlines() or [""])[-1],
+                               " [retried once]" if retried else "")))
             else:
-                print("  PASS    %s" % gate["name"])
-        else:
-            rec = _read_receipt(gate["name"])
-            if rec is None:
-                red.append((gate["name"],
-                            "NEVER RUN against this tree — no receipt. "
-                            "python3 prepush_gate.py --record %s"
+                print("  PASS    %s%s" % (gate["name"],
+                                          " (retried once)" if retried
+                                          else ""))
+            ran += 1
+            continue
+
+        rec = _read_receipt(gate["name"])
+        wh = _watch_hash(gate, files)
+        if rec is not None and rec.get("watch_hash") == wh:
+            print("  PASS    %-20s (receipt — watched paths unchanged)"
+                  % gate["name"])
+            via_receipt += 1
+            continue
+        if not force and not _affected(gate, changed):
+            skipped.append((gate["name"],
+                            "SKIPPED BY RULE — unaffected: nothing this "
+                            "branch's commits changed is in its `watches`. "
+                            "`python3 prepush_gate.py --record %s` still "
+                            "gives it a fresh receipt if you want one; "
+                            "`--force` re-requires it unconditionally."
                             % gate["name"]))
-            elif rec.get("tree") != tree:
-                red.append((gate["name"],
-                            "receipt is for tree %s, pushing %s — the code "
-                            "changed after the gate ran. Re-run: python3 "
-                            "prepush_gate.py --record %s"
-                            % ((rec.get("tree") or "?")[:12], tree[:12],
-                               gate["name"])))
-            else:
-                print("  PASS    %-20s (receipt, tree %s)"
-                      % (gate["name"], tree[:12]))
+            continue
+        if rec is None:
+            red.append((gate["name"],
+                        "NEVER RUN against these watched paths — no "
+                        "receipt. python3 prepush_gate.py --record %s"
+                        % gate["name"]))
+        else:
+            red.append((gate["name"],
+                        "receipt is for different watched-path content — "
+                        "code this gate watches changed since it last ran. "
+                        "Re-run: python3 prepush_gate.py --record %s"
+                        % gate["name"]))
 
     for name, why in skipped:
         print("  SKIP    %-20s %s" % (name, why))
 
+    rule_skipped = sum(1 for _n, w in skipped if w.startswith("SKIPPED BY RULE"))
+    print("\n   %d gate(s) ran fresh, %d passed via an unchanged receipt, "
+          "%d skipped by rule, %d skipped for a missing precondition."
+          % (ran, via_receipt, rule_skipped, len(skipped) - rule_skipped))
+
     if not red:
-        print("\n✅ every registered gate is green for tree %s — push allowed."
-              % tree[:12])
+        print("\n✅ every registered gate is green — push allowed.")
         return 0
 
     # ── an override must NAME the gate it is excusing ────────────────────
@@ -255,18 +457,19 @@ def check():
 
 
 def main(argv):
+    force = "--force" in argv
     if "--check" in argv:
-        return check()
+        return check(force=force)
     if "--record-all" in argv:
         return record([g["name"] for g in gate_registry.GATES
-                       if g["speed"] == "slow"])
+                       if g["speed"] == "slow"], force=force)
     if "--record" in argv:
         i = argv.index("--record")
         if i + 1 >= len(argv):
             print("--record needs a gate name. Registry: %s"
                   % ", ".join(g["name"] for g in gate_registry.GATES))
             return 2
-        return record([argv[i + 1]])
+        return record([argv[i + 1]], force=True)
     print(__doc__)
     return 2
 

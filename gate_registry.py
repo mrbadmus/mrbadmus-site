@@ -78,12 +78,76 @@ which is itself registered as the `gate_coverage` gate, so the assertion runs
 on every push. A registry that can silently omit a member has the same shape
 as the problem it was built to solve; this is the fix for the shape, not for
 the four instances of it.
+
+── ⊕ MRB-346, 15 Sep 2026 · `watches`, AND THE MATCHING RULES FOR IT ────
+
+Every gate below now carries a `watches` key: a list of glob patterns naming
+every tracked file that can change the gate's outcome. `prepush_gate.py`
+uses this to bind a receipt to the watched files' content instead of the
+whole tree (so a docs commit no longer invalidates every slow gate), and to
+select only the gates a branch's own changes can actually reach (so a
+content-only branch doesn't have to run the teacher-dashboard suite). The
+matching functions live here, next to the data they interpret, rather than
+duplicated in `prepush_gate.py` and `gate_watches_check.py`.
+
+Pattern syntax: `**` matches anything including further `/`; `*` matches
+anything except `/` (one path segment); `?` matches one character except
+`/`. Every pattern is matched against a path from the repo root with no
+leading `/` (the same shape `git ls-tree`/`git diff --name-only` print).
+
+RULE, UNCONDITIONAL: no gate's `watches` may name anything under `docs/**`,
+match `**/*.md`, or match `README*`. A docs-only change must never
+reinvalidate a slow gate's receipt or select it to re-run — `gate_registry.py
+--check` and `gate_watches_check.py` both refuse a violation.
 """
+
+import re as _re
+
+
+def glob_to_regex(pattern):
+    """Compile one `watches` pattern to a fully-anchored regex."""
+    out = ["^"]
+    i, n = 0, len(pattern)
+    while i < n:
+        c = pattern[i]
+        if pattern[i:i + 2] == "**":
+            out.append(".*")
+            i += 2
+        elif c == "*":
+            out.append("[^/]*")
+            i += 1
+        elif c == "?":
+            out.append("[^/]")
+            i += 1
+        else:
+            out.append(_re.escape(c))
+            i += 1
+    out.append("$")
+    return _re.compile("".join(out))
+
+
+def matches_any(path, patterns):
+    """Whether `path` (repo-root-relative, no leading `/`) matches any of
+    `patterns`."""
+    return any(glob_to_regex(p).match(path) for p in patterns)
+
+
+def own_script(gate):
+    """The `.py` file a gate's `cmd` invokes — every gate's `watches` must
+    cover this (a gate that doesn't watch its own code could stop being
+    selected by a change to itself)."""
+    for token in gate["cmd"]:
+        if token.endswith(".py"):
+            return token
+    return None
+
 
 GATES = [
     dict(name="verify_questions",
          cmd=["python3", "verify_questions.py"],
          speed="fast",
+         watches=["verify_questions.py", "ks3_data/**", "ks3_art/**",
+                  "build_ks3.py", "mrbadmus_site/ks3/**"],
          why="the KS3 question bank (MRB-269) — nine checks over every "
              "lesson's ladder and bank. THE ORPHAN: this is the gate that "
              "was red at push time in PR #8 and was not run."),
@@ -91,12 +155,19 @@ GATES = [
     dict(name="ks3_smoke_static",
          cmd=["python3", "ks3_smoke.py", "--static"],
          speed="fast",
+         watches=["ks3_smoke.py", "ks3_browser.py", "build_ks3.py",
+                  "ks3_art/**", "ks3_data/**", "shared/ks3.js",
+                  "shared/ks3.css", "mrbadmus_site/ks3/**"],
          why="garbage strings in the built key stage — unsubstituted "
              "placeholders, stray markup, `undefined` reaching a page."),
 
     dict(name="answer_positions",
          cmd=["python3", "verify_answer_positions.py"],
          speed="fast",
+         watches=["verify_answer_positions.py", "ks3_data/**", "ks4_data/**",
+                  "all_subtopics_*.py", "generate_site_v5.py",
+                  "shared/quiz.js", "mrbadmus_site/combined/**",
+                  "mrbadmus_site/triple/**"],
          why="MRB-278 made permanent and cross-key-stage: no fixed-position "
              "MCQ corpus — KS3 authored (served verbatim) or KS4 built "
              "(served post-shuffle) — lets one option position hold more "
@@ -106,6 +177,7 @@ GATES = [
     dict(name="answer_lengths",
          cmd=["python3", "verify_answer_lengths.py"],
          speed="fast",
+         watches=["verify_answer_lengths.py", "ks3_data/**"],
          why="MRB-297 — the tell POSITION cannot see. The row above "
              "watches WHERE the correct answer sits; nothing watched HOW "
              "LONG it is. The physics audit measured the cost: a student "
@@ -161,6 +233,9 @@ GATES = [
     dict(name="3d_isolation",
          cmd=["python3", "3d_isolation_check.py"],
          speed="fast",
+         watches=["3d_isolation_check.py", "generate_site_v5.py",
+                  "3d-studio/dist/**", "3d-studio/src/**",
+                  "mrbadmus_site/3d/**"],
          needs="3d-studio/dist",
          why="spec §10 / MRB-194 — the published studio survives a generator "
              "run. Needs a build to publish; skipped, by name, without one."),
@@ -168,12 +243,39 @@ GATES = [
     dict(name="verify_ks3",
          cmd=["python3", "verify_ks3.py"],
          speed="slow",
+         # ⚠️ THE KS4-DRIFT CHECK IS NOT IN THIS LIST, ON PURPOSE. It reads
+         # `git status --porcelain` and compares every touched `.html` outside
+         # `ks3/` and `docs/` against HEAD — that is a WORKING-TREE STATE, not
+         # a content dependency, and no path pattern can predict it (once the
+         # work is committed the scan sees nothing at all). The list used to
+         # carry `mrbadmus_site/{*.html,combined,triple,student/classes.html}`,
+         # which was an arbitrary quarter of that surface: it named neither
+         # `mrbadmus_site/teacher/` nor the repo-root pages, both of which the
+         # scan covers just as much. Completing it honestly means "every .html
+         # in the repo", which is not a selector. What DOES belong here is
+         # what the gate reads and runs — its own modules, the KS3 build
+         # inputs, the shared assets the driven pages load, `mrbadmus_site/
+         # ks3/**` (the only tree it opens), and generate_site_v5.py, which it
+         # executes. Those are also precisely the changes the drift check
+         # exists to detect collateral damage FROM.
+         watches=["verify_ks3.py", "ks3_parity.py", "ks3_canvas.py",
+                  "ks3_figure_sweep.py", "ks3_overflow.py", "ks3_browser.py",
+                  "build_ks3.py", "ks3_art/**", "ks3_data/**",
+                  "generate_site_v5.py", "shared/ks3.js", "shared/ks3.css",
+                  "shared/class-entry.js", "shared/mrbadmus.v2.js",
+                  "shared/nav.css", "shared/styles.css", "shared/tokens.css",
+                  "mrbadmus_site/ks3/**", "mrbadmus_site/shared/**"],
          why="the §9 slice gates — the umbrella. Rebuilds the key stage and "
              "drives every lesson in headless Chrome."),
 
     dict(name="student_parity",
          cmd=["python3", "student_parity.py"],
          speed="slow",
+         watches=["student_parity.py", "ks3_parity.py", "ks3_browser.py",
+                  "build_student.py", "student_switches.json", "ks3_data/**",
+                  "shared/student-breakpoints.js", "shared/student-ds.css",
+                  "mrbadmus_site/student/class-preview.html",
+                  "mrbadmus_site/student/assignment-preview.html"],
          needs="student_parity.py",
          why="the generated student previews against Design's own file, "
              "layers A-H at 360/390/820/1460."),
@@ -181,6 +283,12 @@ GATES = [
     dict(name="student_behaviour",
          cmd=["python3", "student_behaviour.py"],
          speed="slow",
+         watches=["student_behaviour.py", "ks3_browser.py",
+                  "build_student_port.py", "student_rulings.py",
+                  "student_template.py", "shared/student-runtime.js",
+                  "shared/student-live.js", "shared/student-fixture-class.js",
+                  "shared/student-fixture-assignment.js",
+                  "shared/student-ds.css", "mrbadmus_site/student/**"],
          needs="student_behaviour.py",
          why="the ported student pages driven against Design's own — 30 "
              "drives, visible text identical."),
@@ -188,6 +296,12 @@ GATES = [
     dict(name="student_themes",
          cmd=["python3", "student_themes.py"],
          speed="slow",
+         watches=["student_themes.py", "ks3_browser.py",
+                  "build_student_port.py", "student_rulings.py",
+                  "student_template.py", "shared/student-ds.css",
+                  "shared/student-runtime.js",
+                  "shared/student-fixture-class.js", "shared/tokens.css",
+                  "mrbadmus_site/student/class-fixture.html"],
          needs="mrbadmus_site/student/class-fixture.html",
          why="the ported class page's COLOUR — six bench themes plus the "
              "attribute absent, grounds, tokens and every contrast ratio "
@@ -200,6 +314,11 @@ GATES = [
     dict(name="teacher_tells",
          cmd=["python3", "teacher_tells.py"],
          speed="fast",
+         watches=["teacher_tells.py", "build_teacher_port.py",
+                  "teacher_rulings.py", "student_templates.json",
+                  "teacher/classes.html", "teacher/class-detail.html",
+                  "teacher/student-detail.html", "teacher/assignment.html",
+                  "teacher/digest.html", "teacher/insights.html"],
          needs="teacher/insights.html",
          why="Design's invented school must not reach a teacher. The teacher "
              "delivery is a SAMPLE — twelve classes, fifty-four students and "
@@ -225,6 +344,15 @@ GATES = [
     dict(name="today_drive",
          cmd=["python3", "today_drive.py"],
          speed="slow",
+         watches=["today_drive.py", "ks3_browser.py", "teacher/today.html",
+                  "teacher/timetable.html",
+                  "mrbadmus_site/teacher/today.html",
+                  "mrbadmus_site/teacher/timetable.html",
+                  "shared/teacher-data.js", "shared/teacher-guard.js",
+                  "shared/teacher-picker.js", "shared/teacher-admin-nav.js",
+                  "shared/teacher-ds.css", "shared/class-entry.js",
+                  "shared/config.js", "shared/tokens.css",
+                  "generate_site_v5.py"],
          needs="mrbadmus_site/teacher/today.html",
          why="MRB-306's Today screen, DRIVEN through its four states. Today "
              "is the one teacher page whose whole job is to be HONEST about a "
@@ -252,6 +380,17 @@ GATES = [
     dict(name="import_year_drive",
          cmd=["python3", "import_year_drive.py"],
          speed="slow",
+         # ⚠️ NOT supabase/functions/roster-import/**. The edge function is
+         # never called: `functions.invoke` is REPLACED by the stub, and the
+         # body handed to it is what this drive captures and asserts on. The
+         # function's own source cannot change that, which is the whole reason
+         # this gate runs offline on every push.
+         watches=["import_year_drive.py", "ks3_browser.py",
+                  "teacher/import.html", "shared/class-entry.js",
+                  "shared/teacher-guard.js", "shared/teacher-admin-nav.js",
+                  "shared/search.js", "shared/search-index.js",
+                  "shared/teacher-ds.css", "shared/config.js",
+                  "shared/tokens.css"],
          needs="teacher/import.html",
          why="MRB-307 — WHICH SCHOOL YEAR A ROSTER IMPORT LANDS IN. On "
              "1 September 2026 a real import enrolled 14 real students into "
@@ -318,6 +457,19 @@ GATES = [
     dict(name="teacher_behaviour",
          cmd=["python3", "teacher_behaviour.py"],
          speed="slow",
+         # ⚠️ NOT shared/teacher-live.js, NOT shared/rum.js, NOT tokens.css.
+         # A `-fixture.html` is the live page's bytes with its last two script
+         # tags swapped for Design's extracted data and a mount call, so it
+         # never loads teacher-live.js and therefore never loads the deps
+         # teacher-live.js pulls in (rum.js among them). The only /shared/
+         # assets any of the 24 fixtures link are the six below, and
+         # teacher-ds.css declares its own tokens rather than importing them.
+         watches=["teacher_behaviour.py", "ks3_browser.py",
+                  "build_teacher_port.py", "teacher_rulings.py",
+                  "teacher_fixtures/**", "shared/student-runtime.js",
+                  "shared/teacher-ds.css", "shared/set-work.js",
+                  "shared/set-work.css", "shared/teacher-picker.js",
+                  "shared/teacher-admin-nav.js"],
          # ⚠️ `teacher_fixtures/`, NOT `teacher/`. The fixtures moved out of
          # the published directory (they render Design's invented school and
          # /teacher/* has no edge auth). This row kept the old path for one
@@ -347,6 +499,15 @@ GATES = [
     dict(name="teacher_reach",
          cmd=["python3", "teacher_reach.py"],
          speed="slow",
+         # Same fixture set as teacher_behaviour, so the same asset list and
+         # the same two exclusions: no teacher-live.js, no tokens.css.
+         watches=["teacher_reach.py", "teacher_behaviour.py",
+                  "ks3_browser.py", "build_teacher_port.py",
+                  "teacher_rulings.py", "teacher_fixtures/**",
+                  "shared/student-runtime.js",
+                  "shared/teacher-ds.css", "shared/set-work.js",
+                  "shared/set-work.css", "shared/teacher-picker.js",
+                  "shared/teacher-admin-nav.js"],
          needs="teacher_fixtures/classes-fixture.html",
          why="Mide's Phase 3 ruling, 4 Sep 2026: assert REACHABILITY of "
              "every teacher control at a real phone width, not the absence "
@@ -383,6 +544,13 @@ GATES = [
     dict(name="teacher_picker_drive",
          cmd=["python3", "teacher_picker_drive.py"],
          speed="slow",
+         watches=["teacher_picker_drive.py", "ks3_browser.py",
+                  "build_teacher_port.py", "teacher_rulings.py",
+                  "teacher_fixtures/class-detail-fixture.html",
+                  "teacher_fixtures/teacher-fixture-class-detail.js",
+                  "shared/teacher-picker.js", "shared/student-runtime.js",
+                  "shared/teacher-ds.css", "shared/set-work.js",
+                  "shared/set-work.css"],
          needs="teacher_fixtures/class-detail-fixture.html",
          why="MRB-323, 5 Sep 2026: the random name picker's PROMISES, which "
              "the two gates beside it structurally cannot make. "
@@ -417,6 +585,13 @@ GATES = [
     dict(name="pool_ownership",
          cmd=["python3", "pool_ownership.py"],
          speed="fast",
+         watches=["pool_ownership.py", "shared/student-live.js",
+                  "shared/ks3.js", "shared/teacher-live.js",
+                  "shared/teacher-data.js", "shared/student-data.js",
+                  "shared/class-entry.js", "shared/mrbadmus.v2.js",
+                  "build_ks3.py", "ks4_data/**", "all_subtopics_*.py",
+                  "supabase/migrations/*mrb288_one_pool_per_assignment.sql",
+                  "*.html"],
          needs="/Users/midebadmus/Documents/GitHub/mrbadmus---backend/server.js",
          needs_env="MRB_BACKEND",
          why="⚠️ needs_env=MRB_BACKEND SINCE MRB-331, 7 Sep 2026, and for "
@@ -451,6 +626,8 @@ GATES = [
     dict(name="leaderboard_tells",
          cmd=["python3", "leaderboard_tells.py"],
          speed="fast",
+         watches=["leaderboard_tells.py", "build_leaderboard_port.py",
+                  "leaderboard.html", "mrbadmus_site/leaderboard.html"],
          why="no student Design invented reaches the live leaderboard. The "
              "corpus is DERIVED from the vendored delivery on every run — "
              "FIRST, LAST and VIEWER parsed out of its own source and "
@@ -467,6 +644,8 @@ GATES = [
     dict(name="week_truth",
          cmd=["python3", "verify_week_truth.py"],
          speed="fast",
+         watches=["verify_week_truth.py", "shared/teacher-live.js",
+                  "shared/teacher-data.js"],
          needs_env="MRB_BACKEND",
          why="⊕ MRB-330 — ONE WEEK, agreed on by every surface that names it. "
              "The product had TWO definitions of \"this week\" and neither knew "
@@ -491,6 +670,7 @@ GATES = [
     dict(name="leaderboard_seam",
          cmd=["python3", "leaderboard_seam.py"],
          speed="fast",
+         watches=["leaderboard_seam.py", "shared/leaderboard-live.js"],
          needs="shared/leaderboard-live.js",
          why="the leaderboard's DATA LAYER, driven directly — 31 checks "
              "against the real shared/leaderboard-live.js under Node with a "
@@ -516,6 +696,14 @@ GATES = [
     dict(name="leaderboard_behaviour",
          cmd=["python3", "leaderboard_behaviour.py"],
          speed="slow",
+         # ⚠️ NOT leaderboard.html and NOT its built copy — this gate drives
+         # `leaderboard_fixtures/` and nothing else (see the note below), so
+         # the live page cannot move its outcome. leaderboard_tells is the
+         # gate that reads those two files.
+         watches=["leaderboard_behaviour.py", "ks3_browser.py",
+                  "build_leaderboard_port.py", "leaderboard_fixtures/**",
+                  "shared/leaderboard-live.js", "shared/leaderboard-ds.css",
+                  "shared/student-runtime.js"],
          why="TEN leaderboard fixtures driven headless, on load and again "
              "after a reload: every control pressed (tier, four subjects, "
              "the week rail's prev/next/This week and every chip, every row "
@@ -546,6 +734,8 @@ GATES = [
     dict(name="ks4_pool_check",
          cmd=["python3", "ks4_pool_check.py", "--python"],
          speed="fast",
+         watches=["ks4_pool_check.py", "ks4_data/**", "ks4_seed_sow.py",
+                  "generate_site_v5.py", "all_subtopics_*.py"],
          needs="ks4_data/questions/physics/energy.py",
          why="MRB-332 — THE KS4 CONTENT RULE, and the reason it is measured "
              "rather than trusted. A Foundation Combined child must never be "
@@ -587,6 +777,10 @@ GATES = [
     dict(name="set_work_scope_check",
          cmd=["python3", "set_work_scope_check.py"],
          speed="fast",
+         watches=["set_work_scope_check.py",
+                  "tools/export_curriculum_tree.py", "ks4_data/**",
+                  "ks3_data/**", "ks4_seed_sow.py", "generate_site_v5.py",
+                  "all_subtopics_*.py"],
          needs="tools/export_curriculum_tree.py",
          why="MRB-335 — EVERY NODE A TEACHER CAN PICK CAN ACTUALLY BE FILLED. "
              "v1 offered scheme-of-work ROWS, so the only thing a teacher "
@@ -630,6 +824,8 @@ GATES = [
     dict(name="set_work_unit",
          cmd=["python3", "set_work_unit.py"],
          speed="fast",
+         watches=["set_work_unit.py", "tools/set_work_time_test.js",
+                  "shared/set-work.js"],
          needs_env="MRB_BACKEND",
          why="MRB-335 — SET WORK'S TWO PURE SUITES, WHICH EXISTED AND WERE "
              "REACHABLE ONLY BY SOMEBODY REMEMBERING THEM. "
@@ -659,6 +855,9 @@ GATES = [
     dict(name="curriculum_tree_mirror",
          cmd=["python3", "tools/export_curriculum_tree.py", "--check"],
          speed="fast",
+         watches=["tools/export_curriculum_tree.py", "ks3_data/**",
+                  "ks4_data/**", "ks4_seed_sow.py", "generate_site_v5.py",
+                  "all_subtopics_*.py"],
          needs="tools/export_curriculum_tree.py",
          why="MRB-335 — THE BACKEND'S COPY OF THE CURRICULUM HAS NOT DRIFTED. "
              "The curriculum is authored in this repo's Python — "
@@ -686,6 +885,12 @@ GATES = [
     dict(name="ks4_pool_drive",
          cmd=["python3", "ks4_pool_drive.py"],
          speed="slow",
+         # ⚠️ NOT ks3_data/**. It imports ks4_data and nothing else of the
+         # content; the KS3 half of the collision check is asserted on the id
+         # PREFIX (`ks4-` against `c1-04-h02`), which no KS3 authoring change
+         # can move.
+         watches=["ks4_pool_drive.py", "mrb331_fixture.py", "ks4_data/**",
+                  "shared/config.js"],
          needs="mrb331_fixture.py",
          # ⊕ MRB-335 — WAS `MRB_THROWAWAY_PASSWORD`, AND IT WAS WRONG IN BOTH
          # DIRECTIONS. This drive imports `mrb331_fixture`, whose switch is
@@ -758,6 +963,19 @@ GATES = [
     dict(name="ks4_chrome_tells",
          cmd=["python3", "ks4_chrome_tells.py"],
          speed="fast",
+         # ⚠️ THE WHOLE BUILT TREE BAR ks3/ AND 3d/, because check_walls()
+         # walks it. The stray half of the scope wall — "nothing that is NOT a
+         # chrome page wears data-chrome or links ks4-chrome.css" — is an
+         # assertion about every other generator's output, so a teacher,
+         # student or consumer page gaining either turns this red. Watching
+         # only the chrome pages would watch the half that cannot drift.
+         watches=["ks4_chrome_tells.py", "generate_site_v5.py",
+                  "all_subtopics_*.py", "shared/ks4-chrome.css",
+                  "shared/ks4-chrome.js", "mrbadmus_site/*.html",
+                  "mrbadmus_site/combined/**", "mrbadmus_site/triple/**",
+                  "mrbadmus_site/teacher/**", "mrbadmus_site/student/**",
+                  "mrbadmus_site/consumer/**", "mrbadmus_site/parents/**",
+                  "mrbadmus_site/go/**", "mrbadmus_site/org/**"],
          needs="docs/ks3/design-reference/chrome/MrBadmusAI Redesign.dc.html",
          why="Design's click-through must not reach a student. The chrome "
              "delivery is a SAMPLE in the same way the teacher and "
@@ -785,6 +1003,15 @@ GATES = [
     dict(name="ks4_chrome_drive",
          cmd=["python3", "ks4_chrome_drive.py"],
          speed="slow",
+         watches=["ks4_chrome_drive.py", "ks3_browser.py",
+                  "generate_site_v5.py", "build_ks3.py", "all_subtopics_*.py",
+                  "shared/ks4-chrome.css", "shared/ks4-chrome.js",
+                  "shared/nav.css", "shared/nav.js", "shared/styles.css",
+                  "shared/tokens.css", "shared/class-entry.js",
+                  "shared/search.js", "shared/search-index.js",
+                  "shared/mrbadmus.v2.js", "mrbadmus_site/*.html",
+                  "mrbadmus_site/combined/**", "mrbadmus_site/triple/**",
+                  "mrbadmus_site/ks3/index.html", "mrbadmus_site/shared/**"],
          needs="mrbadmus_site/ks4.html",
          why="the KS4 chrome DRIVEN, and the twin of ks4_chrome_tells the way "
              "teacher_behaviour is the twin of teacher_tells: `tells` reads "
@@ -822,14 +1049,37 @@ GATES = [
     dict(name="gate_coverage",
          cmd=["python3", "gate_registry.py", "--check"],
          speed="fast",
+         watches=["gate_registry.py", "*.py", "*.sh",
+                  "tools/export_curriculum_tree.py"],
          why="the registry against the repo — every executable script at the "
              "root is a gate here or an entry in EXCLUDED with a reason. "
              "Without this the registry is a hand-maintained list nothing "
              "checks, which is the defect it exists to stop."),
 
+    dict(name="gate_watches_check",
+         cmd=["python3", "gate_watches_check.py"],
+         speed="fast",
+         watches=["gate_registry.py", "gate_watches_check.py"],
+         why="MRB-346 — every gate's `watches` list is honest, not just "
+             "plausible. Asserts every gate names a non-empty `watches`, "
+             "that its own script is inside that list (a change to the "
+             "gate's own code must always select it), and that nothing any "
+             "gate watches matches `docs/**`, `**/*.md`, or `README*` — the "
+             "one absolute rule `prepush_gate.py`'s selection and receipt "
+             "logic depends on. This is the gate that watches the watching."),
+
     dict(name="ks3_statutory",
          cmd=["python3", "ks3_statutory.py", "--check-only"],
          speed="fast",
+         # ONE ENTRY, and correct: this module IS the source of truth. It
+         # imports nothing of the estate — the 155 statements and the RULINGS
+         # are constants in this file — and --check-only renders them and
+         # compares byte for byte against `docs/ks3/statutory-register.md`.
+         # The register is the other half and is unwatchable under MRB-346 §1,
+         # so the residual gap is narrow: a HAND-EDIT of the markdown with no
+         # change here. That is the one thing --check-only exists to catch,
+         # and it is a fast gate, so it runs on every push anyway.
+         watches=["ks3_statutory.py"],
          why="the 155 statutory statements, and docs/ks3/statutory-register.md "
              "against the module that renders it. --check-only IS REQUIRED: a "
              "bare run used to REWRITE the register, which destroyed MRB-232's "
@@ -839,6 +1089,9 @@ GATES = [
     dict(name="ks3_key_audit",
          cmd=["python3", "ks3_key_audit.py"],
          speed="fast",
+         watches=["ks3_key_audit.py", "ks3_data/**", "ks3_art/**",
+                  "build_ks3.py", "shared/ks3.js", "shared/ks3.css",
+                  "ks3_parity.py", "verify_ks3.py", "ks3_statutory.py"],
          why="every authored data key against the code that reads it. An "
              "authored key nothing reads is teaching that was written and "
              "never rendered — invisible in a screenshot, because what is "
@@ -847,6 +1100,17 @@ GATES = [
     dict(name="ks3_rail_manifest",
          cmd=["python3", "ks3_rail_manifest.py"],
          speed="fast",
+         # ⚠️ ONE ENTRY, AND IT IS A NAMED GAP RATHER THAN AN OVERSIGHT.
+         # BOTH sides of this comparison live under docs/ — Design's delivered
+         # `docs/ks3/design-reference/*/*.dc.html` on one side and
+         # `docs/ks3/rail-manifest.md` on the other — and MRB-346 §1 rules
+         # that docs/** and **/*.md are never watched by any gate. It reads
+         # nothing else: no ks3_art, no ks3_data, no built page. So a change
+         # to a delivery or to the manifest selects this gate from NOTHING,
+         # and it is caught by being fast (prepush_gate runs every fast gate
+         # on every push regardless of selection) rather than by this list.
+         # Do not close the gap by pointing at a path it does not read.
+         watches=["ks3_rail_manifest.py"],
          why="the rail Design DREW against the rail the manifest records. "
              "THIS ONE HAS ALREADY FIRED: it was red on origin/main when the "
              "chemistry lane merged c8-07 without a manifest row, and nothing "
@@ -856,6 +1120,9 @@ GATES = [
     dict(name="ks3_instrument_liveness",
          cmd=["python3", "ks3_instrument_liveness.py"],
          speed="slow",
+         watches=["ks3_instrument_liveness.py", "ks3_browser.py",
+                  "ks3_art/**", "ks3_data/**", "build_ks3.py",
+                  "shared/ks3.js", "shared/ks3.css", "mrbadmus_site/ks3/**"],
          why="the only gate that PRESSES THE BUTTONS. Every other KS3 gate "
              "measures the page at rest, so a dead instrument passes parity, "
              "overflow and contrast and does nothing when a student touches "
@@ -866,6 +1133,13 @@ GATES = [
     dict(name="student_switches",
          cmd=["python3", "student_switches.py", "--check"],
          speed="slow",
+         # ⚠️ NOT shared/student-breakpoints.js and NOT shared/student-ds.css.
+         # This gate serves docs/ks3/design-reference/student/ and measures
+         # DESIGN'S OWN STANDALONES — it never loads a repo asset, so neither
+         # file can move a switch. Its real corpus is under docs/ and is
+         # therefore unwatchable; see the MRB-346 §1 gap list.
+         watches=["student_switches.py", "student_switches.json",
+                  "ks3_browser.py"],
          needs="student_switches.json",
          why="Design's discrete breakpoint switches, measured in a browser "
              "against the recorded table. --check IS REQUIRED: a bare run "
@@ -875,6 +1149,12 @@ GATES = [
     dict(name="student_controls_drive",
          cmd=["python3", "student_controls_drive.py"],
          speed="slow",
+         watches=["student_controls_drive.py", "ks3_browser.py",
+                  "build_student_port.py", "student_rulings.py",
+                  "shared/student-live.js", "shared/student-runtime.js",
+                  "shared/student-data.js", "shared/student-guard.js",
+                  "shared/student-ds.css", "shared/class-entry.js",
+                  "shared/config.js", "mrbadmus_site/student/**"],
          needs_env=("MRB_DRIVE_PASSWORD", "MRB_TEST_STUDENT_PASSWORD"),
          why="presses every control on the student pages and fails on one "
              "that does nothing. The student-side twin of "
@@ -888,6 +1168,11 @@ GATES = [
     dict(name="export_ks3_questions_verify",
          cmd=["python3", "export_ks3_questions.py", "--verify"],
          speed="fast",
+         # shared/config.js is a real input, not scenery: --verify resolves the
+         # anon key for the named project OUT of it and refuses to run when it
+         # carries none.
+         watches=["export_ks3_questions.py", "ks3_data/**",
+                  "shared/config.js"],
          needs_env="MRB_TEST_STUDENT_PASSWORD",
          why="the KS3 question mirror in Postgres against these files. The "
              "only check that the tables a student is actually served still "
@@ -898,6 +1183,17 @@ GATES = [
     dict(name="3d_parity",
          cmd=["python3", "3d_parity.py"],
          speed="slow",
+         # `reference/*.html` and not `reference/**`: the two frozen pages are
+         # opened, `reference/design-notes.md` is not — and a markdown file is
+         # never watched by any gate (MRB-346 §1). `.design-sync/` is the
+         # second root of layer A's old-value sweep, spelled by extension for
+         # the same reason: the sweep does read that folder's two .md files,
+         # and those two are the named gap rather than a pattern to widen.
+         watches=["3d_parity.py", "ks3_browser.py", "ks3_parity.py",
+                  "3d-studio/dist/**", "3d-studio/src/**",
+                  "3d-studio/reference/*.html", "3d-studio/content/**",
+                  ".design-sync/**/*.tsx", ".design-sync/**/*.css",
+                  ".design-sync/**/*.json", ".design-sync/**/*.mjs"],
          needs="3d-studio/dist",
          why="the studio shell against Design's screens (MRB-186). Needs a "
              "built studio; skipped, by name, without one."),
@@ -905,6 +1201,8 @@ GATES = [
     dict(name="3d_render_check",
          cmd=["python3", "3d_render_check.py"],
          speed="slow",
+         watches=["3d_render_check.py", "ks3_browser.py", "3d-studio/dist/**",
+                  "3d-studio/src/**", "3d-studio/content/**"],
          needs="3d-studio/dist",
          why="the mesh renderer in a real browser (MRB-187) — including that "
              "a missing GLB routes to the flat stage. Needs a built studio."),
@@ -912,6 +1210,11 @@ GATES = [
     dict(name="seating_tells",
          cmd=["python3", "seating_tells.py"],
          speed="fast",
+         watches=["seating_tells.py", "teacher/seating.html",
+                  "mrbadmus_site/teacher/seating.html",
+                  "shared/seating-canvas.js", "shared/seating-data.js",
+                  "shared/seating-photo.js", "shared/seating.css",
+                  "supabase/migrations/*mrb322_seating_plans.sql"],
          why="MRB-322 seating plans, static. Five checks, and the two that "
              "matter most cross a repo boundary. (a) THE ROOM LIST IS ONE "
              "LIST: the eleven room codes are written in the dropdown, in a "
@@ -934,6 +1237,13 @@ GATES = [
     dict(name="seating_drive",
          cmd=["python3", "seating_drive.py"],
          speed="slow",
+         watches=["seating_drive.py", "ks3_browser.py",
+                  "teacher/seating.html",
+                  "mrbadmus_site/teacher/seating.html",
+                  "shared/seating-canvas.js", "shared/seating-data.js",
+                  "shared/seating-photo.js", "shared/seating.css",
+                  "shared/teacher-ds.css", "shared/teacher-guard.js",
+                  "shared/class-entry.js", "shared/config.js"],
          needs="mrbadmus_site/teacher/seating.html",
          why="MRB-322 seating plans, driven. The canvas is the product — a "
              "layout that cannot be dragged is not a layout — and nothing "
@@ -950,6 +1260,12 @@ GATES = [
     dict(name="assignments_hold_drive",
          cmd=["python3", "assignments_hold_drive.py"],
          speed="slow",
+         watches=["assignments_hold_drive.py", "ks3_browser.py",
+                  "teacher/admin.html", "mrbadmus_site/teacher/admin.html",
+                  "shared/teacher-data.js", "shared/teacher-guard.js",
+                  "shared/teacher-admin-nav.js", "shared/shoutouts.js",
+                  "shared/class-entry.js", "shared/config.js",
+                  "shared/teacher-ds.css"],
          needs="teacher/admin.html",
          why="MRB-324 — THE ASSIGNMENTS GO-LIVE HOLD, and above all the "
              "invariant underneath it. `teacher/admin.html` makes no direct "
@@ -1003,6 +1319,15 @@ GATES = [
          cmd=["python3", "night3_selfreview.py",
               "--site", "mrbadmus_site", "--api", "http://localhost:3120"],
          speed="slow",
+         watches=["night3_selfreview.py", "ks3_browser.py", "consumer/**",
+                  "parents/**", "go/**", "org/**", "generate_site_v5.py",
+                  "build_teacher_port.py", "build_student_port.py",
+                  "build_leaderboard_port.py", "shared/config.js",
+                  "teacher/admin.html", "teacher/today.html",
+                  "leaderboard.html", "mrbadmus_site/consumer/**",
+                  "mrbadmus_site/parents/**", "mrbadmus_site/go/**",
+                  "mrbadmus_site/org/**", "mrbadmus_site/teacher/**",
+                  "mrbadmus_site/student/**", "mrbadmus_site/leaderboard.html"],
          needs="mrbadmus_site/parents/index.html",
          why="MRB-317/321. The consumer estate ships to production with "
              "CONSUMER_SIGNUP_ENABLED off, so 21 pages sit in "
@@ -1026,6 +1351,14 @@ GATES = [
     dict(name="teacher_perf_budget",
          cmd=["python3", "teacher_perf_budget.py"],
          speed="slow",
+         watches=["teacher_perf_budget.py", "ks3_browser.py",
+                  "build_teacher_port.py", "teacher_rulings.py",
+                  "teacher/today.html", "mrbadmus_site/teacher/**",
+                  "shared/teacher-live.js", "shared/teacher-data.js",
+                  "shared/teacher-guard.js", "shared/teacher-admin-nav.js",
+                  "shared/student-runtime.js", "shared/rum.js",
+                  "shared/class-entry.js", "shared/config.js",
+                  "shared/teacher-ds.css"],
          needs="mrbadmus_site/teacher/today.html",
          needs_env="MRB_TEST_TEACHER_PASSWORD",
          why="MRB-325 ruling 4 — A WARM-LOAD BUDGET ACROSS THE FOUR TEACHER "
@@ -1074,6 +1407,15 @@ GATES = [
     dict(name="teacher_admin_foreign_class",
          cmd=["python3", "teacher_admin_foreign_class_drive.py"],
          speed="slow",
+         watches=["teacher_admin_foreign_class_drive.py",
+                  "admin_view_drive.py", "ks3_browser.py",
+                  "build_teacher_port.py", "teacher_rulings.py",
+                  "mrbadmus_site/teacher/**", "teacher/admin.html",
+                  "teacher/import.html", "shared/teacher-live.js",
+                  "shared/teacher-data.js", "shared/teacher-guard.js",
+                  "shared/teacher-admin-nav.js", "shared/student-runtime.js",
+                  "shared/set-work.js", "shared/teacher-picker.js",
+                  "shared/class-entry.js", "shared/config.js"],
          needs="mrbadmus_site/teacher/class-detail.html",
          why="MRB-325 ruling 5 — A SCHOOL_ADMIN OPENS A CLASS THEY DO NOT "
              "TEACH, and a plain teacher still cannot. `mergeForeignClass` "
@@ -1146,6 +1488,15 @@ GATES = [
     dict(name="set_work",
          cmd=["python3", "set_work_drive.py"],
          speed="slow",
+         watches=["set_work_drive.py", "mrb331_fixture.py", "ks3_browser.py",
+                  "ks3_data/**", "ks4_data/**", "build_teacher_port.py",
+                  "teacher_rulings.py", "build_student_port.py",
+                  "student_rulings.py", "shared/set-work.js",
+                  "shared/set-work.css", "shared/teacher-live.js",
+                  "shared/teacher-data.js", "shared/student-live.js",
+                  "shared/student-runtime.js", "shared/config.js",
+                  "teacher/admin.html", "mrbadmus_site/teacher/**",
+                  "mrbadmus_site/student/**"],
          needs="mrbadmus_site/teacher/class-detail.html",
          needs_env="MRB_SET_WORK_PASSWORD",
          why="MRB-331 — THE SEAMS SET WORK CREATES, END TO END, UNDER REAL "
@@ -1175,6 +1526,20 @@ GATES = [
     dict(name="teacher_admin_real",
          cmd=["python3", "teacher_admin_real_drive.py"],
          speed="slow",
+         # ⚠️ ONE MIGRATION, NOT THE FOLDER. What decides this gate's outcome
+         # is the policy set APPLIED to the TEST project, not a file sitting
+         # in `supabase/migrations/`; a migration that has not been pushed
+         # changes no RLS. The folder-wide glob would have selected a slow,
+         # credentialed, row-WRITING drive for every unrelated migration in
+         # the estate. The one named is the one this gate's before/after
+         # assertions are written against.
+         watches=["teacher_admin_real_drive.py", "ks3_browser.py",
+                  "build_teacher_port.py", "teacher_rulings.py",
+                  "mrbadmus_site/teacher/**", "shared/teacher-live.js",
+                  "shared/teacher-data.js", "shared/teacher-guard.js",
+                  "shared/student-runtime.js", "shared/class-entry.js",
+                  "shared/config.js",
+                  "supabase/migrations/*mrb326_admin_write_authority.sql"],
          needs="mrbadmus_site/teacher/class-detail.html",
          needs_env="MRB_THROWAWAY_PASSWORD",
          why="MRB-326 — THE SAME RULINGS, UNDER REAL RLS, AS TWO REAL "
@@ -1211,6 +1576,16 @@ GATES = [
     dict(name="mrb328_import_picker",
          cmd=["python3", "mrb328_import_picker_drive.py", "--section", "b"],
          speed="slow",
+         # ⚠️ NOT supabase/functions/roster-import/**, for import_year_drive's
+         # reason: section b is the STUBBED half. It never reaches the edge
+         # function — it asserts on the body handed to the stub. The `_real`
+         # row below, which completes an actual import, keeps the path.
+         watches=["mrb328_import_picker_drive.py", "import_year_drive.py",
+                  "ks3_browser.py", "teacher/import.html",
+                  "shared/class-entry.js", "shared/teacher-guard.js",
+                  "shared/teacher-admin-nav.js", "shared/search.js",
+                  "shared/search-index.js", "shared/teacher-ds.css",
+                  "shared/config.js"],
          needs="teacher/import.html",
          why="MRB-328 J2 — WHO MAY IMPORT INTO WHICH CLASS, and whether a "
              "chosen class is really the destination. `teacher/import.html` "
@@ -1239,6 +1614,19 @@ GATES = [
     dict(name="mrb328_import_picker_real",
          cmd=["python3", "mrb328_import_picker_drive.py", "--section", "a"],
          speed="slow",
+         # ⊕ roster-import IS kept here and dropped from the two stubbed rows
+         # above, because section a is the only one that reaches the function
+         # at all: it signs in and completes a real import against TEST. The
+         # repo source does not become live until it is DEPLOYED, so strictly
+         # this is a watch on the artefact rather than on the behaviour — kept
+         # because an edit to that source is exactly the moment the real
+         # import wants re-driving.
+         watches=["mrb328_import_picker_drive.py", "import_year_drive.py",
+                  "ks3_browser.py", "teacher/import.html",
+                  "shared/class-entry.js", "shared/teacher-guard.js",
+                  "shared/teacher-admin-nav.js", "shared/search.js",
+                  "shared/search-index.js", "shared/teacher-ds.css",
+                  "shared/config.js", "supabase/functions/roster-import/**"],
          needs="teacher/import.html",
          needs_env="MRB_THROWAWAY_PASSWORD",
          why="MRB-328 J2, THE HALF THE STUB CANNOT REACH. The same MRB-326 "
@@ -1264,6 +1652,13 @@ GATES = [
     dict(name="mrb328_card_prefetch",
          cmd=["python3", "mrb328_card_prefetch_drive.py"],
          speed="slow",
+         watches=["mrb328_card_prefetch_drive.py", "ks3_browser.py",
+                  "build_teacher_port.py", "teacher_rulings.py",
+                  "shared/teacher-live.js", "shared/teacher-data.js",
+                  "shared/teacher-guard.js", "shared/student-runtime.js",
+                  "shared/config.js", "mrbadmus_site/teacher/classes.html",
+                  "mrbadmus_site/teacher/class-detail.html",
+                  "teacher/import.html"],
          needs="shared/teacher-live.js",
          needs_env="MRB_TEST_TEACHER_PASSWORD",
          why="MRB-328 J4(b) — HOVERING A CLASS CARD STARTS FETCHING ITS PAGE, "
@@ -1303,6 +1698,18 @@ GATES = [
     dict(name="student_bell_drive",
          cmd=["python3", "student_bell_drive.py"],
          speed="slow",
+         watches=["student_bell_drive.py", "ks3_browser.py",
+                  "build_student_port.py", "student_rulings.py",
+                  "build_leaderboard_port.py", "generate_site_v5.py",
+                  "shared/student-bell.js", "shared/student-live.js",
+                  "shared/student-runtime.js", "shared/student-ds.css",
+                  "shared/nav.js", "shared/nav.css", "shared/config.js",
+                  "mrbadmus_site/student/**", "leaderboard.html",
+                  "my-challenges.html", "revision.html",
+                  "weekly-challenge.html", "mrbadmus_site/leaderboard.html",
+                  "mrbadmus_site/my-challenges.html",
+                  "mrbadmus_site/revision.html",
+                  "mrbadmus_site/weekly-challenge.html"],
          needs="mrbadmus_site/student/class.html",
          needs_env="MRB_THROWAWAY_PASSWORD",
          why="MRB-337 — THE BELL ON THE STUDENT PAGES, AND EVERY WAY IT CAN "
