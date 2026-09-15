@@ -819,4 +819,1471 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-338 top-up · easier ─────────────────────────────────────────
+    {
+        "id": "b9-02-e10",
+        "band": "easier",
+        "text": "In biology, which of these is what the word predator "
+                "means?",
+        "options": [
+            {"text": "An animal that hunts and eats other animals",
+             "correct": True},
+            {"text": "An animal that eats more than its fair share of the food supply",
+             "correct": False,
+             "why": "Appetite is not the test. A predator is named for "
+                    "hunting other animals, not for how much it eats."},
+            {"text": "The largest animal living in an ecosystem",
+             "correct": False,
+             "why": "Size decides nothing. A ladybird hunts aphids and is one "
+                    "of the smallest animals in a wood."},
+            {"text": "An animal with no natural enemies of its own",
+             "correct": False,
+             "why": "That describes a top predator. A stoat is hunted by owls "
+                    "and is still a predator of voles."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e11",
+        "band": "easier",
+        "text": "Rabbits in a field are unusually plentiful this year. What "
+                "happens to the fox population over the next few years?",
+        "options": [
+            {"text": "It falls, because so many rabbits crowd the foxes out "
+                     "of the best ground", "correct": False,
+             "why": "Rabbits do not crowd foxes out. Plenty of prey is the "
+                    "easiest time a fox population ever has."},
+            {"text": "It rises, because well-fed foxes raise more cubs that "
+                     "survive", "correct": True},
+            {"text": "It stays the same, since fox numbers are fixed by the "
+                     "size of the field they live in", "correct": False,
+             "why": "Area does not fix a predator's numbers. The food supply "
+                    "does, and it has just improved."},
+            {"text": "It doubles within the year", "correct": False,
+             "why": "Nothing happens within the year. Cubs have to be born "
+                    "and survive a winter first."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e12",
+        "band": "easier",
+        "text": "Several things together set how large a rabbit population a "
+                "field can support. Which list is right?",
+        "options": [
+            {"text": "The number of foxes and nothing else", "correct": False,
+             "why": "Predators hold a population below its limit. The limit "
+                    "itself is set by what the field supplies."},
+            {"text": "The weather in the year the rabbits were born",
+             "correct": False,
+             "why": "One year's weather changes the numbers, and the ceiling "
+                    "is set by what the land can supply year after year."},
+            {"text": "Food, water, space and disease", "correct": True},
+            {"text": "The area of the field, measured in hectares",
+             "correct": False,
+             "why": "Two fields of equal area can support quite different "
+                    "numbers, depending on what grows on them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e13",
+        "band": "easier",
+        "text": "Which of these pairs names a predator and then its prey?",
+        "options": [
+            {"text": "A rabbit and the grass it grazes", "correct": False,
+             "why": "Grass is a plant, so the rabbit is a plant-eater rather "
+                    "than a predator."},
+            {"text": "An aphid and the oak sap it drinks", "correct": False,
+             "why": "Sap comes from a producer. An aphid is a primary "
+                    "consumer, not a hunter."},
+            {"text": "A fungus and the dead leaf it feeds on", "correct": False,
+             "why": "A dead leaf is not prey and a fungus does not hunt. That "
+                    "is a decomposer at work."},
+            {"text": "A barn owl and the mouse it catches", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e14",
+        "band": "easier",
+        "text": "Lynx and snowshoe hare numbers in Canada rise and fall on a "
+                "regular cycle. About how long is one full turn of it?",
+        "options": [
+            {"text": "About ten years", "correct": True},
+            {"text": "About one year", "correct": False,
+             "why": "A year is one breeding season. A full turn takes many "
+                    "breeding seasons to work through."},
+            {"text": "About a hundred years", "correct": False,
+             "why": "The records cover two centuries and show about twenty "
+                    "turns in them, not two."},
+            {"text": "About three months", "correct": False,
+             "why": "Populations cannot change that fast. Animals have to be "
+                    "born and raised before numbers move."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e15",
+        "band": "easier",
+        "text": "The famous Canadian lynx and hare records come from a fur "
+                "company's account books. What did those books actually count?",
+        "options": [
+            {"text": "Animals counted by scientists walking the forest",
+             "correct": False,
+             "why": "No scientist collected these. They are a company's "
+                    "trading records, kept for business."},
+            {"text": "Pelts brought in by trappers each year", "correct": True},
+            {"text": "Lynx and hares photographed at feeding stations",
+             "correct": False,
+             "why": "The records are two centuries old and are written "
+                    "trading figures, not observations of live animals."},
+            {"text": "Every animal born in the forest that year",
+             "correct": False,
+             "why": "Nobody could count births across Canada. What was "
+                    "counted was what came in for sale."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e16",
+        "band": "easier",
+        "text": "Two populations rise and fall, over and over, in the same "
+                "order each time. What is that pattern called?",
+        "options": [
+            {"text": "A migration", "correct": False,
+             "why": "Migration is animals moving from place to place. Nothing "
+                    "here has moved anywhere."},
+            {"text": "An extinction", "correct": False,
+             "why": "Extinction is a population reaching zero and staying "
+                    "there. These populations recover each time."},
+            {"text": "A cycle", "correct": True},
+            {"text": "A ceiling", "correct": False,
+             "why": "A ceiling is the largest number an environment can "
+                    "support. It is a limit, not a repeating pattern."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e17",
+        "band": "easier",
+        "text": "A farmer sows extra clover across his pasture and puts in a "
+                "second water trough. What effect does that have on the "
+                "number of rabbits the land can support?",
+        "options": [
+            {"text": "It falls, because clover is poor food for a rabbit",
+             "correct": False,
+             "why": "Clover is good rabbit food. More of it means more "
+                    "rabbits can be fed, not fewer."},
+            {"text": "Nothing changes, because rabbit numbers are set by the "
+                     "foxes", "correct": False,
+             "why": "Predators hold a population below its limit. Improving "
+                    "the food and water moves the limit itself."},
+            {"text": "The number rises, because more food and water raises "
+                     "the limit", "correct": True},
+            {"text": "It rises without limit from now on", "correct": False,
+             "why": "There is still a limit — it is simply a higher one. "
+                    "Space and disease have not gone away."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e18",
+        "band": "easier",
+        "text": "Rabbits are plentiful in a field one spring. What is the "
+                "most likely effect on the fox cubs born that year?",
+        "options": [
+            {"text": "More of them survive their first winter", "correct": True},
+            {"text": "Fewer are born, because the vixens are too well fed to "
+                     "breed", "correct": False,
+             "why": "Good feeding makes breeding more likely, not less. A "
+                    "well-fed vixen raises more cubs, not fewer."},
+            {"text": "They leave the field to hunt somewhere with less "
+                     "competition", "correct": False,
+             "why": "Animals move away from shortage, not from plenty. A "
+                    "field full of rabbits is where a fox wants to be."},
+            {"text": "They become hunters only in their second year",
+             "correct": False,
+             "why": "Cubs hunt from their first year. What takes time is the "
+                    "POPULATION growing, not one animal learning."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e19",
+        "band": "easier",
+        "text": "A model of one field runs on two rules only: rabbits breed "
+                "and are eaten, foxes eat and die. It has no weather, disease "
+                "or migration in it. What does that make it?",
+        "options": [
+            {"text": "A record of a real field, measured over many years",
+             "correct": False,
+             "why": "Nothing here has been measured. Two rules were chosen "
+                    "and the arithmetic was run forward."},
+            {"text": "A simplified model, built to show one idea clearly",
+             "correct": True},
+            {"text": "A wrong model, since anything left out makes it false",
+             "correct": False,
+             "why": "Every model leaves things out. That is what makes it a "
+                    "model rather than the world."},
+            {"text": "A prediction of what a real field will do next year",
+             "correct": False,
+             "why": "It predicts no real field. It shows why a delay produces "
+                    "a cycle, which is a different job."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e20",
+        "band": "easier",
+        "text": "Fox numbers in a wood fall to just a few animals. Why can "
+                "the population still recover?",
+        "options": [
+            {"text": "Foxes can live on plants until prey returns",
+             "correct": False,
+             "why": "What lets them recover is the prey becoming plentiful, "
+                    "not a change of diet."},
+            {"text": "New foxes appear once the rabbits are numerous enough", "correct": False,
+             "why": "Animals do not appear. The few foxes still there breed, "
+                    "and more of their cubs now survive."},
+            {"text": "A few breeding pairs are left, and prey is now "
+                     "plentiful", "correct": True},
+            {"text": "Rabbits turn into foxes as the years go on",
+             "correct": False,
+             "why": "One species never becomes another. The rabbits are the "
+                    "food that lets fox cubs survive."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e21",
+        "band": "easier",
+        "text": "Rabbits can raise several litters in a year, while a vixen "
+                "raises one. What does that difference mean for the two "
+                "populations?",
+        "options": [
+            {"text": "Rabbit numbers end up higher but change more slowly",
+             "correct": False,
+             "why": "Fast breeding makes numbers change FASTER. That is the "
+                    "whole point of the difference."},
+            {"text": "Fox numbers change faster, because there are fewer of "
+                     "them to count", "correct": False,
+             "why": "Having fewer animals does not make a population quicker "
+                    "to respond. Breeding rate does."},
+            {"text": "The two populations change at exactly the same speed",
+             "correct": False,
+             "why": "They plainly do not. One can multiply several times in a "
+                    "season and the other once."},
+            {"text": "The rabbit population responds to a change more quickly",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e22",
+        "band": "easier",
+        "text": "Rabbit numbers in a field have climbed to the ceiling the "
+                "land can support. What is the grass in that field like?",
+        "options": [
+            {"text": "Grazed short, with not enough to go round",
+             "correct": True},
+            {"text": "Long and thick, because the rabbits cannot keep up",
+             "correct": False,
+             "why": "The ceiling is reached precisely when the grazing "
+                    "catches up with the growth."},
+            {"text": "Unchanged, because grass regrows as fast as it is eaten",
+             "correct": False,
+             "why": "Grass regrows at a limited rate, and that rate is what "
+                    "sets the ceiling in the first place."},
+            {"text": "Replaced by other plants the rabbits prefer",
+             "correct": False,
+             "why": "Heavy grazing removes what the rabbits prefer. It does "
+                    "not summon better food."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e23",
+        "band": "easier",
+        "text": "Two things have to be true together before a predator "
+                "population can grow. Which pair is right?",
+        "options": [
+            {"text": "Warm weather, and prey that cannot run fast",
+             "correct": False,
+             "why": "Neither is needed. Predator numbers climb whenever prey "
+                    "is plentiful and there has been time to breed."},
+            {"text": "Plenty of prey, and time for the young to be raised",
+             "correct": True},
+            {"text": "Plenty of prey, and no other predator in the area",
+             "correct": False,
+             "why": "Several predators share prey in most ecosystems and all "
+                    "of their populations still rise in a good year."},
+            {"text": "A large area, and prey that breeds slowly",
+             "correct": False,
+             "why": "Slow-breeding prey is a worse food supply, not a better "
+                    "one. Area alone supplies no food."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e24",
+        "band": "easier",
+        "text": "Fox numbers in a field have just reached their highest "
+                "point. What are the rabbits doing at that moment?",
+        "options": [
+            {"text": "Climbing, because there are now plenty of foxes to feed "
+                     "on", "correct": False,
+             "why": "The arrows run the other way. Foxes eat rabbits, so more "
+                    "foxes is bad news for rabbits."},
+            {"text": "Peaking as well, since the two populations move "
+                     "together", "correct": False,
+             "why": "The two peaks never coincide. The predator's peak comes "
+                    "after the prey's has passed."},
+            {"text": "They are scarce, and still falling", "correct": True},
+            {"text": "Holding steady at their ceiling", "correct": False,
+             "why": "A population under the heaviest hunting pressure of the "
+                    "cycle is nowhere near its ceiling."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e25",
+        "band": "easier",
+        "text": "A chart of a field draws its rabbit numbers and its fox "
+                "numbers on two separate scales. Why is that done?",
+        "options": [
+            {"text": "Because rabbits and foxes are counted in different "
+                     "units", "correct": False,
+             "why": "Both are counted as animals. Only the sizes of the two "
+                    "numbers differ."},
+            {"text": "Because the chart would otherwise take up too much room "
+                     "on the page", "correct": False,
+             "why": "The chart is the same size either way. What changes is "
+                    "whether the smaller line can be read."},
+            {"text": "Because the rabbits are counted yearly and the foxes "
+                     "monthly", "correct": False,
+             "why": "Both are counted once a year. It is the size of the "
+                    "numbers, not their timing, that differs."},
+            {"text": "Because the foxes are so few that one scale would "
+                     "flatten their line", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e26",
+        "band": "easier",
+        "text": "Snowshoe hares feed on shoots and twigs. What happens to "
+                "that food in the years just after a hare peak?",
+        "options": [
+            {"text": "It is stripped bare and takes years to grow back",
+             "correct": True},
+            {"text": "It grows back thicker, because grazing encourages it",
+             "correct": False,
+             "why": "Light grazing can, and the stripping that follows a peak "
+                    "is far heavier than that."},
+            {"text": "It is unaffected, because hares eat only what falls",
+             "correct": False,
+             "why": "Hares browse living shoots and twigs directly from the "
+                    "plants, which is why the plants suffer."},
+            {"text": "It is replaced by grass within a season", "correct": False,
+             "why": "Shrubs do not become grass. The shoots regrow slowly on "
+                    "the same plants."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e27",
+        "band": "easier",
+        "text": "A model of one field with two species and no weather in it "
+                "is built for a particular purpose. What is that purpose?",
+        "options": [
+            {"text": "To replace the need for anyone to study a real field",
+             "correct": False,
+             "why": "Models point at what to look for in real fields. They "
+                    "never stand in for the looking."},
+            {"text": "To show why a delay between the two produces a cycle",
+             "correct": True},
+            {"text": "To predict how many rabbits a named farm will be holding "
+                     "next spring", "correct": False,
+             "why": "No model this simple can do that. The things it leaves "
+                    "out are exactly the ones a real farm has."},
+            {"text": "To prove that foxes control rabbit numbers by "
+                     "themselves", "correct": False,
+             "why": "It shows the opposite as well — the grass sets a ceiling "
+                    "even with every fox removed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e28",
+        "band": "easier",
+        "text": "Hares living under heavy pressure from lynx raise fewer "
+                "young than hares that are not. What does that add to the "
+                "picture of a predator and its prey?",
+        "options": [
+            {"text": "It shows the lynx are not really hunting the hares",
+             "correct": False,
+             "why": "They hunt them and they always did. This is an effect "
+                    "ON TOP of the hunting."},
+            {"text": "It shows hares choose when to breed and when not",
+             "correct": False,
+             "why": "Nothing is chosen. Animals under pressure and short of "
+                    "food simply raise fewer young."},
+            {"text": "A predator changes prey numbers by more than the ones "
+                     "it catches", "correct": True},
+            {"text": "It shows the hare cycle has nothing to do with lynx",
+             "correct": False,
+             "why": "This is one more way the lynx affect the hares, not a "
+                    "reason to say they do not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e29",
+        "band": "easier",
+        "text": "At every point of a predator and prey cycle, one of the two "
+                "populations is much larger than the other. Which?",
+        "options": [
+            {"text": "The predators, because they live longer than their prey",
+             "correct": False,
+             "why": "Length of life does not decide numbers. The food supply "
+                    "does, and there is far less of it higher up."},
+            {"text": "It changes from one part of the cycle to the other",
+             "correct": False,
+             "why": "Both rise and fall, and the prey stay far the more "
+                    "numerous throughout."},
+            {"text": "Neither — they are about equal all the way round",
+             "correct": False,
+             "why": "A field with as many foxes as rabbits could not feed the "
+                    "foxes for a week."},
+            {"text": "The prey", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-e30",
+        "band": "easier",
+        "text": "A student asks whether anything is managing the rise and "
+                "fall of the foxes and rabbits in a field. What is the answer?",
+        "options": [
+            {"text": "The foxes manage it, by leaving enough rabbits to breed",
+             "correct": False,
+             "why": "No animal holds back for the future. A fox takes what it "
+                    "can catch."},
+            {"text": "The rabbits manage it, by breeding harder when foxes "
+                     "are many", "correct": False,
+             "why": "Rabbits under heavy pressure raise fewer young, not "
+                    "more. Nothing about this is planned."},
+            {"text": "Nothing is — it follows from how each affects the other",
+             "correct": True},
+            {"text": "The weather manages it, by killing the surplus each "
+                     "winter", "correct": False,
+             "why": "Weather disturbs the pattern; it does not create it. The "
+                    "cycle appears in a model with no weather in it."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · standard ───────────────────────────────────────
+    {
+        "id": "b9-02-s10",
+        "band": "standard",
+        "text": "Two fields hold the same grass and the same number of foxes. "
+                "One has thick bramble the rabbits can shelter in and the "
+                "other is bare. Which field holds more rabbits, and why?",
+        "options": [
+            {"text": "The bare field, because rabbits can see the foxes "
+                     "coming across it", "correct": False,
+             "why": "Seeing a fox is little help with nowhere to go. Cover is "
+                    "what turns a chase into an escape."},
+            {"text": "The bramble field, because fewer are caught, so the "
+                     "population sits higher", "correct": True},
+            {"text": "The bare field, because bramble takes up space that "
+                     "would otherwise be growing grass", "correct": False,
+             "why": "A little lost grazing is a small price beside the "
+                    "hunting pressure the cover removes."},
+            {"text": "Both hold the same, because the grass is the same",
+             "correct": False,
+             "why": "Grass sets the ceiling. How close a population sits to "
+                    "that ceiling depends on how hard it is hunted."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s11",
+        "band": "standard",
+        "text": "A reserve wants more of a rare bird of prey. Which action is "
+                "most likely to raise its numbers over the next few years?",
+        "options": [
+            {"text": "Releasing more of the birds into it every spring, year "
+                     "after year", "correct": False,
+             "why": "Released birds need feeding too. Without more prey the "
+                    "reserve simply cannot hold more of them."},
+            {"text": "Fencing the reserve so that no bird can leave it",
+             "correct": False,
+             "why": "A fence keeps nothing in for a bird, and would not "
+                    "change how much food there is."},
+            {"text": "Managing the land so that its prey animals become more "
+                     "numerous", "correct": True},
+            {"text": "Feeding the adult birds through the winter each year",
+             "correct": False,
+             "why": "Winter feeding helps individuals through one season. "
+                    "Numbers still settle at what the land can supply."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s12",
+        "band": "standard",
+        "text": "Explain why a predator and prey cycle keeps swinging instead "
+                "of quickly settling at two steady numbers.",
+        "options": [
+            {"text": "Because the predators deliberately leave some prey "
+                     "uneaten each year", "correct": False,
+             "why": "Nothing is deliberate. The swing comes out of the "
+                    "arithmetic on its own."},
+            {"text": "Because the prey population grows faster than any "
+                     "arithmetic could settle", "correct": False,
+             "why": "Fast growth is part of it; the swing needs the DELAY in "
+                    "the predator's response as well."},
+            {"text": "Because each population answers the other only after a "
+                     "delay, so it overshoots", "correct": True},
+            {"text": "Because the weather changes every year", "correct": False,
+             "why": "The swing appears in a model with no weather in it at "
+                    "all, so weather cannot be the cause."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s13",
+        "band": "standard",
+        "text": "A student draws a graph of a wood in which the owl line sits "
+                "above the vole line at every point. What is wrong with the "
+                "drawing?",
+        "options": [
+            {"text": "Predators are always far fewer than the prey they "
+                     "live on", "correct": True},
+            {"text": "The two lines ought to cross at least once every year of "
+                     "the record", "correct": False,
+             "why": "Nothing says the lines must cross. On one scale the "
+                    "predator line simply stays lower."},
+            {"text": "The owl line should be flat, because owls do not cycle",
+             "correct": False,
+             "why": "Owl numbers follow their prey up and down like any "
+                    "predator's."},
+            {"text": "The vole line should be above only in summer",
+             "correct": False,
+             "why": "Voles outnumber owls in every season. This is not a "
+                    "seasonal effect."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s14",
+        "band": "standard",
+        "text": "In a model where foxes eat rabbits and nothing else, fox "
+                "numbers crash when rabbits become scarce. Explain why a real "
+                "fox population would fall less steeply.",
+        "options": [
+            {"text": "Real foxes hibernate through a shortage and lose "
+                     "nothing", "correct": False,
+             "why": "Foxes do not hibernate. They go on needing food all "
+                    "winter."},
+            {"text": "Real foxes have other food — voles, birds, beetles, "
+                     "fruit — to turn to", "correct": True},
+            {"text": "Real foxes breed faster when their food runs short",
+             "correct": False,
+             "why": "Hungry animals raise fewer young, not more. Breeding "
+                    "falls away with the food."},
+            {"text": "Real rabbits never become as scarce as a model makes "
+                     "them", "correct": False,
+             "why": "Real rabbit populations crash hard after disease. The "
+                    "difference is on the fox's side of the pair."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s15",
+        "band": "standard",
+        "text": "Two identical fields are stocked differently: one starts "
+                "with 40 foxes and the other with 200. After twenty years "
+                "both hold about the same numbers. What does that show?",
+        "options": [
+            {"text": "That the starting numbers were miscounted",
+             "correct": False,
+             "why": "Nothing was miscounted. A population that starts too "
+                    "high simply eats its way down to what the field holds."},
+            {"text": "That foxes move between the two fields until the "
+                     "numbers match", "correct": False,
+             "why": "The fields are separate, and the result appears in a "
+                    "model with no movement in it at all."},
+            {"text": "The numbers settle at what the field supports, not at "
+                     "where they started", "correct": True},
+            {"text": "That twenty years is too long a period to measure "
+                     "anything useful over", "correct": False,
+             "why": "Twenty years is two full turns of a cycle, which is what "
+                    "makes the comparison possible."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s16",
+        "band": "standard",
+        "text": "Two islands hold the same rabbits and foxes, but one "
+                "island's grass grows twice as fast. Predict how the two "
+                "cycles differ.",
+        "options": [
+            {"text": "The grassier island's cycle disappears, because there "
+                     "is always plenty for them to eat", "correct": False,
+             "why": "More grass raises the ceiling. It does nothing to the "
+                    "delay in the fox's response, which is what cycles."},
+            {"text": "The grassier island's foxes die out, because the "
+                     "rabbits can always escape", "correct": False,
+             "why": "More rabbits is more fox food. A better-fed rabbit "
+                    "population supports more foxes, not fewer."},
+            {"text": "The two cycles are identical, since the grass is not one "
+                     "of the pair", "correct": False,
+             "why": "Grass sets the ceiling the rabbits climb towards, so it "
+                    "sets the height of the whole cycle."},
+            {"text": "The grassier island cycles around higher numbers of "
+                     "both", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s17",
+        "band": "standard",
+        "text": "In one year a wood holds the most owls it has had for a "
+                "decade, while the vole population has already been falling "
+                "for a year. Explain how both can be true at once.",
+        "options": [
+            {"text": "The owls born in the good years are still alive and "
+                     "breeding", "correct": True},
+            {"text": "The owls must have moved in from a neighbouring wood "
+                     "that year", "correct": False,
+             "why": "Movement is not needed. The same pattern appears in a "
+                    "model where nothing can move in or out."},
+            {"text": "Owls stop eating voles once vole numbers begin to fall",
+             "correct": False,
+             "why": "They hunt harder, not less. It is the number of OWLS "
+                    "that takes time to respond."},
+            {"text": "The vole count for that year must be wrong",
+             "correct": False,
+             "why": "It fits the cycle exactly. A predator's peak arriving "
+                    "after its prey's is the ordinary pattern."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s18",
+        "band": "standard",
+        "text": "Lime is spread on poor pasture and the grass grows much "
+                "thicker from the following spring. What happens to the "
+                "number of foxes the land can carry, and when?",
+        "options": [
+            {"text": "It falls, because thick grass hides the rabbits from "
+                     "the foxes", "correct": False,
+             "why": "Cover helps rabbits a little, and far more rabbits "
+                    "overall is a much larger gain for the foxes."},
+            {"text": "It rises within the same spring, as soon as the grass "
+                     "is thicker", "correct": False,
+             "why": "Grass does not feed foxes. The rabbits have to become "
+                    "numerous first, and then the cubs have to survive."},
+            {"text": "It rises, but only after the rabbit population has "
+                     "grown", "correct": True},
+            {"text": "It does not change, because foxes do not eat grass",
+             "correct": False,
+             "why": "They do not, and their food does. Everything a fox eats "
+                    "was grass a step earlier."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s19",
+        "band": "standard",
+        "text": "Rabbits can raise several litters a year and foxes one. "
+                "Explain what that difference does to the shape of the cycle.",
+        "options": [
+            {"text": "It flattens the cycle, because one population can "
+                     "always keep up with the other", "correct": False,
+             "why": "It is the MISMATCH in speed that makes the swing. Equal "
+                    "speeds would damp it, not sharpen it."},
+            {"text": "It removes the cycle, because the rabbits can outbreed "
+                     "any number of foxes", "correct": False,
+             "why": "They cannot outbreed a peak fox population — that is "
+                    "exactly when rabbit numbers turn downwards."},
+            {"text": "The rabbits turn quickly and the foxes slowly, which "
+                     "creates the lag", "correct": True},
+            {"text": "It makes the fox peak arrive before the rabbit peak",
+             "correct": False,
+             "why": "Slow breeding puts the fox peak LATER, never earlier. "
+                    "The food has to come first."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s20",
+        "band": "standard",
+        "text": "A farmer counts foxes every January. His count rises for "
+                "three years and then falls for three, and then begins to "
+                "rise again. What is he most likely watching?",
+        "options": [
+            {"text": "A steady decline, interrupted by one good spell",
+             "correct": False,
+             "why": "A decline does not return to where it began. These "
+                    "numbers have come back round."},
+            {"text": "A counting error of his that repeats itself every three "
+                     "years", "correct": False,
+             "why": "An error that rises and falls smoothly over six years is "
+                    "not an error, it is a pattern."},
+            {"text": "The foxes slowly running out of space on his land",
+             "correct": False,
+             "why": "Running out of space would hold the numbers at a limit, "
+                    "not bring them back down and up again."},
+            {"text": "One turn of a predator and prey cycle", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s21",
+        "band": "standard",
+        "text": "A computer model of a field will not let the fox number fall "
+                "below one animal. Suggest why that limit is built in.",
+        "options": [
+            {"text": "Below one animal there is no pair left to breed from",
+             "correct": True},
+            {"text": "A model cannot work with numbers smaller than one", "correct": False,
+             "why": "A model handles fractions perfectly well. The reason is "
+                    "biological, not arithmetical."},
+            {"text": "Foxes are protected and may not be removed from a model "
+                         "like this", "correct": False,
+             "why": "Protection is a law about real animals. It has no "
+                    "bearing on what a model may calculate."},
+            {"text": "The rabbits would otherwise rise for ever",
+             "correct": False,
+             "why": "The grass ceiling stops the rabbits, with or without a "
+                    "single fox left."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s22",
+        "band": "standard",
+        "text": "A chart shows rabbits and foxes on separate scales. A "
+                "student says that hides how few foxes there really are. Is "
+                "he right?",
+        "options": [
+            {"text": "No — the scales are the same, and he has misread the "
+                     "axis", "correct": False,
+             "why": "The scales genuinely do differ, and the chart says so. "
+                    "His observation is correct as far as it goes."},
+            {"text": "Yes in that sense, and separate scales are what make "
+                     "the timing readable", "correct": True},
+            {"text": "Yes, and the chart should therefore be redrawn on one "
+                     "scale", "correct": False,
+             "why": "On one scale the fox line flattens into the axis and the "
+                    "lag — the point of the chart — cannot be seen."},
+            {"text": "No, because the numbers are printed beside each bar",
+             "correct": False,
+             "why": "Printed numbers would not change what the picture "
+                    "suggests at a glance, which is his real point."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s23",
+        "band": "standard",
+        "text": "A model of a field is altered so that the grass supply is "
+                "unlimited. Every fox is then removed. Predict what the "
+                "rabbit line does.",
+        "options": [
+            {"text": "It falls, because the rabbits have nothing to compete "
+                     "against", "correct": False,
+             "why": "Competition does not keep a population up. Removing the "
+                    "predator and the food limit removes both brakes."},
+            {"text": "It rises and then levels off at a ceiling",
+             "correct": False,
+             "why": "The ceiling was the grass, and the grass is now "
+                    "unlimited. Nothing is left to level it off."},
+            {"text": "It climbs and goes on climbing without limit",
+             "correct": True},
+            {"text": "It stays exactly where it was when the foxes went",
+             "correct": False,
+             "why": "With nothing eating them and food to spare, rabbits "
+                    "breed and the number moves."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s24",
+        "band": "standard",
+        "text": "A lynx and hare cycle takes about ten years to come round. "
+                "Suggest why such a cycle is measured in years rather than in "
+                "weeks.",
+        "options": [
+            {"text": "Because trappers only visited the forest once a year",
+             "correct": False,
+             "why": "The record's timing is not the cycle's. A weekly record "
+                    "would show the same ten-year pattern."},
+            {"text": "Because snow makes the forest impossible to work in for "
+                     "much of the year", "correct": False,
+             "why": "Access affects the record, not the animals. The "
+                    "populations move at the speed they breed."},
+            {"text": "Because a population can only change as fast as its "
+                     "animals can breed", "correct": True},
+            {"text": "Because ecologists agreed to use years for every "
+                     "population study", "correct": False,
+             "why": "The unit is not a convention. Some populations really do "
+                    "cycle in weeks — those of animals that breed in days."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s25",
+        "band": "standard",
+        "text": "A student says predators and prey 'balance each other "
+                "perfectly'. Suggest a better description of what the numbers "
+                "actually do.",
+        "options": [
+            {"text": "They overshoot and undershoot, chasing each other round",
+             "correct": True},
+            {"text": "They hold steady, apart from the years when the weather "
+                     "interferes with them", "correct": False,
+             "why": "The swing appears in a model with no weather. Steadiness "
+                    "is not the resting state."},
+            {"text": "They rise together and fall together, in step",
+             "correct": False,
+             "why": "They rise and fall in the same ORDER every time, one "
+                    "behind the other, which is not in step."},
+            {"text": "They drift apart until one of the two dies out",
+             "correct": False,
+             "why": "Neither dies out. Each shortage eases the pressure on "
+                    "the other and the pattern comes round again."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s26",
+        "band": "standard",
+        "text": "A hard winter kills most of a field's rabbits, and fox "
+                "numbers that year are unchanged. A student says this proves "
+                "the cycle model wrong. Evaluate that.",
+        "options": [
+            {"text": "It does prove it wrong, because the foxes should have "
+                     "fallen at once", "correct": False,
+             "why": "The model says the opposite: a predator's numbers "
+                    "respond a year or more after its food does."},
+            {"text": "It does not — the model leaves weather out, and says so",
+             "correct": True},
+            {"text": "It does prove it wrong, because weather cannot affect a "
+                     "population", "correct": False,
+             "why": "Weather affects populations heavily. That is exactly why "
+                    "leaving it out is a stated limit of the model."},
+            {"text": "It cannot be judged without knowing the grass yield "
+                     "that year", "correct": False,
+             "why": "The grass would matter for the ceiling. What settles "
+                    "this is that the model never claimed to cover weather."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s27",
+        "band": "standard",
+        "text": "Hares living where lynx are numerous raise fewer young than "
+                "hares living where lynx are scarce. What does that add to a "
+                "picture in which predators simply catch prey?",
+        "options": [
+            {"text": "It shows the hares are choosing to breed less until the "
+                     "danger passes", "correct": False,
+             "why": "Nothing is chosen. Animals that are short of food and "
+                    "under stress raise fewer young."},
+            {"text": "A predator can lower prey numbers without catching "
+                     "those animals at all", "correct": True},
+            {"text": "It shows that the lynx must be eating the young hares "
+                     "before anyone can count them", "correct": False,
+             "why": "That would be catching them. The point here is that "
+                    "fewer are BORN in the first place."},
+            {"text": "It shows the hare cycle is really about the weather",
+             "correct": False,
+             "why": "The effect is measured against how many lynx there are, "
+                    "which is not a weather measurement."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s28",
+        "band": "standard",
+        "text": "An ecologist studying a population cycle says she would "
+                "rather have fifty years of counts than five. Suggest why.",
+        "options": [
+            {"text": "Counts become more accurate the longer they go on for", "correct": False,
+             "why": "A count is as accurate as the method. Length gives you "
+                    "more turns of the pattern, not better counting."},
+            {"text": "A fifty-year record is easier to publish than a short one", "correct": False,
+             "why": "Publication is not the reason. Five years cannot show "
+                    "whether a rise comes round again."},
+            {"text": "One turn takes about ten years, so five cannot show a "
+                     "pattern", "correct": True},
+            {"text": "Populations only begin to cycle after a few decades of "
+                         "being watched", "correct": False,
+             "why": "Watching changes nothing. The cycle runs whether anyone "
+                    "is counting or not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s29",
+        "band": "standard",
+        "text": "A field's rabbit peak is twice as high one decade as it was "
+                "the last, but the fox peak that follows is only slightly "
+                "higher. Suggest why.",
+        "options": [
+            {"text": "Foxes can only breed so fast, whatever the food supply",
+             "correct": True},
+            {"text": "The extra rabbits were of a kind foxes do not eat",
+             "correct": False,
+             "why": "A rabbit is a rabbit. Nothing about a larger population "
+                    "changes what it is made of."},
+            {"text": "The foxes must have been counted in a different way "
+                     "that decade", "correct": False,
+             "why": "A change of method would be an odd coincidence. A limit "
+                    "on breeding explains it without one."},
+            {"text": "Twice the food always gives exactly twice the predators "
+                     "again in the end", "correct": False,
+             "why": "That is what the figures refuse. Breeding rate puts a "
+                    "ceiling on how fast a peak can be answered."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-s30",
+        "band": "standard",
+        "text": "A long drought kills much of the grass on a hillside "
+                "where rabbits graze and foxes hunt them. Predict what "
+                "happens to the foxes, and say roughly when.",
+        "options": [
+            {"text": "Fox numbers fall in the same summer as the grass does",
+             "correct": False,
+             "why": "Foxes do not eat grass. The shortage has to reach them "
+                    "through the rabbits first."},
+            {"text": "Fox numbers rise, because weakened rabbits are easier "
+                     "to catch", "correct": False,
+             "why": "Easy hunting for one season does not outweigh there "
+                    "being far fewer rabbits to catch."},
+            {"text": "Fox numbers are unchanged, because a drought does not "
+                     "reach as far as a predator", "correct": False,
+             "why": "It reaches every level, one step at a time. A predator "
+                    "is simply the last to feel it."},
+            {"text": "Rabbit numbers fall first, and fox numbers follow a "
+                     "year or more later", "correct": True},
+        ],
+        "figure": None,
+    },
+    # ── MRB-338 top-up · harder ─────────────────────────────────────────
+    {
+        "id": "b9-02-h10",
+        "band": "harder",
+        "text": "A forest record shows snowshoe hare numbers cycling "
+                "strongly while the lynx line stays almost flat. Suggest the "
+                "best explanation.",
+        "options": [
+            {"text": "The lynx must have been counted by some different method "
+                     "in that particular forest", "correct": False,
+             "why": "A flat line from a working method is a finding. Blaming "
+                    "the method is the last explanation to reach for."},
+            {"text": "The lynx have other prey to fall back on, so they track "
+                     "the hares less closely", "correct": True},
+            {"text": "The hares are not the lynx's prey in that forest",
+             "correct": False,
+             "why": "Lynx hunt hares wherever both live. Other prey does not "
+                    "mean no hares are taken."},
+            {"text": "Lynx cannot cycle", "correct": False,
+             "why": "They cycle strongly in most of Canada. What varies is "
+                    "how tightly they are tied to one food."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h11",
+        "band": "harder",
+        "text": "In a model of one field the swings get smaller each turn "
+                "until the two lines go flat. A student argues that the real "
+                "lynx and hare cycle should therefore have flattened "
+                "centuries ago. Evaluate that.",
+        "options": [
+            {"text": "The student is right, and the ten-year record must be "
+                     "measuring something quite different from a cycle",
+             "correct": False,
+             "why": "Two species rising and falling in a fixed order for two "
+                    "centuries is a cycle by any reading."},
+            {"text": "Real populations are disturbed constantly, and each "
+                     "disturbance restarts the swing", "correct": True},
+            {"text": "The student is right, and the record must have been "
+                     "smoothed by whoever drew it", "correct": False,
+             "why": "The ledgers are raw yearly totals. Nothing was smoothed "
+                    "into a shape."},
+            {"text": "The model is simply wrong, since nothing real ever "
+                     "settles", "correct": False,
+             "why": "The model is not wrong; it is undisturbed. Its settling "
+                    "is a true consequence of leaving weather out."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h12",
+        "band": "harder",
+        "text": "An ecologist sees owl numbers fall in one year and concludes "
+                "that voles must be scarce that year. What is the weakest "
+                "part of that reasoning?",
+        "options": [
+            {"text": "Owl numbers cannot be counted accurately enough to draw "
+                     "any firm conclusion from them", "correct": False,
+             "why": "Owls are counted well by nest surveys. The trouble is "
+                    "with the inference, not the count."},
+            {"text": "Voles and owls have nothing to do with one another",
+             "correct": False,
+             "why": "They have a great deal to do with one another. That is "
+                    "what makes the inference tempting."},
+            {"text": "A predator's numbers answer its food a year or more "
+                     "late, and weather can move them too", "correct": True},
+            {"text": "That one year is far too short a time", "correct": False,
+             "why": "A year is long enough to see a fall. What it is not long "
+                    "enough to do is tell you what caused it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h13",
+        "band": "harder",
+        "text": "Snowshoe hares strip the shoots they browse after a peak, "
+                "and those shoots take several years to grow back. Explain "
+                "how that alone could produce a cycle in a forest with no "
+                "lynx in it.",
+        "options": [
+            {"text": "The food acts like a predator with a delay: it runs out "
+                     "after a peak and recovers slowly", "correct": True},
+            {"text": "The hares would eat one another once the shoots had "
+                     "gone", "correct": False,
+             "why": "Hares are plant-eaters. A shortage kills and stops "
+                    "breeding; it does not turn them into predators."},
+            {"text": "The shoots would grow back faster each time, so the "
+                     "hares would rise for ever", "correct": False,
+             "why": "Heavy browsing leaves plants weaker, not stronger. "
+                    "Nothing here can rise without limit."},
+            {"text": "No cycle is possible without a predator to drive it",
+             "correct": False,
+             "why": "Any delayed limit will do it. A food supply that "
+                    "recovers slowly is exactly such a limit."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h14",
+        "band": "harder",
+        "text": "A model of a field is run again with the foxes able to breed "
+                "twice as fast as before, and nothing else changed. Predict "
+                "how the cycle differs.",
+        "options": [
+            {"text": "The cycle disappears, because the foxes can now keep up "
+                     "with the rabbits exactly", "correct": False,
+             "why": "Faster is not instant. So long as any delay remains, the "
+                    "numbers still overshoot."},
+            {"text": "The rabbit peaks arrive after the fox peaks from this "
+                     "point on", "correct": False,
+             "why": "The order never reverses. A predator's rise still has to "
+                    "wait for prey to become plentiful."},
+            {"text": "The swings become larger and the cycle takes longer to "
+                     "come round", "correct": False,
+             "why": "A faster answer means a shorter lag, and a shorter lag "
+                    "means a quicker, gentler cycle."},
+            {"text": "The lag shortens, so the swings come round more "
+                     "quickly", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h15",
+        "band": "harder",
+        "text": "Twenty years of counts show rabbit peaks every four years "
+                "and fox peaks every four years, but with no consistent gap "
+                "between the two. What should an ecologist conclude?",
+        "options": [
+            {"text": "That the foxes are driving the rabbit cycle, exactly as "
+                     "the textbook pattern would have it", "correct": False,
+             "why": "If the foxes were driving it, the fox peak would follow "
+                    "the rabbit peak every time. It does not."},
+            {"text": "That something other than the foxes is driving the "
+                     "rabbit cycle", "correct": True},
+            {"text": "That twenty years is not enough data to say anything "
+                     "about a four-year cycle", "correct": False,
+             "why": "Twenty years holds five turns of a four-year cycle, "
+                    "which is plenty to see a missing lag."},
+            {"text": "That the rabbits must be driving the fox cycle from "
+                     "behind", "correct": False,
+             "why": "That would still put the fox peak in a fixed place after "
+                    "the rabbit peak, and no fixed place is there."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h16",
+        "band": "harder",
+        "text": "A model gives a field one fixed ceiling for its rabbits. "
+                "Suggest why a real field's ceiling moves from year to year.",
+        "options": [
+            {"text": "The rabbits change how many young each pair chooses to "
+                         "raise", "correct": False,
+             "why": "Breeding responds to the food and the crowding. It is "
+                    "not a separate lever the rabbits pull."},
+            {"text": "A ceiling is a rule of thumb that ecologists adjust to "
+                         "fit whatever they counted", "correct": False,
+             "why": "It is a real limit set by real supplies, not a figure "
+                    "fitted after the event."},
+            {"text": "The foxes happen to eat a different number every year", "correct": False,
+             "why": "Predators hold a population below its ceiling. They do "
+                    "not move where the ceiling is."},
+            {"text": "Rain and temperature change how much grass grows",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h17",
+        "band": "harder",
+        "text": "A model is changed so that the foxes can also eat beetles, "
+                "which stay plentiful whatever happens. Predict the effect on "
+                "the rabbit population.",
+        "options": [
+            {"text": "Rabbit numbers rise, because the foxes would now spend "
+                     "almost all of their time hunting beetles instead of "
+                     "rabbits", "correct": False,
+             "why": "The foxes take both. Beetles add to their food rather "
+                    "than replacing what they hunt."},
+            {"text": "Rabbit numbers can be pushed far lower, because the fox "
+                     "population no longer falls when rabbits are scarce",
+             "correct": True},
+            {"text": "Rabbit numbers are unchanged, since beetles are not "
+                     "part of the pair being modelled", "correct": False,
+             "why": "Anything that feeds the foxes changes what the rabbits "
+                    "face. The pair is no longer a pair."},
+            {"text": "Rabbit numbers cycle exactly as before, only faster",
+             "correct": False,
+             "why": "The cycle depends on the foxes going hungry. Remove "
+                    "that and the cycle is what changes most."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h18",
+        "band": "harder",
+        "text": "Two explanations are offered for a vole cycle on a moor: the "
+                "owls that hunt them, or the plants they feed on. Which "
+                "observation would best tell the two apart?",
+        "options": [
+            {"text": "Whether the vole peaks are higher in some decades than "
+                     "in others", "correct": False,
+             "why": "Peak height varies under either explanation. It "
+                    "separates nothing."},
+            {"text": "Whether the plants are stripped at each vole peak and "
+                     "then take years to recover", "correct": True},
+            {"text": "Whether the owls are present on the moor every year",
+             "correct": False,
+             "why": "Owls being present is consistent with both. What matters "
+                    "is whether their numbers explain the timing."},
+            {"text": "Whether the voles breed more than once a year",
+             "correct": False,
+             "why": "How fast voles breed shapes the speed of any cycle, "
+                    "under either explanation."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h19",
+        "band": "harder",
+        "text": "A student says a model of a field proves that foxes control "
+                "rabbit numbers. Which result from that same model is the "
+                "strongest evidence against him?",
+        "options": [
+            {"text": "That fox numbers rise whenever the rabbits become "
+                     "plentiful", "correct": False,
+             "why": "That supports his case if anything. It shows the foxes "
+                    "answering the rabbits, not controlling them."},
+            {"text": "That the two lines both rise and fall across every one of "
+                         "the years modelled", "correct": False,
+             "why": "Both cycling is what the model is for. It settles "
+                    "nothing about which one is in charge."},
+            {"text": "That removing every fox still leaves the rabbits "
+                     "stopping at a ceiling", "correct": True},
+            {"text": "That the fox peak comes after the rabbit peak, in every "
+                     "turn of the cycle the model runs", "correct": False,
+             "why": "The order of the peaks shows the delay. It does not show "
+                    "what sets the rabbits' upper limit."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h20",
+        "band": "harder",
+        "text": "An estate shoots rabbits every year so that the population "
+                "is held at about half the number the land could support. "
+                "Compare the condition of those rabbits with rabbits in a "
+                "population sitting at its ceiling.",
+        "options": [
+            {"text": "They are in worse condition, because a hunted "
+                     "population is always a stressed one", "correct": False,
+             "why": "Stress is real and food is the larger effect here. Twice "
+                    "the grass per rabbit is a better living."},
+            {"text": "They are in the same condition, because a rabbit needs "
+                     "the same food wherever it lives", "correct": False,
+             "why": "Each rabbit needs the same; the question is whether it "
+                    "gets it. At the ceiling, it does not."},
+            {"text": "It cannot be compared, because the two populations are "
+                     "different sizes", "correct": False,
+             "why": "Different sizes is exactly what makes them comparable — "
+                    "the food is shared between fewer animals."},
+            {"text": "They are in better condition, with more food each",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h21",
+        "band": "harder",
+        "text": "A record shows lynx numbers falling for three years while "
+                "hare numbers are already rising. Give the best explanation.",
+        "options": [
+            {"text": "The lynx have stopped hunting hares and taken to "
+                     "smaller prey, which this particular record does not "
+                     "show", "correct": False,
+             "why": "Nothing suggests a change of diet, and the pattern "
+                    "repeats every turn, which a one-off change would not."},
+            {"text": "The record must be wrong, since the two lines should "
+                     "move together", "correct": False,
+             "why": "They never move together. A trailing predator line is "
+                    "what this record is famous for."},
+            {"text": "The lynx are still answering the scarcity of two years "
+                     "ago, and their rise will follow", "correct": True},
+            {"text": "The hares have become too quick for the lynx to catch "
+                     "in the space of three years", "correct": False,
+             "why": "Populations do not change like that in three years, and "
+                    "the same pattern repeats each cycle."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h22",
+        "band": "harder",
+        "text": "A student uses a two-species model to predict how many "
+                "rabbits a named farm will hold next spring. Name the "
+                "strongest reason that prediction will fail.",
+        "options": [
+            {"text": "The model has no weather, disease, migration or other "
+                     "prey in it, and a real farm has all four",
+             "correct": True},
+            {"text": "The model's arithmetic is far too simple to give a whole "
+                     "number of animals at the end", "correct": False,
+             "why": "Rounding is trivial to handle. What is missing is half "
+                    "of what acts on a real population."},
+            {"text": "A year is too short a period for any model to say "
+                     "anything about", "correct": False,
+             "why": "Models forecast over a year routinely. It is what this "
+                    "one leaves out that stops it."},
+            {"text": "Models can never predict anything", "correct": False,
+             "why": "Models predict a great deal. This one was built to "
+                    "explain a pattern rather than to forecast a field."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h23",
+        "band": "harder",
+        "text": "A charity proposes protecting a large predator in order to "
+                "protect a valley's plants from overgrazing. Which statement "
+                "best evaluates that plan?",
+        "options": [
+            {"text": "It is sound, and the grazers would also be limited by "
+                     "their food in the end", "correct": True},
+            {"text": "It is unsound, because a predator cannot affect a plant "
+                     "it has never touched", "correct": False,
+             "why": "It reaches the plants through the grazers, which is "
+                    "exactly the mechanism the plan relies on."},
+            {"text": "It is sound, and it removes any need to think about the "
+                     "grazers' own food supply as well", "correct": False,
+             "why": "The food supply is still the ceiling. The predator holds "
+                    "the grazers below it rather than replacing it."},
+            {"text": "It is unsound in every case", "correct": False,
+             "why": "Predators do hold grazing populations down, and valleys "
+                    "have recovered when predators returned."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h24",
+        "band": "harder",
+        "text": "A model that steps forward one year at a time is given a cap "
+                "just above the prey ceiling and a floor of one predator. "
+                "Explain why a model like that needs limits of that kind.",
+        "options": [
+            {"text": "Because a model must always be given a starting and a "
+                     "finishing number before it will run at all",
+             "correct": False,
+             "why": "It has a starting number already. These limits act every "
+                    "year, not at the ends."},
+            {"text": "Without them the numbers could overshoot into "
+                     "impossible values, or fall below zero", "correct": True},
+            {"text": "Because the cap and the floor are what create the cycle "
+                     "in the first place", "correct": False,
+             "why": "The cycle comes from the delay. Removing the cap would "
+                    "leave a wilder cycle, not a flat line."},
+            {"text": "Because ecologists have agreed those two figures for "
+                     "rabbits and foxes", "correct": False,
+             "why": "No such figures are agreed. They are housekeeping for "
+                    "the arithmetic, not measurements."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h25",
+        "band": "harder",
+        "text": "A student plots predator numbers against prey numbers for "
+                "twenty years and gets a loop rather than a straight line. "
+                "What does the loop show?",
+        "options": [
+            {"text": "That the counts contain too much error to give a clean "
+                     "relationship", "correct": False,
+             "why": "A tidy loop is not error. Error scatters points; it does "
+                    "not walk them round in order."},
+            {"text": "That predator and prey numbers are unrelated to one "
+                     "another in this wood", "correct": False,
+             "why": "Unrelated numbers give a shapeless cloud. A loop is "
+                    "strong evidence of a relationship."},
+            {"text": "That the predators reach each point of the cycle after "
+                     "the prey do", "correct": True},
+            {"text": "That the prey population has been counted twice",
+             "correct": False,
+             "why": "Each year gives one point. The loop comes from the "
+                    "timing, not from a repeated count."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h26",
+        "band": "harder",
+        "text": "An island's rabbits sit at their ceiling for decades and "
+                "barely cycle, although a few foxes live there throughout. "
+                "Suggest why.",
+        "options": [
+            {"text": "The foxes are too few to push the rabbits below what "
+                     "the food allows", "correct": True},
+            {"text": "Island rabbits breed too slowly for a cycle to build up "
+                     "over the years", "correct": False,
+             "why": "Slow breeding would deepen a crash, not prevent one. The "
+                    "rabbits here are not being pushed down at all."},
+            {"text": "A cycle needs at least two predator species before it "
+                     "can appear", "correct": False,
+             "why": "One predator and one prey is enough, as the model shows. "
+                    "What matters is how hard the predator presses."},
+            {"text": "Foxes and rabbits never cycle on islands",
+             "correct": False,
+             "why": "They cycle on islands readily. This island's foxes are "
+                    "simply too scarce to matter."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h27",
+        "band": "harder",
+        "text": "Compare what sets the size of a rabbit population in a field "
+                "with foxes in it and in a field with none.",
+        "options": [
+            {"text": "With foxes the grass sets it, and without foxes the "
+                     "weather does", "correct": False,
+             "why": "The grass sets the ceiling either way. Weather moves "
+                    "that ceiling up and down in both fields."},
+            {"text": "With foxes, hunting holds it below the ceiling; "
+                     "without, food and space set it", "correct": True},
+            {"text": "It is set by the foxes in one field, and nothing whatever "
+                     "sets it in the other", "correct": False,
+             "why": "A field with no predator still has a limit. Rabbits stop "
+                    "climbing when the grass runs short."},
+            {"text": "It ends up at the same number either way",
+             "correct": False,
+             "why": "A hunted population sits below its ceiling; an unhunted "
+                    "one climbs to it. Those are different numbers."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h28",
+        "band": "harder",
+        "text": "Fur records are used to argue that heavy trapping caused a "
+                "lynx decline in the 1890s. What would you most want to know "
+                "before accepting that argument?",
+        "options": [
+            {"text": "How many trappers were working in Canada in the decade "
+                     "before the 1890s began", "correct": False,
+             "why": "Trapper numbers matter for reading the line, and they "
+                    "cannot separate trapping from a hare shortage."},
+            {"text": "Whether the hare numbers were falling in the same "
+                     "years", "correct": True},
+            {"text": "Whether the price of lynx fur was high or low during "
+                     "those particular years", "correct": False,
+             "why": "Price changes how many pelts come in, and a hare crash "
+                    "would explain the decline just as well."},
+            {"text": "Whether lynx live anywhere outside Canada",
+             "correct": False,
+             "why": "Their range elsewhere says nothing about what happened "
+                    "to this population in this decade."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h29",
+        "band": "harder",
+        "text": "A model is built in which each population answers a change "
+                "in the other instantly, with no delay at all. Explain why no "
+                "cycle appears in it.",
+        "options": [
+            {"text": "Each population corrects itself the moment the other "
+                     "moves, so nothing overshoots", "correct": True},
+            {"text": "Without a delay the two populations must both die out "
+                     "within a very few years", "correct": False,
+             "why": "They settle rather than die. Instant correction is "
+                    "stabilising, not fatal."},
+            {"text": "A cycle needs three species, and this model has two",
+             "correct": False,
+             "why": "Two is enough for a cycle, as the delayed model shows. "
+                    "The delay is what was removed here."},
+            {"text": "The arithmetic cannot be done", "correct": False,
+             "why": "The arithmetic runs perfectly well. It simply produces "
+                    "two steady numbers instead of a swing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-02-h30",
+        "band": "harder",
+        "text": "An ecologist writes that the foxes of a field are limited by "
+                "the rabbits, while the rabbits are limited by the foxes AND "
+                "by the grass. Explain why the two halves are not "
+                "symmetrical.",
+        "options": [
+            {"text": "The rabbits have a food limit as well as a predator, "
+                     "while the foxes have only their food", "correct": True},
+            {"text": "The foxes are larger animals, so they are limited by "
+                     "space rather than by anything they eat", "correct": False,
+             "why": "Size is not the point. A fox's numbers still rest on how "
+                    "much prey there is."},
+            {"text": "The rabbits are limited by the grass alone, and the "
+                     "foxes are what the ecologist has miscounted",
+             "correct": False,
+             "why": "Both limits act on the rabbits. Predation holds them "
+                    "below a ceiling that the grass sets."},
+            {"text": "Because the foxes are at the top, and nothing there can "
+                     "be limited", "correct": False,
+             "why": "Top predators are limited severely — by how little food "
+                    "reaches them."},
+        ],
+        "figure": None,
+    },
 ]

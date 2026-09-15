@@ -793,4 +793,1439 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-338 top-up · easier ─────────────────────────────────────────
+    {
+        "id": "b9-03-e10",
+        "band": "easier",
+        "text": "A garden web: blackfly feed on the bean plants, ladybirds "
+                "eat blackfly, and sparrows eat blackfly and caterpillars. "
+                "What do the sparrows feed on?",
+        "options": [
+            {"text": "Blackfly and caterpillars", "correct": True},
+            {"text": "Blackfly and ladybirds", "correct": False,
+             "why": "Nothing gives the sparrows ladybirds. The two foods they "
+                    "take are named in the question."},
+            {"text": "Bean leaves and caterpillars", "correct": False,
+             "why": "Sparrows are not given leaves here. Only the blackfly "
+                    "feed on the bean plants."},
+            {"text": "Ladybirds and bean leaves", "correct": False,
+             "why": "Neither is on the sparrows' list. Read the two foods the "
+                    "question hands them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e11",
+        "band": "easier",
+        "text": "In an oak wood, mice eat acorns and wildflower seeds, owls "
+                "eat mice, and sparrowhawks eat blue tits and take mice when "
+                "they must. What feeds on the mice?",
+        "options": [
+            {"text": "The blue tits, which take small mammals in early spring",
+             "correct": False,
+             "why": "Blue tits are named here as prey of the sparrowhawk. "
+                    "Nothing gives them mice to eat."},
+            {"text": "The owls, and the sparrowhawks when they must",
+             "correct": True},
+            {"text": "The owls, and nothing whatever besides", "correct": False,
+             "why": "The sparrowhawks are given mice too, as a second choice. "
+                    "That second link is what makes this a web."},
+            {"text": "The acorns and the wildflower seeds", "correct": False,
+             "why": "Those are what the mice EAT. The arrows run the other "
+                    "way for the question being asked."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e12",
+        "band": "easier",
+        "text": "One of the rules of disturbing a web says that effects "
+                "travel sideways. What does that mean?",
+        "options": [
+            {"text": "The effect spreads to woods on either side of the one "
+                     "it started in", "correct": False,
+             "why": "Sideways means sideways through the WEB, not across the "
+                    "countryside."},
+            {"text": "The species most affected is often a competitor, or "
+                     "something that shared a predator", "correct": True},
+            {"text": "The effect moves down to the plants and then stops "
+                     "there", "correct": False,
+             "why": "Reaching the plants is travelling DOWN, and the effect "
+                    "does not stop when it gets there."},
+            {"text": "The effect is felt by all species at that level",
+             "correct": False,
+             "why": "It is felt by whatever is linked, at any level. Sharing "
+                    "a level does not make two species linked."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e13",
+        "band": "easier",
+        "text": "A rule of webs says that a web with more connections in it "
+                "is steadier. Why should that be?",
+        "options": [
+            {"text": "Because a predator that eats six things barely notices "
+                     "losing one", "correct": True},
+            {"text": "Because more connections mean more species, and more "
+                         "species will always survive it", "correct": False,
+             "why": "Numbers of species do not protect anything by "
+                    "themselves. It is the alternatives each one has."},
+            {"text": "Because the arrows share the effect out so that nobody "
+                     "feels it", "correct": False,
+             "why": "Somebody always feels it. What alternatives do is give a "
+                    "species somewhere else to turn."},
+            {"text": "Because a crowded web leaves no room for a change to "
+                     "travel through", "correct": False,
+             "why": "Connections are routes, so more of them means more ways "
+                    "for an effect to travel, not fewer."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e14",
+        "band": "easier",
+        "text": "Wildflowers that are never visited by a pollinating insect "
+                "still stand through the summer. What do they fail to do?",
+        "options": [
+            {"text": "Take up water", "correct": False,
+             "why": "Roots work whether or not an insect visits. Pollination "
+                    "is about the next generation."},
+            {"text": "Grow taller", "correct": False,
+             "why": "They grow normally. What is missing appears only when "
+                    "the next year's plants should come up."},
+            {"text": "Set seed", "correct": True},
+            {"text": "Photosynthesise", "correct": False,
+             "why": "Photosynthesis needs light, not insects. The plants feed "
+                    "themselves perfectly well."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e15",
+        "band": "easier",
+        "text": "In an oak wood, sparrowhawks eat blue tits and mice, owls "
+                "eat mice, and nothing hunts the sparrowhawks. Which organism "
+                "is the top predator?",
+        "options": [
+            {"text": "The owls", "correct": False,
+             "why": "Owls are hunted by nothing here either, and they are not "
+                    "the highest — the question says nothing hunts the hawk."},
+            {"text": "The mice",
+             "correct": False,
+             "why": "Being depended on is not being at the top. Mice are "
+                    "prey to two predators."},
+            {"text": "The blue tits",
+             "correct": False,
+             "why": "Blue tits are eaten by sparrowhawks, so something hunts "
+                    "them."},
+            {"text": "The sparrowhawks", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e16",
+        "band": "easier",
+        "text": "Wolves were returned to Yellowstone National Park in 1995. "
+                "What happened to the elk there?",
+        "options": [
+            {"text": "Their numbers fell, and they stopped feeding in the "
+                     "open valley bottoms", "correct": True},
+            {"text": "Their numbers rose, because the wolves kept disease out "
+                         "of the elk herds", "correct": False,
+             "why": "Numbers fell. A predator that hunts a herd does not "
+                    "increase it."},
+            {"text": "Nothing changed, because elk are far too large for "
+                     "wolves to hunt", "correct": False,
+             "why": "Wolves hunt elk in packs, and the elk changed both their "
+                    "numbers and their behaviour."},
+            {"text": "They left the park entirely within the first year",
+             "correct": False,
+             "why": "They stayed. What changed was where inside the park they "
+                    "would risk feeding."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e17",
+        "band": "easier",
+        "text": "After the wolves returned to Yellowstone, two kinds of plant "
+                "began growing back where the elk had browsed them hardest. "
+                "Which plants were they?",
+        "options": [
+            {"text": "Grasses and mosses", "correct": False,
+             "why": "Elk graze grass and it was not the plant that recovered "
+                    "notably. The change was in the taller browse."},
+            {"text": "Oaks and hawthorns", "correct": False,
+             "why": "Those are British woodland trees. Yellowstone's recovery "
+                    "was in different species."},
+            {"text": "Willow and aspen", "correct": True},
+            {"text": "Wheat and barley", "correct": False,
+             "why": "Those are farm crops. Nothing was being grown in a "
+                    "national park."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e18",
+        "band": "easier",
+        "text": "Beavers returned to parts of Yellowstone after the wolves "
+                "did. What had come back that the beavers needed?",
+        "options": [
+            {"text": "The elk", "correct": False,
+             "why": "Beavers are plant-eaters. An elk is neither their food "
+                    "nor their building material."},
+            {"text": "The willow", "correct": True},
+            {"text": "The wolves", "correct": False,
+             "why": "Wolves protect nothing deliberately. What reached the "
+                    "beavers was a plant, by way of the elk."},
+            {"text": "The grass", "correct": False,
+             "why": "Beavers build with wood. It was the willow's return that "
+                    "made the difference."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e19",
+        "band": "easier",
+        "text": "A teaching web of a wood shows eleven organisms. About how "
+                "many does a real woodland web contain?",
+        "options": [
+            {"text": "Hundreds", "correct": True},
+            {"text": "Eleven, which is exactly why the teaching web uses that "
+                         "number",
+             "correct": False,
+             "why": "Eleven is chosen so the picture can be read. A real wood "
+                    "holds far more than that."},
+            {"text": "Two or three, once the rare ones are left out",
+             "correct": False,
+             "why": "Even the commonest organisms of a wood run into the "
+                    "dozens before the rare ones are counted."},
+            {"text": "Exactly twenty, in every wood", "correct": False,
+             "why": "No two woods hold the same number, and none of them "
+                    "holds as few as twenty."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e20",
+        "band": "easier",
+        "text": "Two of the organisms in an oak wood feed on the oak tree "
+                "itself. Which two?",
+        "options": [
+            {"text": "The blue tits and the ladybird beetles", "correct": False,
+             "why": "Both eat insects. Neither of them touches the tree."},
+            {"text": "The mice and bees", "correct": False,
+             "why": "Mice take acorns from the ground and bees visit the "
+                    "wildflowers. Neither feeds on the tree itself."},
+            {"text": "The caterpillars and the aphids", "correct": True},
+            {"text": "The owls and the sparrowhawk", "correct": False,
+             "why": "Both are birds of prey feeding on animals, several steps "
+                    "above the tree."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e21",
+        "band": "easier",
+        "text": "Caterpillars and aphids both damage an oak, but in different "
+                "ways. What is the difference?",
+        "options": [
+            {"text": "Caterpillars eat roots and aphids eat leaves",
+             "correct": False,
+             "why": "Neither touches the roots. Both feed on the parts of the "
+                    "tree above ground."},
+            {"text": "Caterpillars eat the leaves and aphids drain sap from "
+                     "the shoots", "correct": True},
+            {"text": "Caterpillars drain the sap and aphids strip the bark",
+             "correct": False,
+             "why": "That has the two swapped, and neither of them strips "
+                    "bark."},
+            {"text": "Caterpillars damage the acorns and the aphids damage the "
+                         "flowers", "correct": False,
+             "why": "Acorns and flowers are not what either insect takes. "
+                    "Leaves and sap are."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e22",
+        "band": "easier",
+        "text": "In a wood, mice feed on acorns and on wildflower seeds. The "
+                "wildflowers thin out badly over several years. What happens "
+                "to the mice?",
+        "options": [
+            {"text": "Their numbers fall, with less seed to feed on",
+             "correct": True},
+            {"text": "Their numbers rise, because there is more room to move "
+                     "about in", "correct": False,
+             "why": "Space is not what limits them here. Food is, and one of "
+                    "their two foods has gone."},
+            {"text": "Nothing changes, because they still have all the acorns",
+             "correct": False,
+             "why": "Half a food supply is not a whole one. Losing one of two "
+                    "foods still means less to eat."},
+            {"text": "They begin eating the wildflowers' leaves instead of seed",
+             "correct": False,
+             "why": "There are fewer plants of every part, leaves included. "
+                    "Thinning removes the whole plant."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e23",
+        "band": "easier",
+        "text": "A teaching web of a wood has two entries that stand for "
+                "whole groups rather than for single species. Which two?",
+        "options": [
+            {"text": "The owls and the sparrowhawks", "correct": False,
+             "why": "Each of those names one kind of bird. Neither is "
+                    "standing in for a group."},
+            {"text": "The caterpillars and the oak's aphids", "correct": False,
+             "why": "Both are named insects of the oak. They are not "
+                    "shorthand for anything wider."},
+            {"text": "The mice and bees", "correct": False,
+             "why": "Both are ordinary single entries in the web, with their "
+                    "own feeding and pollinating links."},
+            {"text": "The wildflowers, and the fungi and bacteria",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e24",
+        "band": "easier",
+        "text": "One rule of webs says the species that suffers most is often "
+                "a competitor. What is a competitor?",
+        "options": [
+            {"text": "An organism that needs the same food as another one",
+             "correct": True},
+            {"text": "An organism that hunts exactly the same prey as its own "
+                         "predator does", "correct": False,
+             "why": "That is one case of competing, and the word is wider "
+                    "than that — it covers any shared need."},
+            {"text": "An organism that arrives in a web from somewhere else",
+             "correct": False,
+             "why": "An arrival may or may not compete. The word is about "
+                    "needing the same thing, not about coming from away."},
+            {"text": "An organism eaten by the same predator",
+             "correct": False,
+             "why": "Sharing a predator is a real link and it is not "
+                    "competition, which is about sharing a need."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e25",
+        "band": "easier",
+        "text": "The outcomes described for removing a species from a wood "
+                "are called plausible directions rather than predictions. "
+                "What does that mean?",
+        "options": [
+            {"text": "They are guesses about the wood, made without looking at "
+                         "any of the links in the web",
+             "correct": False,
+             "why": "They are worked out from the links in the web. That is "
+                    "what makes them plausible."},
+            {"text": "They show which way things are likely to move, not what "
+                     "will certainly happen", "correct": True},
+            {"text": "They are certain to happen, but nobody knows when",
+             "correct": False,
+             "why": "The timing is uncertain AND so is the outcome. Some "
+                    "effects never arrive."},
+            {"text": "They apply to this wood and to no other", "correct": False,
+             "why": "The reasoning transfers to any web. It is the certainty, "
+                    "not the place, that is limited."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e26",
+        "band": "easier",
+        "text": "Before choosing which species to remove from a web on paper, "
+                "what is it most useful to look at first?",
+        "options": [
+            {"text": "Which organism is largest", "correct": False,
+             "why": "Size says nothing about how much depends on an "
+                    "organism. A microscopic species can hold up a wood."},
+            {"text": "Which organism is rarest in the wood", "correct": False,
+             "why": "Rarity is a reason to worry about a species, not a "
+                    "measure of how much of the wood depends on it."},
+            {"text": "How many arrows go into and out of each organism",
+             "correct": True},
+            {"text": "Which organism is drawn nearest the very top of the "
+                         "picture",
+             "correct": False,
+             "why": "Position on the page is a drawing decision. Removing "
+                    "something at the bottom often matters more."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e27",
+        "band": "easier",
+        "text": "Which of these is an example of a food web being disturbed?",
+        "options": [
+            {"text": "A new species arriving in a wood that has never held it",
+             "correct": True},
+            {"text": "A fox eating a rabbit on an autumn evening",
+             "correct": False,
+             "why": "That is the web working normally. Feeding is what a web "
+                    "is made of."},
+            {"text": "A caterpillar turning into a moth over the summer",
+             "correct": False,
+             "why": "An animal growing up changes nothing about who eats "
+                    "whom."},
+            {"text": "Leaves falling from the oak in the autumn",
+             "correct": False,
+             "why": "Leaf fall happens every year and feeds the decomposers. "
+                    "It is part of the ordinary running of the wood."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e28",
+        "band": "easier",
+        "text": "In a wood, ladybirds eat aphids and nothing else. A cold "
+                "spring kills almost every aphid. Which organism loses a "
+                "food?",
+        "options": [
+            {"text": "The oak", "correct": False,
+             "why": "Aphids take sap FROM the oak. Losing them is a relief to "
+                    "the tree, not a loss."},
+            {"text": "The ladybirds", "correct": True},
+            {"text": "The mice",
+             "correct": False,
+             "why": "Mice eat acorns and seeds. Nothing links them to the "
+                    "aphids at all."},
+            {"text": "The wildflowers",
+             "correct": False,
+             "why": "Aphids are sap-suckers, not pollinators. The bees are "
+                    "what the flowers depend on."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e29",
+        "band": "easier",
+        "text": "Blue tits in a wood eat caterpillars and aphids. A disease "
+                "wipes out every caterpillar. What can the blue tits do?",
+        "options": [
+            {"text": "Switch to the aphids, their other food", "correct": True},
+            {"text": "Begin eating the oak leaves the caterpillars ate",
+             "correct": False,
+             "why": "A blue tit cannot digest leaves. Its other food is the "
+                    "aphids."},
+            {"text": "Nothing — they need caterpillars", "correct": False,
+             "why": "They have a second food named in the question, which is "
+                    "what makes them less vulnerable than a specialist."},
+            {"text": "Hunt the sparrowhawks that used to hunt them",
+             "correct": False,
+             "why": "A small bird does not turn on a bird of prey. Arrows do "
+                    "not reverse when food runs short."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-e30",
+        "band": "easier",
+        "text": "In an oak wood, mice feed mainly on acorns through the "
+                "winter. The oak produces almost no acorns one autumn. Which "
+                "organism feels it first?",
+        "options": [
+            {"text": "The ladybirds", "correct": False,
+             "why": "Ladybirds eat aphids. Nothing joins them to the acorn "
+                    "crop."},
+            {"text": "The bees", "correct": False,
+             "why": "Bees work the wildflowers. Acorns are no part of what "
+                    "they use."},
+            {"text": "The mice", "correct": True},
+            {"text": "The owls", "correct": False,
+             "why": "The owls do feel it, and only after the mice have. The "
+                    "question asks which is first."},
+        ],
+        "figure": None,
+    },
+    # ── MRB-338 top-up · standard ───────────────────────────────────────
+    {
+        "id": "b9-03-s10",
+        "band": "standard",
+        "text": "Deer browse the young plants of a wood heavily. A fence is "
+                "built to keep them out. Predict what happens to the ground "
+                "plants and to the birds that nest in them.",
+        "options": [
+            {"text": "The ground plants thin out, because the deer spread their "
+                         "seed", "correct": False,
+             "why": "Deer eat the plants rather than sowing them. Heavy "
+                    "browsing is a loss to a plant, not a service."},
+            {"text": "Nothing changes: deer feed on trees, not on ground plants", "correct": False,
+             "why": "Deer browse whatever is within reach, and young ground "
+                    "plants are exactly that."},
+            {"text": "The ground plants thicken and the birds lose the open "
+                         "ground they need", "correct": False,
+             "why": "These birds nest IN the low plants. Thicker cover is "
+                    "what they want, not what they lose."},
+            {"text": "The ground plants thicken, and the birds that nest in "
+                     "them do better", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s11",
+        "band": "standard",
+        "text": "A stretch of moor is burned off. The voles that lived in the "
+                "old heather lose their cover and their food, and buzzards "
+                "hunt those voles. Predict what happens.",
+        "options": [
+            {"text": "Buzzard numbers fall first, and vole numbers follow them "
+                         "down later", "correct": False,
+             "why": "The order runs the other way. The change reaches the "
+                    "voles' food and cover before it reaches the buzzards."},
+            {"text": "Vole numbers rise on the open ground, so the buzzards do "
+                         "better", "correct": False,
+             "why": "Open ground is a danger to a vole, not an opportunity. "
+                    "Their cover and their food have both gone."},
+            {"text": "Vole numbers fall, and buzzard numbers fall some time "
+                     "afterwards", "correct": True},
+            {"text": "Neither changes: buzzards hunt burned ground more easily", "correct": False,
+             "why": "Easier hunting for a season does not replace the voles "
+                    "that are no longer there to hunt."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s12",
+        "band": "standard",
+        "text": "One species is removed from a wood, and four species later a "
+                "bird that never met it declines. Explain how an effect "
+                "reaches that far.",
+        "options": [
+            {"text": "The bird must have been eating the removed species "
+                         "unnoticed", "correct": False,
+             "why": "No hidden link is needed. The effect travelled along "
+                    "links that were already drawn."},
+            {"text": "Removing any species lowers the numbers of every other "
+                         "one", "correct": False,
+             "why": "Most species are unaffected by most removals. The effect "
+                    "follows the routes, not the whole wood."},
+            {"text": "The wood is small, so every species is in contact with "
+                         "every other", "correct": False,
+             "why": "Contact is not the mechanism, and the same effect "
+                    "appears in webs spread over many square kilometres."},
+            {"text": "Each species changes the next along the links, so the "
+                     "change passes step by step", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s13",
+        "band": "standard",
+        "text": "An orchard's owners destroy the wasps' nests because the "
+                "wasps sting pickers. The following summer the trees carry "
+                "far more caterpillars. Suggest why.",
+        "options": [
+            {"text": "The wasps had been pollinating the trees, so far fewer "
+                         "fruits grew",
+             "correct": False,
+             "why": "Fewer fruits would not feed caterpillars. What changed "
+                    "is that something stopped eating them."},
+            {"text": "The wasps had been hunting the caterpillars, and that "
+                     "hunting has stopped", "correct": True},
+            {"text": "The caterpillars had been feeding on the wasps", "correct": False,
+             "why": "That has the arrow backwards. A caterpillar eats leaves, "
+                    "not wasps."},
+            {"text": "The wasps had been keeping the birds away from the "
+                         "orchard",
+             "correct": False,
+             "why": "More birds would mean FEWER caterpillars. The change "
+                    "went the other way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s14",
+        "band": "standard",
+        "text": "A wood's wildflowers are mown short every spring to make the "
+                "paths tidy. Mice there feed on wildflower seed and on "
+                "acorns. Predict the effect on the mice.",
+        "options": [
+            {"text": "They increase, because mown ground is easier to run about "
+                         "on", "correct": False,
+             "why": "Open ground is a danger, and it is the lost seed that "
+                    "matters more than the running."},
+            {"text": "Nothing changes, because the acorns are their main winter "
+                         "food", "correct": False,
+             "why": "Losing one of two foods still leaves less to eat, and "
+                    "acorn crops vary from year to year."},
+            {"text": "They increase, since mowing brings the seed within reach", "correct": False,
+             "why": "Mowing in spring removes the flowers before they can set "
+                    "any seed at all."},
+            {"text": "Their numbers fall, because the flowers never set seed",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s15",
+        "band": "standard",
+        "text": "A park removes its foxes to protect the birds that nest on "
+                "the ground. Two years later those birds are doing worse than "
+                "before. Suggest the best explanation.",
+        "options": [
+            {"text": "The birds had come to depend on the foxes for warning "
+                     "them of danger", "correct": False,
+             "why": "Nothing suggests that, and a predator is not a lookout "
+                    "for its own prey."},
+            {"text": "The birds left the park when the foxes did, because "
+                     "they follow them about", "correct": False,
+             "why": "Ground-nesting birds do not follow a predator. They "
+                    "nest where the ground suits them."},
+            {"text": "Rats and crows, which the foxes had been holding down, "
+                     "have increased", "correct": True},
+            {"text": "Two years is far too short a time for any change in a "
+                         "bird population to begin to show", "correct": False,
+             "why": "Two breeding seasons is quite long enough for a "
+                    "ground-nesting bird's numbers to move."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s16",
+        "band": "standard",
+        "text": "A council plants a new wood and finds no change in local "
+                "bird numbers after two years. What should it conclude?",
+        "options": [
+            {"text": "That the planting has failed and should be replaced", "correct": False,
+             "why": "Two years is no basis for that. The trees are barely "
+                    "established."},
+            {"text": "That birds do not respond to new woodland", "correct": False,
+             "why": "Birds respond strongly to new woodland. They respond "
+                    "when it has grown enough to use."},
+            {"text": "That the planting worked and the birds are counted in the "
+                         "wrong place", "correct": False,
+             "why": "Blaming the count is a leap. The simpler reading is that "
+                    "it is far too early."},
+            {"text": "That nothing can be concluded yet, because effects are "
+                     "delayed", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s17",
+        "band": "standard",
+        "text": "A gardener wants fewer aphids on her roses without spraying "
+                "anything. Using what you know about webs, which plan is "
+                "most likely to work?",
+        "options": [
+            {"text": "Encourage the ladybirds and insect-eating birds that "
+                     "feed on aphids", "correct": True},
+            {"text": "Remove every other plant so the aphids have nowhere else "
+                         "to go", "correct": False,
+             "why": "That concentrates the aphids on the roses, and removes "
+                    "the shelter their predators need."},
+            {"text": "Cut the roses back hard so the aphids have less leaf to "
+                         "feed on", "correct": False,
+             "why": "Fresh growth after hard pruning is exactly what aphids "
+                    "prefer, being soft and full of sap."},
+            {"text": "Water the roses more, so they outgrow the damage", "correct": False,
+             "why": "Lush watered growth feeds more aphids. Nothing in the "
+                    "web has been changed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s18",
+        "band": "standard",
+        "text": "A team plans to clear an invasive shrub from a heath. What "
+                "should they find out first?",
+        "options": [
+            {"text": "How tall the shrub grows", "correct": False,
+             "why": "That is a question about the work. It says nothing about "
+                    "what the clearance will do to the heath."},
+            {"text": "Whether the shrub was introduced deliberately", "correct": False,
+             "why": "How it arrived is history. What matters now is what "
+                    "depends on it."},
+            {"text": "How quickly the shrub would grow back if only part were "
+                         "taken out", "correct": False,
+             "why": "Useful for planning the work, and it still does not say "
+                    "what else will be affected."},
+            {"text": "What in the heath's web currently uses the shrub",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s19",
+        "band": "standard",
+        "text": "A wood is fenced so completely that no animal can move into "
+                "it or out of it. Suggest one effect the fence alone could "
+                "have on the wood's web.",
+        "options": [
+            {"text": "Every species becomes a generalist, unable to go "
+                         "elsewhere", "correct": False,
+             "why": "A fence does not change what an animal can digest. A "
+                    "specialist stays a specialist."},
+            {"text": "A species lost from the wood cannot be replaced by one "
+                     "moving in", "correct": True},
+            {"text": "The web becomes steadier, since nothing new can arrive", "correct": False,
+             "why": "Shutting out arrivals also shuts out replacements, which "
+                    "is a loss of routes rather than a gain."},
+            {"text": "The effects of a removal travel faster inside the fence", "correct": False,
+             "why": "Effects travel through feeding links at the speed "
+                    "populations respond. A fence does not hurry them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s20",
+        "band": "standard",
+        "text": "A disease removes one plant species from a meadow. Some "
+                "insects there feed on that plant alone; others feed on many "
+                "plants. Predict which insects suffer most.",
+        "options": [
+            {"text": "The many-plant feeders, with more links to lose", "correct": False,
+             "why": "More links means more that survive. Losing one of many "
+                    "is a smaller loss than losing one of one."},
+            {"text": "Neither group, since the meadow holds plenty of other "
+                         "plants", "correct": False,
+             "why": "Plenty of other plants is no help to an insect that can "
+                    "eat only the one that has gone."},
+            {"text": "The insects that fed on that plant alone", "correct": True},
+            {"text": "Both equally, since meadow insects eat whatever is "
+                         "flowering", "correct": False,
+             "why": "Many insects are tied to one plant species. That is what "
+                    "the word specialist is for."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s21",
+        "band": "standard",
+        "text": "Before judging which removal from a web would matter most, "
+                "ecologists count the arrows going into and out of each "
+                "organism. Explain what those two counts tell them.",
+        "options": [
+            {"text": "Arrows in show its size, and arrows out how long it lives", "correct": False,
+             "why": "Neither count says anything about size or lifespan. They "
+                    "are feeding links."},
+            {"text": "Both counts show the same thing, so one will do", "correct": False,
+             "why": "They are different: one is about the organism's food, "
+                    "the other about what eats it."},
+            {"text": "Arrows out show what it eats, and arrows in show how safe "
+                         "it is from its predators", "correct": False,
+             "why": "That is both counts the wrong way round. An arrow points "
+                    "towards the eater."},
+            {"text": "Arrows in show what it depends on; arrows out show what "
+                     "depends on it", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s22",
+        "band": "standard",
+        "text": "Grazing animals are removed from a grassland rich in small "
+                "flowering plants. The grasses there grow tall. Predict what "
+                "happens to the small plants.",
+        "options": [
+            {"text": "They are shaded out by the tall grass and become "
+                     "scarcer", "correct": True},
+            {"text": "They spread quickly, with nothing eating them", "correct": False,
+             "why": "Grazing removed the grass that would otherwise shade "
+                    "them, so losing it costs them more than it saves."},
+            {"text": "They are unaffected: grasses and small plants do not "
+                         "compete", "correct": False,
+             "why": "They compete directly for light, and the taller plant "
+                    "wins that competition."},
+            {"text": "They grow taller as well, to keep up with the grasses", "correct": False,
+             "why": "A plant's height is set by what it is, not by what it "
+                    "needs. Small plants stay small."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s23",
+        "band": "standard",
+        "text": "Two woods each lose one species. The wood with twenty "
+                "species recovers with little visible change; the wood with "
+                "six does not. Which rule about webs does that show?",
+        "options": [
+            {"text": "That effects are delayed, so the larger wood's change "
+                     "has yet to arrive", "correct": False,
+             "why": "Delay is a real rule and it does not explain why the "
+                    "smaller wood was hit at once and harder."},
+            {"text": "That a web with more alternative routes absorbs a loss "
+                     "more easily", "correct": True},
+            {"text": "That effects travel sideways, so the wood spread the "
+                         "change", "correct": False,
+             "why": "Sideways means through the web, not into another wood. "
+                    "Neither wood exported anything."},
+            {"text": "That a wood with more species is always the healthier "
+                     "of two woods", "correct": False,
+             "why": "Health is not the point, and a species-rich wood can "
+                    "still be destroyed by the right loss."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s24",
+        "band": "standard",
+        "text": "A species has been lost from a wood and a trust wants to "
+                "bring it back. Suggest one practical reason that is harder "
+                "than it sounds.",
+        "options": [
+            {"text": "Species that have gone from one place are never found "
+                         "elsewhere", "correct": False,
+             "why": "Many can be found elsewhere. The difficulty is whether "
+                    "the wood they return to still suits them."},
+            {"text": "Putting a species back is against the law in Britain",
+             "correct": False,
+             "why": "Reintroductions are carried out under licence and "
+                    "several have succeeded. The obstacles are practical."},
+            {"text": "The wood may have changed in the meantime, so what the "
+                     "species needs is gone", "correct": True},
+            {"text": "A species that has been away for a few years forgets "
+                     "how to feed itself", "correct": False,
+             "why": "Animals do not forget what they are. What changes is the "
+                    "place they are returning to."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s25",
+        "band": "standard",
+        "text": "Two insects in a wood feed on the same plant and on nothing "
+                "else. A disease wipes out one of the two. Predict the effect "
+                "on the other.",
+        "options": [
+            {"text": "It declines: the two had been helping each other feed", "correct": False,
+             "why": "Nothing suggests they helped one another. Two species "
+                    "on one food are competitors."},
+            {"text": "It declines, since the disease will kill it too", "correct": False,
+             "why": "Diseases are usually particular about which species they "
+                    "infect. Nothing here says this one spreads."},
+            {"text": "Nothing changes: each ate only its own share", "correct": False,
+             "why": "Shares are not fixed. Food that one insect no longer "
+                    "takes is available to the other."},
+            {"text": "It does better, with more of the plant to itself",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s26",
+        "band": "standard",
+        "text": "Mice are poisoned around a farm to protect stored grain. In "
+                "the wood next door, owls eat those mice and the mice eat "
+                "wildflower seed. Predict the two effects.",
+        "options": [
+            {"text": "More owls, and fewer wildflowers", "correct": False,
+             "why": "Owls do not eat flowers, and fewer mice means less owl "
+                    "food, not more."},
+            {"text": "Fewer owls, and more wildflowers", "correct": True},
+            {"text": "Fewer owls, and fewer wildflowers", "correct": False,
+             "why": "The mice EAT the seed here. Removing a seed-eater leaves "
+                    "more seed, not less."},
+            {"text": "No change to either", "correct": False,
+             "why": "Mice move between the two, and a web does not stop at a "
+                    "field boundary."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s27",
+        "band": "standard",
+        "text": "In a wood, sparrowhawks hunt blue tits and blue tits eat "
+                "caterpillars. Gamekeepers shoot out the sparrowhawks. "
+                "Predict the effect on the blue tits and then on the "
+                "caterpillars.",
+        "options": [
+            {"text": "More blue tits, and then fewer caterpillars",
+             "correct": True},
+            {"text": "Fewer blue tits, and then more caterpillars",
+             "correct": False,
+             "why": "A sparrowhawk hunts blue tits. Removing it takes "
+                    "pressure off them rather than protection."},
+            {"text": "More blue tits, and more caterpillars too", "correct": False,
+             "why": "Populations linked by feeding move in opposite "
+                    "directions. More predators means fewer prey."},
+            {"text": "No change to either of them", "correct": False,
+             "why": "A top predator's removal is usually the change that "
+                    "travels furthest, not the least."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s28",
+        "band": "standard",
+        "text": "Ivy is stripped from a wood's trees because it looks untidy. "
+                "Ivy flowers late in the year, when almost nothing else does. "
+                "Predict the effect on the wood's insects.",
+        "options": [
+            {"text": "Insects do better, since ivy had shaded the flowers", "correct": False,
+             "why": "Ivy climbs the trunks rather than shading the ground "
+                    "flowers, and it supplies food no other plant does."},
+            {"text": "Nothing changes: insects feed all summer instead", "correct": False,
+             "why": "Insects still flying in late autumn need food then. A "
+                    "good summer does not carry them through."},
+            {"text": "The insects that feed late in the year lose their food",
+             "correct": True},
+            {"text": "Only the insects that eat ivy leaves are affected", "correct": False,
+             "why": "The flowers are what makes ivy unusual here. The insects "
+                    "visiting them are the ones that lose most."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s29",
+        "band": "standard",
+        "text": "A wood is managed so that dead and dying trees are left "
+                "standing rather than cleared. Suggest how that helps the "
+                "wood's web.",
+        "options": [
+            {"text": "It stops the living trees catching disease from the dead "
+                         "ones, and keeps the wood healthy", "correct": False,
+             "why": "Leaving dead wood does not protect living trees. The "
+                    "gain is in what the dead wood supports."},
+            {"text": "It holds the insects, fungi and hole-nesting birds that "
+                     "need dead wood", "correct": True},
+            {"text": "It gives the wood's producers more light, because a "
+                     "dead tree carries no leaves", "correct": False,
+             "why": "A standing dead tree lets some light through, and the "
+                    "reason for leaving it is what lives in it."},
+            {"text": "It means the decomposers have nothing left to do, so "
+                     "the soil stays richer", "correct": False,
+             "why": "Dead wood is exactly what decomposers work on. Leaving "
+                    "it gives them more, not less."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-s30",
+        "band": "standard",
+        "text": "Brambles are cleared from a wood's edges. Brambles flower in "
+                "summer and carry fruit in autumn. Predict the effects at "
+                "those two times of year.",
+        "options": [
+            {"text": "Pollinating insects lose summer flowers, and birds lose "
+                     "autumn fruit", "correct": True},
+            {"text": "Pollinating insects lose autumn flowers and birds lose "
+                         "nest sites",
+             "correct": False,
+             "why": "The two seasons are the wrong way round: brambles flower "
+                    "in summer and fruit in autumn."},
+            {"text": "Nothing is lost in summer; in autumn the birds move to "
+                         "acorns", "correct": False,
+             "why": "The summer flowers are a real loss, and acorns suit "
+                    "different birds from those that take berries."},
+            {"text": "The wood gains in both seasons, with more light for other "
+                         "plants",
+             "correct": False,
+             "why": "More light for some plants is a small gain beside losing "
+                    "a food supply in two separate seasons."},
+        ],
+        "figure": None,
+    },
+    # ── MRB-338 top-up · harder ─────────────────────────────────────────
+    {
+        "id": "b9-03-h10",
+        "band": "harder",
+        "text": "A team clears an introduced shrub from a heath and a rare "
+                "butterfly, which had been increasing, declines sharply. "
+                "Suggest the best explanation.",
+        "options": [
+            {"text": "The butterfly was poisoned by the chemicals used in the "
+                     "clearance work", "correct": False,
+             "why": "Nothing says chemicals were used, and the decline "
+                    "followed the loss of the shrub rather than the work."},
+            {"text": "The butterfly had never really been increasing, so the "
+                     "earlier counts were wrong", "correct": False,
+             "why": "Doubting the record is the last resort. A plain "
+                    "explanation from the web is available."},
+            {"text": "Butterflies always decline when a heath is managed in "
+                     "any way", "correct": False,
+             "why": "Many heath butterflies depend on management. It is what "
+                    "was removed here that matters."},
+            {"text": "The butterfly had come to depend on the introduced "
+                     "shrub", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h11",
+        "band": "harder",
+        "text": "Two removals from the same wood are compared on paper. One "
+                "changed the numbers of seven species; the other changed "
+                "three. What does that tell you about the two species "
+                "removed?",
+        "options": [
+            {"text": "The first was the larger animal of the two",
+             "correct": False,
+             "why": "Body size does not decide reach. A microscopic species "
+                    "can hold up a whole wood."},
+            {"text": "The first was rarer, so its loss was felt more sharply",
+             "correct": False,
+             "why": "Rarity is not reach. A rare specialist with one link may "
+                    "change almost nothing when it goes."},
+            {"text": "The first had more links, or sat lower in the web",
+             "correct": True},
+            {"text": "The second was removed more recently than the first",
+             "correct": False,
+             "why": "Both were worked through on paper. Timing does not enter "
+                    "into it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h12",
+        "band": "harder",
+        "text": "Two woodland birds eat the same beetle and nothing else "
+                "links them. One is removed. Explain how an effect can reach "
+                "the plants the beetle feeds on.",
+        "options": [
+            {"text": "The plants recover, because one fewer bird means less "
+                     "trampling of the ground beneath them", "correct": False,
+             "why": "Trampling is not a feeding link and is not what "
+                    "connects these species."},
+            {"text": "Nothing reaches the plants, because a bird and a plant "
+                     "are two steps apart in a web", "correct": False,
+             "why": "Two steps is nothing. Effects in webs run four and five "
+                    "steps routinely."},
+            {"text": "The plants are eaten more, because beetles rise and "
+                     "nothing eats them", "correct": False,
+             "why": "The other bird is still eating beetles, and with less "
+                    "competition it takes more, not fewer."},
+            {"text": "The remaining bird takes more beetles, so fewer are "
+                     "left to eat the plants", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h13",
+        "band": "harder",
+        "text": "A wood is restored by replanting every plant species that "
+                "had been lost from it. Ten years later several animals have "
+                "still not returned. Suggest why.",
+        "options": [
+            {"text": "The plants must have been the wrong species after all",
+             "correct": False,
+             "why": "Every lost species was replanted. The gap is on the "
+                    "animals' side of the problem."},
+            {"text": "There may be no population nearby for them to return "
+                     "from", "correct": True},
+            {"text": "Animals take longer to grow than plants do, so ten "
+                     "years is far too short", "correct": False,
+             "why": "Most woodland animals breed within a year or two. Ten "
+                    "years is many generations."},
+            {"text": "Replanting a wood makes it too crowded for animals to "
+                     "move about in", "correct": False,
+             "why": "A restored wood is the habitat they need. Crowding is "
+                    "not what keeps them out."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h14",
+        "band": "harder",
+        "text": "In Yellowstone the elk changed where they fed as well as how "
+                "many there were. Explain why counting elk alone would have "
+                "missed part of the story.",
+        "options": [
+            {"text": "A count is unreliable for a herd animal that moves "
+                     "about a large park", "correct": False,
+             "why": "Elk are counted well enough. The point is what a number "
+                    "cannot record."},
+            {"text": "A count of elk would have been too slow to be finished "
+                     "in a single season", "correct": False,
+             "why": "Speed is not the issue. Even a perfect count records "
+                    "only how many, never where."},
+            {"text": "The willow recovered where the elk stopped feeding, "
+                     "which a number cannot show", "correct": True},
+            {"text": "The elk were not the species that mattered, so counting "
+                     "them was beside the point", "correct": False,
+             "why": "The elk were the link between wolf and willow. Counting "
+                    "them mattered; it simply was not enough."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h15",
+        "band": "harder",
+        "text": "A trust has money to protect one species in a wood. On what "
+                "grounds should it choose?",
+        "options": [
+            {"text": "The rarest species, since it is nearest to being lost",
+             "correct": False,
+             "why": "Rarity is a reason to act and it says nothing about what "
+                    "else would go with it."},
+            {"text": "The largest species, since it needs the most ground",
+             "correct": False,
+             "why": "Ground is a cost, not a measure of what depends on the "
+                    "animal."},
+            {"text": "The best-known species, since the public will support "
+                     "it", "correct": False,
+             "why": "Support matters for funding and it is not a fact about "
+                    "the web."},
+            {"text": "The species that most others in the wood depend on",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h16",
+        "band": "harder",
+        "text": "Compare the effect of losing a predator that eats six "
+                "species with losing one that eats a single species.",
+        "options": [
+            {"text": "The six-prey predator's loss is felt by fewer species, "
+                     "since each one loses less", "correct": False,
+             "why": "It is felt by more species, though lightly. Number "
+                    "affected and size of effect are different things."},
+            {"text": "The generalist's loss spreads thinly over six species; "
+                     "the specialist's lands on one", "correct": True},
+            {"text": "Both losses are felt by exactly one species, because a "
+                     "predator has one main prey", "correct": False,
+             "why": "A generalist has no single main prey. That is what makes "
+                    "it a generalist."},
+            {"text": "Neither loss is felt, because prey do better without a "
+                     "predator", "correct": False,
+             "why": "Prey rising IS the effect being felt, and what they then "
+                    "eat feels it in turn."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h17",
+        "band": "harder",
+        "text": "An ecologist ranks four species by how many feeding links "
+                "each has, and predicts that removing the one with the most "
+                "links will change the wood most. Give one reason that could "
+                "fail.",
+        "options": [
+            {"text": "A species with many links is always the easiest one to "
+                     "remove from a wood", "correct": False,
+             "why": "How easy a removal is has nothing to do with how far its "
+                    "effects travel."},
+            {"text": "Counting links is guesswork, so no ranking from it can "
+                     "ever be trusted", "correct": False,
+             "why": "Links can be observed and recorded. The ranking is "
+                    "useful; it is simply not the whole story."},
+            {"text": "Links can only be counted for animals, never for "
+                     "plants", "correct": False,
+             "why": "A plant's links are counted the same way — what eats it, "
+                    "and what it needs."},
+            {"text": "A species with few links may be the only route to "
+                     "something", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h18",
+        "band": "harder",
+        "text": "After a removal, a wood's records show one species risen, "
+                "two fallen and eight unchanged. A student says the removal "
+                "mostly did not matter. Evaluate that.",
+        "options": [
+            {"text": "He is right: eight of eleven species were untouched by "
+                     "it", "correct": False,
+             "why": "Counting the untouched species is the wrong arithmetic. "
+                    "Three changed, and more may follow."},
+            {"text": "He is wrong, because a removal must always change every "
+                     "species in a wood", "correct": False,
+             "why": "It need not. Plenty of species genuinely are unaffected "
+                    "by a given loss."},
+            {"text": "Three species have already changed, and effects are "
+                     "delayed", "correct": True},
+            {"text": "He is right, since the one species that rose cancels "
+                     "out the two that fell", "correct": False,
+             "why": "Populations do not cancel one another. Three separate "
+                    "species have moved."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h19",
+        "band": "harder",
+        "text": "A fungus kills most of a wood's oaks slowly, over twenty "
+                "years. Compare that with the same oaks being felled in a "
+                "single winter.",
+        "options": [
+            {"text": "The slow loss does more damage, because the fungus "
+                     "spreads to other species too", "correct": False,
+             "why": "Nothing says the fungus attacks anything else. The "
+                    "comparison is about the speed of the loss."},
+            {"text": "The slow loss gives other species time to adjust or "
+                     "move", "correct": True},
+            {"text": "The two are identical, because the same number of oaks "
+                     "is lost either way", "correct": False,
+             "why": "The total is the same and the rate is not, and "
+                    "populations respond to a rate."},
+            {"text": "The sudden loss does less damage, because the wood can "
+                     "be replanted at once", "correct": False,
+             "why": "A replanted oak takes decades to do an oak's job. "
+                    "Planting is not replacing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h20",
+        "band": "harder",
+        "text": "An ecologist calls a wood stable because its list of species "
+                "has not changed in ten years. Give the strongest reason to "
+                "doubt that.",
+        "options": [
+            {"text": "Ten years is too short for any wood to be judged on",
+             "correct": False,
+             "why": "Ten years is a useful record. The trouble is what a "
+                    "species LIST leaves out of it."},
+            {"text": "A species list cannot be counted accurately in a wood "
+                     "of any size", "correct": False,
+             "why": "Species lists are among the easier things to record. "
+                    "Numbers within each species are the harder part."},
+            {"text": "A wood with the same species every year is certain to "
+                     "be in trouble", "correct": False,
+             "why": "A steady list is not itself a warning. It simply does "
+                    "not prove what is claimed from it."},
+            {"text": "Numbers can change a great deal while the list stays "
+                     "the same", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h21",
+        "band": "harder",
+        "text": "In wood A, aphids are eaten by ladybirds and by blue tits. "
+                "In wood B, only the ladybirds eat them. A disease removes "
+                "the ladybirds from both. Compare the effect on the aphids.",
+        "options": [
+            {"text": "Aphids rise further in wood A, because it holds more "
+                     "insects to begin with", "correct": False,
+             "why": "Wood A has the extra PREDATOR. More predators means less "
+                    "room for aphids, not more."},
+            {"text": "Aphids rise by the same amount in both, since the same "
+                     "predator was lost", "correct": False,
+             "why": "What is left behind differs. Wood A still has a bird "
+                    "eating aphids and wood B has nothing."},
+            {"text": "Aphids rise less in wood A, where the blue tits still "
+                     "eat them", "correct": True},
+            {"text": "Aphids fall in wood A, because the blue tits take over "
+                     "entirely", "correct": False,
+             "why": "Blue tits absorb part of the loss. They do not more than "
+                    "make up for a predator that has gone."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h22",
+        "band": "harder",
+        "text": "A teaching model shows the effects of a removal in three "
+                "rounds; in a real wood the same effects take years. Explain "
+                "why that difference matters to someone managing woodland.",
+        "options": [
+            {"text": "They may judge a change safe, or stop watching, long "
+                     "before its effects arrive", "correct": True},
+            {"text": "They will see effects in the wood sooner than the model "
+                     "shows them", "correct": False,
+             "why": "The model is faster than the wood, not slower. Real "
+                    "effects arrive later than three rounds suggest."},
+            {"text": "They cannot use a model at all, since real woods do not "
+                     "behave in rounds", "correct": False,
+             "why": "The rounds show the ORDER of the effects, which is the "
+                    "useful part. Only the timing is compressed."},
+            {"text": "They will need to remove more species than the model "
+                     "shows to get a result", "correct": False,
+             "why": "Nothing about the timing changes how many species a "
+                    "manager should remove."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h23",
+        "band": "harder",
+        "text": "Bees in a wood eat nothing that lives there and nothing "
+                "eats them. A student argues that removing them changes the "
+                "wood's pollination and not its food web. Evaluate that.",
+        "options": [
+            {"text": "He is right, because an organism with no feeding link "
+                     "is not part of a food web", "correct": False,
+             "why": "It is in the web by what it makes possible. The seed "
+                    "the flowers set is food for other animals."},
+            {"text": "He is right, because pollination and feeding are "
+                     "separate systems in a wood", "correct": False,
+             "why": "They meet at the seed. Pollination is what puts the food "
+                    "into the web in the first place."},
+            {"text": "He is wrong, because bees are eaten by birds in every "
+                     "real wood", "correct": False,
+             "why": "That may be true elsewhere, and it is not true in the "
+                    "wood described. The real answer is the seed."},
+            {"text": "He is wrong: the seed-eaters and what hunts them all "
+                     "depend on that pollination", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h24",
+        "band": "harder",
+        "text": "An ecologist maps a web and finds one species with eleven "
+                "links. State what that predicts, and one thing it does not.",
+        "options": [
+            {"text": "It predicts how far each effect will travel, but not "
+                     "which species feel it", "correct": False,
+             "why": "It is the other way about. The links say who is "
+                    "connected, not how strongly."},
+            {"text": "It predicts nothing useful, since the number of links "
+                     "is not a measurement", "correct": False,
+             "why": "It is a count of real connections, and it is genuinely "
+                    "useful — just not complete."},
+            {"text": "It predicts wide effects, but not how strongly each one "
+                     "is felt", "correct": True},
+            {"text": "It predicts that the species is at the top of the web, "
+                     "but not which prey it takes", "correct": False,
+             "why": "Many links can belong to a producer at the bottom. The "
+                    "count says nothing about the level."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h25",
+        "band": "harder",
+        "text": "Two woods hold the same list of species and lose the same "
+                "one. One wood barely changes and the other is transformed. "
+                "Suggest the best explanation.",
+        "options": [
+            {"text": "One wood is older, so its species are better at coping "
+                     "with a loss", "correct": False,
+             "why": "Age does not teach a species to cope. What differs is "
+                    "how much each one relied on what went."},
+            {"text": "How much each species relies on the lost one differs "
+                     "between the woods", "correct": True},
+            {"text": "The two woods must have been recorded by different "
+                     "methods", "correct": False,
+             "why": "Doubting the record explains nothing. Two real woods "
+                    "with one species list can still differ."},
+            {"text": "One wood is larger, so the effect is spread out over "
+                     "more ground", "correct": False,
+             "why": "Area does not dilute a feeding link. A large wood with "
+                    "one route is as vulnerable as a small one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h26",
+        "band": "harder",
+        "text": "A student says nothing depends on an animal at the top of a "
+                "web, because nothing eats it. Explain why that is wrong.",
+        "options": [
+            {"text": "It is wrong, because every animal is eaten by something "
+                     "larger than itself", "correct": False,
+             "why": "Nothing hunts a top predator — that is what the words "
+                    "mean. What the student missed is what DEPENDS on it."},
+            {"text": "Nothing does depend on it, so the student is right",
+             "correct": False,
+             "why": "Its prey depend on it to hold their numbers down, and "
+                    "what they eat depends on that in turn."},
+            {"text": "It is wrong only for very large webs with many species "
+                     "in them", "correct": False,
+             "why": "It is wrong in any web. Every predator presses on its "
+                    "prey, whatever the size of the web."},
+            {"text": "What it eats depends on it, and so does whatever that "
+                     "in turn eats", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h27",
+        "band": "harder",
+        "text": "A reserve is managed for one valued butterfly by removing "
+                "the plants that compete with its foodplant. Suggest a risk "
+                "that the plan carries.",
+        "options": [
+            {"text": "The removed plants were food or shelter for other "
+                     "species", "correct": True},
+            {"text": "The butterfly will become a generalist once its "
+                     "foodplant is common", "correct": False,
+             "why": "A specialist does not change what it can eat because "
+                    "more of it is available."},
+            {"text": "The foodplant will be eaten faster than it can grow "
+                     "back again", "correct": False,
+             "why": "More foodplant is the point of the plan. Over-eating it "
+                    "is not the risk being created."},
+            {"text": "Removing plants is never allowed on a nature reserve",
+             "correct": False,
+             "why": "Reserves are managed by removing plants routinely. The "
+                    "risk is ecological, not legal."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h28",
+        "band": "harder",
+        "text": "A species declines ten years after another was removed from "
+                "the same wood. A student says the gap is too long for the "
+                "removal to be the cause. Evaluate that.",
+        "options": [
+            {"text": "He is right, because an effect that has not appeared "
+                     "within a year will never appear", "correct": False,
+             "why": "Effects routinely take seasons or years. A year proves "
+                    "nothing either way."},
+            {"text": "He is right, because ten years is long enough for the "
+                     "wood to have replaced what it lost", "correct": False,
+             "why": "Replacement is possible and it is not automatic. A long "
+                    "gap does not rule the removal out."},
+            {"text": "A long gap is expected, so it is not evidence against "
+                     "the removal", "correct": True},
+            {"text": "He is wrong, because every effect of a removal takes "
+                     "exactly ten years to arrive", "correct": False,
+             "why": "There is no fixed time. Some effects come in a season "
+                    "and some never come at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h29",
+        "band": "harder",
+        "text": "A bird has declined in a wood. It could be the species "
+                "removed three years ago, or a run of bad weather. Suggest "
+                "the evidence that would best favour the removal.",
+        "options": [
+            {"text": "That the decline began in the same year the species was "
+                     "removed from the wood", "correct": False,
+             "why": "Timing alone is weak: the weather of that year would fit "
+                    "just as well."},
+            {"text": "That only the species linked to what was removed have "
+                     "changed", "correct": True},
+            {"text": "That the bird has declined in several other woods over "
+                     "the same three years", "correct": False,
+             "why": "A decline everywhere points AWAY from one wood's "
+                    "removal and towards the weather."},
+            {"text": "That the removed species was the largest animal in the "
+                     "wood at the time", "correct": False,
+             "why": "Size is not evidence of a link. What matters is which "
+                    "species are connected to it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b9-03-h30",
+        "band": "harder",
+        "text": "After a removal, one species in a wood rose sharply for "
+                "three years and then fell back over the next seven. Suggest "
+                "an explanation.",
+        "options": [
+            {"text": "It rose with its predator gone, then ran short of food "
+                     "or met a new competitor", "correct": True},
+            {"text": "The removed species came back and began eating it "
+                     "again", "correct": False,
+             "why": "Nothing says it returned, and the record would show a "
+                    "sharper fall than a seven-year decline."},
+            {"text": "Its numbers were miscounted in the first three years of "
+                     "the record", "correct": False,
+             "why": "A rise and fall over ten years is a pattern. Doubting "
+                    "the count explains nothing about its shape."},
+            {"text": "Populations always return to their starting numbers "
+                     "after ten years", "correct": False,
+             "why": "There is no such rule. Many populations settle "
+                    "somewhere quite new after a change."},
+        ],
+        "figure": None,
+    },
 ]
