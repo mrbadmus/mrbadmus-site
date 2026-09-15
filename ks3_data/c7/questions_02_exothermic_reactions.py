@@ -1033,4 +1033,1174 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 night 3 · easier ────────────────────────────────────────
+    {
+        "id": "c7-02-e14",
+        "band": "easier",
+        "text": "What is combustion?",
+        "options": [
+            {"text": "A substance reacting with oxygen, which always "
+                     "releases energy",
+             "correct": True},
+            {"text": "A substance getting hot enough to melt and then to "
+                     "boil away", "correct": False,
+             "why": "Melting and boiling are changes of state. No new "
+                    "substance is made, and nothing needs oxygen."},
+            {"text": "A substance being broken down into simpler substances by strongly heating it", "correct": False,
+             "why": "That is thermal decomposition, and it takes energy in "
+                    "rather than giving it out."},
+            {"text": "A substance giving off light while staying the same "
+                     "substance",
+             "correct": False,
+             "why": "The substance is changed — it has reacted with oxygen "
+                    "to make new products."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e15",
+        "band": "easier",
+        "text": "A reusable hand warmer works by sodium ethanoate "
+                "crystallising out of a solution. Is that a chemical "
+                "reaction?",
+        "options": [
+            {"text": "Yes, because a solid appears in the pouch where there was none before it was snapped", "correct": False,
+             "why": "A solid appearing from a solution is a change of state, "
+                    "not a new substance being made."},
+            {"text": "No — it is a change of state, but it still gives "
+                     "energy out", "correct": True},
+            {"text": "Yes, because only a reaction can release energy",
+             "correct": False,
+             "why": "Freezing and condensing release energy too, and neither "
+                    "is a reaction."},
+            {"text": "No, and that means it is not exothermic either",
+             "correct": False,
+             "why": "Exothermic describes any change that gives energy out. "
+                    "The warmer plainly does."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e16",
+        "band": "easier",
+        "text": "A Bunsen flame is held against a coil of magnesium ribbon "
+                "to get it burning. What is the flame supplying?",
+        "options": [
+            {"text": "The oxygen the magnesium reacts with, which the air "
+                     "around it cannot provide", "correct": False,
+             "why": "The oxygen comes from the air. A Bunsen supplies no "
+                    "oxygen to the ribbon at all."},
+            {"text": "The chemical store the magnesium later releases",
+             "correct": False,
+             "why": "That store was in the magnesium before anybody lit "
+                    "anything. The flame cannot fill it."},
+            {"text": "Most of the energy the reaction then gives out",
+             "correct": False,
+             "why": "The Bunsen is turned away once the ribbon catches, and "
+                    "far more energy comes out afterwards."},
+            {"text": "The energy needed to get the reaction started",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e17",
+        "band": "easier",
+        "text": "Why is burning magnesium never watched directly with "
+                "unprotected eyes?",
+        "options": [
+            {"text": "Because the smoke it gives off is poisonous to breathe "
+                     "in", "correct": False,
+             "why": "The hazard the teacher guards against here is the "
+                    "light, and the demonstration is watched rather than "
+                    "inhaled."},
+            {"text": "Because the metal can spit pieces as far as the front "
+                     "bench", "correct": False,
+             "why": "A coil of ribbon does not spit. It is the brightness "
+                    "that makes it a demonstration rather than a class "
+                    "practical."},
+            {"text": "Because it always gives out so much energy that the "
+                     "light is blinding", "correct": True},
+            {"text": "Because the reaction takes energy in from anything nearby, including a person's eyes", "correct": False,
+             "why": "It gives energy out, not in. Combustion is exothermic."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · standard ──────────────────────────────────────
+    {
+        "id": "c7-02-s14",
+        "band": "standard",
+        "text": "A sports hall with the heating switched off gets noticeably "
+                "warmer once two hundred people are inside it. What is doing "
+                "the heating?",
+        "options": [
+            {"text": "Respiration in their cells, which is exothermic",
+             "correct": True},
+            {"text": "The friction of that many people moving about", "correct": False,
+             "why": "A hall full of people sitting still warms up too, so "
+                    "movement is not what does it."},
+            {"text": "Their breath, which is warmer than the air outside", "correct": False,
+             "why": "Warm breath is the result rather than the cause — the "
+                    "energy came from respiration in the first place."},
+            {"text": "The lights, which have to be switched on brighter when there are more people in the hall", "correct": False,
+             "why": "The lighting does not change with the number of people, "
+                    "and an unlit hall still warms up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s15",
+        "band": "standard",
+        "text": "A student holds a thin glass beaker while an acid and an "
+                "alkali react inside it, and the outside of the glass gets "
+                "warm. Trace the path the energy took.",
+        "options": [
+            {"text": "Out of the student's hand, into the glass and then "
+                     "into the mixture", "correct": False,
+             "why": "That is the direction energy travels when you warm "
+                    "something up. Here the beaker is getting warmer, not "
+                    "the hand."},
+            {"text": "Out of the chemicals, into the mixture, through the "
+                     "glass, into the hand", "correct": True},
+            {"text": "Out of the warm air in the room, in through the glass and then into the reacting mixture", "correct": False,
+             "why": "The room is not losing energy here. The rise is coming "
+                    "from the reaction itself."},
+            {"text": "Created in the mixture, then shared between the glass "
+                     "and the hand", "correct": False,
+             "why": "Nothing creates energy. It was stored in the chemicals "
+                    "before they were mixed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s16",
+        "band": "standard",
+        "text": "A reusable hand warmer stays hot for about an hour and then "
+                "goes cold. Why does it stop giving energy out?",
+        "options": [
+            {"text": "Because the pouch has cooled the chemicals down too far for the change to carry on running", "correct": False,
+             "why": "The pouch is the warmest thing in the pocket while it "
+                    "is working. Nothing has cooled it."},
+            {"text": "Because the energy it stored has been destroyed by the "
+                     "time the hour is up", "correct": False,
+             "why": "Energy is never destroyed. It has been transferred to "
+                    "the pocket, the hand and the air."},
+            {"text": "Because the change has finished, so there is nothing "
+                     "left to release its energy", "correct": True},
+            {"text": "Because the air around it has warmed up as much as it "
+                     "possibly can", "correct": False,
+             "why": "The air around a pocket is nowhere near as warm as the "
+                    "pouch was, and the pouch stops anyway."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s17",
+        "band": "standard",
+        "text": "After an exothermic reaction the products hold less energy "
+                "in their chemical store than the reactants did. Where is "
+                "the difference?",
+        "options": [
+            {"text": "It was destroyed as the reactants were used up",
+             "correct": False,
+             "why": "Energy is never destroyed. The total before and after "
+                    "is the same."},
+            {"text": "It is hidden inside the products, in a place where no thermometer can read it", "correct": False,
+             "why": "The products have LESS than the reactants had. What "
+                    "they lost has gone outside them."},
+            {"text": "It was not there to begin with — the store fills as "
+                     "the reaction runs", "correct": False,
+             "why": "The store was full before the reaction started. That is "
+                    "why the reaction had something to release."},
+            {"text": "In the surroundings — that is always where the "
+                     "difference goes", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · harder ────────────────────────────────────────
+    {
+        "id": "c7-02-h14",
+        "band": "harder",
+        "text": "A hand warmer and a battery both give out energy with "
+                "nothing plugged in. What do they have in common, and what "
+                "is different?",
+        "options": [
+            {"text": "Both hold a store put in when they were made; one "
+                     "gives heat and one electricity", "correct": True},
+            {"text": "Both make their own energy as they run; one makes heat "
+                     "and one makes electricity", "correct": False,
+             "why": "Neither makes energy. Both release a store that was "
+                    "filled before you bought them."},
+            {"text": "Both take energy in from the air around them; one then releases it as heat and the other as electricity", "correct": False,
+             "why": "A change that took energy in from the air would leave "
+                    "the room colder, and neither of these does."},
+            {"text": "Both hold a store put in when they were made, and "
+                     "both release it as heat", "correct": False,
+             "why": "A battery's whole purpose is releasing it as "
+                    "electricity. Heat from a battery is the waste."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h15",
+        "band": "harder",
+        "text": "Two designs for a self-heating can release the same total "
+                "energy, one over ten seconds and one over three minutes. "
+                "Why is the slower design the safer product?",
+        "options": [
+            {"text": "Because a slower reaction releases less energy "
+                     "altogether, so less can go wrong", "correct": False,
+             "why": "The totals are stated to be equal. Slower is not "
+                    "smaller."},
+            {"text": "Because the same energy released in ten seconds would "
+                     "reach a far higher temperature", "correct": True},
+            {"text": "Because a slow reaction can be stopped part-way through if the user decides they no longer want it",
+             "correct": False,
+             "why": "Neither design can be halted once it has started, and "
+                    "that is not what makes one safer."},
+            {"text": "Because a slow reaction cannot build up any pressure "
+                     "inside a sealed can", "correct": False,
+             "why": "Pressure depends on what the reaction makes and how hot "
+                    "it gets, and a slow one left to run could reach the "
+                    "same place."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h16",
+        "band": "harder",
+        "text": "A student puts a thermometer into the flame above burning "
+                "magnesium, records 600 °C, and says that proves the "
+                "reaction is exothermic. Why is that not a valid test?",
+        "options": [
+            {"text": "Because a thermometer cannot survive a flame, so the "
+                     "reading means nothing", "correct": False,
+             "why": "The problem is what was measured rather than whether "
+                    "the instrument coped with measuring it."},
+            {"text": "Because a single reading proves nothing without a "
+                     "second one taken later on", "correct": False,
+             "why": "Two readings in the flame would be no better. The site "
+                    "is wrong, not the number of readings."},
+            {"text": "Because the flame is part of the reaction, and the "
+                     "test is the surroundings warming", "correct": True},
+            {"text": "Because 600 °C is far too hot to have come from the magnesium rather than from the Bunsen that lit it", "correct": False,
+             "why": "Burning magnesium is far hotter than the Bunsen that "
+                    "lit it, so the reading is perfectly believable."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h17",
+        "band": "harder",
+        "text": "A neutralisation is exothermic in a 50 cm³ beaker on a "
+                "school bench. Why is the same reaction still exothermic in "
+                "an industrial tank a thousand times bigger?",
+        "options": [
+            {"text": "Because a bigger tank loses heat more slowly, which is "
+                     "what keeps it warming", "correct": False,
+             "why": "Losing heat slowly changes how long it stays warm. It "
+                    "does not decide which way the energy went."},
+            {"text": "Because industrial reactions are run hot, and a hot "
+                     "start makes any reaction exothermic", "correct": False,
+             "why": "Starting temperature does not change the direction of "
+                    "the transfer. A cold start would be exothermic too."},
+            {"text": "Because the temperature rise in the tank would be a thousand times bigger, which is far easier to detect", "correct": False,
+             "why": "A thousand times the chemicals in a thousand times the "
+                    "solution gives about the same rise, not a bigger one."},
+            {"text": "Because the direction of the transfer always belongs "
+                     "to the reaction, not to its size", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · easier, second pass ───────────────────────────
+    {
+        "id": "c7-02-e18",
+        "band": "easier",
+        "text": "Which gas is given off when magnesium reacts with dilute "
+                "hydrochloric acid?",
+        "options": [
+            {"text": "Hydrogen", "correct": True},
+            {"text": "Oxygen", "correct": False,
+             "why": "Oxygen relights a glowing splint. This gas pops, which "
+                    "is the test for hydrogen."},
+            {"text": "Carbon dioxide", "correct": False,
+             "why": "Carbon dioxide comes off when an acid meets a "
+                    "carbonate, and it puts a splint out."},
+            {"text": "Chlorine", "correct": False,
+             "why": "The chlorine stays in the solution as part of the salt "
+                    "that forms."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e19",
+        "band": "easier",
+        "text": "What is made when an acid is neutralised by an alkali?",
+        "options": [
+            {"text": "An acid that is weaker than the one you started with",
+             "correct": False,
+             "why": "Neither substance is left. Two new ones are made in "
+                    "their place."},
+            {"text": "A salt and water", "correct": True},
+            {"text": "A salt and hydrogen", "correct": False,
+             "why": "Hydrogen comes off when an acid meets a metal, not when "
+                    "it meets an alkali."},
+            {"text": "Water only, with the acid used up completely",
+             "correct": False,
+             "why": "The other product is a salt, and it is still there "
+                    "dissolved in the water."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e20",
+        "band": "easier",
+        "text": "Roughly what temperature does a reusable hand warmer reach?",
+        "options": [
+            {"text": "About 20 °C", "correct": False,
+             "why": "That is room temperature, which is where it started."},
+            {"text": "About 35 °C", "correct": False,
+             "why": "A pouch at 35 °C would feel no warmer than your own "
+                    "hand does."},
+            {"text": "About 50 °C", "correct": True},
+            {"text": "About 100 °C", "correct": False,
+             "why": "Something at 100 °C would scald a pocket. That is the "
+                    "temperature it is RESET at, not the one it reaches."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e21",
+        "band": "easier",
+        "text": "Roughly how long does a snapped hand warmer stay hot for?",
+        "options": [
+            {"text": "About ten seconds", "correct": False,
+             "why": "Ten seconds would be no use to anybody on a cold walk."},
+            {"text": "About five minutes", "correct": False,
+             "why": "It runs far longer than that, which is what makes it "
+                    "worth carrying."},
+            {"text": "Until it is snapped a second time", "correct": False,
+             "why": "Snapping it again does nothing. It is reset by boiling, "
+                    "not by snapping."},
+            {"text": "About an hour", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e22",
+        "band": "easier",
+        "text": "How is a reusable hand warmer safely reset?",
+        "options": [
+            {"text": "By boiling it in a pan of water on a hob",
+             "correct": True},
+            {"text": "By heating it in a microwave for a minute",
+             "correct": False,
+             "why": "A sealed pouch in a microwave can burst, and it is "
+                    "named as the thing not to do."},
+            {"text": "By leaving it on a radiator overnight",
+             "correct": False,
+             "why": "A radiator is nowhere near hot enough to run the change "
+                    "backwards."},
+            {"text": "By putting it in a freezer until it is solid",
+             "correct": False,
+             "why": "Cooling it is the opposite of supplying the energy the "
+                    "reset needs."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e23",
+        "band": "easier",
+        "text": "Roughly what temperature does the middle of a working "
+                "compost heap reach?",
+        "options": [
+            {"text": "About 20 °C", "correct": False,
+             "why": "That is the temperature of the garden around it on a "
+                    "mild day."},
+            {"text": "About 60 °C", "correct": True},
+            {"text": "About 5 °C", "correct": False,
+             "why": "A heap at 5 °C would be colder than the summer air, and "
+                    "nothing in it is taking energy in."},
+            {"text": "About 200 °C", "correct": False,
+             "why": "Nothing in a garden heap is anywhere near that, though "
+                    "a very large hay pile can reach the point of igniting."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e24",
+        "band": "easier",
+        "text": "What happened to the temperature in every reaction of the "
+                "displacement grid?",
+        "options": [
+            {"text": "It fell, because a metal has to be pulled out of its "
+                     "compound", "correct": False,
+             "why": "Displacement reactions warm their mixtures. Every one "
+                    "of them gave energy out."},
+            {"text": "It stayed the same, because no new substances were "
+                     "made", "correct": False,
+             "why": "New substances were made — that is what displacement "
+                    "is."},
+            {"text": "It rose", "correct": True},
+            {"text": "It rose only where a very reactive metal was used",
+             "correct": False,
+             "why": "All of them gave energy out. The more reactive metals "
+                    "simply gave out more."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e25",
+        "band": "easier",
+        "text": "Rusting is exothermic. What type of reaction is it?",
+        "options": [
+            {"text": "A neutralisation, because rain is slightly acidic",
+             "correct": False,
+             "why": "No alkali is involved, and iron rusts in pure water "
+                    "with air just as well."},
+            {"text": "A displacement, because the iron takes the place of "
+                     "something else", "correct": False,
+             "why": "Nothing is displaced. The iron combines with oxygen "
+                    "rather than swapping with anything."},
+            {"text": "A thermal decomposition, because the iron breaks down",
+             "correct": False,
+             "why": "The iron is not broken down. It joins with oxygen to "
+                    "make a new compound."},
+            {"text": "An oxidation", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e26",
+        "band": "easier",
+        "text": "What does the sodium ethanoate inside a reusable hand "
+                "warmer do when the disc is snapped?",
+        "options": [
+            {"text": "It crystallises out of the solution", "correct": True},
+            {"text": "It burns, using the air sealed inside the pouch",
+             "correct": False,
+             "why": "There is no flame and no air supply. A sealed pouch "
+                    "cannot burn anything."},
+            {"text": "It dissolves into the water around it", "correct": False,
+             "why": "It is already dissolved. Snapping the disc starts it "
+                    "coming out of solution."},
+            {"text": "It reacts with the metal disc to make a new compound",
+             "correct": False,
+             "why": "The disc sets the change off; it is not one of the "
+                    "substances that change."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e27",
+        "band": "easier",
+        "text": "Four of the five beakers on the bench warmed up. What did "
+                "the fifth one do?",
+        "options": [
+            {"text": "It warmed up more slowly than the rest", "correct": False,
+             "why": "It did not warm at all. Its thermometer went the other "
+                    "way."},
+            {"text": "Its temperature fell", "correct": True},
+            {"text": "It stayed at exactly the temperature it started at",
+             "correct": False,
+             "why": "A reaction with no temperature change would be a fourth "
+                    "possibility, and it is not what that beaker did."},
+            {"text": "It warmed up and then cooled below where it started",
+             "correct": False,
+             "why": "There was no warming stage. The reading fell from the "
+                    "moment the two were stirred together."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e28",
+        "band": "easier",
+        "text": "What does a self-heating can of coffee do in about three "
+                "minutes?",
+        "options": [
+            {"text": "Cools the drink to just above freezing",
+             "correct": False,
+             "why": "It is a heater. Cooling a drink on demand is a "
+                    "different device altogether."},
+            {"text": "Boils the drink, which is why the can must be opened "
+                     "first", "correct": False,
+             "why": "Boiling a sealed can would be dangerous, and no drink "
+                    "is served at 100 °C."},
+            {"text": "Brings the drink up to serving temperature",
+             "correct": True},
+            {"text": "Keeps the drink at the temperature it was bought at",
+             "correct": False,
+             "why": "Holding a temperature is what a flask does. This can "
+                    "raises it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e29",
+        "band": "easier",
+        "text": "What does snapping the metal disc inside a hand warmer do?",
+        "options": [
+            {"text": "It makes the pouch airtight so the reaction can begin",
+             "correct": False,
+             "why": "The pouch was already sealed, and no air is needed by "
+                    "what happens inside it."},
+            {"text": "It generates heat by friction as the metal bends",
+             "correct": False,
+             "why": "Bending a small disc could never warm a pouch to "
+                    "50 °C for an hour."},
+            {"text": "It lets the two chemicals inside mix together for the "
+                     "first time", "correct": False,
+             "why": "Everything in the pouch is already mixed. What the disc "
+                    "does is get the change going."},
+            {"text": "It starts the change that releases the stored energy",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-e30",
+        "band": "easier",
+        "text": "Grass cuttings piled up in a garden heat up on their own. "
+                "What is releasing that energy?",
+        "options": [
+            {"text": "Warm air that was trapped between the cuttings when "
+                     "the pile was made", "correct": False,
+             "why": "A pocket of warm air would cool to the temperature of "
+                    "the garden within minutes. It could not hold a pile "
+                    "warm for weeks."},
+            {"text": "The weight of the pile squashing the lower layers "
+                     "together", "correct": False,
+             "why": "Pressing material together does not release energy "
+                    "from it. A stack of bricks does not warm up."},
+            {"text": "Bacteria respiring as they break down the plant "
+                     "material", "correct": True},
+            {"text": "The grass drying out, which gives energy out as water "
+                     "leaves it", "correct": False,
+             "why": "Water leaving a liquid takes energy in, not out, so "
+                    "drying would cool the pile rather than warm it."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · standard, second pass ─────────────────────────
+    {
+        "id": "c7-02-s18",
+        "band": "standard",
+        "text": "The temperatures on the five-beaker bench are described as "
+                "typical classroom values rather than readings from one "
+                "afternoon. Why does saying so matter?",
+        "options": [
+            {"text": "Because a number given without that warning claims to "
+                     "be a measurement somebody took", "correct": True},
+            {"text": "Because the values measured on a real afternoon would "
+                     "be much larger than the ones printed", "correct": False,
+             "why": "They are the right size. What is being flagged is where "
+                    "they came from, not how big they are."},
+            {"text": "Because a reaction gives a different result every time "
+                     "it is run", "correct": False,
+             "why": "Repeats agree closely. The warning is about how these "
+                    "particular figures were chosen."},
+            {"text": "Because temperatures cannot be measured accurately in "
+                     "a school laboratory", "correct": False,
+             "why": "They can, and the measuring lesson is about doing "
+                    "exactly that well."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s19",
+        "band": "standard",
+        "text": "Four beakers on the bench are said to cover most of the "
+                "chemistry done so far. What does that tell you about "
+                "reactions in general?",
+        "options": [
+            {"text": "That a metal has to be involved for a reaction to "
+                     "give energy out", "correct": False,
+             "why": "Neutralisation involves no metal at all and still warms "
+                    "the beaker."},
+            {"text": "That every reaction met so far had to be started with "
+                     "a flame", "correct": False,
+             "why": "The hand warmer and the neutralisation needed no flame "
+                    "of any kind."},
+            {"text": "That most of the reactions a student meets give energy "
+                     "out", "correct": True},
+            {"text": "That the four types are the only exothermic reactions "
+                     "there are", "correct": False,
+             "why": "They are examples, not a complete list. Respiration and "
+                    "rusting are exothermic too."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s20",
+        "band": "standard",
+        "text": "Magnesium dropped into acid fizzes, gives off a gas, and "
+                "warms the tube. Which of those observations shows the "
+                "reaction is exothermic?",
+        "options": [
+            {"text": "The fizzing, because bubbles form as the energy is "
+                     "released", "correct": False,
+             "why": "Bubbles show a gas is being made. A reaction that took "
+                    "energy in could fizz just as hard."},
+            {"text": "The gas, because a gas carries energy away from the "
+                     "tube", "correct": False,
+             "why": "Making a gas tells you a reaction happened. It says "
+                    "nothing about which way the energy went."},
+            {"text": "All three together, since any change at all means "
+                     "energy was released", "correct": False,
+             "why": "Plenty of changes take energy in. Two of these three "
+                    "would happen either way."},
+            {"text": "The warming, because that is always the surroundings "
+                     "gaining energy", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s21",
+        "band": "standard",
+        "text": "A student holds a warm hand warmer and says their own hand "
+                "is what is heating it. How would you settle that in one "
+                "step?",
+        "options": [
+            {"text": "Snap a fresh one on a cold bench and watch it warm up "
+                     "anyway", "correct": True},
+            {"text": "Hold it for longer and see whether it gets hotter "
+                     "still", "correct": False,
+             "why": "It would warm on its own either way, so a longer hold "
+                    "settles nothing."},
+            {"text": "Ask a second student to hold it and compare how warm "
+                     "it feels", "correct": False,
+             "why": "Two hands test the same idea twice. Neither run has the "
+                    "hand taken away."},
+            {"text": "Put it in a pocket and check that it still reaches "
+                     "50 °C", "correct": False,
+             "why": "A pocket is warm too, so that leaves the same "
+                    "explanation open."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s22",
+        "band": "standard",
+        "text": "Magnesium can be burned in a tongs in open air, or lowered "
+                "into a beaker of water with a thermometer in it. Which "
+                "set-up shows that burning is exothermic?",
+        "options": [
+            {"text": "The open air one, because the flame proves energy is "
+                     "coming out", "correct": False,
+             "why": "The flame is part of the reaction. Exothermic is "
+                    "measured in the surroundings."},
+            {"text": "The beaker one only, because the water is the "
+                     "surroundings and it warms", "correct": True},
+            {"text": "Neither, because burning is a reaction with air and "
+                     "not with the water", "correct": False,
+             "why": "What it reacts with does not matter. The water is there "
+                    "to receive the energy and report it."},
+            {"text": "Both equally, because the same reaction is happening "
+                     "in each of them", "correct": False,
+             "why": "The same reaction, but only one of the two has anything "
+                    "measuring the surroundings."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s23",
+        "band": "standard",
+        "text": "Iron wool is dipped in salty water and sealed in an "
+                "insulated flask with a thermometer. Predict what the "
+                "thermometer does over the next hour.",
+        "options": [
+            {"text": "It falls, because rusting takes oxygen out of the air "
+                     "in the flask", "correct": False,
+             "why": "Using up oxygen is not a cooling process. The rusting "
+                    "itself gives energy out."},
+            {"text": "It stays level, because rusting is far too slow to "
+                     "measure", "correct": False,
+             "why": "Insulating it and using wool rather than a solid bar is "
+                    "exactly what makes it measurable."},
+            {"text": "It rises slowly", "correct": True},
+            {"text": "It rises sharply and then drops back below where it "
+                     "started", "correct": False,
+             "why": "Nothing here releases energy in a burst, and nothing "
+                    "takes any in afterwards."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s24",
+        "band": "standard",
+        "text": "Acid and alkali are both clear liquids, and the mixture "
+                "looks unchanged afterwards. So why does the thermometer "
+                "rise?",
+        "options": [
+            {"text": "Because stirring two liquids together warms them a "
+                     "little on its own", "correct": False,
+             "why": "Stirring water into water warms nothing. It is the "
+                    "reaction that does it."},
+            {"text": "Because the acid was slightly warmer than the alkali "
+                     "to begin with", "correct": False,
+             "why": "Both start at the same temperature, and the rise is far "
+                    "bigger than any small difference."},
+            {"text": "Because a thermometer reads higher in a mixture than "
+                     "in a pure liquid", "correct": False,
+             "why": "A thermometer reads the temperature of whatever it sits "
+                    "in. Mixtures are no different."},
+            {"text": "Because a reaction happened and made new substances, "
+                     "releasing stored energy", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s25",
+        "band": "standard",
+        "text": "A student says any reaction that gets hot must be "
+                "dangerous. Use two examples from this lesson to judge that.",
+        "options": [
+            {"text": "It depends on how hot and how fast — 50 °C in a pocket "
+                     "is safe, burning magnesium is not", "correct": True},
+            {"text": "They are right: every exothermic reaction there is "
+                     "has to be treated as a serious hazard", "correct": False,
+             "why": "A hand warmer is sold for children to carry. Being "
+                    "exothermic does not make something dangerous."},
+            {"text": "They are wrong: no reaction that warms its "
+                     "surroundings can do any harm", "correct": False,
+             "why": "Burning magnesium and quicklime in an eye are both "
+                    "exothermic and both genuinely dangerous."},
+            {"text": "They are right for reactions with flames and wrong for "
+                     "every other kind", "correct": False,
+             "why": "Quicklime and water has no flame at all and is still "
+                    "hazardous."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s26",
+        "band": "standard",
+        "text": "Burning magnesium took its beaker of water to 60 °C; "
+                "magnesium with acid reached 34 °C. What can you conclude?",
+        "options": [
+            {"text": "That magnesium with acid is not really an exothermic "
+                     "reaction", "correct": False,
+             "why": "It warmed its surroundings by fourteen degrees. That is "
+                    "exothermic by the only test there is."},
+            {"text": "Both warmed their surroundings, but the amounts used "
+                     "were not matched, so this is not a fair comparison",
+             "correct": True},
+            {"text": "That burning always releases more energy than any "
+                     "other kind of reaction", "correct": False,
+             "why": "Not from two unmatched runs. Some non-burning reactions "
+                    "release a great deal."},
+            {"text": "That the acid absorbed a large part of the released "
+                     "energy before the thermometer in the beaker could "
+                     "read it", "correct": False,
+             "why": "The acid is part of the surroundings being warmed, "
+                    "which is what the 34 °C shows."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s27",
+        "band": "standard",
+        "text": "A bonfire and a candle are both combustion, yet the bonfire "
+                "feels far hotter from a distance. What is the difference?",
+        "options": [
+            {"text": "The bonfire reaches a higher flame temperature than a "
+                     "candle can", "correct": False,
+             "why": "Flame temperatures are not far apart. It is how much "
+                    "fuel is burning that differs."},
+            {"text": "The candle's reaction is exothermic and the bonfire's "
+                     "is something stronger than that", "correct": False,
+             "why": "There is no stronger category. Both are combustion, and "
+                    "both give energy out."},
+            {"text": "The bonfire releases far more energy every second, "
+                     "because far more fuel is reacting", "correct": True},
+            {"text": "The bonfire has more oxygen available, and oxygen is "
+                     "what carries the heat", "correct": False,
+             "why": "Oxygen is a reactant, not a carrier of energy from one "
+                    "place to another."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s28",
+        "band": "standard",
+        "text": "When magnesium is burned as a demonstration, everybody in "
+                "the room wears eye protection, not only the person holding "
+                "the tongs. Why?",
+        "options": [
+            {"text": "Because the light that makes it a hazard reaches "
+                     "everybody in the room", "correct": True},
+            {"text": "Because the smoke travels across the room within "
+                     "seconds", "correct": False,
+             "why": "Eye protection is worn for the brightness, and it would "
+                    "not help with anything breathed in."},
+            {"text": "Because the magnesium can spit as far as the back "
+                     "bench", "correct": False,
+             "why": "A coil of ribbon burning in tongs does not throw "
+                    "material across a room."},
+            {"text": "Because the same eye-protection rule is applied to "
+                     "every school practical", "correct": False,
+             "why": "Eye protection is worn widely, but this demonstration "
+                    "has its own specific reason."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s29",
+        "band": "standard",
+        "text": "Which observation from the acids unit already showed that "
+                "neutralisation is exothermic, before it had a name?",
+        "options": [
+            {"text": "The indicator changed colour as soon as the alkali "
+                     "started going in", "correct": False,
+             "why": "A colour change shows the acid being used up. It says "
+                    "nothing about energy."},
+            {"text": "The beaker warmed while the two solutions were being "
+                     "mixed", "correct": True},
+            {"text": "Bubbles appeared as soon as the two liquids met",
+             "correct": False,
+             "why": "Neutralisation makes a salt and water, with no gas to "
+                    "bubble off."},
+            {"text": "A solid formed at the bottom of the flask as they "
+                     "mixed", "correct": False,
+             "why": "The salt stays dissolved, and a solid appearing would "
+                    "not tell you the direction anyway."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-s30",
+        "band": "standard",
+        "text": "A candle burns steadily for an hour with nobody adding "
+                "anything to it. Is anything being fed into the reaction?",
+        "options": [
+            {"text": "No — that is exactly what makes combustion "
+                     "exothermic", "correct": False,
+             "why": "What makes it exothermic is energy coming out. "
+                    "Something IS being fed in."},
+            {"text": "Yes — oxygen, which the flame is always drawing from "
+                     "the air around it",
+             "correct": True},
+            {"text": "Yes — energy, radiated back into the flame by the warm "
+                     "air above it", "correct": False,
+             "why": "The warm air is carrying energy away from the flame, "
+                    "not returning it."},
+            {"text": "No — the wax holds everything the reaction needs "
+                     "inside it", "correct": False,
+             "why": "Put a jar over the candle and it goes out, which shows "
+                    "something outside was needed."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · harder, second pass ───────────────────────────
+    {
+        "id": "c7-02-h18",
+        "band": "harder",
+        "text": "A camping stove needs a spark to light. Describe the single "
+                "observation that settles whether the reaction is "
+                "exothermic.",
+        "options": [
+            {"text": "Measure how much energy the spark delivers and compare "
+                     "it with the gas used", "correct": False,
+             "why": "A great deal of work for something one observation "
+                    "settles: take the spark away and watch."},
+            {"text": "Light it in a colder room and check that it still "
+                     "catches", "correct": False,
+             "why": "That tests how easy it is to start, which is a "
+                    "different question from the direction."},
+            {"text": "Stop the spark and see the flame keep burning on its "
+                     "own", "correct": True},
+            {"text": "Turn the gas up and see whether the flame gets hotter",
+             "correct": False,
+             "why": "A bigger flame releases more energy per second, which "
+                    "was never in doubt."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h19",
+        "band": "harder",
+        "text": "Two identical self-heating cans are tested, one in a warm "
+                "kitchen and one in a fridge. Compare the temperature RISE "
+                "each one produces.",
+        "options": [
+            {"text": "The fridge one produces a bigger rise, because it has "
+                     "further to climb", "correct": False,
+             "why": "How far it has to climb is not something the reaction "
+                    "knows about."},
+            {"text": "The kitchen one produces a bigger rise, because warmth "
+                     "speeds the reaction up", "correct": False,
+             "why": "A warmer start can make it run faster, but the energy "
+                    "released is the same either way."},
+            {"text": "The kitchen one produces a rise and the fridge one "
+                     "does not, because the cold cancels it", "correct": False,
+             "why": "A fridge removes energy slowly. It cannot cancel a "
+                    "reaction releasing its store in three minutes."},
+            {"text": "Both rise by about the same amount, though the fridge "
+                     "one ends up colder", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h20",
+        "band": "harder",
+        "text": "The hand warmer is not a chemical reaction at all. Why is "
+                "it still put on a bench of exothermic reactions?",
+        "options": [
+            {"text": "Because the energy accounting is the same whether the "
+                     "change is chemical or physical", "correct": True},
+            {"text": "Because it is the only one of the five on the bench "
+                     "that a student could buy in a shop", "correct": False,
+             "why": "Being buyable is what makes it a good example, not what "
+                    "makes it belong on the list."},
+            {"text": "Because a change of state counts as a reaction once it "
+                     "releases energy", "correct": False,
+             "why": "It never counts as a reaction. No new substance is "
+                    "made, however much energy comes out."},
+            {"text": "Because the sodium ethanoate reacts with the metal "
+                     "disc as it crystallises", "correct": False,
+             "why": "The disc only sets the change off. It is not one of the "
+                    "substances that change."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h21",
+        "band": "harder",
+        "text": "Rusting, combustion and respiration all involve a substance "
+                "combining with oxygen, and all three give energy out. What "
+                "does that suggest?",
+        "options": [
+            {"text": "That a reaction gives energy out only when oxygen is "
+                     "one of the reactants", "correct": False,
+             "why": "Neutralisation and displacement are exothermic with no "
+                    "oxygen involved anywhere."},
+            {"text": "That oxidations are exothermic", "correct": True},
+            {"text": "That oxygen carries energy into a reaction and lets it "
+                     "out again", "correct": False,
+             "why": "Oxygen is a reactant. The energy was stored in the "
+                    "arrangement of the substances, not carried in."},
+            {"text": "That the three reactions are really the same reaction "
+                     "under different names", "correct": False,
+             "why": "They have quite different reactants and products. What "
+                    "they share is the type of change."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h22",
+        "band": "harder",
+        "text": "A reaction warms 100 cm³ of water by 8 °C. The same amounts "
+                "of the same chemicals are reacted in 200 cm³ of water "
+                "instead. Predict the rise.",
+        "options": [
+            {"text": "About 16 °C, because there is more water to hold the "
+                     "energy", "correct": False,
+             "why": "More water to share the same energy means a smaller "
+                    "rise, not a bigger one."},
+            {"text": "About 8 °C, because the reaction has not changed",
+             "correct": False,
+             "why": "The reaction is the same, but the energy is now "
+                    "spreading through twice as much water."},
+            {"text": "About 4 °C", "correct": True},
+            {"text": "No rise at all, because the extra water cools the "
+                     "mixture down", "correct": False,
+             "why": "Water at the same temperature cools nothing. It simply "
+                    "shares the energy released."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h23",
+        "band": "harder",
+        "text": "What is the strongest evidence that the energy a hand "
+                "warmer releases was in it before anybody snapped the disc?",
+        "options": [
+            {"text": "That it reaches 50 °C with nothing plugged into it",
+             "correct": False,
+             "why": "Good evidence that nothing was supplied at the time, "
+                    "but it does not show when the store was filled."},
+            {"text": "That it stays hot for an hour rather than a few "
+                     "seconds", "correct": False,
+             "why": "How long it lasts tells you the store is large, not "
+                    "when it was filled."},
+            {"text": "That snapping the disc does nothing until the pouch "
+                     "has been sealed", "correct": False,
+             "why": "The pouch is sealed at the factory and stays sealed "
+                    "throughout. Nothing here is a test."},
+            {"text": "That boiling it refills the store, so it can be "
+                     "snapped and used again", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h24",
+        "band": "harder",
+        "text": "A student suggests ranking reactions by how exothermic they "
+                "are, using how bright each flame is. Evaluate that.",
+        "options": [
+            {"text": "It fails, because brightness is not a measure of the "
+                     "energy transferred to the surroundings", "correct": True},
+            {"text": "It works, because the brighter flame in any pair is "
+                     "the hotter one", "correct": False,
+             "why": "Even where that held, flame temperature is not the same "
+                    "thing as energy released."},
+            {"text": "It works, as long as every reaction is given the same "
+                     "amount of oxygen", "correct": False,
+             "why": "Matching the oxygen does not turn brightness into a "
+                    "measurement of energy."},
+            {"text": "It fails, because some exothermic reactions release "
+                     "their energy as light rather than heat",
+             "correct": False,
+             "why": "Releasing energy as light is still exothermic. The "
+                    "problem is that brightness measures nothing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h25",
+        "band": "harder",
+        "text": "Two hand warmers are snapped at the same moment. One is "
+                "left on a bench and one is wrapped in a thick towel. "
+                "Compare what their thermometers show.",
+        "options": [
+            {"text": "The bench one gets hotter, because air can reach it "
+                     "and air is a reactant", "correct": False,
+             "why": "Nothing in a sealed pouch needs air. The change is a "
+                    "crystallisation."},
+            {"text": "The wrapped one gets hotter and stays hot longer, "
+                     "because less energy escapes", "correct": True},
+            {"text": "Both behave identically, because the same change "
+                     "releases the same energy", "correct": False,
+             "why": "The same energy released, but not the same amount "
+                    "retained — that is what the towel changes."},
+            {"text": "The wrapped one gets hotter but runs out sooner, "
+                     "because heat speeds the change up", "correct": False,
+             "why": "Insulating it does not use the store up faster. It "
+                    "holds the energy in for longer."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h26",
+        "band": "harder",
+        "text": "A reaction gives out its energy almost entirely as light "
+                "and hardly warms anything. Is it exothermic?",
+        "options": [
+            {"text": "No, because exothermic means the surroundings must "
+                     "get warmer, and nothing here does", "correct": False,
+             "why": "Warming is the usual sign, not the definition. Energy "
+                    "leaving the chemicals is what counts."},
+            {"text": "No, because light is not a form of energy a reaction "
+                     "can release", "correct": False,
+             "why": "A firework releases a great deal of its energy as "
+                    "light, and so does burning magnesium."},
+            {"text": "Yes, because energy is still leaving the chemicals and "
+                     "going out into the surroundings", "correct": True},
+            {"text": "Not unless the light is later absorbed by something "
+                     "and turned into heat", "correct": False,
+             "why": "It is exothermic the moment the energy leaves. What "
+                    "happens to the light afterwards changes nothing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h27",
+        "band": "harder",
+        "text": "A student argues that neutralisation must be exothermic "
+                "because acids are dangerous substances. What is wrong with "
+                "the argument?",
+        "options": [
+            {"text": "Nothing — the more hazardous the reactants, the more "
+                     "energy a reaction gives out", "correct": False,
+             "why": "There is no such rule. Plenty of hazardous substances "
+                    "react with very little energy change."},
+            {"text": "It has the direction backwards: a dangerous substance "
+                     "makes a reaction endothermic", "correct": False,
+             "why": "Hazard does not set the direction either way. That is "
+                    "the whole point."},
+            {"text": "It is wrong about acids, which are not hazardous at "
+                     "the concentrations used in school", "correct": False,
+             "why": "School acids are still handled with care. The fault is "
+                    "in the reasoning, not in that claim."},
+            {"text": "How hazardous a substance is never tells you which "
+                     "way its energy goes", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h28",
+        "band": "harder",
+        "text": "A compost heap holds 60 °C in a frost and about 65 °C in "
+                "summer. What does that narrow difference show?",
+        "options": [
+            {"text": "That the energy is coming from inside the heap rather "
+                     "than from the weather", "correct": True},
+            {"text": "That the heap is storing summer warmth and releasing "
+                     "it through the winter", "correct": False,
+             "why": "No pile of grass could hold months of warmth. It is "
+                    "making the energy afresh the whole time."},
+            {"text": "That the bacteria work equally well at any temperature "
+                     "they are given", "correct": False,
+             "why": "Their rate does change with temperature. What the "
+                    "figures show is where the energy comes from."},
+            {"text": "That most of the heat in a heap comes from sunlight "
+                     "falling on it", "correct": False,
+             "why": "Sunlight would give a far bigger summer-to-winter gap, "
+                    "and a heap works in the dark."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h29",
+        "band": "harder",
+        "text": "A hand warmer only reaches 50 °C, so why does resetting it "
+                "need a pan of boiling water rather than a 50 °C bath?",
+        "options": [
+            {"text": "Because a bath at 50 °C would take far longer to do "
+                     "the same job", "correct": False,
+             "why": "It would not do the job at all, however long it was "
+                    "left."},
+            {"text": "Because resetting has to put back all the energy the "
+                     "change gave out", "correct": True},
+            {"text": "Because the pouch has to be sterilised between uses",
+             "correct": False,
+             "why": "Nothing inside a sealed pouch needs sterilising, and "
+                    "that would not refill the store."},
+            {"text": "Because boiling water is the only way to soften the "
+                     "metal disc again", "correct": False,
+             "why": "The disc is unchanged by being snapped. It is the "
+                    "sodium ethanoate that has to be redissolved."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-02-h30",
+        "band": "harder",
+        "text": "A camping stove needs a spark and a hand warmer needs a "
+                "snap. What do those two very different starts have in "
+                "common?",
+        "options": [
+            {"text": "Both supply the whole of the energy that comes out of "
+                     "the reaction afterwards", "correct": False,
+             "why": "Both supply a tiny fraction of it. The rest was already "
+                    "stored in the chemicals."},
+            {"text": "Both add a substance that the reaction cannot run "
+                     "without", "correct": False,
+             "why": "A spark adds no substance at all, and snapping a disc "
+                    "adds nothing to the pouch."},
+            {"text": "Both give a small push that lets a store of energy "
+                     "start releasing itself", "correct": True},
+            {"text": "Both work by warming the chemicals up to the "
+                     "temperature they need", "correct": False,
+             "why": "A snapped disc warms nothing. The pouch is at room "
+                    "temperature when the change begins."},
+        ],
+        "figure": None,
+    },
 ]

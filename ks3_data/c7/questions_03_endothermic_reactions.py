@@ -1053,4 +1053,1198 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 night 3 · easier ────────────────────────────────────────
+    {
+        "id": "c7-03-e14",
+        "band": "easier",
+        "text": "In photosynthesis, what does a plant build, and what does "
+                "it build it from?",
+        "options": [
+            {"text": "Glucose, from carbon dioxide and water",
+             "correct": True},
+            {"text": "Oxygen, from the sunlight that falls on the leaf",
+             "correct": False,
+             "why": "Oxygen is given off as a product, and sunlight is the "
+                    "energy supply rather than a raw material."},
+            {"text": "Carbon dioxide, from the glucose stored in the leaf "
+                     "and the water drawn up from the roots", "correct": False,
+             "why": "That is respiration working the other way round. "
+                    "Photosynthesis uses carbon dioxide up."},
+            {"text": "Water, from the carbon dioxide it takes in",
+             "correct": False,
+             "why": "Water is one of the raw materials a plant takes in, not "
+                    "something photosynthesis makes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e15",
+        "band": "easier",
+        "text": "The lesson says there is no such thing as cold. If cold is "
+                "not a substance, what is it?",
+        "options": [
+            {"text": "A gas that collects wherever energy has been removed "
+                     "from a substance", "correct": False,
+             "why": "Nothing collects anywhere. There is no material of any "
+                    "kind involved in something being cold."},
+            {"text": "It is not a thing at all — it is the absence of energy", "correct": True},
+            {"text": "A measure of how much ice a substance contains",
+             "correct": False,
+             "why": "Things with no ice in them at all get cold, and ice "
+                    "itself can be at many different temperatures."},
+            {"text": "The opposite of energy, which cancels it out",
+             "correct": False,
+             "why": "There is nothing that cancels energy. Take energy away "
+                    "and what is left is simply less of it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e16",
+        "band": "easier",
+        "text": "Why is an instant cold pack worth carrying in a first aid "
+                "kit up a mountain?",
+        "options": [
+            {"text": "Because it stays cold for the whole of a day's walk "
+                     "once it has been squeezed", "correct": False,
+             "why": "It works for minutes, not for a day. Its advantage is "
+                    "where it works, not how long."},
+            {"text": "Because it can be refilled from a stream and used "
+                     "again further up", "correct": False,
+             "why": "Adding water does not reset it. The solid has already "
+                    "dissolved and cannot be got back."},
+            {"text": "Because it works with no freezer, no electricity and no cold water",
+             "correct": True},
+            {"text": "Because the thinner air higher up makes it colder than "
+                     "it would be at sea level", "correct": False,
+             "why": "The cooling comes from the change inside the bag, and "
+                    "the air outside has nothing to do with it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e17",
+        "band": "easier",
+        "text": "Why is an instant cold pack put on over clothing or a cloth "
+                "rather than straight onto bare skin?",
+        "options": [
+            {"text": "Because the chemicals inside would soak through and "
+                     "sting a cut", "correct": False,
+             "why": "The bag is sealed, and a pack that had burst would be "
+                    "thrown away rather than used."},
+            {"text": "Because the cloth is what makes the pack start working "
+                     "in the first place", "correct": False,
+             "why": "Squeezing the pack starts it. A cloth plays no part in "
+                    "the change at all."},
+            {"text": "Because the pack works better when it is not touching "
+                     "anything directly", "correct": False,
+             "why": "Contact is how the energy gets out of the injury. The "
+                    "cloth slows that down on purpose."},
+            {"text": "Because it gets cold enough to damage the skin it is "
+                     "held against", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · standard ──────────────────────────────────────
+    {
+        "id": "c7-03-s14",
+        "band": "standard",
+        "text": "Sherbet contains citric acid and sodium hydrogencarbonate, "
+                "and it feels cool on the tongue. Which idea from this "
+                "lesson explains that?",
+        "options": [
+            {"text": "The two react once they are wet, and the reaction "
+                     "takes energy from the tongue", "correct": True},
+            {"text": "The powder is stored cold in the wrapper, and it keeps "
+                     "that coldness until it is eaten", "correct": False,
+             "why": "Sherbet sits on a warm shop shelf. It is at room "
+                    "temperature before it goes anywhere near a mouth."},
+            {"text": "The bubbles it makes are cold, and they carry that "
+                     "coldness onto the tongue", "correct": False,
+             "why": "Cold is not something a bubble can carry. The gas is "
+                    "made at the temperature it finds itself in."},
+            {"text": "Sugar dissolving is exothermic, so the tongue feels "
+                     "the contrast afterwards", "correct": False,
+             "why": "An exothermic change would leave the tongue warmer, and "
+                    "there is no contrast effect here to feel."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s15",
+        "band": "standard",
+        "text": "A cube of ice and a squeezed cold pack will both cool a "
+                "drink. What do the two have in common in energy terms?",
+        "options": [
+            {"text": "Both hold a store of coldness that they release into "
+                     "the drink until it runs out", "correct": False,
+             "why": "There is no store of coldness in anything. Both are "
+                    "taking energy rather than giving something."},
+            {"text": "Both take energy in from the drink, one by melting and "
+                     "one by dissolving", "correct": True},
+            {"text": "Both are colder than the drink, which is the whole of "
+                     "the explanation", "correct": False,
+             "why": "A cold pack starts at room temperature, the same as the "
+                    "drink, and still cools it."},
+            {"text": "Both give energy out as they change, which drives the "
+                     "warm drink away from them", "correct": False,
+             "why": "A change giving energy out would warm the drink up. "
+                    "These two take it in."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s16",
+        "band": "standard",
+        "text": "A grower switches extra lamps on over a crop through the "
+                "winter and the plants grow faster. Explain that in terms of "
+                "energy.",
+        "options": [
+            {"text": "The lamps warm the greenhouse, and warmth is what a "
+                     "plant grows from", "correct": False,
+             "why": "Warmth alone does not build glucose. A warm dark shed "
+                    "grows nothing."},
+            {"text": "The lamps replace the carbon dioxide that is short in "
+                     "winter air", "correct": False,
+             "why": "A lamp makes light, not carbon dioxide, and winter air "
+                    "holds as much as summer air does."},
+            {"text": "Photosynthesis is endothermic, and the lamps supply "
+                     "more of the energy it needs", "correct": True},
+            {"text": "Extra light makes the plant respire faster, which is "
+                     "how the extra mass is put on", "correct": False,
+             "why": "Respiration spends the store rather than filling it. "
+                    "Growth comes from photosynthesis."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s17",
+        "band": "standard",
+        "text": "Melting and freezing are opposite changes, so their energy "
+                "transfers run in opposite directions. Apply the same idea "
+                "to boiling and condensing.",
+        "options": [
+            {"text": "Both take energy in, because both of them involve a "
+                     "gas at some point in the change", "correct": False,
+             "why": "Involving a gas does not fix the direction. The two "
+                    "changes are opposites, so they cannot match."},
+            {"text": "Both give energy out, because a gas holds less than a "
+                     "liquid does", "correct": False,
+             "why": "A gas holds more, not less, and two opposite changes "
+                    "cannot both give energy out."},
+            {"text": "Condensing takes energy in and boiling gives it out",
+             "correct": False,
+             "why": "That is the right pairing the wrong way round. It takes "
+                    "energy to drive a liquid into a gas."},
+            {"text": "Boiling takes energy in and condensing gives it out",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · harder ────────────────────────────────────────
+    {
+        "id": "c7-03-h14",
+        "band": "harder",
+        "text": "A student says that because freezing gives back exactly "
+                "what melting took in, you could melt and freeze the same "
+                "ice over and over and collect free energy. What is wrong?",
+        "options": [
+            {"text": "You get back exactly what you put in, so there is "
+                     "never anything spare to collect", "correct": True},
+            {"text": "Nothing is wrong with it, but the energy comes back so "
+                     "slowly that it is not worth the equipment it needs",
+             "correct": False,
+             "why": "Speed is not the problem. There is no surplus to "
+                    "collect however long you wait."},
+            {"text": "Freezing gives back rather less than melting took in, "
+                     "so the ice runs down", "correct": False,
+             "why": "The two are equal. Reversing a change reverses the "
+                    "transfer by exactly the same amount."},
+            {"text": "Melting and freezing are the same change, so no energy "
+                     "moves in either direction", "correct": False,
+             "why": "Energy moves both times — in during melting and out "
+                    "during freezing. They are opposite changes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h15",
+        "band": "harder",
+        "text": "Photosynthesis is endothermic, yet a leaf in bright "
+                "sunshine does not feel cold. Why not?",
+        "options": [
+            {"text": "Because a leaf is too thin for anybody to feel a "
+                     "temperature difference in it, whatever is going on "
+                     "inside", "correct": False,
+             "why": "A thin thing can still be measurably cold. The reason "
+                    "is where the energy comes from."},
+            {"text": "Because the energy it takes in comes from sunlight "
+                     "rather than from the air around it", "correct": True},
+            {"text": "Because respiration in the same leaf gives out exactly "
+                     "as much as photosynthesis takes in", "correct": False,
+             "why": "A growing plant photosynthesises far faster than it "
+                    "respires, or it would never gain any mass."},
+            {"text": "Because photosynthesis is endothermic only at night, "
+                     "when the leaf is already cool", "correct": False,
+             "why": "Photosynthesis stops in the dark. It runs in the light "
+                    "and it is endothermic while it runs."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h16",
+        "band": "harder",
+        "text": "Asked to sort water freezing, a student puts it with the "
+                "endothermic changes because ice is cold. What is the error "
+                "in that reasoning?",
+        "options": [
+            {"text": "They have forgotten that ice is not cold until some "
+                     "time after it has finished forming", "correct": False,
+             "why": "Ice is at 0 °C as it forms. When it got cold is not the "
+                    "question."},
+            {"text": "They have sorted a physical change, and only chemical "
+                     "reactions can be put on either list", "correct": False,
+             "why": "Both lists carry physical changes. Melting and "
+                    "dissolving are on them."},
+            {"text": "They have judged it by how cold the product is instead "
+                     "of which way the energy moved", "correct": True},
+            {"text": "They have used the freezer rather than the water as "
+                     "the thing being classified", "correct": False,
+             "why": "They classified the freezing itself. The mistake is in "
+                    "the evidence they used to classify it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h17",
+        "band": "harder",
+        "text": "Why is “endothermic” a better name for these changes than "
+                "“cooling reactions” would be?",
+        "options": [
+            {"text": "Because some of them cool their surroundings by a very "
+                     "small amount that would be hard to notice at all",
+             "correct": False,
+             "why": "How big the drop is has nothing to do with it. A small "
+                    "drop is still a drop."},
+            {"text": "Because a few of them warm their surroundings instead, "
+                     "so the word cooling would be wrong for those",
+             "correct": False,
+             "why": "Every endothermic change cools its surroundings. None "
+                    "of them warms anything."},
+            {"text": "Because cooling is a word about weather, so it cannot "
+                     "be used about a reaction", "correct": False,
+             "why": "Scientists use ordinary words all the time. The problem "
+                    "is what the word describes, not where it comes from."},
+            {"text": "Because the cooling is only what you notice, while the "
+                     "name states which way the energy went", "correct": True},
+        ],
+        "figure": None,
+    },
+    # ── MRB-338 night 3 · easier, second pass ───────────────────────────
+    {
+        "id": "c7-03-e18",
+        "band": "easier",
+        "text": "What does the ammonium nitrate in a first aid cold pack do "
+                "to the water it meets?",
+        "options": [
+            {"text": "It dissolves, and the dissolving takes energy in from "
+                     "the water", "correct": True},
+            {"text": "It reacts with the water and releases a gas that "
+                     "carries energy away", "correct": False,
+             "why": "Nothing is given off. The pack stays sealed and no gas "
+                    "is made."},
+            {"text": "It freezes the water around each grain, which is what "
+                     "cools the pack", "correct": False,
+             "why": "The contents are still liquid afterwards, and freezing "
+                    "would give energy out rather than take it in."},
+            {"text": "It spreads cold out through the water from each grain",
+             "correct": False,
+             "why": "Cold is not a substance that can spread. Energy moves, "
+                    "and it moves out of the water."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e19",
+        "band": "easier",
+        "text": "Why does an unsqueezed instant cold pack sit at room "
+                "temperature on a shelf for years?",
+        "options": [
+            {"text": "Because the chemicals slowly lose their coldness while "
+                     "they wait", "correct": False,
+             "why": "There is no coldness stored in them. Nothing is waiting "
+                    "to be released."},
+            {"text": "Because the solid and the water are kept apart until "
+                     "it is squeezed", "correct": True},
+            {"text": "Because the pack is insulated well enough to hold its "
+                     "temperature", "correct": False,
+             "why": "Insulation only slows a change down. The pack is simply "
+                    "the same temperature as the shelf."},
+            {"text": "Because the dissolving needs a warm room before it can "
+                     "begin", "correct": False,
+             "why": "A squeezed pack works on a cold mountainside too. What "
+                    "it needs is the water."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e20",
+        "band": "easier",
+        "text": "A first aid cold pack is set off in a room at 20 °C. "
+                "Roughly how far does the thermometer inside it fall?",
+        "options": [
+            {"text": "By about 2 degrees", "correct": False,
+             "why": "A drop that small would not be worth carrying. A pack "
+                    "is sold because you can feel what it does."},
+            {"text": "By about 20 degrees", "correct": True},
+            {"text": "By about 50 degrees", "correct": False,
+             "why": "That would take the pack to −30 °C, colder than a "
+                    "freezer. It goes down to about freezing point."},
+            {"text": "By about 5 degrees", "correct": False,
+             "why": "The fall is several times bigger than that. The pack "
+                    "ends up near 0 °C."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e21",
+        "band": "easier",
+        "text": "Copper carbonate is heated strongly until it breaks down. "
+                "Which way is energy moving during that change?",
+        "options": [
+            {"text": "Into the surroundings, out of the reaction",
+             "correct": False,
+             "why": "That is exothermic. This change has to be fed by the "
+                    "flame for as long as it runs."},
+            {"text": "Neither way — the flame only changes how fast it "
+                     "happens", "correct": False,
+             "why": "Take the flame away and it stops altogether, so the "
+                    "flame is supplying what it needs."},
+            {"text": "Out of the reaction and into the gas that is given off",
+             "correct": False,
+             "why": "The gas leaves the tube, but the change itself is "
+                    "taking energy in rather than sending it out."},
+            {"text": "Into the reaction, out of the surroundings",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e22",
+        "band": "easier",
+        "text": "Sweat evaporating from skin cools a runner down. Is "
+                "evaporating endothermic or exothermic?",
+        "options": [
+            {"text": "Endothermic, because it takes energy in from the skin",
+             "correct": True},
+            {"text": "Exothermic, because the skin ends up cooler than it "
+                     "was before", "correct": False,
+             "why": "A falling temperature is what endothermic does. "
+                    "Exothermic warms the surroundings."},
+            {"text": "Endothermic, because the sweat gives its cold to the "
+                     "skin", "correct": False,
+             "why": "The direction is right and the reason is wrong. Nothing "
+                    "cold is given; energy is taken."},
+            {"text": "Neither, because evaporating is not a chemical "
+                     "reaction at all", "correct": False,
+             "why": "Both words describe any change that moves energy, "
+                    "physical ones included."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e23",
+        "band": "easier",
+        "text": "Melting, photosynthesis, thermal decomposition and ammonium "
+                "nitrate dissolving. What do all four have in common?",
+        "options": [
+            {"text": "They all break a substance down into simpler ones",
+             "correct": False,
+             "why": "Melting breaks nothing down, and photosynthesis builds "
+                    "a substance rather than breaking one."},
+            {"text": "They all need a flame or a lamp to make them happen",
+             "correct": False,
+             "why": "Ice melting in a drink needs neither. What they need is "
+                    "energy, from wherever it comes."},
+            {"text": "They all take energy in from their surroundings",
+             "correct": True},
+            {"text": "They all happen only inside a laboratory",
+             "correct": False,
+             "why": "Three of the four happen in a drink, in a leaf and in a "
+                    "first aid kit."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e24",
+        "band": "easier",
+        "text": "A strongly endothermic reaction is run in a glass beaker. "
+                "What happens to the outside of the beaker?",
+        "options": [
+            {"text": "It dries out, because the cold draws any moisture "
+                     "inwards", "correct": False,
+             "why": "Cold draws nothing. The glass gains water rather than "
+                    "losing it."},
+            {"text": "Nothing, because the reaction is inside and the glass "
+                     "is a barrier", "correct": False,
+             "why": "The glass is part of the surroundings, and it cools "
+                    "with everything else."},
+            {"text": "It warms, because the energy has to leave the beaker "
+                     "somewhere", "correct": False,
+             "why": "No energy is leaving. The reaction is taking it in, so "
+                    "the glass gets colder."},
+            {"text": "It mists over, because water from the air condenses on "
+                     "the cold glass", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e25",
+        "band": "easier",
+        "text": "Which pair of changes run in opposite energy directions?",
+        "options": [
+            {"text": "Rusting and respiring", "correct": False,
+             "why": "Both give energy out, and neither one is the reverse of "
+                    "the other."},
+            {"text": "Melting ice and water freezing", "correct": True},
+            {"text": "Burning coal and burning natural gas", "correct": False,
+             "why": "Both are combustion, so both give energy out."},
+            {"text": "Salt dissolving and sugar dissolving", "correct": False,
+             "why": "Both are dissolvings, and neither one undoes the "
+                    "other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e26",
+        "band": "easier",
+        "text": "A metal tin picked up in a cold garage feels cold in your "
+                "hands. Is that an endothermic change?",
+        "options": [
+            {"text": "Yes, because your hands lose energy, and losing energy "
+                     "is what endothermic means", "correct": False,
+             "why": "Endothermic describes a CHANGE that takes energy in. "
+                    "Nothing in the tin is changing."},
+            {"text": "Yes, because the tin makes cold, which is what a cold "
+                     "object does", "correct": False,
+             "why": "Nothing makes cold. The tin is simply sitting at the "
+                    "garage's temperature."},
+            {"text": "No — nothing is changing in the tin; it is just colder "
+                     "than your hands", "correct": True},
+            {"text": "No, because a metal cannot take part in an endothermic "
+                     "change", "correct": False,
+             "why": "It can. Heating a metal carbonate until it decomposes "
+                    "is endothermic."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e27",
+        "band": "easier",
+        "text": "A thermal decomposition keeps going only while one thing is "
+                "supplied to it. What is it?",
+        "options": [
+            {"text": "Oxygen from the air", "correct": False,
+             "why": "Oxygen is what combustion needs. A decomposition breaks "
+                    "one substance down on its own."},
+            {"text": "Energy", "correct": True},
+            {"text": "Water", "correct": False,
+             "why": "A decomposition in a test tube is dry. Nothing is added "
+                    "to it while it runs."},
+            {"text": "A catalyst", "correct": False,
+             "why": "A catalyst changes the rate. What the flame supplies is "
+                    "the energy the change takes in."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e28",
+        "band": "easier",
+        "text": "An instant cold pack and a reusable hand warmer are lying "
+                "side by side. Which way does energy move in each of them "
+                "once it is started?",
+        "options": [
+            {"text": "Out of both of them, because both are changing",
+             "correct": False,
+             "why": "Only the warmer gives energy out. The pack takes it in, "
+                    "which is why it goes cold."},
+            {"text": "Into the pack and out of the warmer", "correct": True},
+            {"text": "Into both of them, because both hold a store that has "
+                     "to be filled", "correct": False,
+             "why": "The warmer's store was filled before it was sold, and "
+                    "it empties as the warmer works."},
+            {"text": "Out of the pack and into the warmer", "correct": False,
+             "why": "That is the wrong way round for both. The pack cools "
+                    "its surroundings and the warmer heats them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e29",
+        "band": "easier",
+        "text": "A squeezed cold pack is held against a swollen ankle. Which "
+                "of these counts as the SURROUNDINGS of the change inside "
+                "it?",
+        "options": [
+            {"text": "Only the ammonium nitrate that is dissolving",
+             "correct": False,
+             "why": "That is the change itself. The surroundings are "
+                    "everything else."},
+            {"text": "Only the ankle, because that is the one thing the "
+                     "pack was made to cool", "correct": False,
+             "why": "The water, the bag and the air cool as well. All of "
+                    "them are surroundings."},
+            {"text": "The water, the bag, the cloth and the ankle it is held "
+                     "against", "correct": True},
+            {"text": "Nothing, because a sealed pack has no surroundings",
+             "correct": False,
+             "why": "A sealed bag still sits in a room and against a person, "
+                    "and both of those cool."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-e30",
+        "band": "easier",
+        "text": "Citric acid and sodium hydrogencarbonate powders are left "
+                "dry in a jar for a week. What does a thermometer in the jar "
+                "read?",
+        "options": [
+            {"text": "Room temperature, because nothing changes while they "
+                     "stay dry", "correct": True},
+            {"text": "Several degrees below the room, because the two "
+                     "powders are touching", "correct": False,
+             "why": "Touching is not enough. The reaction needs water before "
+                    "anything happens."},
+            {"text": "Several degrees above the room, because dry powders "
+                     "hold their energy in", "correct": False,
+             "why": "A dry powder sits at whatever temperature its "
+                    "surroundings are."},
+            {"text": "Falling steadily, because the reaction runs very "
+                     "slowly without water", "correct": False,
+             "why": "It does not run at all without water. A week later the "
+                    "jar is unchanged."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · standard, second pass ─────────────────────────
+    {
+        "id": "c7-03-s18",
+        "band": "standard",
+        "text": "A kiln breaks limestone down into calcium oxide, and its "
+                "fire is kept burning all day. The fire is damped down for "
+                "an hour. Predict what happens inside the kiln.",
+        "options": [
+            {"text": "The limestone carries on breaking down on the heat "
+                     "stored in the kiln walls", "correct": False,
+             "why": "The walls cool as they give that up, and the change "
+                    "stops with them. An hour is far too long."},
+            {"text": "The breaking down slows and stops, because it needs "
+                     "energy supplied to it", "correct": True},
+            {"text": "The limestone breaks down faster, because a cooler "
+                     "kiln lets the gas escape", "correct": False,
+             "why": "Cooling a change never speeds it up, and the gas "
+                    "leaving is not what drives it."},
+            {"text": "Nothing changes, because the limestone has already "
+                     "been heated once", "correct": False,
+             "why": "A decomposition is not switched on permanently. It runs "
+                    "only while it is being fed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s19",
+        "band": "standard",
+        "text": "Two endothermic reactions are run in identical beakers of "
+                "water. One drops the water by 3 °C and the other by 11 °C. "
+                "What does that comparison tell you?",
+        "options": [
+            {"text": "That only the second is endothermic, because 3 °C is "
+                     "too small to count", "correct": False,
+             "why": "A small fall is still a fall. Both took energy in from "
+                    "the water."},
+            {"text": "That the second one produced more cold than the first "
+                     "one did", "correct": False,
+             "why": "Neither produced any cold. The second took more energy "
+                    "in."},
+            {"text": "That the second one took more energy in from the water "
+                     "than the first did", "correct": True},
+            {"text": "That the first one started from a warmer temperature "
+                     "than the second one", "correct": False,
+             "why": "The size of each fall was compared, and that does not "
+                    "depend on where either started."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s20",
+        "band": "standard",
+        "text": "An endothermic reaction runs faster when its beaker is "
+                "stood in warm water. Does that make it exothermic?",
+        "options": [
+            {"text": "Yes, because energy is now going into the reaction "
+                     "from the warm water", "correct": False,
+             "why": "Energy going INTO the reaction is what endothermic "
+                    "means. Warming it has not changed the direction."},
+            {"text": "Yes, because anything warmed by its surroundings "
+                     "counts as exothermic", "correct": False,
+             "why": "Exothermic means the SURROUNDINGS get warmer. Here they "
+                    "are still losing energy."},
+            {"text": "No, because the warm water cancels out the cooling "
+                     "exactly", "correct": False,
+             "why": "The warm water speeds the change up. Nothing cancels, "
+                    "and the mixture still takes energy in."},
+            {"text": "No — warming it changes how fast it runs, not which "
+                     "way the energy moves", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s21",
+        "band": "standard",
+        "text": "A student writes that an endothermic reaction \"takes heat "
+                "out of the beaker\". Improve that sentence so it says where "
+                "the energy ends up.",
+        "options": [
+            {"text": "It takes energy in from the beaker and stores it in "
+                     "the new substances", "correct": True},
+            {"text": "It takes energy out of the beaker and destroys it as "
+                     "the reaction runs", "correct": False,
+             "why": "Energy is never destroyed. It has been moved into the "
+                    "products."},
+            {"text": "It takes energy out of the beaker and turns it into "
+                     "cold in the mixture", "correct": False,
+             "why": "There is no cold to turn anything into. What is left "
+                    "simply has less energy."},
+            {"text": "It takes energy out of the beaker and sends it into "
+                     "the air above it", "correct": False,
+             "why": "Then the air would warm. Everything around the "
+                    "reaction cools, the air included."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s22",
+        "band": "standard",
+        "text": "A squeezed cold pack and a metal spoon straight from a "
+                "fridge will both cool a drink. What is the difference "
+                "between them?",
+        "options": [
+            {"text": "There is none — both hold a store of cold that they "
+                     "let out into the drink until it is gone", "correct": False,
+             "why": "Neither holds any cold. The spoon is simply colder, and "
+                    "the pack is running a change."},
+            {"text": "The spoon is endothermic and the pack is only cold",
+             "correct": False,
+             "why": "That is the wrong way round. The pack is the one "
+                    "running a change that takes energy in."},
+            {"text": "The pack runs a change that takes energy in; the spoon "
+                     "only started colder", "correct": True},
+            {"text": "The spoon cools the drink further, because metal "
+                     "carries energy better", "correct": False,
+             "why": "A cold spoon runs out of difference in seconds, however "
+                    "well metal conducts."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s23",
+        "band": "standard",
+        "text": "Ammonium nitrate dissolving takes energy IN. Explain how "
+                "taking energy in is what treats a swollen ankle.",
+        "options": [
+            {"text": "The cold it makes numbs the ankle and brings the "
+                     "swelling down", "correct": False,
+             "why": "No cold is made. The pack works by taking energy out of "
+                    "the ankle."},
+            {"text": "Energy is taken out of the ankle, so the skin there "
+                     "gets colder", "correct": True},
+            {"text": "The pack pushes energy into the ankle, which the "
+                     "swelling then uses up", "correct": False,
+             "why": "Energy moves out of the ankle, not into it. That is why "
+                    "the area feels cold."},
+            {"text": "The dissolving pulls water out of the swelling through "
+                     "the skin", "correct": False,
+             "why": "The bag is sealed and nothing crosses the skin. Only "
+                    "energy moves."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s24",
+        "band": "standard",
+        "text": "A chemist wants a change that will store energy now and "
+                "give it back later. Should they look for an endothermic or "
+                "an exothermic change?",
+        "options": [
+            {"text": "Endothermic, because it takes energy in and stores it "
+                     "in the products", "correct": True},
+            {"text": "Exothermic, because giving energy out is what storing "
+                     "it means", "correct": False,
+             "why": "An exothermic change spends a store rather than filling "
+                    "one."},
+            {"text": "Either, because energy is conserved and so both of "
+                     "them store the same amount", "correct": False,
+             "why": "Conservation says nothing is lost. It does not make the "
+                    "two directions the same."},
+            {"text": "Neither, because energy can only be stored inside a "
+                     "battery", "correct": False,
+             "why": "Every substance holds a chemical store, and "
+                    "photosynthesis fills one with sunlight."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s25",
+        "band": "standard",
+        "text": "A freezer has to keep running for the water in it to turn "
+                "to ice. Does that make freezing endothermic?",
+        "options": [
+            {"text": "Yes, because energy has to be supplied for the "
+                     "freezing to happen", "correct": False,
+             "why": "The electricity runs the pump. The water itself is "
+                    "giving energy out."},
+            {"text": "No — the water gives energy out, and the freezer's job "
+                     "is to carry it away", "correct": True},
+            {"text": "Yes, because the ice ends up colder than the water "
+                     "was", "correct": False,
+             "why": "How cold the product ends up does not decide the "
+                    "direction. The water lost energy to get there."},
+            {"text": "No, because freezing is a physical change and can be "
+                     "neither", "correct": False,
+             "why": "Both words describe physical changes too — melting is "
+                    "the standard example."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s26",
+        "band": "standard",
+        "text": "A beaker of chemicals is 8 °C colder after an endothermic "
+                "reaction than it was before. What is now true of the "
+                "chemicals themselves?",
+        "options": [
+            {"text": "They hold less energy than before, which is why the "
+                     "reading fell", "correct": False,
+             "why": "The reading fell because the water and the glass lost "
+                    "energy. The chemicals gained it."},
+            {"text": "They hold the same as before, because energy is "
+                     "conserved", "correct": False,
+             "why": "Conservation means nothing was lost overall. It moved "
+                    "from the surroundings into the products."},
+            {"text": "They hold no energy at all now, having given it up to "
+                     "the surroundings", "correct": False,
+             "why": "Every substance holds a chemical store, and this one "
+                    "has gained rather than given."},
+            {"text": "They hold more energy than they did, taken from the "
+                     "water and the glass", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s27",
+        "band": "standard",
+        "text": "The thermometer in an endothermic reaction falls for thirty "
+                "seconds and then stops falling. Give the reason.",
+        "options": [
+            {"text": "The thermometer has reached the lowest reading it is "
+                     "able to show", "correct": False,
+             "why": "A laboratory thermometer reads well below anything this "
+                    "reaction reaches."},
+            {"text": "The reaction has started running backwards and is "
+                     "giving the energy back", "correct": False,
+             "why": "Nothing reverses on its own. Energy would have to be "
+                    "supplied to run it the other way."},
+            {"text": "The change has finished, so nothing is taking energy "
+                     "in any more", "correct": True},
+            {"text": "The surroundings have run out of energy to give to the "
+                     "reaction", "correct": False,
+             "why": "The water and the room hold far more than any beaker "
+                    "reaction takes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s28",
+        "band": "standard",
+        "text": "Before a cold pack is squeezed, the solid inside it is "
+                "measured and found to be at room temperature. What does "
+                "that measurement rule out?",
+        "options": [
+            {"text": "That the pack works by holding something already cold "
+                     "inside it", "correct": True},
+            {"text": "That the pack takes energy in from the water once it "
+                     "has been squeezed", "correct": False,
+             "why": "It rules nothing out about that. The taking in starts "
+                    "when the two are mixed."},
+            {"text": "That the solid dissolves in the water rather than "
+                     "reacting with it", "correct": False,
+             "why": "A reading taken before squeezing says nothing about "
+                    "which kind of change follows."},
+            {"text": "That the pack would still work on a cold mountainside "
+                     "in winter", "correct": False,
+             "why": "Starting at room temperature is no obstacle. It is the "
+                    "change that does the cooling."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s29",
+        "band": "standard",
+        "text": "A beaker in which an endothermic reaction is running is "
+                "standing in a large tank of water at 20 °C. Predict what "
+                "the thermometer in the beaker does.",
+        "options": [
+            {"text": "It falls and it keeps on falling, because the tank "
+                     "has so much energy to give", "correct": False,
+             "why": "The tank supplies energy, which stops the beaker "
+                    "falling further rather than driving it down."},
+            {"text": "It stays at 20 °C throughout, because the tank fixes "
+                     "the temperature exactly", "correct": False,
+             "why": "The reaction takes energy in faster than the tank can "
+                    "replace it, so there is a dip."},
+            {"text": "It falls a little and is then pulled back towards "
+                     "20 °C by the tank", "correct": True},
+            {"text": "It rises above 20 °C, because the tank keeps feeding "
+                     "energy into the beaker", "correct": False,
+             "why": "The tank only replaces what the reaction removed. It "
+                    "cannot push the beaker past its own temperature."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-s30",
+        "band": "standard",
+        "text": "A student says a cold pack takes its energy in from the "
+                "sun. Correct them.",
+        "options": [
+            {"text": "They are right, and that is why a pack works better "
+                     "outdoors", "correct": False,
+             "why": "A pack works just as well in a dark room. Sunlight has "
+                    "nothing to do with it."},
+            {"text": "They are wrong — it takes energy from the water, the "
+                     "bag and the skin", "correct": True},
+            {"text": "They are wrong — the pack takes its energy from the "
+                     "ice sealed inside it", "correct": False,
+             "why": "There is no ice in a cold pack, only a solid and a "
+                    "pouch of water."},
+            {"text": "They are wrong — the pack makes its own cold and needs "
+                     "no energy", "correct": False,
+             "why": "No cold is made, and the pack certainly does take "
+                    "energy in."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · harder, second pass ───────────────────────────
+    {
+        "id": "c7-03-h18",
+        "band": "harder",
+        "text": "A plant photosynthesises and respires at the same time. "
+                "Explain how it can still gain mass over a summer.",
+        "options": [
+            {"text": "Because photosynthesis is endothermic, and taking "
+                     "energy in always adds mass", "correct": False,
+             "why": "Taking energy in adds no weighable mass. The gain is "
+                    "the carbon built into the plant."},
+            {"text": "Because respiration stops during the day while "
+                     "photosynthesis is running", "correct": False,
+             "why": "A plant respires every hour of every day. The two run "
+                    "alongside each other."},
+            {"text": "Because it photosynthesises more than it respires, so "
+                     "more is stored than spent", "correct": True},
+            {"text": "Because the two cancel exactly, and the extra mass "
+                     "comes up out of the soil", "correct": False,
+             "why": "If they cancelled, nothing would be gained. The mass "
+                    "comes from carbon dioxide in the air."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h19",
+        "band": "harder",
+        "text": "A student argues that because an endothermic reaction takes "
+                "energy in, running one in a classroom should cool the room "
+                "down. Evaluate that.",
+        "options": [
+            {"text": "They are right in principle, but a beaker takes far "
+                     "too little to change a room", "correct": True},
+            {"text": "They are wrong — an endothermic reaction cools the "
+                     "beaker and nothing much beyond it", "correct": False,
+             "why": "The bench and the air around it cool as well. The "
+                    "surroundings are everything nearby."},
+            {"text": "They are wrong — the warmth of the room stops any "
+                     "reaction cooling anything", "correct": False,
+             "why": "The reaction cools its mixture whatever the room is "
+                    "doing. The room only warms it back afterwards."},
+            {"text": "They are right, and a few beakers would cool a "
+                     "classroom noticeably", "correct": False,
+             "why": "The amounts are tiny beside a room full of air, walls "
+                    "and people."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h20",
+        "band": "harder",
+        "text": "An endothermic change and an exothermic change are run side "
+                "by side in one sealed room, and each moves the same amount "
+                "of energy. What happens to the room's total energy?",
+        "options": [
+            {"text": "It falls, because the endothermic change removes "
+                     "energy permanently", "correct": False,
+             "why": "Nothing is removed permanently. It is stored in the "
+                    "products, still inside the room."},
+            {"text": "It rises, because the exothermic change releases "
+                     "energy that was not there before", "correct": False,
+             "why": "That energy was already there, held in its chemicals. "
+                    "Nothing new is created."},
+            {"text": "It stays the same — energy has only been moved between "
+                     "stores", "correct": True},
+            {"text": "It cannot be worked out without knowing which of the "
+                     "two changes ran first", "correct": False,
+             "why": "Order changes nothing. The two transfers are equal and "
+                    "opposite whenever they happen."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h21",
+        "band": "harder",
+        "text": "A first aid instructor says a cold pack should come off "
+                "after twenty minutes. Suggest why it may have stopped being "
+                "useful well before then.",
+        "options": [
+            {"text": "Because the skin stops feeling cold long before the "
+                     "pack itself stops being cold", "correct": False,
+             "why": "Whether it is felt is not the question. The pack itself "
+                    "stops taking energy in."},
+            {"text": "Because the dissolving finishes, after which the pack "
+                     "only warms back up", "correct": True},
+            {"text": "Because the pack has to be squeezed again every few "
+                     "minutes to keep it going", "correct": False,
+             "why": "Squeezing a used pack does nothing. The solid has "
+                    "already dissolved."},
+            {"text": "Because an endothermic change reverses itself once the "
+                     "surroundings are cold", "correct": False,
+             "why": "It does not reverse on its own. It simply finishes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h22",
+        "band": "harder",
+        "text": "One student says an endothermic reaction loses energy; "
+                "another says it gains energy. Which of them is right?",
+        "options": [
+            {"text": "The first, because the reading on the thermometer goes "
+                     "down", "correct": False,
+             "why": "The thermometer reads the surroundings. The chemicals "
+                    "gained what the surroundings lost."},
+            {"text": "The second, because energy can only ever be gained and "
+                     "never lost", "correct": False,
+             "why": "Energy is lost by whatever gives it up, and here that "
+                    "is the water and the beaker."},
+            {"text": "Neither, because energy is conserved and so nothing "
+                     "gains or loses any", "correct": False,
+             "why": "Conservation means none is created or destroyed. It "
+                    "still moves between things."},
+            {"text": "Both, about different things — the surroundings lose "
+                     "it and the chemicals gain it", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h23",
+        "band": "harder",
+        "text": "An endothermic reaction takes in 4 kJ of energy. The same "
+                "reaction is then run backwards to warm a room. How much "
+                "energy does it give out?",
+        "options": [
+            {"text": "8 kJ, twice what it took in", "correct": False,
+             "why": "Reversing a change gives back exactly what it took, not "
+                    "twice as much."},
+            {"text": "4 kJ, the same amount it took in", "correct": True},
+            {"text": "2 kJ, because some is always lost on the way back",
+             "correct": False,
+             "why": "None is lost. The reverse transfer is the same size as "
+                    "the forward one."},
+            {"text": "None — an endothermic change cannot be run backwards",
+             "correct": False,
+             "why": "Reversing it is exactly what resets a hand warmer, and "
+                    "it is how the energy comes back."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h24",
+        "band": "harder",
+        "text": "One beaker falls from 22 °C to 14 °C and another from 40 °C "
+                "to 32 °C. A student says only the first is endothermic, "
+                "because 32 °C is still warm. Evaluate that.",
+        "options": [
+            {"text": "They are right — a reaction that ends up above room "
+                     "temperature is exothermic", "correct": False,
+             "why": "Where a reaction ends does not matter. The second fell "
+                    "by the same eight degrees."},
+            {"text": "They are wrong — both fell by 8 °C, and a fall is what "
+                     "endothermic means", "correct": True},
+            {"text": "They are right, because the second one must have been "
+                     "heated up to start with", "correct": False,
+             "why": "How it reached 40 °C is a separate question. Once "
+                    "running, it took energy in."},
+            {"text": "They are wrong, but only because the second one fell "
+                     "further than the first", "correct": False,
+             "why": "Both fell by exactly eight degrees. The point is that "
+                    "both fell at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h25",
+        "band": "harder",
+        "text": "A vaccine has to be kept cold for a two-day journey with no "
+                "electricity. Evaluate using instant cold packs for the job.",
+        "options": [
+            {"text": "They would work well, because each pack stays close to "
+                     "0 °C for days on end", "correct": False,
+             "why": "A pack is cold for minutes rather than days. The "
+                    "dissolving finishes quickly."},
+            {"text": "They would work well, because a pack can be squeezed "
+                     "again whenever it warms", "correct": False,
+             "why": "A pack works once. Squeezing a used one does nothing at "
+                    "all."},
+            {"text": "They would fail, because a cold pack warms whatever it "
+                     "is put next to", "correct": False,
+             "why": "It cools what it touches. The problem is how briefly, "
+                    "not which direction."},
+            {"text": "They would fail, because each pack cools only until "
+                     "its change has finished", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h26",
+        "band": "harder",
+        "text": "Photosynthesis takes in far more energy each year than all "
+                "the world's fires release. Explain why that does not mean "
+                "the Earth is steadily getting colder.",
+        "options": [
+            {"text": "Because plants hand it straight back as they grow, so "
+                     "nothing is stored", "correct": False,
+             "why": "Growth IS the storing. A tree holds what it took in for "
+                    "as long as it stands."},
+            {"text": "Because the energy is stored rather than destroyed, "
+                     "and respiration and decay release most of it again",
+             "correct": True},
+            {"text": "Because fires release far more energy than anybody has "
+                     "ever managed to measure", "correct": False,
+             "why": "The comparison runs the other way, and guessing at the "
+                    "number changes nothing."},
+            {"text": "Because the Earth makes new energy to replace whatever "
+                     "the plants take in", "correct": False,
+             "why": "Energy is never created. Nothing replaces it, and "
+                    "nothing needs to."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h27",
+        "band": "harder",
+        "text": "A Bunsen is used to burn magnesium, and then to decompose "
+                "copper carbonate. Compare what the flame is doing in each "
+                "case.",
+        "options": [
+            {"text": "It supplies the energy for both, and both stop the "
+                     "moment it is taken away", "correct": False,
+             "why": "Magnesium keeps burning once lit. Only the carbonate "
+                    "needs the flame kept under it."},
+            {"text": "It starts the burning and can then be taken away; the "
+                     "carbonate needs it kept there", "correct": True},
+            {"text": "It only starts each of them, and neither one needs it "
+                     "once it is going", "correct": False,
+             "why": "Take the flame from the carbonate and the decomposition "
+                    "stops at once."},
+            {"text": "It supplies the oxygen in both cases, which is what "
+                     "each change runs on", "correct": False,
+             "why": "A Bunsen supplies energy, not oxygen, and a "
+                    "decomposition needs no oxygen at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h28",
+        "band": "harder",
+        "text": "A cool box can be packed with ice or with squeezed cold "
+                "packs. Explain which would hold it at a steady temperature "
+                "for longer.",
+        "options": [
+            {"text": "The cold packs, because each one starts off colder "
+                     "than ice does", "correct": False,
+             "why": "A pack reaches about 0 °C, no colder than ice, and it "
+                    "warms back within minutes."},
+            {"text": "Neither — both hold their temperature for exactly as "
+                     "long as they last", "correct": False,
+             "why": "A pack's change finishes in minutes, while melting ice "
+                    "goes on for hours."},
+            {"text": "The cold packs, because a chemical change lasts longer "
+                     "than a physical one", "correct": False,
+             "why": "How long a change lasts has nothing to do with which "
+                    "kind of change it is."},
+            {"text": "The ice, because it stays at 0 °C for the whole time "
+                     "it is melting", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h29",
+        "band": "harder",
+        "text": "A student says exothermic and endothermic are opposites, so "
+                "half of all changes must be endothermic. Evaluate that.",
+        "options": [
+            {"text": "They are wrong — being opposite directions says "
+                     "nothing about how many go each way", "correct": True},
+            {"text": "They are right, because every change has a reverse "
+                     "and so the two of them have to balance", "correct": False,
+             "why": "Every change has a reverse, but not every reverse is "
+                    "something that happens."},
+            {"text": "They are right, and the ones we meet are simply the "
+                     "exothermic half of them", "correct": False,
+             "why": "There is no hidden half. Endothermic changes really are "
+                    "the rarer kind."},
+            {"text": "They are wrong, because most changes are neither one "
+                     "nor the other", "correct": False,
+             "why": "Every change moves energy one way or the other. There "
+                    "is no third option."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-03-h30",
+        "band": "harder",
+        "text": "A student argues that because energy is conserved, an "
+                "endothermic reaction must eventually give its energy back "
+                "on its own. Evaluate that.",
+        "options": [
+            {"text": "They are right, and that is why a beaker returns to "
+                     "room temperature afterwards", "correct": False,
+             "why": "The beaker warms because the room warms it. The stored "
+                    "energy stays in the products."},
+            {"text": "They are right, because conservation means that "
+                     "energy cannot stay in one place", "correct": False,
+             "why": "Conservation says energy is not created or destroyed. "
+                    "It says nothing about having to move."},
+            {"text": "They are wrong — the energy comes back only if the "
+                     "change is reversed", "correct": True},
+            {"text": "They are wrong, because conservation does not apply "
+                     "to an endothermic reaction", "correct": False,
+             "why": "It applies to every change without exception. That is "
+                    "why the energy is still there to find."},
+        ],
+        "figure": None,
+    },
 ]
