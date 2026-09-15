@@ -1162,8 +1162,8 @@ QUESTIONS = [
             "boundary into the road and air",
             "Because the road and the air create new energy to make up the "
             "difference in the total",
-            "Because a car is too complicated to count as a system, so its "
-            "energy cannot be totalled",
+            "Because a car is far too complicated to count as a system, so "
+            "its energy cannot be totalled",
         ],
         "correct_index": 1,
         "why": "Conservation of energy holds for a closed system, so drawing "
