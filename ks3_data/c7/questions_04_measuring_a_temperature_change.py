@@ -964,4 +964,1247 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── easier ──────────────────────────────────────────────────────────
+    {
+        "id": "c7-04-e13",
+        "band": "easier",
+        "text": "What should be used to stir the mixture while the reaction "
+                "is running?",
+        "options": [
+            {"text": "The thermometer", "correct": False,
+             "why": "Stirring with a thermometer is how they get broken, and "
+                    "a broken one in acid is a real incident."},
+            {"text": "A second beaker", "correct": False,
+             "why": "Pouring between containers loses heat to the second one "
+                    "and to the air on the way across."},
+            {"text": "A stirring rod", "correct": True},
+            {"text": "Nothing at all", "correct": False,
+             "why": "Unstirred, the thermometer reads one warm pocket rather "
+                    "than the mixture as a whole."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e14",
+        "band": "easier",
+        "text": "A reaction starts at 17 °C and reaches a peak of 23 °C. What "
+                "is the temperature change?",
+        "options": [
+            {"text": "40 °C", "correct": False,
+             "why": "The two readings have been added. A change is found by "
+                    "subtracting, never by adding."},
+            {"text": "6 °C", "correct": True},
+            {"text": "23 °C", "correct": False,
+             "why": "That is the peak reading itself. The change is 23 − 17, "
+                    "the difference between the two."},
+            {"text": "17 °C", "correct": False,
+             "why": "That is the starting reading. On its own it says nothing "
+                    "about how far the temperature moved."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e15",
+        "band": "easier",
+        "text": "An endothermic reaction starts at 20 °C and the thermometer "
+                "falls to 14 °C. What is the temperature change?",
+        "options": [
+            {"text": "A rise of 6 °C", "correct": False,
+             "why": "The size is right and the direction is not. This mixture "
+                    "got colder, so the change is a fall."},
+            {"text": "A fall of 14 °C", "correct": False,
+             "why": "14 °C is the lowest reading, not the change. The fall is "
+                    "20 − 14, which is 6 °C."},
+            {"text": "A fall of 6 °C", "correct": True},
+            {"text": "A fall of 34 °C", "correct": False,
+             "why": "The two readings have been added together. A change is "
+                    "the gap between them, not their total."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e16",
+        "band": "easier",
+        "text": "What does fitting a lid to the container do?",
+        "options": [
+            {"text": "It stops heat escaping from the open top, so more of "
+                     "the rise reaches the thermometer", "correct": True},
+            {"text": "It makes the reaction release more energy, because the "
+                     "heat that is held in goes on building up inside",
+             "correct": False,
+             "why": "A lid cannot change the chemistry. The same amounts of "
+                    "the same substances release the same energy."},
+            {"text": "It stops the thermometer reading too high, by keeping "
+                     "the warm air off the top of the stem", "correct": False,
+             "why": "The reading is too low, not too high. A lid pushes it "
+                    "upwards, closer to the true value."},
+            {"text": "It holds the mixture at room temperature",
+             "correct": False,
+             "why": "A lid slows heat escaping. It does not hold anything at "
+                    "any particular temperature."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e17",
+        "band": "easier",
+        "text": "Why is a polystyrene cup a good insulator?",
+        "options": [
+            {"text": "Because the plastic feels cold to touch, and a cold "
+                     "material keeps the mixture inside it cool",
+             "correct": False,
+             "why": "Feeling cool is about how fast a material carries heat "
+                    "away from skin, not about insulating."},
+            {"text": "Because it is mostly trapped air, and air is a poor "
+                     "conductor of heat", "correct": True},
+            {"text": "Because it is white, and a white surface reflects heat "
+                     "back into whatever is inside it", "correct": False,
+             "why": "Colour makes no useful difference here. It is the "
+                    "trapped air inside the foam that insulates."},
+            {"text": "Because its walls are thicker than glass, and thick "
+                     "walls hold heat in", "correct": False,
+             "why": "Thickness is not the reason. A thick glass beaker still "
+                    "conducts heat away far faster than foam."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e18",
+        "band": "easier",
+        "text": "At what point should the starting temperature be taken?",
+        "options": [
+            {"text": "Before anything is added to the first solution",
+             "correct": True},
+            {"text": "Just after the two solutions have been mixed, once the "
+                     "reading has begun to move", "correct": False,
+             "why": "By then the reaction has already begun and some of the "
+                    "change has already happened."},
+            {"text": "At the very end of the run, once the reading has "
+                     "settled down again", "correct": False,
+             "why": "By the end the mixture has cooled back towards the room, "
+                    "so that is not where it started."},
+            {"text": "At any convenient moment during the reaction, so long "
+                     "as it is written down", "correct": False,
+             "why": "A value taken part-way through is not a starting value, "
+                    "and the change comes out too small."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e19",
+        "band": "easier",
+        "text": "Taking the mean of several repeats reduces which kind of "
+                "error?",
+        "options": [
+            {"text": "Systematic error", "correct": False,
+             "why": "A systematic error shifts every repeat the same way, so "
+                    "the mean is shifted by exactly as much."},
+            {"text": "Both kinds equally", "correct": False,
+             "why": "Averaging only cancels errors that fall on both sides of "
+                    "the truth. A one-way error survives it."},
+            {"text": "Neither kind", "correct": False,
+             "why": "Scatter either side of the truth genuinely does cancel, "
+                    "so a mean is better than one reading."},
+            {"text": "Random error", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e20",
+        "band": "easier",
+        "text": "Trapped air is what makes polystyrene foam insulate. Which "
+                "everyday object works on the same principle?",
+        "options": [
+            {"text": "A metal saucepan", "correct": False,
+             "why": "A saucepan is built to conduct heat quickly, which is "
+                    "the opposite of insulating."},
+            {"text": "A duvet", "correct": True},
+            {"text": "A single window pane", "correct": False,
+             "why": "One pane conducts heat out of a room. It is double "
+                    "glazing, with air between, that insulates."},
+            {"text": "A radiator", "correct": False,
+             "why": "A radiator is made to release heat as fast as it can. "
+                    "Nothing about it traps air."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e21",
+        "band": "easier",
+        "text": "Why does the mixture need stirring at all?",
+        "options": [
+            {"text": "Because without it the thermometer reads one warm "
+                     "pocket rather than the whole mixture", "correct": True},
+            {"text": "Because stirring makes the reaction finish sooner, so "
+                     "there is less time to lose heat", "correct": False,
+             "why": "Stirring may mix the reactants, but the reason it is "
+                    "done here is to make the reading fair."},
+            {"text": "Because an unstirred mixture cools down faster than a "
+                     "stirred one does", "correct": False,
+             "why": "Stirring does not slow cooling. If anything it brings "
+                    "warm liquid up to the surface faster."},
+            {"text": "Because a thermometer will not respond unless liquid "
+                     "is moving past its bulb", "correct": False,
+             "why": "A thermometer responds in still liquid perfectly well. "
+                    "It reports whatever is touching it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e22",
+        "band": "easier",
+        "text": "Which reading of the thermometer is the one to record?",
+        "options": [
+            {"text": "The reading taken exactly one minute after mixing, so "
+                     "that every group uses the same wait", "correct": False,
+             "why": "A fixed wait is not the peak. Many reactions have peaked "
+                    "and begun cooling well inside a minute."},
+            {"text": "The highest reading it reaches", "correct": True},
+            {"text": "The reading taken once the mixture has settled back "
+                     "down to a steady value", "correct": False,
+             "why": "Once it settles it is back near room temperature, and "
+                    "the change has been lost almost entirely."},
+            {"text": "The mean of every reading taken during the run, so "
+                     "that nothing is left out", "correct": False,
+             "why": "Averaging across the run mixes the peak with cooler "
+                    "values and gives a change that is too small."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e23",
+        "band": "easier",
+        "text": "What happens to the thermometer reading in the minutes after "
+                "an exothermic reaction has peaked?",
+        "options": [
+            {"text": "It holds steady at the peak, because the energy "
+                     "released has nowhere left to go", "correct": False,
+             "why": "Nothing holds the heat in. A warm mixture in a cooler "
+                    "room starts losing energy at once."},
+            {"text": "It goes on climbing slowly, because the reaction keeps "
+                     "on releasing energy for hours on end", "correct": False,
+             "why": "The climb stops when the reaction does. After that only "
+                    "the losses to the room continue."},
+            {"text": "It falls back towards room temperature", "correct": True},
+            {"text": "It drops well below room temperature before climbing "
+                     "back up to meet it again", "correct": False,
+             "why": "There is nothing to take it below the room. Cooling "
+                    "stops once the two are level."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e24",
+        "band": "easier",
+        "text": "A set of readings that agree closely with one another is "
+                "described as what?",
+        "options": [
+            {"text": "Accurate", "correct": False,
+             "why": "Accurate means close to the true value. A set can be "
+                    "tightly grouped and still all be wrong."},
+            {"text": "Systematic", "correct": False,
+             "why": "Systematic describes an error that runs one way, not a "
+                    "set of readings that agree."},
+            {"text": "Precise", "correct": True},
+            {"text": "Anomalous", "correct": False,
+             "why": "An anomalous reading is one that sits well away from the "
+                    "others, which is the opposite of this."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e25",
+        "band": "easier",
+        "text": "A reading that sits close to the true value is described as "
+                "what?",
+        "options": [
+            {"text": "Precise", "correct": False,
+             "why": "Precise describes how closely repeats agree with each "
+                    "other, not how close they are to the truth."},
+            {"text": "Repeatable", "correct": False,
+             "why": "Getting the same value again says nothing about whether "
+                    "that value is the right one."},
+            {"text": "Consistent", "correct": False,
+             "why": "Consistent readings agree with one another. They can "
+                    "agree and still sit well away from the truth."},
+            {"text": "Accurate", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e26",
+        "band": "easier",
+        "text": "Why should the starting temperature be written down rather "
+                "than remembered?",
+        "options": [
+            {"text": "Because a number carried in the head is the one that "
+                     "gets lost, and without it there is no change to "
+                     "calculate", "correct": True},
+            {"text": "Because writing it down slows the experiment to a "
+                     "safer pace", "correct": False,
+             "why": "Recording is about keeping the data, not about pace. "
+                    "Speed matters at the peak, not at the start."},
+            {"text": "Because a written number is more accurate than the "
+                     "same number spoken", "correct": False,
+             "why": "The reading is the same either way. What changes is "
+                    "whether it still exists ten minutes later."},
+            {"text": "Because it has to be countersigned", "correct": False,
+             "why": "Nothing in the method needs countersigning. The reason "
+                    "is simply that data has to survive."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e27",
+        "band": "easier",
+        "text": "What is a bomb calorimeter?",
+        "options": [
+            {"text": "A thermometer that reads to a hundredth of a degree, "
+                     "used for very small changes", "correct": False,
+             "why": "The fine thermometer is one part of it. The instrument "
+                    "is the sealed vessel and its water jacket."},
+            {"text": "A machine that measures how quickly a fuel burns away "
+                     "once it has been lit", "correct": False,
+             "why": "It measures the energy released, not the rate. How fast "
+                    "a fuel burns is a different quantity."},
+            {"text": "A stronger polystyrene cup, built to take the heat of "
+                     "a burning fuel", "correct": False,
+             "why": "It is steel, sealed and weighed, with its own heat "
+                    "capacity measured. That is another instrument."},
+            {"text": "A sealed steel vessel sitting in a measured mass of "
+                     "water inside an insulated jacket", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e28",
+        "band": "easier",
+        "text": "Which quantity is measured in order to judge the energy "
+                "change of a reaction?",
+        "options": [
+            {"text": "The mass of the container before the reaction and "
+                     "again once it has finished", "correct": False,
+             "why": "The container does not change mass, and weighing it "
+                    "reports nothing about energy."},
+            {"text": "The time the reaction takes from the moment of mixing "
+                     "to the moment it stops", "correct": False,
+             "why": "A slow reaction can release plenty of energy and a fast "
+                    "one very little. Time does not measure it."},
+            {"text": "The volume of solution left in the cup at the end of "
+                     "the run", "correct": False,
+             "why": "The volume is kept the same on purpose, so that it is "
+                    "not what differs between runs."},
+            {"text": "The temperature change of the mixture", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e29",
+        "band": "easier",
+        "text": "Heat escaping to the room during an exothermic reaction has "
+                "what effect on the measured temperature change?",
+        "options": [
+            {"text": "It always makes the measured change smaller than the "
+                     "true change", "correct": True},
+            {"text": "It makes the measured change larger, because the "
+                     "escaping heat warms the air around the thermometer",
+             "correct": False,
+             "why": "The bulb is in the liquid, not the air. Energy that "
+                    "escapes is energy it never reads."},
+            {"text": "It has no effect at all, because the reaction releases "
+                     "the same energy whatever the apparatus",
+             "correct": False,
+             "why": "The energy released is the same. How much of it reaches "
+                    "the thermometer is not."},
+            {"text": "It turns the measured rise into a fall",
+             "correct": False,
+             "why": "An exothermic reaction still gives a rise. Losses make "
+                    "that rise smaller, never negative."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-e30",
+        "band": "easier",
+        "text": "Why is glass a poor choice of container for this "
+                "experiment?",
+        "options": [
+            {"text": "Because glass reacts with the dilute acid and takes "
+                     "part in what is happening inside the cup",
+             "correct": False,
+             "why": "Glass is used in laboratories precisely because dilute "
+                    "acids do not attack it."},
+            {"text": "Because a glass beaker is far too heavy to be lifted "
+                     "once the reaction has begun", "correct": False,
+             "why": "Weight is irrelevant, and the container is not meant to "
+                    "be moved during the run anyway."},
+            {"text": "Because glass conducts heat away and absorbs a share "
+                     "of it warming itself up", "correct": True},
+            {"text": "Because no lid can be fitted to a beaker",
+             "correct": False,
+             "why": "A beaker takes a lid perfectly well. The trouble is what "
+                    "the glass does with the heat."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "c7-04-s13",
+        "band": "standard",
+        "text": "Group A records 18.0 °C then 24.5 °C. Group B records 20.0 °C "
+                "then 27.5 °C. Which group measured the larger temperature "
+                "change, and by how much?",
+        "options": [
+            {"text": "Group B, by 3.0 °C", "correct": False,
+             "why": "3.0 is the gap between the two final readings. Each "
+                    "group's change has to be worked out first."},
+            {"text": "Group A, by 1.0 °C", "correct": False,
+             "why": "A rose 6.5 °C and B rose 7.5 °C. Starting lower does not "
+                    "make the change bigger."},
+            {"text": "Group B, by 1.0 °C", "correct": True},
+            {"text": "Neither, both 6.5 °C", "correct": False,
+             "why": "24.5 − 18.0 is 6.5, but 27.5 − 20.0 is 7.5. The two "
+                    "changes differ by a whole degree."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s14",
+        "band": "standard",
+        "text": "An endothermic reaction is run twice. Without a lid the "
+                "lowest reading is 15.0 °C from a start of 22.0 °C; with a lid "
+                "it is 13.5 °C from the same start. Which run is closer to the "
+                "true value?",
+        "options": [
+            {"text": "The lidded run, because its fall of 8.5 °C let less "
+                     "heat leak in from the room to the mixture",
+             "correct": True},
+            {"text": "The open run, because a smaller fall is the safer "
+                     "figure to report", "correct": False,
+             "why": "The smaller fall is the one that gained most from the "
+                    "room. Caution is not the same as accuracy."},
+            {"text": "Neither, because a lid can help only a reaction that "
+                     "gets hotter", "correct": False,
+             "why": "A lid slows heat crossing the boundary either way, so it "
+                    "helps both kinds of reaction."},
+            {"text": "Both equally, since the starts matched",
+             "correct": False,
+             "why": "A shared starting value does not make two rigs equal. "
+                    "What differs is how much heat crossed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s15",
+        "band": "standard",
+        "text": "A cup insulates well but is left open at the top. By what "
+                "two routes is heat still escaping?",
+        "options": [
+            {"text": "Straight down through the base into the bench, and "
+                     "sideways through the walls of the cup itself",
+             "correct": False,
+             "why": "The foam is exactly what blocks those two routes. The "
+                    "open top is the gap the cup does not cover."},
+            {"text": "By evaporation from the surface, and by warm air "
+                     "rising away from it", "correct": True},
+            {"text": "Through the thermometer and through the stirring rod, "
+                     "both of which stick out into the air", "correct": False,
+             "why": "Those carry a little, but the open surface loses far "
+                    "more by evaporation and by rising air."},
+            {"text": "By the reaction running backwards, and by the acid "
+                     "cooling as it is used up", "correct": False,
+             "why": "Neither happens. A neutralisation does not reverse, and "
+                    "using up acid cools nothing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s16",
+        "band": "standard",
+        "text": "Two students use identical rigs, but one reads the "
+                "thermometer at the peak and the other two minutes later. "
+                "Predict how their reported changes will compare.",
+        "options": [
+            {"text": "The late reader will report the larger change, because "
+                     "waiting lets the reaction finish properly",
+             "correct": False,
+             "why": "The reaction finished long before. Those two minutes are "
+                    "spent losing heat, not gaining it."},
+            {"text": "Both will report the same change, because they used "
+                     "the same apparatus and chemicals", "correct": False,
+             "why": "Identical apparatus does not rescue a late reading. When "
+                    "you look is a variable of its own."},
+            {"text": "The late reader will always report the smaller change",
+             "correct": True},
+            {"text": "The late reader's value will be the more reliable, "
+                     "having been given longer to settle", "correct": False,
+             "why": "Settling means cooling here. The settled value is the "
+                    "one furthest from the truth."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s17",
+        "band": "standard",
+        "text": "Why should both solutions be at the same temperature as each "
+                "other before they are mixed?",
+        "options": [
+            {"text": "Because mixing two liquids at different temperatures "
+                     "changes the reading on its own, before any reaction is "
+                     "counted", "correct": True},
+            {"text": "Because a warmer solution reacts faster and so "
+                     "releases more energy overall", "correct": False,
+             "why": "A warmer start speeds a reaction up but does not change "
+                    "how much energy it releases."},
+            {"text": "Because a thermometer cannot be moved between two "
+                     "liquids at different temperatures", "correct": False,
+             "why": "A thermometer moves between liquids freely. The problem "
+                    "lies in what mixing them does."},
+            {"text": "Because both must share one measuring cylinder",
+             "correct": False,
+             "why": "Volume measurement is unaffected. The difficulty is that "
+                    "the reading would not be the reaction's."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s18",
+        "band": "standard",
+        "text": "Two students read the same thermometer at the same moment "
+                "and write down 24 °C and 25 °C. What kind of error is that, "
+                "and what would reduce it?",
+        "options": [
+            {"text": "A systematic error, reduced by fitting a lid to the "
+                     "container they are using", "correct": False,
+             "why": "A systematic error pushes every reading the same way. "
+                    "These two disagree in opposite directions."},
+            {"text": "A systematic error, reduced by reading the thermometer "
+                     "sooner after the two are mixed", "correct": False,
+             "why": "Timing did not separate these two. They read the same "
+                    "instrument at the same instant."},
+            {"text": "A random error, reduced by repeating and averaging",
+             "correct": True},
+            {"text": "A random error, reduced by insulating the cup with a "
+                     "second layer of foam", "correct": False,
+             "why": "Insulation attacks heat loss, which is the one-way "
+                    "error. It does nothing about scale reading."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s19",
+        "band": "standard",
+        "text": "A group's three readings are 5.0, 7.0 and 9.0 °C, and the "
+                "true value is 7.0 °C. How should that set be described?",
+        "options": [
+            {"text": "Accurate on average but not precise", "correct": True},
+            {"text": "Precise but not accurate, because the readings are "
+                     "grouped tightly around one wrong figure",
+             "correct": False,
+             "why": "They are spread over four degrees, which is the opposite "
+                    "of tightly grouped."},
+            {"text": "Neither precise nor accurate, since not one reading in "
+                     "the set landed on the true value", "correct": False,
+             "why": "One of them did land on 7.0, and so does the mean. The "
+                    "trouble is the spread, not the centre."},
+            {"text": "Both precise and accurate, because the mean of the "
+                     "three readings comes out at exactly the true value",
+             "correct": False,
+             "why": "A correct mean does not make a scattered set precise. "
+                    "Precision is about how closely repeats agree."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s20",
+        "band": "standard",
+        "text": "A group already uses an insulated cup but writes up the "
+                "method before reading the thermometer. Which single change "
+                "would improve their result most?",
+        "options": [
+            {"text": "Adding a second layer of insulation around the cup "
+                     "they are already using", "correct": False,
+             "why": "The cup is already doing its job. The two-minute wait is "
+                    "throwing that benefit away."},
+            {"text": "Using twice the volume of both solutions so that the "
+                     "rise comes out bigger and easier to see",
+             "correct": False,
+             "why": "Doubling both gives much the same change, and a delayed "
+                    "reading still loses most of it."},
+            {"text": "Repeating the whole experiment five more times and "
+                     "taking the mean of all six runs", "correct": False,
+             "why": "All six would be read late, so the mean would come out "
+                    "just as low as the first run."},
+            {"text": "Reading the thermometer at the peak", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s21",
+        "band": "standard",
+        "text": "Explain why some of the energy released never shows up on "
+                "the thermometer even when the container is sealed.",
+        "options": [
+            {"text": "Some of it is destroyed as the reaction comes to an "
+                     "end, and cannot be recovered afterwards",
+             "correct": False,
+             "why": "Energy is never destroyed. It ends up somewhere other "
+                    "than in the liquid being measured."},
+            {"text": "Some of it goes into warming the container, the lid "
+                     "and the thermometer", "correct": True},
+            {"text": "Some of it is spent making the new substances weigh "
+                     "more than the old ones did", "correct": False,
+             "why": "The products weigh the same as the reactants. Nothing is "
+                    "spent on making mass."},
+            {"text": "Some of it leaves the cup as light", "correct": False,
+             "why": "A neutralisation in a cup gives out no light worth "
+                    "measuring. The losses are to the apparatus."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s22",
+        "band": "standard",
+        "text": "A student suggests warming the acid to 40 °C first, so that "
+                "the rise will be easier to see. Why is that a poor idea?",
+        "options": [
+            {"text": "Because a warm mixture sits further above room "
+                     "temperature, so it loses heat to the room faster all "
+                     "the way through", "correct": True},
+            {"text": "Because warming the acid uses it up before the alkali "
+                     "can be added", "correct": False,
+             "why": "Warming does not consume the acid. All of it is still "
+                    "there when the alkali goes in."},
+            {"text": "Because a laboratory thermometer cannot be trusted "
+                     "above 40 °C", "correct": False,
+             "why": "Laboratory thermometers read far higher than that "
+                    "without any difficulty."},
+            {"text": "Because the rise would be harder to read",
+             "correct": False,
+             "why": "A larger rise would be easier to read. The real problem "
+                    "is that it will not be larger."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s23",
+        "band": "standard",
+        "text": "A group runs the same reaction twice in the same rig and "
+                "gets +6.6 °C and +6.8 °C. What should they do with those two "
+                "values?",
+        "options": [
+            {"text": "Report the higher one, because heat loss means the "
+                     "lower value must be the faulty run of the two",
+             "correct": False,
+             "why": "Neither run is faulty. A 0.2 °C difference is ordinary "
+                    "scatter, and choosing the high one biases the answer."},
+            {"text": "Report the mean of the two, since the difference "
+                     "between them is ordinary scatter", "correct": True},
+            {"text": "Discard both and begin the whole thing again, as two "
+                     "readings that disagree cannot be used", "correct": False,
+             "why": "Repeats never agree exactly. Disagreeing by a tenth or "
+                    "two is what ordinary scatter looks like."},
+            {"text": "Report the lower one, because the smallest measured "
+                     "value is always the safest", "correct": False,
+             "why": "Choosing the smallest is not caution, it is bias. The "
+                    "mean uses both runs fairly."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s24",
+        "band": "standard",
+        "text": "A group stretches cling film over the cup and pushes the "
+                "thermometer through it. What effect will that have on the "
+                "reading?",
+        "options": [
+            {"text": "It will fall, because sealing the top traps the "
+                     "reaction and slows it right down", "correct": False,
+             "why": "Covering the top does not slow a neutralisation. The "
+                    "reactants are already mixed underneath."},
+            {"text": "It will stay exactly the same, because only the walls "
+                     "of a container matter for heat loss", "correct": False,
+             "why": "The open top is one of the biggest losses of the lot, "
+                    "which is why a lid is worth fitting."},
+            {"text": "It will fall, because the film conducts heat away "
+                     "faster than open air does", "correct": False,
+             "why": "Air above the liquid rises and carries heat off with it. "
+                    "The film is what stops that."},
+            {"text": "It will rise, because less heat escapes from the "
+                     "surface of the liquid", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s25",
+        "band": "standard",
+        "text": "A group measures 20.0 °C then 26.4 °C. They repeat with a lid "
+                "fitted and measure 20.0 °C then 27.1 °C. How much did the lid "
+                "gain them?",
+        "options": [
+            {"text": "7.1 °C", "correct": False,
+             "why": "That is the second run's final reading, which is not "
+                    "even a change. The gain is 7.1 − 6.4."},
+            {"text": "6.4 °C", "correct": False,
+             "why": "That is the first rig's whole result, not the part of it "
+                    "the lid was responsible for."},
+            {"text": "1.1 °C", "correct": False,
+             "why": "That subtracts 26.0, which nobody recorded. The two "
+                    "changes are 6.4 °C and 7.1 °C."},
+            {"text": "0.7 °C", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s26",
+        "band": "standard",
+        "text": "Why does the thermometer reading begin to fall the moment it "
+                "has passed its peak?",
+        "options": [
+            {"text": "Because from that point on the heat escaping to the "
+                     "room is greater than any the reaction is still "
+                     "supplying", "correct": True},
+            {"text": "Because the reaction starts running backwards once it "
+                     "has finished", "correct": False,
+             "why": "A neutralisation does not reverse itself. What follows "
+                    "the peak is ordinary cooling."},
+            {"text": "Because a thermometer can hold its highest reading for "
+                     "only a few seconds", "correct": False,
+             "why": "A thermometer holds nothing. It reports whatever the "
+                    "liquid around it is doing."},
+            {"text": "Because the products are colder substances",
+             "correct": False,
+             "why": "Substances do not carry their own temperatures. The "
+                    "mixture is simply cooling towards the room."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s27",
+        "band": "standard",
+        "text": "Why can a systematic error not be spotted by checking how "
+                "closely a group's repeats agree with one another?",
+        "options": [
+            {"text": "Because repeats in a school laboratory are never close "
+                     "enough to one another for the comparison to mean much",
+             "correct": False,
+             "why": "Careful repeats agree to a tenth of a degree. Close "
+                    "agreement is common and is not the difficulty."},
+            {"text": "Because it shifts every repeat by much the same "
+                     "amount, leaving them still in close agreement",
+             "correct": True},
+            {"text": "Because a systematic error shows itself only in the "
+                     "first run of a set, and not in any later one",
+             "correct": False,
+             "why": "It affects every run. That is exactly what makes it "
+                    "systematic rather than random."},
+            {"text": "Because a systematic error appears only once the "
+                     "results have been averaged", "correct": False,
+             "why": "It is present in every individual reading. Averaging "
+                    "neither creates it nor reveals it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s28",
+        "band": "standard",
+        "text": "One class uses glass beakers and another uses polystyrene "
+                "cups for the same reaction. Every cup result is higher than "
+                "every beaker result. What does that pattern show?",
+        "options": [
+            {"text": "That the class with the cups must have worked more "
+                     "carefully than the class with the beakers",
+             "correct": False,
+             "why": "Care would scatter both ways between individuals. This "
+                    "difference tracks the apparatus exactly."},
+            {"text": "That the container is causing a difference that runs "
+                     "one way", "correct": True},
+            {"text": "That the reaction releases more energy in a cup than "
+                     "it does in a glass beaker", "correct": False,
+             "why": "The chemistry is identical. What differs is how much of "
+                    "the energy reaches the thermometer."},
+            {"text": "That the beaker class must have misread their "
+                     "thermometers on every single run", "correct": False,
+             "why": "Misreading scatters in both directions. Every beaker "
+                    "value being lower is not misreading."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s29",
+        "band": "standard",
+        "text": "Why is 'read it at the peak' better advice than 'read it "
+                "exactly thirty seconds after mixing'?",
+        "options": [
+            {"text": "Because a stopwatch brings an error of its own into "
+                     "the measurement", "correct": False,
+             "why": "Timing to a second is easy. The trouble is that the "
+                    "right second differs from reaction to reaction."},
+            {"text": "Because thirty seconds is too short a wait for any "
+                     "reaction to get going", "correct": False,
+             "why": "Many reactions peak within seconds. A fixed rule is "
+                    "wrong for being fixed, not for being short."},
+            {"text": "Because the peak cannot be recognised until the "
+                     "reading has begun to fall", "correct": False,
+             "why": "The peak is recognised exactly that way, and watching "
+                    "for it is what the advice asks for."},
+            {"text": "Because different reactions peak at different times, "
+                     "so a fixed wait misses it", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-s30",
+        "band": "standard",
+        "text": "A group writes 25 °C in the temperature-change column, having "
+                "copied down their final reading. Their start was 18 °C. What "
+                "should the column say?",
+        "options": [
+            {"text": "43 °C", "correct": False,
+             "why": "Adding the two readings gives a number that describes "
+                    "nothing. A change is a difference."},
+            {"text": "18 °C", "correct": False,
+             "why": "The start is one of the two readings needed, not the "
+                    "change between them."},
+            {"text": "25 °C", "correct": False,
+             "why": "That is what the thermometer showed, but the column "
+                    "asks for a change and that needs both readings."},
+            {"text": "7 °C", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "c7-04-h13",
+        "band": "harder",
+        "text": "An endothermic reaction cools the mixture below room "
+                "temperature. Explain what heat loss does to the measured "
+                "fall in that case.",
+        "options": [
+            {"text": "Heat now flows in from the warmer room, so the "
+                     "measured fall always comes out smaller than the true fall",
+             "correct": True},
+            {"text": "Heat still flows out of the mixture, so the measured "
+                     "fall is larger than it should be", "correct": False,
+             "why": "Heat flows from hot to cold. A mixture below room "
+                    "temperature gains energy rather than losing it."},
+            {"text": "Nothing crosses either way, because a cold mixture "
+                     "has no heat left to give", "correct": False,
+             "why": "A mixture at 14 °C still holds plenty of energy, and a "
+                    "20 °C room transfers some straight in."},
+            {"text": "The two flows cancel, so the fall is the true one",
+             "correct": False,
+             "why": "Nothing cancels. The flow runs one way and it always "
+                    "shortens the measured fall."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h14",
+        "band": "harder",
+        "text": "A group argues their result must be right because the group "
+                "at the next bench got the same value. Why is that reasoning "
+                "unsafe?",
+        "options": [
+            {"text": "Two groups can never run a reaction in quite the same "
+                     "way, so no two values may be compared",
+             "correct": False,
+             "why": "They can be compared, and comparing them is useful. The "
+                    "flaw is that agreement is not proof."},
+            {"text": "Only readings taken by the same student may fairly be "
+                     "set beside one another at all", "correct": False,
+             "why": "Whose hand held the thermometer is not the issue. The "
+                    "issue is what the two rigs share."},
+            {"text": "Two groups using the same leaky apparatus are wrong in "
+                     "the same way and still agree", "correct": True},
+            {"text": "A second group's value is only a repeat",
+             "correct": False,
+             "why": "Repeats are evidence about scatter. They are simply not "
+                    "evidence about a one-way error."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h15",
+        "band": "harder",
+        "text": "In a bomb calorimeter the sample is set alight by an "
+                "electrically heated wire rather than a burning splint. "
+                "Suggest why that matters for the measurement.",
+        "options": [
+            {"text": "A splint would burn its own fuel inside the vessel and "
+                     "add energy the sample never released", "correct": True},
+            {"text": "A splint would not fit through the opening in a sealed "
+                     "steel vessel", "correct": False,
+             "why": "Access could be engineered. The objection is the energy "
+                    "the splint itself contributes."},
+            {"text": "An electric wire heats the sample more evenly than any "
+                     "flame could", "correct": False,
+             "why": "Evenness is not the point. The sample is lit and then "
+                    "burns on its own either way."},
+            {"text": "A splint would use up the sample's oxygen",
+             "correct": False,
+             "why": "The vessel is charged with far more oxygen than a splint "
+                    "could ever consume."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h16",
+        "band": "harder",
+        "text": "One group gains 1.4 °C by reading at the peak instead of "
+                "late; another gains 0.9 °C by swapping a beaker for a cup. "
+                "What does that tell you about the two original rigs?",
+        "options": [
+            {"text": "That the second group's rig must have been the better "
+                     "built of the two from the beginning", "correct": False,
+             "why": "Nothing here compares the two rigs' readings. It "
+                    "compares what each group's own fault was costing."},
+            {"text": "That the same piece of advice would have helped both "
+                     "groups by about the same amount", "correct": False,
+             "why": "It would not: timing was the first group's main loss and "
+                    "the container was the second group's."},
+            {"text": "That the first group's reaction released more energy "
+                     "than the second group's reaction did", "correct": False,
+             "why": "A gain from a method change says nothing about the "
+                    "chemistry, which was the same for both."},
+            {"text": "That they were losing heat mainly by different "
+                     "routes", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h17",
+        "band": "harder",
+        "text": "A group's five readings are 6.2, 6.9, 6.7, 6.8 and 6.6 °C, "
+                "and one member wants to drop the 6.2. Is that justified?",
+        "options": [
+            {"text": "Yes, because any value sitting apart from the others "
+                     "is an anomaly and has to go", "correct": False,
+             "why": "Distance alone is not a reason. Discarding low values "
+                    "for being low pushes the mean up."},
+            {"text": "No, because five readings may never be altered once "
+                     "written down", "correct": False,
+             "why": "A genuinely faulty run can be excluded, provided the "
+                    "reason is the fault and not the number."},
+            {"text": "Only if something went wrong in that run, since "
+                     "dropping a low value biases the mean", "correct": True},
+            {"text": "Yes, because heat loss means the lowest reading in a "
+                     "set is always the faulty one", "correct": False,
+             "why": "Heat loss makes all five low together. It does not pick "
+                    "out any one run as faulty."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h18",
+        "band": "harder",
+        "text": "Why does insulating the container do nothing about the "
+                "energy that ends up in the thermometer?",
+        "options": [
+            {"text": "Because a thermometer is made of glass, and no "
+                     "insulation can slow heat moving through glass at all",
+             "correct": False,
+             "why": "Insulation would slow it if it were in the way. It is "
+                    "not: the bulb sits inside the liquid."},
+            {"text": "Because the thermometer sits inside the mixture and "
+                     "always warms with it", "correct": True},
+            {"text": "Because the thermometer is warmed by the room around "
+                     "it rather than by the mixture itself", "correct": False,
+             "why": "Only the stem above the liquid meets the room. The bulb "
+                    "takes its energy from the mixture."},
+            {"text": "Because the energy inside the thermometer comes back "
+                     "out again as the reading is taken", "correct": False,
+             "why": "It comes back only as the mixture cools, which is after "
+                    "the peak has been and gone."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h19",
+        "band": "harder",
+        "text": "Suggest why a school rig gets closer to the true value for a "
+                "reaction that finishes in seconds than for one that takes "
+                "several minutes.",
+        "options": [
+            {"text": "A slow reaction spends longer above room temperature "
+                     "before it peaks, so more heat escapes on the way",
+             "correct": True},
+            {"text": "A slow reaction releases less energy in total than a "
+                     "fast one does", "correct": False,
+             "why": "Rate and total energy are separate. A slow reaction can "
+                    "release a great deal of energy."},
+            {"text": "A fast reaction warms the thermometer less, so less "
+                     "energy is wasted on the instrument", "correct": False,
+             "why": "The thermometer takes the same share in both. What "
+                    "differs is the loss to the room."},
+            {"text": "A fast reaction is easier to stir", "correct": False,
+             "why": "Stirring is no harder over minutes than over seconds. "
+                    "The difference is time spent losing heat."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h20",
+        "band": "harder",
+        "text": "One student says a lid improves accuracy; another says it "
+                "improves precision. Which is right, and why?",
+        "options": [
+            {"text": "The second, because a lid makes a group's repeats "
+                     "agree far more closely with each other",
+             "correct": False,
+             "why": "A lid may tidy the spread a little, but its real work is "
+                    "moving every value nearer the truth."},
+            {"text": "Neither, because a lid changes only how long the "
+                     "experiment takes to run from start to finish",
+             "correct": False,
+             "why": "A lid changes how much heat escapes, which is the whole "
+                    "reason it is fitted."},
+            {"text": "Both equally, since accuracy and precision are two "
+                     "names for the same property of a set", "correct": False,
+             "why": "They are different properties. A set can agree closely "
+                    "and still be far from the true value."},
+            {"text": "The first, because a lid moves every reading closer "
+                     "to the true value", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h21",
+        "band": "harder",
+        "text": "If no school apparatus ever reaches the true value, how can "
+                "the true value be known at all?",
+        "options": [
+            {"text": "By measuring very carefully with the same cup and "
+                     "taking a great many more repeats than usual",
+             "correct": False,
+             "why": "Repeats in the same leaky cup all come out low. Care "
+                    "does not recover what has escaped."},
+            {"text": "By using apparatus whose own losses are measured "
+                     "beforehand and allowed for", "correct": True},
+            {"text": "By settling on whichever value the largest number of "
+                     "classes happened to report", "correct": False,
+             "why": "A shared error survives a vote. Every class using cups "
+                    "would report low together."},
+            {"text": "By taking the very highest value that any group has "
+                     "ever managed to record", "correct": False,
+             "why": "The highest reading is still an underestimate, and "
+                    "picking extremes is not a measurement."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h22",
+        "band": "harder",
+        "text": "Explain how a group can keep every variable the same between "
+                "runs and still end up with a wrong answer.",
+        "options": [
+            {"text": "Controlling variables makes readings agree, and "
+                     "readings that agree can never be checked against "
+                     "anything", "correct": False,
+             "why": "They can be checked — against apparatus with known "
+                    "losses. Agreement is simply not the check."},
+            {"text": "Keeping every variable the same is possible only for a "
+                     "reaction that has already been run once before",
+             "correct": False,
+             "why": "Controls are set before the first run, not after it. "
+                    "That is not where the difficulty lies."},
+            {"text": "A properly controlled experiment cannot be repeated, "
+                     "so its answer can never be tested", "correct": False,
+             "why": "Controlling variables is what makes a repeat meaningful "
+                    "in the first place."},
+            {"text": "Keeping conditions identical removes differences "
+                     "between runs and leaves a fault they all share",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h23",
+        "band": "harder",
+        "text": "A rig loses 0.6 °C of the rise and measures a change of "
+                "5.9 °C. What was the true change, and what would a rig losing "
+                "only 0.2 °C have measured?",
+        "options": [
+            {"text": "True 5.3 °C; better rig reads 5.1 °C", "correct": False,
+             "why": "The loss has already happened, so it is added back to "
+                    "find the truth rather than taken off again."},
+            {"text": "True 6.1 °C; better rig reads 5.9 °C", "correct": False,
+             "why": "6.1 subtracts the wrong pair. The measured 5.9 plus the "
+                    "0.6 lost gives a true value of 6.5."},
+            {"text": "True 6.5 °C; better rig reads 6.3 °C", "correct": True},
+            {"text": "True 6.5 °C; better rig reads 5.7 °C", "correct": False,
+             "why": "The true value is right, but the 0.2 °C comes off 6.5, "
+                    "not off the already-reduced 5.9."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h24",
+        "band": "harder",
+        "text": "Four groups using four different thermometers all read low "
+                "by about the same amount. What does that rule out?",
+        "options": [
+            {"text": "Heat loss, because four separate rigs could not "
+                     "possibly lose the same amount", "correct": False,
+             "why": "Similar rigs in one room lose similar amounts. That is "
+                    "precisely why all four came out low."},
+            {"text": "Random error, because random scatter cannot show up "
+                     "in more than one group's results at once",
+             "correct": False,
+             "why": "Random scatter appears in everyone's results. It is not "
+                    "what is being ruled out here."},
+            {"text": "The thermometers, since one faulty instrument would "
+                     "not repeat across four", "correct": True},
+            {"text": "The chemistry, because one reaction cannot release "
+                     "the same energy in four vessels", "correct": False,
+             "why": "It releases the same energy in all four. That is the one "
+                    "thing never in doubt."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h25",
+        "band": "harder",
+        "text": "A rig measures 5.6 °C when the true rise is 7.0 °C. What "
+                "percentage of the true rise did that rig lose?",
+        "options": [
+            {"text": "14%", "correct": False,
+             "why": "1.4 is a temperature, not a percentage. It has to be "
+                    "compared with the true value first."},
+            {"text": "25%", "correct": False,
+             "why": "That compares the 1.4 °C lost with the measured 5.6 "
+                    "rather than with the true 7.0."},
+            {"text": "80%", "correct": False,
+             "why": "80% is the share the rig managed to record. The question "
+                    "asks for the share it lost."},
+            {"text": "20%", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h26",
+        "band": "harder",
+        "text": "A class's answers for one reaction run from +2 to +7 °C, and "
+                "the true value is 7.0 °C. Is that evidence of random error, "
+                "systematic error, or both?",
+        "options": [
+            {"text": "Random only, because the values are spread across "
+                     "five degrees", "correct": False,
+             "why": "The spread is random, but a spread lying entirely below "
+                    "the truth is a second, one-way effect."},
+            {"text": "Both — the spread between groups is random, and every "
+                     "single value below 7.0 is systematic", "correct": True},
+            {"text": "Systematic only, because every group in the class fell "
+                     "short of the true value", "correct": False,
+             "why": "Falling short is systematic, and the five-degree spread "
+                    "between groups is not explained by it."},
+            {"text": "Neither, because a class using different rigs cannot "
+                     "be described by either term", "correct": False,
+             "why": "Different rigs are exactly where both appear. The terms "
+                    "describe the pattern, not the equipment."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h27",
+        "band": "harder",
+        "text": "A bomb calorimeter tracks temperature to a hundredth of a "
+                "degree. Why is a school thermometer marked in whole degrees "
+                "not the main limit on a school result?",
+        "options": [
+            {"text": "Because the heat escaping from a school cup is worth "
+                     "several tenths of a degree, far more than the scale "
+                     "costs", "correct": True},
+            {"text": "Because a whole-degree scale can be read to a tenth by "
+                     "eye, so in practice it costs nothing", "correct": False,
+             "why": "Estimating between marks helps a little, but the real "
+                    "shortfall is much larger than either."},
+            {"text": "Because the scale a thermometer carries has no bearing "
+                     "at all on the value it reports", "correct": False,
+             "why": "The scale does limit the reading. It is simply not the "
+                    "biggest limit in this experiment."},
+            {"text": "Because school reactions are too small for a finer "
+                     "scale to be of any use", "correct": False,
+             "why": "A finer scale would be useful. It would just be swamped "
+                    "by the heat that escapes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h28",
+        "band": "harder",
+        "text": "A group insists their result must be right because they "
+                "followed every step of the method exactly. Explain why that "
+                "does not follow.",
+        "options": [
+            {"text": "Because nobody can follow somebody else's method "
+                     "exactly", "correct": False,
+             "why": "It can be followed closely enough. The trouble is with "
+                    "the apparatus the method specifies."},
+            {"text": "Because the losses built into the apparatus happen "
+                     "however carefully the steps are followed",
+             "correct": True},
+            {"text": "Because following a method carefully makes a group's "
+                     "readings scatter more widely than they did before",
+             "correct": False,
+             "why": "Careful work reduces scatter. What it cannot reduce is a "
+                    "loss the rig has by design."},
+            {"text": "Because a result counts as right only when it matches "
+                     "the value the teacher expected", "correct": False,
+             "why": "Matching an expectation is not the test. Accuracy is "
+                    "closeness to the true value."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h29",
+        "band": "harder",
+        "text": "Group A neutralises 25 cm³ of acid with 25 cm³ of alkali; "
+                "group B uses 50 cm³ of each, in identical cups, both reading "
+                "at the peak. Predict how their temperature changes compare.",
+        "options": [
+            {"text": "Group B's will be about twice as large, because twice "
+                     "as much acid is neutralised", "correct": False,
+             "why": "Twice the energy goes into twice the liquid, so the "
+                    "temperature change stays about the same."},
+            {"text": "Group A's will be about twice as large, because a "
+                     "small volume heats up more quickly", "correct": False,
+             "why": "A smaller volume needs less energy to warm, and receives "
+                    "less. The two effects cancel."},
+            {"text": "About the same, because twice the energy is released "
+                     "and there is twice as much liquid to warm",
+             "correct": True},
+            {"text": "Group B's will be about half as large",
+             "correct": False,
+             "why": "It is shared more thinly and there is twice as much of "
+                    "it. Neither doubling nor halving follows."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-04-h30",
+        "band": "harder",
+        "text": "A student proposes correcting for heat loss by adding 0.2 °C "
+                "to every result the class produces. What is wrong with that?",
+        "options": [
+            {"text": "Nothing at all — a systematic error is a fixed amount, "
+                     "so one fixed correction removes it everywhere",
+             "correct": False,
+             "why": "Systematic means one direction, not one size. The loss "
+                    "depends on the rig and on the timing."},
+            {"text": "The correction ought to be subtracted instead, because "
+                     "every reading came out too high", "correct": False,
+             "why": "Every reading came out too low, so a correction would be "
+                    "added rather than taken off."},
+            {"text": "Corrections of any kind are dishonest",
+             "correct": False,
+             "why": "Professional instruments are corrected for known losses "
+                    "as a matter of routine."},
+            {"text": "The loss depends on the container and the timing, so "
+                     "it is not one fixed amount", "correct": True},
+        ],
+        "figure": None,
+    },
 ]
