@@ -842,4 +842,1486 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-338 night-3 top-up ─────────────────────────────────
+    #
+    # The first thirty rows work almost entirely on the copper carbonate run.
+    # These twenty open the other two substances out — limestone's missing
+    # colour change, baking soda's third product and the water that condenses
+    # in the cool part of the tube — and pick up the terms the page defines in
+    # its vocabulary list and then never asks about.
+    {
+        "id": "c5-02-e11",
+        "band": "easier",
+        "text": "How would you test a gas to find out whether it is carbon "
+                "dioxide?",
+        "options": [
+            {"text": "Bubble it through limewater and see if it goes milky",
+             "correct": True},
+            {"text": "Hold it against a cold surface and see if it condenses",
+             "correct": False,
+             "why": "That would show water vapour. Carbon dioxide stays a gas "
+                    "on a cold surface"},
+            {"text": "Weigh it and compare the reading with air",
+             "correct": False,
+             "why": "Plenty of gases are heavier than air. A weighing does not "
+                    "name one"},
+            {"text": "Smell it carefully from a short distance away from the tube",
+             "correct": False,
+             "why": "Carbon dioxide has no smell, and smelling a gas in a lab "
+                    "identifies nothing"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e12",
+        "band": "easier",
+        "text": "What is limewater?",
+        "options": [
+            {"text": "Water with quicklime powder floating in it",
+             "correct": False,
+             "why": "It is a clear liquid with nothing floating in it. The "
+                    "cloudiness appears when the gas arrives"},
+            {"text": "A clear liquid used to test for carbon dioxide",
+             "correct": True},
+            {"text": "The water left in the top of a tube after heating",
+             "correct": False,
+             "why": "That water came out of the substance being heated. "
+                    "Limewater is put there on purpose"},
+            {"text": "Another name for the gas that comes off a carbonate",
+             "correct": False,
+             "why": "The gas is carbon dioxide. Limewater is the liquid you "
+                    "bubble it through"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e13",
+        "band": "easier",
+        "text": "What colour is copper carbonate before it is heated?",
+        "options": [
+            {"text": "Black",
+             "correct": False,
+             "why": "Black is the colour of the copper oxide it leaves behind"},
+            {"text": "White",
+             "correct": False,
+             "why": "White is limestone and baking soda. The copper compound "
+                    "is coloured"},
+            {"text": "Green",
+             "correct": True},
+            {"text": "Blue",
+             "correct": False,
+             "why": "Copper compounds are often blue in solution. This powder "
+                    "is green"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e14",
+        "band": "easier",
+        "text": "Copper carbonate is heated until the colour change is "
+                "complete. What solid is left in the tube?",
+        "options": [
+            {"text": "Copper metal",
+             "correct": False,
+             "why": "The copper does not come out on its own. It is still "
+                    "joined to oxygen"},
+            {"text": "Copper carbonate that has been darkened by the flame",
+             "correct": False,
+             "why": "It is not the same substance darkened. It is a different "
+                    "compound"},
+            {"text": "Soot from the burning gas underneath",
+             "correct": False,
+             "why": "Nothing from the Bunsen gets inside the tube. The black "
+                    "came out of the powder"},
+            {"text": "Copper oxide",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e15",
+        "band": "easier",
+        "text": "What do limestone, chalk and marble have in common?",
+        "options": [
+            {"text": "They are all calcium carbonate",
+             "correct": True},
+            {"text": "They are all mixtures of several different carbonates",
+             "correct": False,
+             "why": "They are one compound, which is why all three behave the "
+                    "same way on heating"},
+            {"text": "They all contain copper too",
+             "correct": False,
+             "why": "None of them holds any copper. Copper carbonate is a "
+                    "different substance"},
+            {"text": "They are all formed by heating quicklime strongly",
+             "correct": False,
+             "why": "Quicklime is what limestone becomes when it is heated, "
+                    "not the other way round"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e16",
+        "band": "easier",
+        "text": "Roughly what temperature does a kiln reach to decompose "
+                "limestone?",
+        "options": [
+            {"text": "Around 100 °C",
+             "correct": False,
+             "why": "That is the boiling point of water. Limestone needs far "
+                    "more than that"},
+            {"text": "Around 900 °C",
+             "correct": True},
+            {"text": "Around 300 °C",
+             "correct": False,
+             "why": "An oven reaches a few hundred degrees and does nothing to "
+                    "limestone"},
+            {"text": "Around 20 °C",
+             "correct": False,
+             "why": "That is room temperature. Limestone buildings would not "
+                    "last long if so"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e17",
+        "band": "easier",
+        "text": "Which gas is given off when a carbonate is decomposed by "
+                "heating?",
+        "options": [
+            {"text": "Oxygen",
+             "correct": False,
+             "why": "No oxygen is released. The oxygen in the carbonate stays "
+                    "joined to the metal or leaves in the gas"},
+            {"text": "Hydrogen",
+             "correct": False,
+             "why": "There is no hydrogen in a carbonate such as the copper "
+                    "one"},
+            {"text": "Carbon dioxide",
+             "correct": True},
+            {"text": "Nitrogen from the air",
+             "correct": False,
+             "why": "Nitrogen is in the air rather than in the compound, and "
+                    "it takes no part"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e18",
+        "band": "easier",
+        "text": "What is a compound?",
+        "options": [
+            {"text": "Two or more substances stirred together in a jar but never "
+                     "joined up",
+             "correct": False,
+             "why": "That is a mixture, and it can be separated without a "
+                    "reaction"},
+            {"text": "Anything at all that can be broken down by heating it",
+             "correct": False,
+             "why": "Plenty of compounds do not decompose on heating, and a "
+                    "mixture separates without being one"},
+            {"text": "A substance that always gives off a gas when heated",
+             "correct": False,
+             "why": "Whether it gives off a gas is not what makes it a "
+                    "compound"},
+            {"text": "A substance made of two or more kinds of atom joined "
+                     "together",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e19",
+        "band": "easier",
+        "text": "What is a reactant?",
+        "options": [
+            {"text": "A substance you start with",
+             "correct": True},
+            {"text": "A substance you are left with at the end",
+             "correct": False,
+             "why": "That is a product. Reactants are on the left of the "
+                    "equation"},
+            {"text": "The energy that has to be supplied to make it go",
+             "correct": False,
+             "why": "Energy is a condition rather than a substance, and it is "
+                    "never a reactant"},
+            {"text": "The container the reaction is carried out inside",
+             "correct": False,
+             "why": "The tube takes no part in the reaction at all"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e20",
+        "band": "easier",
+        "text": "Baking soda is heated in an oven. What does it become?",
+        "options": [
+            {"text": "Calcium oxide and carbon dioxide, with no water",
+             "correct": False,
+             "why": "That is what limestone gives, and it gives no water "
+                    "either. Baking soda holds sodium rather than calcium"},
+            {"text": "Sodium carbonate, carbon dioxide and water",
+             "correct": True},
+            {"text": "Sodium and carbon dioxide only",
+             "correct": False,
+             "why": "The sodium stays joined to other atoms. Pure sodium metal "
+                    "is not a product"},
+            {"text": "Copper oxide and carbon dioxide, as the green powder gives",
+             "correct": False,
+             "why": "There is no copper anywhere in baking soda, so neither "
+                    "of those can form"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e21",
+        "band": "easier",
+        "text": "Why does a thermal decomposition stop as soon as the flame is "
+                "taken away?",
+        "options": [
+            {"text": "Because the tube cools too fast for the products to form",
+             "correct": False,
+             "why": "It is not about speed of cooling. The reaction has no "
+                    "energy supply once the flame goes"},
+            {"text": "Because the gas stops escaping once the tube is cool",
+             "correct": False,
+             "why": "The gas leaves because it is being made. It stops being "
+                    "made first"},
+            {"text": "Because it needs energy put in the whole time it runs",
+             "correct": True},
+            {"text": "Because the two products join back together again as it "
+                     "cools",
+             "correct": False,
+             "why": "They do not rejoin. That is the whole point of the "
+                    "cooling stage"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e22",
+        "band": "easier",
+        "text": "Which of these substances gives THREE products when it is "
+                "decomposed?",
+        "options": [
+            {"text": "Copper carbonate",
+             "correct": False,
+             "why": "That gives two: a black solid and a gas"},
+            {"text": "Limestone",
+             "correct": False,
+             "why": "That gives two as well: quicklime and a gas"},
+            {"text": "Quicklime",
+             "correct": False,
+             "why": "Quicklime is a product rather than a starting substance "
+                    "here"},
+            {"text": "Baking soda",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e23",
+        "band": "easier",
+        "text": "What happens to the mass of the solid in the tube during a "
+                "decomposition?",
+        "options": [
+            {"text": "It falls, because a gas leaves the tube",
+             "correct": True},
+            {"text": "It rises, because something from the air joins the solid",
+             "correct": False,
+             "why": "Nothing is added. That is what happens in an oxidation"},
+            {"text": "It stays the same, because mass cannot change",
+             "correct": False,
+             "why": "Mass is conserved overall, and the balance can only weigh "
+                    "what stayed in the tube"},
+            {"text": "It falls, because the heat itself has a mass of its own",
+             "correct": False,
+             "why": "Heat weighs nothing. The mass that left did so as a gas"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e24",
+        "band": "easier",
+        "text": "Quicklime is made in kilns in enormous quantities. What is it "
+                "used to make?",
+        "options": [
+            {"text": "Glass",
+             "correct": False,
+             "why": "Glass is made mainly from sand. Quicklime goes into "
+                    "something else"},
+            {"text": "Cement",
+             "correct": True},
+            {"text": "Plastic",
+             "correct": False,
+             "why": "Plastics are made from oil rather than from rock"},
+            {"text": "Steel",
+             "correct": False,
+             "why": "Steel is made from iron. Quicklime is not what it is "
+                    "built from"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e25",
+        "band": "easier",
+        "text": "Baking soda is heated in a test tube and drops of liquid "
+                "appear near the open end. What are they?",
+        "options": [
+            {"text": "Limewater that has been drawn back up the tube",
+             "correct": False,
+             "why": "Liquid drawn back is a hazard and is not what this is. "
+                    "This appears before the flame comes off"},
+            {"text": "Melted baking soda that has run up the glass",
+             "correct": False,
+             "why": "The powder does not melt and run upwards. What travels up "
+                    "the tube is a gas"},
+            {"text": "Water, condensing where the tube is cool",
+             "correct": True},
+            {"text": "Carbon dioxide that has turned liquid on the cold glass",
+             "correct": False,
+             "why": "Carbon dioxide stays a gas at these temperatures. This "
+                    "decomposition makes water as well"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e26",
+        "band": "easier",
+        "text": "Limestone stays white the whole way through its "
+                "decomposition. What does that show about colour changes?",
+        "options": [
+            {"text": "That a reaction with no colour change must be a physical "
+                     "change",
+             "correct": False,
+             "why": "Limestone stays white and still makes two new "
+                    "substances. Colour decides nothing either way"},
+            {"text": "That the limestone has not really decomposed in the kiln "
+                     "at all",
+             "correct": False,
+             "why": "The gas turns limewater milky and the mass falls. It has "
+                    "decomposed"},
+            {"text": "That colour changes only happen to copper compounds",
+             "correct": False,
+             "why": "Plenty of substances change colour on heating. The point "
+                    "is that a reaction need not"},
+            {"text": "That a reaction can happen with no colour change to see",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e27",
+        "band": "easier",
+        "text": "An airbag holds a solid that decomposes in about thirty "
+                "milliseconds. Which gas does it make?",
+        "options": [
+            {"text": "Nitrogen",
+             "correct": True},
+            {"text": "Carbon dioxide",
+             "correct": False,
+             "why": "Carbon dioxide is what the carbonates in this lesson "
+                    "give. The airbag solid is a different compound"},
+            {"text": "Oxygen",
+             "correct": False,
+             "why": "A bag full of oxygen inside a crashing car would be a "
+                    "poor idea, and it is not what forms"},
+            {"text": "Hydrogen",
+             "correct": False,
+             "why": "Hydrogen is flammable, and it is not what the solid "
+                    "breaks down into"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e28",
+        "band": "easier",
+        "text": "Why does a cake steam as it comes out of the oven?",
+        "options": [
+            {"text": "Because the oven air trapped inside it is escaping",
+             "correct": False,
+             "why": "Air escaping would not be visible. What you can see is "
+                    "water vapour"},
+            {"text": "Because water is one of the products of the raising "
+                     "agent decomposing",
+             "correct": True},
+            {"text": "Because the carbon dioxide inside it turns white as soon as "
+                     "it begins to cool",
+             "correct": False,
+             "why": "Carbon dioxide stays colourless whatever its temperature"},
+            {"text": "Because the sugar in it is boiling away",
+             "correct": False,
+             "why": "Sugar does not boil out of a cake. The steam is water"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e29",
+        "band": "easier",
+        "text": "In the word equation for a decomposition, how many substances "
+                "are written on the left?",
+        "options": [
+            {"text": "Two, with heat counted as the second of them",
+             "correct": False,
+             "why": "Heat is a condition rather than a substance and is never "
+                    "written in"},
+            {"text": "Two, because every reaction has two reactants",
+             "correct": False,
+             "why": "Having one is exactly what makes a decomposition unusual"},
+            {"text": "One",
+             "correct": True},
+            {"text": "Three, one for each product",
+             "correct": False,
+             "why": "Three is a count of products rather than reactants. A "
+                    "decomposition starts with one substance"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-e30",
+        "band": "easier",
+        "text": "How does the heat needed to decompose limestone compare with "
+                "the heat needed for copper carbonate?",
+        "options": [
+            {"text": "About the same, since both are carbonates",
+             "correct": False,
+             "why": "Both are carbonates and they need very different "
+                    "temperatures"},
+            {"text": "Less, because limestone is a softer rock",
+             "correct": False,
+             "why": "How hard a rock is has nothing to do with the "
+                    "temperature its compound decomposes at"},
+            {"text": "Slightly less than copper carbonate needs",
+             "correct": False,
+             "why": "It needs far more rather than slightly less, and its "
+                    "colour is no guide to the temperature"},
+            {"text": "Much more",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-338 night-3 top-up ───────────────────────────────
+    {
+        "id": "c5-02-s11",
+        "band": "standard",
+        "text": "4.00 g of limestone is heated in a kiln until it stops losing "
+                "mass, and 2.24 g of white solid is left. What mass of gas "
+                "escaped?",
+        "options": [
+            {"text": "1.76 g",
+             "correct": True},
+            {"text": "2.24 g",
+             "correct": False,
+             "why": "That is the solid still in the kiln, which escaped "
+                    "nowhere"},
+            {"text": "6.24 g",
+             "correct": False,
+             "why": "That adds the two figures. The 2.24 g is part of the "
+                    "4.00 g rather than extra to it"},
+            {"text": "4.00 g",
+             "correct": False,
+             "why": "That is everything you started with, and most of it is "
+                    "still there as quicklime"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s12",
+        "band": "standard",
+        "text": "Why is the delivery tube lifted out of the limewater BEFORE "
+                "the Bunsen is turned off?",
+        "options": [
+            {"text": "Because the limewater would go milky a second time and "
+                     "spoil the result",
+             "correct": False,
+             "why": "The result is already recorded. What the rule prevents is "
+                    "damage to the apparatus"},
+            {"text": "Because cold liquid would be drawn back into the hot "
+                     "tube and crack it",
+             "correct": True},
+            {"text": "Because the gas would carry on coming off and be wasted",
+             "correct": False,
+             "why": "The reaction stops when the heating does, so nothing is "
+                    "wasted"},
+            {"text": "Because the limewater would boil once the flame stopped",
+             "correct": False,
+             "why": "Taking the flame away cools things. The danger runs the "
+                    "other way, towards the tube"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s13",
+        "band": "standard",
+        "text": "Green copper carbonate in a tube darkens from the bottom "
+                "upwards rather than all at once. Why?",
+        "options": [
+            {"text": "The gas coming off pushes the unreacted powder upwards "
+                     "as it goes",
+             "correct": False,
+             "why": "The powder stays where it is. What moves up the tube is "
+                    "the heat"},
+            {"text": "The powder at the bottom is a different compound from "
+                     "the powder at the top",
+             "correct": False,
+             "why": "It is all one substance. Only its temperature differs"},
+            {"text": "The colour change follows the heat, and the top is not "
+                     "hot enough yet",
+             "correct": True},
+            {"text": "The flame burns the bottom of the powder before the rest",
+             "correct": False,
+             "why": "Nothing burns. The flame heats the glass, and the heat "
+                    "spreads upwards through the powder"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s14",
+        "band": "standard",
+        "text": "Water dropped onto the white solid left after heating "
+                "limestone makes it hiss and get hot. What does that show?",
+        "options": [
+            {"text": "That the white solid is still hot from the kiln and is "
+                     "boiling the water off",
+             "correct": False,
+             "why": "A sample left to go cold for a week does exactly the "
+                    "same thing. The heat comes from a reaction"},
+            {"text": "That the solid left behind is a new substance, quicklime",
+             "correct": True},
+            {"text": "That the limestone never decomposed and is still there",
+             "correct": False,
+             "why": "Water dropped on limestone does nothing at all. This "
+                    "solid behaves differently because it IS different"},
+            {"text": "That some of the carbon dioxide is still trapped inside "
+                     "it",
+             "correct": False,
+             "why": "The gas left during the heating. The hiss comes from the "
+                    "new solid reacting with the water"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s15",
+        "band": "standard",
+        "text": "Baking soda raises a cake inside a closed tin, with no air "
+                "reaching the mixture. Why does that work?",
+        "options": [
+            {"text": "Because the oven air gets in through the cake mixture "
+                     "itself",
+             "correct": False,
+             "why": "Nothing has to get in. The compound comes apart on its "
+                    "own once it is hot"},
+            {"text": "Because the tin holds enough air inside it to start the "
+                     "reaction off",
+             "correct": False,
+             "why": "No air is needed, however much of it there is"},
+            {"text": "Because the reaction needs nothing added, only heat",
+             "correct": True},
+            {"text": "Because the tin itself supplies oxygen",
+             "correct": False,
+             "why": "The tin takes no part in the reaction at all"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s16",
+        "band": "standard",
+        "text": "A student heats a carbonate but forgets to set up the "
+                "limewater. Which observation still shows a gas came off?",
+        "options": [
+            {"text": "The mass of the tube and its contents falls",
+             "correct": True},
+            {"text": "The powder changes colour as it is heated",
+             "correct": False,
+             "why": "A colour change shows something happened, and it does not "
+                    "show that anything left"},
+            {"text": "The tube gets hot where the flame is under it",
+             "correct": False,
+             "why": "The tube would get hot whether anything reacted or not"},
+            {"text": "The flame needs to be kept on the whole time",
+             "correct": False,
+             "why": "That shows the reaction absorbs energy rather than that a "
+                    "gas escaped"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s17",
+        "band": "standard",
+        "text": "When baking soda is heated, water condenses in the cool upper "
+                "part of the tube AND the limewater goes milky. What does that "
+                "tell you?",
+        "options": [
+            {"text": "That the limewater has been contaminated by the water "
+                     "vapour",
+             "correct": False,
+             "why": "Water added to limewater does nothing you could see. Both "
+                    "observations are real"},
+            {"text": "That this decomposition gives off two gases rather than "
+                     "one",
+             "correct": True},
+            {"text": "That the tube was wet before the powder went into it",
+             "correct": False,
+             "why": "A dry tube gives the same result. The water is made by "
+                    "the reaction"},
+            {"text": "That the carbon dioxide has turned into water further up "
+                     "the tube",
+             "correct": False,
+             "why": "One gas does not turn into another. They are two separate "
+                    "products"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s18",
+        "band": "standard",
+        "text": "Copper carbonate decomposes on an ordinary school Bunsen, but "
+                "limestone needs a roaring blue flame and a long wait. Why?",
+        "options": [
+            {"text": "Because limestone is a rock, and a rock conducts heat far "
+                     "too badly to be decomposed quickly",
+             "correct": False,
+             "why": "Grind it to powder and it still needs the higher "
+                    "temperature. The compound itself is what differs"},
+            {"text": "Because limestone has more carbon dioxide locked inside "
+                     "it",
+             "correct": False,
+             "why": "How much gas comes out does not set the temperature "
+                    "needed to start"},
+            {"text": "Because the copper compound burns and the limestone does "
+                     "not",
+             "correct": False,
+             "why": "Neither of them burns. Both are broken apart by heat with "
+                    "nothing added"},
+            {"text": "Because the two compounds need different temperatures to "
+                     "come apart",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s19",
+        "band": "standard",
+        "text": "4.00 g of baking soda is heated to constant mass and 2.52 g "
+                "of white solid is left. What mass left the tube?",
+        "options": [
+            {"text": "1.48 g",
+             "correct": True},
+            {"text": "2.52 g",
+             "correct": False,
+             "why": "That is the sodium carbonate still in the tube"},
+            {"text": "6.52 g",
+             "correct": False,
+             "why": "That adds the two readings together instead of taking one "
+                    "from the other"},
+            {"text": "1.48 g of carbon dioxide and nothing else",
+             "correct": False,
+             "why": "The total is right and the naming is not: water vapour "
+                    "left the tube as well"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s20",
+        "band": "standard",
+        "text": "Which is the better signal that a decomposition has finished: "
+                "the colour settling, or the mass settling?",
+        "options": [
+            {"text": "The colour, because you can watch it happen without any "
+                     "apparatus",
+             "correct": False,
+             "why": "Easy to watch is not the same as reliable. Limestone "
+                    "never changes colour"},
+            {"text": "Neither, because a decomposition carries on for as long "
+                     "as it is heated",
+             "correct": False,
+             "why": "It stops when the compound runs out, which is why the "
+                    "mass settles"},
+            {"text": "The mass, because it works even where there is no colour "
+                     "change",
+             "correct": True},
+            {"text": "The colour, because the mass keeps falling even after "
+                     "the reaction ends",
+             "correct": False,
+             "why": "Once the reaction ends nothing more leaves, so the "
+                    "reading holds steady"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s21",
+        "band": "standard",
+        "text": "A cement works releases carbon dioxide from the limestone "
+                "itself. Where does the REST of its carbon dioxide come from?",
+        "options": [
+            {"text": "From the quicklime reacting with the air as it cools",
+             "correct": False,
+             "why": "Cooling quicklime is not where the extra gas comes from. "
+                    "Look at what heats the kiln"},
+            {"text": "From the fuel burned to heat the kilns",
+             "correct": True},
+            {"text": "From the cement giving the gas back off as it sets",
+             "correct": False,
+             "why": "Setting cement releases no carbon dioxide. The emissions "
+                    "happen at the kiln"},
+            {"text": "From quarrying and crushing the rock",
+             "correct": False,
+             "why": "Crushing is a physical change and makes no gas of its "
+                    "own"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s22",
+        "band": "standard",
+        "text": "Why does a thermal decomposition take energy IN, when "
+                "combustion gives energy out?",
+        "options": [
+            {"text": "Because the tube is cold and has to be warmed before "
+                     "anything can happen inside it",
+             "correct": False,
+             "why": "Warming the glass is not the reaction. Energy goes on "
+                    "being absorbed after everything is hot"},
+            {"text": "Because the gas produced carries the energy away with it "
+                     "as it leaves",
+             "correct": False,
+             "why": "The energy is used inside the reaction. It is not being "
+                    "carried off by a product"},
+            {"text": "Because energy has to be supplied to break the compound "
+                     "apart",
+             "correct": True},
+            {"text": "Because the products are colder than the reactant was",
+             "correct": False,
+             "why": "Everything in the tube is at the same temperature. The "
+                    "energy goes into breaking joins"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s23",
+        "band": "standard",
+        "text": "One tube of a carbonate and one tube of water are both "
+                "heated, and a gas comes off each. Why is only one of them a "
+                "decomposition?",
+        "options": [
+            {"text": "Because the water was already a liquid and a "
+                     "decomposition needs a solid to start with",
+             "correct": False,
+             "why": "The state of the reactant does not decide it. Nothing new "
+                    "is made when water boils"},
+            {"text": "Because the gas from the water leaves no solid behind in "
+                     "the tube",
+             "correct": False,
+             "why": "A decomposition need not leave a solid. What matters is "
+                    "whether new substances were made"},
+            {"text": "Because the carbonate needed a hotter flame than the "
+                     "water did",
+             "correct": False,
+             "why": "How much heat is needed is a fact about the substance, "
+                    "not about the kind of change"},
+            {"text": "Because the water only changed state, so no new "
+                     "substance was made",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s24",
+        "band": "standard",
+        "text": "Chalk from a cliff, marble from a statue and limestone from a "
+                "quarry are each heated to 900 °C. What do you predict?",
+        "options": [
+            {"text": "All three decompose to quicklime and carbon dioxide",
+             "correct": True},
+            {"text": "Only the limestone, because kilns are built for it",
+             "correct": False,
+             "why": "A kiln is fed limestone because it is cheap to quarry, "
+                    "not because the others behave differently"},
+            {"text": "Only the chalk decomposes, because it is the softest of "
+                     "the three",
+             "correct": False,
+             "why": "Hardness is a physical property and does not decide what "
+                    "heat does to a compound"},
+            {"text": "None of them decomposes, because they are natural rocks "
+                     "rather than laboratory chemicals",
+             "correct": False,
+             "why": "Where a substance came from changes nothing about its "
+                    "chemistry"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s25",
+        "band": "standard",
+        "text": "Two unlabelled jars hold copper carbonate and copper oxide. "
+                "How could you tell which is which without heating either?",
+        "options": [
+            {"text": "Weigh equal volumes and take the heavier one as the "
+                     "oxide",
+             "correct": False,
+             "why": "You have nothing to compare a reading against, and the "
+                    "difference is not what the eye is for here"},
+            {"text": "Bubble the air above each one through limewater",
+             "correct": False,
+             "why": "Neither gives off any gas while it sits in a jar"},
+            {"text": "Look at them: the carbonate is green and the oxide is "
+                     "black",
+             "correct": True},
+            {"text": "Add water and see which one dissolves",
+             "correct": False,
+             "why": "Neither dissolves, so nothing separates them that way"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s26",
+        "band": "standard",
+        "text": "A tube of copper carbonate is heated briefly and the mass "
+                "falls by about half of what was expected. What is the most "
+                "likely reason?",
+        "options": [
+            {"text": "Some of the mass was destroyed by the heat",
+             "correct": False,
+             "why": "Nothing is ever destroyed. Every atom is still somewhere"},
+            {"text": "The balance was reading low before the tube was heated",
+             "correct": False,
+             "why": "A balance reading low at the start would make the loss "
+                    "look bigger rather than smaller"},
+            {"text": "Half of the carbon dioxide dissolved in the limewater "
+                     "and half did not",
+             "correct": False,
+             "why": "Where the gas ends up does not change how much left the "
+                    "tube"},
+            {"text": "Only part of the powder has decomposed so far",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s27",
+        "band": "standard",
+        "text": "Both copper carbonate and calcium carbonate are carbonates, "
+                "yet one decomposes far more easily than the other. What does "
+                "that tell you?",
+        "options": [
+            {"text": "That different compounds need different amounts of "
+                     "energy to come apart",
+             "correct": True},
+            {"text": "That only one of the two is really a carbonate at all",
+             "correct": False,
+             "why": "Both are carbonates, and both give off carbon dioxide"},
+            {"text": "That the easier one of the two is a mixture rather than a "
+                     "compound, which is why it comes apart",
+             "correct": False,
+             "why": "Both are compounds. A mixture would separate without any "
+                    "reaction"},
+            {"text": "That the harder one is being heated the wrong way",
+             "correct": False,
+             "why": "It decomposes perfectly well in a kiln. It simply needs a "
+                    "higher temperature"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s28",
+        "band": "standard",
+        "text": "4.00 g of copper carbonate leaves 2.58 g of copper oxide. "
+                "What mass of copper oxide would 6.00 g leave?",
+        "options": [
+            {"text": "2.58 g, because that is what this reaction always gives",
+             "correct": False,
+             "why": "More carbonate gives more oxide. The figure is not fixed"},
+            {"text": "3.87 g",
+             "correct": True},
+            {"text": "4.42 g",
+             "correct": False,
+             "why": "That adds the extra 2.00 g of carbonate straight on as "
+                    "though none of it left as gas"},
+            {"text": "6.00 g, because mass is conserved in every reaction",
+             "correct": False,
+             "why": "Mass is conserved, and some of it leaves the tube as "
+                    "carbon dioxide"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s29",
+        "band": "standard",
+        "text": "Thermal decomposition is described as running BACKWARDS "
+                "compared with the other reaction types. What does that "
+                "mean?",
+        "options": [
+            {"text": "That it can be reversed simply by cooling the tube down "
+                     "again afterwards",
+             "correct": False,
+             "why": "It does not reverse at all. Backwards here describes the "
+                    "shape of the equation"},
+            {"text": "That the products are written on the left of the arrow",
+             "correct": False,
+             "why": "Products are always on the right. What differs is how "
+                    "many there are"},
+            {"text": "That one substance comes apart instead of substances "
+                     "joining",
+             "correct": True},
+            {"text": "That it gives out energy instead of taking energy in",
+             "correct": False,
+             "why": "It takes energy in. That is the opposite of what this "
+                    "option says"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-s30",
+        "band": "standard",
+        "text": "Copper carbonate, limestone and baking soda all decompose "
+                "on heating. Which is the best choice for showing a class in "
+                "one lesson, and why?",
+        "options": [
+            {"text": "Limestone, because it is the one used industrially",
+             "correct": False,
+             "why": "Being important is not the same as being practical. It "
+                    "needs a temperature a school Bunsen struggles to reach"},
+            {"text": "Baking soda, because everyone has seen it in a kitchen",
+             "correct": False,
+             "why": "It works, and it gives nothing to watch: a white powder "
+                    "stays a white powder"},
+            {"text": "Any of the three, because the apparatus and the method are "
+                     "identical whichever one you choose",
+             "correct": False,
+             "why": "The apparatus is the same and the temperature needed is "
+                    "not"},
+            {"text": "Copper carbonate, because an ordinary Bunsen decomposes "
+                     "it and the colour change is easy to see",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-338 night-3 top-up ─────────────────────────────────
+    {
+        "id": "c5-02-h11",
+        "band": "harder",
+        "text": "4.00 g of copper carbonate leaves 2.58 g of solid, and 4.00 g "
+                "of limestone leaves 2.24 g. Which loses the greater share of "
+                "its mass, and what does that suggest?",
+        "options": [
+            {"text": "The limestone, so a larger share of its mass was carbon "
+                     "dioxide",
+             "correct": True},
+            {"text": "The copper carbonate, because copper is the heavier "
+                     "metal of the two",
+             "correct": False,
+             "why": "It loses 1.42 g against the limestone's 1.76 g, so it "
+                    "loses less from the same starting mass"},
+            {"text": "Both the same, because both started at 4.00 g",
+             "correct": False,
+             "why": "They started the same and finished differently, which is "
+                    "the whole comparison"},
+            {"text": "The copper carbonate, because it changes colour while the "
+                     "limestone does not",
+             "correct": False,
+             "why": "A colour change says nothing about mass. The losses are "
+                    "1.42 g against 1.76 g from the same 4.00 g"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h12",
+        "band": "harder",
+        "text": "An airbag must fire in a crash and must not fire in a car "
+                "parked in the sun. What does that require of the solid inside "
+                "it?",
+        "options": [
+            {"text": "That it decomposes slowly, so a hot afternoon is not "
+                     "long enough to set it off",
+             "correct": False,
+             "why": "A slow reaction would be useless in a crash. It has to be "
+                    "extremely fast when it goes"},
+            {"text": "That it stays put at any temperature a parked car reaches",
+             "correct": True},
+            {"text": "That it needs oxygen, kept out until the crash",
+             "correct": False,
+             "why": "A decomposition needs nothing added. That is part of why "
+                    "it was chosen"},
+            {"text": "That it reverses on cooling, so any gas made in the heat "
+                     "goes back in",
+             "correct": False,
+             "why": "A decomposition does not reverse. If it fired once it "
+                    "would stay fired"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h13",
+        "band": "harder",
+        "text": "A student heats baking soda and finds the tube has lost more "
+                "mass than the carbon dioxide alone could account for. "
+                "Explain.",
+        "options": [
+            {"text": "Some of the solid was blown out of the tube by the gas "
+                     "escaping",
+             "correct": False,
+             "why": "Nothing is blown out of a tube heated gently. There is a "
+                    "second product"},
+            {"text": "The balance drifts a little when it is weighing something "
+                     "hot",
+             "correct": False,
+             "why": "The tube is weighed cool. The extra loss is a real "
+                    "product"},
+            {"text": "Water vapour left the tube as well as carbon dioxide",
+             "correct": True},
+            {"text": "Some of the mass was converted into the energy the "
+                     "reaction absorbed",
+             "correct": False,
+             "why": "This reaction takes energy in, and energy is not made of "
+                    "matter in any case"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h14",
+        "band": "harder",
+        "text": "Limestone shows no colour change at all as it decomposes. "
+                "What evidence is there that anything happened?",
+        "options": [
+            {"text": "The lump glows while it is in the flame",
+             "correct": False,
+             "why": "Anything glows if it is hot enough. Glowing is not "
+                    "evidence of a reaction"},
+            {"text": "The flame has to be kept under the lump for a very long "
+                     "time before anything changes",
+             "correct": False,
+             "why": "That shows energy is being supplied, and a lump of iron "
+                    "would take a long time too"},
+            {"text": "The lump crumbles slightly as it is heated",
+             "correct": False,
+             "why": "Plenty of rocks crumble when heated without any reaction "
+                    "at all"},
+            {"text": "The gas coming off turns limewater milky and the mass "
+                     "falls",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h15",
+        "band": "harder",
+        "text": "Quicklime is delivered in sealed bags and spoils if the bags "
+                "are left open in a damp shed. Suggest why.",
+        "options": [
+            {"text": "It reacts with water, and there is water in damp air",
+             "correct": True},
+            {"text": "It decomposes further once it is out of the kiln",
+             "correct": False,
+             "why": "It is already the product of a decomposition and does not "
+                    "carry on breaking down in a shed"},
+            {"text": "It absorbs the carbon monoxide given off by machinery",
+             "correct": False,
+             "why": "Carbon monoxide is not what spoils it, and a shed is not "
+                    "full of it"},
+            {"text": "It turns back into limestone as it cools",
+             "correct": False,
+             "why": "The decomposition does not reverse on cooling. What "
+                    "reaches it in a damp shed is water"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h16",
+        "band": "harder",
+        "text": "A combustion and a decomposition can both be run with a "
+                "Bunsen and both can give off a gas. Name the one test that "
+                "separates them every time.",
+        "options": [
+            {"text": "Whether the reaction gives off a gas that turns "
+                     "limewater milky",
+             "correct": False,
+             "why": "Burning a hydrocarbon gives carbon dioxide too, so the "
+                    "test cannot separate them"},
+            {"text": "Whether anything had to be added to the substance being "
+                     "heated",
+             "correct": True},
+            {"text": "Whether the substance changes colour while it is being "
+                     "heated",
+             "correct": False,
+             "why": "Limestone decomposes with no colour change, and plenty of "
+                    "things char when they burn"},
+            {"text": "Whether a flame can be seen coming from the substance "
+                     "itself",
+             "correct": False,
+             "why": "Charcoal burns with hardly any flame, and no decomposition "
+                    "here gives one"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h17",
+        "band": "harder",
+        "text": "Baking soda gives three products and copper carbonate gives "
+                "two. Does that break the rule that a decomposition gives two "
+                "or more?",
+        "options": [
+            {"text": "Yes, because three products means two separate reactions "
+                     "have run",
+             "correct": False,
+             "why": "One compound came apart once. How many pieces it came "
+                    "apart into is not a count of reactions"},
+            {"text": "Yes, because the rule describes exactly two products and "
+                     "no more",
+             "correct": False,
+             "why": "It says two OR MORE, which is what makes room for the "
+                    "third"},
+            {"text": "No, because two or more includes three",
+             "correct": True},
+            {"text": "No, the water is just a leftover",
+             "correct": False,
+             "why": "The water is made by the reaction, so it is a product "
+                    "like the others"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h18",
+        "band": "harder",
+        "text": "A student says a reaction cannot be a thermal decomposition "
+                "unless a gas comes off. Is that right?",
+        "options": [
+            {"text": "Yes, because a gas escaping is what makes the mass fall",
+             "correct": False,
+             "why": "The mass falling is a consequence in these three cases "
+                    "rather than part of the definition"},
+            {"text": "Yes, because every decomposition you have met gave one off",
+             "correct": False,
+             "why": "Three examples do not make a rule. All three happen to be "
+                    "carbonates"},
+            {"text": "No, because a decomposition producing no gas would be far "
+                     "too slow for anybody to notice it happening",
+             "correct": False,
+             "why": "Speed has nothing to do with it. The definition simply "
+                    "does not mention a gas"},
+            {"text": "No, because the definition asks only for one compound "
+                     "broken into two or more substances",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h19",
+        "band": "harder",
+        "text": "Copper carbonate is decomposed inside a sealed tube that had "
+                "its air pumped out, and the pressure inside rises. Explain.",
+        "options": [
+            {"text": "A gas is being made from a solid, and it has nowhere to "
+                     "go",
+             "correct": True},
+            {"text": "The air pumped out is leaking slowly back in as the tube "
+                     "heats",
+             "correct": False,
+             "why": "A sealed tube does not refill itself. The gas inside was "
+                    "made by the reaction"},
+            {"text": "Heating always raises the pressure, whatever is in the "
+                     "tube",
+             "correct": False,
+             "why": "Heating an empty sealed tube raises it barely at all. "
+                    "Here a new gas is appearing"},
+            {"text": "The black solid takes up more room than the green powder "
+                     "did",
+             "correct": False,
+             "why": "A solid changing volume slightly would not build "
+                    "pressure. A gas being made does"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h20",
+        "band": "harder",
+        "text": "Baking soda thrown onto a small pan fire helps to put it "
+                "out. Explain how.",
+        "options": [
+            {"text": "It melts into a layer that seals the surface of the pan",
+             "correct": False,
+             "why": "It decomposes rather than melting, and the gas it makes "
+                    "is what does the work"},
+            {"text": "It decomposes in the heat, and the carbon dioxide it "
+                     "releases keeps air off the fuel",
+             "correct": True},
+            {"text": "It absorbs the heat of the fire until the fuel is too "
+                     "cool to burn",
+             "correct": False,
+             "why": "It does absorb energy, and a spoonful could not cool a "
+                    "pan fire. The gas is what matters"},
+            {"text": "It reacts with the burning oil and turns it into a "
+                     "substance that cannot catch fire again",
+             "correct": False,
+             "why": "It does not react with the oil at all. It comes apart on "
+                    "its own"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h21",
+        "band": "harder",
+        "text": "Two students heat identical masses of the same carbonate, one "
+                "for two minutes and one for ten. Their final masses differ. "
+                "Whose result should the class use?",
+        "options": [
+            {"text": "The two-minute one, because a shorter heating leaves less "
+                     "chance of anything going wrong with it",
+             "correct": False,
+             "why": "A short heating leaves the reaction unfinished, which is "
+                    "the error"},
+            {"text": "Neither, because two results that differ cannot be "
+                     "trusted at all",
+             "correct": False,
+             "why": "They differ for a reason you can name, and naming it is "
+                    "what settles which to use"},
+            {"text": "The average of the two, because that is what you do with "
+                     "repeats",
+             "correct": False,
+             "why": "These are not repeats. One reaction finished and one did "
+                    "not"},
+            {"text": "The ten-minute one, because heating to constant mass is "
+                     "what shows the reaction has finished",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h22",
+        "band": "harder",
+        "text": "The reaction does not reverse on cooling. What would have to "
+                "be true for it to reverse?",
+        "options": [
+            {"text": "The products would have to meet and react together "
+                     "again, and one of them has left the tube",
+             "correct": True},
+            {"text": "The tube would have to be cooled a very long way below "
+                     "room temperature and then left there",
+             "correct": False,
+             "why": "Cooling further puts no energy in and brings nothing "
+                    "back. Temperature is not the obstacle"},
+            {"text": "The reaction would have to have been a physical change "
+                     "in the first place",
+             "correct": False,
+             "why": "Then it would not have been this reaction at all. The "
+                    "question is what reversing would need"},
+            {"text": "The flame would have to be left on for longer before it "
+                     "was removed",
+             "correct": False,
+             "why": "More heating drives it further forwards rather than "
+                    "backwards"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h23",
+        "band": "harder",
+        "text": "Suppose a cake rose because the air in the mixture expanded "
+                "in the heat, rather than because of a decomposition. What "
+                "would you expect as it cooled?",
+        "options": [
+            {"text": "It would sink back down again",
+             "correct": True},
+            {"text": "It would rise further still",
+             "correct": False,
+             "why": "Cooling air contracts. Nothing would go on expanding once "
+                    "the heat was removed"},
+            {"text": "It would stay exactly as it was, because air that has "
+                     "expanded cannot contract again",
+             "correct": False,
+             "why": "Air contracts as it cools, in just the way it expanded "
+                    "as it was heated"},
+            {"text": "It would collapse and then rise a second time as it "
+                     "reached room temperature",
+             "correct": False,
+             "why": "There is nothing to make it rise a second time once it is "
+                    "cooling"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h24",
+        "band": "harder",
+        "text": "A student writes: copper carbonate + heat makes copper oxide "
+                "+ carbon dioxide. What is wrong with that equation?",
+        "options": [
+            {"text": "The arrow is pointing the wrong way for a decomposition",
+             "correct": False,
+             "why": "The arrow is the right way round. The reactant is on the "
+                    "left and the products on the right"},
+            {"text": "Heat is not a substance, so it does not belong on the "
+                     "left",
+             "correct": True},
+            {"text": "Copper oxide and carbon dioxide should be on the left "
+                     "together",
+             "correct": False,
+             "why": "They are the products, so the right is where they go"},
+            {"text": "Nothing is wrong, because the heat has to be shown "
+                     "somewhere",
+             "correct": False,
+             "why": "It is shown by saying the mixture is heated, never as a "
+                    "reactant in the equation"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h25",
+        "band": "harder",
+        "text": "A company wants a reaction for a hand-warmer that gets hot "
+                "when it is squeezed. Why is a thermal decomposition the wrong "
+                "choice?",
+        "options": [
+            {"text": "Because it would need a gas supply, which a packet "
+                     "cannot carry",
+             "correct": False,
+             "why": "It needs nothing added at all. The problem is the energy, "
+                    "not the reactants"},
+            {"text": "Because it would reverse as soon as the packet started "
+                     "to cool",
+             "correct": False,
+             "why": "A decomposition does not reverse. The problem is which "
+                    "way the energy goes"},
+            {"text": "Because it takes energy in, so it would make the packet "
+                     "colder",
+             "correct": True},
+            {"text": "Because it would be far too slow to be any use in a "
+                     "pocket",
+             "correct": False,
+             "why": "An airbag decomposition runs in thirty milliseconds. "
+                    "Speed is not the obstacle"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h26",
+        "band": "harder",
+        "text": "A student says a decomposition LOSES mass. Which rewording "
+                "makes the claim correct?",
+        "options": [
+            {"text": "The reaction loses mass, and the gas gains it back",
+             "correct": False,
+             "why": "A gas gaining what a reaction lost is still saying mass "
+                    "moved into and out of existence"},
+            {"text": "The tube loses mass, because one of the products leaves "
+                     "it",
+             "correct": True},
+            {"text": "The compound loses mass as it is broken apart by the "
+                     "heat",
+             "correct": False,
+             "why": "The atoms that were in the compound are all still there, "
+                    "spread between two products"},
+            {"text": "The mass is lost to the energy the reaction takes in",
+             "correct": False,
+             "why": "Energy is not made of matter and cannot account for a "
+                    "balance reading"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h27",
+        "band": "harder",
+        "text": "4.00 g of copper carbonate leaves 2.58 g of copper oxide. A "
+                "technician needs 5.16 g of copper oxide. What mass of "
+                "carbonate should be weighed out?",
+        "options": [
+            {"text": "5.16 g, because the oxide and the carbonate weigh the "
+                     "same",
+             "correct": False,
+             "why": "They do not. The carbonate is heavier, because it still "
+                    "holds the gas"},
+            {"text": "2.58 g",
+             "correct": False,
+             "why": "That is the oxide from a 4.00 g sample, so it is half of "
+                    "what is wanted"},
+            {"text": "8.00 g",
+             "correct": True},
+            {"text": "10.32 g, which is 5.16 g doubled to allow for the gas",
+             "correct": False,
+             "why": "Doubling overshoots. 5.16 g is twice 2.58 g, so twice "
+                    "4.00 g of carbonate is needed"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h28",
+        "band": "harder",
+        "text": "A jar holds a mixture of green copper carbonate and black "
+                "copper oxide. The whole mixture is heated and turns entirely "
+                "black. What has happened?",
+        "options": [
+            {"text": "Both substances have decomposed, leaving one black solid "
+                     "behind",
+             "correct": False,
+             "why": "The oxide is already a product of the decomposition and "
+                    "has nothing left to lose"},
+            {"text": "The oxide has coated the carbonate and hidden its "
+                     "colour",
+             "correct": False,
+             "why": "A powder does not coat another powder. The green has gone "
+                    "because it reacted"},
+            {"text": "Only the carbonate decomposed; the oxide was already a "
+                     "product",
+             "correct": True},
+            {"text": "The two have joined to make a single new black compound",
+             "correct": False,
+             "why": "Nothing joined. One of the two came apart and the other "
+                    "sat there"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h29",
+        "band": "harder",
+        "text": "A melted chocolate bar sets again as it cools, but a baked "
+                "cake never becomes batter. Explain the difference.",
+        "options": [
+            {"text": "The cake is hotter than the chocolate, so it cannot go "
+                     "back",
+             "correct": False,
+             "why": "Both cool to the same room. Temperature is not what "
+                    "decides it"},
+            {"text": "The chocolate never changed in any lasting way, and the "
+                     "cake was simply damaged by the heat of the oven",
+             "correct": False,
+             "why": "Damaged is not a chemical description. The cake's raising "
+                    "agent decomposed, which is a reaction"},
+            {"text": "The cake lost a gas to the air and the chocolate did "
+                     "not",
+             "correct": False,
+             "why": "Losing a gas is part of it and not the heart of it. The "
+                    "chocolate only melted"},
+            {"text": "Melting is a physical change and the cake's raising "
+                     "agent decomposed, which is a chemical one",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c5-02-h30",
+        "band": "harder",
+        "text": "Why can a cement works not simply keep the carbon dioxide "
+                "inside the rock and make quicklime anyway?",
+        "options": [
+            {"text": "Because the gas leaving is what turns the limestone into "
+                     "quicklime",
+             "correct": True},
+            {"text": "Because the gas would build up pressure and burst the "
+                     "kiln",
+             "correct": False,
+             "why": "Kilns are open. The real point is that keeping the gas in "
+                    "means keeping the limestone"},
+            {"text": "Because the gas has to be sold to make the process pay "
+                     "for itself",
+             "correct": False,
+             "why": "That is an argument about money rather than about the "
+                    "reaction"},
+            {"text": "Because quicklime is made from the gas rather than from "
+                     "the solid",
+             "correct": False,
+             "why": "Quicklime is the solid left behind. The gas is what goes "
+                    "away"},
+        ],
+        "figure": None,
+    },
 ]
