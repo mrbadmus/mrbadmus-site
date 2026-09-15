@@ -361,7 +361,7 @@ QUESTIONS = [
                 "identical to one another.",
         "options": [
             "One chromosome from each of the 23 pairs goes to each cell, so the sets match",
-            "They share the same cytoplasm for a short while after they separate",
+            "They share the same cytoplasm afterwards",
             "The genes rearrange themselves after division until the two cells match",
             "Each receives an exact copy of every chromosome",
         ],
@@ -523,7 +523,7 @@ QUESTIONS = [
         "text": "Explain the error in the statement that a cell's DNA is "
                 "copied during mitosis.",
         "options": [
-            "DNA is copied during cytokinesis, while the cytoplasm is dividing into two",
+            "DNA is copied during cytokinesis, not interphase",
             "DNA is never copied; the two daughter cells share the original molecules between them",
             "DNA is copied twice, once in interphase and again while the chromosomes separate",
             "DNA is copied during interphase, before mitosis begins",
@@ -959,10 +959,10 @@ QUESTIONS = [
                 "Cell Y holds 46 chromosomes each made of a single "
                 "chromatid. Deduce which cell has already completed mitosis.",
         "options": [
-            "Cell X, because two chromatids show that a division has just finished",
+            "Cell X",
             "Cell Y",
-            "Neither, because both cells are still in interphase",
-            "Both, because the chromatid number always returns to normal after a division",
+            "Neither cell",
+            "Both cells",
         ],
         "correct_index": 1,
         "why": "Mitosis separates the chromatids, so a cell that has "
@@ -998,7 +998,7 @@ QUESTIONS = [
                 "has killed some of its muscle.",
         "options": [
             "The dead muscle is replaced within a few days by mitosis of the cells beside it",
-            "The remaining muscle cells divide by meiosis to make up the loss",
+            "The remaining muscle cells divide by meiosis",
             "The heart makes new muscle by enlarging its cells until they split apart",
             "The dead muscle is not replaced by new muscle cells",
         ],
