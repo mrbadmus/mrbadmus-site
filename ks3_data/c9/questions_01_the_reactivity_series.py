@@ -1053,4 +1053,1110 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 top-up · easier e14–e30 ─────────────────────────────────
+    {
+        "id": "c9-01-e14",
+        "band": "easier",
+        "text": "Which metal sits second in the reactivity series, "
+                "immediately below potassium?",
+        "options": [
+            {"text": "Calcium", "correct": False,
+             "why": "Calcium is third, below sodium"},
+            {"text": "Sodium", "correct": True},
+            {"text": "Magnesium", "correct": False,
+             "why": "Magnesium is fourth, below calcium"},
+            {"text": "Aluminium", "correct": False,
+             "why": "Aluminium is fifth, below magnesium"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e15",
+        "band": "easier",
+        "text": "A metal from the top of the series is put into cold water "
+                "and a gas comes off. What are the two products?",
+        "options": [
+            {"text": "A metal hydroxide, and hydrogen", "correct": True},
+            {"text": "A metal oxide, and hydrogen", "correct": False,
+             "why": "The metal joins the whole water molecule, not oxygen "
+                    "alone. What is left dissolved is a hydroxide"},
+            {"text": "A metal chloride, and hydrogen", "correct": False,
+             "why": "A chloride comes from hydrochloric acid. There is no "
+                    "chlorine in water at all"},
+            {"text": "A metal hydroxide, and oxygen", "correct": False,
+             "why": "Both tests in this lesson give off hydrogen, which pops "
+                    "with a lit splint"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e16",
+        "band": "easier",
+        "text": "Magnesium fizzes in dilute hydrochloric acid. Name the two "
+                "products.",
+        "options": [
+            {"text": "Magnesium oxide and hydrogen", "correct": False,
+             "why": "An oxide would need oxygen. The acid supplies chlorine, "
+                    "so a chloride is what forms"},
+            {"text": "Magnesium hydroxide and hydrogen", "correct": False,
+             "why": "A hydroxide is what cold water gives. An acid gives a "
+                    "salt named after the acid"},
+            {"text": "Magnesium chloride and oxygen", "correct": False,
+             "why": "Hydrogen is the gas from a metal and an acid. No oxygen "
+                    "is released"},
+            {"text": "Magnesium chloride and hydrogen", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e17",
+        "band": "easier",
+        "text": "Potassium on cold water gives off a gas that catches fire. "
+                "What colour is that flame?",
+        "options": [
+            {"text": "Bright white", "correct": False,
+             "why": "Bright white is burning magnesium ribbon"},
+            {"text": "Orange", "correct": False,
+             "why": "Orange is the colour a sodium compound gives a flame"},
+            {"text": "Lilac", "correct": True},
+            {"text": "Green", "correct": False,
+             "why": "Green flames come from copper compounds"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e18",
+        "band": "easier",
+        "text": "A lump of calcium is dropped into cold water. What happens "
+                "to the water itself?",
+        "options": [
+            {"text": "It turns bright blue", "correct": False,
+             "why": "Blue is a copper sulfate solution. Calcium hydroxide is "
+                    "white"},
+            {"text": "It turns a pale green colour", "correct": False,
+             "why": "Pale green is an iron sulfate solution, not a calcium "
+                    "one"},
+            {"text": "It stays completely clear", "correct": False,
+             "why": "Calcium hydroxide is only slightly soluble, so what will "
+                    "not dissolve clouds the water"},
+            {"text": "It turns cloudy white", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e19",
+        "band": "easier",
+        "text": "The second test on the bench uses DILUTE acid. What does "
+                "dilute mean?",
+        "options": [
+            {"text": "An acid with a lot of water in it", "correct": True},
+            {"text": "An acid that has been warmed up before it is used",
+             "correct": False,
+             "why": "Dilute says nothing about temperature. It describes how "
+                    "much water has been mixed in"},
+            {"text": "An acid that is safe to touch with bare hands",
+             "correct": False,
+             "why": "A dilute acid still needs care. Dilute describes the "
+                    "amount of water, not the hazard"},
+            {"text": "An acid that has been left open to the air for a while",
+             "correct": False,
+             "why": "Leaving an acid standing does not dilute it. Water has "
+                    "to be added"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e20",
+        "band": "easier",
+        "text": "Which metal sits between iron and copper in the reactivity "
+                "series?",
+        "options": [
+            {"text": "Zinc", "correct": False,
+             "why": "Zinc is above iron, not below it"},
+            {"text": "Lead", "correct": True},
+            {"text": "Silver", "correct": False,
+             "why": "Silver is below copper, not between iron and copper"},
+            {"text": "Carbon", "correct": False,
+             "why": "Carbon is placed above zinc, which is well above iron"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e21",
+        "band": "easier",
+        "text": "Silver is used for mirror backing and for electrical "
+                "contacts because it stays as it is. What does that suggest?",
+        "options": [
+            {"text": "It is high in the series and reacts readily",
+             "correct": False,
+             "why": "A metal high in the series reacts readily. Silver "
+                    "staying unchanged points the other way"},
+            {"text": "It is the hardest metal in the list", "correct": False,
+             "why": "Hardness is not reactivity, and silver is a soft metal"},
+            {"text": "It is low in the reactivity series, so it stays as it "
+                     "is in ordinary use", "correct": True},
+            {"text": "It is a non-metal, like carbon", "correct": False,
+             "why": "Silver is a metal. Carbon is the only non-metal in the "
+                    "list"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e22",
+        "band": "easier",
+        "text": "Zinc does nothing in cold water but reacts steadily in "
+                "dilute acid. Which band of the bench does it belong to?",
+        "options": [
+            {"text": "The metals that fizz in cold water", "correct": False,
+             "why": "Zinc gave nothing in cold water, so it cannot be in that "
+                    "band"},
+            {"text": "The metals that need acid before much happens",
+             "correct": True},
+            {"text": "The metals that neither liquid touches",
+             "correct": False,
+             "why": "Acid gets a steady reaction from zinc, so that band is "
+                    "the wrong one"},
+            {"text": "The metals that react with neither liquid but rust "
+                     "quickly in damp air", "correct": False,
+             "why": "Rusting is iron, and zinc reacted with the acid anyway"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e23",
+        "band": "easier",
+        "text": "A cleaned magnesium ribbon is left standing in cold water "
+                "for several minutes. What is seen?",
+        "options": [
+            {"text": "A few tiny bubbles clinging to the ribbon",
+             "correct": True},
+            {"text": "A fast stream of bubbles and a warm tube",
+             "correct": False,
+             "why": "That is magnesium in dilute acid. Cold water gives "
+                    "almost nothing"},
+            {"text": "Nothing whatever, now or ever", "correct": False,
+             "why": "The reaction is real but far too slow to watch, so "
+                    "'nothing ever' is too strong"},
+            {"text": "The ribbon disappears and the water goes cloudy",
+             "correct": False,
+             "why": "A disappearing ribbon is the acid tube, and cloudy water "
+                    "is calcium"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e24",
+        "band": "easier",
+        "text": "Where does aluminium sit in the reactivity series?",
+        "options": [
+            {"text": "Between zinc and iron", "correct": False,
+             "why": "Aluminium is above carbon, which is itself above zinc"},
+            {"text": "Somewhere between copper and silver", "correct": False,
+             "why": "That is the bottom of the list. Aluminium is high in it"},
+            {"text": "Below gold, at the very bottom", "correct": False,
+             "why": "Nothing sits below gold, and aluminium is near the top"},
+            {"text": "Between magnesium and carbon", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e25",
+        "band": "easier",
+        "text": "Potassium in water is a teacher demonstration only. Which "
+                "precautions go with it?",
+        "options": [
+            {"text": "A safety screen, and the smallest piece that can be cut",
+             "correct": True},
+            {"text": "Gloves, and a piece about the size of a fist so that "
+                     "the class at the back can see it", "correct": False,
+             "why": "The piece is kept as small as can be cut; a large one "
+                    "would be dangerous"},
+            {"text": "A fume cupboard, and the acid warmed first",
+             "correct": False,
+             "why": "Potassium is never put into acid at any concentration"},
+            {"text": "No special precautions, as the piece is small",
+             "correct": False,
+             "why": "A screen and a teacher demonstration are both required"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e26",
+        "band": "easier",
+        "text": "Carbon is placed in the reactivity series between which two?",
+        "options": [
+            {"text": "Iron and lead, low in the list", "correct": False,
+             "why": "Carbon is well above iron"},
+            {"text": "Aluminium and zinc", "correct": True},
+            {"text": "Copper and silver", "correct": False,
+             "why": "That is the bottom of the list, and carbon is in the "
+                    "upper half"},
+            {"text": "Potassium and sodium", "correct": False,
+             "why": "Those are the top two, and nothing is placed between "
+                    "them"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e27",
+        "band": "easier",
+        "text": "Which observation shows that a metal has reacted with dilute "
+                "acid?",
+        "options": [
+            {"text": "The acid staying exactly as it was", "correct": False,
+             "why": "No change at all is the result copper gives, and copper "
+                    "does not react"},
+            {"text": "The metal becoming shinier in the tube", "correct": False,
+             "why": "A shine can come from cleaning. Bubbles are the sign of "
+                    "a reaction"},
+            {"text": "Bubbles of gas coming off the metal", "correct": True},
+            {"text": "The acid turning a deeper colour while the metal is "
+                     "left completely unchanged", "correct": False,
+             "why": "The metal has to change for a reaction with it to have "
+                    "happened"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e28",
+        "band": "easier",
+        "text": "Why is a magnesium ribbon rubbed clean before it is tested?",
+        "options": [
+            {"text": "To take off the dull oxide layer, so that the metal "
+                     "itself meets the liquid", "correct": True},
+            {"text": "To make it thinner, so that the acid has less metal to "
+                     "work through and reacts faster", "correct": False,
+             "why": "Cleaning is about the surface, not about the thickness"},
+            {"text": "To warm it up before the reaction starts",
+             "correct": False,
+             "why": "Rubbing warms it barely at all, and warmth is not the "
+                    "reason"},
+            {"text": "To make it weigh less, so the result is fairer",
+             "correct": False,
+             "why": "The point is a clean surface, not a particular mass"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e29",
+        "band": "easier",
+        "text": "A freshly cut piece of sodium goes dull within seconds on "
+                "the bench. What is it reacting with?",
+        "options": [
+            {"text": "The knife", "correct": False,
+             "why": "The knife does not attack it. The dullness spreads over "
+                    "the whole cut face"},
+            {"text": "The air", "correct": True},
+            {"text": "The oil it was stored in", "correct": False,
+             "why": "The oil is there to keep air off; it does not attack the "
+                    "metal"},
+            {"text": "Nothing — it is simply drying", "correct": False,
+             "why": "A new substance is forming on the surface, so it is a "
+                    "chemical change"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-e30",
+        "band": "easier",
+        "text": "Which metal on the bench reacted violently with cold water?",
+        "options": [
+            {"text": "Magnesium", "correct": False,
+             "why": "Magnesium barely touches cold water and needs acid"},
+            {"text": "Zinc granules", "correct": False,
+             "why": "Zinc does nothing at all in cold water"},
+            {"text": "Potassium", "correct": True},
+            {"text": "Copper", "correct": False,
+             "why": "Copper does nothing in either liquid"},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · standard s14–s30 ───────────────────────────────
+    {
+        "id": "c9-01-s14",
+        "band": "standard",
+        "text": "Calcium reacts with cold water and also fizzes in dilute "
+                "acid. What does the acid result add to its position?",
+        "options": [
+            {"text": "Nothing new — the water test had already placed it near "
+                     "the top", "correct": True},
+            {"text": "It moves calcium above potassium, because it reacted in "
+                     "two liquids", "correct": False,
+             "why": "Reacting twice does not move a metal up. Potassium's "
+                    "water reaction is far more violent"},
+            {"text": "It moves calcium into the middle band with magnesium "
+                     "and zinc", "correct": False,
+             "why": "The middle band is for metals that give nothing in cold "
+                    "water, and calcium fizzes in it"},
+            {"text": "It shows the series was built the wrong way up",
+             "correct": False,
+             "why": "Every metal that reacts with cold water reacts with acid "
+                    "too, so nothing is upside down"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s15",
+        "band": "standard",
+        "text": "A metal reacts with cold water. Can you say in advance what "
+                "dilute acid will do to it?",
+        "options": [
+            {"text": "No — the two liquids are unrelated, so either result is "
+                     "possible", "correct": False,
+             "why": "Both tests measure the same property, and the top of the "
+                    "series passes both"},
+            {"text": "Yes — anything that manages cold water manages acid as "
+                     "well", "correct": True},
+            {"text": "Yes — it will do nothing, because the water has used "
+                     "the metal up", "correct": False,
+             "why": "A fresh piece is used for each test, and reactivity is a "
+                    "property of the element"},
+            {"text": "No — acid only works on metals that ignore cold water",
+             "correct": False,
+             "why": "Acid reacts with the top of the series too, and more "
+                    "violently than water does"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s16",
+        "band": "standard",
+        "text": "In the middle band, the fizzing in acid gets weaker the "
+                "further down the list you go. Why?",
+        "options": [
+            {"text": "Because the acid is used up by the metals above them in "
+                     "the tube", "correct": False,
+             "why": "Each metal is tested in its own tube with its own fresh "
+                    "acid"},
+            {"text": "Because the lower metals are heavier, so they sink out "
+                     "of the acid", "correct": False,
+             "why": "Density has nothing to do with it, and the pieces are "
+                    "covered either way"},
+            {"text": "Because those metals are less reactive the lower they "
+                     "sit", "correct": True},
+            {"text": "Because the lower metals are harder, so the acid cannot "
+                     "get into them", "correct": False,
+             "why": "Hardness is not reactivity. Sodium is soft and sits near "
+                    "the top"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s17",
+        "band": "standard",
+        "text": "Calcium leaves the water cloudy white, while potassium "
+                "leaves a clear solution behind. What explains the "
+                "difference?",
+        "options": [
+            {"text": "Calcium hydroxide is only slightly soluble, so most of "
+                     "it stays as a white solid in the water", "correct": True},
+            {"text": "Calcium reacts more violently, and violence makes a "
+                     "solution cloudy", "correct": False,
+             "why": "Potassium's reaction is far more violent and its "
+                    "solution is clear"},
+            {"text": "Calcium is a different colour from potassium",
+             "correct": False,
+             "why": "Both are silvery. The cloudiness comes from the compound "
+                    "that forms"},
+            {"text": "Potassium reacts with the glass and cleans it",
+             "correct": False,
+             "why": "Potassium does not attack the glass. The difference is "
+                    "in the hydroxide"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s18",
+        "band": "standard",
+        "text": "The same gas is given off in the water test and in the acid "
+                "test. Why is that a useful clue?",
+        "options": [
+            {"text": "It shows the water and the acid are the same substance",
+             "correct": False,
+             "why": "Dilute acid is mostly water, but it is the acid that "
+                    "gets the middle metals going"},
+            {"text": "It shows the gas comes out of the metal, which had been "
+                     "storing it", "correct": False,
+             "why": "The hydrogen comes from the water or from the acid, not "
+                    "from inside the metal"},
+            {"text": "It shows the two tests must give the same answer for "
+                     "every metal, so only one of them is ever needed",
+             "correct": False,
+             "why": "Magnesium gives nothing in water and a fast reaction in "
+                    "acid, so the answers differ"},
+            {"text": "It suggests the two tests are doing the same kind of "
+                     "job, so one order can cover both", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s19",
+        "band": "standard",
+        "text": "An unknown metal fizzes only gently in dilute acid and the "
+                "tube barely warms. Magnesium in the same acid fizzes fast "
+                "and gets hot. What follows?",
+        "options": [
+            {"text": "The unknown metal is below magnesium in the series",
+             "correct": True},
+            {"text": "The unknown metal is above magnesium, because a gentle "
+                     "reaction runs for longer and so gives more in total",
+             "correct": False,
+             "why": "A gentler reaction means a less reactive metal, whatever "
+                    "it adds up to in the end"},
+            {"text": "The two metals are in the same place, because both of "
+                     "them fizzed", "correct": False,
+             "why": "Both reacting puts them in the same band; how hard they "
+                    "react separates them within it"},
+            {"text": "Nothing can be said until the unknown is tried in cold "
+                     "water as well", "correct": False,
+             "why": "The acid result already places it below magnesium; water "
+                    "would add to that, not replace it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s20",
+        "band": "standard",
+        "text": "Lead barely reacts with dilute acid; copper does not react "
+                "with it at all. Which test separates the two?",
+        "options": [
+            {"text": "The cold water test, because lead reacts with it and "
+                     "copper does not", "correct": False,
+             "why": "Neither lead nor copper reacts with cold water, so that "
+                    "test separates nothing"},
+            {"text": "Neither test, because 'barely' and 'not at all' are the "
+                     "same result", "correct": False,
+             "why": "A small reaction and no reaction are different results, "
+                    "and the difference is the evidence"},
+            {"text": "The acid test — just, because lead gives a little and "
+                     "copper gives none", "correct": True},
+            {"text": "Both tests, because lead reacts in both and copper in "
+                     "neither", "correct": False,
+             "why": "Lead does not react with cold water; only the acid tube "
+                    "tells them apart"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s21",
+        "band": "standard",
+        "text": "One student scrapes a fresh surface on a piece of aluminium "
+                "and another does not. Both pieces go into dilute acid. Whose "
+                "reacts faster?",
+        "options": [
+            {"text": "The unscraped one, because its surface is smoother and "
+                     "the acid can spread over it more evenly", "correct": False,
+             "why": "The oxide layer keeps the acid off the metal, and "
+                    "smoothness does not help"},
+            {"text": "They react at the same rate, because both pieces are "
+                     "aluminium", "correct": False,
+             "why": "Both are aluminium, but only one of them has the metal "
+                    "itself exposed"},
+            {"text": "Neither reacts, because aluminium is below copper in "
+                     "the series", "correct": False,
+             "why": "Aluminium is high in the series, just below magnesium"},
+            {"text": "The scraped one, because the oxide layer has been taken "
+                     "off", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s22",
+        "band": "standard",
+        "text": "A cut piece of sodium goes dull in seconds in air, while "
+                "copper turnings sit in an open jar for years. What does the "
+                "pair establish?",
+        "options": [
+            {"text": "Sodium is softer than copper, and soft metals go dull "
+                     "faster", "correct": False,
+             "why": "Softness is not reactivity. Gold is soft and does not "
+                    "tarnish at all"},
+            {"text": "Sodium is far higher in the reactivity series than "
+                     "copper", "correct": True},
+            {"text": "Copper has been treated with something that protects "
+                     "it", "correct": False,
+             "why": "Plain copper turnings need no treatment; they simply do "
+                    "not react much"},
+            {"text": "Sodium is stored wrongly, and copper is stored "
+                     "properly", "correct": False,
+             "why": "Sodium is kept under oil for exactly this reason. The "
+                    "dulling is its own chemistry"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s23",
+        "band": "standard",
+        "text": "Zinc granules and iron granules of the same size are each "
+                "put into the same dilute acid. Which observation orders "
+                "them?",
+        "options": [
+            {"text": "Which one sinks first, since the more reactive metal is "
+                     "the denser", "correct": False,
+             "why": "Density is a separate property and says nothing about "
+                    "reactivity"},
+            {"text": "Which one is the darker grey, since colour follows the "
+                     "series", "correct": False,
+             "why": "Colour is not part of the series, and both of them are "
+                    "grey"},
+            {"text": "How fast the bubbles come off", "correct": True},
+            {"text": "Neither — both of them fizz", "correct": False,
+             "why": "Both fizz, and how hard they fizz is the evidence that "
+                    "orders them"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s24",
+        "band": "standard",
+        "text": "Potassium is cut fresh from under the oil immediately before "
+                "use. Why would a piece left out on the bench give a poor "
+                "result?",
+        "options": [
+            {"text": "It would have dried out, and a dry metal cannot react "
+                     "with water", "correct": False,
+             "why": "The reaction is with the water in the beaker, not with "
+                    "any dampness on the metal"},
+            {"text": "It would have got warmer where it lay on the bench, and "
+                     "a warm metal reacts less than a cold one",
+             "correct": False,
+             "why": "Warming speeds a reaction up rather than slowing it. The "
+                    "problem is the coating"},
+            {"text": "It would have got heavier, which changes the amount of "
+                     "metal being used", "correct": False,
+             "why": "Any mass change is tiny. What matters is that the "
+                    "surface has already changed"},
+            {"text": "Its surface would already have reacted with the air, so "
+                     "it is no longer clean metal", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s25",
+        "band": "standard",
+        "text": "Calcium is put into dilute hydrochloric acid. Name both "
+                "products.",
+        "options": [
+            {"text": "Calcium hydroxide and hydrogen", "correct": False,
+             "why": "A hydroxide is what cold water gives. An acid gives a "
+                    "salt named after the acid"},
+            {"text": "Calcium chloride and hydrogen", "correct": True},
+            {"text": "Calcium oxide and hydrogen gas", "correct": False,
+             "why": "There is no oxygen to take. The chlorine from the acid "
+                    "joins the calcium"},
+            {"text": "Calcium chloride and oxygen", "correct": False,
+             "why": "Hydrogen is the gas from a metal and an acid, and it "
+                    "pops with a lit splint"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s26",
+        "band": "standard",
+        "text": "Why is dilute acid a better test than cold water for sorting "
+                "the MIDDLE of the list?",
+        "options": [
+            {"text": "Because acid is more dangerous, and a more dangerous "
+                     "test is a more accurate one", "correct": False,
+             "why": "How hazardous a test is has nothing to do with what it "
+                    "can show"},
+            {"text": "Because cold water gives nothing for all of them, so it "
+                     "cannot tell them apart", "correct": True},
+            {"text": "Because acid dissolves every metal, so every one of "
+                     "them gives a result", "correct": False,
+             "why": "Copper, silver and gold all give nothing in dilute acid"},
+            {"text": "Because cold water reacts with all of them equally",
+             "correct": False,
+             "why": "Cold water gives nothing at all for the middle of the "
+                    "list, which is the problem"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s27",
+        "band": "standard",
+        "text": "Silver is chosen for mirror backing and for electrical "
+                "contacts. Which property of silver is being used?",
+        "options": [
+            {"text": "That it is the most reactive metal available at a "
+                     "sensible price", "correct": False,
+             "why": "A reactive metal would tarnish away. Silver is chosen "
+                    "for the opposite reason"},
+            {"text": "That it reacts with air to form a hard protective coat",
+             "correct": False,
+             "why": "That describes aluminium's oxide layer. Silver is chosen "
+                    "because it stays unchanged"},
+            {"text": "That it is the hardest metal, so a contact does not "
+                     "wear", "correct": False,
+             "why": "Silver is soft. It is its lack of reaction that matters "
+                    "here"},
+            {"text": "That it stays as it is, because it is near the bottom "
+                     "of the series", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s28",
+        "band": "standard",
+        "text": "A student tests an unknown metal in WARM water instead of "
+                "cold and sees bubbles. Can they place it with potassium and "
+                "calcium?",
+        "options": [
+            {"text": "Yes, because bubbles in water are bubbles in water "
+                     "whatever the temperature", "correct": False,
+             "why": "Warming can start a reaction cold water would not, so "
+                    "the comparison is unfair"},
+            {"text": "Yes, because warm water is just cold water that has "
+                     "been heated a little", "correct": False,
+             "why": "The other metals were all given cold water, and the test "
+                    "has to be the same for each"},
+            {"text": "No — that is a different test, so the result cannot be "
+                     "compared with theirs", "correct": True},
+            {"text": "No, because warm water never reacts with any metal",
+             "correct": False,
+             "why": "Warm water reacts with more metals than cold water does, "
+                    "not fewer"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s29",
+        "band": "standard",
+        "text": "Calcium fizzes in cold water. How would you identify the gas "
+                "coming off, and what result would you expect?",
+        "options": [
+            {"text": "Hold a lit splint to it and expect a squeaky pop",
+             "correct": True},
+            {"text": "Hold a lit splint to it and expect the flame to go out",
+             "correct": False,
+             "why": "A flame going out suggests carbon dioxide, and this gas "
+                    "burns instead"},
+            {"text": "Bubble it through limewater and expect the limewater to "
+                     "go cloudy", "correct": False,
+             "why": "Cloudy limewater means carbon dioxide, which a metal and "
+                    "water do not give"},
+            {"text": "Hold damp indicator paper in it and expect the paper to "
+                     "bleach white", "correct": False,
+             "why": "Bleaching indicates chlorine, and nothing in this test "
+                    "produces chlorine"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-s30",
+        "band": "standard",
+        "text": "The bench places six of the twelve metals in the reference "
+                "list. How were the other six placed?",
+        "options": [
+            {"text": "By looking at how much each of them costs to buy",
+             "correct": False,
+             "why": "Price is a fact about people. The order came from "
+                    "reactions"},
+            {"text": "By the same two tests, run on those metals",
+             "correct": True},
+            {"text": "By putting them in order of melting point",
+             "correct": False,
+             "why": "Melting point is a separate property and gives a "
+                    "different order"},
+            {"text": "By guessing, since just six of them can be tested",
+             "correct": False,
+             "why": "Every metal in the list was placed by evidence, as the "
+                    "six on the bench were"},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · harder h14–h30 ─────────────────────────────────
+    {
+        "id": "c9-01-h14",
+        "band": "harder",
+        "text": "A student claims the reactivity series is simply the order "
+                "in which the metals were discovered. Which pair of facts "
+                "refutes that?",
+        "options": [
+            {"text": "Gold has been known for thousands of years and is at "
+                     "the bottom; aluminium was isolated recently and is near "
+                     "the top", "correct": True},
+            {"text": "Potassium and sodium were discovered in the same year "
+                     "and sit next to each other", "correct": False,
+             "why": "That fits the claim rather than contradicting it, so it "
+                    "refutes nothing"},
+            {"text": "Copper and iron were both known in ancient times and "
+                     "are both low in the list", "correct": False,
+             "why": "Two ancient metals both sitting low is consistent with "
+                    "the claim"},
+            {"text": "Carbon is a non-metal, so it was never discovered as a "
+                     "metal", "correct": False,
+             "why": "Carbon's place is decided by its chemistry, which says "
+                    "nothing about discovery dates"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h15",
+        "band": "harder",
+        "text": "Dilute acid is mostly water. Why then does it get a reaction "
+                "from magnesium when cold water barely does?",
+        "options": [
+            {"text": "The acid attacks a metal far more readily than water "
+                     "does", "correct": True},
+            {"text": "There is more water in dilute acid than there is in a "
+                     "beaker of cold water", "correct": False,
+             "why": "A beaker of water is all water. It is the acid that "
+                    "makes the difference"},
+            {"text": "Dilute acid comes out of the bottle warm, and the "
+                     "warmth starts it off", "correct": False,
+             "why": "Dilute acid is at room temperature, and warming is not "
+                    "what starts it"},
+            {"text": "Magnesium sits above the metals that react with cold "
+                     "water", "correct": False,
+             "why": "Magnesium is below them, which is exactly why cold water "
+                    "gives it so little"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h16",
+        "band": "harder",
+        "text": "A student puts iron filings and copper wire into dilute acid "
+                "and records 'both slow'. What is wrong with that record?",
+        "options": [
+            {"text": "Nothing — both are low in the series, so 'both slow' is "
+                     "a fair summary", "correct": False,
+             "why": "Iron reacts and copper does not, and that difference is "
+                    "what places them"},
+            {"text": "Iron is fast rather than slow, so only the iron half is "
+                     "wrong", "correct": False,
+             "why": "Iron in dilute acid is genuinely slow. It is the copper "
+                    "half that is wrong"},
+            {"text": "Copper gives nothing at all, and no reaction is a "
+                     "different result from a slow one", "correct": True},
+            {"text": "Copper is faster than iron, so the record has the two "
+                     "of them the wrong way round", "correct": False,
+             "why": "Copper does not react with dilute acid at any speed"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h17",
+        "band": "harder",
+        "text": "A metal's oxide can be broken down by heating it with "
+                "carbon. What does that fix about the metal's position, with "
+                "no water or acid test at all?",
+        "options": [
+            {"text": "That the metal sits below carbon", "correct": True},
+            {"text": "That the metal sits above carbon, since carbon was able "
+                     "to reach it", "correct": False,
+             "why": "Carbon can only take oxygen from the metals below it"},
+            {"text": "That the metal reacts with cold water, since heat was "
+                     "involved", "correct": False,
+             "why": "Heating a mixture says nothing about how a metal behaves "
+                    "in cold water"},
+            {"text": "That the metal is one of the three at the very bottom "
+                     "of the list", "correct": False,
+             "why": "Below carbon covers a wide range, from zinc all the way "
+                    "down to gold"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h18",
+        "band": "harder",
+        "text": "Magnesium ribbon left in cold water for twenty minutes has a "
+                "few tiny bubbles on it. Which conclusion does that evidence "
+                "support?",
+        "options": [
+            {"text": "Magnesium does not react with cold water, and the "
+                     "bubbles are dissolved air coming out", "correct": False,
+             "why": "The bubbles collect on the ribbon rather than anywhere "
+                    "else, which points to a reaction"},
+            {"text": "Magnesium does react with cold water, far too slowly "
+                     "for the test to place it that way", "correct": True},
+            {"text": "Magnesium belongs with potassium and calcium in the top "
+                     "band", "correct": False,
+             "why": "A few bubbles in twenty minutes is nothing like calcium "
+                    "streaming bubbles at once"},
+            {"text": "The water must have been contaminated, since magnesium "
+                     "cannot react with it", "correct": False,
+             "why": "The reaction is real and known to be very slow, so no "
+                    "contamination is needed"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h19",
+        "band": "harder",
+        "text": "An unknown metal X does nothing in cold water, fizzes fast "
+                "in dilute acid, and the tube warms quickly. Which bench "
+                "metal is X most like?",
+        "options": [
+            {"text": "Calcium", "correct": False,
+             "why": "Calcium reacts with cold water, and X did not"},
+            {"text": "Iron", "correct": False,
+             "why": "Iron fizzes only sparsely in acid and the tube barely "
+                    "warms"},
+            {"text": "Copper", "correct": False,
+             "why": "Copper does nothing in either liquid"},
+            {"text": "Magnesium", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h20",
+        "band": "harder",
+        "text": "A student orders four metals using dilute acid alone and "
+                "says cold water was unnecessary. When would that claim fail?",
+        "options": [
+            {"text": "As soon as two of the metals had the same density, "
+                     "because the acid could not then tell them apart",
+             "correct": False,
+             "why": "Density plays no part in the test or in the order"},
+            {"text": "As soon as one of them was a non-metal, because acid "
+                     "does not react with those at all", "correct": False,
+             "why": "Carbon's place is settled another way, and that is not "
+                    "where acid ordering fails"},
+            {"text": "As soon as one metal was high enough to react with cold "
+                     "water, because acid would then be too violent to "
+                     "compare", "correct": True},
+            {"text": "Never — dilute acid separates every metal in the list "
+                     "on its own", "correct": False,
+             "why": "Copper, silver and gold all give nothing in it, so acid "
+                    "cannot order them"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h21",
+        "band": "harder",
+        "text": "A metal does nothing in either liquid, and it is used for "
+                "coins that stay in circulation for decades. Which of those "
+                "two facts is the EVIDENCE for its position?",
+        "options": [
+            {"text": "The tube results", "correct": True},
+            {"text": "The coins", "correct": False,
+             "why": "A use follows from a property. The tests are what "
+                    "measured the property"},
+            {"text": "Both equally, since neither changes", "correct": False,
+             "why": "The coins are a consequence of the position, not the "
+                    "measurement that fixed it"},
+            {"text": "Neither — evidence must be a number", "correct": False,
+             "why": "Observing that nothing happened is evidence, as this "
+                    "lesson insists"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h22",
+        "band": "harder",
+        "text": "The bench used a magnesium ribbon, zinc granules, iron "
+                "filings and a copper coil. Why does using different shapes "
+                "not spoil the comparison?",
+        "options": [
+            {"text": "Because all four shapes were cut to exactly the same "
+                     "surface area, so the rates can be compared directly",
+             "correct": False,
+             "why": "They plainly were not, and the bench does not depend on "
+                    "their being equal"},
+            {"text": "Because shape changes how fast a reaction goes, and the "
+                     "bench is sorting by which metals react at all",
+             "correct": True},
+            {"text": "Because the shapes were chosen so that each metal "
+                     "reacts equally fast", "correct": False,
+             "why": "The rates differ widely, and that is part of what the "
+                    "bench shows"},
+            {"text": "Because shape has no effect on a reaction at all",
+             "correct": False,
+             "why": "Powdered zinc fizzes much faster than a lump of it, so "
+                    "shape changes the rate"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h23",
+        "band": "harder",
+        "text": "Iron left damp for days rusts. Explain why the bench does "
+                "not count that as iron reacting with cold water.",
+        "options": [
+            {"text": "Rusting is a physical change, so it does not count as a "
+                     "reaction", "correct": False,
+             "why": "Rusting forms a new substance, which makes it a chemical "
+                    "change"},
+            {"text": "Rusting takes days, and only reactions that finish "
+                     "inside a lesson count", "correct": False,
+             "why": "How long a reaction takes does not decide whether it is "
+                    "one"},
+            {"text": "Rusting needs water and air together, so it is a "
+                     "different reaction from the one being tested",
+             "correct": True},
+            {"text": "Rusting happens to steel rather than to pure iron, so "
+                     "the filings on the bench could never have rusted "
+                     "anyway", "correct": False,
+             "why": "Iron rusts, and steel rusts precisely because it is "
+                    "mostly iron"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h24",
+        "band": "harder",
+        "text": "How could chemists be sure that an order built from two "
+                "liquids would hold for reactions nobody had tried?",
+        "options": [
+            {"text": "They proved it in advance from the position each metal "
+                     "already held in the series, before any liquid was used",
+             "correct": False,
+             "why": "The series was the thing being tested, so it cannot be "
+                    "the proof of itself"},
+            {"text": "They could not be sure; the order was checked against "
+                     "new reactions and kept holding", "correct": True},
+            {"text": "They could be sure, because an order once written down "
+                     "cannot be wrong", "correct": False,
+             "why": "Any order can be overturned by a result that disagrees "
+                    "with it"},
+            {"text": "They could be sure, because reactivity is measured on a "
+                     "scale with units", "correct": False,
+             "why": "Reactivity has no units. The series is an order, not a "
+                    "measurement scale"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h25",
+        "band": "harder",
+        "text": "Which single result would be the strongest evidence that a "
+                "newly found metal belongs ABOVE calcium?",
+        "options": [
+            {"text": "It melts at a lower temperature than calcium does",
+             "correct": False,
+             "why": "Melting point is a separate property and gives a "
+                    "different order"},
+            {"text": "It reacts with cold water more vigorously than calcium "
+                     "does", "correct": True},
+            {"text": "It reacts with dilute acid more vigorously than calcium "
+                     "does", "correct": False,
+             "why": "Both react hard with acid, and acid is too violent up "
+                    "there to separate them"},
+            {"text": "It is softer than calcium and can be cut with a knife",
+             "correct": False,
+             "why": "Softness has no place in the series. Gold is soft and "
+                    "sits at the bottom"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h26",
+        "band": "harder",
+        "text": "A metal fizzes in dilute acid and a gas is collected. A "
+                "student says this proves the metal is reactive. What is the "
+                "careful version?",
+        "options": [
+            {"text": "It proves the metal is one of the three that react with "
+                     "cold water", "correct": False,
+             "why": "Cold water was not tested, and the middle band fizzes in "
+                    "acid too"},
+            {"text": "It proves nothing, because collecting a gas is not a "
+                     "chemical test", "correct": False,
+             "why": "The gas is a product of the reaction, so its appearance "
+                    "is real evidence"},
+            {"text": "It places the metal above the ones acid does not touch, "
+                     "and says nothing about how high", "correct": True},
+            {"text": "It proves the metal is at the very top of the series, "
+                     "because only the top three give off hydrogen at all",
+             "correct": False,
+             "why": "Every metal that reacts with an acid gives hydrogen, all "
+                    "the way down to lead"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h27",
+        "band": "harder",
+        "text": "The same metal is put into dilute hydrochloric acid and into "
+                "dilute sulfuric acid. Would you expect the same gas?",
+        "options": [
+            {"text": "Yes — hydrogen", "correct": True},
+            {"text": "No — chlorine", "correct": False,
+             "why": "The chlorine stays in the salt. The gas a metal and an "
+                    "acid give is hydrogen"},
+            {"text": "No — sulfur dioxide", "correct": False,
+             "why": "The sulfur stays in the salt, and the gas is hydrogen "
+                    "from both acids"},
+            {"text": "Only in the top band", "correct": False,
+             "why": "Every metal that reacts with an acid gives hydrogen, "
+                    "wherever it sits"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h28",
+        "band": "harder",
+        "text": "Which single result from the bench would most upset the "
+                "order potassium, calcium, magnesium, zinc, iron, copper?",
+        "options": [
+            {"text": "Iron fizzing more slowly in dilute acid than zinc "
+                     "granules of the same size do", "correct": False,
+             "why": "That is exactly what the order predicts, so it supports "
+                    "it"},
+            {"text": "Copper giving nothing in either liquid", "correct": False,
+             "why": "That is the result the order predicts for the bottom of "
+                    "the list"},
+            {"text": "Magnesium fizzing in cold water as hard as calcium "
+                     "does", "correct": True},
+            {"text": "Potassium's hydrogen catching fire", "correct": False,
+             "why": "That is what puts potassium at the top, so it fits the "
+                    "order"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h29",
+        "band": "harder",
+        "text": "The reference list has twelve entries and the bench tests "
+                "six of them. Why were those six chosen?",
+        "options": [
+            {"text": "Because they are the six cheapest metals for a school "
+                     "to buy", "correct": False,
+             "why": "Potassium is neither cheap nor easy to keep, and it is "
+                    "on the bench"},
+            {"text": "Because they are the six that react with dilute acid",
+             "correct": False,
+             "why": "Copper is on the bench and does not react with dilute "
+                    "acid"},
+            {"text": "Because they are spread across the whole list, so all "
+                     "three bands appear", "correct": True},
+            {"text": "Because they are the six metals from the top half of "
+                     "the reference list, where the reactions are easiest to "
+                     "see", "correct": False,
+             "why": "Copper and iron are in the bottom half, and both are on "
+                    "the bench"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-01-h30",
+        "band": "harder",
+        "text": "Sodium is kept under oil; magnesium ribbon is kept in an "
+                "open drawer. Both are in the upper half of the list. Explain "
+                "the difference.",
+        "options": [
+            {"text": "Magnesium is a non-metal, so it does not need "
+                     "protecting", "correct": False,
+             "why": "Magnesium is a metal. The difference is how quickly each "
+                    "one reacts with air"},
+            {"text": "Sodium is more expensive, so it is stored more "
+                     "carefully", "correct": False,
+             "why": "The oil is there for chemistry rather than for value. It "
+                    "keeps air and damp off"},
+            {"text": "Magnesium is below carbon, and nothing below carbon "
+                     "reacts with air", "correct": False,
+             "why": "Magnesium is above carbon, and plenty of metals below "
+                    "carbon tarnish in air"},
+            {"text": "Sodium reacts with air and damp fast enough to matter "
+                     "within seconds, while magnesium's reaction is slow "
+                     "enough for a drawer to be fine", "correct": True},
+        ],
+        "figure": None,
+    },
 ]

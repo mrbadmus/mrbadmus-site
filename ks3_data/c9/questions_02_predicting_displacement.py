@@ -1053,4 +1053,1102 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 top-up · easier e14–e30 ─────────────────────────────────
+    {
+        "id": "c9-02-e14",
+        "band": "easier",
+        "text": "Magnesium ribbon is stood in copper sulfate solution. "
+                "Complete the word equation: magnesium + copper sulfate →",
+        "options": [
+            {"text": "copper sulfate + magnesium", "correct": False,
+             "why": "Those are the two starting substances written out again"},
+            {"text": "magnesium copper + sulfate", "correct": False,
+             "why": "The sulfate stays joined to a metal; it does not come "
+                    "away on its own"},
+            {"text": "magnesium sulfate + copper", "correct": True},
+            {"text": "magnesium oxide + copper sulfide", "correct": False,
+             "why": "There is no free oxygen or sulfur here — the sulfate "
+                    "moves across as one whole part"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e15",
+        "band": "easier",
+        "text": "What has to be true of the metal being added for a "
+                "displacement to happen?",
+        "options": [
+            {"text": "It must be below the metal in the compound",
+             "correct": False,
+             "why": "That is the direction that does not run; a lower metal "
+                    "has nothing to offer"},
+            {"text": "It must be above the metal in the compound",
+             "correct": True},
+            {"text": "It must be a different colour from it", "correct": False,
+             "why": "Colour plays no part in the prediction"},
+            {"text": "It must be heavier than it", "correct": False,
+             "why": "Density plays no part in the prediction"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e16",
+        "band": "easier",
+        "text": "Zinc granules are dropped into blue copper sulfate solution. "
+                "What happens to the colour of the solution?",
+        "options": [
+            {"text": "The blue fades", "correct": True},
+            {"text": "It turns bright red", "correct": False,
+             "why": "The copper appears as a brown-pink solid on the zinc, "
+                    "not as a colour in the liquid"},
+            {"text": "It turns a deeper blue", "correct": False,
+             "why": "Copper is leaving the solution, so the blue gets weaker "
+                    "rather than stronger"},
+            {"text": "It stays exactly as blue", "correct": False,
+             "why": "Zinc is above copper, so the copper comes out and the "
+                    "blue drains away"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e17",
+        "band": "easier",
+        "text": "A coil of clean copper wire is left standing in silver "
+                "nitrate solution. What grows on the wire?",
+        "options": [
+            {"text": "Nothing at all", "correct": False,
+             "why": "Copper is above silver, so this is a pair that reacts"},
+            {"text": "Brown-pink specks of copper", "correct": False,
+             "why": "The copper is the metal going into the solution. The "
+                    "silver is what comes out"},
+            {"text": "A blue crust of copper sulfate", "correct": False,
+             "why": "There is no sulfate here, and the copper dissolves "
+                    "rather than coating the wire"},
+            {"text": "Grey needles of silver", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e18",
+        "band": "easier",
+        "text": "In a displacement reaction, what does DISPLACED mean?",
+        "options": [
+            {"text": "Dissolved into the solution as a compound",
+             "correct": False,
+             "why": "That is what happens to the more reactive metal, not to "
+                    "the one displaced"},
+            {"text": "Heated until it melts and runs out", "correct": False,
+             "why": "No melting is involved. The metal is released by a "
+                    "chemical change"},
+            {"text": "Pushed out of its compound, as the element",
+             "correct": True},
+            {"text": "Broken into smaller pieces", "correct": False,
+             "why": "Breaking a solid up is a physical change and makes no "
+                    "new substance"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e19",
+        "band": "easier",
+        "text": "Iron filings are tipped into colourless zinc sulfate "
+                "solution. What happens?",
+        "options": [
+            {"text": "The zinc comes out as a grey solid", "correct": False,
+             "why": "Iron is below zinc, so it cannot push the zinc out"},
+            {"text": "Nothing", "correct": True},
+            {"text": "The solution turns blue", "correct": False,
+             "why": "Blue is a copper solution, and nothing reacts here in "
+                    "any case"},
+            {"text": "The filings dissolve away", "correct": False,
+             "why": "Iron is below zinc, so the iron is not taken into the "
+                    "solution"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e20",
+        "band": "easier",
+        "text": "Carbon powder is heated strongly with copper oxide. Which "
+                "gas is given off?",
+        "options": [
+            {"text": "Hydrogen", "correct": False,
+             "why": "There is no hydrogen in either of the substances being "
+                    "heated"},
+            {"text": "Oxygen", "correct": False,
+             "why": "The oxygen is taken by the carbon rather than released "
+                    "on its own"},
+            {"text": "Carbon monoxide", "correct": False,
+             "why": "The gas collected turns limewater cloudy, which is "
+                    "carbon dioxide"},
+            {"text": "Carbon dioxide", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e21",
+        "band": "easier",
+        "text": "To predict whether a displacement will happen, which two "
+                "things do you compare?",
+        "options": [
+            {"text": "The metal being added and the metal inside the "
+                     "compound", "correct": True},
+            {"text": "The colour of the solution and the colour of the metal",
+             "correct": False,
+             "why": "Colour is a clue that a reaction has run, not a way of "
+                    "predicting one"},
+            {"text": "The mass of the metal and the volume of the solution",
+             "correct": False,
+             "why": "Amounts change how much product forms, not whether a "
+                    "reaction can happen"},
+            {"text": "The price of the two metals", "correct": False,
+             "why": "Price is a fact about people. The series is a fact about "
+                    "the metals"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e22",
+        "band": "easier",
+        "text": "Copper wire reacts with silver nitrate solution. Complete "
+                "the word equation: copper + silver nitrate →",
+        "options": [
+            {"text": "silver nitrate + copper", "correct": False,
+             "why": "Those are the two starting substances again, so nothing "
+                    "has been displaced"},
+            {"text": "copper nitrate + silver", "correct": True},
+            {"text": "copper silver + nitrate", "correct": False,
+             "why": "The nitrate stays joined to a metal rather than coming "
+                    "away on its own"},
+            {"text": "copper oxide + silver nitride", "correct": False,
+             "why": "There is no free oxygen here, and the nitrate moves "
+                    "across as one whole part"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e23",
+        "band": "easier",
+        "text": "A magnesium ribbon is stood in copper sulfate solution. What "
+                "happens to the temperature of the tube?",
+        "options": [
+            {"text": "It falls sharply", "correct": False,
+             "why": "This reaction gives heat out rather than taking it in"},
+            {"text": "It does not change", "correct": False,
+             "why": "The tube becomes hot enough to notice, which is a sign "
+                    "the reaction has run"},
+            {"text": "It rises enough to notice", "correct": True},
+            {"text": "It rises only after the colour has gone",
+             "correct": False,
+             "why": "The warming happens while the reaction is running, not "
+                    "afterwards"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e24",
+        "band": "easier",
+        "text": "Zinc granules are dropped into pale green iron sulfate "
+                "solution and a reaction runs. What happens to the colour?",
+        "options": [
+            {"text": "It turns deep blue", "correct": False,
+             "why": "Blue is copper in solution, and no copper is present "
+                    "here"},
+            {"text": "It turns pale green from colourless", "correct": False,
+             "why": "The green is there at the start and fades as the iron "
+                    "leaves the solution"},
+            {"text": "It stays exactly the same", "correct": False,
+             "why": "The iron is leaving the solution, so its colour drains "
+                    "away"},
+            {"text": "The pale green fades", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e25",
+        "band": "easier",
+        "text": "Which of these pairs WOULD react?",
+        "options": [
+            {"text": "Magnesium added to silver nitrate solution",
+             "correct": True},
+            {"text": "Silver added to magnesium sulfate solution",
+             "correct": False,
+             "why": "Silver is below magnesium, so it cannot displace it"},
+            {"text": "Copper added to zinc sulfate solution", "correct": False,
+             "why": "Copper is below zinc, so nothing happens"},
+            {"text": "Silver added to copper sulfate solution",
+             "correct": False,
+             "why": "Silver is below copper, so nothing happens"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e26",
+        "band": "easier",
+        "text": "Zinc sulfate and copper are the two products of one of these "
+                "reactions. Which one?",
+        "options": [
+            {"text": "Copper added to zinc sulfate solution", "correct": False,
+             "why": "Copper is below zinc, so there is no reaction and no "
+                    "products at all"},
+            {"text": "Copper added to zinc oxide", "correct": False,
+             "why": "Copper is below zinc, and there is no sulfate in either "
+                    "substance"},
+            {"text": "Zinc added to copper oxide", "correct": False,
+             "why": "That would give copper and zinc oxide, and again there "
+                    "is no sulfate involved"},
+            {"text": "Zinc added to copper sulfate solution", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e27",
+        "band": "easier",
+        "text": "Magnesium, carbon, zinc, iron, copper, silver. Which of "
+                "those is the least reactive?",
+        "options": [
+            {"text": "Copper", "correct": False,
+             "why": "Copper is above silver, which is why copper displaces "
+                    "silver and not the other way round"},
+            {"text": "Iron", "correct": False,
+             "why": "Iron is above copper, and copper is above silver"},
+            {"text": "Silver", "correct": True},
+            {"text": "Magnesium", "correct": False,
+             "why": "Magnesium is the most reactive of those, not the least"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e28",
+        "band": "easier",
+        "text": "In a displacement, which of the two metals ends up as the "
+                "solid element?",
+        "options": [
+            {"text": "The less reactive one", "correct": True},
+            {"text": "The more reactive one", "correct": False,
+             "why": "The more reactive metal takes the place in the compound, "
+                    "so it goes into the solution"},
+            {"text": "Whichever one was added", "correct": False,
+             "why": "If the metal added is the less reactive one, nothing "
+                    "happens at all"},
+            {"text": "Whichever one is heavier", "correct": False,
+             "why": "Density plays no part; position in the series decides "
+                    "it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e29",
+        "band": "easier",
+        "text": "An iron nail is left in copper sulfate. Which colour does "
+                "the solution move towards as the reaction runs?",
+        "options": [
+            {"text": "Deeper blue", "correct": False,
+             "why": "The copper is leaving the solution, so the blue gets "
+                    "weaker"},
+            {"text": "Pale green", "correct": True},
+            {"text": "Colourless", "correct": False,
+             "why": "The iron going into the solution gives it a pale green "
+                    "colour of its own"},
+            {"text": "Bright red", "correct": False,
+             "why": "The red-brown is the copper on the nail. The solution "
+                    "goes pale green"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-e30",
+        "band": "easier",
+        "text": "Which of these would you NOT see in a tube where a "
+                "displacement has run?",
+        "options": [
+            {"text": "Warming of the tube", "correct": False,
+             "why": "These reactions give heat out, so a warm tube is "
+                    "expected"},
+            {"text": "A solid forming on the metal", "correct": False,
+             "why": "The displaced metal appears as a solid, which is the "
+                    "commonest sign of all"},
+            {"text": "Bubbles of gas", "correct": True},
+            {"text": "The colour of the solution changing", "correct": False,
+             "why": "The colour changes as one metal leaves the solution and "
+                    "the other goes into it"},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · standard s14–s30 ───────────────────────────────
+    {
+        "id": "c9-02-s14",
+        "band": "standard",
+        "text": "One piece of copper wire is left in zinc sulfate solution "
+                "and another in silver nitrate solution. In which does the "
+                "copper react?",
+        "options": [
+            {"text": "In both, because copper reacts with any dissolved "
+                     "metal", "correct": False,
+             "why": "Copper cannot displace zinc, which sits above it in the "
+                    "series"},
+            {"text": "In neither, because copper is the least reactive metal "
+                     "there is", "correct": False,
+             "why": "Silver sits below copper, so the silver nitrate tube "
+                    "does react"},
+            {"text": "Only in the silver nitrate, because copper is above "
+                     "silver and below zinc", "correct": True},
+            {"text": "Only in the zinc sulfate, because zinc is the easier of "
+                     "the two to push out", "correct": False,
+             "why": "Zinc is above copper, so that is the direction that "
+                    "cannot run"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s15",
+        "band": "standard",
+        "text": "Of eight displacement proposals, five ran and three did "
+                "nothing. What did the three have in common?",
+        "options": [
+            {"text": "The solutions used in them were too dilute to react",
+             "correct": False,
+             "why": "Concentration changes how fast a possible reaction goes, "
+                    "not whether it can go"},
+            {"text": "The added element was below the one in the compound",
+             "correct": True},
+            {"text": "The added element was above the one in the compound",
+             "correct": False,
+             "why": "That is the arrangement that does run. The three that "
+                    "failed were the other way round"},
+            {"text": "They were left standing for a shorter time than the "
+                     "other five", "correct": False,
+             "why": "Time changes how far a reaction gets, not whether it is "
+                    "possible"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s16",
+        "band": "standard",
+        "text": "Two displacements both work, but one finishes in a minute "
+                "and the other takes days. What is the same about them?",
+        "options": [
+            {"text": "In both, the two metals are next to each other in the "
+                     "series", "correct": False,
+             "why": "The quick one has metals far apart. Neighbouring metals "
+                    "are what make a reaction slow"},
+            {"text": "In both, the solution was the same strength",
+             "correct": False,
+             "why": "Nothing about strength follows from the two reactions "
+                    "both working"},
+            {"text": "In both, the same amount of solid is produced",
+             "correct": False,
+             "why": "How much solid forms depends on the amounts used, not on "
+                    "the rule"},
+            {"text": "In both, the added metal is above the one in the "
+                     "compound", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s17",
+        "band": "standard",
+        "text": "Copper sulfate solution is blue and zinc sulfate solution is "
+                "colourless. What does that colour difference tell you about "
+                "which will react?",
+        "options": [
+            {"text": "Nothing at all — colour is not part of the prediction",
+             "correct": True},
+            {"text": "That the blue one reacts, because colour shows a "
+                     "solution is active", "correct": False,
+             "why": "Colour comes from the dissolved metal and says nothing "
+                    "about reactivity"},
+            {"text": "That the colourless one reacts, because it has nothing "
+                     "in it to get in the way", "correct": False,
+             "why": "Zinc sulfate is a solution of zinc, and the prediction "
+                    "rests on positions"},
+            {"text": "That neither reacts, because their colours are so "
+                     "different", "correct": False,
+             "why": "Colour is irrelevant. Zinc added to copper sulfate "
+                    "reacts readily"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s18",
+        "band": "standard",
+        "text": "A displacement between a metal and a solution makes the tube "
+                "noticeably warm. What does the warming tell you?",
+        "options": [
+            {"text": "That the metal was warm before it was added",
+             "correct": False,
+             "why": "The tube warms as the reaction runs, which is a sign of "
+                    "the reaction itself"},
+            {"text": "That the solution was too concentrated", "correct": False,
+             "why": "Warming is a sign of a reaction, not of a fault in the "
+                    "solution"},
+            {"text": "That a chemical reaction has taken place",
+             "correct": True},
+            {"text": "That the reaction will run the other way as it cools",
+             "correct": False,
+             "why": "A displacement runs one way only, and cooling does not "
+                    "reverse it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s19",
+        "band": "standard",
+        "text": "Why is testing BOTH directions of a pair a good check on the "
+                "rule?",
+        "options": [
+            {"text": "Because repeating the same tube twice gives a more "
+                     "reliable result", "correct": False,
+             "why": "The reverse direction is not a repeat — it is a "
+                    "different test, and that is the point"},
+            {"text": "Because the rule says exactly one direction can run, so "
+                     "a pair that reacted both ways would show it wrong",
+             "correct": True},
+            {"text": "Because the reverse direction runs more slowly and is "
+                     "easier to watch", "correct": False,
+             "why": "The reverse direction does not run, which is the whole "
+                    "point of testing it"},
+            {"text": "Because the two directions give the same products "
+                     "either way", "correct": False,
+             "why": "Only one direction gives products; the other gives "
+                    "nothing"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s20",
+        "band": "standard",
+        "text": "Blocks of magnesium are sometimes bolted to a steel hull "
+                "instead of blocks of zinc. Would magnesium work?",
+        "options": [
+            {"text": "Yes, because magnesium is also above iron",
+             "correct": True},
+            {"text": "No, because only zinc can protect steel in seawater",
+             "correct": False,
+             "why": "Any metal above iron reacts in preference to it, and "
+                    "zinc is not special"},
+            {"text": "No, because magnesium is below iron in the series",
+             "correct": False,
+             "why": "Magnesium is well above iron, which is exactly why it "
+                    "would work"},
+            {"text": "Yes, but only because magnesium is heavier than zinc",
+             "correct": False,
+             "why": "Mass is not the reason. What matters is that magnesium "
+                    "is above iron"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s21",
+        "band": "standard",
+        "text": "You have a solution of a metal's sulfate and want that metal "
+                "as a solid, with no electricity available. What do you add?",
+        "options": [
+            {"text": "A metal below it in the reactivity series",
+             "correct": False,
+             "why": "A lower metal cannot push a higher one out of its "
+                    "compound"},
+            {"text": "More of the same sulfate solution", "correct": False,
+             "why": "Adding more of the same substance changes nothing"},
+            {"text": "A non-metal that dissolves easily in water",
+             "correct": False,
+             "why": "The metal has to be pushed out by something above it in "
+                    "the order"},
+            {"text": "A metal above it in the reactivity series",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s22",
+        "band": "standard",
+        "text": "Lead sits between iron and copper in the reactivity series. "
+                "Predict what happens when lead is added to copper sulfate "
+                "solution.",
+        "options": [
+            {"text": "The copper displaces the lead, which appears as a "
+                     "solid", "correct": False,
+             "why": "Copper is below lead, so it cannot push lead out of "
+                    "anything"},
+            {"text": "The lead displaces the copper, which appears as a "
+                     "solid", "correct": True},
+            {"text": "Nothing happens, because the two metals are close "
+                     "together", "correct": False,
+             "why": "Being close changes how obvious a reaction is, not "
+                    "whether it can run"},
+            {"text": "Nothing happens, because lead was not one of the six "
+                     "metals in the strip", "correct": False,
+             "why": "The rule works for any two metals whose positions are "
+                    "known"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s23",
+        "band": "standard",
+        "text": "Iron filings and an iron nail of the same mass are each put "
+                "into copper sulfate. What differs, and what does not?",
+        "options": [
+            {"text": "Both the speed and whether it happens differ",
+             "correct": False,
+             "why": "Shape changes the rate. It cannot make a possible "
+                    "reaction impossible"},
+            {"text": "Nothing differs, because the mass is the same",
+             "correct": False,
+             "why": "Filings have far more surface in contact, so they react "
+                    "faster"},
+            {"text": "The speed differs; whether it happens does not",
+             "correct": True},
+            {"text": "Whether it happens differs; the speed does not",
+             "correct": False,
+             "why": "It is the other way round — the rule fixes whether, and "
+                    "shape fixes how fast"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s24",
+        "band": "standard",
+        "text": "A student predicts that zinc will displace magnesium from "
+                "magnesium sulfate. What has gone wrong?",
+        "options": [
+            {"text": "Nothing at all; the prediction is right, but the "
+                     "reaction is far too slow to see", "correct": False,
+             "why": "It is not slow, it is impossible. Zinc sits below "
+                    "magnesium"},
+            {"text": "They have used a sulfate when an oxide was needed",
+             "correct": False,
+             "why": "The compound makes no difference. The positions do"},
+            {"text": "They have forgotten that magnesium is a non-metal",
+             "correct": False,
+             "why": "Magnesium is a metal. Carbon is the non-metal in the "
+                    "list"},
+            {"text": "They have the order the wrong way round — magnesium is "
+                     "above zinc", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s25",
+        "band": "standard",
+        "text": "Magnesium in copper sulfate, or copper in magnesium sulfate "
+                "— which tube is easier to judge, and why?",
+        "options": [
+            {"text": "The first, because the blue draining away is easy to "
+                     "see", "correct": True},
+            {"text": "The second, because a colourless solution shows changes "
+                     "more clearly", "correct": False,
+             "why": "Nothing happens in the second tube, so there is no "
+                    "change to see"},
+            {"text": "Neither, because both tubes look the same throughout",
+             "correct": False,
+             "why": "The first tube loses its blue and grows a brown solid"},
+            {"text": "The second, because copper is the more expensive metal",
+             "correct": False,
+             "why": "Price has nothing to do with what a tube shows"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s26",
+        "band": "standard",
+        "text": "A student says a displacement is just the two metals "
+                "swapping places. Why is that a fair description?",
+        "options": [
+            {"text": "Because both metals end up dissolved in the solution "
+                     "together", "correct": False,
+             "why": "Only the more reactive metal dissolves; the other comes "
+                    "out as a solid"},
+            {"text": "Because the two metals combine to make a single new "
+                     "metal", "correct": False,
+             "why": "No new element is made. The two simply change places"},
+            {"text": "Because the more reactive metal ends up joined to the "
+                     "sulfate and the less reactive one ends up as the "
+                     "element", "correct": True},
+            {"text": "Because the sulfate is split between the two metals",
+             "correct": False,
+             "why": "The sulfate stays as one part and joins the more "
+                    "reactive metal"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s27",
+        "band": "standard",
+        "text": "Which observation would tell you a displacement had "
+                "FINISHED rather than merely started?",
+        "options": [
+            {"text": "The colour begins to change and a solid starts to form",
+             "correct": False,
+             "why": "That is the reaction starting, which is the opposite of "
+                    "what was asked"},
+            {"text": "The colour stops changing and no more solid forms",
+             "correct": True},
+            {"text": "The tube becomes warm to hold", "correct": False,
+             "why": "Warming happens while the reaction is still running"},
+            {"text": "Bubbles stop coming off the metal", "correct": False,
+             "why": "No gas is given off in a displacement between a metal "
+                    "and a solution"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s28",
+        "band": "standard",
+        "text": "You have iron, and solutions of zinc sulfate and copper "
+                "sulfate. Which results would place iron between zinc and "
+                "copper?",
+        "options": [
+            {"text": "A grey solid in the zinc sulfate, and nothing in the "
+                     "copper sulfate", "correct": False,
+             "why": "That would put iron above zinc and below copper, which "
+                    "is the wrong way round"},
+            {"text": "A solid in both tubes", "correct": False,
+             "why": "Iron cannot displace zinc, so one of the tubes has to "
+                    "show nothing"},
+            {"text": "Nothing in either tube", "correct": False,
+             "why": "Iron is above copper, so the copper sulfate tube must "
+                    "react"},
+            {"text": "Nothing in the zinc sulfate, and a brown solid in the "
+                     "copper sulfate", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s29",
+        "band": "standard",
+        "text": "A displacement runs and the strip of added metal gets "
+                "thinner. Where has that metal gone?",
+        "options": [
+            {"text": "Into the solution, as a compound", "correct": True},
+            {"text": "Onto its own surface as a solid coat", "correct": False,
+             "why": "The coat is the other metal, the one that came out of "
+                    "the solution"},
+            {"text": "Away as a gas", "correct": False,
+             "why": "No gas is produced in a displacement between a metal and "
+                    "a solution"},
+            {"text": "Nowhere — the strip only looks thinner",
+             "correct": False,
+             "why": "The metal really is being used up, which is why the "
+                    "strip thins"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-s30",
+        "band": "standard",
+        "text": "Copper, silver and gold each give the same result in cold "
+                "water and in dilute acid. How does displacement help?",
+        "options": [
+            {"text": "It gives each of them a reaction with water at last",
+             "correct": False,
+             "why": "None of the three reacts with water, and displacement "
+                    "does not change that"},
+            {"text": "It shows all three are the same, so no order is needed",
+             "correct": False,
+             "why": "Copper displaces silver, so the three are not the same "
+                    "as each other"},
+            {"text": "It compares them against each other's compounds, which "
+                     "separates them", "correct": True},
+            {"text": "It cannot help, because a metal that does nothing in "
+                     "acid does nothing anywhere else either", "correct": False,
+             "why": "Copper does nothing in acid and still displaces silver "
+                    "from its nitrate"},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 top-up · harder h14–h30 ─────────────────────────────────
+    {
+        "id": "c9-02-h14",
+        "band": "harder",
+        "text": "Zinc sulfate solution and copper sulfate solution are mixed "
+                "by mistake, with no metal added at all. Predict what "
+                "happens.",
+        "options": [
+            {"text": "Zinc comes out as a solid, because zinc is above "
+                     "copper", "correct": False,
+             "why": "The zinc here is already inside a compound, so it has "
+                    "nothing left to give up"},
+            {"text": "Nothing — a displacement needs a metal to be added",
+             "correct": True},
+            {"text": "Copper comes out as a solid, because copper is below "
+                     "zinc", "correct": False,
+             "why": "Both metals are already in compounds, and neither is a "
+                    "metal that can displace"},
+            {"text": "The two solutions react to make a new metal",
+             "correct": False,
+             "why": "No new element can be made by mixing two compounds"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h15",
+        "band": "harder",
+        "text": "Silver is recovered from used photographic solution by "
+                "adding scrap iron. Explain why iron works, and whether "
+                "copper would.",
+        "options": [
+            {"text": "Iron works only because it is magnetic, so the silver "
+                     "can be pulled away from it afterwards", "correct": False,
+             "why": "Magnetism plays no part. The silver is pushed out "
+                    "chemically"},
+            {"text": "Iron is above silver, so it displaces it; copper is "
+                     "below silver, so copper would not work", "correct": False,
+             "why": "Copper is above silver — the copper wire in silver "
+                    "nitrate is the proof"},
+            {"text": "Iron is above silver, so it displaces it; copper is "
+                     "above silver too, so copper would work as well",
+             "correct": True},
+            {"text": "Iron works because it is the cheapest metal, and cost "
+                     "is what decides whether a reaction runs", "correct": False,
+             "why": "Cost decides which metal a works buys, not whether the "
+                    "reaction is possible"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h16",
+        "band": "harder",
+        "text": "Predict what would be seen if a strip of magnesium were left "
+                "in silver nitrate solution, and say which fact you used.",
+        "options": [
+            {"text": "Silver would build up on the magnesium, because "
+                     "magnesium is above silver", "correct": True},
+            {"text": "Nothing would happen, because silver nitrate is not a "
+                     "sulfate", "correct": False,
+             "why": "The rule compares the two metals; the part they are "
+                    "joined to makes no difference"},
+            {"text": "Magnesium would build up on the wire, leaving the "
+                     "solution clear", "correct": False,
+             "why": "Magnesium is the metal added, so it goes into the "
+                    "solution rather than coming out"},
+            {"text": "Nothing would happen, because magnesium and silver are "
+                     "too far apart in the series to react", "correct": False,
+             "why": "Being far apart makes a reaction quicker and more "
+                    "obvious, not impossible"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h17",
+        "band": "harder",
+        "text": "Three unknown metals: X displaces Y from its sulfate, and Y "
+                "displaces Z from its sulfate. What can you say about X and "
+                "Z?",
+        "options": [
+            {"text": "Z is above X", "correct": False,
+             "why": "X is above Y and Y is above Z, so X has to be above Z"},
+            {"text": "X is above Z", "correct": True},
+            {"text": "They are in the same place", "correct": False,
+             "why": "Two steps of the order separate them, so they cannot be "
+                    "level"},
+            {"text": "Nothing, until X and Z are tested against each other",
+             "correct": False,
+             "why": "The order carries through: X above Y and Y above Z fixes "
+                    "X above Z"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h18",
+        "band": "harder",
+        "text": "A student writes: 'copper is below zinc, therefore copper is "
+                "unreactive.' Identify the error.",
+        "options": [
+            {"text": "There is no error; anything below zinc is unreactive",
+             "correct": False,
+             "why": "Copper displaces silver readily, so it is certainly not "
+                    "unreactive"},
+            {"text": "The error is that copper is above zinc, not below it",
+             "correct": False,
+             "why": "Copper really is below zinc. The error is in what "
+                    "'below' is taken to mean"},
+            {"text": "The error is that unreactive is not a word used about "
+                     "metals", "correct": False,
+             "why": "It is a fair word. The problem is using it for a metal "
+                    "that does react"},
+            {"text": "Below zinc only says less reactive than zinc, not "
+                     "unreactive", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h19",
+        "band": "harder",
+        "text": "Two students disagree about why the nail reaction stops: one "
+                "says the nail is fully coated, the other says the copper "
+                "sulfate runs out. How would you decide?",
+        "options": [
+            {"text": "Weigh the nail before and after, and see whether it has "
+                     "got heavier", "correct": False,
+             "why": "It gets heavier on either explanation, so weighing "
+                    "separates nothing"},
+            {"text": "Use a bigger nail, since a bigger nail takes longer to "
+                     "coat", "correct": False,
+             "why": "A bigger nail changes both explanations at once, so "
+                    "nothing is separated"},
+            {"text": "Use a large excess of solution and see whether the "
+                     "coated nail keeps reacting", "correct": True},
+            {"text": "Warm the solution, since warming makes a reaction go "
+                     "further than it otherwise would", "correct": False,
+             "why": "Warming changes the rate, not how far the reaction can "
+                    "go"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h20",
+        "band": "harder",
+        "text": "Two students both correctly predict that zinc will displace "
+                "copper. One says it will take seconds, the other days. Which "
+                "part does the series support?",
+        "options": [
+            {"text": "Only that it happens", "correct": True},
+            {"text": "Only the timing, since that is what a prediction is "
+                     "for", "correct": False,
+             "why": "The series orders reactivity and gives no time for "
+                    "anything"},
+            {"text": "Both parts, since position fixes the speed exactly",
+             "correct": False,
+             "why": "Position suggests whether a reaction will be brisk, but "
+                    "it fixes no time"},
+            {"text": "Neither part, since the series applies to metals in "
+                     "solution alone", "correct": False,
+             "why": "The series applies wherever the two positions are known"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h21",
+        "band": "harder",
+        "text": "Metal M fizzes in dilute acid but does not react with zinc "
+                "sulfate solution. Where is M?",
+        "options": [
+            {"text": "Above zinc, and below the metals that react with cold "
+                     "water", "correct": False,
+             "why": "If M were above zinc it would have displaced zinc from "
+                    "its sulfate"},
+            {"text": "Below zinc, and above the metals acid does not touch",
+             "correct": True},
+            {"text": "Below the metals acid does not touch", "correct": False,
+             "why": "M fizzed in acid, so it is above the metals acid leaves "
+                    "alone"},
+            {"text": "Nowhere — the two results contradict each other",
+             "correct": False,
+             "why": "They fit together: M reacts with acid and sits below "
+                    "zinc"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h22",
+        "band": "harder",
+        "text": "A works wants to recover copper from waste copper sulfate "
+                "solution as cheaply as possible. Which metal, and what "
+                "limits the choice?",
+        "options": [
+            {"text": "Silver, because it is a metal and the silver is easy to "
+                     "get back afterwards", "correct": False,
+             "why": "Silver is below copper, so it cannot displace copper at "
+                    "all"},
+            {"text": "Sodium, because the higher the metal the better the "
+                     "reaction", "correct": False,
+             "why": "Sodium reacts violently with the water itself, so it "
+                    "never reaches the copper"},
+            {"text": "Any metal, because every metal displaces every other "
+                     "one", "correct": False,
+             "why": "Only a metal above copper works, which rules most of "
+                    "them out"},
+            {"text": "Iron, because it is above copper and cheap; a metal too "
+                     "high would react with the water as well", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h23",
+        "band": "harder",
+        "text": "Explain why a displacement can show that a metal is "
+                "dissolved in a colourless solution, but cannot say which "
+                "metal it is.",
+        "options": [
+            {"text": "A solid appearing only shows the dissolved metal is "
+                     "below the one added", "correct": True},
+            {"text": "A solid appearing shows exactly which metal it is, from "
+                     "the colour of the solid", "correct": False,
+             "why": "Several metals give a similar grey deposit, so its "
+                    "colour cannot name one"},
+            {"text": "A solid appearing shows nothing, because a colourless "
+                     "solution holds no metal", "correct": False,
+             "why": "Zinc sulfate solution is colourless and holds zinc"},
+            {"text": "A solid appearing names the metal, because one metal "
+                     "sits below any other", "correct": False,
+             "why": "Many metals sit below a given one, so the result narrows "
+                    "it rather than naming it"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h24",
+        "band": "harder",
+        "text": "Two metals are close together in the series and a "
+                "displacement between them is hard to see. Why is that a "
+                "practical difficulty rather than a fault in the rule?",
+        "options": [
+            {"text": "The rule applies only to metals far apart in the "
+                     "series", "correct": False,
+             "why": "The rule is about the order, and neighbouring metals "
+                    "obey it like any others"},
+            {"text": "The rule is about solutions, and close metals make "
+                     "solids instead", "correct": False,
+             "why": "Every displacement of this kind makes a solid, however "
+                    "far apart the metals are"},
+            {"text": "The rule says which direction is possible, not how "
+                     "obvious it will be", "correct": True},
+            {"text": "It is a fault in the rule, which is why the series is "
+                     "no more than a rough guide", "correct": False,
+             "why": "The reaction does run. It is simply small and slow"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h25",
+        "band": "harder",
+        "text": "A gold ring is left in silver nitrate solution. Gold sits "
+                "below silver in the series. Predict what happens.",
+        "options": [
+            {"text": "Silver is deposited on the gold", "correct": False,
+             "why": "Gold is below silver, so it cannot displace silver from "
+                    "anything"},
+            {"text": "The gold dissolves and silver comes out",
+             "correct": False,
+             "why": "That would need gold to be above silver, and it is not"},
+            {"text": "Nothing", "correct": True},
+            {"text": "The ring turns from gold to silver", "correct": False,
+             "why": "One element cannot change into another in a chemical "
+                    "reaction"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h26",
+        "band": "harder",
+        "text": "Why does it make no difference whether the metal is joined "
+                "to a sulfate, a nitrate or an oxide?",
+        "options": [
+            {"text": "Because all three of those parts are the same substance "
+                     "under different names", "correct": False,
+             "why": "They are three different substances. They simply behave "
+                    "the same way here"},
+            {"text": "Because all three break down on their own as soon as a "
+                     "metal is added", "correct": False,
+             "why": "Nothing breaks down on its own. The more reactive metal "
+                    "takes the part"},
+            {"text": "Because the sulfate, nitrate or oxide is removed first "
+                     "by the water", "correct": False,
+             "why": "Nothing is removed first, and the oxide reaction uses no "
+                    "water at all"},
+            {"text": "Because the prediction compares the two metals, and the "
+                     "part they share joins whichever one wins",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h27",
+        "band": "harder",
+        "text": "Scrap iron is added to a tank of copper sulfate and the "
+                "copper is collected. Why must the iron be in excess, and "
+                "what is left in the tank?",
+        "options": [
+            {"text": "So that all the copper comes out; the tank ends with "
+                     "iron sulfate solution and leftover iron", "correct": True},
+            {"text": "So that the reaction goes faster; the tank ends with "
+                     "copper sulfate solution and copper", "correct": False,
+             "why": "Excess decides how completely the reaction runs, and the "
+                    "copper sulfate is used up"},
+            {"text": "So that the iron does not dissolve; the tank ends with "
+                     "iron and copper sulfate", "correct": False,
+             "why": "The iron dissolving is the reaction. It is the copper "
+                    "that comes out"},
+            {"text": "So that the solution stays blue; the tank ends with "
+                     "blue solution and iron", "correct": False,
+             "why": "The blue fading is the sign the reaction has run, so "
+                    "keeping it blue is failure"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h28",
+        "band": "harder",
+        "text": "A student proposes placing an unknown metal in the series "
+                "using ONE displacement test. What is the most that one test "
+                "can establish?",
+        "options": [
+            {"text": "Its exact position, since a single reaction settles the "
+                     "order", "correct": False,
+             "why": "One comparison places it on one side of one metal, and "
+                    "no more than that"},
+            {"text": "A boundary — that the unknown is above or below one "
+                     "particular metal", "correct": True},
+            {"text": "Nothing, since a single test cannot be evidence",
+             "correct": False,
+             "why": "One result is real evidence. It simply does not fix a "
+                    "whole position"},
+            {"text": "Its position relative to every other metal in the "
+                     "series at once", "correct": False,
+             "why": "One test compares the unknown with one metal only"},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h29",
+        "band": "harder",
+        "text": "A student has copper, silver, and money for one solution: "
+                "copper sulfate or silver nitrate. Which should they buy to "
+                "demonstrate the rule?",
+        "options": [
+            {"text": "Copper sulfate, because it is blue and colour changes "
+                     "show up best", "correct": False,
+             "why": "Silver cannot displace copper, so the blue would not "
+                    "change at all"},
+            {"text": "Either, because both tubes would show a reaction",
+             "correct": False,
+             "why": "Only one of the two directions runs; the other shows "
+                    "nothing"},
+            {"text": "Copper sulfate, because silver is the more valuable "
+                     "metal and should be kept", "correct": False,
+             "why": "Value has nothing to do with which direction reacts"},
+            {"text": "Silver nitrate, because copper is above silver and that "
+                     "is the direction that reacts", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-02-h30",
+        "band": "harder",
+        "text": "The blue in a zinc-and-copper-sulfate tube stopped fading "
+                "two days ago and the tube has stood untouched since. What "
+                "has happened since then?",
+        "options": [
+            {"text": "The copper has slowly gone back into the solution as "
+                     "the tube cooled", "correct": False,
+             "why": "The reaction does not run backwards. Zinc stays above "
+                    "copper"},
+            {"text": "The zinc has begun to displace the sulfate itself",
+             "correct": False,
+             "why": "The sulfate is not displaced; it joins whichever metal "
+                    "wins"},
+            {"text": "Nothing more — all the copper that could come out has "
+                     "come out", "correct": True},
+            {"text": "The reaction has kept going, too slowly to see",
+             "correct": False,
+             "why": "The colour stopping is the sign there was nothing left "
+                    "to react with"},
+        ],
+        "figure": None,
+    },
 ]
