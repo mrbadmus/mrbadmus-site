@@ -1115,6 +1115,31 @@ QUESTIONS = [
         "figure": None,
     },
     {
+        "id": "c8-06-e30",
+        "band": "easier",
+        "text": "What is it about a Group 0 atom's electron structure that "
+                "explains why it almost never reacts?",
+        "options": [
+            {"text": "Its outer shell is already full",
+             "correct": True},
+            {"text": "It has no electrons in its outer shell at all",
+             "correct": False,
+             "why": "A Group 0 atom's outer shell is not empty — it is full, "
+              "which is a completely different reason for staying unreactive."},
+            {"text": "Its electrons are held unusually close to the nucleus",
+             "correct": False,
+             "why": "How close the electrons sit is not the reason. A Group 0 "
+              "atom's outer shell already being full is what leaves it "
+              "nothing to gain, lose or share."},
+            {"text": "It has the same number of electrons in every shell",
+             "correct": False,
+             "why": "Group 0 atoms do not have equal numbers of electrons in "
+              "every shell. What makes them unreactive is that the outer "
+              "shell specifically is already full."},
+        ],
+        "figure": None,
+    },
+    {
         "id": "c8-06-s08",
         "band": "standard",
         "text": "Radon is a group 0 gas that seeps out of certain rocks. A "

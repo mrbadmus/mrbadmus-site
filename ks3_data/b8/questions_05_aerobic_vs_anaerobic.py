@@ -1193,6 +1193,21 @@ _MRB338_NEW_QUESTIONS = [
         "figure": None,
     },
     {
+        "id": 'b8-05-e30',
+        "band": 'easier',
+        "text": 'Two identical cells break down the same amount of glucose — one aerobically, one anaerobically. Which one transfers more energy from that glucose?',
+        "options": [
+            {"text": 'The aerobic cell, because it breaks the glucose down completely rather than only partly.', "correct": True},
+            {"text": 'The anaerobic cell, because skipping oxygen makes the reaction release more energy.', "correct": False,
+             "why": 'Skipping oxygen means the glucose is only partly broken down, which releases far less energy, not more.'},
+            {"text": 'Neither — both release exactly the same amount of energy from the same glucose.', "correct": False,
+             "why": "The two routes do not release the same amount. Breaking glucose down completely, as the aerobic route does, transfers far more energy than breaking it down only partly."},
+            {"text": 'It depends only on how fast each cell is working, not on which route it uses.', "correct": False,
+             "why": 'Speed is a separate question from yield. Whichever route is used, the aerobic route transfers more energy from the same glucose because it breaks it down completely.'},
+        ],
+        "figure": None,
+    },
+    {
         "id": 'b8-05-s11',
         "band": 'standard',
         "text": 'A student is given two flasks of the same yeast culture: one is stirred and open to air, the other sealed. Both start with the same amount of glucose. Explain why testing the gas released will not tell you which flask fermented more of its glucose.',

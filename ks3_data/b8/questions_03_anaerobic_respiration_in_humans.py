@@ -1186,6 +1186,21 @@ _MRB338_NEW_QUESTIONS = [
         "figure": None,
     },
     {
+        "id": 'b8-03-e30',
+        "band": 'easier',
+        "text": 'A student claims that during a sprint, muscles switch to breaking down a completely different fuel instead of glucose, and that this is why the process is called anaerobic. Is this correct?',
+        "options": [
+            {"text": 'No — the same glucose is broken down; the difference is that no oxygen is used and it is not taken all the way to carbon dioxide and water.', "correct": True},
+            {"text": 'Yes — the muscle switches to burning fat instead, because fat needs less oxygen to break down.', "correct": False,
+             "why": "Anaerobic respiration uses no oxygen at all, so the reason cannot be about needing less of it. It is still the same glucose being broken down, only partly."},
+            {"text": 'Yes — the muscle switches to burning protein, which releases energy faster than glucose does.', "correct": False,
+             "why": 'The fuel does not change to protein. Glucose is still the substance being broken down; what changes is that the breakdown stops partway and skips using oxygen.'},
+            {"text": 'No — but only because the muscle has run out of glucose and briefly stops respiring instead.', "correct": False,
+             "why": 'The muscle has not run out of glucose or stopped respiring. Anaerobic respiration is still breaking glucose down — just without oxygen, and not as completely.'},
+        ],
+        "figure": None,
+    },
+    {
         "id": 'b8-03-s11',
         "band": 'standard',
         "text": 'A student says muscles ‘stop breathing’ when they respire anaerobically. What is wrong with this description?',
