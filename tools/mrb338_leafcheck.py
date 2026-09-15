@@ -836,8 +836,8 @@ def check_over_assertion(rows, new_ids, scope_name):
               % (leaf, d, k, rate, flag))
     if bad:
         NOTES.append("over-assertion: %d leaf/leaves where an absolute appears "
-                    "only in distractors (%d+ times) and never in a key"
-                    % (bad, 4))
+                     "only in distractors (%d+ times) and never in a key"
+                     % (bad, 4))
     else:
         print("     ✅ no leaf uses an absolute only on the wrong side")
 
