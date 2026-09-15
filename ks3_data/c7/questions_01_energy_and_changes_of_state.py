@@ -1053,4 +1053,1166 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 night 3 · easier ────────────────────────────────────────
+    {
+        "id": "c7-01-e14",
+        "band": "easier",
+        "text": "While a substance is changing state, what does its "
+                "temperature do?",
+        "options": [
+            {"text": "It stays constant until the change is finished",
+             "correct": True},
+            {"text": "It rises more slowly than it did before",
+             "correct": False,
+             "why": "It does not rise at all. A slower rise would still be a "
+                    "rise, and the thermometer does not move."},
+            {"text": "It falls while the particles are being separated",
+             "correct": False,
+             "why": "Nothing is taken away from the substance during melting "
+                    "or boiling, so there is no reason for it to fall."},
+            {"text": "It rises in small steps, one for each state",
+             "correct": False,
+             "why": "The flat parts of a heating curve are level, not "
+                    "stepped. The reading holds at one value."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e15",
+        "band": "easier",
+        "text": "Water in a beaker is boiling and bubbles are forming inside "
+                "the liquid. What is inside those bubbles?",
+        "options": [
+            {"text": "Air that was dissolved in the water", "correct": False,
+             "why": "Dissolved air comes out in small bubbles long before "
+                    "boiling, and it runs out. Boiling does not."},
+            {"text": "Water that has turned into a gas", "correct": True},
+            {"text": "Nothing — they are empty spaces",
+             "correct": False,
+             "why": "A bubble is a pocket of gas. Boiling is the liquid "
+                    "turning to gas throughout, and that gas fills them."},
+            {"text": "Oxygen and hydrogen split out of the water",
+             "correct": False,
+             "why": "Splitting water into its elements is a chemical change. "
+                    "Boiling makes no new substance at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e16",
+        "band": "easier",
+        "text": "Steam that has been heated above 100 °C is given a special "
+                "name. What is it?",
+        "options": [
+            {"text": "Saturated steam", "correct": False,
+             "why": "Saturated describes steam sitting at its boiling point, "
+                    "not steam that has been taken past it."},
+            {"text": "Condensed steam", "correct": False,
+             "why": "Condensing is the gas turning back into a liquid, which "
+                    "is the opposite journey."},
+            {"text": "Superheated steam", "correct": True},
+            {"text": "Latent steam", "correct": False,
+             "why": "Latent describes the energy a change of state hides from "
+                    "a thermometer. It is not a kind of steam."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e17",
+        "band": "easier",
+        "text": "About how many times more energy does it take to boil a "
+                "kilogram of water than to melt a kilogram of ice?",
+        "options": [
+            {"text": "About twice as much", "correct": False,
+             "why": "Far too small. Twice would make the boiling step only "
+                    "twice as long, and it is much longer than that."},
+            {"text": "About the same amount", "correct": False,
+             "why": "Then both flat steps would last the same time, and the "
+                    "boiling one is plainly the longer of the two."},
+            {"text": "About a hundred times as much", "correct": False,
+             "why": "Far too large. A hundredfold gap would make boiling a "
+                    "pan dry take most of a day on a hob."},
+            {"text": "About seven times as much", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · standard ──────────────────────────────────────
+    {
+        "id": "c7-01-s14",
+        "band": "standard",
+        "text": "A pan of water takes about four minutes to reach 100 °C on "
+                "a hob, and about half an hour to boil dry. Why is the second "
+                "stage so much slower?",
+        "options": [
+            {"text": "Because turning the water into steam takes far more "
+                     "energy than warming it did", "correct": True},
+            {"text": "Because the hob delivers energy more slowly once the "
+                     "water has reached 100 °C", "correct": False,
+             "why": "The hob setting has not changed, so it is delivering "
+                    "energy at the same rate throughout."},
+            {"text": "Because a hot pan loses heat to the kitchen faster "
+                     "than the hob can supply it", "correct": False,
+             "why": "If that were true the water would cool rather than boil "
+                    "away. Some heat is lost, but the pan keeps boiling."},
+            {"text": "Because water cannot get hotter than 100 °C, so the "
+                     "heating has nothing left to do", "correct": False,
+             "why": "The heating still has a great deal to do — it is "
+                    "separating the particles into a gas."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s15",
+        "band": "standard",
+        "text": "Water vapour in a steamy bathroom condenses on a cold "
+                "mirror. What happens to the energy as it condenses?",
+        "options": [
+            {"text": "It is taken in from the mirror, which is what makes "
+                     "the mirror cold", "correct": False,
+             "why": "The mirror was already cold before anything condensed "
+                    "on it, and condensing gives energy out rather than "
+                    "taking it in."},
+            {"text": "It is given out to the mirror and the air touching it",
+             "correct": True},
+            {"text": "It is held in the droplets until they dry off again",
+             "correct": False,
+             "why": "Drying takes MORE energy in. The energy that condensing "
+                    "released has already gone into the surroundings."},
+            {"text": "It is destroyed, because the vapour stops existing",
+             "correct": False,
+             "why": "The vapour has not stopped existing — it is the water "
+                    "now sitting on the glass — and energy is never "
+                    "destroyed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s16",
+        "band": "standard",
+        "text": "A heating curve printed in a revision guide is labelled "
+                "“schematic — not to scale”. What is that label "
+                "warning you about?",
+        "options": [
+            {"text": "That the temperatures marked on it are guesses rather "
+                     "than real values", "correct": False,
+             "why": "The temperatures are real: water does melt at 0 °C and "
+                    "boil at 100 °C. It is the lengths that are not to "
+                    "scale."},
+            {"text": "That the shape is wrong, so nothing on it can be "
+                     "trusted at all", "correct": False,
+             "why": "The shape is the whole point of the drawing, and it is "
+                    "right — two flat steps with rises between them."},
+            {"text": "That the lengths of the steps show the pattern rather "
+                     "than measured times", "correct": True},
+            {"text": "That it describes one particular substance and cannot "
+                     "apply to another", "correct": False,
+             "why": "Every substance gives a curve of this shape; only the "
+                    "two temperatures change. A scale warning is not about "
+                    "that."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s17",
+        "band": "standard",
+        "text": "A sample of water is heated steadily all the way from solid "
+                "at −20 °C to gas at 120 °C. How many flat steps and how "
+                "many rising sections does the graph of its temperature "
+                "have?",
+        "options": [
+            {"text": "One flat step and two rising sections", "correct": False,
+             "why": "That misses one of the two changes of state. Melting "
+                    "and boiling each give a flat step of their own."},
+            {"text": "Three flat steps and two rising sections",
+             "correct": False,
+             "why": "There are only two changes of state on this journey, so "
+                    "there can only be two flat steps."},
+            {"text": "Two flat steps and two rising sections",
+             "correct": False,
+             "why": "That forgets one rise. The solid warms, the liquid "
+                    "warms, and the gas warms — three rises in all."},
+            {"text": "Two flat steps and three rising sections",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · harder ────────────────────────────────────────
+    {
+        "id": "c7-01-h14",
+        "band": "harder",
+        "text": "A power station boils water and sends steam to its turbine "
+                "rather than pumping very hot liquid water there. Why is "
+                "steam so much better at carrying the energy?",
+        "options": [
+            {"text": "Because boiling put a great deal of extra energy into "
+                     "it that water at 100 °C does not carry",
+             "correct": True},
+            {"text": "Because a gas cannot lose any energy to its "
+                     "surroundings while it is travelling along a pipe",
+             "correct": False,
+             "why": "Steam pipes are lagged precisely because a gas does "
+                    "lose energy on the way. That is a problem, not a "
+                    "reason."},
+            {"text": "Because steam weighs far less than water does, so it "
+                     "arrives at the turbine much sooner", "correct": False,
+             "why": "Arriving sooner is not the same as carrying more "
+                    "energy, and a lighter substance does not carry more."},
+            {"text": "Because the energy is created inside the boiler at the "
+                     "moment the water turns into steam", "correct": False,
+             "why": "Nothing creates energy. The boiler transfers it from "
+                    "the fuel into the water."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h15",
+        "band": "harder",
+        "text": "The melting point of water and the freezing point of water "
+                "are the same temperature. Why must that be so?",
+        "options": [
+            {"text": "Because a thermometer is not sensitive enough to "
+                     "separate two values that close together",
+             "correct": False,
+             "why": "They are not two close values that an instrument "
+                    "confuses. They are one temperature."},
+            {"text": "Because they are one change run in opposite "
+                     "directions, so they turn at the same point",
+             "correct": True},
+            {"text": "Because 0 °C is the coldest that liquid water is "
+                     "physically able to become", "correct": False,
+             "why": "How cold water can get is a different question "
+                    "altogether, and it is not what fixes the two points "
+                    "together."},
+            {"text": "Because pure water always holds a little ice in it, "
+                     "whatever its temperature", "correct": False,
+             "why": "Water well above 0 °C holds no ice at all, and the two "
+                    "points would still match if it did."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h16",
+        "band": "harder",
+        "text": "A beaker of water is boiled until the last of the liquid "
+                "has gone. Where is the energy the flame supplied during the "
+                "flat step at 100 °C?",
+        "options": [
+            {"text": "Used up, because boiling spends energy rather than "
+                     "passing it on to anything", "correct": False,
+             "why": "Energy is never used up. It is transferred, and here it "
+                    "left the beaker inside the steam."},
+            {"text": "In the empty beaker, which is the hottest thing in "
+                     "the room", "correct": False,
+             "why": "The beaker holds very little of it, and a beaker at "
+                    "100 °C is not where a whole flat step's energy went."},
+            {"text": "In the steam that has left the beaker, which carried "
+                     "it away", "correct": True},
+            {"text": "Back in the flame, which is why the flame keeps "
+                     "burning after the water has gone", "correct": False,
+             "why": "The flame is the source of the energy, not a store for "
+                    "it, and it burns because of its own fuel."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h17",
+        "band": "harder",
+        "text": "A technician checks a thermometer by standing it in a "
+                "beaker of melting ice rather than in a beaker of cooling "
+                "water. Why is melting ice the better check?",
+        "options": [
+            {"text": "Because ice is colder than any water the technician "
+                     "would be able to pour out", "correct": False,
+             "why": "Melting ice and the water around it are both at 0 °C. "
+                    "Being colder is not what makes it useful."},
+            {"text": "Because a thermometer is more reliable at low "
+                     "temperatures than at high ones", "correct": False,
+             "why": "A thermometer is no more reliable at one end of its "
+                    "range than the other, and that would not fix a value "
+                    "to check against."},
+            {"text": "Because the ice keeps getting colder as it melts, so "
+                     "every value can be checked", "correct": False,
+             "why": "Melting ice does not get colder. It holds at 0 °C for "
+                    "the whole of the melting."},
+            {"text": "Because melting ice holds at one known temperature "
+                     "for as long as ice is left", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · easier, second pass ───────────────────────────
+    {
+        "id": "c7-01-e18",
+        "band": "easier",
+        "text": "What is the boiling point of water?",
+        "options": [
+            {"text": "100 °C", "correct": True},
+            {"text": "0 °C", "correct": False,
+             "why": "0 °C is where water melts and freezes, at the other end "
+                    "of the liquid range."},
+            {"text": "50 °C", "correct": False,
+             "why": "Water at 50 °C is hot to the touch but nowhere near "
+                    "bubbling throughout."},
+            {"text": "212 °C", "correct": False,
+             "why": "212 is the boiling point on the Fahrenheit scale, not "
+                    "the Celsius one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e19",
+        "band": "easier",
+        "text": "In which state are the particles held in a fixed "
+                "arrangement?",
+        "options": [
+            {"text": "A liquid", "correct": False,
+             "why": "Liquid particles touch each other but slide past, which "
+                    "is why a liquid takes the shape of its container."},
+            {"text": "A solid", "correct": True},
+            {"text": "A gas", "correct": False,
+             "why": "Gas particles are far apart and move freely in all "
+                    "directions."},
+            {"text": "A gas that has been squeezed into a small space",
+             "correct": False,
+             "why": "Squeezing pushes gas particles closer together but does "
+                    "not lock them into any arrangement."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e20",
+        "band": "easier",
+        "text": "Particles in a solid cannot move around. What can they do?",
+        "options": [
+            {"text": "Nothing, until the solid starts to melt",
+             "correct": False,
+             "why": "They are moving the whole time. Melting is not what "
+                    "starts them off."},
+            {"text": "Swap places with each other",
+             "correct": False,
+             "why": "That is a liquid, where particles slide past one "
+                    "another."},
+            {"text": "Vibrate where they are", "correct": True},
+            {"text": "Spread out until they fill the space around them",
+             "correct": False,
+             "why": "Only a gas does that. A solid keeps its own shape."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e21",
+        "band": "easier",
+        "text": "What holds the particles of a solid in their fixed "
+                "arrangement?",
+        "options": [
+            {"text": "The air pressing in on the outside of the solid",
+             "correct": False,
+             "why": "A solid keeps its arrangement in a vacuum, where there "
+                    "is no air to press on it."},
+            {"text": "The fact that they are too cold to move anywhere",
+             "correct": False,
+             "why": "They are vibrating even in a very cold solid. Being "
+                    "cold is not what holds them."},
+            {"text": "The container the solid is sitting in",
+             "correct": False,
+             "why": "A solid holds its own shape with no container at all, "
+                    "which is what makes it a solid."},
+            {"text": "Forces of attraction between the particles",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e22",
+        "band": "easier",
+        "text": "Which change of state turns a gas into a liquid?",
+        "options": [
+            {"text": "Condensing", "correct": True},
+            {"text": "Evaporating", "correct": False,
+             "why": "Evaporating goes the other way — liquid to gas, from "
+                    "the surface."},
+            {"text": "Melting", "correct": False,
+             "why": "Melting starts with a solid, and no gas is involved in "
+                    "it at all."},
+            {"text": "Freezing", "correct": False,
+             "why": "Freezing turns a liquid into a solid, one step further "
+                    "on."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e23",
+        "band": "easier",
+        "text": "At what temperatures can evaporation happen?",
+        "options": [
+            {"text": "Only at 100 °C", "correct": False,
+             "why": "At 100 °C the liquid changes throughout. Evaporation is going on well below that."},
+            {"text": "At any temperature at all", "correct": True},
+            {"text": "Only above room temperature", "correct": False,
+             "why": "Washing dries outside on a cold day, and a puddle "
+                    "shrinks at 8 °C."},
+            {"text": "Only while the liquid is being heated by something",
+             "correct": False,
+             "why": "A glass of water left alone on a bench loses some over "
+                    "a week with nothing heating it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e24",
+        "band": "easier",
+        "text": "What do the particles of a liquid do as it freezes?",
+        "options": [
+            {"text": "They stop moving completely and lock still",
+             "correct": False,
+             "why": "They keep vibrating in the solid. Only the moving "
+                    "around stops."},
+            {"text": "They get smaller, which is why ice takes up less room",
+             "correct": False,
+             "why": "Particles do not change size, and ice in fact takes up "
+                    "more room than the water it came from."},
+            {"text": "They settle into a fixed arrangement", "correct": True},
+            {"text": "They spread further apart and slow down",
+             "correct": False,
+             "why": "They come closer together as a solid forms, not "
+                    "further apart."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e25",
+        "band": "easier",
+        "text": "What is latent heat?",
+        "options": [
+            {"text": "The heat a substance holds on to once it has been "
+                     "taken off the flame", "correct": False,
+             "why": "That is just the substance being hot, which a "
+                    "thermometer shows perfectly well."},
+            {"text": "The heat that escapes from a beaker into the room "
+                     "during an experiment", "correct": False,
+             "why": "Escaping heat is a loss to the surroundings, and it is "
+                    "not hidden from anything."},
+            {"text": "The extra heat needed to take a substance above its "
+                     "boiling point", "correct": False,
+             "why": "Heating steam above 100 °C raises its temperature, and "
+                    "a thermometer reports every degree of it."},
+            {"text": "The energy taken in or given out during a change of "
+                     "state", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e26",
+        "band": "easier",
+        "text": "Who worked out the idea of latent heat, and roughly when?",
+        "options": [
+            {"text": "Joseph Black, in the 1760s", "correct": True},
+            {"text": "James Watt, in the 1860s", "correct": False,
+             "why": "Watt built the idea into his steam engines, and he was "
+                    "working a century before the 1860s."},
+            {"text": "Isaac Newton, in the 1660s", "correct": False,
+             "why": "Newton worked on forces and light. Latent heat was a "
+                    "hundred years after him."},
+            {"text": "Anders Celsius, in the 1740s", "correct": False,
+             "why": "Celsius gave us the temperature scale, which is a "
+                    "different piece of work altogether."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e27",
+        "band": "easier",
+        "text": "A block of ice is weighed, allowed to melt into a sealed "
+                "dish, and weighed again. What does the balance read?",
+        "options": [
+            {"text": "Less, because melting uses some of the ice up",
+             "correct": False,
+             "why": "Nothing is used up. The same particles are there, "
+                    "arranged differently."},
+            {"text": "Exactly the same", "correct": True},
+            {"text": "More, because the ice has taken energy in",
+             "correct": False,
+             "why": "Taking energy in does not add mass to anything you "
+                    "could weigh on a school balance."},
+            {"text": "Less, because water is lighter than ice",
+             "correct": False,
+             "why": "A kilogram of ice makes a kilogram of water. Ice floats "
+                    "because it is less dense, not because it weighs less."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e28",
+        "band": "easier",
+        "text": "Which of these is NOT a change of state?",
+        "options": [
+            {"text": "Wax melting in a warm room", "correct": False,
+             "why": "Melting is a change of state, and the wax could be set "
+                    "solid again by cooling it."},
+            {"text": "Water freezing in a pipe", "correct": False,
+             "why": "Freezing is a change of state, and the same water comes "
+                    "back when it thaws."},
+            {"text": "Wood burning on a fire", "correct": True},
+            {"text": "Steam condensing on a window", "correct": False,
+             "why": "Condensing is a change of state — gas back to liquid, "
+                    "with nothing new made."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e29",
+        "band": "easier",
+        "text": "Why is a boiling beaker watched from the side rather than "
+                "from directly above it?",
+        "options": [
+            {"text": "Because the glass is more likely to crack upwards than "
+                     "sideways", "correct": False,
+             "why": "Glass does not crack in a chosen direction, and a "
+                    "cracked beaker is not what the rule is about."},
+            {"text": "Because the bubbles are easier to count from that "
+                     "angle", "correct": False,
+             "why": "Nobody is counting bubbles, and the rule would not be a "
+                    "safety one if they were."},
+            {"text": "Because a thermometer cannot be read properly from "
+                     "above", "correct": False,
+             "why": "A thermometer can be read from any angle that shows the "
+                    "scale."},
+            {"text": "Because the plume of steam above it burns",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-e30",
+        "band": "easier",
+        "text": "In which state can particles slide past one another while "
+                "still touching?",
+        "options": [
+            {"text": "A liquid", "correct": True},
+            {"text": "A solid", "correct": False,
+             "why": "Solid particles are held in one arrangement and can "
+                    "only vibrate on the spot."},
+            {"text": "A gas", "correct": False,
+             "why": "Gas particles are far apart and are not touching for "
+                    "most of the time."},
+            {"text": "A solid that has been warmed close to its melting "
+                     "point", "correct": False,
+             "why": "A warm solid vibrates harder, but nothing slides until "
+                    "it actually melts."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · standard, second pass ─────────────────────────
+    {
+        "id": "c7-01-s18",
+        "band": "standard",
+        "text": "Sweating cools you much less well on a humid day, when the "
+                "air already holds a great deal of water vapour. Why?",
+        "options": [
+            {"text": "Because humid air is warmer, so there is nothing for "
+                     "the sweat to cool you down to", "correct": False,
+             "why": "A humid day can be cool and still feel unpleasant. It "
+                    "is the water in the air that does it."},
+            {"text": "Because the sweat cannot evaporate, so the cooling "
+                     "never happens", "correct": True},
+            {"text": "Because humid air stops the body making sweat in the "
+                     "first place", "correct": False,
+             "why": "You sweat more on a humid day, not less. It simply sits "
+                    "on the skin."},
+            {"text": "Because water in the air condenses onto the skin and "
+                     "warms it up again", "correct": False,
+             "why": "Skin is warmer than the air around it, so nothing "
+                    "condenses onto it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s19",
+        "band": "standard",
+        "text": "Spraying trees with water protects fruit in a light frost. "
+                "Why would it not save a crop on a night at −15 °C?",
+        "options": [
+            {"text": "Because water sprayed at −15 °C would not freeze at "
+                     "all", "correct": False,
+             "why": "It would freeze quickly. The problem is what happens "
+                    "afterwards, not whether it freezes."},
+            {"text": "Because the spray would blow away before it could "
+                     "reach the fruit", "correct": False,
+             "why": "Wind is not the point. The question is how cold the "
+                    "night is."},
+            {"text": "Because freezing can only hold the fruit at 0 °C, and "
+                     "the ice then cools further", "correct": True},
+            {"text": "Because ice gives out energy only while the air is "
+                     "above freezing", "correct": False,
+             "why": "Freezing gives energy out whatever the air temperature "
+                    "is. There is simply not enough of it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s20",
+        "band": "standard",
+        "text": "Ice taken straight out of a freezer at −18 °C sits in a "
+                "warm kitchen for several minutes before the first drip "
+                "appears. Why the delay?",
+        "options": [
+            {"text": "Because the outside has to melt before the inside can "
+                     "start", "correct": False,
+             "why": "The surface is where melting starts, and it would drip "
+                    "as soon as it did. Nothing is waiting for the middle."},
+            {"text": "Because a freezer coats ice in a layer that has to "
+                     "come off first", "correct": False,
+             "why": "There is no such coating. The ice is the same substance "
+                    "all the way through."},
+            {"text": "Because the room has to warm the ice up to 0 °C before "
+                     "any melting can begin", "correct": True},
+            {"text": "Because melting always starts slowly and then speeds "
+                     "up on its own", "correct": False,
+             "why": "Once it is at 0 °C the melting runs steadily. The delay "
+                    "happens before melting starts at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s21",
+        "band": "standard",
+        "text": "Wet clothes on a washing line dry on a cold, breezy day. "
+                "Which change is happening, and what supplies the energy?",
+        "options": [
+            {"text": "Evaporation, with the energy coming from the air and "
+                     "the clothes themselves", "correct": True},
+            {"text": "Boiling, with the energy coming from the wind moving "
+                     "over the fabric", "correct": False,
+             "why": "Boiling needs 100 °C. Nothing on a washing line is "
+                    "anywhere near that."},
+            {"text": "Condensing, with the energy given out into the air as "
+                     "the water leaves", "correct": False,
+             "why": "Condensing turns gas into liquid, which would make the "
+                    "clothes wetter rather than drier."},
+            {"text": "Melting, with the energy coming from the sunlight "
+                     "falling on the line", "correct": False,
+             "why": "The water is already liquid, so there is nothing there "
+                    "to melt."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s22",
+        "band": "standard",
+        "text": "A student heats a substance steadily and their graph shows "
+                "one flat step and then a steady climb to the end of the "
+                "run. What did they most likely do?",
+        "options": [
+            {"text": "They heated a substance that has no boiling point", "correct": False,
+             "why": "Every substance boils if it is taken hot enough. The "
+                    "run simply stopped before that."},
+            {"text": "They stopped heating before the substance reached its "
+                     "boiling point", "correct": True},
+            {"text": "They started the run after the substance had already "
+                     "melted", "correct": False,
+             "why": "Then there would be no flat step at all, and their "
+                    "graph has one."},
+            {"text": "They used a thermometer that stopped working part way "
+                     "through", "correct": False,
+             "why": "A broken thermometer would not give a steady climb "
+                    "afterwards."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s23",
+        "band": "standard",
+        "text": "Steam at 120 °C is cooled steadily all the way down to ice. "
+                "What does a graph of its temperature against time look "
+                "like?",
+        "options": [
+            {"text": "A steady fall with no flat steps, because energy is "
+                     "leaving the whole time", "correct": False,
+             "why": "Energy leaving is exactly what the flat steps are made "
+                    "of. They appear while the state changes."},
+            {"text": "A steady fall with two flat steps, where the changes "
+                     "of state happen", "correct": True},
+            {"text": "A steady fall with one flat step, at 0 °C only",
+             "correct": False,
+             "why": "Condensing at 100 °C gives a flat step too, and it is "
+                    "the longer of the two."},
+            {"text": "A fall that gets steeper and steeper as the substance "
+                     "gets colder", "correct": False,
+             "why": "Nothing in the cooling makes it accelerate, and it "
+                    "would still have to hold at the two change points."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s24",
+        "band": "standard",
+        "text": "A pan of water is left boiling on a hob. Once the last of "
+                "the water has gone, the pan's temperature climbs fast. "
+                "Why?",
+        "options": [
+            {"text": "Because a dry pan conducts heat better than a wet one "
+                     "does", "correct": False,
+             "why": "The metal conducts the same either way. What has "
+                    "changed is what the energy has to do."},
+            {"text": "Because the hob turns itself up once the water has "
+                     "gone", "correct": False,
+             "why": "The hob is doing exactly what it was doing before. "
+                    "Nothing about it has changed."},
+            {"text": "Because the energy has nothing left to boil, so it "
+                     "goes into heating the metal", "correct": True},
+            {"text": "Because steam was keeping the pan cool and there is "
+                     "none left", "correct": False,
+             "why": "The steam was leaving at 100 °C, carrying energy away "
+                    "rather than cooling anything down."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s25",
+        "band": "standard",
+        "text": "A student says boiling and evaporating are two words for "
+                "the same thing. Give the two differences.",
+        "options": [
+            {"text": "Boiling happens throughout the liquid and only at its "
+                     "boiling point", "correct": True},
+            {"text": "Boiling gives energy out while evaporating takes it "
+                     "in", "correct": False,
+             "why": "Both take energy in. Both are a liquid becoming a gas."},
+            {"text": "Boiling needs a flame while evaporating needs only "
+                     "sunlight", "correct": False,
+             "why": "Neither one cares what the energy source is. A kettle "
+                    "and the sun both do either."},
+            {"text": "Boiling makes a gas while evaporating makes only tiny "
+                     "droplets", "correct": False,
+             "why": "Evaporation makes the same gas boiling does. The "
+                    "droplets you see are that gas condensing again."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s26",
+        "band": "standard",
+        "text": "A candle burns: the wax near the wick turns liquid, and "
+                "further up the wick it burns. Which part is a change of "
+                "state?",
+        "options": [
+            {"text": "Both are, because the wax changes form in each of "
+                     "them", "correct": False,
+             "why": "Burning makes new substances, which is what a change of "
+                    "state never does."},
+            {"text": "The burning, because the solid wax disappears "
+                     "completely", "correct": False,
+             "why": "It disappears because it has reacted into gases, not "
+                    "because it has changed state."},
+            {"text": "Neither, because a candle is a chemical reaction from "
+                     "start to finish", "correct": False,
+             "why": "The melting at the top of the candle is a change of "
+                    "state, with the same wax left afterwards."},
+            {"text": "The melting, because the wax is the same substance "
+                     "afterwards", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s27",
+        "band": "standard",
+        "text": "A beaker holds ice and water together and the thermometer "
+                "reads 0 °C. More ice is added. What does the reading do?",
+        "options": [
+            {"text": "It falls, because more ice makes the mixture colder",
+             "correct": False,
+             "why": "The ice being added is at 0 °C too. There is nothing "
+                    "colder in the beaker to pull the reading down."},
+            {"text": "It dips briefly",
+             "correct": False,
+             "why": "Nothing dips. Ice and water together hold at the "
+                    "melting point."},
+            {"text": "It holds at 0 °C", "correct": True},
+            {"text": "It rises, because there is now less liquid water to "
+                     "cool", "correct": False,
+             "why": "How much liquid there is does not set the temperature "
+                    "while ice is still present."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s28",
+        "band": "standard",
+        "text": "A student heating ice reads the thermometer every minute "
+                "but never stirs the beaker. Why might their flat step at "
+                "0 °C look less clear than it should?",
+        "options": [
+            {"text": "Because the thermometer drifts upwards when it is left "
+                     "still for too long", "correct": False,
+             "why": "A thermometer reads what it is in. It does not drift "
+                    "because nothing is moving."},
+            {"text": "Because unstirred ice melts more slowly, so the step "
+                     "is shorter", "correct": False,
+             "why": "The step would still be flat, just longer or shorter. "
+                    "Stirring changes how clear the reading is."},
+            {"text": "Because a flat step only appears on a graph if "
+                     "readings are taken more often than once a minute",
+             "correct": False,
+             "why": "A minute is plenty. The lesson's own run is plotted "
+                    "exactly that way."},
+            {"text": "Because the water near the thermometer can warm past "
+                     "0 °C while ice is still there", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s29",
+        "band": "standard",
+        "text": "Why is the flame kept at exactly the same setting for the "
+                "whole of a heating-curve run?",
+        "options": [
+            {"text": "So that every minute delivers the same energy and the "
+                     "flat steps can be compared", "correct": True},
+            {"text": "So that the beaker does not crack from being heated "
+                     "unevenly", "correct": False,
+             "why": "Cracking is worth avoiding, but it is not what the "
+                    "steady flame is there to do."},
+            {"text": "So that the water never goes above its boiling point "
+                     "on the way", "correct": False,
+             "why": "Boiling water holds at 100 °C however big the flame "
+                    "is."},
+            {"text": "So that the two changes of state happen at their "
+                     "proper temperatures", "correct": False,
+             "why": "Ice melts at 0 °C and water boils at 100 °C whatever "
+                    "the flame is doing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-s30",
+        "band": "standard",
+        "text": "Two students heat ice with identical flames, one using "
+                "50 g and one using 200 g. Compare the TEMPERATURES their "
+                "thermometers show at the flat steps.",
+        "options": [
+            {"text": "The larger sample holds at a lower temperature, "
+                     "because there is more of it to warm", "correct": False,
+             "why": "How much there is does not change the temperature a "
+                    "substance melts or boils at."},
+            {"text": "Both hold at 0 °C and then at 100 °C", "correct": True},
+            {"text": "The larger sample holds at a higher temperature, "
+                     "because it stores more energy", "correct": False,
+             "why": "It does hold more energy, and that is exactly why "
+                    "temperature is not the same thing as energy."},
+            {"text": "Neither holds steady at all", "correct": False,
+             "why": "A smaller flame makes the steps longer. It does not "
+                    "stop them being flat."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · harder, second pass ───────────────────────────
+    {
+        "id": "c7-01-h18",
+        "band": "harder",
+        "text": "Water melts and freezes at the same temperature. A student "
+                "says that means water sitting at 0 °C cannot be doing "
+                "either. What is the right answer?",
+        "options": [
+            {"text": "They are right, because the two changes would cancel "
+                     "each other out exactly", "correct": False,
+             "why": "Nothing cancels. Only one of them runs, and which one "
+                    "depends on the energy."},
+            {"text": "They are right, because a substance at its melting "
+                     "point is between states rather than changing",
+             "correct": False,
+             "why": "There is no in-between state. Ice and water sit "
+                    "together and one turns into the other."},
+            {"text": "They are wrong — which one happens depends only on whether energy is going in or out", "correct": True},
+            {"text": "They are wrong, because freezing happens a little below 0 °C", "correct": False,
+             "why": "Water freezes at the same 0 °C it melts at. That is "
+                    "what makes it one fixed point."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h19",
+        "band": "harder",
+        "text": "A heating curve is redrawn with ENERGY SUPPLIED along the "
+                "bottom instead of time. The flame was steady throughout. "
+                "How does the new graph compare?",
+        "options": [
+            {"text": "The flat steps swap places, because energy and time "
+                     "run opposite ways", "correct": False,
+             "why": "They run together, not opposite. More time at a steady "
+                    "flame simply means more energy."},
+            {"text": "The flat steps disappear, because energy is going in "
+                     "the whole time", "correct": False,
+             "why": "Energy going in with no temperature change is exactly "
+                    "what a flat step is."},
+            {"text": "The second flat step becomes the shorter one, because "
+                     "boiling is quicker per joule", "correct": False,
+             "why": "Boiling takes about seven times the energy of melting, "
+                    "so its step is longer on either axis."},
+            {"text": "It has the same shape, because at a steady flame "
+                     "energy and time go together", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h20",
+        "band": "harder",
+        "text": "In a power station, used steam is turned back into water in "
+                "a condenser, which has cold water running through it. "
+                "Predict what that cooling water does.",
+        "options": [
+            {"text": "It warms up, because condensing gives out the energy "
+                     "boiling put in", "correct": True},
+            {"text": "It cools down, because the steam takes energy from it "
+                     "as it condenses", "correct": False,
+             "why": "Condensing is the giving-out direction. The steam is "
+                    "handing energy over, not taking it."},
+            {"text": "It stays at the same temperature, because the steam is "
+                     "already at 100 °C", "correct": False,
+             "why": "Equal temperatures would still leave all the energy of "
+                    "condensing to go somewhere."},
+            {"text": "It freezes, because the steam has given up all of its "
+                     "energy by then", "correct": False,
+             "why": "The cooling water is receiving energy. Nothing there is "
+                    "being taken towards 0 °C."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h21",
+        "band": "harder",
+        "text": "Joseph Black's work on latent heat went straight into James "
+                "Watt's steam engines. Which is the best reason it mattered "
+                "so much to an engine designer?",
+        "options": [
+            {"text": "Because an engine runs better the hotter its steam is "
+                     "allowed to become", "correct": False,
+             "why": "That is about temperature. Black's discovery was about "
+                    "energy that a temperature does not show."},
+            {"text": "Because making the steam is where most of the fuel "
+                     "goes, so wasting steam wastes fuel", "correct": True},
+            {"text": "Because it showed that steam is hotter than the water "
+                     "it was boiled from", "correct": False,
+             "why": "Steam leaving a boiler is at the same temperature as "
+                    "the water. That is the whole surprise."},
+            {"text": "Because it let engineers boil water at a lower "
+                     "temperature than before", "correct": False,
+             "why": "Nothing about latent heat changes the temperature water "
+                    "boils at."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h22",
+        "band": "harder",
+        "text": "While a beaker boils, a balance under it shows the mass "
+                "falling steadily and the thermometer in it does not move at "
+                "all. Explain how those two observations fit together.",
+        "options": [
+            {"text": "The mass leaving as steam is carrying the energy away, "
+                     "so the reading holds", "correct": True},
+            {"text": "The mass is falling because the energy itself has "
+                     "weight and is escaping", "correct": False,
+             "why": "Energy is not something a balance weighs. What is "
+                    "leaving the beaker is water."},
+            {"text": "The thermometer is holding because there is less water "
+                     "left to heat each minute", "correct": False,
+             "why": "Less water would heat faster, not hold still. The "
+                    "holding is the change of state."},
+            {"text": "The two cannot both be right, so one instrument must "
+                     "be faulty", "correct": False,
+             "why": "Both are correct, and together they are the best "
+                    "evidence on the bench for where the energy goes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h23",
+        "band": "harder",
+        "text": "A lake freezes over in winter and thaws in spring. Compare "
+                "what the energy does in the two events.",
+        "options": [
+            {"text": "Freezing takes energy from the air, and thawing gives "
+                     "the same energy back to it", "correct": False,
+             "why": "That is the right pair of events with the directions "
+                    "swapped over."},
+            {"text": "Both take energy in, because ice is involved in each "
+                     "of them", "correct": False,
+             "why": "The substance does not fix the direction. Opposite "
+                    "changes transfer opposite ways."},
+            {"text": "Freezing releases energy to the surroundings, and "
+                     "thawing takes the same amount back", "correct": True},
+            {"text": "Neither moves much energy, because the temperature "
+                     "stays near 0 °C throughout", "correct": False,
+             "why": "A steady temperature is the sign of a large transfer, "
+                    "not of a small one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h24",
+        "band": "harder",
+        "text": "A change of state is described as reversible. Explain why "
+                "reversible does not mean that reversing it costs nothing.",
+        "options": [
+            {"text": "Because reversing it always means supplying or removing the same energy again", "correct": True},
+            {"text": "Because a substance is never quite the same after it "
+                     "has been changed and changed back", "correct": False,
+             "why": "It is exactly the same substance. That is what makes "
+                    "the change physical."},
+            {"text": "Because a little of the substance is lost every time "
+                     "the change is run", "correct": False,
+             "why": "In a sealed container the mass is unchanged. Nothing is "
+                    "lost by changing state."},
+            {"text": "Because the change can only be reversed a limited "
+                     "number of times", "correct": False,
+             "why": "Water can be frozen and melted endlessly, and it is the "
+                    "same water each time."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h25",
+        "band": "harder",
+        "text": "Chocolate burns easily on a hob, so cooks melt it in a bowl "
+                "over a pan of boiling water. Explain why that protects it.",
+        "options": [
+            {"text": "Because water carries heat more gently than metal "
+                     "does, whatever temperature it is at", "correct": False,
+             "why": "How gently it carries heat is not the protection. The "
+                    "temperature it cannot pass is."},
+            {"text": "Because boiling water never goes above 100 °C, however hard the hob is driven", "correct": True},
+            {"text": "Because the steam coming off keeps the bowl below 100 °C throughout", "correct": False,
+             "why": "The steam is at 100 °C itself and warms the bowl rather "
+                    "than holding it lower."},
+            {"text": "Because the bowl does not touch anything that is being heated", "correct": False,
+             "why": "It is being heated — by the water and steam under it. "
+                    "The limit is their temperature."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h26",
+        "band": "harder",
+        "text": "A student wants to show that a thermometer is not an energy "
+                "meter, using a beaker, a flame, ice and a thermometer. "
+                "Which demonstration makes the point best?",
+        "options": [
+            {"text": "Heat the flame itself and show that it reads far "
+                     "higher than the water does", "correct": False,
+             "why": "That compares two temperatures, which is exactly what a "
+                    "thermometer is for."},
+            {"text": "Heat two beakers to the same temperature and show the "
+                     "readings match", "correct": False,
+             "why": "Matching readings with nothing else measured say "
+                    "nothing about energy at all."},
+            {"text": "Heat melting ice and show the reading holds while the "
+                     "flame keeps running", "correct": True},
+            {"text": "Heat the water quickly and then slowly and show the "
+                     "readings end up the same", "correct": False,
+             "why": "Two routes to one temperature is a fair point about "
+                    "heating rate, not about what the reading means."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h27",
+        "band": "harder",
+        "text": "One student's flat step at 0 °C lasts four minutes; "
+                "another, with the same flame and twice the ice, gets eight. "
+                "What quantity is the same for both of them?",
+        "options": [
+            {"text": "The total energy each flame delivered during the flat "
+                     "step", "correct": False,
+             "why": "The second flame ran for twice as long at the same "
+                    "rate, so it delivered twice as much."},
+            {"text": "The length of the flat step, once the graphs are drawn "
+                     "to the same scale", "correct": False,
+             "why": "Drawing them differently does not change the fact that "
+                    "one took twice the time."},
+            {"text": "The temperature and nothing else about the two runs",
+             "correct": False,
+             "why": "The temperature does match, but something about the "
+                    "energy matches too, which is the useful part."},
+            {"text": "The energy needed to melt each kilogram of ice",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h28",
+        "band": "harder",
+        "text": "Steam at 100 °C is bubbled into cold water, and the water "
+                "warms far more than the same mass of boiling water would "
+                "have warmed it. Explain why.",
+        "options": [
+            {"text": "Because the steam gives out the energy of condensing "
+                     "as well as cooling down", "correct": True},
+            {"text": "Because steam is hotter than boiling water, so it has "
+                     "more to give", "correct": False,
+             "why": "Both are at 100 °C. A thermometer cannot tell them "
+                    "apart, which is the point of the comparison."},
+            {"text": "Because bubbling stirs the water and stirring warms "
+                     "it", "correct": False,
+             "why": "Stirring spreads energy around a beaker. It does not "
+                    "add any."},
+            {"text": "Because a gas carries energy more quickly than a "
+                     "liquid can", "correct": False,
+             "why": "How quickly it arrives is a separate question from how "
+                    "much arrives, and it is the amount that differs here."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h29",
+        "band": "harder",
+        "text": "Two students describe the flat step. One says energy is "
+                "being stored; the other says it is being used up. Which is "
+                "the better description, and how would you show it?",
+        "options": [
+            {"text": "Used up — the ice absorbs it and nothing can get it "
+                     "back afterwards", "correct": False,
+             "why": "It can be got back. Freeze the water again and the same "
+                    "energy comes out."},
+            {"text": "Stored — freezing the water again gives the same "
+                     "energy back out", "correct": True},
+            {"text": "Used up — the proof is that the thermometer records "
+                     "none of it", "correct": False,
+             "why": "A thermometer not showing something is not evidence "
+                    "that it has gone."},
+            {"text": "Stored — the proof is that the beaker is warmer "
+                     "afterwards than before", "correct": False,
+             "why": "The beaker is not warmer. It sat at 0 °C for the whole "
+                    "of the flat step."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c7-01-h30",
+        "band": "harder",
+        "text": "A pan is boiling hard on full power. The hob is turned down "
+                "to the lowest setting that still keeps it boiling. Compare "
+                "the temperature and the rate steam is made.",
+        "options": [
+            {"text": "The temperature drops a little and the steam is made "
+                     "more slowly", "correct": False,
+             "why": "Boiling water is at 100 °C on any setting that keeps it "
+                    "boiling."},
+            {"text": "Both stay the same, because the water is boiling in "
+                     "each case", "correct": False,
+             "why": "Less energy every minute means less water turned to "
+                    "steam every minute."},
+            {"text": "The temperature stays the same and the steam is made "
+                     "more slowly", "correct": True},
+            {"text": "The temperature stays the same and the steam is made "
+                     "at the same rate", "correct": False,
+             "why": "The rate follows the energy going in, and much less is "
+                    "going in now."},
+        ],
+        "figure": None,
+    },
 ]
