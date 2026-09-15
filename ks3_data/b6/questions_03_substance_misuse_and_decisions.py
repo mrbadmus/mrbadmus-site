@@ -2223,4 +2223,393 @@ QUESTIONS = [
 "design: who was chosen, when they were measured, and against what."},
         ],
         "figure": None,
-    },]
+    },
+
+    # ── MRB-338 night 3 top-up — appended, never inserted ──────────────
+    {
+        "id": "b6-03-s26",
+        "band": "standard",
+        "text": "Someone buys a painkiller over the counter, and when the "
+                "pain does not go they take twice the amount printed on the "
+                "box. Does that count as substance misuse?",
+        "options": [
+            {"text": "Yes, because misuse covers legal medicines, and taking "
+                     "more than the box allows is taking it wrongly",
+             "correct": True},
+            {"text": "No, because substance misuse describes illegal drugs "
+                     "rather than medicines sold in a shop",
+             "correct": False,
+             "why": "The definition covers legal substances too, and "
+                    "medicines taken wrongly are named in it."},
+            {"text": "No, because a medicine sold without a prescription "
+                     "carries no amount large enough to harm",
+             "correct": False,
+             "why": "The amount printed on the box is a limit, and taking "
+                    "more than it can damage the body."},
+            {"text": "Yes, but the phrase describes the shop that sold it "
+                     "rather than the person who took it",
+             "correct": False,
+             "why": "Misuse describes the way a substance was used, which is "
+                    "the choice of the person taking it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s27",
+        "band": "standard",
+        "text": "A pupil says a plant would not make a substance that harms "
+                "people, because a plant has no reason to. Why does a plant "
+                "make a substance such as nicotine?",
+        "options": [
+            {"text": "To attract the insects that carry its pollen from one "
+                     "flower to the next",
+             "correct": False,
+             "why": "Nicotine is a poison made against the animals that eat "
+                    "the plant, not a signal to pollinators."},
+            {"text": "To poison the animals that try to eat the plant, which "
+                     "has nothing to do with people",
+             "correct": True},
+            {"text": "To make its leaves taste pleasant, which is how people "
+                     "came to use the plant",
+             "correct": False,
+             "why": "It is made to be unpleasant to whatever eats the plant, "
+                    "rather than to taste good."},
+            {"text": "To protect the plant from sunlight, which is why the "
+                     "substance builds up in its leaves",
+             "correct": False,
+             "why": "Sunlight is not what nicotine defends against. It is a "
+                    "defence against being eaten."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s28",
+        "band": "standard",
+        "text": "A national report says that about four in five of the "
+                "pupils it asked have tried an energy drink. It does not say "
+                "how those pupils were chosen. Which of the four questions "
+                "does that leave unanswered?",
+        "options": [
+            {"text": "Compared with what, because the report should have "
+                     "given a second drink to a group kept back for comparison",
+             "correct": False,
+             "why": "This is a count of how many people have tried "
+                    "something, not a test of an effect, so there is no "
+                    "group to compare against."},
+            {"text": "Who is telling me, because the report was written by "
+                     "the company that sells the drink",
+             "correct": False,
+             "why": "It is a national report with nothing to sell, so that "
+                    "question is already answered."},
+            {"text": "How many, and who, because nothing is said about the "
+                     "way those pupils were picked",
+             "correct": True},
+            {"text": "Together, or because, since the report claims the "
+                     "drink is causing something else",
+             "correct": False,
+             "why": "No cause is claimed at all. The report counts how many "
+                    "pupils have tried the drink."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s29",
+        "band": "standard",
+        "text": "A survey finds that people who take sleeping tablets sleep "
+                "worse than people who take none, and a pupil concludes that "
+                "the tablets are causing the poor sleep. What is the most "
+                "likely explanation?",
+        "options": [
+            {"text": "The tablets are the cause, because both groups were "
+                     "counted at the same time of year",
+             "correct": False,
+             "why": "Counting two groups at the same time does not show "
+                    "which came first; the poor sleep may well have come "
+                    "before the tablets."},
+            {"text": "The two groups cannot be compared with each other, "
+                     "because sleep cannot be measured",
+             "correct": False,
+             "why": "Sleep can be measured, in a laboratory or with a simple "
+                    "diary. The trouble here is which way the cause runs."},
+            {"text": "The survey used too few people, and a larger survey "
+                     "would have found no difference between the groups",
+             "correct": False,
+             "why": "More people would not settle it. The two groups chose "
+                    "themselves, and size does not fix that."},
+            {"text": "People who sleep badly are the ones who take tablets, "
+                     "so the cause may run the other way",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-s30",
+        "band": "standard",
+        "text": "A pupil says they know smoking is harmful because an uncle "
+                "of theirs became ill after years of smoking. The conclusion "
+                "is right. How good is the evidence they have given for it?",
+        "options": [
+            {"text": "Strong, because a case somebody knows personally is "
+                     "harder to argue with than a published figure",
+             "correct": False,
+             "why": "A case you know personally is still one case, and how "
+                    "well you know it does not turn it into a rate."},
+            {"text": "Weak on its own, because one case cannot show how "
+                     "often something happens across many people",
+             "correct": True},
+            {"text": "Strong, because evidence is judged by whether the "
+                     "conclusion it reaches turns out to be correct",
+             "correct": False,
+             "why": "Evidence is judged by its shape rather than by its "
+                    "conclusion: a true claim can be given poor support."},
+            {"text": "Weak, because an illness appearing after years of "
+                     "smoking comes too late to be connected to it",
+             "correct": False,
+             "why": "That long gap is exactly what the doctors' study "
+                    "followed and measured; it does not break the link."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h23",
+        "band": "harder",
+        "text": "A pupil asks thirty classmates how many have tried vaping, "
+                "and a national survey asks tens of thousands of pupils how "
+                "many vape regularly. The two produce very different figures, "
+                "and the pupil says one of them must be wrong. Evaluate that.",
+        "options": [
+            {"text": "Neither need be wrong: one counts pupils who have tried "
+                     "it among friends, the other counts regular use "
+                     "nationally",
+             "correct": True},
+            {"text": "The national survey must be wrong, because the pupil "
+                     "counted the people standing in front of them",
+             "correct": False,
+             "why": "Counting the people in front of you is the fault "
+                    "itself: they stand in for nobody but themselves."},
+            {"text": "The pupil's figure must be wrong, because a friendship "
+                     "group cannot be counted accurately",
+             "correct": False,
+             "why": "The thirty were counted accurately enough. The trouble "
+                    "is that they are not a fair sample of pupils."},
+            {"text": "Neither need be wrong, because both figures describe "
+                     "regular use and vaping simply happens to be far more "
+                     "common in some schools than in others",
+             "correct": False,
+             "why": "One figure counts everybody who has tried it and the "
+                    "other counts regular use, which are not the same "
+                    "measure."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h24",
+        "band": "harder",
+        "text": "In a trial of a supplement, 55 of the 100 people given it "
+                "said they felt better, and 40 of the 100 given an identical "
+                "dummy said the same. What does the dummy group's result "
+                "show?",
+        "options": [
+            {"text": "That the dummy worked as well as the supplement, so "
+                     "neither of them has an effect on anybody",
+             "correct": False,
+             "why": "They did not do equally well: 55 against 40 is a real "
+                    "difference, and that difference is what the supplement "
+                    "adds."},
+            {"text": "That much of the improvement happens anyway, so the "
+                     "supplement accounts for about fifteen in a hundred",
+             "correct": True},
+            {"text": "That the trial has failed, because a dummy group is "
+                     "supposed to show no improvement of any kind in the "
+                     "people who were given it",
+             "correct": False,
+             "why": "A dummy group usually does improve, because many "
+                    "conditions come and go anyway. That is why it is "
+                    "there."},
+            {"text": "That 55 in a hundred is the supplement's effect, since "
+                     "those people were given the real thing",
+             "correct": False,
+             "why": "Forty in a hundred improved without the active "
+                    "ingredient, so 55 cannot all be the supplement's "
+                    "doing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h25",
+        "band": "harder",
+        "text": "A post warns that a food additive is harmful, citing a "
+                "study in which people were given a hundred times the amount "
+                "anyone would eat in a day. How much does that study tell you "
+                "about eating the additive normally?",
+        "options": [
+            {"text": "Everything, because a substance that harms at a large "
+                     "amount harms at every smaller amount as well",
+             "correct": False,
+             "why": "A harmful dose says nothing on its own about a much "
+                    "smaller one. Safe has an amount attached to it."},
+            {"text": "Everything, because the size of the amount used has no "
+                     "bearing on where a study's result can be applied",
+             "correct": False,
+             "why": "The amount is part of what was tested, so the result "
+                    "belongs to that amount."},
+            {"text": "Little, because a result at that amount is a statement "
+                     "about that amount and not about a normal one",
+             "correct": True},
+            {"text": "Little, but the study would settle it if more people "
+                     "had been given the same large amount",
+             "correct": False,
+             "why": "Repeating the same unusual amount on more people "
+                    "answers the same question again, not the one being "
+                    "asked."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h26",
+        "band": "harder",
+        "text": "Two well-designed randomised trials of the same supplement "
+                "reach opposite results, and a pupil says one of the teams "
+                "must have cheated. What is the better response?",
+        "options": [
+            {"text": "Accept the trial with the larger number of people, "
+                     "because a bigger trial settles a question outright",
+             "correct": False,
+             "why": "Size helps, but one trial does not settle a question by "
+                    "itself. Agreement between studies is what does."},
+            {"text": "Accept whichever trial was published first, because "
+                     "the later team knew what result to look for",
+             "correct": False,
+             "why": "Being published first makes no result right, and the "
+                    "order says nothing about either design."},
+            {"text": "Treat both as worthless, because two trials that "
+                     "disagree cancel each other out",
+             "correct": False,
+             "why": "Disagreement is a reason to read both designs and look "
+                    "for further evidence, not to discard both."},
+            {"text": "Read both designs and wait for further trials, since "
+                     "results vary between studies without anybody cheating",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h27",
+        "band": "harder",
+        "text": "A teacher believes that telling pupils the true figure for "
+                "regular vaping makes them less likely to start. Which design "
+                "would test that belief properly?",
+        "options": [
+            {"text": "Split classes at random, give one set the true figure "
+                     "and the other nothing, then follow both for a year",
+             "correct": True},
+            {"text": "Tell every class the true figure, and afterwards ask "
+                     "each pupil whether hearing it changed what they would "
+                     "have done",
+             "correct": False,
+             "why": "With everybody told there is no group to compare "
+                    "against, and asking people to imagine what they would "
+                    "have done is not a measurement."},
+            {"text": "Give the true figure to the classes whose teachers "
+                     "volunteered, and compare them with the rest",
+             "correct": False,
+             "why": "Classes whose teachers volunteer choose themselves, so "
+                    "the two groups differ in more than the figure."},
+            {"text": "Ask the pupils who already vape whether an accurate "
+                     "figure would have stopped them starting",
+             "correct": False,
+             "why": "That looks backwards at a group already picked out by "
+                    "the outcome, and relies on what they think they would "
+                    "have done."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h28",
+        "band": "harder",
+        "text": "To test whether an energy drink improves exam results, a "
+                "researcher plans to give the drink to the students who ask "
+                "for it and compare them with the students who do not want "
+                "it. What is wrong with that plan?",
+        "options": [
+            {"text": "Nothing is wrong, because asking who wants the drink "
+                     "is how a comparison group is chosen",
+             "correct": False,
+             "why": "A comparison group is made by splitting people at "
+                    "random, not by asking who would like the drink."},
+            {"text": "The students sort themselves into the two groups, "
+                     "which is the very fault the test was meant to remove",
+             "correct": True},
+            {"text": "The two groups would be too small, since a study of "
+                     "exam results needs thousands of students",
+             "correct": False,
+             "why": "Numbers are not the trouble. However many take part, "
+                    "the groups have chosen themselves."},
+            {"text": "The comparison should be made after the exams, by "
+                     "asking who drank what during study leave",
+             "correct": False,
+             "why": "Asking afterwards still leaves people sorting "
+                    "themselves, and adds the problem of relying on memory."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h29",
+        "band": "harder",
+        "text": "A claim about a substance matches what a pupil already "
+                "believes. Should the four questions still be asked of it?",
+        "options": [
+            {"text": "No, because a claim that matches what is already "
+                     "known has been checked by that agreement",
+             "correct": False,
+             "why": "Agreeing with what you already think is not a test of "
+                    "evidence; plenty of true-sounding claims are badly "
+                    "supported."},
+            {"text": "No, because the questions were written for claims made "
+                     "by somebody with something to sell",
+             "correct": False,
+             "why": "They apply to any claim. A seller is one of the four "
+                    "questions, not the reason for the other three."},
+            {"text": "Yes, because the questions test the evidence behind a "
+                     "claim rather than the claim itself",
+             "correct": True},
+            {"text": "Yes, but agreement with what is already believed can "
+                     "stand in for a comparison group",
+             "correct": False,
+             "why": "A comparison group is people measured the same way, and "
+                    "nothing a reader believes can take its place."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-03-h30",
+        "band": "harder",
+        "text": "A doctor notices that her patients taking one particular "
+                "medicine report more headaches than her other patients, and "
+                "she decides to investigate. Is she making the mistake of "
+                "treating a correlation as a cause?",
+        "options": [
+            {"text": "Yes, because noticing two things together and then "
+                     "acting on it is the mistake itself",
+             "correct": False,
+             "why": "The mistake is announcing a cause. Looking into a "
+                    "pattern is what a correlation is for."},
+            {"text": "Yes, because a medicine that has already been tested "
+                     "in trials cannot be investigated again",
+             "correct": False,
+             "why": "A medicine that has passed its trials can still turn "
+                    "out to have effects nobody had counted, and those are "
+                    "worth investigating."},
+            {"text": "No, because a pattern noticed by somebody qualified "
+                     "counts as a cause in a way that the same pattern "
+                     "noticed by anybody else would not",
+             "correct": False,
+             "why": "Who noticed a pattern does not change what it is "
+                    "worth. It is still two things found together."},
+            {"text": "No, because two things found together are where an "
+                     "investigation starts rather than where it ends",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+]

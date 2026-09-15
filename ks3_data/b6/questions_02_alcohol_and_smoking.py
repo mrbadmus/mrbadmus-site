@@ -2136,4 +2136,342 @@ QUESTIONS = [
 "of sleep can be compared directly against the hours required."},
         ],
         "figure": None,
-    },]
+    },
+
+    # ── MRB-338 night 3 top-up — appended, never inserted ──────────────
+    {
+        "id": "b6-02-s28",
+        "band": "standard",
+        "text": "A shop sells herbal cigarettes and describes them as safe "
+                "because they contain no tobacco and no nicotine. Using the "
+                "three harms in tobacco smoke, is having no nicotine enough "
+                "to make them safe?",
+        "options": [
+            {"text": "No, because burning still produces tar and carbon "
+                     "monoxide, which do most of the damage",
+             "correct": True},
+            {"text": "Yes, because nicotine is the substance in smoke that "
+                     "damages the airways and the blood",
+             "correct": False,
+             "why": "Nicotine causes the dependence. The damage to the "
+                    "airways comes from tar, and the loss of oxygen carried "
+                    "in the blood comes from carbon monoxide."},
+            {"text": "Yes, because smoke from a plant other than tobacco "
+                     "carries no tar and no carbon monoxide",
+             "correct": False,
+             "why": "Any burning leaf produces tar and carbon monoxide. "
+                    "Which plant it came from does not change that."},
+            {"text": "No, because herbal leaves release a stronger form of "
+                     "nicotine when they are burned",
+             "correct": False,
+             "why": "The product is described as containing no nicotine, so "
+                    "there is none in it to be released in any form."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s29",
+        "band": "standard",
+        "text": "Someone feels the effect of a drink within minutes of "
+                "finishing it, yet "
+                "the alcohol takes hours to leave the blood. Why are getting "
+                "in and getting out so different in speed?",
+        "options": [
+            {"text": "The first drink is absorbed quickly and cleared "
+                     "quickly, and it is later drinks that take an hour each",
+             "correct": False,
+             "why": "Every unit takes about the same time. The liver's rate "
+                    "does not change as the evening goes on."},
+            {"text": "Alcohol is absorbed slowly and cleared quickly, so the "
+                     "delay comes at the start of the evening instead",
+             "correct": False,
+             "why": "It is the other way round. Alcohol crosses the stomach "
+                    "wall as well as the intestine, so it arrives quickly, "
+                    "and it is the clearing that is slow."},
+            {"text": "Absorption into the blood is quick, while the liver "
+                     "breaks alcohol down at about one unit an hour",
+             "correct": True},
+            {"text": "The stomach breaks down most of the alcohol quickly, "
+                     "and the liver deals with the little that is left",
+             "correct": False,
+             "why": "The stomach absorbs alcohol into the blood but breaks "
+                    "none of it down. Almost all of that work is the "
+                    "liver's."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-s30",
+        "band": "standard",
+        "text": "Someone counts their evening as three drinks: a can of "
+                "cider, a large wine and a half of beer. Using the unit "
+                "values of those drinks, how many hours will the liver need "
+                "to clear them?",
+        "options": [
+            {"text": "About three hours, because the liver clears one drink "
+                     "an hour, drink by drink",
+             "correct": False,
+             "why": "The clock counts units rather than drinks: a can of "
+                    "cider is two units and a large wine is three."},
+            {"text": "About six hours, because the three drinks come to six "
+                     "units between them",
+             "correct": True},
+            {"text": "About two hours, because a half of beer and a can of "
+                     "cider are both small measures",
+             "correct": False,
+             "why": "A half of beer is one unit and a can of cider is two, "
+                    "and the large wine adds three more on top of those."},
+            {"text": "About nine hours, because a large wine counts as three "
+                     "units and each of the other two counts as three as well",
+             "correct": False,
+             "why": "A can of cider is two units and a half of beer is one, "
+                    "so the evening comes to six units rather than nine."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h23",
+        "band": "harder",
+        "text": "Heavy drinking over years and tobacco smoke over years "
+                "damage different sets of organs, but one organ is on both "
+                "lists. Which organ, and what does each drug do to it?",
+        "options": [
+            {"text": "The lungs: tar damages the alveoli, and alcohol "
+                     "arrives in the blood and inflames them as well",
+             "correct": False,
+             "why": "Alcohol is not described as damaging the alveoli. The "
+                    "harm to the airways comes from tar and the other "
+                    "substances in smoke."},
+            {"text": "The liver: alcohol replaces its working cells with "
+                     "scar tissue, and the tar in smoke scars the liver in "
+                     "exactly the same way",
+             "correct": False,
+             "why": "Tar damages the airways and the alveoli, not the liver. "
+                    "The scarring described here is alcohol's alone."},
+            {"text": "The stomach: alcohol inflames the lining, and "
+                     "swallowed smoke particles wear that same lining away",
+             "correct": False,
+             "why": "Smoke is not described as wearing the stomach lining "
+                    "away. The irritated lining is one of alcohol's own "
+                    "long-term harms."},
+            {"text": "The brain: alcohol costs it tissue, affecting memory "
+                     "and judgement, while nicotine changes its reward "
+                     "pathways",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h24",
+        "band": "harder",
+        "text": "Someone drinks three units at seven o'clock, has nothing "
+                "for three hours, then drinks two more units at ten o'clock. "
+                "Using one unit an hour, when is their blood clear?",
+        "options": [
+            {"text": "About midnight, because the first three units have "
+                     "gone by ten o'clock and the two new ones take two hours",
+             "correct": True},
+            {"text": "About one in the morning, because all five units are "
+                     "added together and counted from the last drink",
+             "correct": False,
+             "why": "The first three units were cleared during the "
+                    "three-hour wait, so two units are left at ten o'clock."},
+            {"text": "About three in the morning, because the liver starts "
+                     "again from the beginning once a new drink arrives",
+             "correct": False,
+             "why": "The liver does not restart. It goes on clearing about "
+                    "one unit an hour whether or not more is drunk."},
+            {"text": "About eleven o'clock, because a three-hour wait clears "
+                     "more than the three units drunk at seven",
+             "correct": False,
+             "why": "Three hours clears about three units and no more, so "
+                    "the two units drunk at ten are still to come."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h25",
+        "band": "harder",
+        "text": "A cigarette brand is advertised as having reduced carbon "
+                "monoxide, and a smoker asks whether that makes it safer for "
+                "their lungs. What is the best reply?",
+        "options": [
+            {"text": "Carbon monoxide is what settles in the airways, so "
+                     "less of it makes the lungs safer straight away",
+             "correct": False,
+             "why": "Carbon monoxide binds to haemoglobin in the blood. The "
+                    "substance that damages the airways is tar."},
+            {"text": "Carbon monoxide is what causes the dependence, so less "
+                     "of it makes the habit easier to give up",
+             "correct": False,
+             "why": "Nicotine causes the dependence. Carbon monoxide takes "
+                    "the places oxygen should occupy in the blood."},
+            {"text": "Carbon monoxide does its harm in the blood, so less of "
+                     "it does nothing about the tar that damages the airways",
+             "correct": True},
+            {"text": "Carbon monoxide forms in the lungs rather than in the "
+                     "smoke, so no brand of cigarette can change how much "
+                     "there is",
+             "correct": False,
+             "why": "It is made by burning and arrives in the smoke, so the "
+                    "amount a cigarette delivers is not fixed by the "
+                    "smoker's lungs."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h26",
+        "band": "harder",
+        "text": "A student works out that twelve units clear in about twelve "
+                "hours, and concludes that drinking twelve units every night "
+                "does no lasting harm because the blood is clear again each "
+                "day. Evaluate that.",
+        "options": [
+            {"text": "It is sound, because damage builds in an organ while "
+                     "the substance is in the blood and stops once the blood "
+                     "is clear",
+             "correct": False,
+             "why": "The liver's scarring and the brain tissue lost come "
+                    "from the drinking repeated over years, not from what is "
+                    "in the blood tonight."},
+            {"text": "It is wrong, because clearing the blood says nothing "
+                     "about the damage building up in the liver, the brain "
+                     "and the gut",
+             "correct": True},
+            {"text": "It is sound, because the liver repairs the previous "
+                     "night's scarring during the hours when the blood is "
+                     "clear",
+             "correct": False,
+             "why": "Early damage can recover if drinking stops, but "
+                    "scarring does not repair, and a clear morning does not "
+                    "undo it."},
+            {"text": "It is wrong, because twelve units take about "
+                     "twenty-four hours to clear and are still in the blood "
+                     "the next night",
+             "correct": False,
+             "why": "At about one unit an hour twelve units take about "
+                    "twelve hours, and the blood does clear. The harm being "
+                    "missed is the long-term one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h27",
+        "band": "harder",
+        "text": "Three hours after finishing five units, someone says they "
+                "feel completely normal and must therefore be clear of "
+                "alcohol. Judge that, using the clearance rate and what "
+                "alcohol does.",
+        "options": [
+            {"text": "They are clear, because feeling normal is the sign "
+                     "that the liver has finished its work on the alcohol",
+             "correct": False,
+             "why": "Feeling normal is not a measurement, and alcohol "
+                    "affects judgement before it affects anything else."},
+            {"text": "About two units are still there, though somebody who "
+                     "feels normal is a reliable judge of their own "
+                     "reactions",
+             "correct": False,
+             "why": "Reactions and coordination are still affected while "
+                    "alcohol is in the blood, whatever the person says about "
+                    "feeling fine."},
+            {"text": "They are clear, because three hours is long enough for "
+                     "five units at about one unit an hour",
+             "correct": False,
+             "why": "Five units at about one unit an hour need about five "
+                    "hours, so three hours leaves about two units."},
+            {"text": "About two units are still there, and judgement, the "
+                     "thing needed to notice that, is affected first",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h28",
+        "band": "harder",
+        "text": "Using the unit values of the drinks, how many halves of "
+                "beer hold the same amount of alcohol as two pints of strong "
+                "lager?",
+        "options": [
+            {"text": "Six halves, because two pints of strong lager come to "
+                     "six units",
+             "correct": True},
+            {"text": "Two halves, because a pint of strong lager is the same "
+                     "measure as a half of beer",
+             "correct": False,
+             "why": "A pint is two halves to start with, and strong lager is "
+                    "stronger, which is why a pint of it counts as three "
+                    "units."},
+            {"text": "Three halves, because a pint of strong lager counts as "
+                     "three units on its own",
+             "correct": False,
+             "why": "That is one pint's worth. The question asks about two "
+                    "pints, which come to six units."},
+            {"text": "Twelve halves, because each pint of strong lager holds "
+                     "six units of alcohol",
+             "correct": False,
+             "why": "A pint of strong lager is three units, so two pints "
+                    "come to six rather than twelve."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h29",
+        "band": "harder",
+        "text": "A student reads that vapes are not known to be safe, and "
+                "takes that to mean they have been shown to be dangerous. "
+                "Explain what the phrase says.",
+        "options": [
+            {"text": "It says they have been tested over forty years and "
+                     "were found to harm the people who used them",
+             "correct": False,
+             "why": "The devices are too new for that. Nobody has used one "
+                    "for forty years, which is why the studies are missing."},
+            {"text": "It says they have been shown to be as harmful as "
+                     "cigarettes, which is why the wording is careful",
+             "correct": False,
+             "why": "They are very likely less harmful than cigarettes. What "
+                    "cannot yet be said is that they are safe."},
+            {"text": "It says the long-term studies do not exist yet, so "
+                     "nobody can call them safe or say how harmful they are",
+             "correct": True},
+            {"text": "It says nothing about evidence, and is a form of words "
+                     "the law makes every nicotine product carry",
+             "correct": False,
+             "why": "It is a statement about the evidence rather than a "
+                    "label required by law: the long-term studies have not "
+                    "been done."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b6-02-h30",
+        "band": "harder",
+        "text": "A person stopped drinking at midday and their blood was "
+                "clear at eight that evening. Using one unit an hour, what is "
+                "the most they could have drunk?",
+        "options": [
+            {"text": "About three units, because the blood clears in roughly "
+                     "the first three hours and then stays clear",
+             "correct": False,
+             "why": "The blood is clear once the units have been broken "
+                    "down, at about one an hour, so eight hours clears about "
+                    "eight units."},
+            {"text": "About eight units, because eight hours passed between "
+                     "the last drink and the blood clearing",
+             "correct": True},
+            {"text": "About sixteen units, because the liver works through "
+                     "about two units in each hour of the afternoon",
+             "correct": False,
+             "why": "The rate is about one unit an hour, so eight hours "
+                    "clears about eight units rather than sixteen."},
+            {"text": "It cannot be worked out, because the clearance rate "
+                     "applies to the hours a person is asleep rather than "
+                     "awake",
+             "correct": False,
+             "why": "The rate is the same asleep or awake, so the eight "
+                    "hours can be counted straight off."},
+        ],
+        "figure": None,
+    },
+]

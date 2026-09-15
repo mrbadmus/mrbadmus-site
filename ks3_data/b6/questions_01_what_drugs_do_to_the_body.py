@@ -2488,4 +2488,43 @@ QUESTIONS = [
 "raises an ordinary drinker's heart rate measurably too."},
         ],
         "figure": None,
-    },]
+    },
+
+    # ── MRB-338 night 3 top-up — appended, never inserted ──────────────
+    {
+        "id": "b6-01-h30",
+        "band": "harder",
+        "text": "A tablet is swallowed at nine o'clock. A student argues that "
+                "because blood completes a full circuit of the body very "
+                "quickly, the tablet must be acting on the headache a minute "
+                "later. Evaluate that.",
+        "options": [
+            {"text": "The circuit is that quick, but the blood reaches the "
+                     "head before it reaches any other organ, so a minute is "
+                     "enough",
+             "correct": False,
+             "why": "There is no order of delivery. The blood offers the dose "
+                    "to every organ it passes, and no organ is served ahead "
+                    "of the rest."},
+            {"text": "The tablet is carried up to the head from the moment it "
+                     "is swallowed, so neither dissolving nor the circuit "
+                     "adds any delay",
+             "correct": False,
+             "why": "Nothing is carried anywhere until the tablet has "
+                    "dissolved and crossed the gut wall into the blood, and "
+                    "it has no address on it when it gets there."},
+            {"text": "The circuit is that quick, but the tablet has to "
+                     "dissolve and cross the gut wall first, which takes "
+                     "several minutes",
+             "correct": True},
+            {"text": "The circuit is far slower than that, because the blood "
+                     "has to pass through the liver and the kidneys before it "
+                     "can reach the head",
+             "correct": False,
+             "why": "Blood does pass through those organs, but the full "
+                    "circuit still takes under a minute. What delays the "
+                    "tablet is dissolving and being absorbed."},
+        ],
+        "figure": None,
+    },
+]
