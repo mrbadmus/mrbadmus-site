@@ -1136,4 +1136,866 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-338 night 3 top-up · easier ──────────────────────────────────
+    {
+        "id": "p3-02-e18",
+        "band": "easier",
+        "text": "A journey's line starts at 15 m when the clock reads 0 s, "
+                "rather than at the origin. What does that tell you?",
+        "options": [
+            {"text": "The graph has a mistake in its first reading",
+             "correct": False,
+             "why": "A line may begin anywhere on the distance axis. That "
+                    "first point is a reading, not an error."},
+            {"text": "The object was travelling at 15 m/s when timing began",
+             "correct": False,
+             "why": "Speed is read from the steepness of the line, not from "
+                    "the height of a point."},
+            {"text": "The object was already 15 m from the start when timing "
+                     "began",
+             "correct": True},
+            {"text": "The clock was started 15 seconds after the object set "
+                     "off",
+             "correct": False,
+             "why": "15 is read off the distance axis, so it is a length in "
+                    "metres and not a time in seconds."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e19",
+        "band": "easier",
+        "text": "Two walkers are plotted on the same axes. One line begins at "
+                "0 s and the other begins at 20 s. What does that tell you?",
+        "options": [
+            {"text": "The second walker was 20 m behind the first",
+             "correct": False,
+             "why": "20 is read off the time axis, so it is a time in "
+                    "seconds, not a distance."},
+            {"text": "The second walker was travelling more slowly",
+             "correct": False,
+             "why": "Speed is in the steepness of a line, and neither line's "
+                    "steepness has been given."},
+            {"text": "The second walker's clock was running slowly",
+             "correct": False,
+             "why": "Both lines share one time axis, so both walkers are "
+                    "timed by the same clock."},
+            {"text": "The second walker set off 20 seconds later",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e20",
+        "band": "easier",
+        "text": "Seven readings have been plotted on a distance–time grid. "
+                "What is done next to show the whole journey?",
+        "options": [
+            {"text": "They are joined up in order, from the first reading to "
+                     "the last",
+             "correct": True},
+            {"text": "They are joined by one straight line from the first "
+                     "point to the last",
+             "correct": False,
+             "why": "That hides everything that happened in between, "
+                    "including any stop."},
+            {"text": "The highest point is circled and the rest left alone",
+             "correct": False,
+             "why": "The highest point is only the furthest from the start. "
+                    "The journey is all seven."},
+            {"text": "They are plotted again with the two axes swapped over",
+             "correct": False,
+             "why": "Time belongs along the bottom, and swapping the axes "
+                    "plots something else entirely."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e21",
+        "band": "easier",
+        "text": "What is the name for the steepness of a line on a graph?",
+        "options": [
+            {"text": "The origin", "correct": False,
+             "why": "The origin is the corner where both axes read zero."},
+            {"text": "The interval", "correct": False,
+             "why": "An interval is a gap between two readings, not a measure "
+                    "of steepness."},
+            {"text": "The gradient", "correct": True},
+            {"text": "The axis", "correct": False,
+             "why": "An axis is one of the two lines the graph is drawn "
+                    "against."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e22",
+        "band": "easier",
+        "text": "A journey's line is shallow for the first part and steep for "
+                "the second. Which part was faster?",
+        "options": [
+            {"text": "The first part", "correct": False,
+             "why": "A shallow line covers less distance in each second, so "
+                    "it is the slower part."},
+            {"text": "Both parts were the same speed", "correct": False,
+             "why": "Two sections drawn with different steepness were "
+                    "travelled at different speeds."},
+            {"text": "The first part, because it lasted longer",
+             "correct": False,
+             "why": "How long a part lasts is read along the bottom. Speed is "
+                    "read from the steepness."},
+            {"text": "The second part", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e23",
+        "band": "easier",
+        "text": "A reading of 12 m at 4 s has to be plotted on a "
+                "distance–time grid. Where does the point go?",
+        "options": [
+            {"text": "4 along the time axis and 12 up the distance axis",
+             "correct": True},
+            {"text": "12 along the time axis and 4 up the distance axis",
+             "correct": False,
+             "why": "That swaps the two readings over and plots a journey "
+                    "that never happened."},
+            {"text": "12 along the time axis and 12 up the distance axis",
+             "correct": False,
+             "why": "The time reading is 4 s, and it is the time that goes "
+                    "along the bottom."},
+            {"text": "4 along the time axis and 4 up the distance axis",
+             "correct": False,
+             "why": "The distance reading is 12 m, and it is the distance "
+                    "that goes up the side."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e24",
+        "band": "easier",
+        "text": "A straight section climbs from 0 m to 20 m between 0 s and "
+                "5 s. What is its gradient?",
+        "options": [
+            {"text": "0.25 m/s", "correct": False,
+             "why": "That is 5 ÷ 20, the time divided by the distance."},
+            {"text": "4 m/s", "correct": True},
+            {"text": "100 m/s", "correct": False,
+             "why": "That multiplies 20 by 5. A gradient comes from a "
+                    "division."},
+            {"text": "15 m/s", "correct": False,
+             "why": "That is 20 − 5. A distance and a time cannot be "
+                    "subtracted from one another."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e25",
+        "band": "easier",
+        "text": "A journey's line rises to its highest point at 40 s and then "
+                "falls. What was happening at 40 s?",
+        "options": [
+            {"text": "The object was travelling at its fastest",
+             "correct": False,
+             "why": "Speed is read from the steepness, and the height of a "
+                    "point says nothing about it."},
+            {"text": "The object had got back to the start", "correct": False,
+             "why": "Back at the start is where the line reaches zero, at the "
+                    "bottom of the graph."},
+            {"text": "The object was at its furthest from the start and "
+                     "turned back",
+             "correct": True},
+            {"text": "The object was stopped for the whole journey",
+             "correct": False,
+             "why": "A stopped object draws a flat line all the way, and this "
+                    "one rises and then falls."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e26",
+        "band": "easier",
+        "text": "Why can the line on a distance-from-the-start graph never go "
+                "below the time axis?",
+        "options": [
+            {"text": "Because the graph would then show a negative time",
+             "correct": False,
+             "why": "Below the time axis is a negative distance, not a "
+                    "negative time."},
+            {"text": "Because the object would then have to travel backwards "
+                     "in time",
+             "correct": False,
+             "why": "Travelling back towards the start brings the line down "
+                    "to zero, and no further."},
+            {"text": "Because a graph has no room drawn in below the axis",
+             "correct": False,
+             "why": "Room could always be drawn. The reason is that the "
+                    "quantity itself cannot go there."},
+            {"text": "Because you cannot be less than no distance from the "
+                     "start",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e27",
+        "band": "easier",
+        "text": "A line is flat for 10 s and then begins to rise. What "
+                "happened?",
+        "options": [
+            {"text": "The object was moving slowly and then sped up",
+             "correct": False,
+             "why": "A flat line is stopped, not slow: the distance from the "
+                    "start was not changing."},
+            {"text": "The object was stopped and then set off again",
+             "correct": True},
+            {"text": "The object came back to the start and then set off",
+             "correct": False,
+             "why": "Coming back makes the line fall. A flat line stays at "
+                    "the same distance."},
+            {"text": "The object went round a bend and then straightened up",
+             "correct": False,
+             "why": "A distance–time graph holds no directions in space, so "
+                    "no bend can appear on it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e28",
+        "band": "easier",
+        "text": "A walk at 1 m/s and a run at 4 m/s are drawn on the same "
+                "axes. Which line is shallower?",
+        "options": [
+            {"text": "The walk", "correct": True},
+            {"text": "The run", "correct": False,
+             "why": "The run covers four metres in each second, so its line "
+                    "climbs four times as steeply."},
+            {"text": "Both have the same steepness", "correct": False,
+             "why": "Two different speeds give two different steepnesses on "
+                    "the same axes."},
+            {"text": "Whichever of the two lasted longer", "correct": False,
+             "why": "How long a journey lasts is read along the bottom and "
+                    "does not change the steepness."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e29",
+        "band": "easier",
+        "text": "A distance–time graph carries two quantities and no others. "
+                "Which two?",
+        "options": [
+            {"text": "Time, and the speed of the object", "correct": False,
+             "why": "Speed is not plotted. It is hidden in the steepness and "
+                    "has to be worked out."},
+            {"text": "Distance from the start, and speed", "correct": False,
+             "why": "Speed is not an axis on this graph. Both axes can be "
+                    "read straight off."},
+            {"text": "Time, and distance from the start", "correct": True},
+            {"text": "Time, and the direction the object travelled",
+             "correct": False,
+             "why": "No direction in space appears anywhere on a "
+                    "distance–time graph."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-e30",
+        "band": "easier",
+        "text": "Which of these journeys draws a horizontal line on a "
+                "distance–time graph?",
+        "options": [
+            {"text": "A car travelling at a steady 30 m/s", "correct": False,
+             "why": "A steady speed draws a straight line that climbs, not a "
+                    "flat one."},
+            {"text": "A car slowing down gently to a stop", "correct": False,
+             "why": "Slowing down makes the line get gradually less steep, "
+                    "and only flat once it has stopped."},
+            {"text": "A car driving back towards where it started",
+             "correct": False,
+             "why": "Coming back brings the line down towards zero rather "
+                    "than holding it level."},
+            {"text": "A car waiting at a red light", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 top-up · standard ────────────────────────────────
+    {
+        "id": "p3-02-s18",
+        "band": "standard",
+        "text": "Between 10 s and 25 s a journey's line climbs steadily from "
+                "20 m to 80 m. How fast was the object going?",
+        "options": [
+            {"text": "4 m/s", "correct": True},
+            {"text": "3.2 m/s", "correct": False,
+             "why": "That is 80 ÷ 25, using the two end readings instead of "
+                    "the change in each."},
+            {"text": "6 m/s", "correct": False,
+             "why": "That uses 10 s, the starting time, rather than the 15 s "
+                    "the climb took."},
+            {"text": "2 m/s", "correct": False,
+             "why": "The line climbed 60 m, not 30 m: take 20 from 80."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s19",
+        "band": "standard",
+        "text": "A journey's line climbs to 50 m by 10 s, and then climbs to "
+                "80 m by 30 s. Which section was faster, and by how much?",
+        "options": [
+            {"text": "The second, at 2.7 m/s against 5 m/s", "correct": False,
+             "why": "2.7 m/s is 80 ÷ 30, and it is smaller than the first "
+                    "section's speed in any case."},
+            {"text": "The first, at 5 m/s against 1.5 m/s", "correct": True},
+            {"text": "The second, at 1.5 m/s against 5 m/s", "correct": False,
+             "why": "1.5 m/s is the second section's speed, and it is the "
+                    "smaller of the two."},
+            {"text": "Neither: both sections climb, so both are the same "
+                     "speed",
+             "correct": False,
+             "why": "Climbing is not the test. How steeply the line climbs "
+                    "is."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s20",
+        "band": "standard",
+        "text": "Six readings from a motion sensor lie close to a straight "
+                "line, but one sits well above it. What is the most likely "
+                "explanation?",
+        "options": [
+            {"text": "The object sped up for a moment, so the line should "
+                     "bend up to it",
+             "correct": False,
+             "why": "One point out of line is a reading to check, not a "
+                    "change of speed the other five missed."},
+            {"text": "The line should be drawn through every point, however "
+                     "it looks",
+             "correct": False,
+             "why": "One line through all the readings is what evens the "
+                    "small errors out."},
+            {"text": "The time axis needs rescaling so that the point fits "
+                     "the line",
+             "correct": False,
+             "why": "Changing a scale moves every point, not one, and it "
+                    "cannot mend a bad reading."},
+            {"text": "That one reading is a mistake, so it is left out of the "
+                     "line",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s21",
+        "band": "standard",
+        "text": "A straight line runs from the origin to 60 m at 30 s. How "
+                "far from the start was the object at 20 s?",
+        "options": [
+            {"text": "30 m", "correct": False,
+             "why": "That is half the distance, but 20 s is two thirds of the "
+                    "way through rather than half."},
+            {"text": "45 m", "correct": False,
+             "why": "45 m is reached at 22.5 s on this line, not at 20 s."},
+            {"text": "40 m", "correct": True},
+            {"text": "20 m", "correct": False,
+             "why": "That reads the time off the distance axis; here 20 is a "
+                    "number of seconds."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s22",
+        "band": "standard",
+        "text": "On a graph the time axis is marked every 5 s, and the line "
+                "reaches 45 m at the fourth mark. What is the average speed "
+                "up to that point?",
+        "options": [
+            {"text": "2.25 m/s", "correct": True},
+            {"text": "11.25 m/s", "correct": False,
+             "why": "That divides by 4, the number of marks, instead of by "
+                    "the 20 s they stand for."},
+            {"text": "9 m/s", "correct": False,
+             "why": "That divides by 5 s, the size of one mark, rather than "
+                    "by the whole 20 s."},
+            {"text": "0.44 m/s", "correct": False,
+             "why": "That divides the time by the distance, the wrong way "
+                    "round."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s23",
+        "band": "standard",
+        "text": "A line curves so that it gets less and less steep, and then "
+                "becomes flat. Describe the motion.",
+        "options": [
+            {"text": "It sped up, then held a steady speed", "correct": False,
+             "why": "Speeding up makes a line get steeper, and a flat line is "
+                    "not a steady speed."},
+            {"text": "It slowed down and then stopped", "correct": True},
+            {"text": "It went round a bend and then straightened out",
+             "correct": False,
+             "why": "No bend in space can appear on a distance–time graph, "
+                    "because the axes carry no directions."},
+            {"text": "It came back towards the start and then stopped",
+             "correct": False,
+             "why": "Coming back brings the line down, and this line never "
+                    "falls."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s24",
+        "band": "standard",
+        "text": "A van's line has three flat sections of 60 s each within a "
+                "journey lasting 600 s. For how long was the van moving?",
+        "options": [
+            {"text": "180 s", "correct": False,
+             "why": "That is the time the van spent stopped, not the time it "
+                    "spent moving."},
+            {"text": "420 s", "correct": True},
+            {"text": "540 s", "correct": False,
+             "why": "That takes off one flat section instead of all three."},
+            {"text": "600 s", "correct": False,
+             "why": "That is the whole journey, including the three stops."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s25",
+        "band": "standard",
+        "text": "A line climbs to 40 m in 10 s and is then flat until 40 s. A "
+                "student says the object travelled at 4 m/s for the whole "
+                "40 s. Correct them.",
+        "options": [
+            {"text": "4 m/s was the speed for the whole journey, and 1 m/s "
+                     "for the climb",
+             "correct": False,
+             "why": "That swaps the two round: 4 m/s is the climb and 1 m/s "
+                    "the whole journey."},
+            {"text": "The object travelled at 4 m/s throughout, but only for "
+                     "the first 10 s",
+             "correct": False,
+             "why": "The second half of that sentence contradicts the first, "
+                    "and the claim was about all 40 s."},
+            {"text": "4 m/s was only the first 10 s; over all 40 s the "
+                     "average was 1 m/s",
+             "correct": True},
+            {"text": "The speed cannot be found, because the line stops "
+                     "climbing",
+             "correct": False,
+             "why": "A flat section is a speed of 0 m/s, which is exactly "
+                    "what makes the average smaller."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s26",
+        "band": "standard",
+        "text": "A motion sensor at the start records a walker going out and "
+                "coming back. The line falls from 24 m to 0 m over 8 s. How "
+                "fast was the walk back?",
+        "options": [
+            {"text": "24 m/s", "correct": False,
+             "why": "That is the distance alone. A speed needs it divided by "
+                    "the 8 s taken."},
+            {"text": "0.33 m/s", "correct": False,
+             "why": "That divides the time by the distance, the wrong way "
+                    "round."},
+            {"text": "192 m/s", "correct": False,
+             "why": "That multiplies the two readings instead of dividing "
+                    "them."},
+            {"text": "3 m/s", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s27",
+        "band": "standard",
+        "text": "Why can a distance–time graph never have a vertical section?",
+        "options": [
+            {"text": "It would mean the object had stopped moving",
+             "correct": False,
+             "why": "A stopped object draws a horizontal line, along which "
+                    "time passes and distance does not."},
+            {"text": "It would mean covering a distance in no time at all",
+             "correct": True},
+            {"text": "It would mean the object had gone backwards",
+             "correct": False,
+             "why": "Going back towards the start draws a line that falls, "
+                    "not one that stands upright."},
+            {"text": "It would mean the time axis had the wrong scale",
+             "correct": False,
+             "why": "Any scale still runs left to right, so a vertical line "
+                    "would still need zero time."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s28",
+        "band": "standard",
+        "text": "Two lines on the same axes are parallel, but one stays 20 m "
+                "above the other throughout. What does that tell you?",
+        "options": [
+            {"text": "One object was travelling 20 m/s faster than the other",
+             "correct": False,
+             "why": "A difference in speed would make the two lines spread "
+                    "apart rather than stay parallel."},
+            {"text": "One object set off 20 seconds before the other",
+             "correct": False,
+             "why": "20 is read off the distance axis, so it is a gap in "
+                    "metres and not in seconds."},
+            {"text": "One object travelled for 20 seconds longer than the "
+                     "other",
+             "correct": False,
+             "why": "How long each lasted is read along the bottom, and "
+                    "parallel lines say nothing about it."},
+            {"text": "Both held the same speed, one 20 m further from the "
+                     "start",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s29",
+        "band": "standard",
+        "text": "A dog runs 30 m away from its owner and 30 m back in 20 s "
+                "altogether. What is its average speed, and where does its "
+                "line finish?",
+        "options": [
+            {"text": "1.5 m/s, and the line finishes at 60 m", "correct": False,
+             "why": "1.5 m/s uses one leg only, and a distance-from-the-start "
+                    "line cannot finish at 60 m here."},
+            {"text": "3 m/s, and the line finishes at 60 m", "correct": False,
+             "why": "The speed is right, but the dog ends up beside its "
+                    "owner, at 0 m from the start."},
+            {"text": "3 m/s, and the line finishes at 0 m", "correct": True},
+            {"text": "0 m/s, because it ended where it began", "correct": False,
+             "why": "Ending where it began makes the distance from the start "
+                    "zero, not the speed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-s30",
+        "band": "standard",
+        "text": "Line A is steeper than line B, but B's line ends higher up "
+                "the distance axis. Which object finished further from the "
+                "start?",
+        "options": [
+            {"text": "B's, because its line ends higher up", "correct": True},
+            {"text": "A's, because its line is steeper", "correct": False,
+             "why": "Steepness is speed. How far from the start is read as a "
+                    "height, not as a slope."},
+            {"text": "A's, because it was travelling faster", "correct": False,
+             "why": "A fast object travelling for a short time can finish "
+                    "closer than a slow one that keeps going."},
+            {"text": "Neither: the two travelled the same distance",
+             "correct": False,
+             "why": "The two lines end at different heights, so the two "
+                    "distances are different."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 top-up · harder ──────────────────────────────────
+    {
+        "id": "p3-02-h18",
+        "band": "harder",
+        "text": "A line curves upwards. A student lays a ruler so that it "
+                "just touches the curve at 20 s and works out the ruler's "
+                "steepness. What have they found?",
+        "options": [
+            {"text": "The speed at that one moment", "correct": True},
+            {"text": "The average speed for the whole journey",
+             "correct": False,
+             "why": "An average over the whole journey comes from joining the "
+                    "two end points, not from touching one."},
+            {"text": "The total distance travelled by 20 s", "correct": False,
+             "why": "A distance is read off the upright axis as a height. "
+                    "Steepness gives a speed."},
+            {"text": "The time taken to reach 20 m", "correct": False,
+             "why": "A time is read along the bottom axis, and a steepness is "
+                    "not read off either axis alone."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h19",
+        "band": "harder",
+        "text": "The same journey is drawn twice, once with the distance axis "
+                "running to 100 m and once to 1000 m. Why does the line look "
+                "far steeper on the first?",
+        "options": [
+            {"text": "The object really was travelling faster on that graph",
+             "correct": False,
+             "why": "One journey cannot have two speeds. Only the drawing has "
+                    "changed."},
+            {"text": "The time axis must have been shortened as well",
+             "correct": False,
+             "why": "Nothing has been said about the time axis, and "
+                    "stretching the distance axis is enough on its own."},
+            {"text": "The distance axis is stretched, so the same climb looks "
+                     "bigger",
+             "correct": True},
+            {"text": "The first graph shows a different, faster part of the "
+                     "journey",
+             "correct": False,
+             "why": "Both graphs show the same journey from beginning to "
+                    "end."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h20",
+        "band": "harder",
+        "text": "A runner goes 200 m out in 50 s and 200 m back in 50 s. On a "
+                "graph of TOTAL DISTANCE TRAVELLED, what value does the line "
+                "reach at 100 s, and what does the second section do?",
+        "options": [
+            {"text": "0 m, because the runner came back to where she started",
+             "correct": False,
+             "why": "That is what the distance-from-the-start graph does. A "
+                    "total distance cannot fall."},
+            {"text": "400 m, with the second section still climbing at 4 m/s",
+             "correct": True},
+            {"text": "400 m, with the second section falling at 4 m/s",
+             "correct": False,
+             "why": "A distance already travelled cannot be un-travelled, so "
+                    "this line cannot fall."},
+            {"text": "200 m, because she got no further than 200 m away",
+             "correct": False,
+             "why": "How far away she got is the other graph's question. This "
+                    "one adds the two legs together."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h21",
+        "band": "harder",
+        "text": "A train's graph has time in minutes along the bottom and "
+                "distance in kilometres up the side. One section climbs 6 km "
+                "in 4 minutes. What is that speed in metres per second?",
+        "options": [
+            {"text": "1.5 m/s", "correct": False,
+             "why": "That is 6 ÷ 4 with neither unit changed, so it is "
+                    "kilometres per minute."},
+            {"text": "1500 m/s", "correct": False,
+             "why": "The kilometres were changed to metres but the minutes "
+                    "were left as minutes."},
+            {"text": "0.025 m/s", "correct": False,
+             "why": "The minutes were changed to seconds but the distance was "
+                    "left in kilometres."},
+            {"text": "25 m/s", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h22",
+        "band": "harder",
+        "text": "A journey's steepest section works out at 8 m/s, yet the "
+                "average speed for the whole trip is 3 m/s. How can both be "
+                "true?",
+        "options": [
+            {"text": "The steepest section must have been measured wrongly",
+             "correct": False,
+             "why": "Nothing is wrong: a fast section can sit inside a slow "
+                    "journey."},
+            {"text": "The average is found by halving the fastest section's "
+                     "speed",
+             "correct": False,
+             "why": "An average comes from the total distance and the total "
+                    "time, not from the fastest part."},
+            {"text": "The rest of the journey was slower or stopped, and "
+                     "lasted longer",
+             "correct": True},
+            {"text": "An average speed is the middle of all the sections' "
+                     "speeds",
+             "correct": False,
+             "why": "The sections are not all the same length, so their "
+                    "speeds cannot simply be averaged."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h23",
+        "band": "harder",
+        "text": "Two students each work out the gradient of the same straight "
+                "section and get 2.4 m/s and 2.6 m/s. The arithmetic is right "
+                "in both. Why do they differ?",
+        "options": [
+            {"text": "They read the points off the axes slightly differently",
+             "correct": True},
+            {"text": "One of them used the total-distance axis instead",
+             "correct": False,
+             "why": "Only one graph has been drawn, and both were reading the "
+                    "same line on it."},
+            {"text": "The steepness changes along the section that they "
+                     "measured",
+             "correct": False,
+             "why": "The section is straight, so its steepness is the same "
+                    "all the way along it."},
+            {"text": "One of them swapped the two axes over before reading",
+             "correct": False,
+             "why": "Swapping the axes would give a reading in seconds for "
+                    "each metre, not 2.6 m/s."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h24",
+        "band": "harder",
+        "text": "A 3000 m journey averages 5 m/s overall, and its line is "
+                "flat for a third of the total time. How fast was the object "
+                "moving while it was moving?",
+        "options": [
+            {"text": "5 m/s", "correct": False,
+             "why": "That is the average including the stop, and the moving "
+                    "speed has to be bigger than it."},
+            {"text": "15 m/s", "correct": False,
+             "why": "That divides 3000 m by 200 s, which is the third of the "
+                    "time spent STOPPED."},
+            {"text": "10 m/s", "correct": False,
+             "why": "That divides 3000 m by 300 s, which is half the total "
+                    "time rather than two thirds."},
+            {"text": "7.5 m/s", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h25",
+        "band": "harder",
+        "text": "A falling section of a line drops from 48 m to 0 m over "
+                "12 s. How fast was the object moving, and which way?",
+        "options": [
+            {"text": "4 m/s, away from the start", "correct": False,
+             "why": "A falling line means the distance from the start is "
+                    "getting smaller, so it is heading back."},
+            {"text": "48 m/s, back towards the start", "correct": False,
+             "why": "48 is the distance covered. The speed comes from "
+                    "dividing it by the 12 s taken."},
+            {"text": "4 m/s, back towards the start", "correct": True},
+            {"text": "0.25 m/s, back towards the start", "correct": False,
+             "why": "That divides the time by the distance, the wrong way "
+                    "round."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h26",
+        "band": "harder",
+        "text": "A walker sets off from a sensor and holds one steady speed. "
+                "The sensor begins recording 5 s late, and its first reading "
+                "is 8 m at 5 s. What was the walking speed?",
+        "options": [
+            {"text": "1.6 m/s", "correct": True},
+            {"text": "8 m/s", "correct": False,
+             "why": "That treats the first reading as a speed, and it is a "
+                    "distance in metres."},
+            {"text": "0.625 m/s", "correct": False,
+             "why": "That divides 5 s by 8 m, the wrong way round."},
+            {"text": "3.2 m/s", "correct": False,
+             "why": "That divides 8 m by 2.5 s, halving the time for no "
+                    "reason."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h27",
+        "band": "harder",
+        "text": "Readings taken every 2 s give distances of 0 m, 2 m, 8 m, "
+                "18 m and 32 m. What is happening, and what would the next "
+                "reading be if the pattern holds?",
+        "options": [
+            {"text": "Slowing down, and the next reading would be 40 m",
+             "correct": False,
+             "why": "Each 2 s covers more ground than the one before, so it "
+                    "is speeding up rather than slowing."},
+            {"text": "Speeding up, and the next reading would be 50 m",
+             "correct": True},
+            {"text": "A steady speed, and the next reading would be 46 m",
+             "correct": False,
+             "why": "A steady speed adds the same distance each time, and "
+                    "these gaps grow."},
+            {"text": "Speeding up, and the next reading would be 64 m",
+             "correct": False,
+             "why": "64 doubles 32. The gaps grow by 4 m each time, so the "
+                    "next gap is 18 m."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h28",
+        "band": "harder",
+        "text": "Seven readings from a motion sensor lie almost on a straight "
+                "line. Why is one straight line drawn through them better "
+                "than joining each point to the next?",
+        "options": [
+            {"text": "Joining the points makes the line too steep to read",
+             "correct": False,
+             "why": "Joining points changes the shape in both directions, and "
+                    "steepness is not the issue."},
+            {"text": "One straight line is quicker to draw than seven joins",
+             "correct": False,
+             "why": "How quick it is to draw is not a reason. What the line "
+                    "is for is the reason."},
+            {"text": "Joining the points would show speed changes, which "
+                     "cannot happen",
+             "correct": False,
+             "why": "An object can change speed. Here the wobbles come from "
+                    "small errors in the readings."},
+            {"text": "Each reading carries a small error, and one line evens "
+                     "them out",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h29",
+        "band": "harder",
+        "text": "Two cars cover the same 900 m in the same 60 s. One line is "
+                "straight and the other has a flat section in the middle. "
+                "What is the same and what is different?",
+        "options": [
+            {"text": "Both travelled at 15 m/s the whole way along",
+             "correct": False,
+             "why": "The second car stopped for part of it, so it cannot have "
+                    "held one speed."},
+            {"text": "The second car's average is lower, because it stopped",
+             "correct": False,
+             "why": "Same distance and same time give the same average. Only "
+                    "the moving speed differs."},
+            {"text": "The average is 15 m/s for both, but the second went "
+                     "faster when moving",
+             "correct": True},
+            {"text": "The second car travelled further, because its line is "
+                     "longer",
+             "correct": False,
+             "why": "Both lines end at 900 m, so both cars covered the same "
+                    "ground."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-02-h30",
+        "band": "harder",
+        "text": "A car's line climbs at 20 m/s for 50 s and then goes flat. "
+                "How long must the flat section last for the average speed "
+                "over the whole journey to fall to 8 m/s?",
+        "options": [
+            {"text": "75 s", "correct": True},
+            {"text": "50 s", "correct": False,
+             "why": "Making the two parts equal gives 1000 m in 100 s, which "
+                    "is 10 m/s."},
+            {"text": "125 s", "correct": False,
+             "why": "125 s is the total time needed, and 50 s of it has "
+                    "already gone."},
+            {"text": "25 s", "correct": False,
+             "why": "That would give 1000 m in 75 s, which is 13.3 m/s."},
+        ],
+        "figure": None,
+    },
 ]
+

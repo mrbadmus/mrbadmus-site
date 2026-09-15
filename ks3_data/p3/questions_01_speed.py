@@ -1127,4 +1127,845 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-338 night 3 top-up · easier ──────────────────────────────────
+    {
+        "id": "p3-01-e18",
+        "band": "easier",
+        "text": "To change a distance measured in kilometres into metres, "
+                "what must you do to the number?",
+        "options": [
+            {"text": "Multiply it by 1000", "correct": True},
+            {"text": "Divide it by 1000", "correct": False,
+             "why": "That turns metres into kilometres, which is the other "
+                    "way round."},
+            {"text": "Multiply it by 100", "correct": False,
+             "why": "100 is the number of centimetres in a metre, not the "
+                    "number of metres in a kilometre."},
+            {"text": "Divide it by 3600", "correct": False,
+             "why": "3600 is the number of seconds in an hour, and this is a "
+                    "distance rather than a time."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e19",
+        "band": "easier",
+        "text": "A swimmer covers 90 m at a steady 5 m/s. How long does the "
+                "swim take?",
+        "options": [
+            {"text": "450 s", "correct": False,
+             "why": "That is 90 × 5. Multiplying a distance by a speed does "
+                    "not give a time."},
+            {"text": "0.06 s", "correct": False,
+             "why": "That is 5 ÷ 90 — the speed divided by the distance, the "
+                    "wrong way round."},
+            {"text": "18 s", "correct": True},
+            {"text": "85 s", "correct": False,
+             "why": "That is 90 − 5. A speed cannot be subtracted from a "
+                    "distance."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e20",
+        "band": "easier",
+        "text": "Four cars each cover the same 300 m of test track. Which car "
+                "is the fastest?",
+        "options": [
+            {"text": "The one that takes 20 s", "correct": False,
+             "why": "It beats two of the others, but one car covers the same "
+                    "300 m in less time still."},
+            {"text": "The one that takes 12 s", "correct": True},
+            {"text": "The one that takes 25 s", "correct": False,
+             "why": "Over a fixed distance a longer time means a slower car, "
+                    "not a faster one."},
+            {"text": "The one that takes 40 s", "correct": False,
+             "why": "That is the slowest of the four: the same 300 m took it "
+                    "longest."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e21",
+        "band": "easier",
+        "text": "The timer on a light-gate bench reads 0.40 s for a gap set "
+                "at 1.00 m. What speed does that give?",
+        "options": [
+            {"text": "0.4 m/s", "correct": False,
+             "why": "That is the time divided by the distance. Distance goes "
+                    "on top."},
+            {"text": "25 m/s", "correct": False,
+             "why": "The decimal point has slipped: 1.00 ÷ 0.40 is 2.5, not "
+                    "25."},
+            {"text": "0.6 m/s", "correct": False,
+             "why": "That is 1.00 − 0.40. A speed comes from a division, not "
+                    "a subtraction."},
+            {"text": "2.5 m/s", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e22",
+        "band": "easier",
+        "text": "A stopwatch measures one of the two quantities in "
+                "speed = distance ÷ time. Which one?",
+        "options": [
+            {"text": "The time", "correct": True},
+            {"text": "The distance", "correct": False,
+             "why": "A distance is measured with a tape or a rule, not with a "
+                    "stopwatch."},
+            {"text": "The speed", "correct": False,
+             "why": "A speed is worked out from two measurements; no single "
+                    "instrument reads it off."},
+            {"text": "Both the distance and the time", "correct": False,
+             "why": "A stopwatch cannot measure how far anything has "
+                    "travelled."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e23",
+        "band": "easier",
+        "text": "A runner's time for a race is given as 4 minutes. How many "
+                "seconds is that?",
+        "options": [
+            {"text": "400 s", "correct": False,
+             "why": "That multiplies by 100. There are 60 seconds in a "
+                    "minute, not 100."},
+            {"text": "4 s", "correct": False,
+             "why": "That leaves the number alone. A minute is 60 seconds, so "
+                    "the number has to grow."},
+            {"text": "240 s", "correct": True},
+            {"text": "64 s", "correct": False,
+             "why": "That adds 60 rather than multiplying by it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e24",
+        "band": "easier",
+        "text": "In the formula triangle for speed, which letter sits on its "
+                "own above the dividing line?",
+        "options": [
+            {"text": "s, for speed", "correct": False,
+             "why": "Speed sits underneath, beside time. Covering it leaves a "
+                    "division."},
+            {"text": "d, for distance", "correct": True},
+            {"text": "t, for time", "correct": False,
+             "why": "Time sits underneath, beside speed. Covering it leaves a "
+                    "division."},
+            {"text": "Both s and t, side by side", "correct": False,
+             "why": "Those two are the pair underneath the line, not the one "
+                    "above it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e25",
+        "band": "easier",
+        "text": "A lorry keeps the same steady speed but drives for twice as "
+                "long. What happens to the distance it covers?",
+        "options": [
+            {"text": "It doubles", "correct": True},
+            {"text": "It halves", "correct": False,
+             "why": "Twice the time at the same speed means more ground "
+                    "covered, not less."},
+            {"text": "It stays the same", "correct": False,
+             "why": "Distance is speed multiplied by time, so a longer time "
+                    "gives a longer distance."},
+            {"text": "It becomes four times bigger", "correct": False,
+             "why": "The time has doubled and the speed has not, so the "
+                    "distance doubles once."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e26",
+        "band": "easier",
+        "text": "A bird flies 120 m in 8 s. What is its speed?",
+        "options": [
+            {"text": "0.07 m/s", "correct": False,
+             "why": "That is 8 ÷ 120 — the time divided by the distance."},
+            {"text": "960 m/s", "correct": False,
+             "why": "That is 120 × 8. Multiplying gives a distance, not a "
+                    "speed."},
+            {"text": "112 m/s", "correct": False,
+             "why": "That is 120 − 8. A speed comes from dividing, not "
+                    "subtracting."},
+            {"text": "15 m/s", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e27",
+        "band": "easier",
+        "text": "Two measurements of a journey are written down: 400 m and "
+                "50 s. Which calculation gives the speed?",
+        "options": [
+            {"text": "400 ÷ 50", "correct": True},
+            {"text": "50 ÷ 400", "correct": False,
+             "why": "That divides the time by the distance and gives seconds "
+                    "for each metre."},
+            {"text": "400 × 50", "correct": False,
+             "why": "Multiplying a distance by a time does not give a "
+                    "speed."},
+            {"text": "400 − 50", "correct": False,
+             "why": "Metres and seconds are different quantities and cannot "
+                    "be subtracted."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e28",
+        "band": "easier",
+        "text": "Why can a distance in kilometres not simply be divided by a "
+                "time in seconds to give a speed in m/s?",
+        "options": [
+            {"text": "Because the time has to be changed into hours first",
+             "correct": False,
+             "why": "Hours belong to km/h. For m/s the time is already in the "
+                    "unit it needs."},
+            {"text": "Because dividing needs the bigger number on top",
+             "correct": False,
+             "why": "Division does not care which number is bigger; it cares "
+                    "which quantity is which."},
+            {"text": "Because the distance has to be changed into metres "
+                     "first",
+             "correct": True},
+            {"text": "Because a speed in m/s is worked out from two whole "
+                     "numbers",
+             "correct": False,
+             "why": "Decimals are fine in a speed calculation; it is the unit "
+                    "of the distance that is wrong."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e29",
+        "band": "easier",
+        "text": "A student writes down speed = time ÷ distance. What is wrong "
+                "with it?",
+        "options": [
+            {"text": "The two measurements should be added", "correct": False,
+             "why": "Adding metres to seconds is not possible, and it would "
+                    "not give a speed."},
+            {"text": "Distance and time are the wrong way round",
+             "correct": True},
+            {"text": "Nothing is wrong: division works either way",
+             "correct": False,
+             "why": "It does not. Dividing the other way round gives a "
+                    "completely different quantity."},
+            {"text": "The time should be in minutes, not seconds",
+             "correct": False,
+             "why": "Minutes would change the unit of the answer, but the two "
+                    "quantities would still be swapped."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-e30",
+        "band": "easier",
+        "text": "Two cyclists set off together and arrive together, but one "
+                "took a 2 km route and the other a 3 km route. Which is true?",
+        "options": [
+            {"text": "The one on the 3 km route was travelling faster",
+             "correct": True},
+            {"text": "They travelled at the same speed, because the times "
+                     "were equal",
+             "correct": False,
+             "why": "Equal times settle the times only. The two distances "
+                    "were different, so the speeds were too."},
+            {"text": "The one on the 2 km route was travelling faster",
+             "correct": False,
+             "why": "That cyclist covered less ground in the same time, so "
+                    "was the slower of the two."},
+            {"text": "Their speeds cannot be compared when the routes are "
+                     "different lengths",
+             "correct": False,
+             "why": "Comparing journeys of different lengths is exactly what "
+                    "a speed is for."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 top-up · standard ────────────────────────────────
+    {
+        "id": "p3-01-s18",
+        "band": "standard",
+        "text": "A tram travels 5.4 km along the line and the journey lasts "
+                "3 minutes. What is its average speed in metres per second?",
+        "options": [
+            {"text": "1.8 m/s", "correct": False,
+             "why": "That is 5.4 ÷ 3, using kilometres and minutes as they "
+                    "stand."},
+            {"text": "30 m/s", "correct": True},
+            {"text": "0.03 m/s", "correct": False,
+             "why": "The minutes were changed to seconds but the distance was "
+                    "left in kilometres."},
+            {"text": "1800 m/s", "correct": False,
+             "why": "The distance was changed to metres but the time was left "
+                    "in minutes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s19",
+        "band": "standard",
+        "text": "A delivery van covers 24 km in half an hour. What is its "
+                "average speed in km/h?",
+        "options": [
+            {"text": "12 km/h", "correct": False,
+             "why": "That halves the distance. Half an hour is less than an "
+                    "hour, so the speed is more than 24 km/h, not less."},
+            {"text": "0.5 km/h", "correct": False,
+             "why": "That is the time divided by the distance, which is not a "
+                    "speed at all."},
+            {"text": "48 km/h", "correct": True},
+            {"text": "24 km/h", "correct": False,
+             "why": "That is the distance, not the speed. A full hour would "
+                    "be needed to average 24 km/h."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s20",
+        "band": "standard",
+        "text": "A class records three light-gate runs but raises the ramp "
+                "between each one. Why can the mean of those three times not "
+                "be used?",
+        "options": [
+            {"text": "Because raising the ramp moves the gates further apart",
+             "correct": False,
+             "why": "Raising the ramp changes the speed, not the gap between "
+                    "the gates."},
+            {"text": "Because a mean can be taken only of readings that are "
+                     "identical to each other",
+             "correct": False,
+             "why": "A mean is taken precisely because readings differ; the "
+                    "problem here is that the setup changed."},
+            {"text": "Because the timer becomes less accurate at higher "
+                     "speeds",
+             "correct": False,
+             "why": "The timer is just as accurate; what changed is what the "
+                    "three runs are measuring."},
+            {"text": "Because the three runs are not repeats of one "
+                     "measurement",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s21",
+        "band": "standard",
+        "text": "A cyclist rides 600 m in 200 s and then waits 100 s at a "
+                "junction. What is her average speed over the whole 300 s?",
+        "options": [
+            {"text": "2 m/s", "correct": True},
+            {"text": "3 m/s", "correct": False,
+             "why": "That is her speed while she was riding. Waiting time "
+                    "counts in an average."},
+            {"text": "6 m/s", "correct": False,
+             "why": "That doubles her riding speed, and waiting cannot make "
+                    "an average go up."},
+            {"text": "1.5 m/s", "correct": False,
+             "why": "That divides by 400 s. The whole journey lasted 300 s."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s22",
+        "band": "standard",
+        "text": "The same trolley is hand-timed over 0.30 m and then over "
+                "1.50 m on the same runway. Which timing is less spoiled by "
+                "the moment it takes to press the stopwatch?",
+        "options": [
+            {"text": "The 0.30 m run, because it is over more quickly",
+             "correct": False,
+             "why": "A shorter run gives a shorter time, so the pressing "
+                    "error is a bigger share of it."},
+            {"text": "The 1.50 m run, because the timed interval is much "
+                     "longer",
+             "correct": True},
+            {"text": "Neither, because the pressing error is the same size "
+                     "and matters just as much either way",
+             "correct": False,
+             "why": "The error is the same size, which is exactly why it "
+                    "matters more to the shorter time."},
+            {"text": "The 0.30 m run, because there is less runway to go "
+                     "wrong",
+             "correct": False,
+             "why": "The length of runway is not the issue. The length of the "
+                    "timed interval is."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s23",
+        "band": "standard",
+        "text": "A jet cruises at 250 m/s. How far does it travel in "
+                "4 minutes, in kilometres?",
+        "options": [
+            {"text": "15 km", "correct": False,
+             "why": "That uses 60 s, a quarter of the time given."},
+            {"text": "60 km", "correct": True},
+            {"text": "6 km", "correct": False,
+             "why": "A power of ten has been lost in changing metres to "
+                    "kilometres."},
+            {"text": "1000 km", "correct": False,
+             "why": "That multiplies 250 by 4 as though a minute were a "
+                    "second."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s24",
+        "band": "standard",
+        "text": "Average-speed cameras sit 2400 m apart and the limit on that "
+                "stretch is 30 m/s. What is the shortest time a driver can "
+                "take between them without going over it?",
+        "options": [
+            {"text": "80 s, but a shorter time proves nothing about the "
+                     "average speed",
+             "correct": False,
+             "why": "Distance ÷ time over that stretch IS the average speed, "
+                    "so a shorter time means a bigger one."},
+            {"text": "2400 s, and a shorter time proves the driver averaged "
+                     "over 30 m/s",
+             "correct": False,
+             "why": "2400 is the distance in metres. The time comes from "
+                    "dividing it by 30 m/s."},
+            {"text": "80 s, and a shorter time proves the driver averaged "
+                     "over 30 m/s",
+             "correct": True},
+            {"text": "72 000 s, and a shorter time proves nothing about the "
+                     "average",
+             "correct": False,
+             "why": "That multiplies the distance by the speed. Dividing is "
+                    "what turns the two into a time."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s25",
+        "band": "standard",
+        "text": "A coach records 400 m in 64 s for a runner. What is the "
+                "runner's average speed, given to two decimal places?",
+        "options": [
+            {"text": "0.16 m/s", "correct": False,
+             "why": "That is 64 ÷ 400 — the time divided by the distance."},
+            {"text": "25 600 m/s", "correct": False,
+             "why": "That multiplies the distance by the time instead of "
+                    "dividing."},
+            {"text": "336 m/s", "correct": False,
+             "why": "That is 400 − 64. A speed comes from a division."},
+            {"text": "6.25 m/s", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s26",
+        "band": "standard",
+        "text": "Two students work out the speed of the same trolley on the "
+                "same run. One writes 1.4 m/s and the other writes 1.43 m/s. "
+                "Which statement is correct?",
+        "options": [
+            {"text": "The second student's trolley was travelling faster",
+             "correct": False,
+             "why": "It is one trolley on one run. Only the rounding "
+                    "differs."},
+            {"text": "Both have the same speed, written to different numbers "
+                     "of decimal places",
+             "correct": True},
+            {"text": "One of them divided the two measurements the wrong way "
+                     "round",
+             "correct": False,
+             "why": "Dividing the wrong way round would give about 0.7, "
+                    "nowhere near either answer."},
+            {"text": "They cannot both be right, because a measurement can "
+                     "only ever be written one way",
+             "correct": False,
+             "why": "A measurement has one value and several sensible ways of "
+                    "writing it down."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s27",
+        "band": "standard",
+        "text": "A road sign gives a speed limit of 90 km/h. What is that "
+                "limit in metres per second?",
+        "options": [
+            {"text": "324 m/s", "correct": False,
+             "why": "That multiplies by 3.6 instead of dividing by it."},
+            {"text": "1.5 m/s", "correct": False,
+             "why": "That divides by 60 once, turning kilometres per hour "
+                    "into kilometres per minute."},
+            {"text": "25 m/s", "correct": True},
+            {"text": "90 m/s", "correct": False,
+             "why": "That leaves the number alone, and km/h and m/s are "
+                    "different sizes of unit."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s28",
+        "band": "standard",
+        "text": "Light gates are set 1.20 m apart and a trolley crosses them "
+                "in 0.60 s. The gates are then moved to 0.60 m apart and the "
+                "trolley is released in exactly the same way. What time would "
+                "you expect?",
+        "options": [
+            {"text": "0.30 s", "correct": True},
+            {"text": "0.60 s", "correct": False,
+             "why": "The gap has halved, so the trolley spends less time "
+                    "between the gates."},
+            {"text": "1.20 s", "correct": False,
+             "why": "That doubles the time. Halving the gap makes the time "
+                    "smaller, not bigger."},
+            {"text": "0.15 s", "correct": False,
+             "why": "That quarters the time. The gap has been halved once, so "
+                    "the time halves once."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s29",
+        "band": "standard",
+        "text": "A pupil measures a 50 m corridor correctly but starts the "
+                "stopwatch a moment after the walker sets off. How does that "
+                "affect the speed they calculate?",
+        "options": [
+            {"text": "The time is too small, so the speed comes out too big",
+             "correct": True},
+            {"text": "The time is too big, so the speed comes out too small",
+             "correct": False,
+             "why": "Starting late makes the recorded time shorter than the "
+                    "real one, not longer."},
+            {"text": "The distance is too small, so the speed comes out too "
+                     "small as well",
+             "correct": False,
+             "why": "The corridor was measured correctly. It is the timing "
+                    "that went wrong."},
+            {"text": "It makes no difference, because the distance is "
+                     "unchanged",
+             "correct": False,
+             "why": "Speed is distance divided by time, so an error in the "
+                    "time changes the answer."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-s30",
+        "band": "standard",
+        "text": "A tortoise walks 9 m in 5 minutes. What is its speed in "
+                "metres per second?",
+        "options": [
+            {"text": "1.8 m/s", "correct": False,
+             "why": "That is 9 ÷ 5, using minutes as though they were "
+                    "seconds."},
+            {"text": "0.3 m/s", "correct": False,
+             "why": "That divides by 30 s rather than by the 300 s in five "
+                    "minutes."},
+            {"text": "45 m/s", "correct": False,
+             "why": "That multiplies instead of dividing, and no tortoise "
+                    "moves at 45 m/s."},
+            {"text": "0.03 m/s", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 top-up · harder ──────────────────────────────────
+    {
+        "id": "p3-01-h18",
+        "band": "harder",
+        "text": "A bus travels for 500 s at 12 m/s, waits 100 s at a stop, "
+                "then travels for 400 s at 20 m/s. What is its average speed "
+                "for the whole journey?",
+        "options": [
+            {"text": "16 m/s", "correct": False,
+             "why": "That is the average of 12 and 20, which ignores how long "
+                    "each speed was held for."},
+            {"text": "14 m/s", "correct": True},
+            {"text": "15.6 m/s", "correct": False,
+             "why": "That leaves the 100 s stop out of the total time, and a "
+                    "stop still counts in an average."},
+            {"text": "32 m/s", "correct": False,
+             "why": "That adds the two speeds together, which gives no "
+                    "journey's speed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h19",
+        "band": "harder",
+        "text": "A sleeper train covers 216 km between two cities in exactly "
+                "2 hours. What is its average speed in metres per second?",
+        "options": [
+            {"text": "30 m/s", "correct": True},
+            {"text": "108 m/s", "correct": False,
+             "why": "108 is the answer in kilometres per hour, wearing the "
+                    "wrong unit."},
+            {"text": "108 000 m/s", "correct": False,
+             "why": "The distance was changed into metres but the time was "
+                    "left in hours."},
+            {"text": "0.03 m/s", "correct": False,
+             "why": "The time was changed into seconds but the distance was "
+                    "left in kilometres."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h20",
+        "band": "harder",
+        "text": "Which of these is the fastest: 40 km/h, 12 m/s, one "
+                "kilometre every 90 s, or 600 m every minute?",
+        "options": [
+            {"text": "12 m/s", "correct": True},
+            {"text": "One kilometre every 90 s", "correct": False,
+             "why": "1000 m ÷ 90 s is about 11.1 m/s, which is just short of "
+                    "the fastest."},
+            {"text": "40 km/h", "correct": False,
+             "why": "40 ÷ 3.6 is about 11.1 m/s, the same as a kilometre "
+                    "every 90 s."},
+            {"text": "600 m every minute", "correct": False,
+             "why": "600 m ÷ 60 s is 10 m/s, the slowest of the four."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h21",
+        "band": "harder",
+        "text": "A cycling app reports an average speed of 25 km/h for a ride "
+                "that covered 24 km in 1 hour 12 minutes. Is the app right?",
+        "options": [
+            {"text": "Yes — 24 km in 72 minutes gives 25 km/h",
+             "correct": False,
+             "why": "24 ÷ 1.2 is 20, not 25. Seventy-two minutes is 1.2 "
+                    "hours."},
+            {"text": "No — it should read 30 km/h, from 24 ÷ 0.8",
+             "correct": False,
+             "why": "0.8 hours is 48 minutes. This ride lasted 72 minutes."},
+            {"text": "It cannot be checked without the rider's top speed",
+             "correct": False,
+             "why": "An average speed needs the total distance and the total "
+                    "time, and both are given."},
+            {"text": "No — 24 km in 1.2 hours is an average of 20 km/h",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h22",
+        "band": "harder",
+        "text": "A trolley crosses from gate 1 to gate 2, a gap of 0.50 m, in "
+                "0.25 s, and from gate 2 to gate 3, another 0.50 m, in "
+                "0.20 s. What does that show?",
+        "options": [
+            {"text": "It sped up: 2.0 m/s over the first gap and 2.5 m/s over "
+                     "the second",
+             "correct": True},
+            {"text": "It slowed down, from 2.5 m/s to 2.0 m/s",
+             "correct": False,
+             "why": "A shorter time over the same gap means a bigger speed, "
+                    "so it was speeding up."},
+            {"text": "It held a steady 2.25 m/s, the mean of the two",
+             "correct": False,
+             "why": "The two readings differ, so the speed was not steady. "
+                    "2.25 is only their mean."},
+            {"text": "Gate 2 must have been triggered early by mistake",
+             "correct": False,
+             "why": "Nothing is wrong with the readings. A trolley on a slope "
+                    "speeds up as it goes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h23",
+        "band": "harder",
+        "text": "Three runs over the same 1.00 m gap give times of 0.50 s, "
+                "0.40 s and 0.60 s. What speed should the class report?",
+        "options": [
+            {"text": "2.06 m/s, the mean of the three speeds",
+             "correct": False,
+             "why": "Averaging the three speeds gives the slow run too little "
+                    "weight. The mean is taken of the times."},
+            {"text": "2.0 m/s, from 1.00 m divided by the mean time",
+             "correct": True},
+            {"text": "2.5 m/s, from the quickest of the three runs",
+             "correct": False,
+             "why": "One run is not the measurement; three were taken so that "
+                    "a mean could be used."},
+            {"text": "1.67 m/s, from the slowest of the three runs",
+             "correct": False,
+             "why": "One run is not the measurement, and the slowest is no "
+                    "more the answer than the quickest."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h24",
+        "band": "harder",
+        "text": "A point on the equator is carried 40 000 km by the Earth's "
+                "turn in 24 hours. What is that speed in metres per second, "
+                "to the nearest ten?",
+        "options": [
+            {"text": "0.46 m/s", "correct": False,
+             "why": "The hours were changed to seconds but the kilometres "
+                    "were left as kilometres."},
+            {"text": "27 800 m/s", "correct": False,
+             "why": "The time was changed into minutes rather than into "
+                    "seconds."},
+            {"text": "460 m/s", "correct": True},
+            {"text": "46 m/s", "correct": False,
+             "why": "The kilometres were multiplied by 100 instead of by "
+                    "1000 to turn them into metres."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h25",
+        "band": "harder",
+        "text": "A student divides a distance measured in centimetres by a "
+                "time in seconds. What unit does the answer have, and how is "
+                "it turned into metres per second?",
+        "options": [
+            {"text": "cm/s, and it is multiplied by 100", "correct": False,
+             "why": "Multiplying makes the number bigger, and a length holds "
+                    "fewer metres than centimetres."},
+            {"text": "m/s already, because centimetres measure length",
+             "correct": False,
+             "why": "The answer carries whatever unit went into it, and "
+                    "centimetres went in."},
+            {"text": "cm/s, and it is divided by 10", "correct": False,
+             "why": "A metre holds 100 centimetres, not 10."},
+            {"text": "cm/s, and it is divided by 100", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h26",
+        "band": "harder",
+        "text": "A ball rolls down a 3 m ramp, speeding up all the way. Which "
+                "timing gives a true average speed for the whole ramp?",
+        "options": [
+            {"text": "The last 0.50 m, timed with light gates",
+             "correct": False,
+             "why": "That gives the speed near the bottom, which is the "
+                    "fastest part rather than the average."},
+            {"text": "The whole 3 m, timed from release to the bottom",
+             "correct": True},
+            {"text": "The first 0.50 m, timed with light gates",
+             "correct": False,
+             "why": "That gives the speed near the top, where the ball is "
+                    "still slow."},
+            {"text": "The middle 1 m, because the speed there is typical",
+             "correct": False,
+             "why": "There is no typical stretch on a ramp: the speed differs "
+                    "at every point along it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h27",
+        "band": "harder",
+        "text": "A 1000 m journey has to be finished in 100 s. The first "
+                "400 m took 50 s. What average speed is needed over the rest?",
+        "options": [
+            {"text": "10 m/s", "correct": False,
+             "why": "That is 1000 m ÷ 100 s, the average for the whole "
+                    "journey rather than for what is left."},
+            {"text": "8 m/s", "correct": False,
+             "why": "That is 400 m ÷ 50 s, the speed already achieved over "
+                    "the first leg."},
+            {"text": "12 m/s", "correct": True},
+            {"text": "6 m/s", "correct": False,
+             "why": "That is 600 m ÷ 100 s. The distance left is right, but "
+                    "50 s of the 100 s has already gone."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h28",
+        "band": "harder",
+        "text": "Light gates give 1.4285 m/s for a run measured as 1.20 m and "
+                "0.84 s. Why should a student not write all five figures in "
+                "their answer?",
+        "options": [
+            {"text": "The measurements carry two or three figures, so the "
+                     "answer cannot carry five",
+             "correct": True},
+            {"text": "Extra figures make the speed look smaller than it "
+                     "really is",
+             "correct": False,
+             "why": "The figures after the second make almost no difference "
+                    "to the size of the number."},
+            {"text": "A speed cannot be written with more than two decimal "
+                     "places",
+             "correct": False,
+             "why": "It can. What limits the figures here is how precisely "
+                    "the run was measured."},
+            {"text": "The light gates round every reading to two figures "
+                     "before showing it",
+             "correct": False,
+             "why": "The gates showed 1.20 and 0.84, which is three figures "
+                    "and two, not two and two."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h29",
+        "band": "harder",
+        "text": "A student calculates a walking speed of 140 m/s and does not "
+                "notice the mistake. Which check would have caught it "
+                "fastest?",
+        "options": [
+            {"text": "Repeating the timing five more times and taking a mean "
+                     "of the readings",
+             "correct": False,
+             "why": "Repeats reduce random error. They do not spot an answer "
+                    "that is a hundred times too big."},
+            {"text": "Writing the answer in kilometres per hour so the number "
+                     "looks smaller",
+             "correct": False,
+             "why": "Changing the unit changes the number but not whether the "
+                    "speed is sensible."},
+            {"text": "Checking that the answer has been rounded to two "
+                     "decimal places",
+             "correct": False,
+             "why": "Rounding tidies an answer. It does not tell you whether "
+                    "the answer is possible."},
+            {"text": "Asking whether that number is sensible for a person on "
+                     "foot",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-01-h30",
+        "band": "harder",
+        "text": "A lorry's tachograph shows 540 km covered in 6 hours, and "
+                "the lorry is limited to 25 m/s. Is that record consistent "
+                "with the limit?",
+        "options": [
+            {"text": "No — 540 km in 6 hours works out at 150 m/s",
+             "correct": False,
+             "why": "150 comes from dividing by one hour's worth of seconds "
+                    "instead of six."},
+            {"text": "Yes, but only if it held exactly 25 m/s for the whole "
+                     "six hours",
+             "correct": True},
+            {"text": "Yes, because the average works out well below the "
+                     "limit",
+             "correct": False,
+             "why": "The average works out at exactly 25 m/s, which leaves no "
+                    "room below the limit."},
+            {"text": "No, because an average can never be as big as the top "
+                     "speed",
+             "correct": False,
+             "why": "An average equals the top speed when the speed does not "
+                    "change, which is what this record shows."},
+        ],
+        "figure": None,
+    },
 ]
+

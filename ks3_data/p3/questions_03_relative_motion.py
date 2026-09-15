@@ -1209,4 +1209,781 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── MRB-338 night 3 top-up · easier ──────────────────────────────────
+    {
+        "id": "p3-03-e19",
+        "band": "easier",
+        "text": "A cyclist rides at 5 m/s and a car comes the other way at "
+                "15 m/s. How fast are the two moving apart?",
+        "options": [
+            {"text": "10 m/s", "correct": False,
+             "why": "That subtracts the speeds, which is what you do when "
+                    "both are going the same way."},
+            {"text": "15 m/s", "correct": False,
+             "why": "That is the car's speed over the ground, and the cyclist "
+                    "is moving too."},
+            {"text": "20 m/s", "correct": True},
+            {"text": "5 m/s", "correct": False,
+             "why": "That is the cyclist's speed over the ground, not the "
+                    "speed between the two."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-e20",
+        "band": "easier",
+        "text": "Two aircraft fly side by side at 200 m/s in the same "
+                "direction. One pilot looks across at the other. What does "
+                "she see it doing?",
+        "options": [
+            {"text": "Pulling ahead at 200 m/s", "correct": False,
+             "why": "Pulling ahead needs the other aircraft to be the faster, "
+                    "and the two speeds match."},
+            {"text": "Falling steadily behind at 200 m/s", "correct": False,
+             "why": "Falling behind needs the other aircraft to be the "
+                    "slower, and the two speeds match."},
+            {"text": "Holding station beside her", "correct": True},
+            {"text": "Pulling ahead at 400 m/s", "correct": False,
+             "why": "400 adds the two speeds, and adding is for aircraft "
+                    "flying towards each other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-e21",
+        "band": "easier",
+        "text": "Two lifts in the same shaft both rise at 2 m/s. What does a "
+                "person in one see the other doing?",
+        "options": [
+            {"text": "Rising steadily at 2 m/s", "correct": False,
+             "why": "That is its speed measured from the building, not from "
+                    "the other lift."},
+            {"text": "Rising steadily at 4 m/s", "correct": False,
+             "why": "Speeds are added when two things move in opposite "
+                    "directions, and these two move together."},
+            {"text": "Falling steadily at 2 m/s", "correct": False,
+             "why": "A lift appears to fall past another only when the other "
+                    "is rising faster than it."},
+            {"text": "Staying level with them", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-e22",
+        "band": "easier",
+        "text": "A skater glides at 4 m/s beside a friend going the same way "
+                "at 4 m/s. The friend then speeds up to 6 m/s. What is the "
+                "friend's new speed relative to the skater?",
+        "options": [
+            {"text": "2 m/s", "correct": True},
+            {"text": "6 m/s", "correct": False,
+             "why": "That is the friend's speed over the ice, not the speed "
+                    "between the two skaters."},
+            {"text": "10 m/s", "correct": False,
+             "why": "Speeds are added when two things move in opposite "
+                    "directions, and these go the same way."},
+            {"text": "0 m/s", "correct": False,
+             "why": "They matched at first, but one has sped up, so the gap "
+                    "between them now grows."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-e23",
+        "band": "easier",
+        "text": "Every object is stationary when it is measured from "
+                "something. From what is a moving train stationary?",
+        "options": [
+            {"text": "The platform it has just pulled away from",
+             "correct": False,
+             "why": "From the platform the train is moving away, at whatever "
+                    "speed the driver was given."},
+            {"text": "A passenger sitting in one of its seats",
+             "correct": True},
+            {"text": "The ground beneath the track", "correct": False,
+             "why": "The ground is what a train's ordinary speed is measured "
+                    "against in the first place."},
+            {"text": "Nothing at all: a moving train is moving",
+             "correct": False,
+             "why": "Moving is not something an object holds on its own. It "
+                    "is measured from something."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-e24",
+        "band": "easier",
+        "text": "A police car is following a van along a motorway, and the "
+                "two have a relative speed of 20 m/s. What is that 20 m/s "
+                "telling you?",
+        "options": [
+            {"text": "How fast the gap between them changes", "correct": True},
+            {"text": "How fast each car is going over the ground",
+             "correct": False,
+             "why": "Two cars at 60 and 40 m/s have the same relative speed "
+                    "as two at 30 and 10 m/s."},
+            {"text": "How far apart the two cars are at the moment",
+             "correct": False,
+             "why": "A relative speed says how the gap changes, not how big "
+                    "the gap is."},
+            {"text": "How fast the faster of the two is going",
+             "correct": False,
+             "why": "The relative speed is the difference or the sum, and not "
+                    "one car's own reading."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-e25",
+        "band": "easier",
+        "text": "A boat's speed is given as 8 m/s relative to the water. What "
+                "does that phrase add that 8 m/s on its own would not?",
+        "options": [
+            {"text": "How long the boat's journey took", "correct": False,
+             "why": "A time is a separate measurement and cannot be read out "
+                    "of a speed."},
+            {"text": "Which direction along the river the boat was going",
+             "correct": False,
+             "why": "A direction is not carried by naming what the speed was "
+                    "measured against."},
+            {"text": "How fast the water itself was flowing", "correct": False,
+             "why": "The water's own speed is a further thing you would have "
+                    "to be told."},
+            {"text": "What the speed was measured against", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-e26",
+        "band": "easier",
+        "text": "A seagull flies alongside a ferry, staying exactly level "
+                "with the deck rail. The ferry is doing 9 m/s over the water. "
+                "How fast is the seagull moving relative to the water?",
+        "options": [
+            {"text": "0 m/s", "correct": False,
+             "why": "0 m/s is the seagull's speed relative to the ferry, "
+                    "which is what staying level means."},
+            {"text": "18 m/s", "correct": False,
+             "why": "Doubling is for two things flying towards each other, "
+                    "and these two travel together."},
+            {"text": "9 m/s", "correct": True},
+            {"text": "4.5 m/s", "correct": False,
+             "why": "Halving a speed has no place in a relative-speed "
+                    "question."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-e27",
+        "band": "easier",
+        "text": "Two friends ride escalators side by side, one going up at "
+                "0.6 m/s and one coming down at 0.6 m/s. How fast do they "
+                "pass each other?",
+        "options": [
+            {"text": "0.6 m/s", "correct": False,
+             "why": "That is one escalator's own speed, and the other friend "
+                    "is moving as well."},
+            {"text": "1.2 m/s", "correct": True},
+            {"text": "0 m/s", "correct": False,
+             "why": "A relative speed of zero needs both to move the same way "
+                    "at the same speed."},
+            {"text": "0.36 m/s", "correct": False,
+             "why": "That multiplies the two speeds, and relative speeds are "
+                    "added or subtracted."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-e28",
+        "band": "easier",
+        "text": "A car travels at 20 m/s. A second car, 100 m behind it, also "
+                "travels at 20 m/s. What happens to the gap between them?",
+        "options": [
+            {"text": "It stays at 100 m, because their relative speed is "
+                     "0 m/s",
+             "correct": True},
+            {"text": "It closes in 5 s, because the gap closes at the speed "
+                     "of the car behind",
+             "correct": False,
+             "why": "The gap closes at the relative speed, and 20 − 20 is 0."},
+            {"text": "It grows, because the car behind is losing ground",
+             "correct": False,
+             "why": "Neither car is gaining on the other, so the gap does not "
+                    "grow any more than it shrinks."},
+            {"text": "It closes in 50 s, because the gap closes at 2 m/s",
+             "correct": False,
+             "why": "Subtracting 20 from 20 gives 0, not 2."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-e29",
+        "band": "easier",
+        "text": "Two trains stand side by side in a station. One begins to "
+                "move, and a passenger in the other feels certain it is their "
+                "own train that has set off. Why?",
+        "options": [
+            {"text": "Because their own train has begun to move backwards "
+                     "down the line",
+             "correct": False,
+             "why": "Their train has not moved. Nothing about it has "
+                    "changed."},
+            {"text": "Because the brakes on their own train have just been "
+                     "released",
+             "correct": False,
+             "why": "A released brake does not make a stationary train appear "
+                    "to move."},
+            {"text": "Because the two trains are coupled together",
+             "correct": False,
+             "why": "Coupled trains move together, and these two do not."},
+            {"text": "Because all they can see is one train moving past the "
+                     "other",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-e30",
+        "band": "easier",
+        "text": "Which of these pairs has a relative speed of 0 m/s?",
+        "options": [
+            {"text": "A car and a lamp post it drives past", "correct": False,
+             "why": "The lamp post stays put while the car moves, so there is "
+                    "a speed between them."},
+            {"text": "A lorry and its own trailer on the motorway",
+             "correct": True},
+            {"text": "Two trains passing in opposite directions on parallel "
+                     "tracks",
+             "correct": False,
+             "why": "Opposite directions add, giving the biggest relative "
+                    "speed of the four."},
+            {"text": "A cyclist and a bus overtaking her", "correct": False,
+             "why": "The bus is gaining on the cyclist, so their relative "
+                    "speed is the difference between them."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 top-up · standard ────────────────────────────────
+    {
+        "id": "p3-03-s19",
+        "band": "standard",
+        "text": "A 180 m train passes a person standing on a platform at "
+                "30 m/s. How long does it take from the front reaching them "
+                "to the back clearing them?",
+        "options": [
+            {"text": "6 s", "correct": True},
+            {"text": "180 s", "correct": False,
+             "why": "That is the train's length used as a time. It has to be "
+                    "divided by the speed."},
+            {"text": "30 s", "correct": False,
+             "why": "That is the train's speed used as a time, which is not "
+                    "what was asked for."},
+            {"text": "5400 s", "correct": False,
+             "why": "That multiplies the length by the speed instead of "
+                    "dividing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-s20",
+        "band": "standard",
+        "text": "Two cars each travel at 15 m/s. Compare the speed at which "
+                "they meet head-on with the speed at which one follows the "
+                "other.",
+        "options": [
+            {"text": "15 m/s head-on, and 15 m/s following", "correct": False,
+             "why": "Head-on adds the two speeds and following subtracts "
+                    "them. Neither leaves 15."},
+            {"text": "30 m/s head-on, and 0 m/s following", "correct": True},
+            {"text": "30 m/s head-on, and 30 m/s following", "correct": False,
+             "why": "Following subtracts the two speeds, and 15 − 15 is 0, "
+                    "not 30."},
+            {"text": "0 m/s head-on, and 30 m/s following", "correct": False,
+             "why": "That is the right pair of numbers put the wrong way "
+                    "round."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-s21",
+        "band": "standard",
+        "text": "A parcel rides a conveyor belt at 0.8 m/s. A worker walks "
+                "beside the belt at 1.2 m/s the same way. How does the parcel "
+                "move relative to the worker?",
+        "options": [
+            {"text": "At 0.4 m/s, forwards past her", "correct": False,
+             "why": "She is the faster of the two, so she gains on the parcel "
+                    "rather than losing ground to it."},
+            {"text": "At 2.0 m/s, backwards past her", "correct": False,
+             "why": "2.0 adds the two speeds, and adding is for things going "
+                    "opposite ways."},
+            {"text": "At 0.4 m/s, backwards past her", "correct": True},
+            {"text": "At 0.8 m/s, the belt's own speed", "correct": False,
+             "why": "0.8 m/s is the parcel's speed over the floor, not "
+                    "relative to a moving worker."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-s22",
+        "band": "standard",
+        "text": "An escalator 24 m long carries people up at 0.5 m/s. A man "
+                "walks up it at 0.7 m/s relative to the steps. How long does "
+                "he take to reach the top?",
+        "options": [
+            {"text": "48 s", "correct": False,
+             "why": "That uses the escalator's speed alone and leaves the "
+                    "walking out."},
+            {"text": "34 s", "correct": False,
+             "why": "That uses the walking speed alone and leaves the "
+                    "escalator out."},
+            {"text": "12 s", "correct": False,
+             "why": "That doubles the combined speed: 0.5 and 0.7 make 1.2, "
+                    "not 2.0."},
+            {"text": "20 s", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-s23",
+        "band": "standard",
+        "text": "The driver of car A measures car B going past at 9 m/s. What "
+                "does the driver of car B measure for car A?",
+        "options": [
+            {"text": "9 m/s, the same size", "correct": True},
+            {"text": "0 m/s, because A is the one moving", "correct": False,
+             "why": "Both readings are made between the same two cars, so "
+                    "neither of them can be zero here."},
+            {"text": "18 m/s, twice as much", "correct": False,
+             "why": "The two are not added. The same gap is closing for both "
+                    "drivers."},
+            {"text": "It depends which car is faster over the ground",
+             "correct": False,
+             "why": "The ground speeds can be anything; only the difference "
+                    "between them settles this."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-s24",
+        "band": "standard",
+        "text": "On a 400 m track, one runner holds 5 m/s and another holds "
+                "4 m/s, both the same way round. How long after the start "
+                "does the faster runner lead by a whole lap?",
+        "options": [
+            {"text": "80 s", "correct": False,
+             "why": "That divides the lap by 5 m/s, using one runner's speed "
+                    "rather than the difference."},
+            {"text": "44 s", "correct": False,
+             "why": "That divides the lap by 9 m/s, adding the speeds as "
+                    "though they ran towards each other."},
+            {"text": "100 s", "correct": False,
+             "why": "That divides the lap by 4 m/s, using the slower runner's "
+                    "speed."},
+            {"text": "400 s", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-s25",
+        "band": "standard",
+        "text": "Whatever you choose to measure speeds from, one speed always "
+                "comes out as zero. Which one?",
+        "options": [
+            {"text": "The speed of the ground", "correct": False,
+             "why": "The ground reads zero when you stand on it, and not when "
+                    "you measure from a moving car."},
+            {"text": "The speed of the slowest object in sight",
+             "correct": False,
+             "why": "The slowest thing still has a speed unless you happen to "
+                    "be travelling with it."},
+            {"text": "The speed of whatever you are measuring from",
+             "correct": True},
+            {"text": "The speed of anything that is not moving at all",
+             "correct": False,
+             "why": "Whether something is moving is the very thing that has "
+                    "to be settled, by naming a frame."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-s26",
+        "band": "standard",
+        "text": "A plane approaches an aircraft carrier at 70 m/s over the "
+                "water. The carrier is sailing at 10 m/s in the same "
+                "direction. What is the plane's speed relative to the deck?",
+        "options": [
+            {"text": "80 m/s", "correct": False,
+             "why": "Speeds are added when the two move in opposite "
+                    "directions, and these move the same way."},
+            {"text": "70 m/s", "correct": False,
+             "why": "70 m/s is the plane's speed over the water, and the deck "
+                    "is moving too."},
+            {"text": "60 m/s", "correct": True},
+            {"text": "10 m/s", "correct": False,
+             "why": "10 m/s is the carrier's own speed over the water."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-s27",
+        "band": "standard",
+        "text": "One student says a train is doing 0 m/s and another says it "
+                "is doing 50 m/s. Both are right. How?",
+        "options": [
+            {"text": "One gave the average speed and the other the top speed",
+             "correct": False,
+             "why": "Both numbers describe the same moment. It is the "
+                    "viewpoint that differs, not the kind of speed."},
+            {"text": "They measured from different things — one from inside "
+                     "the train, one from the ground",
+             "correct": True},
+            {"text": "One used kilometres per hour and the other metres per "
+                     "second",
+             "correct": False,
+             "why": "50 km/h and 50 m/s are different numbers, and neither of "
+                    "them is zero."},
+            {"text": "The train changed speed between the two measurements",
+             "correct": False,
+             "why": "Nothing says the train changed. The two readings are of "
+                    "one moment."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-s28",
+        "band": "standard",
+        "text": "A lorry does 18 m/s and a car ahead of it does 24 m/s, both "
+                "the same way. The gap between them is 25 m now. What is it "
+                "10 s later?",
+        "options": [
+            {"text": "25 m", "correct": False,
+             "why": "The gap stays the same only when the two speeds match, "
+                    "and these differ by 6 m/s."},
+            {"text": "60 m", "correct": False,
+             "why": "That is the growth in the gap; the 25 m it started at "
+                    "still has to be added on."},
+            {"text": "445 m", "correct": False,
+             "why": "That uses 42 m/s, the sum of the speeds, instead of the "
+                    "difference between them."},
+            {"text": "85 m", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-s29",
+        "band": "standard",
+        "text": "A ship sails at 9 m/s relative to the water, straight down a "
+                "channel where the water flows at 2 m/s the same way. How "
+                "long does it take to cover 3300 m over the ground?",
+        "options": [
+            {"text": "300 s", "correct": True},
+            {"text": "367 s", "correct": False,
+             "why": "That uses 9 m/s and ignores the water carrying the ship "
+                    "along with it."},
+            {"text": "471 s", "correct": False,
+             "why": "That uses 7 m/s, taking the flow off instead of adding "
+                    "it on."},
+            {"text": "1650 s", "correct": False,
+             "why": "That uses 2 m/s, the water's speed on its own."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-s30",
+        "band": "standard",
+        "text": "A satellite's speed is given as 7800 m/s. Relative to what "
+                "is that measured, and what is its speed relative to the "
+                "astronaut riding in it?",
+        "options": [
+            {"text": "Relative to the astronaut, and 7800 m/s relative to the "
+                     "ground",
+             "correct": False,
+             "why": "A speed measured from the astronaut would be zero, since "
+                    "she travels with the satellite."},
+            {"text": "Relative to the ground below, and 0 m/s relative to the "
+                     "astronaut",
+             "correct": True},
+            {"text": "Relative to the Sun, and 7800 m/s relative to the "
+                     "astronaut",
+             "correct": False,
+             "why": "Orbit speeds are quoted against the Earth, and the "
+                    "astronaut moves with the satellite."},
+            {"text": "Relative to the ground below, and 7800 m/s relative to "
+                     "the astronaut",
+             "correct": False,
+             "why": "The first half is right, but the astronaut sits still "
+                    "inside, so her reading is zero."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 top-up · harder ──────────────────────────────────
+    {
+        "id": "p3-03-h19",
+        "band": "harder",
+        "text": "A 120 m train travelling at 35 m/s overtakes a 180 m train "
+                "travelling at 25 m/s on the next track, both going the same "
+                "way. How long from its front reaching the slower train's "
+                "back to its own back clearing the slower train's front?",
+        "options": [
+            {"text": "5 s", "correct": False,
+             "why": "That divides 300 m by 60 m/s, adding the speeds as "
+                    "though the trains met head-on."},
+            {"text": "12 s", "correct": False,
+             "why": "That divides 120 m by 10 m/s, using the overtaking "
+                    "train's length on its own."},
+            {"text": "30 s", "correct": True},
+            {"text": "18 s", "correct": False,
+             "why": "That divides 180 m by 10 m/s, using the slower train's "
+                    "length on its own."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-h20",
+        "band": "harder",
+        "text": "A canoeist paddles at 5 m/s in still water. She goes 1200 m "
+                "downstream on a 1 m/s current, then 1200 m back up. What is "
+                "her average speed over the whole trip, relative to the bank?",
+        "options": [
+            {"text": "5 m/s", "correct": False,
+             "why": "5 m/s is her paddling speed through the water, and the "
+                    "current changes what the bank sees."},
+            {"text": "6 m/s", "correct": False,
+             "why": "6 m/s is her speed on the downstream leg only."},
+            {"text": "2.4 m/s", "correct": False,
+             "why": "That divides one leg's distance by the whole trip's "
+                    "time."},
+            {"text": "4.8 m/s", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-h21",
+        "band": "harder",
+        "text": "Two cars, each doing 20 m/s, meet head-on. A student says "
+                "that is the same closing speed as one car doing 40 m/s "
+                "meeting a parked car. In terms of relative speed, is the "
+                "student right?",
+        "options": [
+            {"text": "No — the closing speed head-on is 20 m/s",
+             "correct": False,
+             "why": "Opposite directions add, so the two cars close on each "
+                    "other at 40 m/s."},
+            {"text": "Yes — the closing speed is 40 m/s either way",
+             "correct": True},
+            {"text": "No — the closing speed head-on is 80 m/s",
+             "correct": False,
+             "why": "Adding 20 and 20 gives 40, and 80 doubles it a second "
+                    "time."},
+            {"text": "Yes, but only because both cars have the same mass",
+             "correct": False,
+             "why": "A relative speed is worked out from speeds and "
+                    "directions, and mass plays no part in it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-h22",
+        "band": "harder",
+        "text": "Why does the speed of the vehicle you are sitting in come "
+                "out as 0 m/s however fast it is going?",
+        "options": [
+            {"text": "Because a vehicle cannot measure its own speed",
+             "correct": False,
+             "why": "It can — a speedometer does — but that reading is made "
+                    "against the road, not against itself."},
+            {"text": "Because the speedometer is switched off at the time",
+             "correct": False,
+             "why": "Nothing has been switched off. The answer comes from "
+                    "what the speed is measured against."},
+            {"text": "Because the road is moving instead of the vehicle",
+             "correct": False,
+             "why": "From that seat the road does move, but the zero belongs "
+                    "to the vehicle itself."},
+            {"text": "Because its speed is being measured against itself",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-h23",
+        "band": "harder",
+        "text": "A lorry 16 m long takes 32 s to overtake a cyclist, from its "
+                "front reaching her to its back clearing her. The cyclist "
+                "rides at 6 m/s. How fast is the lorry going?",
+        "options": [
+            {"text": "0.5 m/s", "correct": False,
+             "why": "0.5 m/s is the lorry's speed relative to the cyclist, "
+                    "not its speed over the road."},
+            {"text": "5.5 m/s", "correct": False,
+             "why": "That takes the relative speed off instead of adding it, "
+                    "and an overtaking lorry is the faster."},
+            {"text": "6.5 m/s", "correct": True},
+            {"text": "6 m/s", "correct": False,
+             "why": "At the cyclist's own speed the lorry would sit beside "
+                    "her rather than pass her."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-h24",
+        "band": "harder",
+        "text": "A traveller walks at 1.4 m/s. A 70 m moving walkway runs at "
+                "0.6 m/s. How much time does walking along the walkway save "
+                "compared with walking beside it?",
+        "options": [
+            {"text": "35 s", "correct": False,
+             "why": "35 s is the time taken on the walkway, not the time "
+                    "saved by using it."},
+            {"text": "15 s", "correct": True},
+            {"text": "50 s", "correct": False,
+             "why": "50 s is the time taken walking beside the walkway, not "
+                    "the saving."},
+            {"text": "117 s", "correct": False,
+             "why": "That divides 70 m by 0.6 m/s, leaving the walking out "
+                    "altogether."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-h25",
+        "band": "harder",
+        "text": "Two cars travel the same way at 30 m/s and 22 m/s. How fast "
+                "does one move relative to the other, worked out by a "
+                "roadside observer, by the faster driver, and by the slower "
+                "driver?",
+        "options": [
+            {"text": "52 m/s from the roadside, and 8 m/s from each car",
+             "correct": False,
+             "why": "52 adds the two speeds, and adding is for cars going "
+                    "opposite ways."},
+            {"text": "0 m/s from the roadside, and 8 m/s from each car",
+             "correct": False,
+             "why": "A roadside observer works out the same 8 m/s difference "
+                    "that each driver sees."},
+            {"text": "8 m/s from the faster car, and 52 m/s from the slower",
+             "correct": False,
+             "why": "Both drivers see the same gap closing, so both get "
+                    "8 m/s."},
+            {"text": "8 m/s from the roadside, and 8 m/s from each car",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-h26",
+        "band": "harder",
+        "text": "A river ferry is advertised as doing 6 m/s. Going upstream "
+                "against a 2 m/s current it takes twice as long to cover a "
+                "stretch as it does coming back down. Which frame was the "
+                "6 m/s measured in?",
+        "options": [
+            {"text": "Relative to the water", "correct": True},
+            {"text": "Relative to the bank, going upstream", "correct": False,
+             "why": "Upstream over the bank it makes 4 m/s, and 4 against 8 "
+                    "coming back is what gives the doubling."},
+            {"text": "Relative to the bank, going downstream",
+             "correct": False,
+             "why": "Downstream over the bank it makes 8 m/s, which is not "
+                    "the figure advertised."},
+            {"text": "Relative to the ferry itself", "correct": False,
+             "why": "Measured from the ferry, the ferry's own speed is "
+                    "zero."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-h27",
+        "band": "harder",
+        "text": "A runner sets off at 4 m/s. Thirty seconds later a cyclist "
+                "sets off from the same place at 7 m/s, the same way. How "
+                "long after the CYCLIST starts does she draw level?",
+        "options": [
+            {"text": "30 s", "correct": False,
+             "why": "30 s is the runner's head start in time, not the time "
+                    "the catching takes."},
+            {"text": "40 s", "correct": True},
+            {"text": "17 s", "correct": False,
+             "why": "That divides the 120 m head start by 7 m/s rather than "
+                    "by the 3 m/s difference."},
+            {"text": "70 s", "correct": False,
+             "why": "That divides the head start by 1.7 m/s, and the "
+                    "difference between the speeds is 3 m/s."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-h28",
+        "band": "harder",
+        "text": "A pilot reports 250 m/s while the aircraft flying alongside "
+                "reports 900 km/h. Are the two keeping station with each "
+                "other?",
+        "options": [
+            {"text": "No — the second aircraft is faster, at 900 m/s",
+             "correct": False,
+             "why": "900 km/h is not 900 m/s. Dividing by 3.6 turns it into "
+                    "250 m/s."},
+            {"text": "No — the second aircraft is slower, at 90 m/s",
+             "correct": False,
+             "why": "Dividing by 10 is not the conversion; km/h becomes m/s "
+                    "on dividing by 3.6."},
+            {"text": "Yes — 900 km/h is 250 m/s, so neither gains",
+             "correct": True},
+            {"text": "No — two speeds in different units cannot be compared",
+             "correct": False,
+             "why": "They can, once one is converted, and comparing is "
+                    "exactly what the conversion is for."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-h29",
+        "band": "harder",
+        "text": "A passenger walks at 1.2 m/s towards the front of a bus "
+                "doing 14 m/s. A cyclist rides the other way along the road "
+                "at 5 m/s. How fast is the passenger moving relative to the "
+                "cyclist?",
+        "options": [
+            {"text": "9 m/s", "correct": False,
+             "why": "That subtracts the cyclist's speed, and the two are "
+                    "moving in opposite directions."},
+            {"text": "6.2 m/s", "correct": False,
+             "why": "That combines the walking and the cycling and leaves the "
+                    "bus out."},
+            {"text": "10.2 m/s", "correct": False,
+             "why": "That adds the walking to the bus and then subtracts the "
+                    "cyclist instead of adding."},
+            {"text": "20.2 m/s", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p3-03-h30",
+        "band": "harder",
+        "text": "A train pulls alongside yours at the same speed and appears "
+                "parked in your window. A moment later it edges ahead. What "
+                "has changed?",
+        "options": [
+            {"text": "Its speed relative to your train is no longer zero",
+             "correct": True},
+            {"text": "Both trains again have the same speed over the ground",
+             "correct": False,
+             "why": "Equal ground speeds are what made it appear parked, and "
+                    "it is edging ahead now."},
+            {"text": "The gap between the two trains has changed their "
+                     "relative speed",
+             "correct": False,
+             "why": "How far apart two things are does not enter a relative "
+                    "speed."},
+            {"text": "Its speed relative to the platform has become zero",
+             "correct": False,
+             "why": "A train with zero speed over the ground would be left "
+                    "behind, not edging ahead."},
+        ],
+        "figure": None,
+    },
 ]
+
