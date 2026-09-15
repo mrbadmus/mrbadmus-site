@@ -67,10 +67,10 @@ QUESTIONS = [
         "text": "State which cells are produced by the stem cells in bone "
                 "marrow.",
         "options": [
-            "Nerve cells, because marrow lies close to the spinal cord",
+            "Nerve cells",
             "Blood cells",
-            "Muscle cells, because marrow sits inside a bone that muscles pull on",
-            "Any of the two hundred or more cell types in the human body",
+            "Muscle cells",
+            "Any type of body cell",
         ],
         "correct_index": 1,
         "why": "Bone marrow stem cells are adult stem cells, and they form "
@@ -371,7 +371,7 @@ QUESTIONS = [
             "Therapeutic cloning uses an egg cell, and reproductive cloning uses a sperm cell",
             "Therapeutic cloning copies only the DNA, while reproductive cloning moves a whole nucleus",
             "Therapeutic cloning produces cells for treatment, not a new individual",
-            "Therapeutic cloning is carried out in plants, and reproductive cloning in animals",
+            "Therapeutic cloning is a technique for plants",
         ],
         "correct_index": 2,
         "why": "Both begin with an embryo carrying the patient's genes, but "
@@ -388,7 +388,7 @@ QUESTIONS = [
                 "embryonic stem cells.",
         "options": [
             "They have found that embryonic stem cells cannot be made to differentiate",
-            "They have found that embryonic stem cells are rejected by every patient",
+            "They have found the cells do not divide",
             "They have shown that adult stem cells work better for every known condition",
             "They hold that an embryo is a potential human life",
         ],
@@ -542,7 +542,7 @@ QUESTIONS = [
         "options": [
             "The egg cell copies the patient's genes from the fluid around it",
             "The egg's cytoplasm supplies the genes once the patient's cell is added",
-            "The patient's nucleus makes the egg's own genes change to match it",
+            "The patient's nucleus rewrites the egg's genes",
             "The genetic material of a cell is held in its nucleus",
         ],
         "correct_index": 3,
@@ -684,7 +684,7 @@ QUESTIONS = [
             "Patient A, because cells taken from their own body divide too quickly once returned",
             "Neither, because a stem cell is undifferentiated and so carries no antigens at all",
             "Patient B, because the donor's cells carry different antigens",
-            "Patient B, because donated cells are always given in far larger numbers",
+            "Patient B, because donor cells divide faster",
         ],
         "correct_index": 2,
         "why": "Rejection follows from foreign antigens, and only the "
@@ -876,7 +876,7 @@ QUESTIONS = [
         "options": [
             "The risk can be ignored, because any virus passed on could be treated with antibiotics",
             "The treatment must be refused, because a risk of any size makes a treatment unethical",
-            "The risk vanishes if the cells are taken from the patient's own body to begin with",
+            "The risk vanishes if the patient's own cells are used",
             "The risk is weighed against the benefit of treating the condition",
         ],
         "correct_index": 3,
@@ -937,7 +937,7 @@ QUESTIONS = [
         "options": [
             "It makes no difference, because heart muscle repairs itself within eight weeks anyway",
             "Their own cells remain the better choice, because a stored line cannot be rejected",
-            "The stored line should never be used, because stored cells lose their genes",
+            "The stored line is useless, because stored cells die",
             "The donor line may have to be used, despite the risk of rejection",
         ],
         "correct_index": 3,
