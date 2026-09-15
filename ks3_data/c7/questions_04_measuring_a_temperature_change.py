@@ -974,9 +974,9 @@ QUESTIONS = [
             {"text": "The thermometer", "correct": False,
              "why": "Stirring with a thermometer is how they get broken, and "
                     "a broken one in acid is a real incident."},
-            {"text": "A second beaker", "correct": False,
-             "why": "Pouring between containers loses heat to the second one "
-                    "and to the air on the way across."},
+            {"text": "The measuring cylinder", "correct": False,
+             "why": "A measuring cylinder is for measuring out a volume. It "
+                    "is not put into the mixture at all."},
             {"text": "A stirring rod", "correct": True},
             {"text": "Nothing at all", "correct": False,
              "why": "Unstirred, the thermometer reads one warm pocket rather "
