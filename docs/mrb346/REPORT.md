@@ -364,10 +364,70 @@ This very file is that commit. After §3.2's full forced pass:
 1. `git add docs/mrb346/REPORT.md && git commit` (this file, filled in,
    nothing else).
 2. `python3 prepush_gate.py --check` (the real, unforced push-guard path).
-3. [FILL: paste the result. Every slow gate that had a receipt from §3.2
-   must show `PASS (receipt — watched paths unchanged)` — zero re-runs.
-   This is the rule-1 proof stated as a fact about THIS branch, not a
-   hypothetical.]
+3. The result, measured:
+
+**THE ACCEPTANCE TEST PASSED. All 22 slow gates that held a receipt passed
+on it — zero re-ran. `--check` took 31 seconds.**
+
+```
+   20 gate(s) ran fresh, 22 passed via an unchanged receipt, 0 skipped by rule,
+   7 skipped for a missing precondition.
+```
+
+Every one of the 22 printed the receipt line:
+
+```
+  PASS    verify_ks3           (receipt — watched paths unchanged)
+  PASS    student_parity       (receipt — watched paths unchanged)
+  PASS    teacher_behaviour    (receipt — watched paths unchanged)
+  PASS    leaderboard_behaviour (receipt — watched paths unchanged)
+  PASS    ks4_chrome_drive     (receipt — watched paths unchanged)
+  PASS    set_work             (receipt — watched paths unchanged)
+  PASS    teacher_admin_real   (receipt — watched paths unchanged)
+  PASS    student_bell_drive   (receipt — watched paths unchanged)
+  …22 in total
+```
+
+⚠️ **The 20 that "ran fresh" are all FAST gates, checked mechanically, not by
+eye** — every name in the `running …` list was cross-referenced against
+`gate_registry`'s `speed` field and **not one is slow**. Fast gates run on
+every invocation by design (rule 4 of §2.4); that is the backstop, not a
+re-run. So the docs commit caused **zero** slow-gate re-runs, which is rule 1
+demonstrated on this branch rather than argued.
+
+**31 seconds, against the ~57 minutes the same commit would have cost under
+the old whole-tree mechanism.** That is the ticket, in one number.
+
+4. **`--check` is nonetheless RED, and correctly so** — on
+`teacher_admin_foreign_class`, and on nothing else:
+
+```
+❌ 1 GATE(S) RED:
+     teacher_admin_foreign_class NEVER RUN against these watched paths — no receipt.
+   PUSH REFUSED. 1 of them carry no override.
+```
+
+Worth being precise about why, because "no receipt" and "failed" are
+different states and the guard says the first:
+
+- it FAILED in §3.2, and a failing gate's stale receipt is deleted rather
+  than kept, so it holds no receipt at all;
+- it is genuinely AFFECTED by this branch — `ks3_browser.py` is in its
+  `watches` and this branch changed `ks3_browser.py`, confirmed by
+  computing the intersection rather than assuming it;
+- so selection cannot excuse it, and the guard refuses the push.
+
+This is the machinery behaving exactly as §2.4 says it must: **selection
+only ever widens what runs on top of an already-red gate; it never makes a
+red gate look green.** The branch therefore ships with an explicit
+`GATE-OVERRIDE:` line in the tip commit naming this gate, which is the same
+override this inherited red has required on every full run since MRB-335 —
+not a new concession, and not a weakening of the gate.
+
+⚠️ Note the asymmetry worth keeping: in §3.3(a) the *content* branch skipped
+this gate BY RULE and pushed green, because a KS3 question file cannot reach
+a teacher-admin drive. Only a branch that genuinely touches its watched
+paths — like this one — inherits the red.
 
 ### 3.6 · `set_work_drive.py` — five consecutive runs, identical
 
