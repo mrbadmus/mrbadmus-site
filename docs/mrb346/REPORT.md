@@ -500,3 +500,126 @@ without `3d-studio/dist`.
    these runs matched their own `pgrep -f` pattern and so never exited —
    the same self-matching trap `docs`' concurrency notes record. It cost
    wall-clock time only; no run or measurement was affected.
+
+---
+
+## 6 · Follow-up, 15 Sep 2026 — the bank is never read by a generator, so page-building gates stop watching it
+
+Ruled by Mide, after §4's own line naming `verify_ks3` and `set_work` as
+the content branch's real cost: MRB-338 night 1 already proved no site
+generator reads `ks3_data/**/questions_*.py` or `ks4_data/questions/**`.
+`verify_ks3` and `student_parity` — and, on inspection, four more
+page-building gates — were watching the whole bank anyway.
+
+### 6.1 · The mechanism — `!`-prefixed exclusion
+
+`gate_registry.matches_any` gained negation, in the same sense as
+`.gitignore`: a `!`-prefixed pattern EXCLUDES rather than includes, so a
+gate can watch `ks3_data/**` for its lesson/structure content while naming
+`!ks3_data/**/questions_*.py` (and, where relevant, `!ks4_data/questions/**`)
+without hand-listing every non-bank module.
+
+### 6.2 · Six gates narrowed, each verified by reading the actual code
+
+| gate | speed | why the narrowing is safe |
+|---|---|---|
+| `verify_ks3` | slow | its embedded MRB-278 bank-position check is redundant with the standalone `answer_positions` gate — `verify_answer_positions.py`'s own comment says "thresholds match verify_ks3's MRB-278 check exactly"; `answer_positions` is unchanged and still watches the full bank |
+| `student_parity` | slow | Layer H's bank-side branch (`run_no_generic_right_answer_line`) opens `ks3_data.question_bank.load_bank()` looking for a correct option with a `why`, but `ks3_data/question_bank.py:407` — enforced by `verify_questions`, unchanged, still watching the full bank — refuses any correct option carrying a `why` at all, unconditionally. The branch can never find anything a bank edit could produce; only the ladder half (fed by `lesson_*.py`, still watched) has live coverage |
+| `ks3_smoke_static` | fast | imports no `ks3_data` module at all; scans BUILT pages only, which `build_ks3.py` produces without ever reading a `questions_*.py` |
+| `ks3_instrument_liveness` | slow | reads only `ks3_data.build_units()` (structure) and presses instruments on BUILT pages |
+| `ks3_key_audit` | fast | its own `SOURCES` list names `build_ks3.py`, `ks3_art/**` and each unit's `__init__.py` — never a `questions_*.py` |
+| `curriculum_tree_mirror` | fast | `build_ks3()` reads `ks3_data.build_units()`; `build_ks4()` reads `ks4_data.classify()`, which imports `ks4_seed_sow` and never `ks4_data.questions` — confirmed by reading `classify()` itself |
+
+`set_work`, `ks4_pool_drive`, and every gate that genuinely reads the bank
+(`verify_questions`, `answer_positions`, `answer_lengths`, `pool_ownership`,
+`ks4_pool_check`, `set_work_scope_check`, `export_ks3_questions_verify`) are
+unchanged — confirmed unchanged, not merely left alone, by re-running the
+same empirical match against both a KS3 and a KS4 sample question file
+after the edit (see §6.3).
+
+### 6.3 · `gate_watches_check` gained a fourth assertion, mutation-tested
+
+A `BANK_CONTENT_GATES` allowlist names the nine gates above that may
+legitimately match a question-bank file; every other gate is asserted, by
+empirical match against one real KS3 sample
+(`ks3_data/b2/questions_02_joints.py`) and one real KS4 sample
+(`ks4_data/questions/biology/organisation__z338_topic.py`), to match
+neither. Mutation-tested: stripping the exclusion from `ks3_key_audit` in
+memory and re-running `check()` reports it by name.
+
+Empirical proof the narrowing took, run directly against the registry
+(not a synthetic branch): all six narrowed gates return `False` against
+both sample files; all nine `BANK_CONTENT_GATES` still return `True` for
+whichever key stage they watch (KS3-only gates `True`/`False`, KS4-only
+`False`/`True`, cross-key-stage `True`/`True` — exactly as their own scope
+implies).
+
+### 6.4 · Receipts — three slow gates re-recorded, not the whole suite
+
+Narrowing a gate's `watches` changes what its `watch_hash` is computed
+over, so the three narrowed SLOW gates' existing receipts (from §3.2's
+full forced pass) stopped matching the moment the registry changed — even
+though none of the files they still watch had changed content. The three
+FAST narrowed gates (`ks3_smoke_static`, `ks3_key_audit`,
+`curriculum_tree_mirror`) need no such step; fast gates run on every
+`--check` regardless of any receipt.
+
+Re-recorded individually, not via another full `--record-all`:
+
+| gate | wall clock |
+|---|---|
+| `verify_ks3` | 11m 23s |
+| `student_parity` | 2m 07s |
+| `ks3_instrument_liveness` | 2m 25s |
+
+**15m 55s total, against the ~57 minutes a full forced sweep costs.** This
+is the ticket's own point demonstrated on itself: a registry change that
+touches six gates' definitions only has to re-verify the six gates whose
+definition actually moved.
+
+`--check` (real, unforced) afterward: **28.4 s**, 20 gates ran fresh (all
+fast, cross-checked against the registry's `speed` field), 17 passed via
+an unchanged receipt, 12 skipped for a missing credential (this run
+carried only `$MRB_BACKEND`, deliberately — see §3.2's credential
+guidance, unchanged). The one red is `teacher_admin_foreign_class` —
+**still** the same inherited gate, for the same reason as §3.5: this
+branch's `ks3_browser.py` change (from the machinery commit) is still in
+its `watches`, so it is still genuinely affected and still holds no
+receipt. Shipped under the same override, in the commit that carries this
+report update.
+
+### 6.5 · The new content-branch timing estimate
+
+Computed directly against the now-narrowed registry (`_affected()` called
+for real, not guessed), for a branch touching only a KS3 bank file
+(`ks3_data/b2/questions_02_joints.py`):
+
+**27 of 28 slow gates now SKIPPED BY RULE. Only `set_work` is selected.**
+`verify_ks3`, `student_parity`, and `ks3_instrument_liveness` — three of
+the four slow gates §3.3(a)'s content branch had to pay for — drop out
+entirely; `set_work` is correctly still selected, because Set-work serves
+the bank for real.
+
+For a KS4 bank file, two slow gates are selected: `ks4_pool_drive` and
+`set_work`.
+
+**Estimate, not a fresh live run** (built from real per-gate timings
+already measured this session, to avoid paying the ~20-minute
+temporary-worktree overhead twice for the same proof): the ~20 fast gates
+cost about 25–30 seconds total (measured directly in §6.4's `--check`
+run); `set_work_drive.py` costs about 7m45s per run (measured directly
+across the five consecutive runs in §3.6 and the drive-hardening commit —
+runs started 7m38s apart). **A KS3 bank-only branch should now cost
+roughly 8–9 minutes end to end** — down from the 23m37s a lesson-file
+change still costs (§3.3(a), unaffected by this narrowing, since a lesson
+edit genuinely can move a built page), and down from the ~57 minutes the
+same branch cost under the pre-MRB-346 whole-tree mechanism.
+
+### 6.6 · What did NOT change, again
+
+No assertion was weakened — `answer_positions`, `verify_questions`, and
+`set_work_scope_check` still measure exactly what `verify_ks3` and
+`student_parity`'s narrowed checks used to duplicate, and now are the only
+gates that do. The redundancy this narrowing removes was in WHICH GATE
+RE-VERIFIES a property on a bank-only change, never in whether the
+property is verified at all.
