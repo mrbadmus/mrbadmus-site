@@ -375,8 +375,7 @@ QUESTIONS = [
              "correct": False,
              "why": "That is a sample mass and it depends on how much you "
                     "took. Atomic mass is a property of the element"},
-            {"text": "The number of protons in the nucleus of one single atom "
-                     "of the element",
+            {"text": "The number of protons in the nucleus of an atom",
              "correct": False,
              "why": "That is the atomic number, and it is what the MODERN "
                     "table is ordered by"},
@@ -529,8 +528,7 @@ QUESTIONS = [
              "correct": False,
              "why": "That is exactly what argon did, and the table absorbed "
                     "it. Adding a group is not a refutation"},
-            {"text": "A gap in the table that stayed empty for a great many "
-                     "years after it was first drawn",
+            {"text": "A gap in the table that stayed empty for many years",
              "correct": False,
              "why": "An unfilled gap is a prediction still waiting. It is not "
                     "a result at all"},
@@ -625,8 +623,8 @@ QUESTIONS = [
              "correct": False,
              "why": "The swap made their properties come out RIGHT. That was "
                     "his justification, and it was not a reason"},
-            {"text": "Nothing at all — swaps of that kind were completely "
-                     "normal practice among the chemists working at the time",
+            {"text": "Nothing at all — swaps of that kind were normal "
+                     "practice among chemists then",
              "correct": False,
              "why": "Ordering by mass was the whole basis of the table. "
                     "Breaking it needed defending"},
@@ -680,8 +678,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Right verdict, and hindsight is not the reason. The swap "
                     "was defensible on the day it was made"},
-            {"text": "Neither of them — both of the moves are only guesses, "
-                     "and one guess cannot be any better than another one",
+            {"text": "Neither — both moves are guesses, and one guess is no "
+                     "better than another",
              "correct": False,
              "why": "One of them produced testable predictions and the other "
                     "did not. That is what separates them"},
@@ -1185,7 +1183,7 @@ QUESTIONS = [
         "text": "Which is the weakest kind of evidence that an arrangement "
                 "of the elements is the right one?",
         "options": [
-            {"text": "That an element found later matched what it said",
+            {"text": "That a later element fitted",
              "correct": False,
              "why": "That is the strongest evidence there is, and it is "
                     "what settled the argument in the end"},
@@ -1619,8 +1617,7 @@ QUESTIONS = [
              "correct": False,
              "why": "Surviving everything is a weakness here. It means no "
                     "measurement could ever have caught it out"},
-            {"text": "The first, because vague wording leaves room for "
-                     "better measurements later on",
+            {"text": "The first, because vague wording leaves room",
              "correct": False,
              "why": "Leaving room is exactly the problem. A claim that "
                     "cannot be pinned down cannot be tested"},
@@ -1681,8 +1678,7 @@ QUESTIONS = [
              "correct": False,
              "why": "Criticism is the point of publishing. What was "
                     "offered here was mockery, not criticism"},
-            {"text": "Newlands had already tried it and reported that it "
-                     "did not work",
+            {"text": "Newlands had tried it and said it failed",
              "correct": False,
              "why": "He had not, and it would not have helped. The remark "
                     "was a joke rather than a proposal"},

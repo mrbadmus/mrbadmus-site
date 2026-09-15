@@ -1160,19 +1160,20 @@ QUESTIONS = [
         "text": "What is the name of the reaction that uses glucose and "
                 "oxygen inside cells to release energy?",
         "options": [
-            {"text": "Photosynthesis, which happens in the light inside "
-                     "plants.",
+            {"text": "Photosynthesis.",
              "correct": False,
              "why": "Photosynthesis runs the other way: it builds glucose and "
-                    "releases oxygen, and it needs light."},
-            {"text": "Breathing, which happens in the lungs.",
+                    "releases oxygen, and it needs light. It happens in "
+                    "plants, not in your cells."},
+            {"text": "Breathing.",
              "correct": False,
-             "why": "Breathing is the muscular job of moving air. It supplies "
-                    "the reaction and is not the reaction."},
-            {"text": "Digestion, which happens in the gut.",
+             "why": "Breathing is the muscular job of moving air in and out of "
+                    "the lungs. It supplies the reaction and is not the "
+                    "reaction."},
+            {"text": "Digestion.",
              "correct": False,
-             "why": "Digestion breaks food into small molecules such as "
-                    "glucose. Releasing the energy comes afterwards."},
+             "why": "Digestion breaks food in the gut into small molecules "
+                    "such as glucose. Releasing the energy comes afterwards."},
             {"text": "Aerobic respiration.",
              "correct": True},
         ],
@@ -1186,15 +1187,15 @@ QUESTIONS = [
         "options": [
             {"text": "Enzymes.",
              "correct": True},
-            {"text": "A flame inside the cell.",
+            {"text": "A flame.",
              "correct": False,
              "why": "There is no flame and no spark anywhere in a cell, and the "
                     "reaction needs neither of them."},
-            {"text": "The warmth of the body.",
+            {"text": "Body heat.",
              "correct": False,
              "why": "Body temperature on its own is far too low to drive the "
                     "reaction. Enzymes are what make it possible at 37 °C."},
-            {"text": "The blood supply.",
+            {"text": "Blood.",
              "correct": False,
              "why": "Blood delivers the reactants and removes the waste. The "
                     "steps themselves are controlled inside the cell."},
@@ -1278,18 +1279,17 @@ QUESTIONS = [
         "options": [
             {"text": "Aerobic respiration, the same reaction as in yours.",
              "correct": True},
-            {"text": "A different reaction, because the oxygen came out of "
-                     "water rather than air.",
+            {"text": "A different reaction, because the oxygen came from "
+                     "water.",
              "correct": False,
              "why": "Where the oxygen came from makes no difference at all. An "
                     "oxygen molecule is the same molecule either way."},
-            {"text": "Photosynthesis, because the fish is surrounded by water "
-                     "all of the time.",
+            {"text": "Photosynthesis, as the fish lives in water.",
              "correct": False,
              "why": "Photosynthesis needs light and chlorophyll and builds "
-                    "glucose. A fish does none of that."},
-            {"text": "No reaction at all, because oxygen that is dissolved in "
-                     "water cannot be used by a cell.",
+                    "glucose. A fish does none of that, in or out of water."},
+            {"text": "No reaction at all, because dissolved oxygen cannot be "
+                     "used by a cell.",
              "correct": False,
              "why": "Dissolved oxygen is used exactly as oxygen from air is, "
                     "once it has crossed the gills into the blood."},
@@ -1329,10 +1329,11 @@ QUESTIONS = [
         "text": "Respiration makes water inside your cells. Besides leaving "
                 "as vapour in your breath, how else does that water leave?",
         "options": [
-            {"text": "In glucose, rebuilt by the liver.",
+            {"text": "In glucose.",
              "correct": False,
              "why": "The body has no way of rebuilding glucose from the "
-                    "products of respiration."},
+                    "products of respiration, in the liver or anywhere "
+                    "else."},
             {"text": "Nowhere — it stays inside the cells.",
              "correct": False,
              "why": "Water is not stockpiled in cells. What the body takes in "
@@ -1571,8 +1572,7 @@ QUESTIONS = [
              "correct": False,
              "why": "Both tubes were wrapped the same way and the empty one did "
                     "not change, which is what it is there for."},
-            {"text": "The woodlice photosynthesised, because the foil kept "
-                     "the light off them.",
+            {"text": "The woodlice photosynthesised under the foil.",
              "correct": False,
              "why": "Animals do not photosynthesise, and photosynthesis needs "
                     "light rather than darkness."},

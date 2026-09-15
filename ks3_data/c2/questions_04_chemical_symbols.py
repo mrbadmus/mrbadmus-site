@@ -545,7 +545,8 @@ QUESTIONS = [
                 "matter so much?",
         "options": [
             {"text": "Because the periodic table is arranged in alphabetical "
-                     "order of symbol",
+                     "order of symbol, and a repeat would leave two elements "
+                     "with one place",
              "correct": False,
              "why": "The table is not in alphabetical order at all. The "
                     "reason is about reading formulae, not about the "
@@ -572,19 +573,18 @@ QUESTIONS = [
         "text": "A packet of baking soda gives its contents as NaHCO₃. How "
                 "many different elements does that name?",
         "options": [
-            {"text": "Three, because the lower-case letters and the small "
-                     "number are all part of the symbols in front of them",
+            {"text": "Three",
              "correct": False,
              "why": "The lower-case a does belong to the N, but H and C and O "
                     "are three more capitals. Count the capitals and you get "
                     "four"},
-            {"text": "Five, counting the small 3 as one more",
+            {"text": "Five",
              "correct": False,
              "why": "The 3 is a count of oxygen atoms, not an element. Only "
                     "capital letters start elements"},
             {"text": "Four",
              "correct": True},
-            {"text": "Six, one for every letter and number written down",
+            {"text": "Six",
              "correct": False,
              "why": "Lower-case letters belong to the capital in front of "
                     "them, and numbers are counts"},
@@ -705,7 +705,9 @@ QUESTIONS = [
              "correct": False,
              "why": "Being shorter is a convenience. It is not the reason the "
                     "one- or two-letter rule exists"},
-            {"text": "It makes every symbol match its English name exactly",
+            {"text": "It makes every symbol match its English name exactly, "
+                     "so a reader who knows the name can write the symbol "
+                     "straight off",
              "correct": False,
              "why": "The opposite: several symbols come from Latin and do not "
                     "match the English name at all"},
@@ -713,7 +715,8 @@ QUESTIONS = [
                      "read apart again, because a capital always starts a new "
                      "element",
              "correct": True},
-            {"text": "It stops two elements being confused with each other",
+            {"text": "It stops two elements being confused with each other, "
+                     "which longer names like Cob and CarMon could not do",
              "correct": False,
              "why": "Cob and CarMon would be distinguishable too. What they "
                     "could not do is be strung together and read back"},
@@ -726,16 +729,15 @@ QUESTIONS = [
         "text": "How many atoms altogether are there in one particle of "
                 "NaHCO₃?",
         "options": [
-            {"text": "Four, one for each of the different elements the "
-                     "formula names between its capital letters",
+            {"text": "Four",
              "correct": False,
              "why": "Four is the number of ELEMENTS. The small 3 means three "
                     "oxygen atoms rather than one"},
-            {"text": "Seven, counting the lower-case a as an atom of its own",
+            {"text": "Seven",
              "correct": False,
              "why": "The a belongs to the N, making sodium. It counts "
                     "nothing"},
-            {"text": "Three, because only the small number counts atoms",
+            {"text": "Three",
              "correct": False,
              "why": "A symbol with no number after it already means one atom. "
                     "Na, H and C are one each"},

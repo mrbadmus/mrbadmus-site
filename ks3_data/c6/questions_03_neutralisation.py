@@ -615,18 +615,16 @@ QUESTIONS = [
                 "alkali. The same alkali is used on 50 cm³ of the same acid. "
                 "How much is needed?",
         "options": [
-            {"text": "20 cm³, because the alkali is unchanged and it is the "
-                     "alkali that decides the volume the neutralisation "
-                     "takes",
+            {"text": "20 cm³",
              "correct": False,
-             "why": "The volume needed depends on how much acid there is, and "
-                    "there is now twice as much of it"},
-            {"text": "25 cm³, matching the volume of acid",
+             "why": "That treats the alkali as deciding the volume. The volume "
+                    "needed depends on how much acid there is, and there is "
+                    "now twice as much of it"},
+            {"text": "25 cm³",
              "correct": False,
              "why": "The two volumes do not have to match. It took 20 cm³ for "
                     "25 cm³ of acid, not 25"},
-            {"text": "45 cm³, adding the extra 25 cm³ of acid to the 20 cm³ "
-                     "that worked before",
+            {"text": "45 cm³",
              "correct": False,
              "why": "Volumes of two different solutions cannot be added like "
                     "that. Twice the acid needs twice the alkali"},
@@ -1075,8 +1073,7 @@ QUESTIONS = [
                       "the acid", "correct": False,
              "why": "All three finished the reaction. The largest is not "
                     "automatically the most complete."},
-            {"text": "20.0 cm³, since a round number is easier to work with "
-                      "afterwards", "correct": False,
+            {"text": "20.0 cm³, the roundest reading", "correct": False,
              "why": "A result is chosen because it represents the readings, not "
                     "because it is tidy."},
             {"text": "About 20.1 cm³, the mean of the three", "correct": True},
@@ -1097,7 +1094,7 @@ QUESTIONS = [
             {"text": "pH 7, and colder, because the two cancel their heat out as well", "correct": False,
              "why": "Cancelling applies to the acid and the alkali. Energy is "
                     "released, not cancelled."},
-            {"text": "pH 14, and warmer, because the two readings are added together", "correct": False,
+            {"text": "pH 14, and warmer, the readings added", "correct": False,
              "why": "pH values are not added. Matching amounts leave neither in "
                     "excess, which is 7."},
             {"text": "pH 1, and unchanged, because the stronger of the two always "
@@ -1200,8 +1197,8 @@ QUESTIONS = [
                       "the flask by the alkali", "correct": False,
              "why": "Nothing settles out. The products are dissolved and spread "
                     "through the liquid."},
-            {"text": "Half the acid particles have reacted and half are waiting for "
-                      "more alkali", "correct": False,
+            {"text": "Half have reacted and half are waiting for alkali",
+             "correct": False,
              "why": "At the exact point there is no acid left waiting. That is what "
                     "makes it the exact point."},
             {"text": "The acid particles have been diluted until they are too spread "
@@ -1346,8 +1343,7 @@ QUESTIONS = [
         "text": "Equal volumes of two acid samples are titrated with the same alkali."
                 " One needs 15 cm³ and the other needs 30 cm³. What does that show?",
         "options": [
-            {"text": "That the second sample is twice as dangerous to handle as the "
-                      "first one", "correct": False,
+            {"text": "That the second is twice as dangerous", "correct": False,
              "why": "How much acid there is and how fiercely it acts are separate "
                     "questions."},
             {"text": "That the second sample contains twice as much acid", "correct": True},
@@ -1436,7 +1432,7 @@ QUESTIONS = [
         "text": "Alkali is added drop by drop to an acid and the pH is recorded after"
                 " every drop. How many of those readings can be exactly 7?",
         "options": [
-            {"text": "None, because 7 is never actually reached", "correct": False,
+            {"text": "None", "correct": False,
              "why": "The mixture does pass through 7; it is crossing it that "
                     "takes so little."},
             {"text": "One at most", "correct": True},
@@ -1456,14 +1452,15 @@ QUESTIONS = [
         "text": "Sodium chloride is one salt. Roughly how many different salts are"
                 " there altogether?",
         "options": [
-            {"text": "Only three, one for each common acid", "correct": False,
-             "why": "Each acid makes a whole family, one for every metal it can "
-                    "be paired with."},
+            {"text": "Three", "correct": False,
+             "why": "One for each common acid is the idea behind this. Each "
+                    "acid makes a whole family, one for every metal it can be "
+                    "paired with."},
             {"text": "Thousands", "correct": True},
-            {"text": "Exactly one for each element", "correct": False,
+            {"text": "One for each element", "correct": False,
              "why": "A salt is made from two parts, so the count is far larger "
                     "than the list of elements."},
-            {"text": "Just the one, which is table salt", "correct": False,
+            {"text": "Just one, table salt", "correct": False,
              "why": "Table salt is a single member of a very large family."},
         ],
         "figure": None,
@@ -1626,7 +1623,7 @@ QUESTIONS = [
             {"text": "Exactly 7, because some of the acid has been neutralised",
              "correct": False,
              "why": "Neutral needs all of the acid used up, not some of it."},
-            {"text": "Above 7, because alkali has been added to the flask",
+            {"text": "Above 7, because alkali was added",
              "correct": False,
              "why": "Alkali only pushes a mixture past 7 once there is no acid "
                     "left to use it."},
@@ -1803,15 +1800,16 @@ QUESTIONS = [
                 " alkali is twice as concentrated. Predict the volume of acid that"
                 " 20 cm³ of the second one would neutralise.",
         "options": [
-            {"text": "25 cm³, because the volume added is the same",
+            {"text": "25 cm³",
              "correct": False,
-             "why": "The volume is the same but each cm³ now carries twice as "
-                    "much alkali."},
+             "why": "The volume added is the same, but each cm³ now carries "
+                    "twice as much alkali."},
             {"text": "50 cm³", "correct": True},
-            {"text": "12.5 cm³, because a stronger alkali is used up sooner",
+            {"text": "12.5 cm³",
              "correct": False,
-             "why": "A more concentrated alkali neutralises more acid, not less."},
-            {"text": "40 cm³, because the alkali volume doubles instead",
+             "why": "A more concentrated alkali neutralises more acid, not "
+                    "less — it is not used up sooner."},
+            {"text": "40 cm³",
              "correct": False,
              "why": "The alkali volume has not changed; only what is dissolved in "
                     "it has."},

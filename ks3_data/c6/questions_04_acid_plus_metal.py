@@ -586,8 +586,7 @@ QUESTIONS = [
              "correct": False,
              "why": "Paint chips, and the slabs are there for where it does. "
                     "They protect steel the paint no longer covers"},
-            {"text": "The zinc would stop corroding, because there would be "
-                     "no steel for it to protect",
+            {"text": "The zinc would stop corroding",
              "correct": False,
              "why": "There would be no zinc there at all. The question is "
                     "what happens to the steel"},
@@ -709,13 +708,13 @@ QUESTIONS = [
         "band": "easier",
         "text": "A salt's name has two words. What is the first word?",
         "options": [
-            {"text": "The acid it was made from", "correct": False,
+            {"text": "The acid", "correct": False,
              "why": "The acid decides the second word. The first comes from the "
                     "other reactant."},
             {"text": "The metal", "correct": True},
-            {"text": "The gas that was given off", "correct": False,
+            {"text": "The gas given off", "correct": False,
              "why": "The gas leaves the tube and takes no part in the name at all."},
-            {"text": "The colour of the solution", "correct": False,
+            {"text": "The solution's colour", "correct": False,
              "why": "Colour is an observation, not part of a chemical name."},
         ],
         "figure": None,
@@ -762,12 +761,13 @@ QUESTIONS = [
         "text": "Hydrogen that has mixed with air does not squeak when lit. What does"
                 " it do?",
         "options": [
-            {"text": "Nothing, because air puts the flame out", "correct": False,
-             "why": "A flame is not smothered here. The mixture catches violently."},
-            {"text": "It burns with a slow, quiet flame", "correct": False,
-             "why": "Quiet burning is what happens at the mouth of a stoppered tube,"
-                    " not in a mixture with air."},
-            {"text": "It changes colour before it burns", "correct": False,
+            {"text": "Nothing", "correct": False,
+             "why": "Air does not put the flame out here. The mixture catches "
+                    "violently."},
+            {"text": "It burns quietly", "correct": False,
+             "why": "A slow, quiet flame is what happens at the mouth of a "
+                    "stoppered tube, not in a mixture with air."},
+            {"text": "It changes colour", "correct": False,
              "why": "Hydrogen is colourless throughout, and colour has nothing to do"
                     " with the hazard."},
             {"text": "It bangs", "correct": True},
@@ -970,8 +970,7 @@ QUESTIONS = [
                       "acid is more concentrated", "correct": False,
              "why": "A smaller volume of the same acid is not stronger. It is simply"
                     " less of it."},
-            {"text": "None from either, because an excess of acid stops the reaction "
-                      "from starting", "correct": False,
+            {"text": "None from either — excess acid stops it", "correct": False,
              "why": "Excess acid makes the reaction more certain to finish, not less"
                     " likely to begin."},
         ],
@@ -992,7 +991,7 @@ QUESTIONS = [
                       "properly", "correct": False,
              "why": "Nothing settles. A clear liquid throughout means nothing solid "
                     "is present."},
-            {"text": "That the salt left the tube with the hydrogen as it bubbled out", "correct": False,
+            {"text": "That the salt left with the hydrogen", "correct": False,
              "why": "Only the gas leaves. The salt stays behind, dissolved in the "
                     "liquid."},
         ],
@@ -1673,7 +1672,7 @@ QUESTIONS = [
              "correct": False,
              "why": "The gas leaves the liquid rather than holding the reaction "
                     "back."},
-            {"text": "The salt made has coated the metal and sealed it",
+            {"text": "The salt has sealed it",
              "correct": False,
              "why": "The salt dissolves as it forms and leaves the surface "
                     "clear."},
@@ -1776,7 +1775,7 @@ QUESTIONS = [
             {"text": "Half as much, because each piece is half the size",
              "correct": False,
              "why": "The two halves together hold all of the original magnesium."},
-            {"text": "None, because a cut strip cannot react properly",
+            {"text": "None — it cannot react",
              "correct": False,
              "why": "Cut edges react perfectly well, and rather more readily."},
         ],

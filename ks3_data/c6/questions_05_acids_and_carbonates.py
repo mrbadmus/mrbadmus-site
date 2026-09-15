@@ -348,7 +348,7 @@ QUESTIONS = [
                     "ONE substance can pass"},
             {"text": "A test only one substance can pass",
              "correct": True},
-            {"text": "A test that has to be done in a particular order",
+            {"text": "A test done in a set order",
              "correct": False,
              "why": "Order matters in a method, and it is not what the word "
                     "means here"},
@@ -1027,8 +1027,7 @@ QUESTIONS = [
                       "splint", "correct": False,
              "why": "Only the magnesium gives hydrogen. The marble gives carbon "
                     "dioxide, which puts a splint out."},
-            {"text": "Only the magnesium fizzes, because marble is a rock and rocks "
-                      "do not react", "correct": False,
+            {"text": "Only the magnesium fizzes; marble is rock", "correct": False,
              "why": "Marble fizzes readily, which is why limestone buildings are "
                     "damaged by acid rain."},
             {"text": "Both fizz, and both leave a solid behind that can be filtered "
@@ -1155,8 +1154,7 @@ QUESTIONS = [
         "text": "5.0 g of marble chips is added to a measured amount of acid. When "
                 "the fizzing stops, 3.5 g of chips remain. What does that show?",
         "options": [
-            {"text": "That marble only ever reacts to a fixed depth and then stops on"
-                      " its own", "correct": False,
+            {"text": "That marble stops at a fixed depth", "correct": False,
              "why": "A chip in plenty of acid is reacted away completely. Nothing "
                     "stops it part-way."},
             {"text": "That the acid ran out before the marble did", "correct": True},
@@ -1495,7 +1493,7 @@ QUESTIONS = [
              "correct": False,
              "why": "A little dissolves, but the gas is not destroyed by being "
                     "kept in."},
-            {"text": "It escapes through the glass of the flask", "correct": False,
+            {"text": "It escapes through the glass", "correct": False,
              "why": "Glass does not let a gas through, which is why a stopper "
                     "works at all."},
             {"text": "It stays inside the flask", "correct": True},
@@ -1597,13 +1595,14 @@ QUESTIONS = [
         "text": "The gas given off when magnesium is dropped into dilute acid "
                 "is bubbled through limewater. Predict what happens to it.",
         "options": [
-            {"text": "It turns milky, because all gases from acids do", "correct": False,
+            {"text": "It turns milky", "correct": False,
              "why": "Only carbon dioxide does that, and this gas is not carbon "
-                    "dioxide."},
-            {"text": "It turns milky and then clears again straight away", "correct": False,
+                    "dioxide. Not every gas from an acid turns limewater "
+                    "milky."},
+            {"text": "It turns milky, then clears", "correct": False,
              "why": "That happens with a great deal of carbon dioxide, and "
                     "none is present here."},
-            {"text": "It turns blue, because the gas is slightly alkaline", "correct": False,
+            {"text": "It turns blue", "correct": False,
              "why": "Limewater has no blue stage, and hydrogen is not "
                     "alkaline."},
             {"text": "It stays clear", "correct": True},
@@ -1906,10 +1905,10 @@ QUESTIONS = [
                 " is left standing on the bench. Predict what the limewater looks like"
                 " an hour later.",
         "options": [
-            {"text": "Clear again, because the white solid always redissolves",
+            {"text": "Clear again",
              "correct": False,
-             "why": "It redissolves only when more carbon dioxide is bubbled "
-                    "through, and none is."},
+             "why": "The white solid redissolves only when more carbon dioxide "
+                    "is bubbled through, and none is."},
             {"text": "Still milky", "correct": True},
             {"text": "Clear, because the test only lasts a few minutes",
              "correct": False,

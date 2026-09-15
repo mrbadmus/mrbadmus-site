@@ -477,7 +477,7 @@ QUESTIONS = [
              "correct": False,
              "why": "Distance is the same for both, and it would not break "
                     "the equality anyway."},
-            {"text": "Only the Sun pulls; the Earth does not pull back",
+            {"text": "Only the Sun pulls",
              "correct": False,
              "why": "Every gravitational force comes with an equal one the "
                     "other way."},
@@ -603,9 +603,10 @@ QUESTIONS = [
              "correct": False,
              "why": "Its mass is tiny and its pull is not: the two forces in "
                     "the pair are equal."},
-            {"text": "Nothing at all — only the Earth pulls", "correct": False,
-             "why": "Every gravitational force comes with an equal one in the "
-                    "opposite direction."},
+            {"text": "Nothing at all", "correct": False,
+             "why": "The Earth is not the only puller. Every gravitational "
+                    "force comes with an equal one in the opposite "
+                    "direction."},
             {"text": "Far more than 10 N, because the Earth is enormous",
              "correct": False,
              "why": "The Earth's size affects how hard IT pulls, and the pair "

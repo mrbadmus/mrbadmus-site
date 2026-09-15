@@ -759,7 +759,7 @@ def check_over_assertion(rows, new_ids, scope_name):
         print("     %-34s %3d in distractors · %3d in keys · %5.1f%%%s"
               % (leaf, d, k, rate, flag))
     if bad:
-        NOTE.append("over-assertion: %d leaf/leaves where an absolute appears "
+        NOTES.append("over-assertion: %d leaf/leaves where an absolute appears "
                     "only in distractors (%d+ times) and never in a key"
                     % (bad, 4))
     else:
