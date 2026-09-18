@@ -1,0 +1,821 @@
+"""Chemistry · Using resources — the MRB-338 expansion for `potable-water`.
+
+The shipped rows own the three-stage treatment order, the coagulant, the two
+desalination methods and the aerobic/anaerobic split, so the weight here falls
+on what they left: the waste-water side stage by stage (screening, the sludge
+and effluent split, biogas, the digestate), the sources of water in the UK, and
+the alternatives to chlorine.
+
+Required practical 8 carries the whole apparatus-and-error strand — evaporating
+a measured volume to constant mass, the water bath, the thermometer, the sample
+that leaves more residue because it came off chalk — and it supplies the clean
+arithmetic too, in grams per cubic decimetre. The harder band is mostly
+evaluation of a real choice: energy per cubic metre, residual chlorine in the
+mains, sludge to landfill, effluent back to the tap.
+"""
+
+TOPIC = "resources"
+SUBJECT = "chemistry"
+
+QUESTIONS = [
+    {
+        "id": "ks4-potable-water-e06",
+        "subtopic_slug": "potable-water",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "State what pure water contains.",
+        "options": [
+            "Water molecules and nothing else dissolved or suspended in it",
+            "Water molecules and a low level of dissolved minerals for health",
+            "Water molecules plus a small measured dose of chlorine",
+            "Water molecules and the fluoride ions found in taps",
+        ],
+        "correct_index": 0,
+        "why": "Pure water is a single substance, so it contains only H2O; "
+               "anything dissolved in it makes it a mixture.",
+    },
+    {
+        "id": "ks4-potable-water-e07",
+        "subtopic_slug": "potable-water",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Name the underground store of water that is reached by drilling a borehole.",
+        "options": [
+            "A reservoir, which is a valley dammed to hold surface water back",
+            "An estuary, where a river widens and mixes with salty sea water",
+            "An aquifer, which is a layer of rock holding water in its pores",
+            "A settling tank, in which suspended solids are left to sink down",
+        ],
+        "correct_index": 2,
+        "why": "An aquifer is permeable rock saturated with ground water, and a "
+               "borehole drilled into it lets the water be pumped up.",
+    },
+    {
+        "id": "ks4-potable-water-e08",
+        "subtopic_slug": "potable-water",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "State what happens at the screening stage of sewage treatment.",
+        "options": [
+            "Chlorine is added to the incoming sewage so that the bacteria in it are all killed",
+            "The sewage is boiled so that water separates from the solids",
+            "Air is blown through the liquid to feed the aerobic bacteria present",
+            "Large solids and grit are held back by screens and grilles",
+        ],
+        "correct_index": 3,
+        "why": "Screening is a physical first step that removes rags, grit and "
+               "other large solids before any settling or digestion.",
+    },
+    {
+        "id": "ks4-potable-water-e09",
+        "subtopic_slug": "potable-water",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Name the main gas in the biogas made when sewage sludge is digested without oxygen.",
+        "options": [
+            "Oxygen, which the bacteria release as they digest the sludge material",
+            "Chlorine, which is given off from the treated water in the tanks",
+            "Carbon monoxide, which forms because the sludge burns incompletely",
+            "Methane, which can be burnt as a fuel to run the sewage works",
+        ],
+        "correct_index": 3,
+        "why": "Anaerobic digestion of the organic matter in sludge produces "
+               "biogas that is mainly methane, which is a usable fuel.",
+    },
+    {
+        "id": "ks4-potable-water-e10",
+        "subtopic_slug": "potable-water",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Which of these is a source of surface water used for drinking water in the UK?",
+        "options": [
+            "A reservoir holding water behind a dam",
+            "An aquifer deep below a layer of clay",
+            "The open sea around the British coast",
+            "A sludge tank at a sewage treatment works",
+        ],
+        "correct_index": 0,
+        "why": "Reservoirs, rivers and lakes are surface waters; an aquifer is "
+               "ground water and the other two are not drinking-water sources.",
+    },
+    {
+        "id": "ks4-potable-water-e11",
+        "subtopic_slug": "potable-water",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Name the process in which sea water is boiled and the steam is then condensed.",
+        "options": [
+            "Filtration, in which the water passes through beds of sand and gravel",
+            "Flocculation, in which fine particles are made to clump together",
+            "Distillation, in which the water is evaporated and then cooled back",
+            "Chlorination, in which a small dose of chlorine is added to the water",
+        ],
+        "correct_index": 2,
+        "why": "Boiling leaves the dissolved salts behind in the flask and "
+               "condensing the steam collects the water alone.",
+    },
+    {
+        "id": "ks4-potable-water-e12",
+        "subtopic_slug": "potable-water",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A sample of tap water is evaporated to dryness in a basin. State what is left.",
+        "options": [
+            "Nothing is left, since tap water has been filtered and chlorinated",
+            "A colourless liquid, which is the water that failed to evaporate",
+            "A white solid residue, which is the dissolved salts left behind",
+            "A dark deposit of carbon, formed when the basin was heated strongly",
+        ],
+        "correct_index": 2,
+        "why": "Tap water is potable but not pure, so evaporating the water off "
+               "leaves the solids that were dissolved in it.",
+    },
+    {
+        "id": "ks4-potable-water-s07",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A works doses chlorine at 0.5 mg for every litre of water. "
+                "Calculate the mass of chlorine needed for 2000 cubic metres.",
+        "options": [
+            "1 kg, since 2 000 000 litres each need 0.5 mg",
+            "1 g, treating the 2000 cubic metres as 2000 litres",
+            "1000 kg, taking the dose as 0.5 g for each litre",
+            "4000 kg, dividing the 2000 cubic metres by the 0.5 mg dose",
+        ],
+        "correct_index": 0,
+        "why": "2000 cubic metres is 2 000 000 litres, and 2 000 000 lots of "
+               "0.5 mg is 1 000 000 mg, which is 1 kg.",
+    },
+    {
+        "id": "ks4-potable-water-s08",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Name the process in which fine suspended particles are made to stick together into larger clumps.",
+        "options": [
+            "Sedimentation, the stage in which the heavier clumps sink to the floor of the tank",
+            "Crystallisation, in which the dissolved solids form crystals as water evaporates",
+            "Sterilisation, in which the harmful microorganisms in the water are destroyed",
+            "Flocculation, in which the particles gather into clumps heavy enough to settle",
+        ],
+        "correct_index": 3,
+        "why": "Flocculation is the clumping step; sedimentation is the settling "
+               "that follows once the clumps are heavy enough.",
+    },
+    {
+        "id": "ks4-potable-water-s09",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Describe what separates in the sedimentation tanks at a sewage works.",
+        "options": [
+            "Solids sink to form sludge and the liquid effluent is drawn off above them",
+            "Chlorine gas rises to the surface of the tank while the treated water is drawn off below",
+            "Methane collects at the top of the tank while the effluent flows out beneath",
+            "The water evaporates from the surface, leaving the solid waste in the tank",
+        ],
+        "correct_index": 0,
+        "why": "Settling splits the sewage into two streams that are then treated "
+               "differently: sludge anaerobically and effluent aerobically.",
+    },
+    {
+        "id": "ks4-potable-water-s10",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why the solid digestate left after sludge digestion is valuable.",
+        "options": [
+            "It can be burnt as a fuel, because the digestion has concentrated the methane in it",
+            "It can be returned to the settling tanks, because it helps the next batch to settle",
+            "It can be sold as a coagulant, because digestion makes aluminium sulfate",
+            "It can be spread on farmland, because it holds nutrients that crops need",
+        ],
+        "correct_index": 3,
+        "why": "Digestion leaves a solid rich in nitrogen and phosphorus "
+               "compounds, so it is used as a fertiliser rather than dumped.",
+    },
+    {
+        "id": "ks4-potable-water-s11",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Name two kinds of substance that reach waste water as run-off from farmland.",
+        "options": [
+            "Nitrates and pesticides, which drain off treated land after heavy rainfall",
+            "Heavy metals and organic solvents, which are washed off the surface of the fields",
+            "Chlorine and ozone, which are applied to crops and then washed into rivers",
+            "Grit and rags, which are carried off the fields into the nearest watercourse",
+        ],
+        "correct_index": 0,
+        "why": "Agricultural waste water carries the fertilisers and crop "
+               "chemicals applied to the land, not industrial or domestic waste.",
+    },
+    {
+        "id": "ks4-potable-water-s12",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why treated effluent is disinfected before it is released into a river.",
+        "options": [
+            "To lower its temperature, so that the river water is not warmed by the discharge",
+            "To remove the dissolved nitrates, which would otherwise feed the river plants",
+            "To kill microorganisms that survived treatment, so the river is not contaminated",
+            "To raise its oxygen content, so that the fish downstream are not suffocated",
+        ],
+        "correct_index": 2,
+        "why": "Biological treatment reduces the organic matter but does not "
+               "sterilise, so a final disinfection step protects the river.",
+    },
+    {
+        "id": "ks4-potable-water-s13",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Describe how to find the mass of dissolved solids in a sample of water.",
+        "options": [
+            "Filter a measured volume of the sample through fine paper, then weigh the residue caught on it",
+            "Weigh the sample, distil it, then weigh the distillate that has been collected",
+            "Measure the pH of the sample, then read the mass of solids from a conversion table",
+            "Weigh an empty basin, evaporate a measured volume in it, then reweigh the basin",
+        ],
+        "correct_index": 3,
+        "why": "The dissolved solids stay in the basin when the water evaporates, "
+               "so the increase in the basin's mass is their mass.",
+    },
+    {
+        "id": "ks4-potable-water-s14",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why an evaporating basin is heated over a water bath rather than directly in a hot flame.",
+        "options": [
+            "A flame would make the liquid spit, so some of the solid would be lost",
+            "A flame would deposit carbon in the residue, so the mass finally measured would be far too large",
+            "A flame cannot reach 100 degrees C, so the water in the basin would not evaporate",
+            "A flame would dissolve the glass of the basin, so its mass would fall",
+        ],
+        "correct_index": 0,
+        "why": "Gentle heating at around 100 degrees C evaporates the water "
+               "without bumping, which would throw solid out of the basin.",
+    },
+    {
+        "id": "ks4-potable-water-s15",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "When a water sample is distilled, where should the thermometer bulb be placed?",
+        "options": [
+            "In the liquid at the bottom of the flask, to read the sample's temperature",
+            "In the collecting vessel, to read the temperature of the distillate as it arrives",
+            "Against the outside of the condenser, to read the temperature of the cooling water",
+            "At the neck of the flask, in the vapour passing through to the condenser",
+        ],
+        "correct_index": 3,
+        "why": "The distillate's identity is judged by the temperature of the "
+               "vapour entering the condenser, not of the boiling liquid.",
+    },
+    {
+        "id": "ks4-potable-water-s16",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "After evaporating a water sample to dryness, a student heats and reweighs the basin twice more. Explain why.",
+        "options": [
+            "To reach a constant mass, which shows that all of the water has gone",
+            "To drive off the chlorine, which would otherwise be weighed along with the solids",
+            "To decompose the residue, so that just the metal in it is weighed",
+            "To warm the basin evenly, so that the balance reading does not drift",
+        ],
+        "correct_index": 0,
+        "why": "If the mass is still falling, water remains in the residue and the "
+               "dissolved-solid mass would read too high.",
+    },
+    {
+        "id": "ks4-potable-water-s17",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Some works sterilise water with ozone or ultraviolet light instead of chlorine. State one disadvantage of doing so.",
+        "options": [
+            "Neither method kills bacteria, so the water leaves the works untreated",
+            "Neither method leaves protection in the water as it travels through the mains",
+            "Both methods add a strong taste to the water, which has to be removed at a later stage",
+            "Both methods raise the level of dissolved solids in the finished water",
+        ],
+        "correct_index": 1,
+        "why": "Ozone and ultraviolet act only at the works, whereas a small "
+               "residual chlorine dose keeps working along the pipe network.",
+    },
+    {
+        "id": "ks4-potable-water-s18",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Suggest why a treatment works draws water from a reservoir rather than straight from a river in flood.",
+        "options": [
+            "River water in flood carries dissolved salts, and storage in a reservoir removes them completely",
+            "Water stored in a reservoir has been chlorinated by sunlight during storage",
+            "River water in flood is too cold, and storage in a reservoir warms it up first",
+            "Water stored in a reservoir has already settled, so it carries much less sediment",
+        ],
+        "correct_index": 3,
+        "why": "Storage lets suspended solids settle out, so less work is left for "
+               "the sedimentation and filtration stages.",
+    },
+    {
+        "id": "ks4-potable-water-s19",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "About 3% of the water on Earth is fresh water, and most of that is frozen in ice caps. State roughly what share of the Earth's water is accessible fresh water.",
+        "options": [
+            "Less than 1%, since the ice caps hold most of the fresh water there is",
+            "About 30%, since the frozen fraction can be melted and used as needed",
+            "About 3%, since all fresh water counts as accessible to somebody",
+            "About 10%, since fresh water is shared evenly between ice and rivers",
+        ],
+        "correct_index": 0,
+        "why": "Taking most of the 3% away as ice leaves well under 1% of the "
+               "planet's water in rivers, lakes and aquifers.",
+    },
+    {
+        "id": "ks4-potable-water-s20",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why ground water from a deep aquifer usually needs less treatment than water from a lowland river.",
+        "options": [
+            "The rock it has passed through has filtered out solids and much organic matter",
+            "Ground water contains no dissolved substances, so it needs no treatment",
+            "Ground water is colder, and cold water cannot support any microorganisms",
+            "Ground water has already been chlorinated by the minerals in the rock lying above it",
+        ],
+        "correct_index": 0,
+        "why": "Percolating slowly through rock removes suspended matter and much "
+               "of the organic load that a surface river carries.",
+    },
+    {
+        "id": "ks4-potable-water-s21",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Describe how reverse osmosis separates the dissolved salt from sea water.",
+        "options": [
+            "The sea water is heated so the salt decomposes and the water is left behind",
+            "The sea water is stirred with a coagulant so the salt clumps and sinks",
+            "The sea water is pushed at pressure through a membrane that holds the ions back",
+            "The sea water is passed through sand, which traps the sodium and chloride ions",
+        ],
+        "correct_index": 2,
+        "why": "A semi-permeable membrane lets water molecules through but not the "
+               "larger hydrated ions, and pressure drives the water across it.",
+    },
+    {
+        "id": "ks4-potable-water-s22",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why a water company adds a small dose of chlorine rather than a large one.",
+        "options": [
+            "A large dose would react with the sand filters and clog the beds with solid",
+            "A large dose would raise the level of dissolved solids above the legal limit",
+            "A small dose is enough to kill microorganisms without spoiling taste or smell",
+            "A small dose is cheaper, and the amount added has no effect on the bacteria",
+        ],
+        "correct_index": 2,
+        "why": "Chlorine is effective at low concentration, and more than is needed "
+               "makes the water unpleasant to drink.",
+    },
+    {
+        "id": "ks4-potable-water-s23",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A 250 cm3 sample of water leaves 0.050 g of dissolved solids on evaporation. Calculate the concentration in g/dm3.",
+        "options": [
+            "0.050 g/dm3, using the residue mass directly",
+            "0.20 g/dm3, dividing the residue mass by 0.250 dm3",
+            "0.0125 g/dm3, multiplying by 0.250 dm3",
+            "12.5 g/dm3, multiplying the volume in cm3 by the residue mass",
+        ],
+        "correct_index": 1,
+        "why": "250 cm3 is 0.250 dm3, and 0.050 divided by 0.250 gives "
+               "0.20 g/dm3.",
+    },
+    {
+        "id": "ks4-potable-water-s24",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Suggest why distilled water is not recommended as somebody's only source of drinking water.",
+        "options": [
+            "It carries no dissolved minerals, some of which the body needs",
+            "It is acidic, because distillation concentrates the acids in the sample",
+            "It carries harmful microorganisms, because distillation cannot kill them",
+            "It has a boiling point above 100 degrees C, so it is hard to use",
+        ],
+        "correct_index": 0,
+        "why": "Calcium, magnesium and fluoride ions in ordinary drinking water "
+               "contribute to health, and distillation removes all of them.",
+    },
+    {
+        "id": "ks4-potable-water-s25",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Describe one way in which waste water from a factory can differ from domestic sewage.",
+        "options": [
+            "It may carry heavy metal ions or other toxic chemicals needing extra treatment",
+            "It contains no water, so the usual settling and digestion stages cannot work",
+            "It is already sterile, so no biological treatment of any kind is required",
+            "It has a neutral pH, whereas domestic sewage is strongly alkaline throughout",
+        ],
+        "correct_index": 0,
+        "why": "Industrial effluent can contain substances that ordinary sewage "
+               "treatment does not remove, so it needs treating separately.",
+    },
+    {
+        "id": "ks4-potable-water-s26",
+        "subtopic_slug": "potable-water",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why releasing untreated sewage into a river lowers the oxygen level of the water.",
+        "options": [
+            "The sewage reacts with the dissolved oxygen directly, forming carbon dioxide and water",
+            "The solids in the sewage settle on the bed and seal the oxygen into the sediment",
+            "The sewage is warmer than the river, and warm water is unable to hold any oxygen",
+            "Bacteria multiply on the organic matter and use up the dissolved oxygen as they respire",
+        ],
+        "correct_index": 3,
+        "why": "Aerobic bacteria feeding on the organic matter respire, and their "
+               "demand for oxygen strips it from the water.",
+    },
+    {
+        "id": "ks4-potable-water-h07",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Desalination by distillation needs about 10 kWh per cubic metre and reverse osmosis about 3.5 kWh per cubic metre. Evaluate which a new plant should use.",
+        "options": [
+            "Distillation, because a hotter process must give water of a higher purity overall",
+            "Distillation, because the energy figures show it handles larger volumes per hour",
+            "Reverse osmosis, on energy, although its membranes foul and must be replaced",
+            "Neither, because the two figures cannot be compared without knowing the salinity",
+        ],
+        "correct_index": 2,
+        "why": "3.5 kWh per cubic metre against 10 is a decisive energy saving, but "
+               "membrane fouling and replacement are real costs against it.",
+    },
+    {
+        "id": "ks4-potable-water-h08",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A student's value for the mass of dissolved solids in a water sample is too high. Suggest the most likely reason.",
+        "options": [
+            "The basin was weighed while it was still warm, which makes the balance read lower than it should",
+            "Some of the sample was spilt before it was poured into the evaporating basin",
+            "The residue was not dried to constant mass, so some water was weighed with it",
+            "The volume of the sample was measured with a measuring cylinder, not a pipette",
+        ],
+        "correct_index": 2,
+        "why": "Water still held in the residue adds to its mass, and only heating "
+               "to constant mass shows that it has all gone.",
+    },
+    {
+        "id": "ks4-potable-water-h09",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Equal volumes of water from a chalk area and from a granite area are each evaporated to dryness. Predict which leaves the greater mass of residue.",
+        "options": [
+            "The chalk sample, because more of the chalk has dissolved into the water",
+            "The granite sample, because granite is the harder of the two rock types",
+            "Both leave the same mass, because the volumes taken were equal",
+            "The granite sample, because granite contains more different minerals",
+        ],
+        "correct_index": 0,
+        "why": "Chalk is calcium carbonate and dissolves appreciably in slightly "
+               "acidic ground water; granite is far less soluble.",
+    },
+    {
+        "id": "ks4-potable-water-h10",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "An empty basin has a mass of 42.15 g. After 500 cm3 of water is evaporated in it, its mass is 42.31 g. Calculate the concentration of dissolved solids in g/dm3.",
+        "options": [
+            "0.16 g/dm3, taking the increase in mass as the concentration itself",
+            "84.5 g/dm3, dividing the final mass of the basin by the volume used",
+            "0.08 g/dm3, multiplying the increase by the 0.500 dm3",
+            "0.32 g/dm3, dividing the 0.16 g increase by 0.500 dm3",
+        ],
+        "correct_index": 3,
+        "why": "The residue is 42.31 - 42.15 = 0.16 g in 0.500 dm3, so the "
+               "concentration is 0.32 g/dm3.",
+    },
+    {
+        "id": "ks4-potable-water-h11",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A sample of pond water has a pH of 7.0. Explain why this does not show that the water is potable.",
+        "options": [
+            "A pH meter is not accurate enough to be used on a natural water sample",
+            "A neutral pH says nothing about microorganisms or dissolved substances present",
+            "Potable water has a pH of 6.0, so a neutral sample has already failed the test",
+            "A pH of 7.0 shows the water is pure, which is not the same as being potable",
+        ],
+        "correct_index": 1,
+        "why": "pH measures acidity alone, and water can be neutral while carrying "
+               "bacteria or harmful dissolved ions.",
+    },
+    {
+        "id": "ks4-potable-water-h12",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A village boils its water before drinking it. Determine what this does and does not achieve.",
+        "options": [
+            "It removes the dissolved salts but leaves the microorganisms untouched in the water",
+            "It kills the microorganisms but leaves the dissolved substances in the water",
+            "It removes both the microorganisms and the dissolved salts, giving pure water",
+            "It does neither, because boiling changes nothing about the water's composition",
+        ],
+        "correct_index": 1,
+        "why": "Boiling sterilises but is not distillation: the dissolved ions stay "
+               "in the pan, and any harmful ones remain in the drink.",
+    },
+    {
+        "id": "ks4-potable-water-h13",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A councillor proposes trebling the chlorine dose at the local works to make the water safer. Evaluate the proposal.",
+        "options": [
+            "It is sound, because the safety of drinking water rises with the chlorine dose",
+            "It is poor: the normal dose already kills microbes, and excess spoils the water",
+            "It is sound, because a trebled chlorine dose would also remove the dissolved solids present",
+            "It is poor, because chlorine has no effect on the microorganisms in water anyway",
+        ],
+        "correct_index": 1,
+        "why": "Disinfection is already effective at the dose used, and a large "
+               "excess gives taste and odour problems for no safety gain.",
+    },
+    {
+        "id": "ks4-potable-water-h14",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain how the biogas collected at a sewage works changes the energy balance of the site.",
+        "options": [
+            "It is burnt on site, so some of the energy the treatment needs is supplied by the waste",
+            "It is sold to the gas network, so the works then buys in no energy of its own",
+            "It is stored underground, so the works can claim it captured its emissions",
+            "It warms the sedimentation tanks, which makes the solids settle faster",
+        ],
+        "correct_index": 0,
+        "why": "Burning the methane generates heat and electricity for the works, "
+               "offsetting energy that would otherwise be bought in.",
+    },
+    {
+        "id": "ks4-potable-water-h15",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A works proposes sending its sludge straight to landfill instead of digesting it. Evaluate this proposal.",
+        "options": [
+            "It is a good plan, because landfill is the recognised disposal route for all sludge",
+            "It is poor: the biogas and the fertiliser are both lost, and landfill use rises",
+            "It is a good plan, because anaerobic digestion produces a gas that has no possible use",
+            "It is poor, because sludge cannot legally be moved away from a treatment works",
+        ],
+        "correct_index": 1,
+        "why": "Digestion turns a waste into a fuel and a fertiliser, so skipping "
+               "it throws away both and adds to landfill.",
+    },
+    {
+        "id": "ks4-potable-water-h16",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Evaluate the suggestion that reverse osmosis should replace the whole of a UK works' treatment process.",
+        "options": [
+            "It should, because one process is simpler to run than three separate stages",
+            "It should not: the water is nearly fresh already, so the extra energy is wasted",
+            "It should, because reverse osmosis is the one process that kills microorganisms",
+            "It should not, because reverse osmosis is unable to remove dissolved substances",
+        ],
+        "correct_index": 1,
+        "why": "Settling, filtering and chlorinating are cheap and sufficient for "
+               "fresh water; reverse osmosis is reserved for salt water.",
+    },
+    {
+        "id": "ks4-potable-water-h17",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A desalination plant produces 50 000 cubic metres of water a day and uses 3.5 kWh for each cubic metre. Calculate the energy used per day.",
+        "options": [
+            "14 300 kWh, found by dividing the daily volume by the figure per cubic metre",
+            "1 750 000 kWh, the same multiplication with a power of ten added",
+            "50 004 kWh, found by adding the energy per cubic metre to the volume",
+            "175 000 kWh, found by multiplying the daily volume by 3.5 kWh",
+        ],
+        "correct_index": 3,
+        "why": "50 000 multiplied by 3.5 gives 175 000 kWh, which is the plant's "
+               "daily energy demand.",
+    },
+    {
+        "id": "ks4-potable-water-h18",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why aerobic digestion of effluent gives carbon dioxide and water while anaerobic digestion of sludge gives methane.",
+        "options": [
+            "The sludge contains carbon and the effluent does not, so just one gives a gas",
+            "The bacteria differ in size, and larger bacteria release the larger molecules",
+            "Oxygen is available in one and absent in the other, which changes the products",
+            "The sludge is warmer, and warmer conditions favour a hydrocarbon product",
+        ],
+        "correct_index": 2,
+        "why": "With oxygen present the organic matter is oxidised fully to carbon "
+               "dioxide and water; without it the bacteria produce methane.",
+    },
+    {
+        "id": "ks4-potable-water-h19",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A dry city proposes treating its sewage effluent further and supplying it as drinking water. Evaluate the proposal.",
+        "options": [
+            "It cannot work, because effluent stays unsafe however much it is treated after",
+            "It can work technically, but dissolved substances must be removed and the public convinced",
+            "It can work at once, because effluent leaving a works is already potable water",
+            "It cannot work, because sewage effluent contains no water once it has been treated",
+        ],
+        "correct_index": 1,
+        "why": "The chemistry is achievable with membrane treatment and "
+               "disinfection; the obstacles are dissolved load, cost and trust.",
+    },
+    {
+        "id": "ks4-potable-water-h20",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Suggest why a water company keeps a low level of chlorine in the mains instead of sterilising once at the works.",
+        "options": [
+            "Chlorine is needed to keep the pipes from corroding while the water flows",
+            "Chlorine has to be present for the sand filters at the works to keep working",
+            "Contamination can enter along the network, so protection must continue in the pipe",
+            "Chlorine improves the taste of the water once it has travelled some distance",
+        ],
+        "correct_index": 2,
+        "why": "A single dose at the works cannot deal with microbes entering "
+               "through a leak or repair further down the network.",
+    },
+    {
+        "id": "ks4-potable-water-h21",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Predict how a spell of hot weather affects the chlorine dose a treatment works must use, and explain why.",
+        "options": [
+            "A larger dose, because microorganisms multiply faster in warmer water",
+            "A smaller dose, because chlorine dissolves more readily in warmer water",
+            "The same dose, because temperature has no effect on microbial growth",
+            "A smaller dose, because sunlight will sterilise the reservoir water first",
+        ],
+        "correct_index": 0,
+        "why": "Warmth speeds microbial growth, so more chlorine is needed to reach "
+               "and hold a safe residual level.",
+    },
+    {
+        "id": "ks4-potable-water-h22",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Fine clay particles stay suspended in still water for many hours. Explain, in terms of mass, why a coagulant makes them settle within minutes.",
+        "options": [
+            "The coagulant dissolves the clay, and a solution settles faster than a suspension",
+            "The coagulant warms the water, and warm water allows solids to sink more quickly",
+            "The coagulant makes the water denser, so the clay particles are pushed downwards",
+            "Many small particles join into clumps of much greater mass, which sink quickly",
+        ],
+        "correct_index": 3,
+        "why": "A single particle is too light for gravity to overcome the water's "
+               "resistance; a heavy clump of many particles is not.",
+    },
+    {
+        "id": "ks4-potable-water-h23",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Three sources are available: an upland spring, a lowland river and the sea. Determine the order of increasing treatment needed.",
+        "options": [
+            "Sea, then lowland river, then upland spring, as salt is the easiest thing to remove",
+            "Upland spring, then lowland river, then sea, as the dissolved load rises across them",
+            "Lowland river, then upland spring, then the sea, since a river is the cleanest source there is",
+            "All three need the same treatment, because every source must be made potable",
+        ],
+        "correct_index": 1,
+        "why": "A spring may need only sterilising, a river needs the full "
+               "three-stage process, and sea water needs desalination as well.",
+    },
+    {
+        "id": "ks4-potable-water-h24",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A sample of water contains dissolved copper sulfate. Explain why distillation purifies it but passing it through filter paper does not.",
+        "options": [
+            "Filter paper reacts with copper sulfate, but distillation leaves it alone",
+            "Distillation removes the water and leaves the copper sulfate to be collected",
+            "Dissolved ions pass through the paper, but they are left behind when the water boils off",
+            "Filter paper is too coarse, so a finer grade of paper would purify the sample",
+        ],
+        "correct_index": 2,
+        "why": "Filtration separates by particle size and dissolved ions are far "
+               "smaller than the pores; evaporating the water leaves them behind.",
+    },
+    {
+        "id": "ks4-potable-water-h25",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A town of 20 000 people each uses 150 litres of water a day. Calculate the daily supply needed in cubic metres.",
+        "options": [
+            "3000 cubic metres, since 3 000 000 litres is 3000 cubic metres",
+            "133 cubic metres, dividing the number of people by the litres each",
+            "30 000 cubic metres, the same calculation with a power of ten added",
+            "3 000 000 cubic metres, leaving the answer in litres rather than converting",
+        ],
+        "correct_index": 0,
+        "why": "20 000 x 150 = 3 000 000 litres, and 1000 litres is one cubic "
+               "metre, so the town needs 3000 cubic metres a day.",
+    },
+    {
+        "id": "ks4-potable-water-h26",
+        "subtopic_slug": "potable-water",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Evaluate the claim that water cannot run short because the water cycle keeps returning it.",
+        "options": [
+            "The claim holds, because the total mass of water on Earth does not change",
+            "The claim is weak: the water returns, but not always where and when it is needed",
+            "The claim holds, because rainfall is spread evenly over the whole of the Earth's surface",
+            "The claim is weak, because the water cycle removes fresh water permanently",
+        ],
+        "correct_index": 1,
+        "why": "The cycle conserves water globally, but a region can still lack "
+               "accessible fresh water at the time its people need it.",
+    },
+]

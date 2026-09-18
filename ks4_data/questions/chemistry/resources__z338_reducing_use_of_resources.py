@@ -1,0 +1,821 @@
+"""Chemistry · Using resources — the MRB-338 expansion for `reducing-use-of-resources`.
+
+The shipped rows own the hierarchy itself, the glass and paper cases and the
+e-waste sorting problem, so the weight here falls on the numbers this spec point
+supplies and they did not use: aluminium recycling at about 5% of the extraction
+energy, steel at about 30%, the tonnes of bauxite and iron ore a tonne of scrap
+saves, and the mass arithmetic of a redesigned bottle.
+
+The rest goes on the material-by-material detail — sand as a finite raw material
+for glass, the magnet that takes steel out of a mixed can stream, density sorting
+for polymers, down-cycling glass into road aggregate — and on the reason recycling
+sits third: it recovers the material but still spends energy doing it. The harder
+band evaluates the claims people actually make, including that recycling answers
+the exhaustion of ore.
+"""
+
+TOPIC = "resources"
+SUBJECT = "chemistry"
+
+QUESTIONS = [
+    {
+        "id": "ks4-reducing-use-of-resources-e06",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Name the main raw material that glass is made from.",
+        "options": [
+            "Sand",
+            "Clay",
+            "Bauxite",
+            "Limestone alone",
+        ],
+        "correct_index": 0,
+        "why": "Glass is made by melting sand, which is silicon dioxide, together "
+               "with smaller amounts of other solids.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-e07",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Recycling aluminium needs roughly what share of the energy needed to extract it from its ore?",
+        "options": [
+            "About half of it, because the metal still has to be melted down again",
+            "About 5% of it, because the metal is simply melted and re-formed",
+            "About the same, because melting a metal takes as much energy as extraction",
+            "Rather more, because scrap has to be collected before it can be melted",
+        ],
+        "correct_index": 1,
+        "why": "Extraction needs electrolysis of molten aluminium oxide; recycling "
+               "needs only melting, which is a very much smaller energy cost.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-e08",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Reducing means less new material is made in the first place, "
+                "while reusing gives an existing item a further life. Which "
+                "action is reducing?",
+        "options": [
+            "Filling the same water bottle from a tap each morning",
+            "Taking last year's coat to a second-hand clothing shop",
+            "Choosing loose vegetables instead of a packaged tray",
+            "Mending a torn bag rather than throwing the bag away",
+        ],
+        "correct_index": 2,
+        "why": "Buying with less packaging means the packaging is never made, which "
+               "is prevention rather than a second use of something made already.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-e09",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Paper is manufactured from which raw material?",
+        "options": [
+            "Crude oil, which supplies the fibres that paper is made of",
+            "Sand, which is ground finely and then pressed into thin sheets",
+            "Limestone, which is quarried and then rolled out into sheets",
+            "Trees, which supply the wood fibres that paper is made of",
+        ],
+        "correct_index": 3,
+        "why": "Paper is made from wood fibre, so it is renewable if the forest is "
+               "managed and replanted and a cause of deforestation if it is not.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-e10",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A strong magnet is passed over a stream of mixed scrap cans. Which metal does it pull out?",
+        "options": [
+            "Steel, because iron is attracted to a magnet",
+            "Aluminium, because it is the lighter metal",
+            "Copper, because it conducts electricity well",
+            "Tin, because it is used to coat other metals",
+        ],
+        "correct_index": 0,
+        "why": "Iron and steel are magnetic while aluminium, copper and tin are "
+               "not, so a magnet separates the steel cans cleanly.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-e11",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Most plastics in everyday use are manufactured from which type of resource?",
+        "options": [
+            "Renewable plant material, harvested afresh from farmland at the end of each season",
+            "Fossil fuels, mainly crude oil and natural gas",
+            "Metal ores, crushed and then melted into sheets",
+            "Recycled glass, which is melted and drawn out into long fibres",
+        ],
+        "correct_index": 1,
+        "why": "The monomers for poly(ethene) and most other polymers come from "
+               "crude oil and natural gas, which are finite.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-e12",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "easier",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Mending a kettle instead of buying a new one is an example of which of the three Rs?",
+        "options": [
+            "Recycling, because the parts are recovered",
+            "Reducing, because no energy is spent",
+            "Reusing, because the same kettle serves longer",
+            "None, because repair falls outside the three Rs",
+        ],
+        "correct_index": 2,
+        "why": "Repair keeps the existing article in service, which extends its "
+               "life without reprocessing the material it is made of.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s07",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why recycling is placed third in the hierarchy rather than first.",
+        "options": [
+            "Because recycled material is of such poor quality that it can rarely be used again",
+            "Because recycling is more expensive than manufacturing from raw materials would be",
+            "Because recycling does more harm to the environment than landfill does",
+            "Because it recovers the material but still spends energy reprocessing it",
+        ],
+        "correct_index": 3,
+        "why": "Reducing prevents the material being made and reusing needs no "
+               "reprocessing, whereas recycling has to collect, sort and remelt.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s08",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "State one energy advantage of melting collected glass rather than making glass from raw sand.",
+        "options": [
+            "The recycled glass melts at a lower temperature, so less fuel is burnt",
+            "The recycled glass needs no melting, so no fuel is burnt",
+            "The recycled glass contains no silicon dioxide, so it softens sooner",
+            "The recycled glass is heavier, so a smaller volume needs heating",
+        ],
+        "correct_index": 0,
+        "why": "Broken glass softens at a lower temperature than a fresh mixture of "
+               "sand and other solids, so the furnace uses less energy.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s09",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Extracting aluminium takes about 15 kWh for each kilogram. Recycling takes about 5% of that. Calculate the energy to recycle 1 kg.",
+        "options": [
+            "5 kWh, reading the 5% directly as an energy",
+            "0.75 kWh, which is 5% of 15 kWh",
+            "3 kWh, dividing 15 kWh by the 5",
+            "14.25 kWh, the energy saved, not used",
+        ],
+        "correct_index": 1,
+        "why": "5% of 15 is 0.75, so recycling one kilogram takes about 0.75 kWh.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s10",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Making steel from scrap takes about 30% of the energy of making it from iron ore. Calculate the percentage of energy saved.",
+        "options": [
+            "30%, since that is the figure quoted for the recycled route",
+            "50%, since recycling and extraction are treated as comparable",
+            "70%, since 100% minus the 30% still used leaves 70%",
+            "130%, found by adding the 30% to the original 100%",
+        ],
+        "correct_index": 2,
+        "why": "If only 30% of the energy is still needed, the saving is the other "
+               "70%.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s11",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why waste glass is sorted by colour before it is melted for new bottles.",
+        "options": [
+            "Different colours of glass melt at temperatures much too far apart to be mixed",
+            "The colour has to be washed off the glass before it can be remelted",
+            "Mixed colours would make the new glass too brittle to hold a liquid",
+            "A colour cannot be taken out once melted, so mixed glass gives only dark glass",
+        ],
+        "correct_index": 3,
+        "why": "The colouring stays in the melt, so a mixed collection can only "
+               "become green or brown glass; sorting keeps clear glass "
+               "available for new clear bottles.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s12",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why choosing rechargeable batteries instead of single-use ones is a form of reuse.",
+        "options": [
+            "The same cell is charged and used again many times over",
+            "The metals in the cell are recovered and made into new cells",
+            "The cell contains less material than a single-use cell does",
+            "The cell decomposes harmlessly once it stops holding charge",
+        ],
+        "correct_index": 0,
+        "why": "Reuse means the same article serves again without being "
+               "reprocessed, which is exactly what recharging achieves.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s13",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why buying an appliance that lasts twice as long counts as reducing.",
+        "options": [
+            "Because a longer-lasting appliance can be recycled twice as many times as a cheaper one would be",
+            "Because half as many appliances need to be manufactured over the same period",
+            "Because a longer-lasting appliance draws half as much electricity while working",
+            "Because the appliance is repaired rather than replaced at the end of its life",
+        ],
+        "correct_index": 1,
+        "why": "Reducing means fewer articles are made in the first place, and a "
+               "product that lasts twice as long halves the number needed.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s14",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Suggest why crushing waste glass for road aggregate is a poorer outcome than melting it for new bottles.",
+        "options": [
+            "The crushed glass will decompose in the road and release greenhouse gases as it slowly breaks down",
+            "The crushed glass cannot be used in a road, so it has to be landfilled anyway",
+            "The glass is put to a lower-value use and no new bottle is saved from being made",
+            "The crushing uses far more energy than melting the same mass of glass would",
+        ],
+        "correct_index": 2,
+        "why": "Aggregate replaces cheap crushed rock, whereas a recycled bottle "
+               "replaces a bottle that would otherwise have been made from sand.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s15",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Suggest why copper is a metal especially worth collecting for recycling.",
+        "options": [
+            "Copper is the one metal that can be melted and cast a second time",
+            "Copper corrodes quickly, so recycling it prevents the metal being lost",
+            "Copper is abundant, so there is a large amount of scrap to collect",
+            "Copper is scarce and valuable, so the ore saved is worth a great deal",
+        ],
+        "correct_index": 3,
+        "why": "High-grade copper ore is limited and the metal has a high value, so "
+               "recovering scrap is worthwhile both economically and for the ore.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s16",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Describe one way a recycling plant separates two different polymers from each other.",
+        "options": [
+            "It floats the shredded plastic in a liquid so that one type sinks",
+            "It melts the mixture and pours off whichever polymer melts first",
+            "It passes a magnet over the shredded plastic to attract one type",
+            "It burns the mixture and collects the polymer that fails to burn",
+        ],
+        "correct_index": 0,
+        "why": "Polymers have different densities, so in a liquid of intermediate "
+               "density one floats and the other sinks.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s17",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain how recycling reduces the need for landfill.",
+        "options": [
+            "The recycled material decays away much faster once it has been reprocessed even once",
+            "The material is made into a new product instead of being buried",
+            "The material is burnt during recycling, so nothing is left to bury",
+            "The material is compressed, so the same mass takes up less space",
+        ],
+        "correct_index": 1,
+        "why": "Anything that re-enters manufacture is not buried, so the volume of "
+               "waste going to landfill falls.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s18",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "State one advantage a compostable plastic has over ordinary poly(ethene).",
+        "options": [
+            "It is stronger, so a thinner film of it can carry the same load",
+            "It is broken down by microorganisms, so it need not go to landfill",
+            "It can be recycled more times before its quality begins to fall",
+            "It is made from crude oil, which makes it cheaper to manufacture",
+        ],
+        "correct_index": 1,
+        "why": "Compostable polymers are digested by microorganisms, so the waste "
+               "becomes compost rather than occupying landfill for centuries.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s19",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why paper made from an unmanaged forest is a resource problem.",
+        "options": [
+            "An unmanaged forest yields shorter fibres, so its paper tears more readily",
+            "Paper from an unmanaged forest cannot be collected for recycling afterwards",
+            "Paper from an unmanaged forest has to be bleached with far more chemicals",
+            "Trees are felled faster than they are replanted, so forest area falls",
+        ],
+        "correct_index": 3,
+        "why": "Timber is renewable only while replanting keeps pace with felling; "
+               "without that, the resource and the habitat are both lost.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s20",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Recycling one tonne of aluminium saves about 4 tonnes of bauxite. Calculate the bauxite saved by recycling 25 tonnes.",
+        "options": [
+            "100 tonnes, multiplying 25 tonnes by the 4 tonnes saved per tonne",
+            "29 tonnes, adding the two figures given in the question together",
+            "6.25 tonnes, dividing the 25 tonnes by the 4 tonnes per tonne",
+            "21 tonnes, subtracting the 4 tonnes from the 25 tonnes recycled",
+        ],
+        "correct_index": 0,
+        "why": "25 multiplied by 4 gives 100, so 100 tonnes of bauxite need not be "
+               "mined.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s21",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why switching off lights in an empty room belongs under reducing rather than recycling.",
+        "options": [
+            "Because the electricity is recovered by the meter and supplied to somebody else",
+            "Because less fuel is burnt, so fewer resources are consumed in the first place",
+            "Because the light bulb lasts longer and can be used a second time over",
+            "Because the energy saved is stored in the wiring until it is next needed",
+        ],
+        "correct_index": 1,
+        "why": "Reducing means using less at source; nothing is being recovered "
+               "from waste, so it is not recycling.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s22",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Describe how a deposit return scheme on bottles helps to conserve resources.",
+        "options": [
+            "It raises the price of the drink, so fewer bottles are manufactured in total",
+            "It removes the need to sort bottles, because every bottle is identical",
+            "It gives a reason to bring bottles back, so they can be refilled or remelted",
+            "It taxes the manufacturer, who then chooses a thinner glass for the bottle",
+        ],
+        "correct_index": 2,
+        "why": "A refund makes the return worth a customer's trouble, so the "
+               "bottles re-enter reuse or recycling instead of being discarded.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s23",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why the sand used to make glass is treated as a finite resource.",
+        "options": [
+            "Sand is a compound of silicon, and every compound of silicon is a finite resource",
+            "Sand dissolves slowly in sea water, so the world's supply is falling",
+            "Sand cannot be recycled once it has been melted into glass",
+            "Suitable sand deposits are dug out far faster than new ones form",
+        ],
+        "correct_index": 3,
+        "why": "Sand of the right grain and purity occurs in particular deposits, "
+               "and those are worked out far faster than geology replaces them.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s24",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why sorting waste into separate bins at home makes recycling cheaper.",
+        "options": [
+            "Less separation is needed at the plant, which is the costly part of the process",
+            "The waste weighs less once it has been divided between several bins",
+            "The plant can then burn the waste, more cheaply than reprocessing",
+            "Household bins compress the waste, so fewer lorry journeys are needed",
+        ],
+        "correct_index": 0,
+        "why": "Mixed waste has to be sorted by machine or by hand before anything "
+               "can be reprocessed, and that sorting is where the cost lies.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s25",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Suggest one way a second-hand furniture shop reduces the use of resources.",
+        "options": [
+            "The furniture is broken down and its timber made into new boards",
+            "Each item serves a further owner, so one fewer new item is made",
+            "The furniture decays naturally once its second owner discards it",
+            "The shop pays less tax, which it spends on planting new trees",
+        ],
+        "correct_index": 1,
+        "why": "Every article that finds a second owner displaces the manufacture "
+               "of a replacement, which is the whole point of reuse.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-s26",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why recycling a material still carries an environmental cost.",
+        "options": [
+            "The recycled material releases greenhouse gases the whole time it is stored before use",
+            "Recycled material has to be buried for a period before it can be reused",
+            "Collecting, sorting and reprocessing the material all use energy",
+            "Recycling produces a material of lower mass, so more must be made",
+        ],
+        "correct_index": 2,
+        "why": "Lorries, sorting plant and furnaces all consume energy, which is "
+               "why reducing and reusing are preferred to recycling.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h07",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Extracting aluminium needs 15 kWh per kg and recycling needs 5% of that. Calculate the energy saved by recycling 200 kg instead of extracting it.",
+        "options": [
+            "150 kWh, which is the energy the recycling itself consumes",
+            "3000 kWh, which is the energy the extraction route would consume",
+            "2250 kWh, obtained by taking 75% of the extraction energy",
+            "2850 kWh, since 3000 kWh less the 150 kWh of recycling is 2850 kWh",
+        ],
+        "correct_index": 3,
+        "why": "Extraction is 200 x 15 = 3000 kWh and recycling is 5% of that, "
+               "which is 150 kWh, so 2850 kWh is saved.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h08",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Evaluate the claim that recycling plastic is pointless because a polymer can be recycled only a limited number of times.",
+        "options": [
+            "The claim is weak: each cycle still displaces new plastic made from crude oil",
+            "The claim holds, because a material that cannot be recycled endlessly is not worth the collection",
+            "The claim holds, because a polymer loses its identity the moment it is remelted once",
+            "The claim is weak, because polymers can be recycled without any limit",
+        ],
+        "correct_index": 0,
+        "why": "Even a finite number of cycles delays the demand for fresh monomer "
+               "and keeps the material out of landfill for longer.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h09",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Recycling aluminium needs about 5% of its extraction energy and recycling steel about 30% of its. Determine which metal gains more from recycling, and explain why.",
+        "options": [
+            "Steel, because a far greater tonnage of steel than of aluminium is produced worldwide each year",
+            "Aluminium, because avoiding its electrolysis saves a much larger share of energy",
+            "Steel, because the 30% figure is the larger of the two numbers given here",
+            "Neither, because a percentage saving cannot be compared between two metals",
+        ],
+        "correct_index": 1,
+        "why": "Aluminium is won by electrolysis, which is very energy-intensive, "
+               "so skipping it saves 95% against steel's 70%.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h10",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A council proposes collecting glass, metal and all plastics together in one bin. Evaluate the proposal.",
+        "options": [
+            "It is a clear improvement, because one bin collects more material than three would",
+            "It is a clear improvement, because materials separate on their own inside the lorry",
+            "It raises collection rates but the plant must then do the sorting, which costs energy",
+            "It fails entirely, because a mixed load of waste cannot be recycled by any method",
+        ],
+        "correct_index": 2,
+        "why": "Convenience raises the amount collected, but the separation work has "
+               "only been moved to the plant, where it still has to be paid for.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h11",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A cafe switches to compostable cups and says its waste problem is solved. Evaluate the claim.",
+        "options": [
+            "It is sound, because a compostable cup leaves no residue of any kind once it has been thrown away",
+            "It is sound, because compostable cups are made without using any energy",
+            "It is weak, because compostable cups cannot be composted anywhere in the country",
+            "It is weak: a cup is still made for each drink, and reuse would prevent that",
+        ],
+        "correct_index": 3,
+        "why": "Compostable disposal is an improvement at the disposal end, but "
+               "reducing and reusing both come above it in the hierarchy.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h12",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A school wants to cut its plastic waste as much as possible. Determine which action does most, and why.",
+        "options": [
+            "Fitting water fountains and asking pupils to bring refillable bottles",
+            "Adding more plastic recycling bins along every corridor and in every classroom of the school",
+            "Buying bottled water in larger bottles instead of small ones",
+            "Sending its plastic waste abroad for specialist reprocessing",
+        ],
+        "correct_index": 0,
+        "why": "A refillable bottle prevents the disposable bottle being made at "
+               "all, and reducing sits above both reuse and recycling.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h13",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A bottle contains 24 g of plastic and a redesign brings this down to 18 g. Calculate the percentage reduction in plastic used.",
+        "options": [
+            "6%, reading the 6 g saving directly as a percentage figure",
+            "25%, since the 6 g saving divided by the original 24 g is a quarter",
+            "33%, dividing the 6 g saving by the new mass of 18 g rather than by the old mass",
+            "75%, which is the new mass as a percentage of the original mass",
+        ],
+        "correct_index": 1,
+        "why": "The saving is 24 - 18 = 6 g, and 6 divided by 24 is 25%.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h14",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Evaluate the claim that recycling paper always saves trees.",
+        "options": [
+            "The claim holds, because every sheet recycled is one that no tree was felled for",
+            "The claim holds, because paper mills are not permitted to fell trees themselves",
+            "The claim is weak: much paper comes from plantations planted in order to be felled",
+            "The claim is weak, because recycled paper still has to be made from fresh wood pulp",
+        ],
+        "correct_index": 2,
+        "why": "Where the pulp comes from a replanted plantation, recycling saves "
+               "the energy and the land rather than saving a wild forest.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h15",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A council asks residents to crush aluminium cans flat before putting them out. Explain how this lowers the impact of recycling them.",
+        "options": [
+            "Crushing breaks the metal into smaller pieces that need no sorting at the plant",
+            "Crushing changes the aluminium into a form that melts at a lower temperature",
+            "Crushing squeezes out the air that would otherwise slow the melting down",
+            "More cans fit in each lorry, so fewer journeys and less fuel are needed",
+        ],
+        "correct_index": 3,
+        "why": "Collecting and transporting the scrap counts towards the impact "
+               "of recycling it, and flattened cans travel far more densely, "
+               "so the same tonnage takes fewer lorry journeys.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h16",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Evaluate whether a product labelled as made from fully recycled plastic must be the lowest-impact choice available.",
+        "options": [
+            "It must be, because recycled content measures a product's impact",
+            "It need not be: a product that was never made at all would have less impact still",
+            "It must be, because recycled plastic uses no energy to reprocess",
+            "It need not be, because recycled plastic is unsafe for everyday use",
+        ],
+        "correct_index": 1,
+        "why": "Recycled content is a real gain over new plastic, but reducing "
+               "consumption avoids the whole impact rather than shrinking it.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h17",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A town collects 500 000 aluminium cans, each containing 15 g of metal. Calculate the mass of aluminium collected in kilograms.",
+        "options": [
+            "750 kg, dividing by ten thousand",
+            "7500 kg, since 7 500 000 g is 7500 kg",
+            "75 000 kg, the multiplication with a power of ten added",
+            "7 500 000 kg, left in grams without converting",
+        ],
+        "correct_index": 1,
+        "why": "500 000 x 15 = 7 500 000 g, and dividing by 1000 gives 7500 kg.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h18",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why a glass bottle can be remelted indefinitely while a plastic bottle cannot.",
+        "options": [
+            "Glass is an element, and an element is unchanged by being heated repeatedly",
+            "Glass is heavier, so the same mass of it survives many more melting cycles",
+            "Melting does not shorten or damage the structure of glass as it does a polymer",
+            "Glass is collected more carefully, so it arrives at the plant free of any dirt",
+        ],
+        "correct_index": 2,
+        "why": "Remelting glass re-forms the same material, whereas polymer chains "
+               "break a little each cycle, so the plastic weakens.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h19",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A government can either pay a refund for each returned container or ban single-use containers. Evaluate which does more for resource use.",
+        "options": [
+            "The refund, because a scheme people choose to join is the kind that works best",
+            "The refund, because returning a container prevents it from ever being made",
+            "The ban, because preventing the single-use item removes the impact altogether",
+            "The ban, because banned products cannot be recycled and so are not collected",
+        ],
+        "correct_index": 2,
+        "why": "A refund improves recovery of items already made; a ban acts at the "
+               "reduce step, which is the top of the hierarchy.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h20",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Suggest why reducing is the hardest of the three Rs to achieve in practice, even though it saves the most.",
+        "options": [
+            "It asks people and companies to consume less, which cuts against selling more",
+            "It requires new equipment in every factory before it can begin to work",
+            "It saves resources just in those countries that already recycle all of their other materials",
+            "It cannot be measured, so nobody is able to tell whether it has worked",
+        ],
+        "correct_index": 0,
+        "why": "Recycling can be added to existing habits, whereas reducing means "
+               "buying and making less, which conflicts with commercial pressure.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h21",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Evaluate the claim that burying metal in landfill does not matter because it could be dug up again later.",
+        "options": [
+            "The claim holds, because buried metal stays chemically unchanged",
+            "The claim holds, because landfill sites are designed to be mined again",
+            "The claim is weak: the metal is dispersed and corroded, and fresh ore is mined meanwhile",
+            "The claim is weak, because metals decay into other elements underground",
+        ],
+        "correct_index": 2,
+        "why": "Landfill mixes and corrodes the metal so recovery is costly, and in "
+               "the meantime the demand is met by mining new ore.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h22",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "A country raises the share of its aluminium that is recycled from 50% to 75%. Determine the effect on the bauxite it must import.",
+        "options": [
+            "The import falls by half, because the recycled share rose by half again",
+            "The import is unchanged, because the two routes serve different markets",
+            "The import rises, because recycling plants need bauxite alongside scrap",
+            "The import falls by half, because the share met by new metal drops from 50% to 25%",
+        ],
+        "correct_index": 3,
+        "why": "New metal falls from 50% to 25% of the total, so the bauxite needed "
+               "halves.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h23",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Explain why a kettle made from a single polymer is easier to recycle than one made from three materials bonded together.",
+        "options": [
+            "A single polymer weighs less, so the recycling plant is able to handle more of it in each hour",
+            "A single polymer needs no separation before it can be shredded and remelted",
+            "A single polymer can be recycled without any energy being used",
+            "A single polymer is a renewable material, unlike a bonded mixture",
+        ],
+        "correct_index": 1,
+        "why": "Bonded materials have to be prised apart before either can be "
+               "reprocessed, and that separation is often what makes it uneconomic.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h24",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Recycling one tonne of steel saves about 1.5 tonnes of iron ore. Calculate the ore saved by recycling 6000 tonnes of steel.",
+        "options": [
+            "9000 tonnes, multiplying the 6000 tonnes by 1.5 tonnes of ore",
+            "4000 tonnes, dividing the 6000 tonnes by the factor of 1.5",
+            "6001.5 tonnes, adding the two figures given in the question",
+            "900 tonnes, the correct multiplication with a power of ten lost",
+        ],
+        "correct_index": 0,
+        "why": "6000 multiplied by 1.5 gives 9000, so 9000 tonnes of ore stay in "
+               "the ground.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h25",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Evaluate the claim that recycling on its own will prevent the world running out of metal ore.",
+        "options": [
+            "The claim holds, because recycling returns every atom of the metal back into use each time round",
+            "The claim is weak: demand keeps rising and some metal is lost at every cycle",
+            "The claim holds, because ore is replaced naturally at the rate it is mined",
+            "The claim is weak, because recycled metal cannot be used for any new product",
+        ],
+        "correct_index": 1,
+        "why": "Recycling slows the drawdown but cannot end it while consumption "
+               "grows and some metal is dispersed or discarded at each pass.",
+    },
+    {
+        "id": "ks4-reducing-use-of-resources-h26",
+        "subtopic_slug": "reducing-use-of-resources",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": False,
+        "text": "Suggest why a repair shop can conserve more resources than a recycling centre handling the same products.",
+        "options": [
+            "Repair keeps the whole article in service, so nothing has to be remade",
+            "Repair is carried out by hand, and hand work consumes no energy",
+            "Repair returns the materials to the manufacturer for a second processing",
+            "Repair is cheaper for the customer, so more articles are brought in",
+        ],
+        "correct_index": 0,
+        "why": "Recycling recovers the material but a new article must still be "
+               "manufactured; repair avoids both the remelting and the remaking.",
+    },
+]
