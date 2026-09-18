@@ -1230,14 +1230,15 @@ QUESTIONS = [
     {
         "id": "b7-03-e14",
         "band": "easier",
-        "text": "Step 2's minute in boiling water does more than kill the "
-                "cells and open them up. What else does it do to the leaf?",
+        "text": "The minute the leaf spends in boiling water does more than "
+                "kill the cells and open them up. What else does it do to the "
+                "leaf?",
         "options": [
             {"text": "It also dissolves the chlorophyll, the same job "
                      "ethanol does later.",
              "correct": False,
-             "why": "Water will not shift chlorophyll — that is ethanol's "
-                    "job at step 3, not the boiling water's."},
+             "why": "Water will not shift chlorophyll — that is the ethanol's "
+                    "job later on, not the boiling water's."},
             {"text": "It also softens the leaf's waxy surface, on top of "
                      "killing the cells.",
              "correct": True},
@@ -1407,16 +1408,17 @@ QUESTIONS = [
     {
         "id": "b7-03-e21",
         "band": "easier",
-        "text": "Because this practical uses boiling water and hot "
-                "apparatus, what does the safety note require?",
+        "text": "This practical uses boiling water and hot apparatus as well "
+                "as flammable ethanol. What safety measures does that call "
+                "for?",
         "options": [
             {"text": "Eye protection, and a teacher present.",
              "correct": True},
             {"text": "Gloves, since the water is treated as the sole "
                      "hazard.",
              "correct": False,
-             "why": "The note asks for eye protection and a teacher "
-                    "present, not just gloves."},
+             "why": "Eye protection and a teacher present are what is called "
+                    "for, not just gloves."},
             {"text": "Nothing extra, since water is not the flammable "
                      "substance in the room.",
              "correct": False,
@@ -1425,7 +1427,7 @@ QUESTIONS = [
             {"text": "A fire extinguisher kept open on the bench "
                      "throughout.",
              "correct": False,
-             "why": "The note asks for eye protection and a teacher "
+             "why": "What is called for is eye protection and a teacher "
                     "present, not equipment kept open on the bench."},
         ],
         "figure": None,
@@ -1537,24 +1539,30 @@ QUESTIONS = [
     {
         "id": "b7-03-e26",
         "band": "easier",
-        "text": "The safety note describes this whole bench as a "
-                "simulation of the real practical. What does it say the "
-                "bench is not?",
+        "text": "After the ethanol step the ethanol in the tube is bright "
+                "green. Iodine is added to the leaf and never to that "
+                "ethanol. Why would testing the ethanol be no use?",
         "options": [
-            {"text": "A fair test of anything on its own.",
+            {"text": "The ethanol would break the iodine down before it had "
+                     "any chance to react with anything in the tube.",
              "correct": False,
-             "why": "The note says nothing about fairness — it is about "
-                    "what the bench does and does not stand in for."},
-            {"text": "A risk assessment.",
+             "why": "Ethanol does not break iodine down. The reason is that "
+                    "the starch never left the leaf in the first place."},
+            {"text": "Starch is insoluble, so none of it ever left the leaf "
+                     "and passed into the ethanol.",
              "correct": True},
-            {"text": "A substitute for reading the method cards.",
+            {"text": "The ethanol is still far too hot for iodine to give any "
+                     "colour change at all while it is in there.",
              "correct": False,
-             "why": "The note is about safety, not about whether the "
-                    "method cards need reading."},
-            {"text": "Something a teacher needs to check.",
+             "why": "Iodine reacts with starch at any temperature reached "
+                    "here. The point is that there is no starch in the "
+                    "ethanol for it to find."},
+            {"text": "The chlorophyll now in the ethanol would turn the "
+                     "iodine blue-black and give a false positive.",
              "correct": False,
-             "why": "A teacher present is exactly what the note requires "
-                    "for the real version of this practical."},
+             "why": "Chlorophyll gives no reaction with iodine at all. The "
+                    "ethanol holds chlorophyll and no starch, so there is "
+                    "nothing there to find."},
         ],
         "figure": None,
     },
@@ -1733,10 +1741,9 @@ QUESTIONS = [
     {
         "id": "b7-03-s16",
         "band": "standard",
-        "text": "A student wipes a stray drop of iodine off their hand "
-                "with a paper towel and carries on without telling "
-                "anyone. Why does the safety note treat this as worth "
-                "mentioning?",
+        "text": "A student wipes a stray drop of iodine off their hand with a "
+                "paper towel and carries on without telling anyone. Why does "
+                "that matter?",
         "options": [
             {"text": "Because iodine solution stains and irritates skin "
                      "and eyes, and ought to be reported and washed off "
@@ -1765,31 +1772,34 @@ QUESTIONS = [
     {
         "id": "b7-03-s17",
         "band": "standard",
-        "text": "Two set-ups both go blue-black everywhere after a day "
-                "in the light: one plant was destarched first, the "
-                "other was fresh off a windowsill. Why does only one of "
-                "the two results actually mean anything?",
+        "text": "Two students test leaves picked from the same destarched "
+                "plant after the same day of light. One tile comes out "
+                "strongly blue-black, the other only weakly. Give the most "
+                "likely explanation that does not involve a mistake in the "
+                "method.",
         "options": [
-            {"text": "Because only the plant that was fresh off the "
-                     "windowsill actually had any chlorophyll left to "
-                     "react with.",
+            {"text": "Iodine reacts more strongly with a younger leaf, and "
+                     "the two students will have picked leaves of different "
+                     "ages.",
              "correct": False,
-             "why": "Both plants have chlorophyll — the ethanol removes "
-                    "it from both before the iodine stage in either "
-                    "case."},
-            {"text": "Because only the destarched plant's starch can be "
-                     "dated to the day of the test.",
+             "why": "A leaf's age does not change how iodine reacts with "
+                    "starch. What differs between two leaves on one plant is "
+                    "how much light each of them caught."},
+            {"text": "The two leaves were not equally lit — one spent part of "
+                     "the day in the shade of the leaves above it.",
              "correct": True},
-            {"text": "Because the fresh plant's leaf would be too green "
-                     "for the iodine to work at all.",
+            {"text": "A plant makes starch in only some of its leaves, and "
+                     "stores none at all in the rest of them.",
              "correct": False,
-             "why": "Both leaves go through the same ethanol step and "
-                    "are equally pale by the time iodine is added."},
-            {"text": "Because only the destarched plant was tested with "
-                     "fresh iodine.",
+             "why": "Every green leaf on a lit plant makes and stores starch. "
+                    "The difference between two of them is how much light "
+                    "each one received."},
+            {"text": "One leaf will have kept more of its chlorophyll, and "
+                     "the green adds to the depth of the blue-black.",
              "correct": False,
-             "why": "Which plant was destarched has nothing to do with "
-                    "which bottle of iodine was used."},
+             "why": "The ethanol removes the chlorophyll from both leaves "
+                    "before any iodine is added, so none is left to affect "
+                    "the colour."},
         ],
         "figure": None,
     },
@@ -1888,33 +1898,32 @@ QUESTIONS = [
     {
         "id": "b7-03-s21",
         "band": "standard",
-        "text": "A student argues that as long as their own Bunsen is "
-                "unlit, it does not matter whether anyone else's is "
-                "burning nearby. Using the safety note, explain what is "
-                "wrong with that argument.",
+        "text": "A student who cannot find a dark cupboard puts the plant "
+                "inside a cardboard box with the lid taped down, and leaves "
+                "the box in a bright classroom for two days. Is that an "
+                "acceptable substitute?",
         "options": [
-            {"text": "Nothing is wrong with that reasoning — the note "
-                     "is concerned with the single tube that a "
-                     "particular student happens to be heating "
-                     "themselves.",
+            {"text": "No — a plant shut in a box would run out of the carbon "
+                     "dioxide it needs to empty its starch store.",
              "correct": False,
-             "why": "The note's flame rule covers the whole room, not "
-                    "just one student's own tube."},
-            {"text": "The note bans a naked flame anywhere in the room, "
-                     "because ethanol vapour can drift to reach a flame "
-                     "that is not the student's own.",
+             "why": "Emptying a starch store is respiration, which uses "
+                    "oxygen rather than carbon dioxide, and a taped cardboard "
+                    "box is nowhere near airtight anyway."},
+            {"text": "Yes — all that matters is that no light reaches the "
+                     "plant, which a taped box does.",
              "correct": True},
-            {"text": "The rule only applies once ethanol has started to "
-                     "boil.",
+            {"text": "No — a plant needs some light in order to use up the "
+                     "starch it is holding in its leaves.",
              "correct": False,
-             "why": "Flammable vapour is given off well before boiling, "
-                    "so the rule holds from the moment ethanol is heated "
-                    "at all."},
-            {"text": "The rule is really about protecting the equipment, "
-                     "not the people in the room.",
+             "why": "Light is what lets a plant make starch, not use it up. "
+                    "The store is emptied in the dark, which is the whole "
+                    "reason for the two days."},
+            {"text": "No — only a cupboard is properly dark, and cardboard "
+                     "lets far too much light through to work.",
              "correct": False,
-             "why": "The hazard the note describes is a fire risk to "
-                    "people, not a risk to apparatus."},
+             "why": "Cardboard with the lid taped down blocks light perfectly "
+                    "well. It is darkness the method needs, not a particular "
+                    "cupboard."},
         ],
         "figure": None,
     },
@@ -2051,12 +2060,11 @@ QUESTIONS = [
     {
         "id": "b7-03-s26",
         "band": "standard",
-        "text": "A properly destarched plant is given a full day of "
-                "bright light, tested correctly, and both halves stay "
-                "orange-brown. A second, identical leaf from the same "
-                "plant, tested with a fresh bottle of iodine, goes "
-                "blue-black in the exposed half as expected. What does "
-                "the first result suggest?",
+        "text": "A properly destarched plant is given a full day of bright "
+                "light, tested correctly, and both halves stay orange-brown. "
+                "A second, identical leaf from the same plant, tested with a "
+                "fresh bottle of iodine, gives the usual clear two-tone "
+                "result. What does the first result suggest?",
         "options": [
             {"text": "That light was not actually needed for this plant "
                      "to make starch.",
@@ -2066,9 +2074,9 @@ QUESTIONS = [
             {"text": "That the plant had not really been destarched, "
                      "despite appearances.",
              "correct": False,
-             "why": "The second leaf's result — blue-black only where "
-                    "light fell — is exactly what a properly destarched "
-                    "plant should show."},
+             "why": "The second leaf's result is exactly what a properly "
+                    "destarched plant should show, so the destarching had "
+                    "worked."},
             {"text": "That the first bottle of iodine may genuinely have "
                      "gone off.",
              "correct": True},
@@ -2148,31 +2156,30 @@ QUESTIONS = [
     {
         "id": "b7-03-s29",
         "band": "standard",
-        "text": "A student says the safety note doesn't really matter, "
-                "because nothing on the bench can actually catch fire. "
-                "What is the flaw in that argument?",
+        "text": "A student writes up the practical and records the whole "
+                "result as 'the leaf went blue-black'. What important detail "
+                "has been left out of that record?",
         "options": [
-            {"text": "The note exists for legal reasons alone and has "
-                     "no real grounding in the actual chemistry of "
-                     "ethanol vapour.",
+            {"text": "The mass of the leaf before the test and its mass again "
+                     "afterwards.",
              "correct": False,
-             "why": "The note describes a genuine chemical hazard — "
-                    "ethanol vapour and a naked flame — not a "
-                    "formality."},
-            {"text": "The note describes the real laboratory version of "
-                     "this practical, which the bench stands in for, "
-                     "and that version can catch fire.",
+             "why": "Nothing in this test is weighed; the result is a colour "
+                    "and where it appears, not a change in mass."},
+            {"text": "Which part of the leaf went blue-black, and which part "
+                     "stayed orange-brown.",
              "correct": True},
-            {"text": "The bench itself catches fire under certain "
-                     "settings, so the note does apply directly.",
+            {"text": "The number of drops of iodine that were put onto the "
+                     "leaf on the tile.",
              "correct": False,
-             "why": "The note is about the real practical rather than "
-                    "about the bench catching fire itself."},
-            {"text": "The note only applies once a real teacher is "
-                     "standing next to the bench.",
+             "why": "A drop or two is enough, and more drops do not change "
+                    "what the test says. What the record needs is where the "
+                    "colour appeared."},
+            {"text": "Whether the plant was watered at all during its two "
+                     "days in the dark.",
              "correct": False,
-             "why": "Whether a teacher is present makes no difference "
-                    "to whether the hazard being described is real."},
+             "why": "Watering does not put starch into a leaf; light does, "
+                    "and the two days in the dark are there to take the old "
+                    "starch out."},
         ],
         "figure": None,
     },
@@ -2249,47 +2256,44 @@ QUESTIONS = [
     {
         "id": "b7-03-h15",
         "band": "harder",
-        "text": "The variegated leaf used to show chlorophyll is needed "
-                "has its white tissue only as a narrow edge, where the "
-                "leaf is thin and often torn — a weaker design than "
-                "testing a leaf that is half green and half white down "
-                "the middle. What makes the second design the stronger "
-                "evidence?",
+        "text": "Two classes test leaves from the same variegated plant. One "
+                "class destarches the plant for two days and gives it a day "
+                "of light first; the other tests a leaf straight off the "
+                "plant. Both classes get the same pattern of colour on the "
+                "tile. Does the second class's result still support the "
+                "conclusion that chlorophyll is needed?",
         "options": [
-            {"text": "Because a leaf split cleanly down the middle "
-                     "happens to have roughly twice as much white "
-                     "tissue available to test against the green.",
+            {"text": "No — the starch in the green parts could be weeks old, "
+                     "which leaves the white parts' result meaningless too.",
              "correct": False,
-             "why": "The amount of white tissue is not what makes one "
-                    "design more convincing than the other."},
-            {"text": "Because the green and white halves are otherwise "
-                     "alike in thickness and position, so chlorophyll "
-                     "is closer to being the only difference between "
-                     "them.",
+             "why": "The green parts' result cannot be dated, and that is a "
+                    "real limitation. The white parts' result does not depend "
+                    "on dating: they never hold starch at all."},
+            {"text": "Yes — the white tissue has no chlorophyll and no starch "
+                     "whenever it is tested, so the comparison holds.",
              "correct": True},
-            {"text": "Because a leaf split down the middle "
-                     "photosynthesises faster overall.",
+            {"text": "No — a leaf tested straight off a plant always comes "
+                     "out blue-black all over, whatever colour its tissue is.",
              "correct": False,
-             "why": "Neither design changes how fast the leaf as a "
-                    "whole photosynthesises; the point is which parts "
-                    "are being fairly compared."},
-            {"text": "Because torn tissue always gives a false positive "
-                     "with iodine.",
+             "why": "Undestarched green tissue does go blue-black, but white "
+                    "tissue has no chlorophyll and so never makes starch to "
+                    "be found, whenever it is tested."},
+            {"text": "Yes, but only because a variegated leaf empties its own "
+                     "starch store within a few hours of being picked.",
              "correct": False,
-             "why": "Torn tissue is not chemically different to iodine "
-                    "— the objection is about whether the compared "
-                    "tissues are otherwise alike, not about tearing."},
+             "why": "A picked leaf does not empty its store in hours, and "
+                    "nothing here turns on that. The white tissue simply "
+                    "never had any starch to begin with."},
         ],
         "figure": None,
     },
     {
         "id": "b7-03-h16",
         "band": "harder",
-        "text": "A single variegated leaf, tested once, shows "
-                "blue-black in its green parts and orange-brown in its "
-                "white parts. A critic says this alone does not fully "
-                "prove chlorophyll is needed. What extra evidence would "
-                "answer that criticism?",
+        "text": "A single variegated leaf, tested once, shows starch in its "
+                "green parts and none at all in its white parts. A critic "
+                "says this alone does not fully prove chlorophyll is needed. "
+                "What extra evidence would answer that criticism?",
         "options": [
             {"text": "Testing the exact same leaf a second time on the "
                      "same plant, days later, just to check that the "
@@ -2349,34 +2353,35 @@ QUESTIONS = [
     {
         "id": "b7-03-h18",
         "band": "harder",
-        "text": "Could a class ever mistake a boil-skipped leaf's patchy "
-                "result for a destarch-skipped leaf's result, just by "
-                "looking at one tile?",
+        "text": "A student claims the starch test proves photosynthesis "
+                "happened in a leaf. A teacher says it proves only that "
+                "starch is present. Who is right, and what would close the "
+                "gap between the two statements?",
         "options": [
-            {"text": "No — one gives a faint, uneven pattern that "
-                     "varies between repeats, and the other gives a "
-                     "strong, even blue-black including under the "
-                     "foil; the two look nothing alike.",
+            {"text": "The teacher — the test finds starch, and it takes a "
+                     "destarched plant and a light-and-dark comparison to tie "
+                     "that starch to photosynthesis.",
              "correct": True},
-            {"text": "Yes — both give a faint, hard-to-read pattern on "
-                     "the tile, because in both cases something about "
-                     "how the leaf was prepared has gone wrong before "
-                     "the iodine ever touched it.",
+            {"text": "The student — a blue-black tile is a direct detection "
+                     "of the photosynthesis reaction taking place in the "
+                     "tissue under the iodine.",
              "correct": False,
-             "why": "The destarch-skipped leaf gives a strong, easily "
-                    "read blue-black, not a faint one."},
-            {"text": "Yes — both give exactly the same strong "
-                     "blue-black pattern every time.",
+             "why": "Iodine finds starch and nothing else. Starch is evidence "
+                    "that photosynthesis happened, but it is not the reaction "
+                    "being detected."},
+            {"text": "The teacher, but only because iodine also turns "
+                     "blue-black with the glucose that photosynthesis makes, "
+                     "so the two cannot be told apart.",
              "correct": False,
-             "why": "Only the destarch-skipped leaf repeats the same "
-                    "strong pattern; the boil-skipped one varies each "
-                    "time."},
-            {"text": "No — but only because one uses ethanol and the "
-                     "other does not.",
+             "why": "Iodine gives no colour change with glucose at all, which "
+                    "is one of the reasons starch is the thing tested for."},
+            {"text": "Neither — the test detects chlorophyll, and finding "
+                     "chlorophyll is what proves photosynthesis happened in "
+                     "that part of the leaf.",
              "correct": False,
-             "why": "Both leaves go through the ethanol step in this "
-                    "comparison; what differs is the boiling and the "
-                    "destarching."},
+             "why": "The ethanol removes every trace of chlorophyll before "
+                    "the iodine goes on, so chlorophyll is not what is being "
+                    "detected."},
         ],
         "figure": None,
     },
@@ -2474,9 +2479,9 @@ QUESTIONS = [
                      "glass is always the more serious hazard in a "
                      "school laboratory.",
              "correct": False,
-             "why": "A naked flame near flammable vapour is judged the "
-                    "more serious hazard in this practical, which is "
-                    "why it is named first in the fault order."},
+             "why": "A naked flame near flammable vapour is the more serious "
+                    "hazard in this practical, which is why it is the one to "
+                    "deal with first."},
         ],
         "figure": None,
     },
@@ -2657,10 +2662,9 @@ QUESTIONS = [
     {
         "id": "b7-03-h27",
         "band": "harder",
-        "text": "On the same leaf, a student both skips the destarching "
-                "and heats the ethanol over a naked flame. The bench "
-                "reports the flame fault, not the destarching one. Why "
-                "is that the right thing to report first?",
+        "text": "On the same leaf, a student both skips the destarching and "
+                "heats the ethanol over a naked flame. Which of the two "
+                "faults should be dealt with first, and why?",
         "options": [
             {"text": "Because a destarching fault can always be fixed "
                      "afterwards, but a flame cannot.",
@@ -2672,18 +2676,18 @@ QUESTIONS = [
                      "nothing about the data quality matters until "
                      "safety is dealt with.",
              "correct": True},
-            {"text": "Because skipping the destarching step is judged "
-                     "to be the more dangerous of these two particular "
-                     "mistakes on the bench.",
+            {"text": "Because skipping the destarching step is the more "
+                     "dangerous of these two particular mistakes.",
              "correct": False,
              "why": "Skipping destarching produces bad data, not a "
                     "safety hazard — it is the less dangerous mistake."},
-            {"text": "Because the bench can only ever report one fault "
-                     "at a time, chosen at random.",
+            {"text": "Because faults are dealt with in the order they "
+                     "happened, and the destarching came first.",
              "correct": False,
-             "why": "The order faults are reported in is a deliberate "
-                    "ranking — safety first, then result-destroying "
-                    "faults, then result-weakening ones."},
+             "why": "The order is a deliberate ranking of seriousness — "
+                    "safety first, then result-destroying faults, then "
+                    "result-weakening ones — not the order the mistakes "
+                    "happened in."},
         ],
         "figure": None,
     },

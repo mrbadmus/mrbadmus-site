@@ -2232,8 +2232,8 @@ QUESTIONS = [
         "band": "harder",
         "text": "Some desert plants keep their stomata shut through the whole "
                 "day and open them only at night, storing the carbon dioxide "
-                "they take in until morning. Read that against the two "
-                "readouts.",
+                "they take in until morning. Evaluate that strategy against "
+                "the rate of photosynthesis and the water lost.",
         "options": [
             {"text": "It saves an enormous amount of water, because a hole "
                      "open at night in cool air loses far less than one open "
@@ -2253,7 +2253,7 @@ QUESTIONS = [
              "why": "Photosynthesis needs light and stops when it is dark. "
                     "Only the gas collection happens at night; the reaction "
                     "still waits for the morning."},
-            {"text": "It makes no difference to either readout, because a "
+            {"text": "It makes no difference to either figure, because a "
                      "stoma loses the same water whenever in the day it "
                      "happens to be opened.",
              "correct": False,
@@ -2298,9 +2298,10 @@ QUESTIONS = [
     {
         "id": "b7-02-h16",
         "band": "harder",
-        "text": "Leaf A reads 50% rate and 40% water on the bench; leaf B "
-                "reads 100% and 100%. Which spends less water for each unit "
-                "of photosynthesis, and by how much?",
+        "text": "Leaf A photosynthesises at 50% of an oak leaf's rate while "
+                "losing 40% of an oak leaf's water; leaf B is at 100% of "
+                "both. Which spends less water for each unit of "
+                "photosynthesis, and by how much?",
         "options": [
             {"text": "Leaf B, because 100% is the bigger rate, and the faster "
                      "leaf is the better one.",
@@ -2314,11 +2315,11 @@ QUESTIONS = [
             {"text": "Leaf B, because 100 minus 100 is nothing, while "
                      "leaf A is 10 percentage points behind on its water.",
              "correct": False,
-             "why": "Subtracting the two readouts compares nothing useful. "
-                    "The measure wanted is water divided by rate, which comes "
-                    "out at 0.8 for A and 1.0 for B."},
+             "why": "Subtracting the two figures compares nothing useful. The "
+                    "measure wanted is water divided by rate, which comes out "
+                    "at 0.8 for A and 1.0 for B."},
             {"text": "Neither — they spend the same, since leaf A is behind "
-                     "on both readouts by roughly the same sort of amount.",
+                     "on both figures by roughly the same sort of amount.",
              "correct": False,
              "why": "Roughly is not enough here. A's water falls further than "
                     "its rate does, so A gets more photosynthesis per unit of "
@@ -2555,11 +2556,11 @@ QUESTIONS = [
     {
         "id": "b7-02-h24",
         "band": "harder",
-        "text": "Take a leaf on the bench and make two changes at once: "
-                "double its thickness and halve its area. Predict what "
-                "happens to each readout.",
+        "text": "A leaf is altered in two ways at once: its thickness is "
+                "doubled and its surface area is halved. Predict what happens "
+                "to its rate of photosynthesis and to its water loss.",
         "options": [
-            {"text": "Both readouts fall, since each change on its own cuts "
+            {"text": "Both of them fall, since each change on its own cuts "
                      "the rate and each cuts the water as well.",
              "correct": True},
             {"text": "The rate falls and the water rises, since a thick leaf "
@@ -2686,8 +2687,8 @@ QUESTIONS = [
     {
         "id": "b7-02-h28",
         "band": "harder",
-        "text": "Adding a thick waxy cuticle to a leaf on the bench takes it "
-                "from 100% rate and 100% water to 90% rate and 60% water. Is "
+        "text": "Adding a thick waxy cuticle to a leaf takes it from 100% "
+                "rate and 100% water loss to 90% rate and 60% water loss. Is "
                 "that a good trade on a dry hillside, and why?",
         "options": [
             {"text": "No, because any fall in the rate is a loss, and a plant "
