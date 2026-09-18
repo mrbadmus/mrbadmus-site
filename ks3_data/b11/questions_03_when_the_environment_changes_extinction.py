@@ -1255,4 +1255,1632 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+    # ── easier · the MRB-338 expansion ──────────────────────────────────
+    {
+        "id": "b11-03-e14",
+        "band": "easier",
+        "text": "Biologists call one species a specialist. What does that "
+                "word tell you about it?",
+        "options": [
+            {"text": "It is unusually good at surviving, which is how it came "
+                     "by the name.",
+             "correct": False,
+             "why": "It is usually very good at one particular thing. That is "
+                    "not the same as being good at surviving, and it is often "
+                    "the opposite."},
+            {"text": "It is found in only one country, and nowhere else in "
+                     "the world.",
+             "correct": False,
+             "why": "That describes a small range, which is a separate risk "
+                    "factor. A specialist can be found over a wide area if "
+                    "what it depends on is."},
+            {"text": "It depends on one food, one habitat or one narrow set "
+                     "of conditions, and has nothing to fall back on.",
+             "correct": True},
+            {"text": "It has been studied by specialists, so more is known "
+                     "about it than about most species.",
+             "correct": False,
+             "why": "The word describes the animal or plant, not the people "
+                    "studying it. It is about what the species depends on."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e15",
+        "band": "easier",
+        "text": "A hazel dormouse has one small litter a year. Why does that "
+                "make life harder for the species when something goes wrong "
+                "in its wood?",
+        "options": [
+            {"text": "Losses are replaced very slowly, so the population takes "
+                     "years to build back up.",
+             "correct": True},
+            {"text": "A small litter means each young dormouse is weaker than "
+                     "one from a large litter.",
+             "correct": False,
+             "why": "A small litter usually means better fed young, not "
+                    "weaker ones. The difficulty is in how few of them there "
+                    "are each year."},
+            {"text": "Breeding only once a year means the young are all born "
+                     "at the wrong time of year.",
+             "correct": False,
+             "why": "Dormice breed when their food is available. The problem "
+                    "is the number of chances they get, not their timing."},
+            {"text": "One litter a year means the parents cannot teach their "
+                     "young enough to survive alone.",
+             "correct": False,
+             "why": "Teaching is not what is short here. What is short is the "
+                    "number of young the species can produce while conditions "
+                    "are against it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e16",
+        "band": "easier",
+        "text": "A giant panda eats bamboo and almost nothing else. Its "
+                "mountain forest is being cleared for farmland. Why does its "
+                "diet make the clearing so serious for it?",
+        "options": [
+            {"text": "Bamboo is the least nutritious plant in the forest, so "
+                     "the panda has to eat a great deal of it.",
+             "correct": False,
+             "why": "A panda does eat a great deal of bamboo, and that is a "
+                    "separate difficulty. The danger here is having no other "
+                    "food to turn to."},
+            {"text": "Pandas cannot digest anything other than bamboo, "
+                     "because their gut is that of a plant-eater.",
+             "correct": False,
+             "why": "A panda's gut is actually that of a meat-eater, and it "
+                    "will take other food occasionally. What it cannot do is "
+                    "live on anything else."},
+            {"text": "Bamboo grows back too quickly for the forest to be "
+                     "cleared properly.",
+             "correct": False,
+             "why": "Fast regrowth would help a panda rather than harm it. "
+                    "Bamboo is in fact slow to spread into new ground."},
+            {"text": "There is nothing else it can live on, so losing the "
+                     "bamboo means losing everything.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e17",
+        "band": "easier",
+        "text": "A brown rat can have up to five litters a year. How does "
+                "that help the species after a poisoning campaign cuts its "
+                "numbers?",
+        "options": [
+            {"text": "It means the rats that survive are the strongest, "
+                     "because only strong rats breed that often.",
+             "correct": False,
+             "why": "Breeding rate is a feature of the species, not a test "
+                    "any individual has passed. What matters is how fast the "
+                    "numbers come back."},
+            {"text": "The survivors can replace the lost numbers within a "
+                     "season or two.",
+             "correct": True},
+            {"text": "It means the poison is diluted between more rats, so "
+                     "each one gets a smaller dose.",
+             "correct": False,
+             "why": "Poison is eaten by individual rats in whatever amount "
+                    "they find. Numbers do not share a dose out between "
+                    "them."},
+            {"text": "The rats can move to another barn before the next "
+                     "poisoning begins.",
+             "correct": False,
+             "why": "Moving is something a generalist can do, and it is a "
+                    "different advantage. Breeding rate is about how quickly "
+                    "losses are made up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e18",
+        "band": "easier",
+        "text": "A herring gull will eat fish, waste, chips and almost "
+                "anything else, and is found on coasts and in towns across "
+                "the northern hemisphere. What does that description make it?",
+        "options": [
+            {"text": "A specialist, because it has learned to live on one "
+                     "reliable food supply from people.",
+             "correct": False,
+             "why": "Chips are one of very many things it eats. A specialist "
+                    "depends on one food, and this bird depends on none in "
+                    "particular."},
+            {"text": "A generalist, able to use many different foods and live in "
+                     "many different places.",
+             "correct": True},
+            {"text": "An introduced species, since it has spread into towns "
+                     "where it did not used to live.",
+             "correct": False,
+             "why": "Nobody brought it to those towns; it moved in by itself. "
+                    "An introduced species is one people carried to a place "
+                    "it had never reached."},
+            {"text": "A species with a small range, because it is only ever "
+                     "found near the sea.",
+             "correct": False,
+             "why": "Its range covers coasts and towns right across the "
+                    "northern hemisphere, which is about as far from a small "
+                    "range as a bird gets."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e19",
+        "band": "easier",
+        "text": "One of the four risk factors is a small or fragmented range. "
+                "What does a species' range mean?",
+        "options": [
+            {"text": "The number of foods it can live on.",
+             "correct": False,
+             "why": "That is its diet, and being narrow about it is a "
+                    "different risk factor. Range is about where a species is "
+                    "found."},
+            {"text": "The difference between the largest and smallest "
+                     "individuals of the species.",
+             "correct": False,
+             "why": "That is one kind of variation within a population. Range "
+                    "here is a geographical word, not a measurement of "
+                    "bodies."},
+            {"text": "The area of ground or water over which the species is "
+                     "found.",
+             "correct": True},
+            {"text": "The number of years a population has been living in one "
+                     "particular place.",
+             "correct": False,
+             "why": "How long it has been there is not the point. What "
+                    "matters is how much ground the species covers now."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e20",
+        "band": "easier",
+        "text": "A wildlife report says a habitat has been fragmented. What "
+                "has happened to it?",
+        "options": [
+            {"text": "What is left of it has been broken into separate "
+                     "patches that populations cannot move between.",
+             "correct": True},
+            {"text": "It has been damaged so badly that nothing can live in "
+                     "it at all.",
+             "correct": False,
+             "why": "The patches are usually good habitat still. The problem "
+                    "is that they are cut off from one another."},
+            {"text": "Several different habitats have been mixed together in "
+                     "one place.",
+             "correct": False,
+             "why": "Fragmenting breaks one habitat up rather than blending "
+                    "several. Nothing has been added to it."},
+            {"text": "It has been made smaller, and nothing else has changed "
+                     "about it.",
+             "correct": False,
+             "why": "Losing area is part of it, and the separation is the "
+                    "part that does the extra damage — each patch is now on "
+                    "its own."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e21",
+        "band": "easier",
+        "text": "The extinction at the end of the Permian is the largest in "
+                "the fossil record. Roughly how much of life in the sea did "
+                "it remove?",
+        "options": [
+            {"text": "About one species in ten.",
+             "correct": False,
+             "why": "That is nearer an ordinary bad stretch than a mass "
+                    "extinction. The end-Permian removed the great majority "
+                    "of sea species, not a tenth of them."},
+            {"text": "About nine species in every ten.",
+             "correct": True},
+            {"text": "Only the largest animals, and nothing smaller.",
+             "correct": False,
+             "why": "Losses ran right through the sizes, from large animals "
+                    "down to very small ones. Size is not what decided it."},
+            {"text": "About half of all the species in the sea.",
+             "correct": False,
+             "why": "Half would be an enormous loss and it is still well "
+                    "short. This event is the largest of the five for a "
+                    "reason."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e22",
+        "band": "easier",
+        "text": "How does the rate at which species are being lost today "
+                "compare with the background rate?",
+        "options": [
+            {"text": "It is about the same, which is why the background rate "
+                     "is worked out at all.",
+             "correct": False,
+             "why": "The background rate is worked out so that today's can be "
+                    "compared against it, and the comparison shows a large "
+                    "gap rather than a match."},
+            {"text": "It is lower, because so many species are now protected "
+                     "by law.",
+             "correct": False,
+             "why": "Protection helps particular species. Across the world "
+                    "the rate of loss is well above the background level, not "
+                    "below it."},
+            {"text": "It is estimated at tens to hundreds of times the "
+                     "background rate.",
+             "correct": True},
+            {"text": "It cannot be compared, because nobody has any idea how "
+                     "fast species were lost in the past.",
+             "correct": False,
+             "why": "The fossil record gives an estimate of the background "
+                    "rate, which is exactly what makes the comparison "
+                    "possible."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e23",
+        "band": "easier",
+        "text": "A species is described as extinct in the wild. What does "
+                "that mean?",
+        "options": [
+            {"text": "Its last individual died some years ago, and the phrase "
+                     "is simply a polite way of saying so.",
+             "correct": False,
+             "why": "Extinct in the wild means some are still alive. Once the "
+                    "last individual anywhere has died, the species is "
+                    "extinct without qualification."},
+            {"text": "Its numbers in the wild are falling and are expected to "
+                     "reach zero soon.",
+             "correct": False,
+             "why": "That describes a species in serious trouble but still "
+                    "present. Extinct in the wild means there are none left "
+                    "outside human care."},
+            {"text": "None are left outside human care, though some survive "
+                     "in zoos or gardens.",
+             "correct": True},
+            {"text": "It lives only in places people have never visited, so "
+                     "nobody has counted it.",
+             "correct": False,
+             "why": "An uncounted species is simply unstudied. This phrase is "
+                    "about where the surviving individuals are, and they are "
+                    "all in human hands."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e24",
+        "band": "easier",
+        "text": "Kakapo breed only in the years when a particular tree fruits "
+                "heavily, which can be two to four years apart, and they lay "
+                "very few eggs. Which risk factor is that?",
+        "options": [
+            {"text": "Slow reproduction — very few young, and not in every "
+                     "year.",
+             "correct": True},
+            {"text": "A small or fragmented range, since the birds can only "
+                     "breed near those trees.",
+             "correct": False,
+             "why": "Range is about how much ground a species covers. What is "
+                    "described here is how rarely it can breed at all."},
+            {"text": "Low genetic variation, because so few birds are "
+                     "involved in each breeding year.",
+             "correct": False,
+             "why": "Low variation may follow in time, and the feature "
+                    "described is the breeding rate itself — how seldom the "
+                    "species gets a generation."},
+            {"text": "A specialist diet built around one tree.",
+             "correct": False,
+             "why": "The tree sets when they breed rather than what they eat. "
+                    "This is the reproduction risk factor, not the diet one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e25",
+        "band": "easier",
+        "text": "One species is found right across several countries. Why "
+                "does that usually let it survive a disaster in one place?",
+        "options": [
+            {"text": "Because a disaster in one part of the range leaves "
+                     "populations everywhere else untouched.",
+             "correct": True},
+            {"text": "Because a species spread over several countries is "
+                     "protected by the laws of more than one government.",
+             "correct": False,
+             "why": "Protection is a separate matter and does not always "
+                    "follow. The safety comes from the event reaching only "
+                    "part of the species."},
+            {"text": "Because animals from the other countries come to "
+                     "replace the ones that died.",
+             "correct": False,
+             "why": "Some species do recolonise, and many cannot move that "
+                    "far. The species survives because it was never all in "
+                    "one place."},
+            {"text": "Because a wide range means each population is larger "
+                     "than it would otherwise be.",
+             "correct": False,
+             "why": "A wide range may be made up of many small populations. "
+                    "What matters is that no single event reaches all of "
+                    "them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e26",
+        "band": "easier",
+        "text": "What is a mass extinction?",
+        "options": [
+            {"text": "The loss of every member of one species in a short "
+                     "space of time.",
+             "correct": False,
+             "why": "That is an ordinary extinction, however fast it "
+                    "happened. A mass extinction takes down a great many "
+                    "species at once."},
+            {"text": "An episode in which a very large share of the world's "
+                     "species dies out in a short stretch of geological time.",
+             "correct": True},
+            {"text": "The loss of all the large animals from one continent.",
+             "correct": False,
+             "why": "That would be a serious loss and still a local one. A "
+                    "mass extinction is worldwide and is not limited to large "
+                    "animals."},
+            {"text": "A period when far more species are appearing than "
+                     "dying out.",
+             "correct": False,
+             "why": "That is the opposite of an extinction. Species do appear "
+                    "in large numbers after one, over millions of years."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e27",
+        "band": "easier",
+        "text": "On the account of the five pressures, where do the new "
+                "predators that arrive in a habitat usually come from?",
+        "options": [
+            {"text": "They evolve on the spot from a species that was already "
+                     "living there.",
+             "correct": False,
+             "why": "A predator that grew up alongside its prey is not a new "
+                    "predator in this sense. The dangerous ones arrive from "
+                    "somewhere else entirely."},
+            {"text": "They arrive by themselves, walking or flying in from a "
+                     "neighbouring country.",
+             "correct": False,
+             "why": "Some species do spread on their own. The ones this "
+                    "lesson is concerned with were carried to places they "
+                    "could never have reached."},
+            {"text": "They are brought by people, usually by accident.",
+             "correct": True},
+            {"text": "They are released to control a pest.",
+             "correct": False,
+             "why": "That has happened and has gone badly, and it is one "
+                    "route among several. Most arrivals are accidental, on "
+                    "ships and in cargo."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e28",
+        "band": "easier",
+        "text": "As the climate warms, the zone in which a species can live "
+                "shifts. In which two directions does it usually move?",
+        "options": [
+            {"text": "Downhill and towards the equator, where it is warmer.",
+             "correct": False,
+             "why": "That is the wrong way for both. A species tracking "
+                    "cooler conditions has to move away from the warmth, not "
+                    "towards it."},
+            {"text": "Towards the poles, and uphill into the mountains.",
+             "correct": True},
+            {"text": "Eastwards and westwards, following the way the weather "
+                     "travels.",
+             "correct": False,
+             "why": "Weather systems do travel that way. The zone a species "
+                    "can live in is set by temperature, which changes with "
+                    "latitude and with height."},
+            {"text": "Towards the coast, where the sea keeps temperatures "
+                     "steady.",
+             "correct": False,
+             "why": "Coasts do have steadier temperatures, and that is not "
+                    "the general pattern. The suitable zone moves polewards "
+                    "and upwards as it warms."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e29",
+        "band": "easier",
+        "text": "Hazel dormice hibernate through the winter. Why is a mild "
+                "winter a problem for them?",
+        "options": [
+            {"text": "A mild winter means fewer hazelnuts, so there is less "
+                     "for them to eat when they wake.",
+             "correct": False,
+             "why": "Nut crops depend mostly on the previous summer. The "
+                    "difficulty with a mild winter is what it does while the "
+                    "animal is asleep."},
+            {"text": "Warmth interrupts the hibernation, burning fat reserves "
+                     "the animal cannot replace until spring.",
+             "correct": True},
+            {"text": "A mild winter lets their predators stay active, so more "
+                     "dormice are taken while they sleep.",
+             "correct": False,
+             "why": "Predators are a pressure in their own right. The problem "
+                    "described here is inside the dormouse, in the fat it is "
+                    "living on."},
+            {"text": "Mild weather makes them breed in winter, and the young "
+                     "die of cold.",
+             "correct": False,
+             "why": "Dormice do not breed in the middle of winter. What the "
+                    "warmth does is wake them when there is nothing to eat."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-e30",
+        "band": "easier",
+        "text": "Of all the species that have ever lived on Earth, roughly "
+                "what share are still alive today?",
+        "options": [
+            {"text": "About half of them.",
+             "correct": False,
+             "why": "Nothing like that many. The great majority of species "
+                    "that have ever existed died out long before there were "
+                    "any people."},
+            {"text": "About nine in every ten of them.",
+             "correct": False,
+             "why": "That is close to the reverse of the real figure. It is "
+                    "the extinct ones that run to nine in ten and beyond."},
+            {"text": "Fewer than one in a hundred.",
+             "correct": True},
+            {"text": "About one in five of them.",
+             "correct": False,
+             "why": "Still far too many. Extinction is the ordinary end of a "
+                    "species, and almost every species there has ever been "
+                    "has reached it."},
+        ],
+        "figure": None,
+    },
+    # ── standard · the MRB-338 expansion ────────────────────────────────
+    {
+        "id": "b11-03-s14",
+        "band": "standard",
+        "text": "Against habitat loss the herring gull scores 80 out of 100 "
+                "and the hazel dormouse 15. Both live in Britain and both "
+                "lose woodland and coast to building. Explain the gap.",
+        "options": [
+            {"text": "The gull is the larger bird, and a large animal comes "
+                     "through a shortage better than a small one.",
+             "correct": False,
+             "why": "Size decides very little here. Brown rats are small and "
+                    "score 85 against the same pressure, while pandas are "
+                     "large and score 20."},
+            {"text": "The gull is protected by law in Britain and the "
+                     "dormouse is not.",
+             "correct": False,
+             "why": "The dormouse is the one with legal protection, and it "
+                    "still scores 15. Protection is a different pressure "
+                    "altogether."},
+            {"text": "The gull eats many foods and will live almost anywhere, "
+                     "while the dormouse needs one kind of wood and will not "
+                     "cross open ground to reach another.",
+             "correct": True},
+            {"text": "The gull breeds far more often than the dormouse, so it "
+                     "replaces its losses within a season.",
+             "correct": False,
+             "why": "The gull lays one clutch a year, much like the dormouse. "
+                    "What separates them is how fussy each is about food and "
+                    "habitat."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s15",
+        "band": "standard",
+        "text": "Two small woods each hold a separate population of one "
+                "beetle. A conservation team plants a strip of woodland "
+                "joining them. Why does that help more than adding the same "
+                "area to one wood alone?",
+        "options": [
+            {"text": "Beetles can now move between the two, so the "
+                     "populations breed as one and share their variation.",
+             "correct": True},
+            {"text": "A longer wood holds more beetles per hectare than a "
+                     "round one of the same size.",
+             "correct": False,
+             "why": "Shape does not change how many beetles a hectare feeds. "
+                    "What the strip changes is whether the two populations "
+                    "can reach each other."},
+            {"text": "The strip gives the beetles somewhere to shelter when "
+                     "the weather in both woods is bad.",
+             "correct": False,
+             "why": "A narrow strip is the most exposed part of the whole "
+                    "wood. Its value is as a route, not as shelter."},
+            {"text": "Predators avoid narrow strips of woodland, so the "
+                     "beetles are safer there.",
+             "correct": False,
+             "why": "Narrow strips are if anything easier for a predator to "
+                    "work along. The gain is that two isolated populations "
+                    "become one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s16",
+        "band": "standard",
+        "text": "Kakapo fell to 51 birds. Every living kakapo is now named, "
+                "radio-tagged and monitored, and numbers are slowly climbing. "
+                "What does that tell you about recovery?",
+        "options": [
+            {"text": "That recovery is impossible once a population has "
+                     "fallen that far.",
+             "correct": False,
+             "why": "Numbers are climbing, so it is plainly not impossible. "
+                    "What the account shows is what it takes."},
+            {"text": "That a population recovers by itself once hunting and "
+                     "habitat loss have been stopped.",
+             "correct": False,
+             "why": "Stopping the pressures is necessary and was not enough "
+                    "here. Every individual bird needs watching for the "
+                    "numbers to move at all."},
+            {"text": "That recovery is possible, and costs constant work on "
+                     "every single individual.",
+             "correct": True},
+            {"text": "That the species would have recovered anyway, and the "
+                     "monitoring only records what happens.",
+             "correct": False,
+             "why": "The monitoring is part of the management — nests are "
+                    "guarded and birds are fed. It is not a study carried out "
+                    "from a distance."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s17",
+        "band": "standard",
+        "text": "Three insects live in one valley. One feeds on fifty kinds "
+                "of plant, one on three, one on a single kind. A drought "
+                "kills half the plant species in the valley. Rank their risk.",
+        "options": [
+            {"text": "All three are at the same risk, because the drought "
+                     "affects the whole valley.",
+             "correct": False,
+             "why": "The drought is the same for all three; what differs is "
+                    "how much each of them can afford to lose."},
+            {"text": "The fifty-plant feeder is at most risk, because it "
+                     "depends on more plants than the others.",
+             "correct": False,
+             "why": "Depending on more plants is the safe position. Losing "
+                    "half of fifty still leaves twenty-five it can eat."},
+            {"text": "The three-plant feeder is at most risk, because three "
+                     "is an unlucky number to be left with.",
+             "correct": False,
+             "why": "There is nothing special about three. The insect in most "
+                    "danger is the one whose only food may be among the "
+                    "losses."},
+            {"text": "The single-plant feeder is at most risk, then the "
+                     "three-plant feeder, with the fifty-plant feeder safest "
+                     "of the three.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s18",
+        "band": "standard",
+        "text": "Rats reach a remote island on a ship. The seabirds that nest "
+                "there lay their eggs in scrapes on open ground. Why does "
+                "that nesting habit make them so vulnerable?",
+        "options": [
+            {"text": "Eggs on open ground are colder than eggs in a nest, so "
+                     "fewer of them hatch.",
+             "correct": False,
+             "why": "These birds sit on their eggs and keep them warm "
+                    "perfectly well. The change is what can now reach them."},
+            {"text": "Ground nests are harder for the parents to find again "
+                     "than nests in a tree.",
+             "correct": False,
+             "why": "Seabirds return to the same scrape without difficulty. "
+                    "The danger comes from an animal that was never there "
+                    "before."},
+            {"text": "The island had no ground predator before, so nothing "
+                     "about the birds' nesting protects the eggs from one.",
+             "correct": True},
+            {"text": "Rats prefer eggs to any other food, so they seek out "
+                     "seabird colonies wherever they land.",
+             "correct": False,
+             "why": "Rats eat almost anything and take eggs because they are "
+                    "easy to reach. The problem is on the birds' side, not in "
+                    "any preference."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s19",
+        "band": "standard",
+        "text": "Rhino horn sells for very large sums. Why is a species "
+                "hunted for a valuable product particularly hard to protect, "
+                "even where the hunting is illegal?",
+        "options": [
+            {"text": "The reward for killing one animal stays high however "
+                     "few are left, and rarity pushes the price up further.",
+             "correct": True},
+            {"text": "Illegal hunting cannot be punished, so there is nothing "
+                     "to stop anybody doing it.",
+             "correct": False,
+             "why": "It is punished, sometimes severely. The difficulty is "
+                    "that the money on offer outweighs the risk for the "
+                    "person taking it."},
+            {"text": "Animals with a valuable product are always slow "
+                     "breeders, so hunting hits them harder.",
+             "correct": False,
+             "why": "Many are slow breeders and that is a separate risk "
+                    "factor. The difficulty here is the price the product "
+                    "commands."},
+            {"text": "A hunted species learns to avoid people, which makes it "
+                     "impossible for anyone to count.",
+             "correct": False,
+             "why": "Counting a wary animal is difficult and it is not the "
+                    "main obstacle. The obstacle is how much a horn is worth "
+                    "to whoever takes it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s20",
+        "band": "standard",
+        "text": "A fish stock is fished until about two in every hundred are "
+                "left, and then all fishing stops. Twenty years later it has "
+                "not recovered. Give the best reason the pause alone was not "
+                "enough.",
+        "options": [
+            {"text": "Fish stocks always take longer than twenty years to "
+                     "recover, whatever is done.",
+             "correct": False,
+             "why": "Some stocks have come back inside twenty years. This one "
+                    "has not, and the question is what is different about "
+                    "it."},
+            {"text": "The fishing boats went on taking the same fish "
+                     "somewhere else in the ocean.",
+             "correct": False,
+             "why": "Nothing in the account says so, and it would be a "
+                    "continuing pressure rather than a reason the pause "
+                    "failed where it applied."},
+            {"text": "A population reduced that far is small, short of "
+                     "variation, and still facing everything else that was "
+                     "acting on it.",
+             "correct": True},
+            {"text": "The remaining fish are the oldest ones, and old fish "
+                     "cannot breed.",
+             "correct": False,
+             "why": "Fishing usually removes the largest and oldest first, so "
+                    "what is left is young. Age is not what is holding the "
+                    "recovery back."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s21",
+        "band": "standard",
+        "text": "Extinction has gone on throughout Earth's history. Why do "
+                "biologists still treat today's losses as an emergency?",
+        "options": [
+            {"text": "Because the species being lost now are more useful to "
+                     "people than the ones lost in the past.",
+             "correct": False,
+             "why": "Usefulness is not the measure, and nobody knows what the "
+                    "species of the past could have offered. The concern is "
+                    "about speed."},
+            {"text": "Because species are being lost far faster than they "
+                     "are being replaced.",
+             "correct": True},
+            {"text": "Because extinctions in the past were caused by "
+                     "asteroids, and the present ones are not.",
+             "correct": False,
+             "why": "Only one of the five mass extinctions is put down to an "
+                    "impact. The cause is not what makes the present rate "
+                    "worrying."},
+            {"text": "Because extinction used to be a slow process and is now "
+                     "instant for each species.",
+             "correct": False,
+             "why": "An individual species can take decades to go either way. "
+                    "What has changed is how many are going at once."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s22",
+        "band": "standard",
+        "text": "The hazel dormouse's best score anywhere on the bench is 80, "
+                "against hunting. Explain why that high score is no comfort "
+                "at all.",
+        "options": [
+            {"text": "Because nobody hunts dormice, so the one pressure it "
+                     "handles well is the one it never meets.",
+             "correct": True},
+            {"text": "Because a score of 80 is a poor result on a bench where "
+                     "65 is the lowest good figure.",
+             "correct": False,
+             "why": "Eighty is comfortably in the good band. The trouble is "
+                    "which pressure it is good against."},
+            {"text": "Because a species that is good against one pressure is "
+                     "poor against the rest.",
+             "correct": False,
+             "why": "The brown rat is good against all five. There is no rule "
+                    "that a strength has to be paid for elsewhere."},
+            {"text": "Because hunting is the pressure most likely to arrive "
+                     "next in southern England.",
+             "correct": False,
+             "why": "Hunting is the pressure it is safest from, and the ones "
+                    "already acting on it are habitat loss and a shifting "
+                    "climate."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s23",
+        "band": "standard",
+        "text": "A conservation team must judge how threatened a species is. "
+                "Which tells them more: the total number of individuals, or "
+                "how many separate populations there are and how varied they "
+                "are?",
+        "options": [
+            {"text": "The total number, because a species with more "
+                     "individuals is further from having none.",
+             "correct": False,
+             "why": "Numbers can be rebuilt from very few animals. The "
+                    "variation those animals carry cannot, and that is what "
+                    "the next change will test."},
+            {"text": "The number of populations and how varied they are, "
+                     "because numbers can be rebuilt and lost variation "
+                     "cannot.",
+             "correct": True},
+            {"text": "The total number, because it is the figure that can be "
+                     "measured accurately.",
+             "correct": False,
+             "why": "Ease of measurement does not make a figure the right "
+                    "one. A precise count of a population with no variation "
+                    "left is a precise misleading answer."},
+            {"text": "Neither, since a species is only safe once it is "
+                     "protected by law.",
+             "correct": False,
+             "why": "Legal protection removes one pressure and touches none "
+                    "of the others. The dormouse is protected and still "
+                    "declining."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s24",
+        "band": "standard",
+        "text": "A very large share of the extinctions recorded in the last "
+                "few centuries have been of island species. Suggest why "
+                "islands lose species so readily.",
+        "options": [
+            {"text": "Island species are weaker than mainland ones, having "
+                     "had an easier life.",
+             "correct": False,
+             "why": "They are often superbly fitted to the island. Being well "
+                    "fitted to one narrow set of conditions is what leaves "
+                    "them exposed."},
+            {"text": "Islands have poorer soil and less food than the "
+                     "mainland, so populations are always struggling.",
+             "correct": False,
+             "why": "Many islands are rich enough to support dense "
+                    "populations. What they lack is space to retreat into "
+                    "and any history of the predators people bring."},
+            {"text": "An island species has a small range, nowhere to retreat "
+                     "to, and no defence against the predators people bring.",
+             "correct": True},
+            {"text": "Islands are visited more often by scientists, so more "
+                     "of their extinctions get recorded.",
+             "correct": False,
+             "why": "Better recording would inflate the count a little. It "
+                    "does not explain losses on islands nobody studied until "
+                    "the species had gone."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s25",
+        "band": "standard",
+        "text": "A developer says draining one marsh cannot make anything "
+                "extinct, because the same species live in marshes elsewhere. "
+                "When is that argument sound, and when is it not?",
+        "options": [
+            {"text": "It is sound only if those other marshes really do hold "
+                     "healthy populations of the same species.",
+             "correct": True},
+            {"text": "It is always sound, because a species is not lost while "
+                     "any of it survives anywhere.",
+             "correct": False,
+             "why": "That is true of the final extinction and misses "
+                    "everything before it. Each marsh drained removes a "
+                    "population and some of the species' variation."},
+            {"text": "It is never sound, because every marsh holds species "
+                     "found in no other marsh.",
+             "correct": False,
+             "why": "Many marsh species are widespread. The argument fails "
+                    "when the claim about the other sites has not been "
+                    "checked, not automatically."},
+            {"text": "It is sound only if the drained marsh is smaller than "
+                     "the ones left.",
+             "correct": False,
+             "why": "Size is not what settles it. A small marsh can hold the "
+                    "last of something, and a large one may hold nothing "
+                    "unusual."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s26",
+        "band": "standard",
+        "text": "Foxes are now commoner in British towns than they have ever "
+                "been, while hedgehog numbers in the same towns have fallen "
+                "sharply. Which idea from this lesson fits that contrast?",
+        "options": [
+            {"text": "Foxes are predators and hedgehogs are prey, so the "
+                     "numbers must move in opposite directions.",
+             "correct": False,
+             "why": "Foxes take very few hedgehogs. The contrast is about how "
+                     "each species copes with a town, not about one eating "
+                     "the other."},
+            {"text": "Foxes breed faster than hedgehogs, which is why their "
+                     "numbers have risen.",
+             "correct": False,
+             "why": "The two breed at broadly similar rates. What differs is "
+                    "how well each of them uses what a town offers."},
+            {"text": "Hedgehogs are protected by law and foxes are not, so "
+                     "people leave foxes alone.",
+             "correct": False,
+             "why": "Protection would help hedgehogs rather than harm them, "
+                    "and their numbers have fallen anyway. Legal status is "
+                    "not the difference."},
+            {"text": "A generalist can turn a change like a town into an "
+                     "opportunity, while a species with narrower needs "
+                     "cannot.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s27",
+        "band": "standard",
+        "text": "The bench describes the dormouse's genetic variation as low, "
+                "and falling as populations are cut off. Why does being cut "
+                "off make variation fall?",
+        "options": [
+            {"text": "Because a cut-off population is exposed to fewer "
+                     "different conditions, so it needs less variation.",
+             "correct": False,
+             "why": "Nothing supplies variation according to need. It is lost "
+                    "because each isolated group breeds only within itself."},
+            {"text": "Because each fragment breeds only within itself, so the "
+                     "differences held elsewhere never reach it.",
+             "correct": True},
+            {"text": "Because animals in a small wood are all the same age, "
+                     "so they are all alike.",
+             "correct": False,
+             "why": "Age is not inherited and a fragment holds animals of "
+                    "several ages. What is lost is the mixing between "
+                    "populations."},
+            {"text": "Because a fragmented population stops breeding "
+                     "altogether until it is joined up again.",
+             "correct": False,
+             "why": "It goes on breeding, which is the problem: it breeds "
+                    "within a shrinking circle of close relatives."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s28",
+        "band": "standard",
+        "text": "A scientist wants to claim that species are being lost "
+                "faster now than they normally are. What does she need before "
+                "she can say that at all?",
+        "options": [
+            {"text": "A list of every species currently thought to be at risk "
+                     "of extinction.",
+             "correct": False,
+             "why": "A list of threatened species describes today. Without a "
+                    "figure for normal times there is nothing to compare it "
+                    "against."},
+            {"text": "An estimate of the background rate — how fast species "
+                     "were lost in ordinary times.",
+             "correct": True},
+            {"text": "A count of the species that went extinct in the five "
+                     "mass extinctions.",
+             "correct": False,
+             "why": "Mass extinctions are the exceptional episodes. The "
+                    "comparison she needs is with the ordinary rate between "
+                    "them."},
+            {"text": "Proof that people are the cause of the extinctions she "
+                     "has counted.",
+             "correct": False,
+             "why": "Cause is a separate question from rate. She can show the "
+                    "rate is high without having settled what is driving it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s29",
+        "band": "standard",
+        "text": "Two woods of exactly the same size are cleared. One is the "
+                "only place a particular beetle is found; the other is one of "
+                "two hundred sites holding that beetle. Why is the first far "
+                "worse?",
+        "options": [
+            {"text": "Clearing the only site removes the whole species at a "
+                     "stroke, while clearing one site in two hundred removes "
+                     "a fraction of it.",
+             "correct": True},
+            {"text": "The first wood must have been older, since a species "
+                     "found nowhere else has lived there a long time.",
+             "correct": False,
+             "why": "Age of the wood is not what decides it, and nothing here "
+                    "says one is older. What matters is how much of the "
+                    "species is in it."},
+            {"text": "The beetles in the first wood will move to the second "
+                     "one and overcrowd it.",
+             "correct": False,
+             "why": "They are in different places and, on this account, "
+                    "cannot reach each other. Nothing moves anywhere."},
+            {"text": "Both are equally bad, because the same area of woodland "
+                     "and the same number of beetles are lost.",
+             "correct": False,
+             "why": "The area may match. What is lost differs entirely: one "
+                    "loss is a fraction of a species and the other is all of "
+                    "it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-s30",
+        "band": "standard",
+        "text": "A butterfly has a population of several million, breeds "
+                "twice a year, and its caterpillars eat one plant, which is "
+                "now disappearing from Britain. How would you rate its risk?",
+        "options": [
+            {"text": "Low, because a population of several million cannot be "
+                     "lost.",
+             "correct": False,
+             "why": "Numbers protect a species against most things and not "
+                    "against losing its only food. The passenger pigeon ran "
+                    "to billions."},
+            {"text": "Low, because breeding twice a year gives it plenty of "
+                     "generations to adapt.",
+             "correct": False,
+             "why": "Generations help only if the population contains "
+                    "caterpillars able to eat something else. Nothing here "
+                    "says it does."},
+            {"text": "High, because one risk factor is enough when the thing "
+                     "the species depends on is going.",
+             "correct": True},
+            {"text": "Impossible to say, because the four risk factors have "
+                     "to point the same way before a judgement can be made.",
+             "correct": False,
+             "why": "They rarely all point one way. A single factor can carry "
+                    "a species off if it is the one that matters."},
+        ],
+        "figure": None,
+    },
+    # ── harder · the MRB-338 expansion ──────────────────────────────────
+    {
+        "id": "b11-03-h14",
+        "band": "harder",
+        "text": "A brown tree snake was accidentally introduced to the Pacific island of "
+                "Guam after the Second World War. Within a few decades it had wiped out "
+                "most of the island's native forest bird species, most of which had "
+                "lived there for thousands of years. What is the strongest explanation "
+                "for such a complete collapse?",
+        "options": [
+            {"text": "None of the island's birds had any evolved defence against a "
+                     "predator that hunted at night from the trees.",
+             "correct": True},
+            {"text": "The birds' forest habitat had already been cleared for farmland "
+                     "before the snake ever arrived, leaving them nowhere to nest.",
+             "correct": False,
+             "why": "Guam's forest was largely intact when the snake arrived. The "
+                    "collapse followed the snake, not a habitat loss that came before "
+                    "it."},
+            {"text": "The snake reproduced far faster than any of the island's birds "
+                     "could possibly replace the numbers it was taking.",
+             "correct": False,
+             "why": "Breeding rate is not what this turns on. A predator with nothing "
+                    "like it already on the island can finish off a species without "
+                    "needing an unusually fast reproduction rate of its own."},
+            {"text": "The island's birds were all specialists feeding on a single "
+                     "insect, so almost any new pressure was bound to finish them off.",
+             "correct": False,
+             "why": "Guam's native birds fed on a range of fruit, nectar and insects "
+                    "between them. What removed them was a predator they had no "
+                    "defence against, not a shared narrow diet."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h15",
+        "band": "harder",
+        "text": "A rare fish species lives only in a single volcanic crater lake, about "
+                "four hundred metres across, and carries very high genetic variation. "
+                "Does that variation make the species safe from extinction?",
+        "options": [
+            {"text": "Yes, because high genetic variation is the strongest of the four "
+                     "risk factors and offsets a weakness anywhere else on the list.",
+             "correct": False,
+             "why": "The four risk factors are separate properties rather than points "
+                    "on one scale. A species can score well on variation and still be "
+                    "finished by an event in the one place it exists."},
+            {"text": "No — everything it has lives in one place, so a single event "
+                     "there could remove the whole population.",
+             "correct": True},
+            {"text": "Yes, because a species only becomes seriously at risk once every "
+                     "one of the four risk factors is working against it together.",
+             "correct": False,
+             "why": "A single risk factor can be enough on its own — a specialist that "
+                    "loses its only food is finished even if everything else about it "
+                    "is healthy. A single tiny range is already that kind of factor "
+                    "here."},
+            {"text": "No, because a population confined to one small lake is too "
+                     "limited in numbers for real genetic variation to build up in it.",
+             "correct": False,
+             "why": "The question states the variation has already been measured as "
+                    "high; doubting that measurement sidesteps the actual question, "
+                    "which is about what a small range does regardless of variation."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h16",
+        "band": "harder",
+        "text": "A conservation report estimates that species are being lost worldwide "
+                "at about 150 a year, and that this is roughly fifty times the "
+                "background rate. At the background rate alone, roughly how many "
+                "species would you expect to lose over a five-year period?",
+        "options": [
+            {"text": "About 3 species, since that is the figure for one single year "
+                     "at the slower background rate rather than for the whole period.",
+             "correct": False,
+             "why": "That is the background rate for one year (150 divided by 50), "
+                    "not the total for the five-year period the question asks about."},
+            {"text": "About 30 species, found by sharing the total across the number "
+                     "of years the report actually covers.",
+             "correct": False,
+             "why": "That divides 150 by five rather than by fifty, which mixes up "
+                    "the number of years with the multiplier between the two rates."},
+            {"text": "About 15 species, once the background rate has been separated "
+                     "out and then carried forward across the five years asked about.",
+             "correct": True},
+            {"text": "About 750 species, taking the reported figure and simply "
+                     "carrying it forward across the whole five-year period.",
+             "correct": False,
+             "why": "That multiplies the current elevated rate by five years, rather "
+                    "than first dividing by fifty to reach the background rate."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h17",
+        "band": "harder",
+        "text": "A newspaper reports that a bird population recovered after a nature "
+                "reserve opened nearby, and concludes the reserve saved the species. A "
+                "scientist points out that hunting of the bird was banned in exactly "
+                "the same year the reserve opened. What is the strongest response to "
+                "the newspaper's conclusion?",
+        "options": [
+            {"text": "The newspaper must simply be wrong, because reserves never make "
+                     "any measurable difference to how a threatened species recovers.",
+             "correct": False,
+             "why": "Reserves do help many species, often by addressing habitat loss "
+                    "or fragmentation directly. The problem here is not that reserves "
+                    "are useless, it is that two changes happened together."},
+            {"text": "The hunting ban is beside the point, because hunting was clearly "
+                     "never the pressure that mattered most for this particular bird.",
+             "correct": False,
+             "why": "Nothing has been said about which pressure mattered. Two "
+                    "possible causes arrived in the same year, and the report gives "
+                    "no way to tell which one — or both — did the work."},
+            {"text": "The recovery proves the reserve is what worked, since reserves "
+                     "are specifically designed and funded to help species like this.",
+             "correct": False,
+             "why": "Being designed to help does not show that it did, in this case, "
+                    "given a second explanation arrived at the very same time and was "
+                    "left out of the report."},
+            {"text": "The recovery can never be credited to the reserve alone, "
+                     "since a second change — the hunting ban — happened at the "
+                     "same time.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h18",
+        "band": "harder",
+        "text": "A species can only survive above two thousand metres on one mountain, "
+                "whose summit reaches two thousand two hundred metres. As the climate "
+                "keeps warming, the zone it needs keeps shifting higher up the slope. "
+                "Predict what eventually happens, and explain why this differs from "
+                "the same problem for a species spread across a large continent.",
+        "options": [
+            {"text": "Eventually the zone it needs rises above the summit, leaving "
+                     "nowhere higher to go — unlike a continental species, which can "
+                     "keep shifting poleward.",
+             "correct": True},
+            {"text": "The species will start living further down the slope instead, "
+                     "since two thousand metres was only ever a rough estimate, and a "
+                     "mountain generally has plenty of room lower down.",
+             "correct": False,
+             "why": "The lower slopes are exactly where the unsuitable conditions the "
+                    "species is retreating from now reach. It cannot simply move down "
+                    "into the change it is trying to escape."},
+            {"text": "Nothing changes for the species, because mountain summits stay "
+                     "cooler than the surrounding lowland regardless of the climate.",
+             "correct": False,
+             "why": "The summit is cooler than the lowlands, and the whole mountain "
+                    "is still warming along with everywhere else. What is "
+                    "disappearing is the cool zone the species actually needs, not "
+                    "cool air in general."},
+            {"text": "The problem is exactly the same for the continental species, "
+                     "since a warming climate affects the whole planet equally "
+                     "everywhere.",
+             "correct": False,
+             "why": "A continental species facing the same warming can usually keep "
+                    "moving towards the poles as the suitable zone shifts. A mountain "
+                    "has a top; for practical purposes here, a continent does not."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h19",
+        "band": "harder",
+        "text": "A small tiger population, cut off from all others for many "
+                "generations, begins showing physical problems — crossed eyes and "
+                "kinked tails — that were never recorded in the species before. What "
+                "does that pattern suggest, and why does it matter beyond how the "
+                "animals look?",
+        "options": [
+            {"text": "It suggests a new disease has entered the population, one that "
+                     "happens by an unlikely coincidence to produce exactly these "
+                     "physical symptoms as it spreads.",
+             "correct": False,
+             "why": "Nothing here points to an infection, and these traits are "
+                    "inherited rather than caught. A pattern like this, appearing "
+                    "only after isolation, points to what breeding within a "
+                    "shrinking group does to a population's genes."},
+            {"text": "It suggests low genetic variation from breeding within a "
+                     "small isolated group, leaving it less able to cope with "
+                     "future change.",
+             "correct": True},
+            {"text": "It is a purely cosmetic problem, with no real bearing on the "
+                     "population's chances if its conditions were to change.",
+             "correct": False,
+             "why": "The visible traits are not the real concern. What matters is "
+                    "that the same low variation producing visible defects is also "
+                    "the variation the population would need in order to adapt to "
+                    "anything new."},
+            {"text": "It shows the population successfully adapting to isolation, "
+                     "since new physical traits are appearing that were not there "
+                     "before.",
+             "correct": False,
+             "why": "Adaptation implies traits that help a population cope with "
+                    "something. Crossed eyes and kinked tails help with nothing — "
+                    "they are a sign of variation being lost, not gained."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h20",
+        "band": "harder",
+        "text": "A wildfire kills ninety per cent of a population, but the survivors "
+                "happen to include at least one individual carrying every gene "
+                "variant the population held before the fire. Has the population's "
+                "genetic variation been reduced?",
+        "options": [
+            {"text": "Not necessarily, since a population can crash in numbers while "
+                     "still holding onto the same range of variation, provided the "
+                     "survivors happen to be representative of it.",
+             "correct": True},
+            {"text": "Yes, automatically, because any population losing ninety per "
+                     "cent of its individuals must lose roughly ninety per cent of "
+                     "its variation along with them.",
+             "correct": False,
+             "why": "Variation is not shared out evenly per individual the way that "
+                    "arithmetic assumes. If the range of gene variants happens to "
+                    "survive somewhere in the ten per cent left, the variation is "
+                    "still there, even though the numbers are not."},
+            {"text": "No, because genetic variation in a population is set mainly by "
+                     "how many generations have passed, rather than by how many "
+                     "individuals happen to be alive at any one time.",
+             "correct": False,
+             "why": "Time alone does not preserve variation — what is actually "
+                    "present in living individuals does. Losing the individuals that "
+                    "carried the variation would still lose the variation, whatever "
+                    "the generation count."},
+            {"text": "Yes, because a crash on this scale always strips out some of a "
+                     "population's genetic variation, whoever happens to survive it.",
+             "correct": False,
+             "why": "A bottleneck usually does reduce variation, and that is not the "
+                    "same as always. This question describes the less common case "
+                    "where the surviving individuals happen to cover the full range "
+                    "that was there before."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h21",
+        "band": "harder",
+        "text": "Someone argues that conservation money should be spent only on "
+                "species already known to be medically useful, since that is where "
+                "the benefit is proven. What is the strongest problem with "
+                "restricting protection this way?",
+        "options": [
+            {"text": "It is a reasonable rule, since species with proven medical uses "
+                     "genuinely matter more to people than ones nobody has studied "
+                     "yet.",
+             "correct": False,
+             "why": "The argument does not need medical usefulness to matter more "
+                    "than anything else; using it as the sole test is self-defeating "
+                    "on its own terms, because usefulness is discovered by studying "
+                    "a species, not established beforehand."},
+            {"text": "It would barely change anything, since nearly every species "
+                     "eventually turns out to have some medical use once it has been "
+                     "properly examined.",
+             "correct": False,
+             "why": "There is no basis for assuming nearly every species has a "
+                    "medical use, and the argument does not need that claim. The "
+                    "problem is the test itself: an unstudied species cannot pass "
+                    "it, and it dies out unstudied."},
+            {"text": "It fails mainly for plants, since the compounds worth "
+                     "extracting for medicine are found overwhelmingly in plants "
+                     "rather than in animals or fungi.",
+             "correct": False,
+             "why": "Useful compounds have come from a mould and are found across "
+                    "plants, animals and fungi. The flaw in the argument is the same "
+                    "whatever kind of organism is being ruled out of protection."},
+            {"text": "A species' usefulness is normally discovered only after it has "
+                     "been studied, so this rule guarantees losing exactly the "
+                     "species nobody has checked yet.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h22",
+        "band": "harder",
+        "text": "Scientists formally describe and name several thousand new species "
+                "every year. Does that mean the total number of species alive on "
+                "Earth is increasing?",
+        "options": [
+            {"text": "Yes, since a brand new species comes into existence each time "
+                     "one is formally named and entered into the scientific record.",
+             "correct": False,
+             "why": "Naming a species is an act of classification, not of creation. "
+                    "The organisms being described were already living, breeding "
+                    "populations before anyone wrote a description of them."},
+            {"text": "No — being newly described just means an existing species has "
+                     "now been recorded, not that a new one exists.",
+             "correct": True},
+            {"text": "Yes, because new species are constantly evolving somewhere in "
+                     "the world, and naming them simply keeps pace with roughly how "
+                     "many now happen to exist.",
+             "correct": False,
+             "why": "New species do arise through evolution, and that process is far "
+                    "too slow to explain thousands of new names appearing each year. "
+                    "Almost all of those species were already there, waiting to be "
+                    "found."},
+            {"text": "No, because scientists have nearly run out of species left to "
+                     "describe, which is why the rate of new names is now falling "
+                     "each year.",
+             "correct": False,
+             "why": "The rate of newly described species has not been falling in "
+                    "recent decades. The reason the total is not rising is about "
+                    "what describing a species means, not about running out of them "
+                    "to find."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h23",
+        "band": "harder",
+        "text": "A captive breeding programme releases animals into the wild after "
+                "ten generations raised in an enclosure with no predators. Beyond "
+                "genetic variation, what other risk does this raise for the released "
+                "animals?",
+        "options": [
+            {"text": "None at all, since anti-predator behaviour is learned entirely "
+                     "fresh by each individual, and ten generations without a single "
+                     "predator around cannot touch it.",
+             "correct": False,
+             "why": "Some anti-predator responses are inherited rather than learned "
+                    "from scratch, and others are learned by watching wary adults — "
+                    "neither of which an enclosure with no predators can provide."},
+            {"text": "They may never have needed to recognise or respond to a real "
+                     "predator, so anti-predator behaviour could be missing even in "
+                     "genetically healthy animals.",
+             "correct": True},
+            {"text": "The main risk is simply that captive food differs from wild "
+                     "food, so the released animals will not recognise anything to "
+                     "eat.",
+             "correct": False,
+             "why": "Diet is a separate concern from how an animal reacts to a "
+                    "threat. Ten generations without predators is specifically a "
+                    "problem for anti-predator behaviour."},
+            {"text": "The animals will simply have weaker bodies, from a lack of the "
+                     "exercise a wild environment would otherwise have forced on "
+                     "them.",
+             "correct": False,
+             "why": "Fitness from exercise is a real but different issue. The "
+                    "specific risk raised by ten predator-free generations is "
+                    "behavioural — not knowing how to respond to a threat — rather "
+                    "than physical condition."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h24",
+        "band": "harder",
+        "text": "Insects often evolve resistance to a new pesticide within just a few "
+                "growing seasons, while a slow-breeding mammal facing a new pressure "
+                "often cannot adapt in time and heads towards extinction instead. "
+                "Both cases involve exactly the same underlying mechanism. What is "
+                "it?",
+        "options": [
+            {"text": "Insects are simply better at evolving than mammals are "
+                     "overall, because insects belong to a much older group in "
+                     "evolutionary terms generally.",
+             "correct": False,
+             "why": "Age of the group is not what is doing the work here. What "
+                    "differs between the two cases is how quickly each species can "
+                    "turn its existing variation into generations, not any general "
+                    "talent for evolving."},
+            {"text": "Pesticides act far more slowly than natural predators do, "
+                     "which gives insects extra time that a slow-breeding mammal "
+                     "never gets.",
+             "correct": False,
+             "why": "Nothing in the comparison says the pesticide acts slowly. What "
+                    "differs between the cases is the number of generations each "
+                    "species fits into a set stretch of time, not the speed of the "
+                    "pressure itself."},
+            {"text": "How many generations occur within a given stretch of time "
+                     "decides how many chances a favourable variant gets to "
+                     "spread.",
+             "correct": True},
+            {"text": "Mammals cannot evolve resistance to anything, since resistance "
+                     "of this kind is a specifically insect trait.",
+             "correct": False,
+             "why": "Mammals can and do evolve resistance to pressures, given "
+                    "enough generations. The problem for the slow breeder here is a "
+                    "shortage of generations in the time available, not an "
+                    "inability to evolve at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h25",
+        "band": "harder",
+        "text": "On the bench, disease is the weakest pressure for both the herring "
+                "gull (score 60) and the giant panda (score 40). Both scores sit in "
+                "the muted-to-amber range, yet the two species are not equally at "
+                "risk from disease. Explain the difference.",
+        "options": [
+            {"text": "There is no real difference, since a score anywhere in the "
+                     "muted-to-amber range represents the same level of risk "
+                     "whatever species happens to hold it.",
+             "correct": False,
+             "why": "The score reflects an outcome, not a cause, and reading two "
+                    "similar numbers as identical risk misses what is producing "
+                    "them: population size and variation, which differ sharply "
+                    "between these two species."},
+            {"text": "The gull's score is only lower because gulls are studied far "
+                     "more closely, so more of their disease cases get formally "
+                     "recorded.",
+             "correct": False,
+             "why": "Nothing about how closely a species is studied changes the "
+                    "outcome measured on the bench. The gap between the two species "
+                    "comes from what each population actually holds, not from how "
+                    "well it is monitored."},
+            {"text": "The panda's score would rise to match the gull's if its own "
+                     "colonies simply became as densely packed as a typical gull "
+                     "colony's are said to be.",
+             "correct": False,
+             "why": "Density is not what is holding the panda's score down. What "
+                    "limits it is a small, isolated population with low genetic "
+                    "variation, which crowding the pandas together would not fix."},
+            {"text": "The gull's large, varied population likely holds resistant "
+                     "individuals despite fast-spreading colony disease; the "
+                     "panda's small, isolated population may hold none at all.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h26",
+        "band": "harder",
+        "text": "Green on the bench starts at a score of 65. The hazel dormouse's "
+                "lowest score is 15, against habitat loss. By how many points does "
+                "that fall short of the green threshold, and what does the gap "
+                "represent?",
+        "options": [
+            {"text": "Fifty points — the gap between the threshold and the "
+                     "dormouse's actual score.",
+             "correct": True},
+            {"text": "Thirty-five points, taken as the difference between the "
+                     "dormouse's habitat score and whichever of its other four "
+                     "scores happens to be next-lowest.",
+             "correct": False,
+             "why": "The question asks about the gap to the green threshold of 65, "
+                    "not the gap between two of the dormouse's own scores. "
+                    "Sixty-five minus fifteen is fifty, not thirty-five."},
+            {"text": "Fifteen points, since fifteen is the dormouse's score and the "
+                     "only number that the question has actually supplied.",
+             "correct": False,
+             "why": "Fifteen is the dormouse's score itself, not the distance "
+                    "between that score and the threshold. The gap is found by "
+                    "subtracting the score from 65."},
+            {"text": "Eighty-five points, measured as the distance from the "
+                     "dormouse's habitat score up to a perfect possible score of "
+                     "100.",
+             "correct": False,
+             "why": "The green threshold on this bench is 65, not 100. The gap that "
+                    "matters here is to the line separating a resilient outcome "
+                    "from a vulnerable one, which is 65."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h27",
+        "band": "harder",
+        "text": "A rock layer contains fossils of forty trilobite species. The layer "
+                "laid down immediately above it, a short time later in geological "
+                "terms, contains none. What does that pattern show, and what can it "
+                "not show by itself?",
+        "options": [
+            {"text": "It shows that the trilobites migrated somewhere else, since an "
+                     "absence of fossils in one layer never proves an absence of "
+                     "the animals themselves anywhere at all.",
+             "correct": False,
+             "why": "Migration would still leave fossils somewhere in rock of the "
+                    "same age laid down elsewhere, and none has been found. An "
+                    "abrupt disappearance across a rock record like this is exactly "
+                    "what a genuine loss looks like."},
+            {"text": "It shows the group was lost from the fossil record in that "
+                     "interval; it can never by itself show what caused the loss, "
+                     "or how many separate events were involved.",
+             "correct": True},
+            {"text": "It shows precisely what caused the loss, since fossils "
+                     "themselves are direct physical records of the event as it "
+                     "actually happened.",
+             "correct": False,
+             "why": "A fossil records that an organism existed and, roughly, when. "
+                    "It does not record why a whole group of them stopped existing "
+                    "— that has to be worked out from other evidence."},
+            {"text": "It shows nothing reliable at all, since gaps of this kind in "
+                     "the fossil record are far too common to draw any real "
+                     "conclusion from.",
+             "correct": False,
+             "why": "A change from forty species to none across one boundary is a "
+                    "strong pattern, not an ordinary gap. It reliably shows a loss "
+                    "occurred; the uncertainty is about the cause, not about "
+                    "whether anything happened."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h28",
+        "band": "harder",
+        "text": "American mink, introduced to Britain from fur farms, can swim well "
+                "enough to follow water voles into the water and are small enough to "
+                "enter their burrows — neither of which the native otter, a "
+                "longstanding predator of the voles, can do as effectively. Why has "
+                "this made the vole's usual defences useless?",
+        "options": [
+            {"text": "Otters and mink compete with each other for the same fish in "
+                     "the same rivers, so the otters have driven the mink to hunt "
+                     "voles instead out of necessity.",
+             "correct": False,
+             "why": "The mink's impact on voles is not explained by competition "
+                    "with otters over fish. It follows from the mink's own ability "
+                    "to reach places the vole's defences rely on being out of "
+                    "reach."},
+            {"text": "The vole's escape routes evolved against a predator with "
+                     "different abilities, so a predator able to follow it into "
+                     "both refuges removes that protection.",
+             "correct": True},
+            {"text": "Water voles have simply stopped using their burrows since the "
+                     "mink arrived, purely out of a general increase in caution.",
+             "correct": False,
+             "why": "Abandoning a burrow would not explain a defence failing — it "
+                    "would remove the vole's shelter altogether. What has happened "
+                    "is that the burrow and the water no longer offer safety from "
+                    "this particular predator."},
+            {"text": "Mink are simply more aggressive than otters, so a vole that "
+                     "could survive being attacked by an otter cannot survive an "
+                     "attack by a mink.",
+             "correct": False,
+             "why": "Aggression is not the deciding factor here. What matters is "
+                    "that the vole's usual escape routes were shaped by an otter's "
+                    "more limited reach, and a mink's reach is not limited in the "
+                    "same way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h29",
+        "band": "harder",
+        "text": "Of the five pressures on the bench, which could a single country's "
+                "government reduce to zero by one decision, and which could no "
+                "single country eliminate acting alone?",
+        "options": [
+            {"text": "A new predator could always be eliminated by one swift "
+                     "decision, and disease could never be affected by any single "
+                     "decision a country makes acting on its own.",
+             "correct": False,
+             "why": "An established predator can be very difficult to remove once "
+                    "it has spread, and disease outbreaks can in fact be limited by "
+                    "decisions such as quarantine or vaccination. Hunting is the "
+                    "pressure the bench specifically names as stoppable by a "
+                    "decision."},
+            {"text": "Habitat loss could be reduced to zero by a single decision, "
+                     "and hunting could not be touched by any decision a country "
+                     "makes on its own.",
+             "correct": False,
+             "why": "Habitat, once cleared, is not restored by a single decision, "
+                    "and clearing can continue for many separate reasons. Hunting "
+                    "is the pressure that a single ban can switch off directly."},
+            {"text": "Hunting can be stopped by a decision to ban it; climate "
+                     "change cannot be eliminated by one country acting alone, "
+                     "since it is driven by emissions worldwide.",
+             "correct": True},
+            {"text": "None of the five pressures could be affected by a single "
+                     "country acting alone, since every environmental problem is "
+                     "now global in scale.",
+             "correct": False,
+             "why": "Hunting of a particular species within a country's own "
+                    "borders is squarely within that country's own power to stop. "
+                    "Climate change is the pressure that genuinely needs action "
+                    "beyond any one country."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-03-h30",
+        "band": "harder",
+        "text": "The rat's five scores add up to more than the dormouse's five scores "
+                "combined. Does that total prove the rat is the better-adapted "
+                "species overall?",
+        "options": [
+            {"text": "Yes, since a higher combined total always means better "
+                     "long-term survival chances overall, no matter what is "
+                     "actually causing each of the individual scores that make it "
+                     "up.",
+             "correct": False,
+             "why": "The bench is built to show that a species can score "
+                    "brilliantly against one pressure and disastrously against "
+                    "another, and it is the pressure actually acting on it that "
+                    "decides its fate — not a total that averages the two away."},
+            {"text": "No, because scores measured against different pressures "
+                     "cannot really be added together, since each one is measured "
+                     "on its own separate scale.",
+             "correct": False,
+             "why": "All five scores use the very same scale, from 0 to 100, so "
+                    "there is nothing stopping the arithmetic. The problem with a "
+                    "total is not that it cannot be calculated, it is that it hides "
+                    "which specific pressure is actually acting on a species."},
+            {"text": "No — each score measures resilience to a separate pressure, "
+                     "and a species can be strong against one and helpless against "
+                     "another, which a summed total hides.",
+             "correct": True},
+            {"text": "Yes, but only in the special case where both species happen "
+                     "to live in exactly the same habitat as one another.",
+             "correct": False,
+             "why": "Habitat overlap is not what makes a total meaningful or not. A "
+                    "summed score misrepresents any species' risk, because what "
+                    "actually threatens a species is a specific pressure, not an "
+                    "average across five of them."},
+        ],
+        "figure": None,
+    },
 ]
