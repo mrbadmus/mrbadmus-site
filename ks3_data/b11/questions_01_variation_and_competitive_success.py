@@ -1228,4 +1228,1584 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 night 3 top-up · easier ─────────────────────────────────
+    {
+        "id": "b11-01-e14",
+        "band": "easier",
+        "text": "In this lesson, what does it mean to call a variation an "
+                "advantage?",
+        "options": [
+            {"text": "That it makes an individual larger, stronger or faster "
+                     "than the rest of its population.",
+             "correct": False,
+             "why": "Strength is one variation among many and is often the "
+                    "wrong one. In a drought the animal that needs least "
+                    "water wins without ever being strong."},
+            {"text": "That it makes an individual more likely to survive and "
+                     "reproduce in the conditions it is in.",
+             "correct": True},
+            {"text": "That no other member of the population happens to "
+                     "carry it at that moment.",
+             "correct": False,
+             "why": "How rare a variation is has nothing to do with whether "
+                    "it helps. A common variation can pay handsomely and a "
+                    "rare one can do nothing at all."},
+            {"text": "That it will help the individual wherever it lives and "
+                     "whatever happens to it.",
+             "correct": False,
+             "why": "No variation does that, which is the whole point of the "
+                    "lesson. A thick coat saves a mouse in a hard winter and "
+                    "cooks it in a drought."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e15",
+        "band": "easier",
+        "text": "A biologist describes a species as adapted. What does the "
+                "word mean?",
+        "options": [
+            {"text": "It has changed its own body to suit the place it ended "
+                     "up living in.",
+             "correct": False,
+             "why": "No organism rebuilds itself to order. Adapted describes "
+                    "the variations an organism already has, not something "
+                    "it did during its life."},
+            {"text": "It is further along in its evolution than the species "
+                     "living around it.",
+             "correct": False,
+             "why": "There is no further along to be. Every living species "
+                    "has been evolving for exactly as long as every other "
+                    "one."},
+            {"text": "It is suited to a particular environment by the "
+                     "variations it happens to have.",
+             "correct": True},
+            {"text": "It is able to live successfully in any environment it "
+                     "is put into.",
+             "correct": False,
+             "why": "That would be the opposite of adapted. Being well "
+                    "suited to one place is usually what makes an organism "
+                    "badly suited to another."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e16",
+        "band": "easier",
+        "text": "A biologist records an animal's fitness as zero. What does "
+                "that tell you about it?",
+        "options": [
+            {"text": "It died before it was fully grown, so it never "
+                     "competed for anything at all.",
+             "correct": False,
+             "why": "An animal can live a long adult life and still have a "
+                    "fitness of zero. What the figure records is offspring, "
+                    "not length of life."},
+            {"text": "It left no offspring that survived to breed.",
+             "correct": True},
+            {"text": "It was the weakest animal in its population.",
+             "correct": False,
+             "why": "Fitness is nothing to do with strength. A large strong "
+                    "animal that never breeds has exactly the same figure as "
+                    "a small weak one that never breeds."},
+            {"text": "It was badly suited to its surroundings.",
+             "correct": False,
+             "why": "It may have been superbly suited and simply never found "
+                    "a mate. Fitness counts the result, not how comfortable "
+                    "the animal's life was."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e17",
+        "band": "easier",
+        "text": "In a hard winter with food scarce and buried, large heavy "
+                "mice do fairly well, though not best of all. What are the "
+                "two sides of being large in that winter?",
+        "options": [
+            {"text": "A large body loses heat more slowly, and it needs more "
+                     "food, which is scarce.",
+             "correct": True},
+            {"text": "A large mouse frightens off its rivals, and moves too "
+                     "slowly through deep snow to escape anything.",
+             "correct": False,
+             "why": "Nothing is hunting in this winter and nothing is being "
+                    "escaped from. The danger is the cold and the shortage "
+                    "of food."},
+            {"text": "A large mouse can dig deeper to reach the buried food.",
+             "correct": False,
+             "why": "Size is not a digging advantage here. What it gives is "
+                    "a body that holds its heat, and what it costs is an "
+                    "appetite the winter cannot feed."},
+            {"text": "A large mouse carries more fat, and is easier to see "
+                     "on snow.",
+             "correct": False,
+             "why": "Being seen is the owl's panel, not the winter's. Here "
+                    "the cost of size is the food it takes to keep a large "
+                    "body going."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e18",
+        "band": "easier",
+        "text": "In a hard winter the food is buried and scarce. Bold, "
+                "exploratory mice come out middling — neither best nor "
+                "worst. Why does boldness both help and cost them here?",
+        "options": [
+            {"text": "They are the first to reach any food, and the last to "
+                     "notice a predator creeping up on them in the snow.",
+             "correct": False,
+             "why": "No predator is part of this winter. What boldness costs "
+                    "here is time spent out in the cold, not attention paid "
+                    "to a hunter."},
+            {"text": "They eat more than the others do, and they also find "
+                     "more than the others find.",
+             "correct": False,
+             "why": "Boldness is a habit rather than an appetite. It does "
+                    "not change how much a mouse needs; it changes where the "
+                    "mouse goes looking."},
+            {"text": "They search further for buried food, and are exposed "
+                     "to the cold while doing it.",
+             "correct": True},
+            {"text": "They keep moving, which keeps them warm, and it uses "
+                     "up the fat they need to last the eight weeks out.",
+             "correct": False,
+             "why": "The lesson's reason is about where a bold mouse goes, "
+                    "not about how warm moving keeps it. Searching further "
+                    "finds food and costs exposure."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e19",
+        "band": "easier",
+        "text": "Snow lies over a field for eight weeks and a barn owl hunts "
+                "over it. Why does pale sandy fur help a mouse there?",
+        "options": [
+            {"text": "Owls hunt by smell, not by sight.",
+             "correct": False,
+             "why": "A barn owl hunts by sight and by sound, which is why a "
+                    "mouse's colour matters to it at all. Fur colour has no "
+                    "smell of its own."},
+            {"text": "Pale fur reflects the cold away from the mouse's skin, "
+                     "so the animal stays warmer than a dark-furred one "
+                     "does.",
+             "correct": False,
+             "why": "Fur keeps heat in by trapping air, and its colour does "
+                    "not change that. What pale fur does over snow is make "
+                    "the mouse hard to pick out."},
+            {"text": "Pale mice are more active in cold weather, so they "
+                     "reach what little food there is before the others get "
+                     "to it.",
+             "correct": False,
+             "why": "Colour does not set how active an animal is. Being hard "
+                    "to see is the whole of the advantage here."},
+            {"text": "Pale fur is difficult for an owl to see against snow.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e20",
+        "band": "easier",
+        "text": "A barn owl takes up residence in a field. Large, heavy mice "
+                "do worse than they did before it arrived. Why?",
+        "options": [
+            {"text": "Large mice eat more, so they have to spend longer out "
+                     "in the field feeding than the small ones do.",
+             "correct": False,
+             "why": "Time spent feeding is the bold mouse's problem here. "
+                    "What size costs against an owl is speed to cover and a "
+                    "body that is easy to spot."},
+            {"text": "Large mice cannot survive cold weather.",
+             "correct": False,
+             "why": "Large mice do well in a hard winter, because a big body "
+                    "holds its heat. The owl is a separate problem and a "
+                    "separate panel."},
+            {"text": "The other mice turn on them once a predator is about.",
+             "correct": False,
+             "why": "The owl changes nothing about how mice treat each "
+                    "other. It changes who gets caught, and a big slow mouse "
+                    "is caught more easily."},
+            {"text": "They are slower to reach cover and make a larger "
+                     "target.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e21",
+        "band": "easier",
+        "text": "A barn owl hunts over a field of dark peaty soil. Mice with "
+                "pale sandy fur do very badly. Why?",
+        "options": [
+            {"text": "Pale fur is the most visible thing in a field of dark "
+                     "peat.",
+             "correct": True},
+            {"text": "Pale mice are smaller than the others, so an owl can "
+                     "carry one away more easily than it can carry a heavy "
+                     "one.",
+             "correct": False,
+             "why": "Fur colour says nothing about size. What pale fur does "
+                    "over dark ground is make a mouse easy to find, and "
+                    "being found is the whole danger."},
+            {"text": "Pale fur reflects moonlight and warms the mouse, so it "
+                     "moves about more at night than the others do.",
+             "correct": False,
+             "why": "Fur colour does not change how active a mouse is. It "
+                    "changes how well the mouse matches the ground it is "
+                    "standing on."},
+            {"text": "Pale mice have poorer night vision.",
+             "correct": False,
+             "why": "Nothing links coat colour to eyesight. The problem is "
+                    "that the owl sees the mouse, not that the mouse fails "
+                    "to see the owl."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e22",
+        "band": "easier",
+        "text": "Months pass with no rain. Large, heavy mice now do worse "
+                "than almost any other kind. What has gone wrong for them?",
+        "options": [
+            {"text": "Their size makes them slow, and in dry weather they "
+                     "cannot outrun the animals that hunt them.",
+             "correct": False,
+             "why": "Nothing is hunting in a drought panel. What is killing "
+                    "mice is the shortage of water and the heat, and a large "
+                    "body is expensive in both."},
+            {"text": "Large mice lose heat faster than small ones.",
+             "correct": False,
+             "why": "A large body loses heat more slowly, not faster, which "
+                    "is why size helps in a winter. In a drought the problem "
+                    "is getting rid of heat, not keeping it."},
+            {"text": "A big body needs more water and more food, and there "
+                     "is neither.",
+             "correct": True},
+            {"text": "The drought has made them too thin to win a fight.",
+             "correct": False,
+             "why": "No mouse on the bench changes. The animals are the same "
+                    "in every panel, and what has moved is the conditions "
+                    "around them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e23",
+        "band": "easier",
+        "text": "In a drought that has lasted months, bold and exploratory "
+                "mice come out a little above the middle. What does boldness "
+                "do for them in those conditions?",
+        "options": [
+            {"text": "It finds the few remaining water sources, and it takes "
+                     "risks doing it.",
+             "correct": True},
+            {"text": "It makes them fight the other mice for a share of what "
+                     "water is left, and they usually win those fights.",
+             "correct": False,
+             "why": "Boldness is a willingness to explore, not a willingness "
+                    "to fight. Winning confrontations is what size does, and "
+                    "it does it in a crowded year."},
+            {"text": "It keeps them moving, so they cool down faster.",
+             "correct": False,
+             "why": "Moving about in a drought heats an animal and costs it "
+                    "water. What boldness buys is finding water, not losing "
+                    "heat."},
+            {"text": "It makes them dig deeper burrows, where the soil is "
+                     "still damp and the air is cooler than it is above "
+                     "ground.",
+             "correct": False,
+             "why": "Nothing on the bench gives a bold mouse a better "
+                    "burrow. Its advantage is that it goes further and finds "
+                    "water the others have not reached."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e24",
+        "band": "easier",
+        "text": "In a mild year the population doubles, food runs short and "
+                "burrows are fought over. Mice with a thick coat come out "
+                "exactly average. Why?",
+        "options": [
+            {"text": "A thick coat is a small advantage in a mild year, "
+                     "which is why the figure is neither high nor low.",
+             "correct": False,
+             "why": "It is no advantage at all here. The shortage is of food "
+                    "and burrows, and a coat does nothing about either of "
+                    "them."},
+            {"text": "The other mice leave a thick-coated mouse alone, so it "
+                     "neither wins nor loses any of the contests over food.",
+             "correct": False,
+             "why": "A thick coat does not make a mouse harder to push off a "
+                    "food pile. It simply has no bearing on this year's "
+                    "problem in either direction."},
+            {"text": "A thick coat slows a mouse down as much as it warms "
+                     "it, so the two effects cancel out over the year.",
+             "correct": False,
+             "why": "Nothing here is being cancelled out. A coat is neither "
+                    "an advantage nor a cost in a mild crowded year — it is "
+                    "simply beside the point."},
+            {"text": "In a mild year the coat brings no advantage and no "
+                     "cost.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e25",
+        "band": "easier",
+        "text": "Eight weeks of snow lie over a field and the food is "
+                "buried. What is the main way a mouse dies in those "
+                "conditions?",
+        "options": [
+            {"text": "By being caught by a predator that can see it more "
+                     "easily against the snow than it could before.",
+             "correct": False,
+             "why": "A predator arriving is a different set of conditions "
+                    "altogether. In a hard winter what kills mice is the "
+                    "cold and the food it cannot reach."},
+            {"text": "By losing heat faster than it can replace it.",
+             "correct": True},
+            {"text": "By being pushed off the few remaining feeding places "
+                     "by the larger and heavier members of the population.",
+             "correct": False,
+             "why": "Being displaced by bigger mice is what happens in a "
+                    "crowded year. In a hard winter the cold is doing the "
+                    "killing, not the other mice."},
+            {"text": "By drinking snow, which chills the animal from the "
+                     "inside and uses energy it cannot spare in a hard "
+                     "winter.",
+             "correct": False,
+             "why": "That is not the danger the lesson names. Losing heat is "
+                    "the main way to die in a hard winter, which is why "
+                    "insulation is worth so much."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e26",
+        "band": "easier",
+        "text": "A stag with enormous antlers wins his fights and then "
+                "starves in a hard winter carrying them. What does that "
+                "example show?",
+        "options": [
+            {"text": "That antlers are a poor variation for a deer to carry "
+                     "at any time of year.",
+             "correct": False,
+             "why": "They win him his fights, which is exactly what they are "
+                    "for. The cost only falls due when the winter turns "
+                    "hard."},
+            {"text": "That the same variation can win in one set of "
+                     "conditions and kill in another.",
+             "correct": True},
+            {"text": "That a stag should shed its antlers before the winter "
+                     "arrives to avoid the cost of carrying them.",
+             "correct": False,
+             "why": "No animal decides what to grow or when to shed it to "
+                    "suit the year ahead. The stag has the antlers it has."},
+            {"text": "That fighting is the most important kind of "
+                     "competition there is for a large animal.",
+             "correct": False,
+             "why": "Most competition never involves a fight. In a hard "
+                    "winter the stag is not losing a contest with another "
+                    "deer — it is losing one with the cold."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e27",
+        "band": "easier",
+        "text": "Arctic foxes have small ears and thick fur. Desert foxes "
+                "have very large ears and thin fur. What does that "
+                "difference show?",
+        "options": [
+            {"text": "That each is suited to the place it lives, because "
+                     "losing heat is a danger in one place and a necessity "
+                     "in the other.",
+             "correct": True},
+            {"text": "That the desert fox is the more advanced of the two, "
+                     "since large ears are a more complicated structure to "
+                     "grow.",
+             "correct": False,
+             "why": "There is no ranking of advancement in biology. Neither "
+                    "fox is further along than the other; they are suited to "
+                    "different places."},
+            {"text": "That a fox grows the ears it needs for the climate it "
+                     "finds itself living in.",
+             "correct": False,
+             "why": "An animal does not build itself to suit its "
+                    "surroundings. Each fox has the ears it was born with."},
+            {"text": "That the arctic fox is the tougher animal, because the "
+                     "Arctic is the harder of the two places to survive in.",
+             "correct": False,
+             "why": "Put the arctic fox in the desert and it would be in "
+                    "serious trouble. Neither environment is harder in "
+                    "general; each is hard for the animal not suited to it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e28",
+        "band": "easier",
+        "text": "A cactus stores water in a thick stem, which keeps it alive "
+                "through months of drought. Why is that same thick stem no "
+                "advantage in a wet rainforest?",
+        "options": [
+            {"text": "Because rainforest plants grow faster, so the cactus "
+                     "would be out of date within a few years of arriving "
+                     "there.",
+             "correct": False,
+             "why": "Nothing goes out of date. A stored supply of water is "
+                    "simply worth nothing where water is never short."},
+            {"text": "Because the cactus would take in so much water that "
+                     "its thick stem would split open under the pressure.",
+             "correct": False,
+             "why": "The reason is much simpler than that. Storing water is "
+                    "only worth the effort where there are times when there "
+                    "is none to be had."},
+            {"text": "Because water is never scarce there, so storing it "
+                     "buys the plant nothing.",
+             "correct": True},
+            {"text": "Because a thick stem is only useful to a plant that is "
+                     "growing in full sunlight rather than in shade.",
+             "correct": False,
+             "why": "Light is a separate problem. What a thick stem does is "
+                    "hold water, and holding water pays only where water "
+                    "runs out."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e29",
+        "band": "easier",
+        "text": "Being large and heavy is an advantage to a mouse in some "
+                "conditions. What is the cost that comes with it?",
+        "options": [
+            {"text": "A large mouse needs more food and more water than a "
+                     "small one.",
+             "correct": True},
+            {"text": "A large mouse loses its body heat much more quickly "
+                     "than a small one does, so it suffers badly in the "
+                     "cold.",
+             "correct": False,
+             "why": "It is the other way round. A large body loses heat more "
+                    "slowly for its mass, which is why size helps in a hard "
+                    "winter."},
+            {"text": "A large mouse cannot squeeze into a burrow, so it has "
+                     "nowhere safe to shelter when the weather turns against "
+                     "it.",
+             "correct": False,
+             "why": "Size does not lock a mouse out of shelter. Its real "
+                    "cost is an appetite and a thirst that have to be met "
+                    "every day."},
+            {"text": "A large mouse produces fewer young than a small one, "
+                     "so it leaves less behind it whatever else happens.",
+             "correct": False,
+             "why": "Nothing in the lesson links body size to litter size. "
+                    "The bill a large mouse pays is in food and water."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-e30",
+        "band": "easier",
+        "text": "Two oak saplings grow a metre apart and both need the same "
+                "light, water and minerals from the soil. Are they "
+                "competing?",
+        "options": [
+            {"text": "No, because plants cannot move, and competition needs "
+                     "two organisms that can reach the same place at the "
+                     "same time.",
+             "correct": False,
+             "why": "Neither tree has to move anywhere. Their roots and "
+                    "branches are already reaching into the same soil and "
+                    "the same light."},
+            {"text": "No, because competition is something that happens "
+                     "between animals rather than between plants.",
+             "correct": False,
+             "why": "Plants compete as fiercely as anything does. Shading a "
+                    "rival out is one of the most common contests in "
+                    "biology."},
+            {"text": "Yes, but only once one of them grows tall enough to "
+                     "put the other completely in its shadow.",
+             "correct": False,
+             "why": "The competition starts as soon as the supply is shared "
+                    "and short. Shading is one way it is settled, not the "
+                    "moment it begins."},
+            {"text": "Yes, because they need the same limited things, so one "
+                     "taking them means the other does not.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard ────────────────────────────────────────────────────────
+    {
+        "id": "b11-01-s14",
+        "band": "standard",
+        "text": "A famine reduces the food available to a population of "
+                "animals to a fraction of what it was. Which individuals "
+                "would you expect to come through it?",
+        "options": [
+            {"text": "The largest ones, because they carry the most fat to "
+                     "live off while the shortage lasts.",
+             "correct": False,
+             "why": "A large body carries reserves and also demands far more "
+                    "food to keep going. In a famine the demand is the side "
+                    "that decides it."},
+            {"text": "The ones that can survive on the least food.",
+             "correct": True},
+            {"text": "The strongest ones in the population.",
+             "correct": False,
+             "why": "Strength settles a contest over a food pile, and a "
+                    "famine is a shortage rather than a contest. Winning a "
+                    "fight for nothing gains an animal nothing."},
+            {"text": "The youngest ones, which need less food.",
+             "correct": False,
+             "why": "A growing animal needs more food for its size, not "
+                    "less. Nothing about being young reduces what an animal "
+                    "has to eat."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s15",
+        "band": "standard",
+        "text": "Rabbits in a field vary in leg length. A fox starts hunting "
+                "there, and the field is open grass with cover only at the "
+                "hedge. Which rabbits have the advantage, and what would "
+                "change the answer?",
+        "options": [
+            {"text": "The longer-legged ones, and thick cover across the "
+                     "whole field would change it.",
+             "correct": True},
+            {"text": "The longer-legged ones, and nothing would change it, "
+                     "because outrunning a predator is always worth having.",
+             "correct": False,
+             "why": "In thick cover a rabbit that freezes close to the "
+                    "ground may do better than one that runs. Which "
+                    "variation pays depends on the ground it is standing on."},
+            {"text": "The shorter-legged ones, because a small rabbit is "
+                     "harder for a fox to see across open grass.",
+             "correct": False,
+             "why": "On open grass with the hedge a long way off, the "
+                    "contest is a chase rather than a search. Speed is what "
+                    "decides it."},
+            {"text": "Neither, because a fox catches whichever rabbit it "
+                     "happens to start after first.",
+             "correct": False,
+             "why": "A fox starts after many rabbits and catches some of "
+                    "them. Which ones it catches is exactly what leg length "
+                    "changes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s16",
+        "band": "standard",
+        "text": "On a rocky shore, barnacles high up the rock are left dry "
+                "for hours by the falling tide, while barnacles low down are "
+                "reached and eaten by whelks. Which position is better?",
+        "options": [
+            {"text": "Low down, because being eaten is a risk while drying "
+                     "out is merely uncomfortable for a shelled animal.",
+             "correct": False,
+             "why": "Drying out kills a barnacle as surely as a whelk does. "
+                    "Neither position is safe, which is why neither is "
+                    "better in general."},
+            {"text": "High up, because a barnacle that avoids predators will "
+                     "always leave more offspring in the end.",
+             "correct": False,
+             "why": "Not if it dries out first. An animal that escapes one "
+                    "danger and meets another has not escaped anything."},
+            {"text": "Neither: each position carries a different danger, so "
+                     "which is better depends on the shore.",
+             "correct": True},
+            {"text": "Both are equally bad, so barnacles would do better to "
+                     "settle somewhere other than a rocky shore.",
+             "correct": False,
+             "why": "Barnacles do extremely well on rocky shores, which is "
+                    "where almost all of them live. Each position carries a "
+                    "cost and each supports a great many animals."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s17",
+        "band": "standard",
+        "text": "Some clover plants make a chemical that tastes bitter to "
+                "slugs, and making it uses sugar the plant could have spent "
+                "on growth. In which conditions is the bitter kind at an "
+                "advantage?",
+        "options": [
+            {"text": "In any conditions, because a plant that cannot be "
+                     "eaten has an advantage over one that can.",
+             "correct": False,
+             "why": "It pays for that protection in growth every day, slugs "
+                    "or no slugs. Where there are no slugs it is spending "
+                    "sugar for nothing."},
+            {"text": "Only where the soil is poor and growth is slow.",
+             "correct": False,
+             "why": "Making an extra chemical needs more from the plant, not "
+                    "less. Poor soil makes the cost harder to bear rather "
+                    "than easier."},
+            {"text": "Only in a wet year, when slugs are commonest.",
+             "correct": False,
+             "why": "Wet weather does make slugs commoner, and the point "
+                    "holds in a dry year with slugs too. What matters is "
+                    "whether the slugs are there, not the weather that "
+                    "brought them."},
+            {"text": "Where slugs are common, and it is a cost where they "
+                     "are not.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s18",
+        "band": "standard",
+        "text": "Two mice of the same species are alike in every way except "
+                "that one needs about 5 ml of water a day and the other "
+                "about 12 ml. Months pass with no rain. What would you "
+                "expect?",
+        "options": [
+            {"text": "The 5 ml mouse is more likely to survive, because it "
+                     "can meet its needs from far less water.",
+             "correct": True},
+            {"text": "The 12 ml mouse is more likely to survive, because "
+                     "taking in more water keeps its body cooler through the "
+                     "heat of the day.",
+             "correct": False,
+             "why": "Taking in more water is only possible if there is water "
+                    "to take. In a drought the higher requirement is a bill "
+                    "the animal cannot pay."},
+            {"text": "They are equally likely to survive, because both will "
+                     "drink whatever water they can find.",
+             "correct": False,
+             "why": "Both will drink what they find, and one of them runs "
+                    "out of what it needs long before the other does. That "
+                    "difference is the whole contest."},
+            {"text": "The 12 ml mouse is more likely to survive, because an "
+                     "animal that needs more water is the larger and "
+                     "stronger of the two.",
+             "correct": False,
+             "why": "Strength is not what a drought asks for. The animal "
+                    "that needs least water wins, and it never has to fight "
+                    "anything."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s19",
+        "band": "standard",
+        "text": "Some plants of one species make many small seeds and others "
+                "make a few large ones, each with a store of food. Where "
+                "would the large-seeded plants have the advantage?",
+        "options": [
+            {"text": "On bare ground newly cleared by a fire, where nothing "
+                     "is growing and there is light everywhere.",
+             "correct": False,
+             "why": "Bare open ground is where numbers pay. Many small seeds "
+                    "land in many places, and none of them needs a food "
+                    "store to reach the light."},
+            {"text": "Under deep shade, where a seedling needs a food store "
+                     "to reach the light.",
+             "correct": True},
+            {"text": "In a windy place, because a large seed is carried "
+                     "further on the wind than a small one is.",
+             "correct": False,
+             "why": "Wind carries a small light seed much further. Weight is "
+                    "a cost to a seed in the air and a store of food once it "
+                    "lands."},
+            {"text": "Anywhere at all: a food store is always a better "
+                     "start.",
+             "correct": False,
+             "why": "The parent plant can make a few large seeds or many "
+                    "small ones, and not both. Where light is easy, the many "
+                    "is the better bet."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s20",
+        "band": "standard",
+        "text": "In one field the snow lies for eight weeks and then the "
+                "ground is bare dark peat for the rest of the year, with an "
+                "owl hunting throughout. What can you say about pale sandy "
+                "fur in that field?",
+        "options": [
+            {"text": "It is a cost throughout, because an owl will learn "
+                     "what a pale mouse looks like and hunt for it all year.",
+             "correct": False,
+             "why": "An owl finds what it can see. Over snow a pale mouse is "
+                    "the hardest of the lot to see, whatever the owl has "
+                    "learned."},
+            {"text": "It is an advantage overall, because being hidden for "
+                     "eight weeks outweighs being visible at other times.",
+             "correct": False,
+             "why": "Eight weeks is a small part of a year. The arithmetic "
+                    "runs the other way, and in any case it depends on when "
+                    "the owl hunts hardest rather than on a count of weeks."},
+            {"text": "It is neither an advantage nor a cost, because the two "
+                     "halves of the year cancel each other out exactly.",
+             "correct": False,
+             "why": "Nothing says the two halves are equal. One is eight "
+                    "weeks and the other is most of the year, and the "
+                    "hunting is not spread evenly across them."},
+            {"text": "It is an advantage for the eight snowy weeks and a "
+                     "cost for the rest, so whether it pays depends on when "
+                     "the hunting is heaviest.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s21",
+        "band": "standard",
+        "text": "In a mild year the population doubles, so food is short and "
+                "burrows are fought over. Both the thick-coated mice and the "
+                "pale-furred mice come out right in the middle. What does "
+                "that tell you?",
+        "options": [
+            {"text": "That coat thickness and fur colour are both weak "
+                     "variations, which is why neither reaches the top of "
+                     "any list.",
+             "correct": False,
+             "why": "Each of them tops a list somewhere. A thick coat wins a "
+                    "hard winter outright, and pale fur is the best thing to "
+                    "have over snow."},
+            {"text": "That the two variations cancel each other out.",
+             "correct": False,
+             "why": "Each mouse on the bench carries one variation, so "
+                    "nothing is being combined. They are middling for the "
+                    "same reason, separately."},
+            {"text": "That neither a coat nor a colour has any bearing on a "
+                     "shortage of food and burrows.",
+             "correct": True},
+            {"text": "That the mild weather made it an easy year.",
+             "correct": False,
+             "why": "The year is anything but easy — the population has "
+                    "doubled and there is not enough to go round. Size and "
+                    "boldness make a large difference in it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s22",
+        "band": "standard",
+        "text": "An owl hunts at night over dark peaty ground with almost no "
+                "cover. Which variation would you expect to be worth most to "
+                "a mouse there, and why?",
+        "options": [
+            {"text": "A thick coat, which protects against an owl's talons.",
+             "correct": False,
+             "why": "No coat saves a mouse that has been caught. What "
+                    "decides the night is whether the owl finds and reaches "
+                    "it at all."},
+            {"text": "A large, heavy body, because an owl will pass over a "
+                     "mouse too big for it to carry away.",
+             "correct": False,
+             "why": "A large mouse is a larger target and slower to reach "
+                    "cover, which makes size a serious cost against an owl "
+                    "rather than a protection."},
+            {"text": "Boldness, because a mouse that keeps moving is harder "
+                     "for a hunting bird to follow than one sitting still.",
+             "correct": False,
+             "why": "Bold means out in the open more often, which is the "
+                    "worst habit to have when something is hunting. It is "
+                    "the biggest cost of the night."},
+            {"text": "Being small and quick, because that means a small "
+                     "target and a short run to cover.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s23",
+        "band": "standard",
+        "text": "Every variation costs an organism something — energy, food, "
+                "water or time. How can a variation that costs the animal "
+                "anything at all still be an advantage?",
+        "options": [
+            {"text": "Because in the right conditions what it buys is worth "
+                     "more than what it costs.",
+             "correct": True},
+            {"text": "Because the cost is paid once while the benefit goes "
+                     "on for the whole of the animal's life.",
+             "correct": False,
+             "why": "Most costs are paid continually — a large body has to "
+                    "be fed every day. What settles it is whether the return "
+                    "covers the bill in those conditions."},
+            {"text": "Because a variation that is an advantage costs nothing "
+                     "at all to the animal that carries it.",
+             "correct": False,
+             "why": "The lesson is explicit that every one of them costs "
+                    "something. A thick coat costs almost nothing in a "
+                    "winter and a great deal in a drought."},
+            {"text": "Because the animal can stop paying the cost during the "
+                     "seasons when the variation is not needed.",
+             "correct": False,
+             "why": "It cannot put the variation down. The stag carries his "
+                    "antlers into the winter that starves him, because they "
+                    "are what he has."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s24",
+        "band": "standard",
+        "text": "Two kinds of moss grow on walls. One dries out slowly but "
+                "grows slowly; the other grows fast but dries out quickly. "
+                "On a shaded north wall that stays damp all year, which kind "
+                "would you expect to find, and why?",
+        "options": [
+            {"text": "The slow-drying kind, because resisting drought is the "
+                     "harder thing for a plant to do.",
+             "correct": False,
+             "why": "It is a harder thing to do and it is not needed on a "
+                    "wall that never dries. The slow growth that pays for it "
+                    "is a cost with nothing bought."},
+            {"text": "Neither, because a wall that stays damp suits no moss "
+                     "particularly well.",
+             "correct": False,
+             "why": "A damp shaded wall is excellent moss habitat. The "
+                    "question is which of the two kinds does better on it."},
+            {"text": "The fast-growing kind, because drying out is not a "
+                     "danger there and growth is what wins the space.",
+             "correct": True},
+            {"text": "Both equally, because the two kinds are of the same "
+                     "species and so have the same needs.",
+             "correct": False,
+             "why": "Members of one species need the same things and do not "
+                    "meet them equally well. That difference is exactly what "
+                    "decides who holds the wall."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s25",
+        "band": "standard",
+        "text": "In one set of conditions, four of the five variations being "
+                "compared give a mouse the same chance of survival, and the "
+                "fifth gives a slightly worse one. What does a result like "
+                "that tell you?",
+        "options": [
+            {"text": "That the conditions cannot have been very severe, "
+                     "since almost everything survived them equally well.",
+             "correct": False,
+             "why": "A threat can be severe and still make no distinction. "
+                    "Equal chances mean the danger is indifferent to those "
+                    "variations, not that it is mild."},
+            {"text": "That the four tied variations are equally good ones "
+                     "for a mouse to carry in general.",
+             "correct": False,
+             "why": "They are tied here and nowhere else. In four other sets "
+                    "of conditions the same five spread right out."},
+            {"text": "That the comparison was set up wrongly, because a fair "
+                     "test always separates the five out.",
+             "correct": False,
+             "why": "A result in which nothing separates is a real result. "
+                    "It is telling you that whatever decides this cannot be "
+                    "seen among the five."},
+            {"text": "That none of the variations being compared is any help "
+                     "against this particular danger.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s26",
+        "band": "standard",
+        "text": "A student says that competition only happens when food runs "
+                "short. What is the strongest objection?",
+        "options": [
+            {"text": "Competition happens only when a population is growing.",
+             "correct": False,
+             "why": "A steady population competes just as hard, because more "
+                    "are born than the resources support in every year. "
+                    "Growth is not the trigger."},
+            {"text": "Space, shelter and mates are all competed for, even in "
+                     "a year when food is plentiful.",
+             "correct": True},
+            {"text": "Competition only begins once a shortage is bad enough "
+                     "for animals to start fighting each other over what is "
+                     "left.",
+             "correct": False,
+             "why": "Most competition never involves a fight at all. Two "
+                    "plants shading each other out are competing without "
+                    "either one touching the other."},
+            {"text": "Food is the one thing animals never compete for.",
+             "correct": False,
+             "why": "Food is the commonest thing competed for and the one "
+                    "that bites first. Moving elsewhere means arriving where "
+                    "something else is already eating."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s27",
+        "band": "standard",
+        "text": "A gardener sows a row of carrot seed and then pulls up four "
+                "seedlings in every five so that the rest have room to grow. "
+                "Which idea from this lesson does that illustrate?",
+        "options": [
+            {"text": "That gardeners can improve a crop by choosing which "
+                     "plants to keep.",
+             "correct": False,
+             "why": "The gardener is not choosing between kinds of carrot — "
+                    "he is thinning for room. What this shows is the "
+                    "shortage, not a choice."},
+            {"text": "That plants do not compete with one another unless "
+                     "somebody plants them too close together.",
+             "correct": False,
+             "why": "Wild plants crowd each other constantly and nobody sows "
+                    "them. Sowing thickly makes the shortage easier to see, "
+                    "not different in kind."},
+            {"text": "That a seedling grows better in soil that has been "
+                     "disturbed around its roots.",
+             "correct": False,
+             "why": "Disturbing the soil is a side effect of the thinning. "
+                    "What the row demonstrates is that the bed cannot "
+                    "support every seed that was sown."},
+            {"text": "That far more are produced than the resources can "
+                     "support, so most of them cannot survive.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s28",
+        "band": "standard",
+        "text": "On one island, two finch species eat seeds of the same size "
+                "and a third eats insects. Between which birds would you "
+                "expect the fiercest competition?",
+        "options": [
+            {"text": "Between the two seed-eating species, because they need "
+                     "the same limited food.",
+             "correct": True},
+            {"text": "Between the insect-eater and each seed-eater, because "
+                     "species that feed differently get in each other's way "
+                     "most.",
+             "correct": False,
+             "why": "Feeding differently is what keeps two species out of "
+                    "each other's way. Competition needs both of them to be "
+                    "short of the same thing."},
+            {"text": "Between no two of them, because competition happens "
+                     "only inside a species and never between species.",
+             "correct": False,
+             "why": "Different species compete wherever they overlap. What "
+                    "is true is that members of one species overlap on "
+                    "everything at once."},
+            {"text": "Between the insect-eater and both seed-eaters equally, "
+                     "since all three live on one small island.",
+             "correct": False,
+             "why": "Sharing an island is not the same as sharing a food "
+                    "supply. The insect-eater is short of something neither "
+                    "seed-eater wants."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s29",
+        "band": "standard",
+        "text": "When a barn owl arrives, boldness and pale sandy fur are "
+                "the two worst variations a mouse can carry. Does that make "
+                "them poor variations?",
+        "options": [
+            {"text": "Yes, because being eaten ends everything.",
+             "correct": False,
+             "why": "It gets an animal eaten in this field and saves it in "
+                    "another. Pale fur over snow is the hardest coat of the "
+                    "five for an owl to find."},
+            {"text": "Yes for boldness, because taking risks is never worth "
+                     "it, and no for pale fur, which is only a problem on "
+                     "dark ground.",
+             "correct": False,
+             "why": "Boldness is the best variation to have in a crowded "
+                    "year, when a bold mouse finds ground and food the rest "
+                    "have not reached. Both of them pay somewhere."},
+            {"text": "No: boldness pays in a crowded year and pale fur pays "
+                     "over snow.",
+             "correct": True},
+            {"text": "No, because being eaten by a predator does not affect "
+                     "which variations are passed on to the next generation.",
+             "correct": False,
+             "why": "It affects them a great deal. Whichever variations help "
+                    "an animal avoid being eaten are the ones that get "
+                    "passed on."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-s30",
+        "band": "standard",
+        "text": "A mouse is described as the best survivor of a long "
+                "drought. What does that description NOT tell you?",
+        "options": [
+            {"text": "Why it survived the drought better than the others "
+                     "did.",
+             "correct": False,
+             "why": "Being the best survivor of a drought points straight at "
+                    "the reason: it needs little water and loses heat "
+                    "easily. That much the description does give you."},
+            {"text": "That it survived the drought better than the rest of "
+                     "the population.",
+             "correct": False,
+             "why": "That is precisely what the description says. The "
+                    "question is what it leaves out."},
+            {"text": "How it would do in any other conditions.",
+             "correct": True},
+            {"text": "That a drought is a set of conditions some animals "
+                     "survive and others do not.",
+             "correct": False,
+             "why": "A best survivor implies worse ones, so the description "
+                    "carries that with it. What it cannot carry is a result "
+                    "from a different year."},
+        ],
+        "figure": None,
+    },
+
+    # ── harder ──────────────────────────────────────────────────────────
+    {
+        "id": "b11-01-h14",
+        "band": "harder",
+        "text": "When an owl hunts a field, 80 of every 100 small quick mice "
+                "survive the year and 20 of every 100 bold ones do. A "
+                "population holds 150 of each kind. How many more quick mice "
+                "than bold mice survive?",
+        "options": [
+            {"text": "60 mice",
+             "correct": False,
+             "why": "60 is the difference between the two percentages, and a "
+                    "percentage is not a number of animals. Each rate has to "
+                    "be applied to the 150 first."},
+            {"text": "90 mice",
+             "correct": True},
+            {"text": "120 mice",
+             "correct": False,
+             "why": "120 is how many quick mice survive. The 30 surviving "
+                    "bold mice still have to be taken off to give a "
+                    "difference."},
+            {"text": "150 mice",
+             "correct": False,
+             "why": "150 is how many of each kind there were to begin with. "
+                    "The question asks for a difference between two numbers "
+                    "of survivors."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h15",
+        "band": "harder",
+        "text": "Of 400 pale mice living where snow lies, 300 survive a "
+                "winter. Of 400 pale mice on bare dark peat with an owl "
+                "hunting, 100 survive. How many times more likely is a pale "
+                "mouse to survive on the snow?",
+        "options": [
+            {"text": "Three times as likely.",
+             "correct": True},
+            {"text": "Twice as likely, because 300 is 200 more survivors "
+                     "than 100 and 200 is half of 400.",
+             "correct": False,
+             "why": "A difference of 200 is not a ratio. How many times more "
+                    "likely is found by dividing one chance by the other, "
+                    "which gives 75% over 25%."},
+            {"text": "Two hundred times as likely, since two hundred more "
+                     "mice come through the winter than come through the "
+                     "year on peat.",
+             "correct": False,
+             "why": "200 is again the difference rather than the ratio. "
+                    "Dividing 300 by 100 is what answers a how-many-times "
+                    "question."},
+            {"text": "Fifty times as likely, because the survival rate rises "
+                     "by fifty percentage points between the two fields.",
+             "correct": False,
+             "why": "The rise is indeed 50 percentage points, from 25% to "
+                    "75%, and that is still a difference. The ratio of the "
+                    "two rates is 3."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h16",
+        "band": "harder",
+        "text": "A caterpillar species varies from green to brown. In June, "
+                "birds hunting among green leaves take mostly the brown "
+                "ones; in October, on brown fallen leaves, they take mostly "
+                "the green ones. A student concludes that neither colour is "
+                "an advantage. What is the correct reply?",
+        "options": [
+            {"text": "The student is right, because a colour that fails half "
+                     "the year cannot be called an advantage at all.",
+             "correct": False,
+             "why": "Every variation fails somewhere, and that does not "
+                    "cancel it. Each colour is a real advantage during the "
+                    "months when it matches the leaves."},
+            {"text": "The student is wrong: brown is the better colour, "
+                     "since brown leaves are on the ground for far longer "
+                     "than green ones are on the trees.",
+             "correct": False,
+             "why": "Counting months does not settle it either. The "
+                    "caterpillars are only feeding and being hunted during "
+                    "part of the year, and the answer still turns on which "
+                    "part."},
+            {"text": "The student is wrong: each colour is an advantage "
+                     "while it matches the leaves, and the conditions here "
+                     "change with the season.",
+             "correct": True},
+            {"text": "The student is wrong, because being seen has nothing "
+                     "to do with whether a caterpillar survives.",
+             "correct": False,
+             "why": "Being seen is the whole of the danger. The birds are "
+                    "taking whichever caterpillars they can pick out against "
+                    "the background."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h17",
+        "band": "harder",
+        "text": "One lake holds weedy shallows near the bank and open deep "
+                "water in the middle, and the same fish species lives in "
+                "both. Would you expect the same variations to pay in both "
+                "parts?",
+        "options": [
+            {"text": "Yes, because the fish are one species in one lake, so "
+                     "they are all in the same environment.",
+             "correct": False,
+             "why": "An environment is everything around an organism that "
+                    "affects it, and weed, light and cover differ sharply "
+                    "between the two parts. One lake is two environments."},
+            {"text": "Yes, because a variation that suits a fish will suit "
+                     "it wherever in the lake it happens to be swimming.",
+             "correct": False,
+             "why": "That is the belief the whole lesson takes apart. Hiding "
+                    "among weed and outswimming a pike in open water ask for "
+                    "different things."},
+            {"text": "No, because fish in shallow water are always at a "
+                     "disadvantage compared with fish in deep water.",
+             "correct": False,
+             "why": "Neither part is worse in general. Shallow weed gives "
+                    "cover and food and costs room to escape; deep water is "
+                    "the other way about."},
+            {"text": "No, because the conditions differ between the two "
+                     "parts, so different variations pay in each.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h18",
+        "band": "harder",
+        "text": "A student argues that because survival percentages used for "
+                "teaching are chosen rather than measured, they could have "
+                "been chosen to show the opposite pattern, so they prove "
+                "nothing. What is the strongest reply?",
+        "options": [
+            {"text": "The figures are close enough to real measurements that "
+                     "the difference does not matter.",
+             "correct": False,
+             "why": "Nobody claims they are measurements, and that claim "
+                    "would be a weak defence. The real support comes from "
+                    "populations where the pattern was measured."},
+            {"text": "The same reversal has been measured in real "
+                     "populations, such as the Galapagos finches before and "
+                     "after the 1977 drought.",
+             "correct": True},
+            {"text": "Chosen figures are as good as measured ones, provided "
+                     "the person choosing them understands the science.",
+             "correct": False,
+             "why": "They are not as good, which is exactly why the note "
+                    "says they are teaching values. Their job is to make a "
+                    "measured pattern readable."},
+            {"text": "It does not matter what the figures show, because the "
+                     "conclusion was already known before they were written "
+                     "down.",
+             "correct": False,
+             "why": "A conclusion that no evidence could test is not worth "
+                    "much. The answer to the objection is the evidence, not "
+                    "a refusal to be tested."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h19",
+        "band": "harder",
+        "text": "In one field, mice over 25 g survive a hard winter at 70% "
+                "and mice under 15 g at 45%. In a drought in the same field "
+                "the figures are 40% and 85%. A farmer asks what size of "
+                "mouse he should expect to find there. What is the best "
+                "answer?",
+        "options": [
+            {"text": "Mice over 25 g, because they survive the more "
+                     "dangerous of the two kinds of year.",
+             "correct": False,
+             "why": "Neither year is the more dangerous in general — each is "
+                    "lethal to the mice the other suits. A winter figure "
+                    "cannot rank a drought."},
+            {"text": "Mice under 15 g, because 85% is the highest survival "
+                     "figure of the four.",
+             "correct": False,
+             "why": "It is the highest figure and it belongs to one kind of "
+                    "year. Picking the largest number in a table ignores "
+                    "which year the field actually has."},
+            {"text": "Neither size in particular, because the ranking "
+                     "reverses with the weather, so it depends what kind of "
+                     "years the field has.",
+             "correct": True},
+            {"text": "Both sizes in equal numbers, because the two sets of "
+                     "figures cancel one another out exactly.",
+             "correct": False,
+             "why": "They only cancel if hard winters and droughts arrive "
+                    "equally often, which nothing here says. The answer "
+                    "depends on how often each kind of year comes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h20",
+        "band": "harder",
+        "text": "Some individuals in a population clearly do leave more "
+                "surviving offspring than others. Why does that not make "
+                "them generally superior individuals?",
+        "options": [
+            {"text": "Because superiority is a word about strength, and the "
+                     "animals leaving most offspring are rarely the "
+                     "strongest ones.",
+             "correct": False,
+             "why": "Strength is only one of the variations at stake. Even "
+                    "if the strongest did leave most offspring in some year, "
+                    "that would still be a result about that year."},
+            {"text": "Because the number of offspring an individual leaves "
+                     "is settled by chance rather than by any variation it "
+                     "carries.",
+             "correct": False,
+             "why": "Chance plays a part and the variations matter a great "
+                    "deal, which is why the numbers differ so consistently "
+                    "between kinds. The point is which conditions they are "
+                    "differing in."},
+            {"text": "Because offspring are counted at the end of a year, "
+                     "and a year is too short a period to judge an animal "
+                     "on.",
+             "correct": False,
+             "why": "Nothing here turns on the length of the count. It turns "
+                    "on the fact that a longer count would run through "
+                    "different conditions and give a different winner."},
+            {"text": "Because leaving more offspring is a fact about one set "
+                     "of conditions, and a different individual leads once "
+                     "the conditions change.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h21",
+        "band": "harder",
+        "text": "After a severe winter storm, a scientist collected the "
+                "sparrows killed and those that had survived, and found the "
+                "survivors were more often of middling body size. Which "
+                "conclusion does that support?",
+        "options": [
+            {"text": "That middling sparrows are the best sparrows, so the "
+                     "population will go on getting more middling for ever.",
+             "correct": False,
+             "why": "Middling paid in this storm. A run of mild years, or a "
+                    "different danger, would favour a different size, which "
+                    "is why no size is best in general."},
+            {"text": "That the storm killed sparrows at random.",
+             "correct": False,
+             "why": "If the killing were random the survivors would match "
+                    "the original range of sizes. The survivors being "
+                    "narrower in size than the population is the finding."},
+            {"text": "That body size affected which sparrows came through "
+                     "that particular storm.",
+             "correct": True},
+            {"text": "That the surviving sparrows shrank towards the middle.",
+             "correct": False,
+             "why": "No bird changed size during a storm. The measurement "
+                    "compares two groups of birds, not one group before and "
+                    "after."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h22",
+        "band": "harder",
+        "text": "A population of 500 mice is 60% thick-coated and 40% small "
+                "and quick. In a hard winter thick-coated mice survive at "
+                "90% and small quick ones at 45%. How many mice survive the "
+                "winter altogether?",
+        "options": [
+            {"text": "270 mice",
+             "correct": False,
+             "why": "270 is the thick-coated survivors on their own. The 200 "
+                    "small quick mice still contribute 90 more."},
+            {"text": "338 mice",
+             "correct": False,
+             "why": "338 is what you get by averaging the two rates and "
+                    "applying 67.5% to all 500. The two groups are different "
+                    "sizes, so each has to be worked out separately."},
+            {"text": "360 mice",
+             "correct": True},
+            {"text": "675 mice",
+             "correct": False,
+             "why": "675 is 90% and 45% of 500 added together, which counts "
+                    "every mouse twice. Each rate applies only to its own "
+                    "part of the population."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h23",
+        "band": "harder",
+        "text": "An island has no predators, plenty of food and very little "
+                "fresh water. Which variation would you expect to be the "
+                "largest advantage to a mouse living there?",
+        "options": [
+            {"text": "Speed, because a quick animal can cover more of the "
+                     "island in a day and so find more of whatever there is.",
+             "correct": False,
+             "why": "Speed earns its keep against predators and in the heat "
+                    "of a drought. With no predators and plenty of food, "
+                    "covering ground buys very little."},
+            {"text": "A thick coat, since such islands are cold and windy.",
+             "correct": False,
+             "why": "Nothing here says the island is cold, and a thick coat "
+                    "would be a serious cost if it were not. The stated "
+                    "shortage is water."},
+            {"text": "Size, because with plenty of food a large mouse can "
+                     "grow larger still and dominate the others.",
+             "correct": False,
+             "why": "There is nothing much to dominate where food is "
+                    "plentiful, and a large body needs more water — which is "
+                    "the one thing in short supply."},
+            {"text": "Needing very little water, because water is the one "
+                     "thing that runs short there.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h24",
+        "band": "harder",
+        "text": "Suppose you wanted to test the claim that no variation is "
+                "an advantage in general. What result would count as "
+                "evidence against it?",
+        "options": [
+            {"text": "Finding one variation that raised survival in every "
+                     "set of conditions tested.",
+             "correct": True},
+            {"text": "Finding one variation that raised survival in more "
+                     "sets of conditions than any of the others did.",
+             "correct": False,
+             "why": "Coming top most often is not the same as never failing. "
+                    "A variation that wins four conditions and loses the "
+                    "fifth still is not an advantage in general."},
+            {"text": "Finding a population with no variation in it at all.",
+             "correct": False,
+             "why": "That would be a population with no variation to "
+                    "compare, so it could not test the claim either way."},
+            {"text": "Finding conditions where no variation made a "
+                     "difference.",
+             "correct": False,
+             "why": "That fits the claim rather than contradicting it. A "
+                    "danger that no visible variation answers is exactly "
+                    "what a new disease is."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h25",
+        "band": "harder",
+        "text": "Two mice carry the same variation. One leaves eight young "
+                "that survive to breed and the other leaves none. Does that "
+                "show the variation was not an advantage?",
+        "options": [
+            {"text": "Yes, because an advantage that fails one of the two "
+                     "animals carrying it cannot be a real advantage.",
+             "correct": False,
+             "why": "An advantage shifts the odds for the animals carrying "
+                    "it. It has never promised a result to any particular "
+                    "one of them."},
+            {"text": "No, because an advantage raises the chance of "
+                     "surviving and breeding, and chance still decides what "
+                     "happens to any one animal.",
+             "correct": True},
+            {"text": "Yes, because two animals with the same variation in "
+                     "the same place should do equally well as each other.",
+             "correct": False,
+             "why": "They will not, because a great deal else differs "
+                    "between them and because accidents happen. A variation "
+                    "moves the average, not every case."},
+            {"text": "No, because the second mouse must have been carrying a "
+                     "second variation that cancelled the first one out.",
+             "correct": False,
+             "why": "No hidden second variation is needed to explain it. Bad "
+                    "luck alone accounts for one animal in a pair leaving "
+                    "nothing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h26",
+        "band": "harder",
+        "text": "A wildlife park keeps a deer herd at a size where food is "
+                "never short. A visitor says there is no competition in the "
+                "park. What is the strongest objection?",
+        "options": [
+            {"text": "Food is short in the park too, because the deer eat "
+                     "what is put out for them faster than the keepers "
+                     "replace it.",
+             "correct": False,
+             "why": "The question says food is never short, and the "
+                    "objection has to work even so. Denying the premise is "
+                    "not the strongest reply available."},
+            {"text": "Competition cannot be switched off by a keeper.",
+             "correct": False,
+             "why": "That is an assertion rather than a reason. The reason "
+                    "is that particular things — mates, the best shelter — "
+                    "are still limited in the park."},
+            {"text": "There is no competition: the visitor is right.",
+             "correct": False,
+             "why": "Food is the commonest thing competed for and not the "
+                    "only one. Space, shelter and mates are all limited in a "
+                    "park."},
+            {"text": "Mates and the best shelter are still limited, so the "
+                     "deer are still competing for them.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h27",
+        "band": "harder",
+        "text": "A population of lizards is moved from an island into a warm "
+                "greenhouse with no predators. Ten years later far more of "
+                "them survive each year than survive on the island, and the "
+                "keepers say the greenhouse lizards are better adapted. What "
+                "is wrong with that?",
+        "options": [
+            {"text": "Nothing is wrong, since surviving better is what being "
+                     "better adapted means.",
+             "correct": False,
+             "why": "Surviving better than what, and where? The two groups "
+                    "are not facing the same conditions, so their survival "
+                    "rates cannot be set against each other."},
+            {"text": "The two groups are in different conditions, so a "
+                     "higher survival rate in one says nothing about how "
+                     "well adapted it is.",
+             "correct": True},
+            {"text": "The greenhouse lizards cannot be better adapted, "
+                     "because an animal kept by people is not adapted to "
+                     "anything at all.",
+             "correct": False,
+             "why": "A greenhouse is an environment like any other, and a "
+                    "lizard can be well or badly suited to it. The fault is "
+                    "in the comparison, not in the greenhouse."},
+            {"text": "Ten years is far too short a time for a population to "
+                     "become better adapted to anywhere.",
+             "correct": False,
+             "why": "The claim would be wrong after a thousand years as "
+                    "well. You cannot rank two groups by survival when each "
+                    "is measured somewhere different."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h28",
+        "band": "harder",
+        "text": "In one winter an owl took 45 of the 300 pale mice in a "
+                "field and 60 of the 200 dark mice. Which colour was at "
+                "greater risk, and by how much?",
+        "options": [
+            {"text": "The dark mice, at twice the risk of the pale ones.",
+             "correct": True},
+            {"text": "The dark mice, at one and a third times the risk, "
+                     "since 60 taken is a third more than 45 taken.",
+             "correct": False,
+             "why": "Comparing the two counts ignores how many of each "
+                    "colour there were. 45 out of 300 is 15% and 60 out of "
+                    "200 is 30%."},
+            {"text": "The pale mice, because 300 of them lived in the field "
+                     "and only 200 dark ones did.",
+             "correct": False,
+             "why": "How common a colour is does not tell you the risk to a "
+                    "mouse carrying it. Risk is the share of that group that "
+                    "was taken."},
+            {"text": "Neither: 45 and 60 are close enough that the "
+                     "difference is not worth anything.",
+             "correct": False,
+             "why": "As shares of their own groups they are not close at all "
+                    "— 15% against 30%. The raw counts are the wrong things "
+                    "to compare."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h29",
+        "band": "harder",
+        "text": "In a long drought the largest and heaviest mice in a "
+                "population are the first to die. A student calls them the "
+                "weakest members of the population. Why is that the wrong "
+                "word?",
+        "options": [
+            {"text": "Because they are the same mice that won the crowded "
+                     "year, and size costs water here and pays there.",
+             "correct": True},
+            {"text": "Because weak is an unkind word to use about an animal "
+                     "that has died of thirst.",
+             "correct": False,
+             "why": "The objection is not about kindness. It is that the "
+                    "word names a property of the mouse when what has "
+                    "changed is the conditions around it."},
+            {"text": "Because the largest animals in any population are by "
+                     "definition the strongest ones in it.",
+             "correct": False,
+             "why": "Large and strong are not the same thing, and neither of "
+                    "them is the point. Even a genuinely strong mouse dies "
+                    "first where water is short."},
+            {"text": "Because dying first in a drought has nothing to do "
+                     "with the variations a mouse carries.",
+             "correct": False,
+             "why": "It has everything to do with them — a large body needs "
+                    "more water. The mistake is calling that variation a "
+                    "weakness rather than a cost in these conditions."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b11-01-h30",
+        "band": "harder",
+        "text": "Three students describe the same drought. A writes: the "
+                "mice that needed least water were the fittest that year. B "
+                "writes: the mice that needed least water are the fittest "
+                "kind of mouse. C writes: the strongest mice survived the "
+                "drought. Which is right?",
+        "options": [
+            {"text": "B, because a variation that carries a population "
+                     "through a drought is the most valuable one it has.",
+             "correct": False,
+             "why": "It is the most valuable one that year. B drops the "
+                    "year, which turns a result about a drought into a "
+                    "ranking of mice in general."},
+            {"text": "C, because coming through conditions as hard as a "
+                     "drought is what being strong means.",
+             "correct": False,
+             "why": "Fittest does not mean strongest. In a drought the "
+                    "winner is the animal that needs least water, and it may "
+                    "be the least impressive of the lot."},
+            {"text": "A, because fitness is always fitness in particular "
+                     "conditions.",
+             "correct": True},
+            {"text": "All three: they say the same thing.",
+             "correct": False,
+             "why": "They make three different claims. Only one of them "
+                    "keeps the result attached to the year it came from."},
+        ],
+        "figure": None,
+    },
 ]
