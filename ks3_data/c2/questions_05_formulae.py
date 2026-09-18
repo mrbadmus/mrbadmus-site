@@ -693,4 +693,1667 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-338 expansion ──────────────────────────────────────
+    # ⚠️ FORMULAE ARE WRITTEN FLAT IN THE ROWS BELOW — CO2, not CO₂ — per the
+    # MRB-338 authoring contract and CLAUDE.md's MRB-302 store-flat ruling.
+    # The rows above (MRB-269 and the MRB-335 top-up) use Unicode subscripts,
+    # so this leaf now carries both conventions. Reported to the commander
+    # rather than resolved here: the shipped rows are frozen and may not be
+    # edited, and a mixed file is the only append-only outcome available.
+    {
+        "id": "c2-05-e09",
+        "band": "easier",
+        "text": "Sulfur dioxide has the formula SO2. What is the small 2 "
+                "counting?",
+        "options": [
+            {"text": "The oxygen atoms inside one particle of it.",
+             "correct": True},
+            {"text": "The particles of sulfur dioxide that are there.",
+             "correct": False,
+             "why": "Particles are counted by a big number written in front, "
+                    "as in 2SO2. A small number sits inside one particle."},
+            {"text": "The sulfur atoms in it.",
+             "correct": False,
+             "why": "A small number belongs to the symbol it follows, and that "
+                    "symbol is O. The S has no number, so there is one sulfur."},
+            {"text": "The elements in it, since two are named by a 2.",
+             "correct": False,
+             "why": "Two elements here is a coincidence. SO3 also holds two "
+                    "elements, and its small number is a 3."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e10",
+        "band": "easier",
+        "text": "Magnesium oxide is MgO, and neither symbol has a number "
+                "written after it. How many atoms of each does one particle "
+                "hold?",
+        "options": [
+            {"text": "Two of each: a bare symbol stands for a pair",
+             "correct": False,
+             "why": "A symbol on its own stands for one atom. Two of each "
+                    "would have to be written Mg2O2."},
+            {"text": "None of either, since an unnumbered symbol counts nothing",
+             "correct": False,
+             "why": "The formula is complete as it stands. Chemists leave the "
+                    "1 out because a bare symbol already means one."},
+            {"text": "One magnesium atom and one oxygen atom",
+             "correct": True},
+            {"text": "It cannot be worked out from this formula",
+             "correct": False,
+             "why": "It can, and this is how every formula is read. No number "
+                    "after a symbol means exactly one atom of it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e11",
+        "band": "easier",
+        "text": "A student writes 5CO2 at the top of a page of working. What "
+                "is the 5 counting?",
+        "options": [
+            {"text": "The carbon atoms, which a front number always counts",
+             "correct": False,
+             "why": "The carbon has no small number, so there is one of it. "
+                    "The 5 is not inside the particle at all."},
+            {"text": "Particles of carbon dioxide",
+             "correct": True},
+            {"text": "The oxygen atoms in each particle",
+             "correct": False,
+             "why": "The oxygen atoms are counted by the small 2 after the O. "
+                    "A big number in front counts whole particles."},
+            {"text": "The elements it is built from",
+             "correct": False,
+             "why": "Carbon dioxide is built from two elements, whatever "
+                    "number stands in front of it. The 5 counts particles."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e12",
+        "band": "easier",
+        "text": "A student changes a formula from SO2 to SO3. Both are real "
+                "substances. Has the amount changed, or what the substance is?",
+        "options": [
+            {"text": "The amount: SO3 is more of the gas",
+             "correct": False,
+             "why": "No small number reports an amount. Changing one changes "
+                    "what is inside every particle."},
+            {"text": "Neither: both name one substance",
+             "correct": False,
+             "why": "They name two substances. A particle holding three "
+                    "oxygens is not a particle holding two."},
+            {"text": "Both at once",
+             "correct": False,
+             "why": "Half of this is right — the substance has changed. The "
+                    "amount is not in a formula to be changed."},
+            {"text": "What the substance is: SO3 is not sulfur dioxide",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e13",
+        "band": "easier",
+        "text": "What does the word particle mean?",
+        "options": [
+            {"text": "The smallest separate piece of a substance",
+             "correct": True},
+            {"text": "Any piece of a substance small enough to be a speck of "
+                     "dust",
+             "correct": False,
+             "why": "A speck of dust is enormous next to a particle, and it "
+                    "holds billions of them."},
+            {"text": "The smallest piece an element can possibly be cut into",
+             "correct": False,
+             "why": "That is an atom. A particle of water is three atoms "
+                    "joined."},
+            {"text": "A group of atoms taken from two or more elements",
+             "correct": False,
+             "why": "A particle can be built from one element, and being made "
+                    "of two is no part of what the word means."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e14",
+        "band": "easier",
+        "text": "Calcium chloride is CaCl2. How many chlorine atoms does the "
+                "formula show for every one calcium?",
+        "options": [
+            {"text": "One",
+             "correct": False,
+             "why": "The Cl carries a small 2, and that 2 counts chlorine "
+                    "atoms."},
+            {"text": "Two",
+             "correct": True},
+            {"text": "Three",
+             "correct": False,
+             "why": "Three is every atom in the formula added up. The "
+                    "question asks for chlorine on its own."},
+            {"text": "Four",
+             "correct": False,
+             "why": "Four would need the formula CaCl4. The number written "
+                    "is 2."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e15",
+        "band": "easier",
+        "text": "Count the atoms in a single particle of hydrogen peroxide, "
+                "H2O2. What is the total?",
+        "options": [
+            {"text": "Two",
+             "correct": False,
+             "why": "Two is the hydrogen count on its own. The oxygens are "
+                    "still to be added."},
+            {"text": "Three",
+             "correct": False,
+             "why": "Three atoms is a particle of water. Peroxide carries one "
+                    "oxygen more than that."},
+            {"text": "Four",
+             "correct": True},
+            {"text": "Six",
+             "correct": False,
+             "why": "Six would need H3O3. Both of the small numbers written "
+                    "here are 2."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e16",
+        "band": "easier",
+        "text": "Nitrogen monoxide is NO and nitrogen dioxide is NO2. Which "
+                "holds more oxygen in each particle, and by how much?",
+        "options": [
+            {"text": "Nitrogen dioxide, by one oxygen atom in every particle",
+             "correct": True},
+            {"text": "Nitrogen monoxide",
+             "correct": False,
+             "why": "Monoxide is the one with the single oxygen, and its "
+                    "formula shows no small number at all."},
+            {"text": "Nitrogen dioxide, by twice as much gas",
+             "correct": False,
+             "why": "A small number changes what sits inside each particle, "
+                    "never how much of the gas you have."},
+            {"text": "Neither, since both formulae name the same gas",
+             "correct": False,
+             "why": "One oxygen atom per particle is the whole difference "
+                    "between two substances that behave nothing alike."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e17",
+        "band": "easier",
+        "text": "In the formula Na2S, which symbol does the small 2 belong "
+                "to?",
+        "options": [
+            {"text": "To the S",
+             "correct": False,
+             "why": "A small number is written after the symbol it counts, "
+                    "and this one comes before the S."},
+            {"text": "To both, because one number covers a whole formula",
+             "correct": False,
+             "why": "One small number counts one element. Two of each would "
+                    "be written Na2S2."},
+            {"text": "To neither, since it counts particles",
+             "correct": False,
+             "why": "A number that counts particles is written in front of "
+                    "the whole formula, never tucked inside it."},
+            {"text": "To the Na, giving two sodium atoms",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e18",
+        "band": "easier",
+        "text": "Propane, the gas burnt in a camping stove, is C3H8. State "
+                "the number of hydrogen atoms in one particle.",
+        "options": [
+            {"text": "Three",
+             "correct": False,
+             "why": "Three is the carbon count. The hydrogen's number is the "
+                    "one written after the H."},
+            {"text": "Eight",
+             "correct": True},
+            {"text": "Eleven",
+             "correct": False,
+             "why": "Eleven is every atom in the particle added up, and the "
+                    "question asks for hydrogen alone."},
+            {"text": "Twenty-four",
+             "correct": False,
+             "why": "Multiplying the two small numbers means nothing. Each "
+                    "one counts its own element and no other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e19",
+        "band": "easier",
+        "text": "Is every formula that somebody can write down a real "
+                "substance?",
+        "options": [
+            {"text": "Yes, since real atoms will join in any numbers you ask for",
+             "correct": False,
+             "why": "Real elements are not enough. Hydrogen and oxygen are "
+                    "both real and H3O2 is still nothing."},
+            {"text": "Yes, though a few of them have yet to be discovered",
+             "correct": False,
+             "why": "Those substances are not waiting to be found. Atoms "
+                    "cannot join in those numbers, so they do not exist."},
+            {"text": "No — most combinations of atoms are not substances",
+             "correct": True},
+            {"text": "No, because a formula of two elements is the limit",
+             "correct": False,
+             "why": "Formulae naming three and four elements are ordinary. "
+                    "What limits them is which numbers can bond."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e20",
+        "band": "easier",
+        "text": "Which of these changes would alter what a substance IS, "
+                "rather than how much of it you have?",
+        "options": [
+            {"text": "Changing a small number written after a symbol",
+             "correct": True},
+            {"text": "Writing a number in front",
+             "correct": False,
+             "why": "A number in front counts particles, so it changes the "
+                    "amount and leaves the substance alone."},
+            {"text": "Pouring it into a larger container",
+             "correct": False,
+             "why": "A container holds a substance; it does not reach inside "
+                    "the particles to change one."},
+            {"text": "Drawing its particles further apart",
+             "correct": False,
+             "why": "How a drawing is spaced out is a drawing decision. The "
+                    "particles themselves are unchanged."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e21",
+        "band": "easier",
+        "text": "A formula names the elements in a substance and counts the "
+                "atoms of each. Which of these can it NOT tell you?",
+        "options": [
+            {"text": "Which elements the substance is built from",
+             "correct": False,
+             "why": "That is the first thing a formula does. Every capital "
+                    "letter in it starts an element."},
+            {"text": "How many atoms of each element are in one particle",
+             "correct": False,
+             "why": "That is the job of the small numbers, and it is the "
+                    "other half of what a formula is for."},
+            {"text": "The proportion of one element to the next",
+             "correct": False,
+             "why": "A formula always gives the proportion — for a giant "
+                    "structure that is the only thing it gives."},
+            {"text": "How much of the substance you have",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e22",
+        "band": "easier",
+        "text": "Potassium oxide is K2O. How many potassium atoms are there "
+                "for every oxygen atom?",
+        "options": [
+            {"text": "One",
+             "correct": False,
+             "why": "The O having no number fixes the oxygen at one. The "
+                    "potassium is the element with the 2."},
+            {"text": "Two",
+             "correct": True},
+            {"text": "Three",
+             "correct": False,
+             "why": "Three is the total number of atoms. A ratio compares the "
+                    "two counts instead of adding them up."},
+            {"text": "It depends on the amount",
+             "correct": False,
+             "why": "A ratio belongs to the substance. A lorry-load of it is "
+                    "two potassium for every oxygen as well."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e23",
+        "band": "easier",
+        "text": "Each particle of a substance holds two lithium atoms joined "
+                "to one oxygen atom. How is its formula written?",
+        "options": [
+            {"text": "LiO2",
+             "correct": False,
+             "why": "This puts the 2 on the oxygen, so it says one lithium "
+                    "and two oxygens — the wrong way round."},
+            {"text": "Li2O2",
+             "correct": False,
+             "why": "This doubles the oxygen as well. Only the lithium was "
+                    "described as coming in twos."},
+            {"text": "Li2O",
+             "correct": True},
+            {"text": "2LiO",
+             "correct": False,
+             "why": "A number in front counts particles, so this says two "
+                    "particles holding one of each."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e24",
+        "band": "easier",
+        "text": "Aluminium chloride is AlCl3. Which element has three atoms "
+                "in each particle?",
+        "options": [
+            {"text": "Chlorine",
+             "correct": True},
+            {"text": "Aluminium",
+             "correct": False,
+             "why": "The Al has no number written after it, which fixes it "
+                    "at one atom."},
+            {"text": "Both of them",
+             "correct": False,
+             "why": "Three of each would read Al3Cl3. The 3 counts only the "
+                    "symbol it follows."},
+            {"text": "Neither: the 3 counts particles",
+             "correct": False,
+             "why": "It is written small and low, after a symbol, so it "
+                    "counts atoms. Particle counts go in front."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e25",
+        "band": "easier",
+        "text": "A diamond is one repeating stack of carbon atoms, with "
+                "nothing separate anywhere in it. Which word describes it?",
+        "options": [
+            {"text": "A mixture",
+             "correct": False,
+             "why": "A mixture holds more than one substance, loosely. This "
+                    "is carbon bonded to carbon throughout."},
+            {"text": "A molecule",
+             "correct": False,
+             "why": "A molecule is a small group of atoms you could pick out "
+                    "on its own. Nothing here comes apart like that."},
+            {"text": "A compound",
+             "correct": False,
+             "why": "A compound holds at least two elements joined. Diamond "
+                    "is carbon and carbon only."},
+            {"text": "A giant structure",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e26",
+        "band": "easier",
+        "text": "The formula Fe3O4 has two small numbers in it. What do both "
+                "of them count?",
+        "options": [
+            {"text": "Particles: three of one kind and four of the other",
+             "correct": False,
+             "why": "Both numbers sit inside one formula, after a symbol. A "
+                    "particle count is a single number out in front."},
+            {"text": "Atoms, each of the element whose symbol it follows",
+             "correct": True},
+            {"text": "Elements: three of them before the O and four after it",
+             "correct": False,
+             "why": "The formula names two elements, iron and oxygen. What "
+                    "the numbers count is atoms."},
+            {"text": "Grams of iron and of oxygen",
+             "correct": False,
+             "why": "Nothing in a formula is a mass. The numbers count atoms, "
+                    "whatever the sample weighs."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e27",
+        "band": "easier",
+        "text": "Hydrogen and oxygen can be written down in many "
+                "combinations, and just two of them are substances. Which "
+                "pair is real?",
+        "options": [
+            {"text": "HO and HO2",
+             "correct": False,
+             "why": "Neither is a substance. Hydrogen comes in twos in both "
+                    "of the real ones."},
+            {"text": "H3O and H3O2",
+             "correct": False,
+             "why": "Three hydrogens is one too many, and no bottle of either "
+                    "of these exists anywhere."},
+            {"text": "H2O and H2O2",
+             "correct": True},
+            {"text": "H2O and H3O",
+             "correct": False,
+             "why": "Water is right, and the second one is not. The other "
+                    "real substance carries a second oxygen."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e28",
+        "band": "easier",
+        "text": "Asked what NaCl tells them, a student answers: one sodium "
+                "atom for every chlorine atom. Is that right?",
+        "options": [
+            {"text": "Yes — a one-to-one ratio is exactly what it says",
+             "correct": True},
+            {"text": "No, one particle holds one of each",
+             "correct": False,
+             "why": "Salt has no separate particles to hold anything. The "
+                    "ratio runs through a stack instead."},
+            {"text": "No, it tells you how many grains are in a spoonful",
+             "correct": False,
+             "why": "A formula carries no amount of any kind, in grains or "
+                    "in anything else."},
+            {"text": "No, because a formula gives the element names and stops there",
+             "correct": False,
+             "why": "Naming the elements is half of the job. Counting them "
+                    "against each other is the other half."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e29",
+        "band": "easier",
+        "text": "A substance has the formula CuCl2. Which element is there "
+                "more of in each particle?",
+        "options": [
+            {"text": "Copper",
+             "correct": False,
+             "why": "Being written first counts nothing. The numbers decide "
+                    "it, and the Cu has none."},
+            {"text": "There is the same amount of each",
+             "correct": False,
+             "why": "Equal numbers would read CuCl. The small 2 puts the "
+                    "chlorine ahead by one atom."},
+            {"text": "It cannot be told from a formula",
+             "correct": False,
+             "why": "It is precisely what a formula is for. Read the small "
+                    "numbers and compare them."},
+            {"text": "Chlorine",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-e30",
+        "band": "easier",
+        "text": "One sample of a pure substance is a lorry-load and another "
+                "is a pinch. What must be true of the two formulae?",
+        "options": [
+            {"text": "The lorry-load's formula carries a big number in front",
+             "correct": False,
+             "why": "A number in front counts particles one at a time, and a "
+                    "pinch already holds billions of them."},
+            {"text": "They are the same formula",
+             "correct": True},
+            {"text": "The lorry-load's small numbers are larger",
+             "correct": False,
+             "why": "Larger small numbers would name a different substance "
+                    "rather than a bigger heap of this one."},
+            {"text": "The two formulae are not the same one",
+             "correct": False,
+             "why": "A formula belongs to the substance, not to the sample. "
+                    "The pinch has the same one."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-338 expansion ────────────────────────────────────
+    {
+        "id": "c2-05-s09",
+        "band": "standard",
+        "text": "A line of working reads 3H2O. How many atoms is that "
+                "altogether?",
+        "options": [
+            {"text": "Nine",
+             "correct": True},
+            {"text": "Three",
+             "correct": False,
+             "why": "Three is the number of particles. Each of them holds "
+                    "three atoms of its own."},
+            {"text": "Five",
+             "correct": False,
+             "why": "Five adds the 3 and the 2 together. The front number "
+                    "multiplies the particle rather than joining it."},
+            {"text": "Six",
+             "correct": False,
+             "why": "Six is the hydrogen atoms only. Each particle brings an "
+                    "oxygen with it as well."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s10",
+        "band": "standard",
+        "text": "Two students describe what the formula MgCl2 shows. One says "
+                "it shows one magnesium for every two chlorines; the other "
+                "says it shows two magnesiums for every one chlorine. Who is "
+                "right?",
+        "options": [
+            {"text": "The second, and what the first has described is MgCl",
+             "correct": False,
+             "why": "The second student has the ratio backwards — MgCl2 "
+                    "gives one magnesium to two chlorines, not the reverse."},
+            {"text": "The first, and the second has the ratio backwards",
+             "correct": True},
+            {"text": "Both, since the same atoms are named either way",
+             "correct": False,
+             "why": "The two descriptions give different ratios, and only "
+                    "one of them matches what the small 2 says."},
+            {"text": "Neither, since the small 2 counts magnesium atoms, not "
+                     "chlorine atoms",
+             "correct": False,
+             "why": "The 2 sits after the Cl, so it counts chlorine atoms, "
+                    "not magnesium ones."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s11",
+        "band": "standard",
+        "text": "Sodium and chlorine join one atom to one atom. Predict what "
+                "you would get if you asked for Na2Cl3.",
+        "options": [
+            {"text": "Twice the sodium in an ordinary grain of salt",
+             "correct": False,
+             "why": "Small numbers are not a recipe you can dial up. Asking "
+                    "for more sodium in the formula asks for a substance that "
+                    "is not there."},
+            {"text": "Salt, since those are the two elements salt is made of",
+             "correct": False,
+             "why": "The elements alone do not make the substance. Their "
+                    "numbers have to be right as well, and salt is one to one."},
+            {"text": "Nothing: no substance has that formula",
+             "correct": True},
+            {"text": "A stronger-tasting kind of salt than the usual one",
+             "correct": False,
+             "why": "Taste is a property of a real substance. There is no "
+                    "substance here to taste."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s12",
+        "band": "standard",
+        "text": "Copper oxide is CuO. Explain why writing CuO2 instead would "
+                "not simply mean more copper oxide.",
+        "options": [
+            {"text": "Because a small number reports an amount only when it "
+                     "is larger than one",
+             "correct": False,
+             "why": "A small number never reports an amount, whatever its "
+                    "size. It counts atoms inside a particle."},
+            {"text": "Because the 2 would have to be written in front to "
+                     "count anything",
+             "correct": False,
+             "why": "Written in front it would count particles. Written after "
+                    "the O it changes the particle itself."},
+            {"text": "Because it changes what is in each particle, so it "
+                     "names another substance",
+             "correct": True},
+            {"text": "Because copper oxide is a giant structure and takes no "
+                     "numbers",
+             "correct": False,
+             "why": "Giant structures take numbers too — their formulae give "
+                    "a ratio, and a changed ratio is a changed substance."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s13",
+        "band": "standard",
+        "text": "Sand is SiO2 and is one repeating stack; carbon dioxide is "
+                "CO2 and is separate particles. Both formulae are one to two. "
+                "What is different about what they mean?",
+        "options": [
+            {"text": "Nothing: one to two means the same in both",
+             "correct": False,
+             "why": "The proportion is shared, and what it describes is not. "
+                    "Only one of the two has a particle to describe."},
+            {"text": "For sand it is a ratio through the stack; for the gas "
+                     "it is also the contents of one particle",
+             "correct": True},
+            {"text": "For sand the numbers count grains of it, and for the gas they "
+                     "count particles, which is why only one of them is a "
+                     "true formula",
+             "correct": False,
+             "why": "No formula counts grains. A grain holds billions of "
+                    "atoms and the formula knows nothing of it."},
+            {"text": "For sand the formula is a guess, since nobody can see "
+                     "inside a grain",
+             "correct": False,
+             "why": "It is measured, not guessed. The ratio of silicon to "
+                    "oxygen in sand is known exactly."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s14",
+        "band": "standard",
+        "text": "A bottle is labelled 4H2O2. State what the 4 is doing and "
+                "what the two 2s are doing.",
+        "options": [
+            {"text": "All three numbers count atoms, so this is eight atoms "
+                     "in one large particle",
+             "correct": False,
+             "why": "A number in front sits outside the particle. Totalling "
+                    "all three treats it as though it were inside."},
+            {"text": "The 4 makes the substance four times as concentrated as it "
+                     "would be without it",
+             "correct": False,
+             "why": "Concentration needs something dissolved in something "
+                    "else. The 4 is a count of whole particles."},
+            {"text": "The 4 counts the elements, and each 2 counts particles of "
+                     "the element it follows",
+             "correct": False,
+             "why": "Only two elements are named here, and particles are "
+                    "never counted from inside a formula."},
+            {"text": "The 4 counts particles; each 2 counts atoms of the "
+                     "element it follows",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s15",
+        "band": "standard",
+        "text": "A student totals the atoms in 2CH4 and writes down ten. "
+                "Determine whether they are right.",
+        "options": [
+            {"text": "No: it is five atoms",
+             "correct": False,
+             "why": "Five is one particle. The 2 in front says there are two "
+                    "of them."},
+            {"text": "No: it is seven atoms, the five in the particle plus the two "
+                     "the front number adds on",
+             "correct": False,
+             "why": "Seven adds the 2 to the five atoms. A front number "
+                    "multiplies the particle instead."},
+            {"text": "Yes: two particles of five atoms each",
+             "correct": True},
+            {"text": "No: it is eight atoms",
+             "correct": False,
+             "why": "Eight doubles the hydrogens and forgets the carbons. "
+                    "Everything inside the particle is doubled."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s16",
+        "band": "standard",
+        "text": "A student invents the formula CO3 for a new gas made of "
+                "carbon and oxygen. Suggest why no bottle of it exists.",
+        "options": [
+            {"text": "Because carbon and oxygen have already been used up in "
+                     "making CO and CO2, and an element can only be spent "
+                     "once on one compound",
+             "correct": False,
+             "why": "Elements are not used up by the compounds they make. "
+                    "There is plenty of both."},
+            {"text": "Because the elements themselves fix how many atoms can "
+                     "join, and three oxygens is not one of them",
+             "correct": True},
+            {"text": "Because a gas is never made of three of anything",
+             "correct": False,
+             "why": "Ammonia is a gas with three hydrogens in every particle. "
+                    "Three is no barrier on its own."},
+            {"text": "Because nobody has tried to make it yet",
+             "correct": False,
+             "why": "It is not an unexplored gap. Those atoms do not bond in "
+                    "those numbers, so there is nothing to try for."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s17",
+        "band": "standard",
+        "text": "There is no single particle of salt anywhere in a grain. "
+                "Explain how salt can have a formula at all.",
+        "options": [
+            {"text": "It is borrowed from salt water, where separate "
+                     "particles do float about",
+             "correct": False,
+             "why": "Dissolved salt is not separate NaCl particles either, "
+                    "and the formula was never taken from a solution."},
+            {"text": "Chemists agree to pretend there is a particle, because "
+                     "the formula is useful",
+             "correct": False,
+             "why": "Nothing is being pretended. The proportion the formula "
+                    "gives is real and can be measured."},
+            {"text": "The grain is small enough to count as one particle by "
+                     "itself",
+             "correct": False,
+             "why": "A grain is billions of atoms. Its size is not what "
+                    "decides whether a particle is there."},
+            {"text": "Because a formula gives a proportion, and the stack has "
+                     "one sodium for every chlorine",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s18",
+        "band": "standard",
+        "text": "Copper forms two oxides, CuO and Cu2O. State the ratio of "
+                "copper atoms to oxygen atoms in each.",
+        "options": [
+            {"text": "One to one, and two to one",
+             "correct": True},
+            {"text": "One to one, and one to two",
+             "correct": False,
+             "why": "The 2 in Cu2O follows the copper, so it is the copper "
+                    "that comes in twos."},
+            {"text": "Two to one, and one to one",
+             "correct": False,
+             "why": "The formulae are the right way round in your answer but "
+                    "swapped between them. CuO is the one to one."},
+            {"text": "One to one in both, since the formulae name the same "
+                     "two elements",
+             "correct": False,
+             "why": "Naming the same elements is not having the same ratio. "
+                    "That is why two different oxides exist."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s19",
+        "band": "standard",
+        "text": "A chemist needs to write down four particles of sulfur "
+                "dioxide. Which is correct?",
+        "options": [
+            {"text": "S4O8",
+             "correct": False,
+             "why": "This is one particle with four sulfurs and eight "
+                    "oxygens, which is not a substance at all."},
+            {"text": "SO8",
+             "correct": False,
+             "why": "This multiplies the oxygen only and leaves the sulfur "
+                    "alone. A count of particles covers everything."},
+            {"text": "4SO2",
+             "correct": True},
+            {"text": "4S4O2",
+             "correct": False,
+             "why": "The 4 in front already covers the whole formula. "
+                    "Repeating it inside multiplies the sulfur twice over."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s20",
+        "band": "standard",
+        "text": "A student says NaCl and Na2Cl2 must mean the same thing, "
+                "since both are one to one. Explain which a chemist writes.",
+        "options": [
+            {"text": "Na2Cl2, because a formula must always show at least two "
+                     "atoms of something in it",
+             "correct": False,
+             "why": "No such rule exists. Plenty of formulae, NaCl among "
+                    "them, carry no small numbers at all."},
+            {"text": "NaCl, because a giant structure's formula is written as "
+                     "the simplest form of the ratio",
+             "correct": True},
+            {"text": "Na2Cl2, because a grain holds far more than one of each",
+             "correct": False,
+             "why": "A grain holds billions of each, so no small number could "
+                    "ever report the true count anyway."},
+            {"text": "Either one, depending on the size of the grain",
+             "correct": False,
+             "why": "The ratio does not shift with the size of a grain, and "
+                    "only one form of it is written."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s21",
+        "band": "standard",
+        "text": "Methane is CH4 and ethane is C2H6. Determine which holds "
+                "more atoms in one particle, and by how many.",
+        "options": [
+            {"text": "Ethane, by two, counting the extra carbon and the "
+                     "hydrogens as one",
+             "correct": False,
+             "why": "Every atom is counted separately. Five against eight "
+                    "leaves a difference of three."},
+            {"text": "Methane, by one, since 4 is the larger small number "
+                     "written in either formula",
+             "correct": False,
+             "why": "One number cannot be compared on its own. Both of a "
+                    "formula's counts have to be added up."},
+            {"text": "Neither: both hold the same, as both are made of carbon "
+                     "and hydrogen only",
+             "correct": False,
+             "why": "Sharing two elements is not holding the same atoms. The "
+                    "numbers differ, so the totals differ."},
+            {"text": "Ethane, by three",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s22",
+        "band": "standard",
+        "text": "A syringe of carbon dioxide is sealed and squeezed into half "
+                "the space. State what happens to the formula of the gas, and "
+                "why.",
+        "options": [
+            {"text": "It doubles to C2O4, because the particles are twice as "
+                     "close together and a formula reports how tightly packed "
+                     "a gas is",
+             "correct": False,
+             "why": "Squeezing moves particles closer; it does not join them. "
+                    "Each one is still one carbon and two oxygens."},
+            {"text": "It gains a 2 in front, since the gas is twice as "
+                     "concentrated as it was",
+             "correct": False,
+             "why": "A number in front counts particles, and squeezing makes "
+                    "no new ones."},
+            {"text": "Nothing happens to it: the formula says what the gas "
+                     "is, and squeezing has not changed that",
+             "correct": True},
+            {"text": "It can no longer be written, because the gas is under "
+                     "pressure",
+             "correct": False,
+             "why": "Pressure changes nothing about a formula. Carbon dioxide "
+                    "is CO2 in a syringe as much as in the open air."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s23",
+        "band": "standard",
+        "text": "Sulfur trioxide is SO3 and sulfuric acid is H2SO4. State "
+                "what the H2 adds, and whether the two are the same "
+                "substance.",
+        "options": [
+            {"text": "Two hydrogen atoms; they are different substances",
+             "correct": True},
+            {"text": "Two hydrogen particles; they are the same substance "
+                     "dissolved in water",
+             "correct": False,
+             "why": "The hydrogens are atoms joined inside the particle, not "
+                    "separate particles mixed in."},
+            {"text": "Two extra elements on top of the sulfur and the oxygen",
+             "correct": False,
+             "why": "H2 names one element twice over, not two. It is hydrogen "
+                    "and hydrogen only."},
+            {"text": "Two hydrogen atoms; they remain the same substance, "
+                     "since the sulfur and oxygen are unchanged",
+             "correct": False,
+             "why": "The hydrogens and the extra oxygen are both inside every "
+                    "particle, which makes it a different substance."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s24",
+        "band": "standard",
+        "text": "Ethene is C2H4 and ethane is C2H6. Explain why they are not "
+                "the same gas in two different amounts.",
+        "options": [
+            {"text": "Because a gas in a different amount would need a "
+                     "different number in front of it",
+             "correct": False,
+             "why": "True about front numbers, and it is not the reason. The "
+                    "difference here is inside the particle."},
+            {"text": "Because two gases can never share a pair of elements "
+                     "between them",
+             "correct": False,
+             "why": "They can, and often do. Carbon and hydrogen build a "
+                    "great many different gases."},
+            {"text": "Because ethene holds fewer atoms, so there is less of "
+                     "it in the cylinder",
+             "correct": False,
+             "why": "How many atoms a particle holds says nothing about how "
+                    "many particles a cylinder holds."},
+            {"text": "Because the extra hydrogens are inside every particle, "
+                     "so the substance itself is different",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s25",
+        "band": "standard",
+        "text": "Fool's gold is FeS2 and iron sulfide is FeS. State the ratio "
+                "of iron to sulfur in each.",
+        "options": [
+            {"text": "One to two, and one to one",
+             "correct": True},
+            {"text": "Two to one, and one to one",
+             "correct": False,
+             "why": "The 2 follows the S in FeS2, so the sulfur is the "
+                    "element that comes in twos."},
+            {"text": "One to two in both, because both formulae hold the same "
+                     "two elements as each other",
+             "correct": False,
+             "why": "Holding the same elements does not fix the ratio. FeS "
+                    "carries no small number at all."},
+            {"text": "Three to two, adding the atoms up",
+             "correct": False,
+             "why": "Adding the atoms gives a total. A ratio compares the two "
+                    "counts against each other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s26",
+        "band": "standard",
+        "text": "Nitrogen and oxygen form NO, NO2 and N2O, and all three are "
+                "real. State what that shows.",
+        "options": [
+            {"text": "That any two elements at all can be combined in any numbers "
+                     "you like",
+             "correct": False,
+             "why": "Three real formulae out of the many that could be "
+                    "written is not any numbers at all."},
+            {"text": "That nitrogen and oxygen are unusual, since a pair of "
+                     "elements normally makes one substance",
+             "correct": False,
+             "why": "Several pairs behave this way. Carbon and oxygen give "
+                    "both CO and CO2."},
+            {"text": "That all three of them are really one substance written out "
+                     "in three ways",
+             "correct": False,
+             "why": "Three formulae with different numbers describe three "
+                    "different particles, so three substances."},
+            {"text": "That two elements can join in more than one way, though "
+                     "not in every way",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s27",
+        "band": "standard",
+        "text": "A student says 7CO2 must be a different substance from CO2, "
+                "because the formula looks different. Explain the mistake.",
+        "options": [
+            {"text": "The 7 counts particles, so it is seven lots of the same "
+                     "substance",
+             "correct": True},
+            {"text": "The 7 is not allowed there",
+             "correct": False,
+             "why": "It is perfectly allowed. A number in front is how "
+                    "chemists write an amount of particles."},
+            {"text": "The 7 makes it a mixture of seven gases",
+             "correct": False,
+             "why": "Every one of those particles is carbon dioxide, so "
+                    "nothing is mixed with anything."},
+            {"text": "The 7 makes each particle seven times the size, which is what "
+                     "a number outside a formula does to it",
+             "correct": False,
+             "why": "A number in front multiplies how many particles there "
+                    "are, and leaves each one as it was."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s28",
+        "band": "standard",
+        "text": "One particle of calcium oxide is CaO and one of calcium "
+                "carbonate is CaCO3. How many more atoms does the second "
+                "hold?",
+        "options": [
+            {"text": "Two",
+             "correct": False,
+             "why": "Two is the extra oxygens alone. The extra carbon has to "
+                    "be counted as well."},
+            {"text": "Three",
+             "correct": True},
+            {"text": "Four",
+             "correct": False,
+             "why": "Four is the second particle's atoms after the calcium is "
+                    "removed, not the difference between the two."},
+            {"text": "Five",
+             "correct": False,
+             "why": "Five is every atom in the second particle. The first "
+                    "particle's two have still to be taken off."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s29",
+        "band": "standard",
+        "text": "A worksheet asks for the chlorine atoms in 3CaCl2. What is "
+                "the answer?",
+        "options": [
+            {"text": "Six",
+             "correct": True},
+            {"text": "Two",
+             "correct": False,
+             "why": "Two is the chlorine in one particle. The 3 says there "
+                    "are three of those particles."},
+            {"text": "Three",
+             "correct": False,
+             "why": "Three is the number of particles, not the chlorine "
+                    "atoms in them."},
+            {"text": "Nine",
+             "correct": False,
+             "why": "Nine is every atom in the three particles. The question "
+                    "asks for chlorine on its own."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-s30",
+        "band": "standard",
+        "text": "Ice, liquid water and steam are all water. Explain why one "
+                "formula covers all three.",
+        "options": [
+            {"text": "Because a formula is written for the liquid, and the "
+                     "other two borrow it",
+             "correct": False,
+             "why": "No state owns the formula. All three are built from the "
+                    "same particles."},
+            {"text": "Because steam and ice are too hard to analyse, so the "
+                     "liquid's formula is used",
+             "correct": False,
+             "why": "Both can be analysed perfectly well, and both come back "
+                    "as two hydrogens to one oxygen."},
+            {"text": "Because the formula changes with temperature and "
+                     "happens to land on H2O three times",
+             "correct": False,
+             "why": "A formula does not move with temperature at all. It "
+                    "belongs to the substance."},
+            {"text": "Because melting and boiling rearrange the particles "
+                     "without changing what is inside one",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-338 expansion ──────────────────────────────────────
+    {
+        "id": "c2-05-h09",
+        "band": "harder",
+        "text": "Sodium chloride is NaCl and calcium chloride is CaCl2, and "
+                "both are repeating stacks. Explain why only one of the two "
+                "formulae carries a small number.",
+        "options": [
+            {"text": "Because calcium chloride's stack is the larger of the "
+                     "two, so its formula needs the bigger numbers in it",
+             "correct": False,
+             "why": "Both stacks run on for billions of atoms. No formula "
+                    "reports how big a stack is."},
+            {"text": "Because the ratios differ: one sodium for every "
+                     "chlorine, but one calcium for every two chlorines",
+             "correct": True},
+            {"text": "Because calcium chloride is a compound and sodium "
+                     "chloride is an element",
+             "correct": False,
+             "why": "Both are compounds. Each of them names two different "
+                    "elements in its formula."},
+            {"text": "Because only calcium chloride has separate particles "
+                     "to count",
+             "correct": False,
+             "why": "Neither has separate particles. Both formulae are "
+                    "reporting a proportion through a stack."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h10",
+        "band": "harder",
+        "text": "A gas is analysed. Each of its particles holds three atoms, "
+                "and there are twice as many oxygen atoms as carbon atoms. "
+                "Determine its formula.",
+        "options": [
+            {"text": "C2O",
+             "correct": False,
+             "why": "This puts the 2 on the carbon, so it says twice as much "
+                    "carbon as oxygen — the ratio the wrong way round."},
+            {"text": "CO3",
+             "correct": False,
+             "why": "Three oxygens to one carbon is a ratio of three, and it "
+                    "makes four atoms in the particle rather than three."},
+            {"text": "C2O4",
+             "correct": False,
+             "why": "The ratio is right and the count is not. Six atoms is "
+                    "twice the particle the question describes."},
+            {"text": "CO2",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h11",
+        "band": "harder",
+        "text": "A student concludes that two substances with different "
+                "formulae must contain different elements. Evaluate that "
+                "conclusion.",
+        "options": [
+            {"text": "It is sound, since the elements are the only thing a "
+                     "formula reports about a substance",
+             "correct": False,
+             "why": "A formula reports the counts as well, and the counts "
+                    "alone are enough to make a second substance."},
+            {"text": "It is wrong, but only where one of the two substances "
+                     "is a giant structure",
+             "correct": False,
+             "why": "It fails for two ordinary gases. Giant structures have "
+                    "nothing to do with why."},
+            {"text": "It is sound for compounds and fails for elements",
+             "correct": False,
+             "why": "Carbon monoxide and carbon dioxide are both compounds, "
+                    "and they break it between them."},
+            {"text": "It is wrong: CO and CO2 name the same two elements in "
+                     "different numbers",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h12",
+        "band": "harder",
+        "text": "A grain of salt is stirred into water until it vanishes, and "
+                "the water is then dried off. Predict what the formula of the "
+                "solid left behind will be.",
+        "options": [
+            {"text": "NaCl, because it is the same substance it was before it "
+                     "was stirred in",
+             "correct": True},
+            {"text": "Na and Cl separately, since dissolving splits the two "
+                     "elements apart from one another",
+             "correct": False,
+             "why": "Dissolving parts a stack; it does not part sodium from "
+                    "chlorine. Neither element is left on its own."},
+            {"text": "NaClH2O, since the water joins the stack while the salt "
+                     "is dissolved in it",
+             "correct": False,
+             "why": "The water is driven off again and nothing of it stays. "
+                    "Dissolving joins no atoms to anything."},
+            {"text": "Na2Cl2, because the stack rebuilds itself in bigger "
+                     "pieces as the water dries",
+             "correct": False,
+             "why": "However the stack rebuilds, its ratio is one to one, and "
+                    "that is what the formula records."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h13",
+        "band": "harder",
+        "text": "A student argues that salt's formula is less useful than "
+                "carbon dioxide's, because it gives only a ratio. Evaluate "
+                "that argument.",
+        "options": [
+            {"text": "It is fair: a ratio is a rough description, and an "
+                     "exact count would be better",
+             "correct": False,
+             "why": "The ratio is exact. One sodium for every chlorine is not "
+                    "an approximation of anything."},
+            {"text": "It is fair, since salt would have a proper formula if "
+                     "anyone could see inside a grain",
+             "correct": False,
+             "why": "Seeing inside would show the stack, which is what the "
+                    "formula already reports."},
+            {"text": "It is unfair: a ratio is what there is to report, and "
+                     "the formula reports it exactly",
+             "correct": True},
+            {"text": "It is unfair, because salt's formula counts the atoms "
+                     "in one particle after all",
+             "correct": False,
+             "why": "There is no particle of salt for it to count. The "
+                    "argument fails for a different reason than this."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h14",
+        "band": "harder",
+        "text": "A line of working reads 6CH4. Determine the number of "
+                "hydrogen atoms and the number of atoms altogether.",
+        "options": [
+            {"text": "24 hydrogen atoms and 30 atoms altogether",
+             "correct": True},
+            {"text": "24 hydrogen atoms and 24 atoms altogether",
+             "correct": False,
+             "why": "The hydrogens are right. Six carbons still have to be "
+                    "added to reach the total."},
+            {"text": "4 hydrogen atoms and 10 atoms altogether",
+             "correct": False,
+             "why": "This multiplies nothing by the 6. A number in front "
+                    "multiplies every atom in the particle."},
+            {"text": "10 hydrogen atoms and 11 atoms altogether",
+             "correct": False,
+             "why": "Adding the 6 to the 4 treats the front number as one "
+                    "more atom instead of a count of particles."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h15",
+        "band": "harder",
+        "text": "A new substance is one atom of X to three of Y. Two chemists "
+                "propose XY3 and X2Y6. Determine what would settle which to "
+                "write.",
+        "options": [
+            {"text": "Weighing a sample, since the heavier formula belongs to "
+                     "the heavier substance",
+             "correct": False,
+             "why": "One substance cannot have two weights. Both formulae are "
+                    "describing the same material."},
+            {"text": "Whether its particles are separate, since a giant "
+                     "structure is written as the simplest ratio",
+             "correct": True},
+            {"text": "Nothing: the two formulae say the same thing, so either "
+                     "may be written",
+             "correct": False,
+             "why": "They share a ratio, and a molecule's formula must also "
+                    "count what is in one particle."},
+            {"text": "How much of it there is, since a larger sample takes "
+                     "the larger numbers",
+             "correct": False,
+             "why": "No amount of a substance changes the numbers in its "
+                    "formula."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h16",
+        "band": "harder",
+        "text": "Ammonia is NH3 and hydrazine is N2H4. A student says "
+                "hydrazine must be two particles of ammonia with a hydrogen "
+                "removed. Evaluate.",
+        "options": [
+            {"text": "Wrong: two particles of ammonia would be written 2NH3, "
+                     "and hydrazine is one particle of its own",
+             "correct": True},
+            {"text": "Right: the atoms work out, since two ammonias minus one "
+                     "hydrogen leave two nitrogens and five hydrogens",
+             "correct": False,
+             "why": "Two ammonias minus a hydrogen is five hydrogens, and "
+                    "hydrazine has four. The arithmetic does not even land."},
+            {"text": "Right, and 2NH3 and N2H4 are two ways of writing one "
+                     "substance",
+             "correct": False,
+             "why": "One is two particles of ammonia and the other is a "
+                    "single particle of a different substance."},
+            {"text": "Wrong, because nitrogen and hydrogen make only one "
+                     "compound between them",
+             "correct": False,
+             "why": "They make several, and both of these are real. The "
+                    "mistake is about particles, not about which exist."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h17",
+        "band": "harder",
+        "text": "Carbon monoxide kills and carbon dioxide puts out fires, "
+                "though both are built from carbon and oxygen only. State "
+                "what a formula does not tell you.",
+        "options": [
+            {"text": "Which elements have been joined together",
+             "correct": False,
+             "why": "Naming the elements is the first thing a formula does, "
+                    "and both of these name the same two."},
+            {"text": "How the substance behaves",
+             "correct": True},
+            {"text": "How many atoms of each element are in a particle",
+             "correct": False,
+             "why": "Counting them is exactly what the small numbers are "
+                    "for, and it is how these two are told apart."},
+            {"text": "The proportion of one element to the other in it",
+             "correct": False,
+             "why": "A formula always gives the proportion. One to one and "
+                    "one to two is the whole difference here."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h18",
+        "band": "harder",
+        "text": "A student asks how many particles there are in a 1 g sample "
+                "of a substance, and is told to read the formula. Explain why "
+                "that will not work.",
+        "options": [
+            {"text": "Because 1 g is too small a sample for a formula to "
+                     "describe, and a larger one would answer it",
+             "correct": False,
+             "why": "Sample size is no part of it. A tonne could not be read "
+                    "off a formula either."},
+            {"text": "Because the formula would have to be weighed first, and "
+                     "a formula cannot be put on a balance",
+             "correct": False,
+             "why": "Weighing the substance is a reasonable thing to do. What "
+                    "cannot be done is reading a count out of the formula."},
+            {"text": "Because a formula carries no amount at all — it says "
+                     "what the substance is, not how much there is",
+             "correct": True},
+            {"text": "Because only a formula with a number in front of it "
+                     "reports a count",
+             "correct": False,
+             "why": "A number in front counts particles one by one, and a "
+                    "gram holds far more than anyone would write down."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h19",
+        "band": "harder",
+        "text": "Rust, Fe2O3, is a repeating stack of atoms. A student says "
+                "the formula proves that each particle of rust holds five "
+                "atoms. Evaluate.",
+        "options": [
+            {"text": "Wrong, and the total is three rather than five",
+             "correct": False,
+             "why": "Five is the right total for the formula. The mistake is "
+                    "assuming there is a particle to total."},
+            {"text": "Right about the five, and wrong to call rust a stack",
+             "correct": False,
+             "why": "Rust is a stack, and that is what makes the particle "
+                    "claim fail."},
+            {"text": "Right: any formula counts the atoms in one particle, and rust "
+                     "is no different from a gas in that",
+             "correct": False,
+             "why": "For a giant structure there is no separate particle, so "
+                    "the formula reports a ratio instead."},
+            {"text": "Wrong: a stack has no separate particle, so the "
+                     "formula gives two iron atoms for every three oxygens",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h20",
+        "band": "harder",
+        "text": "Determine the total number of atoms written down in 5Na2S.",
+        "options": [
+            {"text": "Eight",
+             "correct": False,
+             "why": "Eight adds the 5, the 2 and the sulfur together. The 5 "
+                    "multiplies rather than adds."},
+            {"text": "Ten",
+             "correct": False,
+             "why": "Ten is the sodium atoms alone. Each of the five "
+                    "particles carries a sulfur as well."},
+            {"text": "Fifteen",
+             "correct": True},
+            {"text": "Three",
+             "correct": False,
+             "why": "Three is one particle. The 5 in front says there are "
+                    "five of them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h21",
+        "band": "harder",
+        "text": "An equation carries the term 12CO. Determine the atoms of "
+                "each element that names, and state what CO12 would have been "
+                "instead.",
+        "options": [
+            {"text": "12 carbon and 12 oxygen; CO12 would be one particle "
+                     "holding a carbon and twelve oxygens",
+             "correct": True},
+            {"text": "12 carbon and 1 oxygen; CO12 would be the same thing "
+                     "written the other way round",
+             "correct": False,
+             "why": "A front number multiplies everything after it, so both "
+                    "elements are multiplied by twelve."},
+            {"text": "1 carbon and 12 oxygen; CO12 would be twelve particles "
+                     "of carbon monoxide",
+             "correct": False,
+             "why": "This is the two numbers swapped. In front the 12 counts "
+                    "particles; after the O it counts oxygen atoms."},
+            {"text": "24 atoms in one large particle; CO12 would name a "
+                     "mixture of carbon and oxygen",
+             "correct": False,
+             "why": "12CO is twelve ordinary particles, not one large one, "
+                    "and CO12 would be a compound rather than a mixture."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h22",
+        "band": "harder",
+        "text": "Evaluate this claim: a formula tells you everything there is "
+                "to know about a substance.",
+        "options": [
+            {"text": "True, provided the substance is a molecule rather than "
+                     "a giant structure",
+             "correct": False,
+             "why": "Ethanol and dimethyl ether are both molecules and share "
+                    "a formula, so it fails there too."},
+            {"text": "True, since the elements named in it and the numbers beside "
+                     "them are all there is to any substance",
+             "correct": False,
+             "why": "Two substances can share both and still differ, which "
+                    "means there is something else."},
+            {"text": "False: it never says how much there is, and it does not "
+                     "say how the atoms are joined",
+             "correct": True},
+            {"text": "False, because a formula leaves out the elements that "
+                     "are present in small amounts",
+             "correct": False,
+             "why": "A formula names every element in the substance. Nothing "
+                    "is left out for being scarce."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h23",
+        "band": "harder",
+        "text": "Sand is SiO2 and carbon dioxide is CO2. A student says a "
+                "spoonful of sand and a flask of the gas must hold the same "
+                "number of atoms. Evaluate.",
+        "options": [
+            {"text": "Right, since the two formulae carry the same numbers as each "
+                     "other and a number is a number wherever it is written",
+             "correct": False,
+             "why": "The numbers give a proportion within the substance. They "
+                    "say nothing about how much of it is in the room."},
+            {"text": "Wrong: a shared ratio says nothing at all about how "
+                     "much of either substance there is",
+             "correct": True},
+            {"text": "Right, as long as the spoonful and the flask are the "
+                     "same size",
+             "correct": False,
+             "why": "Equal volumes of a solid and a gas hold nothing like "
+                    "equal numbers of atoms."},
+            {"text": "Wrong, because the two formulae have different ratios "
+                     "in them",
+             "correct": False,
+             "why": "Both are one to two. The conclusion fails for a "
+                    "different reason than that."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h24",
+        "band": "harder",
+        "text": "Two labels read 2H2O2 and 4H2O. Determine which names more "
+                "hydrogen atoms.",
+        "options": [
+            {"text": "2H2O2, by four hydrogen atoms",
+             "correct": False,
+             "why": "2H2O2 is four hydrogens and 4H2O is eight, so the "
+                    "comparison runs the other way."},
+            {"text": "They name the same number of hydrogen atoms",
+             "correct": False,
+             "why": "Four against eight. The front numbers have to be "
+                    "multiplied through before anything is compared."},
+            {"text": "4H2O, by four hydrogen atoms",
+             "correct": True},
+            {"text": "2H2O2, because each of its particles holds more atoms "
+                     "in total than a particle of water does",
+             "correct": False,
+             "why": "Its particles are bigger and there are half as many of "
+                    "them, which leaves fewer hydrogens altogether."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h25",
+        "band": "harder",
+        "text": "A student says a small number would not be written unless it "
+                "were bigger than one. Evaluate that, using carbon monoxide, "
+                "CO.",
+        "options": [
+            {"text": "Right: CO is the exception that chemists allow, and "
+                     "every other formula carries its numbers",
+             "correct": False,
+             "why": "CO is no exception. Any symbol standing on its own, in "
+                    "any formula, means one atom."},
+            {"text": "Wrong: a 1 is never written, so CO is one carbon and "
+                     "one oxygen",
+             "correct": True},
+            {"text": "Wrong, because CO really does carry two small 1s that "
+                     "are printed too faintly to see",
+             "correct": False,
+             "why": "There is nothing there to see. The convention is that "
+                    "the 1 is left out altogether."},
+            {"text": "Right, and CO therefore holds an unknown number of "
+                     "atoms of each element",
+             "correct": False,
+             "why": "Nothing about CO is unknown. It is exactly one atom of "
+                    "each, and that is why no number is needed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h26",
+        "band": "harder",
+        "text": "A compound's particles each hold five atoms, and there are "
+                "four times as many chlorine atoms as carbon atoms. Determine "
+                "its formula.",
+        "options": [
+            {"text": "C4Cl",
+             "correct": False,
+             "why": "This has four carbons to one chlorine, which is the "
+                    "ratio the wrong way round."},
+            {"text": "CCl5",
+             "correct": False,
+             "why": "Five chlorines to one carbon makes six atoms, and the "
+                    "ratio is five rather than four."},
+            {"text": "C2Cl8",
+             "correct": False,
+             "why": "The ratio is right and the particle is twice the size "
+                    "the question describes."},
+            {"text": "CCl4",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h27",
+        "band": "harder",
+        "text": "A student says any substance whose formula carries a small "
+                "number must be made of molecules. Evaluate, using calcium "
+                "chloride, CaCl2.",
+        "options": [
+            {"text": "Right, since a number that counts atoms in a particle "
+                     "shows there is a particle there to count",
+             "correct": False,
+             "why": "In a stack the same number is reporting a ratio, and no "
+                    "particle is implied by it."},
+            {"text": "Right, and calcium chloride is therefore made of "
+                     "separate particles holding three atoms",
+             "correct": False,
+             "why": "Calcium chloride is a stack. There is no three-atom "
+                    "particle anywhere in it."},
+            {"text": "Wrong, because CaCl2 carries no small number in it",
+             "correct": False,
+             "why": "It carries a 2 after the chlorine. The claim fails on "
+                    "what that 2 means, not on whether it is there."},
+            {"text": "Wrong: CaCl2 is a repeating stack, and its 2 reports a "
+                     "ratio rather than a particle",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h28",
+        "band": "harder",
+        "text": "Most of the formulae anyone could write down are not "
+                "substances. A student says that makes chemistry mostly "
+                "guesswork. Evaluate.",
+        "options": [
+            {"text": "Fair, since a chemist can do no better than try "
+                     "combinations and see which of them work",
+             "correct": False,
+             "why": "Which combinations bond is understood and predictable, "
+                    "not a matter of trying every one in turn."},
+            {"text": "Unfair: which combinations exist is fixed by the "
+                     "elements, so it is a rule rather than a guess",
+             "correct": True},
+            {"text": "Fair, because the substances that do exist were all "
+                     "found by accident",
+             "correct": False,
+             "why": "Many were made on purpose, from what was already known "
+                    "about how the elements join."},
+            {"text": "Unfair, because every formula that can be written turns "
+                     "out to be a substance somewhere",
+             "correct": False,
+             "why": "Most of them are not substances anywhere. That is the "
+                    "fact the student started from, and it is true."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h29",
+        "band": "harder",
+        "text": "Suggest why chemists count atoms with a number written small "
+                "and low, rather than with a full-sized number.",
+        "options": [
+            {"text": "So that it cannot be confused with the number in front, "
+                     "which counts whole particles",
+             "correct": True},
+            {"text": "So that a formula takes up less room on the page",
+             "correct": False,
+             "why": "A small number saves almost nothing. What it saves is "
+                    "the confusion with a particle count."},
+            {"text": "Because a small number stands for a small quantity of "
+                     "the substance",
+             "correct": False,
+             "why": "It stands for a count of atoms, and there is no small "
+                    "quantity of anything in a formula."},
+            {"text": "Because the atoms it counts are smaller than the "
+                     "particles the other number counts",
+             "correct": False,
+             "why": "How a number is printed has nothing to do with the size "
+                    "of what it counts."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c2-05-h30",
+        "band": "harder",
+        "text": "H2O and H2O2 are both real. A student says HO must exist "
+                "too, halfway between them. Evaluate.",
+        "options": [
+            {"text": "Right, and HO is simply too unstable to keep in a "
+                     "bottle for long",
+             "correct": False,
+             "why": "It is not a matter of a substance that spoils. Those "
+                    "atoms do not bond in those numbers."},
+            {"text": "Right, since anything written between two real formulae must "
+                     "itself be a real substance somewhere",
+             "correct": False,
+             "why": "There is no halfway rule of that kind. Formulae are not "
+                    "spaced out along a line."},
+            {"text": "Wrong: two real formulae do not make everything "
+                     "between them real, and no substance is HO",
+             "correct": True},
+            {"text": "Wrong, because HO holds fewer atoms than any real "
+                     "substance does",
+             "correct": False,
+             "why": "Two-atom substances are ordinary — carbon monoxide is "
+                    "one. HO fails on which atoms, not how many."},
+        ],
+        "figure": None,
+    },
 ]
