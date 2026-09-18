@@ -1835,14 +1835,14 @@ QUESTIONS = [
                      "young.",
              "correct": False,
              "why": "Immunity built during an animal's own life stops with "
-                    "that animal. What is passed on is the genes it was "
-                    "born with."},
-            {"text": "The disease weakened over twenty years because it had "
-                     "fewer rabbits left to infect.",
+                    "that animal. What is passed on is the genes it was born "
+                    "with."},
+            {"text": "The first outbreak used the disease up, so there was "
+                     "less of it left in the population twenty years later.",
              "correct": False,
-             "why": "A disease does not soften itself to spare its hosts. The "
-                    "change being described is in the rabbits, not in the "
-                    "thing attacking them."},
+             "why": "A disease is not a stock that gets spent. It is still "
+                    "there in full, and what has changed is which rabbits it "
+                    "meets."},
             {"text": "The survivors passed their resistance on.",
              "correct": True},
             {"text": "The rabbits learned to avoid one another after the "

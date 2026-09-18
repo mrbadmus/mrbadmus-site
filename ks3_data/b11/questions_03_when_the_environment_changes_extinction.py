@@ -1450,7 +1450,7 @@ QUESTIONS = [
              "why": "The patches are usually good habitat still. The problem "
                     "is that they are cut off from one another."},
             {"text": "Several different habitats have been mixed together in "
-                     "one place.",
+                     "one place, leaving one larger one.",
              "correct": False,
              "why": "Fragmenting breaks one habitat up rather than blending "
                     "several. Nothing has been added to it."},
@@ -1612,8 +1612,9 @@ QUESTIONS = [
         "band": "easier",
         "text": "What is a mass extinction?",
         "options": [
-            {"text": "The loss of every member of one species in a short "
-                     "space of time.",
+            {"text": "The loss of every last member of one single species in "
+                     "a short space of time, which is what makes it a mass "
+                     "one.",
              "correct": False,
              "why": "That is an ordinary extinction, however fast it "
                     "happened. A mass extinction takes down a great many "
@@ -1626,8 +1627,8 @@ QUESTIONS = [
              "why": "That would be a serious loss and still a local one. A "
                     "mass extinction is worldwide and is not limited to large "
                     "animals."},
-            {"text": "A period when far more species are appearing than "
-                     "dying out.",
+            {"text": "A period when far more species are appearing than dying "
+                     "out.",
              "correct": False,
              "why": "That is the opposite of an extinction. Species do appear "
                     "in large numbers after one, over millions of years."},
@@ -1748,32 +1749,36 @@ QUESTIONS = [
     {
         "id": "b11-03-s14",
         "band": "standard",
-        "text": "Against habitat loss the herring gull scores 80 out of 100 "
-                "and the hazel dormouse 15. Both live in Britain and both "
-                "lose woodland and coast to building. Explain the gap.",
+        "text": "Two seabirds nest on the same stretch of British coast. One "
+                "eats fish, waste and scraps and will nest on a building as "
+                "readily as on a cliff; the other eats only sandeels and "
+                "nests only on bare cliff ledges. A harbour development "
+                "removes half the cliff. Which is more at risk, and why?",
         "options": [
-            {"text": "The gull is the larger bird, and a large animal comes "
-                     "through a shortage better than a small one.",
+            {"text": "The generalist, because a bird that spreads itself "
+                     "across many foods never gets enough of any one of them "
+                     "to cope with a loss.",
              "correct": False,
-             "why": "Size decides very little here. Brown rats are small and "
-                    "score 85 against the same pressure, while pandas are "
-                     "large and score 20."},
-            {"text": "The gull is protected by law in Britain and the "
-                     "dormouse is not.",
-             "correct": False,
-             "why": "The dormouse is the one with legal protection, and it "
-                    "still scores 15. Protection is a different pressure "
-                    "altogether."},
-            {"text": "The gull eats many foods and will live almost anywhere, "
-                     "while the dormouse needs one kind of wood and will not "
-                     "cross open ground to reach another.",
+             "why": "Using many foods is the safe position, not a thin one. "
+                    "Losing one of them leaves a generalist with everything "
+                    "else it was already eating."},
+            {"text": "The sandeel feeder, because it has one food and one "
+                     "nesting place and cannot swap either for something "
+                     "else.",
              "correct": True},
-            {"text": "The gull breeds far more often than the dormouse, so it "
-                     "replaces its losses within a season.",
+            {"text": "Neither, because both lose the same area of cliff, so "
+                     "both lose exactly the same amount of the habitat they "
+                     "depend on.",
              "correct": False,
-             "why": "The gull lays one clutch a year, much like the dormouse. "
-                    "What separates them is how fussy each is about food and "
-                    "habitat."},
+             "why": "The same area lost is not the same loss. One bird has "
+                    "other food and other nest sites to fall back on and the "
+                    "other has none."},
+            {"text": "The generalist, because a bird willing to nest on a "
+                     "building has already given up the cliff and has nowhere "
+                     "left to return to.",
+             "correct": False,
+             "why": "Being able to use a building is an extra option, not a "
+                    "lost one. The cliff is still available to it as well."},
         ],
         "figure": None,
     },
@@ -1856,7 +1861,7 @@ QUESTIONS = [
              "why": "Depending on more plants is the safe position. Losing "
                     "half of fifty still leaves twenty-five it can eat."},
             {"text": "The three-plant feeder is at most risk, because three "
-                     "is an unlucky number to be left with.",
+                     "plants is the fewest any insect can manage on.",
              "correct": False,
              "why": "There is nothing special about three. The insect in most "
                     "danger is the one whose only food may be among the "
@@ -1890,7 +1895,7 @@ QUESTIONS = [
                      "about the birds' nesting protects the eggs from one.",
              "correct": True},
             {"text": "Rats prefer eggs to any other food, so they seek out "
-                     "seabird colonies wherever they land.",
+                     "seabird colonies wherever in the world they land.",
              "correct": False,
              "why": "Rats eat almost anything and take eggs because they are "
                     "easy to reach. The problem is on the birds' side, not in "
@@ -1921,7 +1926,7 @@ QUESTIONS = [
                     "factor. The difficulty here is the price the product "
                     "commands."},
             {"text": "A hunted species learns to avoid people, which makes it "
-                     "impossible for anyone to count.",
+                     "impossible for anyone to count or to guard.",
              "correct": False,
              "why": "Counting a wary animal is difficult and it is not the "
                     "main obstacle. The obstacle is how much a horn is worth "
@@ -1938,11 +1943,11 @@ QUESTIONS = [
                 "enough.",
         "options": [
             {"text": "Fish stocks always take longer than twenty years to "
-                     "recover, whatever is done.",
+                     "recover, whatever is done, because a fished sea never "
+                     "refills.",
              "correct": False,
              "why": "Some stocks have come back inside twenty years. This one "
-                    "has not, and the question is what is different about "
-                    "it."},
+                    "has not, and the question is what is different about it."},
             {"text": "The fishing boats went on taking the same fish "
                      "somewhere else in the ocean.",
              "correct": False,
@@ -2029,7 +2034,8 @@ QUESTIONS = [
                 "are?",
         "options": [
             {"text": "The total number, because a species with more "
-                     "individuals is further from having none.",
+                     "individuals is further from having none and safer from "
+                     "every threat.",
              "correct": False,
              "why": "Numbers can be rebuilt from very few animals. The "
                     "variation those animals carry cannot, and that is what "
@@ -2067,11 +2073,12 @@ QUESTIONS = [
                     "fitted to one narrow set of conditions is what leaves "
                     "them exposed."},
             {"text": "Islands have poorer soil and less food than the "
-                     "mainland, so populations are always struggling.",
+                     "mainland, so island populations are always struggling "
+                     "to survive.",
              "correct": False,
              "why": "Many islands are rich enough to support dense "
-                    "populations. What they lack is space to retreat into "
-                    "and any history of the predators people bring."},
+                    "populations. What they lack is space to retreat into and "
+                    "any history of the predators people bring."},
             {"text": "An island species has a small range, nowhere to retreat "
                      "to, and no defence against the predators people bring.",
              "correct": True},
@@ -2123,11 +2130,12 @@ QUESTIONS = [
                 "sharply. Which idea from this lesson fits that contrast?",
         "options": [
             {"text": "Foxes are predators and hedgehogs are prey, so the "
-                     "numbers must move in opposite directions.",
+                     "numbers of the two must always move in opposite "
+                     "directions.",
              "correct": False,
              "why": "Foxes take very few hedgehogs. The contrast is about how "
-                     "each species copes with a town, not about one eating "
-                     "the other."},
+                    "each species copes with a town, not about one eating the "
+                    "other."},
             {"text": "Foxes breed faster than hedgehogs, which is why their "
                      "numbers have risen.",
              "correct": False,
@@ -2218,7 +2226,8 @@ QUESTIONS = [
                      "a fraction of it.",
              "correct": True},
             {"text": "The first wood must have been older, since a species "
-                     "found nowhere else has lived there a long time.",
+                     "found nowhere else has always been in one place a very "
+                     "long time.",
              "correct": False,
              "why": "Age of the wood is not what decides it, and nothing here "
                     "says one is older. What matters is how much of the "

@@ -1233,20 +1233,20 @@ QUESTIONS = [
     {
         "id": "b11-01-e14",
         "band": "easier",
-        "text": "In this lesson, what does it mean to call a variation an "
-                "advantage?",
+        "text": "What does it mean to call a variation an advantage?",
         "options": [
             {"text": "That it makes an individual larger, stronger or faster "
                      "than the rest of its population.",
              "correct": False,
-             "why": "Strength is one variation among many and is often the "
-                    "wrong one. In a drought the animal that needs least "
-                    "water wins without ever being strong."},
+             "why": "Being bigger or faster is one variation among many, and "
+                    "it is frequently the wrong one to have. Where water is "
+                    "short, the animal that needs least of it comes through "
+                    "without being strong at all."},
             {"text": "That it makes an individual more likely to survive and "
                      "reproduce in the conditions it is in.",
              "correct": True},
-            {"text": "That no other member of the population happens to "
-                     "carry it at that moment.",
+            {"text": "That no other member of the population happens to carry "
+                     "it at that moment.",
              "correct": False,
              "why": "How rare a variation is has nothing to do with whether "
                     "it helps. A common variation can pay handsomely and a "
@@ -1296,8 +1296,8 @@ QUESTIONS = [
         "text": "A biologist records an animal's fitness as zero. What does "
                 "that tell you about it?",
         "options": [
-            {"text": "It died before it was fully grown, so it never "
-                     "competed for anything at all.",
+            {"text": "It died before it was fully grown, so it did not "
+                     "compete for anything.",
              "correct": False,
              "why": "An animal can live a long adult life and still have a "
                     "fitness of zero. What the figure records is offspring, "
@@ -2031,21 +2031,21 @@ QUESTIONS = [
                 "water or time. How can a variation that costs the animal "
                 "anything at all still be an advantage?",
         "options": [
-            {"text": "Because in the right conditions what it buys is worth "
-                     "more than what it costs.",
+            {"text": "Because only in the right conditions is what it buys "
+                     "worth more than what it costs.",
              "correct": True},
-            {"text": "Because the cost is paid once while the benefit goes "
-                     "on for the whole of the animal's life.",
+            {"text": "Because the cost is paid once while the benefit goes on "
+                     "for the whole of the animal's life.",
              "correct": False,
-             "why": "Most costs are paid continually — a large body has to "
-                    "be fed every day. What settles it is whether the return "
+             "why": "Most costs are paid continually — a large body has to be "
+                    "fed every day. What settles it is whether the return "
                     "covers the bill in those conditions."},
             {"text": "Because a variation that is an advantage costs nothing "
-                     "at all to the animal that carries it.",
+                     "to the animal that carries it.",
              "correct": False,
              "why": "The lesson is explicit that every one of them costs "
-                    "something. A thick coat costs almost nothing in a "
-                    "winter and a great deal in a drought."},
+                    "something. A thick coat costs almost nothing in a winter "
+                    "and a great deal in a drought."},
             {"text": "Because the animal can stop paying the cost during the "
                      "seasons when the variation is not needed.",
              "correct": False,
@@ -2334,31 +2334,31 @@ QUESTIONS = [
         "id": "b11-01-h16",
         "band": "harder",
         "text": "A caterpillar species varies from green to brown. In June, "
-                "birds hunting among green leaves take mostly the brown "
-                "ones; in October, on brown fallen leaves, they take mostly "
-                "the green ones. A student concludes that neither colour is "
-                "an advantage. What is the correct reply?",
+                "birds hunting among green leaves take mostly the brown ones; "
+                "in October, on brown fallen leaves, they take mostly the "
+                "green ones. A student concludes that neither colour is an "
+                "advantage. What is the correct reply?",
         "options": [
             {"text": "The student is right, because a colour that fails half "
-                     "the year cannot be called an advantage at all.",
+                     "the year cannot be called an advantage.",
              "correct": False,
              "why": "Every variation fails somewhere, and that does not "
                     "cancel it. Each colour is a real advantage during the "
                     "months when it matches the leaves."},
-            {"text": "The student is wrong: brown is the better colour, "
-                     "since brown leaves are on the ground for far longer "
-                     "than green ones are on the trees.",
+            {"text": "The student is wrong: brown is the better colour, since "
+                     "brown leaves are on the ground for far longer than "
+                     "green ones are on the trees.",
              "correct": False,
              "why": "Counting months does not settle it either. The "
                     "caterpillars are only feeding and being hunted during "
                     "part of the year, and the answer still turns on which "
                     "part."},
-            {"text": "The student is wrong: each colour is an advantage "
-                     "while it matches the leaves, and the conditions here "
-                     "change with the season.",
+            {"text": "The student is wrong: each colour is an advantage while "
+                     "it matches the leaves, and the conditions here change "
+                     "with the season.",
              "correct": True},
-            {"text": "The student is wrong, because being seen has nothing "
-                     "to do with whether a caterpillar survives.",
+            {"text": "The student is wrong, because being seen has nothing to "
+                     "do with whether a caterpillar survives.",
              "correct": False,
              "why": "Being seen is the whole of the danger. The birds are "
                     "taking whichever caterpillars they can pick out against "
@@ -2592,29 +2592,29 @@ QUESTIONS = [
     {
         "id": "b11-01-h24",
         "band": "harder",
-        "text": "Suppose you wanted to test the claim that no variation is "
-                "an advantage in general. What result would count as "
-                "evidence against it?",
+        "text": "Suppose you wanted to test the claim that no variation is an "
+                "advantage in general. What result would count as evidence "
+                "against it?",
         "options": [
-            {"text": "Finding one variation that raised survival in every "
-                     "set of conditions tested.",
+            {"text": "Finding one variation that raised survival in every set "
+                     "of conditions tested.",
              "correct": True},
-            {"text": "Finding one variation that raised survival in more "
-                     "sets of conditions than any of the others did.",
+            {"text": "Finding one variation that raised survival in more sets "
+                     "of conditions than any of the others did.",
              "correct": False,
              "why": "Coming top most often is not the same as never failing. "
                     "A variation that wins four conditions and loses the "
                     "fifth still is not an advantage in general."},
-            {"text": "Finding a population with no variation in it at all.",
+            {"text": "Finding a population that holds no variation.",
              "correct": False,
-             "why": "That would be a population with no variation to "
-                    "compare, so it could not test the claim either way."},
+             "why": "That would be a population with no variation to compare, "
+                    "so it could not test the claim either way."},
             {"text": "Finding conditions where no variation made a "
                      "difference.",
              "correct": False,
              "why": "That fits the claim rather than contradicting it. A "
-                    "danger that no visible variation answers is exactly "
-                    "what a new disease is."},
+                    "danger that no visible variation answers is exactly what "
+                    "a new disease is."},
         ],
         "figure": None,
     },
@@ -2629,18 +2629,18 @@ QUESTIONS = [
                      "animals carrying it cannot be a real advantage.",
              "correct": False,
              "why": "An advantage shifts the odds for the animals carrying "
-                    "it. It has never promised a result to any particular "
-                    "one of them."},
-            {"text": "No, because an advantage raises the chance of "
-                     "surviving and breeding, and chance still decides what "
-                     "happens to any one animal.",
+                    "it. It has never promised a result to any particular one "
+                    "of them."},
+            {"text": "No, because an advantage raises the chance of surviving "
+                     "and breeding and never settles what happens to any one "
+                     "animal.",
              "correct": True},
-            {"text": "Yes, because two animals with the same variation in "
-                     "the same place should do equally well as each other.",
+            {"text": "Yes, because two animals with the same variation in the "
+                     "same place should do equally well as each other.",
              "correct": False,
-             "why": "They will not, because a great deal else differs "
-                    "between them and because accidents happen. A variation "
-                    "moves the average, not every case."},
+             "why": "They will not, because a great deal else differs between "
+                    "them and because accidents happen. A variation moves the "
+                    "average, not every case."},
             {"text": "No, because the second mouse must have been carrying a "
                      "second variation that cancelled the first one out.",
              "correct": False,
@@ -2695,13 +2695,13 @@ QUESTIONS = [
              "why": "Surviving better than what, and where? The two groups "
                     "are not facing the same conditions, so their survival "
                     "rates cannot be set against each other."},
-            {"text": "The two groups are in different conditions, so a "
-                     "higher survival rate in one says nothing about how "
-                     "well adapted it is.",
+            {"text": "The two groups are in different conditions, so a higher "
+                     "survival rate in one says nothing about how well "
+                     "adapted it is.",
              "correct": True},
             {"text": "The greenhouse lizards cannot be better adapted, "
                      "because an animal kept by people is not adapted to "
-                     "anything at all.",
+                     "anything.",
              "correct": False,
              "why": "A greenhouse is an environment like any other, and a "
                     "lizard can be well or badly suited to it. The fault is "
@@ -2709,35 +2709,35 @@ QUESTIONS = [
             {"text": "Ten years is far too short a time for a population to "
                      "become better adapted to anywhere.",
              "correct": False,
-             "why": "The claim would be wrong after a thousand years as "
-                    "well. You cannot rank two groups by survival when each "
-                    "is measured somewhere different."},
+             "why": "The claim would be wrong after a thousand years as well. "
+                    "You cannot rank two groups by survival when each is "
+                    "measured somewhere different."},
         ],
         "figure": None,
     },
     {
         "id": "b11-01-h28",
         "band": "harder",
-        "text": "In one winter an owl took 45 of the 300 pale mice in a "
-                "field and 60 of the 200 dark mice. Which colour was at "
-                "greater risk, and by how much?",
+        "text": "In one winter an owl took 45 of the 300 pale mice in a field "
+                "and 60 of the 200 dark mice. Which colour was at greater "
+                "risk, and by how much?",
         "options": [
             {"text": "The dark mice, at twice the risk of the pale ones.",
              "correct": True},
-            {"text": "The dark mice, at one and a third times the risk, "
-                     "since 60 taken is a third more than 45 taken.",
+            {"text": "The dark mice, at one and a third times the risk, since "
+                     "60 taken is a third more than 45 taken.",
              "correct": False,
-             "why": "Comparing the two counts ignores how many of each "
-                    "colour there were. 45 out of 300 is 15% and 60 out of "
-                    "200 is 30%."},
+             "why": "Comparing the two counts ignores how many of each colour "
+                    "there were. 45 out of 300 is 15% and 60 out of 200 is "
+                    "30%."},
             {"text": "The pale mice, because 300 of them lived in the field "
-                     "and only 200 dark ones did.",
+                     "and just 200 dark ones did.",
              "correct": False,
              "why": "How common a colour is does not tell you the risk to a "
                     "mouse carrying it. Risk is the share of that group that "
                     "was taken."},
-            {"text": "Neither: 45 and 60 are close enough that the "
-                     "difference is not worth anything.",
+            {"text": "Neither: 45 and 60 are close enough that the difference "
+                     "is not worth anything.",
              "correct": False,
              "why": "As shares of their own groups they are not close at all "
                     "— 15% against 30%. The raw counts are the wrong things "
