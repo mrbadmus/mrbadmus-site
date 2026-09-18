@@ -237,6 +237,79 @@ def files_at(rev, prefix):
     return [] if r.returncode else [p for p in r.stdout.split("\n") if p]
 
 
+# A shared-constant module a KS3 question file is allowed to import a bare
+# NAME from (`from ..quantities import TEMPERATURE_OPTION`, etc.). Resolved
+# to its REAL value below, not a placeholder — the "now" side of every
+# comparison in this file comes from `qb.load_bank()`, a real import, so an
+# old-side placeholder would never match it and every frozen row using one of
+# these constants would show as "changed" forever.
+_CONST_MODULES = ("ks3_data.quantities",)
+
+
+def _resolve_names(tree):
+    """Map bare names imported at module level from `_CONST_MODULES` to
+    their live value, so a Name node referencing one can be inlined as a
+    literal before `ast.literal_eval` runs."""
+    resolved = {}
+    for node in tree.body:
+        if not isinstance(node, ast.ImportFrom) or node.module != "quantities":
+            continue
+        for modname in _CONST_MODULES:
+            try:
+                mod = __import__(modname, fromlist=["_"])
+            except ImportError:
+                continue
+            for alias in node.names:
+                if hasattr(mod, alias.name):
+                    resolved[alias.asname or alias.name] = getattr(
+                        mod, alias.name)
+            break
+    return resolved
+
+
+class _NameToLiteral(ast.NodeTransformer):
+    """Inline a resolved Name reference (a shared-constant import, e.g.
+    `TEMPERATURE_OPTION` from `ks3_data/quantities.py`) as its real value, so
+    `ast.literal_eval` can still read the REST of the row. Found live on
+    `p1-04-e03` (night 3): one row's key text is `TEMPERATURE_OPTION` rather
+    than a string literal, which made `ast.literal_eval` raise on the entire
+    `QUESTIONS` list — not just that one row — so `ks3_old()` silently
+    returned nothing for the whole leaf and check 9 (the frozen window) then
+    saw every id, including the genuinely untouched e01-04/s01-04/h01-04, as
+    brand new and failed them. Inlining the real value (not an opaque
+    placeholder) matches what `load_ks3()` sees for "now", which resolves the
+    same import through a real Python import — anything else would make
+    every frozen row using a shared constant show as permanently "changed".
+    An unresolvable Name (not one of these known constants) still falls back
+    to a placeholder string, which at least lets the REST of the row's
+    fields be checked.
+    """
+
+    def __init__(self, names):
+        self.names = names
+
+    def visit_Name(self, node):
+        if node.id in self.names:
+            v = self.names[node.id]
+            if isinstance(v, (str, int, float, bool)) or v is None:
+                return ast.copy_location(ast.Constant(value=v), node)
+        return ast.copy_location(ast.Constant(value="<NAME:%s>" % node.id),
+                                  node)
+
+    def visit_Attribute(self, node):
+        parts = []
+        n = node
+        while isinstance(n, ast.Attribute):
+            parts.append(n.attr)
+            n = n.value
+        if isinstance(n, ast.Name):
+            parts.append(n.id)
+            return ast.copy_location(
+                ast.Constant(value="<NAME:%s>" % ".".join(reversed(parts))),
+                node)
+        return node
+
+
 def literal_questions(src):
     """`QUESTIONS = [...]` out of a source file, without importing it.
 
@@ -250,13 +323,16 @@ def literal_questions(src):
         tree = ast.parse(src)
     except SyntaxError:
         return None
+    names = _resolve_names(tree)
     for node in tree.body:
         if not isinstance(node, ast.Assign):
             continue
         for t in node.targets:
             if isinstance(t, ast.Name) and t.id == "QUESTIONS":
+                value = _NameToLiteral(names).visit(node.value)
+                ast.fix_missing_locations(value)
                 try:
-                    return ast.literal_eval(node.value)
+                    return ast.literal_eval(value)
                 except (ValueError, SyntaxError):
                     return None
     return None
