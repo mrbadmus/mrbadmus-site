@@ -1237,4 +1237,874 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 night 3 · easier ────────────────────────────────────────
+    {
+        "id": "p9-03-e19",
+        "band": "easier",
+        "text": "What two things does an electric field have at every point "
+                "in space?",
+        "options": [
+            {"text": "A size and a direction", "correct": True},
+            {"text": "A charge and a mass", "correct": False,
+             "why": "The field belongs to the space itself. Charge and mass "
+                    "belong to objects, not to the empty points around "
+                    "them."},
+            {"text": "A colour and a temperature", "correct": False,
+             "why": "Neither of those is part of what a field is. A field "
+                    "is a push, described by how big it is and which way it "
+                    "acts."},
+            {"text": "A start and a finish", "correct": False,
+             "why": "A field has no beginning or end of its own; it is "
+                    "there at every point, with a size and a direction."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-e20",
+        "band": "easier",
+        "text": "At one single point in space, how many directions can an "
+                "electric field point in at the same time?",
+        "options": [
+            {"text": "Two, if two different charges are involved",
+             "correct": False,
+             "why": "However many charges are involved, their contributions "
+                    "add together first. The result is one field, one "
+                    "direction."},
+            {"text": "As many as there are charges nearby", "correct": False,
+             "why": "The separate pushes are combined before anything "
+                    "feels them, leaving a single field at that point."},
+            {"text": "Only one", "correct": True},
+            {"text": "None — a point can only have a size, not a direction",
+             "correct": False,
+             "why": "A field's value always includes a direction as well "
+                    "as a size, at every point where it exists."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-e21",
+        "band": "easier",
+        "text": "The cable to a TV aerial has a wire in the middle wrapped "
+                "in a metal braid. What is the braid there to do?",
+        "options": [
+            {"text": "Carry the picture signal instead of the inner wire",
+             "correct": False,
+             "why": "The signal still travels down the inner wire; the "
+                    "braid is not the path the signal uses."},
+            {"text": "Make the cable stronger so it does not snap",
+             "correct": False,
+             "why": "A braid does add some strength, but that is not why "
+                    "it surrounds the signal wire specifically."},
+            {"text": "Stop the cable from picking up charge by rubbing "
+                     "against the wall", "correct": False,
+             "why": "Rubbing is not the problem being solved here; it is "
+                    "outside fields reaching the signal wire that the "
+                    "braid stops."},
+            {"text": "Shield the inner wire from outside electric fields",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-e22",
+        "band": "easier",
+        "text": "Of a gravitational field, a magnetic field and an electric "
+                "field, which one can only ever pull, never push?",
+        "options": [
+            {"text": "The gravitational field", "correct": True},
+            {"text": "The magnetic field", "correct": False,
+             "why": "A magnetic field can push or pull, depending on which "
+                    "poles are facing each other."},
+            {"text": "The electric field", "correct": False,
+             "why": "An electric field can push or pull, depending on the "
+                    "two signs involved."},
+            {"text": "All three fields can only pull", "correct": False,
+             "why": "Only gravity is limited that way. The other two do "
+                    "both, which is why only mass has no opposite sign."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-e23",
+        "band": "easier",
+        "text": "Who first pictured the space around a magnet as filled "
+                "with lines of force?",
+        "options": [
+            {"text": "James Clerk Maxwell", "correct": False,
+             "why": "Maxwell came later, and turned the picture into proper "
+                    "mathematics rather than inventing it."},
+            {"text": "Isaac Newton", "correct": False,
+             "why": "Newton's own field, if he can be said to have had one, "
+                    "concerned gravity, and centuries earlier."},
+            {"text": "Nobody in particular — the idea grew slowly with no "
+                     "single originator", "correct": False,
+             "why": "It has a clear origin: one scientist's picture of "
+                    "space around a magnet, with no mathematics behind it "
+                    "at first."},
+            {"text": "Michael Faraday", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-e24",
+        "band": "easier",
+        "text": "The charge making a field is doubled, and nothing else "
+                "changes. What happens to the field it produces at a fixed "
+                "point?",
+        "options": [
+            {"text": "It stays exactly the same", "correct": False,
+             "why": "The field is set by the charge that made it, so "
+                    "changing that charge changes the field too."},
+            {"text": "It halves", "correct": False,
+             "why": "A bigger source charge produces a bigger field, not a "
+                    "smaller one."},
+            {"text": "It doubles too", "correct": True},
+            {"text": "It depends on the test charge used to explore it",
+             "correct": False,
+             "why": "The field belongs to the space made by the source "
+                    "charge; the test charge used to explore it makes no "
+                    "difference at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-e25",
+        "band": "easier",
+        "text": "A map already shows the combined field of two charges. A "
+                "third charge is now brought up close by. What happens to "
+                "the map?",
+        "options": [
+            {"text": "It changes everywhere, as the third contribution "
+                     "adds to the other two", "correct": True},
+            {"text": "It changes only in the small region right next to "
+                     "the new charge", "correct": False,
+             "why": "A field reaches everywhere, so the whole pattern "
+                    "shifts, not just the area nearest the new charge."},
+            {"text": "It stays the same, because a map can only ever show "
+                     "two charges at once", "correct": False,
+             "why": "A map can show the combined field of any number of "
+                    "charges; there is no limit of two."},
+            {"text": "The two original charges stop contributing, and only "
+                     "the new one is shown", "correct": False,
+             "why": "All three charges keep contributing. None of them "
+                    "switches off just because another one arrives."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-e26",
+        "band": "easier",
+        "text": "A magnetic field can be a push or a pull. What decides "
+                "which one it is?",
+        "options": [
+            {"text": "How far apart the two magnets are", "correct": False,
+             "why": "Distance changes how strong the force is, not whether "
+                    "it pushes or pulls."},
+            {"text": "How large the two magnets are", "correct": False,
+             "why": "Size affects the strength of the force, not its "
+                    "direction."},
+            {"text": "Whether the magnets are moving", "correct": False,
+             "why": "Two stationary magnets can push or pull each other "
+                    "just as well; movement is not what decides it."},
+            {"text": "Which poles are facing each other", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-e27",
+        "band": "easier",
+        "text": "An electric field can be a push or a pull, and it is "
+                "described as being much stronger than gravity. What "
+                "decides whether it pushes or pulls?",
+        "options": [
+            {"text": "How far apart the two charges are", "correct": False,
+             "why": "Distance changes how strong the push or pull is, not "
+                    "which one it is."},
+            {"text": "How big the two charges are", "correct": False,
+             "why": "Size changes the strength, not whether it is a push "
+                    "or a pull."},
+            {"text": "The two signs involved", "correct": True},
+            {"text": "Whether the charges are touching", "correct": False,
+             "why": "The force acts across a gap; the charges never need "
+                    "to touch for it to act."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-e28",
+        "band": "easier",
+        "text": "What is the name for a mark on a field map that shows a "
+                "field's size and direction at one point?",
+        "options": [
+            {"text": "A null point", "correct": False,
+             "why": "A null point is a place where the field cancels to "
+                    "zero, not the mark showing size and direction."},
+            {"text": "A test charge", "correct": False,
+             "why": "A test charge is the small charge imagined at a "
+                    "point, not the mark drawn to describe the field "
+                    "there."},
+            {"text": "A charge symbol", "correct": False,
+             "why": "That marks where an actual charge sits, not the field "
+                    "it makes at some other point."},
+            {"text": "A field arrow", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-e29",
+        "band": "easier",
+        "text": "What is meant by the term \"electric field\"?",
+        "options": [
+            {"text": "The state a charged object puts the space around it "
+                     "into", "correct": True},
+            {"text": "The total charge stored on an object", "correct": False,
+             "why": "That is simply the object's own charge. The field is "
+                    "what that charge does to the space around it."},
+            {"text": "The force felt only when two objects touch",
+             "correct": False,
+             "why": "The field acts across a gap, with no contact needed "
+                    "at all."},
+            {"text": "The path an electron follows between two charges",
+             "correct": False,
+             "why": "No electron travels between the charges; nothing "
+                    "crosses the gap."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-e30",
+        "band": "easier",
+        "text": "Of a gravitational field, a magnetic field and an electric "
+                "field, which one is made by something with charge?",
+        "options": [
+            {"text": "The gravitational field", "correct": False,
+             "why": "A gravitational field is made by mass, not by "
+                    "charge."},
+            {"text": "The magnetic field", "correct": False,
+             "why": "A magnetic field is made by a magnet or by a current, "
+                    "not directly by a charge sitting still."},
+            {"text": "The electric field", "correct": True},
+            {"text": "All three, since they all come from the same "
+                     "underlying property", "correct": False,
+             "why": "Mass, magnetism and charge are three separate "
+                    "properties, so an object can have any one of them "
+                    "without the others."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · standard ───────────────────────────────────────
+    {
+        "id": "p9-03-s19",
+        "band": "standard",
+        "text": "A test point is moved from a distance d away from a "
+                "single charge to a distance 2d away. Roughly what happens "
+                "to the field there?",
+        "options": [
+            {"text": "It falls to about a half", "correct": False,
+             "why": "That would be true if the field tracked distance "
+                    "directly. It falls faster than that."},
+            {"text": "It stays about the same", "correct": False,
+             "why": "The field depends strongly on distance from the "
+                    "charge, so doubling the distance changes it a great "
+                    "deal."},
+            {"text": "It doubles", "correct": False,
+             "why": "Moving further from a charge always weakens its "
+                    "field, never strengthens it."},
+            {"text": "It falls to about a quarter", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-s20",
+        "band": "standard",
+        "text": "The field's direction is defined using a small positive "
+                "test charge. Why does the test charge have to be small?",
+        "options": [
+            {"text": "So it is light enough to be pushed by a weak field",
+             "correct": False,
+             "why": "Weight has nothing to do with it; the field would "
+                    "push a heavy charge too, just less noticeably."},
+            {"text": "So it fits neatly onto a diagram", "correct": False,
+             "why": "The drawing is not the reason; a real measurement "
+                    "needs a small test charge for the same reason."},
+            {"text": "So it does not add its own field and disturb the one "
+                     "being measured", "correct": True},
+            {"text": "So its own charge cancels out exactly with the field "
+                     "it measures", "correct": False,
+             "why": "Nothing cancels. A small test charge simply disturbs "
+                    "the arrangement as little as possible while still "
+                    "being pushed by it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-s21",
+        "band": "standard",
+        "text": "Two equal positive charges sit a short way apart. A point "
+                "is much closer to one of them than the other, not at the "
+                "midpoint. Which way does the total field point there?",
+        "options": [
+            {"text": "Away from the nearer charge", "correct": True},
+            {"text": "Away from the further charge", "correct": False,
+             "why": "The nearer charge's push is the stronger of the two, "
+                    "so its direction wins, not the further one's."},
+            {"text": "It is zero, as the point is between the two charges",
+             "correct": False,
+             "why": "The field is only zero exactly at the midpoint, where "
+                    "the two equal pushes cancel. Off-centre, one wins."},
+            {"text": "Towards the nearer charge", "correct": False,
+             "why": "Both charges are positive, so both push a test charge "
+                    "away from themselves, never towards."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-s22",
+        "band": "standard",
+        "text": "A positive charge and a negative charge sit a short way "
+                "apart. A point lies beyond the positive charge, on the far "
+                "side from the negative one. Which way does the field "
+                "point there?",
+        "options": [
+            {"text": "Towards the negative charge", "correct": False,
+             "why": "That direction only holds in the gap between the two "
+                    "charges. Beyond the positive charge the rule "
+                    "changes."},
+            {"text": "It cancels to zero at every point beyond either "
+                     "charge", "correct": False,
+             "why": "For opposite charges the two contributions never "
+                    "fully cancel outside the gap; one of them always "
+                    "wins."},
+            {"text": "Towards the positive charge", "correct": False,
+             "why": "A positive charge always pushes a test charge away "
+                    "from itself, never pulls it in."},
+            {"text": "Away from the positive charge", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-s23",
+        "band": "standard",
+        "text": "On a map of a single charge, every point the same "
+                "distance from the charge has an arrow of the same length. "
+                "Why?",
+        "options": [
+            {"text": "Because the field's strength depends only on "
+                     "distance from the charge, not on the direction you "
+                     "look", "correct": True},
+            {"text": "Because the charge itself is spread evenly around a "
+                     "circle", "correct": False,
+             "why": "The charge sits at a single point. It is the field it "
+                    "produces that happens to be the same strength all "
+                    "round."},
+            {"text": "Because the map is drawn to a fixed scale in every "
+                     "direction", "correct": False,
+             "why": "The scale is the same throughout the map, but that "
+                    "alone would not make equal-distance arrows match in "
+                    "length."},
+            {"text": "Because arrows are only ever drawn at a few chosen "
+                     "distances", "correct": False,
+             "why": "The field has a value at every point, not only at "
+                    "the distances a map happens to sample."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-s24",
+        "band": "standard",
+        "text": "Maxwell turned Faraday's field picture into proper "
+                "mathematics. What did his equations predict that nobody "
+                "had asked for?",
+        "options": [
+            {"text": "That electric and magnetic fields could not exist "
+                     "at the same time", "correct": False,
+             "why": "The two exist together throughout this topic; "
+                    "nothing rules one out in the presence of the other."},
+            {"text": "That a field needs air to travel through, so his "
+                     "equations gave no answer at all for the empty space "
+                     "between the planets",
+             "correct": False,
+             "why": "The opposite: fields work in a total vacuum, which "
+                    "is part of what makes this prediction so surprising."},
+            {"text": "That a changing field travels through empty space "
+                     "at a fixed speed, which turned out to be the speed "
+                     "of light", "correct": True},
+            {"text": "That gravity and electric charge are the same force "
+                     "underneath", "correct": False,
+             "why": "They remain two separate forces; only the way they "
+                    "are described using fields is shared."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-s25",
+        "band": "standard",
+        "text": "An aircraft is struck by lightning in mid-flight, and the "
+                "electronics inside are undamaged. Which fact explains "
+                "this?",
+        "options": [
+            {"text": "The metal skin's free charges rearrange so the "
+                     "field inside stays nearly zero", "correct": True},
+            {"text": "The aircraft is moving too fast for the strike to do "
+                     "any damage", "correct": False,
+             "why": "Speed makes no difference here; a stationary metal "
+                    "shell protects its inside just as well."},
+            {"text": "The electronics are too far from the outer skin to "
+                     "be affected", "correct": False,
+             "why": "Distance from the skin is not what protects them — "
+                    "it is the skin's own charges rearranging that does "
+                    "the work."},
+            {"text": "Lightning strikes tend to miss metal objects in the "
+                     "sky", "correct": False,
+             "why": "Metal is exactly what a strike is likely to hit; the "
+                    "protection comes after the strike, not from being "
+                    "missed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-s26",
+        "band": "standard",
+        "text": "A small positive test charge is released on the line "
+                "between two equal positive charges, a little to one side "
+                "of the null point rather than exactly on it. What happens?",
+        "options": [
+            {"text": "It stays exactly where it was released, because the "
+                     "two charges are equal in size",
+             "correct": False,
+             "why": "The field is zero only exactly at the null point. A "
+                    "little to one side, the nearer charge's push wins."},
+            {"text": "It is pushed further from the null point, towards "
+                     "the charge it is nearer to", "correct": False,
+             "why": "The nearer charge pushes a positive test charge away "
+                    "from itself, not towards itself."},
+            {"text": "It is pushed sideways, at right angles to the line "
+                     "joining the two charges", "correct": False,
+             "why": "Both pushes act along that line, so the total field "
+                    "does too. Nothing acts across it."},
+            {"text": "It is pushed back past the null point, away from "
+                     "the charge it is nearer to", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-s27",
+        "band": "standard",
+        "text": "Which single fact is true of BOTH the magnetic field and "
+                "the electric field, but not of the gravitational field?",
+        "options": [
+            {"text": "Both act across a gap with nothing needed in "
+                     "between", "correct": False,
+             "why": "Gravity acts across a gap too — that is exactly why "
+                    "all three are described using fields in the first "
+                    "place."},
+            {"text": "Both have a size and a direction at every point",
+             "correct": False,
+             "why": "All three fields have a size and a direction at "
+                    "every point, gravity included."},
+            {"text": "Both can be a push or a pull", "correct": True},
+            {"text": "Both are made by something with mass", "correct": False,
+             "why": "Mass makes a gravitational field. A magnet or a "
+                    "current makes the magnetic one, and charge makes the "
+                    "electric one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-s28",
+        "band": "standard",
+        "text": "Two different test charges are placed, one at a time, at "
+                "the same point in a field. The second is twice the size "
+                "of the first. Compare the forces each one feels there.",
+        "options": [
+            {"text": "The second feels twice the force of the first",
+             "correct": True},
+            {"text": "Both feel exactly the same force, since the field "
+                     "at that point is fixed", "correct": False,
+             "why": "The field being fixed is exactly why a bigger test "
+                    "charge there feels a bigger force, not the same one."},
+            {"text": "The second feels half the force of the first",
+             "correct": False,
+             "why": "A bigger test charge feels a bigger force at the "
+                    "same point, not a smaller one."},
+            {"text": "The forces cannot be compared without knowing the "
+                     "source charge's size", "correct": False,
+             "why": "The ratio of the two forces depends only on the "
+                    "ratio of the two test charges, whatever the source "
+                    "charge happens to be."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-s29",
+        "band": "standard",
+        "text": "A point lies in the field of two separate charges. How is "
+                "the total field there actually found?",
+        "options": [
+            {"text": "By adding just the two lengths, ignoring which way "
+                     "each one points", "correct": False,
+             "why": "Direction matters as much as size; two contributions "
+                    "that point opposite ways can cancel rather than add "
+                    "up."},
+            {"text": "By using whichever contribution is larger and "
+                     "ignoring the other", "correct": False,
+             "why": "Both charges contribute at every point; the smaller "
+                    "contribution still affects the total."},
+            {"text": "By averaging the two contributions", "correct": False,
+             "why": "Averaging would halve the answer when the two point "
+                    "the same way, which is not what actually happens."},
+            {"text": "By adding the two contributions as arrows, taking "
+                     "their directions into account", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-s30",
+        "band": "standard",
+        "text": "In one experiment the charge making a field is doubled. In "
+                "a separate experiment an unrelated field is left alone, "
+                "but the TEST charge placed in it is doubled instead. In "
+                "which experiment does the field itself get bigger?",
+        "options": [
+            {"text": "Only the second one, where the test charge was "
+                     "doubled", "correct": False,
+             "why": "The test charge changes the force it feels, not the "
+                    "field it sits in."},
+            {"text": "Both experiments", "correct": False,
+             "why": "Doubling the test charge leaves the field exactly as "
+                    "it was; only the force on it changes."},
+            {"text": "Only the first one, where the source charge was "
+                     "doubled", "correct": True},
+            {"text": "Neither experiment", "correct": False,
+             "why": "Doubling the source charge really does double the "
+                    "field it produces at every point."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 · harder ─────────────────────────────────────────
+    {
+        "id": "p9-03-h19",
+        "band": "harder",
+        "text": "Two equal charges, one positive and one negative, sit a "
+                "fixed distance apart. Both charges are moved further "
+                "apart until the separation has doubled, with their sizes "
+                "unchanged. What happens to the field at the new midpoint, "
+                "compared with the old one?",
+        "options": [
+            {"text": "It falls to about a quarter of what it was",
+             "correct": True},
+            {"text": "It falls to about a half of what it was",
+             "correct": False,
+             "why": "That would hold if the field tracked distance "
+                    "directly. It falls faster, by the square of the "
+                    "change."},
+            {"text": "It stays the same, because the two charges have not "
+                     "changed", "correct": False,
+             "why": "Distance from each charge to the midpoint has also "
+                    "grown, and that weakens each contribution."},
+            {"text": "It doubles, because the gap between the charges is "
+                     "now twice as wide", "correct": False,
+             "why": "A wider gap means the midpoint is further from each "
+                    "charge, which weakens the field there rather than "
+                    "strengthening it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-h20",
+        "band": "harder",
+        "text": "The metal braid around a coaxial cable's inner wire is "
+                "damaged and cut away over a short section. What would you "
+                "expect at that section?",
+        "options": [
+            {"text": "The signal is unaffected, since the inner wire "
+                     "still carries it", "correct": False,
+             "why": "The wire still carries the signal, but with no braid "
+                    "around it there the shielding is gone."},
+            {"text": "The whole cable stops working, from end to end",
+             "correct": False,
+             "why": "Only the unshielded section is exposed; the braided "
+                    "lengths either side still protect the wire there."},
+            {"text": "The braid's job is to add strength, so nothing "
+                     "electrical changes", "correct": False,
+             "why": "The braid's main job is shielding the wire from "
+                    "outside fields, not adding strength."},
+            {"text": "That section is no longer shielded, so outside "
+                     "fields can now reach the wire directly",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-h21",
+        "band": "harder",
+        "text": "A charge is spread evenly over a hollow metal sphere. Just "
+                "outside its surface, how does its field compare with the "
+                "field of the same total charge concentrated at a single "
+                "point at the sphere's centre?",
+        "options": [
+            {"text": "The sphere's field is weaker, because the charge is "
+                     "spread over a larger area", "correct": False,
+             "why": "Spreading the charge over the shell does not weaken "
+                    "its effect outside; from out there it behaves like a "
+                    "point charge of the same size."},
+            {"text": "The sphere's field is stronger, because more of the "
+                     "charge sits closer to the surface", "correct": False,
+             "why": "Nothing about spreading the charge over the shell "
+                    "makes the outside field any stronger."},
+            {"text": "They are the same, outside the sphere", "correct": True},
+            {"text": "They cannot be compared, since a spread-out charge "
+                     "has no field of its own", "correct": False,
+             "why": "A hollow charged sphere certainly has a field "
+                    "outside it; it is the inside where there is none."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-h22",
+        "band": "harder",
+        "text": "A field is measured at 2 cm from a charge, then again at "
+                "8 cm — four times as far. Roughly what has happened to "
+                "the field?",
+        "options": [
+            {"text": "It has fallen to about a quarter", "correct": False,
+             "why": "That would hold if the field tracked distance "
+                    "directly. It falls by the square of the change, not "
+                    "in step with it."},
+            {"text": "It has fallen to about an eighth", "correct": False,
+             "why": "The distance changed by a factor of four, so the "
+                    "field falls by four squared, not by four itself."},
+            {"text": "It has stayed roughly the same", "correct": False,
+             "why": "Multiplying the distance by four changes the field a "
+                    "very great deal; it cannot stay roughly the same."},
+            {"text": "It has fallen to about a sixteenth", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-h23",
+        "band": "harder",
+        "text": "Charge A is twice the size of charge B, and the two sit a "
+                "fixed distance apart. Compare the field A makes at B's "
+                "location with the field B makes at A's location.",
+        "options": [
+            {"text": "A's field at B's location is twice as strong as B's "
+                     "field at A's location", "correct": True},
+            {"text": "The two fields are exactly equal, because the "
+                     "forces on A and B are equal and opposite",
+             "correct": False,
+             "why": "The forces on the two are equal, but each charge's "
+                    "own field depends only on itself, so the bigger "
+                    "charge makes the stronger field."},
+            {"text": "B's field at A's location is twice as strong, since "
+                     "the smaller charge has further to reach",
+             "correct": False,
+             "why": "A field's strength comes from the size of the charge "
+                    "that made it, not from which charge is doing the "
+                    "reaching."},
+            {"text": "Neither charge makes a field at the other's exact "
+                     "location", "correct": False,
+             "why": "Every charge makes a field at every point around it, "
+                    "including at the other charge's location."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-h24",
+        "band": "harder",
+        "text": "Two charges, the same size but opposite sign, sit a short "
+                "way apart. Between two LIKE charges there is always a "
+                "null point somewhere. Is there a null point anywhere on "
+                "the line through this pair?",
+        "options": [
+            {"text": "Yes, exactly halfway between them, just as for two "
+                     "like charges, because at the midpoint the two "
+                     "contributions point in opposite directions and "
+                     "cancel", "correct": False,
+             "why": "Halfway between opposite charges the two "
+                    "contributions point the same way and add, rather "
+                    "than cancelling."},
+            {"text": "Yes, but only far beyond one of the two charges",
+             "correct": False,
+             "why": "Beyond either charge the nearer one's contribution "
+                    "dominates; the two never balance to zero out there "
+                    "either."},
+            {"text": "It depends on which one is called positive and "
+                     "which is called negative", "correct": False,
+             "why": "Swapping the labels changes nothing about the "
+                    "geometry; an opposite pair has no null point on the "
+                    "line either way."},
+            {"text": "No — outside or between an opposite pair the two "
+                     "contributions never point in exactly opposite "
+                     "directions with equal size", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-h25",
+        "band": "harder",
+        "text": "A student measures the field made by charge X, then swaps "
+                "in a bigger test charge to measure the field made by "
+                "charge Y. Why is that comparison unfair?",
+        "options": [
+            {"text": "Because the two source charges being compared "
+                     "should also have been made equal first, so that the "
+                     "only thing left different between the two "
+                     "measurements is the test charge",
+             "correct": False,
+             "why": "The whole point is to compare two different source "
+                    "charges; they are not supposed to be made equal."},
+            {"text": "Because a bigger test charge always reads a smaller "
+                     "field than a smaller one would", "correct": False,
+             "why": "The field itself does not depend on the test charge "
+                    "at all; only the force measured with it changes."},
+            {"text": "Because using two different test charges makes the "
+                     "measured forces hard to compare fairly, even though "
+                     "neither field itself has actually changed",
+             "correct": True},
+            {"text": "Because only one single test charge may ever be "
+                     "used in the whole topic", "correct": False,
+             "why": "Any small test charge will do; what matters is using "
+                    "the same one for both measurements, not one fixed "
+                    "charge forever."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-h26",
+        "band": "harder",
+        "text": "A student says a stronger field always means a bigger "
+                "push, so field and force are really just two names for "
+                "the same thing. Using the definition of the field, "
+                "explain why they are not.",
+        "options": [
+            {"text": "They are the same thing; the two words are simply "
+                     "used in different parts of the topic, one when "
+                     "drawing a map of the space and the other when "
+                     "working out a force in newtons", "correct": False,
+             "why": "The definitions differ: the field is a property of "
+                    "space, and the force is what a particular charge "
+                    "feels because of it."},
+            {"text": "Force is a property of space and field is a "
+                     "property of the object placed in it", "correct": False,
+             "why": "That has the two ideas swapped round: the field "
+                    "belongs to the space, and the force is what a "
+                    "particular object feels."},
+            {"text": "They differ only in their units, and otherwise mean "
+                     "exactly the same physical thing", "correct": False,
+             "why": "It is more than a difference of units — the field "
+                    "does not depend on what is placed in it, while the "
+                    "force does."},
+            {"text": "The field is the push a small test charge would "
+                     "feel there; the actual force also depends on the "
+                     "size of whatever charge is really placed at that "
+                     "point", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-h27",
+        "band": "harder",
+        "text": "Two equal positive charges sit 6 cm apart. A point on the "
+                "line between them is 2 cm from one charge and 4 cm from "
+                "the other. What is the field at that point?",
+        "options": [
+            {"text": "Zero, since the point lies between the two charges",
+             "correct": False,
+             "why": "It is zero only exactly at the midpoint, 3 cm from "
+                    "each. This point is not there."},
+            {"text": "Pointing away from the further charge, since a "
+                     "bigger distance always gives the bigger "
+                     "contribution", "correct": False,
+             "why": "The opposite is true: the closer charge always makes "
+                    "the stronger contribution at a point."},
+            {"text": "Pointing away from the nearer charge, since its "
+                     "contribution at 2 cm is the bigger of the two",
+             "correct": True},
+            {"text": "Equal to the field of just one charge on its own, "
+                     "since the other is too far away to matter",
+             "correct": False,
+             "why": "4 cm is not far enough to ignore; the further charge "
+                    "still makes a real, if smaller, contribution."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-h28",
+        "band": "harder",
+        "text": "A source charge is tripled in size, and at the same time "
+                "the distance to the test point is doubled. Overall, is "
+                "the field there bigger, smaller, or unchanged?",
+        "options": [
+            {"text": "Smaller — about three-quarters of what it was",
+             "correct": True},
+            {"text": "Bigger, because tripling the charge always wins "
+                     "over doubling the distance", "correct": False,
+             "why": "Doubling the distance divides the field by four, "
+                    "which outweighs the charge only being tripled."},
+            {"text": "Unchanged, because the two changes exactly cancel "
+                     "out", "correct": False,
+             "why": "Tripling the charge multiplies the field by three, "
+                    "while doubling the distance divides it by four — "
+                    "those do not cancel to leave it unchanged."},
+            {"text": "Smaller — about a third of what it was",
+             "correct": False,
+             "why": "That ignores the effect of the charge tripling, "
+                    "which partly makes up for the distance increasing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-h29",
+        "band": "harder",
+        "text": "Which of these would make the field at a fixed point "
+                "weaker: moving the point further from the source charge, "
+                "or shrinking the size of the test charge placed there?",
+        "options": [
+            {"text": "Only shrinking the test charge", "correct": False,
+             "why": "The test charge's size changes the force it feels, "
+                    "not the field that is already there at that point."},
+            {"text": "Both of them weaken the field", "correct": False,
+             "why": "Shrinking the test charge does not touch the field "
+                    "at all; only moving the point changes it."},
+            {"text": "Neither — the field depends only on the source "
+                     "charge's own size", "correct": False,
+             "why": "Distance from the source charge matters a great deal "
+                    "too; moving the point further away genuinely weakens "
+                    "the field."},
+            {"text": "Only moving the point further away", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p9-03-h30",
+        "band": "harder",
+        "text": "Two unequal positive charges have a null point somewhere "
+                "between them. The smaller of the two charges is now "
+                "replaced with a larger one, while the original bigger "
+                "charge stays the same. Which way does the null point "
+                "shift?",
+        "options": [
+            {"text": "Towards the charge that was just increased",
+             "correct": False,
+             "why": "A stronger charge reaches further before the other "
+                    "one catches it up, pushing the null point away from "
+                    "itself, not towards it."},
+            {"text": "It stays exactly where it was, since only one of "
+                     "the two charges changed", "correct": False,
+             "why": "Changing either charge's size shifts the balance "
+                    "point between them."},
+            {"text": "Away from the charge that was just increased",
+             "correct": True},
+            {"text": "It moves to the exact midpoint between the two "
+                     "charges", "correct": False,
+             "why": "The midpoint is only the null point when the two "
+                    "charges are equal, and after the change they no "
+                    "longer are."},
+        ],
+        "figure": None,
+    },
 ]

@@ -1393,9 +1393,10 @@ QUESTIONS = [
     {
         "id": "p9-02-e28",
         "band": "easier",
-        "text": "Two oppositely charged spheres attract each other. Two "
-                "like-charged spheres of the same size, the same distance "
-                "apart, repel. How do the two forces compare in size?",
+        "text": "Two oppositely charged spheres are held a short way apart. "
+                "Two like-charged spheres of the same size are held the "
+                "same distance apart. How do the two forces compare in "
+                "size?",
         "options": [
             {"text": "The attraction is the bigger of the "
                      "two", "correct": False,
