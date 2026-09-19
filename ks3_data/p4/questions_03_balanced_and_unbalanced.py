@@ -955,45 +955,33 @@ QUESTIONS = [
     {
         "id": "p4-03-s11",
         "band": "standard",
-        "text": "A train travels at a steady speed along a straight track. "
-                "What is true of the forces on it?",
+        "text": "One train stands still in a station; an identical train runs along a straight track at a steady 30 m/s. Compare the forces acting on the two.",
         "options": [
-            {"text": "They are balanced, because its motion is not changing",
+            {"text": "Both are balanced, because neither train's motion is changing",
              "correct": True},
-            {"text": "They are unbalanced forwards, since it is going "
-                     "forwards", "correct": False,
-             "why": "Motion needs no resultant force; a CHANGE of motion "
-                    "does."},
-            {"text": "Just the engine acts, as nothing is holding it back",
+            {"text": "Only the standing train is balanced, since balance means staying still", "correct": False,
+             "why": "Balance is about the motion not changing, and a steady 30 m/s is not changing either."},
+            {"text": "Only the moving train is balanced, since its engine matches the drag on it",
              "correct": False,
-             "why": "Friction and air resistance act the whole time, and at a "
-                    "steady speed the engine matches them."},
-            {"text": "They are balanced, because balanced always means not "
-                     "moving", "correct": False,
-             "why": "The verdict is right and the reason is wrong. Balanced "
-                    "means no change."},
+             "why": "The engine does match the drag, but the standing train is in balance as well, with its weight matched by the track."},
+            {"text": "Neither is balanced, because a train has an engine running in both cases", "correct": False,
+             "why": "A running engine does not decide it. What matters is whether anything is left over to change the motion, and here nothing is."},
         ],
         "figure": None,
     },
     {
         "id": "p4-03-s12",
         "band": "standard",
-        "text": "Why does a spring with a load on it stop stretching at one "
-                "particular length?",
+        "text": "A 2 kg load and a 4 kg load are hung in turn from the same spring. Why does the heavier load bring it to rest at a longer length?",
         "options": [
-            {"text": "Because it runs out of stretch at a fixed length every "
-                     "time", "correct": False,
-             "why": "A heavier load stretches it further, so the length is not "
-                    "fixed."},
-            {"text": "Because its pull grows as it stretches, and it stops "
-                     "when the pull equals the weight", "correct": True},
-            {"text": "Because the load gets lighter as it goes down",
+            {"text": "Because a heavier load squashes the coils together and makes the spring itself longer", "correct": False,
+             "why": "Hanging a load stretches the coils apart rather than squashing them, and the spring's own length is unchanged."},
+            {"text": "Because the spring must stretch further before its pull has grown to 40 N rather than 20 N", "correct": True},
+            {"text": "Because the 4 kg load gets lighter as it descends, so the spring can hold it lower down",
              "correct": False,
-             "why": "The weight of the load never changes on the way down."},
-            {"text": "Because the spring stops pulling as soon as the load has "
-                     "settled and stopped moving downwards", "correct": False,
-             "why": "It pulls the whole time. Stopping would let the load "
-                    "fall."},
+             "why": "The weight of a load never changes on the way down; it is 40 N at the top of the stretch and 40 N at the bottom."},
+            {"text": "Because the spring stops pulling once the load has settled, and a heavier load takes longer to settle", "correct": False,
+             "why": "The spring pulls the whole time, on both loads. If it stopped pulling, either load would simply fall."},
         ],
         "figure": None,
     },
@@ -1148,7 +1136,7 @@ QUESTIONS = [
                 "the box with an extra 20 N. What does the table push up "
                 "with?",
         "options": [
-            {"text": "40 N", "correct": False,
+            {"text": "40 N, which is the weight of the box on its own", "correct": False,
              "why": "The press goes through the box into the table, and the "
                     "table answers all of it."},
             {"text": "20 N", "correct": False,
@@ -1651,8 +1639,7 @@ QUESTIONS = [
         "text": "A skydiver falling at a steady speed opens the parachute. "
                 "What is true in the moments straight afterwards?",
         "options": [
-            {"text": "The forces stay balanced, so nothing about the fall "
-                     "changes", "correct": False,
+            {"text": "The forces stay balanced, so nothing about the speed of the fall changes once the canopy opens", "correct": False,
              "why": "The fall slows sharply, and a change of motion needs a "
                     "resultant."},
             {"text": "The upward force is bigger than the weight, so the "
@@ -1672,21 +1659,16 @@ QUESTIONS = [
     {
         "id": "p4-03-h21",
         "band": "harder",
-        "text": "A 500 kg lift is to hang at rest from a cable that can pull "
-                "with up to 4 800 N. Is that safe?",
+        "text": "A 320 kg pallet of bricks is to hang at rest from a hoist chain rated to pull with up to 3 000 N. Is that safe?",
         "options": [
-            {"text": "Yes, because 4 800 N is more than 500 kg",
+            {"text": "Yes, because 3 000 N is more than 320 kg",
              "correct": False,
-             "why": "A force cannot be compared with a mass. The weight is "
-                    "5 000 N."},
-            {"text": "Yes, because a cable at rest hardly pulls",
+             "why": "A force cannot be compared with a mass. The weight is 3 200 N."},
+            {"text": "Yes, because a chain at rest hardly pulls",
              "correct": False,
-             "why": "At rest it has to supply the whole weight, which is "
-                    "5 000 N."},
-            {"text": "No, because the weight is 5 000 N and the cable can only "
-                     "give 4 800 N", "correct": True},
-            {"text": "No, because a cable must always be rated at twice the "
-                     "weight", "correct": False,
+             "why": "At rest it has to supply the whole weight, which is 3 200 N."},
+            {"text": "No, because the weight is 3 200 N and the chain can only give 3 000 N", "correct": True},
+            {"text": "No, because a chain must be rated at twice the weight of anything it lifts", "correct": False,
              "why": "There is no such rule here. It fails simply because it "
                     "cannot supply what is needed."},
         ],

@@ -661,7 +661,7 @@ QUESTIONS = [
         "band": "easier",
         "text": "Forces come in pairs. The two forces in a pair point...",
         "options": [
-            {"text": "in the same direction", "correct": False,
+            {"text": "in the same direction as each other", "correct": False,
              "why": "Pointing the same way would make them add up, and a pair "
                     "never does that."},
             {"text": "in whichever direction the object happens to move",
@@ -811,7 +811,7 @@ QUESTIONS = [
         "options": [
             {"text": "Yes, because the cable and the girder are touching",
              "correct": True},
-            {"text": "No, the crane driver is not touching it",
+            {"text": "No, because the crane driver is not touching the girder",
              "correct": False,
              "why": "The driver is not one of the two objects. The cable and "
                     "the girder are, and they touch."},
@@ -1539,7 +1539,7 @@ QUESTIONS = [
         "options": [
             {"text": "Both, as the two halves of one interaction",
              "correct": True},
-            {"text": "Only the second student", "correct": False,
+            {"text": "Only the second student, since the ball is what moves", "correct": False,
              "why": "Which object moves is a separate question from which "
                     "objects exert forces."},
             {"text": "Neither, because the two forces must be different sizes "
@@ -1581,7 +1581,7 @@ QUESTIONS = [
         "text": "A magnet in a clamp pulls a paperclip with 2 N. The magnet "
                 "cannot move. Does the paperclip still pull on the magnet?",
         "options": [
-            {"text": "No, the clamp takes the pull instead", "correct": False,
+            {"text": "No, the clamp takes up the pull instead of the magnet", "correct": False,
              "why": "The clamp holds the magnet still by adding a force of its "
                     "own; it does not remove the paperclip's pull."},
             {"text": "Only if the clamp is removed", "correct": False,
