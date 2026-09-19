@@ -2021,8 +2021,8 @@ QUESTIONS = [
     {
         "id": "c10-03-h18",
         "band": "harder",
-        "text": "Some steps of the cycle take days. Why does a complete "
-                "circuit still take hundreds of millions of years?",
+        "text": "Some steps of the cycle take days. Why is a complete "
+                "circuit still so much slower than its fastest steps?",
         "options": [
             {"text": "Because the slowest steps — burial, heating and cooling "
                      "at depth — set the pace of the whole thing",

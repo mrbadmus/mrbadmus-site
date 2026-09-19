@@ -1134,7 +1134,8 @@ QUESTIONS = [
     {
         "id": "c10-01-e27",
         "band": "easier",
-        "text": "What does the word CORE name in this lesson?",
+        "text": "In the structure of the Earth, what does the word CORE "
+                "name?",
         "options": [
             {"text": "The iron and nickel centre of the Earth, in two "
                      "parts",
