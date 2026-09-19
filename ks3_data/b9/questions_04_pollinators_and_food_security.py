@@ -2256,12 +2256,12 @@ QUESTIONS = [
                 "of the harvest in half. What fraction of the usual "
                 "harvest would you expect?",
         "options": [
-            {"text": "About 40%, because losing half of the pollinators "
-                     "halves the whole harvest.",
+            {"text": "About 40%, halving the 80% that depends on insects "
+                     "and stopping there.",
              "correct": False,
              "why": "Only the four fifths that depends on insects is "
-                    "affected. The other fifth is untouched, so more than "
-                    "half survives."},
+                    "affected. The other fifth is untouched and has to be "
+                    "added back, so more than half survives."},
             {"text": "About 80%, because that is the share of the crop "
                      "that depends on insects.",
              "correct": False,
