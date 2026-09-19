@@ -150,8 +150,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── standard ────────────────────────────────────────────────────────
     {
         "id": "b10-04-s01",
         "band": "standard",
@@ -272,8 +270,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "b10-04-h01",
         "band": "harder",
@@ -396,10 +392,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── MRB-335 top-up ──────────────────────────────────────────────────
-
-    # ── easier ──────────────────────────────────────────────────────────
     {
         "id": "b10-04-e05",
         "band": "easier",
@@ -565,8 +557,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── standard ────────────────────────────────────────────────────────
     {
         "id": "b10-04-s05",
         "band": "standard",
@@ -743,8 +733,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "b10-04-h05",
         "band": "harder",
@@ -913,6 +901,1767 @@ QUESTIONS = [
             {"text": "That a correct answer can arrive before anyone has a use "
                      "for it, and wait.",
              "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e11",
+        "band": "easier",
+        "text": "A dog's body cells each have 78 chromosomes. How many "
+                "chromosomes are in one of its gametes?",
+        "options": [
+            {"text": "39, half of the body-cell number.", "correct": True},
+            {"text": "156, since two gametes are needed to make a full set.",
+             "correct": False,
+             "why": "Gametes carry HALF the number, not double it. Two gametes "
+                    "together restore 78; one on its own carries less."},
+            {"text": "78, the same as a body cell.", "correct": False,
+             "why": "A gamete carries only one chromosome from each pair. If "
+                    "it carried 78 as well, fertilisation would give 156."},
+            {"text": "19, a quarter of the body-cell number.",
+             "correct": False,
+             "why": "A gamete carries half the body-cell number, not a "
+                    "quarter. Halving 78 gives 39."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e12",
+        "band": "easier",
+        "text": "In a species where a gamete carries 10 chromosomes, how many "
+                "chromosomes does the fertilised egg have?",
+        "options": [
+            {"text": "10 — the same as one gamete.", "correct": False,
+             "why": "Two gametes fuse at fertilisation, not one. The number "
+                    "doubles rather than staying the same."},
+            {"text": "5 — half of the gamete's number.", "correct": False,
+             "why": "Fertilisation is where the number is restored, not halved "
+                    "again. Two gametes of 10 add back up to 20."},
+            {"text": "40 — the two parents' body cells added together.",
+             "correct": False,
+             "why": "It is the two GAMETES that fuse, each carrying 10, not "
+                    "the two parents' whole body-cell totals."},
+            {"text": "20 — one full set from each of the two gametes.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e13",
+        "band": "easier",
+        "text": "Which best describes what is meant by 'a version of a gene'?",
+        "options": [
+            {"text": "One of the alternative forms a gene can come in.",
+             "correct": True},
+            {"text": "A whole chromosome, carrying many genes at once.",
+             "correct": False,
+             "why": "A version is one alternative form of a single gene, not "
+                    "a whole chromosome carrying many genes."},
+            {"text": "The complete set of instructions inside a cell's "
+                     "nucleus.",
+             "correct": False,
+             "why": "That describes all the DNA together. A version of a "
+                    "gene is one form of just one gene within it."},
+            {"text": "A cell that is passed from parent to offspring.",
+             "correct": False,
+             "why": "That describes a gamete. A version of a gene is "
+                    "information, not a cell."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e14",
+        "band": "easier",
+        "text": "A fertilised egg divides again and again to build a new "
+                "organism. What is true of the DNA in each new cell?",
+        "options": [
+            {"text": "It is an exact copy of the DNA in the fertilised egg.",
+             "correct": True},
+            {"text": "It is a fresh combination, reshuffled at every "
+                     "division.",
+             "correct": False,
+             "why": "Reshuffling only happens when gametes are made, not "
+                    "during ordinary cell division, which copies DNA "
+                    "exactly."},
+            {"text": "It carries only the genes that cell's own job needs.",
+             "correct": False,
+             "why": "Every cell keeps the full set of genes; only which "
+                    "genes are switched on differs from cell to cell."},
+            {"text": "It is halved compared to the fertilised egg's DNA.",
+             "correct": False,
+             "why": "Halving happens only when gametes are made, not during "
+                    "ordinary body-cell division."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e15",
+        "band": "easier",
+        "text": "A pea plant is pure-breeding for seed shape. What must be "
+                "true of the two versions of the seed-shape gene it carries?",
+        "options": [
+            {"text": "One overrides the other completely.", "correct": False,
+             "why": "That can be true whether or not a plant is pure-breeding. "
+                    "Pure-breeding is specifically about the two versions "
+                    "matching."},
+            {"text": "They are identical to each other.", "correct": True},
+            {"text": "One of them is hidden and never passed on.",
+             "correct": False,
+             "why": "Nothing is ever unable to be passed on. Whichever version "
+                    "a plant carries, it can pass either one on."},
+            {"text": "They came from two different parent plants.",
+             "correct": False,
+             "why": "Which parent supplied each version says nothing about "
+                    "whether they're identical — that is what pure-breeding "
+                    "actually requires."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e16",
+        "band": "easier",
+        "text": "In peas, round seed shape overrides wrinkled. A plant carries "
+                "one round version and one wrinkled version. What shape are "
+                "its seeds?",
+        "options": [
+            {"text": "Wrinkled, because the wrinkled version is more common.",
+             "correct": False,
+             "why": "Commonness has nothing to do with it. One round version "
+                    "is enough to override wrinkled, whatever proportion of "
+                    "plants carry which."},
+            {"text": "A shape in between, since the plant carries both "
+                     "versions.",
+             "correct": False,
+             "why": "Nothing blends. One round version is enough to "
+                    "override the wrinkled one completely."},
+            {"text": "Round.", "correct": True},
+            {"text": "It depends on which parent supplied the round "
+                     "version.",
+             "correct": False,
+             "why": "Which parent supplied which version makes no "
+                    "difference to which shows. Round overrides wrinkled "
+                    "either way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e17",
+        "band": "easier",
+        "text": "A parent carries two versions of a gene. What happens to "
+                "those two versions when one of its gametes is made?",
+        "options": [
+            {"text": "Both go in, so the gamete carries a full pair of them.",
+             "correct": False,
+             "why": "A gamete carries one version, not a pair. If it carried "
+                    "both, the offspring would end up with four."},
+            {"text": "They combine into a single blended version first.",
+             "correct": False,
+             "why": "Nothing blends. Each version stays separate and "
+                    "unchanged, and one of the two is passed on whole."},
+            {"text": "Whichever version the parent shows is the one that "
+                     "always goes in.",
+             "correct": False,
+             "why": "Which version shows makes no difference to which is "
+                    "passed on. A hidden version goes into half the gametes "
+                    "just as readily."},
+            {"text": "Only one of the two goes into the gamete.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e18",
+        "band": "easier",
+        "text": "An organism carries two versions of each of its genes. Where "
+                "does each of the two come from?",
+        "options": [
+            {"text": "One version from each of its two parents.",
+             "correct": True},
+            {"text": "Both from whichever parent the organism most resembles.",
+             "correct": False,
+             "why": "Resemblance has nothing to do with it. One version comes "
+                    "from each parent whoever the offspring happens to look "
+                    "like."},
+            {"text": "Both from the mother, since the egg is the larger "
+                     "gamete.",
+             "correct": False,
+             "why": "Size makes no difference to what a gamete carries. Each "
+                    "parent contributes one version of every gene."},
+            {"text": "One from each parent for some genes, and both from one "
+                     "parent for others.",
+             "correct": False,
+             "why": "It is one from each parent for every gene alike. No gene "
+                    "takes both its versions from a single parent."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e19",
+        "band": "easier",
+        "text": "Two pure-breeding round-seeded pea plants are crossed. What "
+                "seed shape do the offspring have?",
+        "options": [
+            {"text": "Wrinkled, because two identical versions cancel each "
+                     "other out.",
+             "correct": False,
+             "why": "Identical versions do not cancel out. Two rounds passed "
+                    "on give round seeds, simply reinforced."},
+            {"text": "Half round and half wrinkled.", "correct": False,
+             "why": "With only the round version present in either parent, "
+                    "there is no wrinkled version anywhere in the cross to "
+                    "produce a wrinkled seed."},
+            {"text": "Round.", "correct": True},
+            {"text": "A mixture of round and slightly wrinkled.",
+             "correct": False,
+             "why": "Nothing blends, and there is no wrinkled version in this "
+                    "cross to blend with in any case."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e20",
+        "band": "easier",
+        "text": "An organism carries a hidden version of a gene that is "
+                "overridden by the other version it carries. What effect does "
+                "the hidden version have on how the organism looks?",
+        "options": [
+            {"text": "A small, partial effect that is hard to notice.",
+             "correct": False,
+             "why": "An overridden version is not a matter of subtlety — it "
+                    "produces no visible effect while it is there in full."},
+            {"text": "It weakens slightly each generation it stays hidden.",
+             "correct": False,
+             "why": "A version does not weaken through being hidden; it is "
+                    "passed on completely unchanged."},
+            {"text": "It becomes active again once the organism is fully "
+                     "grown.",
+             "correct": False,
+             "why": "Nothing switches an overridden version back on as an "
+                    "organism matures. It stays hidden until an offspring "
+                    "receives it from both parents."},
+            {"text": "None — it produces no visible effect while it is "
+                     "overridden.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e21",
+        "band": "easier",
+        "text": "Where did Gregor Mendel carry out his pea experiments?",
+        "options": [
+            {"text": "At a university laboratory in England.",
+             "correct": False,
+             "why": "Mendel was a monk working in his monastery's own garden, "
+                    "not a university researcher."},
+            {"text": "On a farm in France, as a professional plant breeder.",
+             "correct": False,
+             "why": "He was a monk, not a professional breeder, and his garden "
+                    "was in Brno, not France."},
+            {"text": "In a monastery garden, in what is now the Czech "
+                     "Republic.",
+             "correct": True},
+            {"text": "In a botanical garden in the Netherlands.",
+             "correct": False,
+             "why": "His work took place at his monastery in Brno, in what is "
+                    "now the Czech Republic."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e22",
+        "band": "easier",
+        "text": "Roughly how many pea plants did Mendel grow altogether while "
+                "collecting his results?",
+        "options": [
+            {"text": "About 28,000.", "correct": True},
+            {"text": "About 2,800.", "correct": False,
+             "why": "That is ten times too few. Mendel's total ran to tens of "
+                    "thousands of plants."},
+            {"text": "About 280,000.", "correct": False,
+             "why": "That is ten times too many for Mendel's own count, "
+                    "usually put at something like 28,000."},
+            {"text": "About 280.", "correct": False,
+             "why": "A count that small would never have shown a ratio as "
+                    "clean as 3:1. Mendel's real total ran into the tens of "
+                    "thousands."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e23",
+        "band": "easier",
+        "text": "Which of these is a genuine reason peas were a good choice "
+                "for Mendel's experiments?",
+        "options": [
+            {"text": "They produce a new generation within a single day.",
+             "correct": False,
+             "why": "Peas grow over a season, not a single day. Their real "
+                    "advantage was still speed, just not that fast."},
+            {"text": "Every characteristic in a pea plant comes in exactly one "
+                     "form.",
+             "correct": False,
+             "why": "The opposite is closer to true. Mendel picked "
+                    "characteristics that came in two clean forms, such as "
+                    "round or wrinkled seeds."},
+            {"text": "They self-pollinate, giving pure-breeding lines to start "
+                     "from.",
+             "correct": True},
+            {"text": "Pea plants cannot be crossed with each other at all.",
+             "correct": False,
+             "why": "Mendel's whole method depended on crossing pea plants "
+                    "deliberately. Left alone they self-pollinate, but he "
+                    "crossed them by hand."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e24",
+        "band": "easier",
+        "text": "What did Mendel do differently from earlier plant breeders "
+                "who had also crossed plants and described the results?",
+        "options": [
+            {"text": "He was the first person ever to cross two pea plants.",
+             "correct": False,
+             "why": "Crossing plants was already common practice. What Mendel "
+                    "added was counting the results precisely."},
+            {"text": "He used a microscope to examine the seeds.",
+             "correct": False,
+             "why": "Nothing in his method needed a microscope — seed shape "
+                    "and colour are visible to the naked eye. Counting was the "
+                    "real innovation."},
+            {"text": "He counted the offspring of every cross.",
+             "correct": True},
+            {"text": "He grew his plants for a much shorter time than anyone "
+                     "before him.",
+             "correct": False,
+             "why": "His experiments ran for years, from 1856 to 1863. Speed "
+                    "was not what set his work apart."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e25",
+        "band": "easier",
+        "text": "A plant is grown in poor soil and grows smaller than usual as "
+                "a result. Will that change be passed on to its seeds?",
+        "options": [
+            {"text": "Yes — anything that happens to a parent in its life is "
+                     "passed on to its offspring.",
+             "correct": False,
+             "why": "Nothing that happens during an organism's own lifetime is "
+                    "written into its gametes. Only genetic information "
+                    "already there can be passed on."},
+            {"text": "Yes, but only if the poor soil lasts for more than one "
+                     "generation.",
+             "correct": False,
+             "why": "The length of time makes no difference. A lifetime change "
+                    "to one plant does not enter its gametes at all."},
+            {"text": "It depends on which parent was affected by the poor "
+                     "soil.",
+             "correct": False,
+             "why": "Neither parent's lifetime experience of soil quality is "
+                    "written into the gametes, whichever parent it happened "
+                    "to."},
+            {"text": "No — only genetic information is passed on, and poor "
+                     "soil does not change that.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e26",
+        "band": "easier",
+        "text": "Two purple pea plants look identical but one carries a hidden "
+                "white version and the other does not. What does this show?",
+        "options": [
+            {"text": "That one of the two plants must actually be a slightly "
+                     "different shade.",
+             "correct": False,
+             "why": "Nothing about their appearance differs — they are "
+                    "described as looking identical. The difference is only in "
+                    "what each is carrying."},
+            {"text": "That two plants can look identical while carrying "
+                     "different information.",
+             "correct": True},
+            {"text": "That the hidden version has already started to show a "
+                     "small effect.",
+             "correct": False,
+             "why": "A hidden version, by definition, produces no visible "
+                    "effect. Both plants are purple."},
+            {"text": "That flower colour cannot really be inherited after all.",
+             "correct": False,
+             "why": "Flower colour here is exactly the inherited "
+                    "characteristic. What varies between the two plants is "
+                    "which versions they carry."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e27",
+        "band": "easier",
+        "text": "In one of Mendel's other experiments, yellow seed colour "
+                "overrides green. A plant carries one yellow version and one "
+                "green version. What colour are its seeds?",
+        "options": [
+            {"text": "Yellow.", "correct": True},
+            {"text": "Green, because green is the rarer of the two colours "
+                     "in this cross.",
+             "correct": False,
+             "why": "Rarity has nothing to do with it. A single yellow "
+                    "version is enough to override green."},
+            {"text": "A pale yellow-green blend.", "correct": False,
+             "why": "Nothing blends. One yellow version is enough to "
+                    "produce fully yellow seeds."},
+            {"text": "It depends on whether the yellow version came from "
+                     "the mother or father plant.",
+             "correct": False,
+             "why": "Which parent supplied the yellow version makes no "
+                    "difference. Either way, one yellow version is enough to "
+                    "override green."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e28",
+        "band": "easier",
+        "text": "A tall pea plant is crossed with a short pea plant and every "
+                "offspring is tall. Is that the expected result when one "
+                "version of a gene overrides the other?",
+        "options": [
+            {"text": "No — the offspring should be a height in between the two "
+                     "parents.",
+             "correct": False,
+             "why": "That is the blending prediction, and the point of this "
+                    "cross is that heights do not blend when a single gene "
+                    "with two versions is involved."},
+            {"text": "Yes — one version overrides the other, so an in-between "
+                     "height is not expected.",
+             "correct": True},
+            {"text": "No — the offspring should all be short, since short is "
+                     "the hidden version.",
+             "correct": False,
+             "why": "Whichever version overrides — tall in this cross — is "
+                    "what shows in every offspring, not the hidden one."},
+            {"text": "Yes, but the short parent must be unhealthy.",
+             "correct": False,
+             "why": "Nothing about the short parent's health is involved. The "
+                    "result follows from which version overrides."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e29",
+        "band": "easier",
+        "text": "A guinea pig carries one black-coat version and one "
+                "white-coat version. Which version will a given one of its "
+                "gametes carry?",
+        "options": [
+            {"text": "Black, because black is the version the guinea pig "
+                     "shows.",
+             "correct": False,
+             "why": "Which version shows does not decide which is passed on. "
+                    "Both go into gametes equally often."},
+            {"text": "Whichever the mate needs for the litter to survive.",
+             "correct": False,
+             "why": "Nothing about the mate reaches back into which version a "
+                    "gamete carries. It is settled as the gamete is made."},
+            {"text": "Either one — which of the two it carries is down to "
+                     "chance.",
+             "correct": True},
+            {"text": "Both, so that the offspring is certain to receive the "
+                     "pair.",
+             "correct": False,
+             "why": "A gamete carries one version of each gene. The "
+                    "offspring's pair is made up from two gametes, not from "
+                    "one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-e30",
+        "band": "easier",
+        "text": "In what year did Mendel publish the results of his pea "
+                "experiments?",
+        "options": [
+            {"text": "1900", "correct": False,
+             "why": "That is the year three other botanists rediscovered the "
+                    "same rules — not the year Mendel himself published."},
+            {"text": "1856", "correct": False,
+             "why": "That is the year Mendel began his experiments, seven "
+                    "years before he published his results in 1866."},
+            {"text": "1884", "correct": False,
+             "why": "That is the year Mendel died, two decades after he had "
+                    "already published his results."},
+            {"text": "1866", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s11",
+        "band": "standard",
+        "text": "A species has 78 chromosomes in a body cell. Two individuals "
+                "are crossed. How many chromosomes are in the fertilised egg "
+                "of their offspring, and why?",
+        "options": [
+            {"text": "156 — each parent contributes a full body cell's worth.",
+             "correct": False,
+             "why": "Parents pass on gametes, each carrying only half the "
+                    "number, not whole body cells. Adding two body cells' "
+                    "worth would double the total every generation."},
+            {"text": "39 — the fertilised egg only ever gets half of what a "
+                     "body cell has.",
+             "correct": False,
+             "why": "Fertilisation is where the number gets restored, not "
+                    "halved again. Two gametes of 39 each add up to 78."},
+            {"text": "78 — two halved gametes add back to the full number.",
+             "correct": True},
+            {"text": "117 — one and a half body cells' worth are combined.",
+             "correct": False,
+             "why": "Fertilisation combines exactly two gametes, each with "
+                    "half the body-cell number. There is no \"one and a half\" "
+                    "step in the process."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s12",
+        "band": "standard",
+        "text": "A pure-breeding round-seeded plant is crossed with a "
+                "pure-breeding wrinkled-seeded plant. Round overrides "
+                "wrinkled. What seed shape are the offspring, and why?",
+        "options": [
+            {"text": "Half round and half wrinkled, because each parent passes "
+                     "on its own shape to half the seeds.",
+             "correct": False,
+             "why": "Every seed here receives one version from EACH parent, "
+                    "not a whole shape from one of them. Every single seed is "
+                    "round-and-wrinkled combined, which shows as round."},
+            {"text": "All wrinkled, because wrinkled is the hidden version and "
+                     "hidden versions show first.",
+             "correct": False,
+             "why": "A hidden version does not show \"first\" — it shows only "
+                    "when there is no overriding version present, which is not "
+                    "the case here."},
+            {"text": "All round — every offspring gets one round and one "
+                     "wrinkled version, and round overrides.",
+             "correct": True},
+            {"text": "A shape between round and wrinkled, since both versions "
+                     "are present in every seed.",
+             "correct": False,
+             "why": "Nothing blends. Every offspring here carries one round "
+                    "and one wrinkled version, and round completely overrides "
+                    "wrinkled."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s13",
+        "band": "standard",
+        "text": "A yellow-seeded pea plant is crossed with a green-seeded "
+                "plant, and a mix of yellow and green seeds results. What must "
+                "be true of the yellow-seeded parent?",
+        "options": [
+            {"text": "It must be pure-breeding for yellow seeds.",
+             "correct": False,
+             "why": "A pure-breeding yellow parent can only pass on the yellow "
+                    "version, so none of the offspring could come out green. "
+                    "Some green offspring rules that out."},
+            {"text": "It has developed a new green version by chance during "
+                     "this cross.",
+             "correct": False,
+             "why": "Nothing new appears during a cross. The green version "
+                    "came from a parent that was already carrying it."},
+            {"text": "The green-seeded parent must actually be carrying two "
+                     "yellow versions.",
+             "correct": False,
+             "why": "A plant carrying two yellow versions could only pass on "
+                    "yellow. The green offspring shows one of the true parents "
+                    "is carrying green, not the other way round."},
+            {"text": "It must be carrying a hidden green version as well as a "
+                     "yellow one.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s14",
+        "band": "standard",
+        "text": "A cross expected to give a quarter wrinkled seeds produces "
+                "20 offspring, of which 6 are wrinkled. What percentage of "
+                "the offspring is that?",
+        "options": [
+            {"text": "30 per cent.", "correct": True},
+            {"text": "25 per cent, since that's what a quarter is expected "
+                     "to be.",
+             "correct": False,
+             "why": "25 per cent is the EXPECTATION, not what this "
+                    "particular batch of seeds actually gave. 6 out of 20 is "
+                    "30 per cent."},
+            {"text": "6 per cent, treating the count itself as the "
+                     "percentage.",
+             "correct": False,
+             "why": "The count of wrinkled seeds is not the same as the "
+                    "percentage. Dividing 6 by 20 and multiplying by 100 "
+                    "gives 30 per cent, not 6."},
+            {"text": "70 per cent, the round share rather than the wrinkled "
+                     "share.",
+             "correct": False,
+             "why": "70 per cent is the ROUND share — the other 14 seeds. "
+                    "The question asks for the wrinkled share, which is 30 "
+                    "per cent."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s15",
+        "band": "standard",
+        "text": "A plant breeder crosses two carriers of a hidden version and "
+                "gets close to but not exactly a quarter showing it. Why might "
+                "that be?",
+        "options": [
+            {"text": "The breeder must have made a mistake counting the "
+                     "offspring.",
+             "correct": False,
+             "why": "A small sample landing close to but not exactly on the "
+                    "expected ratio is normal, not a sign of a counting error."},
+            {"text": "Chance means small samples rarely land exactly on the "
+                     "expected ratio.",
+             "correct": True},
+            {"text": "The expected ratio only applies to Mendel's own pea "
+                     "plants.",
+             "correct": False,
+             "why": "The same expectation applies to any cross of this kind. "
+                    "What varies from sample to sample is the actual count, "
+                    "not the underlying rule."},
+            {"text": "The hidden version must be slightly weaker than usual in "
+                     "this cross.",
+             "correct": False,
+             "why": "Nothing about a version's strength changes from sample to "
+                    "sample. Chance in which gametes combine is enough on its "
+                    "own to explain the gap."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s16",
+        "band": "standard",
+        "text": "Two full siblings, from the same two parents, carry different "
+                "combinations of gene versions. What is the source of that "
+                "difference?",
+        "options": [
+            {"text": "The parents' own gene versions must have changed between "
+                     "having each child.",
+             "correct": False,
+             "why": "A parent's own versions do not change from one child to "
+                    "the next. What differs is which of the two each gamete "
+                    "happened to carry."},
+            {"text": "One sibling inherited more genes from one parent than "
+                     "the other sibling did.",
+             "correct": False,
+             "why": "Every child receives exactly the same amount, one version "
+                    "of every gene from each parent. What varies is which "
+                    "versions, not how many."},
+            {"text": "Siblings only differ because of things that happened to "
+                     "them after birth.",
+             "correct": False,
+             "why": "The combination of gene versions a sibling carries is "
+                    "fixed at fertilisation, before birth. Later life events "
+                    "do not rewrite it."},
+            {"text": "Each gamete carried one version of each gene, chosen by "
+                     "chance.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s17",
+        "band": "standard",
+        "text": "In a simple model, curly hair overrides straight hair. A "
+                "woman with a straight-haired father and a curly-haired mother "
+                "has curly hair herself. Later she has a straight-haired child "
+                "with a straight-haired partner. What must be true about the "
+                "woman?",
+        "options": [
+            {"text": "She must have somehow regained her father's "
+                     "straight-hair version as an adult.",
+             "correct": False,
+             "why": "Nothing is regained. If she carries the straight-hair "
+                    "version, she has done so since fertilisation, without it "
+                    "ever leaving."},
+            {"text": "Her partner's straight-hair version must have overridden "
+                     "her curly one in the child.",
+             "correct": False,
+             "why": "The child's own combination decides the child's hair, not "
+                    "an override happening to the mother. She must be carrying "
+                    "a hidden straight version for this outcome to be possible "
+                    "at all."},
+            {"text": "The straight-haired child's hair must be a coincidence "
+                     "unrelated to genetics.",
+             "correct": False,
+             "why": "A straight-haired child from these parents is exactly "
+                    "what carrying-without-showing predicts once both parents "
+                    "happen to pass the straight version."},
+            {"text": "She must be carrying a hidden straight-hair version as "
+                     "well as the curly one she shows.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s18",
+        "band": "standard",
+        "text": "Why does Mendel deliberately start his crosses from "
+                "pure-breeding lines rather than from ordinary plants of "
+                "unknown ancestry?",
+        "options": [
+            {"text": 'Because he then knows exactly which versions each parent carries.',
+             "correct": True},
+            {"text": "Because pure-breeding plants produce more seeds than "
+                     "other plants.",
+             "correct": False,
+             "why": "How many seeds a plant produces has nothing to do with "
+                    "whether it's pure-breeding. The advantage is knowing "
+                    "exactly what each parent carries."},
+            {"text": "Because pure-breeding plants cannot be crossed with "
+                     "plants of a different variety.",
+             "correct": False,
+             "why": "Pure-breeding plants can be crossed with anything — "
+                    "that's exactly what Mendel did. The value is knowing "
+                    "what they carry going in."},
+            {"text": "Because ordinary plants of unknown ancestry cannot "
+                     "make gametes.",
+             "correct": False,
+             "why": "Any pea plant makes gametes in the usual way. What's "
+                    "unusable about an ordinary plant here is that you "
+                    "can't be sure what it's carrying."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s19",
+        "band": "standard",
+        "text": "A cat with short fur has two kittens with a mate that also "
+                "has short fur: one short-furred and one long-furred. What "
+                "does the long-furred kitten show about both parents?",
+        "options": [
+            {"text": "Only the mother must be carrying the long-fur version.",
+             "correct": False,
+             "why": "For the long-fur version to show, the kitten must receive "
+                    "it from BOTH parents. If only the mother carried it, the "
+                    "kitten could not show it."},
+            {"text": "Both parents must be carrying a hidden long-fur version.",
+             "correct": True},
+            {"text": "The father's fur must have changed length after mating.",
+             "correct": False,
+             "why": "An adult's own fur length does not rewrite what it passes "
+                    "on. The kitten's long fur shows something both parents "
+                    "were already carrying, hidden."},
+            {"text": "The long-furred kitten must have a different father from "
+                     "its litter-mate.",
+             "correct": False,
+             "why": "Litter-mates can differ in which versions they receive "
+                    "from the very same two parents. There's no need to invent "
+                    "a different father."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s20",
+        "band": "standard",
+        "text": "A round-seeded plant known to be carrying a hidden wrinkled "
+                "version is crossed with a wrinkled-seeded plant. Out of 60 "
+                "seeds grown, about how many would be expected to be wrinkled?",
+        "options": [
+            {"text": "About 15, a quarter of the total.", "correct": False,
+             "why": "A quarter is the expectation when BOTH parents carry a "
+                    "hidden version alongside a shown one. Here one parent can "
+                    "only ever pass on wrinkled, which raises the wrinkled "
+                    "share to about a half."},
+            {"text": "None, since the round-seeded parent's version always "
+                     "overrides.",
+             "correct": False,
+             "why": "Overriding decides what shows in a seed with both "
+                    "versions present, but half these seeds will receive "
+                    "wrinkled from BOTH parents, with nothing to override."},
+            {"text": "All 60, since crossing with wrinkled makes every seed "
+                     "wrinkled.",
+             "correct": False,
+             "why": "The round-seeded parent still passes its round version to "
+                    "half the seeds, and one round version is enough for a "
+                    "seed to show round."},
+            {"text": "About 30.", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s21",
+        "band": "standard",
+        "text": "A breeder crosses two plants, each carrying one shown version "
+                "and one hidden version of the same gene, and expects close to "
+                "a 3:1 ratio. In a different cross, one parent is "
+                "pure-breeding for the shown version and the other still "
+                "carries one of each. How does the second cross's ratio differ "
+                "from the first, and why?",
+        "options": [
+            {"text": "Both crosses give the same 3:1 ratio, because the shown "
+                     "version is involved in both.",
+             "correct": False,
+             "why": "The ratio isn't decided by which version shows — it's "
+                    "decided by which versions each parent can pass on. A "
+                    "pure-breeding parent can only ever pass the shown one."},
+            {"text": "The second cross gives more hidden-version offspring, "
+                     "because pure-breeding strengthens a version.",
+             "correct": False,
+             "why": "Nothing about being pure-breeding makes a version "
+                    "\"stronger\". A pure-breeding parent for the shown "
+                    "version simply has no hidden version to contribute."},
+            {"text": "The second cross gives no offspring that show the hidden "
+                     "version.",
+             "correct": True},
+            {"text": "The two crosses cannot be compared without knowing the "
+                     "plants' exact ages.",
+             "correct": False,
+             "why": "Age plays no part in which versions a plant passes on. "
+                    "What decides the ratio is which versions each parent is "
+                    "carrying."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s22",
+        "band": "standard",
+        "text": "Out of 84 offspring from a cross expected to give close to "
+                "three-quarters showing a version, 21 do not show it. What "
+                "percentage does that represent, and is it close to the "
+                "expectation?",
+        "options": [
+            {"text": "25 per cent, close to the quarter expected not to "
+                     "show it.",
+             "correct": True},
+            {"text": "21 per cent, taking the count itself as the "
+                     "percentage.",
+             "correct": False,
+             "why": "The count of offspring not showing the version is not "
+                    "the same as a percentage. 21 out of 84 works out to 25 "
+                    "per cent."},
+            {"text": "75 per cent, the share that does show the version "
+                     "rather than the share that doesn't.",
+             "correct": False,
+             "why": "75 per cent is the group that DOES show it — the "
+                    "other 63 offspring. The question asks for the share "
+                    "that does not, which is 25 per cent."},
+            {"text": "4 per cent, dividing 84 by 21 the wrong way round.",
+             "correct": False,
+             "why": "That divides the total by the part instead of the "
+                    "part by the total. 21 divided by 84, times 100, gives "
+                    "25 per cent."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s23",
+        "band": "standard",
+        "text": "Mendel followed one characteristic at a time, such as seed "
+                "shape, rather than recording everything about each plant at "
+                "once. Why did that matter?",
+        "options": [
+            {"text": "Because a pea plant only shows one characteristic that "
+                     "can be recorded at a time.",
+             "correct": False,
+             "why": "A pea plant shows seed shape, seed colour, flower colour "
+                    "and height all at once. Mendel chose to count them one by "
+                    "one."},
+            {"text": "Because a clean ratio can only be seen when one "
+                     "characteristic is counted on its own.",
+             "correct": True},
+            {"text": "Because recording two characteristics at once would have "
+                     "changed the plants themselves.",
+             "correct": False,
+             "why": "Writing something down changes nothing about the plant. "
+                    "What it changes is how clearly a pattern can be read off."},
+            {"text": "Because the other characteristics of a pea plant are not "
+                     "inherited at all.",
+             "correct": False,
+             "why": "Seed colour, flower colour and height are every bit as "
+                    "inherited as seed shape. Mendel went on to study them "
+                    "too."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s24",
+        "band": "standard",
+        "text": "A plant with round seeds is crossed with a plant that is "
+                "pure-breeding for wrinkled seeds, and all the offspring have "
+                "round seeds. What can be concluded about the round-seeded "
+                "parent?",
+        "options": [
+            {"text": "It must be carrying a hidden wrinkled version, since it "
+                     "was crossed with wrinkled.",
+             "correct": False,
+             "why": "Being crossed with a wrinkled-seeded plant does not by "
+                    "itself put a wrinkled version into the round parent. If "
+                    "it carried one, close to half its many offspring would be "
+                    "expected to show wrinkled — none did."},
+            {"text": "It must be pure-breeding for round seeds.",
+             "correct": True},
+            {"text": "Nothing can be concluded, since seed shape does not "
+                     "reveal what a plant carries.",
+             "correct": False,
+             "why": "Seed shape is exactly what the offspring reveal here. A "
+                    "plant carrying a hidden wrinkled version crossed with "
+                    "pure wrinkled would be expected to give close to half "
+                    "wrinkled offspring, and none appeared."},
+            {"text": "The wrinkled-seeded parent must actually be carrying a "
+                     "round version too.",
+             "correct": False,
+             "why": "It was described as pure-breeding for wrinkled, so it "
+                    "carries only the wrinkled version. The result instead "
+                    "tells you about the round-seeded parent."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s25",
+        "band": "standard",
+        "text": "A pea plant grown in very rich soil produces unusually "
+                "large, round seeds one year. The next year, seeds from that "
+                "plant are grown in ordinary soil, and the seed shape is "
+                "still round, though the size is ordinary. What does that "
+                "suggest?",
+        "options": [
+            {"text": "Seed shape is set by genetic information, while "
+                     "environment can still affect other things like size.",
+             "correct": True},
+            {"text": "Seed shape must be affected by soil too, since the "
+                     "plant experienced two different environments.",
+             "correct": False,
+             "why": "The plant's shape stayed round in BOTH environments, "
+                    "exactly what you would expect from a characteristic "
+                    "decided by genetic information rather than by soil."},
+            {"text": "The plant must have changed which version of the "
+                     "gene it carries.",
+             "correct": False,
+             "why": "Nothing about which version of a gene a plant carries "
+                    "changes during its lifetime, whatever soil it is grown "
+                    "in."},
+            {"text": "The result proves nothing, since only one plant was "
+                     "tested.",
+             "correct": False,
+             "why": "A single plant showing the SAME seed shape across two "
+                    "very different environments, while its size changed, "
+                    "is exactly the pattern that separates a genetic "
+                    "characteristic from an environmental one."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s26",
+        "band": "standard",
+        "text": "A species has 24 chromosomes in a body cell. How many are in "
+                "one of its gametes, and how many will be in the fertilised "
+                "egg once two gametes fuse?",
+        "options": [
+            {"text": "24 in the gamete, and 48 in the fertilised egg.",
+             "correct": False,
+             "why": "A gamete carries HALF the body-cell number, not the same "
+                    "amount. Passing on 24 each would double the total to 48."},
+            {"text": "12 in the gamete, and 24 in the fertilised egg.",
+             "correct": True},
+            {"text": "12 in the gamete, and 12 in the fertilised egg.",
+             "correct": False,
+             "why": "Fertilisation is where the number is restored, not halved "
+                    "again. Two gametes of 12 each add back up to 24."},
+            {"text": "6 in the gamete, and 24 in the fertilised egg.",
+             "correct": False,
+             "why": "A gamete carries half of 24, which is 12, not 6, though "
+                    "the fertilised-egg figure here is right."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s27",
+        "band": "standard",
+        "text": "One round-seeded plant is pure-breeding, and another "
+                "round-seeded plant is carrying a hidden wrinkled version. "
+                "What can be said about their offspring?",
+        "options": [
+            {"text": "All offspring will show round, and none of them will "
+                     "carry the hidden wrinkled version.",
+             "correct": False,
+             "why": "The carrier parent passes the wrinkled version to about "
+                    "half its gametes. Those seeds still show round, but they "
+                    "do carry the hidden version."},
+            {"text": "About three-quarters of the offspring will show round, "
+                     "and a quarter will be wrinkled.",
+             "correct": False,
+             "why": "Three-quarters showing and a quarter not showing is what "
+                    "TWO carrier parents give. Here one parent is "
+                    "pure-breeding and can only ever pass round."},
+            {"text": "About half the offspring will show wrinkled, since one "
+                     "parent is carrying it.",
+             "correct": False,
+             "why": "The pure-breeding round parent passes round to every "
+                    "seed, which always overrides any wrinkled version the "
+                    "other parent's gametes carry."},
+            {"text": "All will show round, and about half will carry the "
+                     "hidden wrinkled version.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s28",
+        "band": "standard",
+        "text": "A human gamete carries 23 chromosomes and a fruit fly "
+                "gamete carries 4. Does the fruit fly having fewer "
+                "chromosomes mean it has less genetic information than a "
+                "human?",
+        "options": [
+            {"text": 'Not necessarily — chromosome number says nothing about the amount of information carried.',
+             "correct": True},
+            {"text": "Yes — fewer chromosomes always means less genetic "
+                     "information overall.",
+             "correct": False,
+             "why": "Chromosome number on its own says nothing about how "
+                    "much information is carried. A chromosome can hold "
+                    "many or few genes."},
+            {"text": "Yes, because a gamete's chromosome number always "
+                     "matches how advanced the organism is.",
+             "correct": False,
+             "why": "Chromosome number reflects nothing about how "
+                    "\"advanced\" an organism is. It is simply a feature of "
+                    "that species' own set of chromosomes."},
+            {"text": "No comparison is possible unless the two organisms "
+                     "are the same species.",
+             "correct": False,
+             "why": "Chromosome numbers can be compared across species "
+                    "readily enough — the comparison just doesn't tell you "
+                    "what this option assumed it would."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s29",
+        "band": "standard",
+        "text": "A class of thirty pairs of students each cross two carrier "
+                "plants and grow just two seeds per pair. Why is it a bad idea "
+                "to expect every pair's two seeds to show the 3:1 ratio?",
+        "options": [
+            {"text": "The 3:1 ratio only applies once a hundred seeds have "
+                     "been grown, never fewer.",
+             "correct": False,
+             "why": "There's no fixed number where the ratio \"switches on\". "
+                    "Larger samples simply sit closer to 3:1 more often than "
+                    "small ones do."},
+            {"text": "A sample of two seeds is far too small for a proportion "
+                     "like 3:1 to appear reliably.",
+             "correct": True},
+            {"text": "Two seeds from carrier plants can never come out as one "
+                     "showing the hidden version, one not.",
+             "correct": False,
+             "why": "Two seeds can come out one and one, or two and none, or "
+                    "none and two — that's the whole issue with such a small "
+                    "sample."},
+            {"text": "The class must be crossing the wrong kind of plant if "
+                     "they don't see 3:1 straight away.",
+             "correct": False,
+             "why": "Which plants they crossed isn't the issue. Chance, "
+                    "working on far too small a sample, is enough on its own "
+                    "to explain any result from just two seeds."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-s30",
+        "band": "standard",
+        "text": "A couple wants to know if either of them is carrying a hidden "
+                "version of an inherited condition. Why can looking at their "
+                "own appearance not answer that question?",
+        "options": [
+            {"text": "Appearance can answer it, as long as you look closely "
+                     "enough.",
+             "correct": False,
+             "why": "However closely you look, a hidden version produces no "
+                    "visible sign while it is overridden. Appearance simply "
+                    "cannot reach it."},
+            {"text": "It can be answered by checking whether either parent "
+                     "looks unusually healthy.",
+             "correct": False,
+             "why": "General health is unrelated to whether someone carries a "
+                    "hidden version of a particular gene."},
+            {"text": "It can be answered once their child is born, from the "
+                     "child's appearance alone.",
+             "correct": False,
+             "why": "A child's own appearance tells you something once you see "
+                    "it, but the question is about the PARENTS, whose own "
+                    "appearance cannot show what they are carrying either "
+                    "before or after the birth."},
+            {"text": "A hidden version produces no visible effect at all while "
+                     "it is overridden.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h11",
+        "band": "harder",
+        "text": "A cross between two carriers of a hidden version is expected "
+                "to give close to 3:1. Out of 640 seeds grown, 152 show the "
+                "hidden version. Express this as a ratio to one decimal place, "
+                "and say whether it supports the 3:1 expectation.",
+        "options": [
+            {"text": "4.2 to 1 — comfortably outside the range chance alone "
+                     "would explain.",
+             "correct": False,
+             "why": "488 divided by 152 gives about 3.2, not 4.2. The division "
+                    "has gone wrong here, and 3.2 to 1 is close to what's "
+                    "expected."},
+            {"text": "1 to 3.2 — hidden version to shown, which reverses the "
+                     "usual convention.",
+             "correct": False,
+             "why": "Writing the ratio the other way round changes nothing "
+                    "about the working, but the usual convention puts the "
+                    "SHOWN version first, giving 3.2 to 1."},
+            {"text": "3.0 to 1 exactly, since 640 is a large enough sample to "
+                     "remove chance.",
+             "correct": False,
+             "why": "No sample size removes chance entirely. 488 to 152 works "
+                    "out at about 3.2 to 1, not exactly 3.0."},
+            {"text": "3.2 to 1 — close to 3:1, consistent with chance "
+                     "variation in a large sample.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h12",
+        "band": "harder",
+        "text": "A student claims that because a wrinkled-seeded plant crossed "
+                "with a round-seeded plant sometimes gives all round offspring "
+                "and sometimes gives about half round and half wrinkled, the "
+                "wrinkled plant's own versions must be changing between "
+                "crosses. Evaluate this claim.",
+        "options": [
+            {"text": "The claim is right — a plant's versions can shift "
+                     "depending on which plant it is crossed with.",
+             "correct": False,
+             "why": "A plant's own versions do not shift depending on its "
+                    "partner. What differs between the two outcomes is whether "
+                    "the ROUND parent is pure-breeding or a carrier."},
+            {"text": "The claim cannot be evaluated without knowing the exact "
+                     "soil conditions of each cross.",
+             "correct": False,
+             "why": "Soil has no bearing on which versions of this gene either "
+                    "plant carries. The explanation lies entirely in which "
+                    "versions the round-seeded parent is carrying."},
+            {"text": "The claim is wrong — what changes is which round-seeded "
+                     "plant is used, not the wrinkled plant.",
+             "correct": True},
+            {"text": "The claim is right, but only because wrinkled is the "
+                     "hidden version rather than the shown one.",
+             "correct": False,
+             "why": "Being the hidden version has no bearing on whether a "
+                    "plant's OWN versions change. What varies is the other "
+                    "parent, in either case."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h13",
+        "band": "harder",
+        "text": "A species of moth has 60 chromosomes in a body cell. A "
+                "biologist claims a gamete from this moth, produced normally, "
+                "could have 45 chromosomes. Is that possible, and why or why "
+                "not?",
+        "options": [
+            {"text": "Yes — a gamete can carry any number under the full "
+                     "body-cell total.",
+             "correct": False,
+             "why": "A gamete is not a random fraction of the body-cell "
+                    "number. It carries exactly one chromosome from each of "
+                    "the 30 pairs, giving 30."},
+            {"text": "Yes — moths make gametes differently from most other "
+                     "animals.",
+             "correct": False,
+             "why": "Gamete formation halves the chromosome number the same "
+                    "way in every animal that reproduces sexually. There's no "
+                    "moth-specific exception here."},
+            {"text": "No — a gamete carries half the body-cell number: 30, not "
+                     "45.",
+             "correct": True},
+            {"text": "No — the correct number would be 15, a quarter of the "
+                     "body-cell total.",
+             "correct": False,
+             "why": "A gamete carries HALF the body-cell number, not a "
+                    "quarter. Half of 60 is 30, not 15."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h14",
+        "band": "harder",
+        "text": "A textbook says Mendel 'proved' the 3:1 ratio in 1866. A "
+                "historian points out that his own counts, like 6,022 to "
+                "2,001, were never exactly 3:1. Whose account is more "
+                "accurate, and why?",
+        "options": [
+            {"text": "The textbook's — 'proved' is the right word once a "
+                     "result has been published in a scientific paper.",
+             "correct": False,
+             "why": "Publication does not turn a close approximation into an "
+                    "exact one. Mendel's own numbers, like 6,022 to 2,001, "
+                    "never landed on exactly 3:1."},
+            {"text": "Neither — the true ratio could only have been "
+                     "established using modern DNA sequencing.",
+             "correct": False,
+             "why": "Nothing about the ratio requires DNA sequencing. It is a "
+                    "counting result, and Mendel's own counts already show the "
+                    "approximate pattern clearly."},
+            {"text": "The textbook's — a count of over 8,000 seeds is large "
+                     "enough to remove all chance from the result.",
+             "correct": False,
+             "why": "No sample size removes chance completely; it only brings "
+                    "the ratio closer to 3:1 on average. Mendel's count still "
+                    "came out at 3.01 to 1, not exactly 3."},
+            {"text": "The historian's — Mendel's counts were close to 3:1, "
+                     "never exactly it, as any sample gives.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h15",
+        "band": "harder",
+        "text": "A round-seeded plant is crossed with a wrinkled-seeded plant. "
+                "Of 200 offspring, 96 are wrinkled. What does this tell you "
+                "about the round-seeded parent, and what percentage of the "
+                "offspring is wrinkled?",
+        "options": [
+            {"text": "48 per cent are wrinkled, and the round parent must be "
+                     "pure-breeding for round.",
+             "correct": False,
+             "why": "A pure-breeding round parent could only ever pass round, "
+                    "giving no wrinkled offspring at all. Getting close to "
+                    "half wrinkled points to the round parent carrying a "
+                    "hidden wrinkled version."},
+            {"text": "48 per cent are wrinkled, and the round parent must be "
+                     "carrying a hidden wrinkled version.",
+             "correct": True},
+            {"text": "96 per cent are wrinkled, using the count itself as the "
+                     "percentage.",
+             "correct": False,
+             "why": "96 is a COUNT, not a percentage. 96 out of 200, correctly "
+                    "worked out, is 48 per cent."},
+            {"text": "48 per cent are wrinkled, and nothing can be concluded "
+                     "about the round-seeded parent.",
+             "correct": False,
+             "why": "Something clearly can be concluded — close to half the "
+                    "offspring showing wrinkled is exactly what a round parent "
+                    "carrying a hidden wrinkled version, crossed with pure "
+                    "wrinkled, would be expected to give."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h16",
+        "band": "harder",
+        "text": "A biologist studies a species where a single gene has three "
+                "versions rather than two, and any two of the three can be "
+                "carried together. Does the usual heredity model — one gamete, "
+                "one version, chosen by chance — still explain how versions "
+                "are passed on?",
+        "options": [
+            {"text": "No — that mechanism only works when a gene has exactly "
+                     "two versions in the first place.",
+             "correct": False,
+             "why": "Nothing about gametes carrying one version by chance "
+                    "depends on there being only two versions in the "
+                    "population as a whole. Each individual still carries and "
+                    "passes on just two."},
+            {"text": "No — with three versions, each gamete would need to "
+                     "carry one and a half versions.",
+             "correct": False,
+             "why": "A gamete still carries exactly one version of the gene, "
+                    "whichever versions exist elsewhere in the population. "
+                    "Fractional versions are not possible."},
+            {"text": "Yes — each parent still passes on one of its two "
+                     "versions, whichever it carries.",
+             "correct": True},
+            {"text": "Yes, but only because a third version behaves "
+                     "differently from the first two.",
+             "correct": False,
+             "why": "A third version passing on works by the very same "
+                    "mechanism as the first two — one copy per gamete, chosen "
+                    "by chance."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h17",
+        "band": "harder",
+        "text": "A species' gamete carries 17 chromosomes. A biologist wrongly "
+                "states that its body cells therefore have 17 as well. What is "
+                "the correct body-cell number, and what is wrong with the "
+                "biologist's reasoning?",
+        "options": [
+            {"text": "17 — the biologist is correct, since fertilisation does "
+                     "not change the number at all.",
+             "correct": False,
+             "why": "Fertilisation is exactly where the number is restored, by "
+                    "fusing two gametes. A body cell has double a gamete's "
+                    "number, not the same amount."},
+            {"text": "8.5 — the biologist has the direction right but should "
+                     "have halved rather than doubled.",
+             "correct": False,
+             "why": "The biologist's number needs correcting the OTHER way. A "
+                    "gamete carries half the body-cell number, so the body "
+                    "cell has double the gamete's, which is 34."},
+            {"text": "34 — a gamete is HALF the body-cell number, so the body "
+                     "cell has double the gamete's count.",
+             "correct": True},
+            {"text": "51 — three gametes' worth combine to make a body cell.",
+             "correct": False,
+             "why": "Fertilisation fuses exactly TWO gametes, not three. Two "
+                    "gametes of 17 each add up to 34."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h18",
+        "band": "harder",
+        "text": "A pea plant carrying one round and one wrinkled version is "
+                "crossed with a plant that is pure-breeding for wrinkled. "
+                "Out of 320 offspring, how many would you expect to show "
+                "each seed shape, and how close should the real count come "
+                "to that expectation?",
+        "options": [
+            {"text": 'About 160 round and 160 wrinkled, though a real count will land near but not exactly there.',
+             "correct": True},
+            {"text": "About 240 round and 80 wrinkled, following the usual "
+                     "3:1 ratio for this kind of cross.",
+             "correct": False,
+             "why": "3:1 is the ratio for TWO carrier parents crossed "
+                    "together. Here one parent is pure-breeding for "
+                    "wrinkled, which raises the wrinkled share to about a "
+                    "half."},
+            {"text": "Exactly 160 round and 160 wrinkled, since 320 is a "
+                     "large enough sample to remove chance.",
+             "correct": False,
+             "why": "No sample size removes chance entirely; 320 is large "
+                    "enough to land CLOSE to the expected split, not to "
+                    "guarantee it exactly."},
+            {"text": "All 320 round, since the round version always "
+                     "overrides in every seed.",
+             "correct": False,
+             "why": "Overriding decides what shows when both versions are "
+                    "present in one seed, but half of these offspring will "
+                    "receive wrinkled from BOTH parents and have nothing to "
+                    "override it with."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h19",
+        "band": "harder",
+        "text": "A characteristic disappears for two generations and then "
+                "reappears unchanged in a great-grandchild. A student says "
+                "this must mean the gene 'switched off' and then 'switched "
+                "back on'. Evaluate this claim, using what you know about "
+                "hidden versions of genes.",
+        "options": [
+            {"text": "The claim is wrong — the version was carried, hidden and "
+                     "unchanged, the whole time.",
+             "correct": True},
+            {"text": "The claim is broadly right, since 'switched off' is "
+                     "another way of saying 'hidden'.",
+             "correct": False,
+             "why": "\"Switched off\" implies something changes about the "
+                    "version itself over time. What actually happens is that "
+                    "the SAME unchanged version is carried the whole time."},
+            {"text": "The claim is right, and explains why the reappeared "
+                     "version is weaker than before.",
+             "correct": False,
+             "why": "Nothing about the reappeared characteristic is weaker. A "
+                    "version passed on unchanged for generations is exactly as "
+                    "complete as it always was."},
+            {"text": "The claim cannot be evaluated without knowing which "
+                     "generation carried the mutation.",
+             "correct": False,
+             "why": "No mutation needs to be invoked at all. A characteristic "
+                    "reappearing after being hidden for generations is exactly "
+                    "what carrying-without-showing predicts."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h20",
+        "band": "harder",
+        "text": "In one cross, two carriers of a hidden version produce 480 "
+                "offspring with 118 showing it. In another cross, a carrier is "
+                "crossed with a plant pure-breeding for the hidden version, "
+                "producing 240 offspring with 116 showing it. What proportion, "
+                "as a percentage, does each cross show, and which is closer to "
+                "its own expectation?",
+        "options": [
+            {"text": "About 24.6 per cent and 48.3 per cent — both crosses are "
+                     "equally close to their expectations.",
+             "correct": False,
+             "why": "24.6 per cent is only 0.4 points from the quarter "
+                    "expected, while 48.3 per cent is 1.7 points from the half "
+                    "expected — not an equally close match in each case."},
+            {"text": "About 24.6% and 48.3% — the first cross lands closer to "
+                     "its own expectation than the second.",
+             "correct": True},
+            {"text": "118 per cent and 116 per cent, using each count directly "
+                     "as a percentage.",
+             "correct": False,
+             "why": "A count of offspring is not a percentage on its own. "
+                    "Dividing each count by its own total and multiplying by "
+                    "100 gives about 24.6 per cent and 48.3 per cent."},
+            {"text": "About 24.6 per cent and 48.3 per cent — the second cross "
+                     "lands closer to its own expectation than the first does.",
+             "correct": False,
+             "why": "It's the other way round. 24.6 per cent is only 0.4 "
+                    "points off its quarter expectation, while 48.3 per cent "
+                    "is 1.7 points off its half expectation."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h21",
+        "band": "harder",
+        "text": "A student says the 3:1 ratio idea is 'useless for humans', "
+                "since human families rarely have more than three or four "
+                "children. Evaluate that claim.",
+        "options": [
+            {"text": "It's partly right — a family of three or four is too small a sample for a clean ratio.",
+             "correct": True},
+            {"text": "It is entirely correct — the ratio does not apply to "
+                     "human inheritance at all.",
+             "correct": False,
+             "why": "The underlying mechanism — each gamete carrying one "
+                    "version by chance — applies to humans exactly as it "
+                    "does to peas. What's limited is the SAMPLE SIZE a "
+                    "human family provides."},
+            {"text": "It is entirely wrong — every human family of four "
+                     "children shows a visible 3:1 pattern.",
+             "correct": False,
+             "why": "A sample of four is nowhere near large enough to "
+                    "reliably show a proportion like 3:1. Chance alone can "
+                    "easily give four children the same outcome, or none of "
+                    "one kind at all."},
+            {"text": "It is correct, but only because human gametes work "
+                     "differently from pea gametes.",
+             "correct": False,
+             "why": "Human gametes carry one version of each gene by "
+                    "chance in exactly the same way pea gametes do. The "
+                    "real limitation is sample size, not mechanism."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h22",
+        "band": "harder",
+        "text": "A round-seeded plant, pure-breeding, is crossed with a "
+                "round-seeded plant of unknown status. All 150 offspring are "
+                "round. A second cross of the same unknown plant with a "
+                "wrinkled-seeded plant gives 76 round and 74 wrinkled. What "
+                "can be concluded about the unknown plant from the two crosses "
+                "together?",
+        "options": [
+            {"text": "It must be pure-breeding for round — the first cross "
+                     "alone proves this on its own.",
+             "correct": False,
+             "why": "The first cross alone cannot distinguish a pure-breeding "
+                    "plant from a carrier, since a pure round parent in that "
+                    "cross would also give all round offspring. The second "
+                    "cross is what settles it."},
+            {"text": "It must be carrying a hidden wrinkled version, shown by "
+                     "the even split in the second cross.",
+             "correct": True},
+            {"text": "Nothing can be concluded, since the two crosses give "
+                     "conflicting results.",
+             "correct": False,
+             "why": "The two results are not in conflict. All round from a "
+                    "cross with pure round is consistent with the unknown "
+                    "plant carrying a hidden wrinkled version, and the "
+                    "near-even split with wrinkled confirms it."},
+            {"text": "It must be carrying two wrinkled versions, since "
+                     "wrinkled offspring appeared in cross two.",
+             "correct": False,
+             "why": "A plant carrying two wrinkled versions would show "
+                    "wrinkled seeds itself, not round. It is described as "
+                    "round-seeded, so it carries at least one round version."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h23",
+        "band": "harder",
+        "text": "A farmer notices that a cow that survived a harsh winter "
+                "produces calves that also cope well with cold. He concludes "
+                "the mother's toughened body passed the toughness directly to "
+                "her calves. Using what you know about how heredity works, "
+                "evaluate his conclusion.",
+        "options": [
+            {"text": "It's the right explanation — heredity passes on whatever "
+                     "a parent experiences during its life.",
+             "correct": False,
+             "why": "Heredity passes on genetic information that was already "
+                    "present, not events a parent lived through. A hard winter "
+                    "cannot rewrite what's in a cow's gametes."},
+            {"text": "It's the wrong explanation — only genetic information "
+                     "already in her gametes can be passed on.",
+             "correct": True},
+            {"text": "It's partly right — toughness from experience is passed "
+                     "on, but only for one generation.",
+             "correct": False,
+             "why": "No lifetime experience is passed on for even one "
+                    "generation, let alone more. Only genetic information "
+                    "already in the gametes can be inherited."},
+            {"text": "It cannot be evaluated without knowing the calves' own "
+                     "winters.",
+             "correct": False,
+             "why": "The calves' own experience is irrelevant to evaluating "
+                    "the farmer's claim about how the MOTHER's toughness was "
+                    "supposedly passed on."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h24",
+        "band": "harder",
+        "text": "A cross gives close to a 3:1 ratio. If 45 offspring show the "
+                "hidden version, about how many would you expect to show the "
+                "other version, and how many offspring in total?",
+        "options": [
+            {"text": "About 15 showing the other version, and about 60 in "
+                     "total, keeping the 3:1 ratio the other way round.",
+             "correct": False,
+             "why": "Reversing the ratio like this would make the HIDDEN "
+                    "version the majority, which is not what 3:1 means here. "
+                    "The shown version should be about three times the 45, "
+                    "which is 135."},
+            {"text": "About 45 showing the other version too, split evenly "
+                     "between the two.",
+             "correct": False,
+             "why": "An even split is what a 1:1 ratio looks like, not 3:1. "
+                    "With 45 as the smaller quarter, the larger group should "
+                    "be about three times as many."},
+            {"text": "About 135 showing the other version, and about 180 in "
+                     "total.",
+             "correct": True},
+            {"text": "About 90 showing the other version, and about 135 in "
+                     "total.",
+             "correct": False,
+             "why": "Three times 45 is 135, not 90, and the total should be 45 "
+                    "plus that 135, which comes to 180, not 135."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h25",
+        "band": "harder",
+        "text": "One student says Mendel's 3:1 ratio 'proves' inherited "
+                "information is passed in discrete particles. Another says it "
+                "only makes that idea 'more likely than blending, but not "
+                "certain'. Which is the more defensible position, and why?",
+        "options": [
+            {"text": "The first — a ratio matching a prediction exactly proves "
+                     "the theory behind it beyond any possible doubt.",
+             "correct": False,
+             "why": "Matching a prediction supports a theory; it does not rule "
+                    "out every conceivable alternative explanation with the "
+                    "certainty the word \"proves\" claims."},
+            {"text": "Neither — ratios can never be used as evidence for how "
+                     "genetic information is passed on.",
+             "correct": False,
+             "why": "A ratio is exactly the kind of evidence Mendel used, and "
+                    "it is real evidence for particulate inheritance over "
+                    "blending."},
+            {"text": "The first, because Mendel repeated his experiment enough "
+                     "times to remove any uncertainty.",
+             "correct": False,
+             "why": "No number of repeats removes uncertainty completely from "
+                    "a scientific conclusion. Strong, repeated evidence "
+                    "supports a theory; it does not amount to certainty beyond "
+                    "all possible doubt."},
+            {"text": "The second — a ratio consistent with a theory supports "
+                     "it without proving it beyond doubt.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h26",
+        "band": "harder",
+        "text": "A hybrid between two different plant varieties has 25 "
+                "chromosomes in each body cell — an odd number. What problem "
+                "does that create when the hybrid tries to make its own "
+                "gametes, and why?",
+        "options": [
+            {"text": "None — any number of chromosomes can be shared out "
+                     "evenly between gametes.",
+             "correct": False,
+             "why": "Gametes are formed by splitting pairs, one chromosome "
+                    "from each pair into each gamete. An odd number like 25 "
+                    "cannot be split into whole pairs to start with."},
+            {"text": "The hybrid simply produces gametes with 12.5 chromosomes "
+                     "each.",
+             "correct": False,
+             "why": "A gamete cannot carry half a chromosome. The odd total "
+                    "causes gamete formation to fail rather than to produce a "
+                    "fractional number."},
+            {"text": "They cannot be sorted into matching pairs, so gamete "
+                     "formation breaks down.",
+             "correct": True},
+            {"text": "The hybrid's body cells will double their chromosome "
+                     "number to make it even.",
+             "correct": False,
+             "why": "Body cells do not spontaneously change their chromosome "
+                    "number to fix an odd total. The odd number is a problem "
+                    "for the pairing step of gamete formation."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h27",
+        "band": "harder",
+        "text": "A separate historical case: a scientist calculates a "
+                "result correctly in a private notebook but never publishes "
+                "it, and thirty years later someone else publishes the same "
+                "result independently and gets the credit. Does this fit "
+                "the same working-scientifically point Mendel's story "
+                "makes?",
+        "options": [
+            {"text": 'Not quite — a published-but-unused result differs from one never made available.',
+             "correct": True},
+            {"text": "Yes — both show a correct result arriving before it "
+                     "can be used.",
+             "correct": False,
+             "why": "There's a real difference. Mendel's case is about a "
+                    "PUBLISHED result nobody used yet; an unpublished result "
+                    "was never available to anyone at all."},
+            {"text": "Yes, because in both cases the original scientist "
+                     "received no credit at the time.",
+             "correct": False,
+             "why": "Mendel's case is not really about credit — he was "
+                    "read, cited a little, then rediscovered independently "
+                    "later. The two situations differ in whether the result "
+                    "was ever made available to others."},
+            {"text": "No, because private notebooks never contain correct "
+                     "results.",
+             "correct": False,
+             "why": "Nothing about being unpublished makes a result more "
+                    "or less likely to be correct. The distinction that "
+                    "matters is whether it was ever made available to "
+                    "others."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h28",
+        "band": "harder",
+        "text": "A carrier plant (round, hidden wrinkled) is crossed with a "
+                "wrinkled plant, giving roughly half round, half wrinkled "
+                "offspring. One of the round offspring from this cross is then "
+                "crossed with another wrinkled plant. About what proportion of "
+                "this second generation would be expected to be wrinkled, and "
+                "why?",
+        "options": [
+            {"text": "About a quarter, the usual proportion for any cross "
+                     "involving a hidden version.",
+             "correct": False,
+             "why": "A quarter is the expectation when BOTH parents are "
+                    "carriers. Here the second cross is between a carrier "
+                    "(necessarily) and a plant that is pure wrinkled, which "
+                    "gives about a half."},
+            {"text": "None, because a round offspring cannot be carrying a "
+                     "hidden version at all.",
+             "correct": False,
+             "why": "This particular round offspring can ONLY be carrying a "
+                    "hidden wrinkled version — it received wrinkled from one "
+                    "parent and round from the other, with nothing else it "
+                    "could have received."},
+            {"text": "All of them, since crossing with wrinkled a second time "
+                     "guarantees every offspring shows wrinkled.",
+             "correct": False,
+             "why": "The round offspring being crossed still carries one round "
+                    "version, and one round version is always enough to "
+                    "override wrinkled in half of the resulting seeds."},
+            {"text": "About half again — every round offspring from the first "
+                     "cross must itself be a carrier.",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h29",
+        "band": "harder",
+        "text": "A biologist proposes replacing the phrase 'hidden version' "
+                "with 'silent version' in future lessons, arguing the two mean "
+                "exactly the same thing. Evaluate whether anything would be "
+                "lost by the change.",
+        "options": [
+            {"text": "Nothing would be lost — the two words are perfect "
+                     "synonyms with no different implications.",
+             "correct": False,
+             "why": "\"Silent\" carries a suggestion of being quietened or "
+                    "turned down, which \"hidden\" does not. That is a real "
+                    "difference in what a learner might infer from it."},
+            {"text": "Something might be lost — 'silent' suggests the version "
+                     "has been quietened or reduced.",
+             "correct": True},
+            {"text": "Something would be lost, because 'silent' is not an "
+                     "English word that can describe a gene.",
+             "correct": False,
+             "why": "\"Silent\" is a perfectly ordinary word that could "
+                    "describe a gene version; the real concern is what it "
+                    "might wrongly suggest about strength, not whether it's a "
+                    "valid word."},
+            {"text": "Nothing would be lost, since neither word has any "
+                     "settled meaning in biology.",
+             "correct": False,
+             "why": "\"Hidden\" is the ordinary word for this, chosen "
+                    "precisely because of the distinction being weighed here."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "b10-04-h30",
+        "band": "harder",
+        "text": "A family pedigree shows an inherited condition skipping from "
+                "a great-grandparent to a great-grandchild, missing the two "
+                "generations in between even though each had several children. "
+                "A student calls this 'too improbable to be inheritance'. "
+                "Evaluate the claim, using the chance mechanism behind how "
+                "gametes combine.",
+        "options": [
+            {"text": "Right — a version that skips two whole generations must "
+                     "have mutated back.",
+             "correct": False,
+             "why": "Nothing mutates back. The same unchanged version can sit "
+                    "hidden in carrier after carrier for as long as no "
+                    "offspring happens to receive it from both parents."},
+            {"text": "Wrong — chance alone can easily skip several generations "
+                     "of carriers.",
+             "correct": True},
+            {"text": "Right — with several children each generation, someone "
+                     "should have shown it by chance.",
+             "correct": False,
+             "why": "\"Should have\" describes an average over many families, "
+                    "not a guarantee for one. A quarter chance failing to "
+                    "appear across two generations of children is "
+                    "unremarkable."},
+            {"text": "It cannot be evaluated without testing every family "
+                     "member's DNA.",
+             "correct": False,
+             "why": "The claim can be judged on the chance mechanism alone — "
+                    "testing every relative would confirm carriers but isn't "
+                    "needed to see the pattern described is ordinary, not "
+                    "improbable."},
         ],
         "figure": None,
     },

@@ -131,8 +131,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── standard ────────────────────────────────────────────────────────
     {
         "id": "b10-03-s01",
         "band": "standard",
@@ -236,8 +234,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "b10-03-h01",
         "band": "harder",
@@ -351,10 +347,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── MRB-335 top-up ──────────────────────────────────────────────────
-
-    # ── easier ──────────────────────────────────────────────────────────
     {
         "id": "b10-03-e05",
         "band": "easier",
@@ -512,8 +504,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── standard ────────────────────────────────────────────────────────
     {
         "id": "b10-03-s05",
         "band": "standard",
@@ -696,8 +686,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "b10-03-h05",
         "band": "harder",
@@ -885,23 +873,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── MRB-338 night 3 top-up ──────────────────────────────────────────
-    #
-    # The seams worked here are the ones the first two passes left: the four
-    # named people and the two laboratories as content in their own right
-    # (KS3.B.INH.02b names them, so this is statutory rather than colour), the
-    # DATES as a sequence a student can reason with, the bench's twelve
-    # combinations read as arithmetic, and a set of counterfactuals — what an
-    # extra strand, a different pairing rule or a missing measurement would
-    # have done to the argument.
-    #
-    # ⚠️ Rung 2's task ("what did Watson and Crick actually do in 1953") is
-    # NOT re-asked in any form, and rung 4's fair-acknowledgement task is not
-    # touched. The chromosome-nesting facts belong to b10-02 and the pairing
-    # ARITHMETIC of a mule belongs to b10-05; neither is worked here.
-
-    # ── easier ──────────────────────────────────────────────────────────
     {
         "id": "b10-03-e11",
         "band": "easier",
@@ -1366,53 +1337,49 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── standard ────────────────────────────────────────────────────────
     {
         "id": "b10-03-s11",
         "band": "standard",
         "text": "A model has the bases on the outside of the two strands. "
                 "Which single piece of evidence does that choice contradict?",
         "options": [
-            {"text": "Franklin's water measurements",
-             "correct": True},
-            {"text": "Photo 51",
-             "correct": False,
+            {"text": "Franklin's water measurements", "correct": True},
+            {"text": "Photo 51", "correct": False,
              "why": "Photo 51 settles the number of strands, not where the "
                     "bases sit. A two-strand model still fits its width."},
-            {"text": "Chargaff's base-ratio tables",
-             "correct": False,
+            {"text": "Chargaff's base-ratio tables", "correct": False,
              "why": "Chargaff's ratios say how the bases pair up. They say "
                     "nothing about whether the bases face in or out."},
-            {"text": "Pauling's triple helix",
-             "correct": False,
-             "why": "That card rules out a three-strand model with the bases "
-                    "facing out. This model has two strands, so it is not "
-                    "contradicted by it."},
+            {"text": "Pauling's triple helix", "correct": False,
+             "why": "That is a published proposal rather than a measurement. "
+                    "Either way, this model has two strands, so it is not the "
+                    "one that proposal rules out."},
         ],
         "figure": None,
     },
     {
         "id": "b10-03-s12",
         "band": "standard",
-        "text": "A student sets the bench to three strands, bases on the "
-                "inside, any base with any base. How many cards fail, and "
-                "which?",
+        "text": "A proposed model has three strands, the bases on the inside, "
+                "and any base able to pair with any other. Tested against "
+                "Photo 51, Chargaff's ratios, Franklin's water measurements "
+                "and Pauling's published model, how many of the four does it "
+                "fail, and which?",
         "options": [
             {"text": "One — only Photo 51, because of the number of strands",
              "correct": False,
              "why": "The pairing has been set to any base with any base, which "
-                    "Chargaff's card also refuses. Two cards fail."},
-            {"text": "Two — Photo 51 and Chargaff's ratios",
-             "correct": True},
+                    "Chargaff's ratios also refuse. Two of the four fail."},
+            {"text": "Two — Photo 51 and Chargaff's ratios", "correct": True},
             {"text": "Three — everything except Pauling's model",
              "correct": False,
-             "why": "The water card passes, because the bases have been put on "
-                    "the inside. Only two of the four fail."},
-            {"text": "Four — every card fails on a three-stranded model",
+             "why": "The water measurement passes, because the bases have been "
+                    "put on the inside. Only two of the four fail."},
+            {"text": "Four — every one of the four fails on a three-stranded "
+                     "model",
              "correct": False,
              "why": "Three strands alone does not fail everything. The water "
-                    "card and Pauling's card both pass this setting."},
+                    "measurement and Pauling's model both pass this setting."},
         ],
         "figure": None,
     },
@@ -1521,22 +1488,18 @@ QUESTIONS = [
     {
         "id": "b10-03-s17",
         "band": "standard",
-        "text": "The bench offers three choices of strand number, two "
+        "text": "A model of DNA must choose between three strand numbers, two "
                 "positions for the bases and two pairing rules. How many "
                 "different models is that?",
         "options": [
-            {"text": "7",
-             "correct": False,
+            {"text": "7", "correct": False,
              "why": "This is 3 added to 2 added to 2. Choices that combine are "
                     "multiplied rather than added."},
-            {"text": "12",
-             "correct": True},
-            {"text": "3",
-             "correct": False,
+            {"text": "12", "correct": True},
+            {"text": "3", "correct": False,
              "why": "Three is the number of decisions, not the number of "
                     "models the decisions can produce between them."},
-            {"text": "24",
-             "correct": False,
+            {"text": "24", "correct": False,
              "why": "This is twice the true figure. Three multiplied by two "
                     "multiplied by two comes to twelve."},
         ],
@@ -1572,9 +1535,8 @@ QUESTIONS = [
     {
         "id": "b10-03-s19",
         "band": "standard",
-        "text": "Franklin and Wilkins both worked on DNA at King's College "
-                "London. What does the lesson say about how they worked "
-                "together?",
+        "text": "What was true of the way Rosalind Franklin and Maurice "
+                "Wilkins worked together on DNA?",
         "options": [
             {"text": "They shared every result and published jointly "
                      "throughout",
@@ -1701,8 +1663,8 @@ QUESTIONS = [
     {
         "id": "b10-03-s24",
         "band": "standard",
-        "text": "Why does the lesson insist that a diffraction pattern is not "
-                "a picture of the molecule?",
+        "text": "Why is it wrong to call a diffraction pattern a picture of "
+                "the molecule?",
         "options": [
             {"text": "Because the image is far too blurred for anyone to make "
                      "out the details of a molecule anywhere in it",
@@ -1878,20 +1840,19 @@ QUESTIONS = [
              "correct": False,
              "why": "An argument is exactly what scientists send each other in "
                     "print. Building one tests it against real dimensions."},
-            {"text": "Because the sizes of the atoms were not known well enough "
-                     "to be used in an argument",
+            {"text": "Because the sizes of the atoms were not known well "
+                     "enough to be used in an argument",
              "correct": False,
              "why": "Those sizes were known, and they are what made the models "
                     "worth building to scale in the first place."},
             {"text": "Because a physical model counts as an experiment on DNA",
              "correct": False,
              "why": "It does not. Watson and Crick did no experiments on DNA, "
-                    "which is the point the lesson keeps making."},
+                    "which is what makes the model building their "
+                    "contribution."},
         ],
         "figure": None,
     },
-
-    # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "b10-03-h11",
         "band": "harder",
@@ -1960,8 +1921,9 @@ QUESTIONS = [
             {"text": "Because the evidence had to cover every base, and there "
                      "are four of those",
              "correct": False,
-             "why": "The four cards have nothing to do with the four bases. "
-                    "One card covers the pairing of all of them."},
+             "why": "The four pieces of evidence have nothing to do with the "
+                    "four bases. One of them covers the pairing of all of "
+                    "them."},
             {"text": "Because each piece rules out only some of the possible "
                      "models, and only together do they leave one",
              "correct": True},
@@ -2402,24 +2364,22 @@ QUESTIONS = [
     {
         "id": "b10-03-h30",
         "band": "harder",
-        "text": "The bench allows twelve models. Photo 51 permits only one of "
-                "the three strand numbers. How much of the field does that one "
-                "card remove?",
+        "text": "Twelve models are possible in all. Photo 51 permits only one "
+                "of the three strand numbers. How much of the field does that "
+                "one piece of evidence remove?",
         "options": [
-            {"text": "One third of it",
-             "correct": False,
+            {"text": "One third of it", "correct": False,
              "why": "One of the three strand numbers survives, so two of the "
                     "three are cut. What goes is two thirds."},
-            {"text": "One twelfth of it",
-             "correct": False,
+            {"text": "One twelfth of it", "correct": False,
              "why": "A single model out of twelve is what survives all four "
-                    "cards together, not what one card removes."},
-            {"text": "All of it except Pauling's model",
-             "correct": False,
+                    "pieces of evidence together, not what one of them "
+                    "removes."},
+            {"text": "All of it except Pauling's model", "correct": False,
              "why": "Pauling's model has three strands, so it is among the "
-                    "ones this card removes rather than the one it leaves."},
-            {"text": "Two thirds of it",
-             "correct": True},
+                    "ones this piece of evidence removes rather than the one "
+                    "it leaves."},
+            {"text": "Two thirds of it", "correct": True},
         ],
         "figure": None,
     },

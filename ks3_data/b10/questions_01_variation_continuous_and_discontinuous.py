@@ -154,8 +154,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── standard ────────────────────────────────────────────────────────
     {
         "id": "b10-01-s01",
         "band": "standard",
@@ -285,8 +283,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "b10-01-h01",
         "band": "harder",
@@ -423,10 +419,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── MRB-335 top-up ──────────────────────────────────────────────────
-
-    # ── easier ──────────────────────────────────────────────────────────
     {
         "id": "b10-01-e05",
         "band": "easier",
@@ -629,8 +621,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── standard ────────────────────────────────────────────────────────
     {
         "id": "b10-01-s05",
         "band": "standard",
@@ -854,8 +844,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "b10-01-h05",
         "band": "harder",
@@ -1076,10 +1064,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── MRB-338 top-up ──────────────────────────────────────────────────
-
-    # ── easier ──────────────────────────────────────────────────────────
     {
         "id": "b10-01-e12",
         "band": "easier",
@@ -1232,7 +1216,7 @@ QUESTIONS = [
              "why": "When the counting happened has nothing to do with the "
                     "drawing. The gap is a claim about values, not about the "
                     "survey's timetable."},
-            {"text": "That nothing exists between the two categories.",
+            {"text": "That nothing at all exists between the two categories.",
              "correct": True},
             {"text": "That fewer people were found in one category than in the "
                      "other.",
@@ -1304,24 +1288,20 @@ QUESTIONS = [
                 "the six characteristics surveyed answers most strongly to how "
                 "somebody lives?",
         "options": [
-            {"text": "Body mass",
-             "correct": True},
-            {"text": "Height",
-             "correct": False,
+            {"text": "Body mass", "correct": True},
+            {"text": "Height", "correct": False,
              "why": "Nutrition does move height, and it moved a whole "
                     "population over a century. But mass answers to diet and "
                     "activity far more, which is why its curve is the "
                     "broadest."},
-            {"text": "Tongue rolling",
-             "correct": False,
-             "why": "Nothing you eat, do or experience changes whether you can "
-                    "roll your tongue. It is one of the characteristics "
-                    "surveyed with a single, fixed cause."},
-            {"text": "Blood group",
-             "correct": False,
+            {"text": "Tongue rolling", "correct": False,
+             "why": "Tongue rolling is largely down to the genes a person "
+                    "inherited, and diet and activity do not move it the way "
+                    "they move body mass."},
+            {"text": "Blood group", "correct": False,
              "why": "Nothing you eat, do or experience changes a blood group "
-                    "either. It is another of the single-cause "
-                    "characteristics surveyed."},
+                    "either. It is another of the single-cause characteristics "
+                    "surveyed."},
         ],
         "figure": None,
     },
@@ -1453,8 +1433,8 @@ QUESTIONS = [
              "why": "That mixes up the two questions. Food cannot reach blood "
                     "group because a gene fixes it, not because of the shape "
                     "the data takes."},
-            {"text": "Because it is set by a gene, and food cannot rewrite a "
-                     "gene.",
+            {"text": "Because it is set by a gene, and food can never rewrite "
+                     "a gene.",
              "correct": True},
             {"text": "Because everybody's diet ends up containing much the "
                      "same things in the end.",
@@ -1478,7 +1458,7 @@ QUESTIONS = [
             {"text": "How many individuals were measured in the survey.",
              "correct": False,
              "why": "Sample size is worth knowing, and it is not the question "
-                    "this lesson holds apart from the first one."},
+                    "that is held apart from the first one here."},
             {"text": "Which of the two graphs the results should be drawn on.",
              "correct": False,
              "why": "That is part of the first question. Once you know whether "
@@ -1486,8 +1466,7 @@ QUESTIONS = [
             {"text": "Whether the characteristic is useful to the organism.",
              "correct": False,
              "why": "An interesting question, and not this one. The pair kept "
-                    "apart here is what shape the data has and what caused "
-                    "it."},
+                    "apart here is what shape the data has and what caused it."},
         ],
         "figure": None,
     },
@@ -1599,8 +1578,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── standard ────────────────────────────────────────────────────────
     {
         "id": "b10-01-s12",
         "band": "standard",
@@ -1707,8 +1684,8 @@ QUESTIONS = [
              "why": "Her height does change smoothly, and a graph of one "
                     "person over time is a record of growth. Variation is what "
                     "you find between individuals."},
-            {"text": "No — it shows one individual changing over time, not "
-                     "differences between individuals.",
+            {"text": "No — it shows only one individual changing over time, "
+                     "not differences between individuals.",
              "correct": True},
             {"text": "Yes, because every value between her first reading and "
                      "her last one existed at some point.",
@@ -1888,8 +1865,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Any mass between the lightest apple and the heaviest is "
                     "possible, so this is continuous and its bars touch."},
-            {"text": "The time 200 students take to run 100 m, recorded in "
-                     "seconds.",
+            {"text": "The time 200 students each take to run 100 m, recorded "
+                     "in seconds.",
              "correct": False,
              "why": "Times grade into one another: 14.6 s and 14.7 s both "
                     "exist, and so does everything between them."},
@@ -1979,8 +1956,8 @@ QUESTIONS = [
              "correct": False,
              "why": "Throwing away precision is not the fix. The measurements "
                     "are fine; it is the grouping that needs changing."},
-            {"text": "Leave the graph, because the jagged shape shows that "
-                     "height is discontinuous.",
+            {"text": "Leave the graph, because a jagged shape with empty bars "
+                     "shows that height is discontinuous.",
              "correct": False,
              "why": "Sixty students spread across thirty-five bars will look "
                     "jagged whatever happens. Every height in between still "
@@ -2168,8 +2145,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "b10-01-h12",
         "band": "harder",
@@ -2496,8 +2471,8 @@ QUESTIONS = [
                 "and each set still gives a smooth hump. What do the two "
                 "results show together?",
         "options": [
-            {"text": "The seedlings cannot have been genetically identical, "
-                     "since each set still spreads out.",
+            {"text": "The seedlings cannot have been genetically identical to "
+                     "begin with, since each set still spreads out.",
              "correct": False,
              "why": "Identical plants still meet different light, water and "
                     "neighbours. The spread inside a set is the evidence that "

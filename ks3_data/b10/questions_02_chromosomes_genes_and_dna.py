@@ -130,8 +130,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── standard ────────────────────────────────────────────────────────
     {
         "id": "b10-02-s01",
         "band": "standard",
@@ -238,8 +236,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "b10-02-h01",
         "band": "harder",
@@ -348,10 +344,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── MRB-335 top-up ──────────────────────────────────────────────────
-
-    # ── easier ──────────────────────────────────────────────────────────
     {
         "id": "b10-02-e05",
         "band": "easier",
@@ -538,8 +530,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── standard ────────────────────────────────────────────────────────
     {
         "id": "b10-02-s05",
         "band": "standard",
@@ -744,8 +734,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "b10-02-h05",
         "band": "harder",
@@ -958,23 +946,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── MRB-338 night 3 top-up ──────────────────────────────────────────
-    #
-    # The seam this block works is the one the first two passes left alone:
-    # the six-level scale column itself (1.6 m, 0.02 mm, 0.006 mm, 0.002 mm,
-    # 0.0000003 mm), the stretch layer's counts, and the four model cards read
-    # as four jobs rather than four objects. Nothing here reproduces a ladder
-    # rung: rung 1's ordering task and rung 4's crime-scene task are both
-    # deliberately absent, and rung 2's "does a cell in your foot carry the
-    # gene for eye colour" is approached only from the side (where the
-    # difference between two people actually lies), never re-asked.
-    #
-    # ⚠️ The gamete arithmetic (a body cell's count halved to make a sex cell)
-    # is b10-04's and is NOT worked here — this leaf keeps chromosome PAIRS,
-    # b10-04 keeps gametes. Brief §9.4's shared-fact rule.
-
-    # ── easier ──────────────────────────────────────────────────────────
     {
         "id": "b10-02-e12",
         "band": "easier",
@@ -1115,7 +1086,7 @@ QUESTIONS = [
     {
         "id": "b10-02-e18",
         "band": "easier",
-        "text": "The lesson says that a chromosome is DNA, packed. What does "
+        "text": "A chromosome is often described as DNA, packed. What does "
                 "that mean?",
         "options": [
             {"text": "It is a wrapper with the DNA folded up inside it",
@@ -1409,8 +1380,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── standard ────────────────────────────────────────────────────────
     {
         "id": "b10-02-s12",
         "band": "standard",
@@ -1667,12 +1636,12 @@ QUESTIONS = [
     {
         "id": "b10-02-s22",
         "band": "standard",
-        "text": "The lesson gives a size for a cell, a nucleus and a "
-                "chromosome, but for a gene it says only \"a section of the "
-                "strand\". Why give no number?",
+        "text": "A size can be given for a cell, a nucleus and a chromosome, "
+                "but a gene is usually described only as \"a section of the "
+                "strand\". Why is no number given?",
         "options": [
-            {"text": "Because genes differ in length, so a single figure "
-                     "would never be right",
+            {"text": "Because genes differ in length, so a single figure would "
+                     "never be right",
              "correct": True},
             {"text": "Because a gene is too small for anybody to have measured "
                      "one yet",
@@ -1910,8 +1879,6 @@ QUESTIONS = [
         ],
         "figure": None,
     },
-
-    # ── harder ──────────────────────────────────────────────────────────
     {
         "id": "b10-02-h12",
         "band": "harder",
@@ -2049,7 +2016,7 @@ QUESTIONS = [
              "correct": False,
              "why": "The two metres is already the uncoiled length, so adding "
                     "those lengths is a fair thing to do."},
-            {"text": "Yes — both figures are the lesson's own, and the "
+            {"text": "Yes — both figures are standard ones, and the "
                      "multiplication is straightforward",
              "correct": True},
             {"text": "Yes, but only if the DNA of the red blood cells is "
@@ -2368,8 +2335,8 @@ QUESTIONS = [
     {
         "id": "b10-02-h29",
         "band": "harder",
-        "text": "Books usually draw a chromosome as a neat X shape, while this "
-                "lesson calls it a long thin molecule. How do the two "
+        "text": "Books usually draw a chromosome as a neat X shape, while it "
+                "is also described as a long thin molecule. How do the two "
                 "pictures fit together?",
         "options": [
             {"text": "The X shape is what a chromosome looks like in a plant "
