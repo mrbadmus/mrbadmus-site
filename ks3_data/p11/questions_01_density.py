@@ -832,4 +832,1084 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 night 3 top-up · easier ───────────────────────────────────
+    {
+        "id": "p11-01-e14",
+        "band": "easier",
+        "text": "Which of these bench materials floats on water: oak, at "
+                "0.65 g/cm³, or gold, at 19.30 g/cm³?",
+        "options": [
+            {"text": "Oak", "correct": True},
+            {"text": "Gold", "correct": False,
+             "why": "Gold's density is far above 1.00 g/cm³, so it sinks."},
+            {"text": "Both float", "correct": False,
+             "why": "Only densities below 1.00 g/cm³ float; gold's is "
+                    "nineteen times that."},
+            {"text": "Neither floats", "correct": False,
+             "why": "Oak's density of 0.65 g/cm³ is below water's, so it does "
+                    "float."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e15",
+        "band": "easier",
+        "text": "Which of these bench materials sinks in water: ice, at "
+                "0.92 g/cm³, or iron, at 7.87 g/cm³?",
+        "options": [
+            {"text": "Ice", "correct": False,
+             "why": "0.92 g/cm³ is below water's 1.00, so ice floats rather "
+                    "than sinks."},
+            {"text": "Iron", "correct": True},
+            {"text": "Both sink", "correct": False,
+             "why": "Ice's density is below water's, so it floats instead."},
+            {"text": "Neither sinks", "correct": False,
+             "why": "Iron's density of 7.87 g/cm³ is well above water's, so "
+                    "it does sink."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e16",
+        "band": "easier",
+        "text": "A jeweller weighs a small pebble at 45 g; it takes up 9 cm³ "
+                "of space. Work out the pebble's density.",
+        "options": [
+            {"text": "405 g/cm³", "correct": False,
+             "why": "That multiplies the two numbers; density divides mass "
+                    "by volume."},
+            {"text": "0.20 g/cm³", "correct": False,
+             "why": "That is 9 ÷ 45, the division upside down."},
+            {"text": "5.0 g/cm³", "correct": True},
+            {"text": "36 g/cm³", "correct": False,
+             "why": "That subtracts the volume from the mass, and density is "
+                    "not found by subtracting."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e17",
+        "band": "easier",
+        "text": "Osmium, the densest natural element, has a density of about "
+                "22.6 g/cm³. Is osmium denser or less dense than gold, at "
+                "19.30 g/cm³?",
+        "options": [
+            {"text": "Less dense, because osmium has a smaller mass number",
+             "correct": False,
+             "why": "Mass number is not what is being compared here; the two "
+                    "densities themselves are."},
+            {"text": "The same, because both are metals", "correct": False,
+             "why": "Being a metal does not fix a density; the two values "
+                    "given are different."},
+            {"text": "It cannot be told without knowing the sample sizes",
+             "correct": False,
+             "why": "Density does not depend on how much of a sample you "
+                    "take, so the two numbers compare directly."},
+            {"text": "Denser", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e18",
+        "band": "easier",
+        "text": "Lithium has a density of about 0.53 g/cm³. Based on density "
+                "alone, would a lump of lithium float or sink in water?",
+        "options": [
+            {"text": "Float", "correct": True},
+            {"text": "Sink, because all metals sink in water", "correct": False,
+             "why": "Not all metals do; a metal below 1.00 g/cm³ floats just "
+                    "as any other material would."},
+            {"text": "Neither — it hangs halfway down", "correct": False,
+             "why": "Hanging in the middle needs a density matching water's "
+                    "exactly; 0.53 g/cm³ is below 1.00, so it floats."},
+            {"text": "Sink, because 0.53 is a small number", "correct": False,
+             "why": "A small number is a low density, and low density is "
+                    "exactly what makes something float."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e19",
+        "band": "easier",
+        "text": "A large iron girder and a small iron nail are cut from the "
+                "same batch of iron. Which is denser?",
+        "options": [
+            {"text": "The girder, because it has a far bigger mass",
+             "correct": False,
+             "why": "Mass is not density; the girder's much bigger volume "
+                    "grows to match, so the ratio stays the same."},
+            {"text": "They have the same density", "correct": True},
+            {"text": "The nail, because it is more tightly packed into a "
+                     "small shape", "correct": False,
+             "why": "Cutting a shape smaller does not pack a material's atoms "
+                    "any closer together."},
+            {"text": "It cannot be told without weighing both", "correct": False,
+             "why": "It can — same material, from the same batch, shares one "
+                    "density whatever the sizes."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e20",
+        "band": "easier",
+        "text": "Iron has a density of 7.87 g/cm³. What is the mass of a "
+                "1 cm³ sample of it?",
+        "options": [
+            {"text": "1 g", "correct": False,
+             "why": "That ignores the density figure altogether and just uses "
+                    "the volume."},
+            {"text": "0.13 g", "correct": False,
+             "why": "That is 1 ÷ 7.87, the division upside down."},
+            {"text": "7.87 g", "correct": True},
+            {"text": "7.87 cm³", "correct": False,
+             "why": "That keeps the wrong unit; a mass is measured in grams, "
+                    "not cubic centimetres."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e21",
+        "band": "easier",
+        "text": "A cube measures 1 cm along every edge. If its mass is "
+                "2.70 g, what is its density?",
+        "options": [
+            {"text": "0.37 g/cm³", "correct": False,
+             "why": "That is 1 ÷ 2.70, the ratio upside down."},
+            {"text": "1 g/cm³", "correct": False,
+             "why": "That ignores the mass and just uses the volume of the "
+                    "cube."},
+            {"text": "8.10 g/cm³", "correct": False,
+             "why": "That multiplies the mass by the three edge lengths added "
+                    "together, 1 + 1 + 1, instead of dividing by the 1 cm³ of "
+                    "volume they give."},
+            {"text": "2.70 g/cm³", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e22",
+        "band": "easier",
+        "text": "A certain plastic has been measured at exactly 1.00 g/cm³. "
+                "Lowered gently into a bowl of water, what will it do?",
+        "options": [
+            {"text": "It stays where it is put, neither floating nor sinking",
+             "correct": True},
+            {"text": "It floats, because 1.00 is a small number",
+             "correct": False,
+             "why": "1.00 is not below water's own density, so nothing about "
+                    "it makes the material float."},
+            {"text": "It sinks, because it has some mass", "correct": False,
+             "why": "Everything has mass; what decides floating or sinking is "
+                    "density, not simply having mass."},
+            {"text": "It dissolves into the water", "correct": False,
+             "why": "Dissolving is unrelated to matching densities; most "
+                    "materials at 1.00 g/cm³ do not dissolve at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e23",
+        "band": "easier",
+        "text": "According to the story, Archimedes solved a density problem "
+                "while sitting in a bath. What was the mixed-metal crown's "
+                "real problem?",
+        "options": [
+            {"text": "It weighed more than a pure gold crown of the same "
+                     "size", "correct": False,
+             "why": "Mixing silver into gold lowers the density, so the same "
+                    "size of crown would weigh less, not more."},
+            {"text": "It had a slightly bigger volume than a pure gold crown "
+                     "of the same mass", "correct": True},
+            {"text": "It melted at a lower temperature than pure gold",
+             "correct": False,
+             "why": "Melting point plays no part in the story; the test used "
+                    "mass and volume alone."},
+            {"text": "It floated, while a pure gold crown would sink",
+             "correct": False,
+             "why": "Gold and most metal mixtures are all far denser than "
+                    "water, so both crowns would sink."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e24",
+        "band": "easier",
+        "text": "A block of copper and a block of lead have the same volume. "
+                "Which has the greater mass, given that lead is the denser of "
+                "the two?",
+        "options": [
+            {"text": "The copper block", "correct": False,
+             "why": "At equal volumes, the denser material is the one that "
+                    "packs in more mass."},
+            {"text": "Neither — equal volumes always give equal masses",
+             "correct": False,
+             "why": "Equal volumes give equal masses only when the materials "
+                    "are equally dense, and lead and copper are not."},
+            {"text": "The lead block", "correct": True},
+            {"text": "It cannot be told without knowing both densities "
+                     "exactly", "correct": False,
+             "why": "Knowing which one is denser is already enough to say "
+                    "which has the greater mass at equal volume."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e25",
+        "band": "easier",
+        "text": "A small clay tile has a mass of 12 g and takes up 4 cm³ of "
+                "space. Work out its density.",
+        "options": [
+            {"text": "48 g/cm³", "correct": False,
+             "why": "That multiplies the mass by the volume instead of "
+                    "dividing."},
+            {"text": "0.33 g/cm³", "correct": False,
+             "why": "That is 4 ÷ 12, the division the wrong way up."},
+            {"text": "8 g/cm³", "correct": False,
+             "why": "That subtracts the volume from the mass, and density is "
+                    "a division, not a difference."},
+            {"text": "3.0 g/cm³", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e26",
+        "band": "easier",
+        "text": "Which of these six bench materials has the greatest density: "
+                "oak, water, aluminium or gold?",
+        "options": [
+            {"text": "Gold", "correct": True},
+            {"text": "Aluminium", "correct": False,
+             "why": "Aluminium's 2.70 g/cm³ is far below gold's 19.30."},
+            {"text": "Water", "correct": False,
+             "why": "Water's 1.00 g/cm³ is the lowest of the four named here "
+                    "except oak."},
+            {"text": "Oak", "correct": False,
+             "why": "Oak is the least dense material on the whole bench, at "
+                    "0.65 g/cm³."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e27",
+        "band": "easier",
+        "text": "A tiny metal pellet takes up 2 cm³ of space and has a "
+                "density of 9.0 g/cm³. What mass does the pellet have?",
+        "options": [
+            {"text": "4.5 g", "correct": False,
+             "why": "That is 9.0 ÷ 2, dividing where the rearrangement "
+                    "multiplies."},
+            {"text": "18 g", "correct": True},
+            {"text": "11 g", "correct": False,
+             "why": "That adds the volume to the density, and the two cannot "
+                    "be added together."},
+            {"text": "0.22 g", "correct": False,
+             "why": "That is 2 ÷ 9.0, inverted as well as divided instead of "
+                    "multiplied."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e28",
+        "band": "easier",
+        "text": "A liquid is poured into a cylinder and 5 cm³ of it has a mass "
+                "of 5 g. What is its density?",
+        "options": [
+            {"text": "25 g/cm³", "correct": False,
+             "why": "That multiplies the two numbers instead of dividing."},
+            {"text": "0.5 g/cm³", "correct": False,
+             "why": "Halving does not follow from these figures; the correct "
+                    "division gives a different answer."},
+            {"text": "1.0 g/cm³", "correct": True},
+            {"text": "10 g/cm³", "correct": False,
+             "why": "That adds the two numbers, and density is a division, "
+                    "not a sum."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e29",
+        "band": "easier",
+        "text": "A machined offcut has a mass of 100 g and a density of "
+                "4.0 g/cm³. How much space does it take up?",
+        "options": [
+            {"text": "400 cm³", "correct": False,
+             "why": "That multiplies the mass by the density instead of "
+                    "dividing."},
+            {"text": "0.04 cm³", "correct": False,
+             "why": "That is 4.0 ÷ 100, the division the wrong way round."},
+            {"text": "96 cm³", "correct": False,
+             "why": "That subtracts the density from the mass, and volume is "
+                    "found by dividing."},
+            {"text": "25 cm³", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-e30",
+        "band": "easier",
+        "text": "Two blocks are made of the same plastic. Block A has twice "
+                "the mass of block B, and twice the volume as well. Compare "
+                "their densities.",
+        "options": [
+            {"text": "They are the same", "correct": True},
+            {"text": "Block A is twice as dense", "correct": False,
+             "why": "Doubling the mass AND the volume together leaves the "
+                    "ratio between them unchanged."},
+            {"text": "Block A is half as dense", "correct": False,
+             "why": "Nothing here divides the density; both the mass and the "
+                    "volume scaled up by the same factor."},
+            {"text": "It cannot be told without knowing the actual numbers",
+             "correct": False,
+             "why": "The actual numbers are not needed — doubling both mass "
+                    "and volume together always leaves the ratio the same."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 top-up · standard ─────────────────────────────────
+    {
+        "id": "p11-01-s14",
+        "band": "standard",
+        "text": "A rectangular block measures 5 cm by 4 cm by 2 cm and has a "
+                "mass of 200 g. What is its density?",
+        "options": [
+            {"text": "8000 g/cm³", "correct": False,
+             "why": "That multiplies the mass by the volume instead of "
+                    "dividing by it."},
+            {"text": "5.0 g/cm³", "correct": True},
+            {"text": "0.20 g/cm³", "correct": False,
+             "why": "That is the volume divided by the mass, the ratio "
+                    "upside down."},
+            {"text": "18 g/cm³", "correct": False,
+             "why": "That adds the three edge lengths, 5 + 4 + 2 = 11, and "
+                    "divides by that instead of multiplying them to find the "
+                    "volume."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s15",
+        "band": "standard",
+        "text": "A manufacturer casts two components, A and B, from two "
+                "different plastics. Component A weighs the same as component "
+                "B, but is moulded into twice the volume. What can be said "
+                "about their densities?",
+        "options": [
+            {"text": "A is twice as dense as B", "correct": False,
+             "why": "A bigger volume for the same mass gives a lower "
+                    "density, not a higher one."},
+            {"text": "Neither — different volumes always mean different "
+                     "materials", "correct": False,
+             "why": "A volume on its own names no material; two quite "
+                    "different plastics can be moulded to any volume you "
+                    "like."},
+            {"text": "A is half as dense as B", "correct": True},
+            {"text": "They are equally dense, since the two weigh the "
+                     "same", "correct": False,
+             "why": "Equal masses do not give equal densities; A spreads that "
+                    "same mass through twice as much space."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s16",
+        "band": "standard",
+        "text": "A sample of osmium has a volume of 10 cm³. Its density is "
+                "about 22.6 g/cm³. What is its approximate mass?",
+        "options": [
+            {"text": "2.26 g", "correct": False,
+             "why": "That is 22.6 ÷ 10, dividing where the rearrangement "
+                    "multiplies."},
+            {"text": "12.6 g", "correct": False,
+             "why": "That subtracts the volume from the density rather than "
+                    "multiplying them."},
+            {"text": "32.6 g", "correct": False,
+             "why": "That adds the volume to the density, and mass is found "
+                    "by multiplying, not adding."},
+            {"text": "226 g", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s17",
+        "band": "standard",
+        "text": "A student measures a stone's mass as 168 g and its volume by "
+                "displacement as 60 cm³. What is its density?",
+        "options": [
+            {"text": "2.8 g/cm³", "correct": True},
+            {"text": "0.36 g/cm³", "correct": False,
+             "why": "That is 60 ÷ 168, the ratio upside down."},
+            {"text": "10 080 g/cm³", "correct": False,
+             "why": "That multiplies the two figures; density divides the "
+                    "mass by the volume."},
+            {"text": "108 g/cm³", "correct": False,
+             "why": "That subtracts the volume from the mass, and a density "
+                    "is not found by subtracting."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s18",
+        "band": "standard",
+        "text": "A crown of mass 965 g is suspected of being mixed with "
+                "silver rather than pure gold. Pure gold has a density of "
+                "19.30 g/cm³. If the crown's volume is measured at 65 cm³, "
+                "what does that show?",
+        "options": [
+            {"text": "It is pure gold, because 965 divides evenly by 65",
+             "correct": False,
+             "why": "How evenly the numbers divide has no bearing on the "
+                    "science; only the resulting density matters."},
+            {"text": "It is not pure gold: its density works out at about "
+                     "14.8 g/cm³, well below 19.30", "correct": True},
+            {"text": "It is pure gold, because the mass is large enough",
+             "correct": False,
+             "why": "A large mass only means there is a lot of it; the ratio "
+                    "to its volume is what a density compares."},
+            {"text": "Nothing can be concluded without melting the crown "
+                     "down", "correct": False,
+             "why": "Nothing needs melting; the mass and volume together are "
+                    "already enough to find the density."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s19",
+        "band": "standard",
+        "text": "A bottle holds 250 cm³ of a certain oil, whose density is "
+                "0.90 g/cm³. What mass of oil is in the bottle?",
+        "options": [
+            {"text": "277.8 g", "correct": False,
+             "why": "That is 250 ÷ 0.90, the division the wrong way round."},
+            {"text": "249.1 g", "correct": False,
+             "why": "That subtracts the density from the volume rather than "
+                    "multiplying them."},
+            {"text": "225 g", "correct": True},
+            {"text": "250.9 g", "correct": False,
+             "why": "That adds the density to the volume, and a mass is "
+                    "found by multiplying, not adding."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s20",
+        "band": "standard",
+        "text": "Two spheres are cast from the same metal. Sphere A has three "
+                "times the volume of sphere B. Compare their masses.",
+        "options": [
+            {"text": "A has a third of B's mass", "correct": False,
+             "why": "A bigger volume of the same material holds more mass, "
+                    "not less."},
+            {"text": "They are equal, since they are made of the same metal",
+             "correct": False,
+             "why": "Being the same metal fixes their density, not their "
+                    "mass, which still depends on how much of it there is."},
+            {"text": "It cannot be told without knowing the density",
+             "correct": False,
+             "why": "It can — whatever the density, three times the volume "
+                    "of the same material gives three times the mass."},
+            {"text": "A has three times B's mass", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s21",
+        "band": "standard",
+        "text": "A student converts a mass of 3.4 kg into grams before "
+                "dividing by a volume in cm³. Why is that step necessary?",
+        "options": [
+            {"text": "Because grams pair with cubic centimetres, and "
+                     "kilograms do not", "correct": True},
+            {"text": "Because kilograms are too large a unit to use in any "
+                     "calculation", "correct": False,
+             "why": "Size is not the issue; kilograms are used constantly, "
+                    "just paired with cubic metres rather than cubic "
+                    "centimetres."},
+            {"text": "Because the answer would otherwise come out negative",
+             "correct": False,
+             "why": "Mixing kg with cm³ gives an answer a thousand times too "
+                    "small, not a negative one."},
+            {"text": "Because a calculator cannot divide by a volume in cm³",
+             "correct": False,
+             "why": "A calculator divides by any number; the problem is that "
+                    "the units would not form a real density."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s22",
+        "band": "standard",
+        "text": "A liquid's density is 0.79 g/cm³. What volume does 158 g of "
+                "it occupy?",
+        "options": [
+            {"text": "124.8 cm³", "correct": False,
+             "why": "That multiplies the mass by the density; a volume is "
+                    "found by dividing."},
+            {"text": "200 cm³", "correct": True},
+            {"text": "158.79 cm³", "correct": False,
+             "why": "That adds the density onto the mass, and the two cannot "
+                    "be added."},
+            {"text": "0.005 cm³", "correct": False,
+             "why": "That is 0.79 ÷ 158, the division inverted."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s23",
+        "band": "standard",
+        "text": "A metal sphere weighs in at 540 g and has a density of "
+                "9.0 g/cm³. How much space does the sphere occupy?",
+        "options": [
+            {"text": "4860 cm³", "correct": False,
+             "why": "That multiplies the mass by the density instead of "
+                    "dividing."},
+            {"text": "0.017 cm³", "correct": False,
+             "why": "That is 9.0 ÷ 540, the ratio inverted as well as "
+                    "dividing the wrong way."},
+            {"text": "60 cm³", "correct": True},
+            {"text": "531 cm³", "correct": False,
+             "why": "That subtracts the density from the mass, and volume is "
+                    "found by dividing, not subtracting."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s24",
+        "band": "standard",
+        "text": "Liquid Q, at 1.05 g/cm³, is poured on top of liquid P, at "
+                "0.88 g/cm³, in the same jar, and the two are left to settle. "
+                "What happens?",
+        "options": [
+            {"text": "They stay as poured, with Q remaining on top",
+             "correct": False,
+             "why": "The denser liquid does not stay on top; it sinks below "
+                    "the less dense one once they are left to settle."},
+            {"text": "They mix completely into one layer", "correct": False,
+             "why": "The two do not mix; each settles into its own layer, "
+                    "ordered by density."},
+            {"text": "Q rises further, since it was poured second",
+             "correct": False,
+             "why": "Pouring order makes no difference to the final "
+                    "arrangement; density does."},
+            {"text": "They swap, with P rising above Q", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s25",
+        "band": "standard",
+        "text": "A 2.0 kg mass of a liquid occupies 2500 cm³. What is its "
+                "density in g/cm³?",
+        "options": [
+            {"text": "0.80 g/cm³", "correct": True},
+            {"text": "1.25 g/cm³", "correct": False,
+             "why": "That is 2500 ÷ 2000, the ratio upside down."},
+            {"text": "5 000 000 g/cm³", "correct": False,
+             "why": "That multiplies the mass in grams by the volume; "
+                    "density divides one by the other."},
+            {"text": "0.0008 g/cm³", "correct": False,
+             "why": "That divides the mass in kilograms directly by the "
+                    "volume, without converting to grams first."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s26",
+        "band": "standard",
+        "text": "A student has a density in kg/m³ and wants it in g/cm³. What "
+                "must be done?",
+        "options": [
+            {"text": "Multiply by 1000", "correct": False,
+             "why": "Multiplying by 1000 alone ignores that the volume unit "
+                    "is also changing, by a much bigger factor."},
+            {"text": "Divide by 1000", "correct": True},
+            {"text": "Divide by a million", "correct": False,
+             "why": "Dividing by a million alone ignores that the kilograms "
+                    "also need converting into grams."},
+            {"text": "Leave the number exactly as it is", "correct": False,
+             "why": "kg/m³ and g/cm³ are not the same size of unit; the "
+                    "number must change to match."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s27",
+        "band": "standard",
+        "text": "A sample's mass is measured as 88 g and its volume as "
+                "40 cm³. A second measurement of the same sample gives 89 g "
+                "and 41 cm³. Which pair gives the higher density?",
+        "options": [
+            {"text": "The second pair, since both its numbers are bigger",
+             "correct": False,
+             "why": "Bigger numbers alone do not mean a bigger ratio; here "
+                    "the second pair's ratio is actually the smaller one."},
+            {"text": "Both pairs give exactly the same density",
+             "correct": False,
+             "why": "88 ÷ 40 and 89 ÷ 41 are not quite equal; they come out "
+                    "at 2.20 and about 2.17."},
+            {"text": "The first pair", "correct": True},
+            {"text": "It cannot be told without repeating the measurement a "
+                     "third time", "correct": False,
+             "why": "The two densities can be worked out and compared "
+                    "directly from the figures already given."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s28",
+        "band": "standard",
+        "text": "A block of density 6.0 g/cm³ is cut into three equal pieces. "
+                "What is the density of each piece?",
+        "options": [
+            {"text": "2.0 g/cm³", "correct": False,
+             "why": "Cutting divides the mass and the volume together, so "
+                    "the ratio between them is unchanged, not divided by "
+                    "three."},
+            {"text": "18 g/cm³", "correct": False,
+             "why": "Cutting cannot triple how tightly a material is "
+                    "packed."},
+            {"text": "It depends which piece is measured", "correct": False,
+             "why": "All three pieces are the same material in the same "
+                    "state, so all three share one density."},
+            {"text": "6.0 g/cm³", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s29",
+        "band": "standard",
+        "text": "A liquid of unknown density has a mass of 156 g and a "
+                "volume of 120 cm³. Which of the bench's six materials is it "
+                "closest to?",
+        "options": [
+            {"text": "Water, at 1.00 g/cm³", "correct": True},
+            {"text": "Aluminium, at 2.70 g/cm³", "correct": False,
+             "why": "1.30 g/cm³ is far closer to water's 1.00 than to "
+                    "aluminium's 2.70."},
+            {"text": "Ice, at 0.92 g/cm³", "correct": False,
+             "why": "1.30 g/cm³ sits closer to 1.00 than to 0.92, if only "
+                    "just."},
+            {"text": "Oak, at 0.65 g/cm³", "correct": False,
+             "why": "1.30 g/cm³ is roughly double oak's density, and far "
+                    "closer to water's."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-s30",
+        "band": "standard",
+        "text": "A sample has a mass of 217 g and a volume of 31 cm³. Which "
+                "of the bench's materials does this most resemble?",
+        "options": [
+            {"text": "Aluminium, at 2.70 g/cm³", "correct": False,
+             "why": "7.0 g/cm³ is far above aluminium's density and much "
+                    "closer to iron's."},
+            {"text": "Iron, at 7.87 g/cm³", "correct": True},
+            {"text": "Gold, at 19.30 g/cm³", "correct": False,
+             "why": "7.0 g/cm³ is well below half of gold's density."},
+            {"text": "Water, at 1.00 g/cm³", "correct": False,
+             "why": "7.0 g/cm³ is seven times water's density, and nowhere "
+                    "near it."},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night 3 top-up · harder ───────────────────────────────────
+    {
+        "id": "p11-01-h14",
+        "band": "harder",
+        "text": "A crown of mass 900 g is claimed to be pure gold, density "
+                "19.30 g/cm³. If the crown really were pure gold, what volume "
+                "should it have?",
+        "options": [
+            {"text": "17 370 cm³", "correct": False,
+             "why": "That multiplies the mass by the density instead of "
+                    "dividing."},
+            {"text": "85.8 cm³", "correct": False,
+             "why": "That uses silver's density instead of gold's; this "
+                    "version of the question is about a crown that IS pure "
+                    "gold."},
+            {"text": "About 46.6 cm³", "correct": True},
+            {"text": "0.021 cm³", "correct": False,
+             "why": "That is the density divided by the mass, the ratio "
+                    "inverted."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h15",
+        "band": "harder",
+        "text": "A student measures a crown's volume as 52 cm³ and its mass "
+                "as 900 g. Is the crown consistent with being pure gold, at "
+                "19.30 g/cm³?",
+        "options": [
+            {"text": "Yes, because 900 and 52 are both plausible numbers for "
+                     "a crown", "correct": False,
+             "why": "Whether the numbers seem plausible says nothing; only "
+                    "the density they give matters."},
+            {"text": "Yes, because the density comes out close to 19",
+             "correct": False,
+             "why": "17.3 is noticeably below 19.30, a bigger gap than "
+                    "measurement error would explain."},
+            {"text": "It cannot be judged without melting the crown down",
+             "correct": False,
+             "why": "Nothing needs melting; the mass and volume already give "
+                    "a density to compare."},
+            {"text": "No — its density works out at about 17.3 g/cm³, below "
+                     "pure gold's 19.30", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h16",
+        "band": "harder",
+        "text": "An iron sphere is melted down and recast as a hollow casting "
+                "that takes up twice as much room overall, using exactly the "
+                "same mass of iron. Iron itself has a density of 7.87 g/cm³. "
+                "What is the AVERAGE density of the casting, counting the "
+                "empty space inside it?",
+        "options": [
+            {"text": "About 3.94 g/cm³", "correct": True},
+            {"text": "7.87 g/cm³, unchanged", "correct": False,
+             "why": "That is the density of the iron itself. The question "
+                    "asks for the average across the whole casting, and half "
+                    "of that room is now empty space."},
+            {"text": "15.74 g/cm³, doubled", "correct": False,
+             "why": "Doubling the volume for the same mass halves the "
+                    "density; it does not double it."},
+            {"text": "2.70 g/cm³, the same as aluminium", "correct": False,
+             "why": "The new shape is still iron; nothing here has turned it "
+                    "into aluminium."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h17",
+        "band": "harder",
+        "text": "A liquid mixture is made by combining 100 cm³ of a liquid at "
+                "0.80 g/cm³ with 100 cm³ of a liquid at 1.20 g/cm³, and the "
+                "two mix completely with no change in total volume. What is "
+                "the density of the mixture?",
+        "options": [
+            {"text": "0.80 g/cm³", "correct": False,
+             "why": "That takes only the lighter liquid's density and "
+                    "ignores the heavier one entirely."},
+            {"text": "1.00 g/cm³", "correct": True},
+            {"text": "2.00 g/cm³", "correct": False,
+             "why": "That adds the two densities together rather than "
+                    "finding the combined mass and volume."},
+            {"text": "1.20 g/cm³", "correct": False,
+             "why": "That takes only the denser liquid's density and ignores "
+                    "the lighter one entirely."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h18",
+        "band": "harder",
+        "text": "Two identical-sized cubes are tied together by a very light "
+                "thread and dropped into water: one cube is oak, at "
+                "0.65 g/cm³, and the other is iron, at 7.87 g/cm³. What "
+                "happens to the pair?",
+        "options": [
+            {"text": "They float, because oak floats on its own",
+             "correct": False,
+             "why": "Tied together, the very dense iron cube outweighs what "
+                    "the oak alone could keep afloat."},
+            {"text": "The pair hangs level with the surface", "correct": False,
+             "why": "That would need the combined density to sit at exactly "
+                    "1.00 g/cm³, and iron alone is nearly eight times that."},
+            {"text": "They sink together", "correct": True},
+            {"text": "Each behaves independently, so one floats while the "
+                     "thread stretches", "correct": False,
+             "why": "A thread tying them together forces them to move as one "
+                    "combined object, not two separate ones."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h19",
+        "band": "harder",
+        "text": "A perfumer blends 300 cm³ of a carrier oil at 0.75 g/cm³ "
+                "with 100 cm³ of a fragrance concentrate at 1.15 g/cm³, and "
+                "the two combine with no change in total volume. What is the "
+                "density of the finished blend?",
+        "options": [
+            {"text": "0.95 g/cm³", "correct": False,
+             "why": "That averages the two densities equally, ignoring that "
+                    "there is three times as much of the lighter liquid."},
+            {"text": "1.90 g/cm³", "correct": False,
+             "why": "That adds the two densities together rather than "
+                    "combining the actual masses and volumes."},
+            {"text": "0.75 g/cm³", "correct": False,
+             "why": "That takes only the larger liquid's density and ignores "
+                    "the smaller one's contribution completely."},
+            {"text": "0.85 g/cm³", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h20",
+        "band": "harder",
+        "text": "A metal ingot weighs 2.4 kg and measures 10 cm by 8 cm by "
+                "5 cm. Find its density in g/cm³.",
+        "options": [
+            {"text": "6.0 g/cm³", "correct": True},
+            {"text": "0.17 g/cm³", "correct": False,
+             "why": "That is the volume divided by the mass in grams, the "
+                    "ratio upside down."},
+            {"text": "960 000 g/cm³", "correct": False,
+             "why": "That multiplies the mass in grams by the volume instead "
+                    "of dividing."},
+            {"text": "0.006 g/cm³", "correct": False,
+             "why": "That divides the mass in kilograms directly by the "
+                    "volume, without converting to grams first."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h21",
+        "band": "harder",
+        "text": "A cylindrical rod is 20 cm long with a cross-sectional area "
+                "of 3 cm², and has a mass of 126 g. What is its density?",
+        "options": [
+            {"text": "7560 g/cm³", "correct": False,
+             "why": "That multiplies the mass by the volume instead of "
+                    "dividing."},
+            {"text": "2.1 g/cm³", "correct": True},
+            {"text": "0.48 g/cm³", "correct": False,
+             "why": "That is the volume divided by the mass, the ratio "
+                    "upside down."},
+            {"text": "42 g/cm³", "correct": False,
+             "why": "That divides the mass by the cross-sectional area alone, "
+                    "leaving out the length needed to find the volume."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h22",
+        "band": "harder",
+        "text": "A liquid has a density of 1.05 g/cm³. On warming, its volume "
+                "expands slightly while its mass stays exactly the same. "
+                "What happens to its density?",
+        "options": [
+            {"text": "It rises, because warming adds energy to the liquid",
+             "correct": False,
+             "why": "Adding energy changes how the particles move, not how "
+                    "much mass or volume is present at that instant — what "
+                    "decides density here is the volume change."},
+            {"text": "It stays at 1.05 g/cm³, since the mass has not changed",
+             "correct": False,
+             "why": "The mass staying fixed does not mean the density is "
+                    "fixed too; the volume has grown, and density depends on "
+                    "both."},
+            {"text": "It falls slightly, because the same mass now fills "
+                     "more space", "correct": True},
+            {"text": "It cannot be predicted without knowing the new "
+                     "temperature exactly", "correct": False,
+             "why": "The direction of the change can be told without an "
+                    "exact figure — expanding the volume with the mass fixed "
+                    "always lowers the density."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h23",
+        "band": "harder",
+        "text": "A metal alloy is made by melting together equal MASSES of "
+                "copper, at 8.96 g/cm³, and zinc, at 7.13 g/cm³. Is the "
+                "alloy's resulting density closer to copper's, closer to "
+                "zinc's, or exactly halfway between the two?",
+        "options": [
+            {"text": "Closer to copper's density", "correct": False,
+             "why": "Equal masses give the less dense metal the bigger "
+                    "volume, which pulls the mixture's density toward zinc, "
+                    "not copper."},
+            {"text": "Exactly halfway between the two", "correct": False,
+             "why": "Exactly halfway would only follow from mixing equal "
+                    "volumes; here the masses are equal instead, and the "
+                    "less dense metal then takes up more of the total "
+                    "volume."},
+            {"text": "It cannot be judged without knowing the actual masses "
+                     "used", "correct": False,
+             "why": "The actual mass used does not change which way the "
+                    "mixture leans — equal masses always give the less dense "
+                    "metal the greater share of the volume."},
+            {"text": "Closer to zinc's density", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h24",
+        "band": "harder",
+        "text": "A solid block has a mass of 60 g. Cut into two unequal "
+                "pieces, one piece has a volume of 8 cm³ and a mass of 24 g. "
+                "What is the volume of the other piece?",
+        "options": [
+            {"text": "12 cm³", "correct": True},
+            {"text": "8 cm³", "correct": False,
+             "why": "That copies the first piece's volume rather than "
+                    "working out the second piece's from its own mass."},
+            {"text": "20 cm³", "correct": False,
+             "why": "That is the volume of the WHOLE block, 60 g ÷ 3 g/cm³; "
+                    "the first piece's 8 cm³ still has to be taken off."},
+            {"text": "36 cm³", "correct": False,
+             "why": "That treats the remaining mass in grams as if it "
+                    "already were the volume in cm³."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h25",
+        "band": "harder",
+        "text": "A hot air balloon's envelope holds 2000 m³ of hot air at a "
+                "density of 0.90 kg/m³, while the same volume of the cooler "
+                "air outside has a density of 1.20 kg/m³. What is the "
+                "difference in mass between the hot air inside and the same "
+                "volume of the cold air outside?",
+        "options": [
+            {"text": "6000 kg", "correct": False,
+             "why": "That multiplies the volume by the difference in density "
+                    "with an extra factor of ten error."},
+            {"text": "600 kg", "correct": True},
+            {"text": "1800 kg", "correct": False,
+             "why": "That is the mass of the hot air alone, not the "
+                    "difference between the two."},
+            {"text": "2400 kg", "correct": False,
+             "why": "That is the mass of the cold air alone, not the "
+                    "difference between the two."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h26",
+        "band": "harder",
+        "text": "A gemstone is being tested to see whether it is genuine "
+                "turquoise (density about 2.6-2.8 g/cm³) or a common glass "
+                "imitation (density about 2.4 g/cm³). A sample has a mass of "
+                "15 g and a volume of 5.6 cm³. Which is it more likely to "
+                "be?",
+        "options": [
+            {"text": "The glass imitation, because 2.68 is closer to 2.4 "
+                     "than the numbers first suggest", "correct": False,
+             "why": "2.68 g/cm³ sits inside the range quoted for turquoise "
+                    "and well above the glass imitation's typical 2.4."},
+            {"text": "It cannot be identified from density alone",
+             "correct": False,
+             "why": "Here it can — the sample's density falls squarely "
+                    "inside turquoise's quoted range and clearly above the "
+                    "glass imitation's."},
+            {"text": "Genuine turquoise, since 2.68 g/cm³ falls inside its "
+                     "quoted range", "correct": True},
+            {"text": "Neither — the density is too high for both",
+             "correct": False,
+             "why": "2.68 g/cm³ is comfortably inside the range quoted for "
+                    "turquoise, not above it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h27",
+        "band": "harder",
+        "text": "A fisherman's lead weight has a mass of 45 g and displaces "
+                "4 cm³ of water when lowered into a measuring cylinder. Lead "
+                "has a density of about 11.3 g/cm³. Is this weight likely to "
+                "be solid lead, or does it have a hollow centre?",
+        "options": [
+            {"text": "It must be hollow, because the numbers do not match "
+                     "exactly", "correct": False,
+             "why": "11.25 g/cm³ is close enough to 11.3 to be the same "
+                    "material, allowing for ordinary measurement rounding."},
+            {"text": "It cannot be judged without weighing it in air as well "
+                     "as in water", "correct": False,
+             "why": "The mass and the displaced volume already give a "
+                    "density close enough to lead's to judge this."},
+            {"text": "It must contain gold, since the density is unusually "
+                     "high", "correct": False,
+             "why": "11.25 g/cm³ is far below gold's 19.30, and matches lead "
+                    "closely instead."},
+            {"text": "It is consistent with being solid lead, since "
+                     "11.25 g/cm³ is very close to 11.3", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h28",
+        "band": "harder",
+        "text": "A sample's mass and volume are both measured twice, giving "
+                "densities of 3.02 g/cm³ and 2.98 g/cm³. What best explains "
+                "the small difference between the two results?",
+        "options": [
+            {"text": "Ordinary measurement uncertainty in reading the "
+                     "balance and the cylinder", "correct": True},
+            {"text": "The material's density genuinely changed between the "
+                     "two measurements", "correct": False,
+             "why": "An ordinary solid's density does not drift between two "
+                    "measurements taken moments apart; the difference is in "
+                    "the readings, not the material."},
+            {"text": "The sample must have absorbed water between "
+                     "measurements", "correct": False,
+             "why": "Nothing here suggests the sample changed at all; small "
+                    "differences like this are typical of reading two "
+                    "separate instruments."},
+            {"text": "One of the two results must be a different substance "
+                     "entirely", "correct": False,
+             "why": "Two results this close together, on the same sample, "
+                    "point to measurement uncertainty rather than to two "
+                    "different materials."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h29",
+        "band": "harder",
+        "text": "A metal bar of density 8.4 g/cm³ is drawn out into a much "
+                "longer, thinner wire of exactly the same mass. What happens "
+                "to the wire's density compared with the bar's?",
+        "options": [
+            {"text": "It rises, because the wire is thinner and more "
+                     "concentrated", "correct": False,
+             "why": "\"Thinner\" is not the same as \"denser\" — the same "
+                    "mass has simply been reshaped, and density depends on "
+                    "the mass-to-volume ratio, not on shape."},
+            {"text": "It stays at 8.4 g/cm³, since the mass and the material "
+                     "are unchanged", "correct": True},
+            {"text": "It falls, because stretching a shape thinner increases "
+                     "its overall volume", "correct": False,
+             "why": "Drawing a bar into a wire keeps the metal's total "
+                    "volume the same; only its shape changes."},
+            {"text": "It cannot be known without measuring the new wire's "
+                     "volume directly", "correct": False,
+             "why": "It is already known from the reasoning alone — "
+                    "reshaping a fixed mass of one material never changes "
+                    "its density."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p11-01-h30",
+        "band": "harder",
+        "text": "A recipe calls for a mixture with an overall density of "
+                "exactly 1.50 g/cm³, made by combining equal MASSES of two "
+                "liquids: one at 1.00 g/cm³ and one at 2.00 g/cm³. Will "
+                "equal masses of these two actually give 1.50 g/cm³?",
+        "options": [
+            {"text": "Yes, because equal masses always average to the "
+                     "midpoint density", "correct": False,
+             "why": "Equal masses do not average to the simple midpoint; "
+                    "that only happens when equal volumes are combined."},
+            {"text": "Yes, because density is unaffected by how the two "
+                     "liquids are combined", "correct": False,
+             "why": "How the two are combined changes the result — equal "
+                    "masses give a different answer from equal volumes."},
+            {"text": "No — equal masses give a lower value than 1.50 g/cm³, "
+                     "closer to about 1.33", "correct": True},
+            {"text": "No — equal masses give a higher value than 1.50 g/cm³",
+             "correct": False,
+             "why": "Equal masses skew the result toward the less dense "
+                    "liquid, which pulls the density down, not up."},
+        ],
+        "figure": None,
+    },
 ]
