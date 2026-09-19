@@ -1026,4 +1026,1215 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-338 night 3 top-up ─────────────────────────────────
+    {
+        "id": "c9-03-e14",
+        "band": "easier",
+        "text": "Zinc oxide used on the furnace bench is roasted from which "
+                "ore?",
+        "options": [
+            {"text": "Zinc blende, a sulfide mineral of zinc",
+             "correct": True},
+            {"text": "Bauxite, which is aluminium's ore", "correct": False,
+             "why": "Bauxite is aluminium's ore, not zinc's."},
+            {"text": "Malachite", "correct": False,
+             "why": "Malachite is copper's ore, and it is green rather "
+                    "than white."},
+            {"text": "Haematite", "correct": False,
+             "why": "Not the ore named in this lesson. Zinc's ore here is "
+                    "zinc blende."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e15",
+        "band": "easier",
+        "text": "Which metal does malachite, the green stone in the hook, "
+                "provide an ore of?",
+        "options": [
+            {"text": "Aluminium", "correct": False,
+             "why": "Aluminium's ore is bauxite, a different rock "
+                    "entirely."},
+            {"text": "Zinc", "correct": False,
+             "why": "Zinc's ore is zinc blende, not this green stone."},
+            {"text": "Lead", "correct": False,
+             "why": "Lead has its own ores, and malachite is not one of "
+                    "them."},
+            {"text": "Copper", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e16",
+        "band": "easier",
+        "text": "Which pair of countries is named as a major source of "
+                "bauxite?",
+        "options": [
+            {"text": "Canada and Chile", "correct": False,
+             "why": "Real mining countries, and not the pair this lesson "
+                    "names for bauxite."},
+            {"text": "Australia and Guinea", "correct": True},
+            {"text": "Wales and Cornwall, in the United Kingdom",
+             "correct": False,
+             "why": "Cornwall supplies the malachite in the hook, and "
+                    "neither is a bauxite source here."},
+            {"text": "Norway and Iceland", "correct": False,
+             "why": "Not named in this lesson as bauxite sources."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e17",
+        "band": "easier",
+        "text": "Which of these is NOT one of the four methods tested "
+                "against a delivery on the bench?",
+        "options": [
+            {"text": "Melt it and pour it into a mould", "correct": True},
+            {"text": "Crush it and wash it", "correct": False,
+             "why": "One of the four — it is the method that works when "
+                    "the metal is already uncombined."},
+            {"text": "Heat it with carbon", "correct": False,
+             "why": "One of the four — the route for every metal below "
+                    "carbon."},
+            {"text": "Pass electricity through it", "correct": False,
+             "why": "One of the four — the route for every metal above "
+                    "carbon."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e18",
+        "band": "easier",
+        "text": "Copper oxide is heated with carbon and a gas is given off "
+                "that turns limewater cloudy. What is the gas?",
+        "options": [
+            {"text": "Oxygen", "correct": False,
+             "why": "Oxygen does not turn limewater cloudy, and the "
+                    "oxygen here has left joined to the carbon."},
+            {"text": "Hydrogen gas from the reaction", "correct": False,
+             "why": "There is no hydrogen in this reaction to give off."},
+            {"text": "Water vapour given off from the mixture",
+             "correct": False,
+             "why": "Water vapour does not turn limewater cloudy. Carbon "
+                    "dioxide does."},
+            {"text": "Carbon dioxide", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e19",
+        "band": "easier",
+        "text": "Which group of metals sits ABOVE carbon in the reactivity "
+                "series?",
+        "options": [
+            {"text": "Zinc, iron, lead and copper", "correct": False,
+             "why": "That group sits below carbon, which is why carbon "
+                    "can free them."},
+            {"text": "Silver and gold", "correct": False,
+             "why": "Those sit far below carbon, near the very bottom."},
+            {"text": "Potassium, sodium, calcium, magnesium and aluminium",
+             "correct": True},
+            {"text": "Carbon itself, since it heads its own line",
+             "correct": False,
+             "why": "Carbon is the line, not a metal above it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e20",
+        "band": "easier",
+        "text": "Zinc, iron and lead can all be freed from their oxides "
+                "with carbon. Which one of these four metals CANNOT join "
+                "that list?",
+        "options": [
+            {"text": "Copper", "correct": False,
+             "why": "Copper is below carbon too, and joins the list "
+                    "readily."},
+            {"text": "Aluminium", "correct": True},
+            {"text": "Tin", "correct": False,
+             "why": "Tin sits below carbon and has been smelted this way "
+                    "for thousands of years."},
+            {"text": "Nickel", "correct": False,
+             "why": "Nickel sits below carbon as well, on the same side "
+                    "as zinc, iron and lead."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e21",
+        "band": "easier",
+        "text": "Which pair of metals sits far enough below carbon that heat "
+                "alone can free one of them, and the other needs no "
+                "chemistry at all?",
+        "options": [
+            {"text": "Iron and zinc", "correct": False,
+             "why": "Both of those need carbon. Neither comes free with "
+                    "heat alone or with nothing."},
+            {"text": "Copper and lead", "correct": False,
+             "why": "Both sit below carbon and both need the carbon "
+                    "route."},
+            {"text": "Silver and gold", "correct": True},
+            {"text": "Aluminium and magnesium", "correct": False,
+             "why": "Both of those sit above carbon and need electricity, "
+                    "which is the opposite end of the series."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e22",
+        "band": "easier",
+        "text": "Which element makes up almost all of the coke used in a "
+                "blast furnace?",
+        "options": [
+            {"text": "Iron", "correct": False,
+             "why": "Iron is what the furnace is trying to produce, not "
+                    "what coke is made of."},
+            {"text": "Oxygen", "correct": False,
+             "why": "Oxygen is what coke takes away from the ore, not "
+                    "what coke itself is."},
+            {"text": "Silicon", "correct": False,
+             "why": "Not the element coke is mostly made of."},
+            {"text": "Carbon", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e23",
+        "band": "easier",
+        "text": "What is the visible sign that copper oxide has been "
+                "successfully reduced by carbon?",
+        "options": [
+            {"text": "The black powder turns bright blue", "correct": False,
+             "why": "Blue is the colour of copper sulfate solution, not "
+                    "of this reaction."},
+            {"text": "Specks of pink-brown copper appear in the black "
+                     "mixture", "correct": True},
+            {"text": "The whole mixture turns to a colourless liquid",
+             "correct": False,
+             "why": "Nothing here melts into a colourless liquid."},
+            {"text": "The black powder gives off a bright flame",
+             "correct": False,
+             "why": "No flame appears. The change is a colour change in "
+                    "the solid."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e24",
+        "band": "easier",
+        "text": "Which gas is given off when zinc oxide is reduced by "
+                "heating with carbon?",
+        "options": [
+            {"text": "Carbon dioxide", "correct": True},
+            {"text": "Sulfur dioxide, left over from the ore it was "
+                     "roasted from", "correct": False,
+             "why": "The sulfur leaves during the roasting, long before "
+                    "the oxide reaches the furnace. No sulfur dioxide "
+                    "comes off this reaction."},
+            {"text": "Oxygen", "correct": False,
+             "why": "The oxygen leaves joined to the carbon, as carbon "
+                    "dioxide, rather than on its own."},
+            {"text": "Nitrogen", "correct": False,
+             "why": "Nitrogen plays no part in this reaction."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e25",
+        "band": "easier",
+        "text": "Getting a metal out of its ore is a reaction, not a ___.",
+        "options": [
+            {"text": "Temperature", "correct": True},
+            {"text": "The cost of extraction", "correct": False,
+             "why": "Cost decides which method is chosen once a reaction "
+                    "is possible. It is not the word this lesson "
+                    "contrasts a reaction with."},
+            {"text": "The starting compound", "correct": False,
+             "why": "A compound is what the ore already is, not what "
+                    "extraction is being contrasted with."},
+            {"text": "The extracted metal", "correct": False,
+             "why": "A metal is the product, not the wrong idea being "
+                    "corrected here."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e26",
+        "band": "easier",
+        "text": "The safety guidance for the copper oxide and carbon "
+                "practical warns that something stays dangerous even after "
+                "the flame is put out. What is it?",
+        "options": [
+            {"text": "The unused carbon powder", "correct": False,
+             "why": "Cold carbon powder sitting in a jar is not the "
+                    "hazard the warning is about."},
+            {"text": "The hot residues left in the tube", "correct": True},
+            {"text": "The limewater used to test the gas", "correct": False,
+             "why": "Limewater is not what the warning names."},
+            {"text": "The Bunsen burner's gas supply tap", "correct": False,
+             "why": "Turning the gas off is what puts the flame out, not "
+                    "the lingering hazard."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e27",
+        "band": "easier",
+        "text": "Which substance is purified from bauxite before it is "
+                "electrolysed to give aluminium?",
+        "options": [
+            {"text": "Aluminium chloride", "correct": False,
+             "why": "The compound electrolysed here is an oxide, not a "
+                    "chloride."},
+            {"text": "Aluminium carbonate", "correct": False,
+             "why": "Not the compound this lesson names as coming from "
+                    "bauxite."},
+            {"text": "Pure aluminium metal", "correct": False,
+             "why": "If it were already the metal, electrolysis would "
+                    "have nothing left to do."},
+            {"text": "Aluminium oxide", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e28",
+        "band": "easier",
+        "text": "Is carbon, the element that reduces metal oxides in a "
+                "furnace, classed as a metal or a non-metal?",
+        "options": [
+            {"text": "A metal, since it takes the place of one in the "
+                     "reaction", "correct": False,
+             "why": "Doing a metal's job is not the same as being one. "
+                    "Carbon is a non-metal."},
+            {"text": "Neither — it is an alloy", "correct": False,
+             "why": "An alloy is a mixture of metals. Carbon is a single "
+                    "element."},
+            {"text": "A non-metal", "correct": True},
+            {"text": "A metalloid", "correct": False,
+             "why": "Not the class this lesson places carbon in."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e29",
+        "band": "easier",
+        "text": "Silver oxide decomposes on heating alone, with nothing "
+                "added. Which gas is released?",
+        "options": [
+            {"text": "Carbon dioxide", "correct": False,
+             "why": "There is no carbon in this reaction at all."},
+            {"text": "Hydrogen", "correct": False,
+             "why": "No hydrogen is involved in silver oxide breaking "
+                    "apart."},
+            {"text": "Oxygen", "correct": True},
+            {"text": "Silver vapour", "correct": False,
+             "why": "The silver is left behind as a solid. It is the gas "
+                    "the question asks for."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-e30",
+        "band": "easier",
+        "text": "Which word equation correctly describes iron ore being "
+                "reduced in a blast furnace?",
+        "options": [
+            {"text": "Iron oxide goes in alone; iron and oxygen come out",
+             "correct": False,
+             "why": "Iron oxide heated alone gives nothing. Something has "
+                    "to take the oxygen."},
+            {"text": "Iron and oxygen go in; iron oxide comes out",
+             "correct": False,
+             "why": "That is the reaction running backwards, an "
+                    "oxidation rather than an extraction."},
+            {"text": "Iron oxide and oxygen go in; iron and carbon dioxide "
+                     "come out", "correct": False,
+             "why": "Oxygen is not added to a blast furnace's ore charge. "
+                    "Carbon is."},
+            {"text": "Iron oxide and carbon go in; iron and carbon dioxide "
+                     "come out", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-338 night 3 top-up ─────────────────────────────
+    {
+        "id": "c9-03-s14",
+        "band": "standard",
+        "text": "Extracting one tonne of new aluminium from bauxite needs "
+                "roughly 15,000 kWh of electricity. Recycling aluminium uses "
+                "about a twentieth of that. Roughly how much electricity "
+                "does recycling one tonne need?",
+        "options": [
+            {"text": "About 15,000 kWh — recycling still splits the same "
+                     "oxide", "correct": False,
+             "why": "Recycling melts metal rather than splitting a "
+                    "compound, which is the whole reason it is so much "
+                    "cheaper."},
+            {"text": "About 7,500 kWh, since half the aluminium needs "
+                     "reprocessing", "correct": False,
+             "why": "A twentieth is the fraction given, not a half."},
+            {"text": "About 750 kWh", "correct": True},
+            {"text": "About 75 kWh, since melting takes almost no energy",
+             "correct": False,
+             "why": "That divides by two hundred rather than by twenty."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s15",
+        "band": "standard",
+        "text": "A metal's oxide can be freed by heating alone AND by "
+                "heating with carbon. What does having BOTH routes work "
+                "tell you about its position?",
+        "options": [
+            {"text": "It sits very low in the series, near silver and gold",
+             "correct": True},
+            {"text": "It sits above carbon, like aluminium",
+             "correct": False,
+             "why": "A metal above carbon cannot be freed by carbon at "
+                    "all, let alone by heat alone as well."},
+            {"text": "It sits exactly level with carbon in the series",
+             "correct": False,
+             "why": "Carbon holds one position, not a metal sharing it."},
+            {"text": "Its position cannot be worked out from this alone",
+             "correct": False,
+             "why": "Both routes working is itself strong evidence — only "
+                    "the least reactive metals give up their oxygen this "
+                    "easily."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s16",
+        "band": "standard",
+        "text": "Zinc oxide reacts with carbon at the furnace's normal "
+                "running temperature. If the furnace were run even hotter, "
+                "what would happen to the AMOUNT of zinc produced from a "
+                "fixed mass of ore?",
+        "options": [
+            {"text": "It would rise well beyond what the ore's zinc content "
+                     "allows", "correct": False,
+             "why": "No method produces more metal than the ore actually "
+                    "contains."},
+            {"text": "It would not increase — the reaction would simply run "
+                     "faster", "correct": True},
+            {"text": "It would fall, because heat above the normal running "
+                     "temperature damages the zinc", "correct": False,
+             "why": "Nothing about this reaction is harmed by extra heat. "
+                    "The zinc itself is unaffected."},
+            {"text": "It would double for every ten degrees the furnace "
+                     "gets hotter", "correct": False,
+             "why": "That rule applies to reaction RATE in some reactions, "
+                    "never to the total amount a fixed mass of ore can "
+                    "give."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s17",
+        "band": "standard",
+        "text": "A student wants to find out quickly whether a new metal's "
+                "oxide sits above or below carbon. What single test tells "
+                "them?",
+        "options": [
+            {"text": "Heat the oxide with carbon and see if the metal "
+                     "appears", "correct": True},
+            {"text": "Weigh the oxide before and after leaving it in air "
+                     "for a week", "correct": False,
+             "why": "That tests how the metal reacts with the AIR, not "
+                    "where it sits relative to carbon."},
+            {"text": "Measure how hot the oxide has to get before it melts",
+             "correct": False,
+             "why": "Melting point says nothing about whether carbon can "
+                    "take the oxygen."},
+            {"text": "Dissolve the oxide in water and measure the pH",
+             "correct": False,
+             "why": "A pH change tells you about the oxide's chemistry as "
+                    "a compound, not its position against carbon."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s18",
+        "band": "standard",
+        "text": "Silver oxide is heated alone and nothing else is added. "
+                "What would you expect to see happen?",
+        "options": [
+            {"text": "The dark powder gradually turns into a silvery solid, "
+                     "and a gas is given off", "correct": True},
+            {"text": "The dark powder melts into a silver liquid that "
+                     "solidifies again on cooling", "correct": False,
+             "why": "This is a chemical change into a new solid, not "
+                    "melting and re-solidifying."},
+            {"text": "Nothing changes, however long it is heated",
+             "correct": False,
+             "why": "Silver oxide is exactly the compound this lesson says "
+                    "does come apart on heating alone."},
+            {"text": "The powder catches fire and burns away completely",
+             "correct": False,
+             "why": "There is nothing here to burn. The change is the "
+                    "oxide splitting apart."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s19",
+        "band": "standard",
+        "text": "Iron and zinc are both freed from their oxides by heating "
+                "with carbon, yet zinc's extraction needs an extra step "
+                "iron's does not. What is it, and why?",
+        "options": [
+            {"text": "Zinc has to be re-melted afterwards, because it sets "
+                     "solid the moment it forms", "correct": False,
+             "why": "Iron also has to be cast into shape afterwards. That "
+                    "is not what makes zinc different."},
+            {"text": "Zinc boils at the furnace's temperature, so it is "
+                     "condensed from a vapour", "correct": True},
+            {"text": "Zinc has to be roasted twice, because one roasting "
+                     "does not remove enough sulfur", "correct": False,
+             "why": "Not a step this lesson describes for zinc."},
+            {"text": "Zinc has to be cooled slowly, because it cracks if "
+                     "it cools quickly", "correct": False,
+             "why": "Cracking on cooling is not the extra step this "
+                    "lesson gives for zinc."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s20",
+        "band": "standard",
+        "text": "Why can one furnace loaded with carbon not extract both "
+                "zinc and aluminium from their oxides?",
+        "options": [
+            {"text": "Because the two metals would alloy together inside "
+                     "the furnace", "correct": False,
+             "why": "The two ores are not being extracted at the same "
+                    "time in the same furnace in the first place."},
+            {"text": "Because zinc sits below carbon and aluminium sits "
+                     "above it", "correct": True},
+            {"text": "Because zinc and aluminium oxides need different "
+                     "furnace shapes", "correct": False,
+             "why": "Furnace shape is not what the reactivity series "
+                    "rules on here."},
+            {"text": "Because carbon runs out before it can free a second "
+                     "metal", "correct": False,
+             "why": "Running out of carbon is not the reason — aluminium "
+                    "oxide would still resist carbon with an unlimited "
+                    "supply of it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s21",
+        "band": "standard",
+        "text": "A student heats copper oxide with far too little carbon. "
+                "What is the most likely result?",
+        "options": [
+            {"text": "Nothing reacts, because the amount of carbon has to "
+                     "reach a minimum threshold first",
+             "correct": False,
+             "why": "Even a small amount of carbon reacts with some of "
+                    "the oxide. There is no threshold below which nothing "
+                    "happens."},
+            {"text": "Some copper appears, but a good deal of black copper "
+                     "oxide is left unreacted", "correct": True},
+            {"text": "Leftover carbon is mixed in with the copper, so the "
+                     "copper comes out sooty", "correct": False,
+             "why": "Too LITTLE carbon means none of it is left over — "
+                    "every speck reacts. What is left over here is the "
+                    "black oxide that never got any carbon."},
+            {"text": "The reaction happens exactly as normal, since carbon "
+                     "is not used up in this reaction",
+             "correct": False,
+             "why": "Carbon is used up — it leaves as carbon dioxide — so "
+                    "too little of it limits how much oxide can react."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s22",
+        "band": "standard",
+        "text": "A student heats copper oxide and carbon powder that were "
+                "never mixed properly — the carbon sits mostly on top. "
+                "Why does this give a poor result?",
+        "options": [
+            {"text": "Because unmixed powders catch fire instead of "
+                     "reacting", "correct": False,
+             "why": "The powders do not catch fire either way. The problem "
+                    "is contact, not combustion."},
+            {"text": "Because carbon on top blocks the heat from reaching "
+                     "the copper oxide underneath", "correct": False,
+             "why": "Heat still reaches the oxide well enough. What is "
+                    "missing is contact between the reacting substances."},
+            {"text": "Because carbon that never touches copper oxide has "
+                     "no oxide to take the oxygen from", "correct": True},
+            {"text": "Because the reaction needs both powders to have "
+                     "melted into a single liquid first",
+             "correct": False,
+             "why": "Neither powder needs to melt. The reaction happens "
+                    "between the solids where they touch."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s23",
+        "band": "standard",
+        "text": "Gold-bearing gravel needs no chemical method at all, while "
+                "bauxite needs the most expensive method there is. What "
+                "single fact about the two metals explains the enormous "
+                "difference?",
+        "options": [
+            {"text": "Gold is denser than aluminium, so it settles out on "
+                     "its own", "correct": False,
+             "why": "Density explains why crushing and washing works for "
+                    "gold. It says nothing about why bauxite is so hard "
+                    "by comparison."},
+            {"text": "Gold ore is far rarer than bauxite, so more care is "
+                     "taken with it", "correct": False,
+             "why": "Rarity affects value, not which method is needed to "
+                    "free the metal."},
+            {"text": "Gold and aluminium sit at opposite ends of the "
+                     "series", "correct": True},
+            {"text": "Aluminium has a far higher melting point than gold "
+                     "does", "correct": False,
+             "why": "Melting point plays no part in why carbon fails on "
+                    "aluminium oxide."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s24",
+        "band": "standard",
+        "text": "Lead is obtained from its oxide using a furnace with "
+                "carbon, and never by electrolysis. What does that tell "
+                "you about lead's position in the series?",
+        "options": [
+            {"text": "Lead sits above carbon", "correct": False,
+             "why": "A metal above carbon could not be freed by carbon at "
+                    "all. Lead can, so it must sit below it."},
+            {"text": "Lead's position cannot be worked out from the method "
+                     "used to extract it", "correct": False,
+             "why": "The method used is exactly how a metal's position "
+                    "relative to carbon is worked out."},
+            {"text": "Lead sits below carbon", "correct": True},
+            {"text": "Lead sits level with carbon in the series",
+             "correct": False,
+             "why": "Carbon occupies one position on its own, not one "
+                    "shared with a metal."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s25",
+        "band": "standard",
+        "text": "Why does a chemist decide which extraction method to use "
+                "from a metal's position in the reactivity series, rather "
+                "than simply trying each method in turn?",
+        "options": [
+            {"text": "Because trying a method on a metal that cannot use "
+                     "it wastes fuel and time", "correct": True},
+            {"text": "Because trying each method in turn is against the "
+                     "law in an industrial furnace", "correct": False,
+             "why": "Nothing here is a legal matter. The objection is "
+                    "practical, not legal."},
+            {"text": "Because the reactivity series was written down "
+                     "before furnaces were ever invented", "correct": False,
+             "why": "The order in which ideas were discovered is not why "
+                    "the series is used to plan a method now."},
+            {"text": "Because each method can be attempted once on any "
+                     "given ore", "correct": False,
+             "why": "A method can be tried more than once. The real cost "
+                    "is the fuel and time wasted on one that cannot work."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s26",
+        "band": "standard",
+        "text": "A newly identified metal reacts violently the moment it "
+                "touches cold water. Based on this alone, would you expect "
+                "carbon to free it from its oxide?",
+        "options": [
+            {"text": "Yes, because reacting with water shows it is a metal "
+                     "and every metal's oxide can be freed with carbon",
+             "correct": False,
+             "why": "Aluminium is a metal too, and carbon cannot touch its "
+                    "oxide. Being a metal is not enough."},
+            {"text": "Yes, because a violent reaction with water shows the "
+                     "metal is easy to react with in general",
+             "correct": False,
+             "why": "Reacting easily with water and giving up oxygen to "
+                    "carbon are opposite ends of the series, not the same "
+                    "thing."},
+            {"text": "No information can be drawn from a water test about "
+                     "an extraction method", "correct": False,
+             "why": "The water test is exactly how the series orders "
+                    "metals, and the series is what decides the method."},
+            {"text": "No — reacting violently with cold water places it "
+                     "high in the series, more likely above carbon than "
+                     "below it", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s27",
+        "band": "standard",
+        "text": "Why is it wrong to describe getting gold out of gravel as "
+                "an “extraction”, in the strict sense this lesson uses the "
+                "word?",
+        "options": [
+            {"text": "Because gold is too valuable for the word to apply "
+                     "to it", "correct": False,
+             "why": "Value has nothing to do with whether a process "
+                    "counts as an extraction."},
+            {"text": "Because the gravel is not technically an ore",
+             "correct": False,
+             "why": "It is an ore in the loose sense of a rock worth "
+                    "processing, and that is not the objection here."},
+            {"text": "Because the process takes minutes rather than the "
+                     "hours a furnace needs", "correct": False,
+             "why": "Speed is not what separates extraction from simple "
+                    "separation."},
+            {"text": "Because no chemical reaction happens — the gold is "
+                     "only separated out", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s28",
+        "band": "standard",
+        "text": "The copper oxide and carbon practical has been run safely "
+                "in schools for decades. Why does the guidance still call "
+                "for a written risk assessment every time it is done?",
+        "options": [
+            {"text": "Because the reaction becomes more dangerous the more "
+                     "times it is repeated", "correct": False,
+             "why": "The chemistry of the reaction does not change with "
+                    "repetition."},
+            {"text": "Because insurers require new paperwork for every "
+                     "practical regardless of what it involves",
+             "correct": False,
+             "why": "Not the reason this lesson gives. The hazards named "
+                    "are chemical ones."},
+            {"text": "Because each class uses a different make of Bunsen "
+                     "burner", "correct": False,
+             "why": "The equipment is not what the risk assessment is "
+                    "written around."},
+            {"text": "Because it covers the specific hazards of strong "
+                     "heating, a reducing mixture and hot residues",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s29",
+        "band": "standard",
+        "text": "Silver oxide falls apart into silver and oxygen on heating "
+                "alone. Copper oxide does not. Why does copper oxide need "
+                "carbon added rather than simply decomposing the same way?",
+        "options": [
+            {"text": "Copper oxide is not a genuine compound, unlike "
+                     "silver oxide", "correct": False,
+             "why": "Copper oxide is a genuine compound, copper joined to "
+                    "oxygen, just like silver oxide."},
+            {"text": "Copper melts before it can decompose, which stops "
+                     "the reaction happening", "correct": False,
+             "why": "Melting is not what prevents copper oxide from "
+                    "decomposing on heating alone."},
+            {"text": "Silver oxide appears to decompose, though it is "
+                     "being reduced by the crucible", "correct": False,
+             "why": "The crucible plays no chemical part. Silver oxide "
+                    "genuinely comes apart on its own."},
+            {"text": "Copper holds its oxygen far more tightly than "
+                     "silver does", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-s30",
+        "band": "standard",
+        "text": "A furnace reduces 80 kg of iron oxide and produces 56 kg "
+                "of iron. What percentage of the iron oxide's mass ends up "
+                "as iron?",
+        "options": [
+            {"text": "56%", "correct": False,
+             "why": "That is simply the number 56 read as a percentage, "
+                    "not 56 divided by 80."},
+            {"text": "80%", "correct": False,
+             "why": "That is the starting mass read as a percentage, not "
+                    "the result of the division."},
+            {"text": "24%", "correct": False,
+             "why": "That is the mass LOST as carbon dioxide, expressed as "
+                    "a percentage of the wrong starting figure."},
+            {"text": "70%", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-338 night 3 top-up ───────────────────────────────
+    {
+        "id": "c9-03-h14",
+        "band": "harder",
+        "text": "A recycling plant processes 500 tonnes of aluminium cans a "
+                "year. New aluminium from bauxite needs about 15,000 kWh per "
+                "tonne, and recycling needs about a twentieth of that. How "
+                "much electricity does recycling 500 tonnes SAVE compared "
+                "with extracting the same mass from bauxite?",
+        "options": [
+            {"text": "About 7,125,000 kWh", "correct": True},
+            {"text": "About 7,500,000 kWh, since a twentieth of the total "
+                     "is simply subtracted from it", "correct": False,
+             "why": "A twentieth of the total is what recycling COSTS, not "
+                    "what is saved."},
+            {"text": "About 375,000 kWh", "correct": False,
+             "why": "That treats 750 kWh as the saving per tonne rather "
+                    "than as recycling's own cost per tonne."},
+            {"text": "About 15,000,000 kWh, since recycling barely uses "
+                     "any electricity", "correct": False,
+             "why": "Recycling still uses a twentieth of the electricity, "
+                    "which is not the same as using almost none of it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h15",
+        "band": "harder",
+        "text": "A start-up claims an extremely powerful electric arc "
+                "furnace with carbon electrodes will finally let carbon "
+                "free sodium, which sits high above carbon in the series. "
+                "Evaluate the claim.",
+        "options": [
+            {"text": "The claim could well be true — this specific design "
+                     "has not been tested on sodium oxide before",
+             "correct": False,
+             "why": "Sodium's position relative to carbon is already "
+                    "established. No furnace was missing; the chemistry "
+                    "was."},
+            {"text": "The claim is wrong — sodium's position above carbon "
+                     "does not change with the furnace's temperature",
+             "correct": True},
+            {"text": "The claim is right, because an electric arc furnace "
+                     "counts as electrolysis rather than as a carbon "
+                     "route", "correct": False,
+             "why": "The furnace described relies on carbon electrodes "
+                    "reducing the ore, not on splitting a molten "
+                    "compound."},
+            {"text": "The claim is wrong, though the objection given is "
+                     "about licensing an arc furnace, not the chemistry",
+             "correct": False,
+             "why": "This lesson objects on chemical grounds. What is "
+                    "permitted in a school or a works is a separate "
+                    "matter."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h16",
+        "band": "harder",
+        "text": "A geologist finds a lump of native platinum in a riverbed, "
+                "combined with nothing else at all. Using the reasoning "
+                "from this lesson, what does that suggest about platinum's "
+                "position in the reactivity series?",
+        "options": [
+            {"text": "It is likely to sit above carbon, since the most "
+                     "reactive metals survive best in a riverbed",
+             "correct": False,
+             "why": "A reactive metal combines with something long before "
+                    "a river gets hold of it. Surviving uncombined points "
+                    "the other way."},
+            {"text": "Its position cannot be guessed from this, since a "
+                     "river can carry any kind of rock", "correct": False,
+             "why": "A river carrying any rock is beside the point. What "
+                    "matters is what stays uncombined once it is there."},
+            {"text": "It is likely to be very unreactive, sitting near the "
+                     "bottom of the series", "correct": True},
+            {"text": "It is likely to sit close to carbon, since carbon "
+                     "itself is sometimes found native too",
+             "correct": False,
+             "why": "Carbon being found native is a fact about a "
+                    "non-metal, and it says nothing about where a metal "
+                    "sits."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h17",
+        "band": "harder",
+        "text": "Metal X's oxide reacts with carbon only slowly, needing "
+                "several hours of continuous heating at full furnace "
+                "temperature, while iron's reaction under the same "
+                "conditions is finished in minutes. Does this show that X "
+                "sits above iron in the series?",
+        "options": [
+            {"text": "Yes — a slower reaction generally means a more "
+                     "reactive metal, in every case", "correct": False,
+             "why": "Rate and position are different measures. A slow "
+                    "reaction that still finishes shows the metal is "
+                    "below carbon."},
+            {"text": "No — X is still below carbon, since carbon does "
+                     "eventually free it; the slowness is about reaction "
+                     "rate, not about position", "correct": True},
+            {"text": "Yes — anything slower than iron must, by "
+                     "definition, sit closer to aluminium", "correct": False,
+             "why": "Slowness is not the test this lesson uses to compare "
+                    "positions. Whether carbon can free the metal is."},
+            {"text": "No conclusion of any kind can be drawn from a "
+                     "reaction taking longer to finish", "correct": False,
+             "why": "Something real follows — the reaction finishing at "
+                    "all shows X is below carbon. It is the ranking "
+                    "against iron that a slow finish leaves open."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h18",
+        "band": "harder",
+        "text": "160 kg of iron oxide yields 112 kg of iron when it is "
+                "fully reduced with carbon. A furnace processes 640 kg of "
+                "iron oxide under the same conditions. How much iron is "
+                "produced?",
+        "options": [
+            {"text": "448 kg", "correct": True},
+            {"text": "112 kg, since the same 160-to-112 ratio applies "
+                     "regardless of the starting mass", "correct": False,
+             "why": "The ratio applies regardless of the starting mass, "
+                    "but the mass it gives still scales up with it."},
+            {"text": "640 kg, since the oxide converts to iron mass for "
+                     "mass", "correct": False,
+             "why": "Some of the mass leaves as carbon dioxide, so the "
+                    "iron produced is less than the oxide that went in."},
+            {"text": "914 kg", "correct": False,
+             "why": "That comes from the ratio flipped the wrong way "
+                    "round — 160 out of 112, rather than 112 out of 160."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h19",
+        "band": "harder",
+        "text": "A metal could in theory be freed by carbon, but the "
+                "reaction is so slow it would take a year to finish one "
+                "batch, while electrolysis would finish the same batch in "
+                "a day. Electrolysis costs roughly twenty times as much "
+                "electricity. Which method should the works choose, and "
+                "why?",
+        "options": [
+            {"text": "Carbon, because it is the cheaper route and cost is "
+                     "what a works weighs above everything else",
+             "correct": False,
+             "why": "Cost is one factor, and a year-long batch makes the "
+                    "cheap route commercially useless on its own."},
+            {"text": "Neither — a method costing twenty times as much "
+                     "cannot reasonably be justified", "correct": False,
+             "why": "Cost alone does not settle it here. A method that "
+                    "cannot deliver in a useful time is worth paying more "
+                    "to avoid."},
+            {"text": "Electrolysis, because a year-long batch time makes "
+                     "the cheaper method uneconomic despite being "
+                     "chemically possible", "correct": True},
+            {"text": "Carbon, because chemical possibility is the single "
+                     "thing that decides a works' choice of method",
+             "correct": False,
+             "why": "Chemical possibility decides what can be used. Cost "
+                    "and time decide what a works chooses among the "
+                    "possible methods."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h20",
+        "band": "harder",
+        "text": "For every 44 kg of carbon dioxide a furnace produces while "
+                "reducing copper oxide, 12 kg of that mass came from the "
+                "carbon used. A furnace produces 275 kg of carbon dioxide "
+                "reducing a batch of copper oxide. What mass of carbon did "
+                "it use?",
+        "options": [
+            {"text": "100 kg, using a quarter of 275 kg as a rough match "
+                     "for the ratio", "correct": False,
+             "why": "A quarter is not the ratio given. 12 out of 44 is."},
+            {"text": "75 kg", "correct": True},
+            {"text": "12 kg, since that is the figure given in the "
+                     "question", "correct": False,
+             "why": "12 kg is the ratio's own figure for 44 kg of gas, not "
+                    "the answer once the gas mass is 275 kg."},
+            {"text": "263 kg, taking the given 12 kg straight off the "
+                     "275 kg", "correct": False,
+             "why": "That treats 12 kg as a fixed amount to subtract, "
+                    "rather than as a ratio to scale up."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h21",
+        "band": "harder",
+        "text": "Metal A is freed from its oxide by heating alone. Metal B "
+                "needs heating with carbon. Metal C needs electrolysis. Put "
+                "A, B and C in order from LEAST reactive to MOST reactive.",
+        "options": [
+            {"text": "C, then B, then A", "correct": False,
+             "why": "That runs the order backwards — C, needing "
+                    "electrolysis, is the most reactive of the three, not "
+                    "the least."},
+            {"text": "B, then A, then C", "correct": False,
+             "why": "A needs nothing but heat, which makes it the least "
+                    "reactive, not the middle one."},
+            {"text": "The order cannot be worked out from the method used "
+                     "on each one", "correct": False,
+             "why": "The method used is exactly what this lesson uses to "
+                    "order metals against carbon and against each other."},
+            {"text": "A, then B, then C", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h22",
+        "band": "harder",
+        "text": "A student argues that because carbon sits “in the "
+                "middle” of the reactivity series, exactly half of all "
+                "metals must be freed using it. What is wrong with this "
+                "argument?",
+        "options": [
+            {"text": "Carbon's position splits metals into an above group "
+                     "and a below group of no fixed size", "correct": True},
+            {"text": "Nothing is wrong — the argument follows directly "
+                     "from carbon's position", "correct": False,
+             "why": "A position splitting a line into two sides does not "
+                    "make the two sides equal in size."},
+            {"text": "Carbon does not sit anywhere near the middle of the "
+                     "series", "correct": False,
+             "why": "Its rough position is not the flaw here. The flaw is "
+                    "assuming a split must be equal."},
+            {"text": "Carbon can free every metal below it, so the true "
+                     "fraction should be closer to all metals overall",
+             "correct": False,
+             "why": "Carbon frees the metals below it. It has no route "
+                    "to the ones above."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h23",
+        "band": "harder",
+        "text": "Two students disagree about whether melting a freed metal "
+                "to cast it into ingots should count as part of "
+                "“extraction”. Using this lesson's own definition, who is "
+                "right?",
+        "options": [
+            {"text": "The student who says it does count, since the metal "
+                     "is not usable in its raw form", "correct": False,
+             "why": "Usefulness is not what the definition turns on. "
+                    "Extraction is the reaction that frees the metal from "
+                    "its compound."},
+            {"text": "The student who says it does not count, because "
+                     "extraction is the reaction that frees the metal, and "
+                     "casting happens afterward", "correct": True},
+            {"text": "Neither, because this lesson gives no working "
+                     "definition of “extraction” to settle it",
+             "correct": False,
+             "why": "A definition is given, and it is precise: getting a "
+                    "metal out of its ore as the metal itself."},
+            {"text": "Both, because melting and reduction are simply two "
+                     "names for the same process", "correct": False,
+             "why": "Melting is a physical change of state. Reduction is "
+                    "a chemical change that removes oxygen."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h24",
+        "band": "harder",
+        "text": "Aluminium powder mixed with iron oxide and lit with a "
+                "spark can free molten iron — the thermite reaction — using "
+                "nothing but aluminium. Does this contradict the rule that "
+                "aluminium sits high in the series, above carbon?",
+        "options": [
+            {"text": "Yes — a metal that high in the series should be "
+                     "unable to free anything on its own", "correct": False,
+             "why": "Being high in the series is exactly what lets a "
+                    "metal displace one below it. It is not a barrier to "
+                    "doing so."},
+            {"text": "No, though the real objection is that a spark counts "
+                     "as electricity, making this electrolysis in "
+                     "disguise", "correct": False,
+             "why": "A spark here starts the reaction. The reaction "
+                    "itself is a displacement, not electrolysis."},
+            {"text": "No — it confirms it: sitting above iron lets "
+                     "aluminium take iron's oxygen in a displacement",
+             "correct": True},
+            {"text": "Yes — aluminium sitting above carbon should stop it "
+                     "reacting with any other metal's oxide too",
+             "correct": False,
+             "why": "Above carbon is about carbon specifically. Aluminium "
+                    "can still displace metals below IT in the series."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h25",
+        "band": "harder",
+        "text": "A school considers dropping its copper oxide and carbon "
+                "practical in favour of an electrolysis demonstration, "
+                "arguing electrolysis is “more advanced chemistry”. "
+                "Evaluate this reasoning.",
+        "options": [
+            {"text": "It is sound reasoning — a more advanced method "
+                     "teaches more chemistry than a simpler one does",
+             "correct": False,
+             "why": "The carbon route with copper teaches reduction, "
+                    "displacement and observation just as directly as "
+                    "electrolysis would."},
+            {"text": "It is sound reasoning, because copper cannot be "
+                     "extracted with carbon in a school laboratory",
+             "correct": False,
+             "why": "Copper oxide and carbon is the practical this lesson "
+                    "names as the one a class is most likely to run."},
+            {"text": "It is poor reasoning, though the real objection is "
+                     "that electrolysis equipment is too expensive for "
+                     "schools", "correct": False,
+             "why": "Cost of equipment is not what this lesson's own "
+                    "reasoning turns on. Matching method to the metal is."},
+            {"text": "It is poor reasoning — the method fits the metal's "
+                     "position and cost, not which one sounds more "
+                     "advanced", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h26",
+        "band": "harder",
+        "text": "A furnace fully reduces a batch of zinc oxide using a "
+                "measured amount of carbon. A worker then adds MORE carbon "
+                "to the same finished batch, without adding any more ore. "
+                "What effect does the extra carbon have on the mass of "
+                "zinc already produced?",
+        "options": [
+            {"text": "None — there is no oxide left for the extra carbon "
+                     "to react with", "correct": True},
+            {"text": "It increases the mass of zinc a little, since more "
+                     "carbon gives more reducing power", "correct": False,
+             "why": "Reducing power matters while oxide remains to "
+                    "reduce. None remains once the batch is finished."},
+            {"text": "It decreases the mass of zinc, because excess "
+                     "carbon reacts with the zinc metal itself",
+             "correct": False,
+             "why": "Carbon does not react with zinc metal. It reacts "
+                    "with zinc oxide, which is already gone."},
+            {"text": "It converts some of the zinc back into zinc oxide",
+             "correct": False,
+             "why": "Adding carbon cannot push the reaction backwards. "
+                    "Nothing here re-joins the zinc to oxygen."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h27",
+        "band": "harder",
+        "text": "Suppose a furnace route costs about £300 per tonne of "
+                "zinc, and electrolysis costs about twenty times as much "
+                "per tonne. How much extra would it cost to produce 10 "
+                "tonnes of zinc by electrolysis instead of by furnace?",
+        "options": [
+            {"text": "£3,000", "correct": False,
+             "why": "That is simply the furnace cost for 10 tonnes, not "
+                    "the extra cost of choosing electrolysis instead."},
+            {"text": "£6,000", "correct": False,
+             "why": "That treats electrolysis as twice the furnace cost "
+                    "rather than twenty times it."},
+            {"text": "£60,000, the full electrolysis cost for the whole "
+                     "10 tonnes", "correct": False,
+             "why": "That is the full electrolysis cost, before the "
+                    "furnace cost is subtracted back out to find the "
+                    "EXTRA."},
+            {"text": "£57,000", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h28",
+        "band": "harder",
+        "text": "A metal sits below carbon but ABOVE zinc in the series. "
+                "Would you expect it to be freed more or less easily by "
+                "carbon than zinc is, and why?",
+        "options": [
+            {"text": "More easily, since sitting closer to carbon on the "
+                     "line means less distance for the reaction to cover",
+             "correct": False,
+             "why": "This is not a matter of physical distance on a line. "
+                    "Nearness to carbon means a tighter grip on oxygen, "
+                    "not an easier reaction."},
+            {"text": "Equally easily, since both sit below carbon and "
+                     "both can be freed by it", "correct": False,
+             "why": "Both being below carbon means both CAN be freed. It "
+                    "does not mean they are freed with equal ease."},
+            {"text": "Less easily, though carbon can still do it — "
+                     "sitting closer to carbon means holding its oxygen "
+                     "more tightly than zinc does", "correct": True},
+            {"text": "It cannot be freed by carbon, since it sits closer "
+                     "to the metals that need electrolysis",
+             "correct": False,
+             "why": "Sitting below carbon, however close, still means "
+                    "carbon can take its oxygen."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h29",
+        "band": "harder",
+        "text": "A newly discovered metal's oxide reacts with carbon within "
+                "seconds, even at a low furnace temperature — faster and "
+                "more easily than any known metal oxide. Where would you "
+                "predict it sits, relative to silver?",
+        "options": [
+            {"text": "Above silver, since reacting easily shows it holds "
+                     "its oxygen firmly", "correct": False,
+             "why": "Holding oxygen firmly is what makes a reaction "
+                    "difficult. Reacting easily points the other way."},
+            {"text": "Level with carbon, since carbon is the fastest "
+                     "thing reacting with an oxide", "correct": False,
+             "why": "Carbon is not an oxide reacting here. It is a metal "
+                    "oxide reacting with carbon that is being placed."},
+            {"text": "Its position cannot be estimated from how easily it "
+                     "reacts with carbon", "correct": False,
+             "why": "How easily an oxide gives up its oxygen is exactly "
+                    "what this lesson uses to place a metal near the "
+                    "bottom of the series."},
+            {"text": "Very close to the bottom of the series, at least as "
+                     "unreactive as silver", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-03-h30",
+        "band": "harder",
+        "text": "A history book claims humans could not have used iron "
+                "until electricity was discovered, reasoning that “metals "
+                "need electricity to be extracted”. What is wrong with "
+                "this claim?",
+        "options": [
+            {"text": "The claim is correct, and iron tools found before "
+                     "electricity must have come from meteorites instead",
+             "correct": False,
+             "why": "Meteoric iron is real and rare. The iron worked "
+                    "through most of history came from ore, using "
+                    "carbon."},
+            {"text": "The claim is correct for iron specifically, though "
+                     "not for the other metals below carbon",
+             "correct": False,
+             "why": "The claim is wrong for iron precisely because iron "
+                    "sits below carbon, and the same reasoning applies to "
+                    "every metal below carbon."},
+            {"text": "The claim is wrong, though the objection given is "
+                     "that early people generated static electricity by "
+                     "accident", "correct": False,
+             "why": "Nothing about the blast furnace route relies on "
+                    "electricity, generated by accident or otherwise."},
+            {"text": "The claim is wrong — iron sits below carbon and has "
+                     "been smelted with carbon for thousands of years",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]

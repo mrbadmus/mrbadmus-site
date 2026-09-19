@@ -1006,4 +1006,1135 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── easier · MRB-338 night 3 top-up ─────────────────────────────────
+    {
+        "id": "c9-04-e14",
+        "band": "easier",
+        "text": "Why does firebrick fail the “see-through” requirement in "
+                "the bench?",
+        "options": [
+            {"text": "It is opaque", "correct": True},
+            {"text": "It is coloured bright red, which blocks light",
+             "correct": False,
+             "why": "Colour is not the reason given. Being opaque is."},
+            {"text": "It is too thick to see through", "correct": False,
+             "why": "Thickness is not the reason given. The material "
+                    "itself does not let light through."},
+            {"text": "It has not been polished smooth", "correct": False,
+             "why": "Polishing changes shine, not whether light passes "
+                    "through the material at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e15",
+        "band": "easier",
+        "text": "Firebrick and heat-proof glass-ceramic are the two "
+                "materials on the bench that both fail “does not shatter "
+                "when dropped”. What do they have in common?",
+        "options": [
+            {"text": "They are both composites", "correct": False,
+             "why": "Both are ceramics, not composites."},
+            {"text": "They are both ceramics", "correct": True},
+            {"text": "They are both polymers", "correct": False,
+             "why": "Neither is a polymer. Polymers on the bench meet this "
+                    "requirement rather than fail it."},
+            {"text": "They are both made from crude oil", "correct": False,
+             "why": "Neither comes from crude oil. That describes "
+                    "polymers, a different family."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e16",
+        "band": "easier",
+        "text": "Why does firebrick fail “holds pressurised gas in”?",
+        "options": [
+            {"text": "It reacts with the gas chemically", "correct": False,
+             "why": "Nothing here is a chemical reaction. The gas simply "
+                    "escapes through the material."},
+            {"text": "It is too heavy to hold gas", "correct": False,
+             "why": "Weight has nothing to do with whether gas can escape "
+                    "through a material."},
+            {"text": "Fired clay is full of tiny holes", "correct": True},
+            {"text": "It cracks the moment gas is added", "correct": False,
+             "why": "Nothing about adding gas cracks a firebrick. The "
+                    "porosity is the reason given."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e17",
+        "band": "easier",
+        "text": "Why does polythene fail “holds pressurised gas in”?",
+        "options": [
+            {"text": "It melts as soon as gas is added", "correct": False,
+             "why": "Nothing about adding gas melts polythene. The gas "
+                    "simply passes through the material."},
+            {"text": "It dissolves in the gas", "correct": False,
+             "why": "Polythene does not dissolve in carbon dioxide."},
+            {"text": "It is too thin to hold anything", "correct": False,
+             "why": "Thinness is not the reason given — the material "
+                    "itself lets the gas seep through."},
+            {"text": "Carbon dioxide seeps through it", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e18",
+        "band": "easier",
+        "text": "An empty PET bottle crumples easily in one hand. What keeps "
+                "a full, sealed one rigid?",
+        "options": [
+            {"text": "The pressure of the gas inside", "correct": True},
+            {"text": "The label wrapped around it", "correct": False,
+             "why": "A label adds no strength to the bottle wall."},
+            {"text": "The drink freezing solid inside it", "correct": False,
+             "why": "The drink stays liquid. Freezing plays no part in "
+                    "this."},
+            {"text": "The cap being screwed on tightly", "correct": False,
+             "why": "The cap seals the bottle. It is the sealed gas "
+                    "pressure that firms up the wall."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e19",
+        "band": "easier",
+        "text": "Why does carbon-fibre composite fail “stands red heat”?",
+        "options": [
+            {"text": "The carbon fibres themselves melt at a low "
+                     "temperature", "correct": False,
+             "why": "It is the resin that fails first, not the fibres "
+                    "themselves."},
+            {"text": "The resin holding the fibres together chars first",
+             "correct": True},
+            {"text": "It reacts explosively with hot air", "correct": False,
+             "why": "Nothing here explodes. The resin simply chars under "
+                    "strong heat."},
+            {"text": "It is too light in weight to hold its own shape "
+                     "once the furnace gets very hot", "correct": False,
+             "why": "Weight is not the reason given for this failure."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e20",
+        "band": "easier",
+        "text": "Which single material on the bench is described as “the "
+                "heaviest thing on the shelf”?",
+        "options": [
+            {"text": "Firebrick", "correct": False,
+             "why": "Firebrick is heavy too, and it is not the one "
+                    "described this way."},
+            {"text": "Carbon-fibre composite", "correct": False,
+             "why": "Carbon-fibre composite is one of the lightest "
+                    "materials on the shelf."},
+            {"text": "Reinforced concrete", "correct": True},
+            {"text": "Heat-proof glass-ceramic", "correct": False,
+             "why": "A safe pane of it is heavy, and it is not the one "
+                    "singled out as heaviest."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e21",
+        "band": "easier",
+        "text": "Why does heat-proof glass-ceramic fail “cheap by the "
+                "square metre”?",
+        "options": [
+            {"text": "It has to be imported from abroad", "correct": False,
+             "why": "Where it comes from is not the reason given."},
+            {"text": "It needs a licence to buy", "correct": False,
+             "why": "Nothing about a licence is mentioned. The cost "
+                    "itself is the reason."},
+            {"text": "It is taxed more heavily than other materials",
+             "correct": False,
+             "why": "Tax is not the reason given for its cost."},
+            {"text": "A sheet of it costs many times what firebrick "
+                     "does", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e22",
+        "band": "easier",
+        "text": "What do we call the property that measures how hard a "
+                "material is to scratch?",
+        "options": [
+            {"text": "Hardness", "correct": True},
+            {"text": "Toughness", "correct": False,
+             "why": "Toughness is about surviving a knock, not resisting "
+                    "a scratch."},
+            {"text": "Strength", "correct": False,
+             "why": "Strength is about the force needed to break a "
+                    "material, not to scratch it."},
+            {"text": "Stiffness", "correct": False,
+             "why": "Stiffness is about resisting bending, not resisting "
+                    "a scratch."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e23",
+        "band": "easier",
+        "text": "Why does carbon-fibre composite fail “see-through”?",
+        "options": [
+            {"text": "It is coated in a dark paint", "correct": False,
+             "why": "Nothing here is painted. The material's own colour "
+                    "and weave block light."},
+            {"text": "It is black, and the weave of the fibres shows",
+             "correct": True},
+            {"text": "It is wrapped in an opaque plastic film",
+             "correct": False,
+             "why": "No film is mentioned. The composite itself is not "
+                    "see-through."},
+            {"text": "The resin used sets cloudy", "correct": False,
+             "why": "Cloudiness is not the reason given — the material's "
+                    "colour and weave are."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e24",
+        "band": "easier",
+        "text": "Why does reinforced concrete fail “see-through”?",
+        "options": [
+            {"text": "It is deliberately tinted grey during mixing",
+             "correct": False,
+             "why": "Tinting is not the reason. Concrete is simply "
+                    "opaque."},
+            {"text": "The steel bars inside block the light",
+             "correct": False,
+             "why": "The concrete itself is opaque, quite apart from the "
+                    "steel bars inside it."},
+            {"text": "It is opaque", "correct": True},
+            {"text": "It is coated with a reflective layer", "correct": False,
+             "why": "No coating is mentioned. The material is opaque on "
+                    "its own."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e25",
+        "band": "easier",
+        "text": "Why does firebrick fail “takes repeated flexing and "
+                "knocks”?",
+        "options": [
+            {"text": "It flexes too easily and never springs back",
+             "correct": False,
+             "why": "Firebrick does not flex easily at all. It cracks "
+                    "instead."},
+            {"text": "It is too slippery to grip", "correct": False,
+             "why": "Grip is not what this requirement is about."},
+            {"text": "It wears away when rubbed", "correct": False,
+             "why": "Wearing away is a different property from flexing "
+                    "and taking knocks."},
+            {"text": "It does not flex at all — the first bend is a "
+                     "crack", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e26",
+        "band": "easier",
+        "text": "Why does heat-proof glass-ceramic fail “does not shatter "
+                "when dropped”?",
+        "options": [
+            {"text": "A sharp knock on a corner and it goes",
+             "correct": True},
+            {"text": "It is too slippery to hold onto safely",
+             "correct": False,
+             "why": "Grip is not the reason given for this failure."},
+            {"text": "It reacts with the air and weakens over time",
+             "correct": False,
+             "why": "Nothing here is a chemical reaction with the air."},
+            {"text": "It is too heavy to carry without dropping it",
+             "correct": False,
+             "why": "Weight is a separate property from what happens once "
+                    "it is dropped."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e27",
+        "band": "easier",
+        "text": "Why does PET fail “stands red heat”?",
+        "options": [
+            {"text": "It catches fire the moment it is warmed even "
+                     "slightly", "correct": False,
+             "why": "PET does not catch fire at these temperatures. It "
+                    "buckles and softens instead."},
+            {"text": "It buckles in an oven and softens in boiling water",
+             "correct": True},
+            {"text": "It turns black under heat", "correct": False,
+             "why": "Colour change is not the reason given for this "
+                    "failure."},
+            {"text": "It becomes strongly magnetic once it is heated in "
+                     "the furnace", "correct": False,
+             "why": "PET does not become magnetic. It softens under "
+                    "heat."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e28",
+        "band": "easier",
+        "text": "Why does polythene fail “stiff under load”?",
+        "options": [
+            {"text": "It shatters under the smallest load", "correct": False,
+             "why": "Polythene does not shatter. It bends easily instead."},
+            {"text": "It dissolves under a steady load", "correct": False,
+             "why": "Nothing about a load makes polythene dissolve."},
+            {"text": "A sheet of it bends between your fingers",
+             "correct": True},
+            {"text": "It cracks along straight lines", "correct": False,
+             "why": "Cracking along lines is not how polythene fails "
+                    "this requirement — bending easily is."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e29",
+        "band": "easier",
+        "text": "Which material is described as “the most expensive "
+                "material on the shelf by a wide margin”?",
+        "options": [
+            {"text": "Heat-proof glass-ceramic", "correct": False,
+             "why": "It is expensive too, and it is not the one singled "
+                    "out this way."},
+            {"text": "Reinforced concrete", "correct": False,
+             "why": "Concrete is one of the cheaper materials on the "
+                    "shelf."},
+            {"text": "PET", "correct": False,
+             "why": "PET is one of the cheaper materials on the shelf."},
+            {"text": "Carbon-fibre composite", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-e30",
+        "band": "easier",
+        "text": "Which requirement do PET and polythene both MEET, that "
+                "firebrick and heat-proof glass-ceramic both FAIL?",
+        "options": [
+            {"text": "Stiff under load", "correct": False,
+             "why": "Neither PET nor polythene meets this — both bend or "
+                    "crumple under a load."},
+            {"text": "Stands red heat", "correct": False,
+             "why": "Neither PET nor polythene meets this — both are "
+                    "polymers that soften under heat."},
+            {"text": "Light", "correct": True},
+            {"text": "See-through", "correct": False,
+             "why": "Polythene fails this one — it comes out milky "
+                    "rather than clear."},
+        ],
+        "figure": None,
+    },
+
+    # ── standard · MRB-338 night 3 top-up ─────────────────────────────
+    {
+        "id": "c9-04-s14",
+        "band": "standard",
+        "text": "The racing bike job needs a material that is light AND "
+                "stiff at once, but the pizza-oven job's requirements do "
+                "not mention “light” at all. Why not?",
+        "options": [
+            {"text": "An oven floor is fixed in place, so its weight is "
+                     "not part of doing the job well", "correct": True},
+            {"text": "No material heavy enough for an oven floor exists",
+             "correct": False,
+             "why": "Heavy materials are exactly what oven floors are "
+                    "made from."},
+            {"text": "An oven does not need to be stiff, unlike a bike",
+             "correct": False,
+             "why": "The oven floor does need to be stiff — it is one of "
+                    "its four requirements."},
+            {"text": "Heavier materials cost less than lighter ones",
+             "correct": False,
+             "why": "That is not a rule this lesson states."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s15",
+        "band": "standard",
+        "text": "Heat-proof glass-ceramic meets “stands red heat” easily, "
+                "yet it still fails “does not shatter when dropped”. Why "
+                "does resisting heat not also mean resisting a knock?",
+        "options": [
+            {"text": "The knock test was carried out while it was still "
+                     "hot", "correct": False,
+             "why": "The bench does not say the knock test was done hot."},
+            {"text": "Standing heat and surviving a knock are different "
+                     "properties", "correct": True},
+            {"text": "The failure is a formality rather than a real one",
+             "correct": False,
+             "why": "The failure is genuine: a sharp knock on a corner "
+                    "and it goes."},
+            {"text": "Resisting heat and resisting a knock are one "
+                     "property seen two ways", "correct": False,
+             "why": "They are not one property, which is why a material "
+                    "can have one and not the other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s16",
+        "band": "standard",
+        "text": "Firebrick and heat-proof glass-ceramic can both stand red "
+                "heat and survive daily heating and cooling, yet only "
+                "glass-ceramic wins the stove-window job. Why?",
+        "options": [
+            {"text": "Firebrick's low price rules it out of a window job",
+             "correct": False,
+             "why": "Being cheap is not a disqualification anywhere in "
+                    "this lesson."},
+            {"text": "Firebrick has not been tested against heat",
+             "correct": False,
+             "why": "Firebrick meets both the heat and cycling "
+                    "requirements. It is simply not transparent."},
+            {"text": "The window also needs to be see-through",
+             "correct": True},
+            {"text": "Glass-ceramic is stiffer than firebrick",
+             "correct": False,
+             "why": "Both materials meet the stiffness requirement."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s17",
+        "band": "standard",
+        "text": "Carbon-fibre composite fails “cheap by the square metre” "
+                "by a wide margin, yet it still wins the racing bike job. "
+                "Why does failing one requirement not rule it out?",
+        "options": [
+            {"text": "The bike job ignores its own rules as an exception",
+             "correct": False,
+             "why": "The bike job is not treated as an exception."},
+            {"text": "Expense on its own makes a material the best choice",
+             "correct": False,
+             "why": "Expense is not a merit by itself."},
+            {"text": "The bike job has a bigger budget than the others",
+             "correct": False,
+             "why": "Budget is not mentioned anywhere on the bench."},
+            {"text": "Cost was never one of the bike job's requirements",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s18",
+        "band": "standard",
+        "text": "The pizza-oven job's requirements do not include "
+                "“see-through” or “holds pressurised gas in”. Why would "
+                "adding those two make less sense for an oven floor?",
+        "options": [
+            {"text": "A requirement should describe something the job "
+                     "genuinely needs", "correct": True},
+            {"text": "Every job on the bench is fixed at four "
+                     "requirements", "correct": False,
+             "why": "The number of requirements is not fixed at four for "
+                    "every job."},
+            {"text": "“See-through” is not a genuine requirement anywhere "
+                     "on the bench", "correct": False,
+             "why": "It decides the bottle and stove jobs."},
+            {"text": "Extra requirements make a job impossible for any "
+                     "material to satisfy", "correct": False,
+             "why": "Firebrick would still meet the original four even "
+                    "with extra requirements listed."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s19",
+        "band": "standard",
+        "text": "PET meets “gas-tight” and “see-through”, which the bottle "
+                "job needs, and it also meets “takes repeated flexing and "
+                "knocks”, which the job's list does not mention. Does that "
+                "extra toughness count against PET?",
+        "options": [
+            {"text": "It cannot be judged, since toughness is never "
+                     "mentioned for this job", "correct": False,
+             "why": "A requirement list is a floor to clear, not a "
+                    "ceiling to match exactly."},
+            {"text": "No — meeting a property beyond what a job needs "
+                     "does not disqualify it", "correct": True},
+            {"text": "Yes — a material must match a job's list exactly, "
+                     "with nothing extra", "correct": False,
+             "why": "Nothing here disqualifies a useful extra property."},
+            {"text": "Yes — extra toughness makes PET too expensive",
+             "correct": False,
+             "why": "Toughness and cost are different properties."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s20",
+        "band": "standard",
+        "text": "Firebrick's low cost matters far more for the oven job "
+                "than heat-proof glass-ceramic's high cost matters for the "
+                "stove job. Why?",
+        "options": [
+            {"text": "Outdoor materials are always cheaper than indoor "
+                     "ones", "correct": False,
+             "why": "Nothing here is about indoors or outdoors."},
+            {"text": "Stove windows are subsidised by manufacturers",
+             "correct": False,
+             "why": "Subsidies are not mentioned anywhere in this "
+                    "lesson."},
+            {"text": "An oven floor covers a much larger area than a "
+                     "stove window", "correct": True},
+            {"text": "An oven floor is replaced more often than a window",
+             "correct": False,
+             "why": "Replacement frequency is not the reason given."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s21",
+        "band": "standard",
+        "text": "Two of the shelf's materials both meet “stands red "
+                "heat”, “stiff under load” and “cheap”. What single "
+                "requirement decides the oven job in firebrick's favour "
+                "over the other one?",
+        "options": [
+            {"text": "Light, which concrete meets and firebrick fails",
+             "correct": False,
+             "why": "Neither material meets “light” — both are heavy."},
+            {"text": "See-through, which decides every job on the bench",
+             "correct": False,
+             "why": "This job does not require “see-through” at all."},
+            {"text": "Survives daily heating and cooling, which concrete "
+                     "fails", "correct": True},
+            {"text": "Does not shatter when dropped, which firebrick "
+                     "fails", "correct": False,
+             "why": "The oven job does not ask for this — nobody drops "
+                    "an oven floor."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s22",
+        "band": "standard",
+        "text": "Why can a material that is very cheap and very strong "
+                "still be the wrong choice for a job?",
+        "options": [
+            {"text": "A job's requirements must all be met together",
+             "correct": True},
+            {"text": "Cheap materials are never actually strong",
+             "correct": False,
+             "why": "Firebrick is both cheap and strong under a steady "
+                    "load."},
+            {"text": "Strength is not a real property materials have",
+             "correct": False,
+             "why": "Strength is central to this whole lesson."},
+            {"text": "Every job on the bench cares only about price in "
+                     "the end", "correct": False,
+             "why": "Price is only one of several possible requirements, "
+                    "and some jobs list it not at all."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s23",
+        "band": "standard",
+        "text": "Which TWO materials on the shelf both meet “stiff under "
+                "load” AND “cheap by the square metre”?",
+        "options": [
+            {"text": "PET and polythene", "correct": False,
+             "why": "Both are cheap, and neither is stiff — both bend or "
+                    "crumple easily."},
+            {"text": "Firebrick and reinforced concrete", "correct": True},
+            {"text": "Carbon-fibre composite and heat-proof glass-ceramic",
+             "correct": False,
+             "why": "Both are stiff, and neither is cheap."},
+            {"text": "Firebrick and PET", "correct": False,
+             "why": "PET fails “stiff under load” — a bottle crumples in "
+                    "one hand."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s24",
+        "band": "standard",
+        "text": "PET meets more of the bench's nine requirements than any "
+                "other single material. Why does it not win every job?",
+        "options": [
+            {"text": "PET is disqualified from winning more than one job "
+                     "by a rule on the bench", "correct": False,
+             "why": "No such rule is described."},
+            {"text": "Meeting more requirements always matters less than "
+                     "meeting fewer, harder ones", "correct": False,
+             "why": "It is not about MORE or FEWER requirements met."},
+            {"text": "Each job weighs a different, specific set of "
+                     "requirements", "correct": True},
+            {"text": "PET is too familiar as a bottle material to be "
+                     "considered for anything else", "correct": False,
+             "why": "Familiarity is not a reason given in this lesson."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s25",
+        "band": "standard",
+        "text": "Carbon-fibre composite and reinforced concrete both fail "
+                "“holds pressurised gas in”. Do they fail it for the SAME "
+                "reason?",
+        "options": [
+            {"text": "Yes — both are far too heavy for a gas container",
+             "correct": False,
+             "why": "Weight is not the reason given for either failure."},
+            {"text": "Yes — neither can be shaped into a bottle",
+             "correct": False,
+             "why": "Shape is not the issue named for either material."},
+            {"text": "No — carbon fibre is opaque, concrete is porous",
+             "correct": False,
+             "why": "Opacity is a separate failure of carbon fibre's, not "
+                    "why it fails “holds gas in”."},
+            {"text": "No — the fibre and resin do not seal on their own, "
+                     "while concrete is porous throughout", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s26",
+        "band": "standard",
+        "text": "Reinforced concrete meets “does not shatter when "
+                "dropped”, while firebrick and heat-proof glass-ceramic — "
+                "both ceramics — do not. What is different about concrete?",
+        "options": [
+            {"text": "It has steel embedded in it", "correct": True},
+            {"text": "It is not brittle in any way, unlike a ceramic",
+             "correct": False,
+             "why": "Concrete's own matrix is brittle. The steel changes "
+                    "how it fails."},
+            {"text": "It is much softer than firebrick or glass-ceramic",
+             "correct": False,
+             "why": "Softness is not what stops concrete shattering."},
+            {"text": "It contains no ceramic material of any kind",
+             "correct": False,
+             "why": "Cement is fired from minerals much like a ceramic; "
+                    "concrete is that plus steel."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s27",
+        "band": "standard",
+        "text": "Firebrick and heat-proof glass-ceramic both meet “stands "
+                "red heat”. What do these two share that neither polymer "
+                "on the shelf does?",
+        "options": [
+            {"text": "Both are fired from clay or minerals",
+             "correct": True},
+            {"text": "Both were invented more recently than the others",
+             "correct": False,
+             "why": "Invention date has nothing to do with heat "
+                    "resistance."},
+            {"text": "Both are composites reinforced with a metal",
+             "correct": False,
+             "why": "Neither is a composite. Both are plain ceramics."},
+            {"text": "Both are the two cheapest materials on the shelf",
+             "correct": False,
+             "why": "Glass-ceramic is one of the most expensive materials "
+                    "here."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s28",
+        "band": "standard",
+        "text": "Polythene meets “takes repeated flexing and knocks” but "
+                "fails “stiff under load”. Could it still be chosen for the "
+                "racing bike job, which needs both?",
+        "options": [
+            {"text": "Yes — meeting any one requirement is enough to be "
+                     "considered", "correct": False,
+             "why": "A job's requirements have to be met together."},
+            {"text": "No — meeting only one of the two needed properties "
+                     "is not enough", "correct": True},
+            {"text": "Yes — toughness matters more than stiffness for any "
+                     "bicycle frame", "correct": False,
+             "why": "Both properties are needed for this job."},
+            {"text": "No — only composites are ever used for a bike "
+                     "frame", "correct": False,
+             "why": "Family membership does not disqualify a material."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s29",
+        "band": "standard",
+        "text": "Carbon-fibre composite meets “stiff under load” but fails "
+                "the oven job's other three requirements. Why is meeting "
+                "one requirement out of four not enough to win the oven "
+                "job?",
+        "options": [
+            {"text": "“Stiff under load” is the least important "
+                     "requirement on any job", "correct": False,
+             "why": "No requirement is ranked as least important."},
+            {"text": "Carbon-fibre composite is banned from ovens",
+             "correct": False,
+             "why": "No such ban is described."},
+            {"text": "A material can meet exactly one requirement per "
+                     "job", "correct": False,
+             "why": "Firebrick meets four requirements for the oven job "
+                    "alone."},
+            {"text": "A job's requirement list works as an ALL condition",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-s30",
+        "band": "standard",
+        "text": "Suppose firebrick costs £20 per square metre and "
+                "heat-proof glass-ceramic costs eight times as much per "
+                "square metre. What would 5 square metres of glass-ceramic "
+                "cost?",
+        "options": [
+            {"text": "£100", "correct": False,
+             "why": "That is five times £20, ignoring the eightfold "
+                    "price difference."},
+            {"text": "£160", "correct": False,
+             "why": "That is the cost of only one square metre, not "
+                    "five."},
+            {"text": "£1,000", "correct": False,
+             "why": "That comes from multiplying £20 by 50 rather than "
+                    "by the correct price per square metre."},
+            {"text": "£800", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── harder · MRB-338 night 3 top-up ───────────────────────────────
+    {
+        "id": "c9-04-h14",
+        "band": "harder",
+        "text": "A new job needs a material that is stiff, cheap AND "
+                "see-through, all at once. Is there one on the shelf?",
+        "options": [
+            {"text": "No — the stiff, cheap materials are opaque, and the "
+                     "see-through stiff one is expensive", "correct": True},
+            {"text": "Yes — PET meets all three at once", "correct": False,
+             "why": "PET is cheap and clear, and fails “stiff under "
+                    "load” — a bottle crumples in one hand."},
+            {"text": "Yes — firebrick meets all three at once",
+             "correct": False,
+             "why": "Firebrick is stiff and cheap, and it is opaque."},
+            {"text": "No — none of the six materials is see-through in "
+                     "the way this job would need for its window",
+             "correct": False,
+             "why": "PET and glass-ceramic are both see-through — "
+                    "neither is stiff and cheap too."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h15",
+        "band": "harder",
+        "text": "A new job needs a material that both “stands red heat” "
+                "and “takes repeated flexing and knocks” at the same time. "
+                "Can any material on the shelf do this job?",
+        "options": [
+            {"text": "Yes — reinforced concrete meets both", "correct": False,
+             "why": "Concrete meets “stands red heat” and fails "
+                    "“flexing and knocks”."},
+            {"text": "No — every heat-resistant material here is "
+                     "brittle, and every flexible one fails at red heat",
+             "correct": True},
+            {"text": "Yes — carbon-fibre composite meets both",
+             "correct": False,
+             "why": "Carbon fibre meets “flexing and knocks” and fails "
+                    "“stands red heat” outright."},
+            {"text": "No — none of the six materials meets either "
+                     "requirement", "correct": False,
+             "why": "Firebrick meets heat, polythene meets flexing. "
+                    "Some meet one; none meets both."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h16",
+        "band": "harder",
+        "text": "Firebrick costs £20/m² and covers a 15 m² oven floor. "
+                "Heat-proof glass-ceramic costs eight times as much per "
+                "m² and would cover a 0.5 m² stove window. Which "
+                "installation costs more in total, and by how much?",
+        "options": [
+            {"text": "The stove window costs more, by £60", "correct": False,
+             "why": "The window costs £80 in total, less than the "
+                    "floor's £300."},
+            {"text": "They cost exactly the same amount in total",
+             "correct": False,
+             "why": "£300 and £80 are not equal."},
+            {"text": "The oven floor costs more, by £220", "correct": True},
+            {"text": "The oven floor costs more, by £300",
+             "correct": False,
+             "why": "£300 is the floor's own total, not the difference "
+                    "between the two totals."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h17",
+        "band": "harder",
+        "text": "A designer proposes a foam plastic instead of carbon "
+                "fibre for the racing bike frame, arguing it would be "
+                "lighter still. Evaluate this against the frame's three "
+                "requirements: light, stiff, flex-tough.",
+        "options": [
+            {"text": "It would win the job outright, since improving on "
+                     "one required property settles the choice",
+             "correct": False,
+             "why": "All three requirements have to be met together, "
+                    "not just the one being improved."},
+            {"text": "It is not a real material family, so the proposal "
+                     "cannot be evaluated at all", "correct": False,
+             "why": "Foam is a real polymer form. The objection is about "
+                    "stiffness, not existence."},
+            {"text": "Anything lighter than carbon fibre must also be "
+                     "stiffer", "correct": False,
+             "why": "Lightness says nothing about stiffness. The two "
+                    "properties are not linked that way."},
+            {"text": "It would likely fail on stiffness even if it wins "
+                     "on weight", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h18",
+        "band": "harder",
+        "text": "A pizza restaurant wants an oven floor that is ALSO "
+                "see-through, so customers can watch the pizza cook from "
+                "below. Is this achievable with the shelf's materials, and "
+                "what would it cost?",
+        "options": [
+            {"text": "Achievable with glass-ceramic, at a far higher cost "
+                     "than firebrick over a whole floor's area",
+             "correct": True},
+            {"text": "Not achievable at any price, since heat-resistance "
+                     "and clarity cannot occur in one material here",
+             "correct": False,
+             "why": "Glass-ceramic is both heat-resistant and clear — "
+                    "the problem is cost over a large area."},
+            {"text": "Achievable with PET, which is both cheap and "
+                     "see-through", "correct": False,
+             "why": "PET fails “stands red heat” outright and would "
+                    "soften before the oven reached temperature."},
+            {"text": "Achievable with firebrick, since it covers oven "
+                     "floors successfully already", "correct": False,
+             "why": "Firebrick is opaque, whatever else it does well."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h19",
+        "band": "harder",
+        "text": "Explain why no material on the shelf satisfies all of: "
+                "cheap, light, AND stands red heat.",
+        "options": [
+            {"text": "No material on the shelf manages to be both cheap "
+                     "and light at the same time, whatever else it "
+                     "offers", "correct": False,
+             "why": "PET and polythene are both cheap and light — "
+                    "neither stands red heat."},
+            {"text": "The cheap, light materials on the shelf are "
+                     "polymers, and none of them stands red heat",
+             "correct": True},
+            {"text": "No material on the shelf stands red heat",
+             "correct": False,
+             "why": "Firebrick and glass-ceramic both stand red heat. "
+                    "Neither is light."},
+            {"text": "The requirement is too vague to test clearly",
+             "correct": False,
+             "why": "Each requirement is tested against each material "
+                    "individually and clearly on the bench."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h20",
+        "band": "harder",
+        "text": "A composite gas cylinder without a liner leaks gas at 40 "
+                "ml per hour. Fitting a liner cuts the leak rate to a "
+                "twentieth of that. What is the leak rate WITH the liner?",
+        "options": [
+            {"text": "20 ml per hour", "correct": False,
+             "why": "That halves the rate rather than dividing by "
+                    "twenty."},
+            {"text": "0.2 ml per hour", "correct": False,
+             "why": "That divides by two hundred rather than by "
+                    "twenty."},
+            {"text": "2 ml per hour", "correct": True},
+            {"text": "38 ml per hour", "correct": False,
+             "why": "That subtracts twenty from the rate rather than "
+                    "dividing by twenty."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h21",
+        "band": "harder",
+        "text": "A manufacturer claims “any ceramic” would work for the "
+                "stove window because “ceramics stand heat well”. Evaluate "
+                "this claim using the shelf's own two ceramics.",
+        "options": [
+            {"text": "True — both firebrick and glass-ceramic would work "
+                     "equally well as a window in a wood-burning stove",
+             "correct": False,
+             "why": "Firebrick is opaque and cannot serve as a window, "
+                    "whatever it does for heat."},
+            {"text": "False — neither ceramic stands red heat at all",
+             "correct": False,
+             "why": "Both ceramics genuinely meet “stands red heat”. The "
+                    "flaw concerns clarity, not heat."},
+            {"text": "True, but glass-ceramic is not really a ceramic",
+             "correct": False,
+             "why": "This lesson treats glass-ceramic as a ceramic "
+                    "throughout."},
+            {"text": "False — firebrick stands heat but is opaque, so "
+                     "clarity varies within the ceramic family",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h22",
+        "band": "harder",
+        "text": "A rival firm invents a ceramic just as heat-resistant as "
+                "glass-ceramic but much cheaper. Would that make it the "
+                "better choice for the stove window?",
+        "options": [
+            {"text": "Not necessarily — it still has to meet clarity and "
+                     "stiffness too, or the saving does not matter",
+             "correct": True},
+            {"text": "Yes — a cheaper material wins the job once it "
+                     "matches an existing one on heat resistance, "
+                     "regardless of anything else", "correct": False,
+             "why": "Cost is one of several requirements. The others "
+                    "still have to be met."},
+            {"text": "No — glass-ceramic cannot be replaced, whatever the "
+                     "rival's properties", "correct": False,
+             "why": "A material meeting every requirement equally well "
+                    "for less money would be a genuine improvement."},
+            {"text": "Yes, since heat resistance is the stove window's "
+                     "one and only requirement", "correct": False,
+             "why": "The window's list also names clarity, stiffness "
+                    "and surviving daily cycling."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h23",
+        "band": "harder",
+        "text": "A student claims carbon-fibre composite, which meets four "
+                "requirements, must be the most generally useful material "
+                "on the shelf. Evaluate this claim.",
+        "options": [
+            {"text": "Sound — the material meeting the most requirements "
+                     "overall is the most useful one", "correct": False,
+             "why": "Carbon fibre fails three of the four requirements "
+                    "the oven job needs, despite its high count overall."},
+            {"text": "Flawed — usefulness depends on which job is being "
+                     "done, not on a raw count of boxes ticked",
+             "correct": True},
+            {"text": "Sound, since carbon fibre wins the racing bike job "
+                     "outright", "correct": False,
+             "why": "Winning one job does not establish general "
+                    "usefulness across every job."},
+            {"text": "Flawed, but only because reinforced concrete meets "
+                     "more requirements than carbon fibre does",
+             "correct": False,
+             "why": "Both of them meet four of the nine. And the count "
+                    "was never the real problem — usefulness depends on "
+                    "the specific job."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h24",
+        "band": "harder",
+        "text": "Reinforced concrete is the one material on the shelf with "
+                "a brittle base that still meets “does not shatter when "
+                "dropped”. Would a hypothetical steel-reinforced "
+                "glass-ceramic be expected to meet it too?",
+        "options": [
+            {"text": "No — glass-ceramic cannot be combined with steel",
+             "correct": False,
+             "why": "Nothing rules this combination out. The reasoning "
+                    "should follow from what stops concrete shattering."},
+            {"text": "No — concrete resists shattering because it is a "
+                     "ceramic, and glass-ceramic already is one",
+             "correct": False,
+             "why": "Concrete's ceramic matrix is brittle on its own — "
+                    "the resistance comes from the steel."},
+            {"text": "Plausibly yes — the steel, not the ceramic base, is "
+                     "what stops concrete shattering", "correct": True},
+            {"text": "Yes, but glass-ceramic is already unbreakable "
+                     "without any reinforcement, entirely on its own",
+             "correct": False,
+             "why": "Glass-ceramic is not unbreakable — it fails “does "
+                    "not shatter when dropped” on its own."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h25",
+        "band": "harder",
+        "text": "Explain why “a composite beats a single material” is not "
+                "something the bench actually shows.",
+        "options": [
+            {"text": "Composites generally cost more than single "
+                     "materials on this shelf, which counts against "
+                     "them here", "correct": False,
+             "why": "Cost is not the reasoning this lesson uses to judge "
+                    "a material against a job."},
+            {"text": "No composite on the shelf wins a job outright",
+             "correct": False,
+             "why": "Carbon-fibre composite wins the racing bike job "
+                    "outright."},
+            {"text": "Single materials cost less than composites do, and "
+                     "the cheaper material wins the job", "correct": False,
+             "why": "The bike job is won by the most expensive material "
+                    "on the shelf, not the cheapest — and reinforced "
+                    "concrete is a cheap composite."},
+            {"text": "Firebrick, a single ceramic, beats both composites "
+                     "on the shelf for the oven job", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h26",
+        "band": "harder",
+        "text": "A hypothetical material meets the same four requirements "
+                "as firebrick for the oven job, and ALSO meets “light”, "
+                "unlike firebrick. Does this change the oven choice?",
+        "options": [
+            {"text": "No — the oven job never asks for “light”, so "
+                     "meeting it changes nothing here", "correct": True},
+            {"text": "Yes — meeting an extra requirement makes a "
+                     "material the new winner", "correct": False,
+             "why": "A job is decided by its own requirement list, not "
+                    "by extra properties a rival happens to add."},
+            {"text": "Yes — the oven job does care about weight, "
+                     "quietly", "correct": False,
+             "why": "The oven job's requirements are red-heat, "
+                    "thermal-cycle, stiff and cheap — weight is not "
+                    "among them."},
+            {"text": "No — firebrick cannot be replaced by another "
+                     "material, however it compares", "correct": False,
+             "why": "A genuinely better material would not be ruled "
+                    "out. The point is that THIS extra property does not "
+                    "matter for THIS job."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h27",
+        "band": "harder",
+        "text": "Both carbon-fibre composite and reinforced concrete are "
+                "“composites”, yet carbon fibre meets “light” and concrete "
+                "fails it badly. Why does calling both “composites” not "
+                "predict this difference?",
+        "options": [
+            {"text": "Concrete is not really a composite at all",
+             "correct": False,
+             "why": "Concrete is treated as a composite of cement and "
+                    "steel throughout this lesson."},
+            {"text": "Carbon-fibre composite is not really a composite "
+                     "either, despite being built from two combined "
+                     "materials", "correct": False,
+             "why": "It is a composite of fibres and resin, exactly as "
+                    "the family is defined."},
+            {"text": "“Light” is a property no composite can ever have",
+             "correct": False,
+             "why": "Carbon-fibre composite meets “light” directly, so "
+                    "the family clearly can have it."},
+            {"text": "“Composite” means two materials were combined, not "
+                     "which specific properties resulted", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h28",
+        "band": "harder",
+        "text": "A builder mistakenly orders enough glass-ceramic, at its "
+                "own price of £160/m², to cover a 15 m² oven floor instead "
+                "of firebrick at £20/m². How much MORE does this mistake "
+                "cost than the correct material would have?",
+        "options": [
+            {"text": "£2,400", "correct": False,
+             "why": "That is the full glass-ceramic cost, before "
+                    "subtracting what firebrick would have cost."},
+            {"text": "£140", "correct": False,
+             "why": "That is the per-square-metre price difference, not "
+                    "the total extra cost over 15 m²."},
+            {"text": "£2,100", "correct": True},
+            {"text": "£300", "correct": False,
+             "why": "That is what firebrick alone would have cost, not "
+                    "the size of the overspend."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h29",
+        "band": "harder",
+        "text": "A material is discovered that flexes twice as far as "
+                "carbon fibre before failing. Would this make it better "
+                "for the racing bike job?",
+        "options": [
+            {"text": "Yes — flexing further before failing is exactly "
+                     "what this job's three requirements are measuring",
+             "correct": False,
+             "why": "The bike job also needs “stiff under load” and "
+                    "“light”, not flex-tough alone."},
+            {"text": "Not necessarily — extra flex can come with less "
+                     "stiffness, which the job needs just as much",
+             "correct": True},
+            {"text": "No — carbon fibre cannot be beaten on any "
+                     "property by another material", "correct": False,
+             "why": "A genuine improvement is not ruled out. The "
+                    "question is whether it improves on all three "
+                    "requirements, not just one."},
+            {"text": "Yes, because a material that flexes further before "
+                     "failing always ends up being lighter too",
+             "correct": False,
+             "why": "Flexing distance and weight are different "
+                    "properties. One does not guarantee the other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "c9-04-h30",
+        "band": "harder",
+        "text": "A manufacturer tries embedding continuous glass fibres, "
+                "instead of carbon fibres, in the same resin used for the "
+                "bike frame. Based on what fibres and resin each "
+                "contribute, what would you expect to change, and what "
+                "would stay the same?",
+        "options": [
+            {"text": "Everything stays the same, since any fibre in any "
+                     "resin behaves identically", "correct": False,
+             "why": "Different fibres have different properties — that "
+                    "is why carbon and glass fibre give a different "
+                    "result."},
+            {"text": "The result would no longer count as a composite",
+             "correct": False,
+             "why": "Two materials combined so the result does what "
+                    "neither can alone is still a composite, whichever "
+                    "fibre is used."},
+            {"text": "The resin would switch to taking the pull instead "
+                     "of the fibres", "correct": False,
+             "why": "Fibres for pull, resin for holding and spreading — "
+                    "that division defines this kind of composite "
+                    "regardless of fibre."},
+            {"text": "Cost would likely fall, while the fibres still "
+                     "take the pull and the resin still holds and "
+                     "spreads the load", "correct": True},
+        ],
+        "figure": None,
+    },
 ]
