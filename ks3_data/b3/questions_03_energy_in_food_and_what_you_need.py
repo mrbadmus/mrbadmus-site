@@ -668,7 +668,8 @@ QUESTIONS = [
     {
         "id": "b3-03-e09",
         "band": "easier",
-        "text": "In this lesson's bookkeeping, what is a shortfall?",
+        "text": "In the bookkeeping of energy in against energy "
+                "transferred, what is a shortfall?",
         "options": [
             {"text": "Taking in less energy than you transfer, so stores are "
                      "broken down.", "correct": True},
@@ -1617,7 +1618,7 @@ QUESTIONS = [
                      "store of the surroundings, even at rest.",
              "correct": True},
             {"text": "Nothing is transferred overnight, since a sleeping "
-                     "body is neither moving nor eating anything.",
+                     "body is not moving.",
              "correct": False,
              "why": "A resting body still keeps warm and still repairs "
                     "tissue, both of which transfer energy; movement "
@@ -1899,9 +1900,8 @@ QUESTIONS = [
             {"text": "Because the five requirements span 5800 kJ to "
                      "25 000 kJ — over a fourfold range — so no single "
                      "figure fits.", "correct": True},
-            {"text": "It could exist, as long as the figure chosen sits "
-                     "exactly halfway between the smallest and the largest "
-                     "of the five.", "correct": False,
+            {"text": "It could exist, as long as the figure sits halfway "
+                     "between the smallest and largest.", "correct": False,
              "why": "The midpoint of 5800 and 25 000 is over 15 000 kJ — a "
                     "huge surplus for the 4-year-old and still short for "
                     "the rower; the spread is too wide for any single "
