@@ -720,4 +720,1593 @@ QUESTIONS = [
         ],
         "figure": None,
     },
+
+    # ── MRB-338 night-3 top-up · easier ──────────────────────────────────
+    {
+        "id": "p10-04-e11",
+        "band": "easier",
+        "text": "A single straight wire is carrying a current, with no coil "
+                "and no core. Is there a magnetic field around it?",
+        "options": [
+            {"text": "No — a field only appears once the wire is wound into "
+                     "a coil", "correct": False,
+             "why": "A straight wire has a field too; winding it into a coil "
+                    "only changes its shape and adds the turns together, it "
+                    "does not create it from nothing."},
+            {"text": "Yes, but it is weak, and you need a sensitive compass "
+                     "close against the wire to detect it", "correct": True},
+            {"text": "No — a wire needs an iron core before any field can "
+                     "form", "correct": False,
+             "why": "Iron is not required at all. A current makes a field "
+                    "in a coil or in a plain straight wire; the core only "
+                    "responds to a field that is already there."},
+            {"text": "Yes, and it is exactly as strong as the same wire "
+                     "would be once wound into a coil, so winding it up "
+                     "would achieve nothing at all", "correct": False,
+             "why": "Winding the same wire into a coil makes many turns add "
+                    "their fields together in the same place, which is a "
+                    "real gain, not nothing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e12",
+        "band": "easier",
+        "text": "In an electromagnet, which part actually creates the "
+                "magnetic field?",
+        "options": [
+            {"text": "The iron core, because it is the only magnetic "
+                     "material present", "correct": False,
+             "why": "Iron is not the only magnetic material present: soft "
+                    "iron works because a coil's field magnetises it. Take "
+                    "the core out and the coil alone still makes a field."},
+            {"text": "The plastic former, once it has been wound with wire",
+             "correct": False,
+             "why": "Plastic is not magnetic and has no field of its own. "
+                    "It only holds the wire in place."},
+            {"text": "The current flowing through the coil", "correct": True},
+            {"text": "The switch, once it has been closed", "correct": False,
+             "why": "A switch only allows or stops the current. It does not "
+                    "itself produce anything magnetic."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e13",
+        "band": "easier",
+        "text": "What does a relay use a small current for?",
+        "options": [
+            {"text": "To pull an iron arm across and close a much bigger "
+                     "circuit", "correct": True},
+            {"text": "To directly power a large motor or heater",
+             "correct": False,
+             "why": "The small circuit never carries the large device's own "
+                    "current; it only operates a switch for it."},
+            {"text": "To recharge the battery that runs the bigger circuit "
+                     "between uses", "correct": False,
+             "why": "A relay switches a circuit; it does not charge "
+                    "anything."},
+            {"text": "To measure how much current the bigger circuit needs",
+             "correct": False,
+             "why": "A relay is a switch operated by magnetism, not a "
+                    "measuring instrument."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e14",
+        "band": "easier",
+        "text": "A car's ignition key turns a small circuit on, which then "
+                "starts the much bigger starter motor circuit. What is "
+                "doing that job?",
+        "options": [
+            {"text": "The starter motor's own magnets, switched on directly "
+                     "by the key", "correct": False,
+             "why": "The starter motor's magnets are permanent and are not "
+                    "switched by the key at all; something else closes its "
+                    "circuit."},
+            {"text": "A solenoid making a permanent magnetic field that "
+                     "never turns off, however the key happens to be "
+                     "turned", "correct": False,
+             "why": "The whole point is that the field is switched, on "
+                    "demand from the key — not permanent."},
+            {"text": "The car's battery, connected straight to the starter "
+                     "motor", "correct": False,
+             "why": "The battery supplies the current, but something has to "
+                    "close that big circuit first, and a small key current "
+                    "cannot do that directly."},
+            {"text": "A relay: the key's small current pulls an iron arm "
+                     "that closes the starter motor's circuit",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e15",
+        "band": "easier",
+        "text": "An electromagnetic door lock holds a fire door shut. The "
+                "power to the building is cut. What happens to the door?",
+        "options": [
+            {"text": "It stays locked shut, because the iron core keeps "
+                     "its magnetism for a good while afterwards",
+             "correct": False,
+             "why": "The core is soft iron chosen precisely because it does "
+                    "not keep its magnetism once the current stops."},
+            {"text": "It is released, because the field goes the instant "
+                     "the current stops", "correct": True},
+            {"text": "It locks even more tightly, because cutting the "
+                     "power reverses the current through the coil",
+             "correct": False,
+             "why": "Cutting the power stops the current; it does not "
+                    "reverse it."},
+            {"text": "Nothing changes until someone switches the lock off "
+                     "by hand", "correct": False,
+             "why": "The lock needs no one present. Losing the current "
+                    "alone is enough to release it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e16",
+        "band": "easier",
+        "text": "A loudspeaker cone is pushed in and out by…",
+        "options": [
+            {"text": "a coil carrying a current that keeps changing, "
+                     "sitting in a permanent magnet's field", "correct": True},
+            {"text": "a permanent magnet fixed inside the case that "
+                     "physically vibrates back and forth", "correct": False,
+             "why": "The magnet stays fixed in a loudspeaker. What moves is "
+                    "the coil attached to the cone."},
+            {"text": "an iron core being switched on and off by hand",
+             "correct": False,
+             "why": "Nothing is switched by hand; the current itself "
+                    "changes thousands of times a second."},
+            {"text": "the cone's own weight, swinging under gravity",
+             "correct": False,
+             "why": "Gravity plays no part. The cone only moves because of "
+                    "the current in the coil."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e17",
+        "band": "easier",
+        "text": "To make a permanent magnet, a coil is wound around a bar "
+                "of hardened steel, a current is run through it, and the "
+                "current is switched off. What is the bar afterwards?",
+        "options": [
+            {"text": "Not magnetic at all, because switching off removes "
+                     "any magnetism it might have had", "correct": False,
+             "why": "That is true of soft iron, not of hardened steel. "
+                    "Steel keeps what it is given."},
+            {"text": "Magnetic, but only while another current is still "
+                     "flowing somewhere nearby", "correct": False,
+             "why": "Nothing else has to keep flowing. The steel keeps its "
+                    "own magnetism once the coil is removed."},
+            {"text": "A permanent magnet, because the steel keeps the "
+                     "magnetism it was given", "correct": True},
+            {"text": "The same as before, because steel cannot be "
+                     "magnetised by a coil", "correct": False,
+             "why": "Steel can certainly be magnetised by a coil — that is "
+                    "exactly how this permanent magnet is made."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e18",
+        "band": "easier",
+        "text": "Why is hardened steel used to make a permanent magnet in "
+                "this way, rather than soft iron?",
+        "options": [
+            {"text": "Steel is a better conductor of electricity than iron",
+             "correct": False,
+             "why": "How well a metal conducts current is not the reason; "
+                    "what matters here is whether it keeps its magnetism."},
+            {"text": "Steel keeps the magnetism it is given, instead of "
+                     "losing it straightaway", "correct": True},
+            {"text": "Steel is heavier, so the finished magnet is stronger",
+             "correct": False,
+             "why": "Weight has nothing to do with how strong the "
+                    "magnetism is."},
+            {"text": "Soft iron cannot be magnetised by a coil in the "
+                     "first place, whatever current is used",
+             "correct": False,
+             "why": "Soft iron magnetises very easily — more easily than "
+                    "steel. It just does not keep it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e19",
+        "band": "easier",
+        "text": "An MRI scanner's main magnet is a coil of superconducting "
+                "wire. What is special about superconducting wire?",
+        "options": [
+            {"text": "It glows brightly so the scan can be seen",
+             "correct": False,
+             "why": "Nothing about the scan involves light from the wire "
+                    "itself."},
+            {"text": "It only works when the current keeps reversing "
+                     "direction many times a second", "correct": False,
+             "why": "The current in this coil runs steadily in one "
+                    "direction; it is not switching back and forth."},
+            {"text": "It is wound without any core at all", "correct": False,
+             "why": "Whether it has a core is not what makes it "
+                    "superconducting; having no resistance is."},
+            {"text": "It has no resistance at all, so a current can flow "
+                     "round it for years", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e20",
+        "band": "easier",
+        "text": "Why are steel objects, such as an oxygen cylinder, kept "
+                "out of an MRI scanner room?",
+        "options": [
+            {"text": "The field is so strong it can pull a steel object in "
+                     "violently enough to injure someone", "correct": True},
+            {"text": "Steel would recharge the scanner's magnet "
+                     "unexpectedly, adding to its own field", "correct": False,
+             "why": "A steel object does not power the magnet in any way."},
+            {"text": "Steel would switch the scanner's current off",
+             "correct": False,
+             "why": "Bringing steel near the magnet does not stop the "
+                    "current flowing in it."},
+            {"text": "The scanner would overheat if any metal were nearby",
+             "correct": False,
+             "why": "The danger is the pull of the field on the metal, not "
+                    "heat."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e21",
+        "band": "easier",
+        "text": "What job does a plastic former do inside a coil?",
+        "options": [
+            {"text": "It multiplies the field, in the same way an iron "
+                     "core does", "correct": False,
+             "why": "Plastic is not magnetic, so it multiplies nothing at "
+                    "all."},
+            {"text": "It stores some of the magnetism after the current is "
+                     "switched off, releasing it slowly", "correct": False,
+             "why": "Nothing is stored in a plastic former; it is not "
+                    "magnetic in any way."},
+            {"text": "It gives the wire something to be wound around, with "
+                     "no magnetic effect of its own", "correct": True},
+            {"text": "It reverses the direction of the current passing "
+                     "through the coil", "correct": False,
+             "why": "The former does not touch the electrical circuit; the "
+                    "current's direction is set at the supply."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e22",
+        "band": "easier",
+        "text": "A soft-iron-cored electromagnet is switched off. A minute "
+                "later, is any of its magnetism left?",
+        "options": [
+            {"text": "Yes, a small amount fades away gradually",
+             "correct": False,
+             "why": "There is nothing gradual about it. The field is gone "
+                    "the instant the current stops."},
+            {"text": "Yes, all of it, because the core has been magnetised",
+             "correct": False,
+             "why": "Soft iron is chosen precisely because it does not "
+                    "keep what it is given."},
+            {"text": "It depends on how long the current was flowing "
+                     "beforehand, the longer the more that stays",
+             "correct": False,
+             "why": "How long it was switched on makes no difference to "
+                    "what happens the instant it is switched off."},
+            {"text": "No, none at all — the field disappeared the moment "
+                     "the current stopped", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e23",
+        "band": "easier",
+        "text": "Does a coil need a plastic former to make a magnetic "
+                "field?",
+        "options": [
+            {"text": "No — the field comes from the current in the wire; "
+                     "a former is just there to hold the wire in shape",
+             "correct": True},
+            {"text": "Yes — without a former, no current can flow through "
+                     "the coil, since the wire needs support", "correct": False,
+             "why": "The former plays no part in the electrical circuit at "
+                    "all; the wire carries the current with or without "
+                    "one."},
+            {"text": "Yes — the former is what gets magnetised, not the "
+                     "wire", "correct": False,
+             "why": "A plastic former cannot be magnetised at all. It is "
+                    "the current itself that creates the field."},
+            {"text": "No — but the field is reversed without one fitted",
+             "correct": False,
+             "why": "Fitting or removing a former does not change which "
+                    "way the current is flowing, so it does not reverse "
+                    "anything."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e24",
+        "band": "easier",
+        "text": "Which of the four uses — the crane, the door lock, the "
+                "relay, the loudspeaker — depends on the current reversing "
+                "direction very rapidly, over and over?",
+        "options": [
+            {"text": "The crane", "correct": False,
+             "why": "The crane only needs the current switched on to lift "
+                    "and off to drop — it does not need reversing."},
+            {"text": "The loudspeaker", "correct": True},
+            {"text": "The door lock", "correct": False,
+             "why": "The lock only needs the current on or off, holding "
+                    "the door shut or releasing it."},
+            {"text": "The relay", "correct": False,
+             "why": "The relay only needs a current switched on to pull "
+                    "the arm across; nothing about it needs reversing."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e25",
+        "band": "easier",
+        "text": "Which of the four uses — the crane, the door lock, the "
+                "relay, the loudspeaker — depends on the electromagnet "
+                "being able to let go of a heavy load on command?",
+        "options": [
+            {"text": "A relay", "correct": False,
+             "why": "A relay's iron arm is light; its job is closing a "
+                    "circuit, not letting go of a heavy load."},
+            {"text": "A loudspeaker", "correct": False,
+             "why": "A loudspeaker's coil is tiny and never lifts anything "
+                    "at all."},
+            {"text": "A scrapyard crane", "correct": True},
+            {"text": "A fire-door lock", "correct": False,
+             "why": "A door lock releases a door, which is much lighter "
+                    "than the load a scrapyard crane lifts."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e26",
+        "band": "easier",
+        "text": "A motor's coil has 40 turns. It is compared with an "
+                "otherwise identical coil that has only 4 turns, at the "
+                "same current. Which coil gives the bigger turning effect?",
+        "options": [
+            {"text": "The 4-turn coil, because fewer turns means less "
+                     "resistance and more push", "correct": False,
+             "why": "Turns being fewer does lower resistance slightly, but "
+                    "the far bigger effect is that ten times fewer turns "
+                    "means ten times fewer pushes adding together."},
+            {"text": "Neither — turning effect does not depend on the "
+                     "number of turns", "correct": False,
+             "why": "It does depend on turns: every turn carries the "
+                    "current through the field and adds its own push."},
+            {"text": "They are the same, since the current is identical in "
+                     "both", "correct": False,
+             "why": "The current being the same does not cancel out a "
+                    "ten-times difference in the number of turns "
+                    "contributing a push."},
+            {"text": "The 40-turn coil, by a wide margin", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e27",
+        "band": "easier",
+        "text": "Ten turns of wire carry 1.0 A. A second, identical coil has "
+                "twenty turns carrying the same 1.0 A. Which coil makes the "
+                "stronger field?",
+        "options": [
+            {"text": "The twenty-turn coil", "correct": True},
+            {"text": "The ten-turn coil", "correct": False,
+             "why": "Fewer turns means fewer fields adding together in the "
+                    "same place, so this coil is the weaker one."},
+            {"text": "They are equally strong, since the current is the "
+                     "same in both", "correct": False,
+             "why": "The current being equal is only half the story; the "
+                    "coil with more turns adds more fields together."},
+            {"text": "It cannot be worked out without knowing the current "
+                     "in amps first", "correct": False,
+             "why": "The current is already given, and it is the same for "
+                    "both — only the turns differ here."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e28",
+        "band": "easier",
+        "text": "Two identical coils carry 2.0 A each. One has 30 turns and "
+                "the other has 60 turns. Which makes the weaker field?",
+        "options": [
+            {"text": "The 60-turn coil", "correct": False,
+             "why": "More turns adds more fields together in the same "
+                    "place, which makes a coil stronger, not weaker."},
+            {"text": "The 30-turn coil", "correct": True},
+            {"text": "Neither — the current decides the strength and it is "
+                     "the same for both", "correct": False,
+             "why": "The current being equal does not cancel out the "
+                    "difference in turns."},
+            {"text": "It is impossible to say without knowing the core "
+                     "material", "correct": False,
+             "why": "The core is the same for both here; only the number "
+                    "of turns differs, and that is enough to compare "
+                    "them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e29",
+        "band": "easier",
+        "text": "One coil carries 1.0 A. An identical coil, with the same "
+                "number of turns, carries 3.0 A instead. Which makes the "
+                "weaker field?",
+        "options": [
+            {"text": "The 3.0 A coil", "correct": False,
+             "why": "A bigger current through the same coil makes a "
+                    "bigger field, not a smaller one."},
+            {"text": "Neither — turns decide the strength, and they are "
+                     "the same for both", "correct": False,
+             "why": "Turns being equal does not cancel out the difference "
+                    "in current."},
+            {"text": "The 1.0 A coil", "correct": True},
+            {"text": "It cannot be worked out from the currents alone",
+             "correct": False,
+             "why": "Turns and core are the same for both here; only the "
+                    "current differs, which is enough to compare them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-e30",
+        "band": "easier",
+        "text": "A coil's iron core is swapped for an identical piece of "
+                "copper. Is copper a good choice as a core?",
+        "options": [
+            {"text": "No — the field would reverse direction with a copper "
+                     "core, since copper conducts so well", "correct": False,
+             "why": "Nothing about the core material can change which way "
+                    "the current is flowing, so the direction would not "
+                    "reverse."},
+            {"text": "Yes — copper is an even better core than iron",
+             "correct": False,
+             "why": "Copper is not a magnetic material at all, so it "
+                    "cannot be magnetised the way iron is."},
+            {"text": "It makes no difference which metal is used as a "
+                     "core", "correct": False,
+             "why": "It makes a large difference: iron is magnetised by "
+                    "the coil's field, and copper is not."},
+            {"text": "No — copper is not magnetic, so it would do nothing "
+                     "at all, just like a plastic former", "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night-3 top-up · standard ────────────────────────────────
+    {
+        "id": "p10-04-s11",
+        "band": "standard",
+        "text": "A coil with 20 turns carries 4.0 A. A second coil, with an "
+                "identical core, has 80 turns and carries 1.0 A. How do their "
+                "fields compare?",
+        "options": [
+            {"text": "They are close to each other in strength",
+             "correct": True},
+            {"text": "The 80-turn coil is far stronger, because turns "
+                     "matter more than current", "correct": False,
+             "why": "Neither one matters more than the other; the smaller "
+                    "current here is balanced by the larger number of "
+                    "turns."},
+            {"text": "The 20-turn coil is far stronger, because current "
+                     "matters more than turns", "correct": False,
+             "why": "Neither one matters more than the other; the smaller "
+                    "number of turns here is balanced by the larger "
+                    "current."},
+            {"text": "It cannot be compared without knowing the length of "
+                     "each coil", "correct": False,
+             "why": "Length is not one of the three things this lesson "
+                    "says changes the field; turns, current and core are."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s12",
+        "band": "standard",
+        "text": "Two electromagnets share the same core. The first has 10 "
+                "turns at 2.0 A; the second has 40 turns at that same "
+                "2.0 A. Which one produces the stronger field?",
+        "options": [
+            {"text": "They are about the same, since the current has not "
+                     "changed", "correct": False,
+             "why": "The current being equal does not cancel out four "
+                    "times as many turns adding their fields together."},
+            {"text": "The 40-turn coil is much stronger", "correct": True},
+            {"text": "The 10-turn coil is much stronger", "correct": False,
+             "why": "Fewer turns means fewer fields adding together, which "
+                    "makes the weaker coil, not the stronger one."},
+            {"text": "The 40-turn coil is weaker, because more wire raises "
+                     "the resistance", "correct": False,
+             "why": "Resistance can lower the current slightly on the same "
+                    "supply, but here both coils are simply given the same "
+                    "2.0 A to carry."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s13",
+        "band": "standard",
+        "text": "An electromagnet carrying 1.0 A is set alongside an "
+                "otherwise identical one carrying 4.0 A. Which of the two "
+                "produces the stronger field?",
+        "options": [
+            {"text": "The 1.0 A coil is stronger, because a smaller "
+                     "current is easier for the coil to carry",
+             "correct": False,
+             "why": "Ease of carrying the current is not what sets the "
+                    "field's strength; the size of the current is."},
+            {"text": "They are the same, since neither coil's turns have "
+                     "changed", "correct": False,
+             "why": "Turns being equal does not cancel out four times the "
+                    "current flowing."},
+            {"text": "The 4.0 A coil is much stronger", "correct": True},
+            {"text": "It cannot be compared without knowing which coil has "
+                     "the iron core", "correct": False,
+             "why": "Both coils are identical apart from their current, so "
+                    "the core is the same for both."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s14",
+        "band": "standard",
+        "text": "A student adds more turns to a coil, keeping the supply "
+                "the same, and finds the electromagnet is stronger even "
+                "though the current measured has gone down very slightly. "
+                "How can both be true?",
+        "options": [
+            {"text": "The meter is faulty, since more wire should always "
+                     "mean more current flowing through it", "correct": False,
+             "why": "More wire is more resistance, so a slightly lower "
+                    "current on the same supply is exactly what should be "
+                    "expected."},
+            {"text": "The extra turns store magnetism from before, on top "
+                     "of the new field", "correct": False,
+             "why": "Nothing is stored between turns; the field exists "
+                    "only while the current flows."},
+            {"text": "The current has not really changed; only the reading "
+                     "looks different", "correct": False,
+             "why": "The reading is real. Adding wire genuinely raises the "
+                    "resistance a little."},
+            {"text": "Each extra turn adds its own field in the same "
+                     "place, which outweighs the small drop in current",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s15",
+        "band": "standard",
+        "text": "A student says the iron core is what makes an "
+                "electromagnet magnetic, and the coil just holds it in "
+                "place. What is the best response?",
+        "options": [
+            {"text": "The coil makes the field; the core is magnetised by "
+                     "that field and adds its own", "correct": True},
+            {"text": "That is correct — the coil is simply a support for "
+                     "the core", "correct": False,
+             "why": "The coil is not just a support; it is the coil's "
+                    "current that creates the magnetic field in the first "
+                    "place."},
+            {"text": "Neither the coil nor the core makes the field; only "
+                     "the switch itself creates it", "correct": False,
+             "why": "A switch only allows or stops the current. It creates "
+                    "no field of its own."},
+            {"text": "The core and the coil each make an identical, "
+                     "separate field", "correct": False,
+             "why": "The core's field comes from being magnetised by the "
+                    "coil; it does not appear on its own without the "
+                    "coil's current."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s16",
+        "band": "standard",
+        "text": "A coil with an iron core is holding a chain of paper "
+                "clips. Without changing the current or the turns, the "
+                "iron core is replaced with an identical rod of hardened "
+                "steel. Straight away, is there any difference?",
+        "options": [
+            {"text": "Yes — it lifts far more clips immediately, because "
+                     "steel is simply a stronger, heavier metal",
+             "correct": False,
+             "why": "Being mechanically strong is a different property "
+                    "from being easy to magnetise; steel is not obviously "
+                    "a stronger core while the current is still flowing."},
+            {"text": "Not obviously, while the current is still flowing — "
+                     "the real difference shows up when it is switched "
+                     "off", "correct": True},
+            {"text": "Yes — the clips fall straight away, because steel is "
+                     "not magnetic", "correct": False,
+             "why": "Steel is magnetic; it can certainly be made into a "
+                    "working electromagnet's core."},
+            {"text": "Yes — the poles swap over immediately", "correct": False,
+             "why": "Swapping the core does not change which way the "
+                    "current is flowing, so the poles do not swap."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s17",
+        "band": "standard",
+        "text": "Why does a relay let a small current in one circuit "
+                "control a much bigger current in another circuit?",
+        "options": [
+            {"text": "Because the relay's coil carries the big current "
+                     "itself, just briefly", "correct": False,
+             "why": "The coil only ever carries the small current; the big "
+                    "circuit is a completely separate one that the arm "
+                    "closes."},
+            {"text": "Because the small current recharges a store of "
+                     "energy that then powers the whole of the big "
+                     "circuit", "correct": False,
+             "why": "Nothing is stored. The relay is a switch, not an "
+                    "energy store."},
+            {"text": "Because the small current's magnetism pulls an arm "
+                     "that physically closes the big circuit's own switch",
+             "correct": True},
+            {"text": "Because the small current heats a wire that then "
+                     "melts a fuse in the big circuit", "correct": False,
+             "why": "A relay works by magnetism pulling a mechanical arm, "
+                    "not by heating anything."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s18",
+        "band": "standard",
+        "text": "A car's starter motor needs a very large current. Why is "
+                "a relay used, rather than running that large current "
+                "straight through the ignition key's switch?",
+        "options": [
+            {"text": "Because the key's switch could not be made from "
+                     "metal", "correct": False,
+             "why": "The switch could be made from metal perfectly well; "
+                    "the issue is the size of current it would have to "
+                    "carry."},
+            {"text": "Because the starter motor itself needs a magnetic "
+                     "field from the key circuit before its own separate "
+                     "current can begin to flow", "correct": False,
+             "why": "The starter motor does not need a field from the key; "
+                    "it needs a large current, which the relay supplies "
+                    "from a separate, heavier circuit."},
+            {"text": "Because the ignition key circuit has no magnet in it "
+                     "at all", "correct": False,
+             "why": "The ignition key circuit is exactly what supplies the "
+                    "small current that magnetises the relay's coil."},
+            {"text": "Because a switch carrying that much current directly "
+                     "would need to be far heavier and more expensive than "
+                     "the small one at the key", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s19",
+        "band": "standard",
+        "text": "A loudspeaker's coil is driven by a current that keeps "
+                "changing direction, thousands of times a second. What "
+                "does the cone do as a result?",
+        "options": [
+            {"text": "Moves rapidly back and forth, pushing the air to "
+                     "make sound", "correct": True},
+            {"text": "Spins round continuously, getting faster as the "
+                     "current increases", "correct": False,
+             "why": "The cone is not free to spin; each change in current "
+                    "pushes it one way and then the other, not round and "
+                    "round."},
+            {"text": "Stays still, because the pushes in each direction "
+                     "cancel out", "correct": False,
+             "why": "The pushes do not cancel; each reversal genuinely "
+                    "drives the cone the other way, which is the "
+                    "movement itself."},
+            {"text": "Slowly rotates the permanent magnet inside the "
+                     "speaker", "correct": False,
+             "why": "The permanent magnet is fixed; it is the coil, "
+                    "attached to the cone, that is pushed by the field."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s20",
+        "band": "standard",
+        "text": "To make a permanent magnet, why must the core be hardened "
+                "steel rather than the soft iron used in an electromagnet's "
+                "core?",
+        "options": [
+            {"text": "Soft iron would carry too little current for the "
+                     "job", "correct": False,
+             "why": "The core carries no current at all in either case; "
+                    "the current runs through the coil around it."},
+            {"text": "Soft iron loses its magnetism as soon as the coil's "
+                     "current stops, which would leave nothing permanent "
+                     "behind", "correct": True},
+            {"text": "Soft iron cannot be placed inside a coil at all",
+             "correct": False,
+             "why": "Soft iron is exactly what usually goes inside a coil, "
+                    "in an ordinary electromagnet."},
+            {"text": "Hardened steel makes a far stronger field while the "
+                     "current is flowing, stronger than soft iron ever "
+                     "manages", "correct": False,
+             "why": "While the current is flowing, soft iron and hardened "
+                    "steel behave in a broadly similar way; the real "
+                    "difference shows up once it is switched off."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s21",
+        "band": "standard",
+        "text": "An MRI scanner's superconducting coil carries a very "
+                "large current with no supply connected, for years on end. "
+                "What would happen if the wire had ordinary resistance "
+                "instead?",
+        "options": [
+            {"text": "Nothing would change — resistance only matters for "
+                     "very small currents, not large ones like this",
+             "correct": False,
+             "why": "Resistance matters whatever the size of the current; "
+                    "a large current through a resistant wire loses energy "
+                    "steadily."},
+            {"text": "The field would immediately reverse direction",
+             "correct": False,
+             "why": "Resistance affects how long a current can keep "
+                    "flowing on its own, not which way it points."},
+            {"text": "The current would steadily lose energy and die "
+                     "away, needing a constant supply to keep it going",
+             "correct": True},
+            {"text": "The coil would need an iron core to keep working",
+             "correct": False,
+             "why": "A core is unrelated to resistance; the coil already "
+                    "works without a supply because it has none, not "
+                    "because of any core."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s22",
+        "band": "standard",
+        "text": "Two identical scrapyard-crane electromagnets are "
+                "compared. One is switched off gently, over several "
+                "seconds using a dimmer switch; the other is switched off "
+                "instantly. Does either one drop its load more slowly?",
+        "options": [
+            {"text": "No — the field stays at full strength until the "
+                     "current reaches zero, so both drop their loads at "
+                     "the very same moment", "correct": False,
+             "why": "A soft iron core's field rises and falls in step "
+                    "with the current in its coil. It does not hold full "
+                    "strength and then vanish at the end."},
+            {"text": "Yes — the instantly-switched one holds on longer, "
+                     "because a sudden change leaves the core no time to "
+                     "let go", "correct": False,
+             "why": "Soft iron lets go as soon as its current does, so a "
+                    "sudden switch-off releases the load at once rather "
+                    "than delaying it."},
+            {"text": "No — a crane magnet is either holding or released, "
+                     "so switching it off slowly makes no difference",
+             "correct": False,
+             "why": "The core's magnetism is not all-or-nothing: it "
+                    "follows the current, so a slow fall in current means "
+                    "a slow fall in the field holding the load."},
+            {"text": "Yes — the field falls as the current falls, so the "
+                     "gently-switched one holds on until its current has "
+                     "dropped far enough", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s23",
+        "band": "standard",
+        "text": "A student wants to build the strongest possible "
+                "electromagnet from a fixed length of wire and a fixed "
+                "current. Should they wind it into few, wide turns or "
+                "many, narrow turns around the same core?",
+        "options": [
+            {"text": "Many, narrow turns — more turns in the same space "
+                     "adds more fields together", "correct": True},
+            {"text": "Few, wide turns — a wider loop makes a bigger field "
+                     "on its own", "correct": False,
+             "why": "The lesson's rule is about how many turns add "
+                    "together in the same place, not about how wide any "
+                    "one loop is."},
+            {"text": "It makes no difference how the wire is wound, only "
+                     "how much of it there is", "correct": False,
+             "why": "How the wire is wound matters: more turns in the "
+                    "same length of core means more fields stacking up."},
+            {"text": "Few, wide turns — fewer turns means less resistance "
+                     "and more current", "correct": False,
+             "why": "A small change in current from fewer turns would not "
+                    "outweigh losing most of the turns' fields."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s24",
+        "band": "standard",
+        "text": "A door lock's electromagnet is designed so a fire alarm "
+                "cuts its current the instant it sounds. Why does the door "
+                "open reliably even if the alarm's own wiring is damaged "
+                "in the fire?",
+        "options": [
+            {"text": "Because the alarm sends a special signal that "
+                     "unlocks the door directly", "correct": False,
+             "why": "The door is not unlocked by a signal; it is unlocked "
+                    "simply because current stops reaching the magnet."},
+            {"text": "Because a broken wire also stops the current "
+                     "reaching the lock, which releases it exactly as "
+                     "cutting the power on purpose would", "correct": True},
+            {"text": "Because fire cannot damage an electromagnet's coil",
+             "correct": False,
+             "why": "The coil can certainly be damaged by fire; what "
+                    "matters is that damage of almost any kind removes "
+                    "the current, which releases the door."},
+            {"text": "Because the lock is fitted with its own separate "
+                     "battery that never fails, whatever happens to the "
+                     "mains supply or the wiring around it",
+             "correct": False,
+             "why": "The lock has no separate battery here; it depends "
+                    "entirely on the current reaching it, which is "
+                    "exactly the point."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s25",
+        "band": "standard",
+        "text": "A relay's iron arm is replaced with an identical arm made "
+                "of copper. Does the relay still work?",
+        "options": [
+            {"text": "Yes — copper conducts electricity better than iron, "
+                     "so it works even better", "correct": False,
+             "why": "Conducting electricity is not the arm's job here; it "
+                    "needs to be pulled by a magnetic field, and copper is "
+                    "not attracted to one."},
+            {"text": "Yes, but it needs a much bigger current in the small "
+                     "circuit to work", "correct": False,
+             "why": "No amount of extra current helps, because copper is "
+                    "not a magnetic material and is never pulled by the "
+                    "coil's field at all."},
+            {"text": "No — copper is not magnetic, so the coil's field "
+                     "cannot pull it across", "correct": True},
+            {"text": "No — copper would carry the big circuit's current "
+                     "straight through the small one", "correct": False,
+             "why": "The arm does not carry the big circuit's current at "
+                    "all; it only closes a switch for it."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s26",
+        "band": "standard",
+        "text": "In an electric bell, would the bell still ring "
+                "repeatedly if the iron arm were replaced with an "
+                "identical plastic one?",
+        "options": [
+            {"text": "Yes — plastic conducts electricity well enough to "
+                     "close the circuit", "correct": False,
+             "why": "Whether it conducts is not the issue here; the arm "
+                    "needs to be pulled by the coil's magnetic field, and "
+                    "plastic is not affected by it."},
+            {"text": "Yes — the coil would simply pull the plastic arm "
+                     "just as it pulled the iron one before it was "
+                     "replaced", "correct": False,
+             "why": "A coil's field pulls magnetic materials. Plastic is "
+                    "not magnetic, so nothing would pull it at all."},
+            {"text": "It depends on how close the plastic arm is to the "
+                     "coil", "correct": False,
+             "why": "Distance makes no difference here, because plastic "
+                    "is never attracted by a magnetic field in the first "
+                    "place, near or far."},
+            {"text": "No — plastic is not magnetic, so the coil could "
+                     "never pull it across to break the circuit",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s27",
+        "band": "standard",
+        "text": "A soft-iron-cored electromagnet and an air-cored coil, "
+                "both with the same turns and current, are switched off at "
+                "the same instant. Which one still shows a field a moment "
+                "later?",
+        "options": [
+            {"text": "Neither — both fields disappear the instant their "
+                     "currents stop", "correct": True},
+            {"text": "The iron-cored one, because the core keeps some "
+                     "magnetism a moment longer than that", "correct": False,
+             "why": "Soft iron is chosen precisely because it does not "
+                    "keep any magnetism once the current stops."},
+            {"text": "The air-cored one, because it never had much of a "
+                     "field to lose", "correct": False,
+             "why": "Having a smaller field to begin with does not mean "
+                    "it lingers; it disappears just as instantly as the "
+                    "stronger one."},
+            {"text": "Both, briefly, because any coil takes a moment to "
+                     "lose its field", "correct": False,
+             "why": "There is no lingering field in either case; both go "
+                    "to zero the instant the current does."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s28",
+        "band": "standard",
+        "text": "A coil's turns are halved and its current is doubled at "
+                "the same time. How does the new field compare with the "
+                "original?",
+        "options": [
+            {"text": "It is much weaker, because losing half the turns "
+                     "matters more than doubling the current",
+             "correct": False,
+             "why": "Neither change matters more than the other; halving "
+                    "one and doubling the other roughly cancels out."},
+            {"text": "It is close to what it was before", "correct": True},
+            {"text": "It is much stronger, because doubling the current "
+                     "matters more than halving the turns", "correct": False,
+             "why": "Neither change matters more than the other; halving "
+                    "one and doubling the other roughly cancels out."},
+            {"text": "It reverses direction, because one change is an "
+                     "increase and the other a decrease", "correct": False,
+             "why": "Direction depends on which way the current runs, not "
+                    "on the size of the turns or the current."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s29",
+        "band": "standard",
+        "text": "An electromagnet is rebuilt so it has 60 turns instead of "
+                "30, but its current is dropped from 4.0 A to 2.0 A. "
+                "Compared with the original, is the new field stronger, "
+                "weaker, or about the same?",
+        "options": [
+            {"text": "Stronger, because doubling the turns matters more "
+                     "than halving the current", "correct": False,
+             "why": "Neither change matters more than the other; doubling "
+                    "one and halving the other roughly cancels out, "
+                    "leaving the field close to where it started."},
+            {"text": "Weaker, because halving the current matters more "
+                     "than doubling the turns", "correct": False,
+             "why": "Neither change matters more than the other; doubling "
+                    "one and halving the other roughly cancels out, "
+                    "leaving the field close to where it started."},
+            {"text": "About the same as the original, since the two "
+                     "changes roughly cancel each other out",
+             "correct": True},
+            {"text": "It cannot be worked out without knowing the core "
+                     "material", "correct": False,
+             "why": "The core has not changed here; only the turns and "
+                    "the current have, and that is enough to compare "
+                    "them."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-s30",
+        "band": "standard",
+        "text": "An electromagnet's turns are tripled, and its current is "
+                "also tripled. How does the new field compare with the "
+                "original?",
+        "options": [
+            {"text": "It stays the same, since both changes are identical "
+                     "in size", "correct": False,
+             "why": "Both increasing by the same amount does not cancel "
+                    "out; each change on its own already makes the field "
+                    "bigger."},
+            {"text": "It triples, because only one of the two changes "
+                     "actually counts", "correct": False,
+             "why": "Both changes count. Turns and current both add to "
+                    "the field, so both increases apply together."},
+            {"text": "It doubles, because two changes together are capped "
+                     "at doubling the effect, however large either change "
+                     "is", "correct": False,
+             "why": "There is no such cap; each change contributes its "
+                    "own increase, and here both are tripled."},
+            {"text": "It becomes very much stronger, since both changes "
+                     "act together, each increasing the field",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+
+    # ── MRB-338 night-3 top-up · harder ──────────────────────────────────
+    {
+        "id": "p10-04-h11",
+        "band": "harder",
+        "text": "Electromagnet A has 15 turns and carries 4.0 A. "
+                "Electromagnet B has 60 turns and carries 1.0 A. Both share "
+                "an identical core. How do their fields compare?",
+        "options": [
+            {"text": "They are close to each other in strength",
+             "correct": True},
+            {"text": "B is four times stronger, because turns matter four "
+                     "times as much as current", "correct": False,
+             "why": "Neither one matters more than the other; B's smaller "
+                    "current is balanced by four times as many turns."},
+            {"text": "A is four times stronger, because current matters "
+                     "four times as much as turns", "correct": False,
+             "why": "Neither one matters more than the other; A's fewer "
+                    "turns are balanced by four times the current."},
+            {"text": "It cannot be compared without knowing the length of "
+                     "each coil", "correct": False,
+             "why": "Coil length is not one of the three things this "
+                    "lesson says the field depends on."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h12",
+        "band": "harder",
+        "text": "A coil with 12 turns carries 5.0 A. It is rewound with 60 "
+                "turns, and the current is reduced to 2.0 A on the same "
+                "supply because the extra wire raises the resistance. Is "
+                "the new coil stronger or weaker than the original?",
+        "options": [
+            {"text": "Weaker — the current has fallen to less than half "
+                     "of what it was", "correct": False,
+             "why": "The turns have increased by five times, which more "
+                    "than makes up for the smaller current."},
+            {"text": "Stronger — five times the turns outweighs the drop "
+                     "in current", "correct": True},
+            {"text": "About the same — the two changes roughly cancel "
+                     "each other out", "correct": False,
+             "why": "Five times the turns against less than half the "
+                    "current does not roughly cancel; the turns' effect "
+                    "wins by a wide margin."},
+            {"text": "It cannot be worked out, because current and turns "
+                     "cannot be compared with each other", "correct": False,
+             "why": "They can be compared: each extra turn adds its own "
+                    "field, and a smaller current gives each turn a "
+                    "smaller push — both can be reasoned about together."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h13",
+        "band": "harder",
+        "text": "An electromagnet with a soft iron core lifts a load. A "
+                "second, identical electromagnet is built with a core of "
+                "hardened steel instead. Both are switched on, lift their "
+                "loads, and are then switched off. Which one is harder to "
+                "unload afterwards?",
+        "options": [
+            {"text": "The soft iron one, because iron is a stronger core "
+                     "than steel while the current flows", "correct": False,
+             "why": "While the current is flowing, soft iron and hardened "
+                    "steel behave in a broadly similar way; the real "
+                    "difference is what happens after switch-off."},
+            {"text": "Neither — both release their loads identically, "
+                     "since both are magnetic metals of a similar kind",
+             "correct": False,
+             "why": "Both being magnetic is not the whole story; steel "
+                    "keeps the magnetism it is given, and soft iron does "
+                    "not."},
+            {"text": "The steel-cored one, because the steel keeps "
+                     "magnetism the soft iron would have lost",
+             "correct": True},
+            {"text": "The soft iron one, because it takes longer to "
+                     "switch off completely", "correct": False,
+             "why": "Switching off is instantaneous in both cases; the "
+                    "difference is what the core does with the magnetism "
+                    "it was given, not how quickly the switch acts."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h14",
+        "band": "harder",
+        "text": "A relay's coil is rewound with far fewer turns, keeping "
+                "the same current. The arm no longer moves across to close "
+                "the big circuit. What is the most likely explanation?",
+        "options": [
+            {"text": "The big circuit's current has become too small to "
+                     "detect, even though the small coil's own wiring is "
+                     "unchanged", "correct": False,
+             "why": "The relay's coil never carries the big circuit's "
+                    "current at all; it is switched by the small circuit's "
+                    "magnetism, which is what has weakened here."},
+            {"text": "The iron arm has become demagnetised over time",
+             "correct": False,
+             "why": "The arm does not need to be permanently magnetised; "
+                    "it only needs to be pulled by the coil's field each "
+                    "time the coil is energised."},
+            {"text": "The current in the small circuit has reversed "
+                     "direction", "correct": False,
+             "why": "Reversing the current would swap the coil's poles, "
+                    "not stop it from making a field able to pull the arm "
+                    "at all."},
+            {"text": "Fewer turns has weakened the coil's field below the "
+                     "strength needed to pull the arm across",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h15",
+        "band": "harder",
+        "text": "A student claims that reversing the current through an "
+                "electromagnet's coil makes it stronger, because the field "
+                "is now working in a fresh direction. What is wrong with "
+                "this reasoning?",
+        "options": [
+            {"text": "Reversing the current changes which end is north "
+                     "and which is south, but leaves the strength of the "
+                     "field exactly as it was", "correct": True},
+            {"text": "The reasoning is correct — reversing the current "
+                     "does make it stronger", "correct": False,
+             "why": "The strength is unchanged by reversing the current; "
+                    "only the poles swap over."},
+            {"text": "Reversing the current actually switches the field "
+                     "off completely", "correct": False,
+             "why": "A current is still flowing, in the other direction, "
+                    "so a field of the same size is still being made."},
+            {"text": "Reversing the current only affects a core made of "
+                     "hardened steel, not soft iron, because only steel "
+                     "keeps any magnetism at all", "correct": False,
+             "why": "Reversing the current affects the poles of any "
+                    "electromagnet's field, whatever the core is made "
+                    "from."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h16",
+        "band": "harder",
+        "text": "An MRI scanner's coil carries an enormous, unchanging "
+                "current for years with no power supply connected. A "
+                "different, ordinary electromagnet is switched off the "
+                "moment its supply is disconnected. What is the key "
+                "difference between the two coils that explains this?",
+        "options": [
+            {"text": "The MRI coil is wound with far more turns than an "
+                     "ordinary electromagnet, which is why its field can "
+                     "persist for so long", "correct": False,
+             "why": "The number of turns changes how strong a coil's "
+                    "field is, not whether a current can keep flowing "
+                    "with no supply at all."},
+            {"text": "The MRI coil's wire has no electrical resistance, "
+                     "so nothing drains the current away once it is set "
+                     "flowing", "correct": True},
+            {"text": "The MRI coil has no core at all, unlike an ordinary "
+                     "electromagnet", "correct": False,
+             "why": "Having no core changes how strong the field is, not "
+                    "whether the current itself can persist without a "
+                    "supply."},
+            {"text": "The MRI coil's current is much smaller than an "
+                     "ordinary electromagnet's", "correct": False,
+             "why": "The current in an MRI's main coil is in fact very "
+                    "large; its size is not what lets it persist without "
+                    "a supply."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h17",
+        "band": "harder",
+        "text": "A permanent magnet is made by winding a coil around a bar "
+                "of hardened steel, running a current, and switching off. "
+                "A second attempt uses exactly the same coil and current, "
+                "but around a bar of soft iron instead. What is the "
+                "result?",
+        "options": [
+            {"text": "An identical permanent magnet, since both are made "
+                     "of iron", "correct": False,
+             "why": "Hardened steel and soft iron are both mostly iron, "
+                    "but they behave very differently once the current "
+                    "stops."},
+            {"text": "A stronger permanent magnet, because soft iron "
+                     "magnetises more easily and holds on to it just as "
+                     "firmly", "correct": False,
+             "why": "Soft iron magnetising more easily while the current "
+                    "flows is exactly why it fails to STAY magnetised "
+                    "afterwards."},
+            {"text": "No permanent magnet at all — the soft iron loses "
+                     "its magnetism as soon as the current stops",
+             "correct": True},
+            {"text": "A permanent magnet with reversed poles compared "
+                     "with the steel one", "correct": False,
+             "why": "Nothing about which metal is used changes which way "
+                    "the current is flowing, so the poles would not "
+                    "reverse."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h18",
+        "band": "harder",
+        "text": "A loudspeaker's coil is fed a current that changes "
+                "direction only once a second, rather than thousands of "
+                "times a second. What would a listener notice?",
+        "options": [
+            {"text": "Nothing different — the cone's motion does not "
+                     "depend on how often the current changes, only on "
+                     "how large it happens to be", "correct": False,
+             "why": "The rate the current changes is exactly what sets "
+                    "how fast the cone moves, which is what a listener "
+                    "hears as pitch."},
+            {"text": "The magnet inside would need to be switched, which "
+                     "it cannot do", "correct": False,
+             "why": "The magnet is permanent and fixed throughout; only "
+                    "the coil's current changes direction."},
+            {"text": "The cone would spin instead of moving back and "
+                     "forth", "correct": False,
+             "why": "The cone is not mounted to spin either way; the "
+                    "current's direction sets which way it is pushed, "
+                    "not whether it turns."},
+            {"text": "The cone would move back and forth far more "
+                     "slowly, which would sound as a very low, thumping "
+                     "sound rather than a note", "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h19",
+        "band": "harder",
+        "text": "A door lock's electromagnet is fitted with a soft iron "
+                "core. A safety inspector suggests replacing it with "
+                "hardened steel 'to make the lock stronger.' Why is this a "
+                "bad idea?",
+        "options": [
+            {"text": "A steel core would keep some magnetism after the "
+                     "power is cut, so the door might not release "
+                     "reliably", "correct": True},
+            {"text": "Steel cannot be magnetised strongly enough to hold "
+                     "a door shut", "correct": False,
+             "why": "Steel magnetises perfectly well; the problem is not "
+                    "initial strength, it is what happens when the power "
+                    "is cut."},
+            {"text": "Steel would reverse the lock's poles every time the "
+                     "door closes", "correct": False,
+             "why": "Nothing about the core material reverses the "
+                    "current's direction; the poles would not swap on "
+                    "their own."},
+            {"text": "Steel conducts electricity too well for a coil to "
+                     "be safely wound around it without a serious risk of "
+                     "a short circuit", "correct": False,
+             "why": "The core does not carry the coil's current at all; "
+                    "how well it conducts electricity is not relevant "
+                    "here."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h20",
+        "band": "harder",
+        "text": "Two identical-looking electromagnets are being compared. "
+                "One has 3 times the turns of the other, but only a third "
+                "of the current. Which is stronger?",
+        "options": [
+            {"text": "The higher-turns one, because turns matter more "
+                     "than current", "correct": False,
+             "why": "Neither matters more; three times the turns and a "
+                    "third of the current cancel out exactly."},
+            {"text": "They are equally strong", "correct": True},
+            {"text": "The higher-current one, because current matters "
+                     "more than turns", "correct": False,
+             "why": "Neither matters more; three times the turns and a "
+                    "third of the current cancel out exactly."},
+            {"text": "It cannot be worked out without knowing the core "
+                     "material", "correct": False,
+             "why": "The core is not said to differ here; turns and "
+                    "current alone are enough to compare them, since one "
+                    "exactly balances the other."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h21",
+        "band": "harder",
+        "text": "A soft-iron-cored electromagnet lifts eight paper clips "
+                "at a certain current. The current is then reduced to a "
+                "quarter of its original value, with everything else "
+                "unchanged. What would you expect?",
+        "options": [
+            {"text": "It still lifts close to eight clips, because the "
+                     "core does the real work", "correct": False,
+             "why": "The core only multiplies whatever field the current "
+                    "makes; cutting the current to a quarter cuts the "
+                    "field it has to multiply."},
+            {"text": "It lifts more clips, because a gentler current "
+                     "strains the wire less", "correct": False,
+             "why": "How gently the wire is treated has nothing to do "
+                    "with how many clips a weaker field can hold; it "
+                    "lifts fewer, not more."},
+            {"text": "It lifts noticeably fewer clips, since a smaller "
+                     "current makes a weaker field", "correct": True},
+            {"text": "It lifts exactly two clips, since the field falls "
+                     "by exactly the same fraction as the current",
+             "correct": False,
+             "why": "The number of clips held is not a simple fraction of "
+                    "the current in this way; it falls, but not to a "
+                    "value that can be read off directly like that."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h22",
+        "band": "harder",
+        "text": "A relay closes a big circuit whenever its small coil is "
+                "energised. A student wires the small coil directly into "
+                "the big circuit itself, hoping to simplify things, so "
+                "one current does both jobs. Why is this a bad plan?",
+        "options": [
+            {"text": "The relay's arm cannot be pulled by a current at "
+                     "all", "correct": False,
+             "why": "The relay's arm is pulled by exactly the coil's "
+                    "current; that is how a relay normally works."},
+            {"text": "The big circuit's own current would be far too "
+                     "small to close anything, since a relay is only ever "
+                     "built to detect the smallest currents", "correct": False,
+             "why": "It is not that the current is too small; the danger "
+                    "is the opposite — the big circuit's current is far "
+                    "too large for the small coil and switch to carry "
+                    "safely."},
+            {"text": "The coil would need to be made of hardened steel "
+                     "instead of iron", "correct": False,
+             "why": "The coil's own core material is not the issue here; "
+                    "it is the size of current the small circuit's "
+                    "wiring is built to carry."},
+            {"text": "The small coil and its switch are built for a "
+                     "small current, and the big circuit's current would "
+                     "be far too large for them to carry safely",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h23",
+        "band": "harder",
+        "text": "An electromagnet is switched off, and a fellow student "
+                "claims they can still feel a very faint pull on a paper "
+                "clip nearby, a second later. What is the best "
+                "explanation?",
+        "options": [
+            {"text": "They are mistaken — with a soft iron core the field "
+                     "is gone the instant the current stops, so there is "
+                     "nothing left to feel", "correct": True},
+            {"text": "The pull is real, and it fades away gradually over "
+                     "a few seconds", "correct": False,
+             "why": "There is nothing gradual about a soft-iron-cored "
+                    "electromagnet's field; it disappears at the same "
+                    "instant the current does."},
+            {"text": "The pull is real, because the paper clip itself has "
+                     "become magnetised permanently by sitting close to "
+                     "the coil", "correct": False,
+             "why": "A single paper clip briefly held near a coil does "
+                    "not become a permanent magnet from that alone, and "
+                    "the coil's own field is what has gone in any case."},
+            {"text": "The pull is real, because the switch itself has "
+                     "stored some current", "correct": False,
+             "why": "A switch stores no current at all; it only allows or "
+                    "stops the flow."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h24",
+        "band": "harder",
+        "text": "A student wants an electromagnet that switches off "
+                "completely but can also be made into a permanent magnet "
+                "later, using the same coil, just by choosing what to put "
+                "inside it at the time. What should they use as the core?",
+        "options": [
+            {"text": "Hardened steel every time, since it is more "
+                     "magnetic than soft iron", "correct": False,
+             "why": "Being 'more magnetic' is not quite it — the relevant "
+                    "property is whether the core keeps the magnetism "
+                    "once the current stops, which is what determines the "
+                    "choice."},
+            {"text": "Soft iron for everyday switching, swapped for "
+                     "hardened steel on the occasion they want a lasting "
+                     "magnet", "correct": True},
+            {"text": "The same core material either way, since the coil "
+                     "is what really matters and the core barely makes "
+                     "any difference", "correct": False,
+             "why": "The coil is not what really matters here; the whole "
+                    "difference between switching off cleanly and keeping "
+                    "magnetism for good comes down to the core material "
+                    "chosen."},
+            {"text": "Plastic, since it can be shaped to do either job",
+             "correct": False,
+             "why": "Plastic is not magnetic at all, so it could never "
+                    "become a permanent magnet, however it is shaped."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h25",
+        "band": "harder",
+        "text": "A loudspeaker cone moves back and forth as the coil's "
+                "current keeps reversing. What single change to the "
+                "current would make the cone push out further each time, "
+                "without changing how often it reverses?",
+        "options": [
+            {"text": "Making the current reverse even more often",
+             "correct": False,
+             "why": "Reversing more often changes the note's pitch; it "
+                    "does not by itself make each push bigger."},
+            {"text": "Making the current smaller", "correct": False,
+             "why": "A smaller current gives a smaller push, moving the "
+                    "cone less far, not more."},
+            {"text": "Making the current larger", "correct": True},
+            {"text": "Making the current reverse less predictably",
+             "correct": False,
+             "why": "Irregular reversing would distort the sound; it "
+                    "does not, by itself, make each individual push "
+                    "bigger."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h26",
+        "band": "harder",
+        "text": "Two identical fire doors are fitted with electromagnetic "
+                "locks. Door A's lock uses a soft iron core; Door B's uses "
+                "a hardened steel core by mistake. Both are working "
+                "normally, holding their doors shut. The fire alarm cuts "
+                "the power to both. Which door is more likely to fail to "
+                "open?",
+        "options": [
+            {"text": "Door A, because soft iron reacts more slowly to "
+                     "losing current", "correct": False,
+             "why": "Soft iron reacts instantly, not slowly, when the "
+                    "current stops — that is exactly the property that "
+                    "makes it the right choice."},
+            {"text": "Neither — both release identically, since both "
+                     "cores are magnetic", "correct": False,
+             "why": "Both being magnetic materials is not the deciding "
+                    "factor; what matters is whether each one keeps the "
+                    "magnetism it is given."},
+            {"text": "Door A, because soft iron needs a reversed current "
+                     "to release, not just a stopped one, at any point",
+             "correct": False,
+             "why": "Soft iron does not need a reversed current to "
+                    "release; simply stopping the current is enough."},
+            {"text": "Door B, because the hardened steel core may keep "
+                     "some magnetism and hold the door partly shut",
+             "correct": True},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h27",
+        "band": "harder",
+        "text": "A coil's current is switched on and off very rapidly, "
+                "thousands of times a second, exactly as it would be in a "
+                "loudspeaker — but this time the coil has a soft iron "
+                "core, as in an electromagnet, rather than sitting rigidly "
+                "in a fixed magnet's field. What would you expect to "
+                "happen to the core's magnetism as the current switches?",
+        "options": [
+            {"text": "It would switch on and off in step with the "
+                     "current, appearing and disappearing thousands of "
+                     "times a second, since soft iron responds instantly",
+             "correct": True},
+            {"text": "It would build up steadily until the core became a "
+                     "permanent magnet, holding its magnetism afterwards "
+                     "regardless of how the current then switches",
+             "correct": False,
+             "why": "Soft iron does not accumulate magnetism over "
+                    "repeated switching; it loses what it has the instant "
+                    "each current pulse stops."},
+            {"text": "It would stay constant, since soft iron cannot "
+                     "respond that quickly", "correct": False,
+             "why": "Soft iron responds as fast as the current changes; "
+                    "there is nothing in the lesson suggesting any lag."},
+            {"text": "It would reverse permanently after the first "
+                     "switch-off", "correct": False,
+             "why": "Switching the current off does not reverse anything; "
+                    "it simply stops the field, and reversing needs the "
+                    "current itself to run the other way."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h28",
+        "band": "harder",
+        "text": "A student says that because both the relay and the "
+                "electric bell use an electromagnet to pull an iron arm, "
+                "they must work in exactly the same way. What is the key "
+                "difference between them?",
+        "options": [
+            {"text": "Only the bell uses a current at all; the relay "
+                     "works by a permanent magnet that pulls its arm "
+                     "across without needing a current of its own",
+             "correct": False,
+             "why": "Both devices are electromagnets, switched by a "
+                    "current; neither uses a permanent magnet."},
+            {"text": "The bell's own arm breaks the circuit that powers "
+                     "it, so it repeats automatically; the relay's arm "
+                     "closes a separate circuit and stays put",
+             "correct": True},
+            {"text": "Only the relay's arm is made of iron; the bell's "
+                     "arm is made of steel", "correct": False,
+             "why": "Both use an iron arm, pulled by a coil's field in "
+                    "the same basic way; the difference is in what each "
+                    "arm's movement does to the circuit."},
+            {"text": "The bell needs a much bigger current than the relay "
+                     "to work at all", "correct": False,
+             "why": "The size of current needed is not the key difference "
+                    "here; what differs is what happens once the arm has "
+                    "moved."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h29",
+        "band": "harder",
+        "text": "An electromagnet with 25 turns and a current of 4.0 A is "
+                "compared with one that has 100 turns and a current of "
+                "1.0 A, both with identical iron cores. A third "
+                "electromagnet has 50 turns and a current of 2.0 A. Which "
+                "of the first two is this third one closest to in "
+                "strength?",
+        "options": [
+            {"text": "Closer to the 25-turn one, because it has fewer "
+                     "turns than the 100-turn one", "correct": False,
+             "why": "Its field, from turns times current, sits between "
+                    "the two — closeness in turns alone does not decide "
+                    "closeness in field strength."},
+            {"text": "Closer to the 100-turn one, because it has more "
+                     "turns than the 25-turn one", "correct": False,
+             "why": "Its field sits between the two — closeness in turns "
+                    "alone does not decide closeness in field strength."},
+            {"text": "About equally close to both, since all three give a "
+                     "very similar field", "correct": True},
+            {"text": "It cannot be compared, since three coils cannot be "
+                     "ranked at once", "correct": False,
+             "why": "Three coils can be compared the same way as two, by "
+                    "reasoning about turns and current together."},
+        ],
+        "figure": None,
+    },
+    {
+        "id": "p10-04-h30",
+        "band": "harder",
+        "text": "A single-coil electromagnet built for a school "
+                "demonstration is later modified by a student, who "
+                "reduces the number of turns to a quarter but keeps the "
+                "current the same, hoping the coil will run cooler "
+                "without becoming much weaker. Was the student right to "
+                "expect only a small drop in strength?",
+        "options": [
+            {"text": "Yes — turns barely affect the strength compared "
+                     "with the current", "correct": False,
+             "why": "Turns affect the strength directly: each one adds "
+                    "its own field, so removing three-quarters of them "
+                    "removes most of that contribution."},
+            {"text": "Yes — removing turns only affects how hot the coil "
+                     "runs, not its field, which stays exactly as strong "
+                     "however many turns are taken away", "correct": False,
+             "why": "Removing turns changes both: fewer turns does run "
+                    "cooler, but it also removes most of the fields that "
+                    "were adding together."},
+            {"text": "No — the coil would in fact become completely "
+                     "non-magnetic", "correct": False,
+             "why": "It would still make some field, from the turns and "
+                    "current that remain; it would not vanish altogether."},
+            {"text": "No — losing three-quarters of the turns would "
+                     "weaken the field by roughly the same fraction, "
+                     "which is a large drop, not a small one at all",
+             "correct": True},
+        ],
+        "figure": None,
+    },
 ]
