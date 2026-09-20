@@ -190,7 +190,7 @@ QUESTIONS = [
                 "station",
             "Untreated sewage released into the tidal stretch of a river "
                 "mouth",
-            "Smoke particles drifting away from a bonfire in a garden",
+            "Smoke drifting from a garden bonfire",
             "Herbicide soaking into the soil of a sprayed field",
         ],
         "correct_index": 3,
@@ -326,8 +326,8 @@ QUESTIONS = [
                 "the countryside around the station",
             "It raises the temperature of the waste gases, which makes the "
                 "chimney draw the gases upwards faster",
-            "It removes the carbon dioxide at the same time, so the station "
-                "stops adding to global warming",
+            "It removes the carbon dioxide too, so the station stops adding "
+                "to global warming",
             "Less of the gas reaches the atmosphere, so less acid rain forms "
                 "downwind of the station",
         ],
@@ -390,12 +390,12 @@ QUESTIONS = [
         "text": "Explain how recycling aluminium drinks cans reduces the "
                 "pressure humans put on land.",
         "options": [
-            "Recycled cans are lighter, so a lorry carries more of them and "
-                "burns less fuel on every journey it makes",
+            "Recycled cans are lighter, so a lorry carries more and burns "
+                "less fuel",
             "Recycled aluminium releases mineral ions into the soil, which "
                 "makes the land around a recycling plant more fertile",
-            "Recycling turns the cans into a gas, so no land at all is needed "
-                "to deal with them once they are used",
+            "Recycling turns the cans into a gas, so no land is needed for "
+                "them",
             "Less ore has to be quarried and fewer cans are buried, so less "
                 "land is dug up or filled in",
         ],
@@ -600,10 +600,10 @@ QUESTIONS = [
         "options": [
             "The sewage sinks to the bed within ten kilometres and so has no "
                 "further effect on the water above it",
-            "The river has been diluted by rain and its water is therefore "
-                "warmer than it was at the outfall",
-            "The species found downstream are a different set that never "
-                "needed any dissolved oxygen at all",
+            "The river has been diluted by rain, so its water is warmer than "
+                "at the outfall",
+            "The species downstream are a different set that does not need "
+                "dissolved oxygen",
             "The organic waste has been broken down and oxygen has dissolved "
                 "back in as the water flows",
         ],
@@ -914,8 +914,8 @@ QUESTIONS = [
                 "whoever picks it up",
             "Litter is unchanged, because the price of a bottle has no "
                 "bearing on where it is finally dropped",
-            "Litter falls, because the deposit makes the bottles heavier and "
-                "harder to carry away from a shop",
+            "Litter falls, because the deposit makes each bottle heavier to "
+                "carry",
         ],
         "correct_index": 1,
         "why": "The deposit gives the empty bottle a value, so people return "
@@ -1023,10 +1023,10 @@ QUESTIONS = [
         "options": [
             "It falls, because planting a site prevents the species that had "
                 "colonised the bare waste from living there",
-            "It is unchanged, because the waste beneath the cap decides what "
-                "can live on the surface above it",
-            "It rises, because the buried waste supplies mineral ions that no "
-                "ordinary soil is able to provide",
+            "It is unchanged, because the buried waste decides what lives "
+                "above it",
+            "It rises, because the buried waste supplies mineral ions no "
+                "soil has",
             "It rises, because a varied plant cover provides habitats and "
                 "food for many more species",
         ],

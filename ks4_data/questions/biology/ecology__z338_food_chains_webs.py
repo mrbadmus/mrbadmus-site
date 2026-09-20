@@ -227,7 +227,7 @@ QUESTIONS = [
         "triple_only": False,
         "text": "Explain why a field supports far fewer foxes than rabbits.",
         "options": [
-            "Foxes are bigger, and bigger animals reproduce far more slowly",
+            "Foxes are bigger, so they breed far more slowly",
             "Foxes need much more space each, and space is what limits their "
             "numbers",
             "Rabbits breed quickly, and quick breeding gives more adults in "
@@ -326,10 +326,10 @@ QUESTIONS = [
         "text": "A pond web has one producer, the algae. Predict what happens "
                 "to the whole web if a herbicide kills all of the algae.",
         "options": [
-            "The animals that graze on the algae are the ones affected",
+            "The animals that eat the algae are the ones affected",
             "The web continues, because the animals go on feeding on one "
             "another instead",
-            "The top predator is unaffected, as it does not feed on algae",
+            "The top predator is unaffected, as it eats no algae",
             "The whole web collapses, because no energy now enters it",
         ],
         "correct_index": 3,
@@ -404,7 +404,7 @@ QUESTIONS = [
         "text": "Explain how a food web helps an ecologist work out which "
                 "species is most at risk if one species is lost.",
         "options": [
-            "It records how many individuals of each species are present",
+            "It records how many individuals each species has",
             "It shows which species are largest, and size decides the risk",
             "It lists the species in the order in which they were first "
             "discovered",
@@ -481,7 +481,7 @@ QUESTIONS = [
         "text": "A thrush eats snails, worms and berries. Explain the "
                 "advantage this gives the thrush over a bird that eats snails alone.",
         "options": [
-            "It digests three different foods more efficiently than one",
+            "It digests three foods more efficiently than one",
             "It needs less energy in total because its diet is so varied",
             "It can switch food if one of the three becomes scarce",
             "It can be placed at three separate trophic levels at the very "
@@ -558,11 +558,11 @@ QUESTIONS = [
         "text": "A field holds about 2 000 000 grass plants, 5000 rabbits and "
                 "3 foxes. State what this pattern of numbers shows.",
         "options": [
-            "Rabbits are the most important species in the whole field",
+            "Rabbits are the field's most important species",
             "Foxes must be feeding on the grass of the field as well as the "
             "rabbits",
             "Energy is lost at each step, so each level supports fewer",
-            "The field is too small to support any more than three foxes",
+            "The field is too small for more than three foxes",
         ],
         "correct_index": 2,
         "why": "The steep fall in numbers at each level follows from the "
@@ -639,7 +639,7 @@ QUESTIONS = [
         "options": [
             "Less energy enters, so it runs out after fewer transfers",
             "Desert animals are larger, so each chain needs fewer of them",
-            "Desert producers are eaten whole, so no energy is ever lost",
+            "Desert producers are eaten whole, so no energy is lost",
             "The heat of a desert destroys the energy as it passes up through "
             "the chain",
         ],
@@ -892,9 +892,9 @@ QUESTIONS = [
                 "level 3 of the same chain, and explain the difference.",
         "options": [
             "Level 3 holds far more, as its organisms are larger individually",
-            "Both hold the same, because biomass cannot be created or lost",
+            "Both hold the same, as biomass cannot be lost",
             "Level 1 holds far more, as biomass is lost at every transfer",
-            "Level 3 holds more, because it draws on two levels beneath it",
+            "Level 3 holds more, as it draws on two levels below",
         ],
         "correct_index": 2,
         "why": "Only about a tenth of the biomass passes on at each step, so "

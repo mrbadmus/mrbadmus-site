@@ -2154,7 +2154,7 @@ QUESTIONS = [
         "triple_only": True,
         "text": "State what is meant by monoculture.",
         "options": [
-            "Growing crops without fertilisers or pesticides",
+            "Growing crops without any artificial fertilisers or pesticides",
             "Growing a single type of crop over a large area of land",
             "Keeping one breed of animal indoors throughout the whole year",
             "Growing crops inside a greenhouse rather than in an open field",
@@ -2311,7 +2311,8 @@ QUESTIONS = [
             "pollution",
             "Organic gives the same yields as intensive farming, but costs "
             "more to run each year",
-            "Organic gives lower yields and greater pollution",
+            "Organic gives lower yields and greater pollution, so it offers "
+            "no advantages at all",
         ],
         "correct_index": 1,
         "why": "Refusing artificial fertilisers and pesticides removes their "
@@ -2527,7 +2528,8 @@ QUESTIONS = [
             "Farmed salmon are released back into the open sea once they have "
             "reached full size",
             "Salmon are fed on fishmeal that is made from wild-caught fish",
-            "Salmon farms are built on wild breeding grounds",
+            "Salmon farms are always built directly on the breeding grounds "
+            "of the wild stocks",
         ],
         "correct_index": 2,
         "why": "A carnivorous farmed fish has to be fed other fish, so wild "
@@ -2638,7 +2640,7 @@ QUESTIONS = [
         "text": "State one example of traditional biotechnology used in food "
                 "production.",
         "options": [
-            "Inserting a bacterial gene into maize",
+            "Inserting a bacterial gene into a growing maize plant",
             "Growing thousands of identical plants from one plant's tissue",
             "Producing human insulin from genetically modified bacteria",
             "Using yeast to make bread rise and to brew beer",
@@ -2860,7 +2862,8 @@ QUESTIONS = [
             "that grows there naturally",
             "The two use similar resources, because both organisms must be "
             "fed and must be kept warm",
-            "Mycoprotein needs more land than cattle do",
+            "Mycoprotein needs more land, because the fermenters occupy a "
+            "large area per kilogram",
             "Mycoprotein needs far less land and water, and produces less "
             "greenhouse gas",
         ],
