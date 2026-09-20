@@ -95,7 +95,7 @@ QUESTIONS = [
                 "makes a muscle cell different from a red blood cell.",
         "options": [
             "The muscle cell holds extra DNA that the red blood cell lacks",
-            "The red blood cell lost some genes as it developed",
+            "The red blood cell lost some of its genes as it developed",
             "The two cells came from two different organisms originally",
             "Different genes are switched on in the two cell types",
         ],
@@ -367,7 +367,7 @@ QUESTIONS = [
                 "glucose can.",
         "options": [
             "Starch is already soluble, so the body has no reason to absorb it",
-            "Starch is kept in the liver rather than being absorbed",
+            "Starch is stored in the liver rather than being absorbed at all",
             "Glucose is broken down by bile before it ever reaches the blood",
             "Starch molecules are too large to cross the intestine wall",
         ],
@@ -457,7 +457,7 @@ QUESTIONS = [
                 "quickly. Predict the effect on their faeces and explain why.",
         "options": [
             "Watery faeces, because less time is available to absorb water",
-            "Hard, dry faeces, because water is absorbed more quickly",
+            "Hard, dry faeces, because water is absorbed faster at higher speed",
             "No change, because water is absorbed in the small intestine instead",
             "Fatty faeces, because bile cannot reach the large intestine in time",
         ],
@@ -680,7 +680,7 @@ QUESTIONS = [
             "Beaker B is faster, because acid helps to break the starch apart",
             "Both take the same time, because the same mass of amylase was used",
             "Beaker A is faster, because pH 7 is amylase's optimum pH",
-            "Beaker B is faster, because acid speeds enzymes up",
+            "Beaker B is faster, because acid stops the enzyme being used up",
         ],
         "correct_index": 2,
         "why": "At its optimum pH the active site keeps its shape, so more "
@@ -1150,7 +1150,7 @@ QUESTIONS = [
         "options": [
             "They widen the coronary arteries by relaxing muscle in their walls",
             "They dissolve blood clots that have already formed in an artery",
-            "They replace a faulty valve in the heart",
+            "They replace a diseased heart valve with a mechanical valve",
             "They lower the level of cholesterol in the blood",
         ],
         "correct_index": 3,
@@ -1185,7 +1185,7 @@ QUESTIONS = [
                 "becomes completely blocked.",
         "options": [
             "It is starved of oxygen and its cells begin to die",
-            "It contracts harder to force the blood past",
+            "It contracts much harder to force blood past the blockage",
             "It is supplied instead by blood from the pulmonary artery",
             "It fills with fatty deposits and its wall becomes thicker",
         ],
@@ -1383,9 +1383,9 @@ QUESTIONS = [
         "text": "State the type of disease that asthma is.",
         "options": [
             "Non-communicable",
-            "Communicable",
-            "Caused by an insect bite",
-            "Caused by a fungus",
+            "Communicable, spread by droplets",
+            "Communicable, spread by an insect",
+            "Communicable, caused by a fungus",
         ],
         "correct_index": 0,
         "why": "Asthma is not caused by a pathogen and cannot be passed on, "
