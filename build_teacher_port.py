@@ -155,6 +155,18 @@ PICKER_JS_NAME = "teacher-picker.js"
 SETWORK_CSS_NAME = "set-work.css"
 SETWORK_JS_NAME = "set-work.js"
 
+# ⊕ "Add pupils (CSV)" — the admin-only CSV entry on a class's own page.
+# See `csv_upload` in page_html. A plain <script src>, the same shape as
+# `picker` below it and for the same reasons: it touches neither
+# `__MRB_TPL__` nor `teacher_rulings`, it defines
+# `window.MrBadmusClassCsvUpload`, and it injects its own trigger into
+# Design's action row after the runtime has drawn — which is the only way
+# an ADMIN-ONLY control can be expressed here at all, since an
+# `INSERT_AT` `<if>` resolves against `renderVals`, a synchronous object
+# built long before any scope question has been asked. The precedent is
+# `shared/teacher-admin-nav.js`, which is scope-gated the same way.
+CSV_JS_NAME = "class-csv-upload.js"
+
 # ── pages this build REFUSES to write ────────────────────────────────────
 #
 # ⚠️ NOT A CONVENTION — A GUARD, and it is the same one `build_student_port`
@@ -256,10 +268,16 @@ _REFUSED = {"import.html"}
 # tuple's contract — "every asset a teacher page names is in the version
 # map" — rather than a second, filtered list that would have to be kept in
 # step with this one.
+# ⊕ `class-csv-upload.js` JOINS for `teacher-picker.js`'s SECOND reason: it
+# is linked by a real tag `page_html` emits on `class-detail.html`, so
+# `stamp_versions` would stamp it either way — being named here is what makes
+# `_verify_stamps` re-hash it from disk in BOTH published trees, and what puts
+# it in `window.__MRB_ASSET_V__`, which this module itself reads to stamp the
+# one script it loads on demand.
 STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
                 "teacher-picker.js", "rum.js",
-                SETWORK_CSS_NAME, SETWORK_JS_NAME)
+                SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME)
 
 
 def asset_hash(text):
@@ -345,6 +363,11 @@ PAGES = [
     # halves of that against the emitted bytes.
     dict(screen="class", node=87, out="class-detail.html", admin_nav=False,
          picker=True,
+         # ⊕ `csv_upload=True` ON THIS ONE ONLY. The trigger is appended to
+         # Design's class action row (node 213), which every other page
+         # prunes — so the other five carry neither the button nor a reason
+         # to load its script.
+         csv_upload=True,
          fixture_out="class-detail-fixture.html",
          fixture_js="teacher-fixture-class-detail.js",
          empty_out="class-detail-empty-fixture.html",
@@ -5012,6 +5035,15 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
                    % SETWORK_CSS_NAME if spec.get("setwork") else "")
     setwork_js = ("<script src=\"/shared/%s\"></script>\n"
                   % SETWORK_JS_NAME if spec.get("setwork") else "")
+    # ⊕ "Add pupils (CSV)", on ONE of the six. Same shape as `picker` above
+    # and emitted on the FIXTURES too, for the same reason every other tag
+    # here is: the gates describe a fixture as "the same bytes apart from its
+    # banner and its last two script tags". On a fixture there is no config,
+    # no SDK and no session, so the module waits for a client that never
+    # arrives and adds nothing — which is the correct outcome rather than a
+    # failure, exactly as `admin_nav` behaves there.
+    csv_js = ("<script src=\"/shared/%s\"></script>\n"
+              % CSV_JS_NAME if spec.get("csv_upload") else "")
     # ⚠️ EMITTED ON BOTH PAGES, including the fixture, which never reads it.
     # The gates document the fixture as "the same bytes apart from its banner
     # and its last two script tags", and that sentence is what lets them
@@ -5286,7 +5318,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
            "    props: {}\n"
            "  }));\n"
            "};",
-           dep_map + admin_nav + picker + setwork_js,
+           dep_map + admin_nav + picker + setwork_js + csv_js,
            tail)),
         versions)
 

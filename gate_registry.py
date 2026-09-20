@@ -1633,6 +1633,48 @@ GATES = [
              "TEST project only — production is never addressed by this "
              "file."),
 
+    dict(name="class_csv_upload",
+         cmd=["python3", "class_csv_upload_drive.py"],
+         speed="slow",
+         watches=["class_csv_upload_drive.py",
+                  "supabase/functions/roster-import/index.ts",
+                  "shared/class-csv-upload.js",
+                  "build_teacher_port.py",
+                  "shared/teacher-admin-nav.js"],
+         needs="mrbadmus_site/teacher/class-detail.html",
+         needs_env="MRB_THROWAWAY_PASSWORD",
+         why="the existing-class-by-id path on roster-import (\"Add pupils "
+             "(CSV)\" on a class's own page). ONE command: it spawns "
+             "`deno run` on the real, unedited index.ts itself for the "
+             "run's duration (no Docker, no Supabase-CLI login), so what it "
+             "drives is the exact file being pushed, not a stub — SKIPS BY "
+             "NAME if `deno` is not on PATH, same standing as `needs_env`. "
+             "Reuses the two MRB-326 throwaway accounts and their real "
+             "sign-in, the same reasoning as `teacher_admin_real` above: a "
+             "proof on the service-role key bypasses RLS and the caller-role "
+             "gate both, so admin-only has to be proven on a real JWT or it "
+             "proves nothing. Asserts: non-admin refused, a REVOKED "
+             "staff_scopes grant refused (the one real gap an Opus review "
+             "found before merge — ended_at was missing from the first cut "
+             "of the filter), the wrong-year refusal and its "
+             "academicYearName-override regression, create+attach, a "
+             "same-CSV re-upload producing zero duplicates, and a mixed "
+             "existing/new batch. "
+             "⚠️ CANNOT GO GREEN ON TEST TODAY, and this is a finding about "
+             "TEST, not about the code being pushed: migration "
+             "20260629195630_add_profiles_external_student_id.sql was never "
+             "applied there, so every real (non-dry-run) roster-import "
+             "write fails on a missing column — a PRE-EXISTING gap this "
+             "drive is what surfaced, since every prior roster-import gate "
+             "either stubs `functions.invoke` or never reaches a real "
+             "write. Fixing TEST needs a Supabase PAT or DB password. Until "
+             "then this ships under a GATE-OVERRIDE naming this file; the "
+             "four write-dependent assertions were verified once by hand "
+             "against a scratch copy with `external_student_id` removed "
+             "(documented in this script's own header) — the six "
+             "non-write assertions (both admin checks, both year checks) "
+             "run for real here regardless, on the actual file."),
+
     # ── ⊕ MRB-328 J2, 6 Sep 2026 · the import page's class picker ───────
 
     dict(name="mrb328_import_picker",
