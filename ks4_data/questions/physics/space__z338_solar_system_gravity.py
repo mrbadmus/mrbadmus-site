@@ -709,4 +709,448 @@ QUESTIONS = [
         "why": "The difference is what the body orbits: a dwarf planet goes "
                "round the Sun, while a moon is a natural satellite of a planet.",
     },
+
+    # ── standard, continued: a third orbit type, the ISS, the Oort cloud,
+    # the ecliptic, ground-based radio astronomy, an interstellar visitor,
+    # a fresh unit conversion and the Kuiper Belt ──────────────────────────
+    {
+        "id": "ks4-solar-system-gravity-s19",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why GPS navigation satellites orbit at an altitude "
+                "of roughly 20 000 km, between the low orbits used for "
+                "imaging and the geostationary orbit used for "
+                "television.",
+        "options": [
+            "That altitude lets a receiver on the ground see several "
+            "satellites of a whole network at once, while each "
+            "satellite still orbits fast enough to cover the globe "
+            "within hours",
+            "20 000 km is simply the lowest altitude at which a "
+            "satellite can carry a working GPS receiver on board "
+            "without it overheating",
+            "20 000 km is the one and only altitude in the whole of "
+            "near-Earth space at which the Earth's gravity happens to "
+            "be weak enough for a satellite of a GPS network's typical "
+            "mass to remain safely in orbit at all",
+            "GPS satellites orbit there because it is exactly halfway "
+            "between low Earth orbit and geostationary orbit, which "
+            "keeps the delay equal for every user",
+        ],
+        "correct_index": 0,
+        "why": "A medium orbit balances two needs: it is high enough "
+               "that many satellites are visible from any point on "
+               "Earth at once, and low enough that each completes an "
+               "orbit every few hours rather than staying fixed above "
+               "one spot.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-s20",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "The International Space Station orbits at a low altitude "
+                "with a period of about 90 minutes. Calculate roughly "
+                "how many complete orbits it makes in 24 hours.",
+        "options": [
+            "8",
+            "16",
+            "24",
+            "48",
+        ],
+        "correct_index": 1,
+        "why": "24 hours is 1440 minutes, and 1440 ÷ 90 = 16 orbits.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-s21",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why astronomers believe there is a vast, thinly "
+                "populated cloud of icy bodies — the Oort cloud — "
+                "surrounding the Solar System far beyond Neptune.",
+        "options": [
+            "Space telescopes such as Hubble and James Webb have already "
+            "photographed the whole cloud directly, showing millions of "
+            "individual icy bodies scattered clearly across a single "
+            "wide-field image",
+            "Every dwarf planet discovered so far has come from that "
+            "region, and none has ever been found any closer to the "
+            "Sun",
+            "It is inferred from the orbits of long-period comets, "
+            "which arrive from every direction and take thousands of "
+            "years to return, suggesting a spherical reservoir around "
+            "the whole system",
+            "It was detected because its combined gravity is strong "
+            "enough to measurably slow the outer planets in their "
+            "orbits",
+        ],
+        "correct_index": 2,
+        "why": "No object that far out can be seen directly with "
+               "current telescopes; the Oort cloud's existence is "
+               "inferred from the paths that long-period comets are "
+               "observed to take.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-s22",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why the eight planets are usually shown lying on "
+                "roughly the same flat plane as they orbit the Sun, "
+                "rather than at random angles to one another.",
+        "options": [
+            "Each planet's own gravity has gradually pulled every "
+            "other planet's orbit into line with its own, levelling "
+            "the whole system out over billions of years since it "
+            "first formed",
+            "The Sun's magnetic field constrains every charged particle "
+            "in the Solar System to travel within one flat plane",
+            "Telescopes can only usefully observe one plane at a time, "
+            "so planets outside it are simply left off most diagrams",
+            "The planets formed from the same flattened, spinning disc "
+            "of gas and dust that surrounded the young Sun, so their "
+            "orbits still largely share that disc's plane",
+        ],
+        "correct_index": 3,
+        "why": "The Solar System formed from a single rotating disc, "
+               "and the planets that condensed within it inherited "
+               "orbits close to that disc's plane.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-s23",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why a large radio telescope, unlike a telescope "
+                "observing visible light or infrared, can usefully be "
+                "built on the ground rather than launched into space.",
+        "options": [
+            "Radio waves from space pass through the Earth's "
+            "atmosphere largely unaffected, so a ground-based dish can "
+            "still collect them clearly",
+            "Radio telescopes are far too heavy to be launched into "
+            "orbit by any rocket currently available anywhere",
+            "Radio waves are blocked completely by the atmosphere, so a "
+            "ground-based telescope has to be built underground to "
+            "detect them at all",
+            "Radio astronomy does not depend on collecting radiation "
+            "at all, so no telescope of any kind is actually needed "
+            "for it",
+        ],
+        "correct_index": 0,
+        "why": "The atmosphere is largely transparent to radio waves, "
+               "unlike to much of the infrared and to X-rays, so a "
+               "radio telescope loses little by staying on the ground.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-s24",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "An object from outside the Solar System passes close to "
+                "the Sun on a path that will carry it back out into "
+                "interstellar space, never to return. Explain what "
+                "this tells you about its speed relative to the Sun's "
+                "gravity.",
+        "options": [
+            "Its speed must be exactly zero relative to the Sun at the "
+            "single moment of closest approach, and it is that "
+            "momentary stillness which is what then lets it escape "
+            "afterwards",
+            "Its speed is great enough that the Sun's gravity can bend "
+            "its path but not enough to pull it into a closed orbit, "
+            "so it escapes rather than returning",
+            "The Sun's gravity has no effect on it at all, because the "
+            "object formed outside the Solar System entirely",
+            "The object must be travelling slower than every planet in "
+            "the Solar System, since only a slow object could have "
+            "arrived from outside it",
+        ],
+        "correct_index": 1,
+        "why": "A body bound in orbit is pulled back again and again; "
+               "one that escapes was moving fast enough that gravity "
+               "could deflect its path but never capture it.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-s25",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A star is measured to be 8.6 light-years from Earth. "
+                "Taking one light-year as 9.46 × 10¹⁵ m and one "
+                "astronomical unit as 1.5 × 10¹¹ m, determine roughly "
+                "how many astronomical units away the star is.",
+        "options": [
+            "5.4 × 10³ AU",
+            "8.6 × 10⁴ AU",
+            "5.4 × 10⁵ AU",
+            "5.4 × 10⁷ AU",
+        ],
+        "correct_index": 2,
+        "why": "8.6 × 9.46 × 10¹⁵ ≈ 8.1 × 10¹⁶ m, and dividing by "
+               "1.5 × 10¹¹ m gives roughly 5.4 × 10⁵ AU.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-s26",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain what the Kuiper Belt is, and how it differs from "
+                "the asteroid belt.",
+        "options": [
+            "It is a ring of rocky debris between Mars and Jupiter, "
+            "identical to the asteroid belt but discovered more "
+            "recently by astronomers",
+            "It is the cloud of gas and dust from which the Sun itself "
+            "first formed, lying far closer in than any of the eight "
+            "planets",
+            "It is the name given to the rings of Saturn, made of icy "
+            "fragments rather than the rock that makes up the asteroid "
+            "belt",
+            "It is a region of icy bodies, including Pluto, orbiting "
+            "beyond Neptune — far further out and far colder than the "
+            "rocky asteroid belt",
+        ],
+        "correct_index": 3,
+        "why": "The Kuiper Belt is a distinct, distant region of icy "
+               "bodies beyond Neptune, quite unlike the much closer, "
+               "rocky asteroid belt.",
+    },
+
+    # ── harder, continued: an MEO orbital-radius calculation, the
+    # telescope-in-space claim tested, the Oort cloud's scale, a parsec
+    # conversion, an interstellar visitor, a real probe compared, ISS
+    # speed and the LEO-versus-GEO synthesis ────────────────────────────
+    {
+        "id": "ks4-solar-system-gravity-h19",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A GPS satellite orbits at an altitude of 20 200 km above "
+                "the Earth's surface. Taking the Earth's radius as "
+                "6400 km, determine the radius of the satellite's "
+                "orbit measured from the centre of the Earth.",
+        "options": [
+            "26 600 km",
+            "20 200 km",
+            "13 800 km",
+            "33 000 km",
+        ],
+        "correct_index": 0,
+        "why": "Orbital radius is altitude plus the Earth's radius: "
+               "20 200 + 6400 = 26 600 km.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-h20",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Evaluate the claim that every kind of astronomical "
+                "telescope works better if it is launched into space "
+                "rather than built on the ground.",
+        "options": [
+            "The claim is sound, because the vacuum of space always "
+            "improves the sharpness of any image, whatever wavelength "
+            "is being observed",
+            "The claim is unsound: a radio telescope loses little by "
+            "staying on the ground, since the atmosphere barely "
+            "absorbs radio waves, while space chiefly benefits "
+            "telescopes working in wavelengths the atmosphere blocks",
+            "The claim is sound, because ground-based telescopes can "
+            "never physically be built larger than a few metres across "
+            "anywhere on Earth, while a telescope launched into space "
+            "faces no such size limit on the mirror it carries at all",
+            "The claim is unsound, because no telescope of any kind "
+            "performs any better in space than the equivalent "
+            "instrument does on the ground",
+        ],
+        "correct_index": 1,
+        "why": "The advantage of space depends on the wavelength: it "
+               "matters enormously for infrared and X-rays, which the "
+               "atmosphere absorbs, but far less for radio, which "
+               "passes through largely unaffected.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-h21",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A short-period comet returns every 76 years and is "
+                "thought to originate from the Kuiper Belt. A "
+                "long-period comet has an orbital period of 4 million "
+                "years. Explain what the size of the second period "
+                "suggests about where that comet came from.",
+        "options": [
+            "It suggests the comet came from just beyond Neptune, the "
+            "same region as the short-period comet, but on a "
+            "slower-moving orbit",
+            "It suggests the comet has been gradually slowed down by "
+            "repeated close passes near the Sun, stretching out its "
+            "period over many thousands of past orbits",
+            "It suggests the comet's orbit extends vastly further out "
+            "than the Kuiper Belt, consistent with an origin in the "
+            "much more distant Oort cloud",
+            "It suggests the period has been measured incorrectly, "
+            "since no comet is expected to take anywhere near that "
+            "long to complete one orbit",
+        ],
+        "correct_index": 2,
+        "why": "An orbital period that long implies an aphelion far "
+               "beyond the Kuiper Belt, which is exactly the kind of "
+               "extremely wide, slow orbit expected of an Oort cloud "
+               "comet.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-h22",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A galaxy is measured to be 2.5 million parsecs from "
+                "Earth. Taking one parsec as 3.26 light-years and one "
+                "light-year as 9.46 × 10¹⁵ m, determine roughly its "
+                "distance in metres.",
+        "options": [
+            "7.7 × 10²¹ m",
+            "2.5 × 10²² m",
+            "3.1 × 10²² m",
+            "7.7 × 10²² m",
+        ],
+        "correct_index": 3,
+        "why": "2.5 × 10⁶ × 3.26 ≈ 8.15 × 10⁶ light-years, and "
+               "8.15 × 10⁶ × 9.46 × 10¹⁵ ≈ 7.7 × 10²² m.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-h23",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A newspaper reports that an interstellar object passing "
+                "through the Solar System 'proves the Sun's gravity "
+                "has grown weaker than before'. Evaluate this claim.",
+        "options": [
+            "The claim is unsound: the object's escape has nothing to "
+            "do with a change in the Sun's gravity, and everything to "
+            "do with the object arriving too fast to be captured into "
+            "orbit",
+            "The claim is sound, because only a gravitational field "
+            "that had genuinely weakened over time would ever allow any "
+            "object to leave the Solar System once it had already "
+            "entered it",
+            "The claim is sound, but only for objects heavier than a "
+            "typical comet, since the Sun's gravity has weakened just "
+            "enough to release large bodies",
+            "The claim is unsound, because interstellar objects are "
+            "not affected by the Sun's gravity at all as they pass "
+            "through the Solar System",
+        ],
+        "correct_index": 0,
+        "why": "An object on a hyperbolic path was always going to "
+               "escape, at any strength of the Sun's gravity — its "
+               "speed on arrival, not a change in gravity, decides "
+               "that.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-h24",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "New Horizons reached Pluto, at about 33 AU, roughly nine "
+                "years after launch. An earlier probe reached Mars, at "
+                "about 1.5 AU, in around seven months. Using only the "
+                "distances, explain why the difference in journey time "
+                "is so much larger than the difference in distance "
+                "alone would suggest.",
+        "options": [
+            "Pluto is constantly moving further away from the Sun "
+            "during the whole nine-year journey, which adds a great "
+            "deal of extra distance beyond the original 33 AU that the "
+            "probe then has to make up along the way",
+            "Distance is only part of the story: reaching a far world "
+            "at a useful speed and arrival trajectory takes a "
+            "carefully planned, often slower path rather than a "
+            "straight line at constant speed",
+            "The Mars probe used a completely different type of engine "
+            "from the Pluto probe, which explains the whole of the "
+            "difference in journey time",
+            "The 33 AU distance to Pluto was measured incorrectly, and "
+            "the true distance is over twenty times what is usually "
+            "quoted for it",
+        ],
+        "correct_index": 1,
+        "why": "Interplanetary missions do not fly in a straight line "
+               "at one constant speed; the actual trajectory, gravity "
+               "assists and arrival requirements all lengthen the real "
+               "journey well beyond what distance alone implies.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-h25",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "The International Space Station orbits at a radius of "
+                "about 6800 km from the centre of the Earth, "
+                "completing one orbit every 90 minutes. Taking the "
+                "orbit as a circle, estimate its orbital speed in "
+                "kilometres per hour.",
+        "options": [
+            "1500 km/h",
+            "7100 km/h",
+            "28 500 km/h",
+            "45 200 km/h",
+        ],
+        "correct_index": 2,
+        "why": "Circumference is 2π × 6800 ≈ 42 700 km, covered in "
+               "90 minutes = 1.5 hours, giving 42 700 ÷ 1.5 ≈ "
+               "28 500 km/h.",
+    },
+    {
+        "id": "ks4-solar-system-gravity-h26",
+        "subtopic_slug": "solar-system-gravity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A company plans a satellite internet constellation, "
+                "giving fast, low-delay connections worldwide, and is "
+                "choosing between geostationary orbit and a low Earth "
+                "orbit for its satellites. Evaluate which is the "
+                "better choice for this purpose.",
+        "options": [
+            "Geostationary orbit is better, because a single satellite "
+            "stationed there can already cover almost half of the "
+            "Earth's surface at once, so the whole network would need "
+            "far fewer satellites overall to run",
+            "Geostationary orbit is better, because its huge altitude "
+            "gives it by far the lowest possible signal delay of any "
+            "orbit available",
+            "Low Earth orbit is better only because satellites are "
+            "cheaper to build at that altitude, not because of any "
+            "advantage in how the service performs",
+            "Low Earth orbit is better for low delay, because the much "
+            "shorter distance to each satellite cuts the signal's "
+            "travel time, even though many more satellites are needed "
+            "for constant coverage",
+        ],
+        "correct_index": 3,
+        "why": "Distance drives delay directly, and a low orbit's far "
+               "shorter path more than makes up for needing a larger "
+               "constellation to keep coverage continuous as the "
+               "satellites move overhead.",
+    },
 ]
