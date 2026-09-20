@@ -829,4 +829,347 @@ QUESTIONS = [
         "why": "39.0 × 100 ÷ 78 = 50.0 g must be possible on paper, and at "
                "0.50 g per gram that needs 50.0 ÷ 0.50 = 100 g of reactant.",
     },
+
+    # ── standard (top-up) ──────────────────────────────────────────────────
+    {
+        "id": "ks4-percentage-yield-s19",
+        "subtopic_slug": "percentage-yield",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Two reactants are mixed in unequal amounts, and one of them "
+                "runs out first. State which reactant's mass is used to "
+                "calculate the theoretical yield.",
+        "options": [
+            "Whichever reactant was measured out to the greater mass at the start",
+            "Whichever reactant happens to be the cheaper of the two to buy in bulk",
+            "The reactant that runs out first and limits how much product "
+            "can form",
+            "Both reactants added together, taken as one single combined mass",
+        ],
+        "correct_index": 2,
+        "why": "Once the limiting reactant is used up the reaction stops, so "
+               "the maximum possible product is fixed by that reactant "
+               "alone.",
+    },
+    {
+        "id": "ks4-percentage-yield-s20",
+        "subtopic_slug": "percentage-yield",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A preparation of aspirin has a theoretical yield of 5.20 g, "
+                "and a student collects 4.16 g. Calculate the percentage "
+                "yield.",
+        "options": [
+            "12.5%",
+            "80.0%",
+            "9.36%",
+            "125%",
+        ],
+        "correct_index": 1,
+        "why": "(4.16 ÷ 5.20) × 100 = 80.0%.",
+    },
+    {
+        "id": "ks4-percentage-yield-s21",
+        "subtopic_slug": "percentage-yield",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Ethanoic acid reacts with ethanol to form an ester in a "
+                "reversible reaction. Explain why the percentage yield of "
+                "ester is below 100% even with a very careful technique.",
+        "options": [
+            "Some of the ester breaks back down into ethanoic acid and "
+            "ethanol as fast as it forms",
+            "The ester evaporates away entirely before it can ever be "
+            "weighed on the balance",
+            "Ethanol reacts with the glassware itself instead of with the "
+            "ethanoic acid present",
+            "The ethanoic acid used does not dissolve completely in the "
+            "ethanol it is mixed with",
+        ],
+        "correct_index": 0,
+        "why": "Because the reaction can run in both directions, some ester "
+               "is always breaking down again, so the reaction never reaches "
+               "completion.",
+    },
+    {
+        "id": "ks4-percentage-yield-s22",
+        "subtopic_slug": "percentage-yield",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "60 g of a reactant can make at most 45 g of product. "
+                "Calculate the theoretical yield possible from 24 g of the "
+                "same reactant.",
+        "options": [
+            "15 g",
+            "18 g",
+            "32 g",
+            "36 g",
+        ],
+        "correct_index": 1,
+        "why": "24 g is 24/60 of the original amount, and 24/60 × 45 = 18 g.",
+    },
+    {
+        "id": "ks4-percentage-yield-s23",
+        "subtopic_slug": "percentage-yield",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A reaction typically gives three quarters of its maximum "
+                "possible product. Its theoretical yield from a given amount "
+                "of reactant is 32 g. Calculate the mass of product expected.",
+        "options": [
+            "8.0 g",
+            "24 g",
+            "42.7 g",
+            "28 g",
+        ],
+        "correct_index": 1,
+        "why": "Three quarters is a percentage yield of 75%, and 75% of 32 g "
+               "is 24 g.",
+    },
+    {
+        "id": "ks4-percentage-yield-s24",
+        "subtopic_slug": "percentage-yield",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A student weighs 12.5 g and 15.0 g, each to three significant "
+                "figures, and calculates a percentage yield of 83.33%. "
+                "Identify the value that should be reported.",
+        "options": [
+            "83%",
+            "83.3%",
+            "83.33%",
+            "80%",
+        ],
+        "correct_index": 1,
+        "why": "The answer cannot be more precise than the data it comes "
+               "from, so a result from three-significant-figure masses is "
+               "reported to three significant figures: 83.3%.",
+    },
+    {
+        "id": "ks4-percentage-yield-s25",
+        "subtopic_slug": "percentage-yield",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A student collects 15.0 g of solid from a reaction, but 3.0 g "
+                "of it is an insoluble by-product mixed in with the wanted "
+                "crystals. The theoretical yield of the crystals is 15.0 g. "
+                "Calculate the percentage yield of the crystals alone.",
+        "options": [
+            "100%",
+            "80%",
+            "20%",
+            "120%",
+        ],
+        "correct_index": 1,
+        "why": "Only 15.0 − 3.0 = 12.0 g is the wanted crystals, so the yield "
+               "is (12.0 ÷ 15.0) × 100 = 80%.",
+    },
+    {
+        "id": "ks4-percentage-yield-s26",
+        "subtopic_slug": "percentage-yield",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A student calculates actual yield divided by theoretical "
+                "yield as 0.85 and writes the percentage yield as '0.85%'. "
+                "Identify the mistake.",
+        "options": [
+            "The fraction should have been inverted before it was reported",
+            "The fraction should have been multiplied by 100 to give 85%",
+            "The fraction should have been subtracted from 1 to give 0.15%",
+            "There is no mistake, since 0.85% is a correct way to write it",
+        ],
+        "correct_index": 1,
+        "why": "A percentage is the fraction multiplied by 100, so 0.85 "
+               "becomes 85%, not 0.85%.",
+    },
+
+    # ── harder (top-up) ─────────────────────────────────────────────────────
+    {
+        "id": "ks4-percentage-yield-h19",
+        "subtopic_slug": "percentage-yield",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A product is made in two steps: the first step gives a 90% "
+                "yield and the second step, carried out on the product of the "
+                "first, gives an 85% yield. Calculate the overall percentage "
+                "yield of the two-step route.",
+        "options": [
+            "87.5%",
+            "76.5%",
+            "175%",
+            "90%",
+        ],
+        "correct_index": 1,
+        "why": "The two yields multiply rather than average: 0.90 × 0.85 = "
+               "0.765, which is 76.5%.",
+    },
+    {
+        "id": "ks4-percentage-yield-h20",
+        "subtopic_slug": "percentage-yield",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A two-step synthesis has an overall percentage yield of 72%. "
+                "The first step alone has a percentage yield of 90%. "
+                "Determine the percentage yield of the second step.",
+        "options": [
+            "18%",
+            "80%",
+            "62%",
+            "65%",
+        ],
+        "correct_index": 1,
+        "why": "The two yields multiply to give the overall yield, so the "
+               "second step is 72 ÷ 90 × 100 = 80%.",
+    },
+    {
+        "id": "ks4-percentage-yield-h21",
+        "subtopic_slug": "percentage-yield",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Reactant P and reactant Q react in the mass ratio 2 : 3 with "
+                "nothing left over, to give product R with no waste product "
+                "formed. A student mixes 40 g of P with 90 g of Q. Determine "
+                "the theoretical yield of R.",
+        "options": [
+            "60 g",
+            "100 g",
+            "130 g",
+            "90 g",
+        ],
+        "correct_index": 1,
+        "why": "40 g of P needs 60 g of Q, so Q (90 g) is in excess and P is "
+               "the limiting reactant; the theoretical yield is 40 + 60 = "
+               "100 g, since none of the mass is lost as waste.",
+    },
+    {
+        "id": "ks4-percentage-yield-h22",
+        "subtopic_slug": "percentage-yield",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A student weighs 12.5 g and a second mass of 8.0 g, "
+                "measured only to two significant figures, and calculates a "
+                "percentage yield of 65.625%. Determine the value that "
+                "should be reported.",
+        "options": [
+            "65.625%",
+            "65.6%",
+            "66%",
+            "65%",
+        ],
+        "correct_index": 2,
+        "why": "The result cannot be more precise than the least precise "
+               "measurement used, which has two significant figures, so the "
+               "answer is rounded to 66%.",
+    },
+    {
+        "id": "ks4-percentage-yield-h23",
+        "subtopic_slug": "percentage-yield",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A carbonate is heated and decomposes, releasing carbon "
+                "dioxide gas that escapes into the air, leaving a solid "
+                "product behind. Explain why the mass of solid remaining "
+                "cannot be compared directly with the starting mass to find a "
+                "percentage yield.",
+        "options": [
+            "A percentage yield always compares the actual mass with a "
+            "theoretical yield calculated from the balanced equation, not "
+            "with the starting mass",
+            "A percentage yield cannot be found for a reaction whose "
+            "products include a gas rather than a solid or a liquid alone",
+            "The carbon dioxide given off has to be captured and weighed "
+            "separately before a yield calculation of this kind becomes "
+            "possible for the chemist to carry out",
+            "The starting mass weighed out is generally smaller than the "
+            "mass of solid product left behind once the heating is "
+            "complete and the flask has cooled",
+        ],
+        "correct_index": 0,
+        "why": "The theoretical yield is the maximum mass the equation "
+               "predicts for the solid product, not the mass that was "
+               "weighed out to begin with.",
+    },
+    {
+        "id": "ks4-percentage-yield-h24",
+        "subtopic_slug": "percentage-yield",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A precipitation reaction is carried out with one reactant in "
+                "slight excess, and the calculated percentage yield comes out "
+                "at 108%. Suggest the most likely cause.",
+        "options": [
+            "Some of the unreacted excess reactant has precipitated out "
+            "along with the product and been weighed as part of it",
+            "The reaction ran further towards completion than the balanced "
+            "chemical equation itself would normally seem to allow for",
+            "The theoretical yield was calculated using too little of the "
+            "reactant that limits the reaction",
+            "The student's balance was reading exactly 8% too low for the "
+            "whole of the weighing session",
+        ],
+        "correct_index": 0,
+        "why": "A yield above 100% is impossible for the product alone, so "
+               "the extra mass most likely comes from unreacted excess "
+               "reactant carried down with the precipitate.",
+    },
+    {
+        "id": "ks4-percentage-yield-h25",
+        "subtopic_slug": "percentage-yield",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A student obtains a percentage yield of 95% but has not "
+                "tested the purity of the crystals collected. Explain what "
+                "the 95% figure alone does not tell them.",
+        "options": [
+            "Whether the crystals collected are the pure product or contain "
+            "other substances mixed in",
+            "How many grams of crystals were collected by the student at the very end of the preparation",
+            "What the theoretical yield of the reaction had been calculated to be before the run began",
+            "Whether the reaction that was carried out happens to be a reversible one or not",
+        ],
+        "correct_index": 0,
+        "why": "Percentage yield measures how much mass was collected "
+               "against the maximum possible, and says nothing about whether "
+               "that mass is pure product or includes impurities.",
+    },
+    {
+        "id": "ks4-percentage-yield-h26",
+        "subtopic_slug": "percentage-yield",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Route 1 makes a product in a single step with a 65% yield. "
+                "Route 2 makes the same product in two steps, each with a "
+                "90% yield. Determine which route gives the greater overall "
+                "yield from the same starting mass of reactant.",
+        "options": [
+            "Route 1, since a single-step route generally beats a two-step "
+            "route of this kind",
+            "Route 2, since adding 90% and 90% gives an overall yield of "
+            "180% for the route",
+            "The two routes are equal, since both of them start from the "
+            "same reactant",
+            "Route 2, since 0.90 × 0.90 gives an overall yield of 81%, "
+            "higher than Route 1's 65%",
+        ],
+        "correct_index": 3,
+        "why": "Multiplying the two step yields gives 81%, which beats "
+               "Route 1's single 65% even though Route 2 takes an extra "
+               "step.",
+    },
 ]
