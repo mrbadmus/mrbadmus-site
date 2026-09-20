@@ -83,6 +83,16 @@ JACCARD_MIN_TOKENS = 10  # correction 2 — below this, report only
 RANK_MAX_SHARE = 0.40   # brief §6 — no length rank may hold more than 40%
 RANK_MIN_N = 20         # below this a 40% share is arithmetic, not a tell
 POSITION_MIN_N = 8      # below this an unused index is not yet evidence
+# ⊕ MRB-338 night 3 — a SKEWED answer index, not just an unused one. Found
+# live: `verify_answer_lengths` (whole-corpus) could see a position skewed
+# 60-88% onto one of the four indices, and this file's own position-spread
+# check (6) only ever asked "is any index ZERO", so a leaf sitting at, say,
+# idx 0 = 70% passed clean here and only showed up in the OTHER gate. Same
+# ceiling and minimum-n as rank spread (checks 5 and 6 are the same shape of
+# defect, one over length-rank, one over raw position) — chance is 25% either
+# way, so there is no reason for the two thresholds to differ.
+POSITION_MAX_SHARE = 0.40
+POSITION_SKEW_MIN_N = RANK_MIN_N
 # Check 7 — how much a key has to SAY before its appearance in another stem
 # means anything. ⚠️ ⊕ A FIFTH CORRECTION, found the first time this file was
 # run (B1, 12 Sep 2026). A bare 12-character threshold produced 57 hits on one
@@ -525,7 +535,10 @@ def parity(rows, margin):
     return visible, correct
 
 
-def check_parity(leaf, rows):
+def check_parity(leaf, rows, new_ids):
+    # ⊕ MRB-338 night 3 — same new-vs-inherited rule as check_spreads: a leaf
+    # this branch added no row to cannot be THIS RUN'S length-parity finding.
+    has_new = any(r["id"] in new_ids for r in rows)
     n, k = parity(rows, VAL.MARGIN)
     head = "    %-34s " % leaf
     if n == 0:
@@ -539,14 +552,19 @@ def check_parity(leaf, rows):
         return
     rate = k / n
     hot = VAL._hot(n, k)
-    mark = "❌" if hot else ("⚠️ " if (rate > CEILING or rate < FLOOR) else "✅")
+    mark = ("❌" if (hot and has_new) else
+            ("⚠️ " if (hot or rate > CEILING or rate < FLOOR) else "✅"))
     print("%s%3d rows · %3d visible · key is longest %3d = %5.1f%%  %s%s"
           % (head, len(rows), n, k, 100 * rate, mark,
              (" " + hot) if hot else ""))
-    if hot:
+    if hot and has_new:
         fail("length parity", "%s is %s at margin %d: %d/%d = %.1f%% "
              "(the gate's own rule)" % (leaf, hot, VAL.MARGIN, k, n,
                                         100 * rate))
+    elif hot:
+        NOTES.append("%s is %s at margin %d: %d/%d = %.1f%% — inherited (no "
+                     "new row in this leaf on this branch), not this run's "
+                     "finding" % (leaf, hot, VAL.MARGIN, k, n, 100 * rate))
     elif rate > CEILING:
         NOTES.append("%s is %.1f%% — over the %.0f%% authoring ceiling, though "
                      "not yet significant" % (leaf, 100 * rate, 100 * CEILING))
@@ -585,7 +603,29 @@ def check_parity(leaf, rows):
 
 # ── 5, 6 · rank and position spread ─────────────────────────────────────
 
-def check_spreads(leaf, rows):
+def check_spreads(leaf, rows, new_ids):
+    # ⊕ MRB-338 night 3 · NEW-VS-INHERITED, the same distinction checks 1, 2,
+    # 3 and 10 already make (file header, correction 4: "Pre-existing pairs
+    # are REPORTED; only a pair involving a NEW row FAILS"). This pair of
+    # checks never made it, and it cost a real lane a real night: a leaf this
+    # branch never touched (organisation, particle-model — both byte-identical
+    # to origin/main once the frozen-window revert landed) still hard-failed
+    # here on a skew that predates the branch, blocking `land.sh` for a fix
+    # that was unrelated and correct. A leaf with ZERO new rows on this branch
+    # is 100% inherited; nothing below may FAIL it — only NOTE it, the same
+    # way an old-old duplicate is only ever reported. A leaf this branch DID
+    # add rows to is measured exactly as before — a lane touching a leaf is
+    # still on the hook for the whole leaf's numbers, per brief §6.
+    has_new = any(r["id"] in new_ids for r in rows)
+
+    def downgrade(kind, msg):
+        if has_new:
+            fail(kind, msg)
+            return "❌"
+        NOTES.append("%s — inherited (no new row in this leaf on this "
+                     "branch), not this run's finding" % msg)
+        return "⚠️ "
+
     ranks = collections.Counter()
     positions = collections.Counter()
     n = 0
@@ -603,12 +643,13 @@ def check_spreads(leaf, rows):
                             for i in (1, 2, 3, 4))
     over = [i for i in (1, 2, 3, 4) if ranks[i] / n > RANK_MAX_SHARE]
     if over and n >= RANK_MIN_N:
-        fail("rank spread", "%s: length rank %s holds %s of %d keys — over "
-             "the %.0f%% ceiling (brief §6)"
-             % (leaf, ",".join(str(i) for i in over),
-                ",".join("%.1f%%" % (100 * ranks[i] / n) for i in over),
-                n, 100 * RANK_MAX_SHARE))
-        mark = "❌"
+        mark = downgrade("rank spread",
+                          "%s: length rank %s holds %s of %d keys — over "
+                          "the %.0f%% ceiling (brief §6)"
+                          % (leaf, ",".join(str(i) for i in over),
+                             ",".join("%.1f%%" % (100 * ranks[i] / n)
+                                      for i in over),
+                             n, 100 * RANK_MAX_SHARE))
     elif over:
         NOTES.append("%s: rank %s over %.0f%% but only %d keys — arithmetic, "
                      "not yet a tell" % (leaf, over, 100 * RANK_MAX_SHARE, n))
@@ -621,11 +662,30 @@ def check_spreads(leaf, rows):
                                                      100 * positions[i] / n)
                            for i in range(4))
     unused = [i for i in range(4) if not positions[i]]
+    # ⊕ MRB-338 night 3 — SKEWED, not just unused (see the constant's own
+    # comment). Checked whether or not `unused` fired: a leaf can have all
+    # four indices present and still be 70% one of them.
+    skewed = [i for i in range(4) if n and positions[i] / n > POSITION_MAX_SHARE]
     if unused and n >= POSITION_MIN_N:
-        fail("position spread", "%s: answer index %s never used across %d rows "
-             "(brief §6)" % (leaf, ",".join(str(i) for i in unused), n))
-        mark = "❌"
+        mark = downgrade("position spread",
+                          "%s: answer index %s never used across %d rows "
+                          "(brief §6)"
+                          % (leaf, ",".join(str(i) for i in unused), n))
     elif unused:
+        mark = "⚠️ "
+    elif skewed and n >= POSITION_SKEW_MIN_N:
+        mark = downgrade("position spread",
+                          "%s: answer index %s holds %s of %d keys — over "
+                          "the %.0f%% ceiling (brief §6, same rule as rank "
+                          "spread)"
+                          % (leaf, ",".join(str(i) for i in skewed),
+                             ",".join("%.1f%%" % (100 * positions[i] / n)
+                                      for i in skewed),
+                             n, 100 * POSITION_MAX_SHARE))
+    elif skewed:
+        NOTES.append("%s: index %s over %.0f%% but only %d keys — "
+                     "arithmetic, not yet a tell"
+                     % (leaf, skewed, 100 * POSITION_MAX_SHARE, n))
         mark = "⚠️ "
     else:
         mark = "✅"
@@ -848,6 +908,7 @@ def check_frozen(stage, rows, leaves, new_ids, old_by_leaf):
           "`git show <merge-base>:<file>`,")
     print("    never against the working tree alone.")
     clean = True
+    leaves_with_new = {r["leaf"] for r in rows if r["id"] in new_ids}
 
     # 9a · no new id lands inside the first four of its band.
     # ⚠️ Positions 0–11 ARE ids e01–e04, s01–s04, h01–h04, at both key stages
@@ -886,10 +947,24 @@ def check_frozen(stage, rows, leaves, new_ids, old_by_leaf):
         for letter, nums in sorted(by_band.items()):
             want = list(range(1, len(nums) + 1))
             if sorted(nums) != want:
-                fail("frozen window", "%s band %r ids are %s — expected "
-                     "%02d..%02d with no gaps and no repeats"
-                     % (leaf, letter, sorted(nums), 1, len(nums)))
-                clean = False
+                msg = ("%s band %r ids are %s — expected %02d..%02d with no "
+                       "gaps and no repeats"
+                       % (leaf, letter, sorted(nums), 1, len(nums)))
+                # ⊕ MRB-338 night 3 · same new-vs-inherited rule as checks 5
+                # and 6 (see check_spreads). A gap can only be INTRODUCED by
+                # a row this branch added, renamed or removed — not by
+                # reading a leaf this branch never wrote to. particle-model's
+                # changes-of-state was found this way: byte-identical to
+                # origin/main, a gap at s19 already live in production, and
+                # this check failing it blocked `land.sh` for every OTHER
+                # leaf in the same topic.
+                if leaf in leaves_with_new:
+                    fail("frozen window", msg)
+                    clean = False
+                else:
+                    NOTES.append("frozen window · %s — inherited (no new row "
+                                 "in this leaf on this branch), not this "
+                                 "run's finding" % msg)
 
     # 9c · no row at position 0..11 changed, compared row by row.
     for leaf in leaves:
@@ -1078,16 +1153,22 @@ def main():
     print("    %.0f%% (the mirror tell). ⚠️ n=0 is not a pass — brief §9.1."
           % (100 * FLOOR))
     for leaf in focus:
-        check_parity(leaf, [r for r in rows if r["leaf"] == leaf])
+        check_parity(leaf, [r for r in rows if r["leaf"] == leaf], new_ids)
 
     print("\n5 · KEY LENGTH-RANK SPREAD — 1 = longest … 4 = shortest. No rank "
           "may hold")
     print("    more than %.0f%% of the keys (brief §6); enforced from %d keys "
           "up." % (100 * RANK_MAX_SHARE, RANK_MIN_N))
-    print("6 · KEY POSITION SPREAD — no index may be unused (brief §6); "
-          "enforced from %d rows up." % POSITION_MIN_N)
+    print("6 · KEY POSITION SPREAD — no index may be unused, or hold more "
+          "than %.0f%% (brief §6);" % (100 * POSITION_MAX_SHARE))
+    print("    unused enforced from %d rows up, skew from %d up. Both checks "
+          "(5 and 6) FAIL only when" % (POSITION_MIN_N, POSITION_SKEW_MIN_N))
+    print("    this branch added a row to the leaf — a leaf with zero new "
+          "rows is inherited and is")
+    print("    reported, never failed (the same rule as corrections 1-4 "
+          "above).")
     for leaf in focus:
-        check_spreads(leaf, [r for r in rows if r["leaf"] == leaf])
+        check_spreads(leaf, [r for r in rows if r["leaf"] == leaf], new_ids)
 
     check_key_echo(rows, scope_name)
     check_text_defects(paths, rows, scope_name)
