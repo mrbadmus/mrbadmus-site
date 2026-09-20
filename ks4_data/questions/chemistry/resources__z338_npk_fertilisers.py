@@ -494,7 +494,8 @@ QUESTIONS = [
             "Three nutrients dissolve faster than one on its own",
             "Each does a different job, so a shortage of any one limits "
             "growth",
-            "Three nutrients react together in the soil to make a fourth",
+            "Three nutrients react together in the soil to make a fourth, "
+            "less useful compound",
             "Each one cancels out the harm the other two would do",
         ],
         "correct_index": 1,
@@ -692,8 +693,8 @@ QUESTIONS = [
             "Correct, because no farm would then need any land",
             "Mixed, because rivers would recover but far more land "
             "would have to be farmed",
-            "Wrong, because fertiliser has no effect on rivers in the "
-            "first place",
+            "Wrong, because fertiliser is claimed to have no effect on "
+            "rivers whatsoever",
         ],
         "correct_index": 2,
         "why": "Cutting the nutrient load would help waterways, but yields "
@@ -809,8 +810,8 @@ QUESTIONS = [
             "Infants drink far more water each day than an adult does",
             "Infants are more affected because nitrate lowers oxygen "
             "carriage in the blood",
-            "Infants cannot taste nitrate, so they would not notice it "
-            "in the water",
+            "Infants cannot taste or smell nitrate, so they would never "
+            "notice it in the water",
             "Infants are given water that is not treated with chlorine",
         ],
         "correct_index": 1,
@@ -1001,8 +1002,8 @@ QUESTIONS = [
             "in every plant",
             "Poor root development, because the seedling cannot build the "
             "root system it needs without enough phosphorus",
-            "No symptom at all, because nitrogen and potassium are the two "
-            "nutrients a young seedling needs most",
+            "No symptom appears at first, because nitrogen and potassium "
+            "are the two nutrients a young seedling needs most of all",
             "Poor fruit development, because fruit always forms before "
             "roots in a young seedling",
         ],
@@ -1099,8 +1100,8 @@ QUESTIONS = [
             "process, feeds directly into the next step as a raw material",
             "Each of the three processes makes an identical product, so "
             "only one factory is actually needed",
-            "Government regulations require every fertiliser ingredient to "
-            "be made within the boundary of a single site",
+            "Government regulations are said to require every fertiliser "
+            "ingredient to be made within the boundary of a single site",
             "None of the three processes could be run anywhere else in the "
             "country even if a company wanted to",
         ],
