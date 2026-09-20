@@ -763,4 +763,491 @@ QUESTIONS = [
         "why": "d = v ÷ H₀ = 10 200 ÷ 68 = 150 Mpc for R, which is well "
                "inside S's 400 Mpc, so S is the more distant galaxy.",
     },
+
+    # ── standard, continued: the CMB's own temperature and cooling, the
+    # steady-state rival, the Hubble constant as a graph gradient, why many
+    # galaxies are needed, two fresh calculations, and Lemaître's priority ──
+    {
+        "id": "ks4-red-shift-big-bang-s19",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "The cosmic microwave background radiation is measured "
+                "today at about 2.7 K, yet it was released when the "
+                "universe was around 3000 K. Explain why it has cooled "
+                "so dramatically on its journey to us.",
+        "options": [
+            "The expansion of space has stretched its wavelength "
+            "enormously since it was released, and a longer "
+            "wavelength corresponds to a lower temperature",
+            "The radiation has been steadily absorbed and re-emitted "
+            "by the gas and dust of billions of galaxies it has "
+            "passed through since it began travelling",
+            "The radiation was measured incorrectly at the time it "
+            "was released, and the true early temperature is now "
+            "known to be much closer to 2.7 K",
+            "Radiation naturally loses energy the further it travels "
+            "through space, in the same way that sound gradually "
+            "fades over a long enough distance",
+        ],
+        "correct_index": 0,
+        "why": "Cosmic expansion stretches the wavelength of the "
+               "radiation as it travels, and a longer wavelength means "
+               "lower energy and so a lower equivalent temperature.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-s20",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Before the 1960s, some astronomers supported a rival "
+                "'steady-state' theory, in which the universe is "
+                "expanding but has always looked the same on average, "
+                "with new matter continuously created to fill the "
+                "growing space. Explain why this theory lost support "
+                "once the cosmic microwave background was discovered.",
+        "options": [
+            "The steady-state theory had in fact already predicted the "
+            "exact temperature of the background radiation years "
+            "before, so its discovery only strengthened that older "
+            "model further",
+            "A universe that has always looked the same has no hot, "
+            "dense early phase to have left behind a leftover glow, "
+            "so the background radiation had no natural explanation "
+            "within it",
+            "The steady-state theory was abandoned purely because more "
+            "astronomers personally preferred the Big Bang model, "
+            "rather than because of any new evidence",
+            "The background radiation was found to come from a single "
+            "nearby galaxy rather than from the whole sky, which "
+            "neither theory had predicted at all",
+        ],
+        "correct_index": 1,
+        "why": "The Big Bang model explains the background radiation "
+               "directly, as the leftover glow of a hot early "
+               "universe; a steady-state universe has no such episode "
+               "to leave one behind.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-s21",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Astronomers measure the distance and the recession "
+                "speed of many different galaxies and plot recession "
+                "speed against distance on a graph. Explain how the "
+                "Hubble constant is obtained from this graph.",
+        "options": [
+            "It is read directly from the single highest speed plotted "
+            "anywhere on the graph, ignoring every other galaxy with "
+            "a lower recession speed than that one alone",
+            "It is calculated by averaging the distances of every "
+            "galaxy plotted, without using their recession speeds in "
+            "the calculation at all",
+            "It is the gradient of the straight line that best fits "
+            "the plotted points, since Hubble's Law states that speed "
+            "is proportional to distance",
+            "It is found from the point where the line crosses the "
+            "speed axis, which shows the recession speed at zero "
+            "distance from Earth",
+        ],
+        "correct_index": 2,
+        "why": "Since v = H₀d is a straight-line relationship through "
+               "the origin, plotting v against d for many galaxies "
+               "gives a line whose gradient is H₀ itself.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-s22",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A nearby galaxy's own motion through space, caused by "
+                "the pull of nearby galaxy clusters, can add several "
+                "hundred km/s to or take several hundred km/s from "
+                "its measured recession speed. Explain why astronomers "
+                "use many galaxies rather than just one to find the "
+                "Hubble constant.",
+        "options": [
+            "Using many galaxies allows astronomers to measure each "
+            "one with a much less powerful, and therefore far "
+            "cheaper, telescope than any single galaxy on its own "
+            "would ever need",
+            "A single galaxy can only ever be red-shifted, so several "
+            "are needed before a genuine blue-shifted galaxy can be "
+            "included in the data as well",
+            "Every individual galaxy in the universe recedes at a "
+            "completely different rate, so no pattern could ever "
+            "emerge from studying only one of them",
+            "One galaxy's own local motion can distort its measured "
+            "speed, but averaging over many galaxies lets that random "
+            "local motion cancel out, leaving the true underlying "
+            "trend",
+        ],
+        "correct_index": 3,
+        "why": "Local motion adds noise to any one galaxy's reading, "
+               "but with many galaxies that noise tends to cancel out, "
+               "revealing the genuine Hubble relationship underneath.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-s23",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A spectral line emitted at 480 nm is observed from a "
+                "distant galaxy at 492 nm. Calculate the percentage "
+                "increase in the wavelength.",
+        "options": [
+            "2.5%",
+            "12%",
+            "0.4%",
+            "25%",
+        ],
+        "correct_index": 0,
+        "why": "The increase is 492 − 480 = 12 nm, and 12 ÷ 480 = "
+               "0.025, which is a 2.5% increase.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-s24",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A galaxy recedes from Earth at 9500 km/s. Taking the "
+                "Hubble constant as 68 km/s/Mpc, determine its "
+                "approximate distance from Earth.",
+        "options": [
+            "0.007 Mpc",
+            "140 Mpc",
+            "646 000 Mpc",
+            "14 Mpc",
+        ],
+        "correct_index": 1,
+        "why": "Rearranging v = H₀d gives d = v ÷ H₀ = 9500 ÷ 68 ≈ "
+               "140 Mpc.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-s25",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Georges Lemaître proposed an expanding universe "
+                "originating from a single point, based on Einstein's "
+                "equations, several years before Edwin Hubble's "
+                "observations of galaxy red-shift were published. "
+                "Explain what this tells you about how the Big Bang "
+                "model developed.",
+        "options": [
+            "It tells you the model was accepted purely on Lemaître's "
+            "mathematics alone, since observational evidence played "
+            "no real part in establishing it",
+            "It tells you Hubble's later observations were entirely "
+            "unnecessary, since the theoretical prediction on its own "
+            "was already more than enough to convince the whole "
+            "scientific community",
+            "It tells you the theoretical idea came first, and it was "
+            "observational evidence — Hubble's red-shift measurements "
+            "— that later gave it strong scientific support",
+            "It tells you the two scientists worked on completely "
+            "unrelated ideas, and it is only in modern textbooks that "
+            "their separate work has been linked together",
+        ],
+        "correct_index": 2,
+        "why": "Lemaître's mathematics proposed the expanding-universe "
+               "idea; Hubble's later observations of red-shift then "
+               "provided the evidence that idea needed to become "
+               "widely accepted.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-s26",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "The cosmic microwave background radiation was "
+                "discovered by chance in 1965. Explain why this "
+                "discovery was treated as a turning point in the "
+                "debate between the Big Bang model and the rival "
+                "steady-state model.",
+        "options": [
+            "It proved that galaxies were red-shifted for the very "
+            "first time, which neither model had previously been "
+            "able to explain at all",
+            "It showed that the universe contained far more hydrogen "
+            "than either rival model had ever predicted, forcing both "
+            "of them to be reworked completely from scratch",
+            "It was immediately shown to have come from a single "
+            "nearby star, which neither model could explain and both "
+            "were abandoned as a result",
+            "It supplied direct evidence of the hot, dense early "
+            "universe the Big Bang model required, which the "
+            "steady-state model had no way to account for",
+        ],
+        "correct_index": 3,
+        "why": "The steady-state model had no hot early phase to leave "
+               "behind such radiation, so its discovery counted "
+               "heavily in the Big Bang model's favour.",
+    },
+
+    # ── harder, continued: the constant as a gradient, evaluating the
+    # steady-state holdout, a single nearby galaxy's unreliable distance,
+    # two quasars compared, Lemaître and Hubble's real roles, scatter in
+    # real data, the stretch-factor honesty check, and what a rival theory
+    # would still need to explain ─────────────────────────────────────────
+    {
+        "id": "ks4-red-shift-big-bang-h19",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "On a graph of recession speed against distance, one "
+                "galaxy plots at (50 Mpc, 3500 km/s) and another at "
+                "(150 Mpc, 10 500 km/s), and both points lie on the "
+                "same straight line through the origin. Calculate the "
+                "gradient of that line.",
+        "options": [
+            "70 km/s/Mpc",
+            "35 km/s/Mpc",
+            "7 km/s/Mpc",
+            "700 km/s/Mpc",
+        ],
+        "correct_index": 0,
+        "why": "Gradient = change in speed ÷ change in distance = "
+               "(10 500 − 3500) ÷ (150 − 50) = 7000 ÷ 100 = "
+               "70 km/s/Mpc.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-h20",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A scientist in 1966 argues that the steady-state model "
+                "should be kept, since it can still explain galaxy "
+                "red-shift just as well as the Big Bang model can. "
+                "Evaluate this argument in light of the cosmic "
+                "microwave background's discovery the previous year.",
+        "options": [
+            "The argument is sound, because red-shift is the only "
+            "observation either model is ever required to explain, "
+            "so both remain equally supported by the evidence",
+            "The argument is weak: matching red-shift alone is no "
+            "longer enough once one model also accounts for the "
+            "background radiation and the other model does not",
+            "The argument is sound, because the background radiation "
+            "was later shown to be unrelated to either model and so "
+            "should be set aside entirely from the debate",
+            "The argument is weak, but only because steady-state "
+            "theory had already been formally disproved decades "
+            "earlier for a completely unconnected reason",
+        ],
+        "correct_index": 1,
+        "why": "A model earns support by explaining everything "
+               "observed, not just one line of evidence; once the "
+               "background radiation favoured only one model, matching "
+               "red-shift alone stopped being a sufficient defence.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-h21",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A nearby galaxy is measured receding at only "
+                "200 km/s. Using the Hubble constant of 70 km/s/Mpc, "
+                "a student calculates its distance as under 3 Mpc, "
+                "and treats this as an exact, reliable value. Evaluate "
+                "the student's confidence in that figure.",
+        "options": [
+            "The confidence is justified, because Hubble's Law gives "
+            "an exact distance for absolutely any galaxy, regardless "
+            "of how nearby it happens to be",
+            "The confidence is justified, because a low recession "
+            "speed always means the measurement taken is inherently "
+            "more accurate than a high recession speed measurement "
+            "would ever turn out to be",
+            "The confidence is misplaced: for a nearby, slow-moving "
+            "galaxy, its own local motion can be a large fraction of "
+            "the total measured speed, making the Hubble-Law distance "
+            "unreliable",
+            "The confidence is misplaced, because the Hubble constant "
+            "does not apply to any galaxy inside our own galaxy "
+            "cluster, however its speed is measured",
+        ],
+        "correct_index": 2,
+        "why": "A small recession speed is easily distorted by a "
+               "galaxy's own local motion, so the distance calculated "
+               "from it alone carries much more uncertainty than the "
+               "same calculation would for a fast-receding, distant "
+               "galaxy.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-h22",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Quasar P's light set out 10.5 billion years ago and "
+                "quasar Q's light set out 13.2 billion years ago, in a "
+                "universe now about 13.8 billion years old. Compare "
+                "what each quasar's light shows astronomers, and state "
+                "which shows the younger universe.",
+        "options": [
+            "Quasar P's light shows the younger universe, because it "
+            "has had less total time to travel and so has changed "
+            "less along the whole way on its very long journey to "
+            "reach Earth",
+            "Both quasars show the universe at exactly the same age, "
+            "because both are being observed today, at the same "
+            "moment in time",
+            "Neither quasar's light can show anything about the age "
+            "of the universe, because a quasar's own age can never be "
+            "measured or estimated at all",
+            "Quasar P's light shows the universe about 3.3 billion "
+            "years after the Big Bang, and quasar Q's light shows it "
+            "just 0.6 billion years after the Big Bang, so Q shows "
+            "the younger universe",
+        ],
+        "correct_index": 3,
+        "why": "13.8 − 10.5 = 3.3 billion years after the Big Bang for "
+               "P, and 13.8 − 13.2 = 0.6 billion years after it for Q, "
+               "so Q's light captures by far the younger universe.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-h23",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A textbook states that 'Edwin Hubble alone discovered "
+                "the expanding universe.' Evaluate this statement.",
+        "options": [
+            "The statement overstates Hubble's role: Georges Lemaître "
+            "had already proposed an expanding universe from theory "
+            "several years earlier, and Hubble's contribution was the "
+            "crucial observational confirmation of it",
+            "The statement is accurate, because Lemaître's work was "
+            "published only after Hubble's observations and simply "
+            "repeated what Hubble had already found",
+            "The statement is accurate, because Hubble worked in "
+            "complete isolation from every other astronomer and "
+            "physicist working at the time",
+            "The statement understates Hubble's role: in actual fact "
+            "no theoretical prediction of any expanding universe at "
+            "all existed anywhere before Hubble's own observations "
+            "were first published",
+        ],
+        "correct_index": 0,
+        "why": "Lemaître's theoretical proposal came first; Hubble's "
+               "later observations of galaxy red-shift supplied the "
+               "evidence that turned the idea into a strongly "
+               "supported scientific model.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-h24",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A graph plotting the recession speed of forty galaxies "
+                "against their distance shows a clear overall upward "
+                "trend, but the points do not lie on a perfectly "
+                "straight line — several sit noticeably above or "
+                "below it. Evaluate whether this scatter means "
+                "Hubble's Law should be rejected.",
+        "options": [
+            "It should be rejected, because a genuine physical law "
+            "would never, under any circumstances, allow a single "
+            "point to lie above or below the line that it predicts",
+            "It should not be rejected: some scatter is expected from "
+            "each galaxy's own local motion adding to or subtracting "
+            "from its recession speed, while the overall trend still "
+            "supports the law",
+            "It should be rejected, because forty galaxies is far too "
+            "small a sample for any pattern in the data to be "
+            "considered meaningful at all",
+            "It should not be rejected, but only because the scatter "
+            "proves that every galaxy's local motion is identical in "
+            "size and always adds to its recession speed",
+        ],
+        "correct_index": 1,
+        "why": "Real data from real, moving galaxies is expected to "
+               "scatter around the true relationship; what matters is "
+               "the trend across many galaxies, not that any single "
+               "one sits exactly on the line.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-h25",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "The cosmic microwave background's wavelength has been "
+                "stretched by a factor of about 1100 since it was "
+                "released, when the universe was about 380 000 years "
+                "old; the universe is now about 13.8 billion years "
+                "old. Evaluate the claim that this stretch factor "
+                "should simply equal the ratio of the two ages, "
+                "13.8 billion ÷ 380 000 ≈ 36 000.",
+        "options": [
+            "The claim is sound, and the mismatch between 1100 and "
+            "36 000 shows that the accepted age of the universe must "
+            "in fact be wrong",
+            "The claim is sound, because wavelength stretching and "
+            "time elapsed are always directly proportional to one "
+            "another in any expanding system",
+            "The claim is unsound: the rate at which space has "
+            "expanded has not stayed constant throughout the "
+            "universe's history, so a simple ratio of ages does not "
+            "predict the stretch factor correctly",
+            "The claim is unsound, because the stretch factor of "
+            "1100 was in fact measured incorrectly, and its true "
+            "value is now believed to be much closer to 36 000 than "
+            "originally thought",
+        ],
+        "correct_index": 2,
+        "why": "Expansion has sped up and slowed down at different "
+               "points in cosmic history, so stretching cannot be "
+               "read off as a simple ratio of two ages — a genuinely "
+               "honest gap in the simplest version of the model.",
+    },
+    {
+        "id": "ks4-red-shift-big-bang-h26",
+        "subtopic_slug": "red-shift-big-bang",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A new theory claims to explain galaxy red-shift exactly "
+                "as well as the Big Bang model does. Evaluate what "
+                "else that theory would need to achieve before "
+                "scientists would seriously consider it as a "
+                "replacement for the Big Bang model.",
+        "options": [
+            "Nothing further would be needed, because matching the "
+            "red-shift evidence alone is sufficient to replace any "
+            "existing scientific model, however well supported",
+            "It would need to disprove the existence of red-shift "
+            "altogether, since that is the only evidence the Big Bang "
+            "model actually depends on",
+            "It would need the formal support of a clear majority of "
+            "working astronomers voting in its favour, regardless of "
+            "what evidence it did or did not actually go on to "
+            "explain",
+            "It would also need to account for the cosmic microwave "
+            "background and the observed hydrogen-to-helium ratio, "
+            "since the Big Bang model is supported by all three lines "
+            "of evidence together",
+        ],
+        "correct_index": 3,
+        "why": "The Big Bang model's strength comes from several "
+               "independent lines of evidence agreeing at once; a "
+               "rival matching only one of them, red-shift, has not "
+               "yet matched the case for the model it hopes to "
+               "replace.",
+    },
 ]
