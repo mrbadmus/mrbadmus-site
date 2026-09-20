@@ -731,4 +731,367 @@ QUESTIONS = [
         "why": "The greater the reactivity difference, the more strongly the "
                "sacrificial metal is corroded in preference to the iron.",
     },
+
+    # ── standard (top-up) ──────────────────────────────────────────────
+    {
+        "id": "ks4-corrosion-prevention-s19",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State the name given to the process by which aluminium's "
+                "thin oxide layer protects it from any further reaction with "
+                "the air.",
+        "options": [
+            "Passivation",
+            "Galvanising",
+            "Electroplating",
+            "Sacrificial protection",
+        ],
+        "correct_index": 0,
+        "why": "Passivation is the name given to a surface layer that "
+               "stops a reactive metal reacting any further.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-s20",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why a thicker layer of galvanising protects steel "
+                "for longer than a thin one.",
+        "options": [
+            "A thicker layer is a better barrier, so no water can ever reach "
+            "the steel through it",
+            "There is more zinc available to corrode sacrificially before "
+            "the steel is left unprotected",
+            "A thicker layer conducts electricity less well, which slows the "
+            "corrosion reaction down",
+            "A thicker layer makes the surface of the steel harder, which "
+            "resists corrosion directly",
+        ],
+        "correct_index": 1,
+        "why": "Sacrificial protection lasts only as long as there is zinc "
+               "left to be consumed, so more zinc means a longer working "
+               "life for the coating.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-s21",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A rusting nail gains mass of 0.1 g, 0.2 g, 0.3 g and 0.4 g "
+                "after 1, 2, 3 and 4 days respectively. Assuming the same "
+                "steady rate continues, predict the mass gained after 6 days.",
+        "options": [
+            "0.5 g",
+            "0.6 g",
+            "0.8 g",
+            "1.0 g",
+        ],
+        "correct_index": 1,
+        "why": "The mass rises by 0.1 g each day, so after 6 days the gain "
+               "is 6 × 0.1 = 0.6 g.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-s22",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A homeowner chooses galvanised steel guttering over "
+                "stainless steel guttering for a new roof. Suggest the most "
+                "likely reason.",
+        "options": [
+            "Galvanised steel is a far better electrical conductor, which "
+            "guttering has to be",
+            "Galvanised steel is cheaper and gives corrosion resistance that "
+            "is good enough for the job",
+            "Galvanised steel is harder than stainless steel, so it "
+            "survives falling roof tiles far better",
+            "Galvanised steel needs noticeably less maintenance over its "
+            "life than stainless steel does",
+        ],
+        "correct_index": 1,
+        "why": "Guttering does not need the appearance or the extra "
+               "corrosion resistance of stainless steel, so the cheaper "
+               "galvanised option is usually chosen instead.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-s23",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain, in terms of electrons, why zinc corrodes in "
+                "preference to iron when the two metals are in contact.",
+        "options": [
+            "Zinc gives up its electrons more readily than iron does, so it "
+            "reacts in the iron's place",
+            "Zinc takes electrons from the iron, which forces the iron to "
+            "react instead",
+            "Zinc conducts electrons away from the iron before they can "
+            "reach the oxygen in the air",
+            "Zinc has no electrons of its own to lose, so the iron is left "
+            "completely unaffected",
+        ],
+        "correct_index": 0,
+        "why": "Zinc is the more reactive metal, so it loses its outer "
+               "electrons to form ions more easily than iron does, which is "
+               "what sacrificial protection depends on.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-s24",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Compare how galvanising and how stainless steel each resist "
+                "corrosion.",
+        "options": [
+            "Galvanising coats the surface with a more reactive metal; "
+            "stainless steel is alloyed throughout with chromium",
+            "Galvanising is alloyed throughout with zinc; stainless steel "
+            "instead coats just the surface with a layer of chromium",
+            "Both work by coating the surface, one with zinc and the other "
+            "with chromium",
+            "Both work by alloying a second metal all through the steel",
+        ],
+        "correct_index": 0,
+        "why": "Galvanising is a coating that also protects sacrificially; "
+               "stainless steel's chromium is mixed through the whole alloy "
+               "and forms its own protective oxide.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-s25",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Suggest why a gas company pays to inspect and replace the "
+                "sacrificial anodes on a buried pipeline every few years, "
+                "even though this adds an ongoing cost.",
+        "options": [
+            "It is a legal requirement that has no real connection to "
+            "preventing corrosion of the pipeline itself",
+            "It is far cheaper than repairing a leak from a corroded section "
+            "of pipeline later",
+            "It raises the value of the land the pipeline runs beneath",
+            "It is required just the once, with any further inspection "
+            "left as optional after that first check",
+        ],
+        "correct_index": 1,
+        "why": "A leak in a buried gas pipeline is expensive and dangerous "
+               "to repair, so the smaller ongoing cost of maintaining "
+               "sacrificial protection is worth paying.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-s26",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State the term used for the corrosion process that speeds "
+                "up when a dissolved electrolyte, such as salt, is present in "
+                "the water touching a metal.",
+        "options": [
+            "Thermal decomposition",
+            "Neutralisation",
+            "Electrolysis",
+            "Electrochemical corrosion",
+        ],
+        "correct_index": 3,
+        "why": "Rusting proceeds by charge moving through the water at the "
+               "metal's surface, which is why it is described as an "
+               "electrochemical process.",
+    },
+
+    # ── harder (top-up) ─────────────────────────────────────────────────
+    {
+        "id": "ks4-corrosion-prevention-h19",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "An engineer claims that an underground aluminium cable "
+                "sheath needs no paint because the metal 'protects itself'. "
+                "Evaluate this claim.",
+        "options": [
+            "Unsound: aluminium is more reactive than iron, so it needs a "
+            "barrier coating just as badly, if not more so",
+            "Sound: the oxide layer reseals itself if lightly scratched, so "
+            "paint adds little extra corrosion protection",
+            "Unsound, because aluminium's oxide layer forms specifically "
+            "once the metal has already been painted over",
+            "Sound, because aluminium is generally considered not to react "
+            "with oxygen under ordinary conditions",
+        ],
+        "correct_index": 1,
+        "why": "Passivation is a genuine form of self-protection, unlike "
+               "flaking rust, so for corrosion resistance alone the claim "
+               "largely holds.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-h20",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A galvanised coating is 20 micrometres thick and loses zinc "
+                "at 2 micrometres per year in a coastal climate. Determine "
+                "how many more years of protection remain once 8 micrometres "
+                "has already been lost.",
+        "options": [
+            "4 years",
+            "6 years",
+            "10 years",
+            "12 years",
+        ],
+        "correct_index": 1,
+        "why": "20 − 8 = 12 micrometres of zinc remain, and at 2 micrometres "
+               "a year that gives 12 ÷ 2 = 6 more years.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-h21",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain, in terms of electrons, why bolting a copper plate "
+                "to a steel hull makes the steel corrode faster rather than "
+                "protecting it.",
+        "options": [
+            "Copper gives its electrons to the steel, which speeds up the "
+            "steel's own reaction with oxygen",
+            "Iron gives up its electrons more readily than copper does, so "
+            "the iron becomes the one that reacts",
+            "Copper reacts with the water first, releasing acid that attacks "
+            "the steel directly",
+            "Copper is a poor conductor, so it forces the electrons to build "
+            "up inside the steel instead",
+        ],
+        "correct_index": 1,
+        "why": "Between iron and a less reactive metal it is iron that "
+               "loses electrons more easily, so contact with copper reverses "
+               "the direction protection normally works in.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-h22",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Replacing a corroded pipeline costs 2 000 000 pounds. "
+                "Fitting and replacing sacrificial anodes over the same "
+                "30-year period costs 150 000 pounds in total. Calculate how "
+                "many times more expensive the replacement would be.",
+        "options": [
+            "About 1.3 times",
+            "About 4 times",
+            "About 13 times",
+            "About 30 times",
+        ],
+        "correct_index": 2,
+        "why": "2 000 000 ÷ 150 000 is about 13.3, so replacement costs "
+               "roughly thirteen times as much as the anode programme.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-h23",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A ship's aluminium hull is constantly rubbed against a "
+                "gravel seabed as the tide rises and falls. Evaluate whether "
+                "passivation still protects the hull under these conditions.",
+        "options": [
+            "Yes, because passivation reforms instantly and needs no real "
+            "time to reseal a fresh scratch in the surface",
+            "Yes, because continuous abrasion has little effect on how well "
+            "an oxide layer is able to protect a metal underneath it",
+            "No: constant abrasion can wear the oxide away faster than it "
+            "can reform, exposing bare metal continuously",
+            "No, because passivation is thought to work on metals kept "
+            "completely away from any water whatsoever",
+        ],
+        "correct_index": 2,
+        "why": "Passivation copes well with an occasional scratch, but "
+               "continuous mechanical wear can strip the oxide away faster "
+               "than it rebuilds, which a single scratch does not.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-h24",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Sodium is far more reactive than iron, yet it is never used "
+                "as a sacrificial anode. Explain why.",
+        "options": [
+            "Sodium is too expensive to be used in any industrial "
+            "application of this kind",
+            "Sodium reacts violently and dangerously with water, making it "
+            "impractical and unsafe to fit and handle",
+            "Sodium is less reactive than zinc, so it would fail to protect "
+            "the iron in any meaningful way",
+            "Sodium conducts electricity too well, which would damage the "
+            "steel structure it was meant to protect",
+        ],
+        "correct_index": 1,
+        "why": "A sacrificial anode has to be safe to install and handle; "
+               "sodium's violent reaction with water rules it out even "
+               "though its reactivity would in principle work.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-h25",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A council is choosing a finish for a steel slide in a "
+                "children's playground, where sharp flakes of rust would be a "
+                "safety hazard. Determine the most suitable method and "
+                "justify it.",
+        "options": [
+            "Grease, because it is the cheapest way to keep water off any "
+            "outdoor structure a council might own",
+            "Galvanising, because a scratched coating still protects and "
+            "will not flake into sharp rust",
+            "A sacrificial block bolted nearby, since that method works well "
+            "for a ship's hull in the open sea",
+            "No coating whatsoever, since children rub the surface smooth "
+            "as they play on the slide",
+        ],
+        "correct_index": 1,
+        "why": "Galvanising resists damage from play and, even if scratched, "
+               "corrodes as zinc rather than leaving the flaking, sharp rust "
+               "an unprotected surface would produce.",
+    },
+    {
+        "id": "ks4-corrosion-prevention-h26",
+        "subtopic_slug": "corrosion-prevention",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why a permanently submerged steel structure is "
+                "usually fitted with bolted sacrificial blocks rather than "
+                "relying on galvanising alone, even though galvanising also "
+                "gives sacrificial protection.",
+        "options": [
+            "A thin galvanised layer is used up quickly under constant "
+            "immersion, while replaceable blocks can be renewed as needed",
+            "Galvanising works well in air but stops giving any real "
+            "protection once it is placed permanently underwater",
+            "Bolted blocks conduct electricity better than a thin coating "
+            "does, which is the property that matters most underwater",
+            "Galvanising reacts with seawater to form a substance that "
+            "actively attacks the steel beneath it",
+        ],
+        "correct_index": 0,
+        "why": "Continuous immersion consumes a sacrificial coating far "
+               "faster than intermittent exposure, so a thin galvanised "
+               "layer would not last; large replaceable blocks are used "
+               "instead so protection can be renewed.",
+    },
 ]

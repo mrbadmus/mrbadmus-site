@@ -809,4 +809,370 @@ QUESTIONS = [
                "however long the mixture is left, so some nitrogen and "
                "hydrogen always remain.",
     },
+
+    # ---------------------------------------------------------- standard (top-up)
+    {
+        "id": "ks4-haber-process-s19",
+        "subtopic_slug": "haber-process",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Name the two chemists whose work in the early twentieth "
+                "century gives the process its name.",
+        "options": [
+            "Fritz Haber and Carl Bosch",
+            "John Dalton and Amedeo Avogadro",
+            "Robert Boyle and Jacques Charles",
+            "Humphry Davy and Michael Faraday",
+        ],
+        "correct_index": 0,
+        "why": "Fritz Haber developed the reaction and Carl Bosch scaled it "
+               "up for industry, which is why it is often called the "
+               "Haber-Bosch process.",
+    },
+    {
+        "id": "ks4-haber-process-s20",
+        "subtopic_slug": "haber-process",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "The industrial iron catalyst is used together with small "
+                "amounts of aluminium oxide and potassium oxide. State what "
+                "these additional substances are called.",
+        "options": [
+            "Promoters, which make the catalyst more effective",
+            "Reactants, which are converted into ammonia alongside nitrogen "
+            "and hydrogen",
+            "Inhibitors, which slow the reaction down deliberately",
+            "Indicators, which show when equilibrium has been reached",
+        ],
+        "correct_index": 0,
+        "why": "Promoters are added in small amounts to boost a catalyst's "
+               "activity beyond what the iron alone would achieve.",
+    },
+    {
+        "id": "ks4-haber-process-s21",
+        "subtopic_slug": "haber-process",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State the process used to separate nitrogen from the other "
+                "gases in the air.",
+        "options": [
+            "Filtration of the air through a fine membrane",
+            "Fractional distillation of liquid air",
+            "Electrolysis of air that has been dissolved in water",
+            "Cracking the air over a hot catalyst",
+        ],
+        "correct_index": 1,
+        "why": "Air is cooled until it liquefies and is then fractionally "
+               "distilled, separating nitrogen from oxygen and the other "
+               "gases by their different boiling points.",
+    },
+    {
+        "id": "ks4-haber-process-s22",
+        "subtopic_slug": "haber-process",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Suggest an alternative source of hydrogen for the Haber "
+                "process that would not release carbon dioxide, unlike "
+                "reforming methane.",
+        "options": [
+            "Hydrogen obtained by the electrolysis of water, using "
+            "electricity from a renewable source",
+            "Hydrogen extracted directly from the nitrogen already taken "
+            "from the air",
+            "Hydrogen obtained by cooling ammonia until it separates into "
+            "its elements",
+            "Hydrogen taken from carbon dioxide already present in the "
+            "atmosphere",
+        ],
+        "correct_index": 0,
+        "why": "Splitting water by electrolysis, powered by renewable "
+               "electricity, would supply hydrogen without burning a fossil "
+               "fuel or releasing carbon dioxide.",
+    },
+    {
+        "id": "ks4-haber-process-s23",
+        "subtopic_slug": "haber-process",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State what happens to the nitrogen and hydrogen that leave "
+                "the reactor without having reacted.",
+        "options": [
+            "They are released into the atmosphere as waste gases",
+            "They are recycled and fed back into the reactor",
+            "They are burned to help heat the incoming feed gases",
+            "They are dissolved in water and disposed of safely",
+        ],
+        "correct_index": 1,
+        "why": "Unreacted nitrogen and hydrogen are not thrown away; they "
+               "are separated from the ammonia and returned to the reactor "
+               "to react again.",
+    },
+    {
+        "id": "ks4-haber-process-s24",
+        "subtopic_slug": "haber-process",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State approximately what percentage of the nitrogen and "
+                "hydrogen is converted to ammonia in a single pass through "
+                "the reactor, before any recycling.",
+        "options": [
+            "About 15%",
+            "About 50%",
+            "About 80%",
+            "About 98%",
+        ],
+        "correct_index": 0,
+        "why": "Only around 15% converts on one pass; it is the recycling "
+               "of the rest that raises the overall yield to about 98%.",
+    },
+    {
+        "id": "ks4-haber-process-s25",
+        "subtopic_slug": "haber-process",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State what is true of the rates of the forward and reverse "
+                "reactions once the mixture has reached equilibrium.",
+        "options": [
+            "Both rates have fallen to zero",
+            "The forward rate is faster than the reverse rate",
+            "The forward and reverse rates are equal to one another",
+            "The reverse rate is faster than the forward rate",
+        ],
+        "correct_index": 2,
+        "why": "Equilibrium is reached when ammonia forms exactly as "
+               "quickly as it breaks down, not when the reaction has "
+               "stopped.",
+    },
+    {
+        "id": "ks4-haber-process-s26",
+        "subtopic_slug": "haber-process",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why the nitrogen and hydrogen leaving the reactor "
+                "unreacted are better described as recycled material than as "
+                "waste.",
+        "options": [
+            "They are compressed until they turn into a completely "
+            "different substance",
+            "They are returned to the reactor and go on to form more "
+            "ammonia, rather than being discarded",
+            "They are sold separately to other factories once they leave "
+            "the plant",
+            "They are chemically identical to ammonia once they have left "
+            "the reactor",
+        ],
+        "correct_index": 1,
+        "why": "Waste is material with no further use; this gas still "
+               "reacts perfectly well and is fed straight back in, which is "
+               "why it is recycled rather than wasted.",
+    },
+
+    # ------------------------------------------------------------- harder (top-up)
+    {
+        "id": "ks4-haber-process-h19",
+        "subtopic_slug": "haber-process",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Using the fact that only about 15% of the gas converts on "
+                "one pass through the reactor, and the plant's overall yield "
+                "is about 98%, explain why recycling is essential to the "
+                "process's economics.",
+        "options": [
+            "Without recycling, most of the costly purified nitrogen and "
+            "hydrogen would leave the plant unused rather than becoming "
+            "ammonia",
+            "Without recycling, the reactor would need to be run at a far "
+            "lower pressure than 200 atmospheres",
+            "Without recycling, the iron catalyst would have to be replaced "
+            "after every single pass through the reactor",
+            "Without recycling, ammonia would decompose back into nitrogen "
+            "and hydrogen as soon as it left the reactor",
+        ],
+        "correct_index": 0,
+        "why": "At only 15% conversion per pass, throwing away the "
+               "unreacted gas would waste the great majority of the "
+               "nitrogen and hydrogen that had already been purified and "
+               "compressed at real cost.",
+    },
+    {
+        "id": "ks4-haber-process-h20",
+        "subtopic_slug": "haber-process",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "The catalyst promoters aluminium oxide and potassium oxide "
+                "add to the cost of preparing the iron catalyst. Suggest why "
+                "manufacturers include them anyway.",
+        "options": [
+            "They lower the pressure the reactor has to be built to "
+            "withstand",
+            "They significantly raise the catalyst's activity, so the plant "
+            "runs faster and more cheaply overall",
+            "They react with the nitrogen to make a small extra amount of "
+            "ammonia directly",
+            "They are required by law in every country that manufactures "
+            "ammonia",
+        ],
+        "correct_index": 1,
+        "why": "A more active catalyst reaches equilibrium faster, which "
+               "raises the plant's output and more than repays the small "
+               "extra cost of including the promoters.",
+    },
+    {
+        "id": "ks4-haber-process-h21",
+        "subtopic_slug": "haber-process",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain how fractional distillation is able to separate "
+                "nitrogen from the other gases in liquid air.",
+        "options": [
+            "Nitrogen has a different boiling point from the other gases, "
+            "so it evaporates off separately as the liquid air is warmed",
+            "Nitrogen is denser than the other gases and sinks to the "
+            "bottom of the column",
+            "Nitrogen reacts with the column packing while the other gases "
+            "pass straight through",
+            "Nitrogen is magnetic and can be pulled out of the mixture as "
+            "it flows through the column",
+        ],
+        "correct_index": 0,
+        "why": "Each gas in liquid air boils off at its own temperature, so "
+               "warming the mixture gradually lets nitrogen be collected "
+               "separately from oxygen and the rest.",
+    },
+    {
+        "id": "ks4-haber-process-h22",
+        "subtopic_slug": "haber-process",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Evaluate the claim that switching entirely to hydrogen made "
+                "by electrolysis with renewable electricity would solve the "
+                "environmental problems of the Haber process immediately.",
+        "options": [
+            "Sound: electrolysis needs no electricity at all once it is "
+            "built, so the change would cost nothing further to run",
+            "Sound, because ammonia made this way is a chemically different "
+            "and cleaner substance",
+            "Unsound: enormous amounts of renewable electricity and new "
+            "infrastructure would be needed, so the change could only "
+            "happen gradually",
+            "Unsound, because electrolysis cannot produce hydrogen in "
+            "large enough quantities under any circumstances",
+        ],
+        "correct_index": 2,
+        "why": "Electrolysis would remove the carbon dioxide released by "
+               "reforming methane, but replacing the whole world's supply "
+               "would need a huge, gradual build-up of renewable "
+               "electricity and plant.",
+    },
+    {
+        "id": "ks4-haber-process-h23",
+        "subtopic_slug": "haber-process",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Gas leaving the reactor is cooled to condense out the "
+                "ammonia before the leftover nitrogen and hydrogen are "
+                "recycled. Explain why the ammonia is removed first, rather "
+                "than recycling the whole mixture as it is.",
+        "options": [
+            "Recycling the whole mixture would send the ammonia already "
+            "made straight back into the reactor instead of collecting it "
+            "as product",
+            "Ammonia would corrode the compressor used to recycle the "
+            "unreacted gases",
+            "Ammonia cannot pass through the same pipework as nitrogen and "
+            "hydrogen do",
+            "Ammonia would react with the iron catalyst if it were "
+            "recycled through the reactor again",
+        ],
+        "correct_index": 0,
+        "why": "Cooling and condensing takes the ammonia out of the loop so "
+               "it can be collected, leaving only the unreacted gases to be "
+               "sent round again.",
+    },
+    {
+        "id": "ks4-haber-process-h24",
+        "subtopic_slug": "haber-process",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Evaluate the claim that, because the forward reaction is "
+                "exothermic, running the reactor as cold as possible would "
+                "always give the best result.",
+        "options": [
+            "Sound, because a lower temperature always raises both the "
+            "yield and the rate together",
+            "Unsound: a very low temperature would raise the yield but make "
+            "the rate impractically slow",
+            "Sound, because temperature has no effect on the rate of this "
+            "particular reaction",
+            "Unsound, because a lower temperature would in fact lower the "
+            "equilibrium yield of ammonia",
+        ],
+        "correct_index": 1,
+        "why": "A colder reactor would shift equilibrium further towards "
+               "ammonia, but the reaction would then be too slow to be "
+               "worth running, which is exactly why 450 °C is chosen as a "
+               "compromise.",
+    },
+    {
+        "id": "ks4-haber-process-h25",
+        "subtopic_slug": "haber-process",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "50 tonnes of nitrogen is fed into a reactor, but only 80% "
+                "of it reacts before the gas is drawn off. Calculate the "
+                "mass of ammonia formed. Relative formula masses: N2 = 28, "
+                "NH3 = 17.",
+        "options": [
+            "24.3 tonnes",
+            "34.0 tonnes",
+            "48.6 tonnes",
+            "60.7 tonnes",
+        ],
+        "correct_index": 2,
+        "why": "80% of 50 tonnes is 40 tonnes of nitrogen reacted; each "
+               "28 tonnes of N2 gives 34 tonnes of NH3, so "
+               "40 × (34 ÷ 28) = 48.6 tonnes.",
+    },
+    {
+        "id": "ks4-haber-process-h26",
+        "subtopic_slug": "haber-process",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why the process conditions of 450 °C, 200 "
+                "atmospheres and an iron catalyst are described as optimum "
+                "rather than as the conditions that give the highest "
+                "possible yield of ammonia.",
+        "options": [
+            "They balance yield, rate and cost together, rather than "
+            "chasing the highest yield alone regardless of price or speed",
+            "They are simply the conditions that happen to be easiest for "
+            "an engineer to measure accurately",
+            "They give the highest yield possible, and the word optimum "
+            "means exactly the same thing as maximum in this context",
+            "They were fixed by international law once the process was "
+            "first invented and cannot be changed since",
+        ],
+        "correct_index": 0,
+        "why": "A lower temperature or a higher pressure would each raise "
+               "the equilibrium yield further, but only at a cost in rate "
+               "or in engineering that outweighs the extra ammonia gained, "
+               "which is what makes the chosen conditions optimum rather "
+               "than maximal.",
+    },
 ]

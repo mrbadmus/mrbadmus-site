@@ -824,4 +824,372 @@ QUESTIONS = [
                "fire, at the cost of a much greater mass that the "
                "foundations must carry.",
     },
+
+    # -------------------------------------------------------- standard (top-up)
+    {
+        "id": "ks4-ceramics-polymers-composites-s19",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State which form of poly(ethene) has branched chains that "
+                "cannot pack closely together.",
+        "options": [
+            "Low-density poly(ethene)",
+            "High-density poly(ethene)",
+            "Both forms have branched chains",
+            "Neither form has branched chains",
+        ],
+        "correct_index": 0,
+        "why": "LDPE's chains branch, so they cannot pack as closely as "
+               "HDPE's straight chains, which is why it is the lower-density "
+               "of the two.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-s20",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State which form of poly(ethene) is chosen for a rigid milk "
+                "bottle or a drain pipe.",
+        "options": [
+            "Low-density poly(ethene), because it is the more flexible of "
+            "the two forms of the polymer",
+            "High-density poly(ethene), because its closely packed chains "
+            "give it more stiffness and strength",
+            "Neither, because both forms are far too soft for either use",
+            "A thermosetting polymer, because a rigid bottle is not "
+            "expected to soften in ordinary use",
+        ],
+        "correct_index": 1,
+        "why": "HDPE's unbranched chains pack tightly, giving the extra "
+               "stiffness a bottle or a pipe needs to hold its shape.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-s21",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Suggest why the plastic body of an electrical plug is made "
+                "from a thermosetting polymer rather than a thermoplastic.",
+        "options": [
+            "A thermosetting polymer conducts electricity away safely if a "
+            "fault occurs inside the plug",
+            "A thermosetting polymer will not soften and lose its shape if "
+            "the plug becomes hot",
+            "A thermosetting polymer is far cheaper to mould than a "
+            "thermoplastic of the same size",
+            "A thermosetting polymer can be melted down and reused once the "
+            "plug wears out",
+        ],
+        "correct_index": 1,
+        "why": "A fault or overload can make a plug warm, and a "
+               "cross-linked polymer keeps its rigid shape and insulating "
+               "properties even then, unlike a thermoplastic.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-s22",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Bone is a natural composite material. Name its matrix and "
+                "its reinforcement.",
+        "options": [
+            "Collagen fibres are the matrix; calcium phosphate is the "
+            "reinforcement",
+            "Calcium phosphate is the matrix; collagen fibres are the "
+            "reinforcement",
+            "Water is the matrix; calcium phosphate is the reinforcement",
+            "Calcium phosphate is both the matrix and the reinforcement",
+        ],
+        "correct_index": 1,
+        "why": "The calcium phosphate forms the continuous mineral matrix, "
+               "while the protein collagen fibres are set within it as the "
+               "reinforcement.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-s23",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State the way in which plain, unreinforced concrete is weak.",
+        "options": [
+            "It is weak under compression, when it is squeezed",
+            "It is weak under tension, when it is stretched",
+            "It is weak in both compression and tension equally",
+            "It has no particular weakness once it has fully set",
+        ],
+        "correct_index": 1,
+        "why": "Concrete resists being squeezed well but cracks easily when "
+               "stretched, which is why steel rods are added wherever a "
+               "structure will be pulled or bent.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-s24",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain, in terms of structure, why HDPE is denser and "
+                "stiffer than LDPE.",
+        "options": [
+            "HDPE's unbranched chains can pack closely together, while "
+            "LDPE's branches keep its chains further apart",
+            "HDPE is made of heavier atoms than LDPE, which raises both its "
+            "density and its stiffness",
+            "HDPE contains cross-links between its chains, while LDPE "
+            "has no cross-links of any kind between its own chains",
+            "HDPE is cooled more slowly during manufacture, which is what "
+            "raises its density",
+        ],
+        "correct_index": 0,
+        "why": "Both are the same chemical repeating unit; it is the "
+               "unbranched shape of HDPE's chains that lets them pack more "
+               "closely and gives the extra density and stiffness.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-s25",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A crucible used to melt a metal in a school laboratory is "
+                "made from a ceramic. State the property that makes this "
+                "suitable.",
+        "options": [
+            "It is soft, so it cannot scratch the metal being melted inside "
+            "it as the temperature rises",
+            "It conducts electricity well, which is needed to heat the "
+            "metal placed inside it",
+            "It has a very high melting point and does not react with the "
+            "molten metal",
+            "It is transparent, so the level of the molten metal can be "
+            "seen from outside",
+        ],
+        "correct_index": 2,
+        "why": "A crucible must survive temperatures far above the metal's "
+               "melting point without melting or reacting itself, which is "
+               "exactly what a ceramic offers.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-s26",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State one way in which LDPE and HDPE are similar to each "
+                "other, despite their different densities.",
+        "options": [
+            "Both are thermosetting polymers with cross-links running "
+            "between their chains",
+            "Both are thermoplastics with no cross-links, so both can be "
+            "melted and reshaped",
+            "Both are composites made from a matrix and a fibre "
+            "reinforcement set inside it",
+            "Both are ceramics formed by heating their raw materials "
+            "together in a kiln",
+        ],
+        "correct_index": 1,
+        "why": "The branching differs, but neither form has cross-links "
+               "between its chains, so both soften on heating and can be "
+               "recycled in the same way.",
+    },
+
+    # ---------------------------------------------------------- harder (top-up)
+    {
+        "id": "ks4-ceramics-polymers-composites-h19",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why a bone can bend very slightly under load without "
+                "snapping, unlike a plain ceramic object of the same shape.",
+        "options": [
+            "The collagen fibres let the structure flex a little, while the "
+            "mineral matrix still carries most of the load",
+            "Bone contains no mineral whatsoever, which is why it does not "
+            "behave like an ordinary ceramic material",
+            "Bone is far less dense than any ceramic, and low density "
+            "generally prevents brittle failure of a structure",
+            "Bone is warmed by the body, and warming an ordinary ceramic "
+            "usually stops it being so brittle",
+        ],
+        "correct_index": 0,
+        "why": "As in a synthetic composite, the fibrous reinforcement adds "
+               "a little give that a plain mineral structure lacks, so the "
+               "combination resists snapping under a load that would crack "
+               "a brittle ceramic.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-h20",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "An engineer casts a concrete beam with no steel rods "
+                "embedded in it, to save money. Predict what happens to the "
+                "underside of the beam once it is loaded so that surface is "
+                "stretched, and explain why.",
+        "options": [
+            "It stays intact, because concrete resists tension exactly as "
+            "well as it resists compression",
+            "It cracks, because plain concrete is weak under the tension "
+            "that stretching produces",
+            "It is crushed, because the load places the underside under "
+            "compression rather than tension",
+            "It becomes stronger, because the load compacts the concrete "
+            "further as it is stretched",
+        ],
+        "correct_index": 1,
+        "why": "The underside of a loaded beam is stretched, and "
+               "unreinforced concrete is weak precisely under that kind of "
+               "force, which is why the steel rods are needed there.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-h21",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Compare carbon fibre reinforced plastic with glass "
+                "reinforced plastic, and explain why aircraft use the first "
+                "and small boats more often use the second.",
+        "options": [
+            "CFRP is heavier but far cheaper, which suits a boat hull more "
+            "than an aircraft",
+            "CFRP gives a higher strength for a lower mass but costs far "
+            "more, which aircraft can justify and small boats usually "
+            "cannot",
+            "GRP is stronger than CFRP for the same mass, which is why "
+            "aircraft avoid it",
+            "The two composites have identical strength and identical cost "
+            "in practice, so the choice made is simply a matter of tradition",
+        ],
+        "correct_index": 1,
+        "why": "Carbon fibre gives the best strength-to-mass ratio but at "
+               "a high price, which an aircraft's fuel savings can justify "
+               "far more easily than a small boat's budget can.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-h22",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Evaluate the claim that a thermosetting polymer is always "
+                "the better choice for any high-temperature application.",
+        "options": [
+            "Sound, because a thermosetting polymer withstands any "
+            "temperature a ceramic can withstand",
+            "Sound, because a thermoplastic always melts below room "
+            "temperature",
+            "Unsound: a thermosetting polymer still decomposes at a high "
+            "enough temperature, and only a ceramic survives the most "
+            "extreme heat",
+            "Unsound, because a thermosetting polymer conducts heat too "
+            "well to be used near any source of heat",
+        ],
+        "correct_index": 2,
+        "why": "A thermosetting polymer resists softening far better than "
+               "a thermoplastic, but it still decomposes eventually, while "
+               "a ceramic's much higher melting point is needed for the "
+               "most extreme temperatures.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-h23",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A kiln lining must withstand repeated heating to 1200 °C. A "
+                "candidate polymer melts at 300 °C and a candidate ceramic "
+                "melts at 1800 °C. Explain why only the ceramic is suitable.",
+        "options": [
+            "The polymer's melting point is far below the working "
+            "temperature, while the ceramic's is comfortably above it",
+            "The polymer is the cheaper material, so cost alone rules it "
+            "out for this use",
+            "The ceramic conducts heat away faster, which is the only "
+            "property that matters inside a kiln",
+            "The polymer would react chemically with the bricks inside the "
+            "kiln",
+        ],
+        "correct_index": 0,
+        "why": "A lining has to survive well above its working temperature "
+               "with a safety margin, and only the ceramic's melting point "
+               "clears 1200 °C by a wide margin.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-h24",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "An engineer proposes replacing the steel rods in reinforced "
+                "concrete with rods of a thermosetting polymer, since the "
+                "polymer will not rust. Evaluate this proposal.",
+        "options": [
+            "A good proposal, because rust-resistance is the only property "
+            "that matters for reinforcement",
+            "A good proposal, because a thermosetting polymer is always "
+            "stronger under tension than steel is",
+            "A poor proposal: a polymer rod is far less strong and less "
+            "stiff under tension than a steel rod of the same size",
+            "A poor proposal, because a thermosetting polymer cannot be "
+            "shaped into a rod at all",
+        ],
+        "correct_index": 2,
+        "why": "Not rusting is a real advantage, but the rods must still "
+               "carry the tension the concrete cannot, and a polymer rod "
+               "falls far short of steel's strength and stiffness for that "
+               "job.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-h25",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A hybrid composite panel of mass 12 kg is 50% carbon fibre, "
+                "20% glass fibre and the remainder resin, all by mass. "
+                "Calculate the mass of resin in the panel.",
+        "options": [
+            "2.4 kg",
+            "3.6 kg",
+            "6.0 kg",
+            "8.4 kg",
+        ],
+        "correct_index": 1,
+        "why": "The resin is 100 − 50 − 20 = 30% of the mass, and "
+               "0.30 × 12 kg = 3.6 kg.",
+    },
+    {
+        "id": "ks4-ceramics-polymers-composites-h26",
+        "subtopic_slug": "ceramics-polymers-composites",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Evaluate whether unreinforced concrete, with no steel rods "
+                "at all, would be suitable for a short, thick pillar that "
+                "only ever carries a load pressing straight down on it.",
+        "options": [
+            "Unsuitable, because concrete is weak under compression, which "
+            "is the only force a pillar like this experiences",
+            "Suitable, because the load places the pillar under "
+            "compression, which plain concrete already resists well",
+            "Unsuitable, because concrete can never be used without steel "
+            "reinforcement under any circumstances",
+            "Suitable, but only if the pillar is also coated with a "
+            "polymer to keep out moisture",
+        ],
+        "correct_index": 1,
+        "why": "Steel reinforcement is needed where concrete would be "
+               "stretched; a pillar loaded straight down is under "
+               "compression throughout, which is exactly the force plain "
+               "concrete handles well on its own.",
+    },
 ]

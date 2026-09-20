@@ -818,4 +818,365 @@ QUESTIONS = [
                "blood's ability to carry oxygen, so the safe concentration is "
                "set by their tolerance and not an adult's.",
     },
+
+    # -------------------------------------------------------- standard (top-up)
+    {
+        "id": "ks4-npk-fertilisers-s19",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A crop shows stunted growth and yellowing leaves across the "
+                "whole plant. Identify the most likely nutrient deficiency.",
+        "options": [
+            "Nitrogen",
+            "Phosphorus",
+            "Potassium",
+            "Carbon",
+        ],
+        "correct_index": 0,
+        "why": "Nitrogen is needed for making protein, and a shortage shows "
+               "up as yellow leaves and poor overall growth.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-s20",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A young plant has purple-tinged leaves and a poorly "
+                "developed root system. Identify the most likely nutrient "
+                "deficiency.",
+        "options": [
+            "Magnesium",
+            "Calcium",
+            "Phosphorus",
+            "Iron",
+        ],
+        "correct_index": 2,
+        "why": "Phosphorus is needed for root development, and its "
+               "shortage classically shows up as poor roots and a purple "
+               "tinge to the leaves.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-s21",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A crop develops brown, scorched-looking leaf edges and "
+                "produces poorly formed fruit. Identify the most likely "
+                "nutrient deficiency.",
+        "options": [
+            "Sulfur",
+            "Magnesium",
+            "Potassium",
+            "Iron",
+        ],
+        "correct_index": 2,
+        "why": "Potassium supports enzyme function and photosynthesis, and "
+               "a shortage of it typically shows as browned leaf edges and "
+               "poor fruit.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-s22",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State the role phosphorus plays inside a plant cell, "
+                "besides supporting root growth.",
+        "options": [
+            "It transfers energy inside the cell, as part of ATP",
+            "It absorbs light energy directly during photosynthesis",
+            "It forms the cell wall around every plant cell",
+            "It carries oxygen from the leaves to the roots",
+        ],
+        "correct_index": 0,
+        "why": "Phosphorus is a component of ATP, the molecule cells use "
+               "to transfer energy for the processes that keep them "
+               "growing.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-s23",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State the process that potassium is required for, besides "
+                "enzyme function.",
+        "options": [
+            "Photosynthesis",
+            "Respiration only in the roots",
+            "Formation of the cell wall",
+            "Absorption of water through the leaves",
+        ],
+        "correct_index": 0,
+        "why": "Potassium supports the processes that keep photosynthesis "
+               "running efficiently, alongside its role in enzyme function.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-s24",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A fertiliser factory makes its own ammonia, its own "
+                "sulfuric acid and the ammonium salts, all on one site, each "
+                "process feeding the next. State the term used for a "
+                "manufacturing site organised this way.",
+        "options": [
+            "An integrated process",
+            "A closed process",
+            "A reversible process",
+            "A catalysed process",
+        ],
+        "correct_index": 0,
+        "why": "An integrated process links separate manufacturing steps "
+               "together on one site, so the product of one feeds directly "
+               "into the next.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-s25",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why potassium compounds for an NPK fertiliser are "
+                "obtained differently from the nitrogen and phosphorus "
+                "compounds.",
+        "options": [
+            "Potassium is mined from natural mineral deposits, rather than "
+            "being manufactured by neutralising an acid with ammonia",
+            "Potassium is made by the Haber process, exactly as the "
+            "nitrogen compounds are",
+            "Potassium is extracted from the air, in the same way nitrogen "
+            "is",
+            "Potassium is made from phosphate rock, using the same acid "
+            "treatment as phosphorus",
+        ],
+        "correct_index": 0,
+        "why": "Unlike the nitrogen and phosphorus salts, potassium "
+               "compounds occur ready-formed underground and are simply "
+               "mined rather than built up chemically.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-s26",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A crop has healthy green leaves and a strong root system, "
+                "but poor fruit and browned leaf edges. Identify the most "
+                "likely nutrient deficiency, ruling out the other two "
+                "nutrients from the symptoms given.",
+        "options": [
+            "Nitrogen, since the leaves are the part most affected",
+            "Phosphorus, since fruit and roots are closely linked to each "
+            "other",
+            "Potassium, since neither the leaf colour nor the roots point "
+            "to the other two nutrients",
+            "None of the three, since all three symptoms point to the "
+            "plant being healthy",
+        ],
+        "correct_index": 2,
+        "why": "Healthy green leaves rule out a nitrogen shortage and "
+               "strong roots rule out a phosphorus shortage, leaving "
+               "potassium as the nutrient behind the poor fruit and browned "
+               "edges.",
+    },
+
+    # ----------------------------------------------------------- harder (top-up)
+    {
+        "id": "ks4-npk-fertilisers-h19",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A soil test shows plenty of nitrogen and potassium but "
+                "almost no phosphorus. Predict which symptom a young seedling "
+                "growing in it would show first, and explain why.",
+        "options": [
+            "Yellow leaves, because nitrogen is what controls leaf colour "
+            "in every plant",
+            "Poor root development, because the seedling cannot build the "
+            "root system it needs without enough phosphorus",
+            "No symptom at all, because nitrogen and potassium are the two "
+            "nutrients a young seedling needs most",
+            "Poor fruit development, because fruit always forms before "
+            "roots in a young seedling",
+        ],
+        "correct_index": 1,
+        "why": "A seedling establishing itself depends heavily on root "
+               "growth, which phosphorus specifically supports, so a "
+               "shortage shows up there first.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-h20",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Evaluate the claim that potassium fertiliser is more "
+                "sustainable than nitrogen fertiliser simply because it "
+                "needs no energy-intensive industrial synthesis.",
+        "options": [
+            "Fully sound: mining a mineral has no environmental impact of "
+            "any kind, unlike the Haber process",
+            "Partly sound: mining avoids the Haber process's energy use, "
+            "but mining itself disturbs land and draws on a finite "
+            "mineral resource",
+            "Fully unsound: potassium fertiliser is in fact manufactured by "
+            "exactly the same route as ammonia is",
+            "Fully unsound, because mined potassium deposits are in "
+            "unlimited supply and can never run out",
+        ],
+        "correct_index": 1,
+        "why": "Not needing the Haber process is a genuine saving, but "
+               "mining still carries its own costs, so the sustainability "
+               "comparison is not simply one-sided.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-h21",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why a fertiliser factory that makes its own "
+                "sulfuric acid and its own ammonia on site is more efficient "
+                "than one that buys both chemicals in from elsewhere.",
+        "options": [
+            "It avoids transporting hazardous chemicals and can match "
+            "production to what the salt-making process actually needs, "
+            "without holding large stocks",
+            "It uses no raw materials at all, since everything is made "
+            "from ammonia and acid already on site",
+            "It is required to do so by an international safety law that "
+            "applies to every fertiliser manufacturer",
+            "It reduces the atom economy of the ammonium salt reaction, "
+            "which lowers costs further",
+        ],
+        "correct_index": 0,
+        "why": "Making the ingredients on site removes the cost, risk and "
+               "delay of transporting them, and lets output be matched "
+               "closely to what is actually needed next.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-h22",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A gardener sees yellowing leaves on a plant and treats it "
+                "with a fertiliser that is high in potassium but very low in "
+                "nitrogen. Evaluate this choice.",
+        "options": [
+            "A good choice, because potassium and nitrogen are chemically "
+            "interchangeable inside the plant",
+            "A poor choice: yellow leaves point to a nitrogen shortage, "
+            "which a potassium-rich fertiliser does very little to fix",
+            "A good choice, because potassium always corrects yellowing "
+            "leaves faster than nitrogen does",
+            "A poor choice, because potassium fertiliser is toxic to any "
+            "plant showing yellow leaves",
+        ],
+        "correct_index": 1,
+        "why": "The symptom points to a nitrogen shortage specifically, so "
+               "a fertiliser that supplies mostly potassium fails to "
+               "address the actual deficiency.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-h23",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why NPK fertiliser manufacture is described as an "
+                "integrated process, rather than as three separate "
+                "industries that happen to be located near one another.",
+        "options": [
+            "The output of one step, such as ammonia from the Haber "
+            "process, feeds directly into the next step as a raw material",
+            "Each of the three processes makes an identical product, so "
+            "only one factory is actually needed",
+            "Government regulations require every fertiliser ingredient to "
+            "be made within the boundary of a single site",
+            "None of the three processes could be run anywhere else in the "
+            "country even if a company wanted to",
+        ],
+        "correct_index": 0,
+        "why": "Ammonia made on site becomes the raw material for the "
+               "ammonium salts, and acid made on site feeds more than one "
+               "of those routes, which is what makes the processes "
+               "genuinely linked rather than merely neighbouring.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-h24",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Natural deposits of potassium nitrate exist and could in "
+                "principle supply some nitrogen as well as potassium. "
+                "Suggest why manufacturers do not rely on such deposits to "
+                "meet the world's nitrogen demand.",
+        "options": [
+            "Potassium nitrate deposits are far too limited to match the "
+            "scale the Haber process can supply from air and natural gas",
+            "Potassium nitrate cannot be dissolved in water, so plant roots "
+            "are unable to take it up at all",
+            "Potassium nitrate reacts violently with ammonia, so the two "
+            "cannot be used in the same fertiliser blend",
+            "Potassium nitrate contains no nitrogen at all, despite its "
+            "name",
+        ],
+        "correct_index": 0,
+        "why": "The Haber process draws on effectively unlimited nitrogen "
+               "from the air, while mined potassium nitrate deposits are "
+               "finite and nowhere near large enough to meet world demand.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-h25",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A 40 kg bag of fertiliser is labelled 15:10:5. Calculate "
+                "the combined mass of nitrogen and phosphorus in the bag.",
+        "options": [
+            "6.0 kg",
+            "8.0 kg",
+            "10.0 kg",
+            "12.0 kg",
+        ],
+        "correct_index": 2,
+        "why": "Nitrogen is 15% of 40 kg, which is 6.0 kg, and phosphorus "
+               "is 10% of 40 kg, which is 4.0 kg; together that is 10.0 kg.",
+    },
+    {
+        "id": "ks4-npk-fertilisers-h26",
+        "subtopic_slug": "npk-fertilisers",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Evaluate the claim that an NPK fertiliser is always better "
+                "for a crop than a fertiliser supplying only one nutrient, "
+                "whatever the soil already contains.",
+        "options": [
+            "Sound, because supplying all three nutrients together can "
+            "never do a crop any harm",
+            "Sound, because a soil that already holds enough of two "
+            "nutrients cannot be harmed by adding more of them",
+            "Unsound: adding nutrients a soil already has enough of is "
+            "wasted and can add to leaching, so a targeted single-nutrient "
+            "fertiliser can be the better choice",
+            "Unsound, because an NPK fertiliser never contains enough of "
+            "any one nutrient to correct a real deficiency",
+        ],
+        "correct_index": 2,
+        "why": "A soil test that shows two nutrients are already adequate "
+               "means a blanket NPK blend wastes those two and adds to the "
+               "risk of leaching, so matching the fertiliser to the actual "
+               "shortage is the more efficient choice.",
+    },
 ]

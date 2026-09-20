@@ -738,4 +738,374 @@ QUESTIONS = [
         "why": "Doubling thickness doubles the mass, which an aircraft cannot "
                "afford, and the metal still deforms more readily than the alloy.",
     },
+
+    # ── standard (top-up) ──────────────────────────────────────────────
+    {
+        "id": "ks4-alloys-useful-materials-s19",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why 9 carat gold is often chosen for a ring that a "
+                "child is likely to handle roughly.",
+        "options": [
+            "It has a lower proportion of gold, so more of its lattice is "
+            "disrupted and it is harder-wearing",
+            "It has a higher proportion of gold, so it bends back into shape "
+            "if it is knocked",
+            "It is heavier than 18 carat gold, so it is less likely to be "
+            "lost or dropped",
+            "It contains no gold whatsoever, so the metal cannot tarnish "
+            "or lose its bright colour over time in use",
+        ],
+        "correct_index": 0,
+        "why": "9 carat gold holds more of the other metals mixed in, which "
+               "disrupts the lattice further and makes it tougher for "
+               "everyday wear than a higher-carat piece.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-s20",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why coins are not made from pure copper.",
+        "options": [
+            "Pure copper would conduct electricity too well, and would "
+            "short-circuit a vending machine's coin mechanism",
+            "Pure copper is soft, so a coin made from it would wear down "
+            "quickly as it changed hands",
+            "Pure copper reacts with the metal used in a till drawer",
+            "Pure copper is too expensive to use for a coin of any size",
+        ],
+        "correct_index": 1,
+        "why": "A coin passes through thousands of hands, so an alloy such "
+               "as cupronickel is chosen because it resists wear far better "
+               "than the pure metal would.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-s21",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Steel contains only a small percentage of carbon by mass. "
+                "Explain why this small amount is still enough to make the "
+                "iron considerably harder.",
+        "options": [
+            "Every iron atom has to be replaced by a carbon atom before "
+            "any hardening can take place",
+            "A small number of differently sized atoms scattered through "
+            "the lattice is enough to stop the layers sliding freely",
+            "The carbon reacts completely with the iron to form a brand "
+            "new compound running throughout the entire sample of metal",
+            "The small amount of carbon lowers the density of the iron "
+            "enough to harden it",
+        ],
+        "correct_index": 1,
+        "why": "Disrupting the regular layers does not need a large "
+               "proportion of a second element; scattered atoms of a "
+               "different size are enough to block the layers sliding.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-s22",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A stainless steel item has a mass of 150 g and is 18% "
+                "chromium and 8% nickel by mass, with the remainder iron. "
+                "Calculate the mass of iron in it.",
+        "options": [
+            "39 g",
+            "74 g",
+            "111 g",
+            "126 g",
+        ],
+        "correct_index": 2,
+        "why": "Iron makes up 100 − 18 − 8 = 74% of the mass, and 0.74 × "
+               "150 g = 111 g.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-s23",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Nitinol is used to make a medical stent that is compressed "
+                "to be inserted into a blood vessel and then expands once in "
+                "place. Explain which property makes this possible.",
+        "options": [
+            "Its very low density, which lets it float into position along "
+            "the blood vessel",
+            "Its shape memory, which returns it to a wider shape once it "
+            "warms to body temperature",
+            "Its high electrical conductivity, which is detected by the "
+            "surgeon during the operation",
+            "Its resistance to corrosion, which stops it reacting with the "
+            "blood in any noticeable way",
+        ],
+        "correct_index": 1,
+        "why": "The stent is set into its wide shape beforehand, compressed "
+               "for the narrow insertion, and springs back to that set shape "
+               "once it reaches body temperature.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-s24",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Suggest why some car manufacturers are replacing steel body "
+                "panels with aluminium alloy panels of the same strength.",
+        "options": [
+            "Aluminium alloy conducts heat away from the engine faster than "
+            "steel does",
+            "A lighter car uses less fuel to accelerate and to keep moving",
+            "Aluminium alloy is magnetic, which helps in the factory during "
+            "assembly",
+            "Aluminium alloy is a better colour match for modern paint "
+            "finishes",
+        ],
+        "correct_index": 1,
+        "why": "Cutting the mass of the body panels while keeping the same "
+               "strength lowers the energy needed to move the car, which "
+               "reduces fuel use.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-s25",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why bronze was preferred over pure copper for "
+                "tools and weapons in the ancient world.",
+        "options": [
+            "Bronze is harder than copper, so it holds a cutting edge far "
+            "better",
+            "Bronze is much lighter than copper, so a tool made of it is "
+            "easier to carry",
+            "Bronze melts at a far higher temperature, so it could not be "
+            "cast by early metalworkers",
+            "Bronze conducts electricity, which ancient tools needed in "
+            "order to function",
+        ],
+        "correct_index": 0,
+        "why": "Alloying copper with tin disrupts the layers of atoms, "
+               "giving an edge that stays sharp for far longer than pure "
+               "copper would.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-s26",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why an 18 carat gold wire can be drawn out into a "
+                "thinner shape more easily than a 9 carat gold wire of the "
+                "same starting size.",
+        "options": [
+            "18 carat gold has fewer disrupting atoms in its lattice, so "
+            "its layers slide past each other more readily",
+            "18 carat gold is heavier, so it stretches further under its "
+            "own weight when it is pulled",
+            "9 carat gold conducts electricity better than 18 carat gold "
+            "does, which is what makes it harder to draw out",
+            "9 carat gold contains more gold, so its layers slide even more "
+            "easily than 18 carat's do",
+        ],
+        "correct_index": 0,
+        "why": "With more gold and fewer atoms of a different size in the "
+               "lattice, the higher-carat alloy deforms more easily, which "
+               "is also why it wears faster.",
+    },
+
+    # ── harder (top-up) ─────────────────────────────────────────────────
+    {
+        "id": "ks4-alloys-useful-materials-h19",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A 9 carat gold earring has a mass of 3.2 g and contains "
+                "1.2 g of silver, with the rest of the non-gold portion made "
+                "up of copper. 9 carat gold is 37.5% gold by mass. Calculate "
+                "the mass of copper in the earring.",
+        "options": [
+            "0.2 g",
+            "0.8 g",
+            "1.2 g",
+            "2.0 g",
+        ],
+        "correct_index": 1,
+        "why": "The gold is 0.375 × 3.2 = 1.2 g, so the non-gold portion is "
+               "3.2 − 1.2 = 2.0 g, of which 1.2 g is silver, leaving "
+               "2.0 − 1.2 = 0.8 g of copper.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-h20",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A company proposes making entire car body panels from a "
+                "nickel-titanium shape-memory alloy so that small dents "
+                "spring back out on their own. Evaluate this proposal.",
+        "options": [
+            "A good proposal, because shape-memory alloys are cheaper than "
+            "the steel currently used for body panels",
+            "A good proposal, because a shape-memory alloy is stronger for "
+            "its mass than every other metal available for car bodies",
+            "A poor proposal: the alloy is costly to produce in large "
+            "sheets, so it suits small precision parts rather than whole "
+            "panels",
+            "A poor proposal, because a shape-memory alloy cannot be shaped "
+            "into a flat panel of any kind",
+        ],
+        "correct_index": 2,
+        "why": "Nitinol's expense limits it to small, high-value "
+               "applications such as stents and frames; covering a whole car "
+               "body in it would be far too costly for the benefit gained.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-h21",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Using the same reasoning that explains why steel is harder "
+                "than pure iron, explain why bronze is harder than pure "
+                "copper.",
+        "options": [
+            "Tin atoms are a different size from copper atoms and disrupt "
+            "the regular layers, so they resist sliding past one another",
+            "Tin reacts with copper to form a new compound with covalent "
+            "bonds throughout the structure",
+            "Tin is itself a much harder metal than copper is, and that "
+            "hardness simply carries itself across into the bronze alloy",
+            "Tin lowers the melting point of copper, and a lower melting "
+            "point generally means a harder solid results",
+        ],
+        "correct_index": 0,
+        "why": "The same principle applies to any alloy: atoms of a "
+               "different size mixed through the lattice get in the way of "
+               "the layers sliding, whichever two metals are involved.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-h22",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A car's steel body of mass 1200 kg is redesigned in "
+                "aluminium alloy of the same strength, giving a body mass of "
+                "800 kg. Calculate the percentage reduction in body mass.",
+        "options": [
+            "25.0%",
+            "33.3%",
+            "40.0%",
+            "66.7%",
+        ],
+        "correct_index": 1,
+        "why": "The mass falls by 1200 − 800 = 400 kg, and "
+               "(400 ÷ 1200) × 100 = 33.3%.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-h23",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Evaluate the suggestion that every ordinary coiled spring "
+                "should be replaced with one made from a shape-memory alloy.",
+        "options": [
+            "A good idea, because shape-memory alloys are considerably "
+            "cheaper to produce in bulk than the steel currently used for "
+            "springs",
+            "A good idea, because a shape-memory spring lasts far longer "
+            "in service than an ordinary steel one does",
+            "A poor idea: the cost and complexity of a shape-memory alloy "
+            "are not needed for a job an ordinary steel spring already does",
+            "A poor idea, because a shape-memory alloy cannot be coiled "
+            "into a spring shape",
+        ],
+        "correct_index": 2,
+        "why": "An ordinary spring only needs to flex and return, which a "
+               "plain steel spring already does reliably and cheaply, so "
+               "the extra cost of a shape-memory alloy buys nothing there.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-h24",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Some coins once made entirely from cupronickel are now made "
+                "from steel with only a thin cupronickel-coloured coating. "
+                "Suggest the main reason for this change.",
+        "options": [
+            "Steel is magnetic, and modern vending machines are designed to "
+            "reject any coin that is not magnetic",
+            "A steel core with a thin plating is far cheaper to produce than "
+            "a coin made of solid cupronickel",
+            "Steel resists corrosion far better than cupronickel does when "
+            "handled every day",
+            "Steel is softer than cupronickel, so the coin lasts longer in "
+            "circulation",
+        ],
+        "correct_index": 1,
+        "why": "Using a cheap steel core with only a thin surface layer of "
+               "the more expensive alloy keeps the coin looking and feeling "
+               "the same while cutting the cost of production sharply.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-h25",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A wheelchair frame must be light enough to push easily, "
+                "strong enough to carry a person safely, and affordable "
+                "enough to be widely available. Determine the most suitable "
+                "material and justify the choice.",
+        "options": [
+            "Pure aluminium, because its low density is the one property "
+            "that a wheelchair frame is thought to need most",
+            "A titanium alloy, because it generally becomes the cheapest "
+            "option once a frame is produced in very large numbers",
+            "High carbon steel, because hardness matters more for a "
+            "wheelchair frame than mass or cost does",
+            "An aluminium alloy, because it balances low mass and enough "
+            "strength at a cost titanium cannot match",
+        ],
+        "correct_index": 3,
+        "why": "Titanium alloys offer similar advantages at a far higher "
+               "price, while steel is too heavy for daily pushing, so an "
+               "aluminium alloy is the practical balance of the three "
+               "requirements.",
+    },
+    {
+        "id": "ks4-alloys-useful-materials-h26",
+        "subtopic_slug": "alloys-useful-materials",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Evaluate the claim that a metal always becomes more useful "
+                "the more thoroughly it is alloyed with other elements.",
+        "options": [
+            "Sound, because every property of a metal improves as more of a "
+            "second element is added to it",
+            "Sound, provided the second element added happens to be a "
+            "transition metal rather than a non-metal",
+            "Unsound: too much of a second element can make a metal too "
+            "brittle or too poor a conductor for its job",
+            "Unsound, because alloying generally lowers the strength of "
+            "the metal it happens to be added into",
+        ],
+        "correct_index": 2,
+        "why": "Alloying trades properties against each other, so beyond a "
+               "useful point more disruption to the lattice can leave a "
+               "metal too brittle to work with or too poor a conductor to "
+               "be practical.",
+    },
 ]
