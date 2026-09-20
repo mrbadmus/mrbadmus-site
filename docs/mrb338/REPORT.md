@@ -1396,3 +1396,60 @@ keeping the incoming line. All 24 KS4 topics and all four hand-run gates
 (`verify_questions`, `verify_answer_positions`, `pool_ownership`,
 `ks4_pool_check --python`) re-verified green after the rebase, before
 pushing.
+
+## G7 · Pushed, loaded, and proved
+
+`31b88f76d` pushed to `main` (`ee798e0c9..31b88f76d`) under the
+`GATE-OVERRIDE: set_work` line above; the pre-push hook's own run of
+`prepush_gate.py --check` (the actual hook, not `--record-all`) confirmed the
+override is recognised and reported **"PUSH ALLOWED UNDER EXPLICIT
+OVERRIDE"** before the push proceeded.
+
+**`export_ks4_questions.py --load test`** hit one transient
+`TimeoutError` (a dropped TLS read, ~11,000 rows in) — re-ran clean
+end to end, `✅ 16765 row(s) upserted into TEST`. Upserts are idempotent, so
+the partial first attempt is harmless.
+
+**`export_ks4_questions.py --load prod`**, guarded by the three
+independent checks in `load()` (literal `prod` on the command line, the
+service key from `~/.mrbadmus/prod.env` alone, the key's own JWT `ref` claim
+checked against `urklkrwevjtlfbwnipjn` before a single row is sent) — proved
+in words first: the key's `ref` claim is `urklkrwevjtlfbwnipjn`, role
+`service_role`. `✅ 16765 row(s) upserted into PRODUCTION.`
+
+### Proof, not assertion
+
+| proof | result |
+|---|---|
+| `--verify --project prod` (service-key content read) | `16765 in Python, 16765 live, 0 missing, 0 extra, 0 differing` |
+| aggregate sha256, Python ↔ production | `ece57026f1dba489e315f08534cfa399aad41afa927cae6d6ad6f9fa6daa2e62` — **equal** |
+| anon read | `0 rows` — **refused to the public** (authenticated-only RLS intact) |
+| auto-composition window, queried live off production (not inferred from the Python-side check) | all 16,765 rows fetched; **all 264/264 subtopics hold exactly 12 rows at `bank_position < 12`**, and every one of those twelve is **exactly 4 easier / 4 standard / 4 harder** — 0 broken |
+| `set_work_scope_check --db --leaf`, against production (temp env file built from the prod key's own derived URL, `chmod 600`, deleted immediately after) | every cohort × node × tier cell fills; **498 KS4 cells, 494 at or above the 50 floor**; anon/reach not claimed by this check, content only |
+
+⚠️ **The `--leaf` report is not entirely clean, and it predates this run.**
+Four cells sit at 49, one row short of the 50 floor — all four are
+`chemistry/organic`, Higher tier: `crude-oil-hydrocarbons`,
+`fractional-distillation`, `properties-of-hydrocarbons`,
+`cracking-alkenes`. `organic.py` is untouched by every commit in this run
+(confirmed identical to `origin/main` before I touched anything — it was
+never one of the six frozen-window topics) — this gap was already present
+in the commit that landed it (`ecc97058b`, whose own message says "to
+floor"). It is a reporting-only finding (`--leaf` without `--strict` does
+not fail the gate), four rows, and left for a trivial top-up rather than
+folded into this run's scope.
+
+### Final production count
+
+| bank | before this run (13 Sep) | after | added |
+|---|---|---|---|
+| `ks4_assignment_bank` | 5,202 | **16,765** | **+11,563** |
+
+The jump is the WHOLE night-3 KS4 authoring programme reaching its floor
+(dozens of topics landed across the session this report's earlier sections
+cover), not merely the six-topic frozen-window fix — this run's OWN diff
+against what was already on the pushed branch was 39 reverted rows plus 13
+rewritten distractors in ecology, net zero new rows. `bank_position < 12` —
+the twelve rows every existing automatic weekly assignment in the school
+composes from — is **provably unchanged** for every one of the 264
+subtopics, so no assignment already sitting with a class today changes.
