@@ -898,18 +898,19 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": True,
-        "text": "A spectral line emitted at 480 nm is observed from a "
-                "distant galaxy at 492 nm. Calculate the percentage "
-                "increase in the wavelength.",
+        "text": "An absorption line with a rest wavelength of 500 nm is "
+                "measured at 512 nm in the light from a quasar. "
+                "Calculate the size of the wavelength shift caused by "
+                "the redshift.",
         "options": [
-            "2.5%",
-            "12%",
-            "0.4%",
-            "25%",
+            "12 nm",
+            "500 nm",
+            "512 nm",
+            "1012 nm",
         ],
         "correct_index": 0,
-        "why": "The increase is 492 − 480 = 12 nm, and 12 ÷ 480 = "
-               "0.025, which is a 2.5% increase.",
+        "why": "The shift is the observed wavelength minus the rest "
+               "wavelength: 512 − 500 = 12 nm.",
     },
     {
         "id": "ks4-red-shift-big-bang-s24",
@@ -917,18 +918,17 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": True,
-        "text": "A galaxy recedes from Earth at 9500 km/s. Taking the "
-                "Hubble constant as 68 km/s/Mpc, determine its "
-                "approximate distance from Earth.",
+        "text": "A quasar lies 150 Mpc from Earth. Using a Hubble constant "
+                "of 70 km/s/Mpc, calculate its expected recession "
+                "velocity.",
         "options": [
-            "0.007 Mpc",
-            "140 Mpc",
-            "646 000 Mpc",
-            "14 Mpc",
+            "10 500 km/s",
+            "2.1 km/s",
+            "150 km/s",
+            "1050 km/s",
         ],
-        "correct_index": 1,
-        "why": "Rearranging v = H₀d gives d = v ÷ H₀ = 9500 ÷ 68 ≈ "
-               "140 Mpc.",
+        "correct_index": 0,
+        "why": "v = H₀d = 70 × 150 = 10 500 km/s.",
     },
     {
         "id": "ks4-red-shift-big-bang-s25",
