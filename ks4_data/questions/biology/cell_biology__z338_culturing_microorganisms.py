@@ -854,4 +854,356 @@ QUESTIONS = [
                "12² = 452 mm², which is 450 mm² to 2 "
                "significant figures.",
     },
+
+    # ══ standard · s19–s26 ═══════════════════════════════════════════════
+    # MRB-338 night 3 top-up: the controlled-variable reasoning behind a
+    # fair antiseptic comparison, a missing nutrient's consequence, culturing
+    # for diagnosis rather than testing, a blank plate read correctly, two
+    # named food-production cases, why a result gets repeated, and the whole
+    # dish's own area.
+    {
+        "id": "ks4-culturing-microorganisms-s19",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A student compares four antiseptics by soaking a disc in "
+                "each one at the same concentration before placing them on "
+                "one inoculated plate. Explain why the concentration is "
+                "kept the same for every antiseptic.",
+        "options": [
+            "So every disc ends up the same size, because each one absorbs the same volume of liquid as it soaks",
+            "So each antiseptic diffuses through the agar at the same rate, because rate of diffusion is what a zone actually shows",
+            "So any difference between the zones is caused by the antiseptic itself, not by how concentrated each solution was",
+            "So the plate needs only one resistant control disc, because a stronger solution would otherwise need its own control",
+        ],
+        "correct_index": 2,
+        "why": "Keeping concentration constant makes it a fair test: the "
+               "only thing that varies between the discs is which "
+               "antiseptic was used.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-s20",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Cheese-making uses a bacterial starter culture to turn milk "
+                "sugar into lactic acid, which curdles the milk. Explain "
+                "why the process could fail if the starter culture had "
+                "been contaminated with a wide range of airborne "
+                "microorganisms before it was added.",
+        "options": [
+            "Airborne microorganisms die once mixed into milk, because milk itself is too acidic for them to survive in",
+            "The unwanted microorganisms could out-compete the starter culture, producing different and unwanted chemical changes",
+            "Contamination only changes the final colour of the cheese, because colour comes from whichever species dominates",
+            "The milk sugar gets used up faster, because more species together break it down more quickly than one alone",
+        ],
+        "correct_index": 1,
+        "why": "A mixed, uncontrolled population could out-compete the "
+               "chosen starter culture and carry out different reactions, "
+               "so the intended, safe fermentation is not what actually "
+               "happens.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-s21",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A culture medium is prepared with a carbon source and "
+                "minerals, but the nitrogen source is left out by mistake. "
+                "Explain the effect this has on bacteria growing in it.",
+        "options": [
+            "Growth is limited, because the bacteria cannot build the proteins they need without a nitrogen source to use",
+            "Growth speeds up, because bacteria no longer have to break down complex nitrogen compounds before dividing",
+            "The bacteria switch to using the dissolved minerals as an energy source, because no other source remains",
+            "There is no real effect, because bacteria can fix their own nitrogen compounds from the air inside the dish",
+        ],
+        "correct_index": 0,
+        "why": "Nitrogen is needed to build proteins for growth and "
+               "division, so a medium without it limits how much the "
+               "bacteria can grow.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-s22",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Besides testing which antibiotic works best, explain one "
+                "other reason a hospital laboratory cultures a sample "
+                "taken from a patient with a suspected infection.",
+        "options": [
+            "Culturing removes the need to keep a patient in hospital, because a result can then be given by telephone",
+            "Culturing destroys the pathogen present, because growth on agar uses up all of the sample that was taken",
+            "Culturing reveals a patient's blood group, because blood group is read from how a sample grows on agar",
+            "Culturing lets staff identify which species of pathogen is present, so the best treatment can be chosen",
+        ],
+        "correct_index": 3,
+        "why": "Growing the sample lets staff see what kind of "
+               "microorganism is present, which guides the choice of "
+               "treatment.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-s23",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A student's agar plate shows no bacterial growth anywhere "
+                "on its surface, including areas far away from every "
+                "antibiotic disc. Explain what this most likely shows "
+                "about the experiment.",
+        "options": [
+            "The plate was never properly inoculated at all, or the bacteria failed to grow, rather than every antibiotic working",
+            "All four antibiotics on the plate happened to be equally effective against that particular bacterium used",
+            "The plate was incubated for far longer than the standard twenty-four to forty-eight hour window",
+            "The agar itself must have been contaminated by an unwanted microorganism before the plate was poured",
+        ],
+        "correct_index": 0,
+        "why": "A healthy inoculated plate should show growth well away "
+               "from any disc, so total absence of growth points to a "
+               "problem with the set-up, not the antibiotics.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-s24",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Yoghurt is made by culturing a bacterium in milk. Explain "
+                "why the milk is heated to a high temperature before the "
+                "starter bacterium is added.",
+        "options": [
+            "Heating breaks the milk sugar down directly, because heat alone is enough to split it into simpler sugars",
+            "Heating thickens the milk on its own, because proteins in warm milk clump together without any bacteria",
+            "Heating kills or reduces microorganisms already present, so only the added starter bacterium then grows",
+            "Heating makes the milk easier to pour into the vessel, because warm milk always flows faster than cold milk",
+        ],
+        "correct_index": 2,
+        "why": "Reducing the existing microorganisms first means the "
+               "starter culture is not competing with an unknown mixed "
+               "population as it grows.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-s25",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why a student repeats an antibiotic-disc "
+                "investigation on three separate plates rather than "
+                "relying on the result from a single plate.",
+        "options": [
+            "Repeats are needed because a single plate never holds enough agar to take four separate discs at once",
+            "Repeats make an anomalous plate easier to spot, and let the remaining results be averaged for reliability",
+            "Repeats let a student test a different antibiotic on each plate, rather than comparing them fairly at all",
+            "Repeats shorten the incubation time each individual plate then needs, because heat builds up between plates",
+        ],
+        "correct_index": 1,
+        "why": "One plate could be affected by an unnoticed problem such "
+               "as contamination; repeating the test and averaging "
+               "gives a more reliable result.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-s26",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A circular Petri dish has a diameter of 90 mm, and agar "
+                "fills the whole dish. Calculate the area of agar "
+                "available for bacteria to grow on, to 3 significant "
+                "figures.",
+        "options": [
+            "6360 mm², from squaring a radius of 45 mm and multiplying by pi",
+            "2830 mm², from treating the full diameter as though it were the radius",
+            "8100 mm², from squaring the diameter without ever multiplying by pi",
+            "283 mm², from using a radius of only 3 mm by mistake",
+        ],
+        "correct_index": 0,
+        "why": "The radius is 45 mm, so the area is π × 45² = 6362 "
+               "mm², which is 6360 mm² to 3 significant figures.",
+    },
+
+    # ══ harder · h19–h26 ═════════════════════════════════════════════════
+    # Lab evidence against clinical proof, a safety judgement on an
+    # unfamiliar protocol, mixed-unit zone comparison, an advantage of
+    # automating the method, resistance appearing over years, a zone that
+    # keeps growing, an anomalous repeat weighed against clean ones, and a
+    # disinfectant's plate result weighed against ward use.
+    {
+        "id": "ks4-culturing-microorganisms-h19",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A new antibiotic gives the largest inhibition zone of any "
+                "drug tested on an agar plate. A company claims this "
+                "proves it is the most effective treatment for patients "
+                "with that infection. Evaluate this claim.",
+        "options": [
+            "It is proven, because zone size measured on agar always predicts exactly how a drug performs inside a living patient",
+            "It is not proven; a plate result cannot show how the drug is absorbed, distributed or handled by the immune system",
+            "It is not proven, because agar plates are never a valid way of testing any antibiotic candidate at all",
+            "It is proven, because the strain grown on the plate is identical to the one infecting every single patient",
+        ],
+        "correct_index": 1,
+        "why": "A plate shows how well a drug stops bacterial growth in "
+               "culture, but says nothing about absorption, side effects "
+               "or how a patient's own body responds.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-h20",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A student proposes swabbing an unidentified environmental "
+                "sample and incubating it at 37 °C in the school "
+                "laboratory, reasoning that this will show the widest "
+                "range of microorganisms present. Evaluate this proposal.",
+        "options": [
+            "It should go ahead, because 37 °C in a school laboratory only ever favours harmless soil bacteria",
+            "It should go ahead, because incubating above 25 °C is standard, fully approved practice in every school laboratory",
+            "It should not go ahead at all, because an unidentified sample never grows in a laboratory culture",
+            "It should not go ahead at 37 °C; an unidentified sample may contain a pathogen that grows best at body temperature",
+        ],
+        "correct_index": 3,
+        "why": "The safety limit of 25 °C exists precisely because an "
+               "unidentified sample could contain organisms that thrive "
+               "at body temperature, which are more likely to be human "
+               "pathogens.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-h21",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "On one plate, the zone around disc P has an area of 200 "
+                "mm². The zone around disc Q has a diameter of 20 mm. "
+                "Determine which zone is larger, and by how much, to 3 "
+                "significant figures.",
+        "options": [
+            "Q is larger, by 114 mm², since its radius of 10 mm gives an area of 314 mm² against P's 200 mm²",
+            "P is larger, by 114 mm², since a stated area already outweighs anything a 20 mm disc could ever produce",
+            "Q is larger, by 314 mm², since its whole calculated area counts as the difference between the discs",
+            "P and Q come out the same size, once both values are converted into exactly the same units",
+        ],
+        "correct_index": 0,
+        "why": "Disc Q's radius is 10 mm, so its area is π × 10² = 314 "
+               "mm², which is 114 mm² more than disc P's 200 mm².",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-h22",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A pharmaceutical company replaces manual measurement of "
+                "inhibition zones with a robotic system that photographs "
+                "and measures thousands of plates a day. Suggest one "
+                "advantage this gives over a school's manual method, "
+                "besides speed.",
+        "options": [
+            "Every plate is measured in exactly the same way, removing the variation that a person's own technique adds",
+            "The robotic system makes it unnecessary to sterilise any equipment involved, because robots carry no bacteria",
+            "The robotic system allows a single Petri dish to hold an unlimited number of antibiotic discs at once",
+            "The robotic system removes the need to incubate plates at all, because cameras can read fresh bacteria directly",
+        ],
+        "correct_index": 0,
+        "why": "A consistent, automated measurement removes the "
+               "person-to-person variation that comes from reading a "
+               "zone by eye, which a manual method cannot fully avoid.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-h23",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A hospital laboratory finds that a bacterium which used "
+                "to show a large inhibition zone with a certain antibiotic "
+                "ten years ago now shows no inhibition zone at all with "
+                "the same antibiotic. Suggest an explanation.",
+        "options": [
+            "The antibiotic disc used in the more recent test must have been accidentally contaminated beforehand",
+            "The bacterium must have lost the ability to grow on agar at all in the years since the earlier test",
+            "The bacterium has evolved resistance to that antibiotic over the years between the two tests",
+            "The more recent test must have used a far weaker concentration of the antibiotic by mistake",
+        ],
+        "correct_index": 2,
+        "why": "Repeated exposure to an antibiotic over years can select "
+               "for bacteria that have evolved resistance, so a "
+               "previously effective antibiotic stops producing a zone.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-h24",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A single antibiotic disc produces a zone 18 mm across "
+                "after 24 hours, because the antibiotic is still diffusing "
+                "outward into the agar. After another 24 hours the "
+                "diameter has grown to 22 mm. Calculate the increase in "
+                "the area of the zone, to 3 significant figures.",
+        "options": [
+            "16 mm², from subtracting the two diameters directly without ever converting either one to a radius",
+            "1260 mm², from treating the two given diameters as though they were already radii",
+            "63.5 mm², from halving the correctly calculated increase in area by mistake",
+            "126 mm², from the rise between π × 9² and π × 11², to three significant figures",
+        ],
+        "correct_index": 3,
+        "why": "The area rises from π × 9² = 254 mm² to π × 11² = 380 "
+               "mm², an increase of 126 mm² to 3 significant figures.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-h25",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "One student tests an antibiotic once and gets a 20 mm "
+                "zone. A second student repeats the same test three "
+                "times, getting 18 mm, 20 mm and 30 mm, with a ring of "
+                "unrelated fungal growth visible around the edge of the "
+                "30 mm plate. Evaluate which result should be trusted as "
+                "evidence of the antibiotic's effectiveness.",
+        "options": [
+            "The second student's 18 mm and 20 mm readings, once the contaminated 30 mm plate is excluded, not averaged in",
+            "The second student's average of all three readings, including the contaminated plate, because more data helps",
+            "The first student's single 20 mm reading, because one careful measurement beats several rushed ones",
+            "The contaminated 30 mm plate alone, because a larger zone is always the more convincing evidence",
+        ],
+        "correct_index": 0,
+        "why": "A visibly contaminated plate is an anomalous result and "
+               "should be discarded rather than averaged with genuine "
+               "readings, which is what makes repeats more reliable in "
+               "the first place.",
+    },
+    {
+        "id": "ks4-culturing-microorganisms-h26",
+        "subtopic_slug": "culturing-microorganisms",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A new disinfectant produces a very large inhibition zone "
+                "when tested on an agar plate. Evaluate whether this "
+                "result alone is enough to recommend using it to clean a "
+                "hospital ward.",
+        "options": [
+            "It is enough alone, because an inhibition zone on agar always predicts performance on any real surface",
+            "It is not enough alone; real surfaces carry dirt and organic matter, and the achievable contact time may differ",
+            "It is not enough alone, because disinfectants can never be tested by an inhibition-zone method at all",
+            "It is enough alone, because a hospital ward is cleaned under exactly the same conditions a laboratory plate is",
+        ],
+        "correct_index": 1,
+        "why": "A plate test is a clean, controlled comparison, but a "
+               "ward surface carries dirt and organic matter and is "
+               "wiped for a limited time, both of which can reduce a "
+               "disinfectant's real performance.",
+    },
 ]
