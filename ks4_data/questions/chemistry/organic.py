@@ -247,8 +247,8 @@ QUESTIONS = [
                 "combustion but propane, C3H8, needs 5. Explain why propane "
                 "needs more oxygen per molecule of fuel.",
         "options": [
-            "Propane molecules are heavier, so they need more energy to "
-            "ignite",
+            "Propane molecules are heavier, so more energy is needed to make "
+            "them ignite at all",
             "Propane contains a carbon–carbon double bond that has to be "
             "broken before it can burn",
             "Propane has fewer hydrogen atoms for each carbon atom, so much "
@@ -394,8 +394,8 @@ QUESTIONS = [
         "text": "Explain why the fractionating column is kept much hotter at "
                 "the bottom than at the top.",
         "options": [
-            "So that the heaviest fractions are broken down into smaller "
-            "ones",
+            "So that the heaviest fractions are chemically broken down into "
+            "smaller molecules",
             "So that every fraction condenses at the same level and can be "
             "collected together",
             "So that the vapours are cooled as they sink downwards, "
@@ -795,7 +795,7 @@ QUESTIONS = [
         "options": [
             "An alkene",
             "Only smaller alkanes",
-            "CO2 and H2O",
+            "Carbon dioxide and water",
             "A hydrocarbon with more carbon atoms than the original",
         ],
         "correct_index": 0,
@@ -1215,7 +1215,8 @@ QUESTIONS = [
         "text": "Explain, in terms of bonding, why alkenes react much more "
                 "readily than alkanes.",
         "options": [
-            "Alkenes have more hydrogen atoms available for swapping",
+            "Alkenes have more hydrogen atoms available to be replaced by "
+            "other atoms",
             "Alkenes have larger molecules, so they collide with other "
             "particles far more often",
             "Alkanes contain polar bonds that hold other molecules away from "
@@ -1698,9 +1699,10 @@ QUESTIONS = [
                 "at -1 °C, even though the molecules are a similar size. "
                 "Explain the difference.",
         "options": [
-            "Butanol has a higher relative formula mass, and mass alone "
-            "matters",
-            "Butanol contains oxygen, and its covalent bonds must be broken",
+            "Butanol has a higher relative formula mass, and mass alone sets "
+            "the boiling point",
+            "Butanol contains oxygen, and oxygen atoms form covalent bonds "
+            "that must be broken",
             "Butanol molecules hydrogen bond to each other through their "
             "–OH groups",
             "Butane molecules are branched, so they pack together far more "
@@ -1899,8 +1901,8 @@ QUESTIONS = [
                 "acid, the other hydrochloric acid. Predict which reacts "
                 "faster with magnesium ribbon, and explain.",
         "options": [
-            "Ethanoic acid, because its larger molecules collide with the "
-            "metal more",
+            "Ethanoic acid, because its molecules are larger and so collide "
+            "more often with the metal",
             "They react at exactly the same rate, because both solutions "
             "contain the same concentration of acid",
             "Hydrochloric acid — it fully ionises, giving a higher "
@@ -2162,8 +2164,8 @@ QUESTIONS = [
             "single product",
             "Polymerisation is 100%, but making ethanol is lower because "
             "water is lost as a by-product",
-            "Polymerisation is lower, because a small molecule is lost at "
-            "each join",
+            "Polymerisation is lower, because a small molecule is released "
+            "at every join in the chain",
             "Making ethanol is 100%, but polymerisation is lower because "
             "some monomer is always left over",
         ],
@@ -2182,8 +2184,8 @@ QUESTIONS = [
         "options": [
             "Ideal — the polymers break down into harmless monomers that can "
             "be collected and reused",
-            "Ideal — no carbon dioxide forms, because the polymers hold no "
-            "carbon",
+            "Ideal — no carbon dioxide can be released, because addition "
+            "polymers contain no carbon",
             "Mixed — energy is recovered, but carbon dioxide and toxic gases "
             "are released",
             "Useless — addition polymers simply cannot be burnt at any "
@@ -2405,7 +2407,8 @@ QUESTIONS = [
                 "group and a –COOH group are still shown between the two "
                 "monomer units. Explain what is wrong.",
         "options": [
-            "Nothing is wrong — both of the groups remain in the repeat unit",
+            "Nothing is wrong — both groups stay unchanged inside the repeat "
+            "unit of the polymer",
             "Those groups should have joined, losing water and forming an "
             "ester link",
             "The –OH should have been replaced by an amide link, –CO–NH–, "
@@ -2455,8 +2458,8 @@ QUESTIONS = [
             "be recovered from it",
             "Poor — PET is an addition polymer and so it cannot be "
             "hydrolysed under any conditions",
-            "Good — hydrolysis turns the PET directly into a clean, useful "
-            "fuel",
+            "Good — hydrolysis converts the PET directly into a clean fuel "
+            "with no waste at all",
         ],
         "correct_index": 0,
         "why": "Recovering the original monomers closes the loop: new PET "
@@ -2659,7 +2662,8 @@ QUESTIONS = [
         "options": [
             "One amino acid and one water molecule, as the chain simply "
             "shortens by a unit",
-            "A polypeptide and carbon dioxide, from the broken bond",
+            "A polypeptide and carbon dioxide, as the peptide bond "
+            "decomposes on heating",
             "Two amino acids and one water molecule, both released together "
             "from the chain",
             "Two amino acids, formed as water adds across the peptide bond",
@@ -2797,7 +2801,8 @@ QUESTIONS = [
                 "protein cause fewer environmental problems than "
                 "poly(ethene).",
         "options": [
-            "They are made in smaller amounts than plastics",
+            "They are made in much smaller quantities than poly(ethene) ever "
+            "is",
             "They dissolve completely in cold water, so they simply wash "
             "away harmlessly",
             "Enzymes can break them down, so they are biodegradable",
