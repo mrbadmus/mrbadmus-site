@@ -372,7 +372,8 @@ QUESTIONS = [
         "options": [
             "The sunscreen would stop working, because too much filter blocks "
             "absorption into the skin",
-            "Nothing would change, because only the UV filter matters",
+            "Nothing would change, because the UV filter is the only "
+            "component that matters at all",
             "Protection may rise, but the higher concentration could irritate "
             "the skin",
             "The sunscreen would become a pure substance, since one component "
@@ -416,7 +417,8 @@ QUESTIONS = [
         "options": [
             "Measure its melting point and compare it with a data book of dye "
             "melting points",
-            "Carry out a flame test and match the colour to a dye",
+            "Carry out a flame test on the product and match the flame colour "
+            "to a known dye",
             "Boil the product and collect the first fraction, which will be "
             "the mixture of dyes",
             "Run paper chromatography and compare the spots with reference "
@@ -669,7 +671,8 @@ QUESTIONS = [
                 "from four pens in the same solvent. Describe how they decide "
                 "which pen wrote the document.",
         "options": [
-            "The pen giving the fewest spots wrote it, as its ink is purest",
+            "The pen giving the fewest spots wrote it, because its ink is the "
+            "purest of the four",
             "The pen whose spots travel furthest wrote it, because its dyes "
             "are the most soluble",
             "The pen giving spots at the same Rf values as the document ink "
@@ -755,7 +758,8 @@ QUESTIONS = [
                 "but stopped when the solvent front reaches 5.0 cm. Predict "
                 "how far the same spot travels.",
         "options": [
-            "2.4 cm, because the distance never changes",
+            "2.4 cm, because a substance always travels the same distance in "
+            "a given solvent",
             "0.30 cm, because the Rf value is itself the distance the spot "
             "moves up the paper",
             "3.3 cm, because the spot travels proportionally further when "
@@ -1244,7 +1248,8 @@ QUESTIONS = [
             "A brighter lilac, because two ionic compounds together emit far "
             "more light",
             "A yellow flame, because sodium's emission masks the lilac",
-            "A green flame, because the two colours mix",
+            "A green flame, because the two colours mix together to give a "
+            "third colour",
             "No colour at all, because sodium and potassium cancel each other "
             "out entirely",
         ],
