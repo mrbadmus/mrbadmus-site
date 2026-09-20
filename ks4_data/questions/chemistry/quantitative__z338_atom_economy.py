@@ -813,4 +813,355 @@ QUESTIONS = [
         "why": "A by-product that can be sold is not waste, and a low-economy "
                "route can still be the only one available for that product.",
     },
+
+    # ── standard (top-up) ──────────────────────────────────────────────────
+    {
+        "id": "ks4-atom-economy-s19",
+        "subtopic_slug": "atom-economy",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Sulfur dioxide is converted into sulfur trioxide in the "
+                "Contact process: 2SO2 + O2 -> 2SO3. State the atom economy "
+                "of this reaction for sulfur trioxide.",
+        "options": [
+            "50%",
+            "64%",
+            "88%",
+            "100%",
+        ],
+        "correct_index": 3,
+        "why": "Sulfur trioxide is the only product, so the whole of the "
+               "product mass is the desired one.",
+    },
+    {
+        "id": "ks4-atom-economy-s20",
+        "subtopic_slug": "atom-economy",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Iron(II) sulfate is made by Fe + H2SO4 -> FeSO4 + H2. Mr: "
+                "FeSO4 = 152, H2 = 2. Calculate the atom economy for iron(II) "
+                "sulfate.",
+        "options": [
+            "1.3%",
+            "76.0%",
+            "98.7%",
+            "50.0%",
+        ],
+        "correct_index": 2,
+        "why": "(152 ÷ (152 + 2)) × 100 = 98.7%.",
+    },
+    {
+        "id": "ks4-atom-economy-s21",
+        "subtopic_slug": "atom-economy",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Magnesium is extracted from molten magnesium chloride by "
+                "electrolysis: MgCl2 -> Mg + Cl2. Ar of Mg = 24; Mr of "
+                "Cl2 = 71. Calculate the atom economy for magnesium.",
+        "options": [
+            "16.9%",
+            "25.3%",
+            "33.8%",
+            "74.7%",
+        ],
+        "correct_index": 1,
+        "why": "The products are Mg = 24 and Cl2 = 71, giving a total of "
+               "95, so (24 ÷ 95) × 100 = 25.3%.",
+    },
+    {
+        "id": "ks4-atom-economy-s22",
+        "subtopic_slug": "atom-economy",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A reaction has an atom economy of 64%. For every 100 kg of "
+                "desired product made, calculate the mass of waste "
+                "by-product also produced.",
+        "options": [
+            "36 kg",
+            "56.25 kg",
+            "64 kg",
+            "156.25 kg",
+        ],
+        "correct_index": 1,
+        "why": "100 kg is 64% of the total, so the total is "
+               "100 × 100 ÷ 64 = 156.25 kg, of which 156.25 − 100 = 56.25 kg "
+               "is waste.",
+    },
+    {
+        "id": "ks4-atom-economy-s23",
+        "subtopic_slug": "atom-economy",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A by-product is later found to be hazardous and expensive to "
+                "dispose of safely. State the effect this has on the atom "
+                "economy already calculated for the reaction.",
+        "options": [
+            "The atom economy falls, since a hazardous by-product has to be "
+            "counted as waste on two separate occasions",
+            "The atom economy becomes impossible for anyone to calculate "
+            "from that point onward",
+            "The atom economy is unchanged, since it is fixed by the Mr "
+            "values in the equation alone",
+            "The atom economy rises, since the disposal cost is now "
+            "factored into how the calculation is carried out",
+        ],
+        "correct_index": 2,
+        "why": "Atom economy is worked out purely from the masses in the "
+               "balanced equation, so a fact learned later about the "
+               "by-product does not change the number.",
+    },
+    {
+        "id": "ks4-atom-economy-s24",
+        "subtopic_slug": "atom-economy",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why a high atom economy matters more for a reaction "
+                "that uses a rare and expensive raw material than for one "
+                "using an abundant, cheap one.",
+        "options": [
+            "A rare raw material reacts more slowly, so a catalyst is "
+            "generally needed regardless of the atom economy of the reaction",
+            "Wasting a rare raw material is far more costly, and the supply "
+            "of it is limited",
+            "A rare raw material generally gives a lower atom economy than "
+            "an abundant, common one would give",
+            "Atom economy is a figure that cannot be worked out for any "
+            "reaction using a rare raw material",
+        ],
+        "correct_index": 1,
+        "why": "Turning less of a scarce, costly resource into waste "
+               "matters more, both for cost and because the supply cannot "
+               "simply be replaced.",
+    },
+    {
+        "id": "ks4-atom-economy-s25",
+        "subtopic_slug": "atom-economy",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "State the name given to the branch of chemistry that designs "
+                "reactions to have a high atom economy and a low "
+                "environmental impact.",
+        "options": [
+            "Green chemistry",
+            "Organic chemistry",
+            "Physical chemistry",
+            "Analytical chemistry",
+        ],
+        "correct_index": 0,
+        "why": "Green chemistry is the name given to designing processes "
+               "that waste as little material as possible.",
+    },
+    {
+        "id": "ks4-atom-economy-s26",
+        "subtopic_slug": "atom-economy",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why a manufacturer usually prefers to redesign a "
+                "process so it makes fewer by-products, rather than simply "
+                "finding a buyer for the existing by-products.",
+        "options": [
+            "Fewer by-products means less material to separate, handle and "
+            "transport in the first place",
+            "A buyer is rarely found for the kind of by-product an "
+            "industrial process of this size tends to make",
+            "Redesigning a process is generally a cheaper option than "
+            "finding somewhere to sell a by-product",
+            "By-products are not permitted to be sold on to another "
+            "company under most national regulations",
+        ],
+        "correct_index": 0,
+        "why": "Even a saleable by-product still has to be separated, "
+               "purified and moved, so cutting it out at the design stage "
+               "removes those costs entirely rather than just offsetting "
+               "them.",
+    },
+
+    # ── harder (top-up) ─────────────────────────────────────────────────────
+    {
+        "id": "ks4-atom-economy-h19",
+        "subtopic_slug": "atom-economy",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Magnesium chloride can be made by Mg + 2HCl -> MgCl2 + H2 "
+                "(Mr: MgCl2 = 95, H2 = 2) or by "
+                "MgO + 2HCl -> MgCl2 + H2O (Mr: MgCl2 = 95, H2O = 18). "
+                "Determine which route has the higher atom economy for "
+                "magnesium chloride.",
+        "options": [
+            "The metal route, at 97.9% against 84.1% for the oxide route",
+            "The oxide route, at 84.1% against 97.9% for the metal route",
+            "They are equal, because both make magnesium chloride as the "
+            "desired product",
+            "The metal route, at 50.0% against 84.1% for the oxide route",
+        ],
+        "correct_index": 0,
+        "why": "The metal route gives 95 ÷ 97 = 97.9%, while the oxide route "
+               "gives 95 ÷ 113 = 84.1%, because water is a heavier by-product "
+               "than hydrogen.",
+    },
+    {
+        "id": "ks4-atom-economy-h20",
+        "subtopic_slug": "atom-economy",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Lead is extracted by roasting its sulfide ore: "
+                "2PbS + 3O2 -> 2PbO + 2SO2. Mr: PbO = 223, SO2 = 64. "
+                "Calculate the atom economy for lead oxide.",
+        "options": [
+            "22.3%",
+            "58.0%",
+            "77.7%",
+            "87.1%",
+        ],
+        "correct_index": 2,
+        "why": "The products are 2PbO = 446 and 2SO2 = 128, so "
+               "(446 ÷ 574) × 100 = 77.7%.",
+    },
+    {
+        "id": "ks4-atom-economy-h21",
+        "subtopic_slug": "atom-economy",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A reaction gives an atom economy of 76% for a desired "
+                "product of Mr 190, made alongside one by-product. Determine "
+                "the Mr of the by-product.",
+        "options": [
+            "45.6",
+            "60",
+            "144",
+            "250",
+        ],
+        "correct_index": 1,
+        "why": "The total product Mr is 190 × 100 ÷ 76 = 250, so the "
+               "by-product's Mr is 250 − 190 = 60.",
+    },
+    {
+        "id": "ks4-atom-economy-h22",
+        "subtopic_slug": "atom-economy",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A plant runs a reaction with an atom economy of only 55%, "
+                "but the by-product is fed straight back in as a raw material "
+                "for a second process on the same site. Evaluate whether the "
+                "55% figure still fairly represents how much of the site's "
+                "material ends up as true waste.",
+        "options": [
+            "Yes, because the standard atom economy calculation is designed "
+            "to account for any recycling a site happens to carry out",
+            "No: the equation's atom economy stays 55% however the "
+            "by-product is used, but the site's real waste may be far lower",
+            "Yes, because a recycled by-product no longer counts as one of "
+            "the products written in the balanced equation",
+            "No, because recycling the by-product in this way lowers the "
+            "true atom economy of the process still further",
+        ],
+        "correct_index": 1,
+        "why": "Atom economy is fixed by the one equation it is calculated "
+               "from; what happens to the by-product afterwards changes the "
+               "real environmental picture without changing that number.",
+    },
+    {
+        "id": "ks4-atom-economy-h23",
+        "subtopic_slug": "atom-economy",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Evaluate the claim that a reaction with a 100% atom economy "
+                "must always be the cheapest way to manufacture a product.",
+        "options": [
+            "Sound, because no mass is wasted, and wasted mass is the one "
+            "cost that a manufacturer has to think about here",
+            "Sound, because a 100% atom economy reaction needs no catalyst "
+            "and no heating of any kind to run",
+            "Unsound: the cost of the reactants, energy and any catalyst "
+            "still has to be paid, whatever the atom economy is",
+            "Unsound, because a 100% atom economy is thought to be "
+            "impossible for a real industrial reaction to achieve",
+        ],
+        "correct_index": 2,
+        "why": "Atom economy measures only how much of the reactant mass "
+               "ends up as useful product; it says nothing about the price "
+               "of the reactants or the energy needed to make them react.",
+    },
+    {
+        "id": "ks4-atom-economy-h24",
+        "subtopic_slug": "atom-economy",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A company requires a new reaction to reach an atom economy "
+                "of at least 65%. The desired product has an Mr of 210 and "
+                "the only by-product has an Mr of 90. Determine whether the "
+                "reaction meets the target.",
+        "options": [
+            "Yes: the atom economy is 70%, above the 65% target",
+            "No: the atom economy is 42.9%, below the 65% target",
+            "Yes: the atom economy is 90%, above the 65% target",
+            "No: the atom economy cannot be found from the data given",
+        ],
+        "correct_index": 0,
+        "why": "The total product mass is 210 + 90 = 300, and "
+               "(210 ÷ 300) × 100 = 70%, which clears the 65% target.",
+    },
+    {
+        "id": "ks4-atom-economy-h25",
+        "subtopic_slug": "atom-economy",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Evaluate the claim that a very high atom economy proves a "
+                "manufacturing process is environmentally friendly overall.",
+        "options": [
+            "Sound, because atom economy is generally treated as the sole "
+            "measure of a process's impact on the surrounding environment",
+            "Sound, because a process with no waste mass can have no other "
+            "environmental impact of any kind",
+            "Unsound: the energy used and the toxicity of the reactants or "
+            "product are not measured by atom economy at all",
+            "Unsound, because atom economy tends to fall once a process is "
+            "scaled up and run at a full industrial scale",
+        ],
+        "correct_index": 2,
+        "why": "Atom economy is a measure of mass efficiency alone; a "
+               "process can waste almost nothing and still use large amounts "
+               "of energy or handle hazardous substances.",
+    },
+    {
+        "id": "ks4-atom-economy-h26",
+        "subtopic_slug": "atom-economy",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A chemist is choosing between two routes to the same "
+                "fertiliser salt: Route 1 has an atom economy of 85% but "
+                "needs an expensive catalyst; Route 2 has an atom economy of "
+                "60% but needs no catalyst at all. Explain why atom economy "
+                "alone cannot decide which route the company should choose.",
+        "options": [
+            "Because the higher atom economy route tends to become the "
+            "cheaper one to run once the plant has finally been built",
+            "Because atom economy leaves out other real costs, such as the "
+            "price of a catalyst, that also decide which route is best",
+            "Because atom economy is a figure that applies just to "
+            "reactions using a catalyst of one kind or another",
+            "Because a route needing no catalyst generally has the higher "
+            "atom economy of the two routes being compared",
+        ],
+        "correct_index": 1,
+        "why": "Atom economy weighs only the mass that ends up as product; "
+               "reagent and catalyst costs can easily outweigh a difference "
+               "in atom economy when a company chooses between routes.",
+    },
 ]
