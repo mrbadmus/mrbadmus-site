@@ -562,7 +562,7 @@ QUESTIONS = [
         "text": "Which method of contraception also reduces the spread of "
                 "gonorrhoea?",
         "options": [
-            "The pill",
+            "The contraceptive pill",
             "An intrauterine device",
             "Condoms",
             "A contraceptive implant",
@@ -1226,7 +1226,7 @@ QUESTIONS = [
                 "antibiotic-resistant bacterium?",
         "options": [
             "MRSA",
-            "Malaria",
+            "Plasmodium",
             "Tobacco mosaic virus",
             "Diplocarpon rosae",
         ],
@@ -1684,7 +1684,7 @@ QUESTIONS = [
         "text": "Which physical defence protects the living tissue inside a "
                 "woody stem?",
         "options": [
-            "The cuticle",
+            "The waxy cuticle",
             "The bark",
             "The root hairs",
             "The guard cells",
