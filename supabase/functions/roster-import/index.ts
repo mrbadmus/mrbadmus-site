@@ -61,6 +61,7 @@ type ClassSpec = {
   pathway?: string | null;
   teacherId?: string | null;
   subjectId?: string | null;
+  id?: string; // target an EXISTING class by id — skips find-or-create entirely
 };
 
 
@@ -148,6 +149,45 @@ Deno.serve(async (req) => {
   const students = Array.isArray(body.students) ? body.students : [];
   if (classes.length === 0) return json(400, { ok: false, error: "no_classes" });
 
+  // The existing-class-by-id path (Add students (CSV) on a class's own page)
+  // is school_admin-only. The staff gate above (teacher/hod/admin) is
+  // unchanged and still guards every path, including this one — this is a
+  // narrower check layered on top for this one entry, not a replacement.
+  //
+  // "school_admin" here means the same thing `callerStanding()` in the
+  // backend's server.js means by it (MRB-326/335): a live `staff_scopes` row
+  // with scope='school_admin', OR the legacy `profiles.role = 'admin'`. It is
+  // NOT `profiles.role`, which only ever holds teacher/hod/admin as a school
+  // ROLE — Mide's own account, and most school admins in this estate, are
+  // `role='teacher'` with a `staff_scopes` grant, not `role='admin'`. Getting
+  // this wrong would 403 every real admin including Mide.
+  if (classes.some((c) => c?.id)) {
+    let schoolAdmin = caller.role === "admin";
+    if (!schoolAdmin) {
+      // Compared as ISO strings, not Date objects, and filtered in JS rather
+      // than in the query — exactly as `shared/teacher-admin-nav.js`'s
+      // `isAdmin()`/`live()` does it (the canonical predicate this repo uses
+      // everywhere else it reads `staff_scopes`). A `.lte("started_at", …)`
+      // query filter, tried first, silently EXCLUDES a row with a NULL
+      // `started_at` (SQL NULL comparison), which every other reader in the
+      // estate treats as already live — so it is read in JS instead, where
+      // "no started_at yet" and "not yet ended" both fall out the same way
+      // the canonical version handles them.
+      const { data: scopes } = await admin
+        .from("staff_scopes")
+        .select("started_at, ended_at, deleted_at")
+        .eq("profile_id", callerId)
+        .eq("scope", "school_admin");
+      const nowIso = new Date().toISOString();
+      schoolAdmin = (scopes ?? []).some((r) =>
+        !r.deleted_at &&
+        (!r.started_at || r.started_at <= nowIso) &&
+        (!r.ended_at || r.ended_at > nowIso)
+      );
+    }
+    if (!schoolAdmin) return json(403, { ok: false, error: "admin_only" });
+  }
+
   // ── 3. Resolve the school's WORKING academic year ──
   //
   // ⚠️ This used to fall back to `.eq("is_current", true)` when the caller
@@ -169,7 +209,15 @@ Deno.serve(async (req) => {
     .is("deleted_at", null);
   if (yErr) return json(400, { ok: false, error: "no_academic_year" });
 
-  const year = body.academicYearName
+  // The existing-class-by-id path's "must be the working year" refusal only
+  // means something if `year` IS the working year — `academicYearName` lets
+  // a caller name any year of the school, which would otherwise let the
+  // wrong-year check pass by construction (name the class's own, non-working
+  // year, and it stops being wrong). This is the id-path's admin gate, so it
+  // ignores the override precisely where MRB-307 warns a silent wrong year
+  // is invisible: a school_admin naming a past year deliberately gets
+  // refused, not silently honoured.
+  const year = (body.academicYearName && !classes.some((c) => c?.id))
     ? (allYears ?? []).find((y) => y.name === body.academicYearName) ?? null
     : workingAcademicYear(allYears ?? []);
   if (!year) return json(400, { ok: false, error: "no_academic_year" });
@@ -191,6 +239,37 @@ Deno.serve(async (req) => {
   const classSpecByName = new Map<string, ClassSpec>();
   const classKeyStageByName = new Map<string, string>();
   for (const c of classes) {
+    // ── existing-class path: attach to a class that already exists, by id ──
+    // Used by the "Add students (CSV)" control on an existing class's page —
+    // no find-or-create, no name/tier/pathway from the client at all. The
+    // class must belong to this school AND to the working academic year;
+    // either failure refuses the whole request rather than silently
+    // skipping rows, since a request here always targets exactly one class.
+    if (c?.id) {
+      const { data: existingById, error: findErr } = await admin
+        .from("classes")
+        .select("id, name, key_stage, tier, science_pathway, academic_year_id")
+        .eq("id", c.id)
+        .eq("school_id", schoolId)
+        .is("deleted_at", null)
+        .maybeSingle();
+      if (findErr || !existingById) {
+        return json(404, { ok: false, error: "class_not_found" });
+      }
+      if (existingById.academic_year_id !== yearId) {
+        return json(400, { ok: false, error: "class_wrong_year" });
+      }
+      const name = existingById.name as string;
+      classSpecByName.set(name, {
+        name,
+        tier: existingById.tier as string | null,
+        pathway: existingById.science_pathway as string | null,
+      });
+      classKeyStageByName.set(name, existingById.key_stage as string);
+      classMap.set(name, existingById.id as string);
+      counts.classesFound++;
+      continue;
+    }
     if (!c?.name) continue;
     classSpecByName.set(c.name, c);
     // year_group is authoritative for the key stage when supplied (7–9 →
@@ -462,7 +541,12 @@ Deno.serve(async (req) => {
       p_payload: {
         source: body.source ?? null,
         academic_year: year.name,
-        classes: classes.map((c) => c.name),
+        // The RESOLVED name (from `classSpecByName`, which the id-path keys
+        // by the DB row's own `name` and the name-path keys by the name it
+        // actually created-or-found), never the client's raw `c.name` — an
+        // id-path caller can send any string there, and an audit row is
+        // exactly the place a silent lie must not land. See MRB-307.
+        classes: Array.from(classSpecByName.keys()),
         counts,
         issue_count: issues.length,
       },
@@ -475,9 +559,9 @@ Deno.serve(async (req) => {
   // The year and the resolved class ids travel back with the counts so the
   // import page can NAME the year it enrolled into and link straight to the
   // class. A silent year was how MRB-307 stayed invisible.
-  const importedClasses = classes.map((c) => ({
-    name: c.name,
-    id: classMap.get(c.name) ?? null,
+  const importedClasses = Array.from(classSpecByName.keys()).map((name) => ({
+    name,
+    id: classMap.get(name) ?? null,
   }));
 
   return json(200, {
