@@ -289,7 +289,7 @@ QUESTIONS = [
                 "climate.",
         "options": [
             "It reflects the sunlight and it takes nitrogen out of the air",
-            "It releases carbon dioxide and it lowers the local rainfall",
+            "It releases carbon dioxide and lowers local rainfall",
             "It absorbs carbon dioxide and it influences local rainfall",
             "It warms the air above it and it produces its own clouds of dust",
         ],
@@ -366,7 +366,7 @@ QUESTIONS = [
                 "Compare their biodiversity.",
         "options": [
             "P's is higher, because one of its species is clearly thriving",
-            "They are equal, because each lake contains 18 species in all",
+            "They are equal, because each lake holds 18 species",
             "Q's is higher, because its species are more evenly abundant",
             "P's is higher, because it must hold more individuals in total",
         ],
@@ -442,7 +442,7 @@ QUESTIONS = [
                 "Predict the effect on the site's biodiversity.",
         "options": [
             "It stays the same, because the same area of land is still there",
-            "It rises, because maize is a tall plant that shelters wildlife",
+            "It rises, because maize shelters wildlife",
             "It falls sharply, because one crop replaces many wild species",
             "It rises, because ploughing releases minerals into the topsoil",
         ],
@@ -846,7 +846,7 @@ QUESTIONS = [
         "options": [
             "It is complete, provided the same observer does all the counting",
             "It is complete, because a species count is what diversity means",
-            "It is incomplete, because a count ignores the abiotic factors",
+            "It is incomplete, because a count ignores abiotic factors",
             "It is incomplete: how common each species is matters as well",
         ],
         "correct_index": 3,

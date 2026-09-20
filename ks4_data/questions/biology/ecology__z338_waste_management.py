@@ -232,8 +232,8 @@ QUESTIONS = [
         "text": "Fish in a lake die after an algal bloom. State the stage at "
                 "which the oxygen is used up, and explain why.",
         "options": [
-            "While the algae are growing, because a growing alga respires but "
-                "cannot yet photosynthesise at all",
+            "While the algae are growing, because a growing alga respires "
+                "but cannot yet photosynthesise",
             "After the algae die, because decomposers feeding on them respire "
                 "and use the dissolved oxygen up",
             "While the algae are growing, because algae take oxygen out of "
@@ -281,8 +281,8 @@ QUESTIONS = [
                 "acidic water die out",
             "The rain adds so much water that the lake overflows and carries "
                 "most of its fish away downstream",
-            "The rain cools the lake, and fish species cannot survive at the "
-                "temperature it reaches",
+            "The rain cools the lake, and fish cannot survive at that "
+                "temperature",
             "The rain washes the fish eggs onto the shore, where they dry out "
                 "before they can hatch",
         ],
@@ -1132,8 +1132,8 @@ QUESTIONS = [
                 "leaves it. Predict what a survey of the river below it will "
                 "find a year later, and explain.",
         "options": [
-            "Fewer species, because the decomposers that had been living on "
-                "the organic matter have gone",
+            "Fewer species, because the decomposers on the organic matter "
+                "are gone",
             "More species, because the dissolved oxygen has risen once the "
                 "organic load was removed",
             "The same species, because a river's community is set by its "
