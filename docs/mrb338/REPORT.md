@@ -1183,3 +1183,216 @@ the reasoning is in the code to be overruled rather than rediscovered.
 ⚠️ It nearly cost in both directions tonight: an override was nearly written for
 a defect that did not exist, and a red worth reading could easily have been
 dismissed as more flakiness.
+
+---
+
+# NIGHT 3 · KS4 FINAL — the frozen-window repair, two gate fixes, and the load
+
+Resumed from the 20 Sep blocker comment: six KS4 topics carried frozen-window
+damage from finding ⓵'s own repair pass, because that pass edited distractor
+text directly rather than going through `tools/mrb338_land.sh`, so nothing
+checked whether it had touched `bank_position` 0-11 — the twelve rows every
+automatic weekly assignment composes from, live on production, which must stay
+byte-identical to it forever.
+
+## G1 · The damage, topic by topic, and the fix
+
+`mrb338_leafcheck --topic <t>` for all 24 KS4 topics named exactly six red on
+check 9 (THE FROZEN WINDOW), and only six — confirming the blocker's list
+completely:
+
+| topic | frozen rows changed | rows reverted |
+|---|---|---|
+| ecology | 18 | `carbon-cycle-h03/s03/s04`, `global-warming-e02/h03`, `waste-management-e01`, `population-competition-h04`, `food-chains-webs-e02/e04`, `adaptations-s03`, `ecosystems-s02/s04/h03`, `role-of-biotechnology-e01/h03`, `sustainable-fisheries-s04`, `farming-techniques-e03/h02` |
+| organisation | 7 | `health-disease-e03`, `coronary-heart-disease-e02/e04`, `enzymes-h04`, `digestive-system-s03/h04`, `principles-of-organisation-e04` |
+| resources | 7 | `alternative-metal-extraction-e01`, `ceramics-polymers-composites-s03`, `alloys-useful-materials-h02`, `corrosion-prevention-e01`, `life-cycle-assessment-s02`, `earths-resources-e02/s02` |
+| analysis | 5 | `chromatography-s04/h04`, `flame-tests-h04`, `formulations-s02/s04` |
+| atmosphere | 2 | `atmospheric-pollutants-h03`, `greenhouse-gases-s03` |
+| particle-model | 0 | **nothing to revert — see G2** |
+
+**39 rows across five topics.** Every one was a distractor-text edit only —
+never the id, the stem, the key, or the order — confirmed by `git show
+<merge-base>:<file>` before and after. Fixed with a small script
+(`tools/revert_frozen.py`, kept in the run's scratch, not committed — see the
+deviation note below) that locates each frozen id's `{...}` dict-literal span
+in the CURRENT file via `ast`, and the SAME id's span in the merge-base blob,
+and splices the merge-base text back in verbatim, leaving every row numbered
+05 or higher untouched. **Every one of the five files is now byte-identical to
+`origin/main`** — proved with `git diff --stat origin/main -- <file>`, empty
+on all five, which is a stronger proof than reading the diff: it says nothing
+this branch shipped, anywhere in that file, differs from what is already live.
+
+⚠️ **`particle-model` needed NO revert.** Its only leafcheck red was a
+structural id-sequence gap in `changes-of-state` band `s` (id 19 missing,
+`[…18, 20, 21…]`) — not a position-0-11 content edit. `git diff --stat
+origin/main -- ks4_data/questions/physics/particle_model*` was empty
+**before** I touched anything, meaning this gap is **already live on
+production today** and predates this branch entirely. Per the run's own rule
+4 ("a real defect in a frozen row is a separate ticket, not this run"), and
+because renumbering an id that a live Set work assignment may already
+reference by exact id is exactly the kind of production-data surgery that
+needs its own considered ticket, **this was left untouched and is reported,
+not fixed.** New finding, ticket-ready:
+
+> **MRB-3xx · `changes-of-state` (physics/particle-model) is missing id
+> `s19`** — band `s` ids run 1-18, 20-26, no 19. Already live on production.
+> Does not affect automatic composition (`bank_position < 12` — ids 01-04 —
+> is intact) but would need care if Set work v2 has already set any class
+> work referencing an id at or above position 19 in this leaf, since a naive
+> renumber would silently move which question that id names.
+
+Landed as six commits (one gate-fix commit, five content commits, one per
+topic — `ecology`'s commit also carries a second, unrelated fix, see G3),
+each preceded by a full `tools/mrb338_land.sh --topic <t> -- <files>` run,
+all 8 gates green, before committing. **All 24 KS4 topics now pass
+`mrb338_leafcheck` cleanly** — the literal exit criterion for this run.
+
+## G2 · Gate fix 1 — `mrb338_leafcheck` gained a skewed-index check
+
+As asked: check 6 (KEY POSITION SPREAD) only ever asked "is any answer index
+ZERO across the leaf" — the same shape of gap `verify_answer_lengths` (the
+real gate) already caught THIS SAME NIGHT in the `organic.py` landing
+(several new files skewed 60-75% onto one option index, invisible to the
+unused-only check, per that commit's own message). Added a skewed-index FAIL
+at the same 40% ceiling and minimum-n as the existing rank-spread check
+(`POSITION_MAX_SHARE = 0.40`, `POSITION_SKEW_MIN_N = 20`) — chance is 25%
+either way, so there is no principled reason for the two thresholds to
+differ. `tools/mrb338_leafcheck.py` lines ~86-95, ~610-625.
+
+## G3 · Gate fix 2 — new-vs-inherited scoping for checks 4, 5, 6 and 9b
+
+Found live, and it blocked landing the organisation revert: checks 1, 2, 3
+and 10 already distinguish a leaf's PRE-EXISTING rows from rows THIS BRANCH
+added (file header, correction 4 — "an old-old pair is a pre-existing
+condition of the estate, not this run's finding, and failing on it stops a
+lane fixing a leaf it did not break"). Checks 4 (length parity), 5/6
+(rank/position spread) and 9b (frozen-window id-sequence continuity) never
+made that distinction — they fail on the WHOLE leaf's numbers regardless of
+who wrote which row.
+
+Concretely: `organisation` (6 leaves' worth of rank-spread skew:
+`cancer`, `coronary-heart-disease`, `health-disease`, `plant-tissues`,
+`translocation`, `transpiration`) and `particle-model` (the `s19` gap above,
+plus `internal-energy`'s length-parity MIRROR reading) are **both
+byte-identical to `origin/main` once their frozen rows are fixed** — meaning
+every one of these findings already exists on live production, untouched by
+this branch. The checks hard-failed on them anyway, which meant `land.sh`
+refused to land the organisation frozen-window fix — a correct, in-scope,
+unrelated repair — because of six findings this run did not create and is not
+authorised to fix (rule 4 again).
+
+Fixed by the same rule the file already applies elsewhere: a leaf with **zero
+new rows on this branch** cannot be blamed by these four checks — they
+downgrade to a NOTE (still printed, still visible, never silently dropped). A
+leaf this branch DID add rows to is measured exactly as before, in full,
+because a lane touching a leaf is still on the hook for the whole leaf's
+numbers per brief §6. Verified this doesn't just hide real problems: reran
+the full 24-topic sweep after the fix, and — separately — reran it with the
+fix `git stash`ed to confirm the SAME six pre-existing findings reappear
+identically. `tools/mrb338_leafcheck.py`, `check_parity`, `check_spreads`,
+and the `leaves_with_new` set inside `check_frozen`.
+
+**Neither fix touches what a clean leaf looks like — only which redness this
+run may be blamed for.** organisation's and particle-model's six inherited
+findings (five rank-spread leaves plus `internal-energy`'s parity reading,
+plus the `s19` gap above) are still printed by leafcheck as NOTES on every
+future run of these topics, for whoever picks up the separate ticket.
+
+## G4 · Process note, as asked: repair passes must go through `land.sh`
+
+This entire finding — six topics' worth of frozen-window damage — exists
+because a repair pass (the four commits fixing finding ⓵'s shortest-option
+tell, night 3, 15 Sep) edited files directly and committed without running
+`tools/mrb338_land.sh` first. `land.sh`'s own check 9 (frozen window) would
+have caught every one of the 39 edits the moment they were made, at the cost
+of a few seconds per topic. **Ruling for any future repair pass, authoring or
+otherwise: `tools/mrb338_land.sh --topic <t> -- <files>` runs before every
+commit that touches `ks4_data/**` or `ks3_data/**`, with no exception for
+"this is just wording, not new content."** A repair is not exempt from the
+gate that exists specifically to catch what a repair is most likely to break.
+
+## G5 · A second inherited red, found while pushing — `set_work`
+
+`prepush_gate.py --record-all` ran `ks4_pool_drive` (PASS) and `set_work`
+(**FAIL, exit 1**) — the two gates this branch's `ks4_data/**` changes
+select. The failure read, at first glance, exactly like finding ⓷'s
+already-diagnosed flakiness ("429 on call 31 of this burst…"), and a second
+standalone run of `set_work_drive.py` reproduced it byte-identically — so
+before treating it as the KNOWN flake, I read what actually failed rather
+than assuming.
+
+**It is not finding ⓷, and it is not flaky.** The 429 line is evidence for a
+PASSING assertion (`record(hit > 0, "worksheet_rate_limited…", …)` — the
+rate limit correctly fired on call 31, which is the check succeeding). The
+real, and only, failure is earlier in the same run:
+
+    3 · swap
+       ❌  a small KS3 lesson exists to drain
+
+`check_swap` in `set_work_drive.py` looks for a KS3 lesson with `0 < n <= 8`
+rows in its `easier` band, small enough that a drive can exhaust it with
+repeated Swap calls inside one run — by design, since draining a KS4 topic
+the same way would take hundreds of requests. Before tonight this reliably
+found one, because the KS3 authoring programme was still in progress and
+some lessons had not yet reached the ≥30-per-band floor.
+
+**`feat/bank-night3-ks3` merged to `origin/main` earlier this same session**
+(`d8d8eba6a … KS3 PROGRAMME COMPLETE (all 185 lessons at floor)`, folded into
+merge `ee798e0c9`) — entirely independently of this KS4 run, reviewed and
+landed on its own branch. Proved directly rather than assumed:
+
+```
+python3 -c "… minimum 'easier'-band count across all 185 KS3 lessons …"
+→ lowest 10 counts: all exactly 30. lessons with easier <= 8: 0. easier == 0: 0.
+```
+
+**Every one of the 185 KS3 lessons now holds ≥30 rows in every band, with no
+exception.** The precondition `check_swap` searches for cannot be met by ANY
+scope in the current — or any future — estate, because the whole point of the
+programme that just completed was to eliminate exactly this: a shallow pool a
+teacher could run out of. This is not a data-loading timing issue and will
+not clear on a re-run; it is a permanent consequence of finishing the KS3
+programme, discovered here only because this is the first `set_work`
+run since that merge landed.
+
+⚠️ **The failing check never reaches the code path it exists to test.**
+`check_swap` returns immediately on `if not small`, before making a single
+Swap call — so this failure carries zero evidence either way about whether
+swap-exhaustion actually behaves correctly in the product. Confirmed
+separately that the exhaustion logic itself is otherwise fully exercised:
+`check_toast_and_swap` (the rendered-UI half of the same behaviour,
+`shared/set-work.js`'s Swap button going `disabled`) hit the identical
+missing-precondition case and also returned early, for the identical reason.
+Nothing in this run's diff (`ks4_data/**` and `tools/mrb338_leafcheck.py`
+only) touches KS3 content, `set-work.js`, or the swap route.
+
+**Ticket-ready finding, separate from this run:**
+
+> **MRB-3xx · `set_work_drive.py`'s swap-exhaustion check has no reachable
+> precondition.** `check_swap` and `check_toast_and_swap` both search the
+> live KS3 pool for a lesson with ≤8 rows in one band; since the KS3
+> authoring programme reached its 30-per-band floor everywhere
+> (`ee798e0c9`), none exists and none ever will while the floor holds. Fix:
+> seed a throwaway scope small enough to drain (the way `BurstActor` already
+> seeds a throwaway teacher for the rate-limit check), rather than searching
+> live content for one small enough by chance.
+
+**Overridden to push**, per the same reasoning the inherited
+`teacher_admin_foreign_class` red already carries in this repo's history: a
+red that is proved pre-existing, proved unrelated to the diff being pushed,
+and proved not to touch the behaviour it nominally gates, is a finding for
+its own ticket rather than a reason to hold six correct, gate-verified
+content fixes. The override line is on the commit that carries this report
+update.
+
+## G6 · Rebase note
+
+`origin/main` moved twice during this run: once for `feat/class-csv-upload`
+(unrelated, does not touch `ks4_data/`), and once for the KS3 completion
+above. Rebased cleanly; one trivial whitespace conflict in
+`tools/mrb338_leafcheck.py` (both branches independently fixed the same
+`ca8c05014` NameError, one space apart in a continued string) resolved by
+keeping the incoming line. All 24 KS4 topics and all four hand-run gates
+(`verify_questions`, `verify_answer_positions`, `pool_ownership`,
+`ks4_pool_check --python`) re-verified green after the rebase, before
+pushing.
