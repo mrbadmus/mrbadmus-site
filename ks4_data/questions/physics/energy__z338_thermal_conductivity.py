@@ -1009,4 +1009,467 @@ QUESTIONS = [
                "steel, so hot spots from the burner even out across a copper "
                "base much faster.",
     },
+
+    # ══ standard · s19–s26 ═══════════════════════════════════════════════
+    # Applications the leaf's own docstring list does not name — the cavity
+    # itself, pipe lagging, the loft/wall priority, two RP2 criticisms, the
+    # window frame's thermal bridge, a three-way ranking and the oven glove.
+    {
+        "id": "ks4-thermal-conductivity-s19",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why filling a house's cavity wall with foam works "
+                "better than simply leaving the cavity as an air gap of "
+                "the same width.",
+        "options": [
+            "An unfilled cavity is wide enough for the air inside it to "
+            "circulate by convection, which foam prevents by breaking "
+            "the space into many small pockets",
+            "An unfilled cavity contains no air of any kind inside it, "
+            "so filling it with foam is what introduces the very first "
+            "conducting material into the gap between the two walls",
+            "Foam is a better conductor than air, so it carries energy "
+            "across the cavity and out through the outer wall more "
+            "efficiently than air alone does",
+            "An unfilled cavity lets rainwater collect inside it, and "
+            "foam is fitted only to keep the bricks on either side dry "
+            "rather than to insulate them",
+        ],
+        "correct_index": 0,
+        "why": "A cavity is far wider than a window's sealed gap, so "
+               "plain air inside it can circulate; foam removes that "
+               "convection route by holding the air still in small "
+               "cells.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-s20",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain the purpose of wrapping foam lagging around a "
+                "hot water pipe that runs through an unheated loft.",
+        "options": [
+            "The lagging heats the pipe further, adding its own energy "
+            "to the water flowing through it",
+            "The lagging traps a layer of poorly conducting material "
+            "around the pipe, slowing the rate at which the water "
+            "inside loses energy to the cold loft",
+            "The lagging reflects the water's own energy back down the "
+            "length of the pipe towards the boiler, before it ever has "
+            "a chance to escape upwards into the cold loft above",
+            "The lagging raises the pipe's own thermal conductivity, so "
+            "energy is carried away from the loft faster than it would "
+            "be otherwise",
+        ],
+        "correct_index": 1,
+        "why": "Lagging works exactly like any other insulation: it adds "
+               "a poorly conducting layer around the pipe, cutting the "
+               "rate of energy loss to the cold air of the loft.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-s21",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "In an older house with little insulation anywhere, "
+                "explain why adding loft insulation is usually "
+                "recommended before adding wall insulation.",
+        "options": [
+            "Loft insulation is cheaper to manufacture than wall "
+            "insulation, whatever the two materials are actually made "
+            "from",
+            "Walls always conduct energy more slowly than a loft does "
+            "in every house, so insulating the walls first would "
+            "achieve almost nothing worth the cost of doing it",
+            "Warm air inside the house rises towards the loft, so an "
+            "uninsulated loft typically accounts for a larger share of "
+            "the energy lost through the building's fabric",
+            "Wall cavities cannot be insulated at all in a house of "
+            "that age, so the loft is the only surface insulation can "
+            "ever be fitted to",
+        ],
+        "correct_index": 2,
+        "why": "Because warm air rises, the loft is where the "
+               "temperature difference driving conduction is greatest, "
+               "so improving it first usually saves the most energy for "
+               "the cost.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-s22",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "In the required practical on insulators, explain why the "
+                "water in each beaker should be stirred immediately "
+                "before every temperature reading is taken.",
+        "options": [
+            "Stirring adds a small amount of energy to the water, which "
+            "keeps every beaker's reading consistent with the others",
+            "Stirring resets the thermometer to the correct starting "
+            "value before the next measurement of that beaker is taken",
+            "Stirring temporarily removes the effect of the insulating "
+            "wrapping for the moment the reading is taken, which is "
+            "what makes the comparison between the different beakers "
+            "fair",
+            "Without stirring, the water nearest the wrapping may have "
+            "cooled more than the water at the centre, so the "
+            "thermometer could read a value that is not representative",
+        ],
+        "correct_index": 3,
+        "why": "A beaker of water is not all at one temperature as it "
+               "cools; stirring mixes it so that a single thermometer "
+               "reading represents the whole volume fairly.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-s23",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why a gap left in the insulating wrapping of one "
+                "beaker, while every other beaker is wrapped without "
+                "any gaps, would make the investigation's results "
+                "unreliable.",
+        "options": [
+            "The gap gives that beaker's water an extra, faster path "
+            "to lose energy, so its result reflects the gap as much as "
+            "it reflects the material under test",
+            "A gap in the wrapping has no effect at all on the rate of "
+            "cooling, since the material either side of it still does "
+            "the same job",
+            "The gap allows that beaker's water to warm up rather than "
+            "cool down, which would give a false reading in the "
+            "opposite direction",
+            "A gap changes only the beaker's volume of water, which is "
+            "the sole variable that a gap left in the wrapping material "
+            "could ever possibly go on to affect",
+        ],
+        "correct_index": 0,
+        "why": "An unwrapped patch is a shortcut for energy to leave "
+               "through, so that beaker is no longer being tested under "
+               "the same conditions as the others.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-s24",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Aluminium window frames are often fitted with a plastic "
+                "strip that splits the metal into an inner and an "
+                "outer section. Explain why this improves the frame's "
+                "insulation.",
+        "options": [
+            "The plastic strip reflects thermal radiation away from the "
+            "surface of the window, which a continuous, unbroken metal "
+            "frame would otherwise absorb into itself and pass on",
+            "Without the break, the metal frame would form a "
+            "continuous high-conductivity path straight through the "
+            "window, carrying energy across far faster than the "
+            "glazing beside it",
+            "The plastic strip makes the whole frame heavier, and a "
+            "heavier frame always conducts energy more slowly than a "
+            "lighter one",
+            "The plastic strip stops the two halves of the frame "
+            "touching each other, which would otherwise generate an "
+            "electric current between them",
+        ],
+        "correct_index": 1,
+        "why": "Metal conducts far better than the surrounding "
+               "materials, so an unbroken metal frame would bypass the "
+               "insulating glazing entirely — the plastic strip removes "
+               "that shortcut.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-s25",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Wood has a thermal conductivity of about 0.15 W/m K, "
+                "glass about 1.0 W/m K and steel about 50 W/m K. For "
+                "three walls of the same thickness, area and "
+                "temperature difference, rank the three materials from "
+                "the slowest rate of energy transfer to the fastest.",
+        "options": [
+            "Steel, then glass, then wood",
+            "Glass, then wood, then steel",
+            "Wood, then glass, then steel",
+            "Wood, then steel, then glass",
+        ],
+        "correct_index": 2,
+        "why": "A larger thermal conductivity gives a faster rate for "
+               "the same thickness, area and temperature difference, so "
+               "the order follows 0.15, then 1.0, then 50 W/m K.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-s26",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "standard",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Explain why an oven glove is made from a thick, quilted "
+                "fabric holding several layers of trapped air rather "
+                "than a single layer of thin cotton.",
+        "options": [
+            "A single layer of cotton would conduct better the thinner "
+            "it was made, so thickness alone is what a quilted design "
+            "adds to it",
+            "Quilting increases the total mass of fabric packed into "
+            "the glove, and a heavier glove always insulates a hand "
+            "better than a lighter one does, whatever it is made from",
+            "A single layer of thin cotton reflects heat from the oven "
+            "back towards the food, whereas a quilted glove absorbs it "
+            "instead",
+            "Each quilted layer traps its own pocket of still air, and "
+            "several such pockets in series slow the transfer far more "
+            "than one thin layer of fabric alone could",
+        ],
+        "correct_index": 3,
+        "why": "Quilting multiplies the number of poorly conducting air "
+               "pockets between the oven and the hand, which is what a "
+               "single thin layer of fabric cannot provide on its own.",
+    },
+
+    # ══ harder · h19–h26 ═════════════════════════════════════════════════
+    # A three-way ratio calculation, the thermal bridge made a synthesis
+    # question, a fresh RP2 evaluation, lagging and payback arithmetic, an
+    # unequal-rate pane pair, a cryogenic strut, and the k/d claim itself.
+    {
+        "id": "ks4-thermal-conductivity-h19",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Three walls are each tested under the same area and "
+                "temperature difference. Wall P is 0.050 m thick with "
+                "conductivity 0.20 W/m K. Wall Q is 0.10 m thick with "
+                "conductivity 0.80 W/m K. Wall R is 0.20 m thick with "
+                "conductivity 1.2 W/m K. Determine which wall is the "
+                "best insulator.",
+        "options": [
+            "Wall P",
+            "Wall Q",
+            "Wall R",
+            "All three transfer energy at the same rate",
+        ],
+        "correct_index": 0,
+        "why": "Dividing conductivity by thickness: P gives "
+               "0.20 / 0.050 = 4.0, Q gives 0.80 / 0.10 = 8.0, and R "
+               "gives 1.2 / 0.20 = 6.0 — P has the smallest value, so "
+               "it is the best insulator.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-h20",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A house has thick, high-quality insulation in its walls "
+                "and roof but retains its original single-piece metal "
+                "window frames. Evaluate the claim that the frames "
+                "could still be responsible for a significant share of "
+                "the house's total heat loss.",
+        "options": [
+            "The claim is unsound, because window frames make up too "
+            "small an area of a house's surface to matter, whatever "
+            "they happen to be made from",
+            "The claim is sound: a continuous metal frame conducts far "
+            "faster than the surrounding insulated wall, so a "
+            "disproportionate share of the loss can concentrate there",
+            "The claim is unsound, because metal frames are always "
+            "fitted with double glazing, which removes any advantage "
+            "the metal's conductivity would otherwise give it",
+            "The claim is sound, but only because metal frames rust "
+            "over time, and it is the rust rather than the metal "
+            "itself that conducts so well",
+        ],
+        "correct_index": 1,
+        "why": "Once the rest of the house is well insulated, a "
+               "remaining low-resistance path such as an unbroken metal "
+               "frame becomes proportionally far more significant to "
+               "the total loss.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-h21",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A pupil tests four insulating materials with a single "
+                "beaker of each, on a bench beside a door that is "
+                "opened and closed throughout the lesson. Evaluate the "
+                "reliability of the conclusion drawn from this "
+                "investigation.",
+        "options": [
+            "It is reliable, because exactly the same door was opened "
+            "and closed for every beaker in turn, so any draught it "
+            "created must have affected all four of them equally",
+            "It is reliable, provided the pupil recorded the exact "
+            "time at which the door was opened during the experiment",
+            "It is not reliable: a single reading per material gives "
+            "no way to check for a fluke result, and a passing draught "
+            "may not have reached every beaker equally",
+            "It is not reliable, because a draught only ever affects "
+            "the beaker nearest the door, so that beaker alone should "
+            "simply be excluded from the results",
+        ],
+        "correct_index": 2,
+        "why": "One result per material cannot show whether it was "
+               "typical, and an intermittent draught is exactly the "
+               "kind of uncontrolled variable that could affect beakers "
+               "unevenly.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-h22",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A bare copper pipe has a conductivity-to-thickness "
+                "ratio of 25 000 W/m² K. Once lagged, the extra foam "
+                "layer's own ratio is only 2.0 W/m² K, and the foam "
+                "now dominates the rate of loss. Estimate roughly how "
+                "many times slower the pipe loses energy once lagged.",
+        "options": [
+            "About 12 times slower",
+            "About 100 times slower",
+            "About 2000 times slower",
+            "About 12 000 times slower",
+        ],
+        "correct_index": 3,
+        "why": "Dividing the bare pipe's ratio by the lagged rate: "
+               "25 000 ÷ 2.0 ≈ 12 500, so the lagged pipe loses energy "
+               "at roughly a twelve-thousandth of its former rate.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-h23",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A homeowner is told that upgrading their loft "
+                "insulation from 150 mm to 270 mm will cost £180 and "
+                "save £15 a year on heating, while the original "
+                "installation of the first 150 mm cost £120 and saves "
+                "£90 a year. Evaluate the claim that the second "
+                "upgrade is as good a financial decision as the first "
+                "one was.",
+        "options": [
+            "The claim is unsound: the first 150 mm pays for itself in "
+            "under two years, while the extra 120 mm takes twelve "
+            "years to pay back, because most of the benefit was "
+            "already captured",
+            "The claim is sound, because both upgrades add the very same "
+            "insulating material to the very same loft, and so must "
+            "save the homeowner money at exactly the same rate for "
+            "every extra millimetre installed",
+            "The claim is unsound, because adding insulation beyond "
+            "150 mm provides no further reduction in the rate of "
+            "energy loss at all",
+            "The claim is sound, because £180 is close enough to £120 "
+            "that the two upgrades cost roughly the same amount to "
+            "install",
+        ],
+        "correct_index": 0,
+        "why": "The first layer removes most of the loss, so extra "
+               "thickness beyond it saves proportionally little more — "
+               "the same diminishing-returns pattern that makes the "
+               "payback times so different.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-h24",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "Pane C has an area of 2.0 m2 and is 4.0 mm thick. Pane "
+                "D has an area of 2.0 m2 and is 6.0 mm thick, of the "
+                "same glass and with the same temperature difference "
+                "across it. Determine which pane transfers energy "
+                "faster, and by roughly what factor.",
+        "options": [
+            "Pane D, by a factor of about 1.5",
+            "Pane C, by a factor of about 1.5",
+            "Pane C, by a factor of about 6.0",
+            "The two panes transfer energy at the same rate",
+        ],
+        "correct_index": 1,
+        "why": "With area and conductivity equal, rate depends only on "
+               "thickness: the thinner pane C loses energy "
+               "6.0 ÷ 4.0 = 1.5 times faster than pane D.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-h25",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "The inner vessel of a laboratory cryogenic dewar is "
+                "held away from the outer vessel by a small number of "
+                "thin support struts crossing an evacuated gap. "
+                "Explain why the struts are made as long and as narrow "
+                "as the design allows.",
+        "options": [
+            "A long, narrow strut is simply easier and considerably "
+            "cheaper to manufacture accurately to a high tolerance than "
+            "a short, wide one would ever be, and that alone is the "
+            "real reason for the design",
+            "A long, narrow strut vibrates less than a short, wide one, "
+            "which keeps the inner vessel from shaking loose over time",
+            "A long, narrow strut gives the smallest possible area and "
+            "the largest possible thickness for the one remaining "
+            "solid path across the vacuum, minimising the conduction "
+            "it allows",
+            "A long, narrow strut reflects more of the escaping "
+            "thermal radiation back into the inner vessel than a "
+            "short, wide one would",
+        ],
+        "correct_index": 2,
+        "why": "With the surrounding vacuum stopping conduction and "
+               "convection everywhere else, the struts are the only "
+               "solid bridge left, so their geometry is chosen to keep "
+               "area divided by length as small as the design allows.",
+    },
+    {
+        "id": "ks4-thermal-conductivity-h26",
+        "subtopic_slug": "thermal-conductivity",
+        "band": "harder",
+        "tier": "foundation",
+        "triple_only": True,
+        "text": "A manufacturer claims that, for one material at a fixed "
+                "area and temperature difference, doubling its "
+                "thickness always halves the rate of energy transfer "
+                "through it. Evaluate this claim using the "
+                "relationship between conductivity, thickness, area "
+                "and rate.",
+        "options": [
+            "The claim is unsound, because rate depends only on the "
+            "area of the material and on the temperature difference "
+            "across it, and thickness itself makes no contribution to "
+            "that rate at all",
+            "The claim is unsound, because doubling the thickness of a "
+            "real material in practice always removes more than half "
+            "the rate, never exactly half",
+            "The claim is sound only for metals, because non-metals do "
+            "not obey the same relationship between thickness and "
+            "rate of transfer",
+            "The claim is sound for a single material under those "
+            "fixed conditions, because rate is proportional to "
+            "conductivity and area divided by thickness, so doubling "
+            "thickness alone does halve it",
+        ],
+        "correct_index": 3,
+        "why": "Holding conductivity, area and temperature difference "
+               "fixed, rate is proportional to one over the thickness, "
+               "so doubling the SAME material's own thickness does "
+               "halve it — the diminishing returns seen elsewhere in "
+               "this leaf come from adding a new layer on top of an "
+               "existing one, a different scenario.",
+    },
 ]
