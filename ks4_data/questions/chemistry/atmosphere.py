@@ -634,7 +634,8 @@ QUESTIONS = [
             "dioxide as it is made",
             "Cement absorbs carbon dioxide while it sets and releases it "
             "again when it dries out",
-            "Cement is made from crude oil, which contains CO2",
+            "Cement is made from crude oil, which contains dissolved carbon "
+            "dioxide within it",
             "Calcium carbonate is decomposed to calcium oxide, releasing CO2",
         ],
         "correct_index": 3,
@@ -967,8 +968,8 @@ QUESTIONS = [
         "options": [
             "Fuel B produces more carbon monoxide, because removing sulfur "
             "leaves it short of oxygen",
-            "The two produce identical pollutants, as fuel sulfur cannot "
-            "burn",
+            "The two produce identical pollutants, because the sulfur in a "
+            "fuel does not burn at all",
             "Fuel A produces more nitrogen oxides, because sulfur raises the "
             "temperature of burning",
             "Fuel A produces far more sulfur dioxide, so contributes more to "
