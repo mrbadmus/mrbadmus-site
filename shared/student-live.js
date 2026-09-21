@@ -1960,8 +1960,37 @@
       withDbDeadline(WARM_MS, sb.from("assignments")
         .select("id, academic_week").eq("class_id", klass.id)
         .is("deleted_at", null)),
-      withDbDeadline(WARM_MS, sb.from("academic_years")
-        .select("id, name, start_date, end_date").is("deleted_at", null)),
+      /* ⊕ Perf, 21 Sep 2026 — THE YEAR ROWS COME FROM THE SHARED READ.
+
+         `class-entry.js` already reads `academic_years` on every page load to
+         year-scope the nav entry, and its `academicYears()` carries BOTH an
+         in-flight dedupe and a 30-minute sessionStorage cache. This arm was
+         asking the same table for the same four columns a second time, in the
+         same wave — one whole round trip inside the pre-paint path, for an
+         answer the page had already been given.
+
+         ⚠️ NULL MEANS "I DO NOT KNOW", NEVER "THERE ARE NO YEARS". The shared
+         read resolves null when the viewer is signed out or the request
+         failed, and reading that as an empty list would drop the year filter
+         — which is how a Year 11 gets shown the class they left in July
+         (MRB-261). So null, and an empty list, both fall back to this page's
+         own query. That is the same fallback `student-data.js`'s `yearRows()`
+         makes, in the same words, for the same reason.
+
+         ⚠️ THE `{ data, error }` SHAPE IS PRESERVED. The resolution below
+         reads both fields (`if (!yrs.error)`), so the cached path answers
+         `error: null` rather than a bare array. */
+      (async function () {
+        var mod = window.MRBClassEntry;
+        if (mod && mod.academicYears) {
+          try {
+            var shared = await mod.academicYears();
+            if (shared && shared.length) { return { data: shared, error: null }; }
+          } catch (e) { /* fall through to our own read */ }
+        }
+        return withDbDeadline(WARM_MS, sb.from("academic_years")
+          .select("id, name, start_date, end_date").is("deleted_at", null));
+      })(),
       /* ⊕ MRB-306 WS-3 — unread reminders, joined to THIS wave rather than
          added after it. It takes only `klass.id`, already an argument here,
          so it has no dependency on the five above and costs no extra round

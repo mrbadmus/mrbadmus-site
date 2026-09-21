@@ -3345,6 +3345,17 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "<meta charset=\"utf-8\">\n"
         "<meta name=\"viewport\" content=\"width=device-width, "
         "initial-scale=1\">\n"
+        # ⊕ Perf, 21 Sep 2026 — OPEN THE THREE CONNECTIONS EARLY.
+        # The runtime reaches the Supabase project, the jsDelivr CDN
+        # (the Supabase SDK) and the Render backend only after its own
+        # JS has parsed, so on school wifi the DNS + TLS handshake for
+        # each one lands serially inside the pre-paint path. These three
+        # tags start the handshakes while the HTML is still parsing.
+        # They are hints, not fetches: a browser that ignores them, or a
+        # page that never reaches an origin, pays nothing.
+        "<link rel=\"preconnect\" href=\"https://urklkrwevjtlfbwnipjn.supabase.co\" crossorigin>\n"
+        "<link rel=\"preconnect\" href=\"https://cdn.jsdelivr.net\" crossorigin>\n"
+        "<link rel=\"dns-prefetch\" href=\"https://mrbadmus-backend.onrender.com\">\n"
         "<title>%s</title>\n"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
