@@ -830,10 +830,72 @@ def fixture(key, pw, srk):
                  len(base_assign), len(roster), len(left)))
 
 
+ROWS_NOTE = """
+ROWS FETCHED PER SCREEN, on the basis round two's §4 used: the three reads
+`loadClassMatrices` makes (members + assignments + submissions) plus, after
+this ticket, one rollup row per class whose submissions were NOT fetched.
+
+⚠️ It counts ROWS, not requests or bytes, and it is measured against the
+realistic TEST teacher rather than projected. The December projection in the
+report is arithmetic on top of this, and is labelled as such.
+"""
+
+
+def rows_per_screen(key, pw):
+    print(ROWS_NOTE)
+    email = "mide.badmus@test-rainford.local"
+    token = sign_in(email, key, pw)["access_token"]
+    ids = [r["id"] for r in rest("classes?select=id&deleted_at=is.null", key,
+                                 token)]
+    packs, nmem, nasg, nsub = load_class_matrices(key, token, ids)
+    per_class = {}
+    for cid, p in sorted(packs.items()):
+        per_class[cid] = (len(p["members"]), len(p["assignments"]),
+                          len(p["submissions"]))
+    print("  %s sees %d classes" % (email, len(packs)))
+    for cid, (m, a, s) in per_class.items():
+        print("    %s  %2d members · %2d assignments · %2d submissions"
+              % (cid[-4:], m, a, s))
+    total_m = sum(v[0] for v in per_class.values())
+    total_a = sum(v[1] for v in per_class.values())
+    total_s = sum(v[2] for v in per_class.values())
+    before = total_m + total_a + total_s
+    busiest = max(per_class, key=lambda c: per_class[c][2])
+    quietest = min(per_class, key=lambda c: per_class[c][2])
+
+    screens = [
+        ("classes.html", []),
+        ("digest.html", []),
+        ("insights.html", []),
+        ("class-detail.html ?class=%s (busiest)" % busiest[-4:], [busiest]),
+        ("class-detail.html ?class=%s (quietest)" % quietest[-4:], [quietest]),
+        ("assignment.html  (one paper of %s)" % busiest[-4:], [busiest]),
+        ("student-detail.html (%s)" % busiest[-4:], [busiest]),
+        ("class-detail.html with NO ?class=", None),
+    ]
+    print("\n  %-44s %8s %8s %8s" % ("screen", "before", "after", "saving"))
+    for name, scope in screens:
+        if scope is None:
+            after = before
+            rollup = 0
+        else:
+            subs = sum(per_class[c][2] for c in scope)
+            rollup = len([c for c in per_class if c not in scope])
+            after = total_m + total_a + subs + rollup
+        print("  %-44s %8d %8d %8s%s"
+              % (name, before, after, before - after,
+                 "" if rollup == 0 else "   (%d rollup rows)" % rollup))
+    print("\n  before = %d (%d members + %d assignments + %d submissions)"
+          % (before, total_m, total_a, total_s))
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--fixture", action="store_true",
                     help="build, prove and tear down the adversarial fixture")
+    ap.add_argument("--rows", action="store_true",
+                    help="tabulate rows fetched per screen, before and after")
     a = ap.parse_args()
 
     pw = os.environ.get("MRB_TEST_TEACHER_PASSWORD")
@@ -844,6 +906,9 @@ def main():
     print("credential ref, proven from the key payload : %s" % ref)
     print("=> TEST. Every measured read below is made with the ANON key as a "
           "signed-in user, under real RLS.\n")
+
+    if a.rows:
+        return rows_per_screen(key, pw)
 
     if a.fixture:
         return 1 if fixture(key, pw, srk) else 0

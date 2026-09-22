@@ -828,6 +828,149 @@
     });
   }
 
+  /* ⊕ MRB-348 round three — THE MARKED TOTALS, IN ONE PLACE.
+
+     Everything below the columns is arithmetic ON the columns, and there are
+     now TWO ways to arrive at those columns: counted from the submissions
+     (`buildMatrix`, the class in focus) or read off the database aggregate
+     (`matrixFromRollup`, every other class). The sums themselves must not
+     fork with them — a digest that adds up differently depending on which
+     screen you came from is the exact failure this dashboard's "one matrix"
+     rule exists to prevent. So they are computed here, once, from whichever
+     columns arrived. */
+  function finishMatrix(o) {
+    var markedSub = 0, markedOnTime = 0, markedLate = 0,
+        markedLateUnknown = 0, markedAsked = 0;
+    o.markedIdx.forEach(function (i) {
+      markedSub += o.colSub[i];
+      markedOnTime += o.colOnTime[i];
+      markedLate += o.colLate[i];
+      markedLateUnknown += o.colLateUnknown[i];
+      markedAsked += o.colAsked[i];
+    });
+    var latenessKnown = markedOnTime + markedLate;
+    var meansOfMarked = o.markedIdx.map(function (i) { return o.colMean[i]; })
+                                   .filter(function (v) { return v != null; });
+    o.markedSub = markedSub;
+    o.markedAsked = markedAsked;
+    o.markedOnTime = markedOnTime;
+    o.markedLate = markedLate;
+    o.markedLateUnknown = markedLateUnknown;
+    // Out of the submissions whose lateness is KNOWN, not out of all of
+    // them. Dividing by `markedSub` would let every un-stamped historic row
+    // drag the on-time rate down as though it were late, which is the same
+    // unsupported claim as the old `=== true` in the opposite direction.
+    // `markedLateUnknown` is beside it so the gap can be shown rather than
+    // absorbed.
+    o.markedPct = latenessKnown
+      ? Math.round((markedOnTime / latenessKnown) * 100) : null;
+    // Design's README pins this as the mean of the marked COLUMN MEANS
+    // rather than a pooled sum/sum, so that the digest's "mean of N class
+    // means" is a mean of things that are themselves means. Kept, so the
+    // chain from cell to digest stays the one Design documented.
+    o.classMean = meansOfMarked.length
+      ? Math.round(meansOfMarked.reduce(function (a, v) { return a + v; }, 0)
+                   / meansOfMarked.length)
+      : null;
+    return o;
+  }
+
+  /* ⊕ MRB-348 round three — THE SAME MATRIX, WITHOUT THE SUBMISSIONS.
+
+     ⛔ WHAT THIS IS FOR. `loadClassMatrices` used to fetch every submission
+     of every assignment of every class on all six screens — about six
+     thousand rows at a December load, to draw cards that show six numbers
+     each. The cost is a PRODUCT (pupils x papers); what the screens read off
+     it is two SUMS (a number per paper, a number per pupil).
+     `public.teacher_class_rollup` returns the two sums and this builds the
+     matrix out of them, for every class EXCEPT the one the screen is focused
+     on — which still reads its submissions in full, because a grid needs
+     cells.
+
+     ⚠️ IT IS PARTIAL, AND IT SAYS SO. `partial: true` is on the matrix and
+     on every row. There are NO per-cell values here and there cannot be: a
+     row's `scores` / `max` / `pct` / `late` / `stamp` / `status` / `subId` /
+     `submitted` are EMPTY ARRAYS, not arrays of nulls, so that nothing can
+     index one and read an invented "not submitted" out of it. Everything a
+     roster row actually needs — the average, whether they are in this week,
+     when they were last active, and whether they are missing a marked paper
+     — is ANSWERED DIRECTLY by the aggregate and carried on the row.
+
+     ⚠️ WHICH MEANS A SCREEN THAT DRAWS CELLS MUST NOT BE GIVEN ONE. The
+     class, marking and student screens all draw per-cell values, and `base()`
+     keeps their class on the full read for exactly that reason. If you add a
+     screen that needs cells, widen the scope in `base()` — do not add fake
+     cells here.
+
+     The aggregate is proven equal to `buildMatrix` value by value on TEST
+     (`mrb348_teacher_rollup_proof.py`, 1008 of 1008 across three readers,
+     plus an 87-value adversarial fixture agreeing by hand, in JS and in SQL)
+     and the RENDERED output of all six pages is diffed by
+     `mrb348_teacher_equiv.py`. */
+  function matrixFromRollup(pack, papers, roll) {
+    var cols = papers.length;
+    var byPaper = {};
+    (roll.papers || []).forEach(function (p) { byPaper[p.assignment_id] = p; });
+    var byPupil = {};
+    (roll.students || []).forEach(function (s) { byPupil[s.student_id] = s; });
+
+    var colSub = [], colMean = [], colOnTime = [], colLate = [],
+        colLateUnknown = [], colMarkedN = [], colAsked = [];
+    papers.forEach(function (p) {
+      var r = byPaper[p.id] || null;
+      colSub.push(r ? r.sub : 0);
+      colOnTime.push(r ? r.on_time : 0);
+      colLate.push(r ? r.late : 0);
+      colLateUnknown.push(r ? r.unknown : 0);
+      colMarkedN.push(r ? r.marked_n : 0);
+      colMean.push(r ? r.mean : null);
+      /* `asked` is the ACTIVE roster plus anyone off it who sat THIS paper —
+         the 24 Aug 2026 ruling that stopped a column reading "31 of 29". The
+         aggregate returns only the second half, so the roster keeps being
+         defined in exactly one place: here. */
+      colAsked.push(pack.members.length + (r ? r.off_roster : 0));
+    });
+
+    var studentAvg = {};
+    var rows = pack.members.map(function (m) {
+      var s = byPupil[m.student_id] || null;
+      studentAvg[m.student_id] = s ? s.avg : null;
+      /* ⚠️ A FRESH ARRAY EACH, not one shared empty one. Nine references to a
+         single `[]` is a single mutable object behind every pupil's every
+         column, and the one caller that ever pushed to it would corrupt the
+         whole class silently. Nine empty arrays per pupil cost nothing. */
+      return {
+        sid: m.student_id,
+        scores: [], max: [], pct: [], late: [], stamp: [],
+        stampShort: [], status: [], subId: [], submitted: [],
+        inWeek: !!(s && s.in_week),
+        // Read by buildRoster INSTEAD of walking the (absent) cell arrays.
+        lastIso: s ? s.last_at : null,
+        missingMarked: !!(s && s.missing_marked),
+        partial: true
+      };
+    });
+
+    var out = finishMatrix({
+      rows: rows,
+      cols: cols,
+      colSub: colSub,
+      colAsked: colAsked,
+      colMean: colMean,
+      colOnTime: colOnTime,
+      colLate: colLate,
+      colLateUnknown: colLateUnknown,
+      colMarkedN: colMarkedN,
+      markedIdx: papers.filter(function (p) { return p.when === "marked"; })
+                       .map(function (p) { return p.idx; }),
+      studentAvg: studentAvg,
+      partial: true,
+      byId: {}
+    });
+    rows.forEach(function (r) { out.byId[r.sid] = r; });
+    return out;
+  }
+
   function buildMatrix(pack, papers, now) {
     var idxOf = {};
     papers.forEach(function (p) { idxOf[p.id] = p.idx; });
@@ -1045,21 +1188,7 @@
       studentAvg[r.sid] = totMax > 0 ? Math.round((tot / totMax) * 100) : null;
     });
 
-    var markedSub = 0, markedOnTime = 0, markedLate = 0,
-        markedLateUnknown = 0, markedAsked = 0;
-    markedIdx.forEach(function (i) {
-      markedSub += colSub[i];
-      markedOnTime += colOnTime[i];
-      markedLate += colLate[i];
-      markedLateUnknown += colLateUnknown[i];
-      markedAsked += colAsked[i];
-    });
-    var latenessKnown = markedOnTime + markedLate;
-
-    var meansOfMarked = markedIdx.map(function (i) { return colMean[i]; })
-                                 .filter(function (v) { return v != null; });
-
-    var out = {
+    var out = finishMatrix({
       rows: rows,
       cols: cols,
       colSub: colSub,
@@ -1071,27 +1200,8 @@
       colMarkedN: colMarkedN,
       markedIdx: markedIdx,
       studentAvg: studentAvg,
-      markedSub: markedSub,
-      markedAsked: markedAsked,
-      markedOnTime: markedOnTime,
-      markedLate: markedLate,
-      markedLateUnknown: markedLateUnknown,
-      // Out of the submissions whose lateness is KNOWN, not out of all of
-      // them. Dividing by `markedSub` would let every un-stamped historic row
-      // drag the on-time rate down as though it were late, which is the same
-      // unsupported claim as the old `=== true` in the opposite direction.
-      // `markedLateUnknown` is beside it so the gap can be shown rather than
-      // absorbed.
-      markedPct: latenessKnown ? Math.round((markedOnTime / latenessKnown) * 100) : null,
-      // Design's README pins this as the mean of the marked COLUMN MEANS
-      // rather than a pooled sum/sum, so that the digest's "mean of N class
-      // means" is a mean of things that are themselves means. Kept, so the
-      // chain from cell to digest stays the one Design documented.
-      classMean: meansOfMarked.length
-        ? Math.round(meansOfMarked.reduce(function (a, v) { return a + v; }, 0) / meansOfMarked.length)
-        : null,
       byId: {}
-    };
+    });
     rows.forEach(function (r) { out.byId[r.sid] = r; });
     return out;
   }
@@ -1117,8 +1227,18 @@
     return pack.members.map(function (m) {
       var row = mx.byId[m.student_id] || null;
       var avg = mx.studentAvg[m.student_id];
+      /* ⊕ MRB-348 round three — a PARTIAL row answers both of these itself.
+         A matrix built from the database aggregate (`matrixFromRollup`) has
+         no per-cell arrays to walk, so it carries the two facts this function
+         would have derived from them. A matrix built from submissions has no
+         `partial` flag and walks the cells exactly as it always did.
+         ⚠️ The test is `row.partial`, not "are the arrays empty": a real row
+         with no submissions at all has genuinely empty-looking cells and must
+         still take the walking branch, which gives the same answer. */
       var lastIso = null;
-      if (row) {
+      if (row && row.partial) {
+        lastIso = row.lastIso || null;
+      } else if (row) {
         row.stamp.forEach(function (v) {
           if (v && (lastIso == null || v > lastIso)) { lastIso = v; }
         });
@@ -1135,9 +1255,11 @@
       var hours = lastIso != null
         ? hoursSince(lastIso, now)
         : hoursSince(m.joined_at, now);
-      var missingMarked = mx.markedIdx.some(function (i) {
-        return !(row && row.submitted[i]);
-      });
+      var missingMarked = (row && row.partial)
+        ? row.missingMarked
+        : mx.markedIdx.some(function (i) {
+            return !(row && row.submitted[i]);
+          });
       return {
         id: m.student_id,
         name: fullName(m.first_name, m.last_name),
@@ -1848,6 +1970,52 @@
      colleague's. Two independent reasons, and the leak needs both to fail. */
   var classScope = null;
 
+  /* ⊕ MRB-348 round three — WHICH SCREEN THIS PAGE LOAD IS, set by `load()`
+     before it calls `base()`, and read by `base()` to decide WHOSE
+     SUBMISSIONS it needs.
+
+     ⚠️ A PAGE LOAD IS A SCREEN. `base()` caches, and each of the six teacher
+     screens is a full document navigation with its own `load()` call, so a
+     scope decided here cannot leak from one screen to the next within a
+     session. A `reset()` clears the cache and the next `load()` sets this
+     again before `base()` runs.
+
+     ⚠️ NULL MEANS "EVERY CLASS'S SUBMISSIONS", which is what every caller
+     before this ticket got. It is the safe direction and it is the fallback
+     for anything unrecognised. */
+  var focus = null;
+
+  /* The three screens that draw a single class's CELLS — a mark in a grid, a
+     stamp on a row, the submission id feedback binds to — and the three that
+     draw only counts.
+
+     ⚠️ THE LIST IS OF SCREENS THAT NEED CELLS, NOT OF SCREENS THAT NAME A
+     CLASS. `digest` names one (its "This class" report) and is on the
+     counting side, because every figure that report draws comes off the
+     per-paper columns the aggregate returns. `insights` names one too. What
+     puts a screen on the other list is a per-(pupil, paper) value.
+
+     ⚠️ AND A SINGLE-CLASS SCREEN WITH NO `?class=` FALLS BACK TO EVERYTHING.
+     `load()` resolves the class to `CLASSES[0]` AFTER `base()` has run, so
+     the id is not knowable here; guessing it would risk fetching the wrong
+     class's cells and drawing an empty grid on a real class. Today's
+     behaviour, in the one case that cannot be narrowed safely. */
+  var CELL_SCREENS = ["class", "student", "marking"];
+  var COUNT_SCREENS = ["classes", "digest", "insights"];
+
+  function submissionScope() {
+    if (!focus || !focus.screen) { return null; }
+    if (CELL_SCREENS.indexOf(focus.screen) > -1) {
+      return focus.classId ? [focus.classId] : null;
+    }
+    /* ⚠️ BOTH LISTS ARE NAMED, AND AN UNRECOGNISED SCREEN TAKES THE FULL
+       READ. "Not on the cells list" is not the same claim as "on the counting
+       list": a seventh screen added later would inherit the narrow path by
+       silence, and the failure mode is a page drawing zeroes rather than an
+       error. Unknown means unbounded, which is only slow. */
+    return COUNT_SCREENS.indexOf(focus.screen) > -1 ? [] : null;
+  }
+
   /* Resolve it, or leave it null. Never throws: every failure — no module,
      no client, a refused read, a row that is not there — is a reason to show
      the viewer their own classes, which is the page a bare URL gives. */
@@ -1977,10 +2145,16 @@
      fetched OUTSIDE that loop — an admin viewing a class they do not teach,
      see `mergeForeignClass` below — is built exactly the same way, rather
      than a second, drifting copy of this shape. */
-  function buildClassEntry(c, pack, yearWeeks, viewing, now) {
+  function buildClassEntry(c, pack, yearWeeks, viewing, now, roll) {
     var papers = buildPapers(pack, now);
     assignPaperWeeks(papers, yearWeeks, viewing, now);
-    var mx = buildMatrix(pack, papers, now);
+    /* ⊕ MRB-348 round three — `roll` is this class's row of
+       `teacher_class_rollup`, present exactly when `base()` decided this
+       screen does not need the class's cells. Everything below this line is
+       unchanged and cannot tell the two apart: the matrix has the same shape
+       either way. */
+    var mx = roll ? matrixFromRollup(pack, papers, roll)
+                  : buildMatrix(pack, papers, now);
     decoratePapers(papers, mx);      // `sub` / `mean` / `asked`, from the matrix
     var roster = buildRoster(pack, mx, now);
 
@@ -2177,10 +2351,17 @@
        `pack.class.academic_year_id` does, and it is the same field
        `loadTeacherClasses` filters on for the ordinary path. One definition
        of "this year's classes", read off the row that owns it. */
+    /* ⊕ MRB-348 round three — WHOSE SUBMISSIONS THIS SCREEN ACTUALLY NEEDS.
+       `null` on an unrecognised caller, which is every caller's behaviour
+       before this ticket. See `submissionScope()`. */
+    var subsFor = submissionScope();
+    var matrixOpts = { submissionsFor: subsFor };
+
     var classRows, classIds, packs;
     if (classScope) {
       classIds = classScope.classIds.slice();
-      packs = classIds.length ? await TD.loadClassMatrices(classIds) : {};
+      packs = classIds.length
+        ? await TD.loadClassMatrices(classIds, matrixOpts) : {};
       classRows = [];
       classIds.forEach(function (id) {
         var pack = packs[id];
@@ -2232,7 +2413,8 @@
            answer for. `loadClassMatrices` THROWS on a class it cannot read —
            a stale id for a class the teacher has been taken off is exactly
            that — so the whole speculative call is swallowed to null. */
-        speculative = TD.loadClassMatrices(guess).catch(function () { return null; });
+        speculative = TD.loadClassMatrices(guess, matrixOpts)
+                        .catch(function () { return null; });
       }
 
       classRows = await TD.loadTeacherClasses(selectedYearId, { metrics: false });
@@ -2245,8 +2427,68 @@
         if (early && early[id]) { packs[id] = early[id]; } else { missing.push(id); }
       });
       if (missing.length) {
-        var fetched = await TD.loadClassMatrices(missing);
+        var fetched = await TD.loadClassMatrices(missing, matrixOpts);
         Object.keys(fetched).forEach(function (id) { packs[id] = fetched[id]; });
+      }
+    }
+
+    /* ⊕ MRB-348 round three — ONE CLOCK for the whole page load. `now` used
+       to be taken below, after the metrics fill; it is taken here because the
+       aggregate is SENT it. The database and the browser must agree about
+       which deadlines have passed, or a card and a column could disagree by
+       one paper on a screen drawn from both. */
+    var now = Date.now();
+
+    /* ── The aggregate, for every class this screen does not need cells of ──
+
+       ⛔ WHAT THIS REPLACES: fetching every submission of every assignment of
+       every class, on all six screens, and counting them in the browser. See
+       `matrixFromRollup`.
+
+       ⚠️ THE FALLBACK IS THE WHOLE REASON THIS CAN SHIP BEFORE THE MIGRATION
+       DOES. `teacher_class_rollup` does not exist on production until
+       `20260922231500` is applied; PostgREST answers a missing function with
+       an error, `loadClassSummaries` throws, and this catch re-reads the
+       submissions exactly as the page did yesterday. A teacher sees the same
+       screen, a little slower, and nothing breaks. It is a safety net, NOT a
+       licence to skip the migration — an estate running on the fallback is
+       paying the full cost this ticket exists to remove, silently.
+
+       ⚠️ AND A CLASS MISSING FROM THE ANSWER FALLS BACK TOO, not just a
+       thrown error. The function drops a class id it cannot read rather than
+       raising, so "no row" is a real outcome and it must not be allowed to
+       render as a class with no work. */
+    var rollups = {};
+    if (subsFor !== null) {
+      var wantRoll = classIds.filter(function (id) {
+        return subsFor.indexOf(id) === -1 && packs[id];
+      });
+      if (wantRoll.length) {
+        var windows = {};
+        wantRoll.forEach(function (id) {
+          var w = packs[id] && packs[id].week;
+          if (w) { windows[id] = { start: w.start_at, end: w.end_at }; }
+        });
+        var rollErr = null;
+        try {
+          var got = await TD.loadClassSummaries(wantRoll,
+                                                { now: now, windows: windows });
+          wantRoll.forEach(function (id) {
+            if (got && got[id]) { rollups[id] = got[id]; }
+          });
+        } catch (err) {
+          rollErr = err;
+        }
+        var absent = wantRoll.filter(function (id) { return !rollups[id]; });
+        if (absent.length) {
+          try {
+            console.warn("[teacher-live] class rollup unavailable for "
+              + absent.length + " class(es); falling back to the full "
+              + "submissions read", rollErr || "no row returned");
+          } catch (e) { /* a console that refuses is not a reason to fail */ }
+          var full = await TD.loadClassMatrices(absent, { submissionsFor: absent });
+          absent.forEach(function (id) { if (full[id]) { packs[id] = full[id]; } });
+        }
       }
     }
 
@@ -2261,7 +2503,11 @@
       // from "genuinely zero", and clearing it here would erase exactly that.
       var pack = packs[c.id];
       if (!pack) { return; }
-      var m = TD.deriveClassMetrics(pack);
+      /* ⊕ MRB-348 round three — the same five numbers, counted where the rows
+         are when this class's submissions were not fetched. The aggregate
+         returns them under the key names `deriveClassMetrics` produces, so
+         this is one line and not a second shape. */
+      var m = rollups[c.id] ? rollups[c.id].metrics : TD.deriveClassMetrics(pack);
       c.student_count = m.student_count;
       c.assignment_count = m.assignment_count;
       c.submission_count = m.submission_count;
@@ -2270,7 +2516,8 @@
       delete c.metrics_deferred;
     });
 
-    var now = Date.now();
+    // `now` is taken ONCE, above, before the aggregate is asked — the
+    // database is sent the same instant this page reasons with.
     var CLASSES = [], MATRIX = {}, ROSTER = {}, PAPERS = {}, WEEKS = {};
 
     /* ⊕ MRB-306 — ONE WEEK LIST FOR THE WHOLE PAGE, keyed per class because
@@ -2285,7 +2532,8 @@
     classRows.forEach(function (c) {
       var pack = packs[c.id];
       if (!pack) { return; }                       // cannot happen: it throws
-      var built = buildClassEntry(c, pack, yearWeeks, viewing, now);
+      var built = buildClassEntry(c, pack, yearWeeks, viewing, now,
+                                  rollups[c.id]);
       /* ⊕ MRB-328 J3 — the same marker `mergeForeignClass` sets, for the
          same reason and on the same terms: this is not the viewer's class.
          The grid does not read it; `klass.meta` on the class screen does,
@@ -2621,7 +2869,13 @@
      it is year-agnostic — so it answers both halves of the question at once:
      is this class mine, and which year is it in. */
   async function yearOfClass(classId) {
-    var packs = await window.MrBadmusTeacherData.loadClassMatrices([classId]);
+    /* ⊕ MRB-348 round three — `submissionsFor: []`. This call reads ONE
+       field, `pack.class.academic_year_id`, and the authorisation it doubles
+       as is decided in Stage A (`class_teachers` / `classes`), which the
+       scope does not touch. Fetching the class's whole submission history to
+       find out which September it belongs to was never needed. */
+    var packs = await window.MrBadmusTeacherData.loadClassMatrices(
+      [classId], { submissionsFor: [] });
     var pack = packs && packs[classId];
     return (pack && pack.class && pack.class.academic_year_id) || null;
   }
@@ -2634,6 +2888,13 @@
 
   async function load(screen, params) {
     params = params || {};
+    /* ⊕ MRB-348 round three — TELL `base()` WHICH SCREEN THIS IS, BEFORE IT
+       RUNS. It decides whose submissions to fetch off this, and it caches, so
+       it has to be set on the line before rather than passed down later.
+       ⚠️ Set on EVERY call, including the re-entry after a `reset()` in the
+       year-switch branch below: a stale focus would scope the second `base()`
+       to the first call's screen. */
+    focus = { screen: screen, classId: params.classId || null };
     var c = await base();
 
     /* ⛔ THIS USED TO THROW `not_authorised` OUTRIGHT, AND IT WAS A DEAD END.
@@ -3298,6 +3559,16 @@
                mean "show them their own", which is the page a bare URL
                gives. */
             await resolveClassScope(screenFromLocation(), q);
+
+            /* ⊕ MRB-348 round three — AND THE SCREEN, FOR THE SAME REASON:
+               `base()` is on the next line, it caches, and it decides whose
+               submissions to fetch off this. `load()` sets it too, from the
+               same two query parameters — but `load()` runs AFTER this call
+               has already built and cached the world, so setting it only
+               there would leave every page load on the unbounded read with
+               nothing saying so. That is the exact shape of a gate that
+               stops watching: still correct, silently doing nothing. */
+            focus = { screen: screenFromLocation(), classId: q.get("class") };
 
             var c = await base();
 

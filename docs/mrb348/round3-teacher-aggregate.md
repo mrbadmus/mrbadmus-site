@@ -78,6 +78,17 @@ of one locked rule that must agree for ever, on top of the JavaScript they
 must both agree with — the exact drift that function's own header warns about.
 Nothing calls it and it was never on production.
 
+### The checked-in file IS what was proven
+
+The function was applied to TEST through the Supabase connector with an
+explicit `project_id`, and the connector takes the SQL inline — so the
+executable text and the file could in principle drift, and everything below
+would then be a proof about something that is not in the repo. They do not:
+with SQL comments stripped and whitespace collapsed, the file's body and
+`pg_proc.prosrc` on TEST are the same 6,521 characters and the same md5
+`6ebd8c32b1dd96b5dd6d6ef0af31eb27`. `teacher_class_summaries` is gone from
+TEST's catalogue (`count = 0`).
+
 ### Why each predicate is what it is
 
 **Three predicates that are easy to conflate and are NOT the same** — round
