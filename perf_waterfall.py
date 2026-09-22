@@ -74,7 +74,29 @@ TEST_REF = "qeppkiswvclkkwbxmlok"
 PROD_REF = "urklkrwevjtlfbwnipjn"
 URL = "https://%s.supabase.co" % TEST_REF
 CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
-PORT = 5531
+PORT = int(os.environ.get("MRB348_PORT") or 5531)
+# ⊕ MRB-348 round three — the tree to serve. `mrbadmus_site` always, unless a
+# caller names another with $MRB348_SERVE_DIR.
+#
+# ⚠️ CHANGE $MRB348_PORT WITH IT, ALWAYS. Two trees built from the same repo
+# serve the SAME asset urls, cache-bust stamp and all — `/shared/
+# teacher-live.js?v=94834e17` names the path, and the stamp is a hash of the
+# file the CURRENT build produced. Serve both on 127.0.0.1:5531 and Chrome
+# answers the second run out of the first run's cache: the measurement is of
+# the wrong code and it looks completely normal. It fired on the first attempt
+# here, and the tell was `rpc:teacher_class_rollup` appearing in the critical
+# path of a run that was supposed to predate it. A different port is a
+# different origin and therefore a different cache.
+#
+# ⚠️ IT EXISTS SO A **BEFORE** CAN BE MEASURED WITHOUT DISTURBING THE REPO.
+# Round two left no committed BEFORE for the teacher journeys, and the way to
+# get one is to build the old files and drive them — which, done in place,
+# means a stash, a full rebuild, a measurement, a restore and another rebuild,
+# on a tree whose gate receipts bind to its content. Pointing this at a
+# hardlinked copy of `mrbadmus_site` carrying the previous commit's
+# `shared/*.js` costs nothing and cannot leave the repo half-reverted if the
+# run dies in the middle.
+SERVE_DIR = os.environ.get("MRB348_SERVE_DIR") or "mrbadmus_site"
 
 # The realistic TEST world, not the hz_* smoke fixtures. See the note in
 # `_mrb348_fixture_pw.py`: hz_s1's class holds no assignments and no
@@ -482,7 +504,7 @@ def main() -> int:
             raise SystemExit("unknown journey %r" % n)
 
     key, pw = anon_key(), password()
-    server, port = cdp.serve("mrbadmus_site", PORT)
+    server, port = cdp.serve(SERVE_DIR, PORT)
     base = "http://127.0.0.1:%d" % port
     print("perf_waterfall — TEST (%s), serving mrbadmus_site on %s"
           % (TEST_REF, base))
