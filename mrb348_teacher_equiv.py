@@ -134,6 +134,18 @@ CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 # Not 5537 — that is `mrb348_student_equiv.py`'s port, and the two harnesses
 # are run back to back on the same machine.
 PORT = 5538
+# ⊕ The tree to serve. `mrbadmus_site` unless a caller names another.
+#
+# ⚠️ IT IS **NOT** HOW THE `fallback` CAPTURE WAS TAKEN, and the difference is
+# the whole worth of that capture. The fallback — the page's behaviour when
+# `public.teacher_class_rollup` is missing, which is production between the
+# frontend push and the migration — was produced by RENAMING THE FUNCTION OUT
+# OF TEST'S CATALOGUE for the length of one drive, then renaming it back and
+# verifying the restoration from `pg_proc`. Simulating it by editing the
+# page's own copy of `loadClassSummaries` would have proved only that a
+# hand-written `throw` is caught; it would not have proved that PostgREST's
+# real answer to a missing function reaches the catch at all.
+SERVE_DIR = os.environ.get("MRB348_SERVE_DIR") or "mrbadmus_site"
 OUT = os.environ.get("MRB_SHOTS") or os.path.expanduser("~/tmp/ks3-gates")
 
 TEACHER_A = "mide.badmus@test-rainford.local"     # 5 classes / 28 / 79
@@ -419,7 +431,7 @@ def capture(tag, pw):
     observe the same composed, warm world.
     """
     key = anon_key()
-    server, port = cdp.serve("mrbadmus_site", PORT)
+    server, port = cdp.serve(SERVE_DIR, PORT)
     base = "http://127.0.0.1:%d" % port
     snaps, who = {}, None
     try:
@@ -472,11 +484,12 @@ def capture(tag, pw):
     return snaps
 
 
-def compare():
+def compare(against="new"):
     fails = []
     a = json.load(open(os.path.join(OUT, "mrb348_teacher_old.json")))
-    b = json.load(open(os.path.join(OUT, "mrb348_teacher_new.json")))
-    print("\n  comparing OLD (before MRB-348 round three) with NEW (after)\n")
+    b = json.load(open(os.path.join(OUT, "mrb348_teacher_%s.json" % against)))
+    print("\n  comparing OLD (before MRB-348 round three) with %s\n"
+          % against.upper())
     for c in CASES:
         k = c["key"]
         oldc, newc = a.get(k, {}), b.get(k, {})
@@ -537,8 +550,10 @@ def compare():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--capture", choices=["old", "new"])
+    ap.add_argument("--capture", choices=["old", "new", "fallback"])
     ap.add_argument("--compare", action="store_true")
+    ap.add_argument("--against", default="new", choices=["new", "fallback"],
+                    help="which capture to hold OLD against (default: new)")
     a = ap.parse_args()
     if a.capture:
         pw = os.environ.get("MRB_TEST_TEACHER_PASSWORD")
@@ -548,7 +563,7 @@ def main():
         capture(a.capture, pw)
         return 0
     if a.compare:
-        return compare()
+        return compare(a.against)
     ap.print_help()
     return 2
 
