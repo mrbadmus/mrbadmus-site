@@ -1872,6 +1872,46 @@ GATES = [
              "env-switched drive here is: a push must not depend on the "
              "network and must never write to a shared project by "
              "accident."),
+
+    # ── ⊕ MRB-348 round three · two implementations of one locked rule ──
+
+    dict(name="teacher_rollup_equal",
+         cmd=["python3", "mrb348_teacher_rollup_proof.py"],
+         speed="slow",
+         watches=["mrb348_teacher_rollup_proof.py",
+                  "supabase/migrations/"
+                  "20260922231500_mrb348_teacher_class_rollup.sql",
+                  "shared/teacher-data.js", "shared/teacher-live.js",
+                  "shared/config.js"],
+         needs="mrb348_teacher_rollup_proof.py",
+         needs_env="MRB_TEST_TEACHER_PASSWORD",
+         why="MRB-348 round three — `public.teacher_class_rollup` and the "
+             "JavaScript it replaced still agree, value for value, under "
+             "real RLS. The six teacher screens no longer count submissions "
+             "in the browser for any class but the one in focus; the "
+             "counting moved into SQL, so the MRB-38 first-attempt rule, "
+             "`cellOf`'s three predicates, its tri-state lateness, the "
+             "mean-of-marked-column-means and `Math.round`'s "
+             "half-away-from-zero each now have TWO implementations that "
+             "must agree for ever. This replays `loadClassMatrices`'s exact "
+             "PostgREST reads as three real users on TEST — including "
+             "`hz_rich`, whose HoD standing makes RLS narrow the ASSIGNMENT "
+             "set and therefore every number derived from it — asks the RPC "
+             "in the same instant with the same clock and the same "
+             "teaching-week windows, and diffs every cell. It returns 1 on a "
+             "single mismatch; 1008 of 1008 on 22 Sep 2026. "
+             "⚠️ WHAT IT DOES **NOT** WATCH, and the line is worth reading "
+             "before trusting a green: it holds the SQL against a PYTHON "
+             "TRANSLATION of the JavaScript, not against the JavaScript "
+             "itself. Rewrite `buildMatrix` without rewriting the "
+             "translation and this gate stays green on a page that has "
+             "changed — the same shape as `student_parity` not watching the "
+             "ported page. The RENDERED half is `mrb348_teacher_equiv.py`, "
+             "which drives all six real pages and is EXCLUDED below because "
+             "it is a two-tree comparison. "
+             "⚠️ Its `--fixture` mode WRITES to TEST (and tears down by a "
+             "snapshotted id list, never a predicate); the gate runs the "
+             "DEFAULT mode, which writes nothing."),
 ]
 
 
@@ -1905,6 +1945,33 @@ EXCLUDED = {
         "measurements still standing: a laptop, a nearby TEST database, a "
         "warm cache. Good for SHAPE, not a model of a Year 8 on a school "
         "Chromebook. For that, read `rum_timings`.",
+    "mrb348_teacher_equiv.py":
+        "the MRB-348 round-three equivalence drive — proves the SIX "
+        "GENERATED TEACHER SCREENS render the same visible text, the same "
+        "control set and the same ADDRESS after the `assignment_submissions` "
+        "pull becomes a database aggregate as before it, for a realistic "
+        "teacher (five classes, 28 assignments, 79 submissions) and for a "
+        "HoD whose RLS standing is not an ordinary teacher's. Excluded for "
+        "exactly the reason its student sibling below is: it is a TWO-TREE "
+        "comparison and so cannot run against one tree — it needs a "
+        "`--capture old` taken with the pre-change files BUILT and a "
+        "`--capture new` with the current ones, then `--compare`. A gate "
+        "comparing a capture against itself would be green for ever and "
+        "prove nothing. ⚠️ It exists because `teacher_behaviour` and "
+        "`teacher_reach` CANNOT see this change: they drive "
+        "`teacher_fixtures/*-fixture.html`, which have no network and never "
+        "load `shared/teacher-live.js` at all, and their own `watches` lists "
+        "above say so. ⚠️ Two of its mechanisms are load-bearing and are not "
+        "tidiable. Readiness is QUIESCENCE, not presence — a probe that only "
+        "asked whether the mount host had content was caught capturing three "
+        "different pages from one URL on one unchanged tree. And every case "
+        "carries a `require` naming the target it is about, reloaded until "
+        "that target is on screen, because a throwaway assignment from "
+        "ANOTHER gate's fixture was observed appearing on 10A mid-run and "
+        "vanishing again: it carries no `due_at`, `buildPapers` sorts nulls "
+        "first, so while it existed it took index 0 and made `?paper=1` "
+        "render the wrong paper — stably, and for 425 characters that read "
+        "exactly like a regression.",
     "mrb348_student_equiv.py":
         "the MRB-348 WS-1 equivalence drive — proves the student class page "
         "renders the same visible text, the same control set and the same "

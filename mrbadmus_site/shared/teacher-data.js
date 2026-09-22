@@ -2344,47 +2344,74 @@ window.MrBadmusTeacherData = (function () {
   }
 
   /**
-   * loadClassSummaries(classIds) — MRB-348 WS-2.
+   * loadClassSummaries(classIds, opts) — MRB-348, round three.
    *
-   * The six numbers a SUMMARY screen draws per class — active roster size,
-   * assignment count, submissions handed in, completion %, class mean and
-   * last activity — computed in SQL by `public.teacher_class_summaries`
-   * instead of by shipping every submission row to the browser and counting
-   * them here.
+   * Everything the six teacher screens draw about a class they are not
+   * FOCUSED on, computed in SQL by `public.teacher_class_rollup` instead of
+   * by shipping every submission row to the browser and counting it here.
    *
    * Returns an object keyed by class id:
    *
-   *   { [classId]: { active_member_count, assignment_count,
-   *                  submissions_completed, completion_pct,
-   *                  class_mean, last_activity_at } }
+   *   { [classId]: {
+   *       metrics:  { student_count, assignment_count, submission_count,
+   *                   completion_pct, class_mean, last_activity_at },
+   *       papers:   [ { assignment_id, sub, off_roster, on_time, late,
+   *                     unknown, marked_n, mean } ],
+   *       students: [ { student_id, in_week, last_at, avg,
+   *                     missing_marked } ]
+   *   } }
    *
-   * ⚠️ IT IS `deriveClassMetrics` + `buildMatrix().classMean`, NOT A SECOND
-   * OPINION. The function reproduces the JavaScript rule for rule — the
-   * first-attempt pick (MRB-38), the `submitted_at IS NOT NULL` predicate the
-   * card count uses (which is NOT the matrix's `colSub` predicate), the
-   * mean-of-marked-column-means, and JavaScript's own `Math.round`. Proven
-   * on TEST, 22 Sep 2026: 102 of 102 values identical across three readers
-   * and every class each could see, plus a hand-built adversarial fixture
-   * (retakes, null `attempts`, tied stamps, off-roster submitters, a
-   * `completed_at` with no `submitted_at`, ungraded rows, `max_score = 0`,
-   * an in-progress row, a soft-deleted first attempt, and an exact `.5`
-   * rounding boundary) agreeing three ways — by hand, in JS, in SQL.
-   * `docs/mrb348/teacher-aggregate.md` carries the numbers.
+   * `metrics` carries the SAME KEY NAMES `deriveClassMetrics` produces, so it
+   * is a drop-in for the `classRows.forEach` metrics-fill block in
+   * `teacher-live.js`'s `base()`.
+   *
+   * ⊕ ROUND THREE REPLACED THE WHOLE OF THIS. It used to call
+   * `teacher_class_summaries` and return six numbers per class. Six was not
+   * enough to draw a screen: all six pages share ONE compiled `renderVals`
+   * that also computes `week[0]`, the per-paper `colSub` / `colAsked` /
+   * `colMean` / `colOnTime` / `colLate` / `colLateUnknown` arrays, and every
+   * pupil's `avg`, `inWeek`, `flag` and `lastIso` — for EVERY class, on every
+   * screen. `docs/mrb348/round3-teacher-aggregate.md` has the list. The
+   * migration that adds `teacher_class_rollup` DROPS
+   * `teacher_class_summaries`, so this function must not be pointed back at
+   * it.
+   *
+   * ⚠️ THE CLOCK AND THE WEEK WINDOWS ARE SENT, NOT ASSUMED — and that is
+   * what keeps two definitions from appearing. `opts.now` is the page's own
+   * `Date.now()`, and `opts.windows` is `computeWeekWindow()`'s answer for
+   * each class, which is browser-LOCAL, anchored on the CLASS's own day, and
+   * carries MRB-330's Sunday rule. Four implementations of the teaching week
+   * already have to agree (CLAUDE.md); a fifth, in SQL, would be a fifth.
+   * Omit them and the function falls back to `now()` and to "no pupil is in
+   * this week", which is not what any live screen wants.
+   *
+   * ⚠️ IT IS `buildMatrix` AND `deriveClassMetrics`, NOT A SECOND OPINION.
+   * The function reproduces the JavaScript rule for rule — the first-attempt
+   * pick (MRB-38), `cellOf`'s three predicates, its tri-state lateness, the
+   * mean of the marked column means, and JavaScript's own `Math.round`.
+   * Proven on TEST, 22 Sep 2026, by `mrb348_teacher_rollup_proof.py`: 1008
+   * of 1008 values identical across three readers (including the HoD, whose
+   * assignment set RLS narrows to their own department) and every class each
+   * could see, plus an adversarial fixture agreeing three ways — by hand, in
+   * JS, in SQL — on 87 values, with two exact `.5` rounding boundaries.
    *
    * ⚠️ A CLASS THE CALLER MAY NOT SEE IS SIMPLY ABSENT FROM THE ANSWER, and
-   * that is the opposite of `loadClassMatrices`, which THROWS `not_authorised`
-   * rather than quietly omitting a class. The two are right for different
-   * jobs: the matrices read is a page's authorisation check, and a dashboard
-   * that silently drops a class looks identical to a teacher who has been
-   * taken off it. A summary read is asked speculatively, over a remembered
-   * id list, for counts — one stale id must not take the page down. A caller
-   * that needs the check must still make it.
+   * that is the opposite of `loadClassMatrices`, which THROWS
+   * `not_authorised` rather than quietly omitting a class. The two are right
+   * for different jobs: the matrices read is a page's authorisation check,
+   * and a dashboard that silently drops a class looks identical to a teacher
+   * who has been taken off it. A rollup is asked speculatively, over a
+   * remembered id list, for counts — one stale id must not take the page
+   * down. A caller that needs the check must still make it.
    *
    * Error codes:
    *   - invalid_class_id        — an id failed the UUID shape check
-   *   - query_failed_summaries  — the RPC errored
+   *   - query_failed_summaries  — the RPC errored, INCLUDING the case where
+   *                               the function does not exist yet. The caller
+   *                               is expected to fall back to the full
+   *                               submissions read; see `base()`.
    */
-  async function loadClassSummaries(classIds) {
+  async function loadClassSummaries(classIds, opts) {
     const ids = Array.from(new Set((classIds || []).filter(Boolean)));
     ids.forEach(function (id) {
       if (!isUuid(id)) {
@@ -2401,6 +2428,9 @@ window.MrBadmusTeacherData = (function () {
       throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
     }
 
+    const nowIso = new Date(opts && opts.now ? opts.now : Date.now()).toISOString();
+    const windows = (opts && opts.windows) || null;
+
     /* Chunked on the same `IN_CHUNK` the rest of this file uses. The argument
        is a real array parameter rather than an `in.()` filter, so the URL
        length limit that motivates chunking does not apply — but a thousand
@@ -2409,12 +2439,22 @@ window.MrBadmusTeacherData = (function () {
     let rows;
     try {
       rows = await inChunks(ids, async function (chunk) {
-        const r = await sb.rpc('teacher_class_summaries', { p_class_ids: chunk });
+        const scoped = {};
+        if (windows) {
+          chunk.forEach(function (id) {
+            if (windows[id]) { scoped[id] = windows[id]; }
+          });
+        }
+        const r = await sb.rpc('teacher_class_rollup', {
+          p_class_ids: chunk,
+          p_now: nowIso,
+          p_windows: windows ? scoped : null,
+        });
         if (r.error) throw r.error;
         return r.data || [];
       });
     } catch (err) {
-      const e = new Error('[teacher-data] teacher_class_summaries failed: ' + (err && err.message));
+      const e = new Error('[teacher-data] teacher_class_rollup failed: ' + (err && err.message));
       e.code = 'query_failed_summaries';
       e.cause = err;
       throw e;
@@ -2423,13 +2463,18 @@ window.MrBadmusTeacherData = (function () {
     const out = {};
     rows.forEach(function (r) {
       if (!r || !r.class_id) return;
+      const s = r.summary || {};
       out[r.class_id] = {
-        student_count:    r.active_member_count,
-        assignment_count: r.assignment_count,
-        submission_count: r.submissions_completed,
-        completion_pct:   r.completion_pct,
-        class_mean:       r.class_mean,
-        last_activity_at: r.last_activity_at,
+        metrics: {
+          student_count:    s.active_member_count,
+          assignment_count: s.assignment_count,
+          submission_count: s.submissions_completed,
+          completion_pct:   s.completion_pct,
+          class_mean:       s.class_mean,
+          last_activity_at: s.last_activity_at,
+        },
+        papers: r.papers || [],
+        students: r.students || [],
       };
     });
     return out;

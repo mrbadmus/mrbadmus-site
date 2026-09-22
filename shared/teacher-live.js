@@ -931,15 +931,18 @@
       colAsked.push(pack.members.length + (r ? r.off_roster : 0));
     });
 
-    var empty = [];
     var studentAvg = {};
     var rows = pack.members.map(function (m) {
       var s = byPupil[m.student_id] || null;
       studentAvg[m.student_id] = s ? s.avg : null;
+      /* ⚠️ A FRESH ARRAY EACH, not one shared empty one. Nine references to a
+         single `[]` is a single mutable object behind every pupil's every
+         column, and the one caller that ever pushed to it would corrupt the
+         whole class silently. Nine empty arrays per pupil cost nothing. */
       return {
         sid: m.student_id,
-        scores: empty, max: empty, pct: empty, late: empty, stamp: empty,
-        stampShort: empty, status: empty, subId: empty, submitted: empty,
+        scores: [], max: [], pct: [], late: [], stamp: [],
+        stampShort: [], status: [], subId: [], submitted: [],
         inWeek: !!(s && s.in_week),
         // Read by buildRoster INSTEAD of walking the (absent) cell arrays.
         lastIso: s ? s.last_at : null,
