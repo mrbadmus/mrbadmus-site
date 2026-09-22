@@ -9,12 +9,17 @@ Backend half: `mrbadmus---backend` `d57dd7c`, pushed and live on Render before
 the site (health reports `build: d57dd7c…`). Site half: one commit on this
 branch, one push, receipts recorded on the tip.
 
-A second session was working `feat/speed-round-2` in the main checkout at the
-same time (student-live.js load order, teacher-data.js, RLS). Its branch had
-not been pushed when this run landed, so this run landed first onto an
-unchanged `origin/main`; that session rebases onto this. The student-live.js
-edits here are kept inside the assignment-row model and the two existing
-reads it draws on, with no code moved, so their rebase should be clean.
+A second session was working MRB-348 in the main checkout at the same time
+(student-live.js load order, teacher-data.js, RLS consolidation). It landed
+first — `2cf3e2e7a` and `6c510cd91` reached `origin/main` while this run's
+receipts were being recorded — so this unit was REBASED onto it before the
+push. The one source overlap, `shared/student-live.js`, auto-merged: their
+change parallelises `buildClass`'s opening wave and speculates the class
+build from `?class=`; this run's edits sit inside the later submissions and
+attempts reads of the same function and the row model, with nothing moved.
+Both behaviours are on main. Every other conflict was a generated file and
+was settled by rebuilding from the merged sources, not by picking a side.
+The receipt round was then run a third time on the rebased tip.
 
 ---
 
@@ -254,19 +259,24 @@ Receipt round and live check: see §10, filled after the round.
 
 `prepush_gate.py --record-all` on the tip (`MRB_BACKEND`, `MRB_SET_WORK_PASSWORD`,
 `MRB_THROWAWAY_PASSWORD`, `MRB_TEST_TEACHER_PASSWORD` set; no student
-credential in this environment). Two rounds: the first found the anchoring
-race (§7 finding 6c), the second, on the amended tip:
+credential in this environment). Three rounds: the first found the anchoring
+race (§7 finding 6c); the second, on the amended tip, was green bar the two
+inherited reds; the third, on the tip rebased onto MRB-348, is the one the
+push carried:
 
 | gate | result |
 |---|---|
 | verify_ks3, student_behaviour, student_themes, today_drive, teacher_behaviour, teacher_reach, teacher_picker_drive, ks4_chrome_drive, consumer_flag_off, teacher_perf_budget, teacher_admin_real, mrb328_card_prefetch, student_bell_drive | PASS, receipt written |
-| set_work | FAIL — 391 checks, 4 red: the three small-pool searches + `row_download_lands` (§7 findings 6 and 6b). Overridden on the tip. `check_three_topics_at_twenty`, `check_next_is_immediate`, `classes_screen_anchors_on_first_tap` all green |
+| set_work | FAIL — 398 checks, 3 red: the three small-pool searches (§7 finding 6). `row_download_lands` (6b) was red in rounds one and two and green in round three — flake, as suspected. Overridden on the tip. `check_three_topics_at_twenty`, `check_next_is_immediate`, `classes_screen_anchors_on_first_tap` all green |
 | teacher_admin_foreign_class | FAIL — C7 REMINDERS × 3, inherited since MRB-335. Overridden on the tip |
 | student_parity, import_year_drive, leaderboard_behaviour, ks4_pool_drive, ks3_instrument_liveness, student_switches, seating_drive, assignments_hold_drive, class_csv_upload, mrb328_import_picker(_real) | SKIPPED BY RULE — no path this branch changed is in their `watches` |
 | student_controls_drive | SKIP — no student credential |
 | 3d_parity, 3d_render_check | SKIP — no `3d-studio/dist` |
 
-Live check: a docs-only follow-up commit records the `check_ks4_live.sh`
-result for `student/class.html`, `teacher/classes.html`,
-`teacher/class-detail.html` and `teacher/timetable.html` after Cloudflare
-reported the deploy.
+Live, after the push (`ce6538e36` → `origin/main`), `check_ks4_live.sh` on
+`student/class.html`, `student/assignment.html`, `teacher/classes.html`,
+`teacher/class-detail.html`, `teacher/timetable.html`: all 200 and all on
+THIS build's stamps (`student-live.js?v=327b348f`, `set-work.js?v=4bfb9523`,
+`set-work.css?v=617a104e`). The live timetable body carries the flipped
+prose and the live class page's logic carries `Complete homework`. Backend
+`/api/health` reports `build: d57dd7c…`, `db: ok`.
