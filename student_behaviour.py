@@ -132,6 +132,34 @@ DRIVES = {
         ("the term chip", [("click", "TERM")]),
         ("SHOW TOP 10", [("click", "SHOW TOP 10")]),
         ("a work row expands", [("clickAt", "03\nAnimal and plant cells", 0)]),
+        # ⊕ ADDED 22 Sep 2026 — AND THE DRIVE ABOVE IS NOT THE ONE ITS LABEL
+        # CLAIMS. `03\nAnimal and plant cells` is a LESSON CARD in "Lessons
+        # in this topic" (node 231), not a work row: the work rows' labels
+        # begin `W03`, with a `W`. So until tonight NO drive on this page had
+        # ever opened an expanded work row, and the expanded panel — the
+        # detail line, the teacher's notes, the question-by-question chips,
+        # the primary button and the footnote — was measured on neither file.
+        #
+        # It is found, rather than reasoned about, by Mide's ruling of 22 Sep
+        # 2026: removing the marked row's `MARKS ARE FINAL UNLESS A RETAKE IS
+        # OPEN` footnote registered a `RULED_DIVERGENCE`, and the page-level
+        # half of that registration went RED saying the pattern was in
+        # Design's file on no drive. It is in Design's file; no drive had ever
+        # been on the screen that shows it.
+        #
+        # ⚠️ THE STALE DRIVE IS KEPT, NOT REPAIRED. It presses a real control
+        # on both files (Design's lesson card is a dead `<a href="#top">`; the
+        # port's is wired to `openLesson`) and it is the only drive that
+        # presses it. Renaming or repointing it would trade one surface's
+        # coverage for another's. Its LABEL is left alone in the same spirit:
+        # the row it names now exists, immediately below.
+        #
+        # `W03\nDigestion` is row `a4` — MARKED, no retake, with two teacher
+        # notes and an eight-question breakdown. Marked because that is where
+        # both halves of the ruling land: the footnote this port removes is
+        # `isMarked`-only, and the completion breakdown needs a row whose
+        # `answered` and `qtotal` the fixture carries.
+        ("a marked work row expands", [("clickAt", "W03\nDigestion", 0)]),
         # ── ⊕ 23 Aug 2026 — PHASE 3. THE SEVEN `Recall` DRIVES ARE RETIRED ──
         #
         # They read:
@@ -507,6 +535,15 @@ def run(cdp):
                 amended_states, problems, seen)
             rows.extend(add_rows)
 
+            # ⊕ 22 Sep 2026 — THE FOURTH REGISTRY, and the only one that
+            # anchors on no Design file at all. `ds["text"]` and not
+            # `d_text`: it asks "did Design's ORIGINAL already say this?",
+            # and a span the ruled registry has just stripped is still
+            # something Design's original said.
+            g_text, radd_rows = _apply_ruled_additions(
+                name, ds["text"], g_text, problems, seen)
+            rows.extend(radd_rows)
+
             g_ctl, add_ctl_rows = _apply_additions_controls(
                 name, ds["controls"], gs["controls"], amended_states,
                 problems, seen)
@@ -558,6 +595,7 @@ def run(cdp):
                 rows.append((name, label, "FAIL", "; ".join(bits)[:110]))
 
         rows.extend(_ruled_seen(name, seen, problems))
+        rows.extend(_ruled_additions_seen(name, seen, problems))
         rows.extend(_additions_seen(name, seen, amended_states, problems))
         rows.extend(_omissions_seen(name, seen, amended_states, problems))
     return rows, problems
@@ -584,6 +622,26 @@ def run(cdp):
 # held to byte-for-byte parity.
 RULED_DIVERGENCE = {
     "class view": [
+        # ── ⊕ RULED BY MIDE, 22 Sep 2026 · FIRST-WEEK FIXES ──────────────
+        #
+        # *"Remove MARKS ARE FINAL UNLESS A RETAKE IS OPEN. Unnecessary."*
+        #
+        # It sat under every marked row's Open-the-lesson button. It is also
+        # platform self-explanation of exactly the kind KS3 §8.10 rules out —
+        # a sentence about how the marking works rather than about this
+        # child's work — and the row it appears on is the one carrying their
+        # marks. The OPEN row's `COUNTS TOWARDS WEEK 04` stays: that is a
+        # fact about the deadline in front of them, not an explanation of the
+        # machinery.
+        #
+        # ⚠️ ONE DRIVE REACHES IT AND THAT IS ENOUGH FOR THE PAGE-LEVEL HALF.
+        # A footnote only renders in an EXPANDED row, and `a work row
+        # expands` is the only drive that expands one (row `a3`, marked with
+        # a retake open). `_apply_ruled` asserts "present in Design" once per
+        # PAGE over all drives, precisely so a span that only one screen
+        # reaches does not paint the other eighteen red.
+        ("the marked row's MARKS-ARE-FINAL footnote",
+         r"MARKS ARE FINAL UNLESS A RETAKE IS OPEN "),
         ("the leader's ON TIME / SCORE / RECALL figures",
          r"ON TIME \d+ SCORE \d+ RECALL \d+ "),
         ("the static 40 / 40 / 20 split legend",
@@ -853,6 +911,136 @@ def _apply_ruled(page, d_text, g_text, problems, seen):
     return d_text, rows
 
 
+# ── RULED ADDITIONS — where the port says something Design NEVER drew ─────
+#
+# ⊕ ADDED 22 Sep 2026 — THE TWELFTH MECHANISM, and it is the gap Mide's
+# first-week ruling walked straight into.
+#
+# There were three registries and between them they could describe every
+# difference this port had ever had:
+#
+#   RULED_DIVERGENCE   the port REMOVED something Design drew.
+#   AMENDED_ADDITIONS  the port GAINED something Design drew LATER.
+#   AMENDED_OMISSIONS  the port omits something Design drew LATER.
+#
+# All three anchor on a Design file. Mide's 22 Sep ruling adds words to the
+# page that appear in NO Design delivery, original or amended: `CORRECT`
+# under a score, and `7 OF 10 ANSWERED` in an expanded row. `AMENDED_
+# ADDITIONS` is the near-miss and it is the wrong one — it REQUIRES the span
+# to be present in Design's amended delivery's own region (see
+# `_apply_additions`), so registering these there would have gone red
+# claiming Design's amendment had lost them.
+#
+# ⚠️ AND THE WRONG ANSWER WAS AVAILABLE AND TEMPTING: give the fixture empty
+# values so the new markup renders nothing, and the gate stays green with no
+# registration at all. That is what MRB-306 Phase 2b legitimately did for the
+# feedback panel — Design's sample has no teacher's comment, so EMPTY is
+# Design's own state. It is not available here: Mide's ruling is that the
+# fixture renders the bar, because a gate driving a page the feature is
+# switched off on is a gate watching the old page.
+#
+# So each entry is asserted BOTH WAYS, the same shape `RULED_DIVERGENCE` uses
+# and the exact mirror of it:
+#
+#   · the pattern MUST NOT match DESIGN's own file — on any drive. One screen
+#     where Design already said it proves this was never an addition, and
+#     stripping it from the port's side would be deleting half of a live
+#     comparison.
+#   · the pattern MUST match the PORT — once per page, over all drives. An
+#     entry that stops matching is a ruling that has been reverted, or a
+#     registration that has outlived it, and either way it goes red.
+#
+# Only then is the matched text removed from the PORT's side and the rest of
+# the drive compared exactly as before.
+RULED_ADDITIONS = {
+    "class view": [
+        # ⊕ RULED by Mide 22 Sep 2026 — first-week fixes (completion bar).
+        #
+        # *"Replace the bare percentage with a completion bar … PLUS the
+        # correct percentage, labelled so it cannot be misread."*
+        #
+        # Design's row shows `82%` in 27px display type with nothing saying
+        # what it is a percentage OF, and the row now carries a COMPLETION
+        # figure as well — so the unlabelled number had become genuinely
+        # ambiguous rather than merely terse.
+        #
+        # ⚠️ THE LOOKBEHIND IS LOAD-BEARING. `CORRECT ` on its own is a word
+        # that could appear in a teacher's note, in a question stem, or in a
+        # future Design surface, and stripping it from the port's side
+        # wherever it occurred would take real text out of a live comparison.
+        # Anchored on `% ` it can only match the label this ruling adds.
+        ("the CORRECT label under a marked row's percentage",
+         r"(?<=% )CORRECT ?"),
+        # The other half of the same ruling: the breakdown, in the panel the
+        # tap opens. `\d+ OF \d+ ANSWERED` and not `ANSWERED` — Design's
+        # original says `RECALL 46 ANSWERED THIS WEEK` in the sidebar card
+        # and `ANSWERED · WK 04` in the readings strip, and neither carries
+        # the `N OF M` this ruling writes. Checked against the rendered
+        # oracle, not against the markup.
+        ("the completion breakdown in an expanded row",
+         r"\d+ OF \d+ ANSWERED "),
+    ],
+}
+
+_RADD_IN_PORT = "radd-in-port:"
+
+
+def _apply_ruled_additions(page, d_text, g_text, problems, seen):
+    """Strip ruled ADDITIONS from the PORT's text, asserting each both ways.
+
+    The exact mirror of `_apply_ruled`, including its split of scopes and for
+    the identical reason:
+
+      · FORBIDDEN IN DESIGN — per drive, every drive. One screen where
+        Design's own file already says it is enough to prove this is not an
+        addition, and a registration that is wrong about that is deleting
+        text from one side of a live comparison.
+      · PRESENT IN THE PORT — once per page, over all drives. Not every drive
+        reaches every row: `a work row expands` is the only one that opens a
+        panel, so demanding the breakdown per drive would paint eighteen
+        healthy drives red for being on another screen.
+    """
+    import re
+    rows = []
+    for label, pat in RULED_ADDITIONS.get(page, ()):
+        if re.search(pat, g_text):
+            seen.add(_RADD_IN_PORT + label)
+        if re.search(pat, d_text):
+            rows.append((page, "ruled addition · %s" % label, "FAIL",
+                         "already in Design's own file"))
+            problems.append(
+                "%s — %r is registered as something Mide's ruling of 22 Sep "
+                "2026 ADDS to the port, and DESIGN's own file already says "
+                "it. The registration is therefore deleting a span from the "
+                "port's side of a live comparison rather than accounting for "
+                "an addition. Re-read the delivery and narrow the pattern."
+                % (page, label))
+        g_text = re.sub(pat, "", g_text)
+    return g_text, rows
+
+
+def _ruled_additions_seen(page, seen, problems):
+    """Once per page: every registered addition was found ON THE PORT."""
+    rows = []
+    for label, _pat in RULED_ADDITIONS.get(page, ()):
+        ok = (_RADD_IN_PORT + label) in seen
+        rows.append((page, "ruled addition · %s — on the port" % label,
+                     "PASS" if ok else "FAIL",
+                     "rendered by the port, absent from Design's file" if ok
+                     else "NOT rendered by the port on any drive"))
+        if not ok:
+            problems.append(
+                "%s — the ruled addition %r is on the ported page on NO "
+                "drive. Either Mide's ruling of 22 Sep 2026 has been "
+                "reverted, or the fixture has stopped carrying the data the "
+                "new markup reads (`fixture_patch` in "
+                "build_student_port.PAGES), or the pattern has rotted. All "
+                "three are findings; a registration nothing satisfies is "
+                "the port being credited with a feature it has lost."
+                % (page, label))
+    return rows
+
+
 def _apply_ruled_controls(page, d_controls, g_controls, problems, seen):
     """Design's control list with the ruled-away controls removed.
 
@@ -930,6 +1118,18 @@ def _apply_ruled_controls(page, d_controls, g_controls, problems, seen):
 #       control may end in it. This is the shape a ruling takes when the text
 #       it removes is INSIDE a longer label rather than being the whole of one.
 #
+#   `label`, `port_suffix`, `why`     ⊕ 22 Sep 2026
+#       the EXACT MIRROR of `suffix`: a tail the port ADDS to a control whose
+#       label is otherwise untouched. Every PORT control ending in it loses
+#       it; no DESIGN control may end in it, on any drive. This is the shape
+#       Mide's 22 Sep ruling takes on the census, and it is needed for the
+#       same reason `suffix` was: the word `CORRECT` sits at the end of a
+#       label that also carries a week, a title, a brief and a SCORE, and
+#       every one of the three marked rows has a different one. Registering
+#       them as exact labels would mean three hand-typed strings carrying a
+#       child's marks, going stale the moment any of them changed for a
+#       reason nothing to do with this ruling.
+#
 # ⚠️ THE SECOND SHAPE EXISTS BECAUSE THE FIRST COULD NOT SAY THE WORK ROWS.
 # Each work row is ONE `<button>` whose label is the whole summary line —
 # `W03 Digestion 6 questions · enzymes and the gut 82% READ FEEDBACK` — so the
@@ -981,6 +1181,22 @@ RULED_CONTROL_EDITS = {
                  "marked row's expanded panel carries the real `Open the "
                  "lesson` button, wired by ruling P3.")
         for word in ("READ FEEDBACK", "OPEN IT", "SEE IT", "OPTIONS")
+    ] + [
+        # ⊕ RULED by Mide 22 Sep 2026 — first-week fixes (completion bar /
+        # labelled percentage). The census half of the `CORRECT` entry in
+        # `RULED_ADDITIONS`: the word is a text node INSIDE the row button,
+        # so stripping it from the page text does nothing whatever to the
+        # control list, and the three marked rows would report as three
+        # controls only in the port. Same division of labour the four hint
+        # words above already have.
+        dict(label="the CORRECT label, on the row button",
+             port_suffix=" CORRECT",
+             why="RULED 22 Sep 2026 — a bare percentage beside a homework "
+                 "title is read as whichever of completion or correctness "
+                 "the reader was already thinking about, and the row now "
+                 "carries both. The word is inside the row's single "
+                 "<button>, which is why it is here as well as in "
+                 "RULED_ADDITIONS."),
     ],
 }
 
@@ -1008,6 +1224,25 @@ def _apply_ruled_control_edits(page, d_controls, g_controls, problems, seen):
         return d_controls, g_controls, rows
     for e in edits:
         label = e["label"]
+        if "port_suffix" in e:
+            # ⊕ 22 Sep 2026 — the mirror of the `suffix` branch below.
+            suf = e["port_suffix"]
+            if any(c.endswith(suf) for c in g_controls):
+                seen.add(_EDIT_IN_PORT + label)
+            early = [c for c in d_controls if c.endswith(suf)]
+            if early:
+                rows.append((page, "ruled addition · %s" % label, "FAIL",
+                             "already in Design's own file"))
+                problems.append(
+                    "%s — %r: %d control(s) in DESIGN's own file already END "
+                    "in %r, e.g. %r. The registration says the port ADDS "
+                    "this tail; if Design already carries it, the entry is "
+                    "removing a span from the port's side of a live "
+                    "comparison rather than accounting for an addition."
+                    % (page, label, len(early), suf, early[0]))
+            g_controls = [c[:-len(suf)] if c.endswith(suf) else c
+                          for c in g_controls]
+            continue
         if "suffix" in e:
             suf = e["suffix"]
             if any(c.endswith(suf) for c in d_controls):
@@ -1060,6 +1295,27 @@ def _ruled_seen(page, seen, problems):
     rows = []
     for e in RULED_CONTROL_EDITS.get(page, ()):
         label = e["label"]
+        if "port_suffix" in e:
+            # ⊕ 22 Sep 2026 — mirrored: the claim is about the PORT, so the
+            # page-level assertion is about the PORT. Demanding the tail in
+            # Design's file would be demanding that the addition was never
+            # an addition.
+            ok = (_EDIT_IN_PORT + label) in seen
+            rows.append((page, "ruled addition · %s — on the port" % label,
+                         "PASS" if ok else "FAIL",
+                         "%r ends a control on the ported page"
+                         % e["port_suffix"] if ok else
+                         "%r ends NO control on the port on any drive"
+                         % e["port_suffix"]))
+            if not ok:
+                problems.append(
+                    "%s — the control edit %r says the port adds %r to the "
+                    "end of a control's label, and no control on the ported "
+                    "page carries it on any drive. Mide's ruling of 22 Sep "
+                    "2026 stands; either it has been reverted or the fixture "
+                    "has stopped carrying a marked row for it to land on."
+                    % (page, label, e["port_suffix"]))
+            continue
         what = e.get("suffix", e.get("design"))
         ok = (_EDIT_IN_DESIGN + label) in seen
         rows.append((page, "ruled · %s — still in the delivery" % label,
@@ -2032,7 +2288,91 @@ def _prove_additions():
         AMENDED_OMISSIONS.pop(page, None)
         AMENDED_DRIVES.pop(page, None)
 
+    # ── ⊕ 22 Sep 2026 — the RULED-ADDITIONS half of the same proof ───────
+    #
+    # ⚑ AND IT NEEDS ITS OWN, FOR THE REASON THE OMISSIONS HALF GIVES. This
+    # registry anchors on NO Design file, so it cannot borrow the amended
+    # delivery's region as its witness the way `_apply_additions` does; its
+    # only witness is the port. A mechanism that recorded nothing — a typo in
+    # a `seen` key, a registry read off the wrong page — would strip the
+    # span, pass the byte comparison, and report a clean page forever. So the
+    # proof drives THREE directions: a healthy addition passes, an
+    # UNREGISTERED extra span still fails, and a span Design's own file
+    # already carries is reported rather than swallowed.
+    rfaults = []
+    RULED_ADDITIONS[page] = [("a synthetic ruled addition", r"RULEDNEW ")]
+    try:
+        # (a) present on the port and nowhere in Design: stripped, and what
+        #     is left IS the oracle.
+        seen6, sink6 = set(), []
+        got6, _r6 = _apply_ruled_additions(
+            page, d_text, "ALPHA RULEDNEW BETA GAMMA", sink6, seen6)
+        if got6 != d_text:
+            rfaults.append(
+                "a registered ruled addition was not stripped out of the "
+                "port's text: %r was left as %r, which does not equal "
+                "Design's %r"
+                % ("ALPHA RULEDNEW BETA GAMMA", got6, d_text))
+        if sink6:
+            rfaults.append("a healthy ruled addition was reported as a "
+                           "problem: %s" % sink6[0][:90])
+        rows6 = _ruled_additions_seen(page, seen6, sink6)
+        if not any(v == "PASS" for _p, _l, v, _d in rows6):
+            rfaults.append("a healthy ruled addition produced no PASS row at "
+                           "all, so nothing was actually checked")
+
+        # (b) an UNREGISTERED extra span survives and the comparison fails.
+        seen7, sink7 = set(), []
+        got7, _r7 = _apply_ruled_additions(
+            page, d_text, "ALPHA RULEDNEW BETA UNREGISTERED GAMMA",
+            sink7, seen7)
+        if got7 == d_text or "UNREGISTERED" not in got7:
+            rfaults.append(
+                "an UNREGISTERED extra span was swallowed: the port read %r "
+                "and came back %r, so the machinery strips more than it was "
+                "told to and no unregistered divergence could ever be seen"
+                % ("ALPHA RULEDNEW BETA UNREGISTERED GAMMA", got7))
+
+        # (c) Design's own file already says it. Wrong register: this is not
+        #     an addition, and the gate must say so rather than delete it
+        #     from one side of a live comparison.
+        seen8, sink8 = set(), []
+        _apply_ruled_additions(page, "ALPHA RULEDNEW BETA GAMMA",
+                               "ALPHA RULEDNEW BETA GAMMA", sink8, seen8)
+        if not sink8:
+            rfaults.append(
+                "a span present in DESIGN's own file was accepted as a ruled "
+                "addition, so the registry can be used to delete real text "
+                "from the port's side of the comparison with nothing said")
+
+        # (d) the ruling reverted: nothing on the port. The page-level half
+        #     has to go red rather than pass on an empty page.
+        seen9, sink9 = set(), []
+        _apply_ruled_additions(page, d_text, d_text, sink9, seen9)
+        rows9 = _ruled_additions_seen(page, seen9, sink9)
+        if not sink9 or not any(v == "FAIL" for _p, _l, v, _d in rows9):
+            rfaults.append(
+                "the addition was taken OFF the port and the machinery "
+                "reported nothing. A registry that cannot see its own ruling "
+                "being reverted is a note, not a gate")
+    finally:
+        RULED_ADDITIONS.pop(page, None)
+
     rows, problems = [], []
+    if rfaults:
+        rows.append((disp, "the ruled-additions machinery strips, and only "
+                     "what it was told to", "FAIL", "; ".join(rfaults)[:110]))
+        problems.append(
+            "the ruled-additions self-proof FAILED: %s. Until this passes, "
+            "every RULED_ADDITIONS entry is an unchecked promise, and its "
+            "silence on the real page proves nothing whatever."
+            % "; ".join(rfaults))
+    else:
+        rows.append((disp, "the ruled-additions machinery strips, and only "
+                     "what it was told to", "PASS",
+                     "registered span removed and the text then matches; "
+                     "unregistered survives; a span Design already had is "
+                     "reported; a reverted ruling goes red"))
     if ofaults:
         rows.append((disp, "the omissions machinery sees a ruling reverted",
                      "FAIL", "; ".join(ofaults)[:110]))

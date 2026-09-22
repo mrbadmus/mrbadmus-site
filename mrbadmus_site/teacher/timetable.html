@@ -334,9 +334,18 @@
       .lesson-period { min-width: 68px; letter-spacing: 0.1em; }
     }
 
-    /* ── ⊕ MRB-306 — the timetable editor ───────────────────────────────── */
-    .grid-wrap { overflow-x: auto; }
-    table.grid { border-collapse: collapse; width: 100%; min-width: 640px; }
+    /* ── ⊕ MRB-306 — the timetable editor ─────────────────────────────────
+       ⊕ 22 Sep 2026, ruled by Mide — DAYS ARE THE COLUMNS AND PERIODS ARE
+       THE ROWS, the way the school's own system prints a timetable. That
+       flips which axis is the long one: five day columns plus a label
+       column do not fit a phone, so the sideways scroll lives INSIDE
+       `.grid-wrap` and never on the page body (today_drive's "390px: no
+       horizontal overflow" check is a push gate on the sibling page and
+       this page has always held the same property), and the period label
+       is sticky at the left edge so a teacher scrolling across can still
+       see which period they are filling in. */
+    .grid-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table.grid { border-collapse: collapse; width: 100%; min-width: 600px; }
     table.grid th, table.grid td {
       border: 1px solid var(--st-rule-soft); padding: 6px; vertical-align: middle;
     }
@@ -344,12 +353,40 @@
       font: 500 13px/1.2 var(--st-mono); letter-spacing: 0.14em;
       text-transform: uppercase; color: var(--st-caption); background: var(--st-num-well);
     }
-    table.grid th.rowhead { text-align: left; white-space: nowrap; width: 92px; }
+    /* The row head carries "Period 3 · 11:20" now rather than "Wed", so it is
+       wider than the 92px the day names needed — and it is STICKY.
+       ⚠️ Its right-hand rule is drawn with a box-shadow, NOT with the border:
+       a `border-collapse: collapse` table does not repaint a sticky cell's
+       own borders once the cells behind it have scrolled under it, which
+       leaves the label sitting on top of the selects with no edge. */
+    table.grid th.rowhead {
+      text-align: left; white-space: nowrap; width: 116px;
+      position: sticky; left: 0; z-index: 1;
+      background: var(--st-num-well);
+      box-shadow: 1px 0 0 var(--st-rule-soft);
+    }
     table.grid select {
       width: 100%; min-height: 40px; padding: 6px 8px;
       border: 1px solid var(--st-btn-border); border-radius: var(--st-r-btn);
       background: var(--st-paper); color: var(--st-ink);
       font: 400 15.5px/1.2 var(--st-ui);
+    }
+    /* Narrow viewports buy back width from the padding and the label column
+       only. ⚠️ The select keeps its 40px minimum — that is the touch target,
+       and it is not negotiable for a screen built to be used on a phone. */
+    @media (max-width: 560px) {
+      table.grid th, table.grid td { padding: 5px; }
+      /* ⚠️ `white-space: normal` IS THE LOAD-BEARING HALF, not the width.
+         A table cell treats `width` as a minimum, so "Period 1 · 09:15" held
+         on one line measured 152px inside a 390px phone whatever the rule
+         said, and took that width off the five day columns — which clipped
+         the class name in every select, the one thing the cell has to show.
+         Wrapped, the label stacks the period over its clock time in ~92px,
+         the same shape the lesson rows on Today use. */
+      table.grid th.rowhead {
+        width: 92px; white-space: normal; letter-spacing: 0.08em;
+      }
+      table.grid select { padding: 6px; font-size: 15px; }
     }
     .actions { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; margin-top: 18px; }
     .msg { font: 400 16px/1.4 var(--st-ui); margin-top: 12px; }
@@ -415,6 +452,7 @@
   <div class="card">
     <h2>Build it here</h2>
     <p class="empty" style="margin-bottom:14px;">
+      Days run across the top and periods down the side, the same way your school prints it.
       Pick a class for each period you teach. Leave the rest empty.
       Periods are numbered because the school&rsquo;s bell times aren&rsquo;t on the system yet.
     </p>
@@ -479,6 +517,15 @@
    `auth_user_teaches_class` for every row, so neither is load-bearing.
    ═══════════════════════════════════════════════════════════════════════ */
 
+/* ⊕ 22 Sep 2026, ruled by Mide — DAYS ARE THE COLUMNS, PERIODS ARE THE ROWS.
+   The grid used to be drawn the other way up (a row per day, a column per
+   period). Same days, same periods, same saved rows; only the axes swapped,
+   so that it reads like the timetable the school already gives the teacher.
+
+   ⚠️ THE CELL IS THE CONTRACT, NOT THE LAYOUT. `readGrid()` and
+   `replace_timetable` know a lesson only by a select's `data-wd` / `data-p`,
+   so the orientation is free to change and the saved payload cannot. Anything
+   that flips it again must keep those two attributes on the same cell. */
 const DAYS  = [[1,'Mon'],[2,'Tue'],[3,'Wed'],[4,'Thu'],[5,'Fri']];
 const PERIODS = [1,2,3,4,5];
 
@@ -512,17 +559,21 @@ function periodHeader(p) {
   return 'Period ' + p + (pt && pt.startsAt ? ' · ' + formatTime(pt.startsAt) : '');
 }
 
+/* A blank corner, then Mon-Fri across the top; one row per period, labelled
+   down the left. The CELL is unchanged in every respect a teacher or the
+   server can see: same `data-wd` / `data-p`, same aria-label, same options in
+   the same order, same selected option restored from the saved timetable. */
 function drawGrid(existing) {
   const bySlot = {};
   (existing || []).forEach(function (e) { bySlot[e.weekday + ':' + e.period] = e.classId; });
 
   let html = '<tr><th class="rowhead"></th>';
-  PERIODS.forEach(function (p) { html += '<th>' + esc(periodHeader(p)) + '</th>'; });
+  DAYS.forEach(function (d) { html += '<th>' + esc(d[1]) + '</th>'; });
   html += '</tr>';
 
-  DAYS.forEach(function (d) {
-    html += '<tr><th class="rowhead">' + d[1] + '</th>';
-    PERIODS.forEach(function (p) {
+  PERIODS.forEach(function (p) {
+    html += '<tr><th class="rowhead">' + esc(periodHeader(p)) + '</th>';
+    DAYS.forEach(function (d) {
       const sel = bySlot[d[0] + ':' + p] || '';
       html += '<td><select data-wd="' + d[0] + '" data-p="' + p + '" aria-label="' +
               d[1] + ' period ' + p + '"><option value="">&mdash;</option>';

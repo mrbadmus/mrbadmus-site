@@ -2100,6 +2100,13 @@
        nothing else — the work list still renders, so this is caught and
        logged rather than thrown. */
     var lessonsFor = {};
+    /* ⊕ RULED by Mide 22 Sep 2026 — first-week fixes (completion bar).
+       How many questions each assignment has, tallied off the `assignment_questions`
+       read below rather than by a read of its own. That read already returns one row
+       per question per assignment, so the count is free: no extra round trip, and no
+       N+1 across the work list. Empty when the read fails, which is what takes the
+       bar off the row rather than drawing it at zero. */
+    var qTotalFor = {};
     /* ⊕ 23 Aug 2026 — PHASE 2. THE SAME RESOLUTION, READ TWICE OVER.
        `lessonsFor` answers "which lesson does THIS piece of work draw on", and
        drops any slug this build has no PAGE for, because its reader is a link.
@@ -2145,6 +2152,11 @@
         }
 
         (aq.data || []).forEach(function (r) {
+          /* ⊕ 22 Sep 2026 — the completion bar's denominator. Counted before
+             the lesson-resolution `return`s below, which skip a question whose
+             lesson this build has no page for: a question a student still has
+             to answer counts whether or not its lesson is linkable. */
+          qTotalFor[r.assignment_id] = (qTotalFor[r.assignment_id] || 0) + 1;
           var slug = bySlug[r.source_ref] || slugFromRef(r.source_ref);
           if (slug) { coveredSlugs[slug] = true; }
           var href = lessonHref(slug);
@@ -2409,9 +2421,25 @@
            `assignmentHrefFor` — bookmarks, and the drive's assertion — and it
            means this line is a strict superset of what it replaces: every row
            that had a destination has the same destination. */
+        /* ⊕ RULED by Mide 22 Sep 2026 — first-week fixes.
+           `status === "open"` used to be the whole test, and the note above
+           says why: *"a missed one is Design's `Ask for an extension`, which
+           is a different control and a different ticket."* This is that
+           ticket. Mide: *"Anything not completed — OPEN and MISSED alike —
+           says 'Complete homework' and lets them do it. Missing the deadline
+           never takes the work away."*
+
+           ⚑ AND NOTHING DOWNSTREAM HAD TO CHANGE FOR IT, which was checked
+           rather than hoped. The backend refuses nothing by the clock:
+           `/api/assignment/answer` has no due-date test at all, and
+           `/api/assignment/complete` computes `is_late` and STORES it beside
+           the submission rather than rejecting. The assignment page has no
+           deadline gate on its inputs or its Complete button either. This
+           empty string was the only thing in the way. */
         assignmentHref: c.id === currentId
           ? assignmentHref()
-          : (status === "open" ? assignmentHrefFor(c.id) : "")
+          : ((status === "open" || status === "missed")
+              ? assignmentHrefFor(c.id) : "")
       };
       if (status === "marked" && c.max_score > 0) {
         row.score = Math.round((c.score / c.max_score) * 100);
@@ -2706,28 +2734,101 @@
        an embedded join, so the RLS the policy describes is the RLS the query
        relies on and nothing depends on PostgREST resolving a relationship. */
     var wrongLessons = {};
+    /* ⊕ RULED by Mide 22 Sep 2026 — first-week fixes (completion bar).
+       `answeredFor[assignment_id]` — how many questions this child has actually
+       answered, off the SAME two reads, with no third one added. See the block
+       below the catch for why the rows are filled there and not in `work`. */
+    var answeredFor = null;
     try {
       if (assignmentIds.length) {
+        /* ⊕ 22 Sep 2026 — `assignment_id` and `attempt_no` join the select.
+           Both are free (same rows, same filter) and both are needed: the
+           answered count is per ASSIGNMENT, and a retake makes a second
+           submission for the same one, so it is the LATEST attempt that
+           describes where the child is. */
         var mySubs = await withDbDeadline(WARM_MS, sb.from("assignment_submissions")
-          .select("id").eq("student_id", user.id)
+          .select("id, assignment_id, attempt_no").eq("student_id", user.id)
           .in("assignment_id", assignmentIds));
         if (mySubs.error) { throw mySubs.error; }
         var subIds = (mySubs.data || []).map(function (r) { return r.id; });
+        /* The latest submission per assignment, and the assignment each
+           submission belongs to. `attempt_no` is null on the hand-seeded May
+           work, so a missing one sorts as 0 rather than throwing the row out. */
+        var latestSub = {}, subAssignment = {};
+        (mySubs.data || []).forEach(function (r) {
+          subAssignment[r.id] = r.assignment_id;
+          var n = r.attempt_no || 0;
+          var best = latestSub[r.assignment_id];
+          if (!best || n >= best.n) { latestSub[r.assignment_id] = { id: r.id, n: n }; }
+        });
         if (subIds.length) {
+          /* ⊕ 22 Sep 2026 — `submission_id` joins the select and the
+             `is_correct = false` FILTER COMES OFF.
+             ⚠️ THE WRONG-ANSWER READING BELOW IS UNCHANGED, and that is
+             asserted in the code rather than promised in a comment: the
+             filter moves from the query into `r.is_correct === false`, which
+             is the same set of rows PostgREST was returning. What the wider
+             query adds is the rows a child got RIGHT, which is what "how many
+             have they answered" is a count of — and a right answer is not a
+             weakness, so it must not reach `wrongLessons`.
+             ⚑ STILL NOT A POOL READ. This reads a child's own attempt
+             history (`question_ref`, `is_correct`) to weight practice and now
+             to count progress; it serves no question to anybody, which is the
+             line MRB-288's contract draws. */
           var att = await withDbDeadline(WARM_MS, sb.from("assignment_question_attempts")
-            .select("question_ref, is_correct")
-            .in("submission_id", subIds).eq("is_correct", false));
+            .select("submission_id, question_ref, is_correct")
+            .in("submission_id", subIds));
           if (att.error) { throw att.error; }
+          var perSub = {};
           (att.data || []).forEach(function (r) {
+            perSub[r.submission_id] = (perSub[r.submission_id] || 0) + 1;
+            if (r.is_correct !== false) { return; }
             var slug = bySlug[r.question_ref] || slugFromRef(r.question_ref);
             if (slug) { wrongLessons[slug] = true; }
           });
+          answeredFor = {};
+          Object.keys(latestSub).forEach(function (aid) {
+            answeredFor[aid] = perSub[latestSub[aid].id] || 0;
+          });
+        } else {
+          /* No submission at all is a real answer, not a missing one: nothing
+             answered on anything. An empty map rather than `null` is what
+             lets an open row draw `0 OF 8` honestly. */
+          answeredFor = {};
         }
+      } else {
+        answeredFor = {};
       }
     } catch (wrongErr) {
       console.error("[student-live] could not read this student's wrong "
-                    + "answers; the deck loses its FROM YOUR WORK ordering "
-                    + "and nothing else", wrongErr);
+                    + "answers; the deck loses its FROM YOUR WORK ordering, "
+                    + "the work rows lose the completion bar, and nothing "
+                    + "else", wrongErr);
+    }
+
+    /* ── ⊕ RULED by Mide 22 Sep 2026 — first-week fixes ────────────────────
+       THE COMPLETION BAR'S TWO NUMBERS, ONTO THE ROWS.
+
+       ⚠️ WHY HERE AND NOT IN `work = cards.map(…)` TWO HUNDRED LINES UP. The
+       answered count needs the student's SUBMISSION IDS, and those are read
+       in the block immediately above — which runs after the rows are built.
+       Moving that read earlier is a restructuring of this file's load order,
+       which is a separate piece of work being done on another branch; mutating
+       the rows here costs nothing, because `work` is not read by anything
+       until it is handed to the page (`work: work`, far below).
+
+       ⚠️ BOTH FIELDS OR NEITHER. If the attempts read failed, `answeredFor`
+       is null and neither field is set — so `hasBar` is false in Design's
+       logic and the row draws NO bar. A bar reading `0 OF 8` on a piece of
+       work a child finished last week is worse than no bar at all, and it is
+       the failure this shape refuses to have. */
+    if (answeredFor) {
+      work.forEach(function (row) {
+        var total = qTotalFor[row.id] || 0;
+        if (!total) { return; }             // no question rows: nothing to draw
+        row.qtotal = total;
+        row.answered = Math.min(total, answeredFor[row.id] || 0);
+      });
     }
 
     var cards = [];

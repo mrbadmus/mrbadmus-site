@@ -5,7 +5,10 @@
    Claude Design's own example data for the class view, lifted out of
    Design's logic class and out of Design's template by source
    transformation — not retyped, and not re-serialised. Every value
-   below is the same bytes Design wrote.
+   below is the same bytes Design wrote, except for the fields
+   `fixture_patch` adds (build_student_port.PAGES) for a ruling Design's
+   delivery predates — see the ruling there; each one is asserted exactly
+   once against Design's own bytes, and the live page reads none of them.
 
    ⛔ FOR THE GATES ONLY. This is one real class's homework with one
    real child's name on it, frozen. It is loaded by class-fixture.html and by nothing
@@ -14,19 +17,19 @@
    ══════════════════════════════════════════════════════════════ */
 window.__MRB_DATA__ = {
   "work": [
-    { id: 'a5', week: 4, title: 'Cells & microscopy', brief: '8 questions \u00B7 draws on this week\u2019s lessons', status: 'open', detail: 'SET MON 15 SEP \u00B7 8 QUESTIONS \u00B7 DUE THU 18:00' },
-    { id: 'a4', week: 3, title: 'Digestion', brief: '6 questions \u00B7 enzymes and the gut', status: 'marked', score: 82, detail: 'MARKED 11 SEP \u00B7 6 OF 8 QUESTIONS RIGHT',
+    { id: 'a5', answered: 3, qtotal: 8, week: 4, title: 'Cells & microscopy', brief: '8 questions \u00B7 draws on this week\u2019s lessons', status: 'open', detail: 'SET MON 15 SEP \u00B7 8 QUESTIONS \u00B7 DUE THU 18:00' },
+    { id: 'a4', answered: 8, qtotal: 8, week: 3, title: 'Digestion', brief: '6 questions \u00B7 enzymes and the gut', status: 'marked', score: 82, detail: 'MARKED 11 SEP \u00B7 6 OF 8 QUESTIONS RIGHT',
       notes: [
         { text: 'Questions 3 and 7 put the enzyme in the wrong part of the gut. Read the second half of the lesson before the next one.', meta: 'ON QUESTIONS 03, 07 \u00B7 11 SEP' },
         { text: 'Handed in early and the working was set out clearly. Same again this week.', meta: 'ON THE WHOLE PIECE \u00B7 11 SEP' }
       ], items: [1, 1, 0, 1, 1, 1, 0, 1] },
-    { id: 'a3', week: 3, title: 'Movement & joints', brief: '5 questions \u00B7 muscles and bones', status: 'marked', score: 71, retake: true, detail: 'MARKED 9 SEP \u00B7 3 OF 5 QUESTIONS RIGHT',
+    { id: 'a3', answered: 5, qtotal: 5, week: 3, title: 'Movement & joints', brief: '5 questions \u00B7 muscles and bones', status: 'marked', score: 71, retake: true, detail: 'MARKED 9 SEP \u00B7 3 OF 5 QUESTIONS RIGHT',
       notes: [{ text: 'Two answers named the wrong bone. The retake is open until Friday and the better mark counts.', meta: 'ON QUESTIONS 02, 04 \u00B7 9 SEP' }],
       items: [1, 0, 1, 0, 1] },
-    { id: 'a2', week: 2, title: 'Gas exchange', brief: '10 questions \u00B7 lungs and breathing', status: 'pending', late: true, detail: 'HANDED IN 2 DAYS LATE \u00B7 WITH MR BADMUS' },
-    { id: 'a1', week: 1, title: 'Cell parts', brief: '8 questions \u00B7 starter set', status: 'marked', score: 95, detail: 'MARKED 2 SEP \u00B7 8 OF 8 QUESTIONS RIGHT',
+    { id: 'a2', answered: 10, qtotal: 10, week: 2, title: 'Gas exchange', brief: '10 questions \u00B7 lungs and breathing', status: 'pending', late: true, detail: 'HANDED IN 2 DAYS LATE \u00B7 WITH MR BADMUS' },
+    { id: 'a1', answered: 8, qtotal: 8, week: 1, title: 'Cell parts', brief: '8 questions \u00B7 starter set', status: 'marked', score: 95, detail: 'MARKED 2 SEP \u00B7 8 OF 8 QUESTIONS RIGHT',
       notes: [{ text: 'Full marks. Move on to the microscopy lesson before Thursday.', meta: 'ON THE WHOLE PIECE \u00B7 2 SEP' }], items: [1, 1, 1, 1, 1, 1, 1, 1] },
-    { id: 'a0', week: 1, title: 'Lab safety check', brief: '8 questions \u00B7 before any practical', status: 'missed', detail: 'CLOSED 1 SEP \u00B7 NOT HANDED IN' }
+    { id: 'a0', answered: 2, qtotal: 8, week: 1, title: 'Lab safety check', brief: '8 questions \u00B7 before any practical', status: 'missed', detail: 'CLOSED 1 SEP \u00B7 NOT HANDED IN' }
   ],
   "roster": [
     { id: 's1', name: 'Tiwa A.', mono: 'TA' }, { id: 's2', name: 'Marcus O.', mono: 'MO' },

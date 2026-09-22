@@ -356,9 +356,47 @@
     });
   }
 
+  /* ⊕ first-week fixes (22 Sep 2026) — EVERY READ SETTLES, AND A HUNG ONE IS A FAILURE RATHER THAN A
+     FOREVER.
+
+     ⛔ There was no timeout, and three controls were disabled for the life of
+     a request that never answered: `Next` on the classes step (it waited for
+     `/scope` to resolve), the primary on the Detail step (`sc.busy` is only
+     cleared by a preview's own handlers) and one row's `Swap`. A fetch that
+     never settles is not rare — a laptop lid closed on a school corridor, a
+     Render instance paged out mid-response — and it left a sheet with nothing
+     on screen saying why and no way to make it try again.
+
+     Thirty seconds, and it is deliberately generous: `/scope` on a KS3 class
+     pages five thousand bank rows, and a Render cold start is twenty seconds
+     of honest waiting. This is the bound on "never", not a latency budget.
+
+     ⚠️ GET ONLY. `apiPost` and `apiPatch` do NOT get one, and must not: a set
+     whose POST is aborted may ALREADY HAVE BEEN WRITTEN, and a sheet that
+     then let the teacher press again is the two-assignments-for-thirty-children
+     defect `close()` was hardened against. A read is safe to abandon; a write
+     is not. */
+  var READ_TIMEOUT_MS = 30000;
+
   function apiGet(path) {
+    var ctl = (typeof AbortController === "function") ? new AbortController() : null;
+    var timer = null;
+    var done = function () { if (timer) { clearTimeout(timer); timer = null; } };
     return token().then(function (t) {
-      return fetch(apiBase() + path, { headers: { Authorization: "Bearer " + t } });
+      if (ctl) {
+        timer = setTimeout(function () { try { ctl.abort(); } catch (e) { /* gone */ } },
+                           READ_TIMEOUT_MS);
+      }
+      return fetch(apiBase() + path, {
+        headers: { Authorization: "Bearer " + t },
+        signal: ctl ? ctl.signal : undefined
+      });
+    }).then(function (res) {
+      done();
+      return res;
+    }, function (e) {
+      done();
+      throw e;
     }).then(function (res) {
       if (res.status === 204) { return { status: 204, body: null }; }
       return res.json().then(
@@ -462,6 +500,16 @@
        read-only values are `labelTier` and `steps[1]`, which are already
        here because the Topic step uses them. */
     save: "Save",
+    /* ⊕ first-week fixes (22 Sep 2026) — TWO MORE, AND A9 STILL HOLDS. `Next` now enables the moment
+       a class is ticked rather than waiting for `/scope`, so the Topic step is
+       reachable before the tree exists. A panel that is empty because a
+       request is in flight looks exactly like a panel that is empty because
+       the class has no topics — which is the same lie by omission the two
+       refusal labels above were added to stop. `Loading` is a status noun in
+       the tag slot, exactly where `Unavailable` goes; `Retry` is a button
+       verb, like `Save` and `Back`. Neither is a sentence. */
+    loading: "Loading",
+    retry: "Retry",
     unavailable: "Unavailable",
     notSetToast: "Not set",
     notSavedToast: "Not saved",
@@ -643,15 +691,38 @@
     return n;
   }
 
-  /* The questions every OTHER scope is already spending, so a count chip
-     that would push the set past the server's twenty is not offered. */
-  function othersTotal(scope) {
-    var n = 0;
-    filledScopes().forEach(function (sc) { if (sc !== scope) { n += sc.picked.length; } });
-    return n;
-  }
+  /* ⊕ first-week fixes, ruled by Mide 22 Sep 2026 — THE COUNT IS PER TOPIC, AND
+     `othersTotal()` IS GONE.
 
-  var MAX_QUESTIONS = 20;
+     ⛔ IT USED TO EXIST AND IT WAS THE BUG. It read:
+
+         "The questions every OTHER scope is already spending, so a count chip
+          that would push the set past the server's twenty is not offered."
+
+     …and its answer was subtracted from `MAX_QUESTIONS` in four places —
+     `syncCountChips`, `loadPreview` (twice), and the ceiling on `Add topic`.
+     The result, in Mide's first real week of teaching with the sheet: with
+     three topics on it, 15 and 20 were greyed on ALL THREE even though every
+     one of them held thirty-odd questions in the bank, and with two topics the
+     chips still stopped at 10. The number a teacher was allowed to give one
+     class was being spent by the OTHER topics they had chosen, which is not a
+     fact about anything — a pool belongs to a subtopic and so does the demand.
+
+     Ruled: a teacher picks the count they want per topic — 5, 10, 15, 20 —
+     limited only by THAT topic's own pool at the chosen tier. Nothing about
+     the rest of the sheet reaches a count chip.
+
+     What bounds a set instead is `MAX_SCOPES`: how many topics may be on one
+     sheet. It is worn by `Add topic` — the control that actually adds one —
+     and by nothing else. Both numbers are the backend's, and the names are
+     its names: `SW.MAX_QUESTIONS_PER_SCOPE` and `SW.MAX_SCOPES` in
+     `set-work-scope.js`.
+
+     ⚠️ `pickedTotal()` SURVIVES and is still read — by `Download` (is there
+     anything to print?) and by `stepValid` (has every scope got rows?). It is
+     no longer a CEILING anywhere. */
+  var MAX_QUESTIONS = 20;      // per SCOPE — the top count chip
+  var MAX_SCOPES = 10;         // topics on one sheet — `Add topic`'s ceiling
 
   function freshState(classId) {
     return {
@@ -664,6 +735,14 @@
       step: 0,                 // 0 Classes, 1 Topic, 2 Detail
       scope: null,             // the /scope answer
       scopeErr: false,
+      /* ⊕ first-week fixes (22 Sep 2026) — IN FLIGHT, and it is a THIRD state rather than the
+         absence of the other two. `scope === null && !scopeErr` used to mean
+         both "nothing has been asked for yet" and "an answer is on its way",
+         and the Topic panel cannot tell a teacher which of those it is
+         showing without being told. Owned by `loadScope` and cleared ONLY by
+         the fetch whose `fetchSeq` is still current, so a superseded answer
+         can never report the current request as finished. */
+      scopeLoading: false,
       /* Anchored (a card, the class screen): that class, ticked. Unanchored
          (the classes screen): nothing, and the first tap anchors. */
       classes: classId ? [classId] : [],
@@ -840,6 +919,32 @@
     var tree = el("div", "sw-tree");
     tree.setAttribute("data-sw", "tree");
     pTopic.appendChild(tree);
+    /* ⊕ first-week fixes (22 Sep 2026) — THE TREE PANEL'S OWN STATUS, AND IT IS A SIBLING OF THE
+       TREE RATHER THAN A CHILD OF IT.
+
+       `Next` now enables the moment a class is ticked (see `stepValid`), so a
+       teacher can stand on this step before `/scope` has answered. Three
+       things can be true here — in flight, answered, failed — and the panel
+       has to say which, because an empty `sw-tree` reads as "this class has
+       no topics" in all three.
+
+       ⚠️ NOT WRITTEN INTO `els.tree`. `buildTree()` opens by emptying that
+       node, and `loadScope`'s failure path used to append the `Unavailable`
+       tag into it — so the two fought over one container and the note's
+       lifetime was whatever happened last. Kept outside, the status is
+       patched (hidden / shown, one of two words) and the tree is built, and
+       neither touches the other. */
+    var treeNote = el("div", "sw-row-tag", SAY.loading);
+    treeNote.setAttribute("data-sw", "tree-note");
+    treeNote.hidden = true;
+    pTopic.appendChild(treeNote);
+    /* Its own control, because a failed read must be RETRYABLE without
+       closing the sheet. Hidden unless the read actually failed: a Retry over
+       a tree that loaded is a control that does nothing. */
+    var treeRetry = btn("sw-btn sw-add", SAY.retry);
+    treeRetry.setAttribute("data-sw", "tree-retry");
+    treeRetry.hidden = true;
+    pTopic.appendChild(treeRetry);
 
     /* ── panel 2: Detail ── */
     var pDetail = el("div", "sw-panel");
@@ -944,6 +1049,7 @@
       pTopic: pTopic, tierChips: tierChips,
       subjLabel: subjLabel, subjChips: subjChips,
       paperLabel: paperLabel, paperChips: paperChips, tree: tree,
+      treeNote: treeNote, treeRetry: treeRetry,
       pDetail: pDetail,
       qLbl: qLbl, scopesHost: scopesHost, addTopic: addTopic, dl: dl,
       relLbl: relLbl,
@@ -1012,6 +1118,14 @@
       syncStep();
       syncTree();
       syncTierChips();
+    });
+    /* ⊕ first-week fixes (22 Sep 2026) — the one control that makes a failed `/scope` recoverable.
+       Guarded on `S.classId` because there is nothing to ask about without an
+       anchor, and on `scopeLoading` so a double-press cannot start a second
+       request whose answer would race the first. */
+    els.treeRetry.addEventListener("click", function () {
+      if (!S || !S.classId || S.scopeLoading) { return; }
+      loadScope();
     });
     els.primary.addEventListener("click", onPrimary);
     els.title.addEventListener("input", function () {
@@ -1469,9 +1583,20 @@
           /* Cleared, so the next tap is a real retry rather than a repaint
              of the last failure. */
           S.scopeErr = false;
+          /* ⊕ first-week fixes (22 Sep 2026) — AND THE IN-FLIGHT FLAG, AND `fetchSeq` WITH IT.
+             Un-anchoring while a `/scope` is still on the wire must not leave
+             the panel saying `Loading` for a class nobody has chosen, and the
+             answer that is still coming must not be allowed to paint a tree
+             over it. Bumping `fetchSeq` makes that answer stale by
+             construction — the same instrument `open()` uses on `session`. */
+          S.scopeLoading = false;
+          fetchSeq += 1;
           els.classNote.hidden = true;
           els.overlay.setAttribute("data-sw-class", "");
+          els.tree.textContent = "";
+          els.treeRows = [];
           syncClasses();
+          syncScopePanel();
           syncValidity();
           return;
         }
@@ -1586,8 +1711,17 @@
        triple, and `PATCH /api/teacher/set-work/:id` takes one; a second
        topic added to an existing set would have nowhere to be written. */
     els.addTopic.hidden = !!S.editId;
+    /* ⊕ first-week fixes (22 Sep 2026) — THE CEILING ON A SET IS ITS NUMBER OF TOPICS, and this is
+       the control that wears it.
+
+       ⛔ It read `pickedTotal() >= MAX_QUESTIONS`: once the teacher's topics
+       added up to twenty questions there was no room for another topic. That
+       was the whole-set ceiling in its last and most reasonable-looking
+       place — and it was the same mistake, because a further topic does not
+       take questions away from the ones already chosen. The set route accepts
+       `MAX_SCOPES` scopes of twenty, so this is the number that is true. */
     els.addTopic.disabled = !S.scope || anyBusy() ||
-      pickedTotal() >= MAX_QUESTIONS;
+      filledScopes().length >= MAX_SCOPES;
   }
 
   function anyBusy() {
@@ -1742,13 +1876,76 @@
      12. FETCHES
      ═════════════════════════════════════════════════════════════════════ */
 
+  /* ⊕ first-week fixes (22 Sep 2026) — THE TOPIC PANEL SAYS WHICH OF THE THREE THINGS IS TRUE, AND
+     IT IS PATCHED IN PLACE.
+
+     Reported by Mide after his first week: after selecting a class, `Next`
+     stayed grey for a noticeable time and sometimes needed the class toggling
+     off and on to wake up. `stepValid` for step 0 read
+     `!!(S.scope || S.scopeErr)` — Next waited for `/scope` to SETTLE — and
+     `loadScope` only called `syncValidity()` on its success and failure paths,
+     never on the discarded-stale-response path and never at all if the request
+     simply hung. Toggling the class off and on re-anchored and re-fetched, and
+     the second answer arrived; that is the whole of why the workaround worked.
+
+     Ruled: step 0 is valid when ≥1 class is selected, full stop. Which moves
+     the problem here — the Topic step is now reachable before the tree exists,
+     so this function is what makes that honest:
+
+        loading  the chip rails and the tree are empty and `Loading` says so
+        ready    the tree is built and the note and Retry are gone
+        error    `Unavailable`, and a `Retry` that asks again in place
+
+     `data-sw-scope-state` on the overlay carries the same word, counted onto
+     the node the way `data-sw-opens` is, so a drive reads a state instead of
+     inferring one from an empty container.
+
+     ⚠️ IT REBUILDS NOTHING. Same reason as `syncTree` and `refreshClasses`:
+     the teacher may be scrolled into this panel when `/scope` lands. */
+  function syncScopePanel() {
+    if (!S || !els) { return; }
+    var state = S.scope ? "ready" : (S.scopeErr ? "error" : (S.scopeLoading ? "loading" : "idle"));
+    els.overlay.setAttribute("data-sw-scope-state", state);
+    var note = (state === "loading") ? SAY.loading
+             : ((state === "error") ? SAY.unavailable : "");
+    els.treeNote.textContent = note;
+    els.treeNote.hidden = !note;
+    els.treeRetry.hidden = (state !== "error");
+    els.treeRetry.disabled = !!S.scopeLoading;
+    /* ⚠️ THE CHIP RAILS ARE DELIBERATELY NOT TOUCHED. An unbuilt `.sw-chips`
+       is an empty div and draws nothing, so hiding it would change no pixel
+       and would add a fourth thing this function owns — and `buildSubjectChips`
+       and `buildPaperChips` already own their own labels' visibility, for the
+       different reason that a separate-sciences class HAS no subject chips.
+       Two owners of one `hidden` is the bug this note exists to prevent. */
+  }
+
   function loadScope() {
     S.scopeErr = false;
+    S.scopeLoading = true;
     els.classNote.hidden = true;
+    syncScopePanel();
     var mySession = session, mySeq = ++fetchSeq;
+    /* ⚠️ `syncValidity()` IS CALLED ON EVERY PATH OUT OF HERE, INCLUDING THE
+       STALE ONE. The stale path does NOT clear `scopeLoading` — that flag
+       belongs to the newer fetch, which is still in flight — but it does
+       resync, because the state it is reading may have moved for other
+       reasons while it was away. Under the new `stepValid` no path out of
+       this function can leave `Next` grey on step 0 anyway: it no longer
+       reads `S.scope` at all. */
+    var stale = function () {
+      if (!S) { return true; }
+      if (mySession !== session || mySeq !== fetchSeq) {
+        syncScopePanel();
+        syncValidity();
+        return true;
+      }
+      return false;
+    };
     return apiGet("/api/teacher/set-work/scope?class_id=" +
                   encodeURIComponent(S.classId)).then(function (r) {
-      if (!S || mySession !== session || mySeq !== fetchSeq) { return false; }
+      if (stale()) { return false; }
+      S.scopeLoading = false;
       S.scope = r.body || {};
       var k = S.scope.class || {};
       var tiers = S.scope.tiers || [];
@@ -1781,17 +1978,24 @@
       buildTree();
       syncTree();
       syncScopes();
+      /* ⊕ first-week fixes (22 Sep 2026) — the panel resolves IN PLACE, so a teacher who already
+         walked forward to the Topic step watches `Loading` become the tree
+         without touching anything. No step change, no toggle, no re-open. */
+      syncScopePanel();
       syncValidity();
       return true;
     }, function () {
-      if (!S || mySession !== session || mySeq !== fetchSeq) { return false; }
+      if (stale()) { return false; }
+      S.scopeLoading = false;
       S.scope = null;
       S.scopeErr = true;
       els.classNote.hidden = false;
       els.tree.textContent = "";
       els.treeRows = [];
-      var tag = el("div", "sw-row-tag", SAY.unavailable);
-      els.tree.appendChild(tag);
+      /* ⊕ first-week fixes (22 Sep 2026) — the word is in `treeNote` now, not appended into the tree
+         itself: `buildTree()` empties `els.tree`, so a tag written in here was
+         a note whose lifetime depended on which function ran last. */
+      syncScopePanel();
       syncValidity();
       return false;
     });
@@ -1826,14 +2030,18 @@
        a chip reading 5. Capping first makes the number on the chip and the
        number of rows the same number.
 
-       ⊕ MRB-342 — AND THE OTHER SCOPES' ROWS ARE PART OF THE CEILING. The
-       server takes at most twenty questions for one assignment; a second
-       topic asking for ten over a first topic's twenty is a set that cannot
-       be written, and the sheet must not compose one. */
-    capCount(sc, Math.min(cap > 0 ? cap : MAX_QUESTIONS,
-                          MAX_QUESTIONS - othersTotal(sc)));
-    var room = MAX_QUESTIONS - othersTotal(sc);
-    var want = Math.min(sc.count, cap > 0 ? cap : sc.count, room);
+       ⊕ first-week fixes (22 Sep 2026) — AND THE OTHER SCOPES' ROWS ARE NOT PART OF THE CEILING.
+
+       ⛔ MRB-342 wrote, here: "AND THE OTHER SCOPES' ROWS ARE PART OF THE
+       CEILING. The server takes at most twenty questions for one assignment;
+       a second topic asking for ten over a first topic's twenty is a set that
+       cannot be written, and the sheet must not compose one." The premise is
+       no longer true — the server takes twenty PER SCOPE — and while it was
+       believed, this line asked `/preview` for fewer questions than the
+       teacher had pressed for and then moved their chip down to match. The
+       only ceiling on this request is this scope's own pool. */
+    capCount(sc, cap > 0 ? cap : MAX_QUESTIONS);
+    var want = Math.min(sc.count, cap > 0 ? cap : sc.count, MAX_QUESTIONS);
     if (want < 1) {
       sc.picked = [];
       buildQuestions(sc);
@@ -1873,8 +2081,10 @@
       S.clientRef = uuid();
       /* The server's `available` de-duplicates by normalised stem, so it can
          be smaller than the count /scope sent. Cap again against the number
-         that turned out to be true. */
-      capCount(sc, Math.min(sc.available, MAX_QUESTIONS - othersTotal(sc)));
+         that turned out to be true — and against THAT ALONE (⊕ first-week fixes (22 Sep 2026): the
+         `MAX_QUESTIONS - othersTotal(sc)` that used to be `min`'d in here was
+         the other topics' rows reaching into this one's ceiling). */
+      capCount(sc, sc.available);
       /* ⊕ MRB-335 — AND THE ROWS ARE TRUNCATED TO THE CHIP.
          `capCount` moves the CHIP down to the largest that fits; it cannot
          move the rows, and the server can legitimately return more than the
@@ -2031,16 +2241,27 @@
   function syncCountChips(sc) {
     if (!sc || !sc.els || !sc.els.countList) { return; }
     var cap = sc.available || scopeAvailable(sc);
-    /* ⊕ MRB-342 — AND THE ROOM THE OTHER SCOPES HAVE LEFT. The server takes
-       at most twenty questions in one assignment, so on a set already
-       holding fifteen the only live chip on a second topic is 5. Offering
-       10 and letting the POST come back `too_many_questions` would be a
-       control that composes a set the sheet knows cannot be written. */
-    var room = MAX_QUESTIONS - othersTotal(sc);
+    /* ⊕ first-week fixes (22 Sep 2026) — A CHIP IS DISABLED BY THIS TOPIC'S POOL AND BY NOTHING
+       ELSE.
+
+       ⛔ MRB-342 added a second clause here and it is the reported bug:
+
+           "AND THE ROOM THE OTHER SCOPES HAVE LEFT. The server takes at most
+            twenty questions in one assignment, so on a set already holding
+            fifteen the only live chip on a second topic is 5. Offering 10 and
+            letting the POST come back `too_many_questions` would be a control
+            that composes a set the sheet knows cannot be written."
+
+       The reasoning was sound and the premise was withdrawn: the server takes
+       twenty PER SCOPE, so a third topic asking for twenty over two topics'
+       forty is a set that CAN be written. `cap` — `/preview`'s `available`,
+       or `/scope`'s count for the node before the first request — is the only
+       ceiling left, and it is a fact about this topic's own pool at this
+       tier. Three topics of thirty-odd therefore offer all four chips on all
+       three, which is what Mide asked for. */
     var off = function (k) {
       var n = Number(k);
-      if (cap > 0 && n > cap) { return true; }
-      return n > room;
+      return cap > 0 && n > cap;
     };
     /* ⚠️ A DISABLED CHIP IS NEVER SHOWN AS SELECTED. ⊕ MRB-335. On a scope
        holding fewer than five — a KS3 lesson at one tier holds four — every
@@ -2124,10 +2345,33 @@
        where Next is already refused for want of a topic — a legible dead end
        instead of an illegible one. The class panel says it too now; see
        `loadScope`. */
-    if (S.step === 0) {
-      if (!S.classes.length) { return false; }
-      return !!(S.scope || S.scopeErr);
-    }
+    /* ⊕ first-week fixes, ruled by Mide 22 Sep 2026 — STEP 0 IS VALID WHEN A CLASS IS
+       CHOSEN. FULL STOP.
+
+       ⛔ It read `return !!(S.scope || S.scopeErr)` — resolved-either-way —
+       and the note above explains why that was an improvement on what came
+       before it. It is still wrong, and Mide met it in his first teaching
+       week: after selecting a class, `Next` stayed grey for a noticeable time
+       and SOMETIMES NEEDED THE CLASS TOGGLING OFF AND ON to wake up. Both
+       halves of that follow from this line.
+
+         · the wait is `/scope` — a round trip to Render, a KS3 tree with
+           five thousand bank rows behind it — standing between a teacher's
+           tap and a button that has nothing to do with the answer. Ticking a
+           class is a complete statement of what step 0 asks.
+         · the toggle-to-fix is the discarded-stale-response path in
+           `loadScope`, which returned without calling `syncValidity()`, and a
+           request that never settled, which called nothing at all. Either
+           left `scope` null and `scopeErr` false forever — and toggling the
+           class re-anchored and re-fetched, which is why it worked.
+
+       Ruled: `Next` enables the moment a class is chosen; whatever it was
+       waiting for happens in the background, and the toggle must become
+       impossible. Both are now true by construction — this predicate cannot
+       observe a fetch at all, so no state a fetch can be in can reach it. The
+       Topic step carries the waiting instead, and says which of loading /
+       ready / failed it is showing; see `syncScopePanel`. */
+    if (S.step === 0) { return S.classes.length > 0; }
     if (!S.scope) { return false; }
     if (S.step === 1) {
       var sc = cur();
@@ -2141,15 +2385,31 @@
        title and the deadline, both checked below; the questions are shown
        because a teacher changing a deadline should see what the deadline is
        on, and if that read failed the deadline is still theirs to move. */
-    /* ⊕ MRB-342 — EVERY SCOPE MUST HAVE ROWS, AND THE TOTAL IS THE
-       SERVER'S TWENTY. A scope the teacher added and left empty would be a
-       heading over nothing in the assignment and a section over nothing in
-       the worksheet; the count rails already refuse to compose past twenty,
-       so this is the assertion behind them rather than a second rule. */
+    /* ⊕ MRB-342 — EVERY SCOPE MUST HAVE ROWS. A scope the teacher added and
+       left empty would be a heading over nothing in the assignment and a
+       section over nothing in the worksheet.
+
+       ⊕ first-week fixes (22 Sep 2026) — AND THE TOTAL IS NO LONGER THE SERVER'S TWENTY. This read
+       `total > MAX_QUESTIONS` on both branches, with the note "the count
+       rails already refuse to compose past twenty, so this is the assertion
+       behind them rather than a second rule". The rails no longer refuse
+       that, because the server no longer does: the ceilings are twenty PER
+       SCOPE and `MAX_SCOPES` scopes. So this is the same assertion, restated
+       over the two things that are now true — and it is still the assertion
+       BEHIND the controls rather than a rule of its own, because `Add topic`
+       wears `MAX_SCOPES` and each count rail wears its own pool.
+
+       ⚠️ `over` IS PER SCOPE. A single scope past twenty can only arrive from
+       a stored set (an `edit()` of a row written under some other rule), and
+       Save must be refused rather than sending a body the route will refuse. */
     var total = pickedTotal();
     var empty = filledScopes().some(function (sc) { return !sc.picked.length; });
-    if (!S.locked && (!total || total > MAX_QUESTIONS || empty)) { return false; }
-    if (S.locked && total > MAX_QUESTIONS) { return false; }
+    var over = filledScopes().some(function (sc) {
+      return sc.picked.length > MAX_QUESTIONS;
+    });
+    var many = filledScopes().length > MAX_SCOPES;
+    if (!S.locked && (!total || empty || over || many)) { return false; }
+    if (S.locked && (over || many)) { return false; }
     var t = String(S.title || "").trim();
     if (!t.length || t.length > 80) { return false; }
     var due = dueIso();
@@ -2248,6 +2508,10 @@
     var ro = !!S.locked;
     /* The per-scope rails and lists take this in `syncScopes`. */
     syncScopes();
+    /* ⊕ first-week fixes (22 Sep 2026) — the Topic panel's three states are re-stated on every step
+       change, so arriving at it mid-fetch shows `Loading` rather than the
+       blank tree a teacher would read as "no topics". */
+    syncScopePanel();
     els.relLbl.hidden = ro;
     els.relChips.hidden = ro;
     if (ro) { els.relFields.hidden = true; }

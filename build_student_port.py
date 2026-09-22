@@ -278,7 +278,41 @@ PAGES = [
          constants=dict(benchPrimaryHref="''", benchDone="false",
                         benchOpen="true", benchDoneMarked="false",
                         benchDoneLessons="false", benchDoneFeedback="''",
-                        cardsEmpty="''")),
+                        cardsEmpty="''"),
+         # ── ⊕ RULED BY MIDE, 22 Sep 2026 · THE FIXTURE'S PROGRESS NUMBERS ─
+         #
+         # The completion bar reads `w.answered` and `w.qtotal` off each work
+         # row. DESIGN'S FILE HAS NEITHER FIELD, because Design's delivery
+         # predates the ruling — so there is nothing in it to lift, exactly
+         # as there was nothing to lift for `weekLabel` and `lateText` on
+         # the assignment page. This is that same seam, and it is here for
+         # the same three reasons `constants` gives: the value is typed
+         # rather than extracted, it is small, and it is named.
+         #
+         # ⚠️ IT IS NOT `constants`, AND IT COULD NOT BE. `constants` are
+         # whole `MRB_DATA` keys; these are two fields on each of six rows
+         # inside one lifted literal, and the literal ships as DESIGN'S OWN
+         # BYTES rather than being re-serialised. So the patch is an
+         # exactly-once string replacement per row, asserted, which leaves
+         # every other byte of Design's work list untouched.
+         #
+         # The numbers are chosen to put all six of Design's statuses
+         # through the bar, and the two PART-DONE rows are the point: an
+         # open row at 3/8 and a missed row at 2/8 are the states the bar
+         # exists for, and a fixture where every bar reads 100% would render
+         # the feature and prove nothing about it. The three marked rows and
+         # the pending one are full because Design's own `items` say they
+         # are. ⚑ The LIVE page never reads this file: `student-live.js`
+         # fills both fields from `assignment_questions` and the student's
+         # own `assignment_question_attempts`.
+         fixture_patch={"work": [
+             ("{ id: 'a5', week: 4,", "{ id: 'a5', answered: 3, qtotal: 8, week: 4,"),
+             ("{ id: 'a4', week: 3,", "{ id: 'a4', answered: 8, qtotal: 8, week: 3,"),
+             ("{ id: 'a3', week: 3,", "{ id: 'a3', answered: 5, qtotal: 5, week: 3,"),
+             ("{ id: 'a2', week: 2,", "{ id: 'a2', answered: 10, qtotal: 10, week: 2,"),
+             ("{ id: 'a1', week: 1,", "{ id: 'a1', answered: 8, qtotal: 8, week: 1,"),
+             ("{ id: 'a0', week: 1,", "{ id: 'a0', answered: 2, qtotal: 8, week: 1,"),
+         ]}),
     dict(page="assignment", out="assignment.html",
          fixture_out="assignment-fixture.html",
          fixture_js="student-fixture-assignment.js",
@@ -1602,6 +1636,165 @@ def top_up(css, wanted, tpls):
 # the full account of the recovery. Nothing about their content changed.
 
 
+# ── the type scale and the per-node style edit ────────────────────────────
+#
+# See `TYPE_SCALE`, `STYLE_EDIT`, `MONO_FLOOR_PX` and `UI_FLOOR_PX` in
+# student_rulings.py for Mide's ruling of 22 Sep 2026 and for why a table plus
+# a floor sweep rather than 188 `!important` overrides.
+
+_PX = re.compile(r"(\d+(?:\.\d+)?)px")
+
+
+def _style_strings(node):
+    """Every literal string inside this node's `style`, with a setter.
+
+    A `style` is either a plain string or Design's `{"parts": [...]}` run of
+    literals and `{"e": …}` expressions. Only the LITERALS are rewritten: an
+    expression is a name in the logic and its value is computed there.
+    """
+    a = node.get("a")
+    if not isinstance(a, dict) or "style" not in a:
+        return
+    v = a["style"]
+    if isinstance(v, str):
+        yield v, lambda new, _a=a: _a.__setitem__("style", new)
+        return
+    if isinstance(v, dict) and isinstance(v.get("parts"), list):
+        parts = v["parts"]
+        for i, p in enumerate(parts):
+            if isinstance(p, str):
+                yield p, (lambda new, _p=parts, _i=i: _p.__setitem__(_i, new))
+
+
+def _walk_nodes(roots):
+    stack = list(roots)
+    while stack:
+        n = stack.pop()
+        if not isinstance(n, dict):
+            continue
+        yield n
+        for kid in n.get("c") or []:
+            stack.append(kid)
+
+
+def _restyle(page, roots):
+    """Apply `STYLE_EDIT` then `TYPE_SCALE`, then sweep for the floors.
+
+    Returns `(type_scale_applications, style_edit_applications)`.
+    """
+    import student_rulings
+
+    # ── STYLE_EDIT: one node, exactly once each ──────────────────────────
+    edits = dict(student_rulings.STYLE_EDIT.get(page, {}))
+    n_edit = 0
+    for node in _walk_nodes(roots):
+        idx = node.get("i")
+        if idx not in edits:
+            continue
+        for old, new in edits[idx]:
+            hit = 0
+            for text, setter in list(_style_strings(node)):
+                if old in text:
+                    hit += text.count(old)
+                    setter(text.replace(old, new))
+            if hit != 1:
+                raise SystemExit(
+                    "build_student_port.py: the STYLE_EDIT ruling for %r "
+                    "rewrites %r on template node %s, and that declaration "
+                    "run occurs %d times in that node's style, not once.\n"
+                    "  Design has redrawn it. The ruling is Mide's and still "
+                    "stands (22 Sep 2026, the first-week fixes); re-anchor it "
+                    "in student_rulings.STYLE_EDIT rather than dropping it."
+                    % (page, old, idx, hit))
+            n_edit += 1
+        edits.pop(idx)
+    if edits:
+        raise SystemExit(
+            "build_student_port.py: the STYLE_EDIT ruling for %r names "
+            "template node(s) %s, and they are not on the page (or a graft "
+            "that brings them in did not run). ⚠️ NODE 136 IS THE TRAP HERE: "
+            "Design's original RECALL card is replaced by the grafted "
+            "flashcards card at 10204, so a ruling anchored on 136 edits a "
+            "node nothing renders. Re-anchor rather than dropping."
+            % (page, sorted(edits)))
+
+    # ── TYPE_SCALE: every node, at least once each ───────────────────────
+    #
+    # Longest `old` first, so a tracked run is rewritten before the bare run
+    # that is its prefix. The lookahead makes that belt-and-braces rather
+    # than load-bearing; both are here because either alone would be one
+    # silent-in-the-wrong-direction failure away from shipping.
+    table = sorted(student_rulings.TYPE_SCALE.get(page, ()),
+                   key=lambda kv: -len(kv[0]))
+    pats = [(old, new,
+             re.compile(re.escape(old) + r'(?=$|"|;(?!letter-spacing))'))
+            for old, new in table]
+    found = {old: 0 for old, _new in table}
+    n_type = 0
+    for node in _walk_nodes(roots):
+        for text, setter in list(_style_strings(node)):
+            out = text
+            for old, new, pat in pats:
+                out, k = pat.subn(new.replace("\\", "\\\\"), out)
+                if k:
+                    found[old] += k
+                    n_type += k
+            if out != text:
+                setter(out)
+    missed = sorted(o for o, k in found.items() if not k)
+    if missed:
+        raise SystemExit(
+            "build_student_port.py: %d TYPE_SCALE entr(ies) for %r matched "
+            "NOTHING on the page:\n%s\n"
+            "Design has redrawn that type. Mide's ruling of 22 Sep 2026 "
+            "stands — no mono label below %gpx, no body text below %gpx — so "
+            "re-anchor the entry in student_rulings.TYPE_SCALE. An entry that "
+            "silently matches nothing is the same failure as the hand-edit "
+            "the rulings file exists to replace."
+            % (len(missed), page, "\n".join("    %r" % m for m in missed),
+               student_rulings.MONO_FLOOR_PX, student_rulings.UI_FLOOR_PX))
+
+    # ── the floor sweep, which is the actual guarantee ───────────────────
+    #
+    # ⚑ THE TABLE IS A LIST OF EDITS; THIS IS THE PROPERTY. A table can be
+    # incomplete, and an incomplete table fails in the direction that looks
+    # fine: most labels grow, the two Design wrote once each stay at 9px, and
+    # nothing says so. So every literal px in every `var(--st-mono)` and
+    # `var(--st-ui)` shorthand left on the page is checked against its floor,
+    # including a `clamp()`'s floor and including nodes no entry names.
+    #
+    # `var(--st-display)` is deliberately NOT swept: every size in that
+    # family is already 16.5px or more, and it is the family Design tuned
+    # optically.
+    bad = []
+    for node in _walk_nodes(roots):
+        for text, _setter in _style_strings(node):
+            for m in re.finditer(r"font:([^;\"]*)", text):
+                run = m.group(1)
+                if "var(--st-mono)" in run:
+                    floor = student_rulings.MONO_FLOOR_PX
+                elif "var(--st-ui)" in run:
+                    floor = student_rulings.UI_FLOOR_PX
+                else:
+                    continue
+                for px in _PX.findall(run):
+                    if float(px) < floor:
+                        bad.append((node.get("i"), run.strip(), px, floor))
+    if bad:
+        raise SystemExit(
+            "build_student_port.py: %d type run(s) on %r are below Mide's "
+            "floor after the TYPE_SCALE pass:\n%s\n"
+            "RULED 22 Sep 2026: no mono label below %gpx, no body/detail "
+            "text below %gpx, on the pages a Year 8 reads on a phone. Add "
+            "the missing entr(ies) to student_rulings.TYPE_SCALE — a table "
+            "that is merely MOSTLY complete leaves the smallest labels on "
+            "the page exactly as they were."
+            % (len(bad), page,
+               "\n".join("    node %s  %s  (%spx < %gpx)" % b for b in bad),
+               student_rulings.MONO_FLOOR_PX, student_rulings.UI_FLOOR_PX))
+    return n_type, n_edit
+
+
 def apply_rulings(page, logic, roots, donor=None):
     """Design's logic and template with Mide's rulings applied.
 
@@ -2231,9 +2424,33 @@ def apply_rulings(page, logic, roots, donor=None):
             "underneath the DONE bench, with two dockets, and the build stays "
             "green." % (page, sorted(wraps)))
 
+    # ── ⊕ RULED BY MIDE, 22 Sep 2026 · THE TENTH AND ELEVENTH MECHANISMS ─
+    #
+    # `STYLE_EDIT` rewrites one declaration run on ONE named node;
+    # `TYPE_SCALE` rewrites a declaration run wherever it occurs. Both are
+    # in student_rulings.py with the full ruling; this is the machinery.
+    #
+    # ⚠️ IT RUNS LAST — after the grafts, the insertions and the wraps —
+    # for two reasons that are each independently sufficient. A GRAFTED node
+    # is addressable (`STYLE_EDIT` names 10204, Design's flashcards card,
+    # whose phone order this ruling sets), and an INSERTED subtree's own
+    # type is held to the same floor as Design's rather than being the one
+    # place on the page where a 9px label can still live.
+    #
+    # ⚠️ THE MATCH CARRIES A LOOKAHEAD AND THE TABLE IS SORTED LONGEST-FIRST.
+    # Design writes `font:400 10px/1 var(--st-mono)` and
+    # `font:400 10px/1 var(--st-mono);letter-spacing:0.1em`, and the first is
+    # a PREFIX of the second. A bare `str.replace` of the short entry would
+    # raise the long one's SIZE and leave its TRACKING at the value that was
+    # chosen for 10px — a label 20% bigger and no tighter, which is the exact
+    # thing this ruling is trying to avoid, on the widest labels, silently.
+    # So a match must be followed by end-of-run, by a quote, or by a `;` that
+    # does not begin `letter-spacing`.
+    typed = _restyle(page, roots)
+
     return (logic, roots, len(reps), removed[0], wired[0],
             grafted[0], attred[0], exprd[0], wrapped[0], moved[0],
-            inserted[0])
+            inserted[0], typed[0], typed[1])
 
 
 # ── lifting Design's data out of Design's logic ───────────────────────────
@@ -2733,8 +2950,35 @@ _MUST_NOT_LEAK = {"className", "classNamePadded", "studentFirstName",
 
 
 def fixture_js(spec, page, data_literals, bind_values):
-    """`window.__MRB_DATA__ = {…}` — Design's own values, once, for the gates."""
+    """`window.__MRB_DATA__ = {…}` — Design's own values, once, for the gates.
+
+    ⊕ 22 Sep 2026 — plus `fixture_patch`, where a ruling reads a field
+    Design's delivery has no counterpart for. See the class view's entry in
+    `PAGES` for the ruling; each replacement is asserted EXACTLY ONCE against
+    Design's lifted bytes, so a redrawn delivery stops the build rather than
+    quietly shipping a fixture whose new fields matched nothing.
+    """
     rows = []
+    patch = spec.get("fixture_patch") or {}
+    for name in sorted(patch):
+        if name not in data_literals:
+            raise SystemExit(
+                "build_student_port.py: the fixture patch for %r names the "
+                "field %r, and nothing of that name was lifted out of "
+                "Design's logic. Re-anchor it in PAGES." % (page, name))
+        lit = data_literals[name]
+        for old, new in patch[name]:
+            if lit.count(old) != 1:
+                raise SystemExit(
+                    "build_student_port.py: the fixture patch for %r anchors "
+                    "on %r in Design's %r, and it occurs %d times, not once.\n"
+                    "  Design has redrawn the example data. Mide's ruling of "
+                    "22 Sep 2026 stands — the fixture has to render the "
+                    "completion bar or the gates drive a feature that is not "
+                    "on the page they drive. Re-anchor rather than dropping."
+                    % (page, old, name, lit.count(old)))
+            lit = lit.replace(old, new, 1)
+        data_literals[name] = lit
     named = list(spec["fields"]) + list(spec["state_fields"])
     # The fields, in Design's order, then whatever the method-body seams
     # lifted — sorted, so the file is stable across runs.
@@ -2752,7 +2996,7 @@ def fixture_js(spec, page, data_literals, bind_values):
         "   Claude Design's own example data for the %s, lifted out of\n"
         "   Design's logic class and out of Design's template by source\n"
         "   transformation — not retyped, and not re-serialised. Every value\n"
-        "   below is the same bytes Design wrote.\n"
+        "   below is the same bytes Design wrote%s\n"
         "\n"
         "   ⛔ FOR THE GATES ONLY. This is one real class's homework with one\n"
         "   real child's name on it, frozen. It is loaded by %s and by nothing\n"
@@ -2760,7 +3004,16 @@ def fixture_js(spec, page, data_literals, bind_values):
         "   and `MRB_DATA` throws rather than falling back to this.\n"
         "   ══════════════════════════════════════════════════════════════ */\n"
         "window.__MRB_DATA__ = {\n%s\n};\n"
-        % (page, spec["fixture_out"], LIVE_JS_NAME, ",\n".join(rows)))
+        % (page,
+           "." if not patch else
+           ", except for the fields\n"
+           "   `fixture_patch` adds (build_student_port.PAGES) for a ruling "
+           "Design's\n"
+           "   delivery predates — see the ruling there; each one is asserted "
+           "exactly\n"
+           "   once against Design's own bytes, and the live page reads none "
+           "of them.",
+           spec["fixture_out"], LIVE_JS_NAME, ",\n".join(rows)))
 
 
 # ── the KS3 lesson index: a slug, and where that lesson actually lives ────
@@ -3102,6 +3355,69 @@ _PIP_ROW = (
 )
 
 
+# ── the DONE dot, which is no longer page-chrome dark ────────────────────
+#
+# ⊕ RULED BY MIDE, 22 Sep 2026 — first-week fixes (Done colour). See
+# `SET_ATTR` 166 in student_rulings.py for the ruling, for why `--pg-ok` and
+# not `--ks3-ok`, and for why the attribute is RENAMED off `data-page-strong`
+# rather than repointed.
+#
+# ⚠️ AND IT NEEDS `!important`, for the fifth time in this file and for the
+# reason `_PAGE_STRONG` records: `background:var(--st-ink)` is a LITERAL
+# inside Design's inline `style` on node 166, and an inline declaration
+# outranks any selector however specific. Written without the keyword this
+# rule parses, matches, loses, and the page looks exactly as if the ruling
+# had never been applied — the failure mode `[data-bench-avatar]` shipped
+# once already.
+#
+# CLASS VIEW ONLY, checked rather than assumed: `data-row-done` is set on one
+# node of one template, and the assignment has no work rows.
+_ROW_DONE = (
+    "[data-row-done]{background-color:var(--pg-ok)!important}"
+)
+
+
+# ── the eyebrow, which is the most-used label on both pages ──────────────
+#
+# ⊕ RULED BY MIDE, 22 Sep 2026 — first-week fixes (type scale). See
+# `TYPE_SCALE` in student_rulings.py for the ruling; this is the half of it
+# that lives in a STYLESHEET rather than in an inline `style`, so
+# `TYPE_SCALE` — which rewrites inline runs — cannot reach it.
+#
+# `.eyebrow` is Design's `font: 500 10.5px/1 var(--st-mono)` with
+# `letter-spacing: 0.18em`, and it labels almost every region a student
+# reads: Work, Recall, Lessons, Shoutouts, Leaderboard, the hero's welcome
+# line, the four stat-strip labels, the docket kicker — twelve nodes on the
+# class view and eight on the assignment. Under Mide's floor, every one of
+# them.
+#
+# ⚠️ IT IS EMITTED HERE AND NOT EDITED INTO `shared/student-ds.css`, and that
+# was learned the hard way in this very run: `student-ds.css` is GENERATED by
+# this build out of Design's six sheets. An edit typed into it survives until
+# the next build, which is the exact shape of the mistake `student_rulings.py`
+# exists to recover from — and it did, silently, with a green build and the
+# type unchanged.
+#
+# ⚠️ THE SIZE AND THE TRACKING MOVE TOGETHER. 0.18em on a 12px face is 2.2px
+# of air per letter and `WELCOME BACK, AYO · YOUR CLASS` then wraps mid-word
+# at 390px. 0.11em keeps the letterspaced mono character and buys back more
+# width than the size costs.
+#
+# ⚑ NO `!important`, DELIBERATELY, AND IT IS THE ONE EMITTED RULE HERE THAT
+# DOES NOT NEED IT. The declaration it overrides is in a STYLESHEET, not in an
+# inline `style` attribute, so equal specificity plus later origin is enough —
+# this `<style>` block is emitted after the `<link>`. And the keyword would
+# actively do harm: `.modewrap .eyebrow` (specificity 0,2,0) is what keeps the
+# BENCH's own eyebrow at 10.5px, which is Mide's explicit exclusion of the
+# flashcards surface from this ruling, and `!important` here would beat it.
+#
+# BOTH PAGES, counted rather than assumed: 12 on the class view, 8 on the
+# assignment.
+_EYEBROW_TYPE = (
+    ".eyebrow{font:600 12px/1 var(--st-mono);letter-spacing:0.11em}"
+)
+
+
 # ── the flip stage, and the two buttons it pushed off a phone ────────────
 #
 # ⊕ RULED 23 Aug 2026 — PHASE 5. See `data-card-fit` in student_rulings.py for
@@ -3395,9 +3711,18 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
            # rather than assumed: there is no `[data-page-strong]` and no
            # `[data-pip-row]` anywhere in the assignment template, so both
            # would be rules nothing could tell were broken.
-           ((_THEME_BRIDGE + _PAGE_STRONG + _PIP_ROW + _CARD_FIT)
-            if spec["page"] == "class view"
-            else (bench_css + _THEME_BRIDGE + _Q_EYEBROW)),
+           # ⊕ 22 Sep 2026 — and the work row's DONE dot, which leaves
+           # the espresso family for `--pg-ok`. Class-view-only for the
+           # same measured reason as the two above it.
+           # ⊕ 22 Sep 2026 — `_EYEBROW_TYPE` is on BOTH branches: it is the
+           # one emitted rule in this file that matches on both pages, and
+           # leaving it off the assignment would have raised twelve labels
+           # on the class view and left eight identical ones beside them.
+           (_EYEBROW_TYPE +
+            ((_THEME_BRIDGE + _PAGE_STRONG + _PIP_ROW + _CARD_FIT
+              + _ROW_DONE)
+             if spec["page"] == "class view"
+             else (bench_css + _THEME_BRIDGE + _Q_EYEBROW))),
            json.dumps({"roots": roots, "imports": tpl["imports"]},
                       separators=(",", ":")).replace("<", "\\u003c"),
            json.dumps(bind_table, separators=(",", ":")),
@@ -3667,7 +3992,7 @@ def build():
         donor_tpl = tpls.get(DONOR_PAGE)
         (logic, ruled_roots, n_rep, n_pruned, n_wired,
          n_grafted, n_attred, n_exprd, n_wrapped, n_moved,
-         n_inserted) = apply_rulings(
+         n_inserted, n_typed, n_styled) = apply_rulings(
             spec["page"], tpl["logic"], tpl["roots"],
             donor=(donor_tpl or {}).get("roots"))
         ruled_tpl = {"roots": ruled_roots, "imports": tpl["imports"]}
@@ -3768,11 +4093,13 @@ def build():
                   "%d subtree(s) grafted from the amendments, %d node(s) "
                   "named for the themes, %d loop expression(s) renamed, "
                   "%d node(s) made conditional, %d handler(s) retargeted, "
-                  "%d subtree(s) inserted where Design drew none — "
+                  "%d subtree(s) inserted where Design drew none, "
+                  "%d type run(s) rescaled, %d style declaration(s) "
+                  "rewritten on a named node — "
                   "from student_rulings.py, not from a hand edit to the "
                   "built page"
                   % (n_rep, n_pruned, n_wired, n_grafted, n_attred, n_exprd,
-                     n_wrapped, n_moved, n_inserted))
+                     n_wrapped, n_moved, n_inserted, n_typed, n_styled))
         print("     ✅ %-24s %7d bytes  (%d template node(s), "
               "%d chars of Design's logic, 0 bytes of data)"
               % (spec["out"], len(body), count_nodes(roots), len(logic)))

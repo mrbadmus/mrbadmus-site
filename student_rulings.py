@@ -1877,6 +1877,155 @@ LOGIC = {
             "         it twice is how a lesson stops being one. */\n"
             "      ...this.recallVals(),\n",
         ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ RULED BY MIDE, 22 Sep 2026 · FIRST-WEEK FIXES
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Mide's first real week teaching with the class pages. Five rulings
+        # land on the work row and all five are in the same map, so they are
+        # written as four anchored replacements on it, in the order the
+        # fields appear. Each anchors on the POST-RULING logic — these
+        # entries are LAST in the list, so `old` is what the earlier rulings
+        # left, which is what `student/class.html` actually carries.
+        #
+        # ── F1 · THE EXTENSION IS GONE, AND A MISSED DEADLINE IS NOT A ────
+        # ──      LOCKED DOOR                                          ────
+        #
+        # Design's missed row offered `Ask for an extension`, and the port
+        # wired it to `this.openRecall` — so the one control a child reached
+        # for when they had missed a deadline opened a practice round. Mide:
+        # *"it only opens the recall/practice round, which makes no sense …
+        # Missing the deadline never takes the work away."*
+        #
+        # RULED: there is no extension. Anything not completed — OPEN and
+        # MISSED alike — says `Complete homework` and goes to the
+        # assignment. `retake`, `marked` and `pending` keep exactly the
+        # labels and destinations Design gave them.
+        #
+        # ⚑ THE WHOLE LATE PATH WAS CHECKED BEFORE THIS WAS WRITTEN, not
+        # assumed, and it is already built for this: the backend's
+        # `/api/assignment/answer` and `/api/assignment/complete` carry no
+        # due-date refusal of any kind (`is_late` is computed at completion
+        # and STORED, never used to reject), and the assignment page has no
+        # deadline gate on its inputs or its Complete button. The only thing
+        # standing between a child and their missed homework was this label
+        # and the empty `assignmentHref` beside it in
+        # `shared/student-live.js`, which moves in the same commit.
+        #
+        # ── F2 · THE MARKS-ARE-FINAL NOTE GOES ───────────────────────────
+        #
+        # `MARKS ARE FINAL UNLESS A RETAKE IS OPEN` sat under every marked
+        # row. Mide: *"Unnecessary."* It is also platform self-explanation of
+        # exactly the kind §8.10 rules out — a sentence about how the marking
+        # works rather than about this child's work. The OPEN row's
+        # `COUNTS TOWARDS WEEK n` stays: that is a fact about the deadline
+        # in front of them.
+        #
+        # ── F3 · THE BARE PERCENTAGE BECOMES A BAR AND A LABEL ───────────
+        #
+        # A row showed `82%` in 27px display type and nothing saying what it
+        # was a percentage OF. Mide ruled two things in its place: a
+        # COMPLETION bar (answered vs not) and the CORRECT percentage,
+        # labelled so it cannot be misread.
+        #
+        # ⚠️ TWO NUMBERS, AND THEY ARE NOT THE SAME NUMBER. Completion is
+        # `answered / questions` and exists on every row including an open
+        # one; correct is `score / max_score` and exists only once a teacher
+        # has marked it. Conflating them is the exact misreading the label is
+        # for, so they are computed apart, coloured apart and never summed.
+        #
+        # ⚠️ `hideScores` IS UNTOUCHED. The completion bar is not a mark and
+        # is shown regardless; `showScore` still gates the percentage, so a
+        # class with scores hidden gains progress and reveals no marks.
+        #
+        # The numbers come from the row (`w.answered`, `w.qtotal`), filled by
+        # `shared/student-live.js` from data the class page ALREADY reads —
+        # `assignment_questions` for the totals and the student's own
+        # `assignment_question_attempts` for the answered count — so the bar
+        # costs no new round trip. The `w.items` fallback is what makes
+        # Design's own fixture rows render a bar at all where the patch does
+        # not reach, and it is honest: a marked row's per-question breakdown
+        # IS its answered list.
+        #
+        # ── F4 · DONE IS GREEN, INCLUDING THE WORD ───────────────────────
+        #
+        # The dot is `SET_ATTR` 166 + `_ROW_DONE`; this is its other half.
+        # `wordColor` paints the status word AND the row's `W03 · MARKED`
+        # meta line, so a marked row now reads green in both places.
+        # `--pg-ok-text` (#0A6B36) and not `--pg-ok`: this is TEXT, 6.02:1 on
+        # the ground, where the dot's #12A150 is 3.06:1 and would fail AA.
+        (
+            "        showScore: showScore, scoreText: w.score + '%',",
+            "        showScore: showScore, scoreText: w.score + '%',\n"
+            "        /* ⊕ RULED by Mide 22 Sep 2026 — first-week fixes.\n"
+            "           The bare percentage gets a word, and the row gets a\n"
+            "           completion bar that is NOT the same number. */\n"
+            "        scoreLabel: 'CORRECT',\n"
+            "        hasBar: qTotal > 0,\n"
+            "        barPct: qTotal > 0\n"
+            "          ? Math.round((qDone / qTotal) * 100) + '%' : '0%',\n"
+            "        barFill: qDone >= qTotal\n"
+            "          ? 'var(--pg-ok)' : 'var(--st-accent)',\n"
+            "        barText: qDone + ' OF ' + qTotal + ' ANSWERED',\n"
+            "        barTitle: qDone + ' of ' + qTotal + ' questions answered',",
+        ),
+        # The two locals the bar reads, declared where the row's other
+        # derived values are. `Math.min` because a retake can leave more
+        # attempt rows than the assignment has questions and a bar wider
+        # than its track is a rendering bug a student would report as a lie.
+        (
+            "      const shortWord = w.status === 'open' ? 'DUE THU'"
+            " : w.status === 'pending' ? 'SENT' : w.status === 'missed' ?"
+            " 'MISSED' : 'MARKED';\n"
+            "      return {",
+            "      const shortWord = w.status === 'open' ? 'DUE THU'"
+            " : w.status === 'pending' ? 'SENT' : w.status === 'missed' ?"
+            " 'MISSED' : 'MARKED';\n"
+            "      /* ⊕ RULED by Mide 22 Sep 2026 — first-week fixes. */\n"
+            "      const qTotal = w.qtotal != null ? w.qtotal"
+            " : (w.items ? w.items.length : 0);\n"
+            "      const qDone = Math.min(qTotal, w.answered != null"
+            " ? w.answered : (w.items ? w.items.length : 0));\n"
+            "      return {",
+        ),
+        # F4's other half.
+        (
+            "        wordColor: w.status === 'open' ? 'var(--ks3-accent-text)'"
+            " : w.status === 'missed' ? 'var(--err)' : 'var(--st-caption)',",
+            "        /* ⊕ RULED by Mide 22 Sep 2026 — first-week fixes:\n"
+            "           Done is bright and unmistakable. See SET_ATTR 166. */\n"
+            "        wordColor: w.status === 'open' ? 'var(--ks3-accent-text)'"
+            " : w.status === 'missed' ? 'var(--err)' : isMarked ?"
+            " 'var(--pg-ok-text)' : 'var(--st-caption)',",
+        ),
+        # F1 and F2 together: they are two adjacent lines of the same map and
+        # splitting them would give two anchors that each contain the other's
+        # text.
+        (
+            "        footNote: isMarked ? 'MARKS ARE FINAL UNLESS A RETAKE IS"
+            " OPEN' : w.status === 'open' ? 'COUNTS TOWARDS WEEK 04' : '',\n"
+            "        primaryLabel: w.status === 'open' ? 'Open the assignment'"
+            " : w.retake ? 'Retake it' : isMarked ? 'Open the lesson' :"
+            " w.status === 'pending' ? 'See what you sent' : 'Ask for an"
+            " extension',\n"
+            "        primary: (w.status === 'open' || w.retake)\n",
+            "        /* ⊕ RULED by Mide 22 Sep 2026 — first-week fixes.\n"
+            "           F2: the marked row's footnote is gone. It explained\n"
+            "           the marking machinery under a child's marks and said\n"
+            "           nothing about their work. The OPEN row's note stays. */\n"
+            "        footNote: w.status === 'open' ?"
+            " 'COUNTS TOWARDS WEEK 04' : '',\n"
+            "        /* F1: asking for more time is not a thing this page\n"
+            "           offers any more, and a missed deadline does not take\n"
+            "           the work away. Open and missed both say\n"
+            "           `Complete homework` and both go to the assignment;\n"
+            "           nothing about marked, retake or pending moves. */\n"
+            "        primaryLabel: w.retake ? 'Retake it' : isMarked ?"
+            " 'Open the lesson' : w.status === 'pending' ?"
+            " 'See what you sent' : 'Complete homework',\n"
+            "        primary: (w.status === 'open' || w.status === 'missed'"
+            " || w.retake)\n",
+        ),
     ],
     'assignment': [
         (
@@ -2491,7 +2640,47 @@ SET_ATTR = {
         10118: {"data-bench-docket": "1"},
         107: {"data-port-region": "term-spine"},
         118: {"data-page-strong": "legend-done"},
-        166: {"data-page-strong": "work-row-done"},
+        # ⊕ RULED by Mide 22 Sep 2026 — first-week fixes (Done colour).
+        #
+        # THIS LINE USED TO READ:
+        #
+        #     166: {"data-page-strong": "work-row-done"},
+        #
+        # and it is quoted rather than deleted because the note above —
+        # Design's README change 1, *"page-chrome dark is now espresso
+        # #4A3728 … top rule, work-row and legend DONE dots"* — still
+        # stands for the LEGEND dot and for the week tiles. It no longer
+        # stands for this one.
+        #
+        # Mide's first week with the real classes: *"The Done status
+        # colour must be bright and unmistakably different from Open and
+        # Missed. Today Done is a dark ink dot."* Espresso beside an
+        # orange Open ring and a red Missed diamond is the one of the
+        # three a phone at arm's length cannot name, and it is the one a
+        # student most wants to see.
+        #
+        # So the work-row DONE dot takes `--pg-ok` (#12A150, 3.06:1 on
+        # the cream ground — above the 3:1 floor for a graphic, which is
+        # what a 13px disc is). ⚠️ `--pg-ok` and NOT `--ks3-ok`: both are
+        # #12A150 today, and `--pg-*` is the PAGE-CHROME family, declared
+        # fixed on `:root` and asserted theme-independent by
+        # student_themes.py. A bench-theme token here is the cream-ground
+        # defect the term spine's `numColor` note records refusing.
+        #
+        # ⚠️ THE ATTRIBUTE IS RENAMED, NOT REPOINTED, and that is what
+        # keeps the gate honest: `student_themes.PAGE_STRONG_MARKS` counts
+        # every `[data-page-strong]` and requires it to measure #4A3728,
+        # so leaving the old name on a green dot would have failed that
+        # gate with a message about espresso. It moves to
+        # `data-row-done`, with its own rule (`_ROW_DONE` in
+        # build_student_port.py) and its own count in student_themes.py.
+        #
+        # ⚑ THE LEGEND DOT AND THE WEEK TILES DO NOT MOVE. They are a
+        # different ruling (23 Aug 2026, the term spine) about a
+        # different graphic, and Mide's 22 Sep ruling is about the
+        # assignment card. Changing them would be folding new scope into
+        # this one silently; it is reported instead.
+        166: {"data-row-done": "work-row"},
         # ⊕ 23 Aug 2026 — PHASE 4. A HANDLE FOR THE DONE BENCH'S FIRST LINK.
         #
         # 225 is the live page's "Lessons in this topic" panel. Design's done
@@ -2782,7 +2971,97 @@ SET_EXPR = {
 #
 # `{page: {(parent, after): (subtree, why)}}`.
 INSERT_AT = {
-    "class view": {},
+    "class view": {
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ RULED BY MIDE, 22 Sep 2026 · FIRST-WEEK FIXES — THE COMPLETION
+        # BAR, AND THE WORD THAT STOPS THE PERCENTAGE BEING MISREAD
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Three insertions, and each one is placed where it is for a reason
+        # about the ROW BUTTON rather than about the layout.
+        #
+        # ⚠️ THE WHOLE COLLAPSED ROW IS ONE `<button>` (node 161), so every
+        # word put inside it lands in `student_behaviour`'s CONTROL CENSUS as
+        # well as in the page text. That is why the bar inside the row is a
+        # GRAPHIC and nothing else: three nested spans, no text node, with
+        # the breakdown on a `title` for a pointer and in the EXPANDED panel
+        # for a thumb. A bar that carried its own caption would have added a
+        # number to every row button's label, and a number that moves with a
+        # child's progress cannot be registered as a fixed pattern.
+        #
+        # ⚠️ AND A HOVER TOOLTIP IS NOT AN ANSWER ON A PHONE, which is where
+        # these students are. `title` is the pointer affordance; the real one
+        # is the tap, and the tap already expands the row — so the breakdown
+        # goes in the panel the tap opens, which is Mide's "tap reveals the
+        # breakdown" literally and needs no new control.
+        (173, 177): (
+            {"t": "if", "e": "r.hasBar", "c": [
+                {"t": "span",
+                 "a": {"title": {"parts": [{"e": "r.barTitle"}]},
+                       "style": "display:block;margin-top:10px;"
+                                "max-width:230px"},
+                 "c": [
+                     {"t": "span",
+                      "a": {"style": "display:flex;height:7px;"
+                                     "border-radius:4px;overflow:hidden;"
+                                     "background:var(--st-rule-soft)"},
+                      "c": [
+                          {"t": "span",
+                           "a": {"style": {"parts": [
+                               "display:block;height:7px;border-radius:4px;"
+                               "background:", {"e": "r.barFill"},
+                               ";width:", {"e": "r.barPct"}]}}},
+                      ]},
+                 ]},
+            ]},
+            "the completion bar, in the work row's title column, under the "
+            "`W03 \u00b7 MARKED` meta line (node 177's `<if>`). Mide's "
+            "ruling of 22 Sep 2026: the bare percentage is replaced by a "
+            "completion bar plus a LABELLED correct percentage, because a "
+            "single unlabelled number beside a homework title is read as "
+            "whichever of the two the reader was already thinking about. "
+            "Two segments only \u2014 answered against the track \u2014 "
+            "and no caption inside the button; see the note above."),
+        # The word. `scoreText` stays Design's `82%` in Design's 27px display
+        # type; this is the small mono word under it, and node 181's own
+        # `style` gains the flex column that stacks the two (`STYLE_EDIT`
+        # below, because `SET_ATTR` refuses to overwrite Design's `style`
+        # and `LOGIC` has no computed string to bite on).
+        #
+        # ⚠️ INSIDE NODE 181 AND NOT BESIDE IT. Node 179 is a horizontal flex
+        # row and an `<if>`'s children are spliced into their grandparent's
+        # flow, so a sibling `<span>` would have sat the word to the RIGHT of
+        # the number rather than under it, between the score and the caret.
+        (181, None): (
+            {"t": "span",
+             "a": {"style": "font:500 12px/1 var(--st-mono);"
+                            "letter-spacing:0.08em;"
+                            "color:var(--st-caption)"},
+             "c": [{"t": "#", "v": {"parts": [{"e": "r.scoreLabel"}]}}]},
+            "the word CORRECT, under the marked row's percentage. Mide's "
+            "ruling of 22 Sep 2026: the percentage is labelled so it cannot "
+            "be misread as completion. It is a text node inside the row "
+            "button, so it is registered in "
+            "`student_behaviour.RULED_ADDITIONS` and "
+            "`RULED_CONTROL_EDITS`."),
+        # The breakdown, in the panel the tap opens. Node 189 is the panel's
+        # header row — `r.detail` at 190, the RETAKE chip at 191 — and it is
+        # a `<div>`, NOT a button, so this adds to the page text and to no
+        # control's label.
+        (189, 191): (
+            {"t": "if", "e": "r.hasBar", "c": [
+                {"t": "span",
+                 "a": {"style": "margin-left:auto;font:500 12px/1.4 "
+                                "var(--st-mono);letter-spacing:0.07em;"
+                                "color:var(--st-caption);white-space:nowrap"},
+                 "c": [{"t": "#", "v": {"parts": [{"e": "r.barText"}]}}]},
+            ]},
+            "the completion breakdown \u2014 `7 OF 10 ANSWERED` \u2014 in "
+            "the expanded row's header, beside the detail line and the "
+            "RETAKE chip. This is the half of Mide's 22 Sep ruling that a "
+            "thumb can reach: the bar above is the glance, the tap is the "
+            "number."),
+    },
     "assignment": {
         # ── ⊕ RULED BY MIDE, 3 Sep 2026 · WHAT THE TEACHER WROTE ────────
         #
@@ -3434,4 +3713,304 @@ WRAP = {
         10134: "benchDoneFeedback",
     },
     "assignment": {348: "assignmentLessonHref"},
+}
+
+
+# ── ⊕ RULED BY MIDE, 22 Sep 2026 · THE TENTH AND ELEVENTH MECHANISMS ─────
+#
+# Both rewrite DECLARATIONS inside a `style` attribute, and both exist for the
+# same reason the four emitted CSS rules in build_student_port.py exist: the
+# value is a LITERAL inside an inline `style`, so there is no computed string
+# for `LOGIC` to bite on, `SET_ATTR` refuses to overwrite an attribute Design
+# already wrote, and an inline declaration outranks any selector however
+# specific.
+#
+# The four `!important` rules were the right answer while there were four of
+# them, each naming one element. Mide's type ruling touches 106 declarations
+# on the class view and 82 on the assignment, and 188 `!important` overrides
+# would be a second, invisible stylesheet fighting the first.
+#
+#     STYLE_EDIT   {node: [(old, new), …]}  — one node, asserted exactly once
+#     TYPE_SCALE   [(old, new), …]          — every node, asserted at least once
+#
+# ⚠️ BOTH RUN LAST, AFTER THE GRAFTS AND THE INSERTIONS, so a grafted or
+# inserted node can be addressed (`STYLE_EDIT` 10204 below is one) and so an
+# inserted subtree's own type is held to the same floor as Design's.
+#
+# ⚠️ AND BOTH MATCH WITH A LOOKAHEAD, NOT A BARE `str.replace`. Design writes
+# both `font:400 10px/1 var(--st-mono)` and
+# `font:400 10px/1 var(--st-mono);letter-spacing:0.1em`, and the first is a
+# PREFIX of the second. A plain replace of the short one would turn the long
+# one into `font:500 12px/1 var(--st-mono);letter-spacing:0.1em` — the size
+# raised and the tracking left at its 10px value, which is the one thing this
+# ruling is trying to avoid. So a match must be followed by end-of-run or by a
+# `;` that does NOT begin `letter-spacing`, and the table is applied
+# longest-`old`-first. See `restyle()` in build_student_port.py.
+
+
+STYLE_EDIT = {
+    'class view': {
+        # ── ⊕ RULED BY MIDE, 22 Sep 2026 · PHONE ORDER ───────────────────
+        #
+        # *"On a phone the flashcards/recall panel currently sits ABOVE the
+        # assignment details. Move it BELOW the assignments and ABOVE the
+        # leaderboard."*
+        #
+        # ⚠️ IT IS NODE 10204 AND NOT NODE 136, AND THAT IS THE WHOLE TRAP.
+        # Design's ORIGINAL delivery draws the dark RECALL card at node 136
+        # with `order:1;grid-column:2;grid-row:2`. `GRAFT` replaced that card
+        # wholesale with Design's amended flashcards card (donor 204 →
+        # `10204`) on 23 Aug 2026, and Design's donor carries
+        # `position:relative;` and NO `order` and NO grid placement at all.
+        # So its phone order is the CSS default, 0 — which is why it sits
+        # above a Work section carrying `order:2`, and why editing node 136
+        # would have edited a node that is not on the page.
+        #
+        # The rail's four children read, today:
+        #
+        #     10204  flashcards   (no order — effectively 0, no grid cell)
+        #     146    Work         order:2   grid col 1, rows 1-2
+        #     225    Lessons      order:3   grid col 2, row 1
+        #     236    Shoutouts    order:4   grid col 1, row 3
+        #
+        # RULED: Work takes 1 and the flashcards card takes 2, so the phone
+        # reads Work → Flashcards → Lessons → Shoutouts, and then the
+        # LEADERBOARD, which is node 249 — a SIBLING of the rail and after it
+        # in document order, so "above the leaderboard" is satisfied by
+        # anything inside the rail. Immediately after the work is the
+        # strictest reading of "below the assignments" and is what this does.
+        #
+        # ⚑ DESKTOP IS UNCHANGED, AND IT WAS CHECKED RATHER THAN ASSUMED.
+        # 146, 225 and 236 are EXPLICITLY placed (`grid-column` /
+        # `grid-row`), so `order` cannot move them in the grid; 10204 is
+        # auto-placed, and auto-placement walks order-modified document order
+        # looking for the first free cell. Before: 10204 is first, finds
+        # row 1 col 1 taken by 146, row 1 col 2 taken by 225, row 2 col 1
+        # taken by 146's span, and lands in row 2 col 2. After: it is second,
+        # and the three explicit placements are identical, so the first free
+        # cell is the same cell. Verified at 1460 as well as reasoned.
+        10204: [("position:relative;", "order:2;position:relative;")],
+        146: [("order:2;", "order:1;")],
+        # ── F3's other half: the score stacks over its label ─────────────
+        #
+        # Node 181 holds one text node, `{r.scoreText}`. `INSERT_AT` appends
+        # the word CORRECT inside it, and an inline `<span>` would have set
+        # the word BESIDE the number. A flex column with `align-items:
+        # flex-end` stacks them and keeps them right-aligned against the
+        # caret, which is where Design's row already ends.
+        181: [("letter-spacing:-0.035em",
+               "letter-spacing:-0.035em;display:flex;"
+               "flex-direction:column;align-items:flex-end;gap:4px;"
+               "text-align:right")],
+    },
+    'assignment': {},
+}
+
+
+# ── ⊕ RULED BY MIDE, 22 Sep 2026 · THE TYPE IS TOO SMALL ─────────────────
+#
+# *"Text on the student class page is too small — the tiny mono instruction
+# labels especially. Bring it up to what a Year 8 reads on a phone without
+# squinting."*
+#
+# The rule Mide set, and the rule this table implements:
+#
+#   · no mono label below 12px          (`MONO_FLOOR_PX`)
+#   · the status word at 13px           (node 183, the one that says MARKED)
+#   · card body / detail text ≥ 15px    (`UI_FLOOR_PX`)
+#   · weight up one step where the text is thin (400 → 500, 500 → 600)
+#   · tracking EASED as the size rises, so the label still fits at 390px
+#   · `clamp()` / `cqw` idioms KEPT, with their floors raised
+#
+# ⚠️ TRACKING IS PART OF THE ENTRY, NOT A SEPARATE TABLE, and that is not
+# tidiness. `letter-spacing:0.1em` sits on a 9.5px mono label AND on a 14.5px
+# chip, so a global tracking map would have loosened the chip while tightening
+# the label. Each entry therefore carries the `letter-spacing` declaration
+# that FOLLOWS its `font:` shorthand where there is one, which Design writes
+# adjacently everywhere — checked across both templates, not assumed.
+#
+# ⚠️ DISPLAY TYPE IS NOT IN THIS TABLE. Every `var(--st-display)` size on both
+# pages is already 16.5px or larger, and the display family is the one Design
+# tuned optically; raising a 76px hero because a 9.5px label was illegible
+# would be a redesign wearing a ruling's clothes.
+#
+# ⚠️ THE BENCH'S OWN TYPE IS NOT IN IT EITHER. The flashcards overlay and the
+# round are Design's grafted surfaces, they carry `font:inherit` and take
+# their size from `student-ds.css`, and their smallest label — `.modewrap
+# .eyebrow` — is 10.5px with its own rule. Mide's ruling explicitly excludes
+# the bench unless it has the same 9.5px labels. It does not.
+#
+# ⚑ THE TABLE IS NOT THE GUARANTEE — THE FLOOR SWEEP IS. A table can be
+# incomplete and an incomplete table fails silently in the direction that
+# looks fine: the page builds, most labels grow, and the two Design wrote
+# once each stay at 9px with nothing saying so. So `restyle()` asserts, after
+# the pass, that NO literal px size in any `var(--st-mono)` shorthand is
+# under `MONO_FLOOR_PX` and none in any `var(--st-ui)` shorthand is under
+# `UI_FLOOR_PX`, anywhere on the page, including inside a `clamp()` floor and
+# including nodes this table never names. An entry that stops matching is a
+# separate failure, asserted separately.
+MONO_FLOOR_PX = 12.0
+UI_FLOOR_PX = 15.0
+
+TYPE_SCALE = {
+    'class view': [
+        # ── mono, 9–9.5px: the eyebrow-weight labels ────────────────────
+        ("font:400 9.5px/1 var(--st-mono);letter-spacing:0.11em",
+         "font:500 12px/1 var(--st-mono);letter-spacing:0.07em"),
+        ("font:400 9.5px/1 var(--st-mono);letter-spacing:0.12em",
+         "font:500 12px/1 var(--st-mono);letter-spacing:0.07em"),
+        ("font:400 9.5px/1.4 var(--st-mono);letter-spacing:0.12em",
+         "font:500 12px/1.4 var(--st-mono);letter-spacing:0.07em"),
+        # node 178 — the work row's `W03 · MARKED` meta line.
+        ("font:400 9.5px/1.4 var(--st-mono);letter-spacing:0.1em",
+         "font:500 12px/1.4 var(--st-mono);letter-spacing:0.06em"),
+        ("font:400 9.5px/1.5 var(--st-mono);letter-spacing:0.1em",
+         "font:500 12px/1.5 var(--st-mono);letter-spacing:0.06em"),
+        ("font:500 9px/1 var(--st-mono);letter-spacing:0.14em",
+         "font:600 12px/1 var(--st-mono);letter-spacing:0.08em"),
+        # ── mono, 10px ──────────────────────────────────────────────────
+        ("font:400 10px/1 var(--st-mono);letter-spacing:0.06em",
+         "font:500 12px/1 var(--st-mono);letter-spacing:0.04em"),
+        ("font:400 10px/1 var(--st-mono);letter-spacing:0.11em",
+         "font:500 12px/1 var(--st-mono);letter-spacing:0.07em"),
+        ("font:400 10px/1 var(--st-mono);letter-spacing:0.1em",
+         "font:500 12px/1 var(--st-mono);letter-spacing:0.07em"),
+        ("font:400 10px/1.4 var(--st-mono);letter-spacing:0.11em",
+         "font:500 12px/1.4 var(--st-mono);letter-spacing:0.07em"),
+        ("font:400 10px/1.4 var(--st-mono);letter-spacing:0.12em",
+         "font:500 12px/1.4 var(--st-mono);letter-spacing:0.07em"),
+        ("font:400 10px/1.4 var(--st-mono);letter-spacing:0.1em",
+         "font:500 12px/1.4 var(--st-mono);letter-spacing:0.07em"),
+        ("font:500 10px/1 var(--st-mono);letter-spacing:0.11em",
+         "font:600 12px/1 var(--st-mono);letter-spacing:0.07em"),
+        ("font:500 10px/1 var(--st-mono);letter-spacing:0.12em",
+         "font:600 12px/1 var(--st-mono);letter-spacing:0.07em"),
+        ("font:500 10px/1 var(--st-mono);letter-spacing:0.14em",
+         "font:600 12px/1 var(--st-mono);letter-spacing:0.08em"),
+        # the two bare 10px runs — no tracking follows either. The lookahead
+        # is what keeps these off the eight tracked entries above.
+        ("font:400 10px/1 var(--st-mono)", "font:500 12px/1 var(--st-mono)"),
+        ("font:500 10px/1 var(--st-mono)", "font:600 12px/1 var(--st-mono)"),
+        # ── mono, 10.5px ────────────────────────────────────────────────
+        ("font:400 10.5px/1.5 var(--st-mono);letter-spacing:0.12em",
+         "font:500 12.5px/1.5 var(--st-mono);letter-spacing:0.07em"),
+        ("font:500 10.5px/1 var(--st-mono);letter-spacing:0.04em",
+         "font:600 12.5px/1 var(--st-mono);letter-spacing:0.03em"),
+        # node 183 — THE STATUS WORD. 13px, the top of Mide's range, because
+        # it is the one mono string on the row a student reads as a state
+        # rather than as a label.
+        ("font:500 10.5px/1 var(--st-mono);letter-spacing:0.13em",
+         "font:600 13px/1 var(--st-mono);letter-spacing:0.08em"),
+        ("font:500 10.5px/1 var(--st-mono);letter-spacing:0.16em",
+         "font:600 12.5px/1 var(--st-mono);letter-spacing:0.1em"),
+        ("font:500 10.5px/1 var(--st-mono);letter-spacing:0.1em",
+         "font:600 12.5px/1 var(--st-mono);letter-spacing:0.07em"),
+        ("font:500 10.5px/1.5 var(--st-mono);letter-spacing:0.16em",
+         "font:600 12.5px/1.5 var(--st-mono);letter-spacing:0.1em"),
+        ("font:500 10.5px/1 var(--st-mono)",
+         "font:600 12.5px/1 var(--st-mono)"),
+        # ── mono, 11px and 11.5px ───────────────────────────────────────
+        ("font:400 11px/1 var(--st-mono);letter-spacing:0.08em",
+         "font:500 12.5px/1 var(--st-mono);letter-spacing:0.06em"),
+        ("font:400 11px/1 var(--st-mono)", "font:500 12.5px/1 var(--st-mono)"),
+        ("font:500 11px/1 var(--st-mono)", "font:600 12.5px/1 var(--st-mono)"),
+        ("font:400 11.5px/1 var(--st-mono);letter-spacing:0.09em",
+         "font:500 12.5px/1 var(--st-mono);letter-spacing:0.06em"),
+        ("font:400 11.5px/1 var(--st-mono)",
+         "font:500 12.5px/1 var(--st-mono)"),
+        # the work tabs — a `clamp()` kept as a clamp, floor raised.
+        ("font:500 clamp(11px,0.9cqw,12px)/1 var(--st-mono);"
+         "letter-spacing:0.1em",
+         "font:600 clamp(12px,0.95cqw,13px)/1 var(--st-mono);"
+         "letter-spacing:0.07em"),
+        # ── ui body and buttons, under 15px ─────────────────────────────
+        # node 176 — the work row's brief. The one line of body copy a
+        # student reads to know what the homework IS.
+        ("font:400 13.5px/1.4 var(--st-ui)", "font:400 15px/1.45 var(--st-ui)"),
+        ("font:400 14.5px/1.45 var(--st-ui)",
+         "font:400 15.5px/1.5 var(--st-ui)"),
+        ("font:500 14.5px/1 var(--st-ui)", "font:500 15px/1 var(--st-ui)"),
+        ("font:500 14.5px/1.25 var(--st-ui);letter-spacing:-0.01em",
+         "font:600 15.5px/1.3 var(--st-ui);letter-spacing:-0.01em"),
+        ("font:600 13.5px/1 var(--st-ui)", "font:600 15px/1 var(--st-ui)"),
+        ("font:500 clamp(13.5px,1.15cqw,15px)/1 var(--st-ui)",
+         "font:600 clamp(15px,1.2cqw,16px)/1 var(--st-ui)"),
+        ("font:500 clamp(14.5px,1.2cqw,15.5px)/1.3 var(--st-ui)",
+         "font:500 clamp(15px,1.25cqw,16.5px)/1.35 var(--st-ui)"),
+        ("font:500 clamp(14.5px,1.3cqw,15.5px)/1.2 var(--st-ui);"
+         "letter-spacing:-0.01em",
+         "font:600 clamp(15px,1.3cqw,16.5px)/1.25 var(--st-ui);"
+         "letter-spacing:-0.01em"),
+        ("font:500 clamp(14.5px,1.3cqw,15.5px)/1.2 var(--st-ui)",
+         "font:600 clamp(15px,1.3cqw,16.5px)/1.25 var(--st-ui)"),
+        ("font:400 clamp(14.5px,1.2cqw,15px)/1.5 var(--st-ui)",
+         "font:400 clamp(15px,1.25cqw,16px)/1.55 var(--st-ui)"),
+    ],
+    # ⊕ THE ASSIGNMENT PAGE IS IN SCOPE, AND IT WAS CHECKED RATHER THAN
+    # ASSUMED. Mide's ruling says "the assignment page if the same tiny
+    # labels appear there — check". They do, and worse: it carries THIRTEEN
+    # separate uses of `font:400 9.5px/1 var(--st-mono)` and five at 9px,
+    # against the class view's five and two. It is also the page a child
+    # spends the longest on, reading question stems.
+    'assignment': [
+        ("font:400 9.5px/1 var(--st-mono);letter-spacing:0.11em",
+         "font:500 12px/1 var(--st-mono);letter-spacing:0.07em"),
+        ("font:400 9.5px/1 var(--st-mono);letter-spacing:0.12em",
+         "font:500 12px/1 var(--st-mono);letter-spacing:0.07em"),
+        ("font:400 9.5px/1 var(--st-mono);letter-spacing:0.13em",
+         "font:500 12px/1 var(--st-mono);letter-spacing:0.08em"),
+        ("font:400 9px/1 var(--st-mono);letter-spacing:0.13em",
+         "font:500 12px/1 var(--st-mono);letter-spacing:0.08em"),
+        ("font:500 9.5px/1 var(--st-mono);letter-spacing:0.11em",
+         "font:600 12px/1 var(--st-mono);letter-spacing:0.07em"),
+        ("font:500 9.5px/1 var(--st-mono);letter-spacing:0.12em",
+         "font:600 12px/1 var(--st-mono);letter-spacing:0.07em"),
+        ("font:500 9.5px/1 var(--st-mono);letter-spacing:0.13em",
+         "font:600 12px/1 var(--st-mono);letter-spacing:0.08em"),
+        ("font:500 9.5px/1.4 var(--st-mono);letter-spacing:0.11em",
+         "font:600 12px/1.4 var(--st-mono);letter-spacing:0.07em"),
+        ("font:500 9px/1 var(--st-mono);letter-spacing:0.13em",
+         "font:600 12px/1 var(--st-mono);letter-spacing:0.08em"),
+        ("font:400 10px/1 var(--st-mono);letter-spacing:0.14em",
+         "font:500 12px/1 var(--st-mono);letter-spacing:0.08em"),
+        ("font:500 10px/1.6 var(--st-mono);letter-spacing:0.13em",
+         "font:600 12px/1.6 var(--st-mono);letter-spacing:0.08em"),
+        # ⚠️ FOUR RUNS ON THIS PAGE CARRY NO LINE-HEIGHT AT ALL —
+        # `font:500 10.5px var(--st-mono)`, not `.../1 ...`. They are
+        # separate entries from the `/1` ones and neither is a prefix of the
+        # other (the character after `10.5px` is a space in one and `/` in
+        # the other), so the two cannot be folded.
+        ("font:400 10.5px var(--st-mono);letter-spacing:0.1em",
+         "font:500 12.5px var(--st-mono);letter-spacing:0.07em"),
+        ("font:500 10.5px var(--st-mono)", "font:600 12.5px var(--st-mono)"),
+        ("font:500 10.5px/1 var(--st-mono)",
+         "font:600 12.5px/1 var(--st-mono)"),
+        ("font:500 10.5px/1.5 var(--st-mono);letter-spacing:0.16em",
+         "font:600 12.5px/1.5 var(--st-mono);letter-spacing:0.1em"),
+        ("font:500 11px var(--st-mono);letter-spacing:0.06em",
+         "font:600 12.5px var(--st-mono);letter-spacing:0.05em"),
+        ("font:500 11px var(--st-mono)", "font:600 12.5px var(--st-mono)"),
+        ("font:500 11px/1 var(--st-mono);letter-spacing:0.05em",
+         "font:600 12.5px/1 var(--st-mono);letter-spacing:0.04em"),
+        ("font:500 11px/1 var(--st-mono)", "font:600 12.5px/1 var(--st-mono)"),
+        ("font:400 11.5px/1 var(--st-mono);letter-spacing:0.09em",
+         "font:500 12.5px/1 var(--st-mono);letter-spacing:0.06em"),
+        # ── ui: the question stem, the options and the action bar ───────
+        ("font:400 clamp(13.5px,1.15cqw,15px)/1.5 var(--st-ui)",
+         "font:400 clamp(15px,1.2cqw,16.5px)/1.55 var(--st-ui)"),
+        ("font:400 clamp(13.5px,1.1cqw,14.5px)/1.5 var(--st-ui)",
+         "font:400 clamp(15px,1.15cqw,16px)/1.55 var(--st-ui)"),
+        # The two `INSERT_AT` feedback bodies (MRB-306 Phase 2b). They are
+        # this file's own values rather than Design's, and they are scaled
+        # HERE rather than edited in place so that one table is the whole
+        # statement of what the type on this page is.
+        ("font:400 clamp(14.5px,1.2cqw,16px)/1.6 var(--st-ui)",
+         "font:400 clamp(15px,1.2cqw,16.5px)/1.6 var(--st-ui)"),
+        ("font:400 clamp(14px,1.15cqw,15.5px)/1.6 var(--st-ui)",
+         "font:400 clamp(15px,1.2cqw,16px)/1.6 var(--st-ui)"),
+        ("font:500 clamp(14px,1.2cqw,15px)/1.4 var(--st-ui)",
+         "font:600 clamp(15px,1.25cqw,16px)/1.45 var(--st-ui)"),
+        ("font:600 14.5px/1 var(--st-ui)", "font:600 15px/1 var(--st-ui)"),
+        ("font:600 14px/1 var(--st-ui)", "font:600 15px/1 var(--st-ui)"),
+    ],
 }

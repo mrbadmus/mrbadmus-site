@@ -163,10 +163,63 @@ PAGE_STRONG_TOL = 0.05
 # a selector that matches nothing must fail, not pass quietly.
 #
 #   legend-done     1  the term spine's legend dot beside the word DONE
-#   work-row-done   3  one per MARKED row in the fixture's work list
 #   tile-seg        4  the week tiles' done segments, found without an index
 #                      by their own `background:var(--pg-strong)`
-PAGE_STRONG_MARKS = {"legend-done": 1, "work-row-done": 3, "tile-seg": 4}
+#
+# ⊕ RULED BY MIDE, 22 Sep 2026 — first-week fixes (Done colour).
+#
+# THIS TABLE USED TO CARRY A THIRD KIND, AND THE LINE READ:
+#
+#     work-row-done   3  one per MARKED row in the fixture's work list
+#
+#     PAGE_STRONG_MARKS = {"legend-done": 1, "work-row-done": 3,
+#                          "tile-seg": 4}
+#
+# It is quoted rather than deleted because it is the registration Design's
+# README change 1 asked for — *"page-chrome dark is now espresso #4A3728 …
+# top rule, work-row and legend DONE dots"* — and that sentence still stands
+# for the LEGEND dot and the week tiles, which have not moved.
+#
+# Mide, after his first real week teaching with these pages: *"The Done
+# status colour must be bright and unmistakably different from Open and
+# Missed. Today Done is a dark ink dot."* Espresso beside an orange Open ring
+# and a red Missed diamond is the one of the three a phone at arm's length
+# cannot name — and it is the one a child most wants to find.
+#
+# So the work-row DONE dot leaves the espresso family for `--pg-ok`, and its
+# attribute is RENAMED (`data-page-strong` → `data-row-done`, `SET_ATTR` 166
+# in student_rulings.py) rather than repointed. Leaving the old name on a
+# green dot would have failed THIS gate with a message about espresso, which
+# would have read as a defect in a ruling that had been carried out. It is
+# asserted in `PAGE_OK_MARKS` instead, at its own colour, with its own count
+# and its own contrast floor.
+PAGE_STRONG_MARKS = {"legend-done": 1, "tile-seg": 4}
+
+
+# ── the DONE dot, which is bright now, and still must not take the theme ──
+#
+# ⊕ RULED BY MIDE, 22 Sep 2026 — first-week fixes (Done colour).
+#
+# `--pg-ok` is the PAGE-CHROME family's green, declared on `:root` alongside
+# `--pg-strong` and fixed for the same reason: a `--b-*` token here would put
+# the theme's ground on the cream page, which is the defect the term spine's
+# `numColor` note records refusing.
+#
+# ⚠️ #12A150 IS A GRAPHIC COLOUR AND NOT A TEXT COLOUR. It measures 3.06:1 on
+# the cream ground — over the 3:1 floor a 13px disc is held to, and UNDER the
+# 4.5 a word would be. That is why the dot is `--pg-ok` and the status WORD
+# beside it is `--pg-ok-text` (#0A6B36, 6.02:1), and why this check gates on
+# `NONTEXT_AA` rather than on `AA`. Getting that the other way round would
+# either fail a legitimate graphic or pass an illegible label.
+PAGE_OK = "#12A150"
+PAGE_OK_RATIO = 3.06            # measured on PAGE_GROUND
+PAGE_OK_TOL = 0.05
+# One per MARKED row in the fixture's work list — the same three rows the
+# espresso count named, for the same reason it was asserted: the rule needs
+# `!important` to beat Design's inline `background:var(--st-ink)`, and a rule
+# that parses, matches and LOSES leaves a page that looks exactly as if the
+# ruling had never been applied.
+PAGE_OK_MARKS = {"work-row": 3}
 
 # ── the near-blacks that are still on the page, and why each is allowed ──
 #
@@ -417,7 +470,20 @@ _MEASURE = r"""
       });
     return out;
   }
+  // ⊕ 22 Sep 2026 — the DONE dot, which is no longer one of the espresso
+  // marks above. Its own probe rather than a fourth `kind` in theirs,
+  // because it is asserted at a DIFFERENT colour and a different floor, and
+  // folding it in would have meant one loop with two expected hexes.
+  function okMarks(){
+    var out = [];
+    document.querySelectorAll('[data-row-done]').forEach(function(el){
+      out.push({kind: el.getAttribute('data-row-done'),
+                bg: getComputedStyle(el).backgroundColor});
+    });
+    return out;
+  }
   return JSON.stringify({
+    okmarks: okMarks(),
     bench:  one('[data-bench-surface="bench"]'),
     board:  one('[data-bench-surface="board"]'),
     docket: one('[data-bench-docket]'),
@@ -427,6 +493,8 @@ _MEASURE = r"""
     chrome: chrome(),
     pgStrong: (getComputedStyle(document.documentElement)
                  .getPropertyValue('--pg-strong') || '').trim(),
+    pgOk: (getComputedStyle(document.documentElement)
+             .getPropertyValue('--pg-ok') || '').trim(),
     pageGround: getComputedStyle(document.body).backgroundColor,
     theme:  document.documentElement.getAttribute('data-bench-theme')
   });
@@ -1012,6 +1080,91 @@ def check_page_chrome(case, m):
         except ValueError:
             pass
 
+    # ── b2 — the DONE dot, at its own colour ─────────────────────────────
+    #
+    # ⊕ RULED BY MIDE, 22 Sep 2026 — first-week fixes (Done colour). Same
+    # three assertions as the espresso marks above, and separate from them
+    # for the reason `PAGE_OK_MARKS` gives: a different expected hex and a
+    # different contrast floor.
+    #
+    # ⚠️ `--pg-ok` IS ASSERTED FIXED HERE TOO. It is the half that is easy to
+    # leave out, and it is the half the term spine's `numColor` note is about:
+    # a green that moved with the theme would look right on the five dark
+    # cases and vanish on chalk, which is a defect only a light-theme student
+    # would ever see.
+    ok_got = (m.get("pgOk") or "").upper()
+    if ok_got != PAGE_OK:
+        rows.append((disp, "--pg-ok is fixed, not themed", "FAIL",
+                     "%s, wanted %s" % (ok_got or "(undeclared)", PAGE_OK)))
+        problems.append(
+            "%s — :root reports --pg-ok=%r, not %s. The DONE dot's green is "
+            "a PAGE token and must be the same on all seven cases; a value "
+            "that moves with the theme is the cream-ground defect the term "
+            "spine's `numColor` note records refusing."
+            % (disp, ok_got or "(undeclared)", PAGE_OK))
+    else:
+        rows.append((disp, "--pg-ok is fixed, not themed", "PASS", ok_got))
+
+    okmarks = m.get("okmarks") or []
+    ok_seen = {}
+    ok_wrong = []
+    for mk in okmarks:
+        ok_seen[mk["kind"]] = ok_seen.get(mk["kind"], 0) + 1
+        try:
+            if hexof(parse_colour(mk["bg"])) != PAGE_OK:
+                ok_wrong.append((mk["kind"], mk["bg"]))
+        except ValueError:
+            ok_wrong.append((mk["kind"], mk["bg"]))
+    for kind, want in sorted(PAGE_OK_MARKS.items()):
+        n = ok_seen.get(kind, 0)
+        if n != want:
+            rows.append((disp, "done-green mark · %s" % kind, "FAIL",
+                         "%d found, wanted %d" % (n, want)))
+            problems.append(
+                "%s — %d %r DONE dot(s) on the page, not %d. RULED by Mide "
+                "22 Sep 2026: the work row's Done state is bright green and "
+                "not espresso. Either `SET_ATTR` 166 stopped matching "
+                "Design's node or the fixture's marked rows changed; both "
+                "are findings, and a rule painting nothing passes silently "
+                "unless the count is asserted."
+                % (disp, n, kind, want))
+        else:
+            rows.append((disp, "done-green mark · %s" % kind, "PASS",
+                         "%d at %s" % (n, PAGE_OK)))
+    if ok_wrong:
+        rows.append((disp, "DONE dots all measure %s" % PAGE_OK,
+                     "FAIL", "%d wrong: %s" % (len(ok_wrong), ok_wrong[:3])))
+        problems.append(
+            "%s — %d DONE dot(s) are not painted %s: %s. The rule needs "
+            "!important to beat Design's inline background:var(--st-ink); "
+            "check _ROW_DONE in build_student_port.py still carries it."
+            % (disp, len(ok_wrong), PAGE_OK, ok_wrong[:4]))
+    elif okmarks:
+        rows.append((disp, "DONE dots all measure %s" % PAGE_OK,
+                     "PASS", "%d mark(s)" % len(okmarks)))
+        try:
+            r = contrast(parse_colour(PAGE_OK), parse_colour(PAGE_GROUND))
+            # GATED, not merely reported, and at the NON-TEXT floor: a 13px
+            # disc is a graphic, and #12A150 has only 0.06 of headroom over
+            # 3:1. A drift of a shade here really does stop a child seeing it.
+            if r + 1e-9 < NONTEXT_AA:
+                rows.append((disp, "the DONE green on the cream ground",
+                             "FAIL", "%.2f:1 — under %.1f:1" % (r, NONTEXT_AA)))
+                problems.append(
+                    "%s — the DONE dot measures %.2f:1 against the cream "
+                    "page ground, under the %.1f:1 a non-text mark has to "
+                    "clear. It is 13px across and it is the one thing on the "
+                    "row a child looks for."
+                    % (disp, r, NONTEXT_AA))
+            else:
+                delta = abs(r - PAGE_OK_RATIO)
+                rows.append((disp, "the DONE green on the cream ground",
+                             "PASS" if delta <= PAGE_OK_TOL else "NOTE",
+                             "%.2f:1 (pinned %.2f, floor %.1f)"
+                             % (r, PAGE_OK_RATIO, NONTEXT_AA)))
+        except ValueError:
+            pass
+
     # c — the sweep, and its registry
     found = m.get("chrome") or []
     reg = {(e["tpl"], e["bg"].upper()): e for e in PAGE_CHROME_EXCEPTIONS}
@@ -1528,8 +1681,15 @@ def _prove(page, baseline):
     # loses, and the page looks exactly as if the rule were not there — which
     # is how the avatar inversion shipped broken once already. Forcing the
     # marks back to #221E1B is that failure, exactly.
+    # ⊕ 22 Sep 2026 — BOTH SELECTORS ARE FORCED, in one injection. The DONE
+    # dot moved out of the espresso family into `--pg-ok` and gained its own
+    # assertions, and an assertion nobody has watched fail is an assertion
+    # nobody knows is running. Forcing `[data-row-done]` back to Design's own
+    # inline `var(--st-ink)` replays the exact failure `_ROW_DONE`'s
+    # `!important` exists to prevent.
     page.eval(_INJECT % json.dumps(
-        "[data-page-strong]{background-color:#221E1B !important}"))
+        "[data-page-strong]{background-color:#221E1B !important}"
+        "[data-row-done]{background-color:#221E1B !important}"))
     time.sleep(0.35)
     _r, broke4 = check_page_chrome(None, _measure(page))
     page.eval(_UNINJECT)
@@ -3007,6 +3167,16 @@ def main():
           "registered survivor(s) — each asserted still present."
           % (PAGE_STRONG, sum(PAGE_STRONG_MARKS.values()),
              PAGE_STRONG_RATIO, len(PAGE_CHROME_EXCEPTIONS)))
+    # ⊕ 22 Sep 2026 — said out loud for the reason the DONE BENCH line below
+    # is: a summary that describes the espresso marks while the file also
+    # measures a green one is a gate claiming less than it does.
+    print("        And the WORK ROW'S DONE DOT, which Mide ruled bright on "
+          "22 Sep 2026: --pg-ok fixed at %s on all seven cases, %d dot(s) "
+          "measuring it, and %.2f:1 on the cream ground — GATED at the "
+          "%.1f:1 a non-text mark must clear, not merely reported, because "
+          "it has 0.06 of headroom."
+          % (PAGE_OK, sum(PAGE_OK_MARKS.values()), PAGE_OK_RATIO,
+             NONTEXT_AA))
     # ⊕ 23 Aug 2026 — PHASE 4. Said out loud, because a summary that describes
     # the OPEN bench while the file also measures the DONE one is a gate
     # claiming less than it does, and the next reader would add the coverage

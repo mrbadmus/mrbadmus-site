@@ -986,14 +986,20 @@ def check_write(t_teacher, scopes):
                            tier="foundation", scope_ref=topic["id"],
                            question_ids=big_ids[:20],
                            title=TITLE + " · twenty")
-        record(st == 200, "twenty questions is accepted — the maximum",
+        record(st == 200, "twenty questions is accepted — the PER-SCOPE "
+                          "maximum, and this body is flat, which the route "
+                          "reads as one scope (⊕ first-week fixes (22 Sep 2026): it used to be the "
+                          "maximum for a whole set, however many topics)",
                "status %s" % st)
         st, out = post_set(t_teacher, class_ids=[FX.C_KS4_COMB],
                            tier="foundation", scope_ref=topic["id"],
                            question_ids=big_ids[:20] + big_ids[:1])
         record(st == 400 and (out or {}).get("error") in
                ("too_many_questions", "duplicate_questions"),
-               "twenty-one is refused", "status %s %s" % (st, json.dumps(out)[:120]))
+               "twenty-one is refused — one scope may not exceed twenty, "
+               "and `check_three_topics_at_twenty` is what proves THREE "
+               "scopes of twenty are now accepted",
+               "status %s %s" % (st, json.dumps(out)[:120]))
         st, out = post_set(t_teacher, class_ids=[FX.C_KS4_COMB],
                            tier="foundation", scope_ref=topic["id"],
                            question_ids=big_ids[:3] + big_ids[:1])
@@ -1542,6 +1548,17 @@ FAFF_EXACT = {
     # sheet's word for exactly that. A second failure string would be a
     # second way of saying one thing.
     "Download", "Add topic", "Worksheet", "PDF", "Word", "Answers",
+    # ⊕ first-week fixes (22 Sep 2026) — TWO, AND THEY EXIST BECAUSE `Next` STOPPED WAITING.
+    #
+    # Next now enables the moment a class is ticked rather than when /scope
+    # settles, so the Topic step is reachable BEFORE its tree exists. A panel
+    # that is empty because a request is in flight looks exactly like a panel
+    # that is empty because the class has no topics — the same lie by omission
+    # `Unavailable` was added to stop, one state earlier. `Loading` is a status
+    # noun in the tag slot, where `Unavailable` already goes; `Retry` is a
+    # button verb, like `Save` and `Back`. Neither is a sentence, and there is
+    # no third: a read that failed still says `Unavailable`.
+    "Loading", "Retry",
 }
 # ⚠️ A SECOND SET, AND SPLITTING THEM IS THE POINT RATHER THAN A CONCESSION.
 # These four are `aria-label`s on the date and time inputs and are never
@@ -3283,6 +3300,11 @@ def main():
                     check_sideways(p, "the Topic step", args.shots)
                     check_tier_and_zero(p, scopes)
                     check_detail(p, scopes, args.shots)
+                    # ⊕ first-week fixes (22 Sep 2026) — the per-topic ceiling. Here, straight after
+                    # `check_detail`, because it is the same question asked of
+                    # a sheet holding more than one scope — which is the only
+                    # shape the defect is expressible in.
+                    check_three_topics_at_twenty(p, scopes, args.shots)
                     check_sideways(p, "the Detail step", args.shots)
                     check_dates(p, t_teacher, scopes, args.shots)
                     check_faff(p, scopes)
@@ -3293,6 +3315,11 @@ def main():
                     # own: the two checks below replace `window.fetch`.
                     check_worksheet_sheet(p, base, ws_first, args.shots)
                     check_classes_screen_open(p, base)
+                    # ⊕ first-week fixes (22 Sep 2026) — it holds `/scope` for three seconds, so it
+                    # belongs with the fetch-wrapping checks. It restores the
+                    # function it found, and it runs BEFORE the two below so
+                    # that what it finds, and puts back, is the browser's own.
+                    check_next_is_immediate(p, base)
                     # LAST of the sheet checks, both of them: each wraps
                     # `fetch` to make a race deterministic, so nothing that
                     # needs an unhindered network runs behind them.
@@ -4038,7 +4065,30 @@ def check_classes_screen_open(p, base):
           if(rs[i].getAttribute('aria-pressed')!=='true'){
             rs[i].click(); return rs[i].getAttribute('data-sw-ref');}}
         return null;})()""")
+    # ⊕ first-week fixes (22 Sep 2026) — WAIT FOR THE THING THIS CHECK IS ABOUT, WHICH IS THE CALL.
+    #
+    # ⛔ This read `wait_for(!primary.disabled)` and then took the resource
+    # list. That worked only while Next waited for `/scope`: the primary
+    # lighting WAS the answer having landed, so the `PerformanceResourceTiming`
+    # entry was always recorded by then. Next is now live in the same task as
+    # the tap (first-week fixes (22 Sep 2026)), so this returned before the request had even been
+    # issued and the check went red reporting "the new one is for nothing" —
+    # a drive measuring the OLD behaviour's side effect as if it were the fact.
+    # The fact is the call, so that is what is waited for.
     got = wait_for(p, "!document.querySelector('[data-sw=\"primary\"]').disabled")
+    # ⚠️ WAIT FOR THE PICKED CLASS'S OWN ENTRY, NOT FOR "ANY NEW ENTRY".
+    # `PerformanceResourceTiming` records a fetch when its RESPONSE lands, and
+    # the check before this one anchored the sheet on another class and moved
+    # on without waiting for that `/scope` to resolve — which it could not do
+    # while Next waited, and can now. So the first new entry to appear here
+    # was, twice in one night, the PREVIOUS check's late answer (…023), read
+    # as "the new one is for nothing" against a class this tap never asked
+    # about. The claim is that THIS tap requests THIS class's scope; the wait
+    # now names that entry, and the assertion below is unchanged.
+    wait_for(p, "performance.getEntriesByType('resource').filter(function(r){"
+                "return r.name.indexOf('set-work/scope') > -1;}).slice(%d)"
+                ".some(function(r){return r.name.indexOf('class_id=%s') > -1;})"
+                % (len(before_calls), picked or "__none__"))
     after_calls = scope_calls()
     new_calls = after_calls[len(before_calls):]
 
@@ -4049,8 +4099,17 @@ def check_classes_screen_open(p, base):
            "%d call(s) before, %d after; the new one is for %s"
            % (len(before_calls), len(after_calls),
               (new_calls[0][-3:] if new_calls else "nothing")))
-    record(got, "…and Next comes alive once that scope has RESOLVED — the "
-                "dead end is gone",
+    # ⊕ first-week fixes (22 Sep 2026) — THE CLAIM CHANGED, AND THE OLD SENTENCE WOULD HAVE GONE ON
+    # PASSING WHILE BEING WRONG. It read "…and Next comes alive once that
+    # scope has RESOLVED — the dead end is gone", which was MRB-335's
+    # improvement on a permanent dead end and is now the defect: Mide waited
+    # on it, and a stale or hung answer left it grey for good. Next no longer
+    # waits for `/scope` at all, so `wait_for` here returns on its first
+    # reading — which is the assertion, and `check_next_is_immediate` is what
+    # proves it cannot be latency by holding the route.
+    record(got, "…and Next is alive with the class chosen — it does not wait "
+                "for /scope to resolve (first-week fixes (22 Sep 2026)), so neither a stale answer "
+                "nor one that never comes can strand it",
            "primary disabled = %s"
            % p.eval("document.querySelector('[data-sw=\"primary\"]').disabled"))
 
@@ -4107,6 +4166,10 @@ def check_classes_screen_open(p, base):
         return null;})()""")
     alive = wait_for(p, "!document.querySelector('[data-sw=\"primary\"]')"
                         ".disabled")
+    # ⊕ first-week fixes (22 Sep 2026) — and the call, for the reason given on the first tap above.
+    wait_for(p, "performance.getEntriesByType('resource').filter(function(r){"
+                "return r.name.indexOf('set-work/scope') > -1;}).length > %d"
+                % len(before2))
     after2 = scope_calls()
     record(bool(second) and second != picked and alive
            and second in after2[len(before2):],
@@ -7431,6 +7494,18 @@ def check_row_download(p, base, t_teacher, scopes, made):
            "row_download_lands — the row's Download saves a genuine PDF, "
            "through `/api/class/current-assignment` and then the worksheet "
            "route", "%s · %d byte(s)" % (name, len(data)))
+    # ⚠️ A RED HERE USED TO BECOME A CRASH, AND IT TOOK THE TEARDOWN WITH IT.
+    # The assertion above correctly recorded False when the saved file was not
+    # a PDF (measured 22 Sep 2026: Chrome handed back a 33 MB `downloads.html`
+    # instead of the file), and then this line parsed those bytes as a PDF
+    # anyway. `pypdf` raised `PdfStreamError` out of the middle of `main()`,
+    # past the summary, past `cleanup()` and past `FX.teardown()` — so a single
+    # harness hiccup left the throwaway world standing on TEST and printed no
+    # result line at all. Every other refusal in this function returns; so does
+    # this one now. NOTHING IS WEAKENED: the red is still recorded, by the
+    # assertion that was already recording it.
+    if data[:5] != b"%PDF-":
+        return
     nums, opts, ans_i = pdf_numbering(pdf_pages(data))
     want_n = len(made.get("question_ids") or [])
     record(nums == list(range(1, want_n + 1)) and opts == 4 * want_n,
@@ -7569,6 +7644,389 @@ def check_row_download(p, base, t_teacher, scopes, made):
                    % (name2, len(data2), len(n2), o2))
             drop_downloads(mark_dir)
     drop_downloads(dl_dir)
+
+
+# ════════════════════════════════════════════════════════════════════════
+# 11 · ⊕ first-week fixes (22 Sep 2026) — THE TWO FIRST-WEEK DEFECTS, DRIVEN
+# ════════════════════════════════════════════════════════════════════════
+#
+# Both of these are things Mide met in his first real week of teaching with
+# the sheet, and neither was visible to any check above: every existing count
+# assertion drives ONE scope, where the whole-set ceiling and the per-scope
+# ceiling are the same number and cannot be told apart, and every existing
+# Next assertion waits for the answer it is about to read.
+
+
+def scope_rail(p, index):
+    """One scope section's count rail, ITS rows, and the node it is for.
+
+    ⚠️ PER SECTION, NOT PER PAGE. `chip_state(p, "count-chips")` reads
+    `[data-sw="count-chips"] .sw-chip` across the whole Detail step, so on a
+    three-topic sheet it returns twelve chips with nothing saying which rail
+    each came from — and "some chip named 20 is live" is exactly the claim
+    that passes while the third topic's 20 is dead.
+    """
+    return p.eval("""(function(){
+        var ss=document.querySelectorAll('[data-sw="scope"]'), s=ss[%d];
+        if(!s){return null;}
+        var cs=s.querySelectorAll('[data-sw="count-chips"] .sw-chip'), out=[];
+        for(var i=0;i<cs.length;i++){out.push({t:cs[i].textContent,
+          on:cs[i].classList.contains('is-on'), off:!!cs[i].disabled});}
+        return {ref:s.getAttribute('data-sw-ref'), chips:out,
+                rows:s.querySelectorAll('[data-sw="question"]').length};})()"""
+                  % index)
+
+
+def press_scope_count(p, index, n):
+    """Press one count chip in ONE scope's rail. Answers 'disabled' rather
+    than clicking a dead chip, because a press that silently does nothing is
+    the failure this whole check is about."""
+    return p.eval("""(function(){
+        var ss=document.querySelectorAll('[data-sw="scope"]'), s=ss[%d];
+        if(!s){return false;}
+        var cs=s.querySelectorAll('[data-sw="count-chips"] .sw-chip');
+        for(var i=0;i<cs.length;i++){
+          if(cs[i].textContent===%s){
+            if(cs[i].disabled){return 'disabled';}
+            cs[i].click(); return true;}}
+        return false;})()""" % (index, json.dumps(str(n))))
+
+
+def add_topic_and_pick(p, ref):
+    """`Add topic`, choose a named topic, Next. The teacher's gesture."""
+    if p.eval("""(function(){var b=document.querySelector(
+            '[data-sw="add-topic"]');
+        if(!b||b.disabled){return false;} b.click(); return true;})()""") is not True:
+        return "add-topic is dead"
+    time.sleep(0.5)
+    hit = p.eval("""(function(){var rs=document.querySelectorAll(
+            '[data-sw="topic"]');
+        for(var i=0;i<rs.length;i++){
+          if(rs[i].getAttribute('data-sw-ref')===%s){
+            if(rs[i].getAttribute('aria-disabled')==='true'){return 'disabled';}
+            rs[i].click(); return true;}}
+        return false;})()""" % json.dumps(ref))
+    if hit is not True:
+        return "the row for %s answered %r" % (ref, hit)
+    time.sleep(0.3)
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    return True
+
+
+# ── (a) THREE TOPICS, TWENTY EACH — `per_topic_count_is_its_own_pool` ──
+#
+# ⛔ THE DEFECT, AS MIDE MET IT. With three topics on the sheet, the 15 and 20
+# chips were greyed on ALL THREE even though each topic held thirty-odd
+# questions in the bank; with two topics they still stopped at 10.
+# `shared/set-work.js` subtracted `othersTotal(sc)` — every OTHER scope's rows
+# — from a single whole-set ceiling of twenty, in `syncCountChips`, in
+# `loadPreview` twice, and on `Add topic`; `server.js` refused the combined
+# list past twenty to match.
+#
+# ⚠️ WHY NO EXISTING CHECK SAW IT. `chips_cap_at_availability` and
+# `scope_counts_agree_with_preview` both drive a sheet holding ONE scope, and
+# with one scope `othersTotal()` is zero — so the wrong ceiling and the right
+# one are the same number and every assertion passes. The bug is only
+# expressible with more than one topic on the sheet, and the two-topic checks
+# that do exist (`add_topic_second_section`, `sheet_multi_scope_download`) ask
+# about sections and rows and never about a chip's disabled state.
+def check_three_topics_at_twenty(p, scopes, shots):
+    print("\n   three topics of twenty — the count is per topic (first-week fixes (22 Sep 2026))")
+
+    # ⚠️ `atomic-structure` IS EXCLUDED, and not for convenience: it is the one
+    # ambiguous id in the curriculum (check (a) of section 10), it appears
+    # TWICE in a combined tree, and clicking by `data-sw-ref` would pick
+    # whichever came first. A check about counts must not also be a check about
+    # which science it landed in.
+    deep = []
+    for t in scopes["comb"].get("tree") or []:
+        if t["id"] == "atomic-structure":
+            continue
+        if (t.get("counts") or {}).get("foundation", 0) >= 20:
+            deep.append(t["id"])
+        if len(deep) == 3:
+            break
+    if len(deep) < 3:
+        return record(False, "three KS4 combined topics hold twenty each at "
+                             "Foundation, so the ruling can be driven at all",
+                      "found %d: %s" % (len(deep), deep))
+
+    if not goto_detail(p, FX.C_KS4_COMB, "foundation", "topic", deep[0]):
+        return record(False, "reach the Detail step on the first deep topic",
+                      deep[0])
+    if press_scope_count(p, 0, 20) is not True:
+        return record(False, "press 20 on the FIRST topic",
+                      json.dumps(scope_rail(p, 0))[:240])
+    if not wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]')"
+                       ".length === 20"):
+        return record(False, "twenty rows arrive for the first topic",
+                      "%d row(s)" % sheet_question_rows(p))
+
+    # ── the second topic, and the chip that used to die here ──────────
+    added = add_topic_and_pick(p, deep[1])
+    if added is not True:
+        return record(False, "add the second topic", str(added))
+    if not wait_for(p, "document.querySelectorAll('[data-sw=\"scope\"]')"
+                       ".length === 2", tries=80):
+        return record(False, "the second section is drawn")
+    # ⚠️ READ BEFORE PRESSING. This is the state the teacher actually met: a
+    # sheet already holding twenty, a second topic with a full pool, and —
+    # before first-week fixes (22 Sep 2026) — nothing but 5 to choose from, because the first topic
+    # had spent the ceiling.
+    wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]').length > 20",
+             tries=80)
+    two = scope_rail(p, 1)
+    by2 = {c["t"]: c for c in (two or {}).get("chips") or []}
+    record(bool(by2) and all(by2.get(k, {}).get("off") is False
+                             for k in ("5", "10", "15", "20")),
+           "per_topic_count_is_its_own_pool — with twenty already picked on "
+           "topic 1, EVERY count chip on topic 2 is still live. Before "
+           "first-week fixes (22 Sep 2026) only 5 was, because `MAX_QUESTIONS - othersTotal()` had "
+           "spent the ceiling on the other topic's rows",
+           json.dumps(by2)[:240])
+    if press_scope_count(p, 1, 20) is not True:
+        return record(False, "press 20 on the SECOND topic",
+                      json.dumps(two)[:240])
+    if not wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]')"
+                       ".length === 40", tries=80):
+        return record(False, "forty rows across two topics",
+                      "%d row(s)" % sheet_question_rows(p))
+
+    # ── the third, which is the case in the report ────────────────────
+    added = add_topic_and_pick(p, deep[2])
+    if added is not True:
+        return record(False, "add the third topic", str(added))
+    if not wait_for(p, "document.querySelectorAll('[data-sw=\"scope\"]')"
+                       ".length === 3", tries=80):
+        return record(False, "the third section is drawn")
+    wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]').length > 40",
+             tries=80)
+    three = scope_rail(p, 2)
+    by3 = {c["t"]: c for c in (three or {}).get("chips") or []}
+    record(bool(by3) and all(by3.get(k, {}).get("off") is False
+                             for k in ("5", "10", "15", "20")),
+           "…and the count chips on TOPIC 3 are not greyed by topics 1 and 2 "
+           "— forty questions are already picked, and all four chips are "
+           "still live on the third topic's own pool",
+           "%s · %s" % ((three or {}).get("ref"), json.dumps(by3)[:200]))
+    if press_scope_count(p, 2, 20) is not True:
+        return record(False, "press 20 on the THIRD topic",
+                      json.dumps(three)[:240])
+    if not wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]')"
+                       ".length === 60", tries=80):
+        return record(False, "sixty rows across three topics",
+                      "%d row(s)" % sheet_question_rows(p))
+
+    # ⚠️ AND THE FIRST TWO RAILS ARE RE-READ AFTER THE THIRD IS FULL. The old
+    # rule was symmetrical — every rail shrank as the others filled — so a fix
+    # that only freed the LAST topic would pass everything above this line.
+    rails = [scope_rail(p, i) for i in range(3)]
+    allby = [{c["t"]: c for c in (r or {}).get("chips") or []} for r in rails]
+    record(all(b.get("20", {}).get("off") is False and
+               b.get("20", {}).get("on") is True for b in allby),
+           "…and with SIXTY questions composed, 20 is live AND selected on "
+           "all three rails at once — the rule is symmetrical, so a fix that "
+           "freed only the last topic would not reach here",
+           "; ".join("%s: %s" % ((rails[i] or {}).get("ref"),
+                                 json.dumps(allby[i].get("20")))
+                     for i in range(3)))
+    if shots:
+        p.screenshot(os.path.join(shots, "MRB350-three-topics-390.png"),
+                     width=390)
+
+    # ── and it SETS, which is the half the server owns ────────────────
+    before, err = fixture_assignment_ids()
+    if err:
+        return record(False, "the world can be read before the three-topic set",
+                      err)
+    title = TITLE + " · three of twenty"
+    set_sheet_title(p, title)
+    time.sleep(0.3)
+    record(p.eval("!document.querySelector('[data-sw=\"primary\"]').disabled"),
+           "…and `Set work` is LIVE on a sixty-question set — `stepValid` used "
+           "to refuse any total over twenty, so the sheet would have composed "
+           "a set it then would not send")
+    p.eval("""(function(){var t=document.querySelector('[data-sw="toast"]');
+        if(t){t.hidden=true;} return true;})()""")
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    landed = wait_for(p, "(function(){var t=document.querySelector("
+                         "'[data-sw=\"toast\"]');return !!(t && !t.hidden);})()",
+                      tries=80)
+    toast = p.eval("(document.querySelector('[data-sw=\"toast\"]')||{})"
+                   ".textContent")
+    record(landed and toast == title + " · 10b/Sc5",
+           "three_topics_set_successfully — the sixty-question set across "
+           "three topics is accepted by `POST /api/teacher/set-work`, which "
+           "used to refuse it `too_many_questions` at twenty-one",
+           repr(toast))
+
+    # ⚠️ RE-QUERIED, NOT INFERRED FROM THE TOAST. The toast is the sheet's own
+    # word about what it thinks happened.
+    after, err = fixture_assignment_ids()
+    if err:
+        return record(False, "the world can be re-queried after the set", err)
+    new = sorted(after - before)
+    if len(new) != 1:
+        return record(False, "exactly one assignment was written for the one "
+                             "class", "appeared: %s" % new)
+    st, rows = FX.api("GET", "/rest/v1/assignment_questions?assignment_id=eq.%s"
+                             "&select=source_ref,position,band,rung"
+                             "&order=position" % new[0])
+    if st != 200 or not isinstance(rows, list):
+        return record(False, "the sixty question rows can be read back",
+                      "%s %s" % (st, str(rows)[:200]))
+    refs = [r["source_ref"] for r in rows]
+    record(len(rows) == 60 and len(set(refs)) == 60
+           and [r["position"] for r in rows] == list(range(1, 61)),
+           "…and it carries SIXTY distinct questions at positions 1…60, so "
+           "nothing was dropped or folded on the way through",
+           "%d row(s), %d distinct, positions %s…%s"
+           % (len(rows), len(set(refs)),
+              rows[0]["position"] if rows else "-",
+              rows[-1]["position"] if rows else "-"))
+    record(all(r.get("band") is not None for r in rows)
+           and all(r.get("rung") is None for r in rows),
+           "…and every one of the sixty carries a `band` and no `rung`, so a "
+           "bigger set is still the right side of `one_pool_per_assignment`",
+           "%d row(s)" % len(rows))
+
+    # ⚠️ THE TOAST IS CLEARED ON THE WAY OUT, AND IT IS NOT TIDINESS. A toast
+    # lives 3.2 seconds and carries its text afterwards, so a LATER check that
+    # does `wait_for(toast not hidden)` returns on THIS one and reads THIS
+    # title. `check_toast_and_swap` already carries a note about exactly that
+    # ("HIDE THE PREVIOUS TOAST FIRST … a drive artefact wearing the clothes
+    # of a product defect"), and it went red on this set's title the first
+    # time this check ran. A check that sets work owns the toast it leaves.
+    p.eval("""(function(){var t=document.querySelector('[data-sw="toast"]');
+        if(t){t.hidden=true; t.textContent="";} return true;})()""")
+
+
+# ── (b) NEXT IS LIVE THE INSTANT A CLASS IS PRESSED ────────────────────
+#
+# ⛔ THE DEFECT, AS MIDE MET IT. After selecting a class, `Next` stayed grey
+# for a noticeable time, and SOMETIMES needed the class toggling off and on to
+# wake up. `stepValid()` for step 0 read `!!(S.scope || S.scopeErr)` — Next
+# waited for `/scope` to settle — and `loadScope()` called `syncValidity()` on
+# its success and failure paths only, never on the discarded-stale-response
+# path and never at all for a request that simply never answered. The toggle
+# worked because it re-anchored and re-fetched.
+#
+# ⚠️ WHY `classes_screen_anchors_on_first_tap` COULD NOT SEE IT. That check
+# reads `wait_for(!primary.disabled)` — it WAITS for the thing it is about, so
+# it is satisfied by any latency at all, and it was written when waiting was
+# the intended behaviour. This one measures in the same tick as the click, with
+# `/scope` deliberately held, so latency cannot hide inside it.
+def check_next_is_immediate(p, base):
+    print("\n   Next is live the instant a class is pressed (first-week fixes (22 Sep 2026))")
+
+    if not goto_ready(p, "%s/teacher/classes.html?env=test&api=%s"
+                      % (base, PAGE_API),
+                      "!!(window.MRBSetWork && window.MRBSetWork.open)",
+                      settle=6.0):
+        return record(False, "the classes screen loads for the Next check")
+
+    # `/scope` held for three seconds, so "before it resolves" is arranged
+    # rather than hoped for. Restored at the end to whatever was found — which
+    # at this point in the run is the browser's own.
+    p.eval("""(function(){
+      if (window.__mrb350Held) { return true; }
+      window.__mrb350Held = window.fetch;
+      window.fetch = function (u, o) {
+        var mine = String(u).indexOf('set-work/scope') > -1;
+        return window.__mrb350Held.call(window, u, o).then(function (r) {
+          if (!mine) { return r; }
+          return new Promise(function (res) {
+            setTimeout(function () { res(r); }, 3000); }); }); };
+      return true;})()""")
+
+    try:
+        if p.eval("typeof MRB_SET_WORK_OPEN === 'function'") is not True:
+            return record(False, "the page exposes MRB_SET_WORK_OPEN")
+        p.eval("MRB_SET_WORK_OPEN('')")
+        if not wait_for(p, "document.querySelectorAll('[data-sw=\"class\"]')"
+                           ".length > 0"):
+            return record(False, "the sheet lists the classes")
+
+        # ⚠️ THE CLICK AND THE READING ARE ONE EVALUATION, so the reading
+        # happens in the same task as the handler that set the state. Nothing
+        # asynchronous can have run in between — not a promise callback, not a
+        # timer — so this measures the handler's own answer and not the
+        # network's.
+        got = p.eval("""(function(){
+          var rs = document.querySelectorAll('[data-sw="class"]');
+          for (var i = 0; i < rs.length; i++) {
+            if (rs[i].getAttribute('aria-pressed') !== 'true') {
+              rs[i].click();
+              var pri = document.querySelector('[data-sw="primary"]');
+              var o = document.querySelector('[data-sw="overlay"]');
+              return {ref: rs[i].getAttribute('data-sw-ref'),
+                      disabled: !!pri.disabled,
+                      state: o.getAttribute('data-sw-scope-state'),
+                      topics: document.querySelectorAll(
+                        '[data-sw="topic"]').length}; } }
+          return null;})()""")
+        if not got:
+            return record(False, "a class row could be pressed")
+        record(got["disabled"] is False,
+               "next_enables_on_the_class_tap — `Next` is live IN THE SAME "
+               "TASK as the press, with /scope held and no tree yet. It used "
+               "to wait for the answer, and a stale or hung answer left it "
+               "grey for the life of the sheet",
+               "%s · disabled %s · %d topic(s) · scope state %r"
+               % (got["ref"][-3:], got["disabled"], got["topics"], got["state"]))
+        record(got["state"] == "loading" and got["topics"] == 0,
+               "…and the sheet says so rather than showing an empty tree: the "
+               "Topic panel is in its `loading` state before the answer, "
+               "because a blank topic list reads as 'this class has no topics'",
+               "state %r, %d topic row(s)" % (got["state"], got["topics"]))
+
+        # Forward to the Topic step WHILE IT IS STILL HELD, which is the
+        # screen the new Next makes reachable and the one that has to cope.
+        p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+        time.sleep(0.2)
+        mid = p.eval("""(function(){
+          var o = document.querySelector('[data-sw="overlay"]');
+          var n = document.querySelector('[data-sw="tree-note"]');
+          var r = document.querySelector('[data-sw="tree-retry"]');
+          return {step: o.getAttribute('data-sw-step'),
+                  state: o.getAttribute('data-sw-scope-state'),
+                  note: n ? (n.hidden ? "" : n.textContent) : null,
+                  retry: r ? !r.hidden : null,
+                  topics: document.querySelectorAll('[data-sw="topic"]').length};})()""")
+        record(mid["step"] == "1" and mid["note"] == "Loading"
+               and mid["retry"] is False and mid["topics"] == 0,
+               "…and the Topic step reached before /scope lands says `Loading` "
+               "with no Retry — the panel states which of the three things is "
+               "true rather than showing a blank tree",
+               json.dumps(mid))
+
+        # ⚠️ AND IT RESOLVES IN PLACE, WHICH IS THE OTHER HALF OF THE RULING:
+        # the toggle-to-fix must become impossible. Nothing is pressed here.
+        filled = wait_for(p, "document.querySelectorAll('[data-sw=\"topic\"]')"
+                             ".length > 0", tries=80)
+        end = p.eval("""(function(){
+          var o = document.querySelector('[data-sw="overlay"]');
+          var n = document.querySelector('[data-sw="tree-note"]');
+          return {step: o.getAttribute('data-sw-step'),
+                  state: o.getAttribute('data-sw-scope-state'),
+                  noteHidden: n ? !!n.hidden : null,
+                  topics: document.querySelectorAll('[data-sw="topic"]').length,
+                  tiers: document.querySelectorAll(
+                    '[data-sw="tier-chips"] .sw-chip').length};})()""")
+        record(filled and end["state"] == "ready" and end["topics"] > 0
+               and end["noteHidden"] is True and end["tiers"] > 0
+               and end["step"] == "1",
+               "scope_resolves_in_place — the held answer fills the tree "
+               "UNDER the teacher, on the step they already walked to, with "
+               "nothing pressed and no class toggled. The toggle-to-fix is "
+               "what Mide had to do; it is now impossible because Next never "
+               "waits on the fetch at all",
+               json.dumps(end))
+        p.eval("if (window.MRBSetWork) { window.MRBSetWork.close(); }")
+    finally:
+        p.eval("""(function(){ if (window.__mrb350Held) {
+            window.fetch = window.__mrb350Held;
+            window.__mrb350Held = null; } return true;})()""")
 
 
 if __name__ == "__main__":

@@ -523,13 +523,28 @@
 
 /* Back to the Topic step for a further scope. Full width so it reads as an
    action ON the list above it rather than as a third header button, and
-   `.sw-btn`'s own disabled alpha when the set is already at twenty. */
+   `.sw-btn`'s own disabled alpha when the sheet already holds MAX_SCOPES
+   topics (⊕ first-week fixes (22 Sep 2026) — it used to be "when the set is already at twenty",
+   which was the whole-set question ceiling; a topic's count is now bounded by
+   its own pool and the number of TOPICS is what bounds a set). */
 .sw-add {
   width: 100%;
   margin-top: 16px;
   color: var(--st-accent-text);
 }
 .sw-add[hidden] { display: none; }
+
+/* ⊕ first-week fixes (22 Sep 2026) — THE TOPIC STEP'S STATUS AND ITS RETRY.
+   `Next` now enables the moment a class is ticked rather than waiting for
+   `/scope`, so a teacher can stand on the Topic step before the tree exists.
+   The note is the same `.sw-row-tag` the tree's own refusals wear — one word,
+   in the tag slot — and it sits ABOVE the Retry rather than beside it so the
+   two read as a statement and an action, not as a sentence.
+   `.sw-add` carries the Retry's shape: it is the same kind of full-width
+   action on the list above it that `Add topic` is. */
+[data-sw="tree-note"] { margin-top: 12px; }
+[data-sw="tree-note"][hidden], [data-sw="tree-retry"][hidden] { display: none; }
+[data-sw="tree-retry"] { margin-top: 10px; }
 
 /* ── ⊕ MRB-342 · THE DOWNLOAD MENU ───────────────────────────────────────
    One control, three places: the sheet's header, the class table's
