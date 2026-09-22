@@ -480,6 +480,33 @@
           logic.componentDidUpdate(prevProps);
         }, 0);
       },
+      /* ⊕ MRB-348 ROUND THREE — SWAP THE BOUND TEMPLATE AND REDRAW.
+
+         `applyBindings` runs ONCE, before the first paint, and writes Design's
+         literal identity strings into a clone of the compiled template. That
+         is the right shape for everything it was written for — a name, a class
+         code, a term label — because none of those can change while the page
+         is open.
+
+         One of them can. `practiceLabel` is marked `drop`, so an empty value
+         REMOVES the Practice button's element from the clone; and the student
+         class page now mounts before `/api/class/practice` has answered, so a
+         class whose practice bank arrives late would have had its button
+         removed on the evidence of a read that had not happened yet. A
+         `setState` cannot put it back: the element is no longer in the
+         template `draw` builds from.
+
+         So this replaces that template with a freshly-bound clone of the same
+         compiled source and draws again. It is deliberately the ONLY way in:
+         the runtime never re-binds on its own, and the caller has to have
+         produced the new roots itself, from `window.__MRB_TPL__`, which
+         `applyBindings` never mutates. */
+      rebind: function (roots) {
+        if (!roots || !roots.length) { return false; }
+        opts.template.roots = roots;
+        api.draw();
+        return true;
+      },
       draw: function () {
         var vals = logic.renderVals() || {};
         var scope = Object.create(vals);

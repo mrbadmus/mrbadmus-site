@@ -1105,6 +1105,15 @@
      exists to keep sharp. */
   var pendingSink = null;
 
+  /* ⊕ MRB-348 ROUND THREE — THE SAME HAND-OFF, FOR WORK THAT HAPPENS AFTER
+     THE MOUNT. `buildClass` sets this to a function; `run()` calls it with the
+     mounted app once the page is on the screen, and it is what folds
+     `/api/class/practice` in if and when that endpoint answers. It is a
+     variable on the module rather than a key on the data object for exactly
+     the reason `pendingSink` is: the data object is what the page RENDERS
+     from, and a function that owns two database reads is not data. */
+  var pendingLate = null;
+
   /* ── THE DEADLINE EVERY BACKEND CALL NOW CARRIES ───────────────────────
      ⊕ 23 Aug 2026. What was here was a bare `await fetch(...)`, and a bare
      fetch has no timeout of any kind. A request that is never ANSWERED is
@@ -1947,19 +1956,108 @@
        `api()` from the response, so it is set by whichever of the two api
        calls answers first, and the check below is unchanged and still
        unconditional. What a piece of work's status is measured against has
-       not moved; only when the requests leave has. */
+       not moved; only when the requests leave has.
+
+       ⊕ MRB-348 ROUND THREE, 22 Sep 2026 — one sentence of the note above is
+       now out of date and is kept rather than rewritten, because it is the
+       thing that was wrong: "whichever of the TWO api calls answers first".
+       There is still one api call in this wave. The other one — practice —
+       left the wave tonight and is started three lines above it. `serverNow`
+       is therefore set by `current-assignment` and nothing else on this path,
+       which was already true whenever practice was the slower of the two. */
+
+    /* ═══════════════════════════════════════════════════════════════════
+       ⊕ MRB-348 ROUND THREE — `/api/class/practice` CANNOT TAKE THE PAGE
+       DOWN, AND CANNOT HOLD IT UP.
+       ═══════════════════════════════════════════════════════════════════
+
+       ⛔ WHAT IT WAS. One unguarded arm of the wave below. `api()` throws on
+       any non-2xx and on its own deadline, and an arm of a `Promise.all` that
+       rejects takes the whole wave with it — so a Render blip, a cold start
+       that overran, a 500 on one route, and a child saw "We could not load
+       your class just now" instead of their homework. What it was protecting
+       was the flashcard deck and the practice round: one panel, below the
+       fold, behind a toggle.
+
+       ⚠️ AND THE ERROR CASE WAS NOT THE WORST HALF. Boxing the rejection
+       inside the wave would have fixed the 500 and left the SLOW case exactly
+       where it was: `Promise.all` waits for a catch to resolve just as it
+       waits for a value, so a practice call that hangs to its ceiling still
+       held the first paint for it — up to COLD_MS, seventy-five seconds of
+       blank page, for a panel nobody had opened. It has to leave the wave, not
+       merely be forgiven inside it.
+
+       ⚠️ IT STILL LEAVES AT THE SAME INSTANT. This line is above the wave, not
+       after it, so no wall-clock is added anywhere: the request is in flight
+       across the same cold start the wave below pays for, and lands where it
+       lands. What changed is only that nothing waits for it.
+
+       ⚠️ BOXED, NEVER REJECTING. A promise nobody awaits for several hundred
+       milliseconds is a promise that can raise `unhandledrejection` in the
+       meantime, and this page has a global handler; the box turns the failure
+       into a value at the moment it happens, and `foldInPractice` below reads
+       the box. This is the same shape `run()` already uses for the speculative
+       build and for the early class-list read, for the same reason.
+
+       ⚠️ THE LATENCY WIN HERE IS SMALL AND THE AVAILABILITY WIN IS NOT.
+       `current-assignment` is still awaited below and is still a call to the
+       same backend, so a cold Render still costs the page its cold start.
+       What this buys is that the page no longer DIES, and no longer waits, on
+       a route that feeds one optional surface. */
+    var practiceP = api("/api/class/practice?class_id=" + klass.id, token)
+      .then(function (v) { return { ok: true, v: v }; },
+            function (e) {
+              console.warn("[student-live] the practice endpoint did not "
+                           + "answer — the deck and the round fall back to "
+                           + "the lessons behind this class's work", e);
+              return { ok: false, e: e };
+            });
+
+    /* ⊕ MRB-348 ROUND THREE — A NON-CRITICAL DB ARM FAILS TO THE SHAPE ITS
+       OWN CONSUMER ALREADY HANDLES, AND TO NO OTHER SHAPE.
+
+       supabase-js RESOLVES a refused read with `{ data: null, error }` rather
+       than rejecting, and every consumer below was written against that: the
+       assignments arm is read as `aw.data || []`, the years arm as
+       `if (!yrs.error)`, the reminders arm as `unreadNotes && !unreadNotes.error
+       && …`. All three already degrade correctly on a REFUSAL.
+
+       ⛔ WHAT THEY DID NOT SURVIVE IS A TIMEOUT. `withDbDeadline` REJECTS when
+       the clock runs out, and a rejecting arm of a `Promise.all` is the whole
+       page — so three reads that had been carefully written to fail softly
+       each had a second failure mode that killed the class view outright. This
+       hands the timeout to the consumer in supabase-js's own vocabulary, so
+       the two failure modes become one and no consumer learns a new shape.
+
+       ⚠️ IT INVENTS NOTHING. `data: null` is not an empty list and is not a
+       success; nothing here can turn a failed read into "there are no rows".
+       Where that distinction matters it is the consumer that already makes it
+       — see the MRB-261 note on the years arm below. */
+    function _soft(p, what) {
+      return Promise.resolve(p).then(function (r) { return r; },
+        function (e) {
+          console.warn("[student-live] " + what + " did not answer", e);
+          return { data: null, error: e };
+        });
+    }
+
     var opening = await Promise.all([
       D.loadStudentClass(klass.id, user.id),
-      api("/api/class/practice?class_id=" + klass.id, token),
       api("/api/class/current-assignment?class_id=" + klass.id, token),
       /* The teaching week each piece of work belongs to. `assignments`
          records it (`academic_week`), so read it rather than recomputing it;
          the fall back derives it from `due_at` against the academic year's
          start_date, which is the same arithmetic the producer used to set
-         that due_at. */
-      withDbDeadline(WARM_MS, sb.from("assignments")
+         that due_at.
+
+         ⊕ MRB-348 round three — SOFT. Losing it costs the teaching week on
+         each work row (which then falls back to the `due_at` arithmetic
+         below), the "Open the lesson" links, the FROM YOUR WORK ordering, and
+         the deck and round's assignment-side lessons. The work list itself
+         comes from `loadStudentClass`, so the child still sees their work. */
+      _soft(withDbDeadline(WARM_MS, sb.from("assignments")
         .select("id, academic_week").eq("class_id", klass.id)
-        .is("deleted_at", null)),
+        .is("deleted_at", null)), "the class's assignment rows"),
       /* ⊕ Perf, 21 Sep 2026 — THE YEAR ROWS COME FROM THE SHARED READ.
 
          `class-entry.js` already reads `academic_years` on every page load to
@@ -1979,8 +2077,20 @@
 
          ⚠️ THE `{ data, error }` SHAPE IS PRESERVED. The resolution below
          reads both fields (`if (!yrs.error)`), so the cached path answers
-         `error: null` rather than a bare array. */
-      (async function () {
+         `error: null` rather than a bare array.
+
+         ⊕ MRB-348 round three — SOFT, AND THE MRB-261 HAZARD IS NOT HERE.
+         Checked rather than assumed: `year` has exactly one reader inside this
+         function, `weekOf`'s `due_at` fallback, and that fallback is itself
+         only reached for a work row whose `academic_week` is null. The
+         year-scoped CLASS LIST that MRB-261 is about is decided in
+         `loadStudentClasses`/`pickClass`, one level up in `run()`, out of this
+         arm's reach entirely — so failing this arm cannot show a Year 11 the
+         class they left in July. And the fallback the note above describes is
+         untouched: `if (!yrs.error)` is exactly the branch a soft failure
+         lands in, so a failed read leaves `year` null and NEVER an empty list
+         read as "there are no years". */
+      _soft((async function () {
         var mod = window.MRBClassEntry;
         if (mod && mod.academicYears) {
           try {
@@ -1990,7 +2100,7 @@
         }
         return withDbDeadline(WARM_MS, sb.from("academic_years")
           .select("id, name, start_date, end_date").is("deleted_at", null));
-      })(),
+      })(), "the academic year rows"),
       /* ⊕ MRB-306 WS-3 — unread reminders, joined to THIS wave rather than
          added after it. It takes only `klass.id`, already an argument here,
          so it has no dependency on the five above and costs no extra round
@@ -2008,8 +2118,16 @@
          `class_teachers_for_viewer` already uses for exactly this problem.
 
          READ ONLY — this feature adds no save path to this page and must not
-         disturb the per-answer queue or the keepalive. */
-      withDbDeadline(WARM_MS, sb.rpc("student_reminders_for_viewer", { p_class_id: klass.id })),
+         disturb the per-answer queue or the keepalive.
+
+         ⊕ MRB-348 round three — SOFT. Its consumer already reads
+         `unreadNotes && !unreadNotes.error && unreadNotes.data && …`, so a
+         refusal has always left the banner off and the page whole; only the
+         TIMEOUT could kill it. What a student loses is the one-sentence
+         reminder line at the top. The BELL is a separate read, injected after
+         the mount, and is unaffected. */
+      _soft(withDbDeadline(WARM_MS, sb.rpc("student_reminders_for_viewer", { p_class_id: klass.id })),
+            "the unread reminders"),
       /* ⊕ MRB-328 J4(b) — THE SHOUT-OUT FEED, joined to this wave for exactly
          the reason the reminders RPC above was joined to it, and stated in
          the same words: it takes only `klass.id`, already an argument here,
@@ -2071,13 +2189,18 @@
     if (detail && detail.class) {
       klass = Object.assign({}, detail.class, klass);
     }
-    var practice = opening[1];
-    var current = opening[2];
-    var aw = opening[3];
-    var yrs = opening[4];
-    var unreadNotes = opening[5];
-    var feedEarly = opening[6];
-    var classTeachers = opening[7] || [];
+    /* ⊕ MRB-348 round three — PRACTICE IS NOT IN THE WAVE ANY MORE, so it is
+       null at first paint and is folded in by `foldInPractice` below if and
+       when it lands. Every read of it in this function is already written
+       `practice && practice.…`, because the endpoint has always been able to
+       answer without the field being asked for. */
+    var practice = null;
+    var current = opening[1];
+    var aw = opening[2];
+    var yrs = opening[3];
+    var unreadNotes = opening[4];
+    var feedEarly = opening[5];
+    var classTeachers = opening[6] || [];
 
     /* Whether a piece of work is still open or has been missed is decided
        against the SERVER's clock and nothing else. Without one, this page does
@@ -2585,19 +2708,29 @@
        The lesson ladder's recall and apply rungs for the lessons this class
        has been taught, nearest lesson first. The page's round is six long, so
        six is what it is given. */
-    var questions = [];
-    (practice && practice.questions ? practice.questions : []).forEach(function (q) {
-      if (questions.length >= 6) { return; }
-      var n = normalise(q.options, q.answer_letter);
-      if (!n) { return; }
-      questions.push({
-        topic: String(q.topic || deslug(q.lesson_slug)).toUpperCase(),
-        a: ["A", "B", "C", "D"][n.a],
-        q: q.text || "",
-        o: n.o,
-        f: n.f
+    /* ⊕ MRB-348 round three — THE SHAPING IS A FUNCTION RETURNING A FRESH
+       ARRAY, called with `null` here and again from `foldInPractice` when the
+       endpoint lands. One copy of the code, so the late fill cannot drift from
+       the early one — and a NEW array rather than a mutated one, so the value
+       already published on `window.__MRB_DATA__` cannot change underneath the
+       page except at the one moment the fold-in decides it may. */
+    function fillQuestions(src) {
+      var out = [];
+      (src && src.questions ? src.questions : []).forEach(function (q) {
+        if (out.length >= 6) { return; }
+        var n = normalise(q.options, q.answer_letter);
+        if (!n) { return; }
+        out.push({
+          topic: String(q.topic || deslug(q.lesson_slug)).toUpperCase(),
+          a: ["A", "B", "C", "D"][n.a],
+          q: q.text || "",
+          o: n.o,
+          f: n.f
+        });
       });
-    });
+      return out;
+    }
+    var questions = fillQuestions(practice);
     /* ⊕ 23 Aug 2026 — PHASE 3. THE THROW THAT USED TO BE HERE IS GONE, AND
        ITS REMOVAL IS THE POINT OF THE UNIT RATHER THAN A SIDE EFFECT.
 
@@ -2671,9 +2804,33 @@
 
        Same rule as `lessonsFor` above and the shout-outs below: the work is
        the page, and a card is a card. */
-    (practice && practice.questions ? practice.questions : []).forEach(function (q) {
-      if (q.lesson_slug) { coveredSlugs[q.lesson_slug] = true; }
-    });
+    /* ⊕ MRB-348 ROUND THREE — AND THIS IS WHERE THE LATE ARRIVAL IS REAL WORK
+       RATHER THAN A REDRAW.
+
+       The note above says it in Design's own words: NEITHER SLUG SET CONTAINS
+       THE OTHER. (a) is every lesson behind every assignment this class has
+       been set; (b) is every lesson the scheme says it has been taught. So
+       mounting before practice lands means the first paint's deck is (a)
+       alone, and (b) may carry lessons (a) never names — a lesson taught but
+       not yet assessed, and on a class in its first week of term, possibly
+       every lesson it has.
+
+       `foldInPractice` therefore does not merely re-render: it takes the slugs
+       (b) adds that (a) did not already cover, reads the two corpora for JUST
+       those, and re-ranks the union. Reading the whole set again would be a
+       second full pair of round trips for rows the page is already holding. */
+    var practiceCovered = {};
+    function coverFromPractice(src) {
+      var added = [];
+      (src && src.questions ? src.questions : []).forEach(function (q) {
+        if (!q.lesson_slug || practiceCovered[q.lesson_slug]) { return; }
+        practiceCovered[q.lesson_slug] = true;
+        if (!coveredSlugs[q.lesson_slug]) { added.push(q.lesson_slug); }
+        coveredSlugs[q.lesson_slug] = true;
+      });
+      return added;
+    }
+    coverFromPractice(practice);
     var deckSlugs = Object.keys(coveredSlugs);
 
     /* ⊕ RULED 23 Aug 2026 — THE TWO DECK READS LEAVE NOW AND ARE AWAITED
@@ -2697,25 +2854,43 @@
        a catch that RESOLVES with the error in supabase-js's own shape
        (`{ error }`), because the two `await` sites below already check
        `.error` and throw into their own try/catch. So a failure is handled in
-       exactly the place, and in exactly the way, it was handled before. */
+       exactly the place, and in exactly the way, it was handled before.
+
+       ⊕ MRB-348 ROUND THREE — EACH IS NOW A FUNCTION OF ITS SLUG LIST, AND IT
+       IS STILL EXACTLY ONE SERVING READ EACH.
+
+       `foldInPractice` needs the same two queries a second time, for the slugs
+       the practice endpoint added. Writing them out again would be two more
+       `from("ks3_cards")` / `from("ks3_ladder_questions")` sites in this file
+       — which `pool_ownership` counts, by design, because a second serving
+       read of a pool is how a cross-feed starts. Parameterising the one read
+       keeps the count at one and makes the claim MORE true rather than less:
+       there is now literally a single place in this file that serves a card
+       and a single place that serves a rung. */
     function _started(builder) {
       return builder.then(function (r) { return r; },
                           function (err) { return { data: null, error: err }; });
     }
-    var cardsQ = deckSlugs.length ? _started(withDbDeadline(WARM_MS,
-      sb.from("ks3_cards")
-        .select("id, lesson_slug, kind, card_position, topic, front, back, "
-                + "equation_left, equation_arrow, equation_right, "
-                + "equation_condition")
-        .in("lesson_slug", deckSlugs)
-        .order("lesson_slug").order("card_position"))) : null;
-    var bankQ = deckSlugs.length ? _started(withDbDeadline(WARM_MS,
-      sb.from("ks3_ladder_questions")
-        .select("question_ref, lesson_slug, unit_code, rung, text, "
-                + "answer_letter, options")
-        .in("lesson_slug", deckSlugs)
-        .in("rung", ["recall", "apply"])
-        .order("lesson_slug").order("rung"))) : null;
+    function startCards(slugs) {
+      return slugs.length ? _started(withDbDeadline(WARM_MS,
+        sb.from("ks3_cards")
+          .select("id, lesson_slug, kind, card_position, topic, front, back, "
+                  + "equation_left, equation_arrow, equation_right, "
+                  + "equation_condition")
+          .in("lesson_slug", slugs)
+          .order("lesson_slug").order("card_position"))) : null;
+    }
+    function startBank(slugs) {
+      return slugs.length ? _started(withDbDeadline(WARM_MS,
+        sb.from("ks3_ladder_questions")
+          .select("question_ref, lesson_slug, unit_code, rung, text, "
+                  + "answer_letter, options")
+          .in("lesson_slug", slugs)
+          .in("rung", ["recall", "apply"])
+          .order("lesson_slug").order("rung"))) : null;
+    }
+    var cardsQ = startCards(deckSlugs);
+    var bankQ = startBank(deckSlugs);
 
     /* ── WHICH LESSONS DID THIS STUDENT GET SOMETHING WRONG IN? ───────────
 
@@ -2831,17 +3006,14 @@
       });
     }
 
-    var cards = [];
-    try {
-      if (cardsQ) {
-        var cq = await cardsQ;      // started the moment deckSlugs existed
-        /* A refusal here is silent otherwise — supabase-js RESOLVES with an
-           `error` rather than rejecting, so `.data` would simply be null and
-           the deck would be empty with nothing said anywhere. The card's own
-           empty state is honest either way; the console line is what tells
-           whoever is looking that it is empty for a REASON. */
-        if (cq.error) { throw cq.error; }
-        cards = (cq.data || []).map(function (r) {
+    /* ⊕ MRB-348 round three — the mapping is a function for `foldInPractice`'s
+       sake, exactly as the two reads above are. `cardsAll` holds the UNRANKED
+       rows so a late arrival re-ranks the union from the same input the first
+       ranking saw, rather than re-ranking an already-ranked list (which would
+       change the final `a.i - b.i` tiebreak for no reason). */
+    var cardsAll = [];
+    function mapCards(rows) {
+      return (rows || []).map(function (r) {
           var eq = r.kind === "equation";
           var card = {
             id: r.id,
@@ -2891,11 +3063,22 @@
              correct outcome; faking one would put Design's pressure triangle
              on a chemistry card. */
           return card;
-        });
+      });
+    }
+    try {
+      if (cardsQ) {
+        var cq = await cardsQ;      // started the moment deckSlugs existed
+        /* A refusal here is silent otherwise — supabase-js RESOLVES with an
+           `error` rather than rejecting, so `.data` would simply be null and
+           the deck would be empty with nothing said anywhere. The card's own
+           empty state is honest either way; the console line is what tells
+           whoever is looking that it is empty for a REASON. */
+        if (cq.error) { throw cq.error; }
+        cardsAll = mapCards(cq.data);
       }
     } catch (cardErr) {
       console.error("[student-live] could not build the flashcard deck", cardErr);
-      cards = [];
+      cardsAll = [];
     }
 
     /* ── AND THE ORDER, WHICH IS WRITTEN IN ONE PLACE ────────────────────
@@ -2904,11 +3087,14 @@
        for a session AND across a reload (a student who refreshes does not get
        a reshuffled stack under their finger) and moves tomorrow. */
     var deckSeen = seenStore(user.id, klass.id);
-    cards = rankForPractice(cards, {
-      wrong: wrongLessons,
-      seen: deckSeen.all(),
-      seed: klass.id + "|" + londonYmd(serverNow)
-    });
+    function rankDeck() {
+      return rankForPractice(cardsAll, {
+        wrong: wrongLessons,
+        seen: deckSeen.all(),
+        seed: klass.id + "|" + londonYmd(serverNow)
+      });
+    }
+    var cards = rankDeck();
 
     /* ═══════════════════════════════════════════════════════════════════
        ── ⊕ 23 Aug 2026 — PHASE 3. THE RECALL BANK ───────────────────────
@@ -2950,18 +3136,15 @@
        anywhere in the round: no submission row, no attempt row, no score. The
        only thing a round writes is a per-device seen count, in localStorage,
        for the ordering — see `QSEEN_PREFIX`. */
-    var practiceBank = [];
-    try {
-      if (bankQ) {
-        var lq = await bankQ;       // started the moment deckSlugs existed
-        /* supabase-js RESOLVES with an `error` rather than rejecting, so
-           without this the bank would simply be empty and nothing would say
-           why — the same silence the deck's own read documents. */
-        if (lq.error) { throw lq.error; }
-        (lq.data || []).forEach(function (r) {
-          var n = normalise(r.options, r.answer_letter);
-          if (!n) { return; }
-          practiceBank.push({
+    /* ⊕ MRB-348 round three — unranked rows, and the mapping as a function,
+       for the reason the deck's own pair above gives. */
+    var bankAll = [];
+    function mapBank(rows) {
+      var out = [];
+      (rows || []).forEach(function (r) {
+        var n = normalise(r.options, r.answer_letter);
+        if (!n) { return; }
+        out.push({
             /* ⚠️ THE ID IS `question_ref`, AND IT IS THE ONLY id this corpus
                has. `rankForPractice` keys `opts.seen` on `it.id` and
                `opts.wrong` on `it.lesson`, so this is what a seen count is
@@ -2985,12 +3168,22 @@
                else. `recallVals` reads whichever shape it is handed, so the
                fixture keeps Design's behaviour byte for byte. */
             notes: n.f
-          });
         });
+      });
+      return out;
+    }
+    try {
+      if (bankQ) {
+        var lq = await bankQ;       // started the moment deckSlugs existed
+        /* supabase-js RESOLVES with an `error` rather than rejecting, so
+           without this the bank would simply be empty and nothing would say
+           why — the same silence the deck's own read documents. */
+        if (lq.error) { throw lq.error; }
+        bankAll = mapBank(lq.data);
       }
     } catch (bankErr) {
       console.error("[student-live] could not build the recall bank", bankErr);
-      practiceBank = [];
+      bankAll = [];
     }
 
     /* ── THE SAME ORDER, FROM THE SAME FUNCTION ───────────────────────────
@@ -3005,11 +3198,14 @@
        round should not agree about which lesson to lead with just because
        they happen to hash the same slug. */
     var practiceSeen = seenStore(user.id, klass.id, QSEEN_PREFIX);
-    practiceBank = rankForPractice(practiceBank, {
-      wrong: wrongLessons,
-      seen: practiceSeen.all(),
-      seed: klass.id + "|recall|" + londonYmd(serverNow)
-    });
+    function rankBank() {
+      return rankForPractice(bankAll, {
+        wrong: wrongLessons,
+        seen: practiceSeen.all(),
+        seed: klass.id + "|recall|" + londonYmd(serverNow)
+      });
+    }
+    var practiceBank = rankBank();
 
     /* ── shoutouts[] ─────────────────────────────────────────────────────
        The class's real shout-out feed, narrowed to the ones written TO this
@@ -3061,9 +3257,20 @@
        against the academic year's own dates, never a device clock). The
        denominator is the scheme's own ceiling of 39 weeks, which is what the
        numerator counts against. */
-    var weekNo = (current && current.week != null)
-      ? current.week
-      : (practice && practice.week != null ? practice.week : null);
+    /* ⊕ MRB-348 round three — A FUNCTION, because `foldInPractice` has to be
+       able to ask the same question again with `practice` filled in. Note the
+       order is unchanged and `current.week` still wins: on every load where
+       the backend named a current assignment, practice's week has never been
+       consulted and still is not, so removing practice from the opening wave
+       changes this value on exactly one path — a class with no current
+       assignment, where it is null at first paint instead of whatever practice
+       would have said, and becomes that value when practice lands. */
+    function weekFrom(p) {
+      return (current && current.week != null)
+        ? current.week
+        : (p && p.week != null ? p.week : null);
+    }
+    var weekNo = weekFrom(practice);
 
     var v = detail.viewer || {};
 
@@ -3148,6 +3355,204 @@
       }
       reminderLine += ".";
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       ⊕ MRB-348 ROUND THREE — FOLDING PRACTICE IN, AFTER THE MOUNT
+       ═══════════════════════════════════════════════════════════════════
+
+       Everything above this line is the page the child gets WITHOUT the
+       practice endpoint. This is what happens if it answers.
+
+       ── WHAT A LATE ARRIVAL CAN CHANGE, AND WHAT IT CANNOT ──────────────
+
+       It has exactly three consumers in this function, and they behave very
+       differently under a late fill:
+
+         `questions`      — published, and read by NOTHING. The old recall
+                            round that consumed it was retired on 23 Aug 2026
+                            (see its note above and `student_rulings.py`); the
+                            page assigns `this.questions = MRB_DATA("questions")`
+                            at construction and never reads the field again. It
+                            is refilled here so the published data is honest,
+                            and it is not the reason for any redraw.
+         `coveredSlugs`   — REAL WORK. See the note at the deck: neither slug
+                            set contains the other, so practice can name
+                            lessons the assignment walk never did. Those get a
+                            supplementary read and the union is re-ranked.
+         `weekNo`         — only on a class with no current assignment, where
+                            it is the fallback. `current.week` still wins.
+
+       ── THE REDRAW, AND WHY IT IS GATED ─────────────────────────────────
+
+       `student-runtime.js` `draw()` empties the mount host and rebuilds the
+       whole template. It restores focus, every form field's value, and the
+       DOCUMENT's scroll — but NOT any element's own `scrollTop`, because it
+       keeps no record of one.
+
+       Measured against the compiled template rather than assumed: the class
+       VIEW contains no `overflow:auto` of any kind, so a redraw of it costs a
+       repaint and nothing else. There are exactly two inner scrollers on this
+       page and both are overlays — the ACCOUNT SHEET and the PRACTICE ROUND —
+       and a third surface, the FLASHCARD OVERLAY, is worse than a lost scroll
+       position: it draws `deck[idx]`, so re-ranking the deck under an open
+       overlay changes the card physically under the student's finger, and the
+       round has the same problem with `practiceBank`.
+
+       So the fold-in APPLIES IMMEDIATELY when the student is on the class view
+       and DEFERS while any of those three is open. It is not dropped: an
+       after-draw hook re-offers it, so it lands on the first draw after the
+       overlay closes — which is the same draw that closing it already caused.
+
+       ── AND ONE THING A REDRAW ALONE CANNOT DO ──────────────────────────
+
+       `practiceLabel` is a BINDING, not a render value: `applyBindings` writes
+       it into a clone of the compiled template ONCE, before the first paint,
+       and it is marked `drop`, so an empty value removes the Practice button's
+       element outright. A later `setState` cannot bring it back — the element
+       is not in the template the runtime is drawing from any more.
+
+       That case is real rather than theoretical: a class in its first week has
+       no assignments, so the assignment walk covers no lessons, so the bank is
+       empty at mount and the button is dropped — and practice is precisely the
+       source that would have filled it. So when, and only when, the bank goes
+       from empty to non-empty, the bindings are applied again to a fresh clone
+       of the untouched compiled template and the runtime is asked to draw from
+       that. Nothing else in the page changes shape; `applyBindings` only ever
+       removes, and a throw inside it is caught and costs the button and
+       nothing more. */
+    pendingLate = function foldInPractice(app) {
+      var pending = null, applied = false, hooked = false;
+
+      function overlayOpen() {
+        var s = app && app.logic && app.logic.state;
+        if (!s) { return false; }
+        return !!(s.cards || s.recall || s.account);
+      }
+
+      function rebind() {
+        var R = window.MrBadmusStudentRuntime;
+        var tpl = window.__MRB_TPL__;
+        if (!app || typeof app.rebind !== "function" || !R || !tpl
+            || !window.__MRB_BIND__) { return false; }
+        try {
+          /* `window.__MRB_DATA__` is accepted in place of the page's own
+             `MRB_DATA`: `applyBindings` takes either, and a plain object
+             throws on a missing key in exactly the same way. */
+          app.rebind(R.applyBindings(tpl.roots, window.__MRB_BIND__,
+                                     window.__MRB_DATA__));
+          return true;
+        } catch (e) {
+          console.warn("[student-live] could not re-apply the bindings after "
+                       + "the practice fold-in; the Practice button stays "
+                       + "absent until the next load", e);
+          return false;
+        }
+      }
+
+      function apply() {
+        applied = true;
+        var d = window.__MRB_DATA__;
+        var take = pending;
+        pending = null;
+        if (!d || !take) { return; }
+        var hadBank = !!(d.practiceBank && d.practiceBank.length);
+        var k;
+        for (k in take) {
+          if (Object.prototype.hasOwnProperty.call(take, k)) { d[k] = take[k]; }
+        }
+        /* The board's selected week is STATE, seeded from `boardWeek` at
+           construction. Moved only when the student has not chosen one — i.e.
+           it still holds the null the page mounted with — so a fold-in can
+           never yank the board off a week a child selected. */
+        if (app && app.logic && app.logic.state
+            && app.logic.state.boardWeek == null && d.boardWeek != null) {
+          app.logic.state.boardWeek = d.boardWeek;
+        }
+        var nowBank = !!(d.practiceBank && d.practiceBank.length);
+        if (!hadBank && nowBank && rebind()) { return; }   // rebind draws
+        if (app && app.logic && app.logic.forceUpdate) { app.logic.forceUpdate(); }
+      }
+
+      function offer() {
+        if (applied || !pending) { return; }
+        if (overlayOpen()) {
+          if (hooked) { return; }
+          hooked = true;
+          var hooks = window.__MRB_AFTER_DRAW__
+                    = window.__MRB_AFTER_DRAW__ || [];
+          hooks.push(function () { offer(); });
+          return;
+        }
+        apply();
+      }
+
+      return practiceP.then(async function (box) {
+        if (!box.ok) { return; }           // degraded; already logged above
+        practice = box.v;
+
+        var next = {};
+        var moved = false;
+
+        var qs = fillQuestions(practice);
+        if (qs.length) { next.questions = qs; }    // published, renders nothing
+
+        var w = weekFrom(practice);
+        if (w !== weekNo) {
+          weekNo = w;
+          next.boardWeek = w == null ? null : w;
+          next.currentWeek = w == null ? null : w;
+          next.weekNumber = w == null ? "—" : pad2(w);
+          moved = true;
+        }
+
+        var extra = coverFromPractice(practice);
+        if (extra.length) {
+          var pair = await Promise.all([
+            startCards(extra) || { data: [], error: null },
+            startBank(extra) || { data: [], error: null }
+          ]);
+          if (pair[0].error) {
+            console.error("[student-live] the practice lessons' flashcards "
+                          + "could not be read; the deck keeps the lessons "
+                          + "behind this class's work", pair[0].error);
+          } else if ((pair[0].data || []).length) {
+            cardsAll = cardsAll.concat(mapCards(pair[0].data));
+            next.cards = rankDeck();
+            moved = true;
+          }
+          if (pair[1].error) {
+            console.error("[student-live] the practice lessons' ladder rungs "
+                          + "could not be read; the round keeps the lessons "
+                          + "behind this class's work", pair[1].error);
+          } else if ((pair[1].data || []).length) {
+            bankAll = bankAll.concat(mapBank(pair[1].data));
+            next.practiceBank = rankBank();
+            next.practiceLabel = next.practiceBank.length ? "Practice" : "";
+            moved = true;
+          }
+        }
+
+        /* Nothing a student can see has changed — the common case, on a class
+           whose scheme names no lesson its work did not already cover. The
+           published `questions` key is updated in place and no redraw is
+           asked for, because a rebuild that changes nothing is a rebuild that
+           can only cost something. */
+        if (!moved) {
+          if (next.questions && window.__MRB_DATA__) {
+            window.__MRB_DATA__.questions = next.questions;
+          }
+          return;
+        }
+        pending = next;
+        offer();
+      }, function (e) {
+        /* `practiceP` is boxed and cannot reject; this exists so a throw in
+           the fold-in itself — a malformed row, a missing global — costs the
+           deck's extra lessons and never the page. */
+        console.error("[student-live] the practice fold-in failed; the page "
+                      + "keeps what it mounted with", e);
+      });
+    };
 
     return {
       /* ⊕ MRB-306 WS-3. All three keys are published UNCONDITIONALLY, empty
@@ -4447,7 +4852,24 @@
              on the one paint that matters. */
           if (pendingSink) { window.__MRB_SINK__ = pendingSink; }
 
-          window.__MRB_MOUNT__();
+          var app = window.__MRB_MOUNT__();
+
+          /* ⊕ MRB-348 ROUND THREE — THE PRACTICE FOLD-IN, AFTER THE PAINT.
+             `buildClass` no longer waits for `/api/class/practice`; it hands
+             back a function that folds the answer in when (or if) it arrives.
+             Called here, on the line after the mount, for the same reason the
+             RUM beacon is: this is the moment the student has stopped waiting,
+             and nothing on this line may be allowed to delay that moment or to
+             undo it. NOT awaited, and every failure path inside it is a console
+             line — a class page that mounted must stay mounted. */
+          if (page === "class" && pendingLate) {
+            try { pendingLate(app); }
+            catch (lateErr) {
+              console.error("[student-live] the practice fold-in could not "
+                            + "start; the page keeps what it mounted with",
+                            lateErr);
+            }
+          }
 
           /* ⊕ MRB-330 — she has opened her work, so the reminder that asked her
              to has been read. After the mount, never awaited: see
