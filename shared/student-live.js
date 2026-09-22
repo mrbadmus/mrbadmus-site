@@ -2049,7 +2049,28 @@
          takes only `klass.id` and costs no extra round trip. Never throws. */
       D.loadClassTeacherNames(klass.id)
     ]);
+    /* ⊕ MRB-348 — THE CLASS FACTS COME FROM THE CLASS READ, NOT THE LIST ROW.
+
+       `buildClass` needs three things off `klass`: `id` (18 times, all of them
+       to build a filter), and `name` and `pill_label` (five times, all of them
+       far below this line, in the render). The id is in the URL. The other two
+       were only ever available because the caller had already spent two serial
+       round trips reading the student's whole class LIST before calling — a
+       list read whose sole purpose, on the overwhelmingly common path, was to
+       hand over a row that `loadStudentClass` was about to fetch again anyway.
+
+       Filling them from `detail.class` lets `run()` below start this function
+       from `{ id }` alone and let the list resolve alongside it.
+
+       ⚠️ `Object.assign({}, detail.class, klass)` — THE PASSED ROW WINS.
+       Written this way round on purpose: when a caller supplies a full row
+       (every existing path), every field it holds is kept and this line is a
+       no-op, so the ordinary journey cannot change appearance. It fills gaps
+       and never overwrites. */
     var detail = opening[0];
+    if (detail && detail.class) {
+      klass = Object.assign({}, detail.class, klass);
+    }
     var practice = opening[1];
     var current = opening[2];
     var aw = opening[3];
@@ -4230,6 +4251,59 @@
              boot line up with no end and nothing to say — the same failure
              `withDeadline` was written for in August, one wave earlier than it
              was watching. */
+          /* ⊕ MRB-348 — THE PAGE STOPS WAITING FOR THE CLASS LIST IT ALREADY
+             HAS THE ANSWER TO.
+
+             ⛔ WHAT IT WAS. `loadStudentClasses()` reads the student's classes
+             and then their teacher links — two SERIAL round trips — and only
+             once both had landed did `buildClass` issue the first of its own.
+             On the journey every link on this site produces, the entire
+             purpose of those two trips was to look up a row whose id was
+             already sitting in `?class=` and which `loadStudentClass` re-reads
+             from `classes` a moment later regardless.
+
+             WHY THE LIST CANNOT SIMPLY BE SKIPPED. `pickClass` is a RULED
+             behaviour (23 Aug 2026, in its own comment below): a student who
+             follows a friend's link to a class that is not theirs is shown
+             THEIR OWN class, silently, with the parameter dropped from the
+             address — no banner, no message, nothing they did wrong. Deciding
+             that needs the list. So the list read stays exactly as it was.
+
+             WHAT CHANGED IS ONLY WHEN buildClass LEAVES. It now starts
+             speculatively, for the class the URL names, at the same moment the
+             list read starts — and the list, when it lands, decides whether
+             that speculation is the page. If `pickClass` agrees (every normal
+             load), the work is already done and two serial round trips have
+             gone. If it disagrees, the speculative result is DISCARDED and the
+             original path runs untouched, giving the student their own class
+             exactly as the ruling says.
+
+             ⚠️ IT CANNOT SHOW A CLASS THE STUDENT IS NOT IN. The speculation
+             is only ever ADOPTED when `pickClass` — reading the real list —
+             returns that same id. And it could not do so even if that check
+             were wrong: `loadStudentClass`'s membership gate and the RLS behind
+             every read inside it refuse a non-member server-side.
+
+             ⚠️ IT CANNOT SURFACE AN ERROR OF ITS OWN. A speculation for
+             someone else's class rejects with `not_authorised`; that rejection
+             is boxed here, never thrown, and thrown away unread on the path
+             that does not adopt it — so it can neither reach the catch below
+             nor raise `unhandledrejection`.
+
+             ⚠️ THE ASSIGNMENT PAGE IS DELIBERATELY NOT INCLUDED. It keys off
+             `?id=` as well as `?class=` and `buildAssignment` has its own
+             preconditions; extending this to it is a separate change with its
+             own proof, not a free ride on this one. */
+          var wanted = new URLSearchParams(window.location.search).get("class");
+          var speculative = null;
+          if (page !== "assignment" && wanted &&
+              /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+                .test(wanted)) {
+            speculative = buildClass(sb, ctx.user, { id: wanted }, token)
+              .then(function (v) { return { ok: true, v: v }; },
+                    function (e) { return { ok: false, e: e }; });
+          }
+
           var classes;
           if (early) {
             var box = await withDbDeadline(DB_MS, early.classes);
@@ -4243,9 +4317,19 @@
           if (!klass) { return say(SAY.noClass); }
           correctAddress(klass);
 
-          var data = page === "assignment"
-            ? await buildAssignment(klass, token, ctx.user.id)
-            : await buildClass(sb, ctx.user, klass, token);
+          var data;
+          if (speculative && klass.id === wanted) {
+            // The speculation was right: this is the page. Its errors are real
+            // errors now, so re-throw into the same catch that has always
+            // turned them into a sentence.
+            var spec = await speculative;
+            if (!spec.ok) { throw spec.e; }
+            data = spec.v;
+          } else {
+            data = page === "assignment"
+              ? await buildAssignment(klass, token, ctx.user.id)
+              : await buildClass(sb, ctx.user, klass, token);
+          }
 
           window.__MRB_DATA__ = data;
 

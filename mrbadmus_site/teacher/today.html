@@ -720,7 +720,7 @@
      is not already on the page, and this page's very first read needs it. -->
 <script src="/shared/class-entry.js?v=dc8db888"></script>
 <script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
-<script src="/shared/teacher-data.js?v=05708462"></script>
+<script src="/shared/teacher-data.js?v=2b828519"></script>
 <script src="/shared/teacher-admin-nav.js?v=4f7c99b7"></script>
 <!-- ⊕ MRB-323 — the name picker. Defines `window.MrBadmusPicker` and does
      nothing until a lesson row's picker button is pressed. It makes no
@@ -812,7 +812,7 @@ function rumReady() {
     // immutable is a file pinned in a browser for a year that no deploy can
     // reach. The build also VERIFIES this — an unstamped `/shared/…"` in a
     // published page fails the build rather than shipping.
-    s.src = "/shared/rum.js?v=215c6794";
+    s.src = "/shared/rum.js?v=66210c21";
     s.async = true;
     s.onload = function () {
       try { window.MrBadmusRUM.report('teacher-today', 'teacher', at); }

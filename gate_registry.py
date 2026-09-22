@@ -1885,6 +1885,43 @@ GATES = [
 # repo root, so a new script cannot be quietly neither.
 
 EXCLUDED = {
+    # ── ⊕ MRB-348, 22 Sep 2026 · the speed instrument and its one-off proof ──
+    #
+    # Same line the MRB-336/337 pair is drawn on: these MEASURE and report;
+    # they do not assert. Registering either would let a printed number
+    # masquerade as a green gate.
+    "perf_waterfall.py":
+        "the MRB-348 waterfall — drives the real student and teacher pages "
+        "on TEST over CDP's Network domain and prints WAVES (how many times "
+        "a page stopped and waited) and CRITICAL PATH (the longest chain of "
+        "'B could not start until A finished'). It ALWAYS returns 0 and has "
+        "no threshold, DELIBERATELY: `teacher_perf_budget` is the gate and "
+        "stays the gate, and a second budget here would be one more number "
+        "available to be nudged until a build passed — which is the whole "
+        "subject of MRB-346. It exists because MRB-347 was argued from a "
+        "hand-built waterfall that was never committed, so its numbers could "
+        "not be reproduced or compared against. ⚠️ It is a LOCAL "
+        "measurement, with every objection `shared/rum.js` raises to local "
+        "measurements still standing: a laptop, a nearby TEST database, a "
+        "warm cache. Good for SHAPE, not a model of a Year 8 on a school "
+        "Chromebook. For that, read `rum_timings`.",
+    "mrb348_student_equiv.py":
+        "the MRB-348 WS-1 equivalence drive — proves the student class page "
+        "renders the same visible text, the same control set and the same "
+        "ADDRESS after the load-order change as before it, including the "
+        "ruled 23 Aug path where a student follows a link to a class that is "
+        "not theirs. Excluded rather than registered because it is a "
+        "TWO-TREE comparison and so cannot run against one tree: it needs a "
+        "`--capture old` taken with the pre-change files staged and a "
+        "`--capture new` with the current ones, then `--compare`. A gate "
+        "that silently compares a capture against itself would be green "
+        "forever and prove nothing, which is precisely the failure "
+        "`student_parity` already demonstrates by not watching the ported "
+        "page at all. ⚠️ Its warm-up loop is load-bearing and is not "
+        "tidiable: auto-composition is LAZY, so whichever side runs first "
+        "CREATES the week's assignment and the second side then reports an "
+        "extra piece of work — a difference that reads exactly like a "
+        "regression in the load path and is entirely the harness.",
     # ── ⊕ MRB-336/337 §8, 8 Sep 2026 · the sweep's two instruments ──────
     #
     # Both arrived with the MRB-336/337 build lanes and neither was

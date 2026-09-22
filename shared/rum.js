@@ -83,6 +83,53 @@
     } catch (e) { return null; }
   }
 
+  /* ⊕ MRB-348 — THE BACKEND ROUTES, BY NAME, FROM A FIXED LIST.
+
+     ⛔ WHAT WAS MISSING. This function recorded `/rest/v1/` and nothing else,
+     so every call to the Render backend was invisible to the only measurement
+     we have of the real world. That mattered more than it sounds: the student
+     class page waits on TWO backend routes inside its pre-paint wave, and a
+     trivial `/api/health` against production measures 237–825 ms warm against
+     roughly 70 ms for a Supabase read. So the most likely single largest cost
+     on the slowest page in the estate was the one thing the instrument could
+     not see, and "the student page is slow" stayed un-diagnosable with the
+     data we were collecting.
+
+     ⚠️ AN EXPLICIT LIST, NOT A PATTERN, and that is the whole safety argument.
+     A REST path ends in a table name; an API path does NOT — `/api/student/
+     notifications/<uuid>` and `/api/teacher/set-work/<id>` both carry an id in
+     the PATH, where dropping the query string does not reach it. A pattern
+     would therefore ship ids, which is the one thing this file exists to
+     prevent. Only a route on this list is ever recorded, and it is recorded as
+     its own constant — the URL is used to CHOOSE a label, never to build one.
+
+     ⚠️ LABELS ARE `[a-z][a-z0-9_-]{0,39}` BECAUSE POSTGRES SAYS SO. The
+     `rum_fetches_ok` CHECK behind `rum_timings.fetches` rejects anything else,
+     and the beacon is sent `keepalive` with its failure swallowed — so a label
+     containing `:` or `/` would not log an error, it would silently discard
+     the ENTIRE row, including the page timing. Hence `api_class_practice` and
+     not `api:class/practice`. Every value below is checked against `SLUG`
+     before it is sent, exactly as a table name is. */
+  var API_ROUTES = {
+    '/api/class/practice':            'api_class_practice',
+    '/api/class/current-assignment':  'api_class_current_assignment',
+    '/api/class/progress':            'api_class_progress',
+    '/api/assignment/answer':         'api_assignment_answer',
+    '/api/assignment/complete':       'api_assignment_complete',
+    '/api/assignment/progress':       'api_assignment_progress',
+    '/api/student/notifications':     'api_student_notifications',
+    '/api/teacher/set-work':          'api_setwork',
+    '/api/teacher/set-work/scope':    'api_setwork_scope',
+    '/api/teacher/set-work/preview':  'api_setwork_preview',
+    '/api/teacher/set-work/swap':     'api_setwork_swap',
+    '/api/teacher/worksheet':         'api_teacher_worksheet',
+    '/api/weekly-leaderboard/board':  'api_leaderboard_board',
+    '/api/weekly-leaderboard/landing': 'api_leaderboard_landing',
+    '/api/profile':                   'api_profile',
+    '/api/room-scan':                 'api_room_scan',
+    '/api/health':                    'api_health'
+  };
+
   // Turn resource timings into {n: <table>, ms: <total>} — names only.
   //
   // The query string is dropped BEFORE anything is read out of the URL, which
@@ -97,6 +144,21 @@
         var url = String(entries[i].name || '');
         var cut = url.indexOf('?');
         if (cut >= 0) { url = url.slice(0, cut); }   // query string gone first
+
+        // A backend route: matched WHOLE against the list above. An exact
+        // match only — `/api/student/notifications/<uuid>` does not equal
+        // `/api/student/notifications`, so the id-bearing form falls through
+        // and is recorded as nothing at all. That is the intended outcome:
+        // losing a measurement is always preferable to shipping an id.
+        var api = url.indexOf('/api/');
+        if (api >= 0) {
+          var route = API_ROUTES[url.slice(api)];
+          if (route && SLUG.test(route)) {
+            byTable[route] = (byTable[route] || 0) + (entries[i].duration || 0);
+          }
+          continue;
+        }
+
         var at = url.indexOf('/rest/v1/');
         if (at < 0) { continue; }
         var table = url.slice(at + 9).split('/')[0].toLowerCase();

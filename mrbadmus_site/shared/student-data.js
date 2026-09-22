@@ -331,40 +331,133 @@ window.MrBadmusStudentData = (function () {
        sat behind two other round trips purely because of the order the code
        was written in.
 
-       ⚠️ THE MEMBERSHIP GATE BELOW IS NOT MOVED, AND THAT IS DELIBERATE.
-       It is the cheapest thing to reorder here and the one thing that must
-       not be: it is an AUTHORISATION ordering, not a data one. It stays
-       first, it stays awaited, and every read that could disclose anything
-       about the class still happens after it. What has been hoisted are two
-       reads about the VIEWER'S OWN school and the VIEWER'S OWN profile —
-       rows they may read whatever the answer to the gate turns out to be —
-       so nothing here can leak on a refusal.
+       ⊕ SUPERSEDED 22 Sep 2026 (MRB-348). The paragraph that stood here read:
 
-       `catch` on the handle, not on the await: if the gate refuses, these
-       two are abandoned unread, and an abandoned rejection would otherwise
-       raise `unhandledrejection` in the browser. The awaits below still see
-       the real result, exactly as they did. */
+         ⚠️ THE MEMBERSHIP GATE BELOW IS NOT MOVED, AND THAT IS DELIBERATE.
+         It is the cheapest thing to reorder here and the one thing that must
+         not be: it is an AUTHORISATION ordering, not a data one. It stays
+         first, it stays awaited, and every read that could disclose anything
+         about the class still happens after it.
+
+       It is kept rather than deleted because it is the reasoning a future
+       reader will re-derive on their own, and it is WRONG in a way that is
+       expensive: it cost every student two extra serial round trips on every
+       class-page load, forever, and it bought nothing.
+
+       WHY IT BOUGHT NOTHING. The gate is a line of JavaScript in a browser.
+       It is not what protects anything, and it never was — a person who wants
+       these rows opens the network tab and asks for them directly, in any
+       order they like, without this file's participation. What actually
+       refuses a non-member is the database, and it refuses EVERY ONE of the
+       reads hoisted below, server-side, on its own authority:
+
+         · `assignments`             → RLS `assignments_student_read` requires
+                                       auth_user_is_member_of_class(class_id)
+         · `assignment_submissions`  → RLS `submissions_self_all` matches on
+                                       student_id = auth_user_id(), so the
+                                       viewer's OWN rows and no one else's
+         · `class_teachers` (via loadClassTeacherLinks)
+                                     → RLS `class_teachers_member_read`
+                                       requires membership
+         · `class_stars_leaderboard_for_member`
+                                     → SECURITY DEFINER, and its FIRST
+                                       statement is
+                                       `IF NOT auth_user_is_member_of_class(...)
+                                        THEN RETURN ... 'not_member'`
+
+       A non-member therefore receives zero rows and an empty leaderboard
+       whether these leave before the gate or after it. The ordering changed
+       when the answers arrive, never what the answers are.
+
+       ⚠️ THE GATE ITSELF IS NOT REMOVED, and must not be. It still decides
+       `not_authorised`, still distinguishes it from `class_not_found`, and
+       still throws before anything is rendered. Only its position in the
+       WAVE has changed: it is now asked at the same moment as the rest
+       instead of being a barrier the rest queue behind. Delete it and the
+       page would show "class not found" to a child who is simply not in the
+       class, which is a different and untrue sentence.
+
+       ⚠️ ONE REAL COST, NAMED. A viewer who is NOT a member now causes eight
+       requests where they used to cause three. All eight are refused cheaply
+       by policies that were going to be evaluated anyway, and the member case
+       — which is every real load — saves two full round trips. That trade is
+       the right way round, but it is a trade and not a free lunch.
+
+       WHY `.then(ok, err)` ON EVERY ARM rather than a bare handle: it both
+       STARTS the request (a supabase-js builder is lazy and does not leave
+       until something calls `.then`) and normalises a rejection into the
+       `{ data, error }` shape the checks below already read. With no arm able
+       to reject, an abandoned arm cannot raise `unhandledrejection` when the
+       gate throws — which is the same hazard the superseded note was guarding
+       against, handled at the source instead of with a bare `catch`. */
     const yearRowsPromise = yearRows(sb);
     yearRowsPromise.catch(function () {});
 
-    const viewerProfilePromise = sb
+    const settle = function (q) {
+      return q.then(function (r) { return r; },
+                    function (e) { return { data: null, error: e }; });
+    };
+
+    const viewerProfilePromise = settle(sb
       .from('profiles')
       .select('id, first_name, last_name, avatar_url, bench_theme')
       .eq('id', viewingStudentId)
-      .single()
-      .then(function (r) { return r; }, function (e) { return { data: null, error: e }; });
+      .single());
 
-    // 1. Membership gate — RLS-scoped to viewer's own rows; if they're
-    // not a member, the query returns zero rows. We treat that as
-    // not_authorised (cleanly differentiated from class_not_found below).
-    const memberRes = await sb
+    // The gate, the class row, and the four reads that used to sit two waves
+    // behind them. Every filter here is built from `classId` and
+    // `viewingStudentId` — both PARAMETERS of this function, known before its
+    // first line runs — so not one of them ever needed the class row it was
+    // waiting for.
+    const memberPromise = settle(sb
       .from('class_members')
       .select('id, joined_at, left_at, deleted_at')
       .eq('class_id', classId)
       .eq('student_id', viewingStudentId)
       .is('left_at', null)
       .is('deleted_at', null)
-      .limit(1);
+      .limit(1));
+
+    const classPromise = settle(sb
+      .from('classes')
+      .select('id, name, key_stage, year_group, tier, science_pathway, assignment_day_of_week, deleted_at, academic_year_id')
+      .eq('id', classId)
+      .is('deleted_at', null)
+      .single());
+
+    const assignmentsPromise = settle(sb
+      .from('assignments')
+      .select('id, title, subject_id, due_at, deleted_at, ' +
+              'subject:subject_id ( name )')
+      .eq('class_id', classId)
+      .is('deleted_at', null));
+
+    const mySubsPromise = settle(sb
+      .from('assignment_submissions')
+      .select('id, assignment_id, student_id, score, max_score, ' +
+              'submitted_at, attempts, total_time_seconds')
+      .eq('student_id', viewingStudentId)
+      .is('deleted_at', null));
+
+    const leaderboardPromise = settle(
+      sb.rpc('class_stars_leaderboard_for_member', { p_class_id: classId }));
+
+    // `[classId]`, not `[klass.id]`: they are the same uuid — the class row is
+    // fetched BY that id — and using the parameter is what lets this leave
+    // with the others instead of waiting for the row to come back and tell us
+    // what we already passed in.
+    const teacherLinksPromise = loadClassTeacherLinks(sb, [classId])
+      .catch(function (e) {
+        console.warn('[student-data] teacher links unavailable', e);
+        return {};
+      });
+
+    // 1. Membership gate — RLS-scoped to viewer's own rows; if they're
+    // not a member, the query returns zero rows. We treat that as
+    // not_authorised (cleanly differentiated from class_not_found below).
+    // ⊕ MRB-348 — this is the AWAIT; the request left above, with the others.
+    // What it decides, and the order it decides it in, is untouched.
+    const memberRes = await memberPromise;
     if (memberRes.error) {
       console.error('[student-data] membership query failed', memberRes.error);
       throw memberRes.error;
@@ -378,12 +471,8 @@ window.MrBadmusStudentData = (function () {
     // 2. Class fetch — RLS allows since viewer is a member. If the row
     // is missing, the class was soft-deleted between member-join and now
     // (or never existed but the membership row leaked somehow — defensive).
-    const classRes = await sb
-      .from('classes')
-      .select('id, name, key_stage, year_group, tier, science_pathway, assignment_day_of_week, deleted_at, academic_year_id')
-      .eq('id', classId)
-      .is('deleted_at', null)
-      .single();
+    // ⊕ MRB-348 — the await, not the request. See the note at the top.
+    const classRes = await classPromise;
     if (classRes.error || !classRes.data) {
       // PostgREST returns code PGRST116 when .single() finds 0 rows.
       if (classRes.error && classRes.error.code === 'PGRST116') {
@@ -438,6 +527,7 @@ window.MrBadmusStudentData = (function () {
     // `supabase/migrations/20260822000050_profiles_bench_theme.sql`.
     // ⊕ MRB-328 J4(b) — started at the top of this function; this is the
     // await, not the request. The select is unchanged and lives up there.
+    // ⊕ MRB-348 — and so, now, do six of its neighbours.
     const viewerProfileRes = await viewerProfilePromise;
     const viewer = viewerProfileRes.data || {
       id: viewingStudentId, first_name: null, last_name: null, avatar_url: null,
@@ -461,19 +551,15 @@ window.MrBadmusStudentData = (function () {
        `Promise.all` "rather than adding a wave". */
     const week = computeWeekWindow(klass.assignment_day_of_week);
 
+    /* ⊕ MRB-348 — THIS IS NO LONGER A WAVE. All four left at the top of the
+       function alongside the gate; this is only where their answers are
+       collected. `Promise.all` over four already-in-flight promises resolves
+       as soon as the slowest of them does, and none of them started here. */
     const [assignmentsRes, mySubsRes, leaderboardRes, teacherLinks] = await Promise.all([
-      sb.from('assignments')
-        .select('id, title, subject_id, due_at, deleted_at, ' +
-                'subject:subject_id ( name )')
-        .eq('class_id', classId)
-        .is('deleted_at', null),
-      sb.from('assignment_submissions')
-        .select('id, assignment_id, student_id, score, max_score, ' +
-                'submitted_at, attempts, total_time_seconds')
-        .eq('student_id', viewingStudentId)
-        .is('deleted_at', null),
-      sb.rpc('class_stars_leaderboard_for_member', { p_class_id: classId }),
-      loadClassTeacherLinks(sb, [klass.id]),
+      assignmentsPromise,
+      mySubsPromise,
+      leaderboardPromise,
+      teacherLinksPromise,
     ]);
 
     if (assignmentsRes.error) {

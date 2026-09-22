@@ -1117,7 +1117,14 @@ window.MrBadmusTeacherData = (function () {
     let submissions = [];
     if (assignmentIds.length > 0) {
       const q4 = await sb.from('assignment_submissions')
-        .select('id, assignment_id, student_id, score, max_score, total_time_seconds, submitted_at, attempts')
+        /* ⊕ MRB-348 WS-2 — `total_time_seconds` IS GONE FROM THE TEACHER'S
+           READS. Nothing on the teacher side has ever read it: it is not
+           projected into this function's output shape, no stats helper in
+           this file touches it, and `teacher-live.js` never names it. Its
+           only consumers are `shared/student-live.js` and
+           `shared/student-data.js`, which fetch it on their own reads.
+           Verified by grep across the tree, 22 Sep 2026 — not assumed. */
+        .select('id, assignment_id, student_id, score, max_score, submitted_at, attempts')
         .in('assignment_id', assignmentIds)
         .is('deleted_at', null);
 
@@ -1510,7 +1517,14 @@ window.MrBadmusTeacherData = (function () {
     let submissions = [];
     if (assignmentIds.length > 0) {
       const q5 = await sb.from('assignment_submissions')
-        .select('id, assignment_id, student_id, score, max_score, total_time_seconds, submitted_at, attempts')
+        /* ⊕ MRB-348 WS-2 — `total_time_seconds` IS GONE FROM THE TEACHER'S
+           READS. Nothing on the teacher side has ever read it: it is not
+           projected into this function's output shape, no stats helper in
+           this file touches it, and `teacher-live.js` never names it. Its
+           only consumers are `shared/student-live.js` and
+           `shared/student-data.js`, which fetch it on their own reads.
+           Verified by grep across the tree, 22 Sep 2026 — not assumed. */
+        .select('id, assignment_id, student_id, score, max_score, submitted_at, attempts')
         .in('assignment_id', assignmentIds)
         .eq('student_id', studentId)
         .is('deleted_at', null);
@@ -1918,7 +1932,7 @@ window.MrBadmusTeacherData = (function () {
    *                        subject_id, subject_name } ],
    *       submissions: [ { id, assignment_id, student_id, score, max_score,
    *                        submitted_at, completed_at, status, is_late,
-   *                        attempts, attempt_no, total_time_seconds } ]
+   *                        attempts, attempt_no } ]
    *     }
    *   }
    *
@@ -1977,8 +1991,38 @@ window.MrBadmusTeacherData = (function () {
    *   - query_failed_classes         — the class-row fallback errored
    *   - query_failed_submissions     — submissions query errored
    */
-  async function loadClassMatrices(classIds) {
+  async function loadClassMatrices(classIds, opts) {
     const ids = Array.from(new Set((classIds || []).filter(Boolean)));
+
+    /* ⊕ MRB-348 WS-2 — `opts.submissionsFor`: WHICH classes' submission rows
+       this call is allowed to fetch.
+
+       ⛔ THE COST THIS EXISTS TO BOUND. Stage B below asks for every
+       submission of every assignment of every class in `ids`, with no limit
+       and no window. At week 2 of term that is a hundred rows. Five classes ×
+       forty assignments × thirty pupils is six thousand, and three of the six
+       screens that pay for it — the class, marking and student screens — draw
+       exactly ONE class's grid.
+
+       `null` / omitted → every class in `ids`, which is what every caller was
+       written against and is still the default. Pass an ARRAY of class ids to
+       fetch submissions for those classes only; pass `[]` to fetch none at
+       all. A class left out still comes back with its `class`, `week`,
+       `members`, `departed_count` and `assignments` — only `submissions` is
+       empty.
+
+       ⚠️ AN EMPTY `submissions` IS NOT THE SAME AS "THIS CLASS HAS NO WORK
+       HANDED IN", and no consumer in this repo can tell the two apart. Every
+       number `buildClassEntry` derives from `pack.submissions` — the week
+       counter `week[0]`, `last` / `lastIso`, `state`, and the whole of
+       `mx` / `roster` / the papers' `mean`, `sub`, `asked` — degrades to
+       zero/null/empty rather than to a dash. So narrowing this is a decision
+       about what a SCREEN draws, and it belongs to the caller that knows
+       which screen it is. See `docs/mrb348/teacher-aggregate.md` for which
+       screens can take it and what still blocks the rest. */
+    const subsScope = (opts && Array.isArray(opts.submissionsFor))
+      ? new Set(opts.submissionsFor.filter(Boolean))
+      : null;
     ids.forEach(function (id) {
       if (!isUuid(id)) {
         const e = new Error('[teacher-data] invalid class id: ' + id);
@@ -2175,14 +2219,26 @@ window.MrBadmusTeacherData = (function () {
       throw e;
     }
 
-    // ── Stage B — submissions for every assignment across every class ──
-    const assignmentIds = assignmentRows.map(function (a) { return a.id; });
+    /* ── Stage B — submissions ──────────────────────────────────────────
+       For every assignment of every class, unless `opts.submissionsFor`
+       narrowed it (MRB-348 WS-2 — see the note at the top of this function).
+       The filter is on the ASSIGNMENT LIST rather than on the result, so a
+       class left out of the scope costs no rows over the wire at all. */
+    const assignmentIds = assignmentRows
+      .filter(function (a) { return subsScope === null || subsScope.has(a.class_id); })
+      .map(function (a) { return a.id; });
     let submissionRows = [];
     if (assignmentIds.length > 0) {
       try {
         submissionRows = await inChunks(assignmentIds, async function (chunk) {
           const r = await sb.from('assignment_submissions')
-            .select('id, assignment_id, student_id, score, max_score, total_time_seconds, ' +
+            /* ⊕ MRB-348 WS-2 — `total_time_seconds` DROPPED, `id` KEPT.
+               The column is unread anywhere on the teacher side (see the
+               note on the same drop in `loadClassDetail`). ⚠️ `id` is NOT
+               droppable and was checked before it was considered: it
+               becomes `subId` in `buildMatrix` (teacher-live.js ~945),
+               which is the only thing written feedback binds to. */
+            .select('id, assignment_id, student_id, score, max_score, ' +
                     'submitted_at, completed_at, status, is_late, attempts, attempt_no')
             .in('assignment_id', chunk)
             .is('deleted_at', null);
@@ -2282,6 +2338,98 @@ window.MrBadmusTeacherData = (function () {
         departed_count: departedByClass.get(id) || 0,
         assignments: assignmentsByClass.get(id) || [],
         submissions: submissionsByClass.get(id) || [],
+      };
+    });
+    return out;
+  }
+
+  /**
+   * loadClassSummaries(classIds) — MRB-348 WS-2.
+   *
+   * The six numbers a SUMMARY screen draws per class — active roster size,
+   * assignment count, submissions handed in, completion %, class mean and
+   * last activity — computed in SQL by `public.teacher_class_summaries`
+   * instead of by shipping every submission row to the browser and counting
+   * them here.
+   *
+   * Returns an object keyed by class id:
+   *
+   *   { [classId]: { active_member_count, assignment_count,
+   *                  submissions_completed, completion_pct,
+   *                  class_mean, last_activity_at } }
+   *
+   * ⚠️ IT IS `deriveClassMetrics` + `buildMatrix().classMean`, NOT A SECOND
+   * OPINION. The function reproduces the JavaScript rule for rule — the
+   * first-attempt pick (MRB-38), the `submitted_at IS NOT NULL` predicate the
+   * card count uses (which is NOT the matrix's `colSub` predicate), the
+   * mean-of-marked-column-means, and JavaScript's own `Math.round`. Proven
+   * on TEST, 22 Sep 2026: 102 of 102 values identical across three readers
+   * and every class each could see, plus a hand-built adversarial fixture
+   * (retakes, null `attempts`, tied stamps, off-roster submitters, a
+   * `completed_at` with no `submitted_at`, ungraded rows, `max_score = 0`,
+   * an in-progress row, a soft-deleted first attempt, and an exact `.5`
+   * rounding boundary) agreeing three ways — by hand, in JS, in SQL.
+   * `docs/mrb348/teacher-aggregate.md` carries the numbers.
+   *
+   * ⚠️ A CLASS THE CALLER MAY NOT SEE IS SIMPLY ABSENT FROM THE ANSWER, and
+   * that is the opposite of `loadClassMatrices`, which THROWS `not_authorised`
+   * rather than quietly omitting a class. The two are right for different
+   * jobs: the matrices read is a page's authorisation check, and a dashboard
+   * that silently drops a class looks identical to a teacher who has been
+   * taken off it. A summary read is asked speculatively, over a remembered
+   * id list, for counts — one stale id must not take the page down. A caller
+   * that needs the check must still make it.
+   *
+   * Error codes:
+   *   - invalid_class_id        — an id failed the UUID shape check
+   *   - query_failed_summaries  — the RPC errored
+   */
+  async function loadClassSummaries(classIds) {
+    const ids = Array.from(new Set((classIds || []).filter(Boolean)));
+    ids.forEach(function (id) {
+      if (!isUuid(id)) {
+        const e = new Error('[teacher-data] invalid class id: ' + id);
+        e.code = 'invalid_class_id';
+        throw e;
+      }
+    });
+    if (ids.length === 0) return {};
+
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    /* Chunked on the same `IN_CHUNK` the rest of this file uses. The argument
+       is a real array parameter rather than an `in.()` filter, so the URL
+       length limit that motivates chunking does not apply — but a thousand
+       uuids in one request body is still one query planning over a thousand
+       ids, and no teacher has a thousand classes. */
+    let rows;
+    try {
+      rows = await inChunks(ids, async function (chunk) {
+        const r = await sb.rpc('teacher_class_summaries', { p_class_ids: chunk });
+        if (r.error) throw r.error;
+        return r.data || [];
+      });
+    } catch (err) {
+      const e = new Error('[teacher-data] teacher_class_summaries failed: ' + (err && err.message));
+      e.code = 'query_failed_summaries';
+      e.cause = err;
+      throw e;
+    }
+
+    const out = {};
+    rows.forEach(function (r) {
+      if (!r || !r.class_id) return;
+      out[r.class_id] = {
+        student_count:    r.active_member_count,
+        assignment_count: r.assignment_count,
+        submission_count: r.submissions_completed,
+        completion_pct:   r.completion_pct,
+        class_mean:       r.class_mean,
+        last_activity_at: r.last_activity_at,
       };
     });
     return out;
@@ -3253,6 +3401,8 @@ window.MrBadmusTeacherData = (function () {
     // MRB-287 — the redesigned dashboard's two reads. Additive: nothing
     // above changed, and no existing caller sees a difference.
     loadClassMatrices,
+    // ⊕ MRB-348 WS-2 — the server-side aggregate behind the summary screens.
+    loadClassSummaries,
     loadPaperQuestions,
     // ⊕ MRB-328 J3 — whose classes a school admin has asked to look at.
     // Additive; no existing caller changes.
