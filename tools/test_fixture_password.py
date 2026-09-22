@@ -46,13 +46,34 @@ SITE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # and ladder reads actually fire), 10A is KS4 with 17, and mide.badmus teaches
 # 5 classes / 26 assignments / 79 submissions — which is the shape workstream 2
 # is about. Both sets are fake accounts on the sandbox project.
+# ⚠️ THE hz_* FIXTURES HAVE DOCUMENTED PASSWORDS AND GATES DEPEND ON THEM.
+# `night3_selfreview.py` (the `consumer_flag_off` gate) hard-codes the defaults
+# `mrb293-drive-only` for hz_amy and `Night3!Admin` for hz_admin. MRB-348 set a
+# different password on hz_amy and hz_rich and turned that gate RED — three
+# checks failing with "sign-in failed", which reads exactly like a product
+# defect and was entirely self-inflicted. So this file no longer takes one
+# password for everything: each fixture is restored to the value the gates
+# already expect, and the Rainford accounts take the same standing value so a
+# single MRB_TEST_TEACHER_PASSWORD still drives everything.
+#
+# ⚠️ hz_s1's documented default is the EMPTY STRING — `consumer_flag_off` skips
+# its two student checks for want of a credential, by design. It is given the
+# standing password here so the perf drives can use it; that cannot un-skip the
+# gate, which reads its own env var and defaults to empty.
+STANDING = "mrb293-drive-only"
+
 FIXTURES = {
-    "ee000000-0000-0000-0000-000000001002": "hz_amy@test.mrbadmus",
-    "ee000000-0000-0000-0000-000000001001": "hz_rich@test.mrbadmus",
-    "ee000000-0000-0000-0000-000000001101": "hz_s1@test.mrbadmus",
-    "29000000-0000-0000-0000-000000000001": "aiden.cole@test-rainford.local",
-    "29000000-0000-0000-0000-000000000006": "hannah.patel@test-rainford.local",
-    "28000000-0000-0000-0000-000000000001": "mide.badmus@test-rainford.local",
+    "ee000000-0000-0000-0000-000000001002": ("hz_amy@test.mrbadmus", STANDING),
+    "ee000000-0000-0000-0000-000000001001": ("hz_rich@test.mrbadmus", STANDING),
+    "ee000000-0000-0000-0000-000000001101": ("hz_s1@test.mrbadmus", STANDING),
+    "ee000000-0000-0000-0000-000000001005": ("hz_admin@test.mrbadmus", "Night3!Admin"),
+    # The Rainford seed — the realistic world the perf waterfall measures.
+    # hz_s1's only class holds zero assignments and zero submissions, so a
+    # waterfall driven from it measures a page with nothing to load, which is
+    # fast for the one reason that cannot be shipped.
+    "29000000-0000-0000-0000-000000000001": ("aiden.cole@test-rainford.local", STANDING),
+    "29000000-0000-0000-0000-000000000006": ("hannah.patel@test-rainford.local", STANDING),
+    "28000000-0000-0000-0000-000000000001": ("mide.badmus@test-rainford.local", STANDING),
 }
 
 
@@ -87,9 +108,11 @@ def post(url, body, headers, method="POST"):
 
 
 def main():
-    pw = os.environ.get("MRB_TEST_TEACHER_PASSWORD")
-    if not pw:
-        print("usage: MRB_TEST_TEACHER_PASSWORD=<pw> python3 test_fixture_password.py")
+    # Kept as a confirmation switch rather than the source of the value: the
+    # values live in FIXTURES above, because the gates already know them.
+    if os.environ.get("MRB_TEST_FIXTURE_RESET") != "1":
+        print("This restores the TEST fixtures to the passwords the gates expect.")
+        print("Re-run with MRB_TEST_FIXTURE_RESET=1 to do it.")
         return 2
 
     env = read_env(BACKEND_ENV)
@@ -111,10 +134,10 @@ def main():
 
     hdr = {"apikey": srk, "Authorization": "Bearer " + srk,
            "Content-Type": "application/json"}
-    for uid, email in FIXTURES.items():
+    for uid, (email, want) in FIXTURES.items():
         st, _ = post(url + "/auth/v1/admin/users/" + uid,
-                     {"password": pw, "email_confirm": True}, hdr, method="PUT")
-        print("  set password  %-26s HTTP %s" % (email, st))
+                     {"password": want, "email_confirm": True}, hdr, method="PUT")
+        print("  set password  %-32s HTTP %s" % (email, st))
 
     # Prove the credential actually signs in — a set that does not produce a
     # usable session is a silent failure that would surface as a drive SKIP.
@@ -139,13 +162,13 @@ def main():
 
     print()
     ok = True
-    for email in FIXTURES.values():
+    for email, want in FIXTURES.values():
         st, d = post(url + "/auth/v1/token?grant_type=password",
-                     {"email": email, "password": pw},
+                     {"email": email, "password": want},
                      {"apikey": anon, "Content-Type": "application/json"})
         good = st == 200 and bool(d.get("access_token"))
         ok = ok and good
-        print("  sign-in proof %-26s %s" % (email, "OK" if good else "FAILED %s" % st))
+        print("  sign-in proof %-32s %s" % (email, "OK" if good else "FAILED %s" % st))
     return 0 if ok else 1
 
 
