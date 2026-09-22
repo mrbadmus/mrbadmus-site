@@ -680,6 +680,21 @@ recorded as FLAKY; it passed first time, so there was nothing to re-run.
 
 ---
 
+## 7b. The state TEST is left in
+
+Read back at the end of the run, not assumed:
+
+| | |
+|---|---|
+| `teacher_class_rollup` | present (1) |
+| `%mrb348_hidden%` (the fallback rename) | **0 strays** |
+| `teacher_class_summaries` | dropped (0) |
+| `mrb348_exec_sql` / `mrb348_exec_ddl` | **0** — the rehearsal seam was never restored and none was created |
+| `public.mrb348_policy_backup` | **141 rows**, exactly as WS-3 left it — the consolidated RLS state is undisturbed |
+| `assignments` like `mrb348r3%` | **0** — the adversarial fixture is gone |
+
+---
+
 ## 8. Deviations
 
 **Deviation: the brief's two-line wiring would have rendered zeroes → I
