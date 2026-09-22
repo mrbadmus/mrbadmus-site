@@ -1,0 +1,1174 @@
+{
+ "capture_md5": "ff51e40d18378faf0946070a4dbca4f7",
+ "captured_at": "2026-09-22T17:54:35.477697+00:00",
+ "cells": 290,
+ "digests": {
+  "anon/academic_years": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/assignment_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/assignment_questions": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/assignment_submissions": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/assignments": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/audit_log": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/class_members": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/class_shoutouts": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/class_teachers": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/classes": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/family_messages": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/pending_staff": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/platform_flags": {
+   "digest": "46b7576a14793a7c94df873f2d25bb09",
+   "n": 1
+  },
+  "anon/platform_operator_activations": {
+   "digest": "denied",
+   "n": -1
+  },
+  "anon/platform_operators": {
+   "digest": "denied",
+   "n": -1
+  },
+  "anon/profiles": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/quiz_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/quiz_scores": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/scheme_of_work_overrides": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/school_period_times": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/school_subject_settings": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/schools": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/staff_scopes": {
+   "digest": "denied",
+   "n": -1
+  },
+  "anon/student_notifications": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/submission_feedback": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/subscriptions": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/timetable_entries": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/weekly_challenges": {
+   "digest": "-",
+   "n": 0
+  },
+  "anon/weekly_scores": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/academic_years": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/assignment_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/assignment_questions": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/assignment_submissions": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/assignments": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/audit_log": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/class_members": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/class_shoutouts": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/class_teachers": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/classes": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/family_messages": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/pending_staff": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/platform_flags": {
+   "digest": "46b7576a14793a7c94df873f2d25bb09",
+   "n": 1
+  },
+  "operator_admin/platform_operator_activations": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/platform_operators": {
+   "digest": "1442a63f15dd5dc590842f1d74fa1762",
+   "n": 1
+  },
+  "operator_admin/profiles": {
+   "digest": "3af5d350ba14910f9cf1dab53a26e0ae",
+   "n": 1
+  },
+  "operator_admin/quiz_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/quiz_scores": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/scheme_of_work_overrides": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/school_period_times": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/school_subject_settings": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/schools": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/staff_scopes": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/student_notifications": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/submission_feedback": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/subscriptions": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/timetable_entries": {
+   "digest": "-",
+   "n": 0
+  },
+  "operator_admin/weekly_challenges": {
+   "digest": "a1c56c9b3b7f3031f53b32f4e56d74d3",
+   "n": 62
+  },
+  "operator_admin/weekly_scores": {
+   "digest": "2bc96869943528c51ec1b87c6a085d98",
+   "n": 190
+  },
+  "school_admin_hi/academic_years": {
+   "digest": "6255d78d974e3a243857785c5deab2b6",
+   "n": 2
+  },
+  "school_admin_hi/assignment_question_attempts": {
+   "digest": "8ad20c183e4eb07b242c9b807257cbd3",
+   "n": 36
+  },
+  "school_admin_hi/assignment_questions": {
+   "digest": "0a401135b10ffebdae2a13ca7de4c4c9",
+   "n": 51
+  },
+  "school_admin_hi/assignment_submissions": {
+   "digest": "a2e0ac6023add91e26f029bc4502891a",
+   "n": 7
+  },
+  "school_admin_hi/assignments": {
+   "digest": "60bc362d015126d9f040d89ba4855c93",
+   "n": 7
+  },
+  "school_admin_hi/audit_log": {
+   "digest": "6587f8c7883e16d5c16f701bf07bc8ac",
+   "n": 148
+  },
+  "school_admin_hi/class_members": {
+   "digest": "3e36311c752fcbb1543d6f9a48a96e7f",
+   "n": 1411
+  },
+  "school_admin_hi/class_shoutouts": {
+   "digest": "ffe01bb1c358f6d906a9974477cfd2e0",
+   "n": 1
+  },
+  "school_admin_hi/class_teachers": {
+   "digest": "3b001bd3c8827cf30e2166f97619b9e0",
+   "n": 91
+  },
+  "school_admin_hi/classes": {
+   "digest": "984c869ebce64f1b94f42a46852efcf6",
+   "n": 73
+  },
+  "school_admin_hi/family_messages": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_hi/pending_staff": {
+   "digest": "bcf675991920cc1d42a7cfdf02f0eca6",
+   "n": 12
+  },
+  "school_admin_hi/platform_flags": {
+   "digest": "46b7576a14793a7c94df873f2d25bb09",
+   "n": 1
+  },
+  "school_admin_hi/platform_operator_activations": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_hi/platform_operators": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_hi/profiles": {
+   "digest": "2bd9405daa160c32e0175a0d12efe8f2",
+   "n": 1136
+  },
+  "school_admin_hi/quiz_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_hi/quiz_scores": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_hi/scheme_of_work_overrides": {
+   "digest": "bb485fd934da58fc41c0add4a0c977a3",
+   "n": 853
+  },
+  "school_admin_hi/school_period_times": {
+   "digest": "154231dafc3c2c5eca0fe1f9a87e60e3",
+   "n": 5
+  },
+  "school_admin_hi/school_subject_settings": {
+   "digest": "c39a6ce4fc1a772cef86da56db3aa619",
+   "n": 3
+  },
+  "school_admin_hi/schools": {
+   "digest": "ab4995b6edf3afbf69df5324d62ceb49",
+   "n": 1
+  },
+  "school_admin_hi/staff_scopes": {
+   "digest": "d29da1a3081070ebea9ec9c555577070",
+   "n": 3
+  },
+  "school_admin_hi/student_notifications": {
+   "digest": "1fdab9618baf91c181bd8c48f61675dc",
+   "n": 4
+  },
+  "school_admin_hi/submission_feedback": {
+   "digest": "f5f608e2b85603a4e1137f7fdf631207",
+   "n": 1
+  },
+  "school_admin_hi/subscriptions": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_hi/timetable_entries": {
+   "digest": "9ca808d0c415f112a62c0117df0f478f",
+   "n": 295
+  },
+  "school_admin_hi/weekly_challenges": {
+   "digest": "a1c56c9b3b7f3031f53b32f4e56d74d3",
+   "n": 62
+  },
+  "school_admin_hi/weekly_scores": {
+   "digest": "2bc96869943528c51ec1b87c6a085d98",
+   "n": 190
+  },
+  "school_admin_lo/academic_years": {
+   "digest": "6255d78d974e3a243857785c5deab2b6",
+   "n": 2
+  },
+  "school_admin_lo/assignment_question_attempts": {
+   "digest": "8ad20c183e4eb07b242c9b807257cbd3",
+   "n": 36
+  },
+  "school_admin_lo/assignment_questions": {
+   "digest": "0a401135b10ffebdae2a13ca7de4c4c9",
+   "n": 51
+  },
+  "school_admin_lo/assignment_submissions": {
+   "digest": "a2e0ac6023add91e26f029bc4502891a",
+   "n": 7
+  },
+  "school_admin_lo/assignments": {
+   "digest": "60bc362d015126d9f040d89ba4855c93",
+   "n": 7
+  },
+  "school_admin_lo/audit_log": {
+   "digest": "6587f8c7883e16d5c16f701bf07bc8ac",
+   "n": 148
+  },
+  "school_admin_lo/class_members": {
+   "digest": "3e36311c752fcbb1543d6f9a48a96e7f",
+   "n": 1411
+  },
+  "school_admin_lo/class_shoutouts": {
+   "digest": "ffe01bb1c358f6d906a9974477cfd2e0",
+   "n": 1
+  },
+  "school_admin_lo/class_teachers": {
+   "digest": "3b001bd3c8827cf30e2166f97619b9e0",
+   "n": 91
+  },
+  "school_admin_lo/classes": {
+   "digest": "984c869ebce64f1b94f42a46852efcf6",
+   "n": 73
+  },
+  "school_admin_lo/family_messages": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_lo/pending_staff": {
+   "digest": "bcf675991920cc1d42a7cfdf02f0eca6",
+   "n": 12
+  },
+  "school_admin_lo/platform_flags": {
+   "digest": "46b7576a14793a7c94df873f2d25bb09",
+   "n": 1
+  },
+  "school_admin_lo/platform_operator_activations": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_lo/platform_operators": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_lo/profiles": {
+   "digest": "2bd9405daa160c32e0175a0d12efe8f2",
+   "n": 1136
+  },
+  "school_admin_lo/quiz_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_lo/quiz_scores": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_lo/scheme_of_work_overrides": {
+   "digest": "bb485fd934da58fc41c0add4a0c977a3",
+   "n": 853
+  },
+  "school_admin_lo/school_period_times": {
+   "digest": "154231dafc3c2c5eca0fe1f9a87e60e3",
+   "n": 5
+  },
+  "school_admin_lo/school_subject_settings": {
+   "digest": "c39a6ce4fc1a772cef86da56db3aa619",
+   "n": 3
+  },
+  "school_admin_lo/schools": {
+   "digest": "ab4995b6edf3afbf69df5324d62ceb49",
+   "n": 1
+  },
+  "school_admin_lo/staff_scopes": {
+   "digest": "d29da1a3081070ebea9ec9c555577070",
+   "n": 3
+  },
+  "school_admin_lo/student_notifications": {
+   "digest": "1fdab9618baf91c181bd8c48f61675dc",
+   "n": 4
+  },
+  "school_admin_lo/submission_feedback": {
+   "digest": "f5f608e2b85603a4e1137f7fdf631207",
+   "n": 1
+  },
+  "school_admin_lo/subscriptions": {
+   "digest": "-",
+   "n": 0
+  },
+  "school_admin_lo/timetable_entries": {
+   "digest": "9ca808d0c415f112a62c0117df0f478f",
+   "n": 295
+  },
+  "school_admin_lo/weekly_challenges": {
+   "digest": "a1c56c9b3b7f3031f53b32f4e56d74d3",
+   "n": 62
+  },
+  "school_admin_lo/weekly_scores": {
+   "digest": "2bc96869943528c51ec1b87c6a085d98",
+   "n": 190
+  },
+  "student_member_hi/academic_years": {
+   "digest": "6255d78d974e3a243857785c5deab2b6",
+   "n": 2
+  },
+  "student_member_hi/assignment_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/assignment_questions": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/assignment_submissions": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/assignments": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/audit_log": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/class_members": {
+   "digest": "aaee188617d3c6aa666c0d896fa2605a",
+   "n": 1
+  },
+  "student_member_hi/class_shoutouts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/class_teachers": {
+   "digest": "b8eba4c56da2b5a561c378653dab40cc",
+   "n": 1
+  },
+  "student_member_hi/classes": {
+   "digest": "90de1f478210c3bd2ed2572be05055b2",
+   "n": 1
+  },
+  "student_member_hi/family_messages": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/pending_staff": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/platform_flags": {
+   "digest": "46b7576a14793a7c94df873f2d25bb09",
+   "n": 1
+  },
+  "student_member_hi/platform_operator_activations": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/platform_operators": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/profiles": {
+   "digest": "22519324de858c8c131adfd26d358aee",
+   "n": 1
+  },
+  "student_member_hi/quiz_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/quiz_scores": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/scheme_of_work_overrides": {
+   "digest": "bb485fd934da58fc41c0add4a0c977a3",
+   "n": 853
+  },
+  "student_member_hi/school_period_times": {
+   "digest": "154231dafc3c2c5eca0fe1f9a87e60e3",
+   "n": 5
+  },
+  "student_member_hi/school_subject_settings": {
+   "digest": "c39a6ce4fc1a772cef86da56db3aa619",
+   "n": 3
+  },
+  "student_member_hi/schools": {
+   "digest": "ab4995b6edf3afbf69df5324d62ceb49",
+   "n": 1
+  },
+  "student_member_hi/staff_scopes": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/student_notifications": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/submission_feedback": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/subscriptions": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/timetable_entries": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_hi/weekly_challenges": {
+   "digest": "a1c56c9b3b7f3031f53b32f4e56d74d3",
+   "n": 62
+  },
+  "student_member_hi/weekly_scores": {
+   "digest": "2bc96869943528c51ec1b87c6a085d98",
+   "n": 190
+  },
+  "student_member_lo/academic_years": {
+   "digest": "6255d78d974e3a243857785c5deab2b6",
+   "n": 2
+  },
+  "student_member_lo/assignment_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/assignment_questions": {
+   "digest": "6429fa593e581c4d822baff7decfd2cd",
+   "n": 10
+  },
+  "student_member_lo/assignment_submissions": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/assignments": {
+   "digest": "2adb184c08d1befabc9876d26e2194ec",
+   "n": 1
+  },
+  "student_member_lo/audit_log": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/class_members": {
+   "digest": "87881ab9369cdbba4cdab4ff1dec860e",
+   "n": 1
+  },
+  "student_member_lo/class_shoutouts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/class_teachers": {
+   "digest": "9af5587c0a4d254b835548966c5a3dc8",
+   "n": 1
+  },
+  "student_member_lo/classes": {
+   "digest": "b819a71ecdc8f45d9f5a8860ccfb2b99",
+   "n": 1
+  },
+  "student_member_lo/family_messages": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/pending_staff": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/platform_flags": {
+   "digest": "46b7576a14793a7c94df873f2d25bb09",
+   "n": 1
+  },
+  "student_member_lo/platform_operator_activations": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/platform_operators": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/profiles": {
+   "digest": "4e7973bb694ecbcc829908f9f80685e2",
+   "n": 1
+  },
+  "student_member_lo/quiz_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/quiz_scores": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/scheme_of_work_overrides": {
+   "digest": "bb485fd934da58fc41c0add4a0c977a3",
+   "n": 853
+  },
+  "student_member_lo/school_period_times": {
+   "digest": "154231dafc3c2c5eca0fe1f9a87e60e3",
+   "n": 5
+  },
+  "student_member_lo/school_subject_settings": {
+   "digest": "c39a6ce4fc1a772cef86da56db3aa619",
+   "n": 3
+  },
+  "student_member_lo/schools": {
+   "digest": "ab4995b6edf3afbf69df5324d62ceb49",
+   "n": 1
+  },
+  "student_member_lo/staff_scopes": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/student_notifications": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/submission_feedback": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/subscriptions": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/timetable_entries": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_member_lo/weekly_challenges": {
+   "digest": "a1c56c9b3b7f3031f53b32f4e56d74d3",
+   "n": 62
+  },
+  "student_member_lo/weekly_scores": {
+   "digest": "2bc96869943528c51ec1b87c6a085d98",
+   "n": 190
+  },
+  "student_noschool_hi/academic_years": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/assignment_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/assignment_questions": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/assignment_submissions": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/assignments": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/audit_log": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/class_members": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/class_shoutouts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/class_teachers": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/classes": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/family_messages": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/pending_staff": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/platform_flags": {
+   "digest": "46b7576a14793a7c94df873f2d25bb09",
+   "n": 1
+  },
+  "student_noschool_hi/platform_operator_activations": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/platform_operators": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/profiles": {
+   "digest": "ed41a932c6ffa7e2161c08993d03a624",
+   "n": 1
+  },
+  "student_noschool_hi/quiz_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/quiz_scores": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/scheme_of_work_overrides": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/school_period_times": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/school_subject_settings": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/schools": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/staff_scopes": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/student_notifications": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/submission_feedback": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/subscriptions": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/timetable_entries": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_hi/weekly_challenges": {
+   "digest": "a1c56c9b3b7f3031f53b32f4e56d74d3",
+   "n": 62
+  },
+  "student_noschool_hi/weekly_scores": {
+   "digest": "2bc96869943528c51ec1b87c6a085d98",
+   "n": 190
+  },
+  "student_noschool_lo/academic_years": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/assignment_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/assignment_questions": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/assignment_submissions": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/assignments": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/audit_log": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/class_members": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/class_shoutouts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/class_teachers": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/classes": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/family_messages": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/pending_staff": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/platform_flags": {
+   "digest": "46b7576a14793a7c94df873f2d25bb09",
+   "n": 1
+  },
+  "student_noschool_lo/platform_operator_activations": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/platform_operators": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/profiles": {
+   "digest": "4c1db61f979978cec534a31fbc2e8324",
+   "n": 1
+  },
+  "student_noschool_lo/quiz_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/quiz_scores": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/scheme_of_work_overrides": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/school_period_times": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/school_subject_settings": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/schools": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/staff_scopes": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/student_notifications": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/submission_feedback": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/subscriptions": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/timetable_entries": {
+   "digest": "-",
+   "n": 0
+  },
+  "student_noschool_lo/weekly_challenges": {
+   "digest": "a1c56c9b3b7f3031f53b32f4e56d74d3",
+   "n": 62
+  },
+  "student_noschool_lo/weekly_scores": {
+   "digest": "2bc96869943528c51ec1b87c6a085d98",
+   "n": 190
+  },
+  "teacher_hi/academic_years": {
+   "digest": "6255d78d974e3a243857785c5deab2b6",
+   "n": 2
+  },
+  "teacher_hi/assignment_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/assignment_questions": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/assignment_submissions": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/assignments": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/audit_log": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/class_members": {
+   "digest": "840b4e075f039637762d1644f8fe837a",
+   "n": 261
+  },
+  "teacher_hi/class_shoutouts": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/class_teachers": {
+   "digest": "9f7de5e14e5f2603aa9e1a65f435d0c9",
+   "n": 10
+  },
+  "teacher_hi/classes": {
+   "digest": "7c5487c35c80b11fa7cb452456dfc1ed",
+   "n": 10
+  },
+  "teacher_hi/family_messages": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/pending_staff": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/platform_flags": {
+   "digest": "46b7576a14793a7c94df873f2d25bb09",
+   "n": 1
+  },
+  "teacher_hi/platform_operator_activations": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/platform_operators": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/profiles": {
+   "digest": "bbf123e74f623ab358782bf08cce18b3",
+   "n": 262
+  },
+  "teacher_hi/quiz_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/quiz_scores": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/scheme_of_work_overrides": {
+   "digest": "bb485fd934da58fc41c0add4a0c977a3",
+   "n": 853
+  },
+  "teacher_hi/school_period_times": {
+   "digest": "154231dafc3c2c5eca0fe1f9a87e60e3",
+   "n": 5
+  },
+  "teacher_hi/school_subject_settings": {
+   "digest": "c39a6ce4fc1a772cef86da56db3aa619",
+   "n": 3
+  },
+  "teacher_hi/schools": {
+   "digest": "ab4995b6edf3afbf69df5324d62ceb49",
+   "n": 1
+  },
+  "teacher_hi/staff_scopes": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/student_notifications": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/submission_feedback": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/subscriptions": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_hi/timetable_entries": {
+   "digest": "c230ff567fdf1c690c62968b12a1b4eb",
+   "n": 17
+  },
+  "teacher_hi/weekly_challenges": {
+   "digest": "a1c56c9b3b7f3031f53b32f4e56d74d3",
+   "n": 62
+  },
+  "teacher_hi/weekly_scores": {
+   "digest": "2bc96869943528c51ec1b87c6a085d98",
+   "n": 190
+  },
+  "teacher_lo/academic_years": {
+   "digest": "6255d78d974e3a243857785c5deab2b6",
+   "n": 2
+  },
+  "teacher_lo/assignment_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/assignment_questions": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/assignment_submissions": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/assignments": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/audit_log": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/class_members": {
+   "digest": "4636987263e134d6fd3025ec013b7961",
+   "n": 51
+  },
+  "teacher_lo/class_shoutouts": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/class_teachers": {
+   "digest": "b65d2fea526d34648c0c5dab40d99aa9",
+   "n": 8
+  },
+  "teacher_lo/classes": {
+   "digest": "f1fdf4e44f93ab4cd1998fc793f9a612",
+   "n": 8
+  },
+  "teacher_lo/family_messages": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/pending_staff": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/platform_flags": {
+   "digest": "46b7576a14793a7c94df873f2d25bb09",
+   "n": 1
+  },
+  "teacher_lo/platform_operator_activations": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/platform_operators": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/profiles": {
+   "digest": "4ab8ffee2f24d42bbccc7e4dcd1dedf9",
+   "n": 52
+  },
+  "teacher_lo/quiz_question_attempts": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/quiz_scores": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/scheme_of_work_overrides": {
+   "digest": "bb485fd934da58fc41c0add4a0c977a3",
+   "n": 853
+  },
+  "teacher_lo/school_period_times": {
+   "digest": "154231dafc3c2c5eca0fe1f9a87e60e3",
+   "n": 5
+  },
+  "teacher_lo/school_subject_settings": {
+   "digest": "c39a6ce4fc1a772cef86da56db3aa619",
+   "n": 3
+  },
+  "teacher_lo/schools": {
+   "digest": "ab4995b6edf3afbf69df5324d62ceb49",
+   "n": 1
+  },
+  "teacher_lo/staff_scopes": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/student_notifications": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/submission_feedback": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/subscriptions": {
+   "digest": "-",
+   "n": 0
+  },
+  "teacher_lo/timetable_entries": {
+   "digest": "d9a1a78f7e9fd0378879e077cc28773a",
+   "n": 18
+  },
+  "teacher_lo/weekly_challenges": {
+   "digest": "a1c56c9b3b7f3031f53b32f4e56d74d3",
+   "n": 62
+  },
+  "teacher_lo/weekly_scores": {
+   "digest": "2bc96869943528c51ec1b87c6a085d98",
+   "n": 190
+  }
+ },
+ "freeze_at": "2026-09-22T18:00:00Z",
+ "grant_denied": 3,
+ "method": "md5 of the sorted visible PRIMARY KEY set, per identity x table",
+ "non_empty": 112,
+ "phase": "before",
+ "ref": "urklkrwevjtlfbwnipjn",
+ "rows_fingerprinted": 14734
+}
