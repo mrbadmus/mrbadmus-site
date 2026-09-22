@@ -340,3 +340,208 @@ run to prove nothing REGRESSED, not to measure a gain.
   run**. The function was already applied; every measurement after that point
   used PostgREST reads and service-role writes instead. A further DDL change on
   TEST would need that path restored.
+
+---
+
+## 9. Rollbacks, and the round trip rehearsed on TEST
+
+22 September 2026, later the same day. Written so both MRB-348 aggregate
+migrations can reach production with an undo beside each, per the house rule
+that no migration ships without one. **Nothing was applied to production in
+this run**; every statement below named `qeppkiswvclkkwbxmlok` (TEST)
+explicitly, and the connector takes the project on every call, so there was no
+ambient default to be wrong about.
+
+### 9a. The two files
+
+| rolls back | file |
+|---|---|
+| `20260922114500_mrb348_teacher_class_summaries` | `supabase/rollbacks/20260922114500_mrb348_teacher_class_summaries_rollback.sql` |
+| `20260922231500_mrb348_teacher_class_rollup` | `supabase/rollbacks/20260922231500_mrb348_teacher_class_rollup_rollback.sql` |
+
+Each forward migration does exactly one thing to the catalogue — 114500 creates
+`teacher_class_summaries(uuid[])`; 231500 drops it and creates
+`teacher_class_rollup(uuid[], timestamptz, jsonb)` — so each rollback does that
+thing backwards and nothing else. **No table, no policy and no row of pupil
+data is touched by either.** Rolling back 231500 recreates the older function;
+rolling back 114500 then removes it. Run in that order they land on "before
+either migration"; run only the first, on "exactly what 114500 left".
+
+⚠️ **Neither file re-states GRANT or REVOKE, and that is deliberate** — it is
+the opposite of the MRB-336 precedent, so it is justified in each header.
+The house rule exists because `CREATE OR REPLACE` resets privileges and a
+rollback that opens a hole is worse than the thing it undoes. But neither
+MRB-348 migration contains a single executable GRANT or REVOKE: both rely on
+the estate's default privileges. Re-stating grants would therefore leave a
+*different* ACL from the one 114500 leaves. Proven below rather than argued.
+
+### 9b. The round trip, read out of the catalogue at every step
+
+Fingerprints are `md5(pg_proc.prosrc)` — the function body exactly as Postgres
+stores it — compared against the same bytes extracted from the migration file
+on disk. That is what makes "identical" a measurement and not an impression.
+
+| step | `teacher_class_summaries` | `teacher_class_rollup` |
+|---|---|---|
+| 0. as found on TEST | absent | present, **body ≠ the committed file** (see 9d) |
+| 1. rollback 231500 | present · `5368b2ef…` ✅ = file | absent |
+| 2. forward 231500 | absent | present · `76419b38…` ✅ = file |
+| 3. rollback 231500 again | present · `5368b2ef…` ✅ = file | absent |
+| 4. rollback 114500 | absent | absent — **0 `teacher_class%` functions remain** |
+| 5. forward 114500 | present · `5368b2ef…` ✅ = file | absent |
+| 6. forward 231500 | absent | present · `76419b38…` ✅ = file |
+
+**The equality that matters is between rows 1/3 and row 5.** Rolling back
+231500 and applying 114500 forward land on the same body hash *and* the same
+ACL (`=X/postgres | postgres=X | anon=X | authenticated=X | service_role=X`)
+and the same `proconfig` (`search_path=public`). So "rolling back 231500 leaves
+the database exactly as 114500 left it" is proven from both directions, not
+assumed. Row 4 proves the second rollback reaches the state before either.
+
+Steps 1 and 3 are byte-identical to each other, so the rollback is
+deterministic and safe to run twice.
+
+### 9c. The aggregate's output is unchanged by the round trip
+
+The realistic teacher (`28000000-…-0001`, five classes) was read before the
+round trip and again after it, with the clock **pinned** to
+`2026-09-22T12:00:00Z` and a fixed week window — without pinning, `marked`
+could flip between captures and the comparison would prove nothing.
+
+All five classes returned identical values and identical `md5` of both the
+`papers` and the `students` arrays. It also reproduces §3b of this document
+exactly:
+
+| class | members | assignments | handed in | completion | class mean |
+|---|---|---|---|---|---|
+| `2a…0001` | 5 | 5 | 15 | 60% | 78 |
+| `2a…0002` | 6 | 18 | 47 | 44% | 73 |
+| `2a…0003` | 5 | 4 | 17 | 85% | 85 |
+| `2a…0004` | 3 | 1 | 0 | 0% | — |
+| `2a…0005` | 3 | 0 | 0 | — | — |
+
+### 9d. ⚠️ TEST was running a body that was never committed
+
+Found, not expected, and the most useful thing in this section.
+
+The `teacher_class_rollup` **as found on TEST** had
+`pg_get_functiondef` length **9,291** characters. The committed migration's
+function body alone is **11,560**. A definition cannot be shorter than the body
+it contains, so TEST was demonstrably running a *different, shorter* body —
+consistent with the round-three record's own pin of `70fc3ad5…`, which is not
+the committed file's `76419b38…`. The migration file has exactly **one** commit
+in its history, so the variant on TEST was never a committed version of it: it
+was an ad-hoc or earlier paste. The gap (~2,650 characters) is the size of the
+inline `⚠️` comment blocks in the committed body.
+
+**Behaviour was identical**: the baseline captured from the variant (§9c,
+before) and from the committed file (after) agree value for value and hash for
+hash, across all five classes, papers and pupils included. So this is a
+provenance defect, not a behavioural one — but it means **the 22 September
+proof was run against a body that is not byte-identical to the file the chat is
+about to apply to production.** As of step 6 above, TEST runs the committed
+file, and the numbers did not move.
+
+⚠️ The variant's source text was overwritten by step 1 and was not captured
+beforehand — only its `def` hash `aca7dac6…` and length. It cannot now be
+diffed line by line.
+
+### 9e. The gate, driven rather than trusted
+
+`teacher_class_rollup` is `SECURITY DEFINER`, so it runs as `postgres` and its
+own internal gate is the *only* thing standing between a caller and every
+class in the estate. There is a live hole of exactly this shape elsewhere
+(teachers can press reminders on other teachers' classes), so it was driven.
+
+Each identity below asked for **all twelve classes on TEST** — their own
+alongside other teachers', other schools', and ones they have no relation to —
+and what came back was parsed, not assumed. Impersonation is by
+`set local request.jwt.claims`, which needs no password.
+
+| caller | asked | returned | verdict |
+|---|---|---|---|
+| Sarah (plain teacher, 1 class) | 12 | **1** — only `22…0001`, the class she teaches | ✅ no leak |
+| Amy (plain teacher, 1 class) | 12 | **1** — only `ee…0401`, the class she teaches | ✅ no leak |
+| Tia (teacher, **another school**) | 12 | **1** — only her own school's `ee…0404` | ✅ no cross-school leak |
+| Rich (**HoD** Science) | 12 | **11** — every class in *his* school, and not the other school's | ✅ correct for the scope |
+| Hannah (**a pupil**, 17 submissions of her own) | 12 | **0** | ✅ student arms not reproduced |
+| anon (signed out) | 12 | **0** | ✅ `EXECUTE` to `PUBLIC` is harmless |
+
+⚠️ **The HoD row is the one that could have hidden a leak, and it is the one
+worth reading twice.** A HoD sees every class in the school but only their own
+department's *work*, so the function must narrow papers per class while still
+returning the class. `HZ 10M Maths` really holds one assignment; Rich, HoD of
+**Science**, got `papers = 0` for it while still seeing the class and its
+roster. Every Science class returned its full paper count
+(`10A` 18/18, `8X1` 5/5, `10X1 Biology` 4/4, `7z/Sc9` 6/6). The asymmetry is
+real and it is in the right direction.
+
+The pupil row is the other one that matters: `class_members` and
+`assignment_submissions` both grant a pupil their own rows, so a naive
+reproduction of RLS would have returned Hannah her own class. It returns her
+nothing — a narrowing of what RLS allows, never a widening.
+
+### 9f. What this rehearsal did NOT cover
+
+- **`mrb348_teacher_rollup_proof.py` was not run.** It needs
+  `$MRB_TEST_TEACHER_PASSWORD`, which is not on this machine. The
+  SQL-level proof above is stronger for the gate question (it drives six
+  identities, including a pupil and anon, where the script drives three
+  teachers) but it does **not** re-run the script's JS-vs-SQL equivalence
+  comparison or its adversarial fixture. §3 of this document remains the
+  authority for those, with the provenance caveat of §9d.
+- **Nothing was applied to production**, and no `db push` was run anywhere.
+- The registry version drift is recorded in each rollback's header: TEST
+  carries the rollup as `20260922175719`, the connector's own stamp, not the
+  filename's `20260922231500`. Both rollbacks therefore match on the
+  migration *name* as well as the version.
+
+### 9g. Production pre-flight — READ ONLY, nothing applied
+
+The gate in §9e was proven against **TEST's** policy set. That is not
+automatically a statement about production: MRB-348 WS-3 recorded that the two
+projects' policy bodies had drifted (153 policies on prod against 141 on TEST),
+and the rollup's internal gate is a HAND-WRITTEN REPRODUCTION of those
+policies. A gate that mirrors the wrong database is a gate that returns numbers
+no reader could have computed for themselves — so production's own catalogue
+was read. **Four `SELECT` statements against `pg_policies`,
+`pg_proc` and `information_schema.columns`. No DDL, no DML, no `db push`,
+nothing written.**
+
+**1. The policies.** Production already carries the consolidated
+`*_select_merged` policies on all four tables. Read against the gate:
+
+| table | production grants `SELECT` to | the gate's arm | verdict |
+|---|---|---|---|
+| `classes` | operator · school+(school_admin\|slt) · school+hod · school+teaches · **school+member (pupil)** | operator · school+(wide\|hod\|teaches) | ✅ equal, minus the pupil arm |
+| `class_members` | **self** · operator · school+(admin\|slt) · school+hod · school+teaches | counted only for a class that passed `can_see` | ✅ equal, minus the pupil arm |
+| `assignments` | operator · school+(admin\|slt) · school+`is_hod_of_subject_dept` · school+teaches · **school+member, released, undeleted (pupil)** | `all_work` ∪ (hod scope ∧ `is_hod_of_subject_dept`) | ✅ equal, minus the pupil arm |
+| `assignment_submissions` | **self** · operator · school+(admin\|slt) · school+`is_hod_of_subject_dept` · school+teaches | drawn only from assignments that already passed | ✅ equal, minus the pupil arm |
+
+**The gate is equal-or-narrower than production on every table**, and every
+place it is narrower is a pupil arm it deliberately does not reproduce — the
+same narrowing §9e drove and confirmed. There is **no arm on which the gate is
+wider than production's own RLS.** ⚠️ Note the gate additionally requires the
+`hod` scope where production's `assignments` policy names only
+`auth_user_is_hod_of_subject_dept(subject_id)`; if that function can ever be
+true for someone without the scope, the gate is narrower there too, never
+wider.
+
+**2. The dependencies.** All eight helpers the body calls exist on production
+(`auth_user_school_id`, `auth_user_operator_active`, `auth_user_has_scope`,
+`auth_user_teaches_class`, `auth_user_is_hod_of_subject_dept`,
+`auth_user_is_member_of_class`, `auth_user_id`, `class_school_id`).
+
+**3. No collision.** Production holds **neither** `teacher_class_summaries` nor
+`teacher_class_rollup` — consistent with neither migration having been applied
+there.
+
+**4. Every column exists.** All 25 columns the body reads were checked by name
+against production's `information_schema`; **zero missing**, `is_late`
+included (it is the newest, added 22 Aug 2026).
+
+So both migrations can be applied to production as written. ⚠️ What this
+pre-flight does **not** do is re-run §9e's leak drive against production's own
+rows — that would mean impersonating a real teacher over real pupils' data, and
+it is not needed to answer the question it was asked: whether the gate's shape
+matches the policy set it will run under. It does.
