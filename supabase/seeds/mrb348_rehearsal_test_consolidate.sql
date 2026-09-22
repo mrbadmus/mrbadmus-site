@@ -1,3 +1,34 @@
+-- ##########################################################################
+-- ⛔ THIS IS **TEST**'s FILE. NEVER APPLY IT TO PRODUCTION. ⛔
+--
+-- Generated from TEST (qeppkiswvclkkwbxmlok, 141 policies). Production's
+-- equivalent is the ONLY one that may touch production:
+--
+--     supabase/migrations/20260922040000_mrb348_rls_consolidate.sql
+--
+-- The two are NOT interchangeable, and the difference is not cosmetic.
+-- Measured 22 Sep 2026 (docs/mrb348/round3-rls-production.md §6):
+--
+--   production 153 policies   TEST 141
+--   12 policies exist on production only (the legacy quiz / weekly-challenge
+--      estate: quiz_scores, weekly_scores, weekly_challenges, chat_logs,
+--      quiz_question_attempts, class_teachers_member_read)
+--   1 policy has a DIFFERENT BODY on the two projects:
+--
+--     profiles.profiles_teacher_read_students
+--       production: ... AND cm.left_at IS NULL AND cm.deleted_at IS NULL ...
+--       TEST      : ... AND cm.left_at IS NULL                      <-- gone
+--
+-- ⚠️ So applying THIS file to production would silently let a teacher read
+-- the profile of a student whose membership had been SOFT-DELETED. The
+-- catalogue-pinning guard below would abort first — but the guard is the
+-- second line of defence, not the reason this is safe. The reason is that
+-- you are reading this banner.
+--
+-- Kept in seeds/ on purpose: the Supabase CLI never reads this folder, so
+-- `supabase db push` cannot pick it up. Apply by hand against TEST only.
+-- ##########################################################################
+--
 -- MRB-348 WS-3 — consolidate multiple permissive RLS policies.
 -- A PERFORMANCE migration with NO semantic change.
 --
