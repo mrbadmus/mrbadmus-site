@@ -806,3 +806,535 @@ neither was on this machine.
   smallest scope that exists rather than one in a fixed band.
 - `teacher_admin_foreign_class` (C7 REMINDERS × 3) is still the inherited red
   CLAUDE.md names. Untouched here.
+
+---
+
+# 342.2 · Page numbers, any number of questions, a teacher's note, a new front door — and an audit
+
+**23 September 2026.** Built on §342.1, not over it. Five parts; four landed,
+one part-landed. The migration is written, rehearsed and parked, because
+production DDL is the chat's to apply.
+
+## 342.2.1 · What shipped, and in what order
+
+| | |
+|---|---|
+| backend commit | `ca54f27ebd61a2a97ce9deb890d90e9806182e4c` |
+| Render `/api/health` `build` | `ca54f27ebd61a2a97ce9deb890d90e9806182e4c` ✅ **matches**, `branch main`, `db ok`, `db_ms 138` |
+| behavioural probe | `POST /api/teacher/worksheet` → **401**, `POST /api/teacher/set-work` → **401** — present and auth-gated, which health alone cannot show |
+| site — Part 5 audit | `765370862` |
+| site — Part 4 landing | `5767cfd94` |
+| site — Parts 1–3 | `ae0a855bd` … `7c0dd80a5` (5 commits) + the report |
+| migration, PARKED | `feat/assignment-note-migration` → `d9a7786a9` |
+
+Backend went first and was proved live by the `build` sha **before** any site
+commit that talks to it moved. ⚠️ That ordering turned out to be belt-and-braces
+rather than load-bearing, and the reason is worth keeping: **every new backend
+behaviour is opt-in or additive**, so an old site against the new backend is
+unchanged. `note` and `per_topic` are optional with defaults that reproduce
+yesterday's request byte for byte; the new response fields are additive; and
+the 503 concurrency guard is *structurally* unreachable from an old site,
+because its threshold is 200 questions and the old UI could not construct a
+request that large. Not "handled gracefully" — cannot happen.
+
+## 342.2.2 · Part 1 — the worksheet follow-ups
+
+| # | asked | done |
+|---|---|---|
+| 1 | chevron **and** title in the header | the mark now leads the title, sized against its cap height. Same `MARK_FRONT`/`MARK_BACK` constants as the footer — copied, never redrawn |
+| 2 | page numbers back in the footer | `n / N` beside the centred mark. PDF draws the number; **Word gets real `PAGE`/`NUMPAGES` fields** |
+| 3 | answers grouped like the questions | same headings, same order, numbering matching the questions, both renderers |
+| 4 | one file, or one per topic | `per_topic: true` ⇒ **one ZIP**, one document per topic inside, each standalone and numbered from 1 |
+| 5 | an optional teacher's note | ≤300 characters, plain text, printed under the title on every document |
+
+⚠️ **A Word page number is a FIELD, not a digit.** Word computes it on open, so
+a text extractor sees no number at all. The check asserts the `PAGE` and
+`NUMPAGES` instruction text inside `word/footer*.xml`. Asserting a rendered
+digit would have been a check that could only ever fail — the kind that gets
+deleted six months later for being "broken".
+
+⚠️ **Browsers block multiple automatic downloads**, so several files are one
+ZIP and the site fires exactly one save. `per_topic` with a single topic still
+returns a ZIP: a teacher who asked for files gets files, and the site never has
+to guess what came back from what it sent.
+
+**Numbering restarts at 1 in each file.** A file that begins at question 11 is
+a fragment; a file per topic is a worksheet.
+
+## 342.2.3 · Part 2 — the question count, and a ceiling chosen from a measurement
+
+The cap was 5/10/15/20. It is now: those four as quick picks, plus a number
+field taking any whole number ≥ 1.
+
+⊕ **The ceiling was written as 500, and 500 was wrong.** The contract's first
+draft reasoned that a per-topic pool "sits in the low hundreds", so a 500
+ceiling would never bind and would be a pure safety guard. Measured against the
+real banks and the real curriculum tree on TEST:
+
+| cohort | biggest KS4 **topic** pool | topics over 500, of 25 |
+|---|---|---|
+| Foundation · combined | 960 | 9 |
+| Higher · combined | 780 | 8 |
+| **Foundation · triple** | **1450** (`biology/ecology`) | **17** |
+| Higher · triple | 1198 (`biology/ecology`) | 15 |
+
+KS4's biggest single *subtopic* is 72; KS3's biggest *unit* is 270 at one band;
+KS3's biggest *lesson* is 32. Only TOPIC scopes, which aggregate 10–23
+subtopics, run large. **A 500 ceiling would have been a product cap on most big
+topics while calling itself a safety guard** — the precise thing the ruling
+forbids. It is 2000, which clears the largest real pool with headroom, so the
+POOL binds first everywhere in the estate today.
+
+The site never hardcodes it: `GET /api/teacher/set-work/scope` returns
+`max_per_scope`, and the sheet reads the number out of it. A site hardcoding
+2000 against a server enforcing 900 would tell a teacher a number the server
+then refuses — agreement right up until Save, which is the worst shape this
+defect can take.
+
+### The clamp, and the number that nearly lied
+
+`/preview` gains `requested` and `capped_by` (`"pool"` | `"ceiling"` | `null`)
+beside the existing `available`. Over the pool, the teacher gets the whole pool
+and an inline note — never an error, never a block. A quick pick over the pool
+takes **the same code path** as a typed number; there is one clamp, not two.
+
+⚠️ **`available` is a distinct-STEM count, and that is where this was most
+likely to break.** `biology/ecology` holds **1,504 distinct normalised stems
+across more rows than that** — duplicate stems inside a single topic. If
+`available` and what `pickRoundRobin` can actually return disagree, the sheet
+promises "All 1450 added" and delivers fewer. Driven on that topic
+specifically: `picked.length === min(ceiling, pool)` exactly, zero duplicate
+ids, zero duplicate stems, `capped_by` agreeing with whichever bound fired —
+at 1, at the pool size, at pool + 1, and at 500, across KS4 Foundation, KS4
+Higher and all three KS3 bands.
+
+### ⛔ The guard the raised cap made necessary
+
+Raising the cap created a failure mode that did not exist before, and it is
+not the one it looks like. Measured, cold process, concurrent renders of the
+1,450-question case:
+
+| concurrent large renders | peak RSS | headroom on 512 MB |
+|---|---|---|
+| 1 | 326 MB | 36% |
+| 2 | 331 MB | 35% |
+| 3 | 395 MB | 23% |
+| 5 | **485 MB** | **5% — unsafe** |
+
+The rate limiter is **30/hour per USER**. It bounds one teacher's repeats and
+says nothing whatever about two teachers pressing Download in the same minute —
+and the realistic moment for a large worksheet is a whole department printing
+revision material in one free period. **The failure is not a slow download: it
+is the Node process being OOM-killed**, which takes `/api/class/current-assignment`
+down for every child mid-homework.
+
+So: at most **2** concurrent renders above **200 total questions**; the next
+gets `503` with `Retry-After: 20` and `worksheet_busy`, which the site shows as
+"busy, try again", never as a failure. An ordinary 10–40 question download is
+below the threshold and never queues. Proved with a real four-way concurrent
+call: exactly two large succeed, one is refused, the small one sails past.
+
+⚠️ **Both numbers are env-tunable** (`MRB_WORKSHEET_MAX_CONCURRENT_LARGE`,
+`MRB_WORKSHEET_LARGE_THRESHOLD`). If 2 is wrong on the real instance, the only
+way we find out is an OOM during a lesson, and that is not a moment to be
+waiting on a code change, a review and a deploy.
+
+⚠️ **Those are COLD-process numbers.** They isolate the render's own cost,
+which is the right way to measure it and is not the state Render runs in. A
+process that has served a school all day carries retained heap a fresh one does
+not, so the true margin at N=2 is 35% *minus* whatever the day has added. 2 is
+defensible on that basis; "35% headroom" read on its own is not the whole truth.
+
+## 342.2.4 · Part 3 — the teacher's note, and a column that may not exist
+
+A teacher's note (≤300 characters, plain text) on a set, which pupils see at
+the top of that assignment, editable later with the rest of it.
+
+**The migration is written, rehearsed and PARKED — not applied.** Production
+DDL is the chat's.
+
+| | |
+|---|---|
+| branch | `feat/assignment-note-migration` → `d9a7786a9` (pushed) |
+| forward | `supabase/migrations/20260923055326_mrb342_2_assignment_teacher_note.sql` · md5 **`8c11e0d885de81d57aae7712247c6579`** |
+| rollback | `supabase/rollbacks/20260923055326_mrb342_2_assignment_teacher_note_rollback.sql` · md5 **`00ce21b769647ce2e33c0b5aa45bd536`** |
+
+Rehearsed on TEST forward → rollback → forward:
+
+| pass | result |
+|---|---|
+| forward 1 | column, check and comment present; 8 inherited column privileges, 2 table SELECT grants — no column-level grant needed |
+| rollback | column gone, check gone, back to **28 columns, 4 RLS policies, 45 rows** |
+| forward 2 | recorded as `schema_migrations` **20260923055326**; 29 columns, the same 4 policies, the same 45 rows |
+
+⚠️ **The filename carries the version TEST RECORDED, not one I typed.** MCP
+`apply_migration` records its own, and a file whose name disagrees with
+`schema_migrations` is a trap for whoever reconciles them next.
+
+⚠️ **Provenance, because a file sitting beside a database is not evidence the
+database ran it.** md5 of TEST's recorded statement body plus a trailing
+newline equals the md5 of the parked file. The bytes parked are the bytes TEST
+ran.
+
+**No RLS change is needed, and the migration says so rather than leaving it
+assumed.** `assignments_select_merged` already gates a class member's read on
+`release_at is null or release_at <= now()` and `deleted_at is null`, so the
+note inherits that: visible to that class's pupils and nobody else's, and **a
+note on an unreleased set is not readable early** — the same gate that hides
+the questions.
+
+**`assignments.instructions` was deliberately not reused.** It exists, is text,
+is nullable, and would have fitted. It is READ at `server.js:1133` and WRITTEN
+BY NOTHING — not one insert or update in the backend sets it. A
+read-but-never-written column is not a free home: nothing distinguishes a note
+a teacher typed from an instruction some earlier producer left behind.
+
+### Both states, proved live rather than reasoned about
+
+The column was **dropped on TEST for a real window** and restored afterwards.
+
+| state | proof | result |
+|---|---|---|
+| present | `test_set_work_v2.js` | **452/452** — note round-trips POST → row → student read → edit → `note:""` clears to NULL |
+| **absent** | same file, state-aware | **445/445** — `assignment_note:false`, POST still **200** with the note dropped and `note_dropped:true` audited, student read **200** and does **not** 400 |
+
+⚠️ The student read is the one that matters. Naming an absent column in a
+PostgREST select 400s the whole read — that is not a missing field, it is the
+assignment page down for the school.
+
+**The probe does not latch, and that was proved rather than read.** Forcing a
+transient `ETIMEDOUT` returns `false` for that call; the very next call, with
+no reset in between, returns `true`. A latched implementation could not have
+produced the second answer — and a latched one and a correct one read
+identically at the point of the `if`.
+
+### ⛔ A divergence that would have shipped
+
+Postgres `char_length()` counts **characters**. JavaScript `.length` counts
+**UTF-16 code units**. 300 🧪 is `char_length` 300 and `.length` **600**.
+
+Found while probing the constraint, not while reading the code. Both halves now
+count **code points**, so a teacher's character counter and the server bound
+mean the same thing about the same string. Verified against the shipped
+validator: CR/LF/TAB collapse to spaces; other C0/C1 control characters are
+refused as `bad_note`; `<script>alert(1)</script> & "q" & </w:t>` passes through
+as literal text to be escaped at render; empty-after-trim becomes `null`, never
+`''` — which the database refuses outright; 300 passes, 301 fails, 300 emoji
+pass.
+
+## 342.2.5 · Part 4 — the front door
+
+`Revision that keeps score.` → **`Revise science properly.`** Same type
+treatment; the lede beneath it is untouched, byte for byte.
+
+Beside it, a rotating science fact — **76 of them**, 28 biology / 25 chemistry
+/ 23 physics, longest 24 words. Data in `shared/science-facts.js`, behaviour in
+`shared/k4-facts.js`, so adding a fact is editing a list.
+
+**Zero layout shift, and not by measuring.** Every fact is in the DOM, stacked
+at `grid-area: 1 / 1`, so the grid track takes the tallest fact's height once
+and never changes. Nothing is measured, capped, or recalculated — the stability
+falls out of the stacking. Live, on mrbadmus.com:
+
+| | |
+|---|---|
+| headline rect, 6 forced changes @1280 | `[28, 108.640625, 764, 129.9375]` — **identical every time** |
+| overflow at 1280 / 820 / 390 / 360 | 0 of 76 facts |
+| first door card top @390×844 | **510 px** — 334 px of headroom |
+| first door card top @360×740 | **510 px** — 230 px of headroom |
+| reduced motion, 20 real seconds | one fact, **unchanged** |
+| no repeat before exhaustion | 157 advances; every 76-window a full permutation |
+| horizontal scroll, all four widths | none |
+
+**Reduced motion means one fact and no timer** — not a slower animation.
+**Screen readers get one static fact**: the stage is `aria-hidden`, there is no
+`aria-live`, and a single visually-hidden paragraph is chosen once at load. A
+fact changing never interrupts anybody.
+
+### The examiners, and the pass that cut nothing
+
+Round 1: 80 facts, two Opus passes, **0 cut** — 23 rewritten. I read all 80
+myself and could not fault one for truth. They were still wrong: roughly 75 of
+the 80 were bare spec definitions. *"Speed is distance travelled divided by
+time taken"* is correct, useful, and a revision flashcard. Nobody repeats one to
+a friend, and this is the first thing a prospective pupil, parent or school
+sees.
+
+⚠️ **A pass that cuts nothing is usually a pass briefed to agree**, and round
+1's 0/80 was exactly that. Round 2 — 38 new wow facts against the same rules —
+cut **6 of 38 (16%)**, and pass 2 caught two that pass 1 had waved through,
+including an isomer fact that is a *counterexample to a rule AQA teaches*, with
+no A-level reasoning available to resolve it: worse than a fact a pupil cannot
+place.
+
+Final: 76 = 44 kept + 32 new. Two of them now actively **debunk** myths on the
+file's own denylist rather than merely avoiding them — glass is a solid, and
+you carry roughly as many bacterial cells as human ones (≈200 g), which is the
+corrected figure that retired the old "ten times more". Full record, including
+every cut with its reason so Mide can overrule any of them, in
+`docs/landing/science-facts.md`.
+
+⚠️ **CLAUDE.md's subject colours are stale for the KS4 chrome.** It names
+Physics teal `#4ECDC4`, Chemistry pink `#FFD2E6`, Biology green `#6BCB77`.
+`generate_site_v5.py` has defined `#1D6FB8` / `#B02342` / `#237A3B` since the
+chrome port, and that is what every dot on the page actually renders. The
+panel follows the code. **One for Mide.**
+
+## 342.2.6 · Part 5 — the described-diagrams audit, and the two nets it took
+
+Audit only. No content, no generator, no question row touched.
+
+| | first pass | **after two corrections** |
+|---|---:|---:|
+| stems scanned | 35,173 | **35,251** |
+| candidates | 413 | **2,351** |
+| **CONFIRMED** | 43 | **110** |
+| BORDERLINE | 29 | **92** |
+| in the frozen window | 9 | **28** |
+
+Physics is **93 of the 110**. KS4 electricity alone is 40, and 36 of those are
+in `circuit-symbols`.
+
+**Both corrections changed the answer, and neither was found by reading:**
+
+1. The corpus map claimed `*_triple_higher.py` was a superset of the other
+   three variants. True for biology and physics; **false for chemistry** — 79
+   stems were never scanned. They yielded no new candidates, but a denominator
+   nobody checked is a denominator nobody should use.
+2. The first net was phrase-based. It carried `circuit diagram`, `a ray
+   diagram` and `the diagram shows`, and **no bare `diagram`**. It reached
+   about a fifth of the candidate space and walked straight past the fault
+   itself — `a rectangle` does not match *"a small rectangle"*. Rebuilt on the
+   real tell (a stem REFERRING to a visual that is not there), candidates went
+   413 → 2,351 and confirmed 43 → 110.
+
+⚠️ The stems it had been missing are Mide's own example almost word for word:
+
+> *A diagram shows a small rectangle inside a circle. Name that component.*
+> *On a diagram, one of the rectangles carries no extra mark. State which component that is.*
+
+The brief was tightened in the other direction at the same time: a question
+about a **convention** (*"state what the length of each arrow on a free body
+diagram represents"*) is answerable with nothing to look at and is not this
+fault. **93.3% of the new candidates were rejected**, so the widening did not
+buy its confirmations with false ones.
+
+⊕ **OPEN ON MIDE: may a frozen row's TEXT be edited in place**, id, band and
+position unchanged? MRB-335 governs composition *positions*, not per-row
+content, so the letter and the spirit disagree. 28 rows wait on that answer.
+It is a ruling, not an audit's call.
+
+## 342.2.7 · Part 2 and 3 on the site, and the drive that nearly did not run
+
+`shared/set-work.js` gains: `maxPerScope()` (the ceiling read from `/scope`,
+never hardcoded), one `setScopeCount`/`capNoteFor` path shared by the quick
+picks and the typed field, the note control shared by Set work and the
+worksheet panel, the per-topic checkbox, `worksheet_busy` handling, and a
+settled swap-exhausted state. `shared/student-live.js` carries
+`assignmentNoteHas`/`assignmentNoteBody` in the same idiom as `feedbackBody`,
+and `student_rulings.py` draws the note as a TEXT NODE above the first
+question.
+
+⚠️ `syncCountChips` used to DISABLE a quick pick above the pool. With a free
+number field that is the wrong behaviour and the contract reverses it: a chip
+over the pool is pressable and clamps with the same note a typed number gets.
+One code path, not two. `docs/mrb335/RISKS.md` A4 still describes the
+overturned rule and is left as the historical record of MRB-335's ruling.
+
+### ⛔ Two real defects, both found by running rather than reading
+
+**1. `student_behaviour` would not mount at all.** `assignmentNoteVisible`'s
+LOGIC calls `MRB_DATA('assignmentNoteHas')` on every mount, and `MRB_DATA`
+throws on a key the fixture was never given — the same class of defect the file
+already documents for `feedbackHas`. Zero output, not a failed check. Proved on
+a pristine baseline first that it was not inherited.
+
+**2. An edit would have silently deleted a note the teacher never looked at.**
+`saveEdit` sent `note` whenever the field was visible, and
+`teacher_rulings.py` does not yet LOAD a stored note into that field — so
+moving a deadline on a released set would have posted `note: ""` and cleared
+it. Now `note` is sent only when the note was actually loaded (`S.noteLoaded`)
+or typed into this session (`S.noteEdited`).
+
+⚠️ **The edit sheet still does not repopulate a stored note** — that needs
+`teacher_rulings.py` and a shared `teacher-data.js` select with its own column
+detection. Scoped out deliberately; the write path is safe either way, which
+is what defect 2 above secures. **Open.**
+
+### The credential that was not missing
+
+The lane first reported `set_work_drive.py` as unrunnable for want of
+`MRB_SET_WORK_PASSWORD` and fell back to static analysis — which is precisely
+what §342.1 §8 proved insufficient, four defects having hidden behind a 52/52
+stub-green run.
+
+⚠️ **It is a password you CHOOSE.** `mrb331_fixture.py` CREATES its accounts at
+`@throwaway.test` and re-asserts whatever it is handed; `docs/mrb335/RISKS.md`
+E6 says so in one word — "(any)". The var was renamed at MRB-331 *because* it
+used to collide with a drive that does have one correct value
+(`teacher_admin_real_drive.py`). Split the names before treating one as a
+blocker: **minted** accounts take any password; **pre-seeded** ones
+(`MRB_DRIVE_PASSWORD`, `MRB_TEST_STUDENT_PASSWORD`) have exactly one.
+
+### The hard case, live
+
+```
+typed 1500 (pool 1450) → 1450 rows rendered
+"Only 1450 at Foundation. All 1450 added."   field shows 1450
+```
+
+On `biology/ecology` — **1,504 distinct stems across more rows than that**, the
+one topic where `available` and the delivered count can disagree. They did not.
+
+Also proved live: the real-key CDP keyboard press (`Input.dispatchKeyEvent`,
+down-char-up — a JS-dispatched event runs no default action and would have
+proved nothing), both note fields' escaping with correct code-point counting,
+and the capability gate reading the column.
+
+### 342.2.7a · Seven drive runs, and three separate flakes
+
+The lane ran five; the commander ran two more to settle a claim rather than
+accept it. **Net: zero new persistent reds.**
+
+| red | verdict |
+|---|---|
+| `edit_locked_after_release` ×4, `pdf_brand_footer` | **stale ASSERTIONS**, not defects — the contract makes `note` editable after release, and put the mark in the header too, so page 1 legitimately carries 4 strokes. Fixed. |
+| ecology check ×3, count-field sync ×1 | **the drive's own bugs** — waiting on a condition true from a stale default, and reading a field `syncCountChips` deliberately never overwrites while focused. |
+| `edit_saves` ×5 (run 5 only) | **flake.** `saveEdit` was byte-identical from 07:56, runs 2–4 passed, and runs 6 and 7 passed. Verified by checking the commit clock, not by accepting the claim. |
+| `row_download_lands` | **flake**, §342.1.7a's documented one — failed run 7, passed runs 6 and 8. |
+| `the admin screen renders its class-cohort selectors` | **flake**, and its own comment records the identical `0 select(s): []` on 14 Sep with a 5-second wait budget. ⚠️ It returns EARLY on failure, so two further checks vanish rather than fail — 421 checks instead of 423. |
+
+⚠️ **Two orphaned headless Chromes were found holding memory for THIRTEEN
+HOURS**, parents dead (PPID 1), predating this session entirely — and the disk
+was at 2.0 GiB free. Killed by captured PID (never `pkill -f`, RISKS E9).
+Whether they caused run 5's cluster is unproven, but a machine in that state is
+one that makes green code look flaky.
+
+**FOLLOW-UP:** the admin-selector wait is 5 s (`tries=100, gap=0.05`) and has
+now produced a false red twice. Raising it weakens no assertion — a screen that
+truly draws none still spends the budget and records the red. Not done here
+because it is in `set_work`'s `watches` and would have invalidated the receipt
+for another quarter-hour run.
+
+## 342.2.8 · Gates
+
+Rebased onto `origin/main` (Parts 4 and 5 already landed), rebuilt with
+`build_all.py`: **zero stamp churn**, so the rebase invented nothing.
+
+**20 gates ran fresh, 8 passed on an unchanged receipt, 10 skipped by rule,
+11 skipped for a missing precondition. Two ship red, both inherited, both
+overridden by name.**
+
+| gate | signature | inherited? |
+|---|---|---|
+| `teacher_admin_foreign_class` | C7 REMINDERS ×3 | **yes** — CLAUDE.md names this one in as many words |
+| `set_work` | 423 checks, 4 failed: `a small KS3 lesson exists to drain`, `a scope of 5–9 questions exists to cap against`, `a scope of 10–14 questions exists`, `ks4_stays_flat` | **yes** — §342.1.7's four, verbatim |
+
+⚠️ **`set_work` was RE-RECORDED rather than overridden on its first signature.**
+The first record carried `row_download_lands` — a flake, not an inherited red.
+§342.1 §8.1 records Mide's ruling on exactly this: *"An override is a permanent
+line in `git log` asserting a gate shipped red, and writing one for a
+self-inflicted [transient] would put a false claim in the history."* The
+re-record came back with **the four named inherited reds and nothing else**,
+and 423 checks — the most of any run tonight, nothing lost to an early return.
+That is the signature the override names.
+
+## 342.2.9 · Proof, and what it is proof of
+
+**Backend**, all against the real TEST project — never a stub, and TEST
+confirmed from the service key's own JWT `ref` claim rather than from a label:
+
+| | |
+|---|---|
+| `test_worksheet.js` | **314/314** |
+| `test_set_work_v2.js` | **452/452** (column present) · **445/445** (column absent) |
+| `tools/worksheet_artefacts.js` | **32/32 combinations × 466/466 assertions** |
+| `test_assignment_compose.js` · `test_compose_subject_scope.js` · `test_generate_week_guard.js` · `test_ks4_bank_read.js` | 109 · 30 · 16 · 35 |
+| `tools/measure_stem_rule.js` | exit 0, still agrees |
+
+The 32 combinations are `{pdf,docx} × answers{on,off} × multiple_choice{on,off}
+× per_topic{on,off} × note{present,absent}` over a real two-topic set. Every
+one: **zero `MrBadmus` hits** in text, metadata, raw bytes, ZIP entry names and
+the ZIP's own filename; the chevron in header *and* footer; page numbers
+present; answers grouped and numbered to match; the note printed and escaped.
+
+⚠️ **The single-scope, no-note, not-per-topic case is proved unchanged** from
+what it produced yesterday, apart from the two deliberate changes. A teacher who
+changes nothing gets the sheet they had.
+
+## 342.2.10 · Decisions I made
+
+1. **The per-scope ceiling is 2000, not 500.** 500 was a guess about pool
+   sizes; 2000 is what the measurement demanded. §342.2.3.
+2. **`MAX_QUESTIONS_TOTAL` is a flat 2000**, not `MAX_SCOPES × per-scope`
+   (20,000) — a sheet is a thing someone prints.
+3. **`per_topic` with one topic still returns a ZIP.** A teacher who asked for
+   files gets files, and the site never guesses what came back from what it sent.
+4. **A concurrency guard, which nobody asked for.** The raised cap created the
+   OOM risk; shipping the cap without the guard would have shipped the risk.
+5. **The note is one paragraph** — CR/LF collapse to spaces rather than being
+   preserved or refused. It removes every escaping ambiguity at a cost no
+   teacher will notice in 300 characters.
+6. **`assignments.instructions` was not reused** for the note. §342.2.4.
+7. **The ZIP's PDF entries are byte-reproducible; its DOCX entries are not** —
+   the `docx` library stamps timestamps with no override hook, and rewriting
+   packaged XML afterwards is the "patch the output" pattern the brief forbids.
+   Named rather than worked around.
+8. **PDF `CreationDate` pinned** so two identical requests give identical
+   bytes. Every worksheet before tonight was non-deterministic in this one
+   respect, invisibly, until `per_topic` made it visible.
+9. **The audit was sent back twice rather than landed as first written** —
+   its corpus map and then its keyword net were each wrong in a way that
+   changed the answer. §342.2.6.
+10. **Round 1's facts were rejected despite being true**, because "true" was
+    not the brief. §342.2.5.
+11. **The landing page and the audit landed BEFORE the backend**, out of the
+    stated order. Neither touches the backend at all, and holding two finished
+    units hostage to a third contradicts the one-unit-one-push rule.
+12. **`docs/mrb335/RISKS.md` A4 left describing the overturned rule** (chips
+    disabled above the pool) as a historical record of MRB-335's ruling; the
+    current behaviour is documented in code and in the drive's replacement
+    checks.
+
+## 342.2.11 · Deviations
+
+**Deviation:** the contract's §1 numbers were revised mid-run, 500/1000 →
+2000/2000 → after measuring the real pools. Both lanes were building to the
+old numbers and were told in the same message as the measurement.
+
+**Deviation:** the concurrency guard is not in `CONTRACT-342.2.md` at all. It
+is a gap the measurement exposed, not a clause anybody wrote.
+
+**Deviation:** the contract said the answers page "has no page-break guard
+today". A per-ANSWER-BLOCK guard already existed; what did not exist, and what
+was built and mutation-tested, is the per-SECTION-HEADING guard that grouping
+made necessary.
+
+**Deviation:** `jszip` moved from `devDependencies` to `dependencies`. Not in
+the contract, and required — `per_topic` needs it at runtime, and MRB-342
+already recorded `fontkit` failing this exact way under Render's production
+install.
+
+**Deviation:** the landing page's subject dots use `#1D6FB8` / `#B02342` /
+`#237A3B` rather than CLAUDE.md's teal/pink/green, because those are
+`generate_site_v5.py`'s own constants and what every other dot on the page
+renders. **CLAUDE.md is stale here — one for Mide.**
+
+**Deviation:** the site lane initially declared `set_work_drive.py` unrunnable
+for want of `MRB_SET_WORK_PASSWORD` and fell back to static analysis. It is a
+password you CHOOSE — `mrb331_fixture.py` creates its own accounts and
+re-asserts whatever it is handed, and RISKS E6 says "(any)". Corrected and the
+drive was run. My brief should have quoted the "(any)"; that one is mine.
+
+## 342.2.12 · What Mide should look at first
+
+1. **The two md5s, to apply the migration.** §342.2.4. Until it is applied,
+   the note field is hidden in Set work and nothing else changes — the site and
+   backend are proved in both states.
+2. **⊕ May a frozen row's TEXT be edited in place?** 28 audited rows wait on
+   this, and it is a ruling rather than an engineering question. §342.2.6.
+3. **The science facts**, `docs/landing/science-facts.md` — every cut is listed
+   with its reason so any of them can be overruled. Gate 2 is yours.
+4. **CLAUDE.md's subject colours are stale** for the KS4 chrome.
+5. **The worksheet concurrency numbers were measured cold.** If the real
+   instance behaves differently, both limits are env vars — no deploy needed.
