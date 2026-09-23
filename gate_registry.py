@@ -813,6 +813,51 @@ GATES = [
              "so it is fast; `--rows` runs the identical rule against what "
              "the DATABASE actually holds, which is what the load path uses."),
 
+    dict(name="frozen_window_guard",
+         cmd=["python3", "frozen_window_guard.py"],
+         speed="fast",
+         watches=["frozen_window_guard.py", "frozen_window_allowlist.py",
+                  "ks3_data/**", "ks4_data/**",
+                  "export_ks3_questions.py", "export_ks4_questions.py"],
+         needs="/Users/midebadmus/.mrbadmus/prod.env",
+         why="MRB-352 — THE FROZEN WINDOW'S CONTENT, NOT JUST ITS SHAPE. "
+             "MRB-335 froze `bank_position` 0-11 of every bank leaf forever "
+             "— that window is all the AUTOMATIC weekly producer ever reads "
+             "— and `ks4_pool_check` check 4a already proves the window "
+             "still holds four of each band. Nothing proved the window's "
+             "CONTENT hadn't moved: a reworded stem or a re-keyed "
+             "`correct_index` inside it would pass every other "
+             "question-bank gate and reach every class that window has "
+             "been serving since MRB-335, silently. Mide ruled a named, "
+             "narrow exception on 23 Sep 2026 — 28 ids, listed in "
+             "`frozen_window_allowlist.py`, may be edited in place to "
+             "attach a figure and reword the stem/options to match it, and "
+             "ONLY those 28, and ONLY those fields. This gate is what keeps "
+             "that exception narrow: every OTHER frozen row (~2,800 of "
+             "them) must be byte-identical to what PRODUCTION actually "
+             "serves — read-only, over PostgREST, with the service-role "
+             "key from ~/.mrbadmus/prod.env, project proved from the key's "
+             "own `ref` JWT claim, exactly the pattern `export_ks3_"
+             "questions.py`/`export_ks4_questions.py --load` already use — "
+             "and an allowlisted row may differ only in `text`, `options` "
+             "and (KS3 only) `figure`, never its `id`/`band`/`tier`/"
+             "`bank_position`. It also proves positions 0-11 hold the SAME "
+             "SET OF IDS IN THE SAME ORDER per leaf against production, "
+             "which is strictly stronger than a 4/4/4 count. "
+             "⚠️ KS4's `figure` column (MRB-352) is deliberately NOT on "
+             "production yet (figure-contract.md §6), so this probes for "
+             "it the same way `export_ks4_questions._has_figure_column` "
+             "does and drops it from both sides of the KS4 comparison when "
+             "absent — comparing a column that isn't there yet would be "
+             "phantom drift, not a finding. "
+             "SKIPS LOUDLY (exit 3), never a silent pass, when the "
+             "production credential is unavailable — `needs` names the one "
+             "file it is ever read from, so the guard reports that as a "
+             "SKIP by name rather than letting this gate get run at all "
+             "without it. `--baseline <file>` runs the identical proof "
+             "offline, from a JSON snapshot, for rehearsing a load before "
+             "and after it without touching the network."),
+
     # ── ⊕ MRB-335, 8 Sep 2026 · Set work v2, and the cross product ──────
 
     dict(name="set_work_scope_check",
@@ -1926,6 +1971,17 @@ GATES = [
 # repo root, so a new script cannot be quietly neither.
 
 EXCLUDED = {
+    # ── ⊕ MRB-352, 23 Sep 2026 · data the gate reads, not a gate itself ─────
+    "frozen_window_allowlist.py":
+        "the MRB-352 ruling, verbatim, as data — the 28 ids Mide permitted "
+        "to be edited in place inside the frozen window, and why. It has no "
+        "`main`, takes no argv and asserts nothing about the live estate; "
+        "its own module-level asserts only check that IT ITSELF still lists "
+        "exactly 14+14 ids with no duplicates, which is a guard against "
+        "editing this file wrong, not a gate over the question bank. "
+        "`frozen_window_guard.py` — registered above — is the gate that "
+        "reads it and proves the ruling was followed.",
+
     # ── ⊕ MRB-348, 22 Sep 2026 · the speed instrument and its one-off proof ──
     #
     # Same line the MRB-336/337 pair is drawn on: these MEASURE and report;

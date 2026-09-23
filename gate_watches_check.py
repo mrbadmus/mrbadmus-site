@@ -61,6 +61,7 @@ BANK_CONTENT_GATES = frozenset({
     "verify_questions", "answer_positions", "answer_lengths",
     "pool_ownership", "ks4_pool_check", "set_work_scope_check",
     "export_ks3_questions_verify", "set_work", "ks4_pool_drive",
+    "frozen_window_guard",
 })
 
 _QUESTIONS_SAMPLES = (

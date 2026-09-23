@@ -64,6 +64,15 @@ question with nothing saying so.
       "options":       ["A", "B", "C", "D"],   # exactly four, plain strings
       "correct_index": 0..3,
       "why":           "one line on why the correct answer is correct",
+      "figure":        "circuit-thermistor",  # OPTIONAL. omit or None for
+                                               # no figure. id, [a-z0-9-]+,
+                                               # resolved against the
+                                               # build_figures.py manifest —
+                                               # see docs/diagrams/figure-
+                                               # contract.md. NOT validated
+                                               # against the manifest here;
+                                               # an unknown id is a
+                                               # build_figures.py failure.
     }
 
 Twelve per subtopic — four per band — and the correct answer is spread
@@ -78,6 +87,7 @@ the difference is deliberate: this is the shape MRB-332 specified, and
 import importlib
 import os
 import pkgutil
+import re
 import sys
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -345,6 +355,7 @@ def load_pool(subject=None, strict=True):
                 correct_index=q["correct_index"],
                 why=q["why"],
                 bank_position=pos,
+                figure=q.get("figure"),
             ))
             pos += 1
     return rows
@@ -431,5 +442,15 @@ def _check(q, n, where, subj, topic, cls, seen_ids):
     for field in ("text", "why"):
         if not isinstance(q[field], str) or not q[field].strip():
             bad("%r must be a non-empty string" % field)
+
+    # ⚠️ OPTIONAL, and NOT required — 16,765 existing rows carry no figure.
+    # Only validated for shape here; whether the id actually exists in the
+    # build_figures.py manifest is that build's job, not this one's, per
+    # docs/diagrams/figure-contract.md.
+    if "figure" in q and q["figure"] is not None:
+        fig = q["figure"]
+        if not isinstance(fig, str) or not re.match(r"^[a-z0-9-]+$", fig):
+            bad("figure must be None/omitted or a string matching "
+                "[a-z0-9-]+, got %r" % (fig,))
 
     return out

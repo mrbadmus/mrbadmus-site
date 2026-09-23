@@ -107,11 +107,26 @@ ROWS_PER_STATEMENT = 250
 # The migration's column order, deliberately, so a reader can hold the file
 # and the table side by side. `id` is the conflict key.
 COLUMNS = ["id", "subtopic_slug", "subject", "band", "tier", "triple_only",
-           "text", "options", "correct_index", "why", "bank_position"]
+           "text", "options", "correct_index", "why", "bank_position",
+           "figure"]
 CONFLICT_KEY = "id"
 
 # The subset compared by --verify: everything except the key itself.
 COMPARED = [c for c in COLUMNS if c != CONFLICT_KEY]
+
+# ⚠️ MRB-352: `figure` ships in its OWN migration
+# (`supabase/migrations/*_mrb352_figure_column.sql`), separate from the table
+# itself and NOT applied to production by this run (see figure-contract.md
+# §6). So the column can be live on TEST and absent on production at the same
+# time, and this exporter must not fall over when it is. `upsert_statements()`
+# — the plain "write SQL files to disk" path — always emits the full
+# `COLUMNS` list unconditionally: those files are reviewed and applied by a
+# human, who is expected to have applied the migration first if the file
+# includes `figure`. It is only the two paths that touch a LIVE database
+# directly — `--load` and `--verify` — that can get a genuine 400 back from
+# PostgREST for a column that is not there yet, so only those two probe for
+# it. See `_has_figure_column()`.
+OPTIONAL_COLUMNS = {"figure"}
 
 
 def _jwt_ref(token):
@@ -137,7 +152,40 @@ def _jwt_ref(token):
     return ref if isinstance(ref, str) and ref else None
 
 
-def checksum(rows):
+def _has_figure_column(url, headers, ctx):
+    """Does the LIVE `ks4_assignment_bank` have a `figure` column? (MRB-352)
+
+    Probes once with a zero-row select, rather than assuming from a migration
+    file having been written — the migration ships separately (see
+    figure-contract.md §6) and reaching production is a later, deliberate
+    step. `--load` and `--verify` both call this before they touch the
+    column, so a run against a database that has not been migrated yet gets
+    a clear printed "column-absent mode" line instead of PostgREST's raw
+    42703 (undefined_column) surfacing as a confusing mid-run 400.
+
+    Only that one error shape is read as "absent". Anything else — a bad
+    credential, a network failure, RLS refusing the read outright — is left
+    to propagate, because a probe that swallows unrelated failures would
+    hide them behind "the column is missing" forever.
+    """
+    import urllib.error
+    import urllib.request
+    req = urllib.request.Request(
+        url.rstrip("/") + "/rest/v1/%s?select=figure&limit=0" % TABLE,
+        headers=headers)
+    try:
+        with urllib.request.urlopen(req, timeout=30, context=ctx) as r:
+            r.read()
+        return True
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", "replace")
+        if exc.code in (400, 404) and (
+                "42703" in body or "does not exist" in body):
+            return False
+        raise
+
+
+def checksum(rows, columns=None):
     """One SHA-256 over the whole pool, computed identically on both sides.
 
     ⚠️ WHAT THIS IS FOR, AND WHAT IT IS NOT FOR. `--verify` already compares
@@ -150,8 +198,8 @@ def checksum(rows):
     content rather than about transport:
 
       · rows sorted by id, so page order cannot change the answer;
-      · all eleven columns, id included, so a renamed question is a different
-        checksum even if its wording is identical;
+      · every compared column, id included, so a renamed question is a
+        different checksum even if its wording is identical;
       · `options` joined IN ORDER and never sorted — correct_index is an index
         into that exact sequence, so a reordered array is a different
         question with a different answer, and must not checksum the same;
@@ -159,11 +207,18 @@ def checksum(rows):
         because PostgREST hands back JSON types and Python holds native ones,
         and a checksum that changed with the wire format would be a checksum
         of the wire format.
+
+    `columns` defaults to the full `COLUMNS`. `--verify` passes the EFFECTIVE
+    column list (with `figure` dropped when the live table does not have it
+    yet — MRB-352), so the two sides of a column-absent comparison are
+    computed over exactly the same fields rather than one side reading a key
+    that is not there.
     """
     import hashlib
     h = hashlib.sha256()
+    cols = columns if columns is not None else COLUMNS
     for r in sorted(rows, key=lambda r: r["id"]):
-        for f in COLUMNS:
+        for f in cols:
             v = r[f]
             if f == "options":
                 v = "\u0000".join(str(o) for o in (v or []))
@@ -581,15 +636,24 @@ def load(rows, subject, project):
 
     ctx = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
     endpoint = url.rstrip("/") + "/rest/v1/ks4_assignment_bank"
+
+    # ⚠️ MRB-352: probe once, before the first INSERT, rather than let the
+    # first batch's PostgREST 400 be the discovery mechanism. See
+    # `_has_figure_column`.
+    load_cols = list(COLUMNS)   # includes the conflict key, "id"
+    auth_headers = {"apikey": key, "Authorization": "Bearer " + key}
+    if not _has_figure_column(url, auth_headers, ctx):
+        load_cols = [c for c in load_cols if c not in OPTIONAL_COLUMNS]
+        print("\n     ⚠️ column-absent mode: %s has no `figure` column yet "
+              "(MRB-352 migration not applied here). Loading without it."
+              % label)
+
     BATCH = 200
     sent = 0
     print("\n     loading %d row(s) into %s over PostgREST…"
           % (len(rows), label))
     for i in range(0, len(rows), BATCH):
-        chunk = [{k: r[k] for k in
-                  ("id", "subtopic_slug", "subject", "band", "tier",
-                   "triple_only", "text", "options", "correct_index", "why",
-                   "bank_position")}
+        chunk = [{k: r[k] for k in load_cols}
                  for r in rows[i:i + BATCH]]
         body = _json.dumps(chunk).encode("utf-8")
         rq = urllib.request.Request(endpoint, data=body, method="POST")
@@ -818,7 +882,25 @@ def verify(rows, subject, partial, project):
         how = "a real signed-in session (content AND reach)"
     print("     reading with %s" % how)
 
-    cols = ",".join(COLUMNS)
+    # ⚠️ MRB-352: probe once, before the first select, whether the live table
+    # has a `figure` column yet — the migration ships separately from this
+    # export and is not applied to production by this run (figure-contract.md
+    # §6). `effective_columns` / `effective_compared` are what the REST of
+    # this function reads instead of the module-level `COLUMNS` / `COMPARED`,
+    # so a run against an unmigrated project compares and checksums the SAME
+    # fields on both sides rather than one side reaching for a key that was
+    # never selected.
+    has_figure = _has_figure_column(url, auth, ctx)
+    effective_columns = (list(COLUMNS) if has_figure
+                         else [c for c in COLUMNS if c not in OPTIONAL_COLUMNS])
+    effective_compared = [c for c in effective_columns if c != CONFLICT_KEY]
+    if not has_figure:
+        print("     ⚠️ column-absent mode: %s has no `figure` column yet "
+              "(MRB-352 migration not applied here). Comparing and "
+              "checksumming without it."
+              % ("PRODUCTION" if ref == PROJECTS["prod"] else "TEST"))
+
+    cols = ",".join(effective_columns)
     # Scoped to the subject being verified when one is named. Without this a
     # `--verify --subject physics` would report every biology row in the table
     # as an extra, which is not drift — it is the other half of the pool.
@@ -890,7 +972,7 @@ def verify(rows, subject, partial, project):
 
     differing = []
     for k in sorted(set(want) & set(got)):
-        for f in COMPARED:
+        for f in effective_compared:
             a, b = want[k][f], got[k][f]
             if f == "options":
                 # PostgREST returns a text[] as a JSON array of strings, so
@@ -917,7 +999,8 @@ def verify(rows, subject, partial, project):
     # ⚠️ Printed whether or not the comparison passed. A checksum is most
     # useful on the run that FAILS — it is what tells you, next time, whether
     # you are looking at the same wrong database or a different one.
-    py_sum, db_sum = checksum(rows), checksum(live)
+    py_sum, db_sum = (checksum(rows, effective_columns),
+                     checksum(live, effective_columns))
     print("        python   sha256 %s" % py_sum)
     print("        database sha256 %s   %s"
           % (db_sum, "✅ equal" if py_sum == db_sum else "❌ DIFFERENT"))

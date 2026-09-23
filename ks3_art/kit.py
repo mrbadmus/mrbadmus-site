@@ -558,6 +558,359 @@ def _mono(x, y, s, size=15, fill=_SVG_INK_MUTED, weight="500",
     """The mono voice: measurements, magnifications, notes on the plate."""
     return _label(x, y, s, size=size, fill=fill, weight=weight, anchor=anchor,
                   family=_SVG_MONO, spacing=spacing, cls=cls, **data)
+
+
+# ═══ SHARED PRIMITIVES · `_plot` and `_triangle` (⊕ MRB-352, diagrams) ═════
+#
+# The first primitives in this file meant for BOTH key stages. A KS4 module
+# reaches these with `from ks3_art.kit import _plot, _triangle, …` — see
+# `ks4_art/`'s own header. Nothing here is unit-specific; everything below
+# takes a bare `fig` dict (`id`, `title`, `desc`, and whatever the shape
+# needs) and returns one self-contained `<svg>…</svg>` string.
+#
+# Mide's rule that forced this ticket: a question about a diagram must SHOW
+# the diagram, never describe it in prose. `_plot` draws every line/curve
+# graph a pupil is asked to read (distance–time, velocity–time, a
+# heating/cooling curve with its plateau, an oscilloscope trace); `_triangle`
+# draws the formula and force-resolution triangles. Both are single data→pixel
+# mappings computed once, never hand-tuned per call site — the same defect
+# `_svg_open`'s note records for `fill="var(…)"` (silently wrong, invisible to
+# a grep) is just as possible in a second copy of an axis scale, so there is
+# only one.
+
+_PLOT_DASH = (None, "7,4", "2,3", "10,3,2,3")
+_PLOT_MARGIN = {"left": 64, "right": 22, "top": 22, "bottom": 54}
+
+
+def _linspace(lo, hi, n):
+    """`n` evenly spaced values from `lo` to `hi`, inclusive of both ends."""
+    if n < 2 or hi == lo:
+        return [lo]
+    step = (hi - lo) / float(n - 1)
+    return [lo + step * i for i in range(n)]
+
+
+def _smooth_path(pts):
+    """A Catmull-Rom curve through `pts`, as cubic Bezier segments.
+
+    Good enough for a heating curve's rounded shoulder or a velocity–time
+    graph's curved section; a trace that needs to be geometrically exact
+    (a sine wave) is passed as many straight-segment points instead, which
+    reads as smooth at any point density a viewBox can show.
+    """
+    if len(pts) < 3:
+        p0, p1 = pts[0], pts[-1]
+        return "M %s,%s L %s,%s" % (_n(p0[0]), _n(p0[1]), _n(p1[0]), _n(p1[1]))
+    bits = ["M %s,%s" % (_n(pts[0][0]), _n(pts[0][1]))]
+    for i in range(len(pts) - 1):
+        p0 = pts[i - 1] if i > 0 else pts[i]
+        p1, p2 = pts[i], pts[i + 1]
+        p3 = pts[i + 2] if i + 2 < len(pts) else p2
+        c1x = p1[0] + (p2[0] - p0[0]) / 6.0
+        c1y = p1[1] + (p2[1] - p0[1]) / 6.0
+        c2x = p2[0] - (p3[0] - p1[0]) / 6.0
+        c2y = p2[1] - (p3[1] - p1[1]) / 6.0
+        bits.append("C %s,%s %s,%s %s,%s"
+                     % (_n(c1x), _n(c1y), _n(c2x), _n(c2y), _n(p2[0]), _n(p2[1])))
+    return " ".join(bits)
+
+
+def _v_axis_label(x, y, s):
+    """A y-axis title, rotated -90°. Not `_label`: that primitive has no
+    `transform`, and a rotated title is the one label in this file that needs
+    one. Paint still goes through `style`, never a bare `fill=`, for the same
+    reason every other emitter in this file does that."""
+    return ('<text x="%s" y="%s" font-family="%s" font-size="14" '
+            'font-weight="700" style="fill:%s" text-anchor="middle" '
+            'transform="rotate(-90 %s %s)">%s</text>'
+            % (_n(x), _n(y), _SVG_BODY, _SVG_INK_BODY, _n(x), _n(y), e(s)))
+
+
+def _plot(fig, width, height, series, x_label, x_unit, y_label, y_unit,
+          x_range=None, y_range=None, x_ticks=None, y_ticks=None,
+          gridlines=True, origin_marker=False, x_fmt=None, y_fmt=None):
+    """A generic line/curve plotter — every science graph goes through this
+    ONE data→pixel mapping.
+
+    `series` is either a bare list of `(x, y)` points (one anonymous series),
+    or a list of series dicts: `{"points": [(x, y), …], "label": str,
+    "dash": "7,4" | None, "smooth": bool}`.
+
+    Axes ALWAYS carry a unit — "time / s", never bare "time" — because a
+    graph missing units is an accuracy defect, not a style choice, so
+    `x_unit`/`y_unit` are required rather than optional.
+
+    Two or more series are told apart by DASH PATTERN plus an END LABEL next
+    to each one's last point — never by colour alone. A caller with more than
+    one series must give every one of them a `label`, or the build stops
+    here rather than shipping an unlabelled second line a pupil cannot read.
+    """
+    if not x_unit or not y_unit:
+        raise ValueError(
+            "_plot %r has no unit on one of its axes ('%s' / '%s'). A graph "
+            "without units is an accuracy defect, not a style omission."
+            % (fig.get("id"), x_label, y_label))
+
+    if series and isinstance(series[0], (tuple, list)):
+        series = [{"points": list(series)}]
+    else:
+        series = [dict(s) for s in (series or [])]
+    if not series or not any(s.get("points") for s in series):
+        raise ValueError("_plot %r has no points to draw." % fig.get("id"))
+
+    if len(series) > 1:
+        missing = [i for i, s in enumerate(series) if not s.get("label")]
+        if missing:
+            raise ValueError(
+                "_plot %r has %d series and no `label` on series %s. Two "
+                "lines on one graph are told apart by dash pattern AND an "
+                "end label — never by colour alone."
+                % (fig.get("id"), len(series), missing))
+
+    all_x = [p[0] for s in series for p in s["points"]]
+    all_y = [p[1] for s in series for p in s["points"]]
+    x0, x1 = x_range if x_range else (min(all_x), max(all_x))
+    y0, y1 = y_range if y_range else (min(all_y), max(all_y))
+    if origin_marker:
+        x0, x1 = min(x0, 0), max(x1, 0)
+        y0, y1 = min(y0, 0), max(y1, 0)
+    if x1 == x0 or y1 == y0:
+        raise ValueError(
+            "_plot %r has a zero-span axis (x %s..%s, y %s..%s); nothing "
+            "would be visible." % (fig.get("id"), x0, x1, y0, y1))
+
+    m = _PLOT_MARGIN
+    pw, ph = width - m["left"] - m["right"], height - m["top"] - m["bottom"]
+    if pw <= 0 or ph <= 0:
+        raise ValueError("_plot %r is too small for its margins (%dx%d)."
+                          % (fig.get("id"), width, height))
+
+    def X(x):
+        return m["left"] + (x - x0) / float(x1 - x0) * pw
+
+    def Y(y):
+        return m["top"] + ph - (y - y0) / float(y1 - y0) * ph
+
+    x_ticks = x_ticks if x_ticks is not None else _linspace(x0, x1, 5)
+    y_ticks = y_ticks if y_ticks is not None else _linspace(y0, y1, 5)
+    x_fmt = x_fmt or (lambda v: _n(round(v, 4)))
+    y_fmt = y_fmt or (lambda v: _n(round(v, 4)))
+
+    out = []
+    if gridlines:
+        for xv in x_ticks:
+            out.append(_line(X(xv), m["top"], X(xv), m["top"] + ph,
+                             stroke=_SVG_RULE, w=1))
+        for yv in y_ticks:
+            out.append(_line(m["left"], Y(yv), m["left"] + pw, Y(yv),
+                             stroke=_SVG_RULE, w=1))
+
+    out.append(_line(m["left"], m["top"], m["left"], m["top"] + ph,
+                     stroke=_SVG_INK, w=2))
+    out.append(_line(m["left"], m["top"] + ph, m["left"] + pw, m["top"] + ph,
+                     stroke=_SVG_INK, w=2))
+
+    for xv in x_ticks:
+        out.append(_line(X(xv), m["top"] + ph, X(xv), m["top"] + ph + 6,
+                         stroke=_SVG_INK, w=2))
+        out.append(_label(X(xv), m["top"] + ph + 20, x_fmt(xv), size=13,
+                          fill=_SVG_INK_MUTED, weight="500"))
+    for yv in y_ticks:
+        out.append(_line(m["left"] - 6, Y(yv), m["left"], Y(yv),
+                         stroke=_SVG_INK, w=2))
+        out.append(_label(m["left"] - 12, Y(yv) + 4, y_fmt(yv), size=13,
+                          fill=_SVG_INK_MUTED, weight="500", anchor="end"))
+
+    if origin_marker and x0 <= 0 <= x1 and y0 <= 0 <= y1:
+        out.append(_circle(X(0), Y(0), 4, fill=_SVG_INK))
+
+    out.append(_label(m["left"] + pw / 2.0, height - 10,
+                      "%s / %s" % (x_label, x_unit), size=14,
+                      fill=_SVG_INK_BODY, weight="700"))
+    out.append(_v_axis_label(16, m["top"] + ph / 2.0,
+                             "%s / %s" % (y_label, y_unit)))
+
+    for i, s in enumerate(series):
+        pts = [(X(x), Y(y)) for x, y in s["points"]]
+        dash = s.get("dash", _PLOT_DASH[i % len(_PLOT_DASH)])
+        if s.get("smooth"):
+            d = _smooth_path(pts)
+        else:
+            d = "M %s,%s %s" % (_n(pts[0][0]), _n(pts[0][1]), " ".join(
+                "L %s,%s" % (_n(px), _n(py)) for px, py in pts[1:]))
+        out.append(_path(d, stroke=_SVG_INK, w=2.5, dash=dash))
+        if s.get("label"):
+            lx, ly = pts[-1]
+            out.append(_label(lx + 8, ly - 6, s["label"], size=13,
+                              fill=_SVG_INK_BODY, weight="700", anchor="start"))
+
+    return _svg_open(fig, width, height) + "".join(out) + "</svg>"
+
+
+def _formula_triangle(fig, width, height, top, bottom_left, bottom_right):
+    """One cell on top, two below — top = bottom_left × bottom_right."""
+    for label, name in ((top, "top"), (bottom_left, "bottom_left"),
+                        (bottom_right, "bottom_right")):
+        if not label:
+            raise ValueError("_triangle %r formula shape needs a %s label."
+                             % (fig.get("id"), name))
+    pad = 20
+    apex_x, apex_y = width / 2.0, pad
+    base_y = height - pad
+    left_x, right_x = pad, width - pad
+    third_y = apex_y + (base_y - apex_y) * (2.0 / 3.0)
+    frac = (third_y - apex_y) / (base_y - apex_y)
+    hx1 = apex_x - frac * (apex_x - left_x)
+    hx2 = apex_x + frac * (right_x - apex_x)
+    mid_x = width / 2.0
+
+    outline = _path(
+        "M %s,%s L %s,%s L %s,%s Z"
+        % (_n(apex_x), _n(apex_y), _n(left_x), _n(base_y),
+           _n(right_x), _n(base_y)),
+        stroke=_SVG_INK, w=2.5)
+    dividers = (_line(hx1, third_y, hx2, third_y, stroke=_SVG_INK, w=2)
+                + _line(mid_x, third_y, mid_x, base_y, stroke=_SVG_INK, w=2))
+    labels = (
+        _label(apex_x, (apex_y + third_y) / 2.0 + 6, top, size=18, weight="700")
+        + _label((left_x + mid_x) / 2.0, base_y - 16, bottom_left, size=15)
+        + _label((mid_x + right_x) / 2.0, base_y - 16, bottom_right, size=15))
+    return _svg_open(fig, width, height) + outline + dividers + labels + "</svg>"
+
+
+def _resolution_triangle(fig, width, height, angle, hyp_label, horiz_label,
+                         vert_label, angle_label=None):
+    """A right-angled triangle: hypotenuse (the force) plus two labelled,
+    dashed component legs, with the right angle marked by a small square —
+    never by the angle alone."""
+    if not (0 < angle < 90):
+        raise ValueError(
+            "_triangle %r resolution shape needs an angle strictly between "
+            "0 and 90 degrees; %r would collapse one component to zero."
+            % (fig.get("id"), angle))
+    for label, name in ((hyp_label, "hyp_label"), (horiz_label, "horiz_label"),
+                        (vert_label, "vert_label")):
+        if not label:
+            raise ValueError("_triangle %r resolution shape needs a %s."
+                             % (fig.get("id"), name))
+    pad = 32
+    ox, oy = pad, height - pad
+    span = min(width, height) - 2 * pad
+    rad = math.radians(angle)
+    vx, vy = ox + span * math.cos(rad), oy - span * math.sin(rad)
+    corner = (vx, oy)
+
+    hyp = _line(ox, oy, vx, vy, stroke=_SVG_INK, w=2.5)
+    horiz = _line(ox, oy, corner[0], corner[1], stroke=_SVG_ACCENT_TEXT, w=2.5,
+                  dash="7,4")
+    vert = _line(corner[0], corner[1], vx, vy, stroke=_SVG_ACCENT_TEXT, w=2.5,
+                 dash="2,3")
+    sq = 14
+    square = _rect(corner[0] - sq, corner[1] - sq, sq, sq,
+                   stroke=_SVG_INK_MUTED, w=1.5)
+    labels = (
+        _label((ox + vx) / 2.0 - 12, (oy + vy) / 2.0 - 10, hyp_label,
+               size=15, weight="700")
+        + _label((ox + corner[0]) / 2.0, oy + 22, horiz_label, size=14,
+                 fill=_SVG_ACCENT_TEXT)
+        + _label(corner[0] + 10, (corner[1] + vy) / 2.0, vert_label, size=14,
+                 fill=_SVG_ACCENT_TEXT, anchor="start"))
+    if angle_label:
+        labels += _label(ox + 38, oy - 12, angle_label, size=14,
+                         fill=_SVG_INK_MUTED, anchor="start")
+    return _svg_open(fig, width, height) + hyp + horiz + vert + square + labels + "</svg>"
+
+
+def _triangle(fig, width, height, shape, relationship="product", **kw):
+    """The second shared primitive: a formula triangle or a force-resolution
+    triangle, dispatched by `shape`.
+
+    p1/p4's ruling, enforced here rather than merely documented: a triangle
+    is drawn for a PRODUCT relationship only (top = left × right, or a force
+    resolved into two components) — never a sum, never a mere
+    proportionality. `relationship` must say `"product"` explicitly, so a
+    call site that reaches for this primitive for the wrong kind of
+    relationship fails at the call, not in front of a pupil.
+    """
+    if relationship != "product":
+        raise ValueError(
+            "_triangle %r asked for relationship %r. A formula/force "
+            "triangle is drawn for a PRODUCT relationship only — a sum or a "
+            "mere proportionality is never drawn this way (p1/p4's ruling). "
+            "Draw a sum as a bar model and a proportionality with _plot."
+            % (fig.get("id"), relationship))
+    if shape == "formula":
+        return _formula_triangle(fig, width, height, **kw)
+    if shape == "resolution":
+        return _resolution_triangle(fig, width, height, **kw)
+    raise ValueError(
+        "_triangle %r asked for shape %r. Only 'formula' and 'resolution' "
+        "are drawn." % (fig.get("id"), shape))
+
+
+if __name__ == "__main__":
+    import math as _pymath
+    import xml.etree.ElementTree as _ET
+
+    def _check(name, svg):
+        _ET.fromstring(svg)
+        assert svg.startswith("<svg") and svg.endswith("</svg>"), name
+        print("ok: %-32s %6d bytes" % (name, len(svg)))
+
+    _check("plot/distance-time", _plot(
+        {"id": "self-check-dt", "title": "t", "desc": "d"}, 400, 260,
+        [(0, 0), (2, 4), (4, 4), (6, 10)],
+        "time", "s", "distance", "m", origin_marker=True))
+
+    _check("plot/velocity-time · two series", _plot(
+        {"id": "self-check-vt", "title": "t", "desc": "d"}, 400, 260,
+        [{"points": [(0, 0), (2, 6), (5, 6)], "label": "A"},
+         {"points": [(0, 0), (2, 3), (5, 8)], "label": "B", "smooth": True}],
+        "time", "s", "velocity", "m/s"))
+
+    _check("plot/heating curve · plateau", _plot(
+        {"id": "self-check-heat", "title": "t", "desc": "d"}, 400, 260,
+        [(0, 20), (2, 20), (2, 100), (6, 100), (8, 140)],
+        "time", "min", "temperature", "°C"))
+
+    _check("plot/oscilloscope sine trace", _plot(
+        {"id": "self-check-sine", "title": "t", "desc": "d"}, 400, 200,
+        [{"points": [(x, _pymath.sin(x / 10.0 * 2 * _pymath.pi))
+                     for x in range(0, 41)], "label": "trace"}],
+        "time", "div", "voltage", "div"))
+
+    _check("triangle/formula", _triangle(
+        {"id": "self-check-tri", "title": "t", "desc": "d"}, 260, 240,
+        shape="formula", top="s", bottom_left="d", bottom_right="t"))
+
+    _check("triangle/resolution", _triangle(
+        {"id": "self-check-res", "title": "t", "desc": "d"}, 260, 240,
+        shape="resolution", angle=40, hyp_label="F",
+        horiz_label="F cos θ", vert_label="F sin θ",
+        angle_label="θ"))
+
+    try:
+        _triangle({"id": "self-check-bad", "title": "t", "desc": "d"}, 200, 200,
+                 shape="formula", relationship="sum", top="a",
+                 bottom_left="b", bottom_right="c")
+    except ValueError:
+        print("ok: _triangle refuses a non-product relationship")
+    else:
+        raise AssertionError("_triangle accepted a `sum` relationship")
+
+    try:
+        _plot({"id": "self-check-badplot", "title": "t", "desc": "d"}, 400, 260,
+             [{"points": [(0, 0), (1, 1)], "label": "A"},
+              {"points": [(0, 0), (1, 2)]}],
+             "time", "s", "distance", "m")
+    except ValueError:
+        print("ok: _plot refuses an unlabelled second series")
+    else:
+        raise AssertionError("_plot accepted a two-series plot with no label")
+
+    print("kit.py self-check: every primitive renders well-formed SVG")
+
+
 def _activity(lesson, act_id):
     return next((a for a in lesson.get("activities", []) if a["id"] == act_id), None)
 def _num(v):
