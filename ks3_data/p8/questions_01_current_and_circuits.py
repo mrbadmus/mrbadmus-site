@@ -1117,27 +1117,27 @@ QUESTIONS = [
                  "warmer."},
      ], "figure": None},
     {"id": "p8-01-s17", "band": "standard",
-     "text": "A motor is connected into a single loop instead of a bulb. Two "
-             "ammeters, one either side of the motor, are compared while it "
-             "runs. What do you expect?",
+     "text": "A small heater is connected into a single loop instead of a "
+             "bulb. Two ammeters, one either side of the heater, are "
+             "compared while it warms up. What do you expect?",
      "options": [
-         {"text": "A smaller reading after the motor, because some of the "
-                  "current is converted into the motor's motion",
+         {"text": "A smaller reading after the heater, because some of the "
+                  "current is converted into heat",
           "correct": False,
-          "why": "Current is not converted into motion. What the motor "
+          "why": "Current is not converted into heat. What the heater "
                  "converts is the energy the charge is carrying."},
-         {"text": "A smaller reading after the motor while it is working "
-                  "hard, but not otherwise", "correct": False,
-          "why": "The two readings stay equal at every instant, loaded or "
-                 "not, because charge is conserved round the loop either "
+         {"text": "A smaller reading after the heater while it is glowing "
+                  "red-hot, but not otherwise", "correct": False,
+          "why": "The two readings stay equal at every instant, hot or "
+                 "cold, because charge is conserved round the loop either "
                  "way."},
-         {"text": "It depends on how fast the motor is spinning and how "
-                  "much mechanical load it is carrying at that particular "
-                  "moment", "correct": False,
-          "why": "Speed can change how much current the motor draws "
-                 "overall, but the two meters either side of it still "
-                 "agree with each other."},
-         {"text": "Equal readings, because the motor takes energy from the "
+         {"text": "It depends on how hot the heater has become and how "
+                  "quickly it is losing energy to the room at that "
+                  "particular moment", "correct": False,
+          "why": "Temperature can change how much current the heater "
+                 "draws overall, but the two meters either side of it "
+                 "still agree with each other."},
+         {"text": "Equal readings, because the heater takes energy from the "
                   "charge rather than using the charge itself up",
           "correct": True},
      ], "figure": None},

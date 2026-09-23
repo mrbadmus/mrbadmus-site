@@ -8,6 +8,14 @@ sensor, the redraw onto separate branches, the schematic-not-to-scale rule,
 the LED the wrong way round, thermistor against LDR, the two meters' internal
 resistances, and the ammeter reading a total current.
 
+⊕ MRB-352 run 2 (Mide's rulings): no circuit question may use a motor
+symbol — the motor is not on the AQA 8463 §4.2.1.1 list — and no question
+may ask a pupil to describe a symbol or a diagram in words. The ten rows
+that used a motor (e06, s05, s06, s19, s23, s26, h08, h14, h21, h24) were
+rebuilt on the same id, band and tier: six around a drawn figure, four with
+the motor swapped for an AQA component. The notes below describe the file
+as first authored.
+
 This file takes what those leave, and the weight follows the CONTENT. The
 `easier` eight are the symbols the baseline never names — the alternating
 supply, the motor, the buzzer, the fuse, the plain rectangle of a fixed
@@ -31,8 +39,8 @@ SUBJECT = "physics"
 
 QUESTIONS = [
     # ══ easier · e05–e12 ═════════════════════════════════════════════════
-    # The symbols the frozen twelve never name: ac supply, motor, buzzer,
-    # fuse, the plain rectangle, the LED's outward arrows, the closed
+    # The symbols the frozen twelve never name: ac supply, (motor — e06
+    # is now the ammeter, MRB-352), buzzer, fuse, the plain rectangle, the LED's outward arrows, the closed
     # switch, and where a component sits on the line.
     {
         "id": "ks4-circuit-symbols-e05",
@@ -60,19 +68,20 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Which component is drawn as a circle with the letter M "
-                "inside it?",
+        "figure": "ks4-fig-circuit-symbol-ammeter",
+        "text": "The diagram shows a circuit symbol. Which component does it "
+                "represent?",
         "options": [
-            "A meter, whose letter M stands for the measurement it makes of "
-            "the current",
-            "A mains socket, which is the point where a circuit joins the "
-            "supply",
-            "A motor, which turns a shaft when a current passes through it",
-            "A magnet, which is switched on and off by the circuit",
+            "A voltmeter, which measures the potential difference across a "
+            "component",
+            "A lamp, which gives out light when a current passes through it",
+            "An ammeter, which measures the current through a component",
+            "A fuse, which melts if the current becomes too large",
         ],
         "correct_index": 2,
-        "why": "The letter inside the circle names the component, and M "
-               "marks the motor that turns when a current passes through it.",
+        "why": "A circle with the letter A inside it is the ammeter symbol — the"
+               " A is for amperes, the unit of current. A voltmeter is a circle "
+               "with a V, and a lamp is a circle with a cross.",
     },
     {
         "id": "ks4-circuit-symbols-e07",
@@ -200,18 +209,25 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A student drawing a torch uses a circle with the letter M "
-                "inside it for the torch bulb. Explain the error.",
+        "figure": "ks4-fig-circuit-torch-ldr-for-bulb",
+        "text": "A student draws the circuit for a torch, which holds a battery, "
+                "a switch and a bulb. The drawing is shown. Explain the error.",
         "options": [
-            "A bulb should be shown by a circle containing the letter B",
-            "That circle is a motor; a bulb is a circle with a cross in it",
-            "The circle is right, but it belongs on a branch of its own",
-            "Nothing is wrong, as one circle may stand for any part that "
-            "gives out light or movement",
+            "The battery should be drawn as a single cell, because a torch "
+            "can only hold one cell",
+            "The bulb has been drawn with the LDR symbol instead of the lamp "
+            "symbol",
+            "The parts should be drawn on separate branches, one branch for "
+            "each part",
+            "Nothing is wrong, as any symbol may stand for a part that gives "
+            "out light",
         ],
         "correct_index": 1,
-        "why": "A circle carrying M is the motor symbol, while the lamp is "
-               "drawn as a circle with a cross standing for its filament.",
+        "why": "The symbol where the bulb should be — a small rectangle inside a"
+               " circle with two arrows pointing in — is a light-dependent "
+               "resistor, which responds to light rather than giving it out. A "
+               "torch bulb is a lamp, drawn as a circle with a cross. The "
+               "battery, the switch and the single loop are right.",
     },
     {
         "id": "ks4-circuit-symbols-s06",
@@ -219,18 +235,18 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A cell, a switch and a motor are joined in one loop. "
-                "Describe where a voltmeter is drawn to measure the "
-                "potential difference across the motor.",
+        "text": "A cell, a switch and a lamp are joined in one loop. State where "
+                "a voltmeter is connected to measure the potential difference "
+                "across the lamp.",
         "options": [
-            "In the loop between the switch and the motor, like an ammeter",
+            "In the loop between the switch and the lamp, like an ammeter",
             "Across the two terminals of the cell, where the supply is made",
-            "In the loop on the far side of the motor from the cell",
-            "On a second pair of wires joined either side of the motor",
+            "In the loop on the far side of the lamp from the cell",
+            "On a second pair of wires joined either side of the lamp",
         ],
         "correct_index": 3,
-        "why": "A voltmeter is drawn in parallel, bridging the component "
-               "with its own pair of wires so that it spans the motor only.",
+        "why": "A voltmeter is connected in parallel, bridging the component "
+               "with its own pair of wires so that it spans the lamp only.",
     },
     {
         "id": "ks4-circuit-symbols-s07",
@@ -467,18 +483,20 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram must show an alternating supply, a switch and a "
-                "motor. Which set of symbols is needed?",
+        "figure": "ks4-fig-symbol-panel-battery-ldr-switch-lamp",
+        "text": "A circuit must contain a battery, a closed switch and a lamp. "
+                "The diagram shows four circuit symbols. Which three are needed?",
         "options": [
-            "A long line paired with a short line, a gap with a lever, and "
-            "a circle with M",
-            "A circle with a sine wave, a gap with a lever, a circle with A",
-            "A circle with a sine wave, a plain rectangle, a circle with M",
-            "A circle with a sine wave, a gap with a lever, a circle with M",
+            "P, Q and R",
+            "Q, R and S",
+            "P, Q and S",
+            "P, R and S",
         ],
         "correct_index": 3,
-        "why": "The sine wave marks the alternating supply, the hinged lever "
-               "the switch, and the letter M the motor.",
+        "why": "P is a battery (two cells joined by a dashed line), R is a "
+               "closed switch (its lever joins both contacts) and S is a lamp (a"
+               " circle with a cross). Q, with arrows pointing in, is a "
+               "light-dependent resistor, which this circuit does not need.",
     },
     {
         "id": "ks4-circuit-symbols-s20",
@@ -546,20 +564,24 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram shows one circle with the letter A in the main "
-                "wire and another circle with the letter M on a branch. "
-                "State what each one shows.",
+        "figure": "ks4-fig-circuit-ammeter-voltmeter-resistor",
+        "text": "The diagram shows a circuit with two meters. What does each "
+                "meter measure?",
         "options": [
-            "An alarm in the main wire and a meter on the branch",
-            "An ammeter in the main wire and a motor on the branch",
-            "An alternating supply in the main wire and a magnet on the "
-            "branch",
-            "An ammeter in the main wire and a second meter on the branch",
+            "The meter in the loop measures the potential difference across "
+            "the cell; the other measures the current in the resistor",
+            "The meter in the loop measures the current; the other measures "
+            "the potential difference across the resistor",
+            "Both meters measure the current, one before the resistor and one"
+            " across it",
+            "Both meters measure the potential difference, one across the "
+            "cell and one across the resistor",
         ],
         "correct_index": 1,
-        "why": "A is the ammeter and M is the motor; the letter inside the "
-               "circle is what separates two components drawn with the same "
-               "outline.",
+        "why": "The circle with A is an ammeter, connected in series in the "
+               "loop, so it measures the current. The circle with V is a "
+               "voltmeter, connected in parallel across the resistor, so it "
+               "measures the potential difference across the resistor.",
     },
     {
         "id": "ks4-circuit-symbols-s24",
@@ -608,19 +630,20 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "An alarm must sound and light a warning lamp at the same "
-                "time. Which two symbols are drawn for these output "
-                "components?",
+        "figure": "ks4-fig-symbol-panel-diode-ldr-led-lamp",
+        "text": "A warning light is to be made with a light-emitting diode. The "
+                "diagram shows four circuit symbols. Which one should be drawn?",
         "options": [
-            "A circle with M inside it, and a circle with a cross inside it, "
-            "side by side",
-            "A circle with a rectangle inside, and a circle with an A",
-            "A circle with a rectangle inside, and a circle with a cross",
-            "A rectangle with a line through it, and a circle with M",
+            "P",
+            "Q",
+            "R",
+            "S",
         ],
         "correct_index": 2,
-        "why": "The buzzer is the circle holding a rectangle and the lamp "
-               "the circle holding a cross.",
+        "why": "R is the LED: a diode symbol with two arrows pointing outwards, "
+               "for the light it gives out. P is a plain diode, which gives out "
+               "no light. Q's arrows point inwards, making it a light-dependent "
+               "resistor. S is a filament lamp.",
     },
 
     # ══ harder · h05–h26 ═════════════════════════════════════════════════
@@ -701,20 +724,18 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A cell feeds a main wire that divides into two branches, "
-                "one holding a motor and one holding a buzzer. A switch is "
-                "drawn in the buzzer branch only. Determine what that switch "
-                "controls.",
+        "figure": "ks4-fig-circuit-two-lamp-branches-switch-y",
+        "text": "The diagram shows a circuit. Determine what the switch controls.",
         "options": [
-            "Both the motor and the buzzer, as one cell feeds them both",
-            "The motor only, as a switch acts on the branch opposite it",
-            "The buzzer only, as it is the one device in that branch",
-            "Neither, as a switch has an effect only in the main wire",
+            "Both lamps, as one cell feeds them both",
+            "Lamp X only, as a switch acts on the branch opposite it",
+            "Lamp Y only, as it is the one lamp in the switch's branch",
+            "Neither lamp, as a switch has an effect only in the main wire",
         ],
         "correct_index": 2,
-        "why": "A switch breaks the path it is drawn in, so one placed in a "
-               "single branch stops that branch alone and leaves the other "
-               "branch complete.",
+        "why": "A switch breaks the path it is in, so a switch in one branch "
+               "stops that branch alone and leaves the other branch complete. "
+               "Opening it turns off lamp Y; lamp X stays lit.",
     },
     {
         "id": "ks4-circuit-symbols-h09",
@@ -826,17 +847,17 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A supply feeds two branches, one holding a motor and one "
-                "holding a lamp. An ammeter is to read the current in the "
-                "motor alone. Determine where it is drawn.",
+        "text": "A cell feeds two parallel branches, one holding a resistor and "
+                "one holding a lamp. An ammeter is to read the current in the "
+                "resistor alone. Determine where it is placed.",
         "options": [
-            "In the motor branch, between the junction and the motor",
+            "In the resistor branch, between the junction and the resistor",
             "In the main wire, where the whole of the current passes",
-            "On a pair of wires bridging the motor from side to side",
+            "On a pair of wires bridging the resistor from side to side",
             "In the lamp branch, whose reading is taken away from the total",
         ],
         "correct_index": 0,
-        "why": "An ammeter reads the current in the path it is drawn in, so "
+        "why": "An ammeter reads the current in the path it is placed in, so "
                "reading one branch means placing it inside that branch.",
     },
     {
@@ -965,19 +986,20 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A lamp must be switchable on its own while a motor keeps "
-                "running, and a second switch must stop everything. "
-                "Determine where the two switches are drawn.",
+        "text": "Two lamps, X and Y, are on separate parallel branches fed by one"
+                " cell. Lamp X must be switchable on its own while lamp Y stays "
+                "lit, and a second switch must turn both off. Determine where the"
+                " two switches are placed.",
         "options": [
-            "Both in the main wire, one drawn on each side of the junction",
-            "One in the lamp branch and one in the motor branch",
-            "Both in the lamp branch, one before the lamp and one after it",
-            "One in the lamp branch and one in the main wire from the cell",
+            "Both in the main wire, one on each side of the junction",
+            "One in lamp X's branch and one in lamp Y's branch",
+            "Both in lamp X's branch, one before the lamp and one after it",
+            "One in lamp X's branch and one in the main wire from the cell",
         ],
         "correct_index": 3,
-        "why": "A switch stops only the path it sits in, so the branch "
-               "switch takes out the lamp alone and a switch in the main "
-               "wire takes out every branch.",
+        "why": "A switch stops only the path it sits in, so the branch switch "
+               "takes out lamp X alone and a switch in the main wire takes out "
+               "every branch.",
     },
     {
         "id": "ks4-circuit-symbols-h22",
@@ -1028,18 +1050,21 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram places an ammeter in the lamp branch, but the "
-                "technician builds it into the motor branch instead. "
-                "Evaluate whether the reading is still the one wanted.",
+        "figure": "ks4-fig-circuit-ammeter-in-lamp-branch",
+        "text": "The diagram shows how a circuit is meant to be built, to measure"
+                " the current in the lamp. A technician builds the ammeter into "
+                "the other branch instead. Evaluate whether the reading is still "
+                "the one wanted.",
         "options": [
             "Yes, as an ammeter reads the current of the circuit as a whole",
             "Yes, as the two branches are fed from one cell and must match",
-            "No: it now reads the motor's current, not the lamp's",
+            "No: it now reads the resistor's current, not the lamp's",
             "No: an ammeter placed on a branch cannot give any reading",
         ],
         "correct_index": 2,
-        "why": "Branches carry different currents, so an ammeter reports "
-               "whatever passes through the branch it has been built into.",
+        "why": "Parallel branches can carry different currents, so an ammeter "
+               "reports whatever passes through the branch it has been built "
+               "into — here the resistor's.",
     },
     {
         "id": "ks4-circuit-symbols-h25",

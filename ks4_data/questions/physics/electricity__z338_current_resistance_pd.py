@@ -282,7 +282,9 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A lamp and a motor are connected in parallel across a 9.0 V battery. The current in the lamp is 0.30 A. Calculate the resistance of the lamp.",
+        "text": "A lamp and a resistor are connected in parallel across a 9.0 V "
+                "battery. The current in the lamp is 0.30 A. Calculate the "
+                "resistance of the lamp.",
         "options": [
             "2.7 Ω",
             "15 Ω",
@@ -290,7 +292,8 @@ QUESTIONS = [
             "0.033 Ω",
         ],
         "correct_index": 2,
-        "why": "Each branch of a parallel combination has the full supply pd across it, so R = V ÷ I = 9.0 ÷ 0.30 = 30 Ω.",
+        "why": "Each branch of a parallel combination has the full supply pd "
+               "across it, so R = V ÷ I = 9.0 ÷ 0.30 = 30 Ω.",
     },
     {
         "id": "ks4-current-resistance-pd-s12",

@@ -765,14 +765,14 @@ PHYSICS_SUBTOPICS_ALL = {
   'fifas': [],
   'higher': None,
   'id': 'circuit-symbols',
-  'key_note': 'Standard symbols allow universal reading of circuits. Key symbols: cell, battery, bulb, motor, switch, '
-              'ammeter (series), voltmeter (parallel), fixed/variable resistor, thermistor, LDR, diode, LED, fuse. '
-              'Ammeter in series. Voltmeter in parallel.',
+  'key_note': 'Standard symbols allow universal reading of circuits. The AQA symbols: switch (open and closed), '
+              'cell, battery, diode, resistor, variable resistor, LED, lamp, fuse, voltmeter, ammeter, thermistor, '
+              'LDR. Ammeter in series. Voltmeter in parallel.',
   'matching': {'instruction': 'Match each circuit symbol description to the component it represents.',
                'pairs': [('Cell', 'One long line (positive) and one shorter line (negative)'),
                          ('Ammeter', 'Circle with A inside — connected in series to measure current'),
                          ('Voltmeter', 'Circle with V inside — connected in parallel to measure potential difference'),
-                         ('LDR', 'Resistor symbol with two arrows pointing inward — resistance decreases in light'),
+                         ('LDR', 'Small rectangle inside a circle, two arrows pointing in — resistance decreases in light'),
                          ('Diode', 'Triangle pointing to a vertical line — allows current in one direction only')],
                'title': 'Symbol to Component'},
   'quiz': [{'opts': [('In series with the bulb — in the same loop so the same current flows through both', True),
@@ -787,11 +787,11 @@ PHYSICS_SUBTOPICS_ALL = {
                                    3: 'Placing an ammeter directly across the battery terminals would short-circuit '
                                       'the battery — dangerous and incorrect.'}},
            {'opts': [('A lamp (bulb) — the cross represents the filament inside the glass envelope', True),
-                     ('A motor — the cross indicates rotation', False),
+                     ('An ammeter — the cross marks where the current is measured', False),
                      ('A fuse — the cross means it can break the circuit', False),
                      ('An LED — the cross represents light emission', False)],
             'q': 'What does the symbol of a circle with a cross inside represent?',
-            'wrong_explanations': {1: 'A motor symbol is a circle with M inside — not a cross.',
+            'wrong_explanations': {1: 'An ammeter symbol is a circle with the letter A inside — not a cross.',
                                    2: 'A fuse symbol is a rectangle with a line through it — not a circle with a '
                                       'cross.',
                                    3: 'An LED symbol is a diode (triangle + line) with two outward arrows — not a '
@@ -812,36 +812,33 @@ PHYSICS_SUBTOPICS_ALL = {
                          'Circuit should be drawn as a CLOSED LOOP.\n'
                          'Wires are shown as straight horizontal and vertical lines.',
               'heading': 'Why Standard Symbols?'},
-             {'content': 'You must be able to draw and recognise all of these:\n'
+             {'content': 'You must be able to draw and recognise all of these — the AQA list:\n'
                          '\n'
                          'POWER SUPPLIES:\n'
                          'Cell — one long line (positive) + one short line (negative)\n'
-                         'Battery — two or more cells in series\n'
-                         'AC supply — circle with a sine wave\n'
+                         'Battery — two cells joined by a dashed line (two or more cells in series)\n'
                          '\n'
                          'CONTROL:\n'
-                         'Switch (open) — a line with a gap and a lever\n'
-                         'Switch (closed) — lever touches the contact\n'
+                         'Switch (open) — a lever lifted away from its second contact\n'
+                         'Switch (closed) — the lever touching both contacts\n'
                          '\n'
                          'OUTPUT COMPONENTS:\n'
-                         'Bulb/lamp — circle with a cross inside\n'
-                         'Motor — circle with M inside\n'
-                         'Buzzer — circle with rectangle inside\n'
+                         'Lamp — circle with a cross inside\n'
+                         'LED — diode symbol with two arrows pointing out\n'
                          '\n'
                          'MEASUREMENT:\n'
                          'Ammeter — circle with A (connected in SERIES)\n'
                          'Voltmeter — circle with V (connected in PARALLEL)\n'
                          '\n'
                          'RESISTANCE:\n'
-                         'Fixed resistor — rectangle\n'
-                         'Variable resistor (rheostat) — rectangle with an arrow through it\n'
-                         'Thermistor — resistor symbol with a diagonal line through\n'
-                         'LDR (light-dependent resistor) — resistor symbol with arrows pointing in\n'
+                         'Resistor — rectangle\n'
+                         'Variable resistor — rectangle with a diagonal arrow through it\n'
+                         'Thermistor — rectangle with a diagonal line through it, ending in a short horizontal tail\n'
+                         'LDR (light-dependent resistor) — small rectangle inside a circle, with two arrows pointing in\n'
                          '\n'
                          'OTHER:\n'
-                         'Diode — triangle pointing to a line (current flows in direction of triangle)\n'
-                         'LED — diode symbol with two arrows pointing out\n'
-                         'Fuse — rectangle with a line through it',
+                         'Diode — triangle pointing to a bar (current flows in the direction of the triangle)\n'
+                         'Fuse — rectangle with a line running through it along its length',
               'heading': 'Essential Component Symbols'},
              {'content': 'To INTERPRET a circuit diagram:\n'
                          '1. Trace the path from the positive terminal of the battery.\n'

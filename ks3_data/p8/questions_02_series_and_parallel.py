@@ -955,12 +955,12 @@ QUESTIONS = [
                  "not just the wiring arrangement."},
      ], "figure": None},
     {"id": "p8-02-e27", "band": "easier",
-     "text": "A motor and a lamp each have their own separate branch "
+     "text": "A heater and a lamp each have their own separate branch "
              "connected straight across the same battery. What "
              "arrangement is this?",
      "options": [
          {"text": "Series", "correct": False,
-          "why": "Series would put the motor and the lamp on one shared "
+          "why": "Series would put the heater and the lamp on one shared "
                  "path, not on their own separate branches."},
          {"text": "A short circuit", "correct": False,
           "why": "Having its own branch across the battery is not the "
@@ -1225,7 +1225,7 @@ QUESTIONS = [
      ], "figure": None},
 
     {"id": "p8-02-s17", "band": "standard",
-     "text": "A lamp drawing 0.30 A, a buzzer drawing 0.10 A and a motor "
+     "text": "A lamp drawing 0.30 A, a buzzer drawing 0.10 A and a heater "
              "drawing 0.20 A are each on their own branch across the same "
              "battery. What total current does the battery supply?",
      "options": [

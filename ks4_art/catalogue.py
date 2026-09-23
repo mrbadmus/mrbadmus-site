@@ -199,6 +199,88 @@ CATALOGUE = [
                 "drawn inside it.",
     },
 
+    # ── MRB-352 run 2 motor sweep (Mide: no circuit question may use a
+    # motor symbol; no question may ask a pupil to describe a symbol or a
+    # diagram in words). Each replaces a motor row's words with a drawing.
+    {
+        # ks4-circuit-symbols-s05 — a student's torch, the bulb drawn wrong
+        "id": "ks4-fig-circuit-torch-ldr-for-bulb",
+        "art": "circuit",
+        "params": {"netlist": [["switch_closed"], ["ldr"]],
+                   "left": [["battery"]]},
+        "title": "A single loop with two pairs of long and short lines "
+                 "joined by a dashed line, a switch whose lever joins both "
+                 "contacts, and a small rectangle inside a circle with two "
+                 "arrows pointing in towards it.",
+        "desc": "One rectangular wire loop. On the left side, two pairs of "
+                "long and short lines joined by a dashed line, with a plus "
+                "sign by the first long line. Along the top, a switch whose "
+                "lever runs from one hollow contact to the other, then a "
+                "circle with a small rectangle inside it and two short "
+                "arrows outside it pointing in.",
+    },
+    {
+        # ks4-circuit-symbols-s19 — pick the three symbols a circuit needs
+        "id": "ks4-fig-symbol-panel-battery-ldr-switch-lamp",
+        "art": "symbol-panel",
+        "params": {"items": [("P", "battery"), ("Q", "ldr"),
+                             ("R", "switch_closed"), ("S", "lamp")],
+                   "cell_w": 170},
+        "title": "Four circuit symbols, labelled P, Q, R and S.",
+        "desc": "P: two pairs of long and short lines joined by a dashed "
+                "line, with a plus sign. Q: a small rectangle inside a "
+                "circle, with two arrows outside it pointing in. R: two "
+                "hollow circles joined by a straight lever. S: a circle "
+                "with a cross inside it.",
+    },
+    {
+        # ks4-circuit-symbols-s26 — which symbol is the light-emitting diode
+        "id": "ks4-fig-symbol-panel-diode-ldr-led-lamp",
+        "art": "symbol-panel",
+        "params": {"items": [("P", "diode"), ("Q", "ldr"), ("R", "led"),
+                             ("S", "lamp")],
+                   "cell_w": 170},
+        "title": "Four circuit symbols, labelled P, Q, R and S.",
+        "desc": "P: a circle containing a triangle pointing along the wire "
+                "with a bar across its tip. Q: a small rectangle inside a "
+                "circle, with two arrows outside it pointing in. R: the same "
+                "circle, triangle and bar as P, with two arrows outside it "
+                "pointing out. S: a circle with a cross inside it.",
+    },
+    {
+        # ks4-circuit-symbols-h08 — a switch in one branch only
+        "id": "ks4-fig-circuit-two-lamp-branches-switch-y",
+        "art": "circuit",
+        "params": {"netlist": [["cell"],
+                               {"parallel": [[["lamp", "X"]],
+                                             [["switch_closed"],
+                                              ["lamp", "Y"]]]}]},
+        "title": "A cell feeding two parallel branches: one holds a circle "
+                 "with a cross labelled X; the other holds a switch and a "
+                 "circle with a cross labelled Y.",
+        "desc": "A cell on the top wire of the loop. The wire then reaches a "
+                "junction dot and splits into two branches that rejoin at a "
+                "second dot. The upper branch holds one lamp symbol, "
+                "labelled X. The lower branch holds a switch whose lever "
+                "joins both contacts, then a lamp symbol labelled Y.",
+    },
+    {
+        # ks4-circuit-symbols-h24 — the ammeter as the diagram places it
+        "id": "ks4-fig-circuit-ammeter-in-lamp-branch",
+        "art": "circuit",
+        "params": {"netlist": [["cell"],
+                               {"parallel": [[["ammeter"], ["lamp"]],
+                                             [["resistor"]]]}]},
+        "title": "A cell feeding two parallel branches: one holds a circle "
+                 "with the letter A and a circle with a cross; the other "
+                 "holds a plain rectangle.",
+        "desc": "A cell on the top wire of the loop. The wire then reaches a "
+                "junction dot and splits into two branches that rejoin at a "
+                "second dot. The upper branch holds a circle marked A and "
+                "then a circle with a cross inside it. The lower branch "
+                "holds a plain rectangle.",
+    },
+
     # ── graphs, forces, molecules ─────────────────────────────────────────
     {
         "id": "ks4-fig-graph-distance-time-runner",

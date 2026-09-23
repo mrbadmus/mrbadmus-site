@@ -981,8 +981,8 @@ QUESTIONS = [
                  "too large a value."},
      ], "figure": None},
     {"id": "p8-03-e30", "band": "easier",
-     "text": "A junction feeds a lamp branch and a motor branch. Does the "
-             "lamp's own branch current depend on what the motor branch "
+     "text": "A junction feeds a lamp branch and a buzzer branch. Does the "
+             "lamp's own branch current depend on what the buzzer branch "
              "happens to be doing?",
      "options": [
          {"text": "It depends on which branch is drawn closer to the "

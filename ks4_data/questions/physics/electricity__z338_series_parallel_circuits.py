@@ -21,7 +21,10 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A lamp, a resistor and a motor are joined in one series loop with a battery. An ammeter placed between the lamp and the resistor reads 0.40 A. State the reading on a second ammeter placed between the motor and the battery.",
+        "text": "Two lamps and a resistor are joined in one series loop with a "
+                "battery. An ammeter placed between the first lamp and the "
+                "resistor reads 0.40 A. State the reading on a second ammeter "
+                "placed between the second lamp and the battery.",
         "options": [
             "0.13 A",
             "0.40 A",
@@ -29,7 +32,9 @@ QUESTIONS = [
             "0.20 A",
         ],
         "correct_index": 1,
-        "why": "A series loop offers one path only, so the same current passes through every part of it and the second ammeter also reads 0.40 A.",
+        "why": "A series loop offers one path only, so the same current passes "
+               "through every part of it and the second ammeter also reads 0.40 "
+               "A.",
     },
     {
         "id": "ks4-series-parallel-circuits-e06",
