@@ -145,58 +145,60 @@ every run instead, so it cannot be forgotten.
 
 ---
 
-## E4 · Worksheet memory with diagrams — measured, and my first estimate was wrong
+## E4 · Worksheet memory with diagrams — measured, and no change is needed
 
-⊕ **Corrected after measuring.** My first pass extrapolated that diagrams
-would push two concurrent large renders to ~530 MB, over Render Starter's
-512 MB. **That extrapolation was wrong**, and it is left here rather than
-deleted because the reason it was wrong is the useful part: I scaled a
-SINGLE-render delta as if concurrent renders stacked additively. They do not —
-the cost that dominates is PDFKit's own content-stream buffering, which the
-MRB-342.2 measurement had already found does not stack. Extrapolating a
-per-render number across N was the error.
+⊕ **Resolved.** Two earlier readings of this — one of mine, one from the
+backend work — both recommended tightening the concurrency ceiling. **Both
+were wrong, for the same reason: they measured a scenario that cannot
+occur.** No change is needed. The reasoning is kept because the mistake is
+easy to repeat.
 
-### What was actually measured (this machine, cold process, PDF, 1,450 questions)
+### The two wrong readings, and why
 
-| | no figures | with figures | delta |
-|---|---:|---:|---:|
-| 200 questions | 101.1 MB | 118.7 MB | +17.6 MB |
-| 1,450 questions | 191.3 MB | 298.4 MB | +107 MB |
+**Mine:** I scaled a single-render delta as if concurrent renders stacked
+additively. They do not — PDFKit's content-stream buffering dominates, and
+MRB-342.2 had already found it does not stack. Going from one render to two
+costs +38 MB, not +298.
 
-| N concurrent (1,450 q, with figures) | peak RSS |
-|---:|---:|
-| 1 | 297.6 MB |
-| **2 — the configured ceiling** | **335.4 MB** |
-| 3 | 413.5 MB |
-| 5 | 505.8 MB |
+**The second:** measured a worksheet where **every one of 1,450 questions
+carries a figure**, got +157 MB, and recommended dropping
+`MRB_WORKSHEET_MAX_CONCURRENT_LARGE` from 2 to 1. The measurement was sound;
+the scenario is unreachable.
 
-Going from one render to two costs **+38 MB, not +298** — confirming the
-non-additive pattern, and killing my estimate.
+### The content fact that makes the measurement interpretable
 
-### ⚠️ The comparison that is still NOT like-for-like
+Counted from the bank rather than assumed: **no leaf has more than 2
+figure-bearing rows**, and there are 18 in all of KS3. A worksheet is scoped
+to a topic or unit, so even the largest real scope carries a handful of
+figures among its questions — not one per question. The KS4 circuit-symbols
+cluster is the densest in the estate and tops out around 40.
 
-The original ceiling was set from numbers measured **on Render** (326 MB at
-N=1, 331 MB at N=2, no figures). Everything above is **this Mac**, which
-measures the same no-figure 1,450-question case at 191.3 MB — roughly
-**135 MB below** Render's baseline.
+### What it actually costs (this machine, cold, PDF, 1,450 questions)
 
-So "335.4 MB at N=2, therefore as safe as the old 331 MB" compares a Mac
-number with a Render number. Carrying this machine's N=2 figure across at the
-same offset gives an estimate of about **470 MB on Render — inside 512 MB, but
-with roughly 8% headroom where the no-figure measurement had 35%.**
+| scenario | peak RSS | delta |
+|---|---:|---:|
+| no figures | 201.6 MB | — |
+| **~40 figures — the realistic worst case** | **217.6 MB** | **+16 MB** |
+| ~97 figures — generous | 227.2 MB | +26 MB |
+| every question (synthetic, unreachable) | 358.5 MB | +157 MB |
 
-**That is still an extrapolation.** It is a much smaller one than my first
-(one offset, on a like-for-like pair, rather than scaling a delta across N),
-but it is not a measurement.
+**+16 MB on the largest scope anyone can actually print.** Against ~180 MB of
+headroom at the configured ceiling, that is noise.
 
-### Recommendation
+### One real memory bug was found and fixed along the way
 
-**No change applied.** `MRB_WORKSHEET_MAX_CONCURRENT_LARGE=2` is probably
-still safe and is NOT over the limit. But the margin has likely fallen from
-about a third to under a tenth, and the failure mode is an OOM under
-concurrent load on the largest real scope — at the moment several teachers
-print at once, which is exactly when it would happen.
+`resvg`'s default is `font.loadSystemFonts: true` — it enumerates and loads
+every font on the machine at first use, measured at **~210 MB of one-time
+RSS** for a trivial SVG. It now loads only the bundled DejaVu faces the PDF
+path already embeds: ~5 MB. That single fix is worth an order of magnitude
+more than anything the concurrency ceiling could have bought.
 
-Worth one measurement on Render before the first big print day. Both values
-are env-tunable, so acting on it is a dashboard change and a restart, not a
-deploy.
+### Verdict
+
+**`MRB_WORKSHEET_MAX_CONCURRENT_LARGE=2` stays as it is.** Throttling
+production to N=1 on the strength of an unreachable scenario would have made
+printing slower for every teacher and bought nothing.
+
+⚠️ The one thing worth re-checking later: if a future run gives most questions
+in a dense topic a figure, the realistic case moves toward the synthetic one.
+The number to watch is figures-per-worksheet, not figures-in-the-estate.

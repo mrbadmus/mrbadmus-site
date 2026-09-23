@@ -36,8 +36,8 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Which component is drawn as a rectangle with an arrow "
-                "through it?",
+        "figure": "ks4-fig-circuit-symbol-variable-resistor",
+        "text": "Which component is shown in the diagram?",
         "options": [
             "A fixed resistor, whose resistance cannot be changed",
             "A thermistor, whose resistance depends on temperature",
@@ -54,8 +54,8 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Which description matches the standard symbol for an "
-                "open switch?",
+        "figure": "ks4-fig-circuit-symbol-switch-open",
+        "text": "Which description matches the symbol shown?",
         "options": [
             "A break in the wire, with a short line hinged at one end "
             "and lifted clear of the contact",
@@ -159,8 +159,8 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A circuit diagram shows a cell, a closed switch and two "
-                "lamps all in one loop. Describe the change needed so that "
+        "figure": "ks4-fig-circuit-cell-switch-two-lamps-loop",
+        "text": "In the circuit shown, describe the change needed so that "
                 "one lamp can be switched off while the other stays lit.",
         "options": [
             "Add a second cell in series with the first one",
@@ -277,10 +277,10 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A circuit has a battery, a switch, and two branches — one "
-                "holding a lamp and one holding a motor. An ammeter must "
-                "read the total current supplied by the battery. Determine "
-                "where it should be drawn.",
+        "figure": "ks4-fig-circuit-battery-switch-lamp-motor-branches",
+        "text": "An ammeter in the circuit shown must read the total "
+                "current supplied by the battery. Determine where it "
+                "should be drawn.",
         "options": [
             "In the main wire between the battery and the junction, so all "
             "the current passes through it",
@@ -1411,10 +1411,9 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Trace X shows 5 complete cycles across an oscilloscope "
-                "screen. Trace Y shows 10 complete cycles across the same "
-                "screen at the same time base setting. Compare the two "
-                "supplies.",
+        "figure": "ks4-fig-oscilloscope-compare-5-10",
+        "text": "The two traces shown are on the same screen, at the same "
+                "time base setting. Compare the two supplies.",
         "options": [
             "Y has half the frequency and twice the period of X",
             "Y has twice the frequency and twice the period of X",

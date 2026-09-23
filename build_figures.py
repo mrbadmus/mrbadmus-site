@@ -63,7 +63,47 @@ import ks3_data
 import ks4_art
 import ks4_data
 from ks3_data.question_bank import all_questions as ks3_bank_questions
-from ks4_art.catalogue import CATALOGUE
+# ⊕ MRB-352 — DISCOVER every catalogue module, do not name one.
+#
+# This read `from ks4_art.catalogue import CATALOGUE`, which silently ignored
+# every other catalogue module in the package. That broke the pattern the
+# content lanes were told to use — each lane adds `ks4_art/catalogue_<lane>.py`
+# so two lanes editing one worktree never collide on a single file — and the
+# failure was the confusing kind: the drawer registry DID discover the lane's
+# new art (because `ks4_art.load()` discovers modules), so the figure drew
+# perfectly in isolation, and then `build_figures.py` reported its id as
+# `unresolved_ks4` as though the record had never been written.
+#
+# It now discovers `catalogue.py` and every `catalogue_*.py` beside it, the
+# same way `ks4_art.load()` finds drawers. A duplicate id across two modules
+# is a hard error, named on both sides — the whole point of per-lane files is
+# that they cannot quietly overwrite each other.
+def _load_ks4_catalogue():
+    import importlib
+    import pkgutil
+
+    import ks4_art
+
+    records, owner = [], {}
+    for mod in sorted(m.name for m in pkgutil.iter_modules(ks4_art.__path__)
+                      if m.name == "catalogue"
+                      or m.name.startswith("catalogue_")):
+        module = importlib.import_module("ks4_art.%s" % mod)
+        for rec in getattr(module, "CATALOGUE", ()):
+            fid = rec.get("id")
+            if fid in owner:
+                raise SystemExit(
+                    "build_figures: figure id %r is declared in BOTH "
+                    "ks4_art/%s.py and ks4_art/%s.py. One id, one owner — "
+                    "per-lane catalogue files exist so lanes cannot collide, "
+                    "and a duplicate is exactly the collision they prevent."
+                    % (fid, owner[fid], mod))
+            owner[fid] = mod
+            records.append(rec)
+    return records
+
+
+CATALOGUE = _load_ks4_catalogue()
 
 _ID_RE = re.compile(r"^[a-z0-9-]+$")
 _VIEWBOX_RE = re.compile(r'viewBox="0 0 (\d+(?:\.\d+)?) (\d+(?:\.\d+)?)"')
@@ -254,7 +294,7 @@ def build():
     if unresolved_ks4:
         raise ValueError(
             "%d KS4 question(s) reference figure id(s) not in "
-            "ks4_art/catalogue.py: %s. An id a question names must exist in "
+            "any ks4_art/catalogue*.py: %s. An id a question names must exist in "
             "the manifest — the figure contract calls this a build failure, "
             "never a silent blank." % (len(unresolved_ks4), ", ".join(unresolved_ks4)))
 

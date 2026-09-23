@@ -923,9 +923,9 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A student's dot-and-cross diagram of ammonia shows the "
-                "nitrogen atom with only six electrons in its outer shell. "
-                "Explain what has gone wrong.",
+        "figure": "ks4-fig-molecule-nh3-missing-bond",
+        "text": "A student draws the dot-and-cross diagram of ammonia "
+                "shown. Explain what has gone wrong.",
         "options": [
             "Nitrogen should end with eight outer electrons, so one bonding "
             "pair has been left out",

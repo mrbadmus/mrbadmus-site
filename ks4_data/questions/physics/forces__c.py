@@ -220,10 +220,10 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A runner's distance–time graph rises steeply from the "
-                "origin and then curves, becoming gradually less steep, "
-                "until it is horizontal at 400 m after 80 s. Determine her "
-                "average speed and compare it with her speed at 70 s.",
+        "figure": "ks4-fig-graph-distance-time-runner-400m",
+        "text": "The graph shows a runner's distance against time. "
+                "Determine her average speed and compare it with her "
+                "speed at 70 s.",
         "options": [
             "5.0 m/s; at 70 s the gradient is steeper, so she is faster there",
             "5.0 m/s; at 70 s the gradient is shallower, so she is slower "
@@ -473,10 +473,10 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A skydiver's velocity–time graph rises steeply from the "
-                "origin, then curves so that its gradient falls to zero at "
-                "a velocity of 55 m/s after 14 s. Determine what is "
-                "happening to her acceleration and her velocity at 14 s.",
+        "figure": "ks4-fig-graph-velocity-time-skydiver",
+        "text": "The graph shows a skydiver's velocity against time. "
+                "Determine what is happening to her acceleration and her "
+                "velocity at 14 s.",
         "options": [
             "Her acceleration is constant and her velocity is still rising",
             "Her acceleration is zero and her velocity is a steady 55 m/s",
