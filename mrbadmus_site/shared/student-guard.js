@@ -121,7 +121,14 @@ window.MrBadmusStudentGuard = (function () {
      below is unguarded on purpose so a correction fires whether or not the
      page has already drawn. */
   const SESSION_PREFIX = 'mrb-student-session:';
-  const SESSION_TTL_MS = 2 * 60 * 1000;
+  /* ⊕ MRB-348 round 5 — THIRTY MINUTES, NOT THE TEACHER GUARD'S TWO, measured.
+     Production RUM: p50 page time is 522 ms when the site was idle under 10 s
+     and 3,864 ms after 5–30 minutes idle. A two-minute cache has expired by
+     then, so it only ever helped the loads that were already fast. The TTL is
+     not what keeps this safe — the revalidation on every load, RLS on every
+     row, and the token-expiry test above are — so lengthening it moves no
+     safety line; it only lets the cache reach the loads that are slow. */
+  const SESSION_TTL_MS = 30 * 60 * 1000;
 
   function sessionCacheKey() {
     const ce = window.MRBClassEntry;
