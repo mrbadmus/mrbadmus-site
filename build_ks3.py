@@ -935,11 +935,109 @@ def r_figure(lesson, block):
         # figure and by nothing else. Without an anchor the honest join could
         # not be expressed and the author would have had to point the entry at
         # some nearby activity that does not, in fact, confront it.
+        # ⊕ MRB-352 — THE FIGURE PATH GUARANTEES `ks3-figure-svg`.
+        #
+        # `ks3_figure_sweep` measures a drawn figure by finding
+        # `.ks3-figure-scroll svg.ks3-figure-svg`; the class is what makes the
+        # SVG fill its scroll box, keep its min-width, and stay readable at
+        # 390px. Drawers built on `kit._svg_open` emit it. The OLDER physics
+        # drawers (`ks3_art/p4.py`'s `ks3-p4fig …`) predate that convention and
+        # do not — they were only ever reached through the INLINE
+        # `core[].figure` path, which has no scroll wrapper and never needed it.
+        #
+        # Reusing one of those as a real figure therefore produced a scroll box
+        # the sweep could not see into. Patching the drawer was wrong: the same
+        # art is rendered BOTH ways on one page (p4 lesson 02 does exactly
+        # that), so it would have restyled the inline copy too.
+        #
+        # So the guarantee lives here, where the contract is: whatever drew it,
+        # a figure rendered into a scroll box carries the class. Drawers that
+        # already emit it are untouched.
+        svg = SVG_ART[art](fig)
+        if "ks3-figure-svg" not in svg[:400]:
+            svg = re.sub(r'<svg\b([^>]*?)\bclass="([^"]*)"',
+                         lambda m: '<svg%sclass="%s ks3-figure-svg"'
+                                   % (m.group(1), m.group(2)),
+                         svg, count=1)
+        # ── and the same for the ACCESSIBILITY contract ──────────────────
+        #
+        # `kit._svg_open` gives a figure `<title>` + `<desc>` and points
+        # `aria-labelledby` at both, so a screen reader gets the short NAME
+        # and then the long DESCRIPTION — for a diagram a blind pupil cannot
+        # see, the description is the entire content of the figure.
+        #
+        # The older drawers emit a bare `aria-label`: one short string, no
+        # description, no way to reach one. That was survivable while they
+        # only ever rendered inline; as real figures it is the difference
+        # between "a chart of resistances" and being told what the chart
+        # SAYS. `ks3_figure_sweep` keys on `aria-labelledby` for exactly this
+        # reason — and reports its absence as "no svg.ks3-figure-svg", which
+        # is a misleading message for a real finding (MRB-352).
+        #
+        # The figure record already REQUIRES `title` and `desc`, so the
+        # renderer has everything it needs. Upgrading here fixes every
+        # older-convention drawer at once, and leaves `_svg_open`'s own
+        # output untouched.
+        # ── and the same for the READABLE-WIDTH contract ────────────────
+        #
+        # `_svg_open` emits `style="min-width:<drawn width>px"` so the figure
+        # renders at the size its labels were sized for, and the scroll
+        # container scrolls instead of the drawing shrinking. The older
+        # drawers emit no inline min-width, so on a 390px phone a 1060-wide
+        # beam scaled to 49% and its 20px labels landed at 9.8px — below the
+        # 13px floor, which is the point at which a label has stopped being a
+        # label. `.ks3-figure-svg`'s CSS min-width does not save it: the
+        # older drawers' own class rules out-specify it.
+        #
+        # Same rule, same source of truth: the width it was drawn at, taken
+        # from its own viewBox.
+        _vb = re.search(r'viewBox="\s*[\d.+-]+\s+[\d.+-]+\s+([\d.]+)', svg)
+        if _vb:
+            _w = int(float(_vb.group(1)))
+            _cur = re.search(r'min-width:\s*([\d.]+)px', svg[:400])
+            # ⚠️ RAISE it, do not merely supply it. The p8 resistance chart
+            # declares `min-width:700px` against a 1000-wide viewBox — it is
+            # DESIGNED to shrink, which is right for an instrument sitting in
+            # a bench and wrong for a figure: at 768px it rendered at 72% and
+            # its 15px axis labels landed at 10.8px, under the 13px floor.
+            # A figure renders at the size it was drawn; the scroll container
+            # is what absorbs the difference on a narrow screen, and that is
+            # exactly what it is for.
+            if _cur is None:
+                if 'style="' in svg[:400]:
+                    svg = re.sub(r'(<svg\b[^>]*?style=")',
+                                 lambda m: '%smin-width:%dpx;' % (m.group(1), _w),
+                                 svg, count=1)
+                else:
+                    svg = re.sub(r'(<svg\b[^>]*?)>',
+                                 lambda m: '%s style="min-width:%dpx">'
+                                           % (m.group(1), _w),
+                                 svg, count=1)
+            elif float(_cur.group(1)) < _w:
+                svg = svg.replace(_cur.group(0), 'min-width:%dpx' % _w, 1)
+        if "aria-labelledby" not in svg[:400]:
+            fid = e(fig["id"])
+            if not fig.get("desc"):
+                raise ValueError(
+                    "figure %r is status 'drawn' and its drawer emits no "
+                    "`aria-labelledby`, so this renderer must supply the "
+                    "<title>/<desc> pair itself — but the figure declares no "
+                    "`desc`. Mide's diagram ruling requires both."
+                    % fig["id"])
+            svg = re.sub(r'\s+aria-label="[^"]*"', '', svg, count=1)
+            svg = re.sub(
+                r'(<svg\b[^>]*?)>',
+                lambda m: ('%s aria-labelledby="%s-t %s-d">'
+                           '<title id="%s-t">%s</title>'
+                           '<desc id="%s-d">%s</desc>'
+                           % (m.group(1), fid, fid, fid, e(fig["title"]),
+                              fid, e(fig["desc"]))),
+                svg, count=1)
         return ('<figure class="ks3-figure ks3-figure-drawn"%s>'
                 '<div class="ks3-figure-scroll" tabindex="0" role="group" '
                 'aria-label="%s — scrollable diagram">%s</div>'
                 '<figcaption>%s</figcaption></figure>'
-                % (_id_attr(block), e(fig["title"]), SVG_ART[art](fig),
+                % (_id_attr(block), e(fig["title"]), svg,
                    t(fig["caption"])))
     return ('<figure class="ks3-figure"><img src="/ks3/figures/%s.svg" alt="%s"/>'
             '<figcaption>%s</figcaption></figure>'
