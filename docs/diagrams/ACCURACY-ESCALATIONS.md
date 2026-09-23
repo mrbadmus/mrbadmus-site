@@ -145,46 +145,58 @@ every run instead, so it cannot be forgotten.
 
 ---
 
-## E4 · The worksheet concurrency ceiling was sized without diagrams in it
+## E4 · Worksheet memory with diagrams — measured, and my first estimate was wrong
 
-**Not a defect — a threshold that a measurement has now outgrown.** Flagged
-rather than changed, because the right value is an operational call.
+⊕ **Corrected after measuring.** My first pass extrapolated that diagrams
+would push two concurrent large renders to ~530 MB, over Render Starter's
+512 MB. **That extrapolation was wrong**, and it is left here rather than
+deleted because the reason it was wrong is the useful part: I scaled a
+SINGLE-render delta as if concurrent renders stacked additively. They do not —
+the cost that dominates is PDFKit's own content-stream buffering, which the
+MRB-342.2 measurement had already found does not stack. Extrapolating a
+per-render number across N was the error.
 
-Measured on this machine, cold process, PDF with answers page:
+### What was actually measured (this machine, cold process, PDF, 1,450 questions)
 
-| questions | no figures | with figures | delta |
-|---:|---:|---:|---:|
-| 200 | 101.1 MB | 119.6 MB | +18 MB (+18%) |
-| 1,450 | 191.3 MB | **291.1 MB** | **+100 MB (+52%)** |
+| | no figures | with figures | delta |
+|---|---:|---:|---:|
+| 200 questions | 101.1 MB | 118.7 MB | +17.6 MB |
+| 1,450 questions | 191.3 MB | 298.4 MB | +107 MB |
 
-The growth is NOT the raster cache — that is bounded by the figure catalogue
-(tens of distinct ids) and is why the cache exists. It is the PDF document
-itself: output grew 379 KB → 696 KB, and PDFKit buffers pages until the
-document is finalised. So it scales with question count, exactly the axis the
-existing guard was sized along.
+| N concurrent (1,450 q, with figures) | peak RSS |
+|---:|---:|
+| 1 | 297.6 MB |
+| **2 — the configured ceiling** | **335.4 MB** |
+| 3 | 413.5 MB |
+| 5 | 505.8 MB |
 
-**Why this needs Mide's call.** The guard
-(`MRB_WORKSHEET_LARGE_THRESHOLD=200`, `MRB_WORKSHEET_MAX_CONCURRENT_LARGE=2`)
-was measured at MRB-342.2 on Render Starter (512 MB): peak 326 MB at N=1 and
-331 MB at N=2, for 1,450 questions with **no image work in the pipeline at
-all**. This machine measures the same no-figure case at 191 MB, so Render's
-baseline sits roughly 135 MB above mine and the two sets of numbers cannot be
-compared directly.
+Going from one render to two costs **+38 MB, not +298** — confirming the
+non-additive pattern, and killing my estimate.
 
-What CAN be carried across is the delta. If diagrams add ~100 MB per large
-render on Render too, then N=2 moves from ~331 MB to roughly **530 MB — over
-the 512 MB limit.**
+### ⚠️ The comparison that is still NOT like-for-like
 
-⚠️ That is an extrapolation, not a measurement. It should be measured on
-Render before it is trusted, and it is the reason this is written down rather
-than acted on.
+The original ceiling was set from numbers measured **on Render** (326 MB at
+N=1, 331 MB at N=2, no figures). Everything above is **this Mac**, which
+measures the same no-figure 1,450-question case at 191.3 MB — roughly
+**135 MB below** Render's baseline.
 
-**Recommended, not applied:** lower `MRB_WORKSHEET_MAX_CONCURRENT_LARGE` to 1,
-or `MRB_WORKSHEET_LARGE_THRESHOLD` below 200, until a real Render measurement
-exists. Both are env-tunable precisely so this is a dashboard change and a
-restart rather than a deploy — which is why the right move now is to hand Mide
-the number, not to pick one.
+So "335.4 MB at N=2, therefore as safe as the old 331 MB" compares a Mac
+number with a Render number. Carrying this machine's N=2 figure across at the
+same offset gives an estimate of about **470 MB on Render — inside 512 MB, but
+with roughly 8% headroom where the no-figure measurement had 35%.**
 
-⚠️ Note the failure mode is not a crash a test would catch: it is an OOM under
-concurrent load, on the largest real scope, at the moment several teachers
-print at once.
+**That is still an extrapolation.** It is a much smaller one than my first
+(one offset, on a like-for-like pair, rather than scaling a delta across N),
+but it is not a measurement.
+
+### Recommendation
+
+**No change applied.** `MRB_WORKSHEET_MAX_CONCURRENT_LARGE=2` is probably
+still safe and is NOT over the limit. But the margin has likely fallen from
+about a third to under a tenth, and the failure mode is an OOM under
+concurrent load on the largest real scope — at the moment several teachers
+print at once, which is exactly when it would happen.
+
+Worth one measurement on Render before the first big print day. Both values
+are env-tunable, so acting on it is a dashboard change and a restart, not a
+deploy.
