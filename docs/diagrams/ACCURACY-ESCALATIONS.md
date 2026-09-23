@@ -9,6 +9,16 @@ they are named, with the reasoning, and left exactly as they are.
 
 ## E1 · `ks4-circuit-symbols-h02` (FROZEN, pos 9, harder/foundation)
 
+> ⊕ **SUPERSEDED, MRB-352 run 2 (24 Sep 2026).** This entry's reading of the
+> AQA thermistor symbol ("a line turning up at the end") is wrong. On the AQA
+> 8463 v1.1 §4.2.1.1 sheet (p.24) the thermistor is a diagonal line fully
+> through the rectangle, with a short horizontal tail at its lower-left end
+> and no arrowhead — and the LDR is a small rectangle inside a circle with
+> two arrows in. The row's intended answer was therefore always right; the
+> defects were the described drawings and an option that named the
+> component. Closed by the examiner's content spec; the figure is
+> `ks4-fig-sensor-symbols-student-a-b` (figlib). Kept below as written.
+
 **Stem:** "Two students draw the sensing part of a fire alarm. Student A draws
 a resistor rectangle with a diagonal line through it; student B draws a
 resistor rectangle with two arrows pointing in towards it. Evaluate which
@@ -107,6 +117,10 @@ by this run as ordinary content.
 ---
 
 ## E3 · `b1-03-e04` points at a figure the manifest cannot serve (pre-existing)
+
+> ⊕ **CLOSED, MRB-352 run 2.** `b1-cell-bench` is now a figlib question
+> figure (a labelled leaf cell), so the manifest serves it; the lesson's own
+> css-art drawing is untouched.
 
 Found by `build_figures.py`, which warns rather than failing:
 

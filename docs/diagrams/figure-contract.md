@@ -23,22 +23,39 @@ Built by `build_figures.py`. One record per figure:
             "w": 320, "h": 200 } }
 ```
 
-Emitted to two places, byte-identical payload:
-- **site**   `shared/figures.js`  — `window.MRBFigures = {…}`
-- **backend** `figures.json`      — mirrored, guarded by a `figures_mirror`
-  gate in the shape of the existing `curriculum_tree_mirror`
-  (`tools/export_curriculum_tree.py --check`). Same proven pattern.
+Emitted by `build_figures.py` (step 1 of `build_all.py`):
+- **site** `shared/figures-ks3.js` / `shared/figures-ks4.js` — one per key
+  stage, `window.MRBFigures = Object.assign(window.MRBFigures || {}, {…})`.
+  KS3 carries only ids a question references.
+- **backend** `figures.json` — the whole manifest, mirrored; the
+  `figures_mirror` gate (`build_figures.py --mirror`) compares the backend's
+  copy byte for byte, finding the checkout the way `curriculum_tree_mirror`
+  does. `figure_manifest` (`build_figures.py --check`) proves the committed
+  site files match a fresh build.
 
 ## 3. Where drawings come from
 
-- **KS3**: already declared in `LESSON["figures"]` and drawn by
-  `build_ks3.SVG_ART[art](fig)`. `build_figures.py` reuses that registry
-  verbatim — the lesson page and the question render the SAME bytes. No fork.
-- **KS4**: a new declarative catalogue `ks4_art/catalogue.py`, records of the
-  same shape (`id`, `art`, `title`, `alt`, params), drawn by a new `ks4_art/`
-  package whose modules `from ks3_art.kit import …`. **Primitives are shared,
-  never copied.** New shared primitives (line/curve plotter, formula/force
-  triangle) go INTO `ks3_art/kit.py` so both key stages get them.
+⊕ **MRB-352 run 2 (24 Sep 2026): from ONE place — `figlib/`**, Mide's
+diagram library brought into the repo as a package (provenance, changes and
+the full SVG subset: `figlib/README.md`).
+
+- **KS3 question figures**: `figlib/catalogue_ks3.py`. SAME ids the questions
+  already used, SAME meaning, redrawn in the exam-paper house style. KS3
+  **lesson** pages are untouched and still draw their own figures with
+  `ks3_art` (architecture law), so one id may have two drawings — the
+  lesson's and the question's. That is deliberate.
+- **KS4**: `ks4_art/catalogue.py` + every `ks4_art/catalogue_*.py` — now
+  declarative records only. Their `art` names a builder in `figlib.ART`.
+- `verify_questions` check 5 resolves a KS3 question's figure against
+  `figlib/catalogue_ks3.py` (it used to ask the lesson, which passed a
+  `css-art` figure no question surface could draw).
+
+~~Superseded:~~ *"KS3: already declared in `LESSON["figures"]` and drawn by
+`build_ks3.SVG_ART[art](fig)`. `build_figures.py` reuses that registry
+verbatim — the lesson page and the question render the SAME bytes. KS4: a
+new declarative catalogue drawn by a new `ks4_art/` package whose modules
+`from ks3_art.kit import …`."* Kept because it is why run 1's figures
+painted through `ks3.css` classes — see §8.
 
 ## 4. Alt text — a hard rule
 
@@ -79,12 +96,34 @@ Site and backend must both work WITH OR WITHOUT the column:
 The KS4 validator ignores unknown keys, so an unthreaded `figure` vanishes
 without any error at all. This is the single easiest way to ship nothing.
 
-## 8. ⚠️ A FIGURE MUST CARRY ITS OWN PAINT — the rule this feature learned four times
+## 8. A FIGURE CARRIES ITS OWN PAINT — and the manifest now guarantees it
 
-A manifest figure's SVG sets colour by **CSS class** (`ks3-cband-symstroke`,
-`ks3-p10fig-*`, …), and those classes live in `shared/ks3.css`. That is fine
-on a KS3 lesson page, which loads it. **Every other surface must supply the
-paint itself**, and the failure is silent and ugly:
+⊕ **MRB-352 run 2 (24 Sep 2026).** Every figure in the manifest is
+**self-painting**: every fill and stroke is an attribute on the shape
+itself; there is not one `class=`, `style=` or `var(` in any manifest SVG.
+`build_figures.py` enforces it as a hard failure — it refuses to write any
+figure if one breaks it — together with the rest of `figlib.checks`: the
+worksheet translator's element/attribute subset, AA contrast against what
+each label actually sits on, no text on a dark fill, ≥ 11px text and ≥ 1px
+strokes in a 320px box, no motor and no d.c. box, Georgia first. The
+`figure_manifest` gate runs the same checks on every push.
+
+**So a consuming surface supplies NO paint.** Put the SVG in the page and
+it draws. The figure is a cream paper card of its own (its first shape, a
+rect marked `data-role="paper"`), in light and dark mode alike; a print
+renderer may drop that one rect on white paper.
+
+Retired, because there is nothing left for them to compensate for:
+- `_figure_paint_css()` in `build_student_port.py` — deleted (it extracted
+  `ks3.css` rules and `--ks3-*` tokens into the assignment page).
+- backend `figure-render.js` `CLASS_STYLES`, `CLASS_STYLE_BLOCK` and
+  `KS3_TOKENS` — no longer needed by any manifest figure (workstream B).
+
+### What the rule learned, kept so nobody reintroduces a class
+
+Run 1's figures set colour by CSS class (`ks3-cband-symstroke`,
+`ks3-p10fig-*`, …) defined in `shared/ks3.css`, which only a KS3 lesson page
+loads. Every other surface failed, silently:
 
 | surface | what happened |
 |---|---|
@@ -92,22 +131,8 @@ paint itself**, and the failure is silent and ugly:
 | worksheet DOCX | resvg does not throw on an unresolved `var()` — it painted **zero pixels** |
 | pupil's page (1) | `p8-lamp-symbol` painted as a **solid black disc**, crossing lines gone |
 | pupil's page (2) | rules copied WITHOUT their tokens → `stroke: var(--ks3-ink)` invalid → **stroke fell back to `none`, figure invisible** |
+| evidence sheet | a standalone page without `ks3.css` → the black disc again, a fifth time |
 
-**The rule, for the next surface:** a consuming surface must provide BOTH
-
-1. the class rules (extract them from `ks3.css`; never retype them), AND
-2. **the `--ks3-*` custom properties those rules spend.**
-
-(2) is the one that gets missed, and it fails worse than (1): an unresolved
-`var()` makes the declaration invalid at computed-value time, so the property
-takes its INITIAL value — and `stroke`'s initial value is `none`. The figure
-does not look broken, it looks *absent*, which reads as "no figure here"
-rather than as a bug.
-
-⚠️ `--ks3-*` is defined in `student-ds.css` only under `.rd[data-mode="ks3"]`,
-the KS3 reading-mode container. A page without one has those tokens undefined
-no matter which stylesheets it loads. Re-scope them to the figure wrapper.
-
-Working implementations to copy: `_figure_paint_css()` in
-`build_student_port.py` (site) and `CLASS_STYLES` + `KS3_TOKENS` in
-`figure-render.js` (backend).
+Five surfaces, one cause, and a documented rule did not stop the fifth. The
+fix that holds is not a better-documented compensation on each surface; it
+is a figure that needs none, checked where it is built.
