@@ -89,3 +89,4 @@ ks3/__fixture__/
 # One was committed into student/ by mistake (109KB of scratch). Per MRB-346,
 # a drive writes its artefacts to a scratch dir OUTSIDE the repo by default.
 student/_verify_*.html
+shared/_verify_mrb352_data.js

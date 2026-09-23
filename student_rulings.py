@@ -2269,11 +2269,26 @@ LOGIC = {
         # `this.figCaptions`, because `Object.keys` on that map would have
         # silently changed meaning if `slot`'s key were ever removed from it
         # for an unrelated reason.
+        #
+        # ⚠️ A SECOND KEY RIDES ALONG — `figSvgId` — and it has to. `figKey`
+        # is a local `const` inside `renderVals()`; it is never one of the
+        # keys the function RETURNS, so nothing outside this method can read
+        # it — not `MRB_DATA`, not the template, nothing. `hasFig`,
+        # `figMicro`… are all DERIVED from it and returned, but the raw id
+        # itself was not, because Design never needed to hand it to a
+        # template node — her seven branches are each their own boolean.
+        # The new `"fig"` node in student-runtime.js needs the id itself, not
+        # another boolean, so this is the one property that has to be
+        # exposed for the first time. `figSvgId` carries it UNCHECKED — the
+        # `"fig"` node makes its own manifest-presence check before drawing
+        # anything, the identical check `hasFig` just made, so an id that
+        # cannot resolve still draws nothing; this key only has to name it.
         (
             "      hasFig: !!figKey,",
             "      hasFig: ['micro', 'bubbles', 'fov', 'plant', 'cells', 'scale', "
             "'slot'].indexOf(figKey) >= 0 ||\n"
-            "        !!(figKey && window.MRBFigures && window.MRBFigures[figKey]),",
+            "        !!(figKey && window.MRBFigures && window.MRBFigures[figKey]),\n"
+            "      figSvgId: figKey,",
         ),
         # ══════════════════════════════════════════════════════════════════
         # ⊕ RULED 23 Aug 2026 — THE OPTIONS THAT WERE NOT PICKED VANISHED.
@@ -3445,19 +3460,20 @@ INSERT_AT = {
         # (`figSlot`, the last of the seven) — still inside 115, so it
         # draws inside the SAME bordered card, with the SAME
         # zoom-to-enlarge and the SAME caption row Design already built,
-        # rather than needing a frame of its own. `figKey` is the one
-        # property every other branch in 115 already reads; this is simply
-        # the eighth reader of it.
+        # rather than needing a frame of its own.
         #
         # ⚠️ THE NODE TYPE IS NEW — `"fig"`, handled in
         # `shared/student-runtime.js`'s `build()`, alongside `if`/`for`/
-        # `import`. It resolves `figKey` and looks it up in
-        # `window.MRBFigures`; an id the manifest does not carry renders
-        # NOTHING — the identical check `shared/student-live.js` makes
-        # before it ever sets a question's `g`, so the two can never
-        # disagree, and neither can ever produce the empty box above. See
-        # that file's own comment on the node for the full accessibility
-        # and innerHTML-sink reasoning.
+        # `import`. It resolves `figSvgId` — NOT `figKey` itself, which is a
+        # local `const` inside `renderVals()` and never one of the keys that
+        # function returns, so nothing outside it can read that name; see
+        # the LOGIC entry above, which is what exposes it for the first
+        # time — and looks the id up in `window.MRBFigures`; an id the
+        # manifest does not carry renders NOTHING, the identical check
+        # `shared/student-live.js` makes before it ever sets a question's
+        # `g`, so the two can never disagree, and neither can ever produce
+        # the empty box above. See that file's own comment on the node for
+        # the full accessibility and innerHTML-sink reasoning.
         #
         # ⛔ `figCaption` NEEDS NO CHANGE, AND IS DELIBERATELY LEFT ALONE.
         # `this.figCaptions[figKey]` is `undefined` for any real id —
@@ -3472,12 +3488,12 @@ INSERT_AT = {
         # pupil is looking at, and never a second time next to the answer
         # options. Ruled by Mide, 23 Sep 2026.
         (115, 244): (
-            {"t": "fig", "e": "figKey"},
+            {"t": "fig", "e": "figSvgId"},
             "the real figure a Set-work question was served with, drawn "
             "inside Design's own zoomable card (node 113/114), after her "
             "seven demo figures (116–244, all inside node 115) and "
-            "reading the same `figKey` they do. See the section header "
-            "above this tuple."),
+            "reading `figSvgId`, the LOGIC ruling's exposed copy of "
+            "`figKey`. See the section header above this tuple."),
     },
 }
 
