@@ -2421,21 +2421,48 @@ def check_detail(p, scopes, shots):
             if hit:
                 mid = (cid, tier) + hit
 
+    # ⊕ MRB-342.2 — CHIPS_CAP_AT_AVAILABILITY IS SUPERSEDED, IN WORDS, BY
+    # THE CONTRACT. RISKS A4 disabled a chip once it read above the pool;
+    # contract §1.1 rules the opposite: "A quick pick bigger than the pool
+    # gets exactly the same treatment as a typed number… it is never an
+    # error, and it never blocks." The two blocks below used to assert
+    # `.disabled` on the chips above a small scope's pool; they now assert
+    # every chip stays PRESSABLE, and that the CLAMP moved from the chip
+    # rail (disabling) to the delivered rows plus the ruled inline note.
+    TIER_LABEL = {"foundation": "Foundation", "higher": "Higher",
+                  "easy": "Easy", "medium": "Medium", "hard": "Hard"}
+
+    def read_count_note(p):
+        return p.eval("""(function(){
+            var el=document.querySelector('[data-sw="count-note"]');
+            return el ? {hidden: el.hidden, text: el.textContent} : null;
+            })()""")
+
     if small:
         cid, tier, kind, ref, n, _t = small
         if goto_detail(p, cid, tier, kind, ref):
             chips = chip_state(p, "count-chips")
             by = {c["t"]: c for c in chips}
             rows = p.eval("document.querySelectorAll('[data-sw=\"question\"]').length")
-            record(by.get("5", {}).get("off") is False
-                   and all(by.get(k, {}).get("off") is True for k in ("10", "15", "20"))
-                   and by.get("5", {}).get("on") is True,
-                   "chips_cap_at_availability — a scope holding %d disables "
-                   "10 / 15 / 20 and the default DROPS from 10 to 5" % n,
-                   "%s · %d row(s) rendered" % (chips, rows))
-            record(rows == 5,
-                   "…and the sheet actually renders the dropped count",
-                   "%d question row(s)" % rows)
+            record(all(by.get(k, {}).get("off") is False
+                       for k in ("5", "10", "15", "20")),
+                   "chips_never_disabled — a scope holding %d still offers "
+                   "all four quick picks, pressable, not greyed (RISKS A4 "
+                   "superseded by contract §1.1)" % n, "%s" % chips)
+            record(rows == n,
+                   "…and the DEFAULT (10, above this pool) is clamped to "
+                   "exactly what the pool holds — the rows follow the "
+                   "server's answer, not a chip snapped to the nearest "
+                   "quick pick",
+                   "%d question row(s), pool %d" % (rows, n))
+            note = read_count_note(p)
+            want = "Only %d at %s. All %d added." % (
+                n, TIER_LABEL.get(tier, tier), n)
+            record(bool(note) and note.get("hidden") is False
+                   and note.get("text") == want,
+                   "count_clamp_note_pool — the ruled inline note (contract "
+                   "§1.3), tier word reused from the tier chips",
+                   "%r (wanted %r)" % (note, want))
         else:
             record(False, "reach the small scope %s in the sheet" % ref)
     else:
@@ -2445,14 +2472,69 @@ def check_detail(p, scopes, shots):
         mcid, mtier, kind, ref, n, _t = mid
         if goto_detail(p, mcid, mtier, kind, ref):
             by = {c["t"]: c for c in chip_state(p, "count-chips")}
-            record(by.get("5", {}).get("off") is False
-                   and by.get("10", {}).get("off") is False
-                   and by.get("15", {}).get("off") is True
-                   and by.get("20", {}).get("off") is True
-                   and by.get("10", {}).get("on") is True,
-                   "chips_cap_at_availability — a scope holding %d keeps 10 "
-                   "live and disables 15 and 20, so the cap is a ceiling and "
-                   "not a blanket" % n, json.dumps(by)[:220])
+            rows = p.eval("document.querySelectorAll('[data-sw=\"question\"]').length")
+            record(all(by.get(k, {}).get("off") is False
+                       for k in ("5", "10", "15", "20")),
+                   "chips_never_disabled (mid) — every chip pressable on a "
+                   "scope holding %d too" % n, "%r" % by)
+            record(by.get("10", {}).get("on") is True and rows == 10,
+                   "…and the untouched default (10) needs no clamp — the "
+                   "pool covers it exactly or with room",
+                   "%d row(s)" % rows)
+            note0 = read_count_note(p)
+            record(bool(note0) and note0.get("hidden") is True,
+                   "…and no clamp note shows when nothing was clamped")
+
+            # A quick pick bigger than the pool: same treatment as typing.
+            p.eval("""(function(){var cs=document.querySelectorAll(
+                '[data-sw="count-chips"] .sw-chip');
+                for(var i=0;i<cs.length;i++){if(cs[i].textContent==='20'){
+                  cs[i].click();return true;}} return false;})()""")
+            wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]')"
+                        ".length === %d" % n)
+            rows2 = p.eval("document.querySelectorAll("
+                          "'[data-sw=\"question\"]').length")
+            note1 = read_count_note(p)
+            want1 = "Only %d at %s. All %d added." % (
+                n, TIER_LABEL.get(mtier, mtier), n)
+            record(rows2 == n and bool(note1) and note1.get("hidden") is False
+                   and note1.get("text") == want1,
+                   "count_clamp_note_quick_pick — pressing 20 on a pool of "
+                   "%d gets the pool's whole content and the same note a "
+                   "typed number would" % n,
+                   "%d row(s), note=%r" % (rows2, note1))
+
+            # ⊕ MRB-342.2 §1 — THE NUMBER FIELD ITSELF, same code path.
+            # Typed well above both this tiny pool and any real ceiling, so
+            # `capped_by` can only ever be "pool" here — the number field's
+            # own clamp behaviour, not the chip's.
+            input_val = p.eval("""(function(v){
+                var i=document.querySelector('[data-sw="count-input"]');
+                if(!i){return null;}
+                i.focus(); i.value=String(v);
+                i.dispatchEvent(new Event('change',{bubbles:true}));
+                return i.value;})(999)""")
+            wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]')"
+                        ".length === %d" % n)
+            rows3 = p.eval("document.querySelectorAll("
+                          "'[data-sw=\"question\"]').length")
+            note2 = read_count_note(p)
+            record(input_val is not None and rows3 == n
+                   and bool(note2) and note2.get("hidden") is False
+                   and note2.get("text") == want1,
+                   "count_field_typed_clamps — the number field takes any "
+                   "typed value and follows the SAME clamp/note path a "
+                   "quick pick does — one code path, not two",
+                   "typed 999, %d row(s), note=%r" % (rows3, note2))
+            # The field itself now reads the actual delivered count, not
+            # the 999 that was typed — it is the single source of truth for
+            # `sc.count`, same as the chip highlight.
+            field_now = p.eval("(document.querySelector('"
+                               "[data-sw=\"count-input\"]')||{}).value")
+            record(field_now == str(n),
+                   "…and the field's own displayed value becomes what was "
+                   "actually delivered, not what was typed",
+                   "field now reads %r (pool is %d)" % (field_now, n))
         else:
             record(False, "reach the mid scope %s" % ref)
     else:
@@ -2889,6 +2971,18 @@ def check_toast_and_swap(p, scopes, shots):
                "out after %d swap(s) and the row's Swap goes DEAD rather than "
                "offering a control that does nothing" % (n, pressed),
                "%d of %d Swap buttons disabled, %d row(s)" % (dead, total, rows))
+        # ⊕ MRB-342.2 §1.4 — SAYS SO, rather than a dead button and silence.
+        note_txt = p.eval("""(function(){
+            var b=document.querySelector('[data-sw="swap"][disabled]');
+            if(!b){return null;}
+            var row=b.closest('[data-sw="question"]');
+            var n=row?row.querySelector('[data-sw="swap-note"]'):null;
+            return n?{hidden:n.hidden, text:n.textContent}:null;})()""")
+        record(bool(note_txt) and note_txt.get("hidden") is False
+               and note_txt.get("text") == "No more questions in this topic.",
+               "swap_exhausted_says_so — the row whose Swap went dead shows "
+               "the ruled settled line, not silence",
+               "%r" % (note_txt,))
         if shots:
             p.screenshot(os.path.join(shots, "A6-swap-exhausted-390.png"),
                          width=390)
@@ -3357,6 +3451,7 @@ def main():
                     # must run while the tab's network is still the browser's
                     # own: the two checks below replace `window.fetch`.
                     check_worksheet_sheet(p, base, ws_first, args.shots)
+                    check_assignment_note_capability(p, t_teacher, scopes)
                     check_classes_screen_open(p, base)
                     # ⊕ first-week fixes (22 Sep 2026) — it holds `/scope` for three seconds, so it
                     # belongs with the fetch-wrapping checks. It restores the
@@ -7602,6 +7697,101 @@ def check_worksheet_sheet(p, base, first, shots):
            "…and nothing UNEXPECTED has crept in beside them",
            "%d fixed + %d pattern-matched dynamic string(s): %s"
            % (len(said) - len(dynamic), len(dynamic), said))
+
+    # ── ⊕ MRB-342.2 — `One file per topic`, a real checkbox ────────────
+    ptShape = p.eval("""(function(){
+      var b=document.querySelector('[data-sw="dl-per-topic"]');
+      if(!b){return null;}
+      return {tag:b.tagName, type:b.type, checked:b.checked,
+              labelled:!!b.closest('label'), disabled:!!b.disabled};})()""")
+    record(bool(ptShape) and ptShape.get("tag") == "INPUT"
+           and ptShape.get("type") == "checkbox"
+           and ptShape.get("labelled") is True,
+           "per_topic_is_a_real_checkbox — `One file per topic` is an "
+           "`<input type=\"checkbox\">` inside its own `<label>`, the same "
+           "idiom as `Multiple choice` and `Answers`",
+           "%r" % (ptShape,))
+    record(bool(ptShape) and ptShape.get("checked") is False,
+           "…and it starts OFF — one file is today's behaviour for a "
+           "caller that never touches it")
+    # ⚠️ A REAL KEY, NOT A SYNTHETIC EVENT — see `press_space`'s own
+    # comment: a JS-dispatched KeyboardEvent gets no default action from
+    # the browser and would prove a dead control alive.
+    focused = p.eval("""(function(){
+      var b=document.querySelector('[data-sw="dl-per-topic"]');
+      if(!b){return false;} b.focus(); return document.activeElement===b;
+      })()""")
+    if focused:
+        press_space(p)
+    checked_pt = p.eval("(document.querySelector('[data-sw=\"dl-per-topic\"]')"
+                        "||{}).checked")
+    record(focused and checked_pt is True,
+           "per_topic_space_toggles — Tab reaches it, Space checks it, and "
+           "the browser owns the state",
+           "focusable=%r, checked after Space=%r" % (focused, checked_pt))
+    # Back off, so the rest of this function's downloads are unaffected.
+    if checked_pt is True:
+        press_space(p)
+
+    # ── ⊕ MRB-342.2 §2.1 — the download's own note, and its escaping ───
+    noteShape = p.eval("""(function(){
+      var ta=document.querySelector('[data-sw="dl-note"]');
+      if(!ta){return null;}
+      return {tag:ta.tagName, labelled:!!ta.closest('.sw-note-field'),
+              hasAriaLabel:!!ta.getAttribute('aria-label')};})()""")
+    record(bool(noteShape) and noteShape.get("tag") == "TEXTAREA"
+           and noteShape.get("labelled") and noteShape.get("hasAriaLabel"),
+           "download_note_is_a_real_field — `<textarea>`, labelled, with "
+           "an accessible name",
+           "%r" % (noteShape,))
+    # ⚠️ THE SITE NEVER EXECUTES WHAT IT IS TYPED INTO A FORM FIELD — proved
+    # rather than assumed. `window.alert` is overridden BEFORE typing, so
+    # any path that reflected this value into markup and ran it would ring
+    # this bell; a `<textarea>`'s own value can never itself be parsed as
+    # HTML, so the proof that matters is that nothing ELSE on the page ever
+    # tries to.
+    XSS = ("<script>alert(1)</script> & \"quotes\" & "
+           "<img src=x onerror=alert(1)>")
+    p.eval("window.__mrb_alert_fired = 0; "
+           "window.alert = function(){ window.__mrb_alert_fired++; };")
+    typed = p.eval("""(function(s){
+      var ta=document.querySelector('[data-sw="dl-note"]');
+      if(!ta){return null;}
+      ta.focus(); ta.value=s;
+      ta.dispatchEvent(new Event('input',{bubbles:true}));
+      return ta.value;})(%s)""" % json.dumps(XSS))
+    time.sleep(0.1)
+    record(typed == XSS,
+           "download_note_round_trips_literally — the field's own value is "
+           "exactly the characters typed, no HTML interpretation anywhere "
+           "on the way in",
+           "%r" % (typed,))
+    fired = p.eval("window.__mrb_alert_fired")
+    record(fired == 0,
+           "download_note_never_executes — no script ran while the "
+           "malicious text sat in the field",
+           "alert() called %r time(s)" % (fired,))
+    count_txt = p.eval("""(function(){
+      var c=document.querySelector('[data-sw="dl-note-count"]');
+      return c?c.textContent:null;})()""")
+    # Python's `len()` on a `str` already counts Unicode CODE POINTS (Python
+    # 3 strings are sequences of code points, not UTF-16 units), which is
+    # exactly `Array.from(s).length` on the JS side — the same rule
+    # `charsLeft` uses, never `.length`.
+    cp_len = len(XSS)
+    want_left = 300 - cp_len
+    record(count_txt == ("%d left" % want_left),
+           "download_note_counts_code_points — the live counter used the "
+           "same code-point rule the server's `char_length()` uses, not "
+           "UTF-16 `.length`",
+           "%r (wanted %r for %d code point(s))"
+           % (count_txt, "%d left" % want_left, cp_len))
+    # Clear it, so it does not leak into the downloads this function still
+    # has to make.
+    p.eval("""(function(){var ta=document.querySelector('[data-sw="dl-note"]');
+      if(ta){ta.value=''; ta.dispatchEvent(new Event('input',{bubbles:true}));}
+      })()""")
+
     check_sideways(p, "the Download menu open", shots)
     p.eval("document.body.click()")
 
@@ -7678,6 +7868,81 @@ def check_worksheet_sheet(p, base, first, shots):
                        else "appeared: %s" % sorted(after2 - before2))
     p.eval("if (window.MRBSetWork) { window.MRBSetWork.close(); }")
     drop_downloads(dl_dir)
+
+
+# ⊕ MRB-342.2 §3.3 — the assignment note field's capability gate.
+#
+# ⚠️ REPORTS WHICH STATE IT OBSERVED, RATHER THAN ASSUMING ONE. The commander
+# adds and drops `assignments.teacher_note` on TEST by hand while this ticket
+# is being built and proved in both states — a check that assumed either
+# state would be right by luck half the time and would not be testing the
+# gate at all. So this reads `/scope`'s own `assignment_note` boolean
+# directly (the ground truth) and asserts the DOM agrees with THAT, whichever
+# way it reads, rather than asserting a fixed expectation.
+def check_assignment_note_capability(p, t_teacher, scopes):
+    print("\n   the assignment note field's capability gate")
+    got = pick_topic(scopes["ks3"], 2, "medium")
+    if not got:
+        record(False, "a topic exists to open the sheet on, for the "
+                      "capability check")
+        return
+    _n, unit, _s = got
+    st, body = call("GET", "/api/teacher/set-work/scope?class_id="
+                     + FX.C_KS3_A, t_teacher)
+    if st != 200:
+        record(False, "/scope answers, for the capability check",
+               "status %s" % st)
+        return
+    truth = body.get("assignment_note")
+    # ⚠️ ABSENT READS AS UNSUPPORTED. `assignment_note` missing from the
+    # body (an older backend during the split-deploy window) must be treated
+    # exactly as `false` — contract's own instruction, and the reason
+    # `syncNoteVisibility` tests `=== true` rather than truthiness.
+    expect_visible = (truth is True)
+    if not goto_detail(p, FX.C_KS3_A, "medium", "topic", unit["id"]):
+        record(False, "reach Detail for the capability check")
+        return
+    hidden = p.eval("""(function(){
+        var w=document.querySelector('[data-sw="assignment-note-field"]');
+        return w ? w.hidden : null;})()""")
+    record(hidden is not None and (hidden is False) == expect_visible,
+           "assignment_note_capability_gate — the note field's visibility "
+           "matches /scope's own `assignment_note` exactly ("
+           + ("column present, field SHOWN" if expect_visible
+              else "column absent or false, field HIDDEN") + ")",
+           "/scope answered assignment_note=%r; field hidden=%r"
+           % (truth, hidden))
+    if expect_visible:
+        # ── the note round-trips, and the server never interprets it ──
+        ta_shape = p.eval("""(function(){
+            var t=document.querySelector('[data-sw="assignment-note"]');
+            return t ? {tag: t.tagName, labelled: !!t.closest('.sw-note-field')}
+                     : null;})()""")
+        record(bool(ta_shape) and ta_shape.get("tag") == "TEXTAREA",
+               "…and the visible field really is the shared note control",
+               "%r" % (ta_shape,))
+        XSS = ("<script>alert(1)</script> & \"quotes\" & "
+               "<img src=x onerror=alert(1)>")
+        p.eval("window.__mrb_note_alert = 0; "
+               "window.alert = function(){ window.__mrb_note_alert++; };")
+        typed = p.eval("""(function(s){
+            var t=document.querySelector('[data-sw="assignment-note"]');
+            if(!t){return null;} t.focus(); t.value=s;
+            t.dispatchEvent(new Event('input',{bubbles:true}));
+            return t.value;})(%s)""" % json.dumps(XSS))
+        record(typed == XSS,
+               "assignment_note_round_trips_literally — the sheet's own "
+               "note field never interprets what is typed into it",
+               "%r" % (typed,))
+        record(p.eval("window.__mrb_note_alert") == 0,
+               "assignment_note_never_executes — no script ran while the "
+               "malicious text sat in the field")
+        # Clear it so nothing this check typed reaches a real POST.
+        p.eval("""(function(){
+            var t=document.querySelector('[data-sw="assignment-note"]');
+            if(t){t.value=''; t.dispatchEvent(new Event('input',
+              {bubbles:true}));}})()""")
+    p.eval("if (window.MRBSetWork) { window.MRBSetWork.close(); }")
 
 
 def check_row_download(p, base, t_teacher, scopes, made):

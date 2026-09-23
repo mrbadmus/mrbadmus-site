@@ -3080,6 +3080,18 @@
     return fileNameFor(title, format, perTopic);
   }
 
+  /* ⊕ MRB-342.2 — `worksheet_busy` IS A "TRY AGAIN", NOT A FAILURE.
+     The backend allows two concurrent LARGE renders (>200 questions,
+     reachable now the per-scope cap is 2000 rather than 20) and 503s a
+     third rather than risk an OOM that would take a child's own
+     `/api/class/current-assignment` down along with it. An ordinary
+     10–40-question worksheet can never reach this — the threshold is 200 —
+     so it is a real state and a rare one, and it must read as "busy",
+     never as "broken": no stack, no code, no `Unavailable`. The server's
+     own `message` is shown verbatim rather than a word this file invents,
+     because it is the one sentence on this whole surface that is DATA from
+     the network rather than this module's own chrome — RISKS A9 governs
+     what `SAY` can say, not a status line a server composed. */
   function postWorksheet(payload) {
     return token().then(function (t) {
       return fetch(apiBase() + DOWNLOAD_PATH, {
@@ -3089,6 +3101,20 @@
         body: JSON.stringify(payload)
       });
     }).then(function (res) {
+      if (res.status === 503) {
+        return res.json().then(function (body) {
+          var e = new Error("worksheet: busy");
+          e.busy = true;
+          e.busyMessage = (body && typeof body.message === "string" &&
+                            body.message) || SAY.unavailable;
+          throw e;
+        }, function () {
+          var e = new Error("worksheet: busy");
+          e.busy = true;
+          e.busyMessage = SAY.unavailable;
+          throw e;
+        });
+      }
       if (!res.ok) { throw new Error("worksheet: " + res.status); }
       return res.blob().then(function (b) {
         return { blob: b, name: nameFromHeaders(res, payload.title,
@@ -3156,6 +3182,16 @@
       saveBlob(r.blob, r.name);
       return true;
     }, function (e) {
+      /* ⊕ MRB-342.2 — `busy` IS NOT LOGGED AS AN ERROR. It is the server
+         correctly refusing to risk an OOM under real load — expected,
+         self-recovering, and not a fact about anything broken here. The
+         button is already re-enabled the moment this promise settles (the
+         caller's own `finally`-equivalent below `go()`), so "try again in
+         a moment" is true the instant it is shown. */
+      if (e && e.busy) {
+        if (!o.quiet) { toast(e.busyMessage || SAY.unavailable); }
+        return false;
+      }
       console.error("[set-work] worksheet", e);
       if (!o.quiet) { toast(SAY.unavailable); }
       return false;
