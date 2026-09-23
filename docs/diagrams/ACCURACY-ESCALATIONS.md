@@ -142,3 +142,49 @@ ruling is even needed.
 ⚠️ **The warning is deliberately non-fatal.** Failing the build would block
 every unrelated figure over one pre-existing content gap. It prints loudly on
 every run instead, so it cannot be forgotten.
+
+---
+
+## E4 · The worksheet concurrency ceiling was sized without diagrams in it
+
+**Not a defect — a threshold that a measurement has now outgrown.** Flagged
+rather than changed, because the right value is an operational call.
+
+Measured on this machine, cold process, PDF with answers page:
+
+| questions | no figures | with figures | delta |
+|---:|---:|---:|---:|
+| 200 | 101.1 MB | 119.6 MB | +18 MB (+18%) |
+| 1,450 | 191.3 MB | **291.1 MB** | **+100 MB (+52%)** |
+
+The growth is NOT the raster cache — that is bounded by the figure catalogue
+(tens of distinct ids) and is why the cache exists. It is the PDF document
+itself: output grew 379 KB → 696 KB, and PDFKit buffers pages until the
+document is finalised. So it scales with question count, exactly the axis the
+existing guard was sized along.
+
+**Why this needs Mide's call.** The guard
+(`MRB_WORKSHEET_LARGE_THRESHOLD=200`, `MRB_WORKSHEET_MAX_CONCURRENT_LARGE=2`)
+was measured at MRB-342.2 on Render Starter (512 MB): peak 326 MB at N=1 and
+331 MB at N=2, for 1,450 questions with **no image work in the pipeline at
+all**. This machine measures the same no-figure case at 191 MB, so Render's
+baseline sits roughly 135 MB above mine and the two sets of numbers cannot be
+compared directly.
+
+What CAN be carried across is the delta. If diagrams add ~100 MB per large
+render on Render too, then N=2 moves from ~331 MB to roughly **530 MB — over
+the 512 MB limit.**
+
+⚠️ That is an extrapolation, not a measurement. It should be measured on
+Render before it is trusted, and it is the reason this is written down rather
+than acted on.
+
+**Recommended, not applied:** lower `MRB_WORKSHEET_MAX_CONCURRENT_LARGE` to 1,
+or `MRB_WORKSHEET_LARGE_THRESHOLD` below 200, until a real Render measurement
+exists. Both are env-tunable precisely so this is a dashboard change and a
+restart rather than a deploy — which is why the right move now is to hand Mide
+the number, not to pick one.
+
+⚠️ Note the failure mode is not a crash a test would catch: it is an OOM under
+concurrent load, on the largest real scope, at the moment several teachers
+print at once.
