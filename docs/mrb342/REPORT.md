@@ -737,6 +737,37 @@ Eight new checks, all green: `answers_is_a_real_checkbox`,
 `multiple_choice_is_a_real_checkbox` and its label, `pdf_no_wordmark`,
 `pdf_brand_footer`, and the faded-chevron alpha.
 
+## 342.1.7a · Live, and verified by bytes
+
+| | |
+|---|---|
+| backend | `/api/health` → `build 57f4345…`, `branch main`, `db ok` ✅ |
+| site | `431b1f1f7` pushed to `main`; Cloudflare published |
+| `teacher/classes.html` asset map | `set-work.js: 52e9c35e`, `set-work.css: 430975e7` — the committed stamps |
+| served bytes | **`cmp`-identical** to `git show HEAD:mrbadmus_site/shared/…` — 169,307 and 25,886 bytes |
+
+⚠️ **A stamped URL was polled before the deploy landed, and that is a trap with
+a one-year blast radius.** `_headers` serves `/shared/*` as
+`max-age=31536000, immutable`, so a request that MISSES while the origin is
+still serving the old file pins the OLD bytes to the NEW url at that POP for a
+year — unreachable by any later deploy, and presenting as exactly the "200
+carrying a stale asset" CLAUDE.md warns about.
+
+The loop was killed and the cache state checked the way it should have been
+verified from the start:
+
+1. fetch the **page** (`curl -sL`; HTML is `max-age=0, must-revalidate`) and
+   read the stamp out of its `__MRB_ASSET_V__` map;
+2. only once the map shows the new stamp, fetch the asset **with a throwaway
+   `&nonce=`**, so the check never populates the real key;
+3. prove with `cmp` against `git show`, not a grep — a wrapped comment makes
+   greps lie in both directions.
+
+`cf-cache-status: MISS` with no `age` header on the canonical url, and the new
+code on both the canonical and the nonce'd fetch: **the key was not poisoned**.
+Had it been, the fix is to re-stamp the file — any content change gives a new
+md5, so no HTML would reference the poisoned url again.
+
 ## 342.1.8 · Deviations
 
 **Deviation:** the footer's page numbers were removed along with the wordmark
