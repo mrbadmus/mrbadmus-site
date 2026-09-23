@@ -78,3 +78,36 @@ Site and backend must both work WITH OR WITHOUT the column:
 `export_ks4_questions.COLUMNS` + `checksum()` + `sql_cell()`.
 The KS4 validator ignores unknown keys, so an unthreaded `figure` vanishes
 without any error at all. This is the single easiest way to ship nothing.
+
+## 8. ⚠️ A FIGURE MUST CARRY ITS OWN PAINT — the rule this feature learned four times
+
+A manifest figure's SVG sets colour by **CSS class** (`ks3-cband-symstroke`,
+`ks3-p10fig-*`, …), and those classes live in `shared/ks3.css`. That is fine
+on a KS3 lesson page, which loads it. **Every other surface must supply the
+paint itself**, and the failure is silent and ugly:
+
+| surface | what happened |
+|---|---|
+| worksheet PDF | six class-only figures drew a `fill:none` frame as a **solid black rectangle** |
+| worksheet DOCX | resvg does not throw on an unresolved `var()` — it painted **zero pixels** |
+| pupil's page (1) | `p8-lamp-symbol` painted as a **solid black disc**, crossing lines gone |
+| pupil's page (2) | rules copied WITHOUT their tokens → `stroke: var(--ks3-ink)` invalid → **stroke fell back to `none`, figure invisible** |
+
+**The rule, for the next surface:** a consuming surface must provide BOTH
+
+1. the class rules (extract them from `ks3.css`; never retype them), AND
+2. **the `--ks3-*` custom properties those rules spend.**
+
+(2) is the one that gets missed, and it fails worse than (1): an unresolved
+`var()` makes the declaration invalid at computed-value time, so the property
+takes its INITIAL value — and `stroke`'s initial value is `none`. The figure
+does not look broken, it looks *absent*, which reads as "no figure here"
+rather than as a bug.
+
+⚠️ `--ks3-*` is defined in `student-ds.css` only under `.rd[data-mode="ks3"]`,
+the KS3 reading-mode container. A page without one has those tokens undefined
+no matter which stylesheets it loads. Re-scope them to the figure wrapper.
+
+Working implementations to copy: `_figure_paint_css()` in
+`build_student_port.py` (site) and `CLASS_STYLES` + `KS3_TOKENS` in
+`figure-render.js` (backend).
