@@ -361,7 +361,23 @@ PAGES = [
                         feedbackBy="''", feedbackWhen="''",
                         assignmentLessonHref=
                         "'/ks3/biology/breathing-and-gas-exchange/"
-                        "the-gas-exchange-system.html'")),
+                        "the-gas-exchange-system.html'",
+                        # ⊕ MRB-342.2 — TWO MORE, SAME REASON, FOUND THE SAME
+                        # WAY (`student_behaviour.py` refusing to mount, this
+                        # time on the very first drive rather than reaching
+                        # any of them). `assignmentNoteVisible` (LOGIC, in
+                        # student_rulings.py) calls
+                        # `MRB_DATA('assignmentNoteHas')` inside the
+                        # per-question view, evaluated on EVERY mount — so
+                        # unlike `feedbackHas` (read only where its own `<if>`
+                        # is), a missing key here throws before a single
+                        # question can be drawn. `assignmentNoteBody` is read
+                        # by the inserted `<if>`'s own text binding and would
+                        # throw the same way once `assignmentNoteVisible` is
+                        # ever true. Design drew no note surface either —
+                        # empty is her own state, not a placeholder — so the
+                        # fixture stays byte-identical to what it was.
+                        assignmentNoteHas="false", assignmentNoteBody="''")),
 ]
 
 # ── the identity strings, which are NOT in the logic ──────────────────────

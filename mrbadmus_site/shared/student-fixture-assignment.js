@@ -167,6 +167,8 @@ window.__MRB_DATA__ = {
   "KEY": 'mrbadmusai.assignment.8rSc1.a5.v1',
   "DUE": 'DUE THU 18 SEP, 18:00',
   "assignmentLessonHref": '/ks3/biology/breathing-and-gas-exchange/the-gas-exchange-system.html',
+  "assignmentNoteBody": '',
+  "assignmentNoteHas": false,
   "feedbackBody": '',
   "feedbackBy": '',
   "feedbackHas": false,
