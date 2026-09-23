@@ -3938,6 +3938,50 @@ def r_cycle_dial(a, act_id):
                t(phase0["label"]), cells, t(note_prompt), phase_data))
 
 
+# ── the egg/sperm scale bars, as a static figure (b5-02, ⊕ MRB-352) ─────
+
+def _scale_bars(fig):
+    """Two or more horizontal bars, drawn to the WIDTH each row's `pct`
+    says — a straight scale comparison, not a plotted graph.
+
+    ⚖️ NO FLOOR, AND NONE IS WANTED (the panel's own comment on `SCALE`).
+    The smaller bar looking as small as it really is IS the argument the
+    question tests, so this draws the raw percentage rather than clamping a
+    twenty-times difference up to something friendlier to look at.
+    """
+    d = fig.get("data") or {}
+    rows = d.get("rows") or []
+    if len(rows) < 2:
+        raise ValueError(
+            "scale-bars figure %r needs at least 2 rows to compare; got %d."
+            % (fig.get("id"), len(rows)))
+    for r in rows:
+        if not (float(r.get("pct") or 0) > 0):
+            raise ValueError(
+                "scale-bars figure %r row %r has no positive pct."
+                % (fig.get("id"), r.get("name")))
+
+    NAME_COL, GAP_AFTER_NAME, RIGHT_RESERVE = 170.0, 16.0, 160.0
+    W = 760
+    ML = NAME_COL + GAP_AFTER_NAME
+    max_w = W - ML - RIGHT_RESERVE
+    H = 24 + len(rows) * 84
+
+    out = [_svg_open(fig, W, H)]
+    for i, r in enumerate(rows):
+        y = 24 + i * 84
+        w = max_w * (float(r["pct"]) / 100.0)
+        out.append(_label(NAME_COL, y + 26, r["name"], size=14,
+                          weight="700", anchor="end"))
+        out.append(_rect(ML, y, w, 40, rx=8, fill=_SVG_ACCENT_TINT,
+                         stroke=_SVG_INK, w=2, data_row=r.get("id"),
+                         data_pct=r["pct"]))
+        out.append(_label(ML + w + 12, y + 26, r["size"], size=13,
+                          fill=_SVG_INK_MUTED, weight="600", anchor="start"))
+    out.append('</svg>')
+    return "".join(out)
+
+
 # ── registrations ────────────────────────────────────────────────────────
 ART = {
     'dispersal': _dispersal,
@@ -3946,6 +3990,7 @@ ART = {
     'placenta': _placenta,
     'pollen-tube': _pollen_tube,
     'repro-systems': _repro_systems,
+    'scale-bars': _scale_bars,
 }
 
 KIND_SHELL = {

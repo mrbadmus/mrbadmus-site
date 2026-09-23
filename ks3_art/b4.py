@@ -24,6 +24,7 @@ from ks3_art.kit import (
     _SVG_RULE,
     _circle,
     _label,
+    _line,
     _mono,
     _n,
     _path,
@@ -1840,8 +1841,82 @@ def r_two_process_ledger(a, act_id):
                verdict_html))
 
 
+# ── the light-ledger bars, as a static figure (b4-05, ⊕ MRB-352) ─────────
+
+def _gas_exchange_bars(fig):
+    """Three bars: respiration, photosynthesis, and what a sensor outside
+    the leaf actually measures.
+
+    ⚖️ THE THIRD BAR IS DERIVED, NEVER A FOURTH AUTHORED NUMBER. It is
+    `photosynthesis - respiration`, and this raises if the two disagree — a
+    figure that authored the net bar independently of the other two could
+    silently stop being the difference the ledger beside it is built on.
+    """
+    d = fig.get("data") or {}
+    bars = d.get("bars") or []
+    if len(bars) != 3:
+        raise ValueError(
+            "gas-exchange-bars figure %r needs exactly 3 bars (respiration, "
+            "photosynthesis, net); got %d." % (fig.get("id"), len(bars)))
+    resp, photo, net = bars[0]["v"], bars[1]["v"], bars[2]["v"]
+    if abs(net - (photo - resp)) > 0.05:
+        raise ValueError(
+            "gas-exchange-bars figure %r draws a net bar of %s, but "
+            "photosynthesis (%s) minus respiration (%s) is %s. The third "
+            "bar IS that difference — a sensor outside the leaf cannot see "
+            "the two processes separately." % (fig.get("id"), net, photo,
+                                                resp, photo - resp))
+    y_unit = d.get("y_unit")
+    if not y_unit:
+        raise ValueError(
+            "gas-exchange-bars figure %r has no y_unit. A chart without "
+            "units is an accuracy defect, not a style omission."
+            % fig.get("id"))
+
+    W, H = 640, 400
+    ML, MR, MT, MB = 56, 24, 30, 138
+    pw, ph = W - ML - MR, H - MT - MB
+    gap = 40.0
+    bw = (pw - gap * 2) / 3.0
+    y_max = max(resp, photo, net) * 1.25
+
+    out = [_svg_open(fig, W, H)]
+    out.append(_label(ML, MT - 12, "rate / %s" % y_unit, size=13,
+                      fill=_SVG_INK_FAINT, weight="700", anchor="start"))
+    out.append(_line(ML, MT, ML, MT + ph, stroke=_SVG_INK, w=2))
+    out.append(_line(ML, MT + ph, ML + pw, MT + ph, stroke=_SVG_INK, w=2))
+    for i, b in enumerate(bars):
+        x = ML + i * (bw + gap)
+        v = float(b["v"])
+        h = (v / y_max) * ph
+        y = MT + ph - h
+        out.append(_rect(x, y, bw, h, rx=6, fill=_SVG_ACCENT_TINT,
+                         stroke=_SVG_INK, w=2, data_bar=b.get("id"),
+                         data_v=v))
+        out.append(_label(x + bw / 2.0, y - 8, "%s %s" % (_n(v), y_unit),
+                          size=13, weight="700"))
+        # A long caption ("What a sensor outside the leaf measures") wraps
+        # across its own bar rather than overrunning the next one.
+        words, lines, cur = b["label"].split(), [], ""
+        for w_ in words:
+            trial = (cur + " " + w_).strip()
+            if len(trial) > 16 and cur:
+                lines.append(cur)
+                cur = w_
+            else:
+                cur = trial
+        if cur:
+            lines.append(cur)
+        for li, ln in enumerate(lines):
+            out.append(_label(x + bw / 2.0, MT + ph + 22 + li * 16, ln,
+                              size=13, fill=_SVG_INK_FAINT, weight="600"))
+    out.append('</svg>')
+    return "".join(out)
+
+
 # ── registrations ────────────────────────────────────────────────────────
 ART = {
+    'gas-exchange-bars': _gas_exchange_bars,
     'guard-cells': _guard_cells,
     'thorax': _thorax,
 }

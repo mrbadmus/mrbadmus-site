@@ -237,9 +237,9 @@ QUESTIONS = [
     {
         "id": "b10-03-h01",
         "band": "harder",
-        "text": "The diagram draws A and G wide and C and T narrow. Suppose "
-                "the rule had instead been A with G and C with T. What would "
-                "the molecule have been like?",
+        "text": "Look at the base-pair diagram. Suppose the pairing rule had "
+                "instead been A with G and C with T. What would the "
+                "molecule have been like?",
         "options": [
             {"text": "Its width would stay constant, because the backbones "
                      "are a fixed distance apart", "correct": False,

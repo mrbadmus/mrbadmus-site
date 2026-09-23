@@ -1639,6 +1639,80 @@ def _art_readings(aria):
         'text-anchor="middle">THE LINE IS THE READING</text>', aria)
 
 
+# ═══ MRB-352 (diagrams) · two standalone question figures ══════════════
+#
+# `r_motor_coil`'s force arrows and `r_compass_plot`'s field lines are both
+# drawn by client JS at runtime (`d="M0 0"` server-side, filled in by
+# `paint()` — see the notes on each), so there is no static drawing in
+# either instrument to extract. Both figures below are new, drawn to match
+# the physics of the bench beside them rather than lifted from its code.
+
+def r_p10_motor_arrows(fig):
+    """`p10-05-h02` — the coil's two force arrows, frozen and equal.
+
+    ⚖️ ONE PATH CONSTANT DRAWS BOTH ARROWS, at the same length, so there is
+    no per-side number that could disagree. Fleming's left-hand rule: the
+    field runs left to right (N to S); the left wire carries current INTO
+    the page (⊗) and feels an upward push; the right wire carries the same
+    current OUT of the page (⊙) and feels a downward push of the same
+    size — the turning couple the lesson's bench is built on.
+    """
+    return (
+        '<svg class="ks3-figure-svg" viewBox="0 0 600 320" role="img" '
+        'style="min-width:480px" aria-label="%s">'
+        '<rect class="ks3-p10fig-pole" x="120" y="40" width="80" '
+        'height="240" rx="6"/>'
+        '<text class="ks3-p10fig-polelabel" x="160" y="172" '
+        'text-anchor="middle">N</text>'
+        '<rect class="ks3-p10fig-pole" x="400" y="40" width="80" '
+        'height="240" rx="6"/>'
+        '<text class="ks3-p10fig-polelabel" x="440" y="172" '
+        'text-anchor="middle">S</text>'
+        '<path class="ks3-p10fig-field" d="M200 90 H378 M378 90 L364 82 '
+        'M378 90 L364 98 M200 160 H378 M378 160 L364 152 M378 160 L364 168 '
+        'M200 230 H378 M378 230 L364 222 M378 230 L364 238"/>'
+        '<path class="ks3-p10fig-coil" d="M260 80 H340 M260 240 H340 '
+        'M260 80 V240 M340 80 V240"/>'
+        '<circle class="ks3-p10fig-axle" cx="300" cy="160" r="10"/>'
+        '<circle class="ks3-p10fig-symbol" cx="260" cy="160" r="14"/>'
+        '<path class="ks3-p10fig-cross" d="M251 151 L269 169 M269 151 '
+        'L251 169"/>'
+        '<circle class="ks3-p10fig-symbol" cx="340" cy="160" r="14"/>'
+        '<circle class="ks3-p10fig-dot" cx="340" cy="160" r="4"/>'
+        '<path class="ks3-p10fig-force" d="M260 146 V100 M260 100 L252 112 '
+        'M260 100 L268 112"/>'
+        '<path class="ks3-p10fig-force" d="M340 174 V220 M340 220 L332 208 '
+        'M340 220 L348 208"/>'
+        '</svg>' % e(fig.get("aria_label", "")))
+
+
+def r_p10_horseshoe_field(fig):
+    """`p10-02-s03` — parallel, equal-length arrows between a horseshoe's
+    poles.
+
+    ⚖️ ONE ARROW LENGTH FOR ALL THREE. The three field arrows in the gap
+    share one path constant — a hand-tuned per-arrow length is exactly the
+    thing this figure must never show, since equal length in the gap is the
+    claim the question is about.
+    """
+    def field_arrow(y):
+        return ('<path class="ks3-p10fig-field" d="M120 %d H246 M246 %d '
+                'L232 %d M246 %d L232 %d"/>'
+                % (y, y, y - 10, y, y + 10))
+    arrows = "".join(field_arrow(y) for y in (140, 190, 240))
+    return (
+        '<svg class="ks3-figure-svg" viewBox="0 0 400 300" role="img" '
+        'style="min-width:420px" aria-label="%s">'
+        '<path class="ks3-p10fig-pole" d="M60 90 H120 V260 H60 Z"/>'
+        '<path class="ks3-p10fig-pole" d="M260 90 H320 V260 H260 Z"/>'
+        '<path class="ks3-p10fig-yoke" d="M60 260 H320 V300 H60 Z"/>'
+        '<text class="ks3-p10fig-polelabel" x="90" y="80" '
+        'text-anchor="middle">N</text>'
+        '<text class="ks3-p10fig-polelabel" x="290" y="80" '
+        'text-anchor="middle">S</text>%s</svg>'
+        % (e(fig.get("aria_label", "")), arrows))
+
+
 _BAND_ART = {
     "repel": _art_repel,
     "attract": _art_attract,
@@ -1657,7 +1731,10 @@ _BAND_ART = {
 # whole registry, `shared/ks3.js` and `shared/ks3.css` first; all six were
 # free.
 
-ART = {}
+ART = {
+    'p10-motor-arrows':    r_p10_motor_arrows,
+    'p10-horseshoe-field': r_p10_horseshoe_field,
+}
 
 KIND_SHELL = {
     'track-pair':      ("ks3-tpair-block",

@@ -679,12 +679,37 @@ LESSON = {
     ],
 
     # ── figures (§4.10) ─────────────────────────────────────────────────────
-    # ⚠️ EMPTY, AND MEASURED. `<img>`, `<figure>` and `<picture>` each appear
-    # zero times on this page — grepped — and every `<svg>` is chrome. Schema §11
-    # says the same of all five B10 pages and gives the reason; nothing in this
-    # lesson is spatial or structural, and declaring a slot the page never
-    # references would invent a sourcing task in `docs/ks3/diagram-manifest.md`.
-    "figures": [],
+    # ⊕ MRB-352, 23 Sep 2026 — NO LONGER EMPTY. This used to read "EMPTY, AND
+    # MEASURED… nothing in this lesson is spatial or structural", which was
+    # true of the page's own hook and remains true of it. What changed is
+    # `b10-01-e01`'s ladder question: its stem used to DESCRIBE the bench's
+    # height chart in words ("the bars are drawn touching") rather than
+    # showing one, which is the described-diagram defect Mide's diagram
+    # ruling forbids. The touching/separated distinction IS spatial — it is
+    # the whole content of the question — so it gets a real drawing rather
+    # than a second sentence about the one on the bench.
+    "figures": [
+        {"id": "b10-height-bars-touching",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "frequency-bars",
+         "title": "A bar chart of student heights, with every bar touching "
+                  "the next",
+         "desc": "A bar chart along the bottom axis showing height in "
+                 "centimetres, grouped into seven ranges from 145–150 up to "
+                 "175–180. The bar for every range is drawn touching its "
+                 "neighbours on both sides, with no gap anywhere along the "
+                 "axis. The vertical axis counts the number of students in "
+                 "each range, out of sixty: 3, 7, 13, 16, 12, 6, then 3, "
+                 "rising to a peak in the middle range and falling away on "
+                 "both sides.",
+         "caption": "Height, in centimetres, for sixty students. The bars "
+                    "touch — there is no gap between one range and the "
+                    "next.",
+         "data": {"bins": CHARACTERISTICS[0]["bins"],
+                  "x_label": "height", "x_unit": "cm",
+                  "y_label": "number of students", "touching": True}},
+    ],
 
     # ── core, in the approved page's document order ─────────────────────────
     "core": [
@@ -772,6 +797,11 @@ LESSON = {
          # arrangement and the same reason as b7-01's, b8-01's and b9-01's.
          "key_fact": {"ref": "shape-and-cause-are-two-questions",
                       "ground": "card"}},
+
+        # ⊕ MRB-352 — the touching-bars chart, so the ladder's question about
+        # it (b10-01-e01) points at a real drawing instead of describing one.
+        {"type": "figure", "ref": "b10-height-bars-touching",
+         "anchor": "s-height-chart"},
 
         {"type": "misconception", "id": "shape-is-not-cause",
          "anchor": "s-think", "targets": "GENE-01"},

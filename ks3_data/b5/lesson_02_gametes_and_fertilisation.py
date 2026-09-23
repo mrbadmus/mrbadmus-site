@@ -603,6 +603,25 @@ LESSON = {
                     "in different organs, and the orange route runs the whole "
                     "way between them. Fertilisation and implantation are two "
                     "events, not one."},
+        # ⊕ MRB-352 — the comparison table's own scale bars, as a static
+        # figure, so `b5-02-h01`'s ladder question points at a real drawing
+        # instead of quoting the bar lengths in words. Reuses `SCALE["rows"]`
+        # verbatim, so this figure and the bench's own panel can never quote
+        # two different ratios for the same two cells.
+        {"id": "b5-egg-sperm-scale",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "scale-bars",
+         "title": "Two horizontal bars comparing an egg cell's diameter "
+                  "with a sperm cell head's diameter, drawn to scale",
+         "desc": "Two horizontal bars, one above the other. The upper "
+                 "bar, labelled Egg cell, runs almost the full width of "
+                 "the figure, with '0.1 mm across' printed after it. The "
+                 "lower bar, labelled Sperm cell head, is drawn much "
+                 "shorter — about a twentieth of the length of the bar "
+                 "above it — with '0.005 mm across' printed after it.",
+         "caption": "Relative diameter, to scale.",
+         "data": {"rows": SCALE["rows"]}},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -644,6 +663,12 @@ LESSON = {
 
          # The panel below the table, inside the same section.
          "scale": SCALE},
+
+        # ⊕ MRB-352 — the scale panel's own two bars, drawn statically, so
+        # `b5-02-h01`'s ladder question points at a real drawing instead of
+        # quoting the bar lengths in words.
+        {"type": "figure", "ref": "b5-egg-sperm-scale",
+         "anchor": "s-egg-sperm-scale"},
 
         # #s-fert — the band panel. Rail stop 3, mirroring `s-compare`; see
         # the docstring. `rule` is the component: band ground, 3px ink border, an accent-text

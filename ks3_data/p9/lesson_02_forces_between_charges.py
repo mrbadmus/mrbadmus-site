@@ -384,6 +384,11 @@ LESSON = {
         {"type": "misconception", "id": "think-attraction-proves-nothing",
          "anchor": "s-think"},
 
+        # ⊕ MRB-352 (diagrams) — the nine-case table, drawn, so
+        # `p9-02-s04` can point a question at it by figure id.
+        {"type": "figure", "ref": "p9-charge-matrix-grid",
+         "anchor": "s-charge-matrix-grid"},
+
         {"type": "quiz", "anchor": "s-ladder"},
         {"type": "summary", "id": "s-keynote"},
     ],
@@ -428,7 +433,51 @@ LESSON = {
          ]},
     ],
 
-    "figures": [],
+    "figures": [
+        # ⊕ MRB-352 (diagrams) — the same nine verdicts as `#s-matrix`'s
+        # table above, drawn as a grid rather than marked up as HTML, so
+        # `p9-02-s04` can point a question at it. Wording is verbatim;
+        # only the markup carrying it changed (SVG `<text>` takes no
+        # `<strong>`, so `strong` is now a flag on the cell instead).
+        {"id": "p9-charge-matrix-grid",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "p9-charge-matrix",
+         "title": "A 3 by 3 grid of every combination of two charged "
+                  "objects",
+         "desc": "A grid with a blank corner, headed Positive, Neutral and "
+                 "Negative across the top and down the left side. Each of "
+                 "the nine cells inside holds a short verdict: the "
+                 "Positive row reads Repel, Attract weakly, Attract; the "
+                 "Neutral row reads Attract weakly, Nothing, Attract "
+                 "weakly; the Negative row reads Attract, Attract weakly, "
+                 "Repel.",
+         "caption": "The same grid as earlier in this lesson.",
+         "grid": {
+             "columns": ["Positive", "Neutral", "Negative"],
+             "rows": [
+                 {"head": "Positive", "cells": [
+                     {"line1": "Repel", "line2": "like charges",
+                      "strong": True},
+                     {"line1": "Attract weakly", "line2": "induction"},
+                     {"line1": "Attract", "line2": "unlike charges",
+                      "strong": True},
+                 ]},
+                 {"head": "Neutral", "cells": [
+                     {"line1": "Attract weakly", "line2": "induction"},
+                     {"line1": "Nothing", "line2": ""},
+                     {"line1": "Attract weakly", "line2": "induction"},
+                 ]},
+                 {"head": "Negative", "cells": [
+                     {"line1": "Attract", "line2": "unlike charges",
+                      "strong": True},
+                     {"line1": "Attract weakly", "line2": "induction"},
+                     {"line1": "Repel", "line2": "like charges",
+                      "strong": True},
+                 ]},
+             ],
+         }},
+    ],
 
     "key_facts": [
         {"id": "repulsion-is-the-proof",

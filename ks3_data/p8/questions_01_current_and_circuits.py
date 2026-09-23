@@ -92,8 +92,8 @@ QUESTIONS = [
     {
         "id": "p8-01-e04",
         "band": "easier",
-        "text": "In the circuit symbols, a circle with a cross inside it "
-                "means…",
+        "text": "Which component's circuit symbol is shown in the "
+                "diagram?",
         "options": [
             {"text": "a switch", "correct": False,
              "why": "A switch is drawn as two contacts with a lever lifted "
@@ -104,7 +104,7 @@ QUESTIONS = [
             {"text": "a resistor", "correct": False,
              "why": "A resistor is a plain rectangle drawn in the wire."},
         ],
-        "figure": None,
+        "figure": "p8-lamp-symbol",
     },
 
     # ── standard ────────────────────────────────────────────────────────

@@ -102,7 +102,7 @@ second quote.
 Full words — `easier`, `standard`, `harder`. Never `s` or `h`.
 """
 
-from ks3_art.kit import e, rich, t
+from ks3_art.kit import e, rich, t, _label, _rect, _svg_open
 
 
 # ═══ shared P9 primitives ════════════════════════════════════════════════
@@ -1117,6 +1117,103 @@ def _triple(spec, act_id):
     return '<div class="ks3-chband-cards">%s</div>' % cells
 
 
+# ═══ MRB-352 (diagrams) · two standalone question figures ══════════════
+#
+# `_matrix` (p9-02) and `field-grid` (p9-03) both render through paths this
+# lane may not extend for a new picture: `_matrix` is an HTML `<table>`, and
+# `field-grid`'s field lines are drawn by client JS at runtime (`d="M0 0"`
+# server-side, filled in by `paint()`), so there is no static drawing to
+# extract from either. Both figures below are new, drawn to match the
+# CONTENT of the instrument beside them rather than lifted from its code.
+
+def r_p9_charge_matrix(fig):
+    """`p9-02-s04` — the nine-case table, as a drawn grid.
+
+    ⚖️ SAME NINE VERDICTS AS `#s-matrix`'s table, split onto two lines and
+    stripped of its `<strong>` markup (SVG `<text>` takes no inline HTML),
+    with a `strong` flag per cell driving the weight instead. The words are
+    unchanged; only the markup they travel in is.
+    """
+    grid = fig.get("grid") or {}
+    cols = grid.get("columns") or []
+    rows = grid.get("rows") or []
+    if len(cols) != 3 or len(rows) != 3:
+        raise ValueError(
+            "charge-matrix %r is %d x %d. Two objects with three states "
+            "each is nine cases, and the figure's own claim is that it "
+            "draws every one." % (fig.get("id"), len(rows), len(cols)))
+    for r in rows:
+        if not r.get("head") or len(r.get("cells") or []) != 3:
+            raise ValueError(
+                "charge-matrix %r row %r does not have three cells."
+                % (fig.get("id"), r.get("head")))
+        for c in r["cells"]:
+            if not c.get("line1"):
+                raise ValueError(
+                    "charge-matrix %r row %r has a cell with no `line1`."
+                    % (fig.get("id"), r.get("head")))
+
+    CELL, X0, Y0 = 150, 40, 40
+    W = H = X0 * 2 + CELL * 4
+    body = []
+
+    def box(col, row, header):
+        body.append(_rect(
+            X0 + col * CELL, Y0 + row * CELL, CELL, CELL,
+            fill="var(--ks3-card)" if header else "var(--ks3-ground)",
+            stroke="var(--ks3-ink)", w=3))
+
+    box(0, 0, True)
+    for i, name in enumerate(cols):
+        box(i + 1, 0, True)
+        body.append(_label(X0 + (i + 1.5) * CELL, Y0 + CELL / 2.0 + 7, name,
+                           size=22, weight="700"))
+    for r, row in enumerate(rows):
+        box(0, r + 1, True)
+        body.append(_label(X0 + CELL / 2.0, Y0 + (r + 1.5) * CELL + 7,
+                           row["head"], size=22, weight="700"))
+        for c, cell in enumerate(row["cells"]):
+            box(c + 1, r + 1, False)
+            cx = X0 + (c + 1.5) * CELL
+            cy = Y0 + (r + 1) * CELL
+            line2 = cell.get("line2", "")
+            body.append(_label(
+                cx, cy + (CELL / 2.0 - 12 if line2 else CELL / 2.0 + 8),
+                cell["line1"], size=19,
+                weight="800" if cell.get("strong") else "600"))
+            if line2:
+                body.append(_label(cx, cy + CELL / 2.0 + 22, line2, size=14,
+                                   weight="500", fill="var(--ks3-ink-muted)"))
+
+    return "".join([_svg_open(fig, W, H)] + body + ["</svg>"])
+
+
+def r_p9_field_point(fig):
+    """`p9-03-s01` — one marked point on a field map, with its own arrow.
+
+    ⚖️ **NO FORCE ARROW IS DRAWN.** The question asks which way a negative
+    charge at this point is pushed; drawing the push would answer it. Only
+    the FIELD arrow (the given) is shown, at the marked point and at three
+    fainter points nearby, so the marked one reads as one sample of a wider
+    map rather than as a special case invented for the question.
+    """
+    def arrow(x, y, length, cls, w):
+        return ('<path class="%s" d="M%d %d H%d M%d %d L%d %d M%d %d L%d %d" '
+                'style="stroke-width:%s"/>'
+                % (cls, x, y, x + length, x + length, y, x + length - 14,
+                   y - 10, x + length, y, x + length - 14, y + 10, w))
+
+    faint = (arrow(60, 70, 90, "ks3-p9fig-faint", 3)
+             + arrow(60, 230, 90, "ks3-p9fig-faint", 3)
+             + arrow(230, 70, 90, "ks3-p9fig-faint", 3)
+             + arrow(230, 230, 90, "ks3-p9fig-faint", 3))
+    main = arrow(150, 150, 130, "ks3-p9fig-main", 6)
+    dot = '<circle class="ks3-p9fig-point" cx="150" cy="150" r="9"/>'
+    body = ('<rect class="ks3-p9fig-frame" x="20" y="20" width="360" '
+            'height="260" rx="18"/>%s%s%s' % (faint, main, dot))
+    return "".join([_svg_open(fig, 400, 300), body, "</svg>"])
+
+
 # ═══ p9-01 · #s-think · the shell of a rail-bearing confrontation ════════
 
 def r_charge_think(a, act_id):
@@ -1166,7 +1263,10 @@ def r_charge_think(a, act_id):
 # `ks3_art/kit.py` are untouched. Shell stems checked against the whole
 # registry first, and one of them had to move: `ks3-cpair-` is C4's.
 
-ART = {}
+ART = {
+    'p9-charge-matrix': r_p9_charge_matrix,
+    'p9-field-point':   r_p9_field_point,
+}
 
 KIND_SHELL = {
     'transfer-pair':  ("ks3-xfer-block",

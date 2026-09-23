@@ -108,9 +108,8 @@ QUESTIONS = [
     {
         "id": "b9-01-e03",
         "band": "easier",
-        "text": "In the oak wood web, exactly one arrow touches the "
-                "ladybirds: it runs from the aphids to the ladybirds. What "
-                "does that tell you?",
+        "text": "Look at the oak wood web. Find the ladybirds, and look at "
+                "the arrows touching them. What does that tell you?",
         "options": [
             {"text": "The ladybirds are eaten by the aphids, and by nothing "
                      "else in the wood.", "correct": False,
@@ -215,9 +214,8 @@ QUESTIONS = [
     {
         "id": "b9-01-s03",
         "band": "standard",
-        "text": "In the oak wood web, one arrow runs from the mice all the "
-                "way up to the sparrowhawk, crossing a whole row. What does "
-                "that arrow show?",
+        "text": "Look at the oak wood web. Find the arrow that runs from the "
+                "mice to the sparrowhawk. What does that arrow show?",
         "options": [
             {"text": "That the mice must really be secondary consumers, since "
                      "they feed a tertiary consumer like the hawk.",

@@ -39,8 +39,8 @@ QUESTIONS = [
     {
         "id": "b10-01-e01",
         "band": "easier",
-        "text": "The height graph on the bench is drawn with the bars "
-                "touching. What are the touching bars claiming?",
+        "text": "Look at the height chart. What are the touching bars "
+                "claiming?",
         "options": [
             {"text": "That every value in between exists — the categories are "
                      "ranges that join up.",
@@ -64,7 +64,7 @@ QUESTIONS = [
                     "question one. Whether the bars touch is a claim about the "
                     "data. What caused the variation is a separate question."},
         ],
-        "figure": None,
+        "figure": "b10-height-bars-touching",
     },
     {
         "id": "b10-01-e02",

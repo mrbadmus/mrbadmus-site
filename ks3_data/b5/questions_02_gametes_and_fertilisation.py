@@ -256,9 +256,10 @@ QUESTIONS = [
     {
         "id": "b5-02-h01",
         "band": "harder",
-        "text": "The lesson draws the egg's bar twenty times as long as the "
-                "sperm head's. A student concludes the egg is twenty times as "
-                "much cell. Where does that go wrong?",
+        "text": "Look at the diagram comparing the egg and sperm cell "
+                "diameters. A student concludes that the egg must be "
+                "twenty times as much cell as the sperm. Where does that "
+                "go wrong?",
         "options": [
             {"text": "It does not go wrong — a bar twenty times as long does "
                      "mean twenty times as much cell.",
@@ -282,7 +283,7 @@ QUESTIONS = [
                     "times the width is about eight thousand times the volume, "
                     "not five."},
         ],
-        "figure": None,
+        "figure": "b5-egg-sperm-scale",
     },
     {
         "id": "b5-02-h02",

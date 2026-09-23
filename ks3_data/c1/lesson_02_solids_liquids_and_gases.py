@@ -280,14 +280,42 @@ LESSON = {
                  "particles are identical in all three."},
     ],
 
-    # Nothing on the rebuilt page references a figure. The superseded body's
-    # `c1-arrangement-compare` — arrangement, movement and spacing side by side
-    # — is exactly what the state bench animates and the contrast matrix
-    # tabulates, so the drawing is not missing, it has been replaced by two
-    # instruments. Declaring it would put a sourcing task in the diagram
-    # manifest for a figure no block would show. Present and empty, never
-    # absent.
-    "figures": [],
+    # ⊕ MRB-352, 23 Sep 2026 — NO LONGER EMPTY. This used to read "Nothing on
+    # the rebuilt page references a figure… declaring one would put a
+    # sourcing task in the manifest for a figure no block would show", and
+    # that stayed true of the LEDE: the animated `<canvas>` bench and the
+    # contrast matrix still do that teaching job and neither is replaced
+    # here. What forced a real drawing is `c1-02-e01`'s ladder question,
+    # which used to describe the bench's fixed-size reference particle in
+    # words ("drawn the same size beside the solid, beside the liquid and
+    # beside the gas") instead of showing one — a static figure the question
+    # can point at, since a ladder question is not rendered beside the live
+    # canvas bench it is testing.
+    "figures": [
+        {"id": "c1-particle-states",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "particle-states",
+         "title": "Solid, liquid and gas, each drawn as a box of "
+                  "particles, with a reference particle beside every box",
+         "desc": "Three boxes side by side, labelled Solid, Liquid and "
+                 "Gas. The solid's box holds sixteen particles in a tight, "
+                 "regular grid, each one touching its neighbours. The "
+                 "liquid's box holds fifteen particles, still close "
+                 "together but arranged unevenly rather than in a grid. "
+                 "The gas's box holds eight particles, scattered with "
+                 "wide gaps between them and none touching. Beneath each "
+                 "box sits one more particle on its own, captioned 'one "
+                 "particle, actual size'.",
+         "caption": "One substance, three states. Compare the particles "
+                    "inside each box with the reference particle "
+                    "underneath it.",
+         "data": {"states": [
+             {"id": "solid", "kind": "solid", "label": "Solid"},
+             {"id": "liquid", "kind": "liquid", "label": "Liquid"},
+             {"id": "gas", "kind": "gas", "label": "Gas"},
+         ]}},
+    ],
 
     # ── core, in the approved page's document order ─────────────────────────
     "core": [
@@ -442,6 +470,12 @@ LESSON = {
                      "setting is showing."},
 
         {"type": "key-fact", "ref": "state-is-arrangement"},
+
+        # ⊕ MRB-352 — the fixed-size reference particle, drawn, so the
+        # ladder's question about it (c1-02-e01) shows the three states
+        # instead of describing them in words.
+        {"type": "figure", "ref": "c1-particle-states",
+         "anchor": "s-particle-states"},
 
         {"type": "misconception", "id": "same-particles-reveal",
          "anchor": "s-think", "targets": "PART-03"},

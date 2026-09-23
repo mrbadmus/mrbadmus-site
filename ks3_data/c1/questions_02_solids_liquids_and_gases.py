@@ -24,10 +24,10 @@ QUESTIONS = [
     {
         "id": "c1-02-e01",
         "band": "easier",
-        "text": "The state bench draws one extra particle at the side, "
-                "labelled “one particle, actual size”, and it is drawn the "
-                "same size beside the solid, beside the liquid and beside "
-                "the gas. Why is it drawn that way?",
+        "text": "Look at the particle diagram for the solid, the liquid and "
+                "the gas. Each one has a reference particle beside it, "
+                "labelled “one particle, actual size”. Why does the "
+                "diagram do that?",
         "options": [
             {"text": "Because three different sizes would make the boxes "
                      "harder to compare with each other.",
@@ -51,7 +51,7 @@ QUESTIONS = [
                     "apart they sit. It never changes their size, at any "
                     "temperature."},
         ],
-        "figure": None,
+        "figure": "c1-particle-states",
     },
     {
         "id": "c1-02-e02",

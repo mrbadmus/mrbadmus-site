@@ -320,6 +320,11 @@ LESSON = {
                   "drawn as a loop off to one side, across a component, "
                   "because it is not measuring a flow at all."},
 
+        # ⊕ MRB-352 (diagrams) — the lamp symbol, standalone, so
+        # `p8-01-e04` can point a question at it rather than describing it
+        # in the stem.
+        {"type": "figure", "ref": "p8-lamp-symbol", "anchor": "s-lamp-symbol"},
+
         {"type": "key-fact", "ref": "current-is-a-flow-of-charge"},
 
         # ── #s-think · the one confrontation on a P8 rail ───────────────
@@ -360,7 +365,27 @@ LESSON = {
 
     "activities": [],
 
-    "figures": [],
+    "figures": [
+        # ⊕ MRB-352 (diagrams) — the lamp cell of the symbol key above,
+        # drawn on its own. Alt text describes GEOMETRY only, never
+        # names the component: `p8-01-e04` asks the pupil to identify it.
+        {"id": "p8-lamp-symbol",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "p8-symbol-lamp",
+         "title": "Circuit symbol: a circle with two lines crossing "
+                  "inside it",
+         "desc": "A single circuit symbol, on its own: a short straight "
+                 "wire enters a circle from the left and another leaves "
+                 "it on the right. Inside the circle, two straight lines "
+                 "cross from corner to corner, making an X.",
+         "caption": "One of the eight symbols from this lesson's key, "
+                    "shown on its own.",
+         "aria_label": "A circuit symbol: a circle with two straight "
+                       "lines crossing inside it, corner to corner, and "
+                       "a wire entering on the left and leaving on the "
+                       "right."},
+    ],
 
     "key_facts": [
         {"id": "current-is-a-flow-of-charge",

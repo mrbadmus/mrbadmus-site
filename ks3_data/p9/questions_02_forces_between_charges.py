@@ -198,8 +198,8 @@ QUESTIONS = [
     {
         "id": "p9-02-s04",
         "band": "standard",
-        "text": "In the nine-case table of every charge combination, how "
-                "many of the nine give no force at all?",
+        "text": "Look at the grid. How many of the nine combinations give "
+                "no force at all?",
         "options": [
             {"text": "Two", "correct": False,
              "why": "The two cases where both objects carry the same sign "
@@ -214,7 +214,7 @@ QUESTIONS = [
              "why": "Four of the nine are the induction case, and those all "
                     "attract weakly. Only one gives nothing."},
         ],
-        "figure": None,
+        "figure": "p9-charge-matrix-grid",
     },
 
     # ── harder ──────────────────────────────────────────────────────────

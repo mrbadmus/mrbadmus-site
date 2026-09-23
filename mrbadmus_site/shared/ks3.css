@@ -28859,6 +28859,24 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    is styled by `.ks3-misconception`, exactly as the other fifty-six are,
    and a rule here would make one page's wrong-idea block look different
    from every other one for a reason that is about the rail. */
+
+/* ⊕ MRB-352 (diagrams) — two standalone question figures, `p9-02-s04`'s
+   nine-case grid and `p9-03-s01`'s marked field point. Neither reuses an
+   existing instrument's drawing (see the note in `ks3_art/p9.py`), so
+   both need their own paint rules rather than borrowing one. */
+.ks3-p9fig-frame {
+  fill: none; stroke: var(--ks3-rule-strong); stroke-width: 2;
+  stroke-dasharray: 6 8;
+}
+.ks3-p9fig-faint {
+  fill: none; stroke: var(--ks3-ink-muted); stroke-width: 3;
+  stroke-linecap: round; opacity: .55;
+}
+.ks3-p9fig-main {
+  fill: none; stroke: var(--ks3-ink); stroke-width: 6;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.ks3-p9fig-point { fill: var(--ks3-ink); stroke: none; }
 /* ═══ END P9 ═══ */
 
 /* ═══ BEGIN P10 ══════════════════════════════════════════════════════════
@@ -29401,6 +29419,37 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    (`--ks3-alert`). Unified at integration with P11 and P12: one control for
    the whole system by an explicit ruling; the corpus-wide question is raised
    as a finding, not answered in one unit. */
+
+/* ⊕ MRB-352 (diagrams) — two standalone question figures, `p10-05-h02`'s
+   motor-coil force arrows and `p10-02-s03`'s horseshoe field gap. Neither
+   reuses an existing instrument's drawing (`r_motor_coil` and
+   `r_compass_plot` both draw by client JS at runtime — see the notes in
+   `ks3_art/p10.py`), so both need their own paint rules. */
+.ks3-p10fig-pole {
+  fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;
+}
+.ks3-p10fig-yoke {
+  fill: var(--ks3-blue-tint); stroke: var(--ks3-ink); stroke-width: 4;
+}
+.ks3-p10fig-polelabel {
+  font-family: var(--ks3-font-display); font-weight: 800; font-size: 30px;
+  fill: var(--ks3-ink);
+}
+.ks3-p10fig-field {
+  fill: none; stroke: var(--ks3-ink-muted); stroke-width: 3;
+  stroke-linecap: round;
+}
+.ks3-p10fig-coil { fill: none; stroke: var(--ks3-ink); stroke-width: 5; }
+.ks3-p10fig-axle { fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 4; }
+.ks3-p10fig-symbol { fill: none; stroke: var(--ks3-ink); stroke-width: 3; }
+.ks3-p10fig-cross {
+  fill: none; stroke: var(--ks3-ink); stroke-width: 3; stroke-linecap: round;
+}
+.ks3-p10fig-dot { fill: var(--ks3-ink); stroke: none; }
+.ks3-p10fig-force {
+  fill: none; stroke: var(--ks3-accent-text); stroke-width: 6;
+  stroke-linecap: round; stroke-linejoin: round;
+}
 
 /* ═══ END P10 ═══ */
 

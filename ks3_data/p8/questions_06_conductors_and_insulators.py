@@ -169,8 +169,8 @@ QUESTIONS = [
     {
         "id": "p8-06-s03",
         "band": "standard",
-        "text": "Why does the chart of resistances use an axis where every "
-                "mark is a thousand times the one before?",
+        "text": "Look at the chart of resistances. Why is its axis built "
+                "like this?",
         "options": [
             {"text": "Because a ruler scale that showed the plastic would "
                      "put every conductor at zero", "correct": True},
@@ -187,7 +187,7 @@ QUESTIONS = [
              "why": "There is no boundary. The line on the chart is a "
                     "convenience and says so."},
         ],
-        "figure": None,
+        "figure": "p8-resistance-chart-recap",
     },
     {
         "id": "p8-06-s04",

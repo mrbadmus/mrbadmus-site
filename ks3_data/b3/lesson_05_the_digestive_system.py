@@ -330,6 +330,41 @@ LESSON = {
                     "follow the orange line down: it does not stop, branch or "
                     "start again anywhere between there and 07, and it never "
                     "once goes into the dashed boundary."},
+        # ⊕ MRB-352 — the gut-journey bench's own hours, as a static chart,
+        # so `b3-05-s04`'s ladder question points at a real chart instead
+        # of quoting the bench's two numbers in words. All six charted
+        # stops are drawn (the pancreas/liver/gall bladder group is off the
+        # chart on the bench itself, since no food passes through them).
+        {"id": "b3-digestion-timing",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "digestion-timing-bars",
+         "title": "A bar chart of how long a meal spends in each part of "
+                  "the digestive system",
+         "desc": "A bar chart with six bars, one per organ in the order "
+                 "food travels: mouth, oesophagus, stomach, small "
+                 "intestine, large intestine, rectum and anus. The mouth "
+                 "and oesophagus bars are both drawn as thin slivers, "
+                 "labelled under 1 hour. The stomach's bar reaches 4 "
+                 "hours. The small intestine's bar is the tallest but "
+                 "one, reaching 16 hours. The large intestine's bar is "
+                 "the tallest, reaching 20 hours, and the rectum's bar "
+                 "reaches 6 hours.",
+         "caption": "Hours spent in each organ, to scale.",
+         "data": {"organs": [
+             {"id": "mouth", "label": "Mouth", "hours": 0.02,
+              "display": "<1 h"},
+             {"id": "oesophagus", "label": "Oesophagus", "hours": 0.003,
+              "display": "<1 h"},
+             {"id": "stomach", "label": "Stomach", "hours": 4,
+              "display": "4 h"},
+             {"id": "smallint", "label": "Small intestine", "hours": 16,
+              "display": "16 h"},
+             {"id": "largeint", "label": "Large intestine", "hours": 20,
+              "display": "20 h"},
+             {"id": "rectum", "label": "Rectum and anus", "hours": 6,
+              "display": "6 h"},
+         ], "y_unit": "hours"}},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -516,6 +551,11 @@ LESSON = {
 
         {"type": "figure", "ref": "b3-gut-labelled", "anchor": "s-tube"},
 
+        # ⊕ MRB-352 — the bench's own hours, drawn, so the question about
+        # the stomach and the small intestine points at a chart instead of
+        # quoting its two numbers in words.
+        {"type": "figure", "ref": "b3-digestion-timing",
+         "anchor": "s-digestion-timing"},
 
         {"type": "misconception", "id": "two-wrong-ideas",
          "anchor": "s-think", "targets": "DIET-11"},

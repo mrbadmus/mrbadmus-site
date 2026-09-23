@@ -392,6 +392,11 @@ LESSON = {
         {"type": "misconception", "id": "think-the-magnets-pull-it",
          "anchor": "s-think"},
 
+        # ⊕ MRB-352 (diagrams) — the coil's two force arrows, frozen and
+        # equal, so `p10-05-h02` can point a question at it by figure id.
+        {"type": "figure", "ref": "p10-motor-arrows-marked",
+         "anchor": "s-motor-arrows-marked"},
+
         {"type": "quiz", "anchor": "s-ladder"},
         {"type": "summary", "id": "s-keynote"},
     ],
@@ -431,7 +436,30 @@ LESSON = {
          ]},
     ],
 
-    "figures": [],
+    "figures": [
+        # ⊕ MRB-352 (diagrams) — the coil's two force arrows, drawn once
+        # more as a fixed diagram so `p10-05-h02` can point at them. The
+        # live bench above draws its force arrows by client script; this
+        # is a new, static drawing to match, not lifted from its code —
+        # see the note on `r_p10_motor_arrows` in `ks3_art/p10.py`.
+        {"id": "p10-motor-arrows-marked",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "p10-motor-arrows",
+         "title": "A coil between two magnetic poles, with two "
+                  "equal-length force arrows",
+         "desc": "Two magnetic poles, labelled N on the left and S on the "
+                 "right, with three arrows between them pointing from the "
+                 "N pole towards the S pole. A rectangular wire coil sits "
+                 "between the poles. Its left side carries a cross symbol "
+                 "and its right side carries a dot symbol. An arrow of a "
+                 "certain length points up from the cross side, and an "
+                 "arrow of the same length points down from the dot side.",
+         "caption": "The coil from this lesson's bench, with its two "
+                    "force arrows marked.",
+         "aria_label": "A coil between two magnetic poles, with two "
+                       "equal-length force arrows, one up and one down."},
+    ],
 
     "key_facts": [
         {"id": "pushed-sideways",

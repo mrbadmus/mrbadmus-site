@@ -26,6 +26,7 @@ from ks3_art.kit import (
     _circle,
     _ellipse,
     _label,
+    _line,
     _mono,
     _n,
     _path,
@@ -2463,8 +2464,76 @@ def r_test_bench(a, act_id):
                "".join(results)))
 
 
+# ── how long a meal spends in each organ (b3-05, ⊕ MRB-352) ─────────────
+
+def _digestion_timing_bars(fig):
+    """How long a meal spends in each organ, one bar per stop.
+
+    ⚖️ ALL SIX CHARTED STOPS, NOT ONLY THE TWO THE QUESTION COMPARES. Drawing
+    only the stomach and the small intestine would let the picture make the
+    comparison FOR the pupil by leaving everything else off it; the real
+    chart beside the gut-journey bench carries every stop, and this figure
+    is that same chart, not a two-bar excerpt of it.
+    """
+    d = fig.get("data") or {}
+    organs = d.get("organs") or []
+    if not organs:
+        raise ValueError(
+            "digestion-timing-bars figure %r has no organs." % fig.get("id"))
+    y_unit = d.get("y_unit")
+    if not y_unit:
+        raise ValueError(
+            "digestion-timing-bars figure %r has no y_unit. A chart "
+            "without units is an accuracy defect, not a style omission."
+            % fig.get("id"))
+
+    W, H = 720, 380
+    ML, MR, MT, MB = 56, 20, 30, 110
+    pw, ph = W - ML - MR, H - MT - MB
+    n = len(organs)
+    gap = 14.0
+    bw = (pw - gap * (n - 1)) / float(n)
+    y_max = max(o["hours"] for o in organs) * 1.2
+    # A floor so a stop that is genuinely under an hour still shows a
+    # visible sliver rather than vanishing into the axis.
+    min_frac = 0.03
+
+    out = [_svg_open(fig, W, H)]
+    out.append(_label(ML, MT - 12, "time in the organ / %s" % y_unit,
+                      size=13, fill=_SVG_INK_MUTED, weight="700",
+                      anchor="start"))
+    out.append(_line(ML, MT, ML, MT + ph, stroke=_SVG_INK, w=2))
+    out.append(_line(ML, MT + ph, ML + pw, MT + ph, stroke=_SVG_INK, w=2))
+    for i, o in enumerate(organs):
+        x = ML + i * (bw + gap)
+        frac = max(o["hours"] / y_max, min_frac)
+        h = frac * ph
+        y = MT + ph - h
+        out.append(_rect(x, y, bw, h, rx=5, fill=_SVG_ACCENT_TINT,
+                         stroke=_SVG_INK, w=2, data_organ=o["id"],
+                         data_hours=o["hours"]))
+        out.append(_label(x + bw / 2.0, y - 8, o["display"], size=13,
+                          weight="700"))
+        words, lines, cur = o["label"].split(), [], ""
+        for w_ in words:
+            trial = (cur + " " + w_).strip()
+            if len(trial) > 11 and cur:
+                lines.append(cur)
+                cur = w_
+            else:
+                cur = trial
+        if cur:
+            lines.append(cur)
+        for li, ln in enumerate(lines):
+            out.append(_label(x + bw / 2.0, MT + ph + 20 + li * 15, ln,
+                              size=13, fill=_SVG_INK_MUTED, weight="600"))
+    out.append('</svg>')
+    return "".join(out)
+
+
 # ── registrations ────────────────────────────────────────────────────────
 ART = {
+    'digestion-timing-bars': _digestion_timing_bars,
     'gut-tube': _gut_tube,
     'villus': _villus,
 }

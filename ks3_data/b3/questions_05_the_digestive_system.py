@@ -218,9 +218,9 @@ QUESTIONS = [
     {
         "id": "b3-05-s04",
         "band": "standard",
-        "text": "The chart puts the stomach at about four hours and the small "
-                "intestine at about sixteen. What does that comparison tell "
-                "you about the two organs?",
+        "text": "Look at the digestion-timing chart. Compare the bars for "
+                "the stomach and the small intestine. What does that "
+                "comparison tell you about the two organs?",
         "options": [
             {"text": "The stomach works four times faster than the small "
                      "intestine, so it does most of the digesting",
@@ -244,7 +244,7 @@ QUESTIONS = [
                     "because that is where digestion is completed and "
                     "absorption happens."},
         ],
-        "figure": None,
+        "figure": "b3-digestion-timing",
     },
 
     # ── harder ──────────────────────────────────────────────────────────

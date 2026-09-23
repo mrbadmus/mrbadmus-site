@@ -2454,9 +2454,78 @@ def r_species_cases(a, act_id):
                t("%d %s" % (len(cases), tal["remaining_suffix"]))))
 
 
+# ── the touching-bars frequency chart (b10-01, ⊕ MRB-352) ────────────────
+
+def _frequency_bars(fig):
+    """A frequency chart, drawn with its bars TOUCHING or SEPARATED.
+
+    ⚖️ TOUCHING IS THE SCIENCE (b10-01's own confrontation), not a style
+    choice. A continuous variable's classes are ranges that join up, so the
+    bars are drawn with no gap between them; a discontinuous variable's
+    classes are separate categories, so the bars sit apart. `touching` is
+    read straight off the data rather than guessed from a label, because
+    drawing it backwards would put the exact misconception the question
+    tests for on the page as the picture.
+
+    The bins are the SAME list `CHARACTERISTICS[0]` (height) hands to the
+    bench, referenced rather than retyped, so the figure and the interactive
+    plotter beside it can never quote two different surveys of the same
+    sixty students.
+    """
+    d = fig.get("data") or {}
+    bins = d.get("bins") or []
+    if not bins:
+        raise ValueError(
+            "frequency-bars figure %r has no bins." % fig.get("id"))
+    x_label, x_unit = d.get("x_label"), d.get("x_unit")
+    if not x_unit:
+        raise ValueError(
+            "frequency-bars figure %r has no x_unit. A chart without units "
+            "is an accuracy defect, not a style omission." % fig.get("id"))
+    touching = bool(d.get("touching"))
+    y_label = d.get("y_label") or "number of students"
+
+    W, H = 760, 380
+    ML, MR, MT, MB = 60, 20, 34, 96
+    pw, ph = W - ML - MR, H - MT - MB
+    n = len(bins)
+    gap = 0.0 if touching else 12.0
+    bw = (pw - gap * (n - 1)) / float(n)
+    top_n = max(b["n"] for b in bins)
+    y_max = top_n * 1.2
+
+    out = [_svg_open(fig, W, H)]
+    out.append(_label(ML, MT - 12, y_label, size=13, fill=_SVG_INK_MUTED,
+                      weight="700", anchor="start"))
+    out.append(_line(ML, MT, ML, MT + ph, stroke=_SVG_INK, w=2))
+    out.append(_line(ML, MT + ph, ML + pw, MT + ph, stroke=_SVG_INK, w=2))
+    for frac in (0.0, 0.5, 1.0):
+        yv = top_n * frac
+        yy = MT + ph - (yv / y_max) * ph
+        out.append(_line(ML - 6, yy, ML, yy, stroke=_SVG_INK, w=2))
+        out.append(_mono(ML - 12, yy + 4, str(int(round(yv))), size=13,
+                         anchor="end"))
+    for i, b in enumerate(bins):
+        x = ML + i * (bw + gap)
+        h = (b["n"] / y_max) * ph
+        y = MT + ph - h
+        out.append(_rect(x, y, bw, h, rx=(0 if touching else 6),
+                         fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=2,
+                         data_bin=b.get("label"), data_n=b["n"]))
+        out.append(_label(x + bw / 2.0, y - 8, str(b["n"]), size=13,
+                          weight="700"))
+        out.append(_label(x + bw / 2.0, MT + ph + 20, b["label"], size=13,
+                          fill=_SVG_INK_MUTED, weight="600"))
+    out.append(_label(ML + pw / 2.0, H - 14, "%s / %s" % (x_label, x_unit),
+                      size=14, fill=_SVG_INK_BODY, weight="700"))
+    out.append('</svg>')
+    return "".join(out)
+
+
 # ── registrations ────────────────────────────────────────────────────────
 ART = {
     'base-pairs': _base_pairs,
+    'frequency-bars': _frequency_bars,
     'nested-scale': _nested_scale,
     'punnett': _punnett,
 }

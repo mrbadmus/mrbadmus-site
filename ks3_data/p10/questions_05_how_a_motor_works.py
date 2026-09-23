@@ -246,9 +246,9 @@ QUESTIONS = [
     {
         "id": "p10-05-h02",
         "band": "harder",
-        "text": "On a motor diagram the two force arrows are always drawn the "
-                "same length as each other, whatever the current is set to. "
-                "Why must that be right?",
+        "text": "Look at the two force arrows in the diagram. Why must they "
+                "always be the same length as each other, whatever the "
+                "current is set to?",
         "options": [
             {"text": "The two sides are the same distance from the axle, so "
                      "the pushes must match", "correct": False,
@@ -265,7 +265,7 @@ QUESTIONS = [
             {"text": "The same current runs through both sides, and both "
                      "sides are in the same field", "correct": True},
         ],
-        "figure": None,
+        "figure": "p10-motor-arrows-marked",
     },
     {
         "id": "p10-05-h03",

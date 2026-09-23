@@ -129,8 +129,8 @@ QUESTIONS = [
     {
         "id": "b4-05-e04",
         "band": "easier",
-        "text": "On the bench the third bar is labelled “What a sensor "
-                "outside the leaf measures”. What is that bar showing?",
+        "text": "Look at the gas-exchange chart. What is the third bar "
+                "showing?",
         "options": [
             {"text": "The two rates above it, added together.",
              "correct": False,
@@ -150,7 +150,7 @@ QUESTIONS = [
             {"text": "The difference between the two rates above it.",
              "correct": True},
         ],
-        "figure": None,
+        "figure": "b4-gas-exchange-bars",
     },
 
     # ── standard ────────────────────────────────────────────────────────

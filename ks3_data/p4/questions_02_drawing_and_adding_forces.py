@@ -220,9 +220,8 @@ QUESTIONS = [
     {
         "id": "p4-02-h02",
         "band": "harder",
-        "text": "A student draws a 40 N arrow and a 25 N arrow pointing "
-                "opposite ways, then a 15 N arrow underneath. Why do the two "
-                "lower bars on the lesson's beam exactly fill the top one?",
+        "text": "Look at the diagram. Why do the two lower bars exactly "
+                "fill the top one?",
         "options": [
             {"text": "Because 25 N and 15 N make 40 N, which is what the "
                      "subtraction says.", "correct": True},
@@ -239,7 +238,7 @@ QUESTIONS = [
              "why": "Nothing here is multiplied. That is exactly why this "
                     "relationship gets a beam rather than a triangle."},
         ],
-        "figure": None,
+        "figure": "p4-resultant-beam-recap",
     },
     {
         "id": "p4-02-h03",

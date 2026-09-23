@@ -241,4 +241,53 @@ diagonal arrow drawn across it", not "variable resistor". Describing the shape
 is not giving the answer away — it is what a sighted pupil already sees, and a
 screen-reader user is entitled to the same information, no more and no less.
 
-## 12. Deviations
+## 12. The most instructive failure of this run — a green suite over a fixture that did not occur
+
+Worth writing up properly, because the suite was green and the feature did not
+work, and the gap between those two facts was invisible from inside the tests.
+
+The backend's worksheet work reported **422 assertions passing, 0 failing**,
+including named proofs that a figure produced real drawn vector content in the
+PDF, that the DOCX carried an image part, that the raster cache worked, and
+that the too-tall guard shrank to a floor. All true. All measured against
+**three hand-written placeholder figures.**
+
+I mirrored the real manifest across and drove one large render. Every
+figure-bearing PDF died at the first figure:
+
+    ERR figure svg: unsupported element <title>
+
+`ks3_art/kit.py`'s `_svg_open` REFUSES to emit a figure without `<title>` and
+`<desc>` — they are what `role="img"` and `aria-labelledby` point at. So those
+elements are on 36 of the 41 real figures, and the translator rejected every
+one of them. **The PDF half of the feature could not render a single real
+figure, with 422 assertions green over it.**
+
+Measuring the corpus rather than guessing then showed the subset was short by
+more than that one element:
+
+| element | in how many of the 41 real figures | supported before |
+|---|---:|---|
+| `title` / `desc` | 36 | ❌ threw |
+| `text` | **23** | ❌ threw |
+| `defs` / `marker` | 2 | ❌ threw |
+
+`<text>` is the serious one: it carries the axis labels and units that this
+ticket makes an accuracy requirement. A graph printed with no axis labels is
+not a cosmetic loss, it is a wrong diagram.
+
+**What actually went wrong** was not the subset — a narrow subset that fails
+loudly is a good design, and it is kept. It was that **the fixtures were not
+drawn from the real corpus**, so the tests could only ever prove the
+translator handled shapes the translator's author had already thought of.
+
+**The fix that matters** is therefore not "add these elements". It is the
+assertion now required: push EVERY figure in `figures.json` through both
+renderers and fail if any one throws. 41 small SVGs, cheap, and it is the only
+thing here that would have caught this without a human driving a real render.
+
+This is the `project_cold_pass_value` lesson again, in a new place: a green
+drive is evidence only about what it watches, and a fixture is part of what it
+watches.
+
+## 13. Deviations

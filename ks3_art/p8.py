@@ -1457,6 +1457,25 @@ def _symbols(specs, act_id):
     return '<div class="ks3-cband-symbols">%s</div>' % cells
 
 
+# ⊕ MRB-352 (diagrams) — the lamp cell of the eight-symbol key above, drawn
+# on its own so `p8-01-e04` can point a question at it. SAME path and circle
+# data as the `lamp` entry in `_symbols`' own spec — copied rather than
+# re-derived, so the two pictures of a lamp on this page cannot drift apart.
+# No `<text>` in this figure (the lamp symbol carries no letter), so the
+# 13px label floor `_label` enforces elsewhere does not apply.
+def r_p8_symbol_lamp(fig):
+    return (
+        '<svg class="ks3-figure-svg" viewBox="0 0 180 80" role="img" '
+        'style="min-width:260px" aria-label="%s">'
+        '<path class="ks3-cband-symstroke" d="M10 40 H62 M118 40 H170" '
+        'style="stroke-width:5"/>'
+        '<path class="ks3-cband-symstroke" d="M70 20 L110 60 M110 20 L70 60" '
+        'style="stroke-width:5"/>'
+        '<circle class="ks3-cband-symstroke" cx="90" cy="40" r="28" '
+        'style="stroke-width:5"/>'
+        '</svg>' % e(fig.get("aria_label", "")))
+
+
 def _table(spec, act_id):
     """The four fixed tables — p8-02, p8-04, p8-05 and p8-07.
 
@@ -1515,6 +1534,17 @@ def _table(spec, act_id):
 
 
 def _bars(spec, act_id):
+    body, height = _bars_body(spec, act_id)
+    return '<div class="ks3-cband-chartwrap">%s</div>' % _bars_svg_from(
+        body, height, spec.get("aria_label", ""))
+
+
+# ⊕ MRB-352 (diagrams) — the geometry alone, factored out of `_bars` so
+# `r_p8_resistance_chart` can put the SAME log-scale chart in a standalone
+# question figure without re-deriving it. `_bars` above is unchanged in
+# behaviour: it is now three lines calling this and `_bars_svg_from`
+# instead of one long function, and produces byte-identical output.
+def _bars_body(spec, act_id):
     """p8-06 `#s-scale` — seven resistances on an axis of fourteen decades.
 
     ⚖️ **ALL GEOMETRY IS COMPUTED FROM LOGARITHMS AT BUILD TIME**, so the
@@ -1604,10 +1634,25 @@ def _bars(spec, act_id):
                     y + 21, t(r["label"]), X0 + w + 10, y + 21,
                     t(r["value"])))
 
-    return ('<div class="ks3-cband-chartwrap">'
-            '<svg class="ks3-cband-chart" viewBox="0 0 1000 %d" role="img" '
-            'aria-label="%s">%s</svg></div>'
-            % (AXIS_Y + 76, e(spec.get("aria_label", "")), body))
+    return body, AXIS_Y + 76
+
+
+def _bars_svg_from(body, height, aria_label, extra_class="", extra_style=""):
+    return ('<svg class="ks3-cband-chart%s" viewBox="0 0 1000 %d" role="img" '
+            '%saria-label="%s">%s</svg>'
+            % (extra_class, height, extra_style, e(aria_label), body))
+
+
+# ⊕ MRB-352 (diagrams) — a standalone question figure of `p8-06`'s decade
+# chart, so `p8-06-s03` can point at the SAME drawing by figure id rather
+# than describing it in the stem. `fig` (from `figures[]`) is passed
+# straight to `_bars_body` — it carries the identical `rows`/`ticks`/
+# `boundary`/`axis_min`/`axis_max` keys `_bars`' own `spec` does.
+def r_p8_resistance_chart(fig):
+    body, height = _bars_body(fig, fig.get("id"))
+    return _bars_svg_from(body, height, fig.get("aria_label", ""),
+                          extra_class=" ks3-figure-svg",
+                          extra_style='style="min-width:700px" ')
 
 
 # ═══ p8-01 · #s-think · the one confrontation that is a rail stop ═══════
@@ -1716,7 +1761,10 @@ def r_p8_attempt(a, act_id):
 # untouched. Shell stems checked against the whole registry first: two
 # obvious ones were already taken (`ks3-cut-block`, `ks3-fault-block`).
 
-ART = {}
+ART = {
+    'p8-symbol-lamp':       r_p8_symbol_lamp,
+    'p8-resistance-chart':  r_p8_resistance_chart,
+}
 
 KIND_SHELL = {
     'circuit-loop':          ("ks3-cloop-block",

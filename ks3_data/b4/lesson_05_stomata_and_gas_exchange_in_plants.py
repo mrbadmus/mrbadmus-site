@@ -482,6 +482,30 @@ LESSON = {
                     "slice underneath says where the pores are: every one of "
                     "them is in the underside of the leaf, and the top "
                     "surface has none."},
+        # ⊕ MRB-352 — the ledger's own three bars, as a static drawing, so
+        # `b4-05-e04`'s ladder question points at a real chart instead of
+        # describing the bench's third bar in words.
+        {"id": "b4-gas-exchange-bars",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "gas-exchange-bars",
+         "title": "A bar chart with three bars: respiration, "
+                  "photosynthesis, and a third bar labelled 'what a "
+                  "sensor outside the leaf measures'",
+         "desc": "Three vertical bars on one chart, each with its rate "
+                 "printed above it. The first bar, labelled Respiration, "
+                 "reaches 2 units. The second, labelled Photosynthesis, "
+                 "reaches about 8.6 units — this reading is taken in "
+                 "bright light. The third bar is labelled 'What a sensor "
+                 "outside the leaf measures' and reaches about 6.6 units.",
+         "caption": "Respiration, photosynthesis, and what a sensor "
+                    "outside the leaf actually measures, in bright light.",
+         "data": {"bars": [
+             {"id": "respiration", "label": "Respiration", "v": 2},
+             {"id": "photosynthesis", "label": "Photosynthesis", "v": 8.6},
+             {"id": "net", "label": "What a sensor outside the leaf "
+                                     "measures", "v": 6.6},
+         ], "y_unit": "units"}},
     ],
 
     # ── core, in the approved page's document order ─────────────────────────
@@ -603,6 +627,10 @@ LESSON = {
 
         {"type": "figure", "ref": "b4-guard-cells-two-state", "anchor": "s-guards"},
 
+        # ⊕ MRB-352 — the ledger's three bars, drawn, so the question about
+        # the third one shows it rather than describing it.
+        {"type": "figure", "ref": "b4-gas-exchange-bars",
+         "anchor": "s-gas-exchange-bars"},
 
         {"type": "misconception", "id": "think-net",
          "anchor": "s-think", "targets": "BREATH-12"},

@@ -834,6 +834,17 @@ def check_text_defects(paths, rows, scope_name):
         print("     ✅ no unambiguous page reference in %d row(s)" % len(rows))
 
 
+# ⊕ MRB-352 — the 28-id frozen-window exception. Imported rather than
+# retyped: `frozen_window_allowlist.py` carries the ruling, the evidence it
+# was checked against production, and asserts its own length, so this file
+# cannot drift from it or quietly grow it.
+try:
+    import frozen_window_allowlist as _mrb352
+    _MRB352_ALLOWLIST = frozenset(_mrb352.ALLOWLIST)
+except Exception:          # the checker must still run without it
+    _MRB352_ALLOWLIST = frozenset()
+
+
 # ── 9 · the frozen window ───────────────────────────────────────────────
 
 # ── 10 · over-assertion: does an absolute MARK the wrong options? ─────────
@@ -994,6 +1005,43 @@ def check_frozen(stage, rows, leaves, new_ids, old_by_leaf):
                 moved.append("options changed")
             if a["key"] != b["key"]:
                 moved.append("key index %s -> %s" % (a["key"], b["key"]))
+            # ⊕ MRB-352 — Mide's 23 Sep 2026 ruling, made explicit here.
+            #
+            # 28 named rows may be edited IN PLACE to attach a figure and
+            # reword the stem so it points at the picture instead of
+            # describing it. This checker knew nothing about that, so it
+            # failed every one of those edits as a frozen-window violation —
+            # which made `mrb338_land.sh` red on any unit carrying one, with
+            # no way to land the repair the ruling authorises.
+            #
+            # The waiver is DELIBERATELY NARROW and DELIBERATELY LOUD:
+            #   * only the 28 ids in `frozen_window_allowlist.py`;
+            #   * only `stem`, `options` and the answer key — an `id` change
+            #     is still a hard failure even for an allowlisted row,
+            #     because the ruling's first condition is "the same id";
+            #   * every waiver prints, by row and by field, on every run, so
+            #     it can never pass silently.
+            #
+            # Every other frozen row in the estate is checked exactly as
+            # before. `frozen_window_guard.py` independently proves the rest
+            # of the window is byte-identical to production.
+            if moved and b["id"] in _MRB352_ALLOWLIST:
+                id_changed = [m for m in moved if m.startswith("id ")]
+                if not id_changed:
+                    NOTES.append(
+                        "frozen window · %s position %d (%s) — WAIVED under "
+                        "MRB-352 (Mide, 23 Sep 2026): %s"
+                        % (leaf, pos, b["id"], "; ".join(moved)))
+                    print("    ⊕ %s position %d waived under MRB-352 (%s)"
+                          % (leaf, pos, b["id"]))
+                    for m in moved:
+                        print("       %s" % m)
+                    continue
+                moved = id_changed + [
+                    m for m in moved if not m.startswith("id ")]
+                print("    ❌ %s is on the MRB-352 allowlist but its ID "
+                      "changed — the ruling's first condition is the SAME "
+                      "id. Not waived." % b["id"])
             if moved:
                 fail("frozen window", "%s position %d CHANGED (%s) — %s"
                      % (leaf, pos, b["id"], "; ".join(moved)))

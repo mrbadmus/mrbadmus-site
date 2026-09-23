@@ -435,6 +435,11 @@ LESSON = {
         {"type": "misconception", "id": "think-the-field-is-there-first",
          "anchor": "s-think"},
 
+        # ⊕ MRB-352 (diagrams) — one marked point on a field map, so
+        # `p9-03-s01` can point a question at it by figure id.
+        {"type": "figure", "ref": "p9-field-point-marked",
+         "anchor": "s-field-point-marked"},
+
         {"type": "quiz", "anchor": "s-ladder"},
         {"type": "summary", "id": "s-keynote"},
     ],
@@ -474,7 +479,23 @@ LESSON = {
          ]},
     ],
 
-    "figures": [],
+    "figures": [
+        # ⊕ MRB-352 (diagrams) — one marked point on a field map, with its
+        # own field arrow, for `p9-03-s01` to point at. No force arrow is
+        # drawn: that is what the question asks for.
+        {"id": "p9-field-point-marked",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "p9-field-point",
+         "title": "One marked point on a field map, with an arrow "
+                  "pointing right",
+         "desc": "A dashed rectangle standing for part of a larger field "
+                 "map. A dot near its centre marks one point, with a bold "
+                 "arrow leading right from it. Three fainter arrows of "
+                 "the same length, also pointing right, sit at the "
+                 "corners of the rectangle.",
+         "caption": "One point on a field map, marked."},
+    ],
 
     "key_facts": [
         {"id": "a-field-fills-the-space",

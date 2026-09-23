@@ -469,6 +469,11 @@ LESSON = {
         {"type": "misconception", "id": "think-only-where-drawn",
          "anchor": "s-think"},
 
+        # ⊕ MRB-352 (diagrams) — parallel, equal-length arrows between a
+        # horseshoe magnet's poles, so `p10-02-s03` can point at them.
+        {"type": "figure", "ref": "p10-horseshoe-field-gap",
+         "anchor": "s-horseshoe-field-gap"},
+
         {"type": "quiz", "anchor": "s-ladder"},
         {"type": "summary", "id": "s-keynote"},
     ],
@@ -510,7 +515,31 @@ LESSON = {
          ]},
     ],
 
-    "figures": [],
+    "figures": [
+        # ⊕ MRB-352 (diagrams) — the horseshoe's field gap, drawn as a
+        # fixed diagram so `p10-02-s03` can point at it. The live bench
+        # above draws its field lines by client script; this is a new,
+        # static drawing of the same arrangement, not lifted from its
+        # code — see the note on `r_p10_horseshoe_field` in
+        # `ks3_art/p10.py`.
+        {"id": "p10-horseshoe-field-gap",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "p10-horseshoe-field",
+         "title": "The gap between the two poles of a horseshoe magnet, "
+                  "with three arrows crossing it",
+         "desc": "Two rectangular blocks facing each other across a gap, "
+                 "joined at the bottom by a third block — a horseshoe "
+                 "magnet seen from the front. The left block is labelled "
+                 "N and the right block is labelled S. Three arrows of "
+                 "the same length cross the gap between them, evenly "
+                 "spaced, all pointing from the N block towards the S "
+                 "block.",
+         "caption": "The gap between a horseshoe magnet's two poles.",
+         "aria_label": "The gap between a horseshoe magnet's poles, with "
+                       "three equal, parallel arrows crossing it from the "
+                       "N pole to the S pole."},
+    ],
 
     "key_facts": [
         {"id": "the-field-is-the-region",

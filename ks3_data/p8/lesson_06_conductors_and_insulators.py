@@ -447,6 +447,11 @@ LESSON = {
         {"type": "misconception", "id": "think-insulators-block",
          "anchor": "s-think"},
 
+        # ⊕ MRB-352 (diagrams) — a standalone recap of the decade chart
+        # above, so `p8-06-s03` can point a question at it by figure id.
+        {"type": "figure", "ref": "p8-resistance-chart-recap",
+         "anchor": "s-resistance-chart-recap"},
+
         {"type": "quiz", "anchor": "s-ladder"},
         {"type": "summary", "id": "s-keynote"},
     ],
@@ -649,7 +654,55 @@ LESSON = {
          ]},
     ],
 
-    "figures": [],
+    "figures": [
+        # ⊕ MRB-352 (diagrams) — the SAME decade chart the `circ-band`
+        # block above draws (identical rows/ticks/boundary), so
+        # `p8-06-s03` can point a question at it by figure id.
+        {"id": "p8-resistance-chart-recap",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "p8-resistance-chart",
+         "title": "A bar chart of seven resistances on a logarithmic axis",
+         "desc": "A chart with seven horizontal bars, one per specimen, on "
+                 "an axis where each marked point is a thousand times the "
+                 "one before it. The bars run from very short, for copper "
+                 "wire, up to one that reaches almost the full length of "
+                 "the axis, for a plastic ruler. A dashed vertical line "
+                 "crosses the chart between the second and third shortest "
+                 "bars, labelled to say there is no sharp boundary there.",
+         "caption": "The same chart as earlier in this lesson.",
+         "aria_label": "A chart of resistance for seven specimens on a "
+                       "logarithmic axis running from a hundredth of an "
+                       "ohm to a hundred teraohms. Copper is the shortest "
+                       "bar and the plastic ruler is by far the longest, "
+                       "reaching almost the end of the axis.",
+         "axis_min": 0.01,
+         "axis_max": 1e12,
+         "axis_note": "EACH MARK IS A THOUSAND TIMES THE ONE BEFORE IT",
+         "ticks": [
+             {"ohms": 0.01, "label": "0.01 Ω"},
+             {"ohms": 1, "label": "1 Ω"},
+             {"ohms": 1000, "label": "1 kΩ"},
+             {"ohms": 1000000, "label": "1 MΩ"},
+             {"ohms": 1000000000, "label": "1 GΩ"},
+             {"ohms": 1000000000000, "label": "1 TΩ"},
+         ],
+         "boundary": {
+             "ohms": 100000,
+             "label": ["NO SHARP LINE — ROUGHLY WHERE",
+                       "USEFUL CONDUCTION GIVES OUT"],
+         },
+         "rows": [
+             {"label": "Copper wire", "ohms": 0.05, "value": "0.05 Ω"},
+             {"label": "Nichrome wire", "ohms": 1.1, "value": "1.1 Ω"},
+             {"label": "Pencil lead", "ohms": 30, "value": "30 Ω"},
+             {"label": "Salt water", "ohms": 400, "value": "400 Ω"},
+             {"label": "Tap water", "ohms": 40000, "value": "40 kΩ"},
+             {"label": "Dry wood", "ohms": 5000000, "value": "5 MΩ"},
+             {"label": "Plastic ruler", "ohms": 2000000000000,
+              "value": "2 TΩ"},
+         ]},
+    ],
 
     "key_facts": [
         {"id": "one-continuous-range",

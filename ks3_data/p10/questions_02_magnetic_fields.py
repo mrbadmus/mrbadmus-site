@@ -174,9 +174,8 @@ QUESTIONS = [
     {
         "id": "p10-02-s03",
         "band": "standard",
-        "text": "Between the jaws of a horseshoe magnet the arrows on a field "
-                "map are nearly parallel and nearly the same length. What "
-                "does that tell you about the field there?",
+        "text": "Look at the field between the jaws of the horseshoe "
+                "magnet. What does that tell you about the field there?",
         "options": [
             {"text": "It is nearly the same strength and direction all "
                      "through that gap", "correct": True},
@@ -196,7 +195,7 @@ QUESTIONS = [
              "why": "The gap between the jaws is the strongest part of a "
                     "horseshoe's map, which is the reason for the shape."},
         ],
-        "figure": None,
+        "figure": "p10-horseshoe-field-gap",
     },
     {
         "id": "p10-02-s04",

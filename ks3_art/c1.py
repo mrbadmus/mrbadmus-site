@@ -11,8 +11,15 @@ import json
 import math
 import re
 from ks3_art.kit import (
+    _SVG_ACCENT_TINT,
+    _SVG_CARD,
+    _SVG_INK,
     _canvas_frame,
+    _circle,
+    _label,
     _option_li,
+    _rect,
+    _svg_open,
     e,
     r_activity_options,
     r_bench_gate,
@@ -2068,7 +2075,82 @@ def r_state_matrix(a, act_id):
                e(hl["rest"]), head, "".join(body), foot))
 
 
+# ── solid, liquid and gas, with a fixed-size reference particle (c1-02) ──
+
+def _particle_states(fig):
+    """Solid, liquid and gas, each a box of particles, with a reference
+    particle beside every box drawn at the SAME radius throughout.
+
+    ⚖️ THE REFERENCE PARTICLE'S RADIUS IS ONE NUMBER, USED THREE TIMES,
+    NEVER THREE. NOTES §3 flag 3 makes this non-negotiable: a state changes
+    how particles are ARRANGED, never how big any one particle is. Passing
+    three separate radii would let the drawing quietly disagree with itself
+    on the exact fact the question tests, so there is only one `R` in this
+    function and every circle — inside every box and beside it — is drawn
+    from it.
+    """
+    d = fig.get("data") or {}
+    states = d.get("states") or []
+    kinds = [s.get("kind") for s in states]
+    if kinds != ["solid", "liquid", "gas"]:
+        raise ValueError(
+            "particle-states figure %r must declare exactly the three "
+            "states solid, liquid, gas, in that order; got %r."
+            % (fig.get("id"), kinds))
+
+    R = 9.0
+    PANEL_W, PANEL_H = 220.0, 190.0
+    GAP, PAD_TOP, PAD_L, PAD_BOT = 26.0, 34.0, 20.0, 96.0
+    W = PAD_L * 2 + 3 * PANEL_W + 2 * GAP
+    H = PAD_TOP + PANEL_H + PAD_BOT
+
+    # Deterministic layouts, one per state — never randomised, so the built
+    # page is byte-identical run to run.
+    def _solid():
+        return [(26 + c * 56.0, 24 + r * 46.0)
+                for r in range(4) for c in range(4)]
+
+    def _liquid():
+        pts = []
+        for r, cnt in ((0, 4), (1, 4), (2, 4), (3, 3)):
+            off = 20.0 if r % 2 else 0.0
+            for c in range(cnt):
+                pts.append((26 + off + c * 52.0, 22 + r * 48.0))
+        return pts
+
+    def _gas():
+        return [(22, 20), (150, 34), (70, 96), (188, 118),
+                (30, 160), (120, 168), (170, 60), (60, 150)]
+
+    layout = {"solid": _solid, "liquid": _liquid, "gas": _gas}
+
+    out = [_svg_open(fig, W, H)]
+    for i, s in enumerate(states):
+        x0 = PAD_L + i * (PANEL_W + GAP)
+        out.append(_rect(x0, PAD_TOP, PANEL_W, PANEL_H, rx=14,
+                         fill=_SVG_CARD, stroke=_SVG_INK, w=2.5))
+        out.append(_label(x0 + PANEL_W / 2.0, PAD_TOP - 12, s["label"],
+                          size=14, weight="700"))
+        for px, py in layout[s["kind"]]():
+            out.append(_circle(x0 + px, PAD_TOP + py, R,
+                               fill=_SVG_ACCENT_TINT, stroke=_SVG_INK, w=1.6,
+                               data_state=s["kind"]))
+        ref_x, ref_y = x0 + 24, PAD_TOP + PANEL_H + 34
+        out.append(_circle(ref_x, ref_y, R, fill=_SVG_ACCENT_TINT,
+                           stroke=_SVG_INK, w=1.6, data_reference=s["kind"]))
+        out.append(_label(ref_x + 22, ref_y - 3, "one particle,", size=13,
+                          anchor="start"))
+        out.append(_label(ref_x + 22, ref_y + 13, "actual size", size=13,
+                          anchor="start"))
+    out.append('</svg>')
+    return "".join(out)
+
+
 # ── registrations ────────────────────────────────────────────────────────
+ART = {
+    'particle-states': _particle_states,
+}
+
 KIND_SHELL = {
     'collision-counter': ("ks3-counter-block", ' data-instrument data-counterblock data-stage-done="0"'),
     'evidence-bench': ("ks3-ebench-block", ' data-instrument data-ebenchblock data-stage-done="0"'),

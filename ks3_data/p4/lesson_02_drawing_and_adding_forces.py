@@ -273,6 +273,15 @@ LESSON = {
         {"type": "misconception", "id": "think-bigger-pull-wins",
          "anchor": "s-think"},
 
+        # ⊕ MRB-352 (diagrams) — a standalone recap of the beam above, so a
+        # bank question can point at it by figure id. Same art, same
+        # whole/parts as the `formula` block's own figure; this is the
+        # SAME diagram shown a second time, deliberately, right before the
+        # ladder — see the report for why a second placement was chosen
+        # over reusing the formula block's embedded copy.
+        {"type": "figure", "ref": "p4-resultant-beam-recap",
+         "anchor": "s-resultant-beam-recap"},
+
         {"type": "quiz", "anchor": "s-ladder"},
         {"type": "summary", "id": "s-keynote"},
     ],
@@ -457,7 +466,38 @@ LESSON = {
          ]},
     ],
 
-    "figures": [],
+    "figures": [
+        # ⊕ MRB-352 (diagrams) — a referenceable copy of the resultant beam
+        # the `formula` block draws inline above (same `art`, same
+        # `whole`/`parts`), so `p4-02-h02` can point a question at it by id.
+        {"id": "p4-resultant-beam-recap",
+         "kind": "diagram",
+         "status": "drawn",
+         "art": "p4-resultant-beam",
+         "title": "Three bars drawn to the same scale: a 40 N pull split "
+                  "into a 25 N part and a 15 N part",
+         "desc": "Three horizontal bars drawn to the same scale, one above "
+                 "the other. The top bar is the longest, labelled PULL "
+                 "RIGHT and 40 N, with an arrowhead pointing right. Below "
+                 "it, two shorter bars sit end to end and together span "
+                 "the same length as the top bar: the first, labelled PULL "
+                 "LEFT and 25 N, has an arrowhead pointing left; the "
+                 "second, labelled LEFT OVER and 15 N, has an arrowhead "
+                 "pointing right. Dashed vertical lines run from the join "
+                 "between the two lower bars up to where the top bar ends.",
+         "caption": "The same beam as earlier in this lesson.",
+         "aria_label": "Three bars, drawn to the same scale. The top bar "
+                       "is a 40 newton pull to the right. Under it a 25 "
+                       "newton bar points left and reaches only part of "
+                       "the way, and the remaining length is a 15 newton "
+                       "bar pointing right. The two lower bars together "
+                       "make the length of the top one.",
+         "whole": {"label": "PULL RIGHT", "newtons": 40, "dir": "right"},
+         "parts": [
+             {"label": "PULL LEFT", "newtons": 25, "dir": "left"},
+             {"label": "LEFT OVER", "newtons": 15, "dir": "right"},
+         ]},
+    ],
 
     "key_facts": [
         {"id": "arrow-length-is-the-size",
