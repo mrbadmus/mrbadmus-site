@@ -432,7 +432,13 @@ def main():
                     help="also emit a delete for ids the database has and "
                          "Python no longer does. NOT the default; see the "
                          "comment on delete_orphans_statement()")
+    ap.add_argument("--self-test", action="store_true",
+                    help="unit-check the production figure guard "
+                         "(prod_figure_refusal) and exit; no network")
     args = ap.parse_args()
+
+    if args.self_test:
+        sys.exit(self_test())
 
     # "The pool is incomplete" and "these rows are withdrawn" are the same
     # absence with opposite meanings, and only the author knows which it is.
@@ -502,6 +508,66 @@ def main():
     print()
 
 
+# ── ⊕ MRB-352 run 2 · a production load must never strip a figure ──────
+
+def prod_figure_refusal(rows, project, has_figure_column):
+    """The message to refuse on, or None when the load may go ahead.
+
+    Column-absent mode drops `figure` from every row it sends — right on
+    TEST while the migration is being rehearsed, and harmless while no
+    authored row carries one. But since MRB-352 the authored stems SAY
+    "the diagram shows…". Loading one of those into a production table that
+    cannot hold its figure would serve a pupil a question pointing at a
+    picture that is not there. So on PRODUCTION, column-absent mode with
+    any non-null figure is a refusal, never a warning. TEST is unchanged:
+    it keeps loading without the column, as before.
+
+    Pure — no network, no argv — so `--self-test` can prove it."""
+    if project != "prod" or has_figure_column:
+        return None
+    carrying = [r["id"] for r in rows if r.get("figure") is not None]
+    if not carrying:
+        return None
+    return ("--load prod: production's ks4_assignment_bank has no `figure` "
+            "column, and %d row(s) being loaded carry a figure (%s%s). "
+            "Loading them would serve stems that point at a diagram with no "
+            "diagram. Apply the MRB-352 figure-column migration to "
+            "production first. Refusing; nothing was written."
+            % (len(carrying), ", ".join(carrying[:6]),
+               ", …" if len(carrying) > 6 else ""))
+
+
+def self_test():
+    """Unit-level proof of `prod_figure_refusal`. Exit 0 = every case holds."""
+    fig = [{"id": "a", "figure": "ks4-fig-x"}, {"id": "b", "figure": None}]
+    plain = [{"id": "a", "figure": None}, {"id": "b"}]
+    cases = [
+        ("prod, column absent, a figure present -> REFUSE",
+         prod_figure_refusal(fig, "prod", False) is not None),
+        ("prod, column absent, the refusal names the row",
+         "a" in (prod_figure_refusal(fig, "prod", False) or "")),
+        ("prod, column absent, no figure anywhere -> load",
+         prod_figure_refusal(plain, "prod", False) is None),
+        ("prod, column present, figures -> load",
+         prod_figure_refusal(fig, "prod", True) is None),
+        ("test, column absent, figures -> load (unchanged behaviour)",
+         prod_figure_refusal(fig, "test", False) is None),
+        ("test, column present, figures -> load",
+         prod_figure_refusal(fig, "test", True) is None),
+    ]
+    bad = [name for name, ok in cases if not ok]
+    for name, ok in cases:
+        print("     %s %s" % ("✅" if ok else "❌", name))
+    if bad:
+        print("\n     ❌ export_ks4_questions --self-test: %d case(s) failed"
+              % len(bad))
+        return 1
+    print("\n     ✅ export_ks4_questions --self-test: a production load in "
+          "column-absent mode refuses any row carrying a figure; TEST is "
+          "unchanged.")
+    return 0
+
+
 # ── applying it ──────────────────────────────────────────────────────────
 
 def load(rows, subject, project):
@@ -546,6 +612,11 @@ def load(rows, subject, project):
          urklkrwevjtlfbwnipjn or this refuses. So a prod.env accidentally
          pointing at TEST cannot quietly write test rows while reporting a
          production load — the two failure directions are both closed.
+
+    ⊕ MRB-352 run 2 — A FOURTH GUARD, on content rather than target: in
+    column-absent mode a PRODUCTION load refuses (exit 5) if any row carries
+    a figure, because those stems point at a diagram the table cannot hold.
+    TEST still loads without the column. See `prod_figure_refusal`.
 
     ⚠️ Production is loaded ONCE, at merge, with the migrations already
     applied. Per CLAUDE.md this is deliberate hand-work, and the run that does
@@ -642,7 +713,12 @@ def load(rows, subject, project):
     # `_has_figure_column`.
     load_cols = list(COLUMNS)   # includes the conflict key, "id"
     auth_headers = {"apikey": key, "Authorization": "Bearer " + key}
-    if not _has_figure_column(url, auth_headers, ctx):
+    has_figure_column = _has_figure_column(url, auth_headers, ctx)
+    refusal = prod_figure_refusal(rows, project, has_figure_column)
+    if refusal:
+        print("\n     ⛔ " + refusal)
+        return 5
+    if not has_figure_column:
         load_cols = [c for c in load_cols if c not in OPTIONAL_COLUMNS]
         print("\n     ⚠️ column-absent mode: %s has no `figure` column yet "
               "(MRB-352 migration not applied here). Loading without it."

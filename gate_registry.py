@@ -967,6 +967,22 @@ GATES = [
              "figures.json / shared/figures-ks{3,4}.js differ from a fresh "
              "build — build_all.py runs build_figures.py first, so a stale "
              "manifest means someone skipped the build."),
+    dict(name="ks4_export_prod_figure_guard",
+         cmd=["python3", "export_ks4_questions.py", "--self-test"],
+         speed="fast",
+         watches=["export_ks4_questions.py"],
+         why="MRB-352 run 2 — A PRODUCTION LOAD NEVER STRIPS A FIGURE. The "
+             "authored KS4 stems now say 'the diagram shows…'. "
+             "`export_ks4_questions.py --load prod` in column-absent mode "
+             "(production has no `figure` column yet) must REFUSE, non-zero, "
+             "if any row carries a figure — otherwise it would serve a stem "
+             "pointing at a picture that is not there. `--self-test` "
+             "unit-checks `prod_figure_refusal` with no network: prod + "
+             "absent + figure refuses and names the row; prod + absent + no "
+             "figure loads; the column present loads; TEST keeps its old "
+             "behaviour either way. ⚠️ export_ks4_questions.py used to be "
+             "EXCLUDED as 'an exporter, which asserts nothing'; this guard "
+             "is the one thing about it that is asserted, so it moved here."),
     dict(name="figures_mirror",
          cmd=["python3", "build_figures.py", "--mirror"],
          speed="fast",
@@ -2319,16 +2335,6 @@ EXCLUDED = {
         "docs/ks4/rainford-sow-mapping.md for Mide rather than asserted "
         "here; a gate cannot tell a genuinely absent topic from a "
         "mis-spelled one.",
-    "export_ks4_questions.py":
-        "an EXPORTER, the exact sibling of export_ks3_extended.py above: "
-        "ks4_data -> upsert SQL, or straight into the table over PostgREST "
-        "with --load. It asserts nothing about the estate. ⚠️ It does carry "
-        "two guards, and they are guards rather than assertions — --load "
-        "takes no value but a named project and re-reads the target URL to "
-        "refuse a database it was not pointed at. What its OUTPUT must "
-        "satisfy is ks4_pool_check, registered above, which is why this is "
-        "excluded rather than registered: gating the exporter would gate the "
-        "writing, and the rows are what matter.",
     "ks4_brief.py":
         "a GENERATOR of the per-topic authoring brief handed to each "
         "authoring lane — prose on stdout, no tracked file, no assertion. "
