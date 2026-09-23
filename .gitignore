@@ -84,3 +84,8 @@ ks3/__fixture__/
 
 # MRB-277 — gate receipts: evidence about one working copy, never committed
 .gate-receipts/
+
+# MRB-352 — a figure-render verification harness belongs in $MRB_SHOTS, not here.
+# One was committed into student/ by mistake (109KB of scratch). Per MRB-346,
+# a drive writes its artefacts to a scratch dir OUTSIDE the repo by default.
+student/_verify_*.html
