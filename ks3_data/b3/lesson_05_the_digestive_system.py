@@ -118,9 +118,17 @@ Measured on both marked rungs, and **both PASS unfixed**:
 No distractor was touched.
 
 ⚑ For Mide's science gate — NOTES-B3's own flags, carried here:
-  * flag 12  the transit times (mouth ~1 min, oesophagus ~8 s, stomach ~4 h,
-             small intestine ~16 h, large intestine 12–30 h, rectum a few
-             hours). Wide natural variation; the caveat is in the foot line.
+  * flag 12  the transit times — ⊕ CORRECTED, MRB-352 run 2 (settled
+             physiology, looked up rather than escalated): the small
+             intestine is ~2–6 h (typically ~4 h), NOT ~16 h; the stomach
+             ~2–4 h; the large intestine a day or more (~30 h typical, very
+             variable). Sources: Healthline "Digestion Process: Timeline";
+             ScienceDirect Topics "Intestine transit time"; AJR small-bowel
+             transit study. The lesson now says what that means: the
+             longest stay is the large intestine, which only takes back
+             water — time spent is not work done. Mouth ~1 min, oesophagus
+             ~8 s and rectum "a few hours" are unchanged. Wide natural
+             variation; the caveat is in the foot line.
   * flag 13  "you could live without a stomach", stated flatly.
   * flag 14  the gut-is-outside-you topology argument in GOING FURTHER, with
              the swallowed-coin comparison.
@@ -168,8 +176,9 @@ LESSON = {
 
     # ── framing ─────────────────────────────────────────────────────────────
     "big_question": "A nine-metre tube with seven jobs along it. Food spends "
-                    "four hours in the organ everybody names, and sixteen in "
-                    "the one that actually does the work.",
+                    "a few hours in the organ everybody names, a few more in "
+                    "the one that actually does the work — and longest of "
+                    "all in the one that only takes back water.",
 
     # ── the progress rail (§4.8.1 A) ────────────────────────────────────────
     # FOUR stops, as Design draws them. `s-two` is the third: no control of
@@ -345,23 +354,22 @@ LESSON = {
                  "food travels: mouth, oesophagus, stomach, small "
                  "intestine, large intestine, rectum and anus. The mouth "
                  "and oesophagus bars are both drawn as thin slivers, "
-                 "labelled under 1 hour. The stomach's bar reaches 4 "
-                 "hours. The small intestine's bar is the tallest but "
-                 "one, reaching 16 hours. The large intestine's bar is "
-                 "the tallest, reaching 20 hours, and the rectum's bar "
-                 "reaches 6 hours.",
+                 "labelled under 1 hour. The stomach's bar reaches 3 "
+                 "hours and the small intestine's 4 hours. The large "
+                 "intestine's bar is by far the tallest, reaching 30 "
+                 "hours, and the rectum's bar reaches 6 hours.",
          "caption": "Hours spent in each organ, to scale.",
          "data": {"organs": [
              {"id": "mouth", "label": "Mouth", "hours": 0.02,
               "display": "<1 h"},
              {"id": "oesophagus", "label": "Oesophagus", "hours": 0.003,
               "display": "<1 h"},
-             {"id": "stomach", "label": "Stomach", "hours": 4,
+             {"id": "stomach", "label": "Stomach", "hours": 3,
+              "display": "3 h"},
+             {"id": "smallint", "label": "Small intestine", "hours": 4,
               "display": "4 h"},
-             {"id": "smallint", "label": "Small intestine", "hours": 16,
-              "display": "16 h"},
-             {"id": "largeint", "label": "Large intestine", "hours": 20,
-              "display": "20 h"},
+             {"id": "largeint", "label": "Large intestine", "hours": 30,
+              "display": "30 h"},
              {"id": "rectum", "label": "Rectum and anus", "hours": 6,
               "display": "6 h"},
          ], "y_unit": "hours"}},
@@ -419,8 +427,8 @@ LESSON = {
                       "muscle wave, not the fall, moves the food."},
              {"id": "stomach", "label": "Stomach", "name": "Stomach",
               "kind": "Mechanical and chemical",
-              "hours": 4, "time": "about 4 hours",
-              "chart_name": "Stomach", "chart_hours": "4 h",
+              "hours": 3, "time": "2 to 4 hours",
+              "chart_name": "Stomach", "chart_hours": "3 h",
               "breaks": "Protein", "absorbs": "Almost nothing",
               "what": "A muscular bag that churns the food, adds hydrochloric "
                       "acid at about pH 2, and adds the enzyme protease to "
@@ -435,8 +443,8 @@ LESSON = {
              {"id": "smallint", "label": "Small intestine",
               "name": "Small intestine",
               "kind": "Chemical, then absorption",
-              "hours": 16, "time": "about 16 hours",
-              "chart_name": "Small intestine", "chart_hours": "16 h",
+              "hours": 4, "time": "about 4 hours (2 to 6)",
+              "chart_name": "Small intestine", "chart_hours": "4 h",
               "breaks": "Starch, protein and lipid — all of them, to "
                         "completion",
               "absorbs": "Almost everything",
@@ -471,8 +479,8 @@ LESSON = {
              {"id": "largeint", "label": "Large intestine",
               "name": "Large intestine",
               "kind": "Absorption of water",
-              "hours": 20, "time": "12 to 30 hours",
-              "chart_name": "Large intestine", "chart_hours": "20 h",
+              "hours": 30, "time": "a day or more — about 30 hours",
+              "chart_name": "Large intestine", "chart_hours": "30 h",
               "breaks": "Nothing your enzymes can break",
               "absorbs": "Water, some minerals and some vitamins",
               "what": "Wider and shorter than the small intestine. By the time "
@@ -502,11 +510,13 @@ LESSON = {
          # bars into the claim the lesson's big question makes.
          "chart": {
              "label": "Hours spent in each organ, to scale",
-             "close": "The stomach is the organ everyone names first and it "
-                      "holds the meal for about four hours. The small "
-                      "intestine holds it for four times as long, and that is "
-                      "where nearly all digestion is completed and nearly all "
-                      "absorption happens."}},
+             "close": "The stomach is the organ everyone names first, and it "
+                      "holds the meal for two to four hours. The small "
+                      "intestine holds it for only about four more, yet that "
+                      "is where nearly all digestion is completed and nearly "
+                      "all absorption happens. The longest stay, a day or "
+                      "more, is in the large intestine, which only takes "
+                      "back water. Time spent is not work done."}},
 
         # #s-two — Design's classless band section, which IS the `rule` shell.
         # Rail stop 3, mirroring `s-journey`; see the docstring.
@@ -603,7 +613,7 @@ LESSON = {
               "body": [
                   "The stomach is not the destination — it is a holding tank "
                   "with an acid bath and a strong set of muscles. It holds a "
-                  "meal for roughly four hours, kills most of the bacteria "
+                  "meal for two to four hours, kills most of the bacteria "
                   "that came in with it, starts protein digestion, and "
                   "releases the result into the small intestine a little at a "
                   "time. Almost nothing is absorbed through the stomach wall: "
@@ -631,8 +641,8 @@ LESSON = {
             "answer": 1,
             "feedback": {
                 0: "The stomach starts protein digestion and absorbs virtually "
-                   "nothing. It holds the meal for four hours; the small "
-                   "intestine holds it for sixteen.",
+                   "nothing. It passes the meal on after a few hours to the "
+                   "small intestine, where the real work happens.",
                 2: "By the time material reaches the large intestine the "
                    "nutrients have already been absorbed. It takes back water, "
                    "not food.",

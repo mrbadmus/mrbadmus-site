@@ -1723,7 +1723,10 @@ def r_gut_journey(a, act_id):
     `job-sort`, `verdict-cards` or the board. Those are runs of judgements;
     this is one journey with a quantity attached to each leg, and the quantity
     contradicts the intuition — the stomach, which every student names first,
-    holds the meal about four hours, and the small intestine holds it sixteen.
+    holds the meal a few hours, the small intestine (where the work happens)
+    only about four, and the large intestine, which only takes back water, a
+    day or more. (⊕ MRB-352 run 2: this once said sixteen hours for the small
+    intestine, which is wrong by about four times.)
     A tabbed panel set with no chart under it would teach the seven organs and
     lose the only thing the lesson is built to overturn.
 

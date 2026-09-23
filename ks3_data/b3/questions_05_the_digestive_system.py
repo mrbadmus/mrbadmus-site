@@ -1,8 +1,12 @@
 """B3 lesson 05 — The digestive system: twelve questions (MRB-269).
 
 The lesson's whole argument is that smaller pieces is not smaller molecules,
-and that the organ everybody names holds the meal for four hours while the one
-that does the work holds it for sixteen. These twelve probe exactly that: the
+and that time spent in an organ is not work done there. (⊕ MRB-352 run 2:
+this line used to say the small intestine holds a meal for sixteen hours; the
+real figure is about 2–6 h, and the rows outside the frozen window that
+carried it are corrected. `b3-05-e02`, `b3-05-h03` and `b3-05-h04` still
+say "sixteen" — they are frozen and not on the MRB-352 allowlist, so they
+wait for Mide's ruling.) These twelve probe exactly that: the
 seven stops and what each one does and does not do (peristalsis without
 gravity, the three secreting organs no food passes through, the large
 intestine taking back water rather than food, egestion as removal of what was
@@ -434,8 +438,8 @@ QUESTIONS = [
     {
         "id": "b3-05-s06",
         "band": "standard",
-        "text": "A meal spends about 4 hours in the stomach, about 16 in the "
-                "small intestine and 12 to 30 hours in the large intestine. "
+        "text": "A meal spends 2 to 4 hours in the stomach, about 4 in the "
+                "small intestine and a day or more in the large intestine. "
                 "Why does the large intestine hold it longest of all, when it "
                 "breaks nothing down?",
         "options": [
@@ -784,10 +788,10 @@ QUESTIONS = [
         "options": [
             {"text": "The large intestine.", "correct": True},
             {"text": "The small intestine.", "correct": False,
-             "why": "The small intestine holds a meal for about sixteen "
-                    "hours, less than the large intestine's twelve to thirty."},
+             "why": "The small intestine holds a meal for only about four "
+                    "hours, far less than the large intestine's day or more."},
             {"text": "The stomach.", "correct": False,
-             "why": "The stomach holds a meal for only about four hours, far "
+             "why": "The stomach holds a meal for only two to four hours, far "
                     "less than the large intestine."},
             {"text": "The rectum.", "correct": False,
              "why": "The rectum holds material for a few hours at the very "
@@ -1644,7 +1648,7 @@ QUESTIONS = [
     {
         "id": "b3-05-s29",
         "band": "standard",
-        "text": "By roughly twenty hours after a meal, digestion of its "
+        "text": "Within roughly ten hours of a meal, digestion of its "
                 "nutrients is essentially complete, yet material can still "
                 "sit in the large intestine for well over a day afterwards. "
                 "Explain why this is not a contradiction.",
@@ -1655,7 +1659,7 @@ QUESTIONS = [
                     "large intestine is doing in that time is absorbing "
                     "water, not digesting food."},
             {"text": "It is not a contradiction, but only because the "
-                     "twenty-hour figure is measured incorrectly.",
+                     "ten-hour figure is measured incorrectly.",
              "correct": False,
              "why": "Both figures can be accurate together — they simply "
                     "describe two different processes running on two "
@@ -1714,15 +1718,15 @@ QUESTIONS = [
                 "stomach and the small intestine.",
         "options": [
             {"text": "The claim does not hold up — the small intestine "
-                     "finishes every nutrient and does almost all "
-                     "absorption, holding the meal four times as long.",
+                     "finishes every nutrient and does almost all of the "
+                     "absorption.",
              "correct": True},
             {"text": "The claim is correct, since the stomach is the first "
                      "organ to add any digestive juice at all.",
              "correct": False,
              "why": "Being first is not the same as doing the most — the "
-                    "small intestine's sixteen hours of work far exceeds the "
-                    "stomach's four."},
+                    "stomach only begins on protein, and the small intestine "
+                    "finishes every nutrient."},
             {"text": "The claim is correct, because the stomach absorbs "
                      "most of the meal's nutrients.", "correct": False,
              "why": "Almost nothing is absorbed through the stomach wall — "
@@ -2385,8 +2389,7 @@ QUESTIONS = [
             {"text": "It is true only for the small intestine and large "
                      "intestine, but false everywhere else.", "correct": False,
              "why": "Even between those two organs the times differ "
-                    "considerably — roughly sixteen hours against twelve to "
-                    "thirty."},
+                    "hugely — about four hours against a day or more."},
             {"text": "It cannot be evaluated, since transit times were "
                      "never actually measured for each organ.", "correct": False,
              "why": "Typical transit times are given for every stop, from "
