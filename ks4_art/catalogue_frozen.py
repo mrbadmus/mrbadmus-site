@@ -1,154 +1,156 @@
-"""ks4_art.catalogue_frozen — new KS4 figures for the MRB-352 frozen-window
-diagram repair (Mide's 23 Sep 2026 ruling, `frozen_window_allowlist.py`).
+"""ks4_art.catalogue_frozen — KS4 figures for the MRB-352 frozen-window rows
+(Mide's 23 Sep 2026 ruling, `frozen_window_allowlist.py`), drawn by figlib.
 
-Kept in its own file, separate from `ks4_art/catalogue.py`, because this is
-a shared worktree and another content lane may be editing that file at the
-same time — records here never collide with anything of theirs.
-
-⚠️ KNOWN GAP, not something this file can fix (out of this lane's permitted
-touch scope): `build_figures.py` currently does
-`from ks4_art.catalogue import CATALOGUE` and only ever reads THAT one list —
-it does not discover every `ks4_art/catalogue_*.py` module the way
-`ks4_art.load()` discovers every drawer module for the `ART` table. So none
-of the ids below are visible to `build_figures.py` yet, and the six rows
-that reference a new id here will fail its `unresolved_ks4` check until
-something merges every `ks4_art/catalogue_*.py` module's `CATALOGUE` list
-(mirroring the discover-not-list pattern `ks4_art/__init__.py` already uses
-for drawers). That fix touches `build_figures.py`, which sits outside this
-worktree's permitted scope (`ks4_data/questions/**` and
-`ks4_art/catalogue*.py` only) — flagged in the run report rather than
-patched here.
-
-Every id, title and desc below follows `ks4_art/catalogue.py`'s own rules
-verbatim: id prefixed `ks4-fig-`, alt text (`title`/`desc`) describing
-GEOMETRY only, never the identification or the answer.
+⊕ MRB-352 run 2: every record here was rebuilt against the examiner's
+figure specification for the 28 frozen rows — exact components, labels and
+values, what must NOT appear, and shapes-only alt text. Kept in its own
+file so a content lane editing `catalogue.py` cannot collide with it.
 """
 
+_H04 = {"netlist": [["battery"], ["switch_closed"],
+                    {"parallel": [[["lamp"]], [["resistor"]]]}]}
+_H04_TITLE = ("A battery and a closed switch on the main wire, which then "
+              "splits into two parallel branches: one holding a circle with "
+              "a cross inside it, the other a plain rectangle.")
+_H04_DESC = "No meter is drawn anywhere in the circuit."
+
 CATALOGUE = [
-    # ── ks4-circuit-symbols-h04 — an ammeter-placement question, so the
-    # figure must NOT already show an ammeter (that would hand over the
-    # answer). Battery + closed switch feeding two branches only. ─────────
-    {
-        "id": "ks4-fig-circuit-battery-switch-lamp-motor-branches",
-        "art": "circuit",
-        "title": "A battery and a closed switch on the top wire, splitting "
-                 "into two parallel branches — one holding a circle with a "
-                 "cross drawn inside it, the other a circle with the "
-                 "letter M.",
-        "desc": "A battery symbol (repeated long-and-short line pairs) and "
-                "a closed switch (a straight line joining two small "
-                "circles) sit on the top wire, before it splits into two "
-                "parallel branches: one branch carries a lamp symbol (a "
-                "circle with a cross drawn inside it), the other a circle "
-                "with the letter M. No meter is drawn anywhere in this "
-                "circuit.",
-        "w": 460, "h": 300,
-        "circuit": {
-            "topology": "parallel",
-            "supply": [{"symbol": "battery", "id": "bat"},
-                      {"symbol": "switch", "id": "sw", "state": "closed"}],
-            "branches": [
-                ("lamp-branch", [{"symbol": "lamp", "id": "lamp1"}]),
-                ("motor-branch", [{"symbol": "motor", "id": "motor1"}]),
-            ],
-        },
-    },
+    # ks4-circuit-symbols-h04 — ammeter placement, so NO meter is drawn.
+    # The second branch was a motor; the motor is not an AQA symbol.
+    {"id": "ks4-fig-circuit-battery-switch-lamp-resistor-branches",
+     "art": "circuit", "params": _H04,
+     "title": _H04_TITLE, "desc": _H04_DESC},
+    # ⚠ The row still names this OLD id until the content lane re-points it.
+    # Same motor-free drawing. Delete this record once nothing references
+    # it (build_figures reports every id no question uses).
+    {"id": "ks4-fig-circuit-battery-switch-lamp-motor-branches",
+     "art": "circuit", "params": _H04,
+     "title": _H04_TITLE, "desc": _H04_DESC},
 
-    # ── ks4-circuit-symbols-s03 — a single loop with a cell, a closed
-    # switch and two lamps, exactly as the stem's setup describes. ────────
-    {
-        "id": "ks4-fig-circuit-cell-switch-two-lamps-loop",
-        "art": "circuit",
-        "title": "A single loop with a cell, a closed switch, and two lamp "
-                 "symbols, one after another around the loop.",
-        "desc": "One rectangular wire loop carrying, in order, a cell, a "
-                "closed switch (a straight line joining two small "
-                "circles), and two lamp symbols (each a circle with a "
-                "cross drawn inside it), all connected one after another "
-                "around the same loop.",
-        "w": 420, "h": 260,
-        "circuit": {
-            "topology": "series",
-            "loop": [{"symbol": "cell", "id": "cell"},
-                    {"symbol": "switch", "id": "sw", "state": "closed"},
-                    {"symbol": "lamp", "id": "lamp1"},
-                    {"symbol": "lamp", "id": "lamp2"}],
-        },
-    },
+    # ks4-circuit-symbols-s03 — cell on the left side; closed switch, lamp,
+    # lamp along the top; no labels.
+    {"id": "ks4-fig-circuit-cell-switch-two-lamps-loop",
+     "art": "circuit",
+     "params": {"netlist": [["switch_closed"], ["lamp"], ["lamp"]],
+                "left": [["cell"]]},
+     "title": "A single loop with a cell, a closed switch, and two lamp "
+              "symbols, one after another around the loop.",
+     "desc": "One rectangular wire loop: a cell on the left side, then along "
+             "the top a switch whose lever joins its two contacts, and two "
+             "lamp symbols (each a circle with a cross inside it)."},
 
-    # ── ks4-acceleration-h03 — the skydiver's velocity–time graph. ────────
-    {
-        "id": "ks4-fig-graph-velocity-time-skydiver",
-        "art": "graph-velocity-time",
-        "title": "A velocity–time graph: a line rising steeply from the "
-                 "origin, curving so its gradient falls to zero, then "
-                 "running flat.",
-        "desc": "A velocity-against-time graph. The line starts at the "
-                "origin and rises steeply at first, then curves so it "
-                "becomes gradually less steep, meeting a horizontal "
-                "section at around 14 seconds and staying flat afterward "
-                "at a velocity of 55 metres per second.",
-        "series": [{"points": [(0, 0), (2, 26), (4, 40), (6, 48), (8, 52),
-                              (10, 54), (12, 54.7), (14, 55), (16, 55),
-                              (18, 55)],
-                   "smooth": True}],
-        "x_range": (0, 18), "y_range": (0, 60),
-        "x_ticks": [0, 2, 4, 6, 8, 10, 12, 14, 16, 18],
-        "y_ticks": [0, 10, 20, 30, 40, 50, 55],
-    },
+    # ks4-circuit-symbols-e02 — the open switch, in a circuit.
+    {"id": "ks4-fig-circuit-cell-open-switch-lamp",
+     "art": "circuit",
+     "params": {"netlist": [["switch"]], "left": [["cell"]],
+                "right": [["lamp"]]},
+     "title": "A single loop with a pair of long and short lines, a switch "
+              "symbol whose lever is lifted away from its second contact, "
+              "and a circle with a cross inside it.",
+     "desc": "One rectangular wire loop: a cell on the left side, a switch "
+             "on the top wire whose lever starts at one contact and angles "
+             "away, ending short of the other, and a circle with a cross "
+             "inside it on the right side."},
 
-    # ── ks4-distance-time-graphs-h02 — the runner's distance–time graph. ──
-    {
-        "id": "ks4-fig-graph-distance-time-runner-400m",
-        "art": "graph-distance-time",
-        "title": "A distance–time graph: a line rising steeply from the "
-                 "origin, then curving to become gradually less steep, "
-                 "ending nearly flat at 400 m after 80 s.",
-        "desc": "A distance-against-time graph. The line starts at the "
-                "origin and rises steeply at first, then curves so it "
-                "becomes gradually less steep as time goes on, ending "
-                "nearly horizontal at a distance of 400 metres after 80 "
-                "seconds.",
-        "series": [{"points": [(0, 0), (10, 120), (20, 210), (30, 280),
-                              (40, 330), (50, 365), (60, 385), (70, 395),
-                              (80, 400)],
-                   "smooth": True}],
-        "x_range": (0, 85), "y_range": (0, 420),
-        "x_ticks": [0, 10, 20, 30, 40, 50, 60, 70, 80],
-        "y_ticks": [0, 100, 200, 300, 400],
-    },
+    # ks4-circuit-symbols-h02 — the two students' drawings (E1 closed).
+    {"id": "ks4-fig-sensor-symbols-student-a-b",
+     "art": "symbol-panel",
+     "params": {"items": [("Student A", "thermistor"), ("Student B", "ldr")]},
+     "title": "Two circuit symbols, labelled Student A and Student B.",
+     "desc": "Student A: a rectangle in a wire with a diagonal line through "
+             "it; the lower end of the line turns into a short horizontal "
+             "tail, and there is no arrowhead. Student B: a small rectangle "
+             "inside a circle in a wire, with two arrows outside the circle "
+             "pointing in towards it."},
 
-    # ── ks4-covalent-bonding-s04 — the student's WRONG ammonia diagram,
-    # one bonding pair short. ──────────────────────────────────────────────
-    {
-        "id": "ks4-fig-molecule-nh3-missing-bond",
-        "art": "molecule-nh3-missing-bond",
-        "title": "A dot-and-cross diagram of ammonia in which one hydrogen "
-                 "atom's shell carries no shared pair with the nitrogen "
-                 "atom.",
-        "desc": "A dot-and-cross diagram showing a nitrogen atom with "
-                "three hydrogen atoms arranged around it. Two of the "
-                "three nitrogen–hydrogen connections show a complete "
-                "shared pair (one dot and one cross together). The third "
-                "hydrogen's shell contains only its own single cross, "
-                "with no dot from the nitrogen atom alongside it. The "
-                "nitrogen atom also carries one further pair of dots, not "
-                "shared with any hydrogen atom.",
-    },
+    # ks4-acceleration-h03 — first gradient 9 m/s², never above g; a
+    # monotone curve that never exceeds 55; gridlines every 5 so 55 sits on
+    # one; no marker, tangent or dashed line.
+    {"id": "ks4-fig-graph-velocity-time-skydiver",
+     "art": "graph",
+     "params": {"series": [{"points": [(0, 0), (2, 18), (4, 32), (6, 42),
+                                       (8, 48.5), (10, 52.5), (12, 54.5),
+                                       (14, 55), (16, 55), (18, 55), (20, 55)],
+                            "smooth": True}],
+                "x_label": "time", "x_unit": "s",
+                "y_label": "velocity", "y_unit": "m/s",
+                "x_range": (0, 20), "y_range": (0, 60),
+                "x_ticks": list(range(0, 21, 2)),
+                "y_ticks": list(range(0, 61, 10)),
+                "y_grid": list(range(0, 61, 5)),
+                "W": 480, "H": 380},
+     "title": "A graph of velocity in m/s against time in s: a curved line "
+              "starting at the origin, rising and then levelling off.",
+     "desc": "The time axis runs from 0 to 20 s and the velocity axis from "
+             "0 to 60 m/s."},
 
-    # ── ks4-direct-alternating-pd-h02 — the two oscilloscope traces the
-    # stem asks the pupil to compare. ──────────────────────────────────────
-    {
-        "id": "ks4-fig-oscilloscope-compare-5-10",
-        "art": "graph-oscilloscope-compare",
-        "title": "Two oscilloscope traces on the same screen: trace X "
-                 "completes 5 cycles, trace Y completes 10 cycles across "
-                 "the same width.",
-        "desc": "An oscilloscope screen showing two wave traces plotted "
-                "against the same time axis, each drawn as a smooth "
-                "up-and-down curve. Trace X completes 5 full cycles "
-                "across the screen. Trace Y completes 10 full cycles "
-                "across the same width of screen.",
-        "traces": [{"cycles": 5, "label": "X"}, {"cycles": 10, "label": "Y"}],
-    },
+    # ks4-distance-time-graphs-h02 — a plausible 400 m run, ending at 80 s.
+    {"id": "ks4-fig-graph-distance-time-runner-400m",
+     "art": "graph",
+     "params": {"series": [{"points": [(0, 0), (10, 80), (20, 155), (30, 225),
+                                       (40, 285), (50, 335), (60, 372),
+                                       (70, 393), (80, 400)],
+                            "smooth": True}],
+                "x_label": "time", "x_unit": "s",
+                "y_label": "distance", "y_unit": "m",
+                "x_range": (0, 80), "y_range": (0, 400),
+                "x_ticks": list(range(0, 81, 10)),
+                "y_ticks": list(range(0, 401, 100)),
+                "y_grid": list(range(0, 401, 50)),
+                "end_dot": True, "W": 480, "H": 380},
+     "title": "A graph of distance in m against time in s: a curved line "
+              "from the origin that becomes less steep, ending at 400 m at "
+              "80 s.",
+     "desc": "The time axis runs from 0 to 80 s and the distance axis from "
+             "0 to 400 m. A dot marks the end of the line."},
+
+    # ks4-covalent-bonding-s04 — the student's WRONG ammonia: the third H
+    # drawn apart, so N's shell unambiguously holds 6.
+    {"id": "ks4-fig-molecule-nh3-missing-bond",
+     "art": "dot-cross",
+     "params": {"formula": "NH3", "title": False, "compact": True,
+                "angles": (180, 90, 0), "detached": (2,), "dashed": True,
+                "nuclei": False, "seat": "lens"},
+     "title": "A dot-and-cross diagram with an N circle overlapping two H "
+              "circles, and a third H circle drawn apart from it.",
+     "desc": "Each overlap holds one dot and one cross. The N circle also "
+             "has a pair of dots on its own. The separate H circle holds one "
+             "cross."},
+
+    # ks4-direct-alternating-pd-h02 — two separate, captioned screens.
+    {"id": "ks4-fig-oscilloscope-compare-5-10",
+     "art": "oscilloscope",
+     "params": {"traces": [{"cycles": 5, "caption": "Supply X"},
+                           {"cycles": 10, "caption": "Supply Y"}]},
+     "title": "Two oscilloscope screens, labelled X and Y, each showing a "
+              "wave trace of the same height; the trace on Y has more "
+              "up-and-down cycles across the same width.",
+     "desc": "Two gridded screens stacked one above the other, captioned "
+             "Supply X and Supply Y, with no numbers on either."},
+
+    # ks4-food-chains-webs-s02 — the moorland web, four boxes, four arrows.
+    {"id": "ks4-fig-food-web-moorland",
+     "art": "food-web",
+     "params": {"W": 400, "H": 300,
+                "nodes": [{"id": "fox", "name": "Fox", "x": 200, "y": 50},
+                          {"id": "hare", "name": "Mountain hare", "x": 96, "y": 150},
+                          {"id": "grouse", "name": "Red grouse", "x": 304, "y": 150},
+                          {"id": "heather", "name": "Heather", "x": 200, "y": 250}],
+                "eats": [("heather", "hare"), ("heather", "grouse"),
+                         ("hare", "fox"), ("grouse", "fox")]},
+     "title": "A food web: four labelled boxes joined by arrows.",
+     "desc": "Heather at the bottom, mountain hare and red grouse in the "
+             "middle, fox at the top."},
+
+    # ks4-condensation-polymerisation-h02 — AQA box notation, monomers only.
+    {"id": "ks4-fig-polyester-monomers",
+     "art": "box-monomers",
+     "params": {"parts": [("n", "HO", "OH"), ("n", "HOOC", "COOH")],
+                "product": "polyester"},
+     "title": "Two chemical formulas with a box standing for the carbon "
+              "chain: HO–box–OH and HOOC–box–COOH, each with n in front, "
+              "joined by a plus sign and an arrow to the word polyester.",
+     "desc": "One line of formulas: n HO, a bond, an empty box, a bond, OH; "
+             "a plus sign; n HOOC, a bond, an empty box, a bond, COOH. "
+             "Below, an arrow points to the word polyester."},
 ]

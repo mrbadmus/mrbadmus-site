@@ -159,7 +159,10 @@ GATES = [
          cmd=["python3", "verify_questions.py"],
          speed="fast",
          watches=["verify_questions.py", "ks3_data/**", "ks3_art/**",
-                  "build_ks3.py", "mrbadmus_site/ks3/**"],
+                  "build_ks3.py", "mrbadmus_site/ks3/**",
+                  # ⊕ MRB-352 run 2: check 5 resolves a question's figure
+                  # against the figlib question-figure catalogue
+                  "figlib/catalogue_ks3.py"],
          why="the KS3 question bank (MRB-269) — nine checks over every "
              "lesson's ladder and bank. THE ORPHAN: this is the gate that "
              "was red at push time in PR #8 and was not run."),
@@ -937,6 +940,47 @@ GATES = [
              "— an argument, then `MRB_BACKEND`, then the sibling repo — "
              "because the main checkout is a shared working copy and a gate "
              "pointed at it reports green about code nobody is shipping."),
+
+    # ── ⊕ MRB-352 run 2, 24 Sep 2026 · the figure manifest ────────────────
+    dict(name="figure_manifest",
+         cmd=["python3", "build_figures.py", "--check"],
+         speed="fast",
+         watches=["build_figures.py", "figlib/**", "ks4_art/**",
+                  "ks3_data/**", "ks4_data/**", "all_subtopics_*.py",
+                  "figures.json", "shared/figures-ks3.js",
+                  "shared/figures-ks4.js"],
+         needs="build_figures.py",
+         why="MRB-352 run 2 — EVERY QUESTION FIGURE PAINTS ITSELF, READS ON A "
+             "PHONE, AND IS WHAT IS COMMITTED. `--check` draws every "
+             "catalogue figure (shipped or not) through figlib, then fails on "
+             "any one that: carries a class=, style= or var() (the black-"
+             "disc bug, four times — figure-contract §8); uses an element or "
+             "attribute outside the worksheet PDF translator's subset (no "
+             "groups, defs, markers, gradients, opacity, arcs; numeric "
+             "font-size/weight; the cream card marked data-role=paper); puts "
+             "a label under 4.5:1 against the fill it actually sits on, or "
+             "on a dark fill at all; has a label under 11px or a stroke "
+             "under 1px when scaled into a 320px box; draws a motor or a "
+             "d.c. box (not on the AQA 8463 list); or does not start its "
+             "font stack with Georgia. It also fails if a question names a "
+             "figure no catalogue declares, and if the committed "
+             "figures.json / shared/figures-ks{3,4}.js differ from a fresh "
+             "build — build_all.py runs build_figures.py first, so a stale "
+             "manifest means someone skipped the build."),
+    dict(name="figures_mirror",
+         cmd=["python3", "build_figures.py", "--mirror"],
+         speed="fast",
+         watches=["build_figures.py", "figlib/**", "ks4_art/**",
+                  "ks3_data/**", "ks4_data/**", "all_subtopics_*.py",
+                  "figures.json", "tools/export_curriculum_tree.py"],
+         needs="build_figures.py",
+         why="MRB-352 — THE BACKEND PRINTS THE SAME FIGURES. The worksheet "
+             "PDF/DOCX renderer is Node and draws from its own committed copy "
+             "of figures.json. This compares that copy with a fresh build, "
+             "byte for byte, in the backend checkout found the way "
+             "curriculum_tree_mirror finds it (MRB_BACKEND_DIR, or the "
+             "sibling checkout). A drift means a worksheet would print a "
+             "different drawing — or none — from the one the pupil sees."),
 
     dict(name="curriculum_tree_mirror",
          cmd=["python3", "tools/export_curriculum_tree.py", "--check"],
@@ -1971,26 +2015,6 @@ GATES = [
 # repo root, so a new script cannot be quietly neither.
 
 EXCLUDED = {
-    # ── ⊕ MRB-352, 23 Sep 2026 · the figure manifest's BUILDER, not a gate ──
-    "build_figures.py":
-        "a generator, in the same family as `build_ks3.py` and "
-        "`build_student.py`: it renders every figure a question references "
-        "into `figures.json` + `shared/figures-ks3.js`/`-ks4.js`. It asserts "
-        "nothing ABOUT the estate — it PRODUCES part of it, and a producer "
-        "registered as a gate would gate the writing rather than the rows. "
-        "It does refuse to emit on a duplicate id, an unknown `art`, a "
-        "missing title/desc or a malformed id, but those are a builder "
-        "declining to write something broken, not a check over content that "
-        "already exists. What its OUTPUT must satisfy is watched elsewhere: "
-        "`verify_questions` (check 5) proves every `figure` a question names "
-        "exists in its own lesson and is in a renderable status, and the "
-        "backend's `test_worksheet.js` drives every figure in the manifest "
-        "through both renderers. ⚠️ It also prints a loud, deliberately "
-        "NON-fatal warning for a question pointing at a `css-art` figure it "
-        "cannot serialise (`b1-cell-bench`) — failing the build over one "
-        "pre-existing content gap would block every unrelated figure; see "
-        "docs/diagrams/ACCURACY-ESCALATIONS.md E3.",
-
     # ── ⊕ MRB-352, 23 Sep 2026 · data the gate reads, not a gate itself ─────
     "frozen_window_allowlist.py":
         "the MRB-352 ruling, verbatim, as data — the 28 ids Mide permitted "

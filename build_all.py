@@ -43,6 +43,17 @@ import subprocess
 import sys
 
 STEPS = [
+    # ⊕ MRB-352 run 2 — FIRST, and that ordering is load-bearing.
+    # build_figures.py writes shared/figures-ks3.js + shared/figures-ks4.js
+    # (and figures.json for the backend). generate_site_v5.py copies shared/
+    # into mrbadmus_site/, and build_student_port.py reads the manifests, so
+    # both must see THIS build's figures. It was not in this list before run
+    # 2, which meant a figure change and `python3 build_all.py` shipped the
+    # previous manifest with a green build — the silent-green failure this
+    # file's docstring warns about. It also refuses to write if any figure
+    # fails figlib.checks, which stops the whole build here, on purpose.
+    ("figure manifest — figures.json, shared/figures-ks{3,4}.js",
+     "build_figures.py"),
     ("KS4 site — combined/, triple/, root pages, shared/", "generate_site_v5.py"),
     ("KS3 site — ks3/ (33 units, 185 lesson slots)",       "build_ks3.py"),
     # ⊕ MRB-270 phase 8a. LAST, and that ordering is load-bearing.

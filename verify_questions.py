@@ -25,11 +25,14 @@ is either valid or it is not.
    correct.
 3. A wrong option with no ``why``, or an empty one.
 4. A duplicate ``id`` anywhere in the bank.
-5. A ``figure`` naming something that does not exist in that lesson, **or that exists
-   but cannot render** — a figure at ``status: "needed"`` has no artwork drawn and one
-   at ``status: "retired"`` has been removed, so pointing a question at either shows the
-   student an empty slot. Membership in ``figures[]`` is not enough; the figure has to be
-   a picture a student can actually look at.
+5. A ``figure`` that no question-figure drawing exists for. ⊕ MRB-352 run 2: a
+   question's figure is drawn by ``figlib`` from ``figlib/catalogue_ks3.py`` — the
+   drawing the assignment page, practice, Set work and the worksheet actually serve —
+   so THAT catalogue is what the id must resolve in. (This used to ask whether the
+   lesson's ``figures[]`` declared the id at a renderable status. That passed
+   ``b1-cell-bench`` — status ``drafted``, kind ``css-art`` — which no question
+   surface could ever draw: membership in the lesson was never the same as a picture
+   the student can look at.)
 6. A question whose ``text`` matches a ladder rung's question text.
 7. A question attached to a lesson slug not in ``structure.py``.
 8. The composition ruling itself, exercised against the real bank: a full week
@@ -85,11 +88,9 @@ def _normalise(text):
     return re.sub(r"[^a-z0-9]+", " ", (text or "").lower()).strip()
 
 
-# A figure a student can actually see. `needed` means commissioned but not drawn;
-# `retired` means removed (e.g. MRB-257 decision 5, where the dial replaced the
-# timeline). Both are still declared in `figures[]`, which is why membership alone is
-# not the test.
-RENDERABLE_FIGURE_STATUS = {"final", "drawn", "drafted"}
+# ⊕ MRB-352 run 2 — the ids a KS3 question may name: the ones figlib draws.
+from figlib.catalogue_ks3 import CATALOGUE as _QUESTION_FIGURE_CATALOGUE  # noqa: E402
+QUESTION_FIGURES = {rec["id"] for rec in _QUESTION_FIGURE_CATALOGUE}
 
 
 def _ladder_texts(lesson):
@@ -288,9 +289,6 @@ def verify():
                  "answerable from the lesson it belongs to" % (slug, unit))
             continue
 
-        figures = {f.get("id"): f.get("status")
-                   for f in (lesson.get("figures") or [])}
-        figure_ids = set(figures)
         ladder = _ladder_texts(lesson)
 
         # ── check 1 — the shape of one lesson's bank ────────────────────
@@ -352,16 +350,12 @@ def verify():
                     fail(3, at, "wrong option %d has no `why` — a distractor "
                                 "without a correction teaches nothing" % i)
 
-            # ── check 5 — figure must already exist in the lesson ───────
+            # ── check 5 — figure must be a question figure figlib draws ─
             figure = q.get("figure")
-            if figure is not None:
-                if figure not in figure_ids:
-                    fail(5, at, "figure %r is not in lesson %r (has: %s)"
-                         % (figure, slug, sorted(figure_ids) or "none"))
-                elif figures[figure] not in RENDERABLE_FIGURE_STATUS:
-                    fail(5, at, "figure %r is %r — there is no artwork to show, so the "
-                                "question would point the student at an empty slot"
-                         % (figure, figures[figure]))
+            if figure is not None and figure not in QUESTION_FIGURES:
+                fail(5, at, "figure %r has no question-figure drawing in "
+                            "figlib/catalogue_ks3.py — the question would point "
+                            "the student at an empty slot" % figure)
 
             # ── check 6 — must not restate a ladder rung ────────────────
             if _normalise(q.get("text")) in ladder:

@@ -1,64 +1,34 @@
-"""ks4_art — the KS4 figure-drawer registry.
+"""ks4_art — the KS4 figure CATALOGUE (declarative records only).
 
-Mirrors `ks3_art`'s discover/merge pattern (adapted — KS4 has one family
-table, `ART`, not the six KS3 carries for its instrument shells) rather than
-re-implementing it: modules are DISCOVERED, not listed, so adding a module is
-adding one new file, and a figure id registered by two modules is a hard
-build error rather than a silent last-one-wins.
+⊕ MRB-352 run 2. This package used to hold KS4 drawers of its own
+(`circuits.py`, `forces.py`, `graphs.py`, `bonding*.py`,
+`oscilloscope_compare.py`) that duplicated what Mide's diagram library
+already drew. They are retired: every question figure is now drawn by
+`figlib/` (the library, brought into the repo as one package). What stays
+here is the declarative layer — `catalogue.py` and any per-lane
+`catalogue_<lane>.py` beside it, each a list `CATALOGUE` of records whose
+`art` names a builder in `figlib.ART`.
 
-Every module's primitives come from `ks3_art.kit` — nothing is copied. See
-each module's own header for which primitives it reaches for.
+`catalogue_modules()` DISCOVERS those files rather than listing them, so a
+lane adds a file and nothing else; `build_figures.py` refuses an id that two
+of them declare.
 """
 
 import importlib
 import pkgutil
 
 
-class Registry(object):
-    __slots__ = ("art", "source", "modules")
-
-    def __init__(self):
-        self.art = {}
-        self.source = {}       # figure id -> module name
-        self.modules = []
-
-
-def discover():
-    """Every module in this package, catalogue included, excluding `_`-prefixed
-    private helpers — discovered rather than listed, for the reason
-    `ks3_art.discover()` gives: a hand-written module list is a second place
-    for a new module's name to go missing from."""
+def catalogue_modules():
+    """`catalogue` and every `catalogue_*` module in this package, sorted."""
     return sorted(m.name for m in pkgutil.iter_modules(__path__)
-                  if not m.name.startswith("_") and m.name != "catalogue")
+                  if m.name == "catalogue" or m.name.startswith("catalogue_"))
 
 
-def load():
-    """Import every drawer module, merge their `ART` tables, refuse a
-    duplicate id — the same gate `ks3_art.load()` applies to `ART`, for the
-    same reason: a figure id registered twice is a silent last-one-wins,
-    and whichever module imported second would win with nothing said."""
-    reg = Registry()
-    clashes = []
-    for name in discover():
+def load_catalogue():
+    """Every record from every catalogue module, with the module that
+    declared it: `[(module_name, record), ...]`."""
+    out = []
+    for name in catalogue_modules():
         mod = importlib.import_module("%s.%s" % (__name__, name))
-        reg.modules.append(name)
-        entries = getattr(mod, "ART", None)
-        if not entries:
-            continue
-        for key, fn in entries.items():
-            prev = reg.source.get(key)
-            if prev is not None:
-                clashes.append((key, prev, name))
-                continue
-            reg.source[key] = name
-            reg.art[key] = fn
-
-    if clashes:
-        raise SystemExit(
-            "ks4_art: %d art name(s) registered by two modules:\n%s\n"
-            "One art name, one drawer. A silent last-one-wins ships "
-            "whichever module imported second and drops the other, with "
-            "nothing said."
-            % (len(clashes), "\n".join(
-                "   %-28s registered by %s AND %s" % c for c in clashes)))
-    return reg
+        out.extend((name, rec) for rec in getattr(mod, "CATALOGUE", ()))
+    return out

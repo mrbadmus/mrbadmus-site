@@ -1,305 +1,244 @@
-"""ks4_art.catalogue — the declarative KS4 figure list.
+"""ks4_art.catalogue — the declarative KS4 figure list, drawn by figlib.
 
-Not a module `build_figures.py` merges through the registry (see
-`ks4_art/__init__.py::discover`, which excludes this file by name): a
-catalogue record names an `art` key, it does not implement one, so it lives
-outside the `ART`-table discovery it feeds.
+⊕ MRB-352 run 2. The drawers that used to live beside this file
+(`ks4_art/circuits.py`, `forces.py`, `graphs.py`, `bonding*.py`,
+`oscilloscope_compare.py`) are retired: Mide's diagram library, brought in
+as `figlib/`, does every one of those jobs, in the house style, and is now
+the ONE source of question figures. This file stays as the declarative
+layer — ids, alt text, parameters — and every `art` names a builder in
+`figlib.ART`. Content lanes still add `ks4_art/catalogue_<lane>.py` beside
+it; `build_figures.py` discovers them all.
 
-Every id is prefixed `ks4-fig-` and matches `[a-z0-9-]+`, per the figure
-contract. Every record carries `title` (short — this BECOMES the alt text)
-and `desc` (a longer description for a screen reader), per Mide's rule:
-alt text says WHAT IS SHOWN, never the answer. Where a figure is a single
-AQA symbol that a question asks the pupil to NAME, the title/desc describe
-its GEOMETRY only — "a rectangle with a diagonal arrow drawn across it" —
-never the component's name.
+Every id is prefixed `ks4-fig-` and matches `[a-z0-9-]+`. Every record
+carries `title` (short — this BECOMES the alt text) and `desc` (for a
+screen reader), per Mide's rule: alt text says WHAT IS SHOWN, never the
+answer. Where a figure is a single AQA symbol that a question asks the
+pupil to NAME, the title/desc describe its GEOMETRY only.
 
-Started with the biggest confirmed cluster from the diagrams audit: KS4
-physics electricity/circuit-symbols (43 of the 110 confirmed rows). This is
-a STARTER set proving every drawer end to end, not a byte-for-byte mapping
-of all 43 rows — wiring a specific question id to a figure id is content
-work for the authoring pass, not this ticket.
+Symbols are exactly the AQA 8463 v1.1 §4.2.1.1 (p.24) list. Retired with
+the old drawers: the motor (not on the AQA list), the a.c. supply (not on
+the AQA list) and the three-cell battery (AQA draws a battery as cell,
+dashed wire, cell, whatever the count).
 """
 
 CATALOGUE = [
     # ── the AQA symbol palette, standalone — the "name this component"
-    # family (e.g. ks4-circuit-symbols-e01, -e07, -e09 … -h02) ────────────
+    # family ───────────────────────────────────────────────────────────────
     {
         "id": "ks4-fig-circuit-symbol-resistor",
-        "art": "circuit-symbol-resistor",
+        "art": "symbol", "params": {"key": "resistor"},
         "title": "Circuit symbol: a plain rectangle in the wire, with no other mark on it.",
         "desc": "A rectangle drawn in a wire. Nothing else is drawn on or "
                 "near the rectangle.",
     },
     {
         "id": "ks4-fig-circuit-symbol-fuse",
-        "art": "circuit-symbol-fuse",
-        "title": "Circuit symbol: a rectangle with a straight line running "
-                 "along its length, the line sticking out a little beyond "
-                 "each end.",
+        "art": "symbol", "params": {"key": "fuse"},
+        "title": "Circuit symbol: a rectangle with the wire running straight "
+                 "through it along its length.",
         "desc": "A rectangle drawn in a wire, with a thin straight line "
-                "passing horizontally through its middle and continuing a "
-                "short distance beyond the rectangle on both sides.",
+                "running horizontally through its middle from one end to "
+                "the other, joining the wire on both sides.",
     },
     {
         "id": "ks4-fig-circuit-symbol-variable-resistor",
-        "art": "circuit-symbol-variable-resistor",
+        "art": "symbol", "params": {"key": "variable_resistor"},
         "title": "Circuit symbol: a rectangle with a diagonal arrow drawn across it.",
         "desc": "A rectangle drawn in a wire, with a straight diagonal line "
-                "running from the lower-left corner area to the upper-right "
-                "corner area, ending in an arrowhead.",
+                "that starts below and to the left of the rectangle, passes "
+                "through it, and ends above and to the right of it in a "
+                "solid arrowhead.",
     },
     {
         "id": "ks4-fig-circuit-symbol-thermistor",
-        "art": "circuit-symbol-thermistor",
-        "title": "Circuit symbol: a rectangle with a line that runs along "
-                 "near the bottom and turns upward at the right-hand end.",
-        "desc": "A rectangle drawn in a wire. A line enters at the lower "
-                "left, runs roughly horizontally through the rectangle, "
-                "then bends and runs upward at the right-hand end, with no "
-                "arrowhead anywhere on it.",
+        "art": "symbol", "params": {"key": "thermistor"},
+        "title": "Circuit symbol: a rectangle with a diagonal line through "
+                 "it, whose lower end turns into a short horizontal tail.",
+        "desc": "A rectangle drawn in a wire. A straight diagonal line "
+                "passes through it from below-left to above-right. At its "
+                "lower-left end the line turns into a short horizontal tail "
+                "pointing left. There is no arrowhead.",
     },
     {
         "id": "ks4-fig-circuit-symbol-ldr",
-        "art": "circuit-symbol-ldr",
-        "title": "Circuit symbol: a rectangle with two separate arrows "
-                 "pointing in towards it from outside.",
-        "desc": "A rectangle drawn in a wire, with two short diagonal "
-                "arrows above it, both pointing down and in towards the "
-                "rectangle, side by side.",
+        "art": "symbol", "params": {"key": "ldr"},
+        "title": "Circuit symbol: a small rectangle inside a circle, with two "
+                 "arrows pointing in towards it.",
+        "desc": "A circle sitting in a wire, the wire running into it to a "
+                "small rectangle at its centre. Outside the circle, at its "
+                "upper left, two short parallel arrows point down and to the "
+                "right, in towards the circle.",
     },
     {
         "id": "ks4-fig-circuit-symbol-lamp",
-        "art": "circuit-symbol-lamp",
+        "art": "symbol", "params": {"key": "lamp"},
         "title": "Circuit symbol: a circle with a cross drawn inside it.",
         "desc": "A circle drawn in a wire, with an X shape — two crossing "
                 "diagonal lines — drawn inside it.",
     },
     {
         "id": "ks4-fig-circuit-symbol-diode",
-        "art": "circuit-symbol-diode",
-        "title": "Circuit symbol: a triangle pointing along the wire, with "
-                 "a short bar drawn across its tip.",
-        "desc": "A filled or outlined triangle sitting in the wire, "
-                "pointing in the direction of the wire, with a short "
-                "straight bar drawn across the triangle's tip.",
+        "art": "symbol", "params": {"key": "diode"},
+        "title": "Circuit symbol: a circle containing a triangle pointing "
+                 "along the wire, with a short bar across its tip.",
+        "desc": "A circle drawn in a wire. Inside it, the wire runs through "
+                "an outlined triangle that points along the wire, and a "
+                "short straight bar is drawn across the triangle's tip.",
     },
     {
         "id": "ks4-fig-circuit-symbol-led",
-        "art": "circuit-symbol-led",
-        "title": "Circuit symbol: a triangle-and-bar shape with two small "
-                 "arrows pointing away from it.",
-        "desc": "The same triangle-and-bar shape as a diode, with two "
-                "short arrows drawn near it pointing away and outward, "
-                "on the side away from the wire.",
+        "art": "symbol", "params": {"key": "led"},
+        "title": "Circuit symbol: a circle containing a triangle and bar, "
+                 "with two small arrows pointing away from it.",
+        "desc": "The same circle, triangle and bar shape as the diode, with "
+                "two short parallel arrows at its upper right pointing up "
+                "and away from the circle.",
     },
     {
         "id": "ks4-fig-circuit-symbol-ammeter",
-        "art": "circuit-symbol-ammeter",
+        "art": "symbol", "params": {"key": "ammeter"},
         "title": "Circuit symbol: a circle with the letter A inside it.",
         "desc": "A circle drawn in the wire with the capital letter A "
                 "printed in its centre.",
     },
     {
         "id": "ks4-fig-circuit-symbol-voltmeter",
-        "art": "circuit-symbol-voltmeter",
+        "art": "symbol", "params": {"key": "voltmeter"},
         "title": "Circuit symbol: a circle with the letter V inside it.",
         "desc": "A circle drawn in the wire with the capital letter V "
                 "printed in its centre.",
     },
     {
-        "id": "ks4-fig-circuit-symbol-motor",
-        "art": "circuit-symbol-motor",
-        "title": "Circuit symbol: a circle with the letter M inside it.",
-        "desc": "A circle drawn in the wire with the capital letter M "
-                "printed in its centre.",
-    },
-    {
-        "id": "ks4-fig-circuit-symbol-ac-supply",
-        "art": "circuit-symbol-ac-supply",
-        "title": "Circuit symbol: a circle with a wavy (sine-shaped) line drawn inside it.",
-        "desc": "A circle drawn in the wire with one smooth up-and-down "
-                "wave drawn across its middle.",
-    },
-    {
         "id": "ks4-fig-circuit-symbol-cell",
-        "art": "circuit-symbol-cell",
-        "title": "Circuit symbol: one long thin line and one short thick "
-                 "line, side by side, in the wire.",
+        "art": "symbol", "params": {"key": "cell"},
+        "title": "Circuit symbol: one long line and one short line, side by "
+                 "side across the wire, with a plus sign by the long line.",
         "desc": "Two short vertical lines drawn close together across the "
-                "wire: one longer and thin, the other shorter and thicker.",
+                "wire: one longer, one shorter. A small plus sign sits above "
+                "and to the left of the longer line.",
     },
     {
         "id": "ks4-fig-circuit-symbol-battery-2",
-        "art": "circuit-symbol-battery",
-        "title": "Circuit symbol: two long-and-short line pairs joined end to end.",
-        "desc": "Two long-thin-line-and-short-thick-line pairs, drawn one "
-                "after the other across the wire.",
-        "cells": 2,
-    },
-    {
-        "id": "ks4-fig-circuit-symbol-battery-3",
-        "art": "circuit-symbol-battery",
-        "title": "Circuit symbol: three long-and-short line pairs joined end to end.",
-        "desc": "Three long-thin-line-and-short-thick-line pairs, drawn one "
-                "after the other across the wire.",
-        "cells": 3,
+        "art": "symbol", "params": {"key": "battery"},
+        "title": "Circuit symbol: two pairs of lines — each a long line "
+                 "beside a short line — joined by a dashed line, with a plus "
+                 "sign by the first long line.",
+        "desc": "Across the wire, a long line and a short line, then a short "
+                "dashed length of wire, then another long line and short "
+                "line. A small plus sign sits above and to the left of the "
+                "first long line.",
     },
     {
         "id": "ks4-fig-circuit-symbol-switch-open",
-        "art": "circuit-symbol-switch-open",
-        "title": "Circuit symbol: two small circles in the wire with a "
-                 "straight line resting near one of them, not touching the other.",
-        "desc": "Two small filled circles in the wire, a short distance "
-                "apart, with a straight line running from one circle up "
-                "and away, not reaching the other circle — the wire is "
-                "broken here.",
+        "art": "symbol", "params": {"key": "switch"},
+        "title": "Circuit symbol: two small hollow circles in the wire, with "
+                 "a straight line from one that is lifted away from the other.",
+        "desc": "Two small hollow circles in the wire, a short distance "
+                "apart. A straight line starts at the left circle and angles "
+                "away from the wire, ending short of the right circle, so "
+                "there is a gap.",
     },
     {
         "id": "ks4-fig-circuit-symbol-switch-closed",
-        "art": "circuit-symbol-switch-closed",
-        "title": "Circuit symbol: two small circles in the wire joined by "
-                 "a straight line touching both.",
-        "desc": "Two small filled circles in the wire, a short distance "
-                "apart, with a straight line joining them so the wire is "
-                "unbroken.",
+        "art": "symbol", "params": {"key": "switch_closed"},
+        "title": "Circuit symbol: two small hollow circles in the wire joined "
+                 "by a straight line touching both.",
+        "desc": "Two small hollow circles in the wire, a short distance "
+                "apart, with a straight line running from one to the other.",
     },
 
-    # ── whole circuits — the majority of the confirmed rows ───────────────
+    # ── whole circuits ─────────────────────────────────────────────────────
     {
         "id": "ks4-fig-circuit-fuse-in-supply-wire",
         "art": "circuit",
-        "title": "A single loop with a cell, a rectangle with a line "
-                 "through it in the wire leaving the cell, and a lamp.",
+        "params": {"netlist": [["fuse"], ["lamp"]], "left": [["cell"]]},
+        "title": "A single loop with a cell, a rectangle with the wire "
+                 "running through it, and a lamp.",
         "desc": "One rectangular wire loop. A cell sits on the left side. "
-                "Along the top wire, first a rectangle with a straight "
-                "line through its length, then a lamp symbol (a circle "
+                "Along the top wire, first a rectangle with the wire running "
+                "straight through its length, then a lamp symbol (a circle "
                 "with a cross inside it).",
-        "w": 380, "h": 240,
-        "circuit": {
-            "topology": "series",
-            "loop": [{"symbol": "cell", "id": "cell"},
-                    {"symbol": "fuse", "id": "fuse"},
-                    {"symbol": "lamp", "id": "lamp"}],
-        },
     },
     {
         "id": "ks4-fig-circuit-wire-short-of-cell",
         "art": "circuit",
-        "title": "A single loop with a cell, a rectangle with a line "
-                 "through it, and a lamp — but one wire does not quite "
-                 "reach the cell.",
-        "desc": "The same loop as the fuse circuit above, except the wire "
-                "returning to the cell stops just short of it, leaving a "
-                "small gap — the circuit is not actually complete.",
-        "w": 380, "h": 240,
-        "circuit": {
-            "topology": "series",
-            "loop": [{"symbol": "cell", "id": "cell"},
-                    {"symbol": "fuse", "id": "fuse"},
-                    {"symbol": "lamp", "id": "lamp"}],
-            "gap": {"after": "return"},
-        },
+        "params": {"netlist": [["cell"], ["fuse"], ["lamp"]], "gap": "start"},
+        "title": "A single loop with a cell, a rectangle with the wire "
+                 "running through it, and a lamp — but one wire does not "
+                 "quite reach the cell.",
+        "desc": "A cell, then a rectangle with the wire running through it, "
+                "then a lamp, along the top of a loop. The wire coming back "
+                "up the left side stops just short of the corner where the "
+                "cell is, leaving a small gap.",
     },
     {
         "id": "ks4-fig-circuit-ammeter-voltmeter-resistor",
         "art": "circuit",
-        "title": "A single loop with a cell, a circle with the letter A, "
-                 "and a rectangle — with a second circle, carrying the "
-                 "letter V, connected across the rectangle on a short pair "
-                 "of wires.",
-        "desc": "One rectangular wire loop with a cell, then a circle "
-                "marked A, then a plain rectangle, all in series around "
-                "the loop. A second circle, marked V, is joined to the "
-                "loop by two short wires that bridge across the rectangle "
-                "only, rather than sitting in the main loop itself.",
-        "w": 420, "h": 260,
-        "circuit": {
-            "topology": "series",
-            "loop": [{"symbol": "cell", "id": "cell"},
-                    {"symbol": "ammeter", "id": "amm"},
-                    {"symbol": "resistor", "id": "r1"}],
-            "meters_across": [{"symbol": "voltmeter", "target": "r1"}],
-        },
-    },
-    {
-        "id": "ks4-fig-circuit-two-branches-lamp-motor",
-        "art": "circuit",
-        "title": "A battery and a switch feeding two branches — one with a "
-                 "circle with a cross, one with a circle with the letter "
-                 "M — with a circle marked A before the branches split.",
-        "desc": "A battery symbol (three long-and-short line pairs) and a "
-                "closed switch sit on the top wire, followed by a circle "
-                "marked A, before the wire splits into two parallel "
-                "branches: one branch holds a lamp symbol, the other a "
-                "circle with the letter M.",
-        "w": 460, "h": 300,
-        "circuit": {
-            "topology": "parallel",
-            "supply": [{"symbol": "battery", "id": "bat", "cells": 3},
-                      {"symbol": "switch", "id": "sw", "state": "closed"},
-                      {"symbol": "ammeter", "id": "amm-total"}],
-            "branches": [
-                ("lamp-branch", [{"symbol": "lamp", "id": "lamp1"}]),
-                ("motor-branch", [{"symbol": "motor", "id": "motor1"}]),
-            ],
-        },
+        "params": {"netlist": [["ammeter"], ["resistor", None, None,
+                                              {"voltmeter": True}]],
+                   "left": [["cell"]]},
+        "title": "A single loop with a cell, a circle with the letter A, and "
+                 "a rectangle — with a second circle, carrying the letter V, "
+                 "connected across the rectangle on a short pair of wires.",
+        "desc": "One rectangular wire loop with a cell on the left side, then "
+                "a circle marked A and a plain rectangle along the top. A "
+                "second circle, marked V, is joined to the top wire by two "
+                "short wires, one either side of the rectangle, so it "
+                "bridges the rectangle only.",
     },
     {
         "id": "ks4-fig-circuit-single-loop-four-components",
         "art": "circuit",
-        "title": "A single loop with a cell, a circle with the letter A, "
-                 "a rectangle with a diagonal arrow, and a circle with a cross.",
-        "desc": "One rectangular wire loop carrying, in order, a cell, a "
-                "circle marked A, a rectangle with a diagonal arrow drawn "
-                "across it, and a circle with a cross drawn inside it.",
-        "w": 420, "h": 260,
-        "circuit": {
-            "topology": "series",
-            "loop": [{"symbol": "cell", "id": "cell"},
-                    {"symbol": "ammeter", "id": "amm"},
-                    {"symbol": "variable-resistor", "id": "vr"},
-                    {"symbol": "lamp", "id": "lamp"}],
-        },
+        "params": {"netlist": [["ammeter"], ["variable_resistor"], ["lamp"]],
+                   "left": [["cell"]]},
+        "title": "A single loop with a cell, a circle with the letter A, a "
+                 "rectangle with a diagonal arrow, and a circle with a cross.",
+        "desc": "One rectangular wire loop: a cell on the left side, then "
+                "along the top a circle marked A, a rectangle with a "
+                "diagonal arrow drawn across it, and a circle with a cross "
+                "drawn inside it.",
     },
 
-    # ── one worked example from each other module, proving the merged
-    # registry end to end ─────────────────────────────────────────────────
+    # ── graphs, forces, molecules ─────────────────────────────────────────
     {
         "id": "ks4-fig-graph-distance-time-runner",
-        "art": "graph-distance-time",
+        "art": "graph",
+        "params": {"series": [{"points": [(0, 0), (2, 8), (4, 13), (6, 16),
+                                          (8, 17.5), (10, 18.2)],
+                               "smooth": True}],
+                   "x_label": "time", "x_unit": "s",
+                   "y_label": "distance", "y_unit": "m",
+                   "x_range": (0, 10), "y_range": (0, 20),
+                   "x_ticks": [0, 2, 4, 6, 8, 10],
+                   "y_ticks": [0, 5, 10, 15, 20]},
         "title": "A distance–time graph: a line rising steeply from the "
                  "origin, then curving to become gradually less steep.",
-        "desc": "A distance-against-time graph. The line starts at the "
-                "origin and rises steeply and straight at first, then "
-                "curves so that it becomes gradually less steep as time "
-                "goes on, without ever going flat.",
-        "series": [(0, 0), (2, 8), (4, 13), (6, 16), (8, 17.5), (10, 18.2)],
-        "x_range": (0, 10), "y_range": (0, 20),
+        "desc": "A graph of distance in metres against time in seconds. The "
+                "line starts at the origin and rises steeply at first, then "
+                "curves so that it becomes gradually less steep as time goes "
+                "on, without going flat.",
     },
     {
         "id": "ks4-fig-resolution-triangle-generic",
         "art": "resolution-triangle",
+        "params": {},
         "title": "A right-angled triangle with a labelled diagonal side and "
                  "two labelled shorter sides, with a small square marking "
                  "the right angle.",
-        "desc": "A right-angled triangle. The longest side (the "
-                "hypotenuse) is labelled F. The horizontal side is "
-                "labelled F cos θ and the vertical side is labelled F sin "
-                "θ. A small square is drawn in the corner where the "
-                "horizontal and vertical sides meet, marking the right "
-                "angle. The angle θ is marked where the hypotenuse meets "
-                "the horizontal side.",
-        "angle": 35, "hyp_label": "F", "horiz_label": "F cos θ",
-        "vert_label": "F sin θ", "angle_label": "θ",
+        "desc": "A right-angled triangle. The longest side (the hypotenuse) "
+                "is labelled F. The horizontal side is labelled F cos θ and "
+                "the vertical side F sin θ. A small square marks the right "
+                "angle, and θ is marked where the hypotenuse meets the "
+                "horizontal side.",
     },
     {
         "id": "ks4-fig-molecule-h2o-dot-cross",
-        "art": "molecule-h2o",
+        "art": "dot-cross",
+        "params": {"formula": "H2O", "title": False, "compact": True},
         "title": "A dot-and-cross diagram of a water molecule.",
-        "desc": "A dot-and-cross diagram showing one oxygen atom bonded to "
-                "two hydrogen atoms. Each O–H bond is shown as one dot and "
-                "one cross together between the two atoms' outer shells. "
-                "The oxygen atom carries two further pairs of dots, each "
-                "pair not shared with a hydrogen atom.",
+        "desc": "One oxygen atom's circle overlapping two hydrogen atoms' "
+                "circles. Each overlap holds one dot and one cross. The "
+                "oxygen circle also carries two further pairs of dots, not "
+                "shared with a hydrogen atom.",
     },
 ]

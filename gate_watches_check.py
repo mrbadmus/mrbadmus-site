@@ -62,6 +62,9 @@ BANK_CONTENT_GATES = frozenset({
     "pool_ownership", "ks4_pool_check", "set_work_scope_check",
     "export_ks3_questions_verify", "set_work", "ks4_pool_drive",
     "frozen_window_guard",
+    # ⊕ MRB-352 run 2: the figure manifest ships a KS3 figure only if a
+    # question references it, so it scans every bank file for `figure` ids
+    "figure_manifest", "figures_mirror",
 })
 
 _QUESTIONS_SAMPLES = (
