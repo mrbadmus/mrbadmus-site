@@ -1280,11 +1280,15 @@
     });
     /* ⊕ MRB-342.2 §3 — the assignment note. Read on demand from `els.noteInput`
        at submit time (`els.noteValue()`, already trimmed and whitespace-
-       collapsed); this listener only clears the outline a refused save left
-       behind, the same shape as the title's. */
+       collapsed); this listener clears the outline a refused save left
+       behind, the same shape as the title's, AND marks the field dirty —
+       see `S.noteEdited` in `saveEdit()`, and `edit()`'s comment on
+       `S.noteLoaded`, for why a keystroke here is the thing that makes a
+       PATCH allowed to touch this column at all. */
     els.noteInput.addEventListener("input", function () {
       if (!S) { return; }
       S.badNote = false;
+      S.noteEdited = true;
       syncValidity();
     });
     var dateTimeSync = function () {
@@ -3696,7 +3700,22 @@
        accepted too, defensively, in case a caller ever names it after the
        column instead. Either way this is only ever a display default — a
        capability the row's own database answers `false` for hides the field
-       regardless of what is in it. */
+       regardless of what is in it.
+
+       ⚠️ `S.noteLoaded` IS NOT THE SAME QUESTION AS "IS THERE TEXT". Today
+       `teacher_rulings.py` does not pass `note`/`teacherNote` at all
+       (tracked as an open item), so `o.note` is always `undefined` and
+       this field opens blank on every edit — indistinguishable, on
+       screen, from a row whose note genuinely IS empty. `saveEdit()`
+       reads THIS flag, not the field's emptiness, to decide whether the
+       PATCH may touch `teacher_note` at all: an edit that never learned
+       what the stored note was must not be the edit that clears it. Once
+       the generated page is wired to pass it, `o.note` starts arriving as
+       a real string (possibly `""`) and this flips to `true` on its own —
+       nothing here needs to change again. */
+    S.noteLoaded = (o.note !== undefined && o.note !== null) ||
+                   (o.teacherNote !== undefined && o.teacherNote !== null);
+    S.noteEdited = false;
     S.note = String(o.note || o.teacherNote || "");
 
     /* The two instants, back into the fields the teacher set them from. */
@@ -3864,18 +3883,37 @@
           title: String(S.title || "").trim(),
           release_at: releaseIso(),
           due_at: dueIso() };
-    /* ⊕ MRB-342.2 §3.4 — UNLIKE `submit()`, THIS ALWAYS SENDS THE KEY WHEN
-       THE FIELD IS ON SCREEN, EMPTY STRING INCLUDED. An edit is the one
-       place a note that already exists can be taken away, and `note: ""`
-       is the signal that means "clear it" (contract §3.4) — omitting the
-       key on an empty textarea would instead mean "leave it as it was",
-       which is not what deleting the text and pressing Save asked for. Gated
-       the same way as `submit()`: nothing is sent when the field itself is
-       hidden (no capability), because there is nothing on screen the
-       teacher could have meant to change either way. It is offered on a
+    /* ⊕ MRB-342.2 §3.4 — SENT WHEN THE FIELD WAS LOADED, OR WHEN THE
+       TEACHER ACTUALLY TOUCHED IT — never on an untouched field that
+       opened blank because nothing loaded it.
+
+       ⛔ THE FIRST VERSION OF THIS READ `if (!els.noteWrap.hidden)`,
+       UNCONDITIONALLY, and that was a defect this ticket would have
+       shipped: `teacher_rulings.py` does not yet pass the stored
+       `teacher_note` into `edit()` (open item, see its own comment), so
+       `S.noteLoaded` is `false` on every edit today and the field always
+       opens blank. Sending the key regardless would have posted
+       `note: ""` on EVERY save — including a save where the teacher only
+       moved the deadline — and `note: ""` means "clear it" (contract
+       §3.4). A teacher who had written a note, then edited the deadline a
+       week later without ever looking at the note field, would have had
+       it silently deleted. Found before it shipped, not after: this is a
+       correction, not a report of a live incident.
+
+       `S.noteEdited` is what makes a genuine edit still work: the
+       teacher typed something (even into a field that opened blank
+       because nothing was loaded into it), so a real intent exists and is
+       sent. `S.noteLoaded || S.noteEdited` is therefore "there is
+       something honest to say about this field" — never "the field
+       exists on screen".
+
+       Gated the same way as `submit()` on TOP of that: nothing is sent
+       when the field itself is hidden (no capability). It is offered on a
        RELEASED set too — a note is the teacher's own annotation, not a
        fact about the questions a pupil is mid-way through. */
-    if (!els.noteWrap.hidden) { payload.note = els.noteValue(); }
+    if (!els.noteWrap.hidden && (S.noteLoaded || S.noteEdited)) {
+      payload.note = els.noteValue();
+    }
     var title = payload.title;
     var mySession = session;
     apiPatch("/api/teacher/set-work/" + encodeURIComponent(S.editId), payload)
