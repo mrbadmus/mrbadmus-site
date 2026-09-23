@@ -15,8 +15,10 @@
   <script src="/shared/search.js?v=d011978d" defer></script>
   <script src="/shared/nav.js?v=28cd1457" defer></script>
   <script src="/shared/class-entry.js?v=dc8db888" defer></script>
-  <link rel="stylesheet" href="/shared/ks4-chrome.css?v=b981896d"/>
+  <link rel="stylesheet" href="/shared/ks4-chrome.css?v=16d4bf56"/>
   <script src="/shared/ks4-chrome.js?v=347675ba" defer></script>
+  <script src="/shared/science-facts.js?v=d06e3fc1" defer></script>
+  <script src="/shared/k4-facts.js?v=be674e3d" defer></script>
 </head>
 <body data-chrome="ks4">
   <nav class="nav">
@@ -37,10 +39,15 @@
 
   <section class="k4-band">
     <div class="k4-band-copy" style="flex:1 1 480px;animation:k4-rise .5s both">
-      <h1 class="k4-h1 k4-h1-hero">Revision that<br>keeps score.</h1>
+      <h1 class="k4-h1 k4-h1-hero">Revise science<br>properly.</h1>
       <p class="k4-lede">Free science for Years 7 to 11 — biology, chemistry and physics,
       with an AI tutor that never tires of the same question.</p>
     </div>
+    
+    <aside class="k4-band-side k4-facts" id="k4-facts" aria-label="A science fact">
+      <div class="k4-facts-stage" id="k4-facts-stage" aria-hidden="true"></div>
+      <p class="k4-facts-sr" id="k4-facts-sr"></p>
+    </aside>
   </section>
 
   <section class="k4-doors">

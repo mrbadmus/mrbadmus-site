@@ -1056,10 +1056,11 @@ def make_landing():
 
   <section class="k4-band">
     <div class="k4-band-copy" style="flex:1 1 480px;animation:k4-rise .5s both">
-      <h1 class="k4-h1 k4-h1-hero">Revision that<br>keeps score.</h1>
+      <h1 class="k4-h1 k4-h1-hero">Revise science<br>properly.</h1>
       <p class="k4-lede">Free science for Years 7 to 11 — biology, chemistry and physics,
       with an AI tutor that never tires of the same question.</p>
     </div>
+    {k4_facts_panel()}
   </section>
 
   <section class="k4-doors">
@@ -1096,7 +1097,39 @@ def make_landing():
         "MrBadmusAI — Free KS3 &amp; GCSE Science Revision",
         body,
         description="Free science revision for Years 7 to 11. KS3 Science for Years 7–9 and GCSE Combined and Triple Science for Years 10–11, with an AI tutor, quizzes and full topic notes.",
-        extra_head='\n  <script src="/shared/ks4-chrome.js" defer></script>')
+        extra_head='\n  <script src="/shared/ks4-chrome.js" defer></script>'
+                   '\n  <script src="/shared/science-facts.js" defer></script>'
+                   '\n  <script src="/shared/k4-facts.js" defer></script>')
+
+
+# ── The rotating science-fact panel (MRB-342.2 Part 4) ──────────────────
+#
+# Sits beside the hero headline on desktop, under the lede on phone —
+# purely from `.k4-band`'s own `flex-wrap: wrap` in shared/ks4-chrome.css,
+# no CSS `order` and no DOM reordering. The DOM stays headline, lede,
+# facts, so the accessible reading order is identical at every breakpoint.
+# Content is `shared/science-facts.js` (~80 vetted facts);
+# the crossfade and shuffle logic is `shared/k4-facts.js`, both stamped
+# like every other shared/ asset by the cache-bust pass below.
+#
+# `k4-dot`, `k4-eyebrow` and the mono kicker idiom are lifted from the
+# door cards a few lines above, and the absolutely-positioned crossfade
+# stage is the SAME technique the "Top stars" rail already uses
+# (`.k4-stars-slides` / `.k4-stars-slide.k4-on` in shared/ks4-chrome.css) —
+# reused rather than reinvented, so this is one more instance of a pattern
+# already reviewed, not a new one.
+#
+# `aria-hidden="true"` on the whole rotating stage plus a single static
+# fact rendered for assistive tech (visually hidden, chosen once and never
+# rewritten) — see the CSS comment on `.k4-facts-sr` — is the accessible
+# contract: a screen-reader user is never interrupted by a fact changing,
+# and never told about a rotation happening only for sighted visitors.
+def k4_facts_panel():
+    return """
+    <aside class="k4-band-side k4-facts" id="k4-facts" aria-label="A science fact">
+      <div class="k4-facts-stage" id="k4-facts-stage" aria-hidden="true"></div>
+      <p class="k4-facts-sr" id="k4-facts-sr"></p>
+    </aside>"""
 
 
 def k4_challenge_strip():

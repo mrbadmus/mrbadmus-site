@@ -1021,7 +1021,8 @@ GATES = [
          # only the chrome pages would watch the half that cannot drift.
          watches=["ks4_chrome_tells.py", "generate_site_v5.py",
                   "all_subtopics_*.py", "shared/ks4-chrome.css",
-                  "shared/ks4-chrome.js", "mrbadmus_site/*.html",
+                  "shared/ks4-chrome.js", "shared/k4-facts.js",
+                  "shared/science-facts.js", "mrbadmus_site/*.html",
                   "mrbadmus_site/combined/**", "mrbadmus_site/triple/**",
                   "mrbadmus_site/teacher/**", "mrbadmus_site/student/**",
                   "mrbadmus_site/consumer/**", "mrbadmus_site/parents/**",
