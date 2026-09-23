@@ -175,6 +175,67 @@
       return;
     }
 
+    /* ⊕ MRB-352 — A QUESTION FIGURE, RESOLVED BY ID AGAINST A BUILD-TIME
+       MANIFEST. `node.e` is a property path, exactly like `if`/`for` above,
+       naming the field on the current question that carries a figure id (or
+       `null`) — `student_rulings.INSERT_AT["assignment"]` anchors this one
+       on `figKey`, inside the span that already wraps Design's seven demo
+       `sc-if`s (`figMicro`…`figSlot`), so it draws in the same bordered,
+       zoomable card those did, rather than needing a card of its own.
+
+       ⚠️ THIS IS THE ONLY innerHTML SINK ON EITHER STUDENT PAGE, and it is
+       fed EXCLUSIVELY from `window.MRBFigures` — a manifest built at BUILD
+       TIME by `build_figures.py` out of trusted Python drawers, mirrored to
+       the site as plain data. It is never fed from a question's own text or
+       options, which stay on the `createTextNode` path above (`node.t ===
+       "#"`) and always will — there is no path from a question's stem to
+       this branch, because this branch never looks at the question at all,
+       only at the ID the caller resolved for it.
+
+       ⚠️ AN UNRESOLVED ID RENDERS NOTHING AND NEVER THROWS, on purpose, for
+       three reasons that all land here: the manifest failed to load (a slow
+       connection, an ad blocker), the id names a figure this build has not
+       shipped a drawing for yet, or `window.MRBFigures` is simply absent
+       because this page never loaded a manifest at all (Design's own
+       fixture, see student_rulings.py — it exercises the seven demo `if`s
+       and never this branch). A missing figure is a worse QUESTION, never a
+       broken PAGE — see docs/diagrams/figure-contract.md §5. `shared/
+       student-live.js` makes the identical check before it ever sets a
+       question's `g`, so the two can never disagree about the same id: a
+       question either arrives with an id this branch can draw, or with
+       `null` and no figure at all — never with an id this branch discards. */
+    if (node.t === "fig") {
+      var figId = lookup(node.e, scope, null);
+      var figs = window.MRBFigures;
+      var rec = figId && figs ? figs[figId] : null;
+      if (!rec || typeof rec.svg !== "string") { return; }
+      var wrap = document.createElement("div");
+      wrap.className = "mrb-figure-scroll";
+      /* Focusable and horizontally scrollable at 360px, the same affordance
+         the KS3 lesson pages give a figure wider than a phone (`.ks3-figure-
+         scroll` in shared/ks3.css) — reimplemented in miniature here rather
+         than loading that whole stylesheet for four rules; see the CSS this
+         build emits in build_student_port.py. The overflow cue itself is set
+         below, after this node is actually laid out — `scrollWidth` reads
+         zero on a node still inside a detached fragment. */
+      wrap.setAttribute("tabindex", "0");
+      if (node.i !== undefined) { wrap.setAttribute("data-dc-tpl", node.i); }
+      /* NO role/aria-label ADDED HERE, and that is checked, not assumed.
+         Every record in both manifests carries `role="img"` on the `<svg>`
+         itself, plus its own accessible name — either a direct `aria-label`
+         or `aria-labelledby` pointing at an internal `<title>`/`<desc>` pair
+         — baked in at build time by `build_figures.py`/`build_ks3.py`. It is
+         the SAME accessible markup the KS3 lesson page renders for the same
+         id, verbatim. A second name on this wrapper would only give a
+         screen reader two competing descriptions of one picture — worse
+         than one correct name, not a backup for it. */
+      wrap.innerHTML = rec.svg;
+      into.appendChild(wrap);
+      if (!ctx.figScrollers) { ctx.figScrollers = []; }
+      ctx.figScrollers.push(wrap);
+      return;
+    }
+
     /* THE HELMET IS PARSED AND NOT RENDERED. `student_template.py` compiles
        from `<helmet>` so that the `data-dc-tpl` numbering matches Design's —
        the helmet's nine element nodes take indices 0..8 — but its contents are
@@ -527,6 +588,24 @@
         refocus(host, keepFocus);
         if (window.scrollY !== keepScroll) { window.scrollTo(0, keepScroll); }
         api.misses = ctx.miss;
+
+        /* ⊕ MRB-352 — THE FIGURE OVERFLOW CUE, MEASURED NOW AND NOT BEFORE.
+           `build()` cannot measure `scrollWidth` on a `fig` node the moment
+           it creates one: the node is still inside a detached
+           `DocumentFragment` at that point, with no layout at all, so every
+           read would be zero. It is real only once `host.appendChild(frag)`,
+           three lines up, has put it in the document — which is why this
+           runs here and not beside the node it is measuring. */
+        if (ctx.figScrollers && ctx.figScrollers.length) {
+          for (var fs = 0; fs < ctx.figScrollers.length; fs++) {
+            var scroller = ctx.figScrollers[fs];
+            if (scroller.scrollWidth > scroller.clientWidth + 1) {
+              scroller.classList.add("is-overflowing");
+            } else {
+              scroller.classList.remove("is-overflowing");
+            }
+          }
+        }
         api.renders += 1;
         /* Counted onto the mount point so a gate reads a number instead of
            inferring from a screenshot that a binding rendered nothing. */

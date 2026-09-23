@@ -3525,6 +3525,42 @@ _Q_EYEBROW = (
 )
 
 
+# ── the figure, and the phone-width scroll cue it needs ──────────────────
+#
+# ⊕ MRB-352, 23 Sep 2026 — see `INSERT_AT["assignment"][(115, 244)]` in
+# student_rulings.py for the node this styles: the new `"fig"` template node
+# `shared/student-runtime.js` draws a real question figure into.
+#
+# ⚠️ NOT `.ks3-figure-scroll` FROM `shared/ks3.css`, DELIBERATELY. That class
+# gives the KS3 lesson pages the identical affordance — a focusable,
+# horizontally-scrollable box with an overflow-fade cue — and the drawings
+# are literally the same bytes (`build_figures.py` reuses `build_ks3.py`'s own
+# `SVG_ART`). But `ks3.css` is 21,000+ lines and this page loads none of it —
+# `grep -c 'ks3.css' student/assignment.html` is 0 — and pulling the whole
+# sheet in for four rules would cost every phone loading this page a
+# stylesheet built for a different one. So the PATTERN is reused — a focusable
+# scroller, an edge-fade cue when it overflows, a floor so a drawing's own
+# labels cannot shrink below the 13px this key stage already treats as the
+# smallest a label can be and still be one — and the rule lives in miniature,
+# beside `_Q_EYEBROW`, for the same reason that one does: `shared/
+# student-ds.css` is GENERATED from Design's six sheets and an edit typed
+# into it survives exactly until the next build.
+#
+# ⚠️ `.is-overflowing` IS SET BY `student-runtime.js`, MEASURED, NOT GUESSED —
+# `scrollWidth > clientWidth` after the node is actually in the document, the
+# same MRB-254 lesson `.ks3-figure-scroll.is-overflowing` was built on. No
+# `!important` anywhere here: nothing on this page carries an inline `style`
+# for background, radius or overflow that this would have to outrank.
+_FIGURE_SCROLL = (
+    ".mrb-figure-scroll{overflow-x:auto;position:relative;"
+    "border-radius:var(--st-r-card);outline-offset:-3px}"
+    ".mrb-figure-scroll.is-overflowing{-webkit-mask-image:"
+    "linear-gradient(to right,#000 calc(100% - 40px),transparent);"
+    "mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}"
+    ".mrb-figure-scroll svg{display:block;min-width:260px}"
+)
+
+
 # ── the six themes' tokens, for a page that has no grafted `:root` ───────
 #
 # ⊕ RULED 23 Aug 2026 — THE ASSIGNMENT'S SCORECARD FOLLOWS THE BENCH THEME.
@@ -3734,11 +3770,16 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
            # one emitted rule in this file that matches on both pages, and
            # leaving it off the assignment would have raised twelve labels
            # on the class view and left eight identical ones beside them.
+           # ⊕ 23 Sep 2026 (MRB-352) — and `_FIGURE_SCROLL` is
+           # ASSIGNMENT-ONLY, checked rather than assumed: the class view's
+           # template has no `"fig"` node (`INSERT_AT["class view"]` never
+           # names one), so `.mrb-figure-scroll` cannot match there.
            (_EYEBROW_TYPE +
             ((_THEME_BRIDGE + _PAGE_STRONG + _PIP_ROW + _CARD_FIT
               + _ROW_DONE)
              if spec["page"] == "class view"
-             else (bench_css + _THEME_BRIDGE + _Q_EYEBROW))),
+             else (bench_css + _THEME_BRIDGE + _Q_EYEBROW
+                   + _FIGURE_SCROLL))),
            json.dumps({"roots": roots, "imports": tpl["imports"]},
                       separators=(",", ":")).replace("<", "\\u003c"),
            json.dumps(bind_table, separators=(",", ":")),

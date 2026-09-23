@@ -2237,6 +2237,45 @@ LOGIC = {
             "      assignmentNoteVisible: idx === 0 && !!MRB_DATA('assignmentNoteHas'),",
         ),
         # ══════════════════════════════════════════════════════════════════
+        # ⊕ MRB-352, 23 Sep 2026 — `hasFig` GATES ON A DRAWABLE FIGURE, NOT
+        # ON A TRUTHY STRING.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Design's own line — `hasFig: !!figKey` — opens Design's zoomable,
+        # bordered card the moment ANY figure id is present, on the
+        # assumption that `figKey` can only ever be one of her seven demo
+        # keys or `null`. `shared/student-live.js` upholds that assumption
+        # for the path it controls: it never sets a question's `g` to an id
+        # `window.MRBFigures` cannot resolve (see the `g` builder in
+        # `buildAssignment`). But `figKey` is read from a plain data object,
+        # and Design's fixture — `student-fixture-assignment.js`, the one
+        # thing on this page that sets `g` WITHOUT going through that
+        # builder — is proof a caller can. A future one might too.
+        #
+        # ⚠️ WITHOUT THIS, THAT GAP IS THE EXACT DEFECT THE FEATURE EXISTS TO
+        # FIX, IN A NEW SHAPE. An id `hasFig` waves through but the `"fig"`
+        # node (student-runtime.js) cannot resolve draws an empty, bordered,
+        # zoomable box with a blank caption underneath — a NEW broken page,
+        # in place of the old broken sentence. A missing figure must look
+        # like an ordinary question with no figure, never like a figure that
+        # failed to load.
+        #
+        # So `hasFig` is re-derived to ask the question the runtime is
+        # actually about to ask: is this id one of Design's seven demo keys
+        # (which draw from her OWN inline branches, never the manifest), OR
+        # does `window.MRBFigures` — the same global the `"fig"` node reads —
+        # actually have it? Anything else is `false`, and the whole card
+        # never opens. The seven names are typed out rather than derived from
+        # `this.figCaptions`, because `Object.keys` on that map would have
+        # silently changed meaning if `slot`'s key were ever removed from it
+        # for an unrelated reason.
+        (
+            "      hasFig: !!figKey,",
+            "      hasFig: ['micro', 'bubbles', 'fov', 'plant', 'cells', 'scale', "
+            "'slot'].indexOf(figKey) >= 0 ||\n"
+            "        !!(figKey && window.MRBFigures && window.MRBFigures[figKey]),",
+        ),
+        # ══════════════════════════════════════════════════════════════════
         # ⊕ RULED 23 Aug 2026 — THE OPTIONS THAT WERE NOT PICKED VANISHED.
         # ══════════════════════════════════════════════════════════════════
         #
@@ -3383,6 +3422,62 @@ INSERT_AT = {
          "control. `eyebrow` styling read off node 111 on this same "
          "screen; card recipe read off 268/269, the same source the "
          "(106, 251) entry above already cites for the identical shape."),
+
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ MRB-352, 23 Sep 2026 — THE FIGURE ITSELF, INSIDE DESIGN'S OWN
+        # FRAME.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Design's file draws SEVEN figures and seven only — her own demo
+        # data (`micro`/`bubbles`/`fov`/`plant`/`cells`/`scale`/`slot`), each
+        # its own `sc-if` inside node 115 (the `<span style="display:block">`
+        # that node 114's zoomable button wraps). `this.props.figures` is
+        # never passed on the real page (`props: {}` in `__MRB_MOUNT__`,
+        # see build_student_port.py), so `figKey` already resolves to the
+        # served question's own `g` today — which means a DATA-ONLY fix
+        # (just stop discarding `figure` in student-live.js) would make
+        # `hasFig` true for a real id and render an EMPTY bordered,
+        # zoomable box: none of the seven demo booleans can ever match a
+        # real manifest id like `b9-oak-wood-web-thread`. That is a worse
+        # page than the one being fixed, not a better one.
+        #
+        # So this inserts an EIGHTH sibling, last, after node 244
+        # (`figSlot`, the last of the seven) — still inside 115, so it
+        # draws inside the SAME bordered card, with the SAME
+        # zoom-to-enlarge and the SAME caption row Design already built,
+        # rather than needing a frame of its own. `figKey` is the one
+        # property every other branch in 115 already reads; this is simply
+        # the eighth reader of it.
+        #
+        # ⚠️ THE NODE TYPE IS NEW — `"fig"`, handled in
+        # `shared/student-runtime.js`'s `build()`, alongside `if`/`for`/
+        # `import`. It resolves `figKey` and looks it up in
+        # `window.MRBFigures`; an id the manifest does not carry renders
+        # NOTHING — the identical check `shared/student-live.js` makes
+        # before it ever sets a question's `g`, so the two can never
+        # disagree, and neither can ever produce the empty box above. See
+        # that file's own comment on the node for the full accessibility
+        # and innerHTML-sink reasoning.
+        #
+        # ⛔ `figCaption` NEEDS NO CHANGE, AND IS DELIBERATELY LEFT ALONE.
+        # `this.figCaptions[figKey]` is `undefined` for any real id —
+        # Design only ever populated it with her seven demo keys — so
+        # `figCaption: figKey ? this.figCaptions[figKey] : ''` reads
+        # `undefined`, which `student-runtime.js` already renders as an
+        # empty string (the same path an ordinary missing binding takes).
+        # That IS the correct caption for a real figure: the manifest's
+        # `alt` is a screen-reader description, written for someone who
+        # cannot see the drawing, and belongs on the accessible name the
+        # SVG already carries — never as printed text beside a picture the
+        # pupil is looking at, and never a second time next to the answer
+        # options. Ruled by Mide, 23 Sep 2026.
+        (115, 244): (
+            {"t": "fig", "e": "figKey"},
+            "the real figure a Set-work question was served with, drawn "
+            "inside Design's own zoomable card (node 113/114), after her "
+            "seven demo figures (116–244, all inside node 115) and "
+            "reading the same `figKey` they do. See the section header "
+            "above this tuple."),
     },
 }
 

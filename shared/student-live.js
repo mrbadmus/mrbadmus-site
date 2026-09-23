@@ -4090,6 +4090,47 @@
     };
   }
 
+  /* ⊕ MRB-352 — THE FIGURE MANIFEST, LOADED BY KEY STAGE AND NEVER BOTH.
+     `window.MRBFigures` is populated by `<script>`, not by an import, so a
+     KS3 class loads `figures-ks3.js` and a KS4 class loads `figures-ks4.js`
+     — one script tag, appended once per manifest, ever, on this page. A KS3
+     pupil's phone must never download a KS4 circuit symbol (figure-contract
+     §5's own framing); loading BOTH unconditionally would have been the
+     easy, wrong answer.
+
+     Cached by src rather than by key stage: two calls for the same key stage
+     (a second question, a redraw) get back the SAME promise rather than a
+     second `<script>` tag, and a call for the OTHER key stage — which
+     genuinely happens, a co-teaching class or an env with mixed rosters —
+     still gets its own load rather than being told the manifest is "ready"
+     when only the wrong one is.
+
+     ⚠️ NEVER REJECTS. A manifest that fails to load — a slow connection, an
+     ad blocker, a 404 on a stale deploy — is not this call's problem to
+     surface: every consumer of `window.MRBFigures` already treats an id it
+     cannot resolve as "no figure", the same state a null `figure` column is,
+     so the honest outcome of a failed load is a plainer page, not a broken
+     one. See the `g` builder in `buildAssignment` and the `"fig"` node in
+     shared/student-runtime.js — both make the identical check. */
+  var figureManifestLoads = {};
+  function loadFigureManifest(keyStage) {
+    var src = (keyStage === "KS4") ? "/shared/figures-ks4.js" : "/shared/figures-ks3.js";
+    if (figureManifestLoads[src]) { return figureManifestLoads[src]; }
+    figureManifestLoads[src] = new Promise(function (resolve) {
+      var s = document.createElement("script");
+      s.src = src;
+      s.onload = function () { resolve(true); };
+      s.onerror = function () {
+        console.error("[student-live] the figure manifest did not load; "
+                      + "any question served with a `figure` id draws as an "
+                      + "ordinary question, with no diagram", src);
+        resolve(false);
+      };
+      document.head.appendChild(s);
+    });
+    return figureManifestLoads[src];
+  }
+
   // ── the assignment ────────────────────────────────────────────────────
   async function buildAssignment(klass, token, userId) {
     /* ⊕ RULED 23 Aug 2026 — the bench theme, onto this page's root too.
@@ -4104,6 +4145,15 @@
     if (mirrored) {
       document.documentElement.setAttribute("data-bench-theme", mirrored);
     }
+
+    /* ⊕ MRB-352 — kicked off here and awaited only once `questions` is
+       about to be built, below. It depends on nothing the assignment fetch
+       answers — the class already knows its own key stage — so it runs
+       ALONGSIDE that fetch rather than after it: a student's wait is
+       already made of serial round trips (see the MRB-292 note a few lines
+       down about `progress`), and a figure manifest is not worth adding
+       another one. */
+    var figuresReady = loadFigureManifest(klass.key_stage);
 
     /* ── ⊕ MRB-331 — WHICH PIECE OF WORK THIS PAGE IS ────────────────────
 
@@ -4189,6 +4239,11 @@
       }
     }
 
+    /* Awaited here, right before it is first read — kicked off above,
+       alongside the assignment fetch, so this is usually free. */
+    await figuresReady;
+    var figs = window.MRBFigures;
+
     var questions = [];
     (current.questions || []).forEach(function (q) {
       if (q.retired) { return; }        // the bank no longer has it; do not draw a blank
@@ -4202,12 +4257,24 @@
            `MRB_DATA` never sees it — only by the sink. */
         __src: q,
         t: deslug(q.lesson_slug).toUpperCase(),
-        /* ⚠️ ALWAYS null. The page can draw seven figures and seven only, all
-           of them Design's own examples keyed `micro` / `bubbles` / `fov` /
-           `plant` / `cells` / `scale` / `slot`. A real question's `figure` is
-           the id of a figure in its KS3 lesson and never one of those, so
-           pointing at it would caption a drawing that is not there. */
-        g: null,
+        /* ⊕ MRB-352 — the served figure id, but ONLY when the manifest that
+           was just loaded actually carries it. `bankFor()` forwards
+           `q.figure` verbatim (figure-contract.md §1/§7), so it can in
+           principle be an id this build has not shipped a drawing for yet,
+           or the manifest can have failed to load at all — and in every one
+           of those cases this must resolve to `null`, not to an id the page
+           cannot draw.
+           ⚠️ THIS IS THE SAME CHECK `shared/student-runtime.js`'s `"fig"`
+           node makes before it draws anything, on purpose: the two can
+           never disagree about the same id, so a figure is never half-drawn
+           — either both sides agree it exists and it appears, or both agree
+           it doesn't and the question renders exactly as it would with no
+           figure at all. Design's own seven demo keys (`micro`/`bubbles`/…)
+           never collide with a real manifest id, so this check alone is
+           what keeps `hasFig` from going true over an empty box — see
+           `INSERT_AT["assignment"][(115, 244)]` in student_rulings.py. */
+        g: (q.figure && typeof q.figure === "string" && figs && figs[q.figure])
+          ? q.figure : null,
         q: q.text || "",
         o: n.o,
         f: n.f,
@@ -4334,8 +4401,25 @@
          would put wrong answers this child never gave in front of them. */
       wrongPlan: {},
 
-      /* Empty on purpose — see `g` above. No figure is drawn, so no figure is
-         captioned, and an unmatched key would print nothing anyway. */
+      /* ⊕ MRB-352 — STAYS EMPTY, DELIBERATELY, EVEN NOW THAT A REAL FIGURE
+         CAN DRAW (see `g` above and the new `"fig"` node in
+         shared/student-runtime.js). Design's own `figCaptions` map holds
+         only her seven demo keys, so `this.figCaptions[figKey]` is
+         `undefined` for any real id and renders as an empty string — which
+         IS the correct caption for a real figure, not a gap this object
+         should fill.
+
+         The manifest's own `alt` is written for someone who cannot see the
+         drawing — a screen-reader description, not a caption — and it
+         already reaches the pupil through the accessible name the SVG
+         itself carries (`role="img"` plus `aria-label` or
+         `aria-labelledby`+`<title>`/`<desc>`, baked in at build time; see
+         the "fig" node's own comment). Printing it here a second time,
+         under a picture the pupil is looking at, would be faintly
+         patronising to a sighted pupil and would put the same geometry
+         description next to the answer options on the SCREEN that the
+         worksheet deliberately keeps off the PAPER (`test_worksheet.js`
+         asserts the alt is never printed). Ruled by Mide, 23 Sep 2026. */
       figCaptions: {},
 
       /* Where this student's own in-progress answers are kept in their
