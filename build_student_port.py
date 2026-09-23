@@ -3533,9 +3533,9 @@ _Q_EYEBROW = (
 #
 # ⚠️ NOT `.ks3-figure-scroll` FROM `shared/ks3.css`, DELIBERATELY. That class
 # gives the KS3 lesson pages the identical affordance — a focusable,
-# horizontally-scrollable box with an overflow-fade cue — and the drawings
-# are literally the same bytes (`build_figures.py` reuses `build_ks3.py`'s own
-# `SVG_ART`). But `ks3.css` is 21,000+ lines and this page loads none of it —
+# horizontally-scrollable box with an overflow-fade cue. (⊕ run 2: the
+# drawings are no longer the lesson's — question figures come from
+# `figlib`, in the exam-paper style.) But `ks3.css` is 21,000+ lines and this page loads none of it —
 # `grep -c 'ks3.css' student/assignment.html` is 0 — and pulling the whole
 # sheet in for four rules would cost every phone loading this page a
 # stylesheet built for a different one. So the PATTERN is reused — a focusable
@@ -3552,146 +3552,35 @@ _Q_EYEBROW = (
 # `!important` anywhere here: nothing on this page carries an inline `style`
 # for background, radius or overflow that this would have to outrank.
 #
-# ⚠️ SIZING ALONE IS NOT ENOUGH, AND THIS WAS FOUND BY DRIVING A REAL FIGURE,
-# NOT BY READING THE DIFF. `build_figures.py` draws with `class="…"`, exactly
-# as `build_ks3.py` does for the lesson page, on the assumption that whatever
-# loads the SVG also loads `ks3.css` — true for the lesson page, false here.
-# Loaded without it, `p8-lamp-symbol`'s circle carried NO fill/stroke rule at
-# all, so the SVG UA default applied: `fill: black` (the default for every
-# shape), `stroke: none`. The two crossing lines — open paths with no fill
-# area — vanished, and the circle painted as a solid black disc. Not a sizing
-# bug: `.mrb-figure-scroll svg{width:100%}` two lines down is exactly what
-# `.ks3-figure-svg` in `ks3.css` already does, and the lesson page renders the
-# same drawing at the same width. The PAINT was missing, not the layout.
+# ⊕ MRB-352 run 2 — THE PAINT NOW TRAVELS INSIDE THE FIGURE, SO THIS FILE
+# SUPPLIES NONE. Until run 2, question figures were lesson drawings painted
+# by `ks3.css` classes, and `_figure_paint_css()` stood here extracting those
+# rules — and, after the second failure, the `--ks3-*` tokens they spend —
+# into this page, because without them `p8-lamp-symbol` painted as a solid
+# black disc and then, rules without tokens, as nothing at all. That was a
+# compensation for a figure that could not paint itself, and it had to be
+# re-derived on every surface that ever showed one (figure-contract §8).
 #
-# So `_figure_paint_css()` below extracts, from `ks3.css`, the rule for every
-# class that actually appears in a REFERENCED figure's SVG — never the whole
-# 21,000-line sheet, and never retyped: a value Design or a drawer moves in
-# `ks3.css` moves here too, the same argument `bench_theme_tokens()` a few
-# hundred lines up makes for extracting rather than restating Design's own
-# palette. Scoped under `.mrb-figure-scroll` so a `ks3-*` class can never
-# reach outside the one thing on this page that carries it.
-def _figure_paint_css():
-    """The `ks3.css` paint rules every referenced figure's classes need.
-
-    Reads BOTH manifests (`shared/figures-ks3.js`, `shared/figures-ks4.js` —
-    already built by the time this runs; step 1 of `build_all.py` precedes
-    step 4) for every `class="…"` a figure's SVG carries, then pulls each
-    class's rule body out of `ks3.css` verbatim. A class with NO rule
-    anywhere in `ks3.css` is not an error: the lesson page gets the identical
-    SVG UA default for it (an unstyled label relying on `fill: black`, which
-    is already the right ink colour), so this must reproduce that absence
-    rather than invent a rule Design never wrote.
-    """
-    classes = set()
-    for name in ("figures-ks3.js", "figures-ks4.js"):
-        path = os.path.join("shared", name)
-        if not os.path.exists(path):
-            raise SystemExit(
-                "build_student_port.py: %s does not exist yet. It is built "
-                "by build_figures.py, step 1 of build_all.py — this script "
-                "cannot run before that step, or run on its own without it."
-                % path)
-        src = open(path, encoding="utf-8").read()
-        # ⚠️ THE MANIFEST IS JSON, WRAPPED IN JS — its `svg` strings carry
-        # `\"` (a JSON-escaped quote), never a bare `"`, so a regex reading
-        # the raw file text for `class="…"` matches nothing at all and
-        # returns silently, which is exactly the failure this had the FIRST
-        # time it ran. Decode the object properly and read `class="…"` off
-        # the UNESCAPED string each `svg` field actually is.
-        m = re.search(r"Object\.assign\(window\.MRBFigures \|\| \{\}, "
-                       r"(\{.*)\);\s*$", src, re.S)
-        if not m:
-            raise SystemExit(
-                "build_student_port.py: %s does not match the "
-                "`window.MRBFigures = Object.assign(…)` shape "
-                "build_figures.py emits. Re-anchor this extraction; it has "
-                "not become optional." % path)
-        for rec in json.loads(m.group(1)).values():
-            for cls_attr in re.findall(r'class="([^"]+)"', rec.get("svg", "")):
-                classes.update(cls_attr.split())
-    if not classes:
-        raise SystemExit(
-            "build_student_port.py: neither figure manifest references a "
-            "single CSS class. Either both manifests are empty (build_figures "
-            "did not run) or every figure has stopped using `class=` — either "
-            "way, re-check before assuming the figure card needs no paint CSS "
-            "at all.")
-
-    css = open(os.path.join("shared", "ks3.css"), encoding="utf-8").read()
-    css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)   # comments can hold a
-                                                       # bare class name too
-    rules = re.findall(r"([^{}]+)\{([^{}]*)\}", css)
-
-    out, matched = [], set()
-    for cls in sorted(classes):
-        for sel, body in rules:
-            topics = [t.strip() for t in sel.split(",")]
-            if ("." + cls) in topics:
-                matched.add(cls)
-                out.append(".mrb-figure-scroll .%s{%s}"
-                            % (cls, " ".join(body.split())))
-    # ── AND THE TOKENS THOSE RULES SPEND ────────────────────────────────
-    #
-    # ⚠️ COPYING THE RULES WITHOUT THE TOKENS LEAVES THE FIGURE INVISIBLE,
-    # which is a worse failure than the black disc it replaced, because it
-    # looks like "no figure" rather than like a bug.
-    #
-    # `ks3.css`'s rules spend `var(--ks3-ink)` and fourteen siblings. Those
-    # are defined in `student-ds.css` — but ONLY under `.rd[data-mode="ks3"]`,
-    # the KS3 reading-mode container, which this page has no instance of. So
-    # on the pupil's page every one of those `var()`s is an UNRESOLVED custom
-    # property, the declaration is invalid at computed-value time, and the
-    # property falls back to its INITIAL value. For `stroke` that initial
-    # value is `none`. Measured on the built page: `--ks3-ink` undefined,
-    # `getComputedStyle(circle).stroke === "none"`, nothing drawn.
-    #
-    # So the tokens travel with the rules, re-scoped to the figure itself.
-    # Extracted from the same stylesheet rather than retyped, for the same
-    # reason the rules are.
-    tok_src = ""
-    for cand in ("student-ds.css", "tokens.css"):
-        try:
-            with open(os.path.join("shared", cand), encoding="utf-8") as fh:
-                tok_src = fh.read()
-            if "--ks3-ink:" in tok_src:
-                break
-        except OSError:
-            continue
-    wanted = sorted(set(re.findall(r"var\((--ks3-[a-z0-9-]+)\)",
-                                   "".join(out))))
-    decls, missing_tok = [], []
-    for name in wanted:
-        m = re.search(re.escape(name) + r"\s*:\s*([^;]+);", tok_src)
-        if m:
-            decls.append("%s:%s;" % (name, m.group(1).strip()))
-        else:
-            missing_tok.append(name)
-    if decls:
-        out.insert(0, ".mrb-figure-scroll{%s}" % "".join(decls))
-    if missing_tok:
-        print("build_student_port.py: %d figure token(s) not found in the "
-              "design stylesheets, so those rules will fall back to their "
-              "initial values: %s" % (len(missing_tok), ", ".join(missing_tok)))
-
-    unmatched = sorted(classes - matched)
-    if unmatched:
-        # Not fatal — see the docstring — but silent is how this shipped
-        # broken the first time, so it is printed rather than swallowed.
-        print("build_student_port.py: %d figure CSS class(es) have no rule "
-              "in ks3.css, same as on the lesson page — SVG default applies: "
-              "%s" % (len(unmatched), ", ".join(unmatched)))
-    return "".join(out)
-
-
+# Every manifest figure is now drawn by `figlib` and passed by
+# `build_figures.py` only if it is SELF-PAINTING: every fill and stroke an
+# attribute, not one `class=`, not one `var(`. So there is nothing left to
+# extract, and the helper is gone rather than kept "just in case" — a helper
+# that silently finds no classes is exactly the green-over-nothing this
+# feature has been bitten by. The figure is a cream paper card of its own in
+# light and dark mode; this rule only sizes it.
+#
+# Sized to the column, never beyond the width it was drawn at: the runtime
+# sets `max-width` from the manifest's `w` (see the `"fig"` node in
+# `shared/student-runtime.js`), so a single circuit symbol is not blown up to
+# fill a desktop card.
 _FIGURE_SCROLL = (
     ".mrb-figure-scroll{overflow-x:auto;position:relative;"
     "border-radius:var(--st-r-card);outline-offset:-3px}"
     ".mrb-figure-scroll.is-overflowing{-webkit-mask-image:"
     "linear-gradient(to right,#000 calc(100% - 40px),transparent);"
     "mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}"
-    ".mrb-figure-scroll svg{display:block;width:100%;min-width:260px}"
-    + _figure_paint_css()
+    ".mrb-figure-scroll svg{display:block;width:100%;height:auto;"
+    "margin:0 auto}"
 )
 
 

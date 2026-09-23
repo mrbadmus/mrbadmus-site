@@ -230,6 +230,13 @@
          screen reader two competing descriptions of one picture — worse
          than one correct name, not a backup for it. */
       wrap.innerHTML = rec.svg;
+      /* ⊕ MRB-352 run 2 — never wider than it was drawn. A figlib figure is
+         laid out for a phone column and scales DOWN to fit one; on a wide
+         card it stops at its own width (`rec.w`, read off its viewBox at
+         build time) instead of blowing a single circuit symbol up to fill
+         the card. */
+      var figSvg = wrap.firstElementChild;
+      if (figSvg && rec.w) { figSvg.style.maxWidth = rec.w + "px"; }
       into.appendChild(wrap);
       if (!ctx.figScrollers) { ctx.figScrollers = []; }
       ctx.figScrollers.push(wrap);
