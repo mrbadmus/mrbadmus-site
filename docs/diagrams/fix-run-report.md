@@ -504,3 +504,100 @@ came out of it. Both were wrong. See ACCURACY-ESCALATIONS E4.
 - **I edited tracked files while `prepush_gate.py --record` was running**, twice, which invalidated receipts mid-flight (a receipt refuses to attest against a dirty tree — correctly). The right order is: finish edits, commit, then record once. Cost: two wasted slow-gate runs.
 - **I mis-diagnosed the figure sweep as a concurrency artefact.** I had run the sweep while a `verify_ks3` rebuild was rewriting the same tree, which is a real hazard and was a reasonable first suspicion — but re-running it clean still failed, so the hypothesis was wrong and there were three genuine defects underneath.
 - **I extrapolated a memory measurement instead of measuring it**, and recommended a production change on the strength of it. Corrected in E4, with the wrong reasoning kept.
+
+---
+
+## 14. Landing — what shipped, and the two defects the evidence sheet found
+
+Written after §§1–13, at the end of the run.
+
+### The branch is pushed
+
+`feat/diagrams`, both repos. Site tip `c5e3bad57`.
+
+Every slow gate this branch affects is green and carries a receipt:
+18 ran fresh, 11 passed on an unchanged receipt, 6 were skipped by rule as
+unaffected, 17 skipped for a missing precondition (the drive passwords this
+run is forbidden to set — see below).
+
+One red, pushed under an explicit override recorded in the history:
+
+```
+GATE-OVERRIDE: teacher_admin_foreign_class — inherited red, C7 REMINDERS x 3, untouched by this run
+```
+
+That is the inherited red CLAUDE.md already names. Its failure output this
+run is the same three `C7. REMINDERS — the control is drawn on the foreign
+class` checks recorded before this branch existed, and nothing here goes
+near the teacher admin screen.
+
+### KS4 is loaded to TEST, and proved there
+
+`python3 export_ks4_questions.py --load test` → **16,765 rows upserted**.
+
+Proved without `--verify`, which is unavailable to this run by rule
+(it needs `MRB_TEST_STUDENT_PASSWORD`, which the brief forbids setting;
+it refuses with exit 3 and says so, rather than passing quietly — the
+right behaviour):
+
+| | |
+|---|---|
+| project, from the service-role key's own `ref` claim | `qeppkiswvclkkwbxmlok` (TEST) |
+| rows, Python / TEST | 16,765 / 16,765 |
+| aggregate md5, Python | `a893b07dae87f98c04e37db48e2abba7b19f695022495dd9f1d02ddb963fbf48` |
+| aggregate md5, TEST | `a893b07dae87f98c04e37db48e2abba7b19f695022495dd9f1d02ddb963fbf48` |
+| rows carrying a figure on TEST | 8 — the eight repaired KS4 rows, and no others |
+
+**Production remains untouched.** No DDL, no load. See §8 for the column
+migration and the exact production command for Mide.
+
+### The before/after evidence sheet
+
+23 pages — one per repaired, figure-bearing frozen row (the brief asked for
+12). `ba_<id>.png` in `$MRB_SHOTS`, built by a scratch script outside the
+repo. BEFORE is read live from production read-only, so it is the row a
+pupil would be served today; AFTER is this branch's authored Python; the
+figure is the real manifest SVG, the same bytes the pupil gets. The
+credited option is marked in both panels, so the question Mide has to
+answer — *does the picture hand over the answer?* — can be answered by
+looking.
+
+**Two defects, both in the evidence sheet, neither in the product** — and
+both worth recording, because each was a wrong belief I held and not merely
+a typo:
+
+1. **I marked the wrong option as the answer, because I assumed index 0.**
+   The two key stages do not agree on where the answer lives. **KS3**
+   options are dicts carrying `correct: true`. **KS4** options are plain
+   strings and the answer is a separate `correct_index` column. Neither is
+   reliably index 0 — `p8-01-e04` is index 1 ("a lamp"),
+   `ks4-distance-time-graphs-h02` is index 1 ("slower there"). Assuming
+   index 0 marks a *distractor* as the answer, in both. The authored
+   content was correct throughout; only my sheet was wrong. ⚠️ This also
+   narrows a belief worth not carrying forward: "authored KS4 is index-0 by
+   design" is a statement about the gate `verify_answer_positions` watches,
+   NOT a property of a bank row you can read positionally.
+
+2. **The figure painted as a solid black disc — the fifth instance of the
+   root cause in `figure-contract.md` §8.** The sheet is a standalone page
+   and did not load `ks3.css`, so the figure's classes resolved to nothing
+   and `fill` fell back to black. I had written §8 about exactly this and
+   then did it again in the first surface I built afterwards. Fixed by
+   reusing `build_student_port._figure_paint_css()` — the helper that
+   already solves it — rather than hand-rolling a sixth variant. **The
+   lesson §8 should have carried and did not: a new surface that shows a
+   figure must import the paint helper, not re-derive which rules it
+   needs.**
+
+The second one is the more useful finding of the two. A documented root
+cause did not stop me reproducing it, which means the documentation was
+doing less work than a shared helper would. That is now the shape of the
+fix everywhere a figure is drawn.
+
+### Still not done
+
+Unchanged from §4: the 179 non-frozen rows (87 confirmed, 92 borderline),
+and the KS3 production load, which stays held for the reason in §13 —
+the renderer that draws these figures lives on this branch and is not
+merged, so loading repaired stems to production now would put "Look at the
+diagram" in front of pupils on a site with no diagram.
