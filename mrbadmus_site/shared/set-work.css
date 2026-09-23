@@ -427,6 +427,49 @@
 }
 .sw-tree.sw-bad { border: 1px solid var(--st-accent-text); border-radius: 10px; padding: 6px; }
 
+/* ── ⊕ MRB-342.2 · THE NOTE FIELD — shared by the download menu's own note
+   (contract §2.1) and the Set-work sheet's assignment note (§3). One field,
+   built once (`buildNoteField` in set-work.js), so its two placements can
+   never drift. A `<textarea>` gets `.sw-input`'s own look; `resize:vertical`
+   is the one addition a single-line input never needed. */
+.sw-note-field { margin-top: 12px; }
+.sw-note-input {
+  resize: vertical;
+  min-height: 44px;
+  font-family: var(--st-ui);
+}
+.sw-note-count {
+  margin-top: 5px;
+  text-align: right;
+  font: 400 12.5px/1.2 var(--st-mono);
+  color: var(--st-caption);
+  font-variant-numeric: tabular-nums;
+}
+/* Never a block — the server is the one true 300-character bound (`bad_note`
+   refuses it), so this is a courtesy colour change, not a control that locks
+   the teacher out of typing further. */
+.sw-note-count.sw-note-over { color: var(--st-accent-text); }
+
+/* ── ⊕ MRB-342.2 · THE COUNT FIELD — beside the quick-pick chips, contract
+   §1. `flex-wrap` matches `.sw-fields`' own answer to the same 390px
+   problem: a number input and (on a clamped scope) its note both need room
+   a 358px sheet body does not spare a chip rail for. */
+.sw-count-custom { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.sw-count-input {
+  flex: 0 1 96px;
+  min-width: 72px;
+  font-family: var(--st-mono);
+}
+/* The clamp note reuses `.sw-row-tag`'s look (the tree and the topic panel's
+   own status line) — one word or one ruled sentence, never a paragraph. */
+[data-sw="count-note"] { margin-top: 8px; }
+[data-sw="count-note"][hidden] { display: none; }
+
+/* A used-up Swap's settled line, same idiom, sitting between the question
+   row's head and its (still-collapsed) options. */
+[data-sw="swap-note"] { margin: 0 12px 10px; }
+[data-sw="swap-note"][hidden] { display: none; }
+
 /* ⊕ MRB-336 — `.sw-hold` WAS HERE. The sheet emits no such node any more:
    the school's open date governs automatic composition only, so there is
    nothing for the sheet to disclose. Deleted rather than left unused, so a

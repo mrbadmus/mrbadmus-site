@@ -1566,6 +1566,18 @@ FAFF_EXACT = {
     # button verb, like `Save` and `Back`. Neither is a sentence, and there is
     # no third: a read that failed still says `Unavailable`.
     "Loading", "Retry",
+    # ⊕ MRB-342.2 — THREE MORE. `One file per topic` is the third checkbox
+    # beside `Multiple choice` and `Answers`, same idiom, same noun-phrase
+    # shape. `Note` is the label over the shared note field (contract §2.1,
+    # §3) — drawn twice, once in the download menu and once (capability-
+    # gated) on the Set-work sheet's own Detail step, both the same string.
+    # `No more questions in this topic.` is the one ruled SENTENCE on this
+    # list — contract §1.4 names it verbatim as the settled line a used-up
+    # Swap shows, and it is exempted from A9's "no sentences" rule the same
+    # way the two refusal labels are: it says a true, static fact rather
+    # than apologising for one, and there is no second way to say it.
+    "One file per topic", "Note",
+    "No more questions in this topic.",
 }
 # ⚠️ A SECOND SET, AND SPLITTING THEM IS THE POINT RATHER THAN A CONCESSION.
 # These four are `aria-label`s on the date and time inputs and are never
@@ -1594,6 +1606,14 @@ FAFF_PATTERNS = [
     re.compile(r"^\d+ students?$"),
     re.compile(r"^\d+\.$"),                      # the question number, "1."
     re.compile(r"^.{1,80} · .+$"),               # the toast: title · class(es)
+    # ⊕ MRB-342.2 — the note field's live count, and the two ruled clamp
+    # notes (contract §1.3), verbatim including the tier word — which is
+    # always one of the five words already on FAFF_EXACT's tier set, never
+    # re-derived, so the pattern names them rather than matching `\w+`.
+    re.compile(r"^\d+ left$"),
+    re.compile(r"^Only \d+ at (Foundation|Higher|Easy|Medium|Hard)\. "
+               r"All \d+ added\.$"),
+    re.compile(r"^\d+ is the most in one topic\. \d+ added\.$"),
 ]
 
 READ_CHROME_JS = r"""
@@ -1601,7 +1621,7 @@ READ_CHROME_JS = r"""
   var o = document.querySelector('[data-sw="overlay"]');
   if (!o) { return JSON.stringify({err: 'no overlay'}); }
   var sel = '.sw-label,.sw-chip,.sw-btn,.sw-step,.sw-row-tag,.sw-swap,' +
-            '.sw-hold,.sw-opt-k,.sw-q-n';
+            '.sw-hold,.sw-opt-k,.sw-q-n,.sw-note-count';
   var out = [];
   var nodes = o.querySelectorAll(sel);
   for (var i = 0; i < nodes.length; i++) {
@@ -2756,6 +2776,22 @@ def check_faff(p, scopes):
     record(not bad,
            "faff_sweep — the four composed strings are each a label plus a "
            "number", "; ".join(composed) if not bad else str(bad))
+
+    # ⊕ MRB-342.2 — the same claim, over the FOUR new composed strings this
+    # ticket adds: the note counter and the two ruled clamp notes (one per
+    # tier register, so both `capNotePool` calls are exercised).
+    composed2 = p.eval("""(function(){var S=window.MRBSetWork.SAY;
+        return [S.charsLeft(300), S.charsLeft(0),
+                S.capNotePool(8, 'Higher'), S.capNotePool(43, 'Medium'),
+                S.capNoteCeiling(500)];})()""")
+    bad2 = [c for c in composed2
+            if c not in FAFF_EXACT
+            and not any(r.match(c) for r in FAFF_PATTERNS)]
+    record(not bad2,
+           "faff_sweep — MRB-342.2's five composed strings (the note "
+           "counter twice, the pool clamp note in two tier registers, the "
+           "ceiling clamp note) all match their ruled pattern",
+           "; ".join(composed2) if not bad2 else str(bad2))
 
     # ⚠️ AND THE THREE v1 SENTENCES MUST BE GONE BY NAME. A general "no long
     # strings" rule would pass a NEW sentence; naming the ones that were there
@@ -7115,7 +7151,12 @@ def check_worksheet_rate_limit(t_admin, first):
 
 WS_NEW_STRINGS = ("Download", "Add topic", "Worksheet", "Multiple choice",
                   "PDF", "Word",
-                  "Answers")
+                  "Answers",
+                  # ⊕ MRB-342.2 — the ninth. `Note` is EXACT-matched here too:
+                  # note-count's "N left" is a NINTH string this sweep sees,
+                  # but it is dynamic and checked via FAFF_PATTERNS rather
+                  # than by exact membership in this tuple.
+                  "One file per topic", "Note")
 
 
 def arm_downloads(p, path):
@@ -7510,34 +7551,57 @@ def check_worksheet_sheet(p, base, first, shots):
     # "Multiple choiceAnswers" — a string on no allowed list, failing as a
     # stray rather than as the two real labels. So the walk descends one
     # level into it, by name.
+    #
+    # ⊕ MRB-342.2 — AND A SECOND WRAPPER, SAME REASON. `.sw-note-field`
+    # holds the label, the `<textarea>` and the live count as three
+    # siblings; read as one item its `textContent` would be
+    # "Note300 left" — no string on any list, so a real, correctly-working
+    # field would report as a stray. The walk descends into it exactly as
+    # it already does for `.sw-dl-checks`. The `<textarea>` itself pushes an
+    # empty string (its `textContent` is unset) and is filtered by `if(t)`,
+    # the same guard that already drops empty pushes everywhere else here.
     said = p.eval("""(function(){
       var out=[], push=function(n){ if(!n){return;}
         var t=(n.textContent||'').trim(); if(t){out.push(t);} };
+      var DESCEND = {'sw-dl-checks':1, 'sw-note-field':1};
       push(document.querySelector('[data-sw="download"]'));
       push(document.querySelector('[data-sw="add-topic"]'));
       var m=document.querySelector('[data-sw="download-menu"]');
       if(m){ var ks=m.children;
         for(var i=0;i<ks.length;i++){
-          if(ks[i].className==='sw-dl-checks'){
+          if(DESCEND[ks[i].className]){
             var cs=ks[i].children;
             for(var j=0;j<cs.length;j++){ push(cs[j]); }
           } else { push(ks[i]); } } }
       return out;})()""") or []
     said = sorted(set(said))
-    stray = [s for s in said if s not in FAFF_EXACT]
+    # ⊕ MRB-342.2 — the note counter ("300 left") is real chrome and is
+    # swept, but it is DATA-shaped (a number that changes with every
+    # keystroke), so it is allowed by PATTERN here exactly as it is
+    # everywhere else in this file, never by exact membership.
+    stray = [s for s in said
+             if s not in FAFF_EXACT and not any(r.match(s) for r in FAFF_PATTERNS)]
     record(not stray,
            "worksheet_strings — every word the Download control and the "
            "`Add topic` button render is on RISKS A9's allowed list",
            "rendered: %s" % said if not stray else "NOT ON THE LIST: %s" % stray)
     record(set(WS_NEW_STRINGS) <= set(said),
-           "…and all seven of MRB-342's new strings are really drawn, so the "
-           "list is not carrying an entry nothing renders",
-           "seven of seven: %s" % list(WS_NEW_STRINGS)
+           "…and all nine of MRB-342/.1/.2's fixed new strings are really "
+           "drawn, so the list is not carrying an entry nothing renders",
+           "nine of nine: %s" % list(WS_NEW_STRINGS)
            if set(WS_NEW_STRINGS) <= set(said)
            else "never drawn: %s" % sorted(set(WS_NEW_STRINGS) - set(said)))
-    record(len(said) == len(WS_NEW_STRINGS),
-           "…and an EIGHTH has not crept in beside them",
-           "%d string(s) across the two controls: %s" % (len(said), said))
+    # ⊕ MRB-342.2 — the exact count grew by one FIXED string ("One file per
+    # topic") plus one PATTERN-matched dynamic one (the note count) over
+    # what §342.1 shipped. `dynamic` isolates the note count so the "no
+    # UNEXPECTED extra string" claim still names an exact number rather than
+    # loosening into "at least".
+    dynamic = [s for s in said if s not in FAFF_EXACT]
+    record(len(said) == len(WS_NEW_STRINGS) + len(dynamic)
+           and all(any(r.match(s) for r in FAFF_PATTERNS) for s in dynamic),
+           "…and nothing UNEXPECTED has crept in beside them",
+           "%d fixed + %d pattern-matched dynamic string(s): %s"
+           % (len(said) - len(dynamic), len(dynamic), said))
     check_sideways(p, "the Download menu open", shots)
     p.eval("document.body.click()")
 

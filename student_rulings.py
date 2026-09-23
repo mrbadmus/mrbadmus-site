@@ -2209,6 +2209,34 @@ LOGIC = {
             "      qEyebrow: 'Question ' + pad(idx + 1) + ' of ' + pad(total),",
         ),
         # ══════════════════════════════════════════════════════════════════
+        # ⊕ MRB-342.2, 23 Sep 2026 — THE ASSIGNMENT NOTE IS VISIBLE ONLY
+        # ABOVE QUESTION ONE.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Contract §3.5: "Print the note at the TOP of that assignment,
+        # above the first question." This screen shows ONE question at a
+        # time (`idx` of `total`) — the same object this tuple's own
+        # `qEyebrow` is computed inside — so "above the first question"
+        # cannot mean "above every question": a note re-shown on Q2, Q3, Q4
+        # would not be about the question under it, and four repeats of one
+        # sentence reads as the page repeating itself, not as an assignment
+        # header.
+        #
+        # `idx` only exists in THIS per-question view — `shared/
+        # student-live.js` has no notion of "which question is on screen
+        # right now", so the gate has to be computed here, beside `qEyebrow`,
+        # not carried in from the data object. `MRB_DATA('assignmentNoteHas')`
+        # is the same capability-and-content gate `feedbackHas` already uses
+        # (student-live.js `buildAssignment`, §3.3): false when the database
+        # column is unsupported, false when nothing was typed — either way
+        # this renders nothing, which is the page before this ticket.
+        (
+            "      qEyebrow: 'Question ' + pad(idx + 1) + ' of ' + pad(total),",
+            "      qEyebrow: 'Question ' + pad(idx + 1) + ' of ' + pad(total),\n"
+            "      /* ⊕ MRB-342.2 — see the section header above this tuple. */\n"
+            "      assignmentNoteVisible: idx === 0 && !!MRB_DATA('assignmentNoteHas'),",
+        ),
+        # ══════════════════════════════════════════════════════════════════
         # ⊕ RULED 23 Aug 2026 — THE OPTIONS THAT WERE NOT PICKED VANISHED.
         # ══════════════════════════════════════════════════════════════════
         #
@@ -3293,6 +3321,68 @@ INSERT_AT = {
          "the child must be able to read it while the work is still open. "
          "Same four keys as (290, 314) — one read, two screens; no control, "
          "on either."),
+
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ MRB-342.2, 23 Sep 2026 — THE TEACHER'S NOTE, ABOVE THE QUESTION.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # ⚠️ ANCHORED AFTER 111, NOT AFTER THE PRUNED 107. The (106, 251)
+        # entry above already tried `after 107` for a DIFFERENT surface and
+        # the build refused it by name: `PRUNE["assignment"]` removes node
+        # 107 (23 Aug 2026's due-line ruling) before INSERT_AT ever runs, so
+        # it is not a child of 106 any more and cannot be anchored on. 111
+        # (the `Question 01 of 04` eyebrow) is the child that remains
+        # closest to the top of the reading column — see that entry's own
+        # comment for the full list of what survives (111, 112, 113, 251)
+        # and why there is no seam among them that is free of a trade-off.
+        # This is the seam contract §3.5 asks for: the note sits between the
+        # eyebrow and the question text itself (112), which is as close to
+        # "above the first question" as a `main` with no prepend operation
+        # can express. Node 112 IS the question (the `<h1>` `qText`); the
+        # eyebrow above it is a caption, not "the question" the contract
+        # names — so this reads as "above the question", not "inside it".
+        #
+        # ⚠️ GATED ON `assignmentNoteVisible` (LOGIC, above `qEyebrow` in
+        # this same file), not on `assignmentNoteHas` directly — see that
+        # ruling's comment: "above the first question" means Q1 only, on a
+        # screen that shows one question at a time, and `idx` is not
+        # something this render scope has any other way to read.
+        #
+        # ⚠️ TEXT NODE, NOT MARKUP. `assignmentNoteBody` binds through
+        # `{"parts": [{"e": …}]}`, the same interpolation every other string
+        # on this page uses — `student-runtime.js` resolves it with
+        # `createTextNode`, never `innerHTML`. There is no way to bind a
+        # string into this template as anything else.
+        (106, 111): ({
+            "t": "if", "e": "assignmentNoteVisible",
+            "c": [{
+                "t": "div",
+                "a": {"style": "margin-top:clamp(12px,1.4cqw,16px);"
+                               "min-width:0;"
+                               "padding:clamp(12px,1.3cqw,16px);"
+                               "border:1px solid var(--st-rule);"
+                               "border-radius:var(--st-r-card);"
+                               "background:var(--st-paper)"},
+                "c": [
+                    {"t": "span", "a": {"class": "eyebrow"},
+                     "c": [{"t": "#", "v": "From your teacher"}]},
+                    {"t": "span",
+                     "a": {"style": "display:block;margin-top:8px;"
+                                    "font:400 clamp(14px,1.15cqw,15.5px)"
+                                    "/1.6 var(--st-ui);"
+                                    "color:var(--st-body);"
+                                    "white-space:pre-wrap;"
+                                    "overflow-wrap:anywhere;"
+                                    "text-wrap:pretty"},
+                     "c": [{"t": "#", "v": {"parts": [
+                         {"e": "assignmentNoteBody"}]}}]},
+                ]}]},
+         "the teacher's note (`assignments.teacher_note`) on Set work, "
+         "printed above the question — contract §3.5. Visible only over "
+         "question 1 (`assignmentNoteVisible`, LOGIC), plain text, no "
+         "control. `eyebrow` styling read off node 111 on this same "
+         "screen; card recipe read off 268/269, the same source the "
+         "(106, 251) entry above already cites for the identical shape."),
     },
 }
 

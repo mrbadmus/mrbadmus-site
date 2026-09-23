@@ -544,7 +544,32 @@
        There is deliberately no word for that exception on this surface: a
        control that said "mostly" would be a control a teacher has to think
        about, and the sheet they get is right either way. */
-    multipleChoice: "Multiple choice"
+    multipleChoice: "Multiple choice",
+    /* ⊕ MRB-342.2 — FOUR MORE, AND EACH IS STILL A NOUN, A LABEL OR A
+       COMPOSED NUMBER — never a sentence.
+
+       `onePerTopic` names the ZIP choice beside `Multiple choice` and
+       `Answers`; it is a checkbox in the same idiom, so it is a noun phrase
+       like its two neighbours. `labelNote` is a field label, exactly like
+       `labelTitle` above it. `charsLeft` and the two clamp notes are
+       composed strings — a number plus fixed words — the same shape as
+       `weeksAgo` and `pupils`.
+
+       ⚠️ THE TWO CLAMP NOTES ARE RULED WORDING (contract §1.3), verbatim.
+       The tier word is `SAY.tier[tier]` — already on this list — reused,
+       never re-derived. */
+    onePerTopic: "One file per topic",
+    labelNote: "Note",
+    charsLeft: function (n) { return n + " left"; },
+    capNotePool: function (n, tierLabel) {
+      return "Only " + n + " at " + tierLabel + ". All " + n + " added.";
+    },
+    capNoteCeiling: function (n) {
+      return n + " is the most in one topic. " + n + " added.";
+    },
+    /* ⊕ MRB-342.2 §1.4 — the settled line a used-up Swap shows instead of
+       nothing. Ruled wording, verbatim. */
+    swapExhausted: "No more questions in this topic."
   };
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -656,9 +681,20 @@
       ref: "",
       count: 10,
       available: 0,
+      /* ⊕ MRB-342.2 — the server's own word for why `count` was not what was
+         typed: "pool" | "ceiling" | null. Drives `capNote` below. */
+      cappedBy: null,
+      /* The inline line shown under this scope's count field, or null. Set
+         from `cappedBy` after every `/preview` answer (`capNoteFor`), and
+         cleared whenever the scope's node or tier changes
+         (`resetScopeQuestions`). */
+      capNote: null,
       picked: [],
       expanded: {},
       swapDead: {},
+      /* ⊕ MRB-342.2 §1.4 — a settled line for a row whose Swap came back 204,
+         keyed by the row's index, same shape as `swapDead`. */
+      swapNote: {},
       previewErr: false,
       busy: false,
       seq: 0,
@@ -730,7 +766,27 @@
      ⚠️ `pickedTotal()` SURVIVES and is still read — by `Download` (is there
      anything to print?) and by `stepValid` (has every scope got rows?). It is
      no longer a CEILING anywhere. */
-  var MAX_QUESTIONS = 20;      // per SCOPE — the top count chip
+  /* ⊕ MRB-342.2 — THE PER-SCOPE CEILING IS NO LONGER A NUMBER IN THIS FILE.
+     It was 20 above, then a flat 500 while this ticket was being built — and
+     both were wrong the same way: a real KS4 topic pool measured on TEST
+     (`biology/ecology`, Foundation, triple) holds **1,450** rows, so any
+     constant this file could pin would eventually BE the product cap for a
+     big topic while calling itself a safety guard.
+
+     `GET /api/teacher/set-work/scope` now answers a top-level
+     `max_per_scope` — the server's own current ceiling, read fresh every
+     time the sheet opens, never hand-copied. `maxPerScope()` is the one
+     place that reads it; nothing else in this file may name a number for
+     this. `MAX_QUESTIONS_FALLBACK` exists only for a `/scope` answer that
+     predates the field — an older backend during the split-deploy window —
+     and is a conservative guess rather than a real ceiling: large enough
+     that it will essentially never bind against a real pool, so hitting it
+     produces the ceiling NOTE rather than a request the server refuses. */
+  var MAX_QUESTIONS_FALLBACK = 500;
+  function maxPerScope() {
+    var n = S && S.scope && S.scope.max_per_scope;
+    return (typeof n === "number" && n > 0) ? n : MAX_QUESTIONS_FALLBACK;
+  }
   var MAX_SCOPES = 10;         // topics on one sheet — `Add topic`'s ceiling
 
   function freshState(classId) {
@@ -846,6 +902,69 @@
     p.setAttribute("stroke-linejoin", "round");
     s.appendChild(p);
     return s;
+  }
+
+  /* ⊕ MRB-342.2 — THE ONE NOTE CONTROL, SHARED BY TWO DIFFERENT FIELDS.
+
+     A worksheet download carries an ephemeral `note` (contract §2.1, printed
+     on the file and nowhere else); a Set-work assignment carries a durable
+     `teacher_note` (§3, saved with the row, read back by the pupil). Two
+     different facts, two different POST bodies — but the same 300-character,
+     plain-text control: a label, a `<textarea>` and a live count. Built once
+     here so the counting rule can never drift between the two places it is
+     drawn.
+
+     ⚠️ CODE POINTS, NOT `.length`. Postgres `char_length()` counts
+     characters; JS `String.prototype.length` counts UTF-16 code units, and
+     the two disagree outside the BMP — 300 🧪 is `char_length` 300 (accepted)
+     and `.length` 600. `Array.from(s).length` iterates by code point, which
+     is what both the live counter and the client-side guard use below, so
+     the number a teacher watches and the bound the server enforces agree on
+     the same string. */
+  var NOTE_MAX = 300;
+  function codePointLen(s) {
+    try { return Array.from(String(s || "")).length; }
+    catch (e) { return String(s || "").length; }
+  }
+
+  /* Trim, and collapse every run of whitespace (space, tab, CR, LF) to one
+     space — the same normalisation the server applies before its own length
+     check (contract §2.1), so the count shown here is the count that will
+     actually be billed against the 300-character bound rather than a raw
+     keystroke count that can disagree with it. */
+  function normaliseNote(raw) {
+    return String(raw || "").replace(/[ \t\r\n\f\v]+/g, " ").trim();
+  }
+
+  /* Returns `{wrap, textarea, sync, value}`. `value()` returns the
+     NORMALISED string, ready to post; the field is never disabled at
+     NOTE_MAX — a teacher may keep typing, the count goes negative-styled via
+     `.sw-note-over`, and the server is the one true bound (`bad_note`). */
+  function buildNoteField(mark) {
+    var wrap = el("div", "sw-note-field");
+    wrap.setAttribute("data-sw", mark + "-field");
+    wrap.appendChild(el("div", "sw-label", SAY.labelNote));
+    var ta = document.createElement("textarea");
+    ta.className = "sw-input sw-note-input";
+    ta.rows = 2;
+    ta.setAttribute("data-sw", mark);
+    ta.setAttribute("aria-label", SAY.labelNote);
+    var count = el("div", "sw-note-count", SAY.charsLeft(NOTE_MAX));
+    count.setAttribute("data-sw", mark + "-count");
+    wrap.appendChild(ta);
+    wrap.appendChild(count);
+    function sync() {
+      var n = codePointLen(normaliseNote(ta.value));
+      var left = NOTE_MAX - n;
+      count.textContent = SAY.charsLeft(left);
+      count.classList.toggle("sw-note-over", left < 0);
+    }
+    ta.addEventListener("input", sync);
+    sync();
+    return {
+      wrap: wrap, textarea: ta, sync: sync,
+      value: function () { return normaliseNote(ta.value); }
+    };
   }
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -1018,6 +1137,17 @@
     titleWrap.appendChild(title);
     pDetail.appendChild(titleWrap);
 
+    /* ⊕ MRB-342.2 §3.3 — HIDDEN UNTIL `/scope` NAMES THE CAPABILITY, AND
+       HIDDEN IS THE OPENING STATE. `syncNoteVisibility()` is the only place
+       that ever un-hides it, and it un-hides on exactly one signal:
+       `S.scope.assignment_note === true` — not "truthy", `=== true`. An
+       older backend, or a request still in flight, answers with the key
+       absent; `undefined` must read as unsupported, never as "unknown, so
+       show it and let the save fail". */
+    var note = buildNoteField("assignment-note");
+    note.wrap.hidden = true;
+    pDetail.appendChild(note.wrap);
+
     var relLbl = el("div", "sw-label", SAY.labelRelease);
     pDetail.appendChild(relLbl);
     var relChips = el("div", "sw-chips");
@@ -1066,7 +1196,9 @@
       relLbl: relLbl,
       roTierLbl: roTierLbl, roTier: roTier,
       roScopeLbl: roScopeLbl, roScope: roScope,
-      title: title, relChips: relChips, relFields: relFields,
+      title: title, noteWrap: note.wrap, noteInput: note.textarea,
+      noteSync: note.sync, noteValue: note.value,
+      relChips: relChips, relFields: relFields,
       relDate: relDate, relTime: relTime, dueDate: dueDate, dueTime: dueTime,
       toast: toast,
       treeRows: [], classRows: []
@@ -1144,6 +1276,15 @@
       S.title = els.title.value;
       S.titleEdited = true;
       S.badTitle = false;
+      syncValidity();
+    });
+    /* ⊕ MRB-342.2 §3 — the assignment note. Read on demand from `els.noteInput`
+       at submit time (`els.noteValue()`, already trimmed and whitespace-
+       collapsed); this listener only clears the outline a refused save left
+       behind, the same shape as the title's. */
+    els.noteInput.addEventListener("input", function () {
+      if (!S) { return; }
+      S.badNote = false;
       syncValidity();
     });
     var dateTimeSync = function () {
@@ -1445,8 +1586,15 @@
     sc.picked = [];
     sc.expanded = {};
     sc.swapDead = {};
+    sc.swapNote = {};
     sc.previewErr = false;
     sc.available = 0;
+    /* ⊕ MRB-342.2 — a clamp note is about the node/tier just left; it does
+       not survive a topic or tier change (a stale "Only 8 at Higher" left
+       showing under a freshly-picked topic that has never been asked about
+       would be a lie about the wrong node). */
+    sc.cappedBy = null;
+    sc.capNote = null;
   }
 
   function nodeFor(kind, ref) {
@@ -1682,13 +1830,37 @@
     name.setAttribute("data-sw", "scope-name");
     var chips = el("div", "sw-chips");
     chips.setAttribute("data-sw", "count-chips");
+    /* ⊕ MRB-342.2 §1 — the number field beside the quick picks. `type=number,
+       min=1` gives a phone a numeric keypad and a desktop the native
+       steppers; `max` is set from `maxPerScope()` in `syncCountChips`, never
+       hand-typed here, because the ceiling is the server's own answer and
+       this file must not carry a second copy of it that could drift. */
+    var countCustom = el("div", "sw-count-custom");
+    countCustom.setAttribute("data-sw", "count-custom");
+    var countInput = document.createElement("input");
+    countInput.type = "number";
+    countInput.min = "1";
+    countInput.step = "1";
+    countInput.className = "sw-input sw-count-input";
+    countInput.setAttribute("data-sw", "count-input");
+    countInput.setAttribute("aria-label", SAY.labelQuestions);
+    countCustom.appendChild(countInput);
+    /* The clamp note — RISKS A9's two ruled sentences (contract §1.3),
+       hidden except while one of them applies to this scope. */
+    var countNote = el("div", "sw-row-tag", "");
+    countNote.setAttribute("data-sw", "count-note");
+    countNote.hidden = true;
     var qlist = el("div", "sw-qlist");
     qlist.setAttribute("data-sw", "qlist");
-    wrap.appendChild(name); wrap.appendChild(chips); wrap.appendChild(qlist);
+    wrap.appendChild(name); wrap.appendChild(chips);
+    wrap.appendChild(countCustom); wrap.appendChild(countNote);
+    wrap.appendChild(qlist);
     els.scopesHost.appendChild(wrap);
     sc.els = { wrap: wrap, name: name, chips: chips, qlist: qlist,
-               countList: null, qRows: [] };
+               countList: null, countInput: countInput, countNote: countNote,
+               qRows: [] };
     buildCountChips(sc);
+    wireCountInput(sc);
     return sc.els;
   }
 
@@ -1771,14 +1943,23 @@
     swap.setAttribute("data-sw", "swap");
     head.appendChild(n); head.appendChild(stem); head.appendChild(swap);
 
+    /* ⊕ MRB-342.2 §1.4 — a used-up Swap goes to a SETTLED state, not a dead
+       button with nothing said. Same `.sw-row-tag` idiom the tree and the
+       topic panel already use for a status line; hidden until `doSwap`'s
+       204 sets it. */
+    var swapNote = el("div", "sw-row-tag", SAY.swapExhausted);
+    swapNote.setAttribute("data-sw", "swap-note");
+    swapNote.hidden = true;
+
     var body = el("div", "sw-q-body");
     body.hidden = true;
     body.setAttribute("data-sw", "options");
     fillOptions(body, q);
 
-    wrap.appendChild(head); wrap.appendChild(body);
+    wrap.appendChild(head); wrap.appendChild(swapNote); wrap.appendChild(body);
 
-    var rec = { sc: sc, i: i, wrap: wrap, stem: stem, body: body, swap: swap };
+    var rec = { sc: sc, i: i, wrap: wrap, stem: stem, body: body, swap: swap,
+                swapNote: swapNote };
     sc.els.qRows.push(rec);
 
     stem.addEventListener("click", function () { toggleQ(rec); });
@@ -1868,7 +2049,9 @@
           myScopeSeq !== sc.seq) { return; }
       if (r.status === 204 || !r.body || !r.body.id) {
         sc.swapDead[rec.i] = true;
-        return;                              // stays disabled
+        sc.swapNote[rec.i] = true;
+        if (rec.swapNote) { rec.swapNote.hidden = false; }
+        return;                              // stays disabled, and says why
       }
       var q = r.body;
       S.shown[String(q.id)] = true;
@@ -1931,6 +2114,20 @@
        Two owners of one `hidden` is the bug this note exists to prevent. */
   }
 
+  /* ⊕ MRB-342.2 §3.3 — the ONLY signal, and it is read strictly.
+     `S.scope.assignment_note === true`, never a truthiness check: `undefined`
+     (an older backend, or before `/scope` has answered) and `false` (a
+     newer backend whose column is not on this database yet) both hide the
+     field, and both are the CORRECT reading — "absent" is treated as FALSE,
+     never as "unknown, so show it and let the save silently drop the note"
+     (contract's own instruction, given the column is only present on TEST
+     right now and the backend lane's half is not yet deployed here). */
+  function syncNoteVisibility() {
+    if (!els) { return; }
+    var supported = !!(S && S.scope && S.scope.assignment_note === true);
+    els.noteWrap.hidden = !supported;
+  }
+
   function loadScope() {
     S.scopeErr = false;
     S.scopeLoading = true;
@@ -1989,6 +2186,9 @@
       buildTree();
       syncTree();
       syncScopes();
+      /* ⊕ MRB-342.2 §3.3 — read once, per `/scope` answer, same as everything
+         else this function resolves. */
+      syncNoteVisibility();
       /* ⊕ first-week fixes (22 Sep 2026) — the panel resolves IN PLACE, so a teacher who already
          walked forward to the Topic step watches `Loading` become the tree
          without touching anything. No step change, no toggle, no re-open. */
@@ -2021,40 +2221,81 @@
     return r ? countAt(r.data, S.tier) : 0;
   }
 
+  /* ⊕ MRB-342.2 — the one line under a scope's count field, or null. Reads
+     `sc.cappedBy`, set below, and `maxPerScope()` for the ceiling's own
+     number — never a number typed into this file. */
+  function capNoteFor(sc) {
+    if (sc.cappedBy === "ceiling") { return SAY.capNoteCeiling(maxPerScope()); }
+    if (sc.cappedBy === "pool") {
+      return SAY.capNotePool(sc.available, SAY.tier[S.tier] || S.tier || "");
+    }
+    return null;
+  }
+
+  /* ⊕ MRB-342.2 — ONE PATH FOR A QUICK PICK AND A TYPED NUMBER, per the
+     contract's own words: "there is one code path, not two." A chip tap and
+     the number field's `commit` both end here with nothing but the number
+     the teacher asked for — this function is the only place that decides
+     what happens to a number bigger than this topic can give.
+
+     ⚠️ THE CEILING IS CLAMPED HERE, CLIENT-SIDE, BEFORE THE REQUEST — and
+     that is a deliberate difference from how the POOL clamp works (which is
+     read back FROM `/preview`'s answer, in `loadPreview` below). The two
+     ceilings answer different questions. The pool is a fact this file does
+     not know until the server has looked, so it can only ever be read from
+     the response. The ceiling (`maxPerScope()`) is known up front, from
+     `/scope`, and pre-clamping it means the number this file remembers
+     asking for and the number the network actually carries never disagree —
+     and it means a request for 50,000 is never sent at all. The SERVER still
+     re-validates independently and would refuse nothing: this is a courtesy
+     to the network, not the security boundary (there is none needed here —
+     nothing is written by a download or a preview). */
+  function setScopeCount(sc, rawN) {
+    var ceiling = maxPerScope();
+    var overCeiling = rawN > ceiling;
+    sc.count = overCeiling ? ceiling : rawN;
+    /* Provisional — a rarer POOL clamp on top of this one, discovered only
+       once `/preview` answers, wins the note that is actually shown
+       (`loadPreview` below), because it is the truthful description of what
+       was actually delivered. Set here so the note appears immediately for
+       the ordinary case, without waiting on the network. */
+    sc.cappedBy = overCeiling ? "ceiling" : null;
+    sc.capNote = capNoteFor(sc);
+    S.keepPicked = false;             // ⊕ MRB-336
+    syncCountChips(sc);
+    loadPreview(sc);
+  }
+
+  /* The cap the count chips obey. Before /preview answers it is the count
+     /scope already sent for this node at this tier — which IS the
+     availability — so the normal path costs one request, not two. */
+  function scopeAvailable(sc) {
+    var s = sc || cur();
+    var r = nodeFor(s.kind, s.ref);
+    return r ? countAt(r.data, S.tier) : 0;
+  }
+
   /* ⊕ MRB-342 — ONE SCOPE'S PREVIEW, and every line of it is that scope's.
      Two of these can legitimately be in flight together, so the guard is
      `session` + `fetchSeq` (which only `/scope` moves) + this scope's own
      `seq`. A preview for the second topic can no longer discard the first
-     topic's rows, and vice versa. */
+     topic's rows, and vice versa.
+
+     ⊕ MRB-342.2 — AND THE COUNT SENT IS THE TEACHER'S OWN, UNCAPPED BY THE
+     POOL. `setScopeCount` has already clamped to the ceiling above; nothing
+     here clamps to `sc.available`, because the whole point of §1 is that a
+     quick pick or a typed number bigger than the pool is not refused, not
+     silently shrunk before it is even asked — it is asked for, the server
+     says what it actually holds, and `sc.count` becomes THAT number
+     (contract §1.1: "the server returns the whole pool and says so"). */
   function loadPreview(scope) {
     var sc = scope || cur();
     if (!sc.kind || !sc.ref) { return Promise.resolve(false); }
     if (!sc.els) { syncScopes(); }
-    var cap = sc.available || scopeAvailable(sc);
-    /* ⚠️ THE COUNT IS CAPPED BEFORE THE REQUEST, NOT AFTER IT. ⊕ MRB-335.
-       This used to ask for `min(S.count, cap)` and then call `capCount()`
-       on the answer, which left the two disagreeing: on a scope holding
-       eight, the sheet asked for eight, rendered eight rows, and moved the
-       selected chip to 5. The chip is not decoration — it is the teacher's
-       statement of how many questions the class gets, and `submit()` sends
-       the picked rows, so pressing Set work there would have set EIGHT under
-       a chip reading 5. Capping first makes the number on the chip and the
-       number of rows the same number.
-
-       ⊕ first-week fixes (22 Sep 2026) — AND THE OTHER SCOPES' ROWS ARE NOT PART OF THE CEILING.
-
-       ⛔ MRB-342 wrote, here: "AND THE OTHER SCOPES' ROWS ARE PART OF THE
-       CEILING. The server takes at most twenty questions for one assignment;
-       a second topic asking for ten over a first topic's twenty is a set that
-       cannot be written, and the sheet must not compose one." The premise is
-       no longer true — the server takes twenty PER SCOPE — and while it was
-       believed, this line asked `/preview` for fewer questions than the
-       teacher had pressed for and then moved their chip down to match. The
-       only ceiling on this request is this scope's own pool. */
-    capCount(sc, cap > 0 ? cap : MAX_QUESTIONS);
-    var want = Math.min(sc.count, cap > 0 ? cap : sc.count, MAX_QUESTIONS);
+    var want = sc.count;
     if (want < 1) {
       sc.picked = [];
+      sc.available = 0;
       buildQuestions(sc);
       syncScopes();
       syncValidity();
@@ -2082,34 +2323,31 @@
       var d = r.body || {};
       sc.busy = false;
       sc.picked = d.picked || [];
-      sc.available = (typeof d.available === "number") ? d.available : cap;
+      sc.available = (typeof d.available === "number") ? d.available : sc.available;
       sc.picked.forEach(function (q) { S.shown[String(q.id)] = true; });
       sc.swapDead = {};
+      sc.swapNote = {};
       sc.expanded = {};
       /* A different set of questions is a different thing to set, so it gets
          its own key. Without this, changing the count and pressing Set work
          would replay the FIRST set under the second set's chip. */
       S.clientRef = uuid();
-      /* The server's `available` de-duplicates by normalised stem, so it can
-         be smaller than the count /scope sent. Cap again against the number
-         that turned out to be true — and against THAT ALONE (⊕ first-week fixes (22 Sep 2026): the
-         `MAX_QUESTIONS - othersTotal(sc)` that used to be `min`'d in here was
-         the other topics' rows reaching into this one's ceiling). */
-      capCount(sc, sc.available);
-      /* ⊕ MRB-335 — AND THE ROWS ARE TRUNCATED TO THE CHIP.
-         `capCount` moves the CHIP down to the largest that fits; it cannot
-         move the rows, and the server can legitimately return more than the
-         chip now reads. Ask for 20 on a scope holding 20, have the server
-         de-duplicate three identical stems, and `available` comes back 17:
-         the chip drops to 15 and seventeen rows stay on screen. `submit()`
-         sends the picked rows, so pressing Set work there sets SEVENTEEN
-         questions under a chip that says 15 — the same lie the pre-request
-         cap was added to stop, arriving from the other direction.
-         The chip is the teacher's statement of how many the class gets, so
-         the rows follow it and never the reverse. */
-      if (sc.picked.length > sc.count) {
-        sc.picked = sc.picked.slice(0, sc.count);
-      }
+      /* ⊕ MRB-342.2 — THE CHIP/FIELD IS NOW WHATEVER ACTUALLY ARRIVED, full
+         stop. `capCount`'s old job — moving the selected number down to the
+         largest thing that fits — is gone along with the idea that the
+         number has to be one of the four quick picks: a typed 43 on a scope
+         holding 43,504 duplicate-stem rows correctly ends up reading 43, not
+         "the nearest chip below 43".
+
+         A server-reported POOL clamp (`d.capped_by === "pool"`) always wins
+         the note over a client-guessed ceiling clamp, because it is the
+         description of what was actually delivered — see `setScopeCount`'s
+         comment for why a stale "ceiling" note would otherwise say a bigger
+         number was added than the rows on screen. */
+      sc.cappedBy = (d.capped_by === "pool") ? "pool" :
+        (sc.cappedBy === "ceiling" ? "ceiling" : null);
+      sc.count = sc.picked.length;
+      sc.capNote = capNoteFor(sc);
       buildQuestions(sc);
       syncScopes();
       syncValidity();
@@ -2129,23 +2367,6 @@
       syncValidity();
       return false;
     });
-  }
-
-  /* Chips above availability are disabled, and a default that is now above
-     it drops to the largest chip that is not (RISKS A4).
-
-     ⚠️ THE CAP IS AN ARGUMENT, NOT `sc.available`. ⊕ MRB-335. It has to run
-     BEFORE the first request, when `sc.available` is still 0 and the only
-     number available is /scope's count for the node — and a cap of 0 means
-     "no ceiling known", which is not the same as "a ceiling of nothing". */
-  function capCount(sc, cap) {
-    if (cap > 0 && sc.count > cap) {
-      var best = COUNTS[0];
-      for (var i = 0; i < COUNTS.length; i++) {
-        if (COUNTS[i] <= cap) { best = COUNTS[i]; }
-      }
-      sc.count = best;
-    }
   }
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -2236,52 +2457,67 @@
     syncChips(els.paperList, S.paper);
   }
 
-  /* ⊕ MRB-342 — ONE RAIL PER SCOPE, inside that scope's own section. */
+  /* ⊕ MRB-342 — ONE RAIL PER SCOPE, inside that scope's own section.
+
+     ⊕ MRB-342.2 — AND THE RAIL NO LONGER DISABLES A CHIP ABOVE THE POOL.
+     RISKS A4 and first-week fixes both disabled a chip once it read above
+     `scopeAvailable()`, on the reasoning that offering a number the pool
+     could not fill was a control that lies. Contract §1.1 overturns that
+     reasoning for THIS ticket, in words: "A quick pick bigger than the pool
+     gets exactly the same treatment as a typed number… it is never an error,
+     and it never blocks." A pressable 20 on an eight-question topic is now
+     correct — pressing it asks, the server says eight, and the inline note
+     says so (`capNoteFor`). Nothing is disabled here any more. */
   function buildCountChips(sc) {
     sc.els.countList = buildChips(sc.els.chips, COUNTS.map(function (n) {
       return { key: n, label: String(n) };
     }), function (k) {
-      sc.count = k;
-      S.keepPicked = false;            // ⊕ MRB-336
-      syncCountChips(sc);
-      loadPreview(sc);
+      setScopeCount(sc, Number(k));
     });
     syncCountChips(sc);
   }
 
+  /* ⊕ MRB-342.2 — THE NUMBER FIELD'S OWN CODE PATH. `change` fires on blur
+     and on the browser's native up/down steppers; Enter does not raise
+     `change` on an input outside a `<form>`, so it is wired separately and
+     forwarded into the same `commit`. A value that is not a whole number ≥ 1
+     is silently ignored — not corrected, not toasted — because a teacher
+     mid-keystroke ("1" on the way to "15") must not have their half-typed
+     entry judged before they have finished typing; `change`/Enter only fire
+     once they are done. */
+  function wireCountInput(sc) {
+    var input = sc.els.countInput;
+    var commit = function () {
+      var n = parseInt(input.value, 10);
+      if (!(n >= 1)) { return; }
+      setScopeCount(sc, n);
+    };
+    input.addEventListener("change", commit);
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); commit(); input.blur(); }
+    });
+  }
+
   function syncCountChips(sc) {
     if (!sc || !sc.els || !sc.els.countList) { return; }
-    var cap = sc.available || scopeAvailable(sc);
-    /* ⊕ first-week fixes (22 Sep 2026) — A CHIP IS DISABLED BY THIS TOPIC'S POOL AND BY NOTHING
-       ELSE.
-
-       ⛔ MRB-342 added a second clause here and it is the reported bug:
-
-           "AND THE ROOM THE OTHER SCOPES HAVE LEFT. The server takes at most
-            twenty questions in one assignment, so on a set already holding
-            fifteen the only live chip on a second topic is 5. Offering 10 and
-            letting the POST come back `too_many_questions` would be a control
-            that composes a set the sheet knows cannot be written."
-
-       The reasoning was sound and the premise was withdrawn: the server takes
-       twenty PER SCOPE, so a third topic asking for twenty over two topics'
-       forty is a set that CAN be written. `cap` — `/preview`'s `available`,
-       or `/scope`'s count for the node before the first request — is the only
-       ceiling left, and it is a fact about this topic's own pool at this
-       tier. Three topics of thirty-odd therefore offer all four chips on all
-       three, which is what Mide asked for. */
-    var off = function (k) {
-      var n = Number(k);
-      return cap > 0 && n > cap;
-    };
-    /* ⚠️ A DISABLED CHIP IS NEVER SHOWN AS SELECTED. ⊕ MRB-335. On a scope
-       holding fewer than five — a KS3 lesson at one tier holds four — every
-       chip is above the ceiling, so `capCount` has nothing to drop to and
-       leaves `sc.count` at 5. Highlighting a 5 the teacher cannot press, over
-       four rendered rows, states a number that is wrong and unreachable at
-       once. Nothing selected is the honest rendering of "there are four here
-       and none of the sizes apply". */
-    syncChips(sc.els.countList, off(sc.count) ? null : sc.count, off);
+    /* Highlighted only when the count is exactly one of the four quick
+       picks — the honest rendering of "the teacher typed 43" is that none of
+       5/10/15/20 lights up. */
+    syncChips(sc.els.countList, sc.count, null);
+    /* The number field mirrors `sc.count` — EXCEPT while the teacher is
+       actively typing in it, where overwriting `.value` mid-keystroke would
+       fight their own fingers (the same reasoning `syncScopePanel` and every
+       other "patched, not rebuilt" surface in this file already follows). */
+    if (sc.els.countInput) {
+      sc.els.countInput.max = String(maxPerScope());
+      if (document.activeElement !== sc.els.countInput) {
+        sc.els.countInput.value = sc.count > 0 ? String(sc.count) : "";
+      }
+    }
+    if (sc.els.countNote) {
+      sc.els.countNote.hidden = !sc.capNote;
+      sc.els.countNote.textContent = sc.capNote || "";
+    }
   }
 
   function buildReleaseChips() {
@@ -2416,7 +2652,7 @@
     var total = pickedTotal();
     var empty = filledScopes().some(function (sc) { return !sc.picked.length; });
     var over = filledScopes().some(function (sc) {
-      return sc.picked.length > MAX_QUESTIONS;
+      return sc.picked.length > maxPerScope();
     });
     var many = filledScopes().length > MAX_SCOPES;
     if (!S.locked && (!total || empty || over || many)) { return false; }
@@ -2482,6 +2718,7 @@
     if (S.step === 2) {
       var t = String(S.title || "").trim();
       els.title.classList.toggle("sw-bad", S.badTitle || (S.titleEdited && !t.length));
+      els.noteInput.classList.toggle("sw-bad", !!S.badNote);
       var due = dueIso(), dueMs = due ? Date.parse(due) : NaN;
       var relMs = S.release === "later" ? Date.parse(releaseIso() || "") : Date.now();
       var dueBad = S.badDue || (!!S.dueDate && !!S.dueTime &&
@@ -2617,7 +2854,8 @@
     bad_due_at: "badDue",
     due_too_far: "badDue",
     bad_release_at: "badRelease",
-    release_in_past: "badRelease"
+    release_in_past: "badRelease",
+    bad_note: "badNote"
   };
 
   function submit() {
@@ -2667,6 +2905,16 @@
       due_at: dueIso(),
       client_ref: S.clientRef
     };
+    /* ⊕ MRB-342.2 §3.4 — omitted on a NEW set when empty; there is nothing
+       to clear yet, so `""` (which the server reads as "clear it") would be
+       the wrong signal to send. Sent only when the field is actually on
+       screen — `els.noteWrap.hidden` is the same capability gate
+       `syncNoteVisibility` set, so a database with no column never receives
+       a field it would have to silently drop. */
+    if (!els.noteWrap.hidden) {
+      var noteVal = els.noteValue();
+      if (noteVal) { payload.note = noteVal; }
+    }
     var title = payload.title;
     var classCount = payload.class_ids.length;
     var only = classCount === 1 ? classNameOf(payload.class_ids[0]) : "";
@@ -2782,12 +3030,19 @@
   /* A filename the operating system will accept, from a title a teacher
      typed. Not a security boundary — the file never leaves this browser —
      but a title with a slash in it produces a download nobody can find. */
-  function fileNameFor(title, format) {
+  /* ⊕ MRB-342.2 §2.6 — `perTopic` GIVES THE FALLBACK A `.zip`, NEVER A
+     `.pdf`/`.docx`. This fallback only ever runs when `Content-Disposition`
+     could not be read (cross-origin, header not exposed) — see
+     `nameFromHeaders` — so it is the ONLY place a client-guessed extension
+     can disagree with what is actually inside the file. Handing a ZIP a
+     `.pdf` name is exactly the defect this parameter exists to prevent. */
+  function fileNameFor(title, format, perTopic) {
     var base = String(title || SAY.worksheet)
       .replace(/[^0-9A-Za-zÀ-ɏ ._-]+/g, " ")
       .replace(/\s+/g, " ")
       .trim()
       .slice(0, 80) || SAY.worksheet;
+    if (perTopic) { return base + ".zip"; }
     return base + (format === "docx" ? ".docx" : ".pdf");
   }
 
@@ -2814,7 +3069,7 @@
      `Content-Disposition` is not a CORS-safelisted response header, so on a
      cross-origin deploy this is empty and the fallback is what ships — which
      is why the fallback is a real name rather than "download". */
-  function nameFromHeaders(res, title, format) {
+  function nameFromHeaders(res, title, format, perTopic) {
     var cd = "";
     try { cd = res.headers.get("Content-Disposition") || ""; }
     catch (e) { cd = ""; }
@@ -2822,7 +3077,7 @@
     if (m && m[1]) {
       try { return decodeURIComponent(m[1]); } catch (e) { return m[1]; }
     }
-    return fileNameFor(title, format);
+    return fileNameFor(title, format, perTopic);
   }
 
   function postWorksheet(payload) {
@@ -2837,7 +3092,8 @@
       if (!res.ok) { throw new Error("worksheet: " + res.status); }
       return res.blob().then(function (b) {
         return { blob: b, name: nameFromHeaders(res, payload.title,
-                                                payload.format) };
+                                                payload.format,
+                                                !!payload.per_topic) };
       });
     });
   }
@@ -2876,10 +3132,27 @@
       /* ⊕ MRB-342.1 — DEFAULTS TRUE ON THIS SIDE TOO, matching the route's
          own default. A caller that predates the flag — `downloadAssignment`
          from a class row, say — keeps the file it has always produced. */
-      multiple_choice: o.multipleChoice !== false
+      multiple_choice: o.multipleChoice !== false,
+      /* ⊕ MRB-342.2 §2.6 — DEFAULTS FALSE, matching the route: an old caller
+         that never learned this flag keeps getting one file, exactly as
+         before. */
+      per_topic: !!o.perTopic
     };
     if (o.title) { payload.title = String(o.title).slice(0, 80); }
+    /* ⊕ MRB-342.2 §2.1 — omitted entirely when empty, never sent as `""`.
+       `normaliseNote` (via `buildNoteField().value()`) has already trimmed
+       and collapsed whitespace by the time it reaches here; an
+       empty-after-that string is the same as never having typed one. */
+    if (o.note) {
+      var n = normaliseNote(o.note);
+      if (n) { payload.note = n; }
+    }
     return postWorksheet(payload).then(function (r) {
+      /* ⚠️ EXACTLY ONE SAVE. `per_topic: true` answers with a ZIP, not
+         several files — the server already does the bundling (contract
+         §2.6) precisely so this line never has to loop over a list of blobs
+         and call `saveBlob` more than once. Browsers block multiple
+         automatic downloads; there is no path here that could trigger one. */
       saveBlob(r.blob, r.name);
       return true;
     }, function (e) {
@@ -2924,7 +3197,7 @@
      a menu that will eventually be pressed by accident. */
   function makeDownload(opts) {
     var o = opts || {};
-    var state = { answers: true, mc: true, busy: false };
+    var state = { answers: true, mc: true, perTopic: false, busy: false };
 
     var wrap = el("div", "sw-dl");
     var b = btn("sw-btn sw-dl-btn", SAY.download);
@@ -2969,9 +3242,21 @@
     }
     var mcC = checkRow("dl-multiple-choice", SAY.multipleChoice);
     var ansC = checkRow("dl-answers", SAY.answers);
+    /* ⊕ MRB-342.2 §2.6 — "one file or one per topic", beside the other two.
+       Same idiom: a real checkbox in its own label. Unchecked (the default)
+       is "one file" — today's behaviour for a caller that never touches it. */
+    var perTopicC = checkRow("dl-per-topic", SAY.onePerTopic);
     var checks = el("div", "sw-dl-checks");
     checks.appendChild(mcC.row);
     checks.appendChild(ansC.row);
+    checks.appendChild(perTopicC.row);
+    perTopicC.box.checked = false;
+
+    /* ⊕ MRB-342.2 §2.1 — the note, shared with the Set-work sheet's own
+       (see `buildNoteField`). This one is per DOWNLOAD, not persisted: it
+       travels with the single `POST /api/teacher/worksheet` this menu is
+       about to make, and is gone the moment the menu is reset. */
+    var noteField = buildNoteField("dl-note");
 
     var pdf = btn("sw-dl-opt", SAY.pdf);
     pdf.setAttribute("data-sw", "dl-pdf");
@@ -2979,6 +3264,7 @@
     word.setAttribute("data-sw", "dl-word");
 
     menu.appendChild(head); menu.appendChild(checks);
+    menu.appendChild(noteField.wrap);
     menu.appendChild(pdf); menu.appendChild(word);
     wrap.appendChild(b); wrap.appendChild(menu);
 
@@ -2988,6 +3274,7 @@
     function syncAnswers() {
       mcC.box.checked = state.mc;
       ansC.box.checked = state.answers;
+      perTopicC.box.checked = state.perTopic;
     }
 
     function setOpen(on) {
@@ -3009,6 +3296,8 @@
         payload.format = format;
         payload.answers = state.answers;
         payload.multipleChoice = state.mc;
+        payload.perTopic = state.perTopic;
+        payload.note = noteField.value();
         return download(payload);
       }, function () {
         toast(SAY.unavailable);
@@ -3031,6 +3320,9 @@
        `change` fires once, for a mouse press and for the Space key alike. */
     mcC.box.addEventListener("change", function () { state.mc = mcC.box.checked; });
     ansC.box.addEventListener("change", function () { state.answers = ansC.box.checked; });
+    perTopicC.box.addEventListener("change", function () {
+      state.perTopic = perTopicC.box.checked;
+    });
     pdf.addEventListener("click", function (e) { e.stopPropagation(); go("pdf"); });
     word.addEventListener("click", function (e) { e.stopPropagation(); go("docx"); });
     menu.addEventListener("click", function (e) { e.stopPropagation(); });
@@ -3044,7 +3336,9 @@
       node: wrap,
       setEnabled: function (on) { b.disabled = !on || state.busy; },
       reset: function () {
-        state.answers = true; state.mc = true; syncAnswers(); setOpen(false);
+        state.answers = true; state.mc = true; state.perTopic = false;
+        noteField.textarea.value = ""; noteField.sync();
+        syncAnswers(); setOpen(false);
       }
     };
   }
@@ -3236,6 +3530,9 @@
     session += 1;
     S = freshState(o.classId ? String(o.classId) : "");
     els.title.value = "";
+    els.noteInput.value = "";
+    els.noteSync();
+    els.noteWrap.hidden = true;         // re-shown by `syncNoteVisibility`
     els.relTime.value = S.releaseTime;
     els.dueTime.value = S.dueTime;
     els.relDate.value = "";
@@ -3358,6 +3655,13 @@
     S.titleEdited = true;          // never overwritten by `autoTitle`
     S.roTier = (SAY.tier[S.tier] || S.tier || "");
     S.roScope = String(o.scopeTitle || o.title || "");
+    /* ⊕ MRB-342.2 §3 — `o.note` is the generated page's own field name
+       (`teacher_rulings.py`'s `MRB_SET_WORK_EDIT` call); `o.teacherNote` is
+       accepted too, defensively, in case a caller ever names it after the
+       column instead. Either way this is only ever a display default — a
+       capability the row's own database answers `false` for hides the field
+       regardless of what is in it. */
+    S.note = String(o.note || o.teacherNote || "");
 
     /* The two instants, back into the fields the teacher set them from. */
     var rel = o.releaseAt ? utcToLondonParts(o.releaseAt) : null;
@@ -3368,6 +3672,9 @@
     if (due) { S.dueDate = due.date; S.dueTime = due.time; }
 
     els.title.value = S.title;
+    els.noteInput.value = S.note;
+    els.noteSync();
+    els.noteWrap.hidden = true;         // re-shown by `syncNoteVisibility`
     els.relDate.value = S.releaseDate;
     els.relTime.value = S.releaseTime;
     els.dueDate.value = S.dueDate;
@@ -3521,6 +3828,18 @@
           title: String(S.title || "").trim(),
           release_at: releaseIso(),
           due_at: dueIso() };
+    /* ⊕ MRB-342.2 §3.4 — UNLIKE `submit()`, THIS ALWAYS SENDS THE KEY WHEN
+       THE FIELD IS ON SCREEN, EMPTY STRING INCLUDED. An edit is the one
+       place a note that already exists can be taken away, and `note: ""`
+       is the signal that means "clear it" (contract §3.4) — omitting the
+       key on an empty textarea would instead mean "leave it as it was",
+       which is not what deleting the text and pressing Save asked for. Gated
+       the same way as `submit()`: nothing is sent when the field itself is
+       hidden (no capability), because there is nothing on screen the
+       teacher could have meant to change either way. It is offered on a
+       RELEASED set too — a note is the teacher's own annotation, not a
+       fact about the questions a pupil is mid-way through. */
+    if (!els.noteWrap.hidden) { payload.note = els.noteValue(); }
     var title = payload.title;
     var mySession = session;
     apiPatch("/api/teacher/set-work/" + encodeURIComponent(S.editId), payload)

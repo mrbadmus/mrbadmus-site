@@ -4386,6 +4386,23 @@
            (feedback.editedAt ? " \u00b7 EDITED" : ""))
         : "",
 
+      /* ⊕ MRB-342.2 §3.5 — the teacher's note on THIS assignment, from
+         `/api/class/current-assignment`'s own `assignment` object. Same
+         two-key idiom as `feedbackHas`/`feedbackBody` just above: a
+         boolean the `<if>` in student_rulings.INSERT_AT reads
+         (`assignmentNoteVisible`, gated further to question 1 only — see
+         that ruling), and the STORED STRING, untouched, rendered as a text
+         node by `student-runtime.js` — no `innerHTML`, no markdown, no
+         linkifier, same as the feedback body's own proof.
+
+         ⚠️ ABSENT/NULL READS AS "NOTHING TO SHOW", not as an error. The
+         backend returns `teacher_note` only when the database column is
+         supported AND a note was set (contract §3.3/§3.5); either way
+         missing here means the same thing missing means everywhere else on
+         this page — there is nothing to say, so nothing is drawn. */
+      assignmentNoteHas: !!(a.teacher_note && String(a.teacher_note).trim()),
+      assignmentNoteBody: a.teacher_note || "",
+
       /* ⊕ RULED 22 Aug 2026 — W5. The three words that live in Design's
          MARKUP rather than in its logic, bound by path like every other
          template literal. The padding is Design's own indentation and travels
