@@ -1651,11 +1651,23 @@ def r_p10_motor_arrows(fig):
     """`p10-05-h02` — the coil's two force arrows, frozen and equal.
 
     ⚖️ ONE PATH CONSTANT DRAWS BOTH ARROWS, at the same length, so there is
-    no per-side number that could disagree. Fleming's left-hand rule: the
-    field runs left to right (N to S); the left wire carries current INTO
-    the page (⊗) and feels an upward push; the right wire carries the same
-    current OUT of the page (⊙) and feels a downward push of the same
-    size — the turning couple the lesson's bench is built on.
+    no per-side number that could disagree.
+
+    ⚠️ THE ARROW DIRECTIONS WERE WRONG WHEN THIS WAS FIRST DRAWN, and the
+    docstring asserted the wrong thing confidently, so it is corrected here
+    rather than quietly swapped. It read: "the left wire carries current INTO
+    the page (⊗) and feels an upward push". It does not.
+
+    F = I L × B. Take x̂ right, ŷ up, ẑ out of the page. The field runs
+    N (left) to S (right), so B = +x̂. The LEFT wire's current goes INTO the
+    page, so L = -ẑ, and (-ẑ) × (x̂) = -ŷ — a DOWNWARD push. The right wire
+    carries the same current OUT of the page (+ẑ), and (+ẑ) × (x̂) = +ŷ — an
+    UPWARD push of the same size. Fleming's left hand agrees: index finger
+    right, second finger into the page, thumb points down.
+
+    The size is what `p10-05-h02` asks about, so the swap did not change the
+    correct answer — but a motor diagram that turns the wrong way teaches the
+    wrong thing, and an examiner would mark it wrong.
     """
     return (
         '<svg class="ks3-figure-svg" viewBox="0 0 600 320" role="img" '
@@ -1679,10 +1691,10 @@ def r_p10_motor_arrows(fig):
         'L251 169"/>'
         '<circle class="ks3-p10fig-symbol" cx="340" cy="160" r="14"/>'
         '<circle class="ks3-p10fig-dot" cx="340" cy="160" r="4"/>'
-        '<path class="ks3-p10fig-force" d="M260 146 V100 M260 100 L252 112 '
-        'M260 100 L268 112"/>'
-        '<path class="ks3-p10fig-force" d="M340 174 V220 M340 220 L332 208 '
-        'M340 220 L348 208"/>'
+        '<path class="ks3-p10fig-force" d="M260 174 V220 M260 220 L252 208 '
+        'M260 220 L268 208"/>'
+        '<path class="ks3-p10fig-force" d="M340 146 V100 M340 100 L332 112 '
+        'M340 100 L348 112"/>'
         '</svg>' % e(fig.get("aria_label", "")))
 
 

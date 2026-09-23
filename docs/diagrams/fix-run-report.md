@@ -84,13 +84,153 @@ every path instead of merely hidden on one.
 
 ## 3. What was built
 
+| piece | where |
+|---|---|
+| two SHARED primitives — `_plot` (axis labels and UNITS are required positional args, so a graph without units cannot be drawn) and `_triangle` (raises unless the relationship is a product) | `ks3_art/kit.py` |
+| a KS4 drawing package that IMPORTS the KS3 kit rather than forking it — 36 drawers: the full AQA symbol set, a parametrised circuit builder (topology, branches, a meter in series or bridged, cell orientation, a deliberate gap), dot-and-cross molecules, graphs, free-body diagrams, triangles | `ks4_art/` |
+| the manifest builder — reuses `build_ks3`'s own `SVG_ART`, so a lesson page and a question show the SAME BYTES | `build_figures.py` |
+| the frozen-window guard | `frozen_window_guard.py` |
+| the ruling as data, with its own asserts | `frozen_window_allowlist.py` |
+| the KS4 + ladder `figure` columns | `supabase/migrations/…mrb352_figure_columns.sql` |
+| worksheet PDF vectors, DOCX raster, the too-tall guard, the three seals lifted | backend `figure-render.js`, `worksheet.js`, `server.js`, `set-work-scope.js` |
+
+**The manifest carries only figures a QUESTION references.** A lesson figure
+is already inlined into its lesson page, so shipping all of them to a child's
+phone is pure download weight — that took KS3 from 21 figures/409KB to
+16/90KB, and the site manifest is split per key stage so a KS3 pupil never
+downloads KS4 circuit symbols.
+
 ## 4. Content: rows fixed, rows left
+
+### The frozen 28 — the priority set, complete
+
+All 28 resolved: **23 repaired, 5 deliberately left.**
+
+| | repaired | left |
+|---|---:|---:|
+| KS3 (16) | 15 | 1 |
+| KS4 (12) | 8 | 4 |
+
+**Left, with reasons** — leaving a row is a legitimate outcome, and the test
+is whether a picture GENUINELY BELONGS, not whether one could be added:
+
+| id | why |
+|---|---|
+| `c1-02-e03` | describes pouring water from a cylinder into a dish — a hypothetical experiment, not an on-page diagram. No withheld picture to restore. |
+| `ks4-food-chains-webs-s02` | states food-web facts in prose, not a picture description; no node-and-arrow ecology drawer exists and building one is scope. |
+| `ks4-condensation-polymerisation-h02` | the repeat-unit drawer places flat labels and cannot show two DISTINCT reacting groups (–OH, –COOH) without a chemistry error an examiner would reject. Honest prose beats a wrong picture. |
+| `ks4-circuit-symbols-e04` | a convention question. Showing both symbols labelled gives the answer away; unlabelled makes it a different, harder task. |
+| `ks4-circuit-symbols-h02` | **escalated, not declined** — its marked answer misidentifies the AQA thermistor symbol. Repairing it means changing the science, which is Mide's gate. See ACCURACY-ESCALATIONS E1. |
+
+### What a repair looks like
+
+| before | after |
+|---|---|
+| "In the circuit symbols, a circle with a cross inside it means…" | "Which component's circuit symbol is shown in the diagram?" |
+| "Which component is drawn as a rectangle with an arrow through it?" | "Which component is shown in the diagram?" |
+| "A student draws a 40 N arrow and a 25 N arrow pointing opposite ways, then a 15 N arrow underneath…" | "Look at the diagram. Why do the two lower bars exactly fill the top one?" |
+| "In the oak wood web, exactly one arrow touches the ladybirds: it runs from the aphids to the ladybirds…" | "Look at the oak wood web. Find the ladybirds, and look at the arrows touching them." |
+| "A skydiver's velocity–time graph rises steeply from the origin, then curves so that its gradient falls to zero at 55 m/s after 14 s…" | "The graph shows a skydiver's velocity against time." |
+
+**The rule applied throughout: once the picture is shown, delete every clause
+that merely restates what it shows.** A stem that shows the diagram AND
+describes it has not been repaired, it has been padded — and it is EASIER
+than the original, because noticing the feature was half the thinking tested.
+A POINTER stays ("find the ladybirds"); a DESCRIPTION goes.
+
+### Still to do
+The remaining 179 non-frozen rows (87 confirmed, 92 borderline) are NOT done.
+The frozen set was taken first because those rows sit inside the automatic
+composition window and reach pupils from Mon 28 Sep; the rest do not have
+that deadline. The machinery they need is built and landed, so they are
+content work on a working system, not a new build.
 
 ## 5. Rendering
 
+| surface | state |
+|---|---|
+| KS3 lesson pages | ✅ live — every drawn figure reads at 390, 768 and 1440 (`ks3_figure_sweep` green) |
+| worksheet PDF | ✅ real vectors, with the too-tall guard |
+| worksheet DOCX | ✅ raster via `@resvg/resvg-js`, cached per figure id per process |
+| teacher Set work preview / swap | ✅ the three seals lifted; figure rows are now offerable |
+| pupil's assignment page | ⚠️ **NOT DONE** — see below |
+| practice | ⚠️ **NOT DONE** — the column ships in the migration; the renderer does not |
+| KS4 lesson-page quizzes | ⚠️ **NOT DONE** |
+
+⚠️ **The pupil-facing render is the largest thing this run did not finish.**
+`shared/student-live.js` still discards the served `figure` (`g: null`), and
+the template's figure slot is still wired to seven hard-coded Design demo
+keys. The backend SERVES the figure — that half is done and tested — but the
+page still throws it away.
+
+**What this means concretely:** a teacher can set a figure-bearing question
+and print it correctly, and the pupil answering it on screen still sees no
+diagram. So the landmine in §2 is NOT yet removed for the pupil surface; it
+is removed for Set work and the worksheet.
+
+Until that lands, the KS3 production load must NOT go out — loading figure
+ids that the pupil's page cannot draw would put MORE "look at the diagram"
+questions in front of children, which is the exact defect this run exists to
+remove. That is why §7 reports nothing loaded to production.
+
 ## 6. Accuracy and the examiner pass
 
+### The pass caught a physics error this run had itself introduced
+
+`p10-motor-arrows-marked` (for the frozen row `p10-05-h02`) was drawn with
+its two force arrows **the wrong way round**, and its docstring asserted the
+error confidently: *"the left wire carries current INTO the page (⊗) and
+feels an upward push."*
+
+It does not. F = I L × B, with x̂ right, ŷ up, ẑ out of the page: the field
+runs N (left) to S (right) so B = +x̂; the left wire's current goes into the
+page so L = -ẑ; and (-ẑ) × (x̂) = **-ŷ — a DOWNWARD push.** Fleming's left
+hand agrees: index finger right, second finger into the page, thumb down.
+
+**Why it nearly survived.** `p10-05-h02` asks why the two arrows must be the
+same LENGTH, so the swap did not change the correct answer, and no gate can
+see it — the sweep measures readability, not physics. The lesson's own prose
+says only "one up and one down", which is true either way. It was caught by
+rendering the figure and reading it against the rule.
+
+A motor diagram that turns the wrong way teaches the wrong thing, and an
+examiner would mark it wrong. Corrected, with the wrong reasoning kept in the
+drawer's docstring rather than quietly swapped.
+
+### What else the pass checked
+- every AQA symbol against the symbol sheet — in particular the three pupils
+  confuse: plain rectangle = fixed resistor, rectangle with a line through =
+  fuse, variable resistor's diagonal carries an ARROW, the thermistor's line
+  turns up with no arrowhead, the LDR's two arrows point IN (light, not heat)
+- every graph carries labelled axes WITH UNITS
+- no figure makes a distractor true — `ks4-circuit-symbols-h04`'s circuit is
+  drawn deliberately WITHOUT the ammeter, because the question asks where one
+  should go; `ks4-covalent-bonding-s04`'s ammonia is drawn deliberately WRONG,
+  because the stem is about a student's mistaken drawing
+- no alt text names the component a question asks the pupil to name
+
 ## 7. What is live on production
+
+**Nothing. No production write of any kind was made by this run.**
+
+| | state |
+|---|---|
+| production DDL | none — forbidden, and none attempted |
+| production content load | **not done**, deliberately — see §5 |
+| production reads | yes, read-only: the frozen-window re-check and the guard's baseline |
+| TEST | migration applied (forward → rollback → forward); no content loaded |
+
+**Why the KS3 production load was NOT run**, despite the brief asking for it:
+the pupil's assignment page still discards the `figure` it is served. Loading
+the repaired rows would ship stems that say "look at the diagram" to a
+surface that cannot draw one — strictly worse than the defect being fixed.
+The repaired stems are SAFE on the worksheet and in Set work, and unsafe on
+the page a child actually answers on, so the load waits for the renderer.
+
+The three proofs are wired and ready (`export_ks3_questions.py --verify`
+gives aggregate checksum, row-by-row comparison and the anon-read negative
+control), and `frozen_window_guard.py --baseline` already holds the
+before-state captured from production for the byte-identical proof.
 
 ## 8. The KS4 `figure` column — migration md5s and the production-load command
 
@@ -291,3 +431,38 @@ drive is evidence only about what it watches, and a fixture is part of what it
 watches.
 
 ## 13. Deviations
+
+**Deviation: the brief asked for the KS3 production load → not done → the
+pupil's page still discards the figure.** Loading repaired stems onto a
+surface that cannot draw them is worse than the defect. Named in §5 and §7,
+with the renderer now in progress. This is the one deliberate departure from
+the brief's instructions, and it is the one I am most confident about.
+
+**Deviation: the migration adds TWO columns, not the one named.**
+`ks3_ladder_questions.figure` alongside `ks4_assignment_bank.figure`, because
+requirement 4 includes practice and practice serves the ladder. Same branch,
+same rehearsal, flagged in §8 and in the migration's own comment.
+
+**Deviation: `tools/mrb338_leafcheck.py` was edited.** The brief said content
+lands through `mrb338_land.sh`; that script's leaf checker predates the
+ruling and failed every one of the 28 authorised edits, so nothing could
+land through it at all. Taught it the allowlist — narrowly (only those 28
+ids; an id change is still a hard failure) and loudly (every waiver prints by
+row and field). This implements the brief's own instruction to make the
+exception explicit in the tooling; it is not a weakened gate.
+
+**Deviation: `build_ks3.py`'s `r_figure` was edited** — a high-collision
+shared file. Three guarantees had to live somewhere, and the drawer was the
+wrong place because one page renders the same art through BOTH the figure
+and inline paths. See the commit for the reasoning.
+
+**Deviation: the RSS measurement the backend brief asked for was run by me,
+not the agent**, after it reported the gap honestly rather than inventing a
+number. That turned out to matter: the measurement it did run used an
+unreachable scenario, and two separate recommendations to throttle production
+came out of it. Both were wrong. See ACCURACY-ESCALATIONS E4.
+
+### Mistakes I made
+- **I edited tracked files while `prepush_gate.py --record` was running**, twice, which invalidated receipts mid-flight (a receipt refuses to attest against a dirty tree — correctly). The right order is: finish edits, commit, then record once. Cost: two wasted slow-gate runs.
+- **I mis-diagnosed the figure sweep as a concurrency artefact.** I had run the sweep while a `verify_ks3` rebuild was rewriting the same tree, which is a real hazard and was a reasonable first suspicion — but re-running it clean still failed, so the hypothesis was wrong and there were three genuine defects underneath.
+- **I extrapolated a memory measurement instead of measuring it**, and recommended a production change on the strength of it. Corrected in E4, with the wrong reasoning kept.
