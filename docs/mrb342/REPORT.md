@@ -1262,6 +1262,33 @@ present; answers grouped and numbered to match; the note printed and escaped.
 what it produced yesterday, apart from the two deliberate changes. A teacher who
 changes nothing gets the sheet they had.
 
+## 342.2.9a · Screenshots, and one that nearly lied
+
+All in `$MRB_SHOTS` (`~/tmp/mrb342-2-shots/`), **outside the repo**, MRB-346
+rule 5.
+
+| shot | what it shows |
+|---|---|
+| `live/live-desktop-1280-fact.png` | the LIVE landing page, a fact mid-hold beside the headline |
+| `live/live-phone-390x844.png` · `live/live-phone-360x740.png` | the panel under the lede, first door card at y=510 — above both folds |
+| `live/live-reduced-motion.png` | `prefers-reduced-motion: reduce`, one fact, held 20 real seconds |
+| `setwork/setwork-typed-above-pool-{desktop-1280,phone-390}.png` | quick picks 5/10/15/20 intact, the field reading **1450** after a typed **1500**, and `ONLY 1450 AT FOUNDATION. ALL 1450 ADDED.` |
+| `mrb342.1-worksheets/`, `drive6/`, `drive7/` | the 32-combination artefacts and the drive's own sweeps |
+
+⚠️ **The Set work pair was captured wrong twice, and the second time it looked
+right.** A standalone rig reached only the CLASSES step; instrumenting the
+drive's `check_detail` typed-999 block did not fire at all, **because that
+block sits behind a small-pool scope the inherited reds say no longer exists**.
+Both attempts wrote to the same directory, so the stale pair from the first was
+still sitting there with plausible filenames when the second run "finished" —
+and a `ls` would have shown exactly what the report wanted. The file
+**timestamps** gave it away: 10:18 for the shots, 10:20 for the run that was
+supposed to have made them.
+
+The real capture is anchored in `check_ecology_pool_clamp`, which is the check
+that actually runs, and the instrumentation was reverted immediately —
+`git status` clean, nothing committed.
+
 ## 342.2.10 · Decisions I made
 
 1. **The per-scope ceiling is 2000, not 500.** 500 was a guess about pool
