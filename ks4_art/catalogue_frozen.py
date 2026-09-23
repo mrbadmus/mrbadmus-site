@@ -20,12 +20,6 @@ CATALOGUE = [
     {"id": "ks4-fig-circuit-battery-switch-lamp-resistor-branches",
      "art": "circuit", "params": _H04,
      "title": _H04_TITLE, "desc": _H04_DESC},
-    # ⚠ The row still names this OLD id until the content lane re-points it.
-    # Same motor-free drawing. Delete this record once nothing references
-    # it (build_figures reports every id no question uses).
-    {"id": "ks4-fig-circuit-battery-switch-lamp-motor-branches",
-     "art": "circuit", "params": _H04,
-     "title": _H04_TITLE, "desc": _H04_DESC},
 
     # ks4-circuit-symbols-s03 — cell on the left side; closed switch, lamp,
     # lamp along the top; no labels.

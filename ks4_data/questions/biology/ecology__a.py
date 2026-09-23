@@ -918,10 +918,10 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "In a moorland food web, heather is eaten by mountain hares "
-                "and by red grouse, and foxes eat both the hares and the "
-                "grouse. A disease kills most of the mountain hares. "
-                "Predict the effect on the foxes.",
+        "figure": "ks4-fig-food-web-moorland",
+        "text": "The diagram shows part of a moorland food web. A disease "
+                "kills most of the mountain hares. Predict the effect on the "
+                "foxes.",
         "options": [
             "Fox numbers rise, because the hares had been competing with "
             "them for grouse",
@@ -933,8 +933,9 @@ QUESTIONS = [
             "been reduced",
         ],
         "correct_index": 3,
-        "why": "A predator that loses part of its prey supply has less "
-               "food, so fewer individuals can be supported.",
+        "why": "The web shows that foxes eat both hares and grouse. With "
+               "most of the hares gone the foxes have less food, so fewer "
+               "foxes can be supported.",
     },
     {
         "id": "ks4-food-chains-webs-s03",

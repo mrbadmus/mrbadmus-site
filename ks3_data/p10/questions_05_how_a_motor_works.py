@@ -246,9 +246,10 @@ QUESTIONS = [
     {
         "id": "p10-05-h02",
         "band": "harder",
-        "text": "Look at the two force arrows in the diagram. Why must they "
-                "always be the same length as each other, whatever the "
-                "current is set to?",
+        "text": "The diagram shows a motor coil, seen end-on, between the "
+                "poles of a magnet. The arrows show the force on each side "
+                "of the coil. Why are the two forces always the same size, "
+                "whatever the current?",
         "options": [
             {"text": "The two sides are the same distance from the axle, so "
                      "the pushes must match", "correct": False,
@@ -258,10 +259,11 @@ QUESTIONS = [
                      "whatever the first one does", "correct": False,
              "why": "These two pushes both act on the coil, from the field. "
                     "They are not a pair acting on each other."},
-            {"text": "Arrows on a diagram are drawn to a fixed length by "
-                     "convention", "correct": False,
-             "why": "They are drawn to scale here — they get longer as the "
-                    "current goes up. What stays equal is the two of them."},
+            {"text": "The push on one side travels along the wire and is "
+                     "passed on to the other side", "correct": False,
+             "why": "Each side gets its own push, straight from the field. "
+                    "Nothing is carried round the coil from one side to the "
+                    "other."},
             {"text": "The same current runs through both sides, and both "
                      "sides are in the same field", "correct": True},
         ],

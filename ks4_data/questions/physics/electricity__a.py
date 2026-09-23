@@ -54,20 +54,24 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "figure": "ks4-fig-circuit-symbol-switch-open",
-        "text": "Which description matches the symbol shown?",
+        "figure": "ks4-fig-circuit-cell-open-switch-lamp",
+        "text": "The diagram shows a circuit. Why is the lamp not lit?",
         "options": [
-            "A break in the wire, with a short line hinged at one end "
-            "and lifted clear of the contact",
-            "A circle with the capital letter S inside it",
-            "Two parallel lines of the same length with a gap between "
-            "them",
-            "A rectangle with a gap in the middle of it",
+            "The switch is open, so the circuit is not complete and there "
+            "is no current",
+            "The cell is connected the wrong way round, so it cannot push a "
+            "current through the lamp",
+            "The lamp needs a resistor in series with it before it can "
+            "light",
+            "The switch is closed, so the current flows through the switch "
+            "instead of the lamp",
         ],
         "correct_index": 0,
-        "why": "An open switch is drawn as a gap in the wire with the "
-               "hinged lever raised; closing the switch lowers the "
-               "lever and completes the circuit.",
+        "why": "The switch is drawn open — its lever is lifted away from the "
+               "second contact, leaving a gap in the loop. With the circuit "
+               "incomplete there is no current, so the lamp cannot light. "
+               "Turning the cell round would reverse the current, and a lamp "
+               "lights either way.",
     },
     {
         "id": "ks4-circuit-symbols-e03",
@@ -98,17 +102,18 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Describe how the symbol for a battery differs from the "
-                "symbol for a single cell.",
+        "figure": "ks4-fig-circuit-symbol-battery-2",
+        "text": "Which component does this circuit symbol represent?",
         "options": [
-            "A battery is drawn as a circle with a sine wave inside it",
-            "A battery is two or more cell symbols drawn in series",
-            "A battery is drawn with two long lines and no short line",
-            "A battery is a cell symbol with an arrow drawn through it",
+            "A single cell",
+            "A battery of cells joined in series",
+            "A closed switch",
+            "A fuse",
         ],
         "correct_index": 1,
-        "why": "A battery is simply several cells joined in series, so its "
-               "symbol repeats the long-line, short-line cell symbol.",
+        "why": "The symbol is two cells joined together — a battery is two "
+               "or more cells connected in series. A single cell would show "
+               "just one long line and one short line.",
     },
     {
         "id": "ks4-circuit-symbols-s01",
@@ -160,8 +165,8 @@ QUESTIONS = [
         "tier": "foundation",
         "triple_only": False,
         "figure": "ks4-fig-circuit-cell-switch-two-lamps-loop",
-        "text": "In the circuit shown, describe the change needed so that "
-                "one lamp can be switched off while the other stays lit.",
+        "text": "The diagram shows a circuit. What change is needed so that "
+                "one lamp can be switched off while the other stays lit?",
         "options": [
             "Add a second cell in series with the first one",
             "Redraw the two lamps on separate branches, each with its own "
@@ -229,24 +234,25 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Two students draw the sensing part of a fire alarm. Student "
-                "A draws a resistor rectangle with a diagonal line through "
-                "it; student B draws a resistor rectangle with two arrows "
-                "pointing in towards it. Evaluate which student is correct.",
+        "figure": "ks4-fig-sensor-symbols-student-a-b",
+        "text": "Two students draw the sensing component for a fire alarm. "
+                "Their drawings are shown. Evaluate which student is "
+                "correct.",
         "options": [
-            "Student B, because the arrows show heat being absorbed by the "
-            "resistor",
-            "Student A, because a diagonal line through the resistor is the "
-            "thermistor symbol",
+            "Student B, because the arrows in B's symbol show heat being "
+            "absorbed by the component",
+            "Student A, because A has drawn the component whose resistance "
+            "changes with temperature",
             "Both, because the two symbols are alternative ways of drawing "
-            "one component",
+            "the same component",
             "Neither, because a fire alarm must use a variable resistor to "
             "set the alarm level",
         ],
         "correct_index": 1,
-        "why": "A fire alarm senses temperature, and the thermistor — the "
-               "resistor rectangle with a line struck through it — is the "
-               "component whose resistance changes with temperature.",
+        "why": "A fire alarm must respond to temperature. Student A's drawing "
+               "is the thermistor symbol, whose resistance changes with "
+               "temperature. Student B's drawing, with arrows pointing in, is "
+               "the LDR symbol: those arrows stand for light, not heat.",
     },
     {
         "id": "ks4-circuit-symbols-h03",
@@ -277,10 +283,10 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "figure": "ks4-fig-circuit-battery-switch-lamp-motor-branches",
-        "text": "An ammeter in the circuit shown must read the total "
-                "current supplied by the battery. Determine where it "
-                "should be drawn.",
+        "figure": "ks4-fig-circuit-battery-switch-lamp-resistor-branches",
+        "text": "The diagram shows a circuit. An ammeter is to be added to "
+                "measure the total current supplied by the battery. "
+                "Determine where it should be drawn.",
         "options": [
             "In the main wire between the battery and the junction, so all "
             "the current passes through it",
@@ -1412,8 +1418,9 @@ QUESTIONS = [
         "tier": "foundation",
         "triple_only": False,
         "figure": "ks4-fig-oscilloscope-compare-5-10",
-        "text": "The two traces shown are on the same screen, at the same "
-                "time base setting. Compare the two supplies.",
+        "text": "The diagram shows the traces from two a.c. supplies, X and "
+                "Y, on an oscilloscope. The time base setting is the same "
+                "for both. Compare the two supplies.",
         "options": [
             "Y has half the frequency and twice the period of X",
             "Y has twice the frequency and twice the period of X",

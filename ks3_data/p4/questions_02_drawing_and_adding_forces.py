@@ -220,25 +220,26 @@ QUESTIONS = [
     {
         "id": "p4-02-h02",
         "band": "harder",
-        "text": "Look at the diagram. Why do the two lower bars exactly "
-                "fill the top one?",
+        "text": "The diagram shows the two horizontal forces acting on a "
+                "crate. A third horizontal force is added so that the "
+                "resultant force on the crate is zero. What must the third "
+                "force be?",
         "options": [
-            {"text": "Because 25 N and 15 N make 40 N, which is what the "
-                     "subtraction says.", "correct": True},
-            {"text": "Because the beam is drawn to fit the space available.",
-             "correct": False,
-             "why": "Then it would prove nothing. The lengths are derived "
-                    "from the newtons, at one scale."},
-            {"text": "Because the resultant is always a third of the "
-                     "biggest force, whatever the other forces are doing", "correct": False,
-             "why": "There is no such rule. Change the 25 N and the leftover "
-                    "changes with it."},
-            {"text": "Because 40 × 25 gives the length of the third bar.",
-             "correct": False,
-             "why": "Nothing here is multiplied. That is exactly why this "
-                    "relationship gets a beam rather than a triangle."},
+            {"text": "20 N to the left", "correct": True},
+            {"text": "20 N to the right", "correct": False,
+             "why": "The resultant is already 20 N to the right. Adding 20 N "
+                    "more to the right would double it to 40 N, not cancel "
+                    "it."},
+            {"text": "80 N to the left", "correct": False,
+             "why": "80 N is the two forces added, but they point opposite "
+                    "ways, so they subtract. 80 N to the left would leave a "
+                    "resultant of 60 N to the left."},
+            {"text": "30 N to the left", "correct": False,
+             "why": "Matching the smaller force does not balance anything. "
+                    "50 N right against 60 N left leaves a resultant of 10 N "
+                    "to the left."},
         ],
-        "figure": "p4-resultant-beam-recap",
+        "figure": "p4-crate-two-forces",
     },
     {
         "id": "p4-02-h03",

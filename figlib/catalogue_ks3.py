@@ -122,26 +122,6 @@ CATALOGUE = [
                               {"title": "Soot-blackened bark", "bark": "soot"}]},
     },
     {
-        # the lesson's own data — see gut-transit-times below for the
-        # corrected chart the rewritten b3-05-s04 uses
-        "id": "b3-digestion-timing",
-        "art": "hbar",
-        "title": "A bar chart of how long a meal spends in each part of the "
-                 "digestive system",
-        "desc": "Six bars, one per organ in the order food travels: mouth "
-                "and oesophagus under 1 hour, stomach 4 hours, small "
-                "intestine 16 hours, large intestine 20 hours, rectum and "
-                "anus 6 hours.",
-        "params": {"rows": [{"label": "Mouth", "value": 0.02, "display": "<1 h"},
-                            {"label": "Oesophagus", "value": 0.003, "display": "<1 h"},
-                            {"label": "Stomach", "value": 4, "display": "4 h"},
-                            {"label": "Small intestine", "value": 16, "display": "16 h"},
-                            {"label": "Large intestine", "value": 20, "display": "20 h"},
-                            {"label": "Rectum and anus", "value": 6, "display": "6 h"}],
-                   "axis": {"label": "time", "unit": "hours", "min": 0,
-                            "max": 20, "ticks": [0, 4, 8, 12, 16, 20]}},
-    },
-    {
         "id": "b3-gut-transit-times",
         "art": "columns",
         "title": "A bar chart of the typical time food spends in the mouth, "
@@ -200,11 +180,9 @@ CATALOGUE = [
     },
     dict(id="b9-oak-wood-web-plain", art="food-web", title=_OAK_TITLE,
          desc=_OAK_DESC, params=_OAK_WOOD),
-    # the two ids questions referenced before the plain web existed — the
-    # SAME drawing, so a question still pointing at either gets the legible
-    # web, not the lesson's banded one
-    dict(id="b9-oak-wood-web-thread", art="food-web", title=_OAK_TITLE,
-         desc=_OAK_DESC, params=_OAK_WOOD),
+    # an id a question referenced before the plain web existed — the SAME
+    # drawing, so a question still pointing at it gets the legible web, not
+    # the lesson's banded one
     dict(id="b9-oak-wood-web", art="food-web", title=_OAK_TITLE,
          desc=_OAK_DESC, params=_OAK_WOOD),
     {
@@ -216,22 +194,6 @@ CATALOGUE = [
                 "second they are touching, heaped at the bottom in no "
                 "pattern. In the third a few circles are spread far apart.",
         "params": _STATES,
-    },
-    {
-        # the older question on this id asks about the reference particle,
-        # so this drawing keeps one under each box
-        "id": "c1-particle-states",
-        "art": "particle-states",
-        "title": "Solid, liquid and gas, each drawn as a box of particles, "
-                 "with a reference particle under every box",
-        "desc": "Three boxes, headed Solid, Liquid and Gas, every particle "
-                "the same size. The solid's particles touch in neat rows; "
-                "the liquid's touch in a heap with no pattern; the gas's are "
-                "few and far apart. Under each box is one more particle, "
-                "captioned 'one particle, actual size'.",
-        "params": dict(_STATES, H=360,
-                       reference=("one particle,", "actual size"),
-                       desc_size=21),
     },
     {
         "id": "p10-horseshoe-field-gap",
@@ -258,20 +220,6 @@ CATALOGUE = [
                 "straight down from the left circle and an arrow of the same "
                 "length points straight up from the right one.",
         "params": {},
-    },
-    {
-        "id": "p4-resultant-beam-recap",
-        "art": "force-beam",
-        "title": "Three bars drawn to the same scale: a 40 N pull split into "
-                 "a 25 N part and a 15 N part",
-        "desc": "Three bar arrows to one scale. The top one points right and "
-                "is labelled PULL RIGHT, 40 N. Below it two bars sit end to "
-                "end and span the same length: PULL LEFT, 25 N, pointing "
-                "left, then LEFT OVER, 15 N, pointing right. Dashed lines "
-                "mark where the top bar starts and ends.",
-        "params": {"whole": {"label": "PULL RIGHT", "newtons": 40, "dir": "right"},
-                   "parts": [{"label": "PULL LEFT", "newtons": 25, "dir": "left"},
-                             {"label": "LEFT OVER", "newtons": 15, "dir": "right"}]},
     },
     {
         "id": "p4-crate-two-forces",
@@ -328,29 +276,6 @@ CATALOGUE = [
                    "boundary": {"value": 1e5,
                                 "lines": ["no sharp line — roughly where",
                                           "useful conduction gives out"]}},
-    },
-    {
-        "id": "p9-charge-matrix-grid",
-        "art": "table",
-        "title": "A 3 by 3 grid of every combination of two charged objects",
-        "desc": "A grid headed Positive, Neutral and Negative across the top "
-                "and down the side. The Positive row reads Repel, Attract "
-                "weakly, Attract; the Neutral row Attract weakly, Nothing, "
-                "Attract weakly; the Negative row Attract, Attract weakly, "
-                "Repel.",
-        "params": {"col_heads": _CHARGES,
-                   "rows": [{"head": "Positive",
-                             "cells": [["Repel", "like charges"],
-                                       ["Attract weakly", "induction"],
-                                       ["Attract", "unlike charges"]]},
-                            {"head": "Neutral",
-                             "cells": [["Attract weakly", "induction"],
-                                       ["Nothing"],
-                                       ["Attract weakly", "induction"]]},
-                            {"head": "Negative",
-                             "cells": [["Attract", "unlike charges"],
-                                       ["Attract weakly", "induction"],
-                                       ["Repel", "like charges"]]}]},
     },
     {
         "id": "p9-charge-matrix-blank",

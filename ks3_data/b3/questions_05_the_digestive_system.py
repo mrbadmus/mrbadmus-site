@@ -218,33 +218,27 @@ QUESTIONS = [
     {
         "id": "b3-05-s04",
         "band": "standard",
-        "text": "Look at the digestion-timing chart. Compare the bars for "
-                "the stomach and the small intestine. What does that "
-                "comparison tell you about the two organs?",
+        "text": "The chart shows the typical time food spends in each part "
+                "of the gut. What mainly happens to food in the part where "
+                "it spends the longest?",
         "options": [
-            {"text": "The stomach works four times faster than the small "
-                     "intestine, so it does most of the digesting",
+            {"text": "Most of the digested food is absorbed into the blood",
              "correct": False,
-             "why": "A shorter stay is not faster work. The stomach only "
-                    "begins on protein; the small intestine needs sixteen "
-                    "hours because it finishes every nutrient off."},
-            {"text": "Most of the meal is stored in the stomach and only the "
-                     "leftovers travel any further", "correct": False,
-             "why": "The stomach passes the whole meal on, a little at a "
-                    "time. Nothing is kept back, and almost nothing is "
-                    "absorbed through its wall."},
-            {"text": "The small intestine holds the meal four times as long, "
-                     "because that is where the work happens",
+             "why": "That happens in the small intestine, and food passes "
+                    "through it in a few hours. The tallest bar is the large "
+                    "intestine."},
+            {"text": "Protein digestion begins, helped by stomach acid",
+             "correct": False,
+             "why": "That happens in the stomach, where food stays for only "
+                    "a few hours. The tallest bar is the large intestine."},
+            {"text": "Water is absorbed from the undigested food",
              "correct": True},
-            {"text": "The small intestine is slower only because it is much "
-                     "longer and much narrower than the stomach",
+            {"text": "Food is broken up by chewing and mixed with saliva",
              "correct": False,
-             "why": "It is six or seven metres of narrow tube, but its length "
-                    "is not the reason for the time. The meal is held there "
-                    "because that is where digestion is completed and "
-                    "absorption happens."},
+             "why": "That happens in the mouth, where food stays for about a "
+                    "minute — the shortest bar on the chart."},
         ],
-        "figure": "b3-digestion-timing",
+        "figure": "b3-gut-transit-times",
     },
 
     # ── harder ──────────────────────────────────────────────────────────

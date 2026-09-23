@@ -198,8 +198,9 @@ QUESTIONS = [
     {
         "id": "p9-02-s04",
         "band": "standard",
-        "text": "Look at the grid. How many of the nine combinations give "
-                "no force at all?",
+        "text": "The grid shows every combination of charge on two objects. "
+                "How many of the nine combinations give no electric force "
+                "between the objects?",
         "options": [
             {"text": "Two", "correct": False,
              "why": "The two cases where both objects carry the same sign "
@@ -207,14 +208,14 @@ QUESTIONS = [
                     "the one with no charge anywhere."},
             {"text": "One", "correct": True},
             {"text": "None", "correct": False,
-             "why": "Two neutral objects genuinely do nothing to each "
-                    "other, and that is the one case in the table that "
-                    "gives no force."},
+             "why": "Two neutral objects do nothing to each other "
+                    "electrically, and that is the one combination in the "
+                    "grid that gives no force."},
             {"text": "Four", "correct": False,
              "why": "Four of the nine are the induction case, and those all "
                     "attract weakly. Only one gives nothing."},
         ],
-        "figure": "p9-charge-matrix-grid",
+        "figure": "p9-charge-matrix-blank",
     },
 
     # ── harder ──────────────────────────────────────────────────────────

@@ -1019,6 +1019,12 @@ def check_frozen(stage, rows, leaves, new_ids, old_by_leaf):
             #   * only `stem`, `options` and the answer key — an `id` change
             #     is still a hard failure even for an allowlisted row,
             #     because the ruling's first condition is "the same id";
+            #     (⊕ Mide's second 23 Sep ruling — "No question ever asks a
+            #     pupil to describe a diagram… scrapped and replaced… same
+            #     id, same band and tier, same bank_position" — lets these
+            #     28 be replaced in full, key included. This check never
+            #     compared the explanation, and position/order checks here
+            #     are unchanged.)
             #   * every waiver prints, by row and by field, on every run, so
             #     it can never pass silently.
             #

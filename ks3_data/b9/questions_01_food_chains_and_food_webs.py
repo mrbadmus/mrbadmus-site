@@ -37,7 +37,7 @@ inside distractor corrections, the pyramid is left entirely to rung 3, and the
 land-use argument is replaced by the whale-and-krill case from the stretch
 layer, which is the same arithmetic pointed somewhere else.
 
-`figure` is `b9-oak-wood-web-thread` on two questions — the drawn web is the
+`figure` is `b9-oak-wood-web-plain` on two questions — the drawn web is the
 only place in the lesson where a student can practise reading arrow direction
 off a picture rather than off a sentence, and both stems need the wood in
 front of them. Every other stem is self-contained.
@@ -108,8 +108,8 @@ QUESTIONS = [
     {
         "id": "b9-01-e03",
         "band": "easier",
-        "text": "Look at the oak wood web. Find the ladybirds, and look at "
-                "the arrows touching them. What does that tell you?",
+        "text": "Look at the food web. Find the ladybirds. What do the "
+                "arrows tell you about them?",
         "options": [
             {"text": "The ladybirds are eaten by the aphids, and by nothing "
                      "else in the wood.", "correct": False,
@@ -129,7 +129,7 @@ QUESTIONS = [
                     "it builds its own food. One arrow in means one food "
                     "source, which makes the ladybirds a consumer."},
         ],
-        "figure": "b9-oak-wood-web-thread",
+        "figure": "b9-oak-wood-web-plain",
     },
     {
         "id": "b9-01-e04",
@@ -214,8 +214,8 @@ QUESTIONS = [
     {
         "id": "b9-01-s03",
         "band": "standard",
-        "text": "Look at the oak wood web. Find the arrow that runs from the "
-                "mice to the sparrowhawk. What does that arrow show?",
+        "text": "Look at the food web. What does the arrow from the mice to "
+                "the sparrowhawk show?",
         "options": [
             {"text": "That the mice must really be secondary consumers, since "
                      "they feed a tertiary consumer like the hawk.",
@@ -238,7 +238,7 @@ QUESTIONS = [
                     "they are secondary; mice eat acorns and seeds, so they "
                     "are primary. Sharing a predator says nothing about it."},
         ],
-        "figure": "b9-oak-wood-web-thread",
+        "figure": "b9-oak-wood-web-plain",
     },
     {
         "id": "b9-01-s04",

@@ -129,25 +129,23 @@ QUESTIONS = [
     {
         "id": "b4-05-e04",
         "band": "easier",
-        "text": "Look at the gas-exchange chart. What is the third bar "
-                "showing?",
+        "text": "Look at the chart. What is the third bar showing?",
         "options": [
-            {"text": "The two rates above it, added together.",
+            {"text": "The other two rates, added together.",
              "correct": False,
              "why": "The two processes move carbon dioxide in opposite "
-                    "directions, so they subtract rather than add. Net "
-                    "movement is what is left when opposite flows cancel."},
+                    "directions, so they subtract rather than add. Adding "
+                    "would give 10.6, not 6.6."},
             {"text": "Whichever of the two processes is currently running.",
              "correct": False,
-             "why": "Both are always running. The net figure is what is left "
+             "why": "Both are always running. The third bar is what is left "
                     "over from two flows happening at once, not a label for "
                     "the one that won."},
             {"text": "The rate of photosynthesis, on its own.",
              "correct": False,
-             "why": "That is the second bar. The third takes respiration off "
-                    "it, which is why it can point the other way when the "
-                    "light is off."},
-            {"text": "The difference between the two rates above it.",
+             "why": "That is the middle bar, 8.6. The third bar is smaller "
+                    "because respiration's 2 has been taken off it."},
+            {"text": "The difference between the other two rates.",
              "correct": True},
         ],
         "figure": "b4-gas-exchange-bars",

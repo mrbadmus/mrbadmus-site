@@ -174,8 +174,9 @@ QUESTIONS = [
     {
         "id": "p10-02-s03",
         "band": "standard",
-        "text": "Look at the field between the jaws of the horseshoe "
-                "magnet. What does that tell you about the field there?",
+        "text": "The diagram shows the magnetic field lines between the "
+                "poles of a horseshoe magnet. What do the field lines tell "
+                "you about the field in the gap?",
         "options": [
             {"text": "It is nearly the same strength and direction all "
                      "through that gap", "correct": True},
@@ -183,17 +184,19 @@ QUESTIONS = [
             # correct answer stops being resolvable as the second-longest.
             {"text": "It is nearly zero, because parallel lines cancel each "
                      "other out", "correct": False,
-             "why": "Cancelling shows up as lines curving away and a bare "
-                    "patch. Parallel arrows of a good length mean a steady, "
-                    "real field, not two fields undoing each other."},
+             "why": "Cancelling shows up as field lines curving away and "
+                    "leaving a bare patch. Evenly spaced parallel lines mean "
+                    "a steady, real field, not two fields undoing each "
+                    "other."},
             {"text": "It is about to become uneven, because the lines are on "
                      "the point of crossing", "correct": False,
              "why": "Parallel lines never meet, and lines never cross "
                     "anywhere in any case."},
-            {"text": "It is weaker there than anywhere else on the map",
+            {"text": "It is weaker there than anywhere else around the magnet",
              "correct": False,
-             "why": "The gap between the jaws is the strongest part of a "
-                    "horseshoe's map, which is the reason for the shape."},
+             "why": "The gap between the poles is where the field is "
+                    "strongest, which is the reason for the horseshoe "
+                    "shape."},
         ],
         "figure": "p10-horseshoe-field-gap",
     },

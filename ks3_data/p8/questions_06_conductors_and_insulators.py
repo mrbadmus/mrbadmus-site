@@ -169,8 +169,8 @@ QUESTIONS = [
     {
         "id": "p8-06-s03",
         "band": "standard",
-        "text": "Look at the chart of resistances. Why is its axis built "
-                "like this?",
+        "text": "Look at the scale along the bottom of the chart. Why is it "
+                "drawn like this?",
         "options": [
             {"text": "Because a ruler scale that showed the plastic would "
                      "put every conductor at zero", "correct": True},

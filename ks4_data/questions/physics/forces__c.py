@@ -221,8 +221,8 @@ QUESTIONS = [
         "tier": "foundation",
         "triple_only": False,
         "figure": "ks4-fig-graph-distance-time-runner-400m",
-        "text": "The graph shows a runner's distance against time. "
-                "Determine her average speed and compare it with her "
+        "text": "The graph shows the distance a runner travels during a "
+                "race. Determine her average speed and compare it with her "
                 "speed at 70 s.",
         "options": [
             "5.0 m/s; at 70 s the gradient is steeper, so she is faster there",
@@ -474,9 +474,9 @@ QUESTIONS = [
         "tier": "foundation",
         "triple_only": False,
         "figure": "ks4-fig-graph-velocity-time-skydiver",
-        "text": "The graph shows a skydiver's velocity against time. "
-                "Determine what is happening to her acceleration and her "
-                "velocity at 14 s.",
+        "text": "The graph shows how a skydiver's velocity changes after "
+                "she jumps. Determine what is happening to her acceleration "
+                "and her velocity at 14 s.",
         "options": [
             "Her acceleration is constant and her velocity is still rising",
             "Her acceleration is zero and her velocity is a steady 55 m/s",

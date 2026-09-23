@@ -36,9 +36,11 @@ exceptions changed nothing but the fields the ruling permits.
 
   1. every frozen row NOT on the allowlist is byte-identical to the
      reference (production, or a `--baseline` snapshot), field by field;
-  2. an allowlisted row may differ ONLY in `text`, `options` and (KS3 only)
-     `figure` — its `id`, `band`, `tier`, `triple_only` and `bank_position`
-     must be unchanged, and a violation names the field;
+  2. an allowlisted row may differ ONLY in `text`, `options`, `figure` and
+     (KS4) `correct_index` and `why` — Mide's two 23 Sep rulings, the field
+     sets in `frozen_window_allowlist.py`; its `id`, `band`, `tier`,
+     `triple_only` and `bank_position` must be unchanged, and a violation
+     names the field;
   3. the allowlist is exactly 28 ids and every one of them actually exists,
      inside the frozen window, in the authored corpus today;
   4. positions 0–11 hold the same SET OF IDS in the same ORDER per leaf as
@@ -129,8 +131,6 @@ KS3_ID_FIELD = "id"
 KS3_LEAF_FIELDS = ("unit_code", "lesson_slug")
 KS3_COLUMNS = ks3x.BANK_COLUMNS   # id, unit_code, lesson_slug, band,
                                   # bank_position, text, figure, options
-KS3_ALLOWED_DIFF = frozenset({"text", "options", "figure"})
-
 KS4_TABLE = "ks4_assignment_bank"
 KS4_ID_FIELD = "id"
 KS4_LEAF_FIELDS = ("subtopic_slug",)
@@ -160,11 +160,25 @@ def ks4_effective_columns(has_figure):
 
 
 def ks4_allowed_diff(has_figure):
-    base = {"text", "options"}
-    return base | ({"figure"} if has_figure else set())
+    """⊕ MRB-352 run 2 — Mide's second 23 Sep ruling ("No question ever asks
+    a pupil to describe a diagram… scrapped and replaced… same id, same band
+    and tier, same bank_position") lets an ALLOWLISTED row's correct answer
+    and explanation change too. The field set is the allowlist module's, so
+    the ruling and the gate cannot drift apart. It is applied to the 28
+    allowlisted ids ONLY (see `compare_pool`); every other frozen row must
+    still be byte-identical. `figure` is compared only when the reference
+    side has the column."""
+    base = set(fwa.KS4_PERMITTED_FIELDS) - {"figure"}
+    return frozenset(base | ({"figure"} if has_figure else set()))
 
 
-KS3_ALLOWED_DIFF = frozenset({"text", "options", "figure"})
+KS3_ALLOWED_DIFF = frozenset(fwa.KS3_PERMITTED_FIELDS)
+
+# Never permitted, even for the 28: the identity and position of the row.
+_NEVER_PERMITTED = {"id", "band", "tier", "triple_only", "bank_position",
+                    "subtopic_slug", "unit_code", "lesson_slug", "subject"}
+assert not (_NEVER_PERMITTED & (KS3_ALLOWED_DIFF | ks4_allowed_diff(True))), \
+    "the ruling never lets a frozen row's identity or position change"
 
 
 def ks3_hash(row):

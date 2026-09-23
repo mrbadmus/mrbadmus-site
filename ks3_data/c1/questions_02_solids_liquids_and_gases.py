@@ -24,34 +24,33 @@ QUESTIONS = [
     {
         "id": "c1-02-e01",
         "band": "easier",
-        "text": "Look at the particle diagram for the solid, the liquid and "
-                "the gas. Each one has a reference particle beside it, "
-                "labelled “one particle, actual size”. Why does the "
-                "diagram do that?",
+        "text": "The diagram shows the particles of one substance as a "
+                "solid, a liquid and a gas. What is different from one box "
+                "to the next?",
         "options": [
-            {"text": "Because three different sizes would make the boxes "
-                     "harder to compare with each other.",
+            {"text": "The size of each particle, which grows as the "
+                     "substance heats up",
              "correct": False,
-             "why": "It is not a drawing convenience. The fixed size is the "
-                    "lesson's whole argument made visible: a gas particle and "
-                    "a solid particle are the same object."},
-            {"text": "Because it is drawn for the solid, and the liquid and "
-                     "gas particles are a little smaller.",
+             "why": "Every particle is drawn the same size in all three "
+                    "boxes. Nothing swells or shrinks when a substance melts "
+                    "or boils."},
+            {"text": "The mass of each particle, which falls as the "
+                     "particles spread out",
              "correct": False,
-             "why": "Nothing shrinks when a solid melts or boils. Same size, "
-                    "same mass, same substance — the particles are identical "
-                    "in all three states."},
-            {"text": "Because a particle is the same size in every state — "
-                     "only spacing and speed change.",
+             "why": "Changing state does not change the particles "
+                    "themselves, so each one keeps the same mass in every "
+                    "state."},
+            {"text": "How close together the particles are, and how they "
+                     "are arranged",
              "correct": True},
-            {"text": "Because particles keep the same size only while the "
-                     "substance stays cold and solid.",
+            {"text": "The type of particle, since a gas is a different "
+                     "substance",
              "correct": False,
-             "why": "Heating changes how fast particles move and how far "
-                    "apart they sit. It never changes their size, at any "
-                    "temperature."},
+             "why": "It is one substance throughout. Changing state "
+                    "rearranges the same particles; it does not make new "
+                    "ones."},
         ],
-        "figure": "c1-particle-states",
+        "figure": "c1-three-states-particles",
     },
     {
         "id": "c1-02-e02",
@@ -87,8 +86,8 @@ QUESTIONS = [
         "id": "c1-02-e03",
         "band": "easier",
         "text": "100 cm³ of water is poured from a tall measuring cylinder "
-                "into a wide flat dish. Which of the contrast table's rows "
-                "has changed?",
+                "into a wide, flat dish. What happens to the water's shape "
+                "and volume?",
         "options": [
             {"text": "Its shape has changed; its volume is still 100 cm³.",
              "correct": True},

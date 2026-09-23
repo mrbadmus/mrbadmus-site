@@ -122,8 +122,8 @@ QUESTIONS = [
     {
         "id": "p9-03-s01",
         "band": "standard",
-        "text": "Look at the marked point on the field map. A small "
-                "NEGATIVE charge is placed there. Which way is it pushed?",
+        "text": "A small NEGATIVE charge is placed at point P on the "
+                "electric field map. Which way is it pushed?",
         "options": [
             {"text": "To the right, along the arrow", "correct": False,
              "why": "That is what a positive charge would do. A negative "

@@ -2403,22 +2403,25 @@ QUESTIONS = [
         "band": "harder",
         "tier": "higher",
         "triple_only": True,
-        "text": "A student draws a polyester repeat unit in which an –OH "
-                "group and a –COOH group are still shown between the two "
-                "monomer units. Explain what is wrong.",
+        "figure": "ks4-fig-polyester-monomers",
+        "text": "The diagram shows the two monomers used to make a "
+                "polyester. Explain how the monomers join together.",
         "options": [
-            "Nothing is wrong — both groups stay unchanged inside the repeat "
-            "unit of the polymer",
-            "Those groups should have joined, losing water and forming an "
-            "ester link",
-            "The –OH should have been replaced by an amide link, –CO–NH–, "
-            "instead of an ester link",
-            "The two monomers should have been joined by a C=C double bond "
-            "in place of the groups",
+            "The –OH and –COOH groups stay unchanged, and the monomers "
+            "simply link end to end",
+            "Each –OH reacts with a –COOH to form an ester link, and a "
+            "molecule of water is lost",
+            "Each –OH reacts with a –COOH to form an amide link, –CONH–, "
+            "and water is lost",
+            "The C=C double bonds in the monomers open up and join the "
+            "monomers into a chain",
         ],
         "correct_index": 1,
-        "why": "The whole point of condensation is that the two groups react "
-               "together: –OH plus –COOH gives –COO– and a molecule of water.",
+        "why": "This is condensation polymerisation. Each monomer has two "
+               "functional groups. Every time an –OH group reacts with a "
+               "–COOH group, an ester link (–COO–) forms and a small "
+               "molecule — water — is given off. An amide link needs an "
+               "–NH2 group, and there is no C=C in either monomer.",
     },
     {
         "id": "ks4-condensation-polymerisation-h03",

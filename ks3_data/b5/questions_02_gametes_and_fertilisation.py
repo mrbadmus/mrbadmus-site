@@ -256,9 +256,8 @@ QUESTIONS = [
     {
         "id": "b5-02-h01",
         "band": "harder",
-        "text": "Look at the diagram comparing the egg and sperm cell "
-                "diameters. A student concludes that the egg must be "
-                "twenty times as much cell as the sperm. Where does that "
+        "text": "Look at the diagram. A student concludes that the egg must "
+                "be twenty times as much cell as the sperm. Where does that "
                 "go wrong?",
         "options": [
             {"text": "It does not go wrong — a bar twenty times as long does "
@@ -274,7 +273,7 @@ QUESTIONS = [
                     "scale. It is the step from a width to an amount that has "
                     "to be taken carefully."},
             {"text": "Those bars are diameters, and volume goes as the "
-                     "diameter cubed — eight thousand times.",
+                     "diameter cubed — about eight thousand times.",
              "correct": True},
             {"text": "It is backwards — the egg is twenty times as wide but "
                      "only about five times the volume.",

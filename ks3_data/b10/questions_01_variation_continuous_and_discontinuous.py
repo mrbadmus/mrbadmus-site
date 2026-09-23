@@ -51,12 +51,12 @@ QUESTIONS = [
              "why": "The instrument is not the test. Number of siblings and UK "
                     "shoe size are counted, and neither is continuous. Bars "
                     "touch because a value exists between any two others."},
-            {"text": "That most of the sixty students sit near the middle of "
-                     "the range.",
+            {"text": "That height is a discrete variable, counted in whole "
+                     "centimetres.",
              "correct": False,
-             "why": "True of the hump, but that is not what the touching bars "
-                    "mean. The bars would still touch if the students were "
-                    "spread evenly, because the categories still join up."},
+             "why": "It is the opposite. Discrete data, like number of "
+                    "siblings, is drawn with gaps between the bars. Height "
+                    "can take any value inside a range, so the bars touch."},
             {"text": "That height is inherited from your parents rather than "
                      "set by diet.",
              "correct": False,

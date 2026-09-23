@@ -32,6 +32,17 @@ edited IN PLACE, provided:
 The science and the difficulty stay the same. This is a presentation repair,
 not a re-authoring.
 
+⊕ SECOND RULING — Mide, 23 Sep 2026 (MRB-352 run 2), WIDENING the first for
+these same 28 ids and no others: "No question ever asks a pupil to describe a
+diagram." Where one of the 28 is a description question, it is scrapped and
+replaced — same id, same band and tier, same bank_position. So for these 28
+ONLY, a row may now change in full: its `text`, its `options` (at KS3 each
+option's `correct` flag and `why`), at KS4 its `correct_index` and its
+`why` explanation, and its `figure`. What still may NOT change, under either
+ruling: the `id`, the `band`, the `tier`, `triple_only`, the `bank_position`,
+and the leaf's id order in positions 0–11. The examiner's replacement spec is
+the run-2 content specification (`docs/diagrams/`, workstream C).
+
 WHY IT IS SAFE, checked rather than assumed. Production was read twice —
 once by the chat when the ruling was made, once again immediately before the
 load (both recorded in `docs/diagrams/fix-run-report.md`):
@@ -100,6 +111,21 @@ RULING = (
     "bank_position; the only changes are adding a figure and rewording the "
     "stem to point at it."
 )
+
+# ⊕ The second ruling, same day, same 28 ids — see the module docstring.
+RULING_REPLACEMENT = (
+    "Mide, 23 Sep 2026 (MRB-352 run 2) — No question ever asks a pupil to "
+    "describe a diagram. A description question among these 28 is scrapped "
+    "and replaced: same id, same band and tier, same bank_position. Its "
+    "text, options (with their whys), correct answer, explanation and "
+    "figure may all change; nothing else may."
+)
+
+# The fields either ruling lets an allowlisted row change, per key stage.
+# `frozen_window_guard.py` reads these; it applies them to the 28 only.
+KS3_PERMITTED_FIELDS = frozenset({"text", "options", "figure"})
+KS4_PERMITTED_FIELDS = frozenset({"text", "options", "correct_index", "why",
+                                  "figure"})
 
 assert len(CONFIRMED) == 14, "the ruling covers 14 confirmed rows"
 assert len(BORDERLINE) == 14, "the ruling covers 14 borderline rows"
