@@ -347,13 +347,109 @@ window.MrBadmusAdminScope = (function () {
     }
   }
 
+  /* ── the answer, remembered ──────────────────────────────────────────
+     ⊕ MRB-348 round 4 — WHY THIS CACHE EXISTS, measured rather than guessed.
+
+     `isAdmin()` makes two reads, and one of them is `profiles`. Production
+     RUM for the five days to 23 Sep 2026 says `profiles` was the SLOWEST read
+     on 57 of 133 teacher page loads — p50 3,991 ms when it was the worst on
+     `teacher-classes`, and 1,142 ms on `teacher-today`. For a one-row
+     primary-key read against a 656 kB table whose server-side mean is 38.9 ms.
+
+     The seconds are not the query; they are connection warmth (see
+     docs/mrb348/round4-speed.md §1). But `pg_stat_statements` records a
+     2,601 ms MAXIMUM for that same read, so the tail is real on the server
+     too — and this module was asking for it a SECOND time on every single
+     page load, moments after `teacher-guard.js` had already fetched the very
+     same row for the role check. Two draws from the same long tail, for one
+     row, to decide whether to draw one link.
+
+     ⚠️ THE CACHE IS ON THE LINK, NOT ON THE PREDICATE. `isAdmin` is exported
+     and `admin.html` calls it for its own fail-closed guard — "one predicate,
+     two callers", as `boot()` already says. That caller must keep making real
+     reads, so `isAdmin` itself is untouched and uncached. Only the chrome
+     decision below is remembered.
+
+     ⚠️ WHY A CACHED ANSWER IS SAFE HERE, and it is the same argument
+     `teacher-guard.js` makes for its own 2-minute cache:
+       1. THIS IS NOT THE SECURITY BOUNDARY. The block at the top of this file
+          says so already — hiding the link hides a link. The gates are the
+          RLS policies, which hand a non-admin zero rows however they arrive.
+       2. THE KEY CARRIES THE VIEWER'S ID AND THE ENVIRONMENT, via
+          `MRBClassEntry.cacheKey`, so a second person in the same tab misses,
+          and a TEST session cannot answer a production question.
+       3. IT IS `sessionStorage`, so it dies with the tab.
+       4. SIGN-OUT DROPS IT — `mrb-admin-scope:` is in `CACHE_FAMILIES`.
+
+     ⚠️ TEN MINUTES, NOT THE GUARD'S TWO. The guard is re-resolving who you
+     are and revalidates in the background on every hit, so it can afford to
+     be eager. This is one link, and a revoked admin who still sees it for up
+     to ten minutes clicks through to a page that re-checks from scratch and
+     fails closed. Ten minutes covers a normal lesson's worth of navigation on
+     one tab, which is the whole point. */
+  var SCOPE_PREFIX = 'mrb-admin-scope:';
+  var SCOPE_TTL_MS = 10 * 60 * 1000;
+
+  function scopeKey() {
+    var ce = window.MRBClassEntry;
+    if (!ce || !ce.cacheKey) { return null; }   // module absent → no cache
+    try { return ce.cacheKey(SCOPE_PREFIX); } catch (e) { return null; }
+  }
+
+  /* Returns true, false, or null for "no usable answer". The stored shape is
+     an OBJECT and not a bare boolean on purpose: `cacheGet` answers null both
+     for a miss and for a stored null, so a bare `false` could not be told
+     from a miss — and "we already know they are not an admin" is exactly the
+     answer worth keeping, since it is the common one. */
+  function cachedScope() {
+    var ce = window.MRBClassEntry;
+    var key = scopeKey();
+    if (!key || !ce || !ce.cacheGet) { return null; }
+    try {
+      var hit = ce.cacheGet(key, SCOPE_TTL_MS);
+      if (!hit || typeof hit.admin !== 'boolean') { return null; }
+      return hit.admin;
+    } catch (e) { return null; }
+  }
+
+  function rememberScope(admin) {
+    var ce = window.MRBClassEntry;
+    var key = scopeKey();
+    if (!key || !ce || !ce.cacheSet) { return; }
+    try { ce.cacheSet(key, { admin: !!admin }); } catch (e) {}
+  }
+
   async function boot() {
     /* On `admin.html` itself there is nothing to link to. The module still
        LOADS there, because the page imports `isAdmin` from it for its own
        fail-closed guard — one predicate, two callers. */
     if (isHere()) { return; }
+
+    /* ⚠️ THE CACHE IS CONSULTED AFTER `client()`, NOT BEFORE IT, AND THAT
+       ORDER IS THE WHOLE FIX.
+
+       I wrote it the other way first — check the cache, return early, skip
+       the `client()` poll entirely — and it was a SILENT NO-OP. This module
+       is one of only four `<script src>` tags on a ported teacher page
+       (`student-runtime`, this, `set-work`, `teacher-live`), and
+       `class-entry.js` is NOT among them: `teacher-live.js` fetches it
+       dynamically in its second wave. So at DOMContentLoaded, when `boot()`
+       runs, `window.MRBClassEntry` does not exist yet — `scopeKey()` returns
+       null, and the cache is never read AND NEVER WRITTEN. It cost nothing
+       and saved nothing, and the only reason it was caught is that
+       `staff_scopes` is read by this file and nothing else, so its survival
+       in a measured request list is proof the cache did not fire.
+
+       `client()` polls for the guard's client on a 120 ms tick, and the guard
+       arrives in the same dynamic wave as `class-entry.js`. By the time it
+       resolves, `MRBClassEntry` is there. We give up the (small) saving of
+       skipping that poll, and keep the (real) saving of the two reads. */
     var sb = await client();
     if (!sb) { return; }
+
+    var known = cachedScope();
+    if (known === true) { watch(); return; }
+    if (known === false) { return; }
     /* `getSession()` is a localStorage read, not a round trip. The link is
        chrome — it does not need `getUser()`'s server-side JWT validation,
        and the page it points at re-checks everything from scratch anyway. */
@@ -362,7 +458,12 @@ window.MrBadmusAdminScope = (function () {
     var user = sess && sess.data && sess.data.session
       ? sess.data.session.user : null;
     if (!user || !user.id) { return; }
-    if (!(await isAdmin(sb, user.id))) { return; }
+    var admin = await isAdmin(sb, user.id);
+    /* Remembered either way. A "no" is the common answer and is worth keeping
+       exactly as much as a "yes" — it is the one that saves the two reads for
+       every ordinary teacher in the school. */
+    rememberScope(admin);
+    if (!admin) { return; }
     watch();
   }
 
