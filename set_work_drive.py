@@ -2508,11 +2508,22 @@ def check_detail(p, scopes, shots):
             # Typed well above both this tiny pool and any real ceiling, so
             # `capped_by` can only ever be "pool" here — the number field's
             # own clamp behaviour, not the chip's.
+            # ⚠️ BLURRED, NOT LEFT FOCUSED. `syncCountChips` deliberately
+            # skips writing `.value` while the field is focused — the same
+            # reasoning `syncScopePanel` and every other "patched, not
+            # rebuilt" surface in `set-work.js` follows, so an in-flight
+            # async answer cannot fight a teacher's own keystroke. In real
+            # use, `change` never fires without a blur (or Enter, which
+            # blurs itself) already having happened or being about to, so
+            # the field is unfocused well before any `/preview` response
+            # could land. Leaving it focused here would measure a state a
+            # real interaction cannot produce, not a product behaviour.
             input_val = p.eval("""(function(v){
                 var i=document.querySelector('[data-sw="count-input"]');
                 if(!i){return null;}
                 i.focus(); i.value=String(v);
                 i.dispatchEvent(new Event('change',{bubbles:true}));
+                i.blur();
                 return i.value;})(999)""")
             wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]')"
                         ".length === %d" % n)
@@ -3452,6 +3463,7 @@ def main():
                     # own: the two checks below replace `window.fetch`.
                     check_worksheet_sheet(p, base, ws_first, args.shots)
                     check_assignment_note_capability(p, t_teacher, scopes)
+                    check_ecology_pool_clamp(p, t_teacher, scopes)
                     check_classes_screen_open(p, base)
                     # ⊕ first-week fixes (22 Sep 2026) — it holds `/scope` for three seconds, so it
                     # belongs with the fetch-wrapping checks. It restores the
@@ -4846,8 +4858,16 @@ def check_edit(t_teacher, scopes):
         st, ref = api_patch(t_teacher, live_id, **{field: value})
         ok = (st == 400 and (ref or {}).get("error") == "locked_after_release")
         det = (ref or {}).get("detail") or {}
+        # ⊕ MRB-342.2 §3.4 — `note` JOINS `title`/`due_at` in what stays
+        # editable after release: it is the teacher's own annotation, not
+        # a fact about the questions a pupil is mid-way through, so it is
+        # never locked by `locked_after_release`. This used to read
+        # `["title", "due_at"]`, which is what MRB-336 shipped before this
+        # ticket added a third always-editable field — the list is the
+        # BACKEND's own statement of what it will accept, not a client
+        # invention, so it is read here rather than re-derived.
         record(ok and det.get("fields") == [field]
-               and det.get("editable") == ["title", "due_at"],
+               and det.get("editable") == ["title", "note", "due_at"],
                "edit_locked_after_release — `%s` is refused 400 "
                "`locked_after_release`, and the refusal NAMES what is still "
                "editable" % field,
@@ -6462,11 +6482,20 @@ def check_worksheet(t_teacher, t_pupil, t_admin, teacher_id, scopes):
            "%d of %d page(s) carry it" % (f["wordmark_pages"], len(f["pages"])))
     marks = pdf_mark_pages(data)
     strokes = [n for n, _ in marks]
-    record(bool(marks) and all(n == 2 for n in strokes),
-           "pdf_brand_footer — Claude Design's DOUBLE chevron is drawn on "
-           "every page: two strokes a page, both in #E4572E, read out of the "
-           "page content stream because a vector footer has no text to extract",
-           "strokes per page: %s" % (strokes,))
+    # ⊕ MRB-342.2 §2.2 — THE HEADER GAINED THE MARK TOO, so page 1 legitimately
+    # carries FOUR strokes (its own header mark plus the footer mark every
+    # page has), not two. `drawMark` is called once for the header (only on
+    # the first page, beside the title) and once per page for the footer —
+    # `worksheet.js`'s own two call sites. This used to assert two strokes on
+    # EVERY page, which was correct when the mark lived only in the footer
+    # (§342.1) and is no longer a true description of the file.
+    want = [4] + [2] * (len(strokes) - 1) if strokes else []
+    record(bool(marks) and strokes == want,
+           "pdf_brand_footer — Claude Design's DOUBLE chevron is drawn in "
+           "the footer of every page, and a SECOND time in the header of "
+           "the first (contract §2.2) — both in #E4572E, read out of the "
+           "page content stream because a vector mark has no text to extract",
+           "strokes per page: %s (wanted %s)" % (strokes, want))
     faded = [a for _, al in marks for a in al if a not in (None, 1, 1.0)]
     record(bool(marks) and all(0.34 in al for _, al in marks),
            "…and the trailing chevron really is the FADED one — stroke alpha "
@@ -7943,6 +7972,128 @@ def check_assignment_note_capability(p, t_teacher, scopes):
             if(t){t.value=''; t.dispatchEvent(new Event('input',
               {bubbles:true}));}})()""")
     p.eval("if (window.MRBSetWork) { window.MRBSetWork.close(); }")
+
+
+# ⊕ MRB-342.2 §1 — THE HARD CASE, NAMED BY THE COMMANDER.
+#
+# `check_detail`'s own count-clamp assertions (`chips_never_disabled`,
+# `count_clamp_note_pool`, `count_field_typed_clamps`) all live inside
+# `if small:`/`if mid:`, and both `small` and `mid` come from
+# `find_node_with(scope, 5, 9, tier)` / `(10, 14, tier)` — the SAME lookup
+# that already reports two of this file's inherited reds ("a scope of 5–9
+# questions exists to cap against", "a scope of 10–14 questions exists"),
+# because MRB-338 grew both banks past the point any real scope is that
+# small any more. So on the estate as it stands today, EVERY assertion this
+# file has about the count field's own clamp path never runs at all — a
+# green run with nothing exercising the one control the whole ticket is
+# named for.
+#
+# `biology/ecology` (Foundation, triple) does not need a SMALL scope; it is
+# the opposite case, and a more informative one: 1,504 distinct normalised
+# stems across MORE rows than that, so `available` (post-dedup) and a naive
+# row count can genuinely disagree. Typing a huge number here is the one
+# place on the whole estate where a note claiming "All N added" could be
+# WRONG — if the server delivered fewer than N because of the dedupe, and
+# this file asserted only "a note appeared" rather than "the note's own
+# number is the number that arrived", it would pass on exactly the defect
+# it exists to catch.
+def check_ecology_pool_clamp(p, t_teacher, scopes):
+    print("\n   the count field's clamp, against biology/ecology "
+          "(duplicate stems)")
+    topic = None
+    for t in (scopes.get("bi") or {}).get("tree") or []:
+        if t.get("id") == "ecology":
+            topic = t
+            break
+    if not topic:
+        record(False, "biology/ecology is findable in the triple class's "
+                      "tree",
+               "tree has %d topic(s): %s"
+               % (len(scopes.get("bi", {}).get("tree") or []),
+                  [t.get("id")
+                   for t in (scopes.get("bi") or {}).get("tree") or []][:20]))
+        return
+    avail = (topic.get("counts") or {}).get("foundation", 0)
+    if not avail:
+        record(False, "biology/ecology has a nonzero Foundation pool",
+               "counts=%r" % (topic.get("counts"),))
+        return
+    if not goto_detail(p, FX.C_KS4_TRIPLE, "foundation", "topic",
+                       topic["id"]):
+        record(False, "reach biology/ecology in the sheet")
+        return
+    # ⚠️ `goto_detail` HAS ALREADY LOADED THE DEFAULT (10) BY THE TIME IT
+    # RETURNS — it waits on exactly the condition `> 0`, which ten rows
+    # already satisfy. Typing 1500 kicks off a SECOND, async `/preview` for
+    # THIS topic; waiting on `length > 0` again is trivially true before
+    # that second answer has even landed, and the first version of this
+    # check measured the stale ten and reported no clamp fired at all — a
+    # false positive in the CHECK, not a real defect. The condition that
+    # actually means "the new preview has landed" is the row count no
+    # longer being the default it started at.
+    before_rows = p.eval("document.querySelectorAll("
+                        "'[data-sw=\"question\"]').length")
+    # Comfortably above whatever the tree's own row count is — guaranteed to
+    # exceed the true deliverable maximum, whatever dedup makes that.
+    typed = avail + 50
+    # ⚠️ BLURRED — see `count_field_typed_clamps`' own comment on this same
+    # pattern. `syncCountChips` will not overwrite a FOCUSED field, on
+    # purpose, so leaving it focused here would measure a state a real
+    # blur-then-wait interaction cannot produce.
+    input_val = p.eval("""(function(v){
+        var i=document.querySelector('[data-sw="count-input"]');
+        if(!i){return null;}
+        i.focus(); i.value=String(v);
+        i.dispatchEvent(new Event('change',{bubbles:true}));
+        i.blur();
+        return i.value;})(%d)""" % typed)
+    # A topic this size takes longer to preview (server-side dedup across a
+    # couple of thousand rows) than the file's default 15s wait.
+    changed = wait_for(p, "document.querySelectorAll('[data-sw=\"question\"]')"
+                          ".length !== %d" % before_rows, tries=200, gap=0.3)
+    record(changed,
+           "ecology_preview_lands — the second `/preview` (for the typed "
+           "1500) actually answers within 60s, so the checks below are "
+           "measuring it and not the topic's stale default",
+           "row count moved off the default (%d) before this check reads "
+           "it" % before_rows if changed
+           else "row count is STILL %d after 60s — either the request "
+                "never landed or the server really did return exactly the "
+                "default" % before_rows)
+    rows = p.eval("document.querySelectorAll('[data-sw=\"question\"]').length")
+    note = p.eval("""(function(){
+        var el=document.querySelector('[data-sw="count-note"]');
+        return el ? {hidden: el.hidden, text: el.textContent} : null;
+        })()""")
+    field_now = p.eval("(document.querySelector('[data-sw=\"count-input\"]')"
+                       "||{}).value")
+    record(input_val is not None and rows > 0,
+           "ecology_number_field_accepts_a_huge_typed_value",
+           "typed %d (tree row count %d), rows rendered %d"
+           % (typed, avail, rows))
+    record(bool(note) and note.get("hidden") is False,
+           "ecology_pool_clamp_note_shows — typing %d on a topic whose "
+           "tree count is %d triggers the pool clamp note" % (typed, avail),
+           "%r" % (note,))
+    # ⚠️ THE ASSERTION IS AGAINST WHAT WAS RENDERED, NOT A NUMBER COMPUTED
+    # HERE. `rows` is read off the DOM, independently of `note` and of
+    # `field_now` — if the server's `available` and its `picked.length`
+    # ever disagreed (the exact shape of defect this check exists to
+    # catch), this would fail rather than compare two numbers that came
+    # from the same wrong place.
+    want = "Only %s at Foundation. All %s added." % (rows, rows)
+    record(bool(note) and note.get("text") == want,
+           "ecology_note_matches_delivered_rows — the note's own number is "
+           "EXACTLY what was rendered, never the tree's row count and "
+           "never the typed value — duplicate-stem dedup is where a note "
+           "could promise more than arrived, and this is the topic where "
+           "that would show up",
+           "note=%r, rows rendered=%d" % (note, rows))
+    record(field_now == str(rows),
+           "…and the number field's own displayed value is the same "
+           "number too — one source of truth across the chip, the field "
+           "and the note",
+           "field reads %r, rows %d" % (field_now, rows))
 
 
 def check_row_download(p, base, t_teacher, scopes, made):
