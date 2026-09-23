@@ -1548,6 +1548,13 @@ FAFF_EXACT = {
     # sheet's word for exactly that. A second failure string would be a
     # second way of saying one thing.
     "Download", "Add topic", "Worksheet", "PDF", "Word", "Answers",
+    # ⊕ MRB-342.1 — A SEVENTH. `Multiple choice` is the one other property of
+    # the downloaded file a teacher chooses: turned off, a question prints
+    # ruled answer lines instead of A/B/C/D. It is a noun phrase in the same
+    # class as `Answers`, and there is deliberately no eighth for the
+    # exception (a stem that points at its own options keeps them) — the
+    # server decides that per question and the teacher never has to.
+    "Multiple choice",
     # ⊕ first-week fixes (22 Sep 2026) — TWO, AND THEY EXIST BECAUSE `Next` STOPPED WAITING.
     #
     # Next now enables the moment a class is ticked rather than when /scope
@@ -6086,17 +6093,75 @@ def pdf_findings(data, scopes, answers):
             if ci is None or ci >= len(opts):
                 key_missing.append("q%d has no correct_index in the pool" % (i + 1))
                 continue
-            line = squeeze("%d.  %s  —  %s" % (i + 1, "ABCD"[ci], opts[ci]))
-            if line not in key_text:
-                key_missing.append("q%d: %r" % (i + 1, line[:56]))
+            # ⊕ MRB-342.1 — THE KEY PHRASE, NOT THE LETTER. This used to look
+            # for "1.  A  —  two oxygen atoms". With multiple choice off there
+            # are no letters on the sheet at all, so a letter in the key
+            # answers a question the child was never asked.
+            #
+            # ⚠️ THE NUMBER IS A SEPARATE DRAW NOW — it sits in its own column
+            # so a wrapped phrase hangs under itself — so the two are looked
+            # for as two facts rather than as one string. A `squeeze`d
+            # substring match would otherwise depend on how the extractor
+            # spaces two text runs on one line, which is not a fact about the
+            # worksheet.
+            phrase = squeeze(opts[ci])
+            if phrase and phrase not in key_text:
+                key_missing.append("q%d: %r" % (i + 1, phrase[:56]))
+            elif squeeze("%d." % (i + 1)) not in key_text:
+                key_missing.append("q%d: its number is not in the key" % (i + 1))
 
     return {
         "pages": pages, "npages": npages, "whole": whole, "want": want,
         "answers_page": ans_i, "body_page_count": len(body_pages),
         "missing": missing, "split": split, "straddled": straddled,
         "wrong_opts": wrong_opts, "key_missing": key_missing,
-        "footer_pages": sum(1 for t in npages if "MrBadmusAI" in t),
+        # ⊕ MRB-342.1 — counted so it can be asserted to be ZERO.
+        "wordmark_pages": sum(1 for t in npages if "MrBadmus" in t),
     }
+
+
+# ⊕ MRB-342.1 — the footer mark, read out of the PAGE CONTENT STREAM.
+#
+# ⚠️ `extract_text` CANNOT SEE IT, and that is the point of the change: the
+# footer is no longer a word, it is two stroked polylines. So the proof has to
+# be the drawing itself. PDFKit writes the colour as a `SCN` operator under
+# `/DeviceRGB CS`, and #E4572E is exactly these three fractions.
+MARK_SCN = ("0.8941176470588236 0.3411764705882353 0.1803921568627451 SCN")
+
+
+def pdf_mark_pages(data):
+    """Per page: (brand-coloured strokes, the stroke alphas they were drawn at).
+
+    Two strokes a page — Claude Design's double chevron — the first at full
+    opacity and the second at 0.34. That pair IS the mark: one chevron at one
+    alpha would be a different drawing.
+    """
+    pypdf = pdf_reader()
+    if pypdf is None:
+        return []
+    out = []
+    reader = pypdf.PdfReader(io.BytesIO(data))
+    for page in reader.pages:
+        try:
+            body = page.get_contents().get_data().decode("latin1")
+        except Exception:                                      # noqa: BLE001
+            out.append((0, []))
+            continue
+        n = body.count(MARK_SCN)
+        alphas = []
+        try:
+            gs = (page.get("/Resources") or {}).get("/ExtGState") or {}
+            for name in re.findall(r"(/Gs\d+) gs", body):
+                ent = gs.get(name[1:]) or gs.get(name)
+                if ent is None:
+                    continue
+                ent = ent.get_object() if hasattr(ent, "get_object") else ent
+                if "/CA" in ent:
+                    alphas.append(round(float(ent["/CA"]), 2))
+        except Exception:                                      # noqa: BLE001
+            pass
+        out.append((n, alphas))
+    return out
 
 
 def check_worksheet(t_teacher, t_pupil, t_admin, teacher_id, scopes):
@@ -6247,14 +6312,36 @@ def check_worksheet(t_teacher, t_pupil, t_admin, teacher_id, scopes):
            else "; ".join((f["straddled"] + f["split"])[:3]))
     record(not f["key_missing"],
            "pdf_answers_page_present — with `answers: true` the key names the "
-           "stored correct option for every question, by letter and by text",
+           "stored correct option for every question, by its KEY PHRASE and "
+           "its number — never by a bare letter (MRB-342.1)",
            "%d answer line(s) on page %d"
            % (len(chosen), f["answers_page"] + 1) if not f["key_missing"]
            else "not found: %s" % f["key_missing"][:3])
-    record(f["footer_pages"] == len(f["pages"]),
-           "pdf_brand_footer — the MrBadmusAI wordmark is on every page, and "
-           "it is the plain STAFF wordmark with no logo asset",
-           "%d of %d page(s)" % (f["footer_pages"], len(f["pages"])))
+    # ⊕ MRB-342.1 — THE FOOTER IS THE MARK, AND THE WORD IS GONE.
+    #
+    # This assertion used to be its own opposite: "the MrBadmusAI wordmark is
+    # on every page". Mide's ruling is that no school will hand a child a sheet
+    # carrying another organisation's name, so the wordmark is out of the
+    # footer and out of the metadata, and Claude Design's double chevron is in
+    # its place. Both halves are asserted, because "the word is gone" on its
+    # own is also what a footer that failed to draw would look like.
+    record(f["wordmark_pages"] == 0,
+           "pdf_no_wordmark — the word MrBadmus appears on NO page of the "
+           "sheet a teacher hands out",
+           "%d of %d page(s) carry it" % (f["wordmark_pages"], len(f["pages"])))
+    marks = pdf_mark_pages(data)
+    strokes = [n for n, _ in marks]
+    record(bool(marks) and all(n == 2 for n in strokes),
+           "pdf_brand_footer — Claude Design's DOUBLE chevron is drawn on "
+           "every page: two strokes a page, both in #E4572E, read out of the "
+           "page content stream because a vector footer has no text to extract",
+           "strokes per page: %s" % (strokes,))
+    faded = [a for _, al in marks for a in al if a not in (None, 1, 1.0)]
+    record(bool(marks) and all(0.34 in al for _, al in marks),
+           "…and the trailing chevron really is the FADED one — stroke alpha "
+           "0.34, which is Design's own value and the difference between her "
+           "mark and a chevron drawn twice",
+           "alphas seen: %s" % (sorted(set(faded)),))
     record("🐙" not in f["whole"] and "⚗" not in f["whole"],
            "…and neither retired placeholder reaches the page a teacher prints")
 
@@ -6349,7 +6436,9 @@ def check_worksheet(t_teacher, t_pupil, t_admin, teacher_id, scopes):
                 opts = q.get("options") or []
                 if ci is None or ci >= len(opts):
                     continue
-                if norm("%d.  %s  —  %s" % (i + 1, "ABCD"[ci], opts[ci])) not in flat:
+                # ⊕ MRB-342.1 — the key phrase, tab-separated from its
+                # number by the hanging indent, and never a bare letter.
+                if norm("%d.\t%s" % (i + 1, opts[ci])) not in flat:
                     keymiss.append("q%d" % (i + 1))
         record(not miss and not optmiss,
                "docx_question_count (answers=%s) — every question is its own "
@@ -7024,7 +7113,8 @@ def check_worksheet_rate_limit(t_admin, first):
 # `Content-Disposition` read and the `<a download>` click are all the shipped
 # ones.
 
-WS_NEW_STRINGS = ("Download", "Add topic", "Worksheet", "PDF", "Word",
+WS_NEW_STRINGS = ("Download", "Add topic", "Worksheet", "Multiple choice",
+                  "PDF", "Word",
                   "Answers")
 
 
@@ -7198,6 +7288,29 @@ def page_filename(title, fmt):
     return base + (".docx" if fmt == "docx" else ".pdf")
 
 
+def press_space(p):
+    """A REAL Space key, through CDP.
+
+    ⚠️ A JS-DISPATCHED `KeyboardEvent` WOULD PROVE NOTHING HERE, and worse, it
+    would fail. An event created by `new KeyboardEvent(...)` is untrusted, and
+    a browser runs no DEFAULT ACTION for an untrusted event — so the checkbox
+    would not toggle and the check would report a dead control that is in fact
+    perfectly alive. `Input.dispatchKeyEvent` is a real press at the browser's
+    own input layer, which is the only kind that can answer "does Space toggle
+    this".
+
+    Down, char, up: Chrome activates a checkbox on the key UP, so a press that
+    stops at `keyDown` toggles nothing.
+    """
+    for kind in ("rawKeyDown", "char", "keyUp"):
+        ev = {"type": kind, "key": " ", "code": "Space",
+              "windowsVirtualKeyCode": 32, "nativeVirtualKeyCode": 32}
+        if kind == "char":
+            ev = {"type": "char", "text": " ", "key": " "}
+        p.send("Input.dispatchKeyEvent", ev)
+    time.sleep(0.15)
+
+
 def check_worksheet_sheet(p, base, first, shots):
     print("\n   the sheet's own Download, saving a real file to disk")
     if pdf_reader() is None:
@@ -7288,14 +7401,70 @@ def check_worksheet_sheet(p, base, first, shots):
     # ── Word, with the key turned OFF ─────────────────────────────────
     p.eval("document.querySelector('[data-sw=\"download\"]').click()")
     time.sleep(0.2)
+    # ⊕ MRB-342.1 — A REAL CHECKBOX, AND IT IS READ AS ONE. This used to
+    # press a `<button role="menuitemcheckbox">` and read `aria-checked` back
+    # off it. Both halves changed: the control is an `<input type="checkbox">`
+    # inside its own `<label>`, so the state lives in `.checked` and the
+    # browser owns it.
+    shape = p.eval("""(function(){
+      var b=document.querySelector('[data-sw="dl-answers"]');
+      if(!b){return null;}
+      return {tag:b.tagName, type:b.type, checked:b.checked,
+              labelled:!!b.closest('label'),
+              disabled:!!b.disabled};})()""")
+    record(bool(shape) and shape.get("tag") == "INPUT"
+           and shape.get("type") == "checkbox" and shape.get("labelled") is True,
+           "answers_is_a_real_checkbox — `Answers` is an `<input "
+           "type=\"checkbox\">` inside its own `<label>`, not a button "
+           "wearing a tick",
+           "%r" % (shape,))
+    record(bool(shape) and shape.get("checked") is True,
+           "…and it starts on, which is the route's own default")
+
     record(sw_click(p, '[data-sw="dl-answers"]') is True,
-           "the `Answers` toggle inside the menu is pressable")
+           "the `Answers` checkbox is pressable")
     time.sleep(0.15)
     checked = p.eval("(document.querySelector('[data-sw=\"dl-answers\"]')||{})"
-                     ".getAttribute('aria-checked')")
-    record(checked == "false",
-           "…and it really turns off — it is a `menuitemcheckbox` and says so",
-           "aria-checked=%r" % checked)
+                     ".checked")
+    record(checked is False,
+           "…and it really turns off — `.checked` is the state now, and the "
+           "browser owns it",
+           "checked=%r" % checked)
+
+    # ⚠️ THE KEYBOARD, WHICH IS THE HALF A BUTTON-WEARING-A-TICK NEVER HAD.
+    # Space on a focused checkbox toggles it, natively. A `<button>` would
+    # have needed that written by hand, and it never was.
+    p.eval("document.querySelector('[data-sw=\"dl-answers\"]').focus()")
+    focused = p.eval("(document.activeElement||{}).getAttribute"
+                     "&&document.activeElement.getAttribute('data-sw')")
+    record(focused == "dl-answers",
+           "answers_is_focusable — it takes focus, so it is reachable by Tab")
+    press_space(p)
+    back_on = p.eval("(document.querySelector('[data-sw=\"dl-answers\"]')||{})"
+                     ".checked")
+    record(back_on is True,
+           "answers_space_toggles — the Space key turns it back ON, which is "
+           "native checkbox behaviour and is why it is one",
+           "checked=%r" % back_on)
+    # Leave it OFF for the Word download below, as this check always has.
+    sw_click(p, '[data-sw="dl-answers"]')
+    time.sleep(0.15)
+
+    # ── ⊕ MRB-342.1 — `Multiple choice`, the second real checkbox ──
+    mc = p.eval("""(function(){
+      var b=document.querySelector('[data-sw="dl-multiple-choice"]');
+      if(!b){return null;}
+      return {tag:b.tagName, type:b.type, checked:b.checked,
+              labelled:!!b.closest('label'),
+              label:(b.closest('label')||{}).textContent};})()""")
+    record(bool(mc) and mc.get("tag") == "INPUT" and mc.get("type") == "checkbox"
+           and mc.get("labelled") is True and mc.get("checked") is True,
+           "multiple_choice_is_a_real_checkbox — the second toggle is the "
+           "same shape as the first and starts ON",
+           "%r" % (mc,))
+    record(bool(mc) and (mc.get("label") or "").strip() == "Multiple choice",
+           "…and its label is the one word RISKS A9 allows for it",
+           "%r" % ((mc or {}).get("label"),))
     record(sw_click(p, '[data-sw="dl-word"]') is True, "`Word` is pressable")
     name2, data2, err = take_download(dl_dir, seen)
     if err:
@@ -7327,12 +7496,20 @@ def check_worksheet_sheet(p, base, first, shots):
     # ── the words the menu is allowed to say ──────────────────────────
     p.eval("document.querySelector('[data-sw=\"download\"]').click()")
     time.sleep(0.2)
-    # ⚠️ THE MENU'S DIRECT CHILDREN, NOT ITS LEAVES. `Answers` is a
-    # `menuitemcheckbox` that CONTAINS an inline `<svg>` tick, so it has a
-    # child element — and a sweep that only read elements with no children
-    # skipped it and then reported that one of the six new strings was never
-    # drawn. An `<svg>` contributes nothing to `textContent`, so reading the
-    # item itself is both simpler and right.
+    # ⚠️ THE MENU'S DIRECT CHILDREN, NOT ITS LEAVES. An item may CONTAIN an
+    # element — the toggles are `<label>`s holding an `<input>` and a
+    # `<span>` — and a sweep that only read elements with no children skipped
+    # them and then reported that one of the new strings was never drawn. An
+    # `<input>` contributes nothing to `textContent`, so reading the item
+    # itself is both simpler and right.
+    #
+    # ⊕ MRB-342.1 — AND THE TWO TOGGLES ARE NOW INSIDE A WRAPPER. They sit in
+    # `.sw-dl-checks` so one rule can separate the choices from the actions,
+    # which makes them GRANDchildren of the panel. Reading only the panel's
+    # own children would have read that wrapper as a single item saying
+    # "Multiple choiceAnswers" — a string on no allowed list, failing as a
+    # stray rather than as the two real labels. So the walk descends one
+    # level into it, by name.
     said = p.eval("""(function(){
       var out=[], push=function(n){ if(!n){return;}
         var t=(n.textContent||'').trim(); if(t){out.push(t);} };
@@ -7340,7 +7517,11 @@ def check_worksheet_sheet(p, base, first, shots):
       push(document.querySelector('[data-sw="add-topic"]'));
       var m=document.querySelector('[data-sw="download-menu"]');
       if(m){ var ks=m.children;
-        for(var i=0;i<ks.length;i++){ push(ks[i]); } }
+        for(var i=0;i<ks.length;i++){
+          if(ks[i].className==='sw-dl-checks'){
+            var cs=ks[i].children;
+            for(var j=0;j<cs.length;j++){ push(cs[j]); }
+          } else { push(ks[i]); } } }
       return out;})()""") or []
     said = sorted(set(said))
     stray = [s for s in said if s not in FAFF_EXACT]
@@ -7349,13 +7530,13 @@ def check_worksheet_sheet(p, base, first, shots):
            "`Add topic` button render is on RISKS A9's allowed list",
            "rendered: %s" % said if not stray else "NOT ON THE LIST: %s" % stray)
     record(set(WS_NEW_STRINGS) <= set(said),
-           "…and all six of MRB-342's new strings are really drawn, so the "
+           "…and all seven of MRB-342's new strings are really drawn, so the "
            "list is not carrying an entry nothing renders",
-           "six of six: %s" % list(WS_NEW_STRINGS)
+           "seven of seven: %s" % list(WS_NEW_STRINGS)
            if set(WS_NEW_STRINGS) <= set(said)
            else "never drawn: %s" % sorted(set(WS_NEW_STRINGS) - set(said)))
     record(len(said) == len(WS_NEW_STRINGS),
-           "…and a SEVENTH has not crept in beside them",
+           "…and an EIGHTH has not crept in beside them",
            "%d string(s) across the two controls: %s" % (len(said), said))
     check_sideways(p, "the Download menu open", shots)
     p.eval("document.body.click()")

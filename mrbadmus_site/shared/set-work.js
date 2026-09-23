@@ -535,7 +535,16 @@
     worksheet: "Worksheet",
     pdf: "PDF",
     word: "Word",
-    answers: "Answers"
+    answers: "Answers",
+    /* ⊕ MRB-342.1 — A SEVENTH, and it is a noun phrase like the six.
+       `Multiple choice` names the one other property of the file a teacher
+       chooses. Turned off, a question draws ruled answer lines instead of
+       A/B/C/D — except where the stem points at its own options, which the
+       SERVER decides; see `stemNeedsOptions` in the backend's worksheet.js.
+       There is deliberately no word for that exception on this surface: a
+       control that said "mostly" would be a control a teacher has to think
+       about, and the sheet they get is right either way. */
+    multipleChoice: "Multiple choice"
   };
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -874,7 +883,9 @@
        `assignments`. */
     var dl = makeDownload({
       mark: "download",
-      request: function (format, answers) { return sheetWorksheet(format, answers); }
+      request: function (format, answers, mc) {
+        return sheetWorksheet(format, answers, mc);
+      }
     });
     head.appendChild(back); head.appendChild(step);
     head.appendChild(dl.node); head.appendChild(primary);
@@ -2861,7 +2872,11 @@
                  question_ids: s.question_ids.map(String) };
       }),
       format: (o.format === "docx" || o.format === "word") ? "docx" : "pdf",
-      answers: o.answers !== false
+      answers: o.answers !== false,
+      /* ⊕ MRB-342.1 — DEFAULTS TRUE ON THIS SIDE TOO, matching the route's
+         own default. A caller that predates the flag — `downloadAssignment`
+         from a class row, say — keeps the file it has always produced. */
+      multiple_choice: o.multipleChoice !== false
     };
     if (o.title) { payload.title = String(o.title).slice(0, 80); }
     return postWorksheet(payload).then(function (r) {
@@ -2875,7 +2890,7 @@
   }
 
   /* The sheet's own body, out of the scopes the teacher has composed. */
-  function sheetWorksheet(format, answers) {
+  function sheetWorksheet(format, answers, multipleChoice) {
     if (!S) { return null; }
     return {
       classId: S.classId,
@@ -2883,6 +2898,7 @@
       title: String(S.title || "").trim(),
       format: format,
       answers: answers,
+      multipleChoice: multipleChoice !== false,
       scopes: filledScopes().map(function (sc) {
         return { scope_kind: sc.kind, scope_ref: sc.ref,
                  subject: subjectOfScope(sc) || null,
@@ -2908,7 +2924,7 @@
      a menu that will eventually be pressed by accident. */
   function makeDownload(opts) {
     var o = opts || {};
-    var state = { answers: true, busy: false };
+    var state = { answers: true, mc: true, busy: false };
 
     var wrap = el("div", "sw-dl");
     var b = btn("sw-btn sw-dl-btn", SAY.download);
@@ -2919,29 +2935,59 @@
     var menu = el("div", "sw-dl-menu");
     menu.hidden = true;
     menu.setAttribute("data-sw", "download-menu");
-    menu.setAttribute("role", "menu");
+    menu.setAttribute("aria-label", SAY.worksheet);
 
     var head = el("div", "sw-dl-title", SAY.worksheet);
-    var ans = btn("sw-dl-opt sw-dl-check", SAY.answers);
-    ans.setAttribute("data-sw", "dl-answers");
-    ans.setAttribute("role", "menuitemcheckbox");
-    var ansTick = svgTick();
-    ans.appendChild(ansTick);
+
+    /* ⊕ MRB-342.1 — REAL CHECKBOXES, AND THAT IS THE WHOLE CHANGE.
+       These two were `<button role="menuitemcheckbox">` carrying an inline
+       SVG tick, which LOOKS like a checkbox and behaves like one only for as
+       long as somebody keeps writing the behaviour by hand. An
+       `<input type="checkbox">` inside its own `<label>` is checkable by
+       Space, reachable by Tab, announced by a screen reader as a checkbox
+       with a state, and focus-ringed by the browser — none of which the
+       button ever was, and all of which had to be re-implemented to keep it.
+
+       ⚠️ AND THE MENU ROLES CAME OFF WITH IT. A native checkbox inside
+       `role="menu"` is a contradiction: ARIA's menu pattern owns the arrow
+       keys and expects `menuitemcheckbox` children, so a real checkbox in
+       one is announced as a menu item that is also not a menu item. The
+       panel is now an ordinary labelled group, which is what it always
+       was. */
+    function checkRow(mark, label) {
+      var row = el("label", "sw-dl-opt sw-dl-check");
+      var box = document.createElement("input");
+      box.type = "checkbox";
+      box.className = "sw-dl-box";
+      box.checked = true;
+      box.setAttribute("data-sw", mark);
+      /* The text is a `<span>` so the row's own `textContent` is exactly the
+         label — RISKS A9's sweep reads the panel's direct children. */
+      row.appendChild(box);
+      row.appendChild(el("span", "sw-dl-word", label));
+      return { row: row, box: box };
+    }
+    var mcC = checkRow("dl-multiple-choice", SAY.multipleChoice);
+    var ansC = checkRow("dl-answers", SAY.answers);
+    var checks = el("div", "sw-dl-checks");
+    checks.appendChild(mcC.row);
+    checks.appendChild(ansC.row);
+
     var pdf = btn("sw-dl-opt", SAY.pdf);
     pdf.setAttribute("data-sw", "dl-pdf");
-    pdf.setAttribute("role", "menuitem");
     var word = btn("sw-dl-opt", SAY.word);
     word.setAttribute("data-sw", "dl-word");
-    word.setAttribute("role", "menuitem");
 
-    menu.appendChild(head); menu.appendChild(ans);
+    menu.appendChild(head); menu.appendChild(checks);
     menu.appendChild(pdf); menu.appendChild(word);
     wrap.appendChild(b); wrap.appendChild(menu);
 
+    /* State → the boxes. Only `reset` needs it now: a person's own click is
+       already reflected by the browser before `change` fires, and writing
+       `checked` back inside the handler is how a checkbox comes to flicker. */
     function syncAnswers() {
-      ans.setAttribute("aria-checked", state.answers ? "true" : "false");
-      ans.classList.toggle("is-on", state.answers);
-      ansTick.hidden = !state.answers;
+      mcC.box.checked = state.mc;
+      ansC.box.checked = state.answers;
     }
 
     function setOpen(on) {
@@ -2952,7 +2998,7 @@
     function go(format) {
       if (state.busy) { return; }
       var body;
-      try { body = o.request ? o.request(format, state.answers) : null; }
+      try { body = o.request ? o.request(format, state.answers, state.mc) : null; }
       catch (e) { body = null; }
       if (!body) { setOpen(false); toast(SAY.unavailable); return; }
       state.busy = true;
@@ -2962,6 +3008,7 @@
         if (!payload) { toast(SAY.unavailable); return false; }
         payload.format = format;
         payload.answers = state.answers;
+        payload.multipleChoice = state.mc;
         return download(payload);
       }, function () {
         toast(SAY.unavailable);
@@ -2977,11 +3024,13 @@
       if (b.disabled) { return; }
       setOpen(menu.hidden);
     });
-    ans.addEventListener("click", function (e) {
-      e.stopPropagation();
-      state.answers = !state.answers;
-      syncAnswers();
-    });
+    /* ⚠️ `change`, NOT `click`, AND NOT ON THE LABEL. A click on a
+       `<label>` is forwarded by the browser to its input, so a click listener
+       here would run twice for one press — once for the label and once for
+       the forwarded click — and the box would end up back where it started.
+       `change` fires once, for a mouse press and for the Space key alike. */
+    mcC.box.addEventListener("change", function () { state.mc = mcC.box.checked; });
+    ansC.box.addEventListener("change", function () { state.answers = ansC.box.checked; });
     pdf.addEventListener("click", function (e) { e.stopPropagation(); go("pdf"); });
     word.addEventListener("click", function (e) { e.stopPropagation(); go("docx"); });
     menu.addEventListener("click", function (e) { e.stopPropagation(); });
@@ -2994,7 +3043,9 @@
     return {
       node: wrap,
       setEnabled: function (on) { b.disabled = !on || state.busy; },
-      reset: function () { state.answers = true; syncAnswers(); setOpen(false); }
+      reset: function () {
+        state.answers = true; state.mc = true; syncAnswers(); setOpen(false);
+      }
     };
   }
 
@@ -3053,7 +3104,8 @@
         tier: o.tier || a.set_tier || "",
         title: o.title || a.title || "",
         format: o.format,
-        answers: o.answers !== false
+        answers: o.answers !== false,
+        multipleChoice: o.multipleChoice !== false
       };
       /* ⚠️ A SUBJECT THAT IS NOT A STRING IS NOT A SUBJECT. The route's
          `validateBody` refuses a non-string `subject` with `bad_scope`, and

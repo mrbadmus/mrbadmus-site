@@ -596,16 +596,54 @@
   cursor: pointer;
 }
 .sw-dl-opt:hover { background: var(--st-note-bg); }
-/* The Answers row is a toggle, not a format, so it carries the tick the
-   question list already uses for "this is the one" and a rule under it
-   separating it from the two things that actually start a download. */
-.sw-dl-check {
-  justify-content: space-between;
+
+/* ⊕ MRB-342.1 — THE TWO TOGGLES ARE REAL CHECKBOXES.
+   They used to be buttons wearing an SVG tick. The rule that separated them
+   from the two things that actually START a download is kept — it is the
+   reason the panel reads as "two choices, then two actions" — but it now sits
+   under the PAIR rather than under the single Answers row.
+
+   ⚠️ NOTHING HERE REPLACES THE BOX'S OWN APPEARANCE. There is no
+   `appearance: none`, so what a teacher sees is their own platform's
+   checkbox, already correct in both colour schemes, already the right size
+   for a finger on iPadOS, and already showing the indeterminate and disabled
+   states this panel does not use but a browser may. `accent-color` tints the
+   checked fill to the sheet's orange and is the whole of the styling. */
+.sw-dl-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   border-bottom: 1px solid var(--st-rule-soft);
-  border-radius: 8px 8px 0 0;
+  padding-bottom: 4px;
   margin-bottom: 4px;
 }
-.sw-dl-check.is-on { color: var(--st-accent-text); }
+.sw-dl-check { cursor: pointer; }
+.sw-dl-box {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--st-accent);
+  cursor: pointer;
+}
+.sw-dl-word { flex: 1 1 auto; min-width: 0; }
+
+/* ⚠️ `:focus-within` ON THE ROW, because the ring belongs around the LABEL
+   and the focus is on the input inside it. A native focus ring on a 16px box
+   tucked against the panel's edge is easy to miss; drawing it around the
+   whole row is the same information where a teacher is already looking.
+   `:focus-visible` on the input itself, so a mouse press does not ring. */
+.sw-dl-check:has(.sw-dl-box:focus-visible) {
+  outline: 2px solid var(--st-accent);
+  outline-offset: -2px;
+  background: var(--st-note-bg);
+}
+/* The fallback for a browser without `:has()`. It rings on any focus rather
+   than on keyboard focus alone, which is the safe direction: a ring nobody
+   needed is a smaller failure than a control that never shows focus. */
+@supports not selector(:has(*)) {
+  .sw-dl-box:focus { outline: 2px solid var(--st-accent); outline-offset: 2px; }
+}
 
 /* ── ⊕ MRB-342 · 390px ───────────────────────────────────────────────────
    Four controls in a 362px header: Cancel, the step word, Download and the
