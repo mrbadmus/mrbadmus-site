@@ -288,9 +288,7 @@ The literal token `prod` must be typed in full; the key is read only from
 `~/.mrbadmus/prod.env`; and the target is proved from the key's own JWT `ref`
 claim (`urklkrwevjtlfbwnipjn`) rather than from any URL beside it.
 
-## 9. Screenshots
 
-## 10. Gates
 
 ### New: `frozen_window_guard.py` (fast) — the exception made narrow
 
@@ -331,6 +329,46 @@ allowlist   28 id(s) (14 confirmed, 14 borderline), 0 stale, 0 moved outside the
 
 5,388 frozen rows, all byte-identical, leaf order intact. The same command is
 re-run after the content lands; §7 carries the after-state.
+
+## 9. Screenshots — for Mide to eyeball
+
+All in `$MRB_SHOTS` (`~/tmp/mrb352-shots`).
+
+**The figures, cropped, at phone (390px) and desktop (1280px)** — 24 files,
+`fig_<id>_<phone|desktop>.png`:
+
+| figure | what it shows | for |
+|---|---|---|
+| `p8-lamp-symbol` | a circle with two lines crossing inside it | "Which component's circuit symbol is shown?" |
+| `p8-resistance-chart-recap` | the log-scale resistance chart, Ω→TΩ | "Why is its axis built like this?" |
+| `p4-resultant-beam-recap` | three bars to one scale, 40 N = 25 N + 15 N | "Why do the two lower bars fill the top one?" |
+| `p10-motor-arrows-marked` | coil between N and S, ⊗ pushed down, ⊙ pushed up | "Why must they be the same length?" |
+| `p10-horseshoe-field-gap` | parallel field arrows between the jaws | the borderline P10 row |
+| `p9-charge-matrix-grid` | the nine charge combinations, one "Nothing" cell | "How many give no force at all?" |
+| `p9-field-point-marked` | a field map with one point marked, NO force arrow | drawing the push would give the answer |
+| `b10-height-bars-touching` | touching bars, axes "height / cm" and "number of students" | "What are the touching bars claiming?" |
+| `b4-gas-exchange-bars` | three bars, the net bar asserted = photo − resp | "What is the third bar showing?" |
+| `b3-digestion-timing` | all six charted stops | comparing stomach and small intestine |
+| `b5-egg-sperm-scale` | egg vs sperm diameters to one scale | the twenty-times claim |
+| `c1-particle-states` | solid/liquid/gas, one reference particle each, same size | "Why does the diagram do that?" |
+
+**The pupil's page**, both widths, both themes: `q2_*`, `q3_*`
+(`_360_light`, `_360_dark`, `_desktop_light`, `_desktop_dark`).
+⚠️ The `q2_*` set was captured BEFORE the paint fix and shows the
+solid-black-disc bug — kept deliberately as the before/after pair.
+
+## 10. Gates
+
+All green at the tip: verify_questions (185 lessons, 16,946 questions, nine
+checks), verify_answer_positions, pool_ownership, question_bank,
+ks4_pool_check, verify_answer_lengths, set_work_scope_check,
+gate_watches_check (53 gates), gate_coverage, build_figures,
+ks3_figure_sweep ("every drawn figure reads at 390, 768 and 1440"),
+student_behaviour, student_parity, ks3_instrument_liveness,
+consumer_flag_off, frozen_window_guard.
+
+Backend: worksheet 428+, set_work_v2 452, ks4_bank_read 35,
+assignment_compose 109, compose_subject_scope 30, generate_week_guard 16.
 
 ## 11. Decisions I made
 
