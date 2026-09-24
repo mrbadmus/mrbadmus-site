@@ -1,0 +1,66 @@
+{
+  "cards": [
+    {
+      "question": "What is a habitat?",
+      "answer": "The place where an organism lives",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is a population?",
+      "answer": "All the organisms of one species living in a habitat",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is a community?",
+      "answer": "All the populations of different species living in a habitat",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is an ecosystem?",
+      "answer": "The interaction of a community of living organisms with the non-living parts of their environment",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is a producer?",
+      "answer": "An organism that makes its own food, usually by photosynthesis",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is a biotic factor?",
+      "answer": "A living factor that affects a community",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "Give an example of an abiotic factor.",
+      "answer": "Light intensity, temperature, moisture, soil pH or wind",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What does a quadrat measure?",
+      "answer": "The number of organisms in a small sample area",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is interdependence?",
+      "answer": "When species in a community depend on each other for food, shelter, pollination or seed dispersal",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What do decomposers do?",
+      "answer": "They break down dead organisms and return nutrients to the soil",
+      "source_ref": "page 1",
+      "confidence": 1
+    }
+  ],
+  "unpaired_questions": [],
+  "unpaired_answers": []
+}

@@ -1,0 +1,54 @@
+{
+  "cards": [
+    {
+      "question": "What is diffusion?",
+      "answer": "The spreading out of particles from an area of higher concentration to an area of lower concentration",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is osmosis?",
+      "answer": "The diffusion of water through a partially permeable membrane",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is active transport?",
+      "answer": "The movement of substances against a concentration gradient using energy from respiration",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "Where is the energy for active transport released?",
+      "answer": "In respiration",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is a partially permeable membrane?",
+      "answer": "A membrane that lets some molecules through but not others",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "Which process moves mineral ions into root hair cells?",
+      "answer": "Active transport",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "Give one factor that increases the rate of diffusion.",
+      "answer": "A bigger concentration gradient, higher temperature or larger surface area",
+      "source_ref": "page 1",
+      "confidence": 1
+    },
+    {
+      "question": "What happens to an animal cell placed in pure water?",
+      "answer": "It swells and may burst",
+      "source_ref": "page 1",
+      "confidence": 1
+    }
+  ],
+  "unpaired_questions": [],
+  "unpaired_answers": []
+}

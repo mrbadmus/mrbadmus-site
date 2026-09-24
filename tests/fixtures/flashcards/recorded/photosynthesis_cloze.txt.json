@@ -1,0 +1,54 @@
+{
+  "cards": [
+    {
+      "question": "Plants make glucose by ___.",
+      "answer": "photosynthesis",
+      "source_ref": "question 1",
+      "confidence": 1
+    },
+    {
+      "question": "Photosynthesis takes place in the ___ of plant cells.",
+      "answer": "chloroplasts",
+      "source_ref": "question 2",
+      "confidence": 1
+    },
+    {
+      "question": "The green pigment that absorbs light is called ___.",
+      "answer": "chlorophyll",
+      "source_ref": "question 3",
+      "confidence": 1
+    },
+    {
+      "question": "The gas taken in by plants for photosynthesis is ___ ___.",
+      "answer": "carbon dioxide",
+      "source_ref": "question 4",
+      "confidence": 1
+    },
+    {
+      "question": "The gas given out by photosynthesis is ___.",
+      "answer": "oxygen",
+      "source_ref": "question 5",
+      "confidence": 1
+    },
+    {
+      "question": "Photosynthesis is an ___ reaction because it takes in energy.",
+      "answer": "endothermic",
+      "source_ref": "question 6",
+      "confidence": 1
+    },
+    {
+      "question": "Water enters a plant through its ___ hair cells.",
+      "answer": "root",
+      "source_ref": "question 7",
+      "confidence": 1
+    },
+    {
+      "question": "Glucose can be stored in plants as ___.",
+      "answer": "starch",
+      "source_ref": "question 8",
+      "confidence": 1
+    }
+  ],
+  "unpaired_questions": [],
+  "unpaired_answers": []
+}

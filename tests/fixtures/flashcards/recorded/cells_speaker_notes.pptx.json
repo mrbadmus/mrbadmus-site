@@ -1,0 +1,54 @@
+{
+  "cards": [
+    {
+      "question": "What is the function of the nucleus?",
+      "answer": "It contains genetic material and controls the activities of the cell",
+      "source_ref": "slide 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is the function of the cell membrane?",
+      "answer": "It controls what enters and leaves the cell",
+      "source_ref": "slide 2",
+      "confidence": 1
+    },
+    {
+      "question": "Where does aerobic respiration take place?",
+      "answer": "In the mitochondria",
+      "source_ref": "slide 3",
+      "confidence": 1
+    },
+    {
+      "question": "What is the function of ribosomes?",
+      "answer": "They are where protein synthesis takes place",
+      "source_ref": "slide 4",
+      "confidence": 1
+    },
+    {
+      "question": "Name two structures found in plant cells but not animal cells.",
+      "answer": "Cell wall and chloroplasts (also a permanent vacuole)",
+      "source_ref": "slide 5",
+      "confidence": 1
+    },
+    {
+      "question": "What is the cell wall made of in plants?",
+      "answer": "Cellulose",
+      "source_ref": "slide 6",
+      "confidence": 1
+    },
+    {
+      "question": "What happens in chloroplasts?",
+      "answer": "Photosynthesis",
+      "source_ref": "slide 7",
+      "confidence": 1
+    },
+    {
+      "question": "What type of cell has no nucleus: prokaryotic or eukaryotic?",
+      "answer": "Prokaryotic",
+      "source_ref": "slide 8",
+      "confidence": 1
+    }
+  ],
+  "unpaired_questions": [],
+  "unpaired_answers": []
+}
