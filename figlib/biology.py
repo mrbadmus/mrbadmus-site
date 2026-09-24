@@ -919,14 +919,19 @@ def plant_cell(W=460, labels=True):
     _q_box(c, x0, y0, cw, ch, "#CFE3C2", ST, 3, 22)          # cell wall
     m = 10
     _q_box(c, x0 + m, y0 + m, cw - 2*m, ch - 2*m, "#EEF3DF", ST, sw, 16)
-    vx, vy, vw, vh = x0 + 26, y0 + 40, cw - 88, ch - 80
+    # ⊕ fix round 2 (examiner m3): the three left-edge chloroplasts sat
+    # across the membrane, in the wall band. They moved inward (dx 214/
+    # 214/212 → 205/205/203, cx 49/49/51), and the vacuole's left side
+    # moved in from x0+26 to x0+40 (its right side unchanged) so they sit
+    # in cytoplasm between membrane and vacuole, touching neither.
+    vx, vy, vw, vh = x0 + 40, y0 + 40, cw - 102, ch - 80
     _q_box(c, vx, vy, vw, vh, TINT["blue"], ST, sw, 30)      # the vacuole
     nx, ny = x0 + cw - 36, y0 + ch * 0.46                    # pushed aside
     c.S.append(f'<ellipse cx="{nx:.1f}" cy="{ny:.1f}" rx="20" ry="30" '
                f'fill="{TINT["lilac"]}" stroke="{ST}" stroke-width="{sw}"/>')
     chloros = [(x0 + cw - dx, y0 + dy) for dx, dy in
-               ((36, 34), (118, 26), (196, 30), (214, 110), (214, 200),
-                (212, 290), (140, ch - 26), (60, ch - 28), (30, ch - 80))]
+               ((36, 34), (118, 26), (196, 30), (205, 110), (205, 200),
+                (203, 290), (140, ch - 26), (60, ch - 28), (30, ch - 80))]
     for cx_, cy_ in chloros:
         c.S.append(f'<ellipse cx="{cx_:.1f}" cy="{cy_:.1f}" rx="11" ry="7" '
                    f'fill="#7FB98A" stroke="{ST}" stroke-width="{sw}"/>')

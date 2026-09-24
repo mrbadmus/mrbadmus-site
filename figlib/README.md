@@ -119,7 +119,7 @@ Paint = `fill stroke stroke-width stroke-linecap stroke-linejoin
 stroke-dasharray`. Colours are `#hex` or `none`. `font-size`,
 `font-weight` (400/700), `stroke-width` and `rx` are bare numbers.
 `font-family` starts with Georgia, or is exactly `style.NUM_FONT`
-("Times New Roman, Times, serif") on a label that carries a digit — see
+("Times New Roman, Times, Noto Serif, serif") on a label that carries a digit — see
 "Fix round 1" below. Never: `class`, `style`, `var()`, `<g>`,
 `<defs>`, `<marker>`, gradients, `<use>`, `<tspan>`, `clipPath`, filters,
 `opacity`/`fill-opacity`, arcs (`A`), `S`/`T`, any transform but a text
@@ -169,3 +169,14 @@ Library-wide changes, each marked `⊕ fix round 1` in the code:
   `field_point`: the arrow at P is a field arrow like the rest.
   `resolution_triangle`: labels at 19. `plant_cell`: the cell-wall leader
   no longer crosses the chloroplast leader.
+
+## Fix round 2 (MRB-352 run 2)
+
+- **`NUM_FONT` gained Noto Serif** before the generic:
+  "Times New Roman, Times, Noto Serif, serif". Android and Chrome OS have
+  no Times, and Noto Serif is their lining-figure serif. (The round-1
+  entry above quotes the old three-family stack.)
+- **New hard check (`figlib.checks` rule 7):** every unrotated numeral
+  keeps >= 6 units from the card's left and right edges, measured with
+  `style.num_width_wide` (digits at 0.60 em, wider than Noto Serif's).
+  A histogram's right margin now fits its last boundary numeral that way.

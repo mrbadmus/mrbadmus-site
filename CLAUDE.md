@@ -95,7 +95,7 @@ The name "MrBadmus" refers to Mide Badmus, the teacher who built this site for h
 | **AI model** | Claude (Anthropic) — accessed via a custom backend |
 | **Backend API** | Separate Node/Express server at `https://mrbadmus-backend.onrender.com` — lives in a separate repo |
 | **Auth & database** | Supabase — handles user sign-in, session tokens, profiles, and leaderboard data (project ID `urklkrwevjtlfbwnipjn`) |
-| **Site generation** | **`build_all.py`** — the entry point. It runs SIX generators in a load-bearing order: `generate_site_v5.py` (KS4), `build_ks3.py` (KS3), `build_student.py` (previews), `build_student_port.py` (**the live student pages**), `build_teacher_port.py` (**six of the teacher screens**), then `build_leaderboard_port.py` (**the live leaderboard**). ⚠️ `generate_site_v5.py` alone does NOT build KS3 — see "How the Site is Generated" below |
+| **Site generation** | **`build_all.py`** — the entry point. It runs SEVEN generators in a load-bearing order (⊕ 24 Sep 2026, MRB-352: this said SIX — see "How the Site is Generated"): `build_figures.py` (**the figure manifests**, first), `generate_site_v5.py` (KS4), `build_ks3.py` (KS3), `build_student.py` (previews), `build_student_port.py` (**the live student pages**), `build_teacher_port.py` (**six of the teacher screens**), then `build_leaderboard_port.py` (**the live leaderboard**). ⚠️ `generate_site_v5.py` alone does NOT build KS3 — see "How the Site is Generated" below |
 | **Hosting** | Cloudflare Pages at mrbadmus.com (auto-deploys from GitHub) |
 | **Email** | Resend.com from noreply@mrbadmus.com |
 
@@ -232,7 +232,7 @@ mrbadmus-site/
 ├── consumer/ parents/ go/ org/  — the B2C product (MRB-308…318), behind CONSUMER_SIGNUP_ENABLED;
 │                             copied and round-tripped by generate_site_v5.py like teacher/ and student/.
 │                             See docs/b2c/worktree.md before touching any of them.
-├── build_all.py            — ⭐ THE ENTRY POINT. Runs all SIX generators, in the correct order.
+├── build_all.py            — ⭐ THE ENTRY POINT. Runs all SEVEN generators (was SIX until MRB-352), in the correct order.
 ├── generate_site_v5.py     — KS4 generator: topic pages + copies root HTML into mrbadmus_site/
 ├── build_ks3.py            — KS3 generator (ks3/). SEPARATE ON PURPOSE. generate_site_v5.py never builds KS3.
 ├── build_student.py        — student preview pages. Runs LAST.
@@ -299,7 +299,14 @@ The two repos share an API contract documented in **`API-CONTRACT.md` in the bac
 
 ## How the Site is Generated
 
-### ⚠️ There are SIX generators, and one entry point
+### ⚠️ There are SEVEN generators, and one entry point
+
+⊕ Corrected 24 Sep 2026 (MRB-352). This heading said *"There are SIX
+generators"*. `build_all.py` now runs `build_figures.py` FIRST (step 0 below):
+it writes `shared/figures-ks3.js`, `shared/figures-ks4.js` and `figures.json`,
+which step 1 copies and step 4 reads, and it stops the whole build if any
+figure fails `figlib/checks.py`. Edit a figure without it and the previous
+manifest ships under a green build.
 
 ⊕ Corrected 1 Sep 2026 (MRB-306 WS-0). This heading said THREE and the table
 listed four; `build_all.py` has run six since MRB-290 landed on 25 Aug 2026.
@@ -319,6 +326,7 @@ It runs, in this order:
 
 | # | Script | Builds |
 |---|---|---|
+| 0 | `build_figures.py` | the figure manifests — `shared/figures-ks{3,4}.js`, `figures.json` (MRB-352) |
 | 1 | `generate_site_v5.py` | the KS4 site — `combined/`, `triple/`, root pages, `shared/` |
 | 2 | `build_ks3.py` | the KS3 site — everything under `ks3/` |
 | 3 | `build_student.py` | the student preview pages — `student/*-preview.html` |

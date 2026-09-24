@@ -2395,9 +2395,10 @@ QUESTIONS = [
              "why": "The chart gives a typical time for each organ, from "
                     "about a minute in the mouth to about 30 hours in the "
                     "large intestine — they clearly are not constant."},
-            {"text": "It is false — the chart shows food staying about a "
-                     "minute in the mouth but about 30 hours in the large "
-                     "intestine.", "correct": True},
+            {"text": "It is false — the chart shows food passing through "
+                     "the long small intestine in about 4 hours but staying "
+                     "about 30 hours in the much shorter large intestine.",
+             "correct": True},
             {"text": "It is true, since peristalsis is the same muscular "
                      "action the whole length of the gut.", "correct": False,
              "why": "The mechanism being the same does not mean the speed "

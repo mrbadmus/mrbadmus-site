@@ -16,7 +16,8 @@ units cannot be drawn by accident.
 import math
 
 from .style import (AMBER, MUTED, RED, STYLE, TINT, Canvas, arrow, box, esc,
-                    line, q_font, q_stroke, text, text_width, wrap)
+                    line, num_width_wide, q_font, q_stroke, text, text_width,
+                    wrap)
 
 ST = STYLE["stroke"]
 LBL = STYLE["label"]
@@ -116,9 +117,12 @@ def hbar_chart(rows, W=480, axis=None, log=False, boundary=None,
             tx = X(t)
             line(c, tx, ay, tx, ay + 8, ST, sw)
             anchor = "middle"
-            if tx - text_width(lab, fn) / 2 < 4:
+            # ⊕ fix round 2: judged in the widest face NUM_FONT can fall
+            # back to, against figlib.checks' 6-unit edge clearance
+            half = num_width_wide(lab, fn) / 2
+            if tx - half < 8:
                 anchor = "start"
-            elif tx + text_width(lab, fn) / 2 > W - 4:
+            elif tx + half > W - 8:
                 anchor = "end"
             text(c, tx, ay + 10 + fn, lab, fn, LBL, "normal", anchor)
         text(c, (left + right) / 2, ay + 22 + fn + fs,
@@ -161,7 +165,15 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
     step = y_step or max(1, int(math.ceil(vmax / 5.0)))
     top = step * int(math.ceil(vmax / float(step)))
     ox = 30 + fs * 1.3 + text_width(_fmt(top), fn)
-    aw = W - ox - 18
+    # ⊕ fix round 2 (visual n1): a histogram's last boundary numeral is
+    # centred on the plot's right edge. At a fixed 18-unit margin "180" ran
+    # to within ~2 units of the card, and past it in Noto Serif (Android).
+    # The margin now fits half that numeral in its widest fallback face,
+    # plus figlib.checks' edge clearance and a little air.
+    rpad = 18
+    if touching and edges:
+        rpad = max(rpad, num_width_wide(_fmt(edges[-1]), fn) / 2 + 8)
+    aw = W - ox - rpad
     gapw = 0 if touching else aw / n * 0.28
     bw = (aw - gapw * (n + 1)) / n
     cat_lines = ([wrap(b["label"], fs, bw + gapw * 0.9) for b in bins]
@@ -174,7 +186,7 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
     head = len(top_lines) * (fs + 5) + (8 if top_lines else 0)
     if y_title == "top":
         ox = 24 + text_width(_fmt(top), fn) + 14
-        aw = W - ox - 18
+        aw = W - ox - rpad
         gapw = 0 if touching else aw / n * 0.28
         bw = (aw - gapw * (n + 1)) / n
         cat_lines = ([wrap(b["label"], fs, bw + gapw * 0.9) for b in bins]

@@ -275,7 +275,29 @@ def esc(txt):
 # PDF/DOCX path maps it to the same bundled DejaVu Serif as Georgia, whose
 # figures already line. The one font-family figlib.checks accepts besides
 # a Georgia-first stack.
-NUM_FONT = "Times New Roman, Times, serif"
+#
+# ⊕ fix round 2 (visual n1): Android and Chrome OS ship neither Times New
+# Roman nor Times, so the stack fell straight to the generic — whose
+# digits are wider. Noto Serif, which both platforms carry, has lining
+# figures; it now sits before the generic so the fallback is still a
+# lining-figure serif. Its digits are wider than Times', which is what
+# `num_width_wide()` below budgets for.
+NUM_FONT = "Times New Roman, Times, Noto Serif, serif"
+
+# The widest digit advance (em) among the faces NUM_FONT can land on:
+# Times ~0.50, Noto Serif ~0.56. Rounded up, so a numeral's extent is never
+# under-estimated whichever face the device has.
+NUM_DIGIT_EM_WIDE = 0.60
+
+
+def num_width_wide(s, size, bold=False):
+    """The width of a numeral label in the WIDEST face NUM_FONT can fall
+    back to: every digit at NUM_DIGIT_EM_WIDE, everything else at the
+    Georgia table (already generous against Times and Noto Serif)."""
+    table = _ADV_BOLD if bold else _ADV
+    return sum(NUM_DIGIT_EM_WIDE if ch.isdigit()
+               else table.get(ch, 1.08 if bold else 0.95)
+               for ch in str(s)) * size
 
 
 def label_font(txt):

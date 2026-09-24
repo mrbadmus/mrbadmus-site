@@ -25,19 +25,27 @@ warnings, because every one of them is a defect a pupil sees:
     (visual M3): Georgia's old-style digits made "0" a small "o" at 11px
     on the chart labels a pupil reads values from. The rule was widened by
     that ONE named, all-serif stack (which the worksheet maps to the same
-    DejaVu Serif as Georgia) and nothing else.
+    DejaVu Serif as Georgia) and nothing else. ⊕ fix round 2 (visual n1):
+    the stack gained Noto Serif before the generic, so Android and Chrome
+    OS (no Times) still land on lining figures.
+ 7. NUMERALS CLEAR THE CARD EDGE. Every unrotated numeral label (one set
+    in NUM_FONT) keeps >= NUM_EDGE_CLEAR units from the left and right
+    edges of the canvas, measured at the WIDEST face the stack can fall
+    back to (`style.num_width_wide`) — so an end-of-axis tick like "180"
+    cannot touch or clip the card on a device without Times.
 """
 
 import math
 import re
 import xml.etree.ElementTree as ET
 
-from .style import (MIN_STROKE_PX, MIN_TEXT_PX, NUM_FONT, screen_scale,
-                    text_width)
+from .style import (MIN_STROKE_PX, MIN_TEXT_PX, NUM_FONT, num_width_wide,
+                    screen_scale, text_width)
 
 _Q = "{http://www.w3.org/2000/svg}"
 
 MIN_CONTRAST = 4.5
+NUM_EDGE_CLEAR = 6           # rule 7: units between a numeral and the edge
 DARK_LUMINANCE = 0.18        # a fill darker than this carries no text at all
 
 PAINT = {"fill", "stroke", "stroke-width", "stroke-linecap",
@@ -287,6 +295,19 @@ def check_figure(fid, svg):
             probs.append("%s: text %r has no fill" % (fid, label))
             continue
         size = float(el.get("font-size", 16))
+        if fam == NUM_FONT and not el.get("transform"):
+            tw = num_width_wide(label, size,
+                                el.get("font-weight") in ("bold", "700"))
+            tx = float(el.get("x", 0))
+            anchor = el.get("text-anchor", "start")
+            x_l = tx - (tw if anchor == "end" else
+                        tw / 2 if anchor == "middle" else 0)
+            x_r = x_l + tw
+            if x_l < NUM_EDGE_CLEAR - 1e-6 or x_r > W - NUM_EDGE_CLEAR + 1e-6:
+                probs.append("%s: numeral %r spans x %.1f–%.1f in its widest "
+                             "fallback face — under %g units from the card "
+                             "edge (canvas 0–%g)" % (fid, label, x_l, x_r,
+                                                      NUM_EDGE_CLEAR, W))
         if size * scale < MIN_TEXT_PX - 1e-6:
             probs.append("%s: text %r is %.1fpx on screen at 320px "
                          "(font-size %g on a %g-wide canvas) — under %gpx"

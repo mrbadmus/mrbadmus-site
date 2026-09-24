@@ -172,8 +172,9 @@ QUESTIONS = [
         "text": "Look at the scale along the bottom of the chart. Why is it "
                 "drawn like this?",
         "options": [
-            {"text": "Because an evenly spaced scale that reached the "
-                     "plastic ruler would squash every conductor to zero",
+            {"text": "Because a scale going up in equal steps of ohms, "
+                     "long enough to reach the plastic ruler, would squash "
+                     "every conductor to zero",
              "correct": True},
             {"text": "Because resistance is always measured in thousands",
              "correct": False,
