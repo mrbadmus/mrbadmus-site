@@ -515,32 +515,33 @@ LESSON = {
     # and only the ORDER moves.
     "ladder": {
         "recall": {
-            "q": "A field map shows arrows pointing outwards in every "
-                 "direction, away from a single object at the centre. What "
-                 "can you say about the object and about a small negative "
-                 "charge released nearby?",
+            "q": "The electric field around a small charged object points "
+                 "outwards, away from it, in every direction. What can you "
+                 "say about the object, and about a small negative charge "
+                 "released nearby?",
             "options": [
                 "The object is negatively charged, and a negative charge "
-                "would be pushed outwards along the arrows.",
+                "would be pushed outwards along the field.",
                 "The object is positively charged, and a negative charge "
-                "would be pushed outwards along the arrows.",
+                "would be pushed outwards along the field.",
                 "The object is positively charged, and a negative charge "
-                "would be pulled inwards, against the arrows.",
-                "You cannot tell the sign from the map, only the strength.",
+                "would be pulled inwards, against the field.",
+                "You cannot tell the sign from the field's direction, only "
+                "its strength.",
             ],
             "answer": 2,
             "feedback": {
-                0: "Arrows point away from positive charges, because they "
-                   "show the push on a small positive charge. And a negative "
-                   "charge always goes against the arrows.",
-                1: "The first half is right. But the arrows show the force "
+                0: "The field points away from a positive charge, because it "
+                   "shows the push on a small positive charge. And a "
+                   "negative charge always goes against the field.",
+                1: "The first half is right. But the field shows the force "
                    "on a positive charge; a negative one feels a force in "
                    "the opposite direction, so it moves inwards.",
-                3: "The direction of the arrows is exactly what tells you "
+                3: "The direction of the field is exactly what tells you "
                    "the sign: outwards means positive, inwards means "
                    "negative.",
             },
-            "title": "Rung 1 · Read the map"},
+            "title": "Rung 1 · Read the field"},
         "apply": {
             "q": "A student says the field between two equal positive "
                  "charges must be at its strongest half-way between them, "
