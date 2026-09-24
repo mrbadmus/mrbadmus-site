@@ -559,6 +559,9 @@
    the only new ink — Design's `--st-rule-soft`, the same hairline the sticky
    header sits on. */
 .sw-scopes { display: flex; flex-direction: column; }
+/* ⊕ MRB-351 — a flashcard set has no question list; the host is hidden and
+   `display:flex` above would otherwise beat the `hidden` attribute. */
+.sw-scopes[hidden], [data-sw="fc-top"][hidden] { display: none; }
 .sw-scope { min-width: 0; }
 .sw-scope + .sw-scope {
   margin-top: 18px;

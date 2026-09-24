@@ -237,7 +237,67 @@ window.MrBadmusAdminScope = (function () {
   function injectToday() {
     var a = injectTodayTopNav();
     var b = injectTodayTopbar();
+    injectDecks();
     return a || b;
+  }
+
+  /* ⊕ MRB-351 — FLASHCARD DECKS, the third link, and it rides Today's
+     machinery exactly: not scope-gated (every teacher may keep decks),
+     injected at DOM-ready into both hosts, and re-injected by the same
+     observer after every redraw of a ported page. It is here for Today's
+     reason — a new file would need a `<script>` tag on the generated pages,
+     and this module is already on every one of them. */
+  var DECKS_MARK = 'data-mrb-decks-nav';
+  var DECKS_HREF = '/teacher/decks.html';
+  var DECKS_LABEL = 'Flashcard decks';
+
+  function decksHref() {
+    var c = window.MrBadmusConfig;
+    return DECKS_HREF + (c && c.environment === 'test' ? '?env=test' : '');
+  }
+  function decksIsHere() {
+    return window.location.pathname === DECKS_HREF;
+  }
+  function decksAlreadyIn(host) {
+    if (host.querySelector('[' + DECKS_MARK + ']')) { return true; }
+    var els = host.querySelectorAll('a, button');
+    for (var i = 0; i < els.length; i++) {
+      if ((els[i].textContent || '').trim() === DECKS_LABEL) { return true; }
+    }
+    return false;
+  }
+
+  function injectDecks() {
+    if (decksIsHere()) { return true; }
+    var done = false;
+    /* Host A — the hand-written pages' old nav, before Sign out. */
+    var so = document.querySelector('nav.top-nav .signout-btn');
+    if (so && so.parentNode) {
+      if (!decksAlreadyIn(so.parentNode)) {
+        so.parentNode.insertBefore(
+          make('color:var(--muted);font-weight:700;font-size:0.85rem;' +
+               'text-decoration:none;', DECKS_LABEL, DECKS_MARK, decksHref()), so);
+      }
+      done = true;
+    }
+    /* Host B — v3's top bar, before its last button (Sign out). */
+    var bar = document.querySelector('[data-port-region="topbar"]');
+    if (bar) {
+      if (!decksAlreadyIn(bar)) {
+        var buttons = bar.querySelectorAll('button');
+        var out = buttons.length ? buttons[buttons.length - 1] : null;
+        var link = make(
+          'flex:none;height:32px;padding:0 12px;display:inline-flex;' +
+          'align-items:center;font:600 15.5px/1.2 var(--st-ui);' +
+          'color:var(--st-muted);background:transparent;' +
+          'border:1px solid var(--st-btn-border);border-radius:9px;' +
+          'cursor:pointer;text-decoration:none;white-space:nowrap;',
+          DECKS_LABEL, DECKS_MARK, decksHref());
+        if (out) { bar.insertBefore(link, out); } else { bar.appendChild(link); }
+      }
+      done = true;
+    }
+    return done;
   }
 
   /* Host B — the five ported pages, whose topbar is `data-port-region`

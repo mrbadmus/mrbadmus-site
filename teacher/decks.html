@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Flashcard decks — Mr Badmus AI</title>
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/teacher-ds.css?v=d6e74d32"/>
+  <!-- ⊕ MRB-351 — the Set work sheet's own chrome. A deck is edited in the
+       same frame here as it is inside the sheet: the panel below is
+       `.sw-overlay` / `.sw-sheet`, and the review table is drawn in
+       `.sw-label` / `.sw-chip` / `.sw-input`. -->
+  <link rel="stylesheet" href="/shared/set-work.css?v=a5cfe289"/>
+  <link rel="stylesheet" href="/shared/flashcard-decks.css?v=cebaa479"/>
+  <style>
+    html { background: var(--st-ground); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--st-ground);
+      color: var(--st-ink);
+      font: 400 18px/1.5 var(--st-ui);
+      min-height: 100vh;
+      padding: 0 0 60px;
+      /* Hidden until the guard's onAllowed fires — the same fail-closed
+         reveal as teacher/today.html. */
+      display: none;
+    }
+
+    /* ── the top bar: today.html's, value for value ─────────────────────── */
+    .topbar {
+      position: sticky; top: 0; z-index: 40;
+      display: flex; align-items: center; gap: 12px;
+      height: 62px; padding: 0 22px;
+      background: var(--st-paper);
+      border-bottom: 1px solid var(--st-rule);
+    }
+    .tb-brand {
+      flex: none; font: 600 23px/1 var(--st-display); letter-spacing: -0.025em;
+      color: var(--st-ink); text-decoration: none; white-space: nowrap;
+    }
+    .tb-brand:hover { color: var(--st-ink); text-decoration: none; }
+    .tb-seg {
+      display: flex; gap: 3px; padding: 3px; flex: none; margin-right: auto;
+      background: var(--st-seg-bg); border-radius: 10px;
+    }
+    .tb-tab {
+      padding: 7px 15px; border-radius: 8px;
+      font: 600 15.5px/1.2 var(--st-ui); color: var(--st-caption);
+      background: transparent; text-decoration: none; white-space: nowrap;
+    }
+    .tb-tab:hover { color: var(--st-ink); text-decoration: none; }
+    .tb-tab.is-on { background: var(--st-paper); color: var(--st-ink); }
+    .tb-name { flex: none; font: 600 16px/1.2 var(--st-ui); color: var(--st-ink); white-space: nowrap; }
+    .tb-name:empty { display: none; }
+    .signout {
+      flex: none; height: 32px; padding: 0 12px;
+      font: 600 15.5px/1.2 var(--st-ui); color: var(--st-muted);
+      background: transparent; border: 1px solid var(--st-btn-border);
+      border-radius: 9px; cursor: pointer;
+    }
+    .signout:hover { color: var(--st-ink); border-color: var(--st-edge); }
+    @media print { .noprint { display: none !important; } }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px 40px 40px; }
+    .head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 16px 24px; flex-wrap: wrap; margin: 8px 0 22px;
+    }
+    .head h1 {
+      font: 600 52px/1 var(--st-display); letter-spacing: -0.035em;
+      color: var(--st-ink); overflow-wrap: break-word;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 11px 16px; min-height: 44px;
+      border: 1px solid var(--st-btn-border); border-radius: var(--st-r-btn);
+      background: var(--st-paper); color: var(--st-ink);
+      font: 600 17px/1.2 var(--st-ui);
+      cursor: pointer; text-decoration: none; white-space: nowrap;
+    }
+    .btn:hover { border-color: var(--st-edge); color: var(--st-ink); text-decoration: none; }
+    .btn:disabled { opacity: 0.55; cursor: default; color: var(--st-muted); }
+    .btn-primary { color: var(--st-paper); background: var(--st-accent-text); border-color: var(--st-accent-text); }
+    .btn-primary:hover { color: var(--st-paper); background: var(--st-accent-hover); }
+
+    .tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+    .tools .sw-chips { margin-top: 0; flex: 1 1 320px; min-width: 0; }
+    .tools .sw-input { flex: 1 1 220px; max-width: 360px; min-height: 44px; }
+
+    .card {
+      background: var(--st-paper); border: 1px solid var(--st-rule-soft);
+      border-radius: var(--st-r-card); padding: 4px 18px;
+    }
+    .lib-row {
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      padding: 16px 0; border-top: 1px solid var(--st-rule-fact);
+      min-width: 0;
+    }
+    .lib-row:first-child { border-top: none; }
+    .lib-main { flex: 1 1 280px; min-width: 0; }
+    .lib-title {
+      font: 600 19px/1.3 var(--st-ui); color: var(--st-ink);
+      overflow-wrap: anywhere;
+    }
+    .lib-meta {
+      margin-top: 5px; font: 500 13px/1.45 var(--st-mono);
+      letter-spacing: .06em; color: var(--st-caption);
+      overflow-wrap: anywhere;
+    }
+    .lib-acts { display: flex; flex-wrap: wrap; gap: 8px; flex: 0 1 auto; min-width: 0; }
+    .lib-acts .btn { padding: 8px 13px; font-size: 15.5px; }
+    .lib-acts .btn.is-confirm { color: var(--st-accent-text); border-color: var(--st-accent-text); }
+    .lib-row.is-deleted .lib-title, .lib-row.is-deleted .lib-meta { color: var(--st-ghost); }
+    .lib-note { padding: 18px 0; font: 500 13px/1.3 var(--st-mono); letter-spacing: .12em;
+                text-transform: uppercase; color: var(--st-caption); }
+    .lib-note[hidden], .lib-retry[hidden] { display: none; }
+    .lib-retry { margin: 0 0 16px; }
+
+    .notice { max-width: 620px; margin: 40px auto; text-align: center; }
+    .notice h1 { font: 600 34px/1.1 var(--st-display); letter-spacing: -0.03em;
+                 color: var(--st-ink); margin-bottom: 10px; }
+
+    @media (max-width: 560px) {
+      .container { padding: 18px 14px 40px; }
+      .head h1 { font-size: 34px; letter-spacing: -0.02em; }
+      .card { padding: 2px 14px; }
+      .topbar { height: auto; min-height: 62px; flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
+      .tb-brand { font-size: 19px; }
+      .tb-seg { margin-right: 0; flex-wrap: wrap; }
+      .tb-tab { padding: 6px 11px; font-size: 14px; }
+      .tools .sw-input { max-width: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- The staff top bar, as on teacher/today.html. `data-port-region="topbar"`
+     is what shared/teacher-admin-nav.js anchors on; the "Flashcard decks"
+     tab carries that module's own marker so it is not injected a second
+     time here. -->
+<nav class="topbar noprint" data-port-region="topbar">
+  <a class="tb-brand" href="/index.html">MrBadmusAI</a>
+  <div class="tb-seg">
+    <a class="tb-tab" data-mrb-today-nav="1" href="/teacher/today.html">Today</a>
+    <a class="tb-tab" href="/teacher/classes.html">My classes</a>
+    <a class="tb-tab is-on" data-mrb-decks-nav="1" href="/teacher/decks.html">Flashcard decks</a>
+  </div>
+  <span class="tb-name" id="tb-name"></span>
+  <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+</nav>
+
+<div class="container" id="main" style="display:none;">
+  <div class="head">
+    <h1>Flashcard decks</h1>
+    <button type="button" class="btn btn-primary" id="new-deck" data-fd="new-deck">New deck</button>
+  </div>
+  <div class="tools">
+    <div class="sw-chips" id="tabs" data-fd="lib-tabs">
+      <button type="button" class="sw-chip is-on" data-fd-key="mine" aria-pressed="true">My decks</button>
+      <button type="button" class="sw-chip" data-fd-key="shared" aria-pressed="false">Shared at my school</button>
+    </div>
+    <input type="search" class="sw-input" id="lib-search" data-fd="lib-search" placeholder="Search" aria-label="Search"/>
+  </div>
+  <div class="card">
+    <div class="lib-note" id="lib-note" data-fd="lib-note">Loading</div>
+    <div id="lib-list" data-fd="lib-list"></div>
+  </div>
+  <button type="button" class="btn lib-retry" id="lib-retry" data-fd="lib-retry" hidden>Retry</button>
+</div>
+
+<div class="container" id="notice" style="display:none;">
+  <div class="notice"><h1 id="notice-title"></h1></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js?v=d1fecb43"></script>
+<script src="/shared/class-entry.js?v=a97c1d3d"></script>
+<script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
+<script src="/shared/teacher-data.js?v=7c1f2419"></script>
+<script src="/shared/teacher-admin-nav.js?v=a3d7d6fe"></script>
+<script src="/shared/formulae.js?v=e4bfb091"></script>
+<script src="/shared/flashcard-decks.js?v=efe64210"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   MRB-351 — THE DECK LIBRARY
+
+   Every deck this teacher can see: their own, and the ones shared at their
+   school. Edit, Duplicate, Share / Unshare and Delete, each only where the
+   database would allow it anyway (RLS is the boundary; this page only
+   declines to offer what would be refused). A deleted deck that live
+   assignments still use stays listed, greyed; an unused one is gone.
+
+   Everything a deck IS — the review table, the upload, the progress — is
+   shared/flashcard-decks.js, the same component the Set work sheet uses.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  var API = window.MRBDeckApi;
+  var SAY = {
+    usedIn: function (n) { return "Used in " + n + (n === 1 ? " assignment" : " assignments"); },
+    deletedUsed: function (n) { return "Deleted · used in " + n + (n === 1 ? " assignment" : " assignments"); },
+    edit: "Edit", duplicate: "Duplicate", share: "Share", unshare: "Unshare",
+    del: "Delete", confirm: "Confirm", deck: "Deck", newDeck: "New deck",
+    loading: "Loading", unavailable: "Unavailable", noDecks: "No decks yet", noMatch: "No decks"
+  };
+  var state = { tab: "mine", q: "", decks: [], usage: {}, admin: false, uid: "", seq: 0 };
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) { n.className = cls; }
+    if (text !== undefined && text !== null) { n.textContent = text; }
+    return n;
+  }
+  function button(text, mark) {
+    var b = el("button", "btn", text);
+    b.type = "button";
+    b.setAttribute("data-fd", mark);
+    return b;
+  }
+
+  function note(text) {
+    $("lib-note").textContent = text || "";
+    $("lib-note").hidden = !text;
+  }
+
+  function load() {
+    var mine = ++state.seq;
+    note(SAY.loading);
+    $("lib-retry").hidden = true;
+    return API.list().then(function (r) {
+      if (mine !== state.seq) { return; }
+      state.uid = r.uid;
+      state.decks = r.decks || [];
+      return Promise.all(state.decks.map(function (d) {
+        return API.usage(d.id).then(function (n) { return n; }, function () { return null; });
+      })).then(function (counts) {
+        if (mine !== state.seq) { return; }
+        state.usage = {};
+        state.decks.forEach(function (d, i) { state.usage[d.id] = counts[i]; });
+        render();
+      });
+    }).catch(function () {
+      if (mine !== state.seq) { return; }
+      $("lib-list").textContent = "";
+      note(SAY.unavailable);
+      $("lib-retry").hidden = false;
+    });
+  }
+
+  function visible() {
+    var q = state.q.toLowerCase();
+    return state.decks.filter(function (d) {
+      var used = state.usage[d.id] || 0;
+      if (state.tab === "mine") {
+        if (!d.mine) { return false; }
+        if (d.deleted_at && !used) { return false; }
+      } else {
+        if (d.mine || d.deleted_at || !d.shared_with_school || d.status !== "ready") { return false; }
+      }
+      return !q || String(d.title || "").toLowerCase().indexOf(q) > -1;
+    });
+  }
+
+  function render() {
+    var host = $("lib-list");
+    host.textContent = "";
+    var list = visible();
+    if (!list.length) { note(state.q ? SAY.noMatch : SAY.noDecks); return; }
+    note("");
+    list.forEach(function (d) { host.appendChild(row(d)); });
+  }
+
+  function row(d) {
+    var used = state.usage[d.id];
+    var r = el("div", "lib-row");
+    r.setAttribute("data-fd", "lib-row");
+    r.setAttribute("data-fd-id", d.id);
+    var main = el("div", "lib-main");
+    var t = el("div", "lib-title");
+    window.MRBDecks.draw(t, d.title || "");
+    var metaText = window.MRBDecks.deckMeta(d);
+    if (d.deleted_at) {
+      r.classList.add("is-deleted");
+      metaText += " · " + SAY.deletedUsed(used || 0);
+    } else if (typeof used === "number") {
+      metaText += " · " + SAY.usedIn(used);
+    }
+    var meta = el("div", "lib-meta", metaText);
+    main.appendChild(t); main.appendChild(meta);
+    r.appendChild(main);
+
+    var acts = el("div", "lib-acts");
+    var canEdit = !d.deleted_at && (d.mine || state.admin);
+    if (canEdit) {
+      var e = button(SAY.edit, "lib-edit");
+      e.addEventListener("click", function () { openEdit(d); });
+      acts.appendChild(e);
+    }
+    if (!d.deleted_at || d.mine) {
+      var dup = button(SAY.duplicate, "lib-duplicate");
+      dup.addEventListener("click", function () {
+        dup.disabled = true;
+        API.duplicate(d.id).then(function (newId) {
+          return load().then(function () {
+            var copy = null;
+            state.decks.forEach(function (x) { if (x.id === newId) { copy = x; } });
+            state.tab = "mine";
+            syncTabs();
+            render();
+            if (copy) { openEdit(copy); }
+          });
+        }).catch(function () { dup.disabled = false; flash(r); });
+      });
+      acts.appendChild(dup);
+    }
+    if (d.mine && !d.deleted_at) {
+      var sh = button(d.shared_with_school ? SAY.unshare : SAY.share, "lib-share");
+      sh.addEventListener("click", function () {
+        sh.disabled = true;
+        API.share(d.id, !d.shared_with_school).then(load, function () { sh.disabled = false; flash(r); });
+      });
+      acts.appendChild(sh);
+    }
+    if (canEdit) {
+      var del = button(SAY.del, "lib-delete");
+      var armed = false;
+      del.addEventListener("click", function () {
+        if (!armed) {
+          armed = true;
+          del.textContent = SAY.confirm;
+          del.classList.add("is-confirm");
+          return;
+        }
+        del.disabled = true;
+        API.remove(d.id).then(load, function () { del.disabled = false; flash(r); });
+      });
+      acts.appendChild(del);
+    }
+    if (acts.children.length) { r.appendChild(acts); }
+    return r;
+  }
+
+  /* A refused action: the row's own meta line says so, in one word. */
+  function flash(r) {
+    var m = r.querySelector(".lib-meta");
+    if (m) { m.textContent = SAY.unavailable; }
+  }
+
+  function openEdit(d) {
+    var src = window.MRBDeckSource.create({
+      picker: false,
+      chips: false,
+      onReady: function () { panel.close(); }
+    });
+    var panel = window.MRBDeckPanel.open(SAY.deck, src.node, function () { load(); });
+    src.editDeck(d);
+  }
+
+  function openNew() {
+    var src = window.MRBDeckSource.create({
+      picker: false,
+      onReady: function () { panel.close(); }
+    });
+    var panel = window.MRBDeckPanel.open(SAY.newDeck, src.node, function () { load(); });
+    src.show("upload");
+  }
+
+  function syncTabs() {
+    Array.prototype.forEach.call($("tabs").children, function (b) {
+      var on = b.getAttribute("data-fd-key") === state.tab;
+      b.classList.toggle("is-on", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  function arm() {
+    Array.prototype.forEach.call($("tabs").children, function (b) {
+      b.addEventListener("click", function () {
+        state.tab = b.getAttribute("data-fd-key");
+        syncTabs();
+        render();
+      });
+    });
+    $("lib-search").addEventListener("input", function () {
+      state.q = String($("lib-search").value || "").trim();
+      render();
+    });
+    $("new-deck").addEventListener("click", openNew);
+    $("lib-retry").addEventListener("click", load);
+  }
+
+  function teacherName(p) {
+    if (!p) { return ""; }
+    return p.display_name || [p.first_name, p.last_name].filter(Boolean).join(" ");
+  }
+
+  MrBadmusTeacherGuard.requireTeacherRole({
+    onDenied: function () { /* the guard redirects */ },
+    onAllowed: function (ctx) {
+      document.body.style.display = "block";
+      $("main").style.display = "block";
+      $("tb-name").textContent = teacherName(ctx && ctx.profile);
+      arm();
+      var sb = MrBadmusTeacherGuard.getClient();
+      var uid = ctx && ctx.user && ctx.user.id;
+      var adminP = (window.MrBadmusAdminScope && sb && uid)
+        ? window.MrBadmusAdminScope.isAdmin(sb, uid).catch(function () { return false; })
+        : Promise.resolve(false);
+      adminP.then(function (a) { state.admin = !!a; if (state.decks.length) { render(); } });
+      load();
+    }
+  });
+})();
+</script>
+</body>
+</html>
