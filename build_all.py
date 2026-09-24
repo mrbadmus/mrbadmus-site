@@ -126,22 +126,27 @@ def main():
 
     print("\n🏗️  build_all — %d generators, in order\n" % len(STEPS))
 
-    for i, (label, script) in enumerate(STEPS, 1):
+    # ⊕ MRB-352 — steps are numbered FROM 0, to agree with CLAUDE.md's table,
+    # where build_figures.py is step 0 and generate_site_v5.py stays step 1
+    # (every "step 1 wipes mrbadmus_site/" in CLAUDE.md and in the comments
+    # above means generate_site_v5.py). This loop used to count from 1.
+    last = len(STEPS) - 1
+    for i, (label, script) in enumerate(STEPS, 0):
         print("─" * 72)
-        print("  [%d/%d] %s" % (i, len(STEPS), label))
+        print("  [step %d of 0–%d] %s" % (i, last, label))
         print("         python3 %s" % script)
         print("─" * 72)
 
         result = subprocess.run([sys.executable, script])
         if result.returncode != 0:
-            print("\n❌ build_all FAILED at step %d/%d (%s), exit code %d."
-                  % (i, len(STEPS), script, result.returncode))
+            print("\n❌ build_all FAILED at step %d of 0–%d (%s), exit code %d."
+                  % (i, last, script, result.returncode))
             print("   Later steps were NOT run — the output tree is incomplete.")
             return result.returncode
         print()
 
     print("─" * 72)
-    print("✅ build_all complete — both generators ran, in order.")
+    print("✅ build_all complete — all %d generators ran, in order." % len(STEPS))
     # ⊕ MRB-228 — this used to say "then Mide pushes via GitHub Desktop".
     # Push authorisation is standing and permanent; see CLAUDE.md's Autonomy
     # Contract. The shipping discipline is one unit, one commit, one push.

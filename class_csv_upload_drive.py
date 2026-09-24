@@ -68,7 +68,9 @@ CTX = ssl.create_default_context(cafile="/etc/ssl/cert.pem")
 with open("/Users/midebadmus/Documents/GitHub/mrbadmus---backend/.env", encoding="utf-8") as f:
     SRK = re.search(r"SUPABASE_SERVICE_ROLE_KEY=(\S+)", f.read()).group(1)
 
-with open("/Users/midebadmus/Documents/GitHub/mrbadmus-worktrees/class-csv-upload/shared/config.js", encoding="utf-8") as f:
+# ⊕ MRB-348 r5: read this repo's own config.js. It used to name the absolute path of the
+# class-csv-upload worktree, which was pruned after merging, so the gate crashed before driving anything.
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "shared", "config.js"), encoding="utf-8") as f:
     src = f.read()
     ANON = re.search(r"'(eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)'", src[src.index("const TEST"):]).group(1)
 

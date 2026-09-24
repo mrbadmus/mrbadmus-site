@@ -235,7 +235,7 @@ mrbadmus-site/
 ├── build_all.py            — ⭐ THE ENTRY POINT. Runs all SEVEN generators (was SIX until MRB-352), in the correct order.
 ├── generate_site_v5.py     — KS4 generator: topic pages + copies root HTML into mrbadmus_site/
 ├── build_ks3.py            — KS3 generator (ks3/). SEPARATE ON PURPOSE. generate_site_v5.py never builds KS3.
-├── build_student.py        — student preview pages. Runs LAST.
+├── build_student.py        — student preview pages (step 3 of 0–6; NOT last — the live student, teacher and leaderboard ports run after it).
 ├── ks3_art/                — one module per KS3 unit: that unit's drawers, instruments and registrations.
 │                             Adding a unit = adding ONE file here. See docs/ks3/worktrees.md.
 ├── all_subtopics_*.py      — Python files defining subtopic content per subject/tier

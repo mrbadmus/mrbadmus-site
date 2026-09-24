@@ -284,7 +284,19 @@
     CACHE_PREFIX,           // mrb-class-entry:v2:
     YEARS_CACHE_PREFIX,     // mrb-academic-years:v1:
     'mrb-staff-session:',   // the guard's session/role resolution (J4b)
-    CLASS_LISTS_FAMILY      // the teacher's own-classes list      (J4b)
+    CLASS_LISTS_FAMILY,     // the teacher's own-classes list      (J4b)
+    /* ⊕ MRB-348 round 4 — the Admin-link scope answer. It MUST be in this
+       list: it is a yes/no about what this viewer may reach, and a shared
+       staffroom machine that carried it into the next person's session would
+       show them a link the last teacher was entitled to. `dropCaches()` on
+       sign-out is what stops that, and it only drops the families named
+       here. */
+    'mrb-admin-scope:',
+    /* ⊕ MRB-348 round 4 — the STUDENT guard's resolution, the mirror of
+       `mrb-staff-session:` above. Same reason it must be here: a shared
+       classroom machine is exactly where one child's resolved session must
+       not survive into the next child's. */
+    'mrb-student-session:'
   ];
 
   /* ⊕ MRB-328 J4(b) — WHAT A MEMBERSHIP WRITE INVALIDATES, named once.
