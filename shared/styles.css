@@ -8,6 +8,24 @@ html { background: var(--bg); scroll-behavior: smooth; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── keyboard focus — one ring, brand-coloured, `:focus-visible` only ──────
+   ⊕ Experience run, 24 Sep 2026 (stream G). `focus_audit.py` found every
+   control on the root/public pages (auth.html, leaderboard.html, index.html,
+   the KS4 chrome + topic pages) ALREADY showing a visible change on Tab —
+   this file strips `outline` from exactly one control (`.chat-input-row
+   input`, which answers with a border-colour change instead) and nowhere
+   removes it wholesale, so the browser's own default focus indicator was
+   still doing the job. That indicator is real but not this brand's colour
+   and not consistent across browsers, so it is replaced here with the same
+   token every other surface's ring now uses, rather than left as a bare pass.
+   `:focus-visible` only, so a mouse click never rings — the pointer
+   experience is unchanged. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 body {
   font-family: var(--font-sans);
   font-size: var(--fs-body);
