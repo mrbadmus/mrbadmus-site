@@ -1607,21 +1607,25 @@ QUESTIONS = [
     {
         "id": "c6-02-e32",
         "band": "easier",
-        "text": "The printed pH scale is drawn as a row of coloured cells, one for each"
-                " whole number. How many cells are there?",
+        "text": "The arrow shows the pH of solution X. Which of these "
+                "describes solution X?",
         "options": [
-            {"text": "Ten", "correct": False,
-             "why": "Ten would leave the scale ending at 9, with the alkaline end "
-                    "cut off."},
-            {"text": "Fourteen", "correct": False,
-             "why": "That forgets the cell for 0, which is where the strongest "
-                    "acids sit."},
-            {"text": "Fifteen", "correct": True},
-            {"text": "Seven", "correct": False,
-             "why": "Seven is the neutral point in the middle, not the number of "
-                    "cells."},
+            {"text": "Strongly acidic",
+             "correct": False,
+             "why": "Acids have a pH below 7. The arrow is at 12, well above "
+                    "7."},
+            {"text": "Neutral",
+             "correct": False,
+             "why": "Neutral is pH 7, in the middle of the scale. The arrow "
+                    "is well over on the alkaline side of it."},
+            {"text": "Strongly alkaline",
+             "correct": True},
+            {"text": "Weakly acidic",
+             "correct": False,
+             "why": "Weak acids sit just below 7. The arrow is above 7, so X "
+                    "is an alkali."},
         ],
-        "figure": None,
+        "figure": "c6-ph-scale-arrow",
     },
     {
         "id": "c6-02-s23",

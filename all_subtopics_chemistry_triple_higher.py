@@ -2259,7 +2259,10 @@ CHEMISTRY_SUBTOPICS_ALL = {
                ('Each atom keeps its own electrons and none are shared', False),
                ('Carbon shares one pair with each oxygen, so all reach 8', False)
               ],
-            'q': 'A dot-and-cross diagram of carbon dioxide shows O=C=O. Explain how this arrangement gives every atom a full outer shell.',
+            # ⚑ MRB-352 run 2 — frozen field changed (architecture_v2 freeze): the stem
+            # described an unseen dot-and-cross diagram (Mide's rule 2). Now uses the
+            # displayed formula as itself. For Mide's examiner review.
+            'q': 'Carbon dioxide has the displayed formula O=C=O. Explain how its bonding gives every atom a full outer shell.',
             'wrong_explanations': {
                1: 'CO₂ is covalent (all non-metals), so electrons are shared, not transferred.',
                2: 'If no electrons were shared, none of the atoms would reach a full shell.',
@@ -2757,17 +2760,21 @@ CHEMISTRY_SUBTOPICS_ALL = {
                2: 'Condensation is a physical change; steam and liquid water are the same substance.',
                3: 'The molecules stay as H₂O; the covalent bonds do not break.'
               }},
+           # ⚑ MRB-352 run 2 — frozen fields changed (architecture_v2 freeze): the stem
+           # described an unseen graph (Mide's rule 2) and this record cannot carry a
+           # figure, so it is asked as a temperature record. Meanings, order and the
+           # credited option are unchanged. For Mide's examiner review.
            {'opts': [
-               ('Each flat section is a change of state (melting, then boiling), where the energy supplied overcomes forces between particles instead of raising the temperature', True),
-               ('The two flat sections show the substance cooling down twice', False),
-               ('The flat sections show where the thermometer was broken', False),
-               ('The flat sections are where the substance stops absorbing any energy', False)
+               ('Each is a change of state (melting, then boiling), where the energy supplied overcomes forces between particles instead of raising the temperature', True),
+               ('The substance cools down twice while it is being heated', False),
+               ('The thermometer stops working twice during the heating', False),
+               ('The substance stops absorbing any energy during those periods', False)
               ],
-            'q': 'On a graph of temperature against time, a solid is heated until it becomes a gas. Explain why the graph has two flat (horizontal) sections.',
+            'q': 'A solid is heated steadily until it becomes a gas, and its temperature is recorded throughout. Explain why there are two periods when the temperature stays the same.',
             'wrong_explanations': {
                1: 'The substance is being heated throughout, so it is not cooling.',
                2: 'The thermometer is fine — the energy is being used to change the state.',
-               3: 'Energy is still absorbed during the flat sections; it goes into separating particles, not raising temperature.'
+               3: 'Energy is still absorbed while the temperature stays the same; it goes into separating particles, not raising temperature.'
               }},
            {'opts': [
                ('It assumes all particles are identical solid spheres and ignores the forces between them and their real sizes and shapes', True),

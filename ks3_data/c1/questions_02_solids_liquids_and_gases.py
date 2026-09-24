@@ -650,15 +650,15 @@ QUESTIONS = [
         "id": "c1-02-h05",
         "band": "harder",
         "text": "Liquid crystals flow like a liquid while their particles "
-                "stay lined up like a solid's. Which two rows of the contrast "
-                "table disagree about them?",
+                "stay lined up like a solid's. Which pair of features do they "
+                "take from two different states?",
         "options": [
-            {"text": "Shape and volume — one of them says the container's, "
-                     "the other says fixed for ever.",
+            {"text": "Shape and volume — it takes its container's shape but "
+                     "keeps a fixed volume.",
              "correct": False,
-             "why": "Those two rows are consequences, not causes. The "
-                    "disagreement is higher up the table, in the rows they "
-                    "come from."},
+             "why": "Taking the container's shape and keeping a fixed volume "
+                    "is what every liquid does, so that pair comes from one "
+                    "state, not two."},
             {"text": "Arrangement and movement — the arrangement is a "
                      "solid's, the movement is a liquid's.",
              "correct": True},

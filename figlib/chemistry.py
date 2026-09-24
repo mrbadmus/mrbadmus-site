@@ -53,6 +53,19 @@ MOLECULES = {
     "HCl": {"centre": "Cl", "fill": "nm",
             "bonds": [("H", 1)], "lone_pairs": 3,
             "name": "Hydrogen chloride, HCl", "spread": 180},
+    # ⊕ MRB-352 run 2 (batch 2). ⚠️ A DELIBERATELY WRONG STRUCTURE, drawn
+    # only for "why can this not be right?" (ks4-covalent-bonding-h23).
+    # Real CO2 is O=C=O — see "CO2" above. Never use it as a correct
+    # drawing, and never "fix" it. Electrons are counted honestly: C keeps
+    # its other two outer electrons as unpaired dots (4 dots in all); each
+    # O keeps its five non-bonding electrons as crosses, two pairs and one
+    # single (6 crosses per O). So C counts 6 and each O counts 7.
+    "CO2_single": {"centre": "C", "fill": "nm",
+                   "bonds": [("O", 1), ("O", 1)], "lone_pairs": 0,
+                   "name": "Carbon dioxide drawn with single bonds (WRONG)",
+                   "spread": 180, "outer_lp": {"O": 2},
+                   "outer_sym": "cross", "outer_singles": {"O": 1},
+                   "central_singles": 2},
 }
 
 _R = {"H": 50, "O": 96, "N": 96, "C": 96, "Cl": 100}  # shell radii
@@ -63,7 +76,7 @@ _R = {"H": 50, "O": 96, "N": 96, "C": 96, "Cl": 100}  # shell radii
 # ====================================================================
 def covalent_dotcross(formula, title=True, compact=False, incomplete=(),
                       angles=None, detached=(), dashed=False, nuclei=True,
-                      seat="nucleus"):
+                      seat="nucleus", detached_seat="centre", detached_gap=14):
     """Return SVG string for the covalent dot-and-cross of `formula`.
 
     ⊕ figlib parameters (defaults = the library's own drawing):
@@ -85,6 +98,17 @@ def covalent_dotcross(formula, title=True, compact=False, incomplete=(),
                   central nucleus; "lens" puts it in the middle of the
                   overlap between the two shells, so both electrons of the
                   pair sit visibly INSIDE the overlap.
+      detached_seat  ⊕ MRB-352 run 2 (batch 2): where a DETACHED atom's own
+                  electron sits — "centre" (default, as before) or "shell":
+                  on its shell, on the side facing the central atom.
+      detached_gap  ⊕ batch 2: the space between a detached atom's shell and
+                  the centre's (library: 14). Wider keeps an unshared dot
+                  and cross from reading as a pair between the atoms.
+    Table keys (optional, ⊕ batch 2, only on a drawing-only entry):
+      central_singles  unpaired electrons on the centre (top, bottom)
+      outer_sym        "cross" draws outer lone pairs as crosses
+      outer_singles    {atom: n} unpaired electrons on that outer atom,
+                       on its far side, away from the centre
     """
     if formula not in MOLECULES:
         raise KeyError(
@@ -114,7 +138,7 @@ def covalent_dotcross(formula, title=True, compact=False, incomplete=(),
         boxes = [(0, 0, OR + 10)]
         for (atom, order), ang in zip(m["bonds"], angles):
             BR = _R[atom]
-            dist = OR + BR + 14 if len(boxes) - 1 in detached else OR + BR - overlap
+            dist = OR + BR + detached_gap if len(boxes) - 1 in detached else OR + BR - overlap
             bx, by = _pol(0, 0, dist, ang)
             boxes.append((bx, by, BR + 10))
         minx = min(x - r for x, y, r in boxes)
@@ -149,7 +173,7 @@ def covalent_dotcross(formula, title=True, compact=False, incomplete=(),
         # diatomic/linear: light overlap. bent/pyramidal/tetrahedral:
         # moderate overlap — a clear lens without burying the shared pair.
         overlap = 18 if linear else 30
-        gap = OR + BR + 14 if k_bond in detached else OR + BR - overlap
+        gap = OR + BR + detached_gap if k_bond in detached else OR + BR - overlap
         bx, by = _pol(Ox, Oy, gap, ang)
         shell(bx, by, BR)
         bond_geo.append((atom, order, ang, bx, by, BR, gap))
@@ -159,6 +183,8 @@ def covalent_dotcross(formula, title=True, compact=False, incomplete=(),
     used = [g[2] % 360 for g in bond_geo]
     free = _free_angle(used)
     _draw_lone_pairs(c, Ox, Oy, OR, m["lone_pairs"], free, symbol="dot")
+    for k_single in range(m.get("central_singles", 0)):     # ⊕ batch 2
+        c.dot(*_pol(Ox, Oy, OR, (-90, 90)[k_single % 2]))
 
     # shared pairs: anchored on the bond axis at a fixed distance just
     # OUTSIDE the central nucleus (AQA textbook convention). Anchoring to
@@ -178,7 +204,10 @@ def covalent_dotcross(formula, title=True, compact=False, incomplete=(),
         if seat_mode_lens:
             seat = (OR + (d - BR)) / 2                 # middle of the lens
         if k_bond in detached:
-            c.cross(bx, by)                            # its own, unshared
+            if detached_seat == "shell":               # facing the centre
+                c.cross(bx - ux*BR, by - uy*BR)
+            else:
+                c.cross(bx, by)                        # its own, unshared
             # ⊕ fix round 1 (examiner M3): the central atom keeps the
             # electron it would have shared — one unpaired dot on its own
             # shell, facing the loose atom. Without it the centre is short
@@ -207,8 +236,11 @@ def covalent_dotcross(formula, title=True, compact=False, incomplete=(),
             away = math.degrees(math.atan2(by-Oy, bx-Ox))
             homonuclear = (atom == m["centre"])
             sym = "cross" if homonuclear else "dot"
+            sym = m.get("outer_sym", sym)                    # ⊕ batch 2
             _draw_lone_pairs(c, bx, by, BR, m["outer_lp"][atom],
                              away, symbol=sym)
+            for k_single in range(m.get("outer_singles", {}).get(atom, 0)):
+                (c.dot if sym == "dot" else c.cross)(*_pol(bx, by, BR, away))
 
     # nuclei on top
     if nuclei:

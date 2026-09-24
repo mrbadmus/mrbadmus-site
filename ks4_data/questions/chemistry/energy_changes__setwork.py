@@ -682,9 +682,8 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A student sketches an endothermic profile in which the peak "
-                "is drawn LOWER than the product level. Identify why the "
-                "sketch must be wrong.",
+        "figure": "ks4-fig-reaction-profile-endo-wrong",
+        "text": "A student sketches this reaction profile for an endothermic reaction. Identify why the sketch must be wrong.",
         "options": [
             "An endothermic reaction has no peak at all",
             "The product level must be drawn below the reactant level",

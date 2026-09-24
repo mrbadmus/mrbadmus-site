@@ -1263,11 +1263,11 @@ QUESTIONS = [
     {
         "id": "b9-01-s11",
         "band": "standard",
-        "text": "A student draws a garden food web. Two arrows point into the "
-                "blackbird: one from the earthworms and one from the berry "
-                "bush. What does that tell you?",
+        "text": "Look at this garden food web. What do the arrows pointing "
+                "into the blackbird tell you?",
         "options": [
-            {"text": "The blackbird is eaten by both the worms and the bush",
+            {"text": "The blackbird is eaten by both the caterpillars and the "
+                     "bush",
              "correct": False,
              "why": "That is the arrows read backwards. An arrow points "
                     "towards the organism doing the eating."},
@@ -1275,14 +1275,15 @@ QUESTIONS = [
                      "a consumer", "correct": True},
             {"text": "The blackbird is the top predator of the garden",
              "correct": False,
-             "why": "Nothing in the two arrows says what eats the blackbird. "
-                    "Arrows in show its food, not its safety."},
+             "why": "The arrow leaving the blackbird goes to the sparrowhawk, "
+                    "so something in this garden eats it. Arrows in show its "
+                    "food, not its safety."},
             {"text": "The blackbird is a producer with two sources",
              "correct": False,
              "why": "A producer has no arrows pointing into it at all, "
                     "because it builds its own food."},
         ],
-        "figure": None,
+        "figure": "b9-garden-web-blackbird",
     },
     {
         "id": "b9-01-s12",
@@ -1850,9 +1851,9 @@ QUESTIONS = [
     {
         "id": "b9-01-h15",
         "band": "harder",
-        "text": "A pyramid of numbers for an oak wood comes out upside down: "
-                "one oak at the bottom supporting thousands of caterpillars "
-                "above it. Does that contradict the tenth-of-the-energy rule?",
+        "text": "This is a pyramid of numbers for an oak wood. Does its shape "
+                "contradict the rule that only about a tenth of the energy at "
+                "one level passes to the next?",
         "options": [
             {"text": "Yes — the rule says every level must hold fewer "
                      "organisms than the level below it", "correct": False,
@@ -1869,7 +1870,7 @@ QUESTIONS = [
              "why": "Caterpillars eat the producer, which makes them a real "
                     "level — the primary consumers."},
         ],
-        "figure": None,
+        "figure": "b9-oak-pyramid-numbers",
     },
     {
         "id": "b9-01-h16",

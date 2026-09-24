@@ -139,7 +139,7 @@ def hbar_chart(rows, W=480, axis=None, log=False, boundary=None,
 def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
                  touching=True, edges=None, y_max=None, y_step=None,
                  fill=None, values=False, caption=None, min_bar=0,
-                 y_title="side"):
+                 y_title="side", edge_label_every=1):
     """Vertical bars.
 
     With `touching=True` and `edges` (the class boundaries, one more than
@@ -156,6 +156,9 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
     `x_label=None` omits the x-axis title (a bar chart of named categories
     needs none); `y_title="top"` writes a long y-axis title above the plot,
     wrapped, instead of rotating it up the side where it would not fit.
+    ⊕ MRB-352 run 2 (batch 2): `edge_label_every=k` numbers only every k-th
+    class boundary of a histogram (every boundary still gets its tick) —
+    for many narrow classes, whose numerals cannot all fit at 360px.
     """
     fs = q_font(W)
     fn = _num_size(fs)
@@ -226,7 +229,8 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
         for i, e in enumerate(edges):
             xx = ox + gapw + i * (bw + gapw)
             line(c, xx, oy, xx, oy + 7, ST, sw)
-            text(c, xx, oy + 10 + fn, _fmt(e), fn, LBL, "normal")
+            if i % edge_label_every == 0:
+                text(c, xx, oy + 10 + fn, _fmt(e), fn, LBL, "normal")
         lab_y = oy + 10 + fn
     else:
         lab_y = oy
@@ -302,7 +306,14 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
     """Axes, a light grid, and one or more series. A series is
     {"points": [(x, y), ...], "smooth": bool, "label": str}; the first is
     drawn in the library's teal, the second in red and dashed, so two
-    series differ by more than colour alone."""
+    series differ by more than colour alone.
+
+    ⊕ MRB-352 run 2 (batch 2), two optional series keys, both off by
+    default: `dots` True puts a filled marker on every data point (one
+    reading per point, e.g. one per year); `arrows` [segment index, ...]
+    puts a solid arrowhead at the midpoint of each listed segment, pointing
+    along it — for a path whose ORDER matters (a loop is not x-monotone, so
+    such a series is drawn with `smooth` False)."""
     fs = q_font(W)
     fn = _num_size(fs)
     sw = q_stroke(W, 2)
@@ -346,6 +357,21 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
         c.S.append(f'<path d="{d}" fill="none" stroke="{col}" '
                    f'stroke-width="{q_stroke(W, 3.5)}" stroke-linecap="round" '
                    f'stroke-linejoin="round"{dd}/>')
+        if s.get("dots"):
+            for px_, py_ in pts:
+                c.S.append(f'<circle cx="{px_:.1f}" cy="{py_:.1f}" r="5" '
+                           f'fill="{col}" stroke="none"/>')
+        for k_seg in (s.get("arrows") or ()):
+            (ax_, ay_), (bx_, by_) = pts[k_seg], pts[k_seg + 1]
+            ang = math.atan2(by_ - ay_, bx_ - ax_)
+            hl = 16
+            tx_, ty_ = ((ax_ + bx_) / 2 + math.cos(ang) * hl / 2,
+                        (ay_ + by_) / 2 + math.sin(ang) * hl / 2)
+            bx2, by2 = tx_ - hl * math.cos(ang), ty_ - hl * math.sin(ang)
+            nx_, ny_ = -math.sin(ang) * hl * 0.5, math.cos(ang) * hl * 0.5
+            c.S.append(f'<polygon points="{tx_:.1f},{ty_:.1f} '
+                       f'{bx2+nx_:.1f},{by2+ny_:.1f} {bx2-nx_:.1f},{by2-ny_:.1f}" '
+                       f'fill="{col}" stroke="none"/>')
         if end_dot:
             ex, ey = pts[-1]
             c.S.append(f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="5.5" '

@@ -53,3 +53,9 @@ def draw(rec):
         raise ValueError("figure %r names art %r, which figlib does not draw. "
                          "Known: %s" % (rec.get("id"), art, ", ".join(sorted(ART))))
     return ART[art](**(rec.get("params") or {}))
+
+
+# ⊕ MRB-352 run 2 (batch 2): the biology/chemistry question builders live in
+# their own module (`figlib/biochem.py`) so lanes cannot collide in this file.
+from . import biochem  # noqa: E402
+ART.update(biochem.ART_BIOCHEM)

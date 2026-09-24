@@ -453,15 +453,14 @@ QUESTIONS = [
     {
         "id": "c4-01-e09",
         "band": "easier",
-        "text": "The comparison table lists where you meet each kind of "
-                "change. Which list is the CHEMICAL one?",
+        "text": "Which list contains only chemical changes?",
         "options": [
             {"text": "Burning, rusting, cooking, acid on marble, respiration",
              "correct": True},
             {"text": "Melting, boiling, dissolving, breaking, mixing",
              "correct": False,
              "why": "Every one of those leaves the same substances behind. "
-                    "That is the physical list"},
+                    "They are all physical changes"},
             {"text": "Heating, cooling, stirring, pouring, weighing",
              "correct": False,
              "why": "Those are things you DO. Some of them start a reaction "
@@ -469,8 +468,8 @@ QUESTIONS = [
             {"text": "Anything that gives off a gas, changes colour, or gets "
                      "warm",
              "correct": False,
-             "why": "All three of those clues appear on both sides of the "
-                    "line, which is why none of them is the test"},
+             "why": "Each of those clues can also happen in a physical "
+                    "change, which is why none of them is the test"},
         ],
         "figure": None,
     },

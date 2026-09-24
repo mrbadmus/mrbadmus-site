@@ -1638,17 +1638,28 @@ QUESTIONS = [
     {
         "id": 'b4-05-h17',
         "band": 'harder',
-        "text": "Respiration's line against light is flat and straight. Photosynthesis rises then levels off. Explain why the NET movement curve against light is not a straight line either.",
+        "text": "The graph shows how the rates of photosynthesis and "
+                "respiration in a leaf change with light intensity. Explain "
+                "why a graph of the NET carbon dioxide uptake against light "
+                "intensity would not be a straight line.",
         "options": [
             {"text": "Net movement is found by subtracting a straight line from a curve that rises then flattens, so it inherits that curve's shape.", "correct": True},
-            {"text": "The net curve is actually straight too, since subtracting two lines always gives another straight line, by this lesson's own reasoning.", "correct": False,
-             "why": 'Only one of the two lines being combined here is straight — photosynthesis is a curve, not a straight line.'},
+            {"text": "The net curve is actually straight too, since "
+                     "subtracting two lines always gives another straight "
+                     "line, by this lesson's own reasoning.",
+             "correct": False,
+             "why": "Only one of the two lines on the graph is straight. "
+                    "Photosynthesis is a curve, not a straight line."},
             {"text": 'The shape comes from respiration changing unpredictably at different light levels.', "correct": False,
              "why": 'Respiration is flat and predictable throughout — the curved shape comes entirely from photosynthesis.'},
-            {"text": 'The bench simply draws it curved for visual effect, with no reason behind the shape.', "correct": False,
-             "why": 'The curved shape follows directly from combining a flat line with a rising-then-levelling curve, not an arbitrary choice.'},
+            {"text": "The net line would be curved only because light "
+                     "intensity is hard to measure accurately.",
+             "correct": False,
+             "why": "Measurement error scatters points. It does not bend a "
+                    "line into a steady rise-then-level shape. That shape "
+                    "comes from photosynthesis."},
         ],
-        "figure": None,
+        "figure": "b4-light-rates-graph",
     },
     {
         "id": 'b4-05-h18',

@@ -188,7 +188,7 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A hormone graph shows a sharp, brief peak around the middle of the cycle. Identify the hormone.",
+        "text": "About halfway through the menstrual cycle, the level of one hormone rises sharply for a short time, and this triggers the release of an egg. Identify the hormone.",
         "options": [
             "Progesterone, which rises steadily through the second half of it",
             "FSH, which is at its highest during the first days of the cycle",
