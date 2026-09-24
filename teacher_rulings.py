@@ -4558,6 +4558,61 @@ INSERT_AT = {
         "the class screen's way into that class's seating plan. The page "
         "existed and nothing linked to it, so the only route in was a "
         "hand-typed URL carrying a uuid."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 12) · THE ENGAGEMENT ══
+    # CHART'S OWN TOGGLE, ABOVE THE CARD
+    #
+    # Node 534 is the chart card; its children are 535 (the header row,
+    # `{{ chart.title }}` + `{{ chart.scopeLabel }}`) then 538
+    # (`{{ chart.note }}`). Inserted as a new child of 534, just before 538,
+    # this sits between the header and the note, on Charts, both scopes,
+    # and only when `chart.hasBucketTabs` — true on the engagement chart
+    # alone (see LOGIC's `hasLegend` ruling), so every other chart kind on
+    # this screen is unaffected.
+    #
+    # ⚠️ THE TOGGLE IS THE LEGEND. `chart.bucketTabs` (LOGIC, the
+    # `kind === 'engagement'` ruling) carries one entry per bucket with its
+    # OWN dot colour, label and `on` state, in the same order the bars and
+    # the single-class columns use it — so this control cannot drift out of
+    # step with what it is a legend for; both read the one array.
+    (534, 538): ({
+        "t": "if", "e": "chart.hasBucketTabs",
+        "c": [{
+            "t": "div", "a": {
+                "class": "noprint",
+                "style": "display:flex;flex-wrap:wrap;gap:8px;"
+                         "margin-top:14px",
+                "data-mrb-added": "engagement-bucket-tabs"},
+            "c": [{
+                "t": "for", "e": "chart.bucketTabs", "as": "bt",
+                "c": [{
+                    "t": "button",
+                    "a": {"type": "button",
+                          "data-mrb-added": "engagement-bucket",
+                          "aria-pressed": {"parts": [{"e": "bt.on"}]},
+                          "style": {"parts": [
+                              "display:flex;align-items:center;gap:7px;"
+                              "padding:7px 13px;border-radius:999px;"
+                              "cursor:pointer;font:600 15px/1.2 var(--st-ui);"
+                              "color:", {"e": "bt.fg"}, ";background:",
+                              {"e": "bt.bg"}, ";border:1px solid ",
+                              {"e": "bt.bd"}]}},
+                    "hov": "background:var(--st-note-bg)",
+                    "on": "bt.pick",
+                    "c": [
+                        {"t": "span",
+                         "a": {"style": {"parts": [
+                             "width:9px;height:9px;border-radius:50%;"
+                             "background:", {"e": "bt.dot"}]}},
+                         "c": []},
+                        {"t": "#", "v": {"parts": [{"e": "bt.label"}]}}
+                    ]}]
+            }]}]},
+        "the engagement chart's own toggle (Today / This week / 2+ weeks). "
+        "One control, both scopes: `chartFor`'s `all` and single-class "
+        "branches both return the same `bucketTabs`, computed from the "
+        "same three-colour map, so the toggle and whatever it is a legend "
+        "for cannot say two different things."),
 }
 
 
@@ -5782,7 +5837,11 @@ LOGIC = (
     digestScope: MRB_Q('class') ? 'class' : 'all', recipient: '',
     chartKind: 'submissions', chartScope: MRB_Q('class') || 'all',
     insFrom: 'today', digestFrom: 'today',
-    yearsOpen: false
+    yearsOpen: false,
+    // ⊕ Stream D, 24 Sep 2026 (experience run, item 12) — the engagement
+    // chart's own toggle (Today / This week / 2+ weeks), surviving a
+    // redraw the same way `chartKind`/`chartScope` do.
+    engBucket: 'today'
   };""",
      "the state initialiser. See the block comment above. "
      "⊕ MRB-335, 7 Sep 2026 — THE TWELVE SET-WORK KEYS ARE OFF AGAIN, and "
@@ -10816,6 +10875,32 @@ componentDidUpdate() {
      "\"say it once\" places. Every chip below it drops the term name "
      "(`buildWeeks`'s `label` in `shared/teacher-live.js`); this is where "
      "it is still said, once, for the week actually in view."),
+
+    ("if (kind === 'engagement') {\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        const stacks = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          return { label: c.code, sub: c.ks, right: b.today + ' today · ' + b.stale + ' cold',\n            segs: [{ pct: Math.round((b.today / t) * 100), fill: 'var(--ks3-ok)' }, { pct: Math.round((b.week / t) * 100), fill: 'var(--st-hatch-b)' }, { pct: Math.round((b.stale / t) * 100), fill: 'var(--st-rule-strong)' }] };\n        });\n        if (!stacks.length) {\n          return { ...base, title: 'Last seen, by class',\n            note: 'No class has work set yet' };\n        }\n        return { ...base, type: 'stack', title: 'Last seen, by class', stacks,\n          legend: [{ label: 'Today', fill: 'var(--ks3-ok)' }, { label: 'This week', fill: 'var(--st-hatch-b)' }, { label: '2+ weeks', fill: 'var(--st-rule-strong)' }],\n          tiles: [tile('Active today', totals.today, 'Across ' + live.length + (live.length === 1 ? ' class' : ' classes')), tile('This week', totals.week, ''), tile('2+ weeks', totals.stale, 'Worth chasing')],\n          note: totals.stale + ' students have not opened anything for two weeks or more' };\n      }\n      const rows = this.rosterFor(k);\n      if (!rows.length) {\n        return { ...base, title: k.code + ' — last seen',\n          note: 'No students on the roster yet' };\n      }\n      const b = this.bucketsOf(rows);\n      const cold = rows.filter(r => r.hours >= 168).map(r => r.name);\n      return { ...base, type: 'cols', title: k.code + ' — last seen',\n        cols: this.colsFrom([{ label: 'Today', value: String(b.today), raw: b.today }, { label: 'This week', value: String(b.week), raw: b.week }, { label: '2+ weeks', value: String(b.stale), raw: b.stale, flag: b.stale > 0 }]),\n        tiles: [tile('Students', k.n, 'On the roster'), tile('Active today', b.today, ''), tile('2+ weeks', b.stale, cold.length ? 'Worth chasing' : 'None')],\n        note: cold.length ? 'Not seen for two weeks: ' + cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + (cold.length - 3) + ' more' : '') : 'Nobody in this class has been quiet for two weeks or more' };\n    }",
+     'if (kind === \'engagement\') {\n      // ⊕ Stream D, 24 Sep 2026 (experience run, item 12) — ONE\n      // measure at a time, picked by the new toggle, in the SAME three\n      // colours everywhere it is drawn (the toggle\'s own dots, the bars,\n      // the single-class columns). `--st-hatch-b` (a dark red-brown) used\n      // to sit on "This week" — normal activity — while\n      // "2+ weeks" — the bucket actually worth a look — sat on\n      // `--st-rule-strong`, a pale neutral. That is backwards, and it is\n      // why a screenshot of this chart reads as an alarm over nothing.\n      // `--ks3-ok` (green) stays on Today; `--st-accent` (the studio\'s one\n      // "worth a look" orange, never `--danger`) moves to 2+ weeks; This\n      // week takes the neutral tone 2+ weeks used to have.\n      const ENG_BUCKETS = {\n        today: { label: \'Today\', fill: \'var(--ks3-ok)\' },\n        week: { label: \'This week\', fill: \'var(--st-rule-strong)\' },\n        stale: { label: \'2+ weeks\', fill: \'var(--st-accent)\' }\n      };\n      const engBucket = ENG_BUCKETS[this.state.engBucket] ? this.state.engBucket : \'today\';\n      // The toggle IS the legend here — one colour shown at a time, so\n      // a separate legend list under the chart would either repeat this or\n      // contradict it. Same order, same labels, same colours as whatever\n      // is drawn below, because both read off this one object.\n      const bucketTabs = [\'today\', \'week\', \'stale\'].map(bk => ({\n        id: bk, label: ENG_BUCKETS[bk].label, dot: ENG_BUCKETS[bk].fill,\n        on: bk === engBucket,\n        fg: bk === engBucket ? \'var(--st-ink)\' : \'var(--st-caption)\',\n        bg: bk === engBucket ? \'var(--st-num-well)\' : \'transparent\',\n        bd: bk === engBucket ? \'var(--st-btn-border)\' : \'var(--st-rule-soft)\',\n        pick: () => this.setState({ engBucket: bk })\n      }));\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        // ⚠️ EVERY CLASS, THE SAME MEASURE. One bar per class, sized to\n        // that class\'s OWN roster (not the school\'s), all in the one\n        // colour the selected bucket owns — replacing the old\n        // three-segment stacked bar, which mixed all three measures in one\n        // bar and coloured the normal one like a warning.\n        const rows = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          const n = b[engBucket];\n          return { label: c.code, sub: c.ks, value: n + \'/\' + c.n,\n            pct: Math.round((n / t) * 100), fill: ENG_BUCKETS[engBucket].fill };\n        });\n        if (!rows.length) {\n          return { ...base, title: \'Last seen, by class\',\n            note: \'No class has work set yet\' };\n        }\n        const ENG_NOTE = {\n          today: totals.today + (totals.today === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n          week: totals.week + (totals.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n          stale: totals.stale + (totals.stale === 1 ? \' student has\' : \' students have\') + \' not opened anything for two weeks or more\'\n        };\n        return { ...base, type: \'bars\', title: \'Last seen, by class\', rows, bucketTabs,\n          tiles: [tile(\'Active today\', totals.today, \'Across \' + live.length + (live.length === 1 ? \' class\' : \' classes\')), tile(\'This week\', totals.week, \'\'), tile(\'2+ weeks\', totals.stale, \'Worth chasing\')],\n          note: ENG_NOTE[engBucket] };\n      }\n      const rows2 = this.rosterFor(k);\n      if (!rows2.length) {\n        return { ...base, title: k.code + \' — last seen\',\n          note: \'No students on the roster yet\' };\n      }\n      const b2 = this.bucketsOf(rows2);\n      const cold = rows2.filter(r => r.hours >= 168).map(r => r.name);\n      // ⚠️ THE THREE COLUMNS STAY, RECOLOURED, ON PURPOSE. One class\n      // already has all three measures on screen at once and they are\n      // separately labelled — that is not the mixing defect the\n      // "all classes" bar had. What was wrong here was only the colour\n      // (Today defaulted to the same dark red-brown as everything\n      // `colsFrom` does not explicitly flag), fixed by giving all three\n      // their own fill from the same map the toggle uses. The toggle\n      // still presses through to `note`, so it has a real effect on this\n      // scope too rather than existing only for visual symmetry.\n      const ENG_NOTE2 = {\n        today: b2.today + \' of \' + k.n + (k.n === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n        week: b2.week + (b2.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n        stale: cold.length ? \'Not seen for two weeks: \' + cold.slice(0, 3).join(\', \') + (cold.length > 3 ? \' and \' + (cold.length - 3) + \' more\' : \'\') : \'Nobody in this class has been quiet for two weeks or more\'\n      };\n      return { ...base, type: \'cols\', title: k.code + \' — last seen\', bucketTabs,\n        cols: this.colsFrom([\n          { label: \'Today\', value: String(b2.today), raw: b2.today, fill: ENG_BUCKETS.today.fill },\n          { label: \'This week\', value: String(b2.week), raw: b2.week, fill: ENG_BUCKETS.week.fill },\n          { label: \'2+ weeks\', value: String(b2.stale), raw: b2.stale, fill: ENG_BUCKETS.stale.fill }\n        ]),\n        tiles: [tile(\'Students\', k.n, \'On the roster\'), tile(\'Active today\', b2.today, \'\'), tile(\'2+ weeks\', b2.stale, cold.length ? \'Worth chasing\' : \'None\')],\n        note: ENG_NOTE2[engBucket] };\n    }',
+     "Stream D, 24 Sep 2026 (experience run, item 12) — the engagement "
+     "chart, both scopes. Its colour semantics were backwards (This week "
+     "on the dark red-brown, 2+ weeks on the pale neutral) and there was "
+     "no way to see one measure at a time across every class. Now one "
+     "toggle (Today / This week / 2+ weeks), one colour per bucket used "
+     "identically everywhere it is drawn, and never `--danger` for "
+     "ordinary activity. See the block comments."),
+
+    ("const base = { type: 'bars', title: '', note: '', tiles: [], "
+     "rows: [], cols: [], stacks: [], legend: [] };",
+     "const base = { type: 'bars', title: '', note: '', tiles: [], "
+     "rows: [], cols: [], stacks: [], legend: [], bucketTabs: [] };",
+     "the chart shape's default `bucketTabs`. Every OTHER chart kind reads "
+     "`chart.bucketTabs.length` (below) to decide whether to draw the "
+     "engagement toggle at all; without a default here every kind but "
+     "engagement would throw on that read rather than simply showing no "
+     "toggle."),
+
+    (dict(method="renderVals", key="hasLegend"),
+     "        hasLegend: chart.legend.length > 0,\n"
+     "        hasBucketTabs: chart.bucketTabs.length > 0,",
+     "the engagement toggle's own gate, in the same derived-flag register "
+     "as `hasLegend` beside it."),
 
 )
 

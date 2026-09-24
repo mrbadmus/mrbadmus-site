@@ -803,8 +803,17 @@ _CHART_JS = r"""
     var txt = function(e){ return e ? (e.textContent||'').replace(/\s+/g,' ').trim() : ''; };
     var frame = function(){ return new Promise(function(r){
       requestAnimationFrame(function(){ setTimeout(r, 40); }); }); };
+    /* ⊕ 24 Sep 2026 (experience run, item 12) — THE ENGAGEMENT CHART'S OWN
+       TOGGLE (Today / This week / 2+ weeks) IS NOT A CHART CHIP. It lives
+       inside the same [data-port-region="insights"], after "Print", exactly
+       where every button from here on is assumed to be a chart-kind chip —
+       so unfiltered it was swept into `kinds`, pressed as if it changed the
+       chart KIND, and correctly reported as "the same card": it never was
+       meant to. Excluded by its own `data-mrb-added` marker; see
+       `_ENGAGEMENT_JS` below for its actual coverage. */
     var buttons = function(){ var r = reg();
-      return r ? Array.prototype.slice.call(r.querySelectorAll('button')) : []; };
+      return r ? Array.prototype.slice.call(r.querySelectorAll('button'))
+        .filter(function(e){ return e.getAttribute('data-mrb-added') !== 'engagement-bucket'; }) : []; };
     var labels = buttons().map(txt);
     var pi = labels.indexOf('Print');
     if(pi < 1){ out.err = 'the Print button is not in the insights region, so the scope tabs cannot be located'; return JSON.stringify(out); }
@@ -826,7 +835,14 @@ _CHART_JS = r"""
         var h2 = r ? r.querySelector('h2') : null;
         var card = h2 ? h2.parentElement.parentElement : null;
         if(!card){ cell.miss = 'no chart card'; out.cells.push(cell); continue; }
-        var kids = Array.prototype.slice.call(card.children);
+        /* ⊕ 24 Sep 2026 (item 12) — the engagement toggle is a new CHILD of
+           this same card, between the header and the note (see
+           INSERT_AT[(534, 538)]), so on the Engagement kind alone `kids[1]`
+           is now the toggle rather than the note. Dropped by its own
+           marker before indexing, so every kind keeps the same shape this
+           probe already assumed. */
+        var kids = Array.prototype.slice.call(card.children).filter(
+          function(e){ return e.getAttribute('data-mrb-added') !== 'engagement-bucket-tabs'; });
         cell.title = txt(h2);
         cell.note = txt(kids[1]);
         cell.tiles = kids[2] ? kids[2].children.length : 0;
@@ -834,6 +850,147 @@ _CHART_JS = r"""
         cell.text = txt(card);
         out.cells.push(cell);
       }
+    }
+  } catch(e){ out.err = String((e && e.stack) || e); }
+  return JSON.stringify(out);
+})()
+"""
+
+
+# ⊕ 24 Sep 2026 (experience run, item 12) — the engagement chart's own
+# toggle (Today / This week / 2+ weeks). `_CHART_JS` above proves every
+# KIND redraws; this proves the one control INSIDE a kind does — pressed
+# for real, in both scopes, exactly the pattern `_SEARCH_JS` and the
+# reteach/shoutout probes already use elsewhere in this file for "a
+# control that looks pressable and does nothing is worse than no control".
+#
+# ⚠️ WHY A SEPARATE PROBE, AND NOT MORE OF `_CHART_JS`. `_CHART_JS` presses
+# one label per (scope, kind) cell and reads the card once; this presses
+# THREE labels inside the SAME (scope, kind) cell and reads the card after
+# each one, which needs its own loop and its own before/after comparison.
+# Folding it in would have made `_CHART_JS` answer two different questions
+# with one cell shape.
+_ENGAGEMENT_JS = r"""
+(async function(){
+  var out = {scopes: [], err: null};
+  try {
+    var reg = function(){ return document.querySelector('[data-port-region="insights"]'); };
+    if(!reg()){ out.err = 'no [data-port-region="insights"] on the page'; return JSON.stringify(out); }
+    var txt = function(e){ return e ? (e.textContent||'').replace(/\s+/g,' ').trim() : ''; };
+    var frame = function(){ return new Promise(function(r){
+      requestAnimationFrame(function(){ setTimeout(r, 40); }); }); };
+    var buttons = function(sel){ var r = reg();
+      return r ? Array.prototype.slice.call(r.querySelectorAll(sel || 'button')) : []; };
+    var press = async function(label){
+      var b = buttons().filter(function(e){ return txt(e) === label; })[0];
+      if(!b){ return false; }
+      b.click(); await frame(); await frame(); return true;
+    };
+    var labels = buttons().map(txt);
+    var pi = labels.indexOf('Print');
+    if(pi < 1){ out.err = 'the Print button is not in the insights region'; return JSON.stringify(out); }
+    var scopeLabels = labels.slice(Math.max(0, pi - 2), pi);
+    if(!(await press('Engagement'))){ out.err = 'the Engagement chip is not on this page'; return JSON.stringify(out); }
+    for(var si = 0; si < scopeLabels.length; si++){
+      var scopeName = scopeLabels[si];
+      var row = {scope: scopeName};
+      if(!(await press(scopeName)) || !(await press('Engagement'))){
+        row.miss = 'scope or Engagement chip vanished'; out.scopes.push(row); continue;
+      }
+      var tabs = buttons('button[data-mrb-added="engagement-bucket"]');
+      /* Legitimately absent when there is nothing to toggle between — no
+         live class at all ("all" scope) or an empty roster (one class):
+         `chartFor` omits `bucketTabs` from those two early-return shapes on
+         purpose, the same "no controls that do nothing" rule the rest of
+         this chart already follows. Only a PARTIAL render (1 or 2 of 3) is
+         a real defect. */
+      if(tabs.length === 0){ row.empty = true; out.scopes.push(row); continue; }
+      if(tabs.length !== 3){
+        row.miss = 'found ' + tabs.length + ' toggle button(s), not 0 or 3';
+        out.scopes.push(row); continue;
+      }
+      row.labels = tabs.map(txt);
+      var r0 = reg();
+      var h20 = r0 ? r0.querySelector('h2') : null;
+      var card0 = h20 ? h20.parentElement.parentElement : null;
+      var noteOf = function(){
+        var r = reg(); var h2 = r ? r.querySelector('h2') : null;
+        var card = h2 ? h2.parentElement.parentElement : null;
+        if(!card){ return null; }
+        var kids = Array.prototype.slice.call(card.children).filter(
+          function(e){ return e.getAttribute('data-mrb-added') !== 'engagement-bucket-tabs'; });
+        return txt(kids[1]);
+      };
+      row.notes = [];
+      for(var ti = 0; ti < 3; ti++){
+        var label = row.labels[ti];
+        var freshTabs = buttons('button[data-mrb-added="engagement-bucket"]');
+        var b = freshTabs[ti];
+        if(!b){ row.miss = 'toggle button ' + ti + ' vanished mid-sweep'; break; }
+        b.click(); await frame(); await frame();
+        var pressedNow = buttons('button[data-mrb-added="engagement-bucket"]')
+          .map(function(e){ return e.getAttribute('aria-pressed'); });
+        row.notes.push({label: label, note: noteOf(), pressed: pressedNow[ti]});
+      }
+      out.scopes.push(row);
+    }
+    /* ⚠️ AND IT MUST NOT BE THERE ON A DIFFERENT KIND. The toggle is
+       `chart.hasBucketTabs`-gated, true for engagement alone — pressing a
+       neighbour chip and finding these buttons still in the DOM would mean
+       the gate itself is not redrawing. */
+    if(await press('Submissions')){
+      out.leaksOnOtherKind = buttons('button[data-mrb-added="engagement-bucket"]').length;
+    }
+  } catch(e){ out.err = String((e && e.stack) || e); }
+  return JSON.stringify(out);
+})()
+"""
+
+
+# ⊕ 24 Sep 2026 (experience run, item 7) — the shoutout composer opened
+# from a pupil's own page. Scoped to `[data-port-region="overlay-bulk"]`
+# (the composer's own overlay region, `SET_ATTR` node 629) rather than to
+# the page at large, because a stale query taken before the overlay mounts
+# would silently match nothing and read as "0 selected" — the same
+# stale-reference trap `_CHART_JS`'s own header warns about.
+_PRESELECT_JS = r"""
+(async function(){
+  var out = {};
+  try {
+    var frame = function(){ return new Promise(function(r){
+      requestAnimationFrame(function(){ setTimeout(r, 40); }); }); };
+    var txt = function(e){ return e ? (e.textContent||'').replace(/\s+/g,' ').trim() : ''; };
+    var heading = Array.prototype.slice.call(document.querySelectorAll('*'))
+      .filter(function(e){ return e.children.length === 0
+        && /^[A-Z][a-z]+ [A-Z][a-z]+$/.test(txt(e)); })[0];
+    out.pageStudent = heading ? txt(heading) : null;
+    var btns = Array.prototype.slice.call(document.querySelectorAll('button'));
+    var open = btns.filter(function(b){ return txt(b) === 'Send shoutout'; })[0];
+    if(!open){ out.skip = true; return JSON.stringify(out); }
+    /* ⚠️ AWAITED, LIKE EVERY OTHER PRESS IN THIS FILE. The runtime's draw()
+       is not synchronous with the click — `_CHART_JS`'s `press()` awaits
+       two frames after every click for the same reason — so reading
+       `[data-port-region="overlay-bulk"]` in the same tick as the click
+       found nothing: not because the composer failed to open, but because
+       it had not been painted yet. */
+    open.click();
+    await frame(); await frame();
+    var region = document.querySelector('[data-port-region="overlay-bulk"]');
+    if(!region){ out.err = 'pressed "Send shoutout" and no '
+      + '[data-port-region="overlay-bulk"] mounted'; return JSON.stringify(out); }
+    var accent = getComputedStyle(document.body).getPropertyValue('--st-accent').trim();
+    var probe = document.createElement('div');
+    probe.style.color = accent; document.body.appendChild(probe);
+    var accentRGB = getComputedStyle(probe).color;
+    document.body.removeChild(probe);
+    var dots = Array.prototype.slice.call(region.querySelectorAll('span'))
+      .filter(function(s){ return s.style && s.style.borderRadius === '50%'; });
+    var selected = dots.filter(function(d){ return getComputedStyle(d).backgroundColor === accentRGB; });
+    out.accentDots = selected.length;
+    if(selected.length === 1){
+      var chip = selected[0].parentElement;
+      out.selectedName = txt(chip);
+      out.nameMatch = out.pageStudent ? (out.selectedName.indexOf(out.pageStudent) === 0) : null;
     }
   } catch(e){ out.err = String((e && e.stack) || e); }
   return JSON.stringify(out);
@@ -1503,6 +1660,99 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
                                 problems.append(
                                     "%s: chart %s renders %r on screen"
                                     % (what, where, bad))
+
+            # 7d. ⊕ 24 Sep 2026 (item 12) — THE ENGAGEMENT TOGGLE, PRESSED.
+            #     `_CHART_JS` above only proves the ENGAGEMENT kind redraws
+            #     when it is FIRST selected; it never presses the toggle
+            #     inside it. See `_ENGAGEMENT_JS`.
+            if page == "insights":
+                got_e = json.loads(pg.eval(_ENGAGEMENT_JS))
+                if got_e.get("err"):
+                    problems.append("%s: the engagement toggle sweep could "
+                                    "not run — %s" % (what, got_e["err"]))
+                else:
+                    for row in got_e.get("scopes") or []:
+                        sc = row.get("scope")
+                        if row.get("miss"):
+                            problems.append("%s: engagement toggle under %r "
+                                            "— %s" % (what, sc, row["miss"]))
+                            continue
+                        if row.get("empty"):
+                            # Legitimately no toggle — nothing to switch
+                            # between (see the JS probe's own comment).
+                            continue
+                        if pass_n == 1:
+                            tally["found"] += 1
+                        want_labels = ["Today", "This week", "2+ weeks"]
+                        if row.get("labels") != want_labels:
+                            problems.append(
+                                "%s: engagement toggle under %r reads %r, "
+                                "not %r"
+                                % (what, sc, row.get("labels"), want_labels))
+                        notes = row.get("notes") or []
+                        if len(notes) != 3:
+                            problems.append(
+                                "%s: engagement toggle under %r — only %d "
+                                "of 3 presses landed"
+                                % (what, sc, len(notes)))
+                        else:
+                            if pass_n == 1:
+                                tally["pressed"] += 3
+                            # ⚑ A DEAD TOGGLE STILL SHOWS aria-pressed="true"
+                            #   ON THE PRESSED BUTTON — that is CSS/markup,
+                            #   not proof the chart redrew. The note text is
+                            #   the seam's own output, so three DIFFERENT
+                            #   notes is three real re-renders.
+                            texts = [n.get("note") for n in notes]
+                            if len(set(texts)) < 3:
+                                problems.append(
+                                    "%s: engagement toggle under %r — "
+                                    "pressing Today / This week / 2+ weeks "
+                                    "leaves the same note (%r): a toggle "
+                                    "that looks pressed and does not redraw"
+                                    % (what, sc, texts))
+                            for n in notes:
+                                if n.get("pressed") != "true":
+                                    problems.append(
+                                        "%s: engagement toggle under %r — "
+                                        "%r was pressed and does not report "
+                                        "aria-pressed=\"true\" on itself"
+                                        % (what, sc, n.get("label")))
+                    leaks = got_e.get("leaksOnOtherKind")
+                    if leaks:
+                        problems.append(
+                            "%s: the engagement toggle is still in the DOM "
+                            "(%d button(s)) after switching to Submissions "
+                            "— chart.hasBucketTabs did not gate it off "
+                            "another kind" % (what, leaks))
+
+            # 7e. ⊕ 24 Sep 2026 (experience run, item 7) — "SEND SHOUTOUT"
+            #     ON A PUPIL'S PAGE PRESELECTS THAT PUPIL. Pressed for real,
+            #     inside the overlay's own region so a stale reference from
+            #     before the composer opened cannot be read back.
+            if page == "student-detail":
+                got_p = json.loads(pg.eval(_PRESELECT_JS))
+                if got_p.get("err"):
+                    problems.append("%s: the shoutout preselect check could "
+                                    "not run — %s" % (what, got_p["err"]))
+                elif got_p.get("skip"):
+                    pass  # no "Send shoutout" button on this shape
+                else:
+                    if pass_n == 1:
+                        tally["found"] += 1
+                        tally["pressed"] += 1
+                    n = got_p.get("accentDots")
+                    if n != 1:
+                        problems.append(
+                            "%s: opening the shoutout composer from this "
+                            "pupil's own page pre-selects %s chip(s), not "
+                            "exactly one" % (what, n))
+                    if got_p.get("nameMatch") is False:
+                        problems.append(
+                            "%s: the preselected chip is not this pupil "
+                            "(%r), it is %r"
+                            % (what, got_p.get("pageStudent"),
+                               got_p.get("selectedName")))
 
             # 8. And the console stayed quiet. A page can render correctly and
             #    still be throwing on every state change — the throw happens
