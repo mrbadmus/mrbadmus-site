@@ -18,13 +18,15 @@ import math
 from .style import (AMBER, MUTED, RED, STYLE, TINT, Canvas, arrow, box, esc,
                     line, num_width_wide, q_font, q_stroke, text, text_width,
                     wrap)
+from .style import grid_line  # ⊕ MRB-352 run 2 (174)
 
 ST = STYLE["stroke"]
 LBL = STYLE["label"]
 ACC = STYLE["arrow"]
-# ⊕ MRB-352 run 2 (174, visual review): 3.0:1 on the cream card (WCAG
-# 1.4.11 — a pupil reads values off this grid). It was #CFC7B2, 1.48:1.
-GRID = "#948A70"
+# ⊕ MRB-352 run 2 (174, visual review): gridlines are drawn by
+# style.grid_line (>= 3:1 on the card, WCAG 1.4.11); this was #CFC7B2,
+# 1.48:1. GRID is kept as a name for anything importing it.
+GRID = STYLE["grid"]
 SERIES = (ACC, RED, "#1A1A1A")
 DASHES = (None, "10 7", "3 6")
 
@@ -205,7 +207,7 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
         yy += fs + 5
     for k in range(0, int(top) + 1, int(step)):
         yy = oy - ah * k / float(top)
-        line(c, ox, yy, ox + aw, yy, GRID, q_stroke(W, 1.2), None, "butt")
+        grid_line(c, ox, yy, ox + aw, yy, W)
         line(c, ox - 7, yy, ox, yy, ST, sw)
         text(c, ox - 11, yy + fn * 0.35, _fmt(k), fn, LBL, "normal", "end")
     for i, b in enumerate(bins):
@@ -330,12 +332,16 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
 
     c = canvas if canvas is not None else Canvas(W, H)
     if grid:
+        # ⊕ MRB-352 (174): a line at a labelled tick is major; one between
+        # ticks (x_grid / y_grid finer than the ticks) is minor, thinner
         for t in (x_grid or x_ticks):
             px, _ = P(t, y0)
-            line(c, px, oy, px, oy - ah, GRID, q_stroke(W, 1.2), None, "butt")
+            grid_line(c, px, oy, px, oy - ah, W,
+                      "major" if t in x_ticks else "minor")
         for t in (y_grid or y_ticks):
             _, py = P(x0, t)
-            line(c, ox, py, ox + aw, py, GRID, q_stroke(W, 1.2), None, "butt")
+            grid_line(c, ox, py, ox + aw, py, W,
+                      "major" if t in y_ticks else "minor")
     for t in x_ticks:
         px, _ = P(t, y0)
         line(c, px, oy, px, oy + 7, ST, sw)

@@ -47,6 +47,8 @@ _Q = "{http://www.w3.org/2000/svg}"
 MIN_CONTRAST = 4.5
 NUM_EDGE_CLEAR = 6           # rule 7: units between a numeral and the edge
 DARK_LUMINANCE = 0.18        # a fill darker than this carries no text at all
+GRID_CONTRAST = 3.0          # grid rule: a data-role grid line vs its paper
+GRID_ROLES = ("grid", "grid-minor")
 
 PAINT = {"fill", "stroke", "stroke-width", "stroke-linecap",
          "stroke-linejoin", "stroke-dasharray"}
@@ -57,7 +59,7 @@ ALLOWED = {
     "rect":     {"x", "y", "width", "height", "rx", "data-role"} | PAINT,
     "circle":   {"cx", "cy", "r"} | PAINT,
     "ellipse":  {"cx", "cy", "rx", "ry"} | PAINT,
-    "line":     {"x1", "y1", "x2", "y2"} | PAINT,
+    "line":     {"x1", "y1", "x2", "y2", "data-role"} | PAINT,
     "polyline": {"points"} | PAINT,
     "polygon":  {"points"} | PAINT,
     "path":     {"d"} | PAINT,
@@ -193,6 +195,57 @@ def _text_samples(el, size):
     return pts
 
 
+def _grid_problems(fid, el, filled):
+    """The grid rule for one data-role grid line: >= GRID_CONTRAST against
+    the topmost fill under its midpoint, painted before it."""
+    stroke = el.get("stroke")
+    if stroke in (None, "none") or not _HEX.match(stroke):
+        return ["%s: a grid line has no #hex stroke" % fid]
+    mx = (float(el.get("x1", 0)) + float(el.get("x2", 0))) / 2
+    my = (float(el.get("y1", 0)) + float(el.get("y2", 0))) / 2
+    under = next((s for s in reversed(filled) if _contains(s, mx, my)), None)
+    if under is None:
+        return ["%s: a grid line at %.1f,%.1f is not on the paper card"
+                % (fid, mx, my)]
+    ratio = contrast(stroke, under.get("fill"))
+    if ratio < GRID_CONTRAST - 1e-9:
+        return ["%s: a %s line %s is %.2f:1 against %s — under %.1f:1 "
+                "(WCAG 1.4.11: a pupil reads values off it)"
+                % (fid, el.get("data-role"), stroke, ratio, under.get("fill"),
+                   GRID_CONTRAST)]
+    return []
+
+
+def self_test_grid():
+    """⊕ MRB-352 run 2 (174): prove the grid rule fires. A faint grid on
+    the cream card and on a white screen must fail; the shared STYLE grid
+    colours must pass on both; an unknown data-role must fail. Returns a
+    list of failures (empty = the rule works)."""
+    from .style import STYLE
+    out = []
+
+    def fig(stroke, under="#F3F0E7", role="grid"):
+        return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" '
+                'role="img"><rect data-role="paper" x="0" y="0" width="320" '
+                'height="200" fill="#F3F0E7" stroke="none"/>'
+                '<rect x="20" y="20" width="280" height="160" fill="%s" '
+                'stroke="none"/><line x1="30" y1="100" x2="290" y2="100" '
+                'fill="none" stroke="%s" stroke-width="1.5" data-role="%s"/>'
+                '</svg>' % (under, stroke, role))
+    for bg in ("#F3F0E7", "#FFFFFF"):
+        for bad in ("#D5CDB8", "#CFC7B2", "#A89E86"):
+            if not any("grid" in p for p in check_figure("t", fig(bad, bg))):
+                out.append("grid rule missed faint %s on %s" % (bad, bg))
+        for good in (STYLE["grid"], STYLE["grid_minor"], STYLE["grid_axis"]):
+            p = [q for q in check_figure("t", fig(good, bg)) if "grid" in q]
+            if p:
+                out.append("grid rule refused STYLE %s on %s: %s" % (good, bg, p))
+    if not any("data-role" in p for p in
+               check_figure("t", fig(STYLE["grid"], role="gridline"))):
+        out.append("grid rule accepted an unknown data-role")
+    return out
+
+
 # ── the check ─────────────────────────────────────────────────────────────
 
 def check_figure(fid, svg):
@@ -251,6 +304,15 @@ def check_figure(fid, svg):
         if tag == "rect" and el.get("data-role") not in (None, "paper"):
             probs.append("%s: data-role=%r — only 'paper'" % (fid,
                                                                el.get("data-role")))
+        # ⊕ MRB-352 run 2 (174) — the GRID rule: a line tagged as a grid is
+        # read (values, squares, divisions), so its stroke is >= 3:1 against
+        # the fill it actually sits on (WCAG 1.4.11), found as for text.
+        if tag == "line" and el.get("data-role") is not None:
+            if el.get("data-role") not in GRID_ROLES:
+                probs.append("%s: <line data-role=%r> — only %s"
+                             % (fid, el.get("data-role"), ", ".join(GRID_ROLES)))
+            else:
+                probs.extend(_grid_problems(fid, el, filled))
         if tag == "polyline" and el.get("fill") not in (None, "none"):
             probs.append("%s: a filled <polyline> — use a polygon" % fid)
 
@@ -363,6 +425,8 @@ def check_manifest(manifest):
     """Every figure, plus the one cross-figure rule: no id attribute value
     appears in two figures (two figures on one page must never collide)."""
     probs, owner = [], {}
+    probs.extend("figlib.checks.self_test_grid: " + p
+                 for p in self_test_grid())       # ⊕ MRB-352 (174)
     for fid in sorted(manifest):
         svg = manifest[fid]["svg"]
         probs.extend(check_figure(fid, svg))

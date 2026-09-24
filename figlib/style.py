@@ -28,6 +28,15 @@ STYLE = {
     "elec_r":  6.5,
     "cross_s": 7,
     "cross_w": 3.4,
+    # ⊕ MRB-352 run 2 (174): the ONE definition of a readable grid — a pupil
+    # reads values and counts squares off it, so every gridline is >= 3:1
+    # against the paper it sits on (WCAG 1.4.11; figlib.checks enforces it on
+    # every data-role="grid"/"grid-minor" line). Major #8C8268 is 3.35:1 on
+    # the cream card; minor #948A70 is 3.01:1 and drawn THINNER, so it still
+    # reads lighter; the scope's centre line #6F6754 is darker again.
+    "grid":       "#8C8268",
+    "grid_minor": "#948A70",
+    "grid_axis":  "#6F6754",
 }
 
 # ====================================================================
@@ -323,6 +332,24 @@ def line(c, x1, y1, x2, y2, stroke=None, width=3, dash=None, cap="round"):
     c.S.append(
         f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" '
         f'stroke="{stroke}" stroke-width="{width}" stroke-linecap="{cap}"{d}/>')
+
+
+def grid_line(c, x1, y1, x2, y2, W, kind="major"):
+    """⊕ MRB-352 run 2 (174): one gridline, tagged data-role so the checks
+    can hold it to 3:1. `kind` is "major" (a labelled tick or a counted
+    division), "minor" (an unlabelled line between ticks — thinner) or
+    "axis" (a screen's centre line — darker and heavier)."""
+    minor_w = q_stroke(W, 1.0)
+    major_w = round(max(q_stroke(W, 1.4), minor_w * 1.4), 2)
+    col, width, role = {
+        "major": (STYLE["grid"], major_w, "grid"),
+        "minor": (STYLE["grid_minor"], minor_w, "grid-minor"),
+        "axis":  (STYLE["grid_axis"], round(major_w * 1.3, 2), "grid"),
+    }[kind]
+    c.S.append(
+        f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" '
+        f'stroke="{col}" stroke-width="{width}" stroke-linecap="butt" '
+        f'data-role="{role}"/>')
 
 
 def box(c, x, y, w, h, fill="none", stroke=None, width=2, rx=0, dash=None):

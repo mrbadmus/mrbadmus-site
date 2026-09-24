@@ -2721,6 +2721,7 @@ if __name__ == "__main__":
 # ====================================================================
 from .style import (MUTED, TINT, arrow as _q_arrow, box as _q_box,  # noqa: E402
                     line as _q_line, q_font, q_stroke, text as _q_text)
+from .style import grid_line as _grid_line  # noqa: E402  ⊕ MRB-352 (174)
 
 
 def symbol_figure(key, W=240, H=150):
@@ -2976,13 +2977,6 @@ def resolution_triangle(angle=35, hyp="F", horiz="F cos θ",
     return c.svg()
 
 
-# ⊕ MRB-352 run 2 (174, visual review): the screen grid is counted (peak
-# pd in divisions, cycles across the screen), so it is 3.4:1 on the white
-# screen (WCAG 1.4.11); it was #D5CDB8, 1.47:1. The centre line stays darker.
-_SCOPE_GRID = "#948A70"
-_SCOPE_CENTRE = "#6F6754"
-
-
 def oscilloscope_compare(traces, W=440, divisions=(10, 5), amplitude=2):
     """One oscilloscope screen per trace, stacked, each captioned — the
     screens share a width and a time-base, so their cycles can be compared
@@ -3013,17 +3007,18 @@ def oscilloscope_compare(traces, W=440, divisions=(10, 5), amplitude=2):
             sy0 = y
         sx0 = 20
         _q_box(c, sx0, sy0, div*dx, sh, TINT["white"], ST, q_stroke(W, 2.5), 6)
+        # ⊕ MRB-352 run 2 (174, visual review): the divisions are counted
+        # (peak pd, cycles across the screen), so they use the shared
+        # readable grid (style.grid_line, >= 3:1); they were #D5CDB8, 1.47:1.
         for i in range(1, dx):
-            _q_line(c, sx0 + i*div, sy0, sx0 + i*div, sy0 + sh, _SCOPE_GRID,
-                    q_stroke(W, 1.2), None, "butt")
+            _grid_line(c, sx0 + i*div, sy0, sx0 + i*div, sy0 + sh, W)
         for j in range(1, dy):
             centre = dy % 2 == 0 and j == dy // 2
-            col = _SCOPE_CENTRE if centre else _SCOPE_GRID
-            _q_line(c, sx0, sy0 + j*div, sx0 + dx*div, sy0 + j*div, col,
-                    q_stroke(W, 1.6 if centre else 1.2), None, "butt")
+            _grid_line(c, sx0, sy0 + j*div, sx0 + dx*div, sy0 + j*div, W,
+                       "axis" if centre else "major")
         if dy % 2:
-            _q_line(c, sx0, sy0 + sh/2, sx0 + dx*div, sy0 + sh/2, _SCOPE_CENTRE,
-                    q_stroke(W, 1.6), None, "butt")
+            _grid_line(c, sx0, sy0 + sh/2, sx0 + dx*div, sy0 + sh/2, W,
+                       "axis")
         cy = sy0 + sh/2
         n = max(200, t["cycles"] * 40)
         pts = [(sx0 + dx*div*i/float(n),

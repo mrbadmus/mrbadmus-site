@@ -248,12 +248,21 @@ byte), each marked `⊕ MRB-352 run 2 (174)`:
 
 ### Batch 3 fix round (examiner + visual review)
 
-- Grids a pupil reads values from are now #948A70 — 3.0:1 on the cream
-  card, 3.4:1 on a white scope screen (WCAG 1.4.11): `charts.GRID` (every
-  line graph and bar/column chart) and the oscilloscope screen grid
-  (`physics._SCOPE_GRID`), whose centre line is darker again (#6F6754).
-  The review suggested #A89E86, but that measures 2.3:1 on cream; #948A70
-  is the colour `force_grid` already uses for the same reason.
+- **A readable grid, defined once** (`STYLE["grid"]`, `["grid_minor"]`,
+  `["grid_axis"]`, drawn by `style.grid_line`): MAJOR gridlines (a
+  labelled tick, a counted scope division) #8C8268, 3.35:1 on the cream
+  card; MINOR gridlines (between ticks) #948A70, 3.01:1, drawn thinner so
+  they still read lighter; a scope's centre line #6F6754, heavier. Used by
+  every line graph, bar/column chart and oscilloscope screen. They were
+  #CFC7B2 / #D5CDB8, about 1.5:1. (#A89E86, suggested in review, is only
+  2.33:1 on cream.) Every gridline carries `data-role="grid"` or
+  `"grid-minor"`.
+- **New hard check (`figlib.checks`, the grid rule):** every data-role
+  grid line's stroke is >= 3:1 against the fill it sits on (the cream card
+  or a white scope screen); any other data-role on a line is refused.
+  `checks.self_test_grid()` proves the rule fires (faint greys refused on
+  both papers, the STYLE colours accepted); `check_manifest` runs it first,
+  so the `figure_manifest` gate exercises it on every build.
 - `line_graph` series option `smooth_from`: an exact straight polyline up
   to that x, then the monotone curve leaving at the straight run's slope
   (no kink, no early bend). Used by `ks4-fig-graph-iv-resistor-bends`.
