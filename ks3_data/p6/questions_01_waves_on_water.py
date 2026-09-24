@@ -1107,25 +1107,25 @@ QUESTIONS = [
     {
         "id": "p6-01-e17",
         "band": "easier",
-        "text": "The leading edge of one crest is marked, and the matching "
-                "leading edge of the very next crest is marked 0.45 m "
-                "further along. What is the wavelength?",
+        "text": "The diagram shows a water wave. What is its wavelength?",
         "options": [
-            {"text": "0.225 m", "correct": False,
-             "why": "Halving would give the distance to only part of the "
-                    "way through the wave, not to the matching point on "
-                    "the next one."},
-            {"text": "0.90 m", "correct": False,
-             "why": "Doubling would be two whole wavelengths. Two matching "
-                    "points on neighbouring crests are one wavelength "
-                    "apart."},
-            {"text": "0.45 m", "correct": True},
+            {"text": "0.225 m",
+             "correct": False,
+             "why": "Halving gives a distance only part of the way along one "
+                    "wave. The two dots sit at the same point on "
+                    "neighbouring waves, so they are one wavelength apart."},
+            {"text": "0.90 m",
+             "correct": False,
+             "why": "Doubling would be two whole wavelengths. The dots are "
+                    "on neighbouring waves, one wavelength apart."},
+            {"text": "0.45 m",
+             "correct": True},
             {"text": "It cannot be told without the amplitude",
              "correct": False,
              "why": "Wavelength is a distance along the wave and does not "
                     "depend on how high the wave rises."},
         ],
-        "figure": None,
+        "figure": "p6-wave-dots-045",
     },
     {
         "id": "p6-01-e18",
@@ -1827,22 +1827,24 @@ QUESTIONS = [
     {
         "id": "p6-01-h14",
         "band": "harder",
-        "text": "A photograph of a ripple tank shows 6 evenly spaced "
-                "crests along a 1.5 m stretch of water, with one crest at each "
-                "end of the stretch. What is the wavelength?",
+        "text": "The diagram shows water waves. What is their wavelength?",
         "options": [
-            {"text": "0.25 m", "correct": False,
-             "why": "That divides 1.5 m by all 6 crests. Six crests "
-                    "with one at each end mark out only 5 gaps between them."},
-            {"text": "0.375 m", "correct": False,
-             "why": "That divides 1.5 m by 4, which is neither the "
-                    "number of crests nor the number of gaps between them."},
-            {"text": "It cannot be found without the amplitude", "correct": False,
-             "why": "Wavelength comes from the length and the number of "
-                    "gaps between crests; amplitude plays no part in it."},
-            {"text": "0.3 m", "correct": True},
+            {"text": "0.25 m",
+             "correct": False,
+             "why": "That divides 1.5 m by all 6 crests. Six crests mark out "
+                    "only 5 gaps between them."},
+            {"text": "0.375 m",
+             "correct": False,
+             "why": "That divides 1.5 m by 4, which is neither the number of "
+                    "crests nor the number of gaps between them."},
+            {"text": "It cannot be found without the amplitude",
+             "correct": False,
+             "why": "Wavelength comes from the length and the number of gaps "
+                    "between crests; amplitude plays no part in it."},
+            {"text": "0.3 m",
+             "correct": True},
         ],
-        "figure": None,
+        "figure": "p6-wave-six-crests",
     },
     {
         "id": "p6-01-h15",
@@ -2287,35 +2289,31 @@ QUESTIONS = [
     {
         "id": "p6-01-h30",
         "band": "harder",
-        "text": "A student sketches a water wave whose crests and "
-                "troughs get progressively closer together from left to right, "
-                "all with the same height. A second student says this cannot be "
-                "a real single wave, because 'a wave's wavelength has to stay "
-                "constant all the way along.' Assess this second claim, and "
-                "suggest what such a changing spacing might show instead.",
+        "text": "Water waves move from deep water into shallow water. Their "
+                "frequency stays the same, but their crests get closer "
+                "together. A student says this is impossible, because 'a "
+                "wave's wavelength has to stay the same all the way along.' "
+                "Evaluate the student's claim.",
         "options": [
-            {"text": "The second claim is right, and the drawing must "
-                     "simply be a mistake", "correct": False,
-             "why": "A changing wavelength along one wave is not ruled "
-                    "out by anything in this lesson — the fixed-wavelength "
-                    "tank is a simple case, not a universal rule."},
-            {"text": "The second claim is right, because amplitude and "
-                     "wavelength are actually one and the same measurement "
-                     "underneath everything else, so of course both would always "
-                     "have to stay perfectly fixed together the entire way along "
-                     "any wave", "correct": False,
-             "why": "Amplitude and wavelength are independent "
-                    "measurements in this lesson, not the same thing, and "
-                    "neither is forced to stay fixed by the other."},
-            {"text": "Real waves can never have their spacing measured "
-                     "more than once, so the second claim cannot be tested", "correct": False,
-             "why": "Spacing between crests can be measured at any "
-                    "point along a wave train — nothing prevents measuring it "
-                    "more than once."},
-            {"text": "The second claim goes too far: a fixed wavelength "
-                     "is only a feature of the simple, steady case, not a rule "
-                     "every real wave obeys — changing spacing more likely shows "
-                     "the wave slowing down or speeding up", "correct": True},
+            {"text": "The student is right, so the crests must have been "
+                     "measured wrongly",
+             "correct": False,
+             "why": "The crest spacing really does change here. A fixed "
+                    "wavelength is only what happens while the speed stays "
+                    "the same."},
+            {"text": "The student is right, because a wave's wavelength is "
+                     "fixed by its amplitude, which has not changed",
+             "correct": False,
+             "why": "Amplitude and wavelength are separate measurements. "
+                    "Neither one fixes the other."},
+            {"text": "The claim cannot be tested, because crest spacing can "
+                     "only be measured in one place",
+             "correct": False,
+             "why": "Crest spacing can be measured anywhere along the waves, "
+                    "in deep water and in shallow water."},
+            {"text": "The student is wrong: the waves slow down in shallow "
+                     "water, so their crests close up",
+             "correct": True},
         ],
         "figure": None,
     },
