@@ -1481,7 +1481,8 @@ NAV = {
         nodes=(253,),
         anchor=dict(key="openMarking"),
         to="      openMarking: () => MRB_GO('marking', { 'class': k && k.id, "
-           "paper: MRB_NEWEST_MARKED(MRB_PICK('PAPERS', k && k.id)) }),",
+           "paper: MRB_NEWEST_MARKED(MRB_PICK('PAPERS', k && k.id), "
+           "MRB_PICK('MATRIX', k && k.id)) }),",
         why="\"Open the full breakdown\" under the class glance's two "
             "weakest questions. Design's own destination is the marking "
             "screen for `lastP`, the last MARKED paper — but by `paperId`, a "
@@ -1490,7 +1491,10 @@ NAV = {
             "one\", taken from `teacher-live.js` rather than reimplemented, "
             "and it is the same function every other marking link already "
             "uses. Design's `if (lastP)` guard is not needed: the whole "
-            "glance block is inside `<if klass.hasWork>`."),
+            "glance block is inside `<if klass.hasWork>`. ⊕ Mide's 23 Sep "
+            "2026 ruling — the matrix is passed now too, so this prefers a "
+            "released paper that actually has a cell over a just-released "
+            "empty one, same as every other `MRB_NEWEST_MARKED` call."),
 
     "w.open (keep an eye on)": dict(
         nodes=(259,),
@@ -5394,8 +5398,11 @@ METHODS = {
         "and fills it from real submissions, and ADDS what Design's could not "
         "carry: `pct[]` and `max[]` per cell (real papers are not out of 8), "
         "`stampShort[]` (when the work actually arrived) and `markedIdx` "
-        "(which columns are closed, because real classes do not have exactly "
-        "one open paper at index 0)."),
+        "(which columns are RELEASED — Mide's 23 Sep 2026 ruling, results are "
+        "live the instant a paper is set rather than only once its deadline "
+        "passes — plus `closedIdx` for the handful of readers that genuinely "
+        "mean the deadline, because real classes do not have exactly one "
+        "open paper at index 0)."),
     "rosterFor": (
         "    if (!k || !k.id) return [];\n"
         "    return MRB_PICK('ROSTER', k.id);",
@@ -6724,7 +6731,7 @@ LOGIC = (
           return { label: c.code, sub: this.STEMS[qi].id + ' · ' + this.STEMS[qi].text, value: min + '%', pct: min, fill: min < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)', qi };
         });""",
      """        const rows = live.map(c => {
-          const gi = MRB_NEWEST_MARKED(this.papersFor(c));
+          const gi = MRB_NEWEST_MARKED(this.papersFor(c), mx(c));
           const g = gi < 0 ? null : this.gridFor(c, gi);
           const scored = g ? g.qpct.filter(v => v != null) : [];
           if (!scored.length) { return null; }
@@ -6750,7 +6757,7 @@ LOGIC = (
         tiles: [tile('Paper mean', mx(k).colMean[1] + '%', g.submitted + ' of ' + k.n + ' submitted'),
           tile('Lowest', this.STEMS[qi].id + ' · ' + min + '%', this.STEMS[qi].text), tile('Highest', max + '%', 'Best answered question')],
         note: 'Reteach ' + this.STEMS[qi].text.toLowerCase() + ' — ' + min + '% of the class got it' };""",
-     """      const gi = MRB_NEWEST_MARKED(this.papersFor(k));
+     """      const gi = MRB_NEWEST_MARKED(this.papersFor(k), mx(k));
       const g = gi < 0 ? null : this.gridFor(k, gi);
       const p = gi < 0 ? null : this.papersFor(k)[gi];
       const scored = g ? g.qpct.filter(v => v != null) : [];
@@ -7798,6 +7805,35 @@ componentDidUpdate() {
      "`noteCount` because it is the composer's other computed key and the "
      "only line in Design's logic that names this footer."),
 
+    # ══ ⊕ Mide's 23 Sep 2026 ruling · "SELECT ALL ON TIME THIS WEEK" MEANT
+    #    "IN THIS WEEK", NOT "ON TIME" — AND IT WAS NEVER WIRED AT ALL ═════
+    #
+    # ⛔ THE BUTTON'S OWN LABEL WAS THE SPEC, AND THE HANDLER DID NOT MATCH
+    # IT. Design's `bulkTop` selects `kRoster.filter(r => r.inWeek)` —
+    # everyone with a cell on an in-week paper, late or not — under a link
+    # reading "Select all on time this week". Pressed on `10h/Ph1`, it would
+    # have caught Annabel (complete, on time) and anyone who handed work in
+    # five days late alongside her, both counted as "on time" by a button
+    # that says so. This line had never been touched by any prior ruling —
+    # `bulkTop` does not appear anywhere else in this file — so the bulk
+    # shoutout sheet has been shipping Design's mismatch since the sheet went
+    # live.
+    #
+    # `r.onTimeWeek` is the real predicate, item 5 of Mide's 23 Sep 2026
+    # ruling: true iff the pupil has a cell with `late === false` on an
+    # in-week paper. Computed once in `shared/teacher-live.js`'s
+    # `buildMatrix` / `matrixFromRollup` and carried on every roster row
+    # exactly so this button (and nothing else) can read it.
+    ("      bulkTop: () => this.setState({ boSel: kRoster.filter(r => "
+     "r.inWeek).map(r => r.id) }),",
+     "      bulkTop: () => this.setState({ boSel: kRoster.filter(r => "
+     "r.onTimeWeek).map(r => r.id) }),",
+     "the bulk shoutout sheet's \"Select all on time this week\" link. "
+     "Design's own handler selected everyone IN this week's work, not "
+     "everyone ON TIME with it — the button's own label was the spec, and "
+     "nothing had ever wired this line before. `r.onTimeWeek` is item 5 of "
+     "Mide's 23 Sep 2026 ruling."),
+
     # ⛔ AND THE BULK SHEET, WHICH IS THE SAME LIE MULTIPLIED. Design's
     # `sendBulk` closes the sheet, empties the selection and toasts "Shoutout
     # sent to 6 students". Six children, none of whom were told anything.
@@ -8160,31 +8196,53 @@ componentDidUpdate() {
      "submissions still marked\"."),
 
     ("      const late = !open && sc != null && stRow.late[i] === true;",
-     "      const lateState = (!open && sc != null) ? stRow.late[i] : null;\n"
+     "      const lateState = sc != null ? stRow.late[i] : null;\n"
      "      const late = lateState === true;",
      "⊕ THE OTHER HALF OF THE `=== true` PIN. Making `late` strict stopped an "
      "unknown being CALLED late and did nothing about it being called ON "
      "TIME, which is what the status chip did — the previous ruling's own "
      "note claimed otherwise and was wrong. The tri-state is carried on the "
-     "row now, so the chip and the tile can both see it."),
+     "row now, so the chip and the tile can both see it. "
+     "⊕ SUPERSEDED, Mide's 23 Sep 2026 ruling — the `!open &&` gate is "
+     "dropped. It used to mean \"don't show lateness for the currently open "
+     "paper\", which made sense back when a currently-open paper could not "
+     "yet have a real mark; results are live now, so a complete cell "
+     "(`sc != null`) is exactly the condition under which lateness is known, "
+     "whether or not the paper has closed."),
 
     ("      const tone = open ? 'neutral' : (sc == null || late ? 'warn' : "
      "'ok');",
-     "      const tone = open ? 'neutral'\n"
-     "        : (sc == null || late ? 'warn'\n"
-     "          : (lateState === false ? 'ok' : 'neutral'));",
+     "      const tone = sc != null\n"
+     "        ? (lateState === true ? 'warn'\n"
+     "          : (lateState === false ? 'ok' : 'neutral'))\n"
+     "        : (pState === 'closed' ? 'warn' : 'neutral');",
      "the status chip's colour. Green is Design's \"on time\"; an unknown is "
-     "not a claim and takes the neutral tone."),
+     "not a claim and takes the neutral tone. ⊕ Mide's 23 Sep 2026 ruling — "
+     "re-expressed on `sc`/`pState` rather than the retired `open`: a "
+     "COMPLETE cell earns its tone (warn if late, ok if on time, neutral if "
+     "unknown) whether or not the paper has closed, since results are live; "
+     "an incomplete row is only a warning once its paper has genuinely "
+     "closed with nothing to show for it — a scheduled or still-open paper "
+     "with no submission yet is neutral, not a warning."),
 
     ("        status: open ? (sc != null ? 'In progress' : 'Nothing in') : "
      "(sc == null ? 'Nothing in' : (late ? 'Late' : 'On time')),",
-     "        status: open ? (sc != null ? 'In progress' : 'Nothing in')\n"
-     "          : (sc == null ? 'Nothing in'\n"
-     "            : (lateState === true ? 'Late'\n"
-     "              : (lateState === false ? 'On time' : 'Submitted'))),",
+     "        status: sc != null\n"
+     "          ? (lateState === true ? 'Complete · late' : 'Complete')\n"
+     "          : (hasRow ? 'In progress'\n"
+     "            : (pState === 'scheduled' ? 'Scheduled'\n"
+     "              : (pState === 'closed' ? 'Missing' : 'Not started'))),",
      "the status chip on a row of the student's assignment history. It read "
      "\"On time\" for every submission whose timing is not recorded, which is "
-     "every submission older than 22 Aug 2026."),
+     "every submission older than 22 Aug 2026. ⊕ Mide's 23 Sep 2026 ruling, "
+     "item 4 — FIVE words, not two: Complete (a cell exists; \"· late\" "
+     "suffix when late), In progress (a submission row exists and is not "
+     "complete), Not started (the paper is open, no row at all), Missing "
+     "(the paper is closed, no complete cell), Scheduled (the paper has not "
+     "been released). A complete cell now reads Complete on an OPEN paper "
+     "too — the whole point of \"results are live\" is that a finished "
+     "pupil's work stops looking absent the moment they finish it, rather "
+     "than waiting for a deadline nobody but the teacher can see."),
 
     # ══ ⊕ 24 Aug 2026 · THE SHOUTOUT DELETE, CONFIRMED AND WIRED ═══════
     #
@@ -8989,26 +9047,32 @@ componentDidUpdate() {
     # Order is safe: both anchor inside `const stHistory`, which no earlier
     # ruling removes, and neither touches a line another entry is looking for.
     (dict(builder="stHistory", key="submitted"),
-     "        submitted: open ? (sc != null ? st.last : 'Not yet') "
-     ": (stampS || '—'),",
-     "the SUBMITTED column, and it is the worst line in Design's file. It "
-     "renders `p.dueShort` when the work was on time and `p.lateShort` when "
+     "        submitted: sc != null ? (stampS || '—')\n"
+     "          : (hasRow ? 'In progress' : '—'),",
+     "the SUBMITTED column, and it was the worst line in Design's file. It "
+     "rendered `p.dueShort` when the work was on time and `p.lateShort` when "
      "it was late — the DEADLINE and the END OF THE WEEK. Neither is when "
      "anybody submitted anything, and on a parents' evening it would be "
      "quoted. `stampShort[]` is `completed_at` or `submitted_at` formatted, "
      "blank where there is none. "
      "⊕ 1 Sep 2026 (MRB-306) — split out of #11's ten-line `frm` onto its "
-     "own anchor; the ruling is unchanged."),
+     "own anchor. ⊕ SUPERSEDED, Mide's 23 Sep 2026 ruling — the `open ? … : "
+     "…` gate is gone with `open` itself: a complete cell shows its real "
+     "timestamp whether or not the paper has closed (results are live), an "
+     "incomplete-but-started row says so, and everything else is a dash."),
 
     (dict(builder="stHistory", key="score"),
-     "        score: open || sc == null || stRow.max[i] == null ? '—'\n"
+     "        score: sc == null || stRow.max[i] == null ? '—'\n"
      "          : sc + '/' + stRow.max[i] "
      "+ (pct == null ? '' : ' · ' + pct + '%'),",
      "the SCORE column's `/8`. Design's every paper is out of eight; a real "
      "one is out of `max[]`, and a paper whose max is unknown says so rather "
      "than dividing by a number nobody set. "
      "⊕ 1 Sep 2026 (MRB-306) — split out of #11's ten-line `frm` onto its "
-     "own anchor; the ruling is unchanged."),
+     "own anchor. ⊕ SUPERSEDED, Mide's 23 Sep 2026 ruling — dropped the "
+     "`open ||` gate that hid a mark on a still-open paper: `sc` is already "
+     "null unless a complete cell exists, so the gate was hiding a genuine "
+     "score behind a deadline nobody needed to wait for."),
 
     # ══ MRB-306 · THE WEEK BAR — THE REST OF #6 AND #13 ═════════════════
     #
@@ -9448,7 +9512,7 @@ componentDidUpdate() {
      """  weakFor(k) {
     if (!k || k.state !== 'live') return null;
     const papers = this.papersFor(k);
-    const pi = MRB_NEWEST_MARKED(papers);
+    const pi = MRB_NEWEST_MARKED(papers, this.matrixFor(k));
     const p = pi >= 0 ? papers[pi] : null;
     const g = p ? this.gridFor(k, p.idx) : null;
     if (!g || !g.qpct) return null;
@@ -9462,7 +9526,10 @@ componentDidUpdate() {
       text: stem.text || '', paperId: p.id };
   }""",
      "the cross-class \"Worth a reteach\" list. Three throws in five lines, "
-     "on every page rather than on one. See the block comment."),
+     "on every page rather than on one. See the block comment. ⊕ Mide's "
+     "23 Sep 2026 ruling — `MRB_NEWEST_MARKED` now takes the class's matrix "
+     "so it prefers a released paper that has a submitted cell over a "
+     "just-released empty one, same as every other caller of it."),
 
     # ══ ⊕ RULED, MRB-326 JOB 4e · THE HEADER STOPS REPEATING THE CARDS ══
     #
@@ -9821,12 +9888,46 @@ componentDidUpdate() {
     # not the guilty one. A shorter block here would have shipped it.
     # Reported to Mide as a hazard in the anchor mechanism itself.
     ("        late, pct: open ? null : pct,",
-     "        late, lateState, pct: open ? null : pct,",
+     "        late, lateState, pct,",
      "the tri-state, PUT ON THE ROW. `lateState` was a local const the "
      "returned object never carried, so the two tile counts that filter on "
      "it were both permanently 0 and the On-time tile was permanently an em "
      "dash. One word, and it is the difference between a tile that reports "
-     "the rows and a tile that contradicts them."),
+     "the rows and a tile that contradicts them. ⊕ SUPERSEDED, Mide's "
+     "23 Sep 2026 ruling — `open ? null : pct` is gone with `open`: `pct` is "
+     "already null unless a complete cell exists (the matrix's own `pct[]`), "
+     "so gating it a second time on the retired deadline test only hid a "
+     "genuine percentage behind a paper that had not yet closed."),
+
+    # ══ ⊕ Mide's 23 Sep 2026 ruling · `marked`/`missing` NEVER HAD A RULING
+    #    AT ALL, AND THEY WERE STILL Design's `open`-BASED ORIGINAL ═════════
+    #
+    # ⛔ NEITHER LINE HAD EVER BEEN TOUCHED. `stMarked = stHistory.filter(h =>
+    # h.marked)` feeds the Submissions tile's count, the On-time tile's whole
+    # population and `stAvg`; `stMissing` feeds the "N never submitted"
+    # caption. Both read `marked`/`missing` off THIS ROW, and this row was
+    # still Design's own `!open && sc != null` / `!open && sc == null` —
+    # correct only by the coincidence that the OLD `open` meant "not closed",
+    # so `!open` meant "closed" and the two lines happened to already say
+    # "released… no, closed paper, has/hasn't a cell". Left as `open`
+    # (now retired, see the block comment above `const pState`), both lines
+    # would have silently started asking "is this paper UNRELEASED" instead.
+    #
+    # `marked` — item 6/7 of the ruling — is the population averages and the
+    # Submissions count are drawn from: a RELEASED paper this pupil has a
+    # complete cell on. `missing` — item 2 — is unchanged in effect, spelled
+    # on the paper's own `state` rather than inferred from a variable that no
+    # longer means what it used to: a CLOSED paper with no complete cell.
+    ("        marked: !open && sc != null,\n"
+     "        missing: !open && sc == null,",
+     "        marked: pState !== 'scheduled' && sc != null,\n"
+     "        missing: pState === 'closed' && sc == null,",
+     "`stMarked` and `stMissing`'s own per-row facts — never previously "
+     "ruled on, and still Design's `open`-based original right up to this "
+     "entry. `marked` now means \"released, with a complete cell\" (items 6 "
+     "and 7); `missing` is unchanged in effect — \"closed, no complete "
+     "cell\" (item 2) — spelled on `pState` because `open` no longer means "
+     "what made the old spelling correct by coincidence."),
 
     # ── 2. "OPEN" WAS A POSITION, NOT A DEADLINE ────────────────────────
     #
@@ -9854,12 +9955,36 @@ componentDidUpdate() {
     # A child's most recent marked paper disappears from the page and from
     # every number on it. Today only `8r/Sc1` has assignments at all, and
     # both of them are past their deadline the moment the first one closes.
+    # ⊕ SUPERSEDED, Mide's 23 Sep 2026 ruling. The paragraph above made
+    # "open" a deadline test — `p.when === 'upcoming'` — which was correct
+    # for as long as `when === 'marked'` meant "the deadline has passed". It
+    # no longer does: `when === 'marked'` now means "released", so
+    # `p.when === 'upcoming'` means SCHEDULED (not yet released at all), not
+    # "still open". Left as `open`, every downstream branch in this row
+    # (`marked`, `missing`, `late`, `tone`, `submitted`, `score`, `status`)
+    # would have started asking "is this unreleased" where it means "is this
+    # not yet due" — a second silent meaning-change riding on the first one.
+    #
+    # Item 4 of the ruling also asks for a FIFTH status this binary cannot
+    # hold at all: Scheduled, In progress, Not started, Missing and Complete
+    # are five distinct facts about one paper, and "results are live" is
+    # precisely the ruling that pupils are handing in real, gradeable work
+    # WHILE a paper is open — so a row must be able to say "Complete" on an
+    # open paper, which `open ? … : …` binaries can never do. `pState`
+    # carries the paper's own three-way `state` and `hasRow` is whether the
+    # pupil has STARTED a submission at all (any status, complete or not) —
+    # read off `subId[i]`, which the matrix sets from the raw submission row
+    # before the complete-cell guard, and the one fact "In progress" needs
+    # that a complete cell alone cannot supply.
     (dict(builder="stHistory", key="const open"),
-     "      const open = p.when === 'upcoming';",
-     "\"open\" is whether the DEADLINE has passed, not whether the paper is "
-     "first in the list. Design's `i === 0` is her one-open-paper fiction, "
-     "the seam warns about it by name above `buildMatrix`, and `buildPapers` "
-     "already answers it as `when`. A real class has none open, or three."),
+     "      const pState = p.state;\n"
+     "      const hasRow = !!(stRow && stRow.subId[i] != null);",
+     "the two facts every field below now reads instead of the old "
+     "`open`/`!open` binary: the paper's own state, and whether the pupil "
+     "has started a submission at all. Design's `i === 0` is her one-open-"
+     "paper fiction; `shared/teacher-live.js` warns about it by name above "
+     "`buildMatrix`. See the block comment above for why `open` itself "
+     "could not simply be corrected in place a second time."),
 
     # ── 3. AND THE DENOMINATOR THAT ASSUMED THE SAME THING ──────────────
     #
@@ -9868,22 +9993,29 @@ componentDidUpdate() {
     # #11 block lists as saying more than their figure knows, and the class
     # and digest screens were both corrected to `kMx.markedIdx.length` on
     # 24 Aug; the student screen's two occurrences were missed. Same defect,
-    # same fix, same key — `markedIdx` is the indices actually closed, so the
-    # denominator is counted rather than assumed, and it agrees with the rows
-    # because `open` above is now the same test.
+    # same fix, same key — `markedIdx` counts released papers (⊕ Mide's
+    # 23 Sep 2026 ruling — it used to count the closed ones, back when
+    # `when === 'marked'` meant the deadline had passed), so the denominator
+    # is counted rather than assumed. ⊕ AND THE WORD "MARKED" IS RETIRED FROM
+    # BOTH CAPTIONS: item 7 of the 23 Sep 2026 ruling asks for "Of M set this
+    # term", because `markedIdx.length` is no longer a count of graded work —
+    # it is a count of RELEASED papers, and "marked" over a live, possibly
+    # still-open paper is a claim this page can no longer make.
     ("          { label: 'Submissions', value: String(stMarked.length), "
      "sub: 'Of ' + Math.max(0, kPapers.length - 1) + ' marked this term' },",
      "          { label: 'Submissions', value: String(stMarked.length),\n"
-     "            sub: 'Of ' + kMx.markedIdx.length + ' marked this term' },",
+     "            sub: 'Of ' + kMx.markedIdx.length + ' set this term' },",
      "the Submissions tile's denominator. `kPapers.length - 1` assumes "
-     "exactly one open paper; `markedIdx` counts the closed ones."),
+     "exactly one open paper; `markedIdx` counts the released ones, and the "
+     "caption says \"set\" rather than \"marked\" now that it is."),
 
     ("      ? (stMarked.length + ' of ' + Math.max(0, kPapers.length - 1) "
      "+ ' marked sets handed in'",
      "      ? (stMarked.length + ' of ' + kMx.markedIdx.length "
-     "+ ' marked sets handed in'",
+     "+ ' sets handed in'",
      "the summary sentence's denominator — the same assumption as the tile "
-     "above it, in words. Both now count the closed papers."),
+     "above it, in words. Both now count the released papers, and the word "
+     "\"marked\" is dropped for the same reason as the tile's caption."),
 
     # ── 4. "SEND A REMINDER" SENT NOTHING ───────────────────────────────
     #
