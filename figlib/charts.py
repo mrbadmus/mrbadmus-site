@@ -22,7 +22,9 @@ from .style import (AMBER, MUTED, RED, STYLE, TINT, Canvas, arrow, box, esc,
 ST = STYLE["stroke"]
 LBL = STYLE["label"]
 ACC = STYLE["arrow"]
-GRID = "#CFC7B2"
+# ⊕ MRB-352 run 2 (174, visual review): 3.0:1 on the cream card (WCAG
+# 1.4.11 — a pupil reads values off this grid). It was #CFC7B2, 1.48:1.
+GRID = "#948A70"
 SERIES = (ACC, RED, "#1A1A1A")
 DASHES = (None, "10 7", "3 6")
 
@@ -252,7 +254,7 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
 
 # ── a line graph ─────────────────────────────────────────────────────────
 
-def _smooth_path(pts):
+def _smooth_path(pts, start_slope=None):
     """A MONOTONE cubic through the points (Fritsch–Carlson), as cubic
     Beziers (C only). Unlike a Catmull-Rom spline it never overshoots: a
     curve through data that levels off at 55 never pokes above 55, and a
@@ -278,6 +280,9 @@ def _smooth_path(pts):
          + [0.0 if d[i-1] * d[i] <= 0 else (d[i-1] + d[i]) / 2.0
             for i in range(1, n - 1)]
          + [end_slope(hs[-1], hs[-2], d[-1], d[-2])])
+    if start_slope is not None:
+        # ⊕ MRB-352 run 2 (174): continue a straight run with no kink
+        m[0] = start_slope
     for i in range(n - 1):
         if d[i] == 0:
             m[i] = m[i+1] = 0.0
@@ -346,7 +351,19 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
         col = SERIES[k % len(SERIES)]
         dash = DASHES[k % len(DASHES)]
         dd = f' stroke-dasharray="{dash}"' if dash else ""
-        if s.get("smooth"):
+        if s.get("smooth") and s.get("smooth_from") is not None:
+            # ⊕ MRB-352 run 2 (174): exactly straight up to x = smooth_from,
+            # then the monotone curve, leaving at the straight run's slope
+            k0 = max(i for i, (x, _y) in enumerate(s["points"])
+                     if x <= s["smooth_from"])
+            if k0 < 1:
+                raise ValueError("line_graph: smooth_from needs a straight "
+                                 "run of at least one segment before it")
+            (ax, ay), (bx, by) = pts[k0 - 1], pts[k0]
+            head = "M " + " L ".join("%.1f %.1f" % q for q in pts[:k0 + 1])
+            tail = _smooth_path(pts[k0:], start_slope=(by - ay) / (bx - ax))
+            d = head + tail[tail.index(" ", tail.index(" ", 2) + 1):]
+        elif s.get("smooth"):
             d = _smooth_path(pts)
         else:
             d = "M " + " L ".join("%.1f %.1f" % p for p in pts)

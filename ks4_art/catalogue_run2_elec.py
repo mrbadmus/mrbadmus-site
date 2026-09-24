@@ -239,7 +239,7 @@ CATALOGUE = [
      "params": {"series": [{"points": [(0, 0), (1, 0.10), (2, 0.20),
                                        (3, 0.30), (4, 0.38), (5, 0.44),
                                        (6, 0.48)],
-                            "smooth": True}],
+                            "smooth": True, "smooth_from": 3}],
                 "x_label": "potential difference", "x_unit": "V",
                 "y_label": "current", "y_unit": "A",
                 "x_range": (0, 6), "y_range": (0, 0.5),

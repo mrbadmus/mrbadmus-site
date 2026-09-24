@@ -245,3 +245,15 @@ byte), each marked `⊕ MRB-352 run 2 (174)`:
   charged sphere with evenly spaced straight radial lines, one arrowhead
   each, and lettered points placed between lines (it refuses a point or
   label that would touch a line). Merged into `ART` from `__init__.py`.
+
+### Batch 3 fix round (examiner + visual review)
+
+- Grids a pupil reads values from are now #948A70 — 3.0:1 on the cream
+  card, 3.4:1 on a white scope screen (WCAG 1.4.11): `charts.GRID` (every
+  line graph and bar/column chart) and the oscilloscope screen grid
+  (`physics._SCOPE_GRID`), whose centre line is darker again (#6F6754).
+  The review suggested #A89E86, but that measures 2.3:1 on cream; #948A70
+  is the colour `force_grid` already uses for the same reason.
+- `line_graph` series option `smooth_from`: an exact straight polyline up
+  to that x, then the monotone curve leaving at the straight run's slope
+  (no kink, no early bend). Used by `ks4-fig-graph-iv-resistor-bends`.

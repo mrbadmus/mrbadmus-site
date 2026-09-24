@@ -469,8 +469,8 @@ QUESTIONS = [
             "and there is almost no current",
             "A diode only works with an alternating supply, so a cell cannot "
             "light the lamp",
-            "The cell's potential difference is shared, so the lamp gets too "
-            "little to light",
+            "A lamp can only be lit when it is placed next to the cell's "
+            "positive terminal",
         ],
         "correct_index": 1,
         "why": "A diode lets current flow in one direction only, the way its "
@@ -478,7 +478,9 @@ QUESTIONS = [
                "reverse direction. The current from the cell leaves its "
                "positive (+) terminal. Here the diode's triangle points back "
                "against that current, so almost no current flows round the "
-               "loop.",
+               "loop. Where the lamp sits in the loop makes no difference: "
+               "with the diode the right way round it would light wherever it "
+               "is placed.",
     },
     {
         "id": "ks4-circuit-symbols-s17",
@@ -744,10 +746,10 @@ QUESTIONS = [
         "options": [
             "The resistor melts first, as a resistor gives way before a fuse "
             "would",
-            "Nothing breaks the circuit, as a resistor is not designed to "
-            "melt open",
-            "The current is cut off, as a resistor opens the circuit above "
-            "its rating",
+            "Nothing is designed to break the circuit, so there is no "
+            "protection from the large current",
+            "The current is cut off safely, as a resistor is designed to open "
+            "the circuit above its rating",
             "The cell stops supplying current, as the diagram shows no fuse",
         ],
         "correct_index": 1,
