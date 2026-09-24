@@ -1415,6 +1415,24 @@ RESPONSIVE_CSS = """
 }
 """
 
+# ⊕ Experience run, 24 Sep 2026 (item 13, legibility) — identical fix to
+# `teacher_rulings.PORT_CSS` / `student_rulings.PORT_CSS`, for the identical
+# reason: `ds_css()` above assembles the SAME six Design sheets, so
+# `--st-caption` (used here for "RANK" and the other table-head labels) is
+# wrong for the same reason and by the same amount. Measured on the rendered
+# leaderboard: 4.29:1 on `--st-crumb-bg`, not the 4.51:1 the token's own
+# comment names. Values are identical by construction to the other two
+# ports' overrides, not independently chosen, so the three cannot drift
+# apart. Appended after `RESPONSIVE_CSS` so it is last in the cascade.
+CONTRAST_TOKENS_CSS = """
+:root {
+  --st-muted:   #605851;
+  --st-caption: #685E51;
+  --st-faint:   #695E4E;
+  --st-ghost:   #6E604B;
+}
+"""
+
 
 def fit_hooks(roots):
     """Tag the stats grid and the table frame so R35's CSS can reach them."""
@@ -2788,6 +2806,7 @@ def build():
     tpl_json = json.dumps(roots)
     css, topped = check_tokens(css, tpl_json, logic)
     css = css + RESPONSIVE_CSS      # R35
+    css = css + CONTRAST_TOKENS_CSS  # Experience run, item 13
     print("     ✅ tokens: every var(--…) resolves%s"
           % ((" (%d topped up from shared/tokens.css: %s)"
               % (len(topped), ", ".join(topped))) if topped else ""))
