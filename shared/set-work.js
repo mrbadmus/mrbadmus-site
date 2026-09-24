@@ -1935,6 +1935,74 @@
     });
   }
 
+  /* ⊕ MRB-352 run 2 (landing) — THE SHEET DRAWS A QUESTION'S FIGURE.
+
+     The backend's three Set work seals were lifted in run 2: a question
+     carrying a `figure` id is now offerable, because the pupil's page and the
+     worksheet both draw it. This sheet was the one surface still showing a
+     teacher "Look at the diagram…" with no diagram (figure-contract §5 lists
+     it: "same manifest, loaded by shared/set-work.js"), and
+     set_work_drive's old `preview_no_figures` check was red on exactly that.
+
+     ⚠️ THE ONLY innerHTML SINK IN THIS FILE, and it is fed EXCLUSIVELY from
+     `window.MRBFigures` — build-time output of `build_figures.py`, the same
+     manifest the pupil's page reads. A question's own stem and options stay
+     on `setFormula`'s text path; nothing here ever looks at them.
+
+     ⚠️ THE MANIFEST IS LOADED STAMPED OR NOT AT ALL. `/shared/*` is served
+     `immutable` for a year, so the `?v=` comes from `window.__MRB_ASSET_V__`
+     (build_teacher_port.STAMPED_DEPS names both manifests). With no stamp the
+     sheet draws no figure — a worse preview, never a year-long pin.
+
+     An id the manifest does not carry draws nothing and never throws, the
+     same rule `shared/student-runtime.js`'s "fig" node keeps. */
+  var figureLoads = {};
+  function loadFigures(keyStage) {
+    var name = (keyStage === "KS4") ? "figures-ks4.js" : "figures-ks3.js";
+    if (figureLoads[name]) { return figureLoads[name]; }
+    var map = window.__MRB_ASSET_V__;
+    var v = map && map[name];
+    if (!v) {
+      figureLoads[name] = Promise.resolve(false);
+      return figureLoads[name];
+    }
+    figureLoads[name] = new Promise(function (resolve) {
+      var s = document.createElement("script");
+      s.src = "/shared/" + name + "?v=" + v;
+      s.onload = function () { resolve(true); };
+      s.onerror = function () { resolve(false); };
+      document.head.appendChild(s);
+    });
+    return figureLoads[name];
+  }
+
+  function drawFigure(body, q) {
+    var id = q && q.figure;
+    var figs = window.MRBFigures;
+    var rec = (id && typeof id === "string" && figs) ? figs[id] : null;
+    if (!rec || typeof rec.svg !== "string") { return; }
+    var wrap = el("div", "sw-q-fig");
+    wrap.setAttribute("data-sw", "figure");
+    wrap.setAttribute("data-sw-figure", id);
+    wrap.innerHTML = rec.svg;
+    var svg = wrap.firstElementChild;
+    if (svg && rec.w) { svg.style.maxWidth = rec.w + "px"; }
+    body.appendChild(wrap);
+  }
+
+  /* The manifest can land after the rows are built (it is fetched alongside
+     `/scope`, not before it). Redraw each row's body in place — the same
+     nodes, so an expanded row stays expanded and the scroller does not move. */
+  function redrawFigures() {
+    if (!S || !S.scopes) { return; }
+    S.scopes.forEach(function (sc) {
+      ((sc.els && sc.els.qRows) || []).forEach(function (rec) {
+        var q = sc.picked[rec.i];
+        if (q && q.figure) { fillOptions(rec.body, q); }
+      });
+    });
+  }
+
   function buildQuestionRow(sc, q, i) {
     var wrap = el("div", "sw-q");
     wrap.setAttribute("data-sw", "question");
@@ -1973,6 +2041,7 @@
 
   function fillOptions(body, q) {
     body.textContent = "";
+    drawFigure(body, q);
     var opts = q.options || [];
     for (var k = 0; k < opts.length; k++) {
       var row = el("div", "sw-opt");
@@ -2160,6 +2229,7 @@
       S.scopeLoading = false;
       S.scope = r.body || {};
       var k = S.scope.class || {};
+      loadFigures(k.key_stage).then(function (ok) { if (ok) { redrawFigures(); } });
       var tiers = S.scope.tiers || [];
       /* ⊕ MRB-336 — AN EDIT KEEPS THE ROW'S OWN TIER. `/scope` answers with
          the CLASS's default, which is the right opening answer for a new
@@ -3827,6 +3897,7 @@
         return { id: q.question_ref || q.id,
                  stem: q.text || q.stem || q.prompt || "",
                  options: texts, correct_index: ci,
+                 figure: q.figure || null,
                  lesson: q.lesson_slug || q.lesson || "" };
       });
       sc.available = Math.max(sc.available, sc.picked.length);

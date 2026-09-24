@@ -375,6 +375,13 @@
 
 .sw-q-body { padding: 0 12px 12px 12px; min-width: 0; }
 .sw-q-body[hidden] { display: none; }
+/* ⊕ MRB-352 — a question's figure, above its options. The figure paints
+   itself (a cream card of its own, in light and dark alike); this only sizes
+   it to the column, never wider than it was drawn (set-work.js sets the
+   max-width from the manifest), and lets a wide one scroll sideways at 360px
+   rather than widen the sheet. */
+.sw-q-fig { margin: 4px 0 10px 0; overflow-x: auto; min-width: 0; }
+.sw-q-fig svg { display: block; width: 100%; height: auto; margin: 0 auto; }
 .sw-opt {
   display: flex;
   gap: 8px;

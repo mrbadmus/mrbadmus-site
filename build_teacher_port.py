@@ -274,10 +274,16 @@ _REFUSED = {"import.html"}
 # `_verify_stamps` re-hash it from disk in BOTH published trees, and what puts
 # it in `window.__MRB_ASSET_V__`, which this module itself reads to stamp the
 # one script it loads on demand.
+# ⊕ MRB-352 run 2 (landing) — `figures-ks3.js` and `figures-ks4.js` JOIN for
+# `class-csv-upload.js`'s reason exactly: `set-work.js` loads the class's
+# key-stage figure manifest ON DEMAND, stamping it from
+# `window.__MRB_ASSET_V__` — and refuses to load it at all without a stamp,
+# because unstamped under `immutable` is a year-long pin.
 STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
                 "teacher-picker.js", "rum.js",
-                SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME)
+                SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME,
+                "figures-ks3.js", "figures-ks4.js")
 
 
 def asset_hash(text):

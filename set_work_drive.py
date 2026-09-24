@@ -3787,39 +3787,79 @@ def check_tier_write_seal(t_teacher, t_admin):
           "pathway": "combined", "subject": None})
 
 
-# ── (d) A FIGURE CANNOT BE SET, AND THE COUNTS MUST BE HONEST ──────────
+# ── (d) A FIGURE ARRIVES WITH ITS ID, AND THE COUNTS MUST BE HONEST ─────
 #
-# ⚠️ A KS3 QUESTION MAY CARRY A `figure`, AND THE SHEET CANNOT DRAW ONE. The
-# sheet renders a stem and four options; a question whose stem says "look at
-# the diagram" with no diagram is unanswerable, and it is unanswerable for the
-# CHILD, in the assignment, after a teacher has set it in good faith.
+# ⊕ MRB-352 run 2 (landing, 24 Sep 2026) — THE SEAL IS LIFTED, SO THE CHECK
+# TURNS ROUND. This used to be `preview_no_figures`: the sheet could draw a
+# stem and four options and not a diagram, so a figure-bearing row must never
+# be offered — "unanswerable for the CHILD, in the assignment, after a teacher
+# has set it in good faith". Run 2 removed the reason on every surface: the
+# pupil's assignment page draws the figure (student-runtime "fig" node), the
+# worksheet prints it, and the sheet itself now draws it (`drawFigure` in
+# shared/set-work.js, from the same manifest). The backend lifted its three
+# seals accordingly (figure-contract §5).
+#
+# So what must hold now is the thing that makes offering one SAFE, and it is
+# stricter than "never offered": every figure-bearing KS3 row, previewed at
+# its own lesson and band with a count large enough to take the whole pool,
+# must COME BACK, carrying exactly its authored `figure` id, and that id must
+# be one the shipped manifest (shared/figures-ks3.js) can draw. A row served
+# without its id, with the wrong id, or with an id the manifest lacks is the
+# old defect — a stem pointing at a picture nobody can see — and fails here.
+# The sample of 8 units × 3 tiers is kept, now asserting that any figure id
+# served at all is drawable.
 def check_figures_and_counts(t_teacher, scopes):
     print("\n   figures, and counts that mean what they say")
 
     import ks3_data.question_bank as qb
-    with_figure = set()
+    manifest = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                 "shared", "figures-ks3.js"),
+                    encoding="utf-8").read()
+    band_tier = {"easier": "easy", "standard": "medium", "harder": "hard"}
+    authored = {}
     for entry in qb.load_bank():
         for q in entry["questions"]:
             if q.get("figure"):
-                with_figure.add(q["id"])
+                authored[q["id"]] = (entry["lesson_slug"],
+                                     band_tier[q["band"]], q["figure"])
 
-    seen, offered = 0, []
+    missing, wrong, undrawable = [], [], []
+    for qid, (slug, tier, fig) in sorted(authored.items()):
+        st, body = preview(t_teacher, FX.C_KS3_A, tier, "subtopic", slug, 200)
+        got = {q["id"]: q for q in (body or {}).get("picked") or []}
+        if qid not in got:
+            missing.append("%s (%s @ %s, status %s, %d served)"
+                           % (qid, slug, tier, st, len(got)))
+            continue
+        if got[qid].get("figure") != fig:
+            wrong.append("%s served figure %r, authored %r"
+                         % (qid, got[qid].get("figure"), fig))
+        if ('"%s"' % fig) not in manifest:
+            undrawable.append("%s -> %s" % (qid, fig))
+    record(authored and not missing and not wrong and not undrawable,
+           "preview_figures_drawable — every figure-bearing KS3 row is offered "
+           "at its own lesson and band, carrying its authored figure id, and "
+           "every such id is in the shipped KS3 manifest",
+           "%d figure-bearing row(s): all served with the right id, all "
+           "drawable" % len(authored) if authored and not (missing or wrong or undrawable)
+           else "authored=%d missing=%s wrong=%s undrawable=%s"
+           % (len(authored), missing[:4], wrong[:4], undrawable[:4]))
+
+    seen, stray = 0, []
     for topic in (scopes["ks3"].get("tree") or [])[:8]:
         for tier in ("easy", "medium", "hard"):
             st, body = preview(t_teacher, FX.C_KS3_A, tier, "topic",
                                topic["id"], 20)
             for q in (body or {}).get("picked") or []:
                 seen += 1
-                if q.get("figure") is not None or q["id"] in with_figure:
-                    offered.append("%s (%s @ %s)" % (q["id"], topic["id"], tier))
-    record(not offered,
-           "preview_no_figures — no KS3 question carrying a figure is ever "
-           "offered; the sheet draws a stem and four options and cannot draw "
-           "a diagram",
-           "%d question(s) sampled across 8 units × 3 tiers; %d figure-bearing "
-           "rows exist in the bank and none was served"
-           % (seen, len(with_figure)) if not offered
-           else "OFFERED: %s" % offered[:5])
+                f = q.get("figure")
+                if f is not None and ('"%s"' % f) not in manifest:
+                    stray.append("%s -> %s" % (q["id"], f))
+    record(not stray,
+           "…and across 8 units × 3 tiers no question is served with a figure "
+           "id the manifest cannot draw",
+           "%d question(s) sampled" % seen if not stray
+           else "UNDRAWABLE: %s" % stray[:5])
 
     # ── /scope's count is what the chips cap against; preview is what
     #    arrives. They must agree, or a chip promises a question the pool
