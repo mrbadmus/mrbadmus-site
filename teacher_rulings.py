@@ -2722,7 +2722,13 @@ _FB_CELL_BTN = ("flex:none;margin-left:auto;width:22px;height:22px;"
 
 # The sheet's own body. `_DEL_BODY` is the pad; these are what sits in it.
 _FB_CAP = _SO_CAP                                                # node 640
-_FB_CAP2 = "margin-top:20px;" + _SO_CAP
+# ⊕ experience run (Mide's item 5) — was `_FB_CAP2`, the caption's own
+# 20px-top-margin variant, used nowhere but as the caption's wrapper div. The
+# caption now shares a row with the "Draft feedback" button, so the 20px
+# margin moved from the label onto the ROW and `_FB_CAP` (no margin) sits
+# inside it unchanged — otherwise the row would carry the margin twice.
+_FB_CAP_ROW = ("margin-top:20px;display:flex;align-items:center;"
+               "justify-content:space-between;gap:12px;flex-wrap:wrap")
 
 _FB_ON = ("font:400 15.5px/1.5 var(--st-ui);color:var(--st-body)")
 
@@ -2905,14 +2911,23 @@ def _fb_sheet():
     Mide's guardrail is that v1 is ONE-WAY. `submission_feedback` has no
     student INSERT policy at all, so a reply control — even greyed out, even
     behind a flag — would be a promise to a child that the database will
-    refuse. The footer says so in words instead, to the TEACHER, because the
-    person who needs to know the child cannot answer is the person writing.
+    refuse.
+
+    ⊕ experience run, 24 Sep 2026 (Mide's item 6) — THE FOOTER NO LONGER SAYS
+    SO IN WORDS on a writable year. It used to, unconditionally, and Mide's
+    ruling removed the sentence itself rather than reworded it. The guardrail
+    is still true and still enforced (there is still no reply control, and
+    still no student INSERT policy) — it is simply no longer stated to the
+    teacher on every open. It still shows on a FINISHED year ("This year is
+    read-only.") because that fact is new information each time, where the
+    one-way sentence was not.
 
     ── the three states this sheet has ──────────────────────────────────
-      · nothing written yet ......... caption, empty textarea, Save
+      · nothing written yet ......... caption + Draft feedback, empty
+                                      textarea, Save
       · this teacher's own comment .. byline, the text in the textarea to
-                                      edit, Save, and Remove behind a
-                                      second press
+                                      edit, caption + Draft feedback, Save,
+                                      and Remove behind a second press
       · a colleague's comment ....... byline, the text as READ-ONLY prose,
                                       and neither Save nor Remove — RLS's
                                       update policy is `teacher_id =
@@ -2920,6 +2935,19 @@ def _fb_sheet():
                                       be offering a refusal
     A past year removes the writing half of all three (`canWrite`), and
     leaves the reading half, for the reason above.
+
+    ── ⊕ experience run, 24 Sep 2026 (Mide's item 5) · DRAFT FEEDBACK ─────
+    A "Draft feedback" button sits beside the caption, wherever the box is
+    editable (`fbCanEdit` — a colleague's comment and a finished year both
+    have no editable box and get no button). It calls the model through
+    `POST /api/teacher/feedback/draft` (`MRB_DRAFT_FEEDBACK`) and NEVER
+    saves anything itself — the draft lands in `fbBody` and the textarea,
+    the teacher edits it, and Save is the only write, exactly as it always
+    was. Pressing it while a draft is already in flight is a no-op
+    (`draftFeedback`'s own guard) and the control also carries a REAL
+    `disabled` attribute for the same reason `shoutout-send` does. A failure
+    shows as `fbDraftErr`, a quiet inline line — never an alert — and never
+    touches `fbErr`, which the Save/Remove path owns.
     """
     return {
         "t": "if", "e": "fbOpen",
@@ -2999,9 +3027,47 @@ def _fb_sheet():
 
                         {"t": "if", "e": "fbCanEdit", "c": [
                             {"t": "div", "c": [
-                                {"t": "div", "a": {"style": _FB_CAP2},
-                                 "c": [{"t": "#", "v": {"parts": [
-                                     {"e": "fbFieldCap"}]}}]},
+                                # ⊕ experience run (Mide's item 5) — the
+                                # caption's own row, so "Draft feedback" sits
+                                # BESIDE the field it fills rather than in the
+                                # footer beside Save/Remove, which is about
+                                # the SUBMISSION rather than the box. The
+                                # caption's 20px top margin moved onto the
+                                # ROW (`_FB_CAP_ROW`), not the label alone, so
+                                # nothing shifts when the button's own text
+                                # changes width ("Draft feedback" vs
+                                # "Drafting…").
+                                {"t": "div", "a": {"style": _FB_CAP_ROW}, "c": [
+                                    {"t": "div", "a": {"style": _FB_CAP},
+                                     "c": [{"t": "#", "v": {"parts": [
+                                         {"e": "fbFieldCap"}]}}]},
+                                    # Design drew no such control; the style
+                                    # is `_HEAD_ACT`, verbatim — the marking
+                                    # screen's OWN secondary-button register
+                                    # (node 374's Edit/Download/Delete row on
+                                    # this same page), not a new one invented
+                                    # for this sheet. A REAL `disabled`
+                                    # attribute, the same idiom as
+                                    # `shoutout-send`'s `sendOff`:
+                                    # `student-runtime.js` drops an attribute
+                                    # whose value resolves to boolean
+                                    # `false`, so a crafted click or a stray
+                                    # keystroke cannot fire a second request
+                                    # while one is in flight.
+                                    {"t": "button",
+                                     "a": {"type": "button",
+                                           "data-mrb-added": "feedback-draft",
+                                           "disabled": {"parts": [
+                                               {"e": "fbDraftDisabled"}]},
+                                           "aria-label": "Draft feedback "
+                                                          "with the AI tutor",
+                                           "style": {"parts": [
+                                               _HEAD_ACT,
+                                               {"e": "fbDraftSkin"}]}},
+                                     "on": "draftFeedback",
+                                     "c": [{"t": "#", "v": {"parts": [
+                                         {"e": "fbDraftLabel"}]}}]},
+                                ]},
                                 # ⛔ THE EXISTING TEXT IS PUT IN BY
                                 # `MRB_FB_FILL`, NOT BY AN INTERPOLATION, AND
                                 # THIS WAS FOUND BY LOOKING RATHER THAN BY
@@ -3044,6 +3110,18 @@ def _fb_sheet():
                                                       "work on next",
                                        "style": _FB_NOTE},
                                  "onch": "setFbBody"},
+                                # ⊕ experience run (Mide's item 5) — a QUIET
+                                # inline line, never an alert. Reuses `_FB_ERR`
+                                # (the same register `fbErr` already draws in
+                                # below) rather than a new colour, so a
+                                # drafting failure and a save failure read as
+                                # the same KIND of thing on this sheet.
+                                {"t": "if", "e": "fbDraftErr", "c": [
+                                    {"t": "div", "a": {"style": _FB_ERR,
+                                                       "role": "alert"},
+                                     "c": [{"t": "#", "v": {"parts": [
+                                         {"e": "fbDraftErr"}]}}]},
+                                ]},
                             ]},
                         ]},
 
@@ -3055,9 +3133,19 @@ def _fb_sheet():
                         ]},
                     ]},
                     {"t": "div", "a": {"style": _FB_FOOT}, "c": [
-                        {"t": "div", "a": {"style": _DEL_FOOT_NOTE},
-                         "c": [{"t": "#", "v": {"parts": [
-                             {"e": "fbFootNote"}]}}]},
+                        # ⊕ experience run, 24 Sep 2026 (Mide's item 6) — GATED
+                        # ON `fbFootNote` ITSELF NOW. It used to render
+                        # unconditionally, because it always had something to
+                        # say; now that the writable-year case says nothing
+                        # (see `fbFootNote`'s own comment in LOGIC), an
+                        # unconditional div would be an empty line taking up
+                        # space in the footer on every open. Absent, not
+                        # blank.
+                        {"t": "if", "e": "fbFootNote", "c": [
+                            {"t": "div", "a": {"style": _DEL_FOOT_NOTE},
+                             "c": [{"t": "#", "v": {"parts": [
+                                 {"e": "fbFootNote"}]}}]},
+                        ]},
                         {"t": "div", "a": {"style": _FB_ACTIONS}, "c": [
                             {"t": "if", "e": "fbCanRemove", "c": [
                                 # ⚠️ TWO PRESSES, NOT A SECOND SHEET. The
@@ -5057,6 +5145,34 @@ AMENDED_ADDITIONS = (
              "class_shoutouts. The existing text is the textarea's CHILD "
              "rather than a `value` attribute, because a textarea's content "
              "IS its value and `value=` on one does nothing."),
+    # ⊕ experience run, 24 Sep 2026 (Mide's item 5) — "Draft feedback".
+    # Registered between `feedback-body` and `feedback-save` because that is
+    # where it sits in the DOM (beside the caption, above the textarea), but
+    # what makes it REACHABLE by this sweep is its position AFTER
+    # `feedback-open` in this list — the same reveal mechanism the other
+    # three writable-half controls rely on. `needs_data=True` for the same
+    # reason `feedback-body`/`feedback-save` carry it: all three sit inside
+    # `<if fbCanEdit>`, which is false at rest on every fixture.
+    #
+    # ⚠️ THE PRESS IS SAFE ON A FIXTURE WITH NO NETWORK CALL EVER LEAVING THE
+    # PAGE. `draftFeedback` calls `MRB_DRAFT_FEEDBACK`, which calls
+    # `MRB_TOKEN()` first — and a fixture loads only the compiled runtime,
+    # never `shared/teacher-guard.js`, so `window.MrBadmusTeacherGuard` is
+    # undefined and `MRB_TOKEN()` rejects before any `fetch()` is attempted.
+    # The control still proves live: the press flips `fbDrafting` to `true`
+    # SYNCHRONOUSLY inside the click handler (the label becomes "Drafting…"
+    # and a real `disabled` attribute appears), which is a text change this
+    # sweep's `snap()` catches on its own, before the rejected promise ever
+    # settles.
+    dict(marker="feedback-draft",
+         pages=("student-detail.html", "assignment.html"),
+         node=330, needs_data=True,
+         label="Draft feedback",
+         why="the button that drafts a paragraph via "
+             "POST /api/teacher/feedback/draft and fills the textarea with "
+             "it. Design drew none of this — it is Mide's item 5 on the "
+             "experience run — and it writes nothing itself: Save (the "
+             "control beside it) is still the only write on this path."),
     dict(marker="feedback-save",
          pages=("student-detail.html", "assignment.html"),
          node=330, needs_data=True,
@@ -8123,7 +8239,8 @@ componentDidUpdate() {
      "          const had = (fbRow && fbRow.body) || '';\n"
      "          this.setState({ fbSub: fbSub, fbName: st ? st.name : '',\n"
      "            fbPaper: p.title, fbBody: had,\n"
-     "            fbErr: '', fbConfirm: false },\n"
+     "            fbErr: '', fbConfirm: false,\n"
+     "            fbDrafting: false, fbDraftErr: '' },\n"
      "            () => MRB_FB_FILL(had));\n"
      "        },\n"
      "        /* ⊕ Mide's item 9, 24 Sep 2026 — the Answer Breakdown panel.\n"
@@ -8181,7 +8298,8 @@ componentDidUpdate() {
      "        const had = (row && row.body) || '';\n"
      "        this.setState({ fbSub: r.subId, fbName: r.name,\n"
      "          fbPaper: pp ? pp.title : '', fbBody: had,\n"
-     "          fbErr: '', fbConfirm: false },\n"
+     "          fbErr: '', fbConfirm: false,\n"
+     "          fbDrafting: false, fbDraftErr: '' },\n"
      "          () => MRB_FB_FILL(had));\n"
      "      },",
      "the marking screen's feedback control, per grid row — the second of "
@@ -8257,18 +8375,73 @@ componentDidUpdate() {
      "         saying it on top of a dialog. */\n"
      "      fbRemoveLabel: s.fbConfirm\n"
      "        ? 'Remove it \\u2014 this cannot be undone' : 'Remove',\n"
-     "      /* ⛔ THE ONE-WAY GUARDRAIL, IN WORDS, TO THE PERSON WRITING.\n"
-     "         There is no reply control anywhere on the student side and\n"
-     "         there is no student INSERT policy on the table, so a child\n"
-     "         cannot answer this — and the teacher composing it is the one\n"
-     "         who needs to know that before they phrase a question. */\n"
-     "      fbFootNote: MRB_DATA('canWrite')\n"
-     "        ? 'They read this under their marking. They cannot reply.'\n"
-     "        : 'This year is read-only.',\n"
+     "      /* ⊕ experience run, 24 Sep 2026 (Mide's item 6) — THE\n"
+     "         ONE-WAY-GUARDRAIL SENTENCE IS GONE ON A WRITABLE YEAR. It used\n"
+     "         to read a fixed two-sentence caption, unconditionally, when\n"
+     "         `canWrite`. Mide's ruling is that the sentence itself is gone,\n"
+     "         not merely reworded — the one-way guardrail it used to spell\n"
+     "         out (there is no student\n"
+     "         INSERT policy on `submission_feedback`, so a reply control was\n"
+     "         never offered anywhere on this surface) still holds; it is\n"
+     "         simply no longer said to the teacher on every open. The\n"
+     "         read-only sentence for a FINISHED year stays — MRB-261 makes a\n"
+     "         past year read-only, not invisible, and that fact still needs\n"
+     "         saying. `_fb_sheet()` wraps the footer note in an `<if>` on\n"
+     "         `fbFootNote` itself now, so an empty string draws no line and\n"
+     "         no gap. */\n"
+     "      fbFootNote: MRB_DATA('canWrite') ? '' : 'This year is read-only.',\n"
+     "      /* ⊕ experience run (Mide's item 5) — DRAFT FEEDBACK. A third\n"
+     "         state beside Save/Remove: drafting is neither a read nor a\n"
+     "         write to `submission_feedback` — it calls the model and\n"
+     "         returns text, nothing is saved — so it gets its own busy flag\n"
+     "         and its own error line rather than borrowing `fbErr`, which\n"
+     "         the Save path already owns and clears on its own schedule. */\n"
+     "      fbDraftLabel: s.fbDrafting ? 'Drafting\\u2026' : 'Draft feedback',\n"
+     "      fbDraftDisabled: !!s.fbDrafting,\n"
+     "      fbDraftSkin: s.fbDrafting\n"
+     "        ? 'color:var(--st-muted);background:var(--st-note-bg);"
+     "cursor:default'\n"
+     "        : 'color:var(--st-ink);background:var(--st-paper);"
+     "cursor:pointer',\n"
+     "      fbDraftErr: s.fbDraftErr || '',\n"
      "      closeFeedback: () => this.setState({ fbSub: null, fbBody: '',\n"
-     "        fbErr: '', fbConfirm: false }),\n"
+     "        fbErr: '', fbConfirm: false,\n"
+     "        fbDrafting: false, fbDraftErr: '' }),\n"
      "      setFbBody: (e) => this.setState({ fbBody: e.target.value,\n"
      "        fbErr: '' }),\n"
+     "      /* ⊕ experience run (Mide's item 5) — the model drafts, the\n"
+     "         teacher edits, Save is still the only write anywhere on this\n"
+     "         path: this handler only ever calls `MRB_DRAFT_FEEDBACK`, which\n"
+     "         reads `POST /api/teacher/feedback/draft` and returns text —\n"
+     "         nothing server-side is written by drafting.\n"
+     "         ⚠️ NEVER OVERWRITES. If the box already has words in it\n"
+     "         (a teacher's own half-typed comment, or an earlier draft),\n"
+     "         the new draft is appended below a blank line rather than\n"
+     "         replacing what was there — a silent overwrite would be the\n"
+     "         one outcome worse than a slow draft. */\n"
+     "      draftFeedback: () => {\n"
+     "        const sub = s.fbSub;\n"
+     "        if (!sub || s.fbDrafting) { return; }\n"
+     "        this.setState({ fbDrafting: true, fbDraftErr: '' });\n"
+     "        MRB_DRAFT_FEEDBACK(sub).then((res) => {\n"
+     "          if (!res.ok) {\n"
+     "            const why = MRB_FEEDBACK_DRAFT_WHY(res.error);\n"
+     "            this.setState({ fbDrafting: false, fbDraftErr: why });\n"
+     "            return;\n"
+     "          }\n"
+     "          const had = String(s.fbBody || '');\n"
+     "          const next = had.trim()\n"
+     "            ? had.replace(/\\s+$/, '') + '\\n\\n' + res.draft\n"
+     "            : res.draft;\n"
+     "          this.setState({ fbDrafting: false, fbDraftErr: '',\n"
+     "            fbBody: next }, () => {\n"
+     "            MRB_FB_FILL(next);\n"
+     "            const el = document.querySelector(\n"
+     "              '[data-mrb-added=\"feedback-body\"]');\n"
+     "            if (el && el.focus) { el.focus(); }\n"
+     "          });\n"
+     "        });\n"
+     "      },\n"
      "      /* INSERT where there is nothing yet, UPDATE where there is — and\n"
      "         the UPDATE carries the body it replaces, because the database\n"
      "         refuses an edit that does not\n"

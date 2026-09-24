@@ -4686,6 +4686,76 @@ function MRB_REMOVE_FEEDBACK(id){
       function(){return {ok:true,error:null};}, no);
   }catch(e){return no(e);}}
 
+/* ══ ⊕ experience run, 24 Sep 2026 (Mide's item 5) — DRAFT FEEDBACK ══════
+
+   The model drafts, the teacher edits, Save is still the only write anywhere
+   on this path. Unlike the two helpers above, this one goes to the RENDER
+   BACKEND rather than to PostgREST directly — `MRB_TOKEN`/`MRB_API`/
+   `MRB_API_ERR` are the same three the set-work seam uses below, called here
+   ahead of their own declaration; that is safe because they are `function`
+   declarations and JavaScript hoists those within one script regardless of
+   source order — `MRB_DELETE_SET_WORK` already relies on exactly this.
+
+   ⚠️ WHY THE BACKEND AND NOT SUPABASE: the payload this sends to the model
+   is built server-side, from the submission's OWN class and questions, and
+   never carries a name, an email or a student id — see
+   `POST /api/teacher/feedback/draft` in the backend repo and its
+   `test_feedback_draft.js`. A client-side prompt would put those keys on
+   the wire whether or not anything used them; routing through one backend
+   route is what lets that promise be tested in ONE place instead of on
+   every page that could open this sheet.
+
+   ⚠️ NOTHING IS SAVED HERE. The route returns `{draft, model, submission_id}`
+   and writes nothing to `submission_feedback` — the caller decides how to
+   merge `draft` into whatever is already in the box (see `draftFeedback` in
+   `teacher_rulings.py`, which appends below a blank line rather than
+   overwriting). Resolves {ok, draft, error}, the same shape as every other
+   helper on this page — nothing here throws into a synchronous
+   `renderVals` closure. */
+function MRB_DRAFT_FEEDBACK(subId){
+  var no=function(e){return Promise.resolve({ok:false,draft:null,error:e});};
+  if(!subId){return no(new Error('teacher page: no submission'));}
+  return MRB_TOKEN().then(function(t){
+    return fetch(MRB_API()+'/api/teacher/feedback/draft',
+      {method:'POST',
+       headers:{Authorization:'Bearer '+t,
+                'Content-Type':'application/json'},
+       body:JSON.stringify({submission_id:subId})});
+  }).then(function(res){
+    return res.json().then(function(d){return {res:res,d:d};},
+                           function(){return {res:res,d:null};});
+  }).then(function(r){
+    if(!r.res.ok){
+      throw MRB_API_ERR(r.res,r.d,'/api/teacher/feedback/draft');}
+    return {ok:true, draft:(r.d&&r.d.draft)||'', error:null};},
+    function(e){return {ok:false,draft:null,error:e};});}
+
+/* Why a draft failed, in a sentence a teacher can act on. THE SERVER'S OWN
+   SENTENCE FIRST — a 422 carries `parseDraft`'s own reason the model's
+   answer was rejected, and a second wording invented here would say
+   something slightly different about the same event. Only when the server
+   gave nothing usable does this guess from the status, same pattern as
+   `MRB_SET_WORK_WHY` and `MRB_DELETE_SET_WORK_WHY` beside it. */
+function MRB_FEEDBACK_DRAFT_WHY(e){
+  if(e&&e.mrbSay){return e.mrbSay;}
+  var m=(e&&e.message)||'', st=(e&&e.mrbStatus)||0;
+  if(st===404)
+    return "Couldn't draft this time — that submission is no longer "+
+           "there.";
+  if(st===403)
+    return "Couldn't draft this time — you may no longer teach this "+
+           "class.";
+  if(st===422) return "Couldn't draft this time — try again.";
+  if(st===502) return "Couldn't draft this time — try again.";
+  if(st===429)
+    return "Couldn't draft this time — try again in a moment.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't draft this time — this page is not signed in. "+
+           "Reload and try again.";
+  if(/failed to fetch|network/i.test(m))
+    return "Couldn't draft this time — no connection just now.";
+  return "Couldn't draft this time — try again.";}
+
 /* The comments re-read after a write, so the row on screen is the row in the
    database rather than an optimistic copy of what was typed.
    ⚠️ ON A DEADLINE AND IT ALWAYS SETTLES, exactly as MRB_REFRESH_FEED is: the
