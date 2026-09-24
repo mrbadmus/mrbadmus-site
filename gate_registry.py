@@ -2261,6 +2261,17 @@ EXCLUDED = {
     "student_shots.py":
         "photographs the wired student pages so a human can look. Produces "
         "images, asserts nothing.",
+    "breakdown_shots.py":
+        "photographs the Answer Breakdown panel (Mide's item 9) against a "
+        "fake in-page Supabase client, for the same reason student_shots "
+        "is here — mainly it produces images for a human to look at (the "
+        "topic grouping, the tick/cross marks, the class-wrong flag, a "
+        "figure), none of which it asserts. It DOES raise on one thing — "
+        "sideways scroll at 360/390/820/1280 — but that is a narrower claim "
+        "than a registered gate makes, and the control that opens the panel "
+        "is already asserted by teacher_behaviour (breakdown-open, via "
+        "AMENDED_ADDITIONS); this script is the follow-up a human runs to "
+        "look at what opens, not a pass/fail step a push depends on.",
     "student_theme_shots.py":
         "photographs the six bench themes for the same reason. The "
         "assertions about those colours live in student_themes, which IS "
