@@ -180,6 +180,7 @@ def build():
                 where[fid] = label
             except (ValueError, KeyError, TypeError) as exc:
                 problems.append("%s (%s): %s" % (fid, label, exc))
+    problems.extend(figchecks.self_test())
     problems.extend(figchecks.check_manifest(everything))
 
     ks3_ids = {r["id"] for r in KS3_CATALOGUE}

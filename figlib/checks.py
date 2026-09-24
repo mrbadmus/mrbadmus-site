@@ -49,7 +49,11 @@ warnings, because every one of them is a defect a pupil sees:
     size, weight, fill and rotation; baselines between STACK_PITCH em
     apart) are one block of type, so their own line boxes may abut —
     every line is still checked against every OTHER label and the edge.
-    Lines closer than STACK_PITCH[0] em still fail.
+    Lines closer than STACK_PITCH[0] em still fail. ⊕ fix round 2: the
+    two lines must also be ADJACENT in document order, the second directly
+    after the first and below it — which is how every builder emits a
+    wrapped label — so two SEPARATE labels that merely share a style and
+    sit about 1 em apart are not exempt.
 """
 
 import math
@@ -244,13 +248,14 @@ def _stack_key(el, size):
 
 
 def _one_block(ka, kb):
-    """Rule 8: consecutive lines of one wrapped label — same x, anchor,
+    """Rule 8: the next line of one wrapped label (the caller also requires
+    the two to be adjacent in document order) — same x, anchor,
     size, weight, fill and angle, unrotated, baselines STACK_PITCH em
     apart. Nothing else is exempt."""
     (sa, ya, za), (sb, yb, _) = ka, kb
     if sa != sb or sa[5]:
         return False
-    return STACK_PITCH[0] * za - 1e-6 <= abs(ya - yb) <= STACK_PITCH[1] * za
+    return STACK_PITCH[0] * za - 1e-6 <= yb - ya <= STACK_PITCH[1] * za
 
 
 # ── the check ─────────────────────────────────────────────────────────────
@@ -423,8 +428,9 @@ def check_figure(fid, svg):
     # rule 8: no two padded label boxes intersect
     for i in range(len(boxes)):
         la, (ax0, ay0, ax1, ay1), ka = boxes[i]
-        for lb, (cx0, cy0, cx1, cy1), kb in boxes[i + 1:]:
-            if _one_block(ka, kb):
+        for j in range(i + 1, len(boxes)):
+            lb, (cx0, cy0, cx1, cy1), kb = boxes[j]
+            if j == i + 1 and _one_block(ka, kb):
                 continue
             if min(ax1, cx1) > max(ax0, cx0) and min(ay1, cy1) > max(ay0, cy0):
                 probs.append("%s: text %r and text %r overlap (their boxes at "
@@ -442,6 +448,55 @@ def check_paper(fid, svg):
         return ["%s: the first shape must be the one data-role=\"paper\" "
                 "rect (the cream card)" % fid]
     return []
+
+
+# ── rule 8 proves itself on every build ──────────────────────────────────
+
+_ST_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">'
+           '<rect data-role="paper" x="0" y="0" width="200" height="200" '
+           'fill="#FBF7EE" stroke="none"/>%s</svg>')
+_ST_TEXT = ('<text x="%s" y="%s" font-family="Georgia, serif" font-size="17" '
+            'font-weight="700" fill="#2E5E45" text-anchor="middle"%s>%s</text>')
+
+
+def self_test():
+    """Rule 8 against drawings whose verdict is known. Returns a list of
+    problems (empty = the rule behaves). `build_figures.py` runs it before
+    the manifest, so the figure_manifest gate fails if the rule is ever
+    weakened or broken."""
+    T = _ST_TEXT
+    rot = ' transform="rotate(-90 %s %s)"'
+    cases = [
+        # (name, body, must_fail)
+        ("rotated label off the left edge",
+         T % (8, 100, rot % (8, 100), "energy"), True),
+        ("rotated label clear of the edge",
+         T % (21, 100, rot % (21, 100), "energy"), False),
+        ("two overlapping labels",
+         T % (100, 100, "", "alpha") + T % (110, 108, "", "beta"), True),
+        ("two lines of one wrapped label, adjacent, 21 units apart",
+         T % (100, 100, "", "alpha") + T % (100, 121, "", "beta"), False),
+        ("two lines of one wrapped label packed too tight (14 units)",
+         T % (100, 100, "", "alpha") + T % (100, 114, "", "beta"), True),
+        # ⊕ fix round 2: the same two same-style lines, 21 units apart, but
+        # NOT adjacent in document order — a separate label sits between
+        # them — are two separate labels, and must not be exempt.
+        ("two separate same-style labels ~1 em apart, not adjacent",
+         T % (100, 100, "", "alpha") + T % (40, 180, "", "x")
+         + T % (100, 121, "", "beta"), True),
+        # ...nor when the second is drawn ABOVE the first.
+        ("same-style labels ~1 em apart, second drawn above the first",
+         T % (100, 121, "", "beta") + T % (100, 100, "", "alpha"), True),
+    ]
+    out = []
+    for name, body, must_fail in cases:
+        failed = any("overlap" in p or " box " in p
+                     for p in check_figure("self-test", _ST_SVG % body))
+        if failed != must_fail:
+            out.append("figlib.checks self-test: %r should %s rule 8 but "
+                       "did%s" % (name, "fail" if must_fail else "pass",
+                                  "n't" if must_fail else " not"))
+    return out
 
 
 def check_manifest(manifest):

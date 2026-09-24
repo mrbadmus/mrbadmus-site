@@ -309,7 +309,10 @@ CATALOGUE = [
                           "cells": [["Yes"], ["No"]]},
                          {"head": "Heat-proof glass-ceramic",
                           "cells": [["Yes"], ["No"]]}],
-                "W": 480},
+                # fix round 2 (visual o2): the row names wrap, so the
+                # "Cheap by the square metre?" header — the stem's own words
+                # — fits in two lines instead of four
+                "head_max": 130, "W": 480},
      "title": "A table of six materials with two columns: stiff under load, "
               "and cheap by the square metre, each answered yes or no.",
      "desc": "Rows: PET, polythene, firebrick, reinforced concrete, "

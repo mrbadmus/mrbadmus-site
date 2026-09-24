@@ -453,18 +453,27 @@ def graph_panels(panels, W=480):
 # ── a table of short verdicts (a grid of combinations) ───────────────────
 
 def table(col_heads, rows, W=480, corner="", cell_fills=None,
-          col_title=None, row_title=None):
+          col_title=None, row_title=None, head_max=None):
     """A grid with a header row and a header column. `rows` is
     [{"head": str, "cells": [[line, ...], ...]}]; a cell is a list of lines
     (wrapped further if a line is still too wide). `cell_fills[r][c]` may
     tint a cell; headers sit on sand, cells on white or their tint.
     `col_title` spans the column headers from above; `row_title` runs up
     the side of the row headers. A cell given as [] is drawn EMPTY — for a
-    grid the pupil fills in."""
+    grid the pupil fills in.
+
+    ⊕ MRB-352 run 2, batch-2 fix round 2 (visual o2): `head_max` (default
+    None = one line per row header, as before) wraps the row headers at
+    that width in the widest fallback face, so a long row header gives
+    its width to the data columns instead of forcing their headers into
+    three or four lines."""
     fs = q_font(W)
     sw = q_stroke(W, 2)
     n = len(col_heads)
-    head_w = max(text_width(r["head"], fs, True) for r in rows) + 18
+    row_heads = [wrap_wide(r["head"], fs, head_max, True) if head_max
+                 else [r["head"]] for r in rows]
+    head_w = max(text_width(ln, fs, True) for rh_ in row_heads
+                 for ln in rh_) + 18
     side = fs + 18 if row_title else 0
     col_w = (W - 24 - side - head_w) / float(n)
     x0, y0 = 12 + side, 12 + (fs + 14 if col_title else 0)
@@ -482,8 +491,9 @@ def table(col_heads, rows, W=480, corner="", cell_fills=None,
     # fallback face, so neighbouring headers cannot run into each other.
     head_lines = [wrap_wide(h, fs, col_w - 10, True) for h in col_heads]
     head_h = max(len(h) for h in head_lines) * (fs + 4) + 16
-    row_hs = [max(len(lines_of(cl)) for cl in r["cells"]) * (fs + 4) + 18
-              for r in rows]
+    row_hs = [max([len(lines_of(cl)) for cl in r["cells"]]
+                  + [len(row_heads[i])]) * (fs + 4) + 18
+              for i, r in enumerate(rows)]
     H = int(y0 + 12 + head_h + sum(row_hs))
     c = Canvas(W, H)
     if col_title:
@@ -505,7 +515,12 @@ def table(col_heads, rows, W=480, corner="", cell_fills=None,
     for i, r in enumerate(rows):
         rh = row_hs[i]
         box(c, x0, y, head_w, rh, TINT["sand"], ST, sw)
-        text(c, x0 + head_w / 2, y + rh / 2 + fs * 0.35, r["head"], fs, LBL)
+        hl_ = row_heads[i]
+        yy = (y + (rh - len(hl_) * (fs + 4)) / 2 + fs if head_max
+              else y + rh / 2 + fs * 0.35)       # one line: as before
+        for ln in hl_:
+            text(c, x0 + head_w / 2, yy, ln, fs, LBL)
+            yy += fs + 4
         for j, cell in enumerate(r["cells"]):
             x = x0 + head_w + j * col_w
             fillc = (cell_fills[i][j] if cell_fills else None) or TINT["white"]
