@@ -249,6 +249,19 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     document.querySelector('.chat-send-btn')?.addEventListener('click', () => ask());
     document.getElementById('ci')?.addEventListener('keydown', e => { if(e.key==='Enter') ask(); });
     document.getElementById('imgInput')?.addEventListener('change', () => handleImg(document.getElementById('imgInput')));
+    // ⊕ Experience run, 24 Sep 2026 (stream G). `<label for="imgInput">` opens
+    // the file picker on a mouse click through native `for` association, but
+    // a `<label>` carries no keyboard activation of its own — Enter/Space
+    // only trigger the default action on elements the platform already
+    // treats as controls (button, a[href], checkbox/radio…), and a label is
+    // not one of them. `focus_audit.py` found this as an "unreachable at
+    // all" control: with the label now `tabindex="0" role="button"`
+    // (build_ks3.py, generate_site_v5.py), a keyboard user can reach it, but
+    // reaching it did nothing until Enter/Space is wired to the same click()
+    // a mouse already performs.
+    document.querySelector('.img-btn')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); }
+    });
 
   // Paste image support — Ctrl+V / Cmd+V directly into chat
   document.addEventListener('paste', function(e) {

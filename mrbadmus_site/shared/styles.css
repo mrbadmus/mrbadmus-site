@@ -8,6 +8,24 @@ html { background: var(--bg); scroll-behavior: smooth; }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── keyboard focus — one ring, brand-coloured, `:focus-visible` only ──────
+   ⊕ Experience run, 24 Sep 2026 (stream G). `focus_audit.py` found every
+   control on the root/public pages (auth.html, leaderboard.html, index.html,
+   the KS4 chrome + topic pages) ALREADY showing a visible change on Tab —
+   this file strips `outline` from exactly one control (`.chat-input-row
+   input`, which answers with a border-colour change instead) and nowhere
+   removes it wholesale, so the browser's own default focus indicator was
+   still doing the job. That indicator is real but not this brand's colour
+   and not consistent across browsers, so it is replaced here with the same
+   token every other surface's ring now uses, rather than left as a bare pass.
+   `:focus-visible` only, so a mouse click never rings — the pointer
+   experience is unchanged. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 body {
   font-family: var(--font-sans);
   font-size: var(--fs-body);
@@ -720,13 +738,23 @@ a { color: inherit; text-decoration: none; }
 .chat-overlay.open .chat-modal { transform: none; }
 .chat-head {
   padding: var(--sp-4) 18px;
-  background: var(--accent);
+  /* ⊕ Experience run, 24 Sep 2026 (item 13) — was `var(--accent)`. On a KS3
+     page that resolves to #E4572E, and solid white text (the `h3` below)
+     only reaches 3.68:1 on it — under AA regardless of any opacity. The
+     hover shade is the same hue, one step darker, and clears AA on every
+     page that loads this file; see the note on `--on-accent-soft` in
+     tokens.css for the measurements. */
+  background: var(--accent-hover);
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 .chat-head-info h3 { font-family: var(--font-serif); font-optical-sizing: auto; font-size: 1.1rem; color: var(--on-accent); }
-.chat-head-info p { font-size: var(--fs-label); color: var(--on-accent); opacity: 0.75; }
+/* ⊕ Experience run, 24 Sep 2026 — was `color: var(--on-accent); opacity: 0.75`,
+   which composited to 4.37:1 on the KS3 accent-hover fill (under AA). A
+   solid token replaces the opacity dim so the subtitle no longer depends on
+   which accent shade the page is running — see tokens.css. */
+.chat-head-info p { font-size: var(--fs-label); color: var(--on-accent-soft); }
 .close-btn { background: none; border: none; cursor: pointer; font-size: 1.4rem; color: var(--on-accent); line-height: 1; padding: 4px; }
 .chat-msgs {
   flex: 1;

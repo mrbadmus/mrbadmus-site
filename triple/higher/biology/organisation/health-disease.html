@@ -7,9 +7,9 @@
   <title>Health, Disease and Risk Factors | Biology | MrBadmusAI</title>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
-  <link rel="stylesheet" href="/shared/styles.css?v=2da37530"/>
-  <link rel="stylesheet" href="/shared/nav.css?v=8b20d995"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=4ac1e47c"/>
+  <link rel="stylesheet" href="/shared/styles.css?v=75c28b2d"/>
+  <link rel="stylesheet" href="/shared/nav.css?v=363c537c"/>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
   <script src="/shared/nav.js?v=28cd1457" defer></script>
@@ -213,7 +213,7 @@ html { background: var(--bg); }
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)" tabindex="0" role="button">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
       <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
@@ -221,7 +221,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=6cb18763"></script>
+  <script src="/shared/mrbadmus.v2.js?v=fe8e6b2c"></script>
   <script>MrBadmus.init({subject:'biology',topic:'Health, Disease and Risk Factors (4.2.4)'});</script>
   <script>
 const SCORE_MESSAGES = [

@@ -2357,9 +2357,23 @@ window.MrBadmusTeacherData = (function () {
    *                   completion_pct, class_mean, last_activity_at },
    *       papers:   [ { assignment_id, sub, off_roster, on_time, late,
    *                     unknown, marked_n, mean } ],
-   *       students: [ { student_id, in_week, last_at, avg,
+   *       students: [ { student_id, in_week, on_time_week, last_at, avg,
    *                     missing_marked } ]
    *   } }
+   *
+   * ⊕ Mide's 23 Sep 2026 ruling — RESULTS ARE LIVE, so this now calls
+   * `public.teacher_class_rollup_v2`, NOT `teacher_class_rollup`. The v1
+   * function is untouched (its `marked`/`in_week`/`missing_marked` still mean
+   * "the deadline has passed") because production DDL cannot change in this
+   * run; v2 is a NEW function, same signature, with `marked := released`,
+   * `closed := due_at passed`, `in_week := open OR due_at in window`,
+   * `missing_marked := a CLOSED paper with no cell`, and the new
+   * `on_time_week` per student. See `supabase/migrations/…_rollup_live_results.sql`
+   * (parked, not applied to production by this run) and
+   * `mrb348_teacher_rollup_proof.py` for the JS/SQL equivalence proof.
+   * `on_time_week` is `true` iff the student has a cell with `late = false`
+   * on a paper `in_week` — the same predicate `buildMatrix`'s `onTimeWeek`
+   * computes in the browser, for "Select all on time this week".
    *
    * `metrics` carries the SAME KEY NAMES `deriveClassMetrics` produces, so it
    * is a drop-in for the `classRows.forEach` metrics-fill block in
@@ -2407,9 +2421,18 @@ window.MrBadmusTeacherData = (function () {
    * Error codes:
    *   - invalid_class_id        — an id failed the UUID shape check
    *   - query_failed_summaries  — the RPC errored, INCLUDING the case where
-   *                               the function does not exist yet. The caller
-   *                               is expected to fall back to the full
-   *                               submissions read; see `base()`.
+   *                               `teacher_class_rollup_v2` does not exist yet
+   *                               on this project (PostgREST `PGRST202` /
+   *                               Postgres `42883` — the migration has not
+   *                               been applied). The caller is expected to
+   *                               fall back to the full submissions read for
+   *                               EVERY class asked for, not only the one it
+   *                               happened to be focused on; see `base()` in
+   *                               teacher-live.js, which does exactly that —
+   *                               `got` stays empty on a thrown error, so
+   *                               every id in `wantRoll` lands in `absent`
+   *                               and is re-read in full, with one
+   *                               `console.warn` naming the fallback.
    */
   async function loadClassSummaries(classIds, opts) {
     const ids = Array.from(new Set((classIds || []).filter(Boolean)));
@@ -2445,7 +2468,10 @@ window.MrBadmusTeacherData = (function () {
             if (windows[id]) { scoped[id] = windows[id]; }
           });
         }
-        const r = await sb.rpc('teacher_class_rollup', {
+        // ⊕ Mide's 23 Sep 2026 ruling — `_v2`, not `teacher_class_rollup`.
+        // See the function doc comment above for what changed and why this
+        // must be a new function name rather than an edit to the old one.
+        const r = await sb.rpc('teacher_class_rollup_v2', {
           p_class_ids: chunk,
           p_now: nowIso,
           p_windows: windows ? scoped : null,
@@ -2454,7 +2480,7 @@ window.MrBadmusTeacherData = (function () {
         return r.data || [];
       });
     } catch (err) {
-      const e = new Error('[teacher-data] teacher_class_rollup failed: ' + (err && err.message));
+      const e = new Error('[teacher-data] teacher_class_rollup_v2 failed: ' + (err && err.message));
       e.code = 'query_failed_summaries';
       e.cause = err;
       throw e;

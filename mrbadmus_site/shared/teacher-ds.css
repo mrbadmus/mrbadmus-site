@@ -3628,3 +3628,37 @@ a:hover { color: var(--st-accent-hover); }
   .mrb-findlabel,
   .mrb-findkey { display: none; }
 }
+
+/* ── ⊕ Experience run, 24 Sep 2026 (item 13, legibility) ──────────────────
+   Mide: "much of the dark text on the cream background isn't clear enough."
+   `contrast_audit.py` opens the six ported pages in headless Chrome and
+   measures the RENDERED contrast of every text node — not the ratio in
+   Design's own comment beside each token, which only ever checked the one
+   ground the token was named for. `--st-caption` / `--st-faint` /
+   `--st-ghost` / `--st-muted` are Design's four "quiet ink" tokens, and
+   each one's OWN comment claims it clears AA — true only against
+   `--st-ground` (#FBF3E6). They are also painted, constantly, against
+   `--st-seg-bg` (the segmented-control trough, #EBDDC5 — the darkest cream
+   tint in the set) via things like the classes/class-detail/insights
+   header bar's day-of-week pills and the roster's "Today" toggle, and
+   against `--st-num-well` / `--st-note-bg` / `--st-crumb-bg`. Measured on
+   the rendered page: `--st-caption` on `--st-seg-bg` is 3.71:1, not the
+   4.51:1 its own comment names.
+
+   Darkened here — not in `shared/teacher-ds.css`, which is Design's frozen
+   bundle and is regenerated on every build; this file is the ruled
+   exception, exactly as `--k4-muted-2` is fixed in `shared/ks4-chrome.css`
+   for the same reason on the KS4 chrome. Hue and saturation are untouched;
+   only lightness moves, the minimum each needs to clear 4.5:1 against
+   `--st-seg-bg` (the worst real ground) with a small margin, so a future
+   rounding difference doesn't reopen the gap. The four keep their relative
+   order (muted darkest, caption/faint next and effectively identical to
+   each other as they always were, ghost lightest) — see
+   `docs/experience-run/contrast-after.md` for the before/after ratio on
+   every ground each token is actually used against. */
+:root {
+  --st-muted:   #605851;  /* was #6E655D — 5.20:1 on --st-seg-bg (was 4.26) */
+  --st-caption: #685E51;  /* was #7A6E5F — 4.75:1 on --st-seg-bg (was 3.71) */
+  --st-faint:   #695E4E;  /* was #7B6E5C — 4.75:1 on --st-seg-bg (was 3.71) */
+  --st-ghost:   #6E604B;  /* was #7D6D55 — 4.55:1 on --st-seg-bg (was 3.74) */
+}

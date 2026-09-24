@@ -3568,3 +3568,10 @@ a:hover { color: var(--st-accent-hover); }
   overflow-y: hidden !important;
   -webkit-overflow-scrolling: touch;
 }
+
+:root {
+  --st-muted:   #605851;
+  --st-caption: #685E51;
+  --st-faint:   #695E4E;
+  --st-ghost:   #6E604B;
+}

@@ -1,0 +1,578 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   breakdown.css — the Answer Breakdown panel (Mide's item 9, 24 Sep 2026).
+   Design's KS3-studio chrome, our DOM. Same reason set-work.css exists and
+   the same shape: see that file's header before changing this one.
+
+   ⊕ 25 Sep 2026 — REWORKED against an Opus design critique
+   (docs kept in the commit message, not here): the panel opened on the
+   wrong pupil, buried its two most valuable signals (the class flag, the
+   follow-up) at the bottom of a long scroll, and gave a figure question
+   nearly a whole screen. This pass adds a question-map strip, moves the
+   class flag into the card header with real numbers, rebalances card
+   weight toward wrong answers, puts a figure beside its stem at ≥820px
+   instead of above it, and adds the focus/ARIA machinery MUST-8 asked for.
+
+   ⚠️ WHY IT IS A SIBLING OF THE MOUNT HOST, NOT A COMPILED NODE. Design drew
+   no breakdown surface at all. `shared/student-runtime.js`'s `draw()`
+   empties `#mrb-teacher` and rebuilds it on every `setState`; Prev/Next
+   inside this panel re-fetch nothing and redraw the panel's OWN content in
+   place, so a compiled node would be destroyed under it the moment
+   anything on the page behind it re-rendered. Appended to `<body>`,
+   `draw()` cannot reach it.
+
+   ⚠️ EVERY COLOUR, RADIUS AND FONT IS A `--st-*` TOKEN read out of
+   `shared/teacher-ds.css`. "Correct" uses `--success` (#237A3B), NOT the
+   marking grid's `--ks3-ok`/`--ks3-ok-text` — those are declared inside
+   `.rd[data-mode="ks3"]` (teacher-ds.css line ~332), the class Design's
+   compiled root carries and this panel, appended as a SIBLING of that
+   root on `<body>`, does not. Using them here resolved to nothing at
+   all — `background: var(--ks3-ok)` on an element outside that scope is
+   an invalid declaration, computed as fully transparent — which is
+   exactly the "why is this square blank" defect a first draft of this
+   file shipped and a screenshot caught. `--success` sits in
+   `teacher-ds.css`'s true unscoped `:root` and is safe from any mount
+   point. "Incorrect" keeps `--st-accent-text`, which is unscoped too.
+   SHAPE differs as well as colour on both — a tick, a cross and a ring
+   are three different marks — per the marking grid's own
+   "distinguishable without colour" rule (teacher_rulings.py `cellStyle`).
+
+   ⚠️ TYPE FLOOR: every mono label is ≥12px, every UI-font value is ≥15px.
+   Nothing here is smaller.
+
+   ⚠️ NO SIDEWAYS SCROLL AT 390px/360px. Every flex/grid child that can hold
+   a stem, an option or a pupil's typed answer carries `min-width:0` and
+   `overflow-wrap:anywhere`.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.bd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(26, 23, 20, .45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+.bd-overlay[hidden] { display: none; }
+
+.bd-sheet {
+  width: 880px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--st-paper);
+  border: 1px solid var(--st-edge);
+  border-radius: 14px;
+  box-shadow: var(--st-shadow-frame);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  /* S11 — the panel is a phone-height sheet at narrow widths; the iOS home
+     bar must not sit over the last card's footer or the close button. */
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── MUST-8 — the one focus ring, everywhere in the panel ────────────────
+   A single broad rule rather than one per control: every button, link and
+   tabbable node the panel ever draws — close, Prev/Next, the question-map
+   squares, the Wrong-only toggle, the follow-up, a class-line number link,
+   the "Show the questions" disclosure — gets the identical ring. A control
+   added later inherits it for free instead of being missed by a list. */
+.bd-overlay button:focus-visible,
+.bd-overlay [tabindex]:focus-visible,
+.bd-overlay a:focus-visible {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 2px;
+}
+
+/* Standard visually-hidden clip pattern (matches shared/ks4-chrome.css's
+   `.k4-facts-sr`), kept local to this file rather than promoted to a
+   site-wide utility. Used for the aria-live pupil announcer and the
+   mark's "Right"/"Wrong"/"Not answered" text. */
+.bd-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ── the sticky header ────────────────────────────────────────────────── */
+.bd-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  flex: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--st-paper);
+  border-bottom: 1px solid var(--st-rule-soft);
+  flex-wrap: wrap;
+}
+.bd-close {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 8px;
+  background: none;
+  border: 1px solid var(--st-btn-border);
+  border-radius: 8px;
+  color: var(--st-ink);
+  font: 600 15px/1 var(--st-ui);
+  cursor: pointer;
+}
+.bd-close:hover { border-color: var(--st-edge); background: var(--st-note-bg); }
+.bd-close svg { flex: none; width: 16px; height: 16px; }
+/* S10c — the word "Close" is drawn on desktop; the icon carries the
+   affordance below 520px where the button drops to a 44px tap target. */
+.bd-close-label { white-space: nowrap; }
+
+/* S10 — the header's anchor is now the SET TITLE, not the pupil's name.
+   Previous/Next keeps the set open; the title that never changes across a
+   press is the one that should read loudest at rest. */
+.bd-head-main { flex: 1 1 220px; min-width: 0; }
+.bd-eyebrow {
+  font: 600 15px/1.3 var(--st-ui);
+  color: var(--st-body);
+  overflow-wrap: anywhere;
+}
+.bd-title {
+  margin-top: 3px;
+  font: 700 19px/1.25 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+.bd-subtitle {
+  margin-top: 2px;
+  font: 400 15px/1.4 var(--st-ui);
+  color: var(--st-muted);
+  overflow-wrap: anywhere;
+}
+
+.bd-nav {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bd-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  font: 600 15px/1 var(--st-ui);
+  color: var(--st-ink);
+  background: var(--st-paper);
+  border: 1px solid var(--st-btn-border);
+  border-radius: 8px;
+  cursor: pointer;
+  max-width: 160px;
+}
+.bd-nav-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bd-nav-btn:hover:not(:disabled) { border-color: var(--st-edge); background: var(--st-note-bg); }
+.bd-nav-btn:disabled { opacity: .4; cursor: default; }
+
+/* ── the body ─────────────────────────────────────────────────────────── */
+.bd-body {
+  padding: 18px 16px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+/* ── S1/S12 — three tiles: Score · Time · Handed in ──────────────────────
+   Completion is gone from here: the question-map strip beneath it carries
+   that signal AND the per-question detail, in one read, which a fourth
+   equal-weighted tile never did. */
+.bd-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+.bd-stat {
+  min-width: 0;
+  padding: 12px 14px;
+  background: var(--st-ground);
+  border: 1px solid var(--st-rule-soft);
+  border-radius: 11px;
+}
+.bd-stat-label {
+  font: 500 12px/1.2 var(--st-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+}
+.bd-stat-value {
+  margin-top: 4px;
+  font: 700 20px/1.2 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+.bd-stat-value.is-late { color: var(--st-accent-text); }
+.bd-stat-value.is-good { color: var(--success); }
+.bd-stat-sub {
+  margin-top: 2px;
+  font: 400 15px/1.35 var(--st-ui);
+  color: var(--st-muted);
+}
+
+/* ── S1 — the question map: one square per question ──────────────────── */
+.bd-qmap-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.bd-qmap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.bd-qmap-sq {
+  position: relative;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font: 700 15px/1 var(--st-ui);
+  cursor: pointer;
+  background: var(--st-paper);
+  border: 2px solid var(--st-rule-soft);
+  color: var(--st-ink);
+}
+.bd-qmap-sq.is-right { background: var(--success); border-color: var(--success); color: #fff; }
+.bd-qmap-sq.is-wrong { background: var(--st-accent-text); border-color: var(--st-accent-text); color: #fff; }
+.bd-qmap-sq.is-flagged::after {
+  content: "";
+  position: absolute;
+  left: 3px; right: 3px; bottom: -4px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--st-accent);
+}
+
+/* ── S13 — "All N" / "Wrong K" ────────────────────────────────────────── */
+.bd-toggle {
+  flex: none;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--st-seg-bg);
+  border-radius: 9px;
+}
+.bd-toggle-btn {
+  padding: 6px 12px;
+  font: 600 15px/1 var(--st-ui);
+  color: var(--st-body);
+  background: none;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.bd-toggle-btn.is-on { background: var(--st-paper); color: var(--st-ink); box-shadow: var(--st-shadow-pop); }
+
+/* ── MUST-6 — the follow-up, under the tiles/map, not after 20 cards ──── */
+.bd-followup-row {
+  display: flex;
+  justify-content: flex-end;
+}
+.bd-followup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  font: 600 15px/1 var(--st-ui);
+  color: var(--st-paper);
+  background: var(--st-accent-text);
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.bd-followup:hover { background: var(--st-accent-hover); }
+.bd-followup[hidden] { display: none; }
+
+/* ── S5 — the one line above the topics that names the class-wide misses ─ */
+.bd-classline {
+  font: 500 15px/1.5 var(--st-ui);
+  color: var(--st-body);
+  overflow-wrap: anywhere;
+}
+.bd-classline[hidden] { display: none; }
+.bd-classline button {
+  font: inherit;
+  color: var(--st-accent-text);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* ── the not-started / no-answers-yet state (MUST-5) ─────────────────── */
+.bd-empty {
+  padding: 22px 18px;
+  background: var(--st-ground);
+  border: 1px dashed var(--st-rule-strong);
+  border-radius: 11px;
+  font: 400 15.5px/1.5 var(--st-ui);
+  color: var(--st-muted);
+}
+.bd-empty[hidden] { display: none; }
+.bd-disclosure {
+  margin-top: 12px;
+}
+.bd-disclosure > summary {
+  font: 600 15px/1.3 var(--st-ui);
+  color: var(--st-accent-text);
+  cursor: pointer;
+  list-style: none;
+}
+.bd-disclosure > summary::-webkit-details-marker { display: none; }
+.bd-disclosure > summary::before { content: "\25B8\2002"; }
+.bd-disclosure[open] > summary::before { content: "\25BE\2002"; }
+.bd-disclosure > .bd-qlist { margin-top: 12px; }
+
+/* ── topic groups ─────────────────────────────────────────────────────── */
+.bd-topic + .bd-topic {
+  margin-top: 4px;
+  padding-top: 18px;
+  border-top: 1px solid var(--st-rule-soft);
+}
+.bd-topic-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.bd-topic-name {
+  font: 700 15.5px/1.3 var(--st-ui);
+  color: var(--st-ink);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+/* COULD-2 — plain 15px UI rather than an uppercase mono chip; coloured by
+   how the topic went, so the read is "how did it go" not "count of five". */
+.bd-topic-tally {
+  flex: none;
+  font: 600 15px/1.3 var(--st-ui);
+  color: var(--st-muted);
+}
+.bd-topic-tally.is-zero { color: var(--st-accent-text); }
+.bd-topic-tally.is-full { color: var(--success); }
+
+.bd-qlist {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── one question ─────────────────────────────────────────────────────── */
+.bd-q {
+  min-width: 0;
+  padding: 14px 14px 14px 50px;
+  position: relative;
+  background: var(--st-paper);
+  border: 1px solid var(--st-rule-soft);
+  border-radius: 11px;
+}
+/* S6 — weight goes to WRONG, not right. A correct card recedes to the same
+   quiet border every other neutral card has; a wrong card keeps a paler
+   border than before AND gains a left accent bar, so the eye lands on what
+   needs attention rather than on what is already fine. */
+.bd-q.is-right { border-color: var(--st-rule-soft); }
+.bd-q.is-wrong {
+  border-color: var(--st-chip-tint-border);
+  box-shadow: inset 3px 0 0 var(--st-accent-text);
+}
+.bd-q[data-bd-q] { scroll-margin-top: 84px; }
+
+/* S7 — a 26px filled disc, readable at arm's length, shape AND colour. */
+.bd-q-mark {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bd-q-mark svg { display: block; width: 15px; height: 15px; }
+.bd-q-mark.is-right { background: var(--success); color: #fff; }
+.bd-q-mark.is-wrong { background: var(--st-accent-text); color: #fff; }
+.bd-q-mark.is-unscored { background: transparent; border: 2px solid var(--st-caption); }
+
+.bd-q-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.bd-q-num {
+  font: 500 12px/1.3 var(--st-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+}
+/* S4 — the class flag moves INTO the header, right-aligned, with numbers,
+   in sentence case and no letter-spacing: a fact, not a warning label. */
+.bd-q-flag {
+  flex: none;
+  max-width: 100%;
+  font: 600 15px/1.3 var(--st-ui);
+  color: var(--st-accent-text);
+  text-align: right;
+}
+.bd-q-flag[hidden] { display: none; }
+.bd-q-meta {
+  flex: none;
+  width: 100%;
+  margin-top: 2px;
+  font: 400 15px/1.3 var(--st-ui);
+  color: var(--st-muted);
+}
+.bd-q-meta[hidden] { display: none; }
+
+.bd-q-body {
+  margin-top: 8px;
+}
+/* S8 — beside the stem at ≥820px, above it below that. */
+@media (min-width: 820px) {
+  .bd-q.has-fig .bd-q-body {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 16px;
+    align-items: start;
+  }
+  .bd-q.has-fig .bd-q-main { min-width: 0; }
+  .bd-q.has-fig .bd-q-fig-col { grid-column: 2; }
+}
+
+.bd-q-stem {
+  font: 500 16px/1.45 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+
+/* S8 — capped height, never a whole screen for one drawing. */
+.bd-q-fig-col { margin-top: 10px; }
+.bd-q-fig {
+  padding: 8px;
+  background: var(--st-ground);
+  border: 1px solid var(--st-rule-soft);
+  border-radius: 10px;
+  text-align: center;
+}
+.bd-q-fig svg, .bd-q-fig img {
+  display: block;
+  max-height: 220px;
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+}
+@media (max-width: 390px) {
+  .bd-q-fig svg, .bd-q-fig img { max-height: 200px; }
+}
+
+/* S9 — a wider, non-mono label; the column no longer wraps "PUPIL'S
+   ANSWER" onto two lines at 92px. */
+.bd-q-answers {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bd-q-answer {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  font: 400 15px/1.4 var(--st-ui);
+}
+.bd-q-answer-label {
+  flex: none;
+  width: auto;
+  min-width: 110px;
+  font: 500 15px/1.3 var(--st-ui);
+  color: var(--st-muted);
+  padding-top: 1px;
+}
+.bd-q-answer-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--st-body);
+}
+.bd-q-answer.is-pupil-wrong .bd-q-answer-text { color: var(--st-accent-text); font-weight: 600; }
+.bd-q-answer.is-pupil-right .bd-q-answer-text { color: var(--success); font-weight: 600; }
+.bd-q-answer.is-missing .bd-q-answer-text { color: var(--st-muted); font-style: italic; }
+
+/* S4 — the quiet positive note: this pupil beat a question the class
+   mostly missed. Told apart from the flag by colour AND by sitting under
+   the answers rather than in the header. */
+.bd-q-good-note {
+  margin-top: 8px;
+  font: 500 15px/1.4 var(--st-ui);
+  color: var(--success);
+}
+.bd-q-good-note[hidden] { display: none; }
+
+/* ── the toast ────────────────────────────────────────────────────────── */
+.bd-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  z-index: 70;
+  max-width: calc(100vw - 32px);
+  padding: 12px 18px;
+  font: 500 15px/1.35 var(--st-ui);
+  color: var(--st-paper);
+  background: var(--st-ink);
+  border-radius: 11px;
+  box-shadow: var(--st-shadow-frame);
+  overflow-wrap: anywhere;
+}
+.bd-toast[hidden] { display: none; }
+
+/* ── 390px ────────────────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .bd-overlay { padding: 0; align-items: stretch; }
+  .bd-sheet {
+    max-height: 100%;
+    height: 100%;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+  .bd-head { border-radius: 0; padding: 12px 14px; }
+  .bd-body { padding: 14px 14px 26px; }
+  /* S11 — 44px tap targets for Close and Prev/Next; the word drops so the
+     icon-only button can still hit 44 without crowding the header. */
+  .bd-close { height: 44px; min-width: 44px; justify-content: center; padding: 0; }
+  .bd-close-label { display: none; }
+  .bd-nav-btn { height: 44px; min-width: 44px; max-width: 96px; padding: 0 8px; }
+  .bd-nav-btn .bd-nav-word { display: none; }
+  .bd-q { padding: 12px 12px 12px 46px; }
+  .bd-q-mark { left: 12px; top: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-overlay, .bd-sheet, .bd-toast { animation: none !important; transition: none !important; }
+}
