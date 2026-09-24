@@ -10186,6 +10186,95 @@ componentDidUpdate() {
      "picker off a class with nobody on it, and the handler that opens it "
      "on the roster this screen has already read."),
 
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 7) · THE PUPIL'S OWN ══
+    # "SEND SHOUTOUT" OPENS ON AN EMPTY COMPOSER
+    #
+    # ⛔ `openBulk` IS ONE HANDLER, USED FROM THREE BUTTONS. Design draws
+    # `onClick="{{ openBulk }}"` on the class screen's header action
+    # ("Shoutouts"), on the "Worth a shoutout" card's own "Send a shoutout"
+    # link, and — the one this ruling is for — on the student screen's "Send
+    # shoutout" button, next to "Send a reminder". All three call the SAME
+    # `this.setState({ modal: 'bulk' })`, so a teacher who opens the composer
+    # FROM a child's own page gets the identical empty picker as a teacher
+    # who opens it from the class header, and has to find that child again
+    # by name in a fifty-four-row list they were just looking straight at.
+    #
+    # ⚠️ NOT `st` ALONE. `const st = this.student()` runs unconditionally at
+    # the top of `renderVals`, and the ported `student()` method (see
+    # `METHODS["student"]` above) returns `null` rather than Design's own
+    # `rows[0]` fallback when `state.studentId` is unset — which on the LIVE
+    # pages is exactly "unset except on `student-detail.html`", because
+    # `teacher-live.js` fills `studentId` from `?student=` and that query
+    # param exists only in that page's own URL. But the SHARED populated
+    # fixture (`fixture_payload` / `design_data` in build_teacher_port.py)
+    # sets a `studentId` default on every page's data, class screen included
+    # — a pre-existing fixture-generation artifact, harmless while nothing
+    # read `studentId` off the class screen, and it is what this ruling
+    # would otherwise start reading. Checked: `class-detail-fixture.html`
+    # carries `studentId: "8rsc1-12"` and `this.student()` resolves it to a
+    # real roster row there too.
+    #
+    # So the guard is the PAGE, not the presence of a student: `s.screen`
+    # is the one thing that is genuinely per-page even in the fixtures — the
+    # build's own `page_logic` step (`build_teacher_port.py`) substitutes it
+    # from the literal token `'MRB_SCREEN'` into each of the six pages'
+    # shipped copies of this same logic class, so `s.screen === 'student'`
+    # is `true` on `student-detail.html` and only there, fixture or live.
+    #
+    # ⚠️ ANCHORED AFTER THE `pickStudent` RULING ABOVE, ON PURPOSE. Both
+    # correct the SAME property (`openBulk`); this one uses a `method`/`key`
+    # anchor rather than a literal span so it finds the line by NAME rather
+    # than by the text `pickStudent` just finished rewriting around it —
+    # `resolve_anchor` narrows to the property's own one-line span (it ends
+    # at its own trailing comma), so the two newly-appended `hasRoster` /
+    # `pickStudent` lines below it are untouched.
+    (dict(method="renderVals", key="openBulk"),
+     "      openBulk: () => this.setState({ modal: 'bulk', "
+     "boSel: (s.screen === 'student' && st) ? [st.id] : [] }),",
+     "the shoutout composer's opener, on all three buttons that share it. "
+     "Opened from a pupil's own page, that pupil is pre-selected in "
+     "`boSel`; opened from the class header or from the \"Worth a "
+     "shoutout\" card, `s.screen` is `'class'` there and the composer opens "
+     "empty, exactly as before. The composer itself is untouched — a preselected "
+     "id in `boSel` is a normal selection, and `sendBulk` / the roster "
+     "checklist already read it as one; a teacher can still add or remove "
+     "names."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 8, UI half) · ══════
+    # "SELECT ALL ON TIME THIS WEEK" SELECTED THE WRONG SET
+    #
+    # ⛔ THE BUTTON'S OWN LABEL AND ITS HANDLER DISAGREED. Design's
+    # `bulkTop` — the shoutout composer's "Select all on time this week"
+    # link — filters the roster on `r.inWeek` alone: HANDED IN this week,
+    # on time or not. A child who submitted late is `inWeek: true` (stream
+    # A's own definition #5/#6 — a cell exists once a submission is
+    # complete, and lateness is a separate fact about that cell), so the
+    # button was really "select all in this week" wearing the label of a
+    # narrower, punctuality-scoped one.
+    #
+    # ⚠️ `r.onTimeWeek` IS STREAM A'S FIELD, NOT COUNTED HERE. This ruling
+    # consumes it (`!!r.onTimeWeek` — has a cell with `late === false` on an
+    # in-week paper) and adds no counting logic of its own: whether a
+    # submission IS on time is stream A's definitions, in `buildRoster`;
+    # this is only which roster rows the button offers to a teacher who has
+    # already pressed it. If `onTimeWeek` is not yet on the roster row at
+    # whatever commit this lands on, `!!undefined` is `false` and the button
+    # selects nobody rather than mis-selecting on the OLD, wrong-by-label
+    # `inWeek` test — a silent selection of the wrong children is the worse
+    # failure of the two, on a button that is about to send a message.
+    #
+    # The composer's own count ("N selected · …") is `s.boSel.length`,
+    # recomputed on every render — pressing this button changes `boSel` and
+    # the count updates with it, with no separate ruling needed.
+    ("      bulkTop: () => this.setState({ boSel: kRoster.filter(r => "
+     "r.inWeek).map(r => r.id) }),",
+     "      bulkTop: () => this.setState({ boSel: kRoster.filter(r => "
+     "!!r.onTimeWeek).map(r => r.id) }),",
+     "\"Select all on time this week\" — selecting on `inWeek` (submitted "
+     "this week, late or not) rather than on-time-ness, which is what the "
+     "button's own label promises. `r.onTimeWeek` is stream A's field "
+     "(MRB-336 definitions #5/#6); this ruling only reads it."),
+
     # ══ ⊕ MRB-322 · A HANDLER DESIGN HAS NO COUNTERPART FOR ═════════════
     #
     # Every other row in this tuple REWRITES something Design drew. This one
