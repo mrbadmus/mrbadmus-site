@@ -1989,6 +1989,11 @@ GATES = [
          watches=["mrb348_teacher_rollup_proof.py",
                   "supabase/migrations/"
                   "20260922231500_mrb348_teacher_class_rollup.sql",
+                  # ⊕ Mide's 23 Sep 2026 ruling — the proof now also calls
+                  # `teacher_class_rollup_v2`, parked in this NEW migration
+                  # (not yet applied to production by this run).
+                  "supabase/migrations/"
+                  "20260924010000_rollup_live_results.sql",
                   "shared/teacher-data.js", "shared/teacher-live.js",
                   "shared/config.js"],
          needs="mrb348_teacher_rollup_proof.py",

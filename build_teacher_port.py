@@ -4045,13 +4045,26 @@ function MRB_FIRST_TEMPLATE(){var t=MRB_DATA('TEMPLATES');
    than reimplemented: Design reaches for index 1 and assumes it exists and is
    closed, which is true only when there is exactly one open paper. Two answers
    to this question is how the page and the prefetch disagree about which grid
-   was fetched. */
-function MRB_NEWEST_MARKED(papers){
+   was fetched.
+
+   ⊕ Mide's 23 Sep 2026 ruling — `mx` IS OPTIONAL AND SHOULD BE PASSED WHEN
+   HANDY. `when === 'marked'` now means "released", and a just-released paper
+   can have zero submissions; `newestMarkedIdx` prefers the newest RELEASED
+   paper that has at least one cell when it is given the class's matrix, and
+   falls back to the newest released paper of any kind (this function's old,
+   simpler behaviour) when it is not. Every call site in this file has a
+   matrix in scope (`MRB_PICK('MATRIX', id)` or the local `mx(k)` closure) and
+   passes it. */
+function MRB_NEWEST_MARKED(papers, mx){
   var L=window.MrBadmusTeacherLive;
-  if(L&&L.newestMarkedIdx)return L.newestMarkedIdx(papers||[]);
+  if(L&&L.newestMarkedIdx)return L.newestMarkedIdx(papers||[], mx);
+  var released=[];
   for(var i=0;i<(papers||[]).length;i++){
-    if(papers[i].when==='marked')return i;}
-  return -1;}
+    if(papers[i].when==='marked')released.push(i);}
+  if(mx&&mx.colSub){
+    for(var j=0;j<released.length;j++){
+      if((mx.colSub[released[j]]||0)>0)return released[j];}}
+  return released.length?released[0]:-1;}
 /* "N late of M marked". ⚠️ AND THE UNKNOWNS ARE SHOWN, NOT HIDDEN. `is_late`
    is NULL on every submission written before 22 Aug 2026 and on any with no
    deadline, so "unknown" is a real population and not a rounding error. Folded
@@ -4071,6 +4084,7 @@ function MRB_NO_CLASS(){return {id:'',code:'\u2014',subject:'',year:'',
   ks:'',n:0,week:[0,0],last:'No activity yet',state:'empty'};}
 function MRB_EMPTY_MATRIX(){return {rows:[],cols:0,colSub:[],colMean:[],
   colOnTime:[],colAsked:[],colLate:[],colLateUnknown:[],markedIdx:[],
+  closedIdx:[],
   studentAvg:{},markedSub:0,markedOnTime:0,markedLate:0,markedLateUnknown:0,
   markedPct:null,classMean:null,byId:{}};}
 function MRB_LATE_LINE(late, unknown, total, noun){
