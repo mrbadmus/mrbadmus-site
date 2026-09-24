@@ -130,7 +130,9 @@ CATALOGUE = [
                 "intestine, 4 hours; large intestine, 30 hours. The time "
                 "axis runs from 0 to 35 hours.",
         "params": {"bins": [{"label": "Mouth", "n": 0.0,
-                             "display": ["about", "1 minute"]},
+                             # ⊕ fix round 1 (visual m1): one line, under
+                             # the 5-hour gridline, not struck through by it
+                             "display": "about 1 min"},
                             {"label": "Stomach", "n": 3, "display": "3 h"},
                             {"label": "Small intestine", "n": 4, "display": "4 h"},
                             {"label": "Large intestine", "n": 30, "display": "30 h"}],

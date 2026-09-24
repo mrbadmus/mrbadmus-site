@@ -929,8 +929,8 @@ QUESTIONS = [
         "options": [
             "Nitrogen should end with eight outer electrons, so one bonding "
             "pair has been left out",
-            "Nitrogen should end with six outer electrons, so the diagram is "
-            "correct as drawn",
+            "Nitrogen should end with seven outer electrons, so the diagram "
+            "is correct as drawn",
             "Nitrogen should end with two outer electrons, so two pairs have "
             "been added by mistake",
             "Nitrogen transfers its electrons in ammonia, so it should have "

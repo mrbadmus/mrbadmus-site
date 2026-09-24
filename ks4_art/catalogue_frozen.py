@@ -39,7 +39,7 @@ CATALOGUE = [
      "params": {"netlist": [["switch"]], "left": [["cell"]],
                 "right": [["lamp"]]},
      "title": "A single loop with a pair of long and short lines, a switch "
-              "symbol whose lever is lifted away from its second contact, "
+              "symbol whose lever is angled away from its second contact, "
               "and a circle with a cross inside it.",
      "desc": "One rectangular wire loop: a cell on the left side, a switch "
              "on the top wire whose lever starts at one contact and angles "
@@ -108,7 +108,8 @@ CATALOGUE = [
      "title": "A dot-and-cross diagram with an N circle overlapping two H "
               "circles, and a third H circle drawn apart from it.",
      "desc": "Each overlap holds one dot and one cross. The N circle also "
-             "has a pair of dots on its own. The separate H circle holds one "
+             "has a pair of dots on its own, and one single dot on the side "
+             "facing the separate H. The separate H circle holds one "
              "cross."},
 
     # ks4-direct-alternating-pd-h02 — two separate, captioned screens.

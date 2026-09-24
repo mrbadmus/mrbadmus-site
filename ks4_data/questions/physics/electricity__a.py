@@ -67,7 +67,7 @@ QUESTIONS = [
             "instead of the lamp",
         ],
         "correct_index": 0,
-        "why": "The switch is drawn open — its lever is lifted away from the "
+        "why": "The switch is drawn open — its lever is angled away from the "
                "second contact, leaving a gap in the loop. With the circuit "
                "incomplete there is no current, so the lamp cannot light. "
                "Turning the cell round would reverse the current, and a lamp "

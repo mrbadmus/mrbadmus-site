@@ -138,7 +138,7 @@ QUESTIONS = [
              "why": "The map works for both. It is drawn for a positive "
                     "charge, and a negative one simply reverses it."},
             {"text": "It depends how big the negative charge is, because "
-                     "the direction is set by the larger of the two",
+                     "a bigger charge could overcome the field",
              "correct": False,
              "why": "The size changes how HARD it is pushed, never which "
                     "way. Direction comes from the sign."},

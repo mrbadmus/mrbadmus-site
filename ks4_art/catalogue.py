@@ -132,7 +132,7 @@ CATALOGUE = [
         "id": "ks4-fig-circuit-symbol-switch-open",
         "art": "symbol", "params": {"key": "switch"},
         "title": "Circuit symbol: two small hollow circles in the wire, with "
-                 "a straight line from one that is lifted away from the other.",
+                 "a straight line from one that is angled away from the other.",
         "desc": "Two small hollow circles in the wire, a short distance "
                 "apart. A straight line starts at the left circle and angles "
                 "away from the wire, ending short of the right circle, so "
@@ -225,7 +225,8 @@ CATALOGUE = [
         "art": "symbol-panel",
         "params": {"items": [("P", "battery"), ("Q", "ldr"),
                              ("R", "switch_closed"), ("S", "lamp")],
-                   "cell_w": 170},
+                   # ⊕ fix round 1 (visual M1): 2 × 2, not a 700-wide strip
+                   "cell_w": 200, "cols": 2, "H": 175, "fs": 25},
         "title": "Four circuit symbols, labelled P, Q, R and S.",
         "desc": "P: two pairs of long and short lines joined by a dashed "
                 "line, with a plus sign. Q: a small rectangle inside a "
@@ -239,7 +240,8 @@ CATALOGUE = [
         "art": "symbol-panel",
         "params": {"items": [("P", "diode"), ("Q", "ldr"), ("R", "led"),
                              ("S", "lamp")],
-                   "cell_w": 170},
+                   # ⊕ fix round 1 (visual M1): 2 × 2, not a 700-wide strip
+                   "cell_w": 200, "cols": 2, "H": 175, "fs": 25},
         "title": "Four circuit symbols, labelled P, Q, R and S.",
         "desc": "P: a circle containing a triangle pointing along the wire "
                 "with a bar across its tip. Q: a small rectangle inside a "
@@ -316,7 +318,12 @@ CATALOGUE = [
     {
         "id": "ks4-fig-molecule-h2o-dot-cross",
         "art": "dot-cross",
-        "params": {"formula": "H2O", "title": False, "compact": True},
+        # ⊕ fix round 1 (examiner B3): "lens" seats BOTH electrons of each
+        # bonding pair inside the overlap of the two shells. The default
+        # seat put O's electron outside the H shell — a shared pair drawn
+        # as not shared, and H counting one electron.
+        "params": {"formula": "H2O", "title": False, "compact": True,
+                   "seat": "lens"},
         "title": "A dot-and-cross diagram of a water molecule.",
         "desc": "One oxygen atom's circle overlapping two hydrogen atoms' "
                 "circles. Each overlap holds one dot and one cross. The "

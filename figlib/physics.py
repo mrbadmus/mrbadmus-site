@@ -74,8 +74,11 @@ def _leads(c, x, y, body_w):
 # settled reference, AQA GCSE Physics 8463 spec v1.1 §4.2.1.1 p.24, and
 # redrawn where the library's version differed from it. The library's
 # originals are in the source file named in figlib/README.md. Differences:
-#   cell        AQA marks only "+" (library also printed "–"); the long
-#               plate thin, the short plate shorter and a little thicker.
+#   cell        AQA marks only "+" (library also printed "–"); both plates
+#               the SAME line weight, the short plate only shorter — as
+#               p.24 draws them. (⊕ fix round 1: this comment once said the
+#               short plate was "a little thicker", which misread the sheet;
+#               the thick short plate is a BS convention, not AQA's.)
 #   battery     cell, dashed wire, cell — AQA's drawing (library drew two
 #               cells touching).
 #   switch      open circles for the contacts; open = lever hinged at the
@@ -97,7 +100,7 @@ _HOLLOW = STYLE["cream"]
 def sym_cell(c, x, y, name=None, value=None):
     half = _leads(c, x, y, 18)
     _wire(c, x-9, y-26, x-9, y+26, 3)               # long plate (+)
-    _wire(c, x+9, y-14, x+9, y+14, 5)               # short, thicker plate
+    _wire(c, x+9, y-14, x+9, y+14, 3)               # short plate, same weight
     _clabel(c, x-24, y-24, "+", 26)
     if value:
         _clabel(c, x, y+52, value, 22, RED)
@@ -106,12 +109,12 @@ def sym_cell(c, x, y, name=None, value=None):
 def sym_battery(c, x, y, name=None, value=None):
     half = _leads(c, x, y, 78)
     _wire(c, x-39, y-26, x-39, y+26, 3)             # first cell, +
-    _wire(c, x-25, y-14, x-25, y+14, 5)
+    _wire(c, x-25, y-14, x-25, y+14, 3)
     c.S.append(
         f'<line x1="{x-19}" y1="{y}" x2="{x+19}" y2="{y}" stroke="{ST}" '
         f'stroke-width="3" stroke-dasharray="6 5"/>')  # "more cells here"
     _wire(c, x+25, y-26, x+25, y+26, 3)             # last cell
-    _wire(c, x+39, y-14, x+39, y+14, 5)
+    _wire(c, x+39, y-14, x+39, y+14, 3)
     _wire(c, x-25, y, x-19, y)
     _wire(c, x+19, y, x+25, y)
     _clabel(c, x-54, y-24, "+", 26)
@@ -349,6 +352,128 @@ class _Tmp:
         self.S = []
 
 
+# ⊕ fix round 1 — geometry of emitted fragments, for centring a symbol
+# (visual m7) and for merging butted wire segments (visual m5).
+def _frag_el(frag):
+    import xml.etree.ElementTree as _ET
+    try:
+        root = _ET.fromstring('<svg xmlns="http://www.w3.org/2000/svg">%s</svg>'
+                              % frag)
+    except _ET.ParseError:
+        return None
+    kids = list(root)
+    return kids[0] if len(kids) == 1 else None
+
+
+def _bbox(el):
+    """(x0, y0, x1, y1) of one element, stroke included; None if unknown."""
+    if el is None:
+        return None
+    tag = el.tag.split("}")[-1]
+    g = lambda k: float(el.get(k, 0))  # noqa: E731
+    hw = float(el.get("stroke-width", 0)) / 2 if el.get("stroke", "none") != "none" else 0
+    if tag == "line":
+        xs, ys = (g("x1"), g("x2")), (g("y1"), g("y2"))
+    elif tag == "circle":
+        xs, ys = (g("cx") - g("r"), g("cx") + g("r")), (g("cy") - g("r"), g("cy") + g("r"))
+    elif tag == "ellipse":
+        xs, ys = (g("cx") - g("rx"), g("cx") + g("rx")), (g("cy") - g("ry"), g("cy") + g("ry"))
+    elif tag == "rect":
+        xs, ys = (g("x"), g("x") + g("width")), (g("y"), g("y") + g("height"))
+    elif tag in ("polygon", "polyline", "path"):
+        import re as _re
+        v = [float(n) for n in _re.findall(r"-?\d*\.?\d+",
+                                            el.get("points") or el.get("d") or "")]
+        if len(v) < 2:
+            return None
+        xs, ys = v[0::2], v[1::2]
+    elif tag == "text":
+        s = float(el.get("font-size", 16))
+        n = len("".join(el.itertext()))
+        x, y = g("x"), g("y")
+        w = 0.6 * s * n
+        a = el.get("text-anchor", "start")
+        x0 = x - (w/2 if a == "middle" else w if a == "end" else 0)
+        return (x0, y - 0.75*s, x0 + w, y + 0.2*s)
+    else:
+        return None
+    return (min(xs) - hw, min(ys) - hw, max(xs) + hw, max(ys) + hw)
+
+
+def _extent_y(frags):
+    boxes = [b for b in (_bbox(_frag_el(f)) for f in frags) if b]
+    return min(b[1] for b in boxes), max(b[3] for b in boxes)
+
+
+def _merge_wires(frags):
+    """Join collinear wire segments that meet end to end into one <line>.
+
+    ⊕ fix round 1 (visual m5). The engine draws a straight run of wire as
+    several butted <line>s (a lead, the next symbol's lead, a corner
+    stub); at a fractional phone scale every join shows a darker 1px dot.
+    Only identical, undashed, axis-aligned lines are joined, and a join is
+    made only when it cannot change what is painted over what: the merged
+    line takes the EARLIEST segment's place in paint order, so it is
+    refused if anything painted between that place and a later segment
+    touches that later segment (a diode's circle, a junction dot, a hollow
+    switch contact)."""
+    els = [_frag_el(f) for f in frags]
+    boxes = [_bbox(e) for e in els]
+
+    def seg(i):
+        e = els[i]
+        if e is None or e.tag.split("}")[-1] != "line" or e.get("stroke-dasharray"):
+            return None
+        x1, y1, x2, y2 = (float(e.get(k)) for k in ("x1", "y1", "x2", "y2"))
+        key = tuple(sorted((k, v) for k, v in e.attrib.items()
+                           if k not in ("x1", "y1", "x2", "y2")))
+        if abs(y1 - y2) < 0.05 and abs(x1 - x2) > 0.05:
+            return ("h", round(y1, 1), key), min(x1, x2), max(x1, x2)
+        if abs(x1 - x2) < 0.05 and abs(y1 - y2) > 0.05:
+            return ("v", round(x1, 1), key), min(y1, y2), max(y1, y2)
+        return None
+
+    def hits(a, b):
+        return (a is not None and b is not None and a[0] < b[2] - 0.05
+                and b[0] < a[2] - 0.05 and a[1] < b[3] - 0.05
+                and b[1] < a[3] - 0.05)
+
+    out = list(frags)
+    changed = True
+    while changed:
+        changed = False
+        live = [i for i in range(len(out)) if out[i]]
+        segs = {i: seg(i) for i in live}
+        for i in live:
+            if not segs[i]:
+                continue
+            for j in live:
+                if j <= i or not segs[j] or segs[j][0] != segs[i][0]:
+                    continue
+                (gi, a0, a1), (_, b0, b1) = segs[i], segs[j]
+                if b0 > a1 + 0.05 or a0 > b1 + 0.05:
+                    continue            # not touching
+                if any(hits(boxes[k], boxes[j]) for k in range(i + 1, j)
+                       if out[k]):
+                    continue            # would change the paint order
+                lo, hi = min(a0, b0), max(a1, b1)
+                e = els[i]
+                if gi[0] == "h":
+                    e.set("x1", "%.1f" % lo); e.set("x2", "%.1f" % hi)
+                else:
+                    e.set("y1", "%.1f" % lo); e.set("y2", "%.1f" % hi)
+                attrs = " ".join('%s="%s"' % kv for kv in e.attrib.items())
+                out[i] = "<line %s/>" % attrs
+                els[i] = _frag_el(out[i])
+                boxes[i] = _bbox(els[i])
+                out[j] = ""
+                changed = True
+                break
+            if changed:
+                break
+    return [f for f in out if f]
+
+
 def _draw_rotated(c, fn, x, y, name=None, value=None):
     """Draw a symbol turned a quarter-turn clockwise, centred on (x, y),
     for a component on a vertical wire. Shapes are turned by rewriting
@@ -477,6 +602,14 @@ def circuit(elements, title=None, layout=None, gap=None, aqa_only=False,
                 (_comp(it)[0] == "voltmeter" or _comp(it)[3].get("voltmeter"))
                 for it in top_items)
     has_par = any(isinstance(it, parallel) for it in top_items)
+    # ⊕ fix round 1 (visual m4): when a parallel section ENDS the top run
+    # (and nothing is drawn on the right side), the return wire drops from
+    # that section's right-hand junction column itself. The library ran a
+    # short tail out to a separate corner and dropped from there, which
+    # drew two parallel verticals a few pixels apart — a doubled wire.
+    par_last = (bool(top_items) and isinstance(top_items[-1], parallel)
+                and len(top_items[-1].branches) > 1 and not right
+                and not L.get("title_size"))
     max_branches = max(
         [len(it.branches) for it in top_items
          if isinstance(it, parallel)] + [1])
@@ -501,6 +634,8 @@ def circuit(elements, title=None, layout=None, gap=None, aqa_only=False,
         top_y = above
         bot_y = top_y + max(118, spread/2 + 70, side_n*SPAN + 40)
         W = int(max(L["min_w"], left_x + total_w + 40 + left_x))
+        if par_last:
+            W = int(max(L["min_w"], left_x + total_w + 20 + left_x))
         H = int(bot_y + 34)
     c = Canvas(W, H)
     if title and L.get("title_size"):
@@ -557,7 +692,8 @@ def circuit(elements, title=None, layout=None, gap=None, aqa_only=False,
             jin_x = cx
             jout_x = cx + bw
             _dot(c, jin_x, top_y)
-            _dot(c, jout_x, top_y)
+            if not (par_last and it is top_items[-1]):
+                _dot(c, jout_x, top_y)
             if n == 1:
                 ys = [top_y]
             else:
@@ -565,7 +701,8 @@ def circuit(elements, title=None, layout=None, gap=None, aqa_only=False,
                 ys = [top_y - spread/2 + spread*i/(n-1) for i in range(n)]
             for by, branch in zip(ys, par.branches):
                 _wire(c, jin_x, top_y, jin_x, by)
-                _wire(c, jout_x, top_y, jout_x, by)
+                if not (par_last and it is top_items[-1]):
+                    _wire(c, jout_x, top_y, jout_x, by)
                 bwid = _series_width(branch)
                 start = jin_x + (bw - bwid)/2
                 _wire(c, jin_x, by, start, by)
@@ -576,12 +713,22 @@ def circuit(elements, title=None, layout=None, gap=None, aqa_only=False,
                     _draw_centered(c, SYMBOLS[ct], bx+SPAN/2, by, nm, vl)
                     bx += SPAN
                 _wire(c, bx, by, jout_x, by)
+            if par_last and it is top_items[-1]:
+                # the right column: first branch down to the last, then on
+                # down to the bottom wire; the junction is the last
+                # branch's corner, where three wires now meet
+                _wire(c, jout_x, ys[0], jout_x, ys[-1])
+                _dot(c, jout_x, ys[-1])
             prev_span = (jin_x, jout_x)
             cx += bw
 
     end_x = max(cx + 40, left_x + 200) if L.get("title_size") else W - left_x
-    _wire(c, cx, top_y, end_x, top_y)               # short tail to corner
-    if not right:
+    if par_last:
+        end_x = cx
+        _wire(c, end_x, ys[-1], end_x, bot_y)       # down from the junction
+    else:
+        _wire(c, cx, top_y, end_x, top_y)           # short tail to corner
+    if not right and not par_last:
         _wire(c, end_x, top_y, end_x, bot_y)        # down right side
     _wire(c, end_x, bot_y, left_x, bot_y)           # along the bottom
     if not left:
@@ -590,6 +737,8 @@ def circuit(elements, title=None, layout=None, gap=None, aqa_only=False,
             _wire(c, left_x, bot_y, left_x, top_y + 30)
         else:
             _wire(c, left_x, bot_y, left_x, top_y)  # up the left side
+    if not L.get("title_size"):
+        c.S = _merge_wires(c.S)
     return c.svg()
 
 
@@ -2542,24 +2691,40 @@ def symbol_figure(key, W=240, H=150):
     if key not in {k for k, _ in AQA_SYMBOLS}:
         raise ValueError(f"'{key}' is not on the AQA 8463 symbol list")
     c = Canvas(W, H)
-    SYMBOLS[key](c, W/2, H*0.6, None, None)
+    # ⊕ fix round 1 (visual m7): centre what is actually drawn, not the
+    # wire. A lamp or resistor is symmetric about its wire; a cell's "+",
+    # an LDR's or LED's arrows and an open switch's lever are not, so a
+    # fixed wire height left most symbols sitting low in the card.
+    tmp = _Tmp()
+    SYMBOLS[key](tmp, 0, 0, None, None)
+    y0, y1 = _extent_y(tmp.S)
+    SYMBOLS[key](c, W/2, H/2 - (y0 + y1)/2, None, None)
     return c.svg()
 
 
-def symbol_panel(items, cell_w=210, H=190):
-    """Two or more AQA symbols side by side, each captioned underneath —
-    for "which of A / B is …" comparison questions. `items` is
-    [(caption, key), ...]; a caption names the DRAWING ("Student A"),
-    never the component."""
-    W = int(cell_w * len(items) + 20)
-    c = Canvas(W, H)
-    fs = q_font(W, floor=20)
+def symbol_panel(items, cell_w=210, H=190, cols=None, fs=None):
+    """Two or more AQA symbols, each captioned underneath — for "which of
+    A / B is …" comparison questions. `items` is [(caption, key), ...]; a
+    caption names the DRAWING ("Student A"), never the component.
+
+    ⊕ fix round 1 (visual M1): `cols` lays the symbols out in a grid of
+    that many columns, `H` being the height of one ROW. Four symbols in one
+    row made a 700-wide strip that shrank to 0.47 on a phone, and the
+    detail the questions turn on (an LED's arrows against a diode's) went
+    to a few pixels. Default: one row, as before."""
+    cols = cols or len(items)
+    rows = -(-len(items) // cols)
+    W = int(cell_w * cols + 20)
+    c = Canvas(W, int(H * rows))
+    fs = fs or q_font(W, floor=20)
     for i, (caption, key) in enumerate(items):
         if key not in {k for k, _ in AQA_SYMBOLS}:
             raise ValueError(f"'{key}' is not on the AQA 8463 symbol list")
-        x = 10 + cell_w*i + cell_w/2
-        SYMBOLS[key](c, x, 96, None, None)
-        _q_text(c, x, H - 20, caption, fs, LBL, "bold")
+        col, row = i % cols, i // cols
+        x = 10 + cell_w*col + cell_w/2
+        y0 = H*row
+        SYMBOLS[key](c, x, y0 + H - 94, None, None)   # wire 94 above the foot
+        _q_text(c, x, y0 + H - 20, caption, fs, LBL, "bold")
     return c.svg()
 
 def question_circuit(netlist, gap=None, left=None, right=None):
@@ -2715,7 +2880,9 @@ def motor_coil_forces(W=460, field_lines=4):
                f'stroke="none"/>')                       # the axle
     _conductor(c, xl, cy, r, into=True)
     _conductor(c, xr, cy, r, into=False)
-    flen = 1.5 * (x1 - x0) / 4.0
+    # ⊕ fix round 1 (visual m2): each tip lands midway between two field
+    # lines, not on one, so the red head never merges with a teal line.
+    flen = 0.75 * (bot - top) / field_lines
     _q_arrow(c, xl, cy + r + 3, xl, cy + r + 3 + flen, RED, q_stroke(W, 5), 18)
     _q_arrow(c, xr, cy - r - 3, xr, cy - r - 3 - flen, RED, q_stroke(W, 5), 18)
     return c.svg()
@@ -2736,9 +2903,12 @@ def field_point(W=420, rows=3, cols=3, label="P"):
             y = 16 + (H - 32) * (i + 0.5) / rows
             centre = (i == rows // 2 and j == cols // 2)
             if centre:
+                # ⊕ fix round 1 (visual m3): P's arrow is a field arrow
+                # like every other — teal, same weight. Only the POINT is
+                # singled out; a heavy black arrow read as a force on it.
+                _q_arrow(c, x, y, x + L, y, ACC, q_stroke(W, 2.5), 13)
                 c.S.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="7" '
                            f'fill="{ST}" stroke="none"/>')
-                _q_arrow(c, x + 8, y, x + L + 10, y, ST, q_stroke(W, 5), 18)
                 _q_text(c, x - 16, y - 14, label, fs, LBL, "bold")
             else:
                 _q_arrow(c, x, y, x + L, y, ACC, q_stroke(W, 2.5), 13)
@@ -2748,7 +2918,7 @@ def resolution_triangle(angle=35, hyp="F", horiz="F cos θ",
                         vert="F sin θ", ang_label="θ", W=420):
     """A force resolved into two perpendicular components: a right-angled
     triangle with the right angle marked."""
-    fs = q_font(W)
+    fs = max(q_font(W), 19)     # ⊕ fix round 1 (visual m9): was 15
     H = 280
     c = Canvas(W, H)
     x0, y0 = 50, H - 60
@@ -2765,20 +2935,25 @@ def resolution_triangle(angle=35, hyp="F", horiz="F cos θ",
     _q_text(c, (x0 + x1)/2 - 14, (y0 + y1)/2 - 10, hyp, fs, LBL, "bold", "end")
     _q_text(c, (x0 + x1)/2, y0 + fs + 10, horiz, fs, LBL, "bold")
     _q_text(c, x1 + 12, (y0 + y1)/2 + fs*0.35, vert, fs, LBL, "bold", "start")
-    _q_text(c, x0 + 58, y0 - 10, ang_label, fs, LBL, "bold", "start")
+    _q_text(c, x0 + 64, y0 - 14, ang_label, fs, LBL, "bold", "start")
     return c.svg()
 
 
-def oscilloscope_compare(traces, W=440, divisions=(10, 8), amplitude=3):
+def oscilloscope_compare(traces, W=440, divisions=(10, 5), amplitude=2):
     """One oscilloscope screen per trace, stacked, each captioned — the
     screens share a width and a time-base, so their cycles can be compared
     by eye. Cream screens gridded in divisions with a darker centre line;
-    no numbers on any axis. `traces` is [{"cycles", "caption"}]."""
+    no numbers on any axis. `traces` is [{"cycles", "caption"}].
+
+    ⊕ fix round 1 (visual M2): screens are 2:1 (10 × 5 divisions), not
+    4:3 — two 4:3 screens stacked made a figure taller than a phone, so the
+    stem, the traces and the options could never be on screen together.
+    With an odd number of rows the centre line is drawn on its own."""
     fs = q_font(W)
     dx, dy = divisions
     div = (W - 40) / float(dx)
     sh = div * dy
-    block = fs + 12 + sh + 18
+    block = fs + 10 + sh + 14
     H = int(14 + block * len(traces))
     c = Canvas(W, H)
     y = 14
@@ -2791,9 +2966,13 @@ def oscilloscope_compare(traces, W=440, divisions=(10, 8), amplitude=3):
             _q_line(c, sx0 + i*div, sy0, sx0 + i*div, sy0 + sh, "#D5CDB8",
                     q_stroke(W, 1.2), None, "butt")
         for j in range(1, dy):
-            col = "#8C8472" if j == dy // 2 else "#D5CDB8"
+            centre = dy % 2 == 0 and j == dy // 2
+            col = "#8C8472" if centre else "#D5CDB8"
             _q_line(c, sx0, sy0 + j*div, sx0 + dx*div, sy0 + j*div, col,
-                    q_stroke(W, 1.6 if j == dy // 2 else 1.2), None, "butt")
+                    q_stroke(W, 1.6 if centre else 1.2), None, "butt")
+        if dy % 2:
+            _q_line(c, sx0, sy0 + sh/2, sx0 + dx*div, sy0 + sh/2, "#8C8472",
+                    q_stroke(W, 1.6), None, "butt")
         cy = sy0 + sh/2
         n = max(200, t["cycles"] * 40)
         pts = [(sx0 + dx*div*i/float(n),

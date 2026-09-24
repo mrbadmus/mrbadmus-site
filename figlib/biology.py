@@ -932,7 +932,10 @@ def plant_cell(W=460, labels=True):
                    f'fill="#7FB98A" stroke="{ST}" stroke-width="{sw}"/>')
     if labels:
         lx = x0 + cw + 34
-        parts = [("cell wall", (x0 + cw - 1, y0 + 64)),
+        # ⊕ fix round 1 (visual M4): the wall's anchor sits high on the
+        # wall, so its leader runs nearly flat. At y0+64 the chloroplast
+        # leader passed within ~1.5 units of it and read as pointing there.
+        parts = [("cell wall", (x0 + cw - 1, y0 + 26)),
                  ("chloroplast", chloros[0]),
                  ("cell membrane", (x0 + cw - m, y0 + 118)),
                  ("nucleus", (nx + 8, ny)),

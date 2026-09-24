@@ -138,9 +138,9 @@ QUESTIONS = [
                     "would give 10.6, not 6.6."},
             {"text": "Whichever of the two processes is currently running.",
              "correct": False,
-             "why": "Both are always running. The third bar is what is left "
-                    "over from two flows happening at once, not a label for "
-                    "the one that won."},
+             "why": "In the light, both happen at the same time. The third "
+                    "bar is what is left over from the two flows together, "
+                    "not a label for the one that won."},
             {"text": "The rate of photosynthesis, on its own.",
              "correct": False,
              "why": "That is the middle bar, 8.6. The third bar is smaller "

@@ -257,8 +257,8 @@ QUESTIONS = [
         "id": "b5-02-h01",
         "band": "harder",
         "text": "Look at the diagram. A student concludes that the egg must "
-                "be twenty times as much cell as the sperm. Where does that "
-                "go wrong?",
+                "be twenty times as much cell as the sperm head. Where does "
+                "that go wrong?",
         "options": [
             {"text": "It does not go wrong — a bar twenty times as long does "
                      "mean twenty times as much cell.",
@@ -269,9 +269,9 @@ QUESTIONS = [
             {"text": "Two cells can only be compared by bars if they are "
                      "exactly the same shape as each other.",
              "correct": False,
-             "why": "The comparison itself is honest — both bars are drawn to "
-                    "scale. It is the step from a width to an amount that has "
-                    "to be taken carefully."},
+             "why": "Treating both as roughly round is fine for an "
+                    "estimate. The mistake is the step from a width to an "
+                    "amount."},
             {"text": "Those bars are diameters, and volume goes as the "
                      "diameter cubed — about eight thousand times.",
              "correct": True},

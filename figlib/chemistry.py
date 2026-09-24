@@ -179,6 +179,12 @@ def covalent_dotcross(formula, title=True, compact=False, incomplete=(),
             seat = (OR + (d - BR)) / 2                 # middle of the lens
         if k_bond in detached:
             c.cross(bx, by)                            # its own, unshared
+            # ⊕ fix round 1 (examiner M3): the central atom keeps the
+            # electron it would have shared — one unpaired dot on its own
+            # shell, facing the loose atom. Without it the centre is short
+            # an electron (NH3 drew N with four), a second error the
+            # question never meant to set.
+            c.dot(Ox + ux*OR, Oy + uy*OR)
             continue
         lx, ly = Ox + ux*seat, Oy + uy*seat
         for off in _pair_offsets(order):

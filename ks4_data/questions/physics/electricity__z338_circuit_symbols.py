@@ -223,11 +223,10 @@ QUESTIONS = [
             "out light",
         ],
         "correct_index": 1,
-        "why": "The symbol where the bulb should be — a small rectangle inside a"
-               " circle with two arrows pointing in — is a light-dependent "
-               "resistor, which responds to light rather than giving it out. A "
-               "torch bulb is a lamp, drawn as a circle with a cross. The "
-               "battery, the switch and the single loop are right.",
+        "why": "The symbol drawn where the bulb should be is an LDR — its "
+               "arrows point in, because it responds to light rather than "
+               "giving it out. A torch bulb is a lamp. The battery, switch and "
+               "single loop are right.",
     },
     {
         "id": "ks4-circuit-symbols-s06",
@@ -493,10 +492,8 @@ QUESTIONS = [
             "P, R and S",
         ],
         "correct_index": 3,
-        "why": "P is a battery (two cells joined by a dashed line), R is a "
-               "closed switch (its lever joins both contacts) and S is a lamp (a"
-               " circle with a cross). Q, with arrows pointing in, is a "
-               "light-dependent resistor, which this circuit does not need.",
+        "why": "P is a battery, R a closed switch and S a lamp. Q is an LDR, "
+               "which this circuit does not need.",
     },
     {
         "id": "ks4-circuit-symbols-s20",
@@ -568,10 +565,10 @@ QUESTIONS = [
         "text": "The diagram shows a circuit with two meters. What does each "
                 "meter measure?",
         "options": [
-            "The meter in the loop measures the potential difference across "
-            "the cell; the other measures the current in the resistor",
-            "The meter in the loop measures the current; the other measures "
-            "the potential difference across the resistor",
+            "The meter in the main loop measures the potential difference "
+            "across the cell; the other measures the current in the resistor",
+            "The meter in the main loop measures the current; the other "
+            "measures the potential difference across the resistor",
             "Both meters measure the current, one before the resistor and one"
             " across it",
             "Both meters measure the potential difference, one across the "
@@ -579,7 +576,7 @@ QUESTIONS = [
         ],
         "correct_index": 1,
         "why": "The circle with A is an ammeter, connected in series in the "
-               "loop, so it measures the current. The circle with V is a "
+               "main loop, so it measures the current. The circle with V is a "
                "voltmeter, connected in parallel across the resistor, so it "
                "measures the potential difference across the resistor.",
     },

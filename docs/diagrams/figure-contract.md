@@ -105,7 +105,8 @@ itself; there is not one `class=`, `style=` or `var(` in any manifest SVG.
 figure if one breaks it — together with the rest of `figlib.checks`: the
 worksheet translator's element/attribute subset, AA contrast against what
 each label actually sits on, no text on a dark fill, ≥ 11px text and ≥ 1px
-strokes in a 320px box, no motor and no d.c. box, Georgia first. The
+strokes in a 320px box, no motor and no d.c. box, Georgia first (or the one lining-figure stack
+`style.NUM_FONT` on a label with a digit — `figlib/README.md`). The
 `figure_manifest` gate runs the same checks on every push.
 
 **So a consuming surface supplies NO paint.** Put the SVG in the page and

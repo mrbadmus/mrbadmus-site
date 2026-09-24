@@ -118,7 +118,9 @@ This is the complete set. `build_figures.py` refuses anything else.
 Paint = `fill stroke stroke-width stroke-linecap stroke-linejoin
 stroke-dasharray`. Colours are `#hex` or `none`. `font-size`,
 `font-weight` (400/700), `stroke-width` and `rx` are bare numbers.
-`font-family` starts with Georgia. Never: `class`, `style`, `var()`, `<g>`,
+`font-family` starts with Georgia, or is exactly `style.NUM_FONT`
+("Times New Roman, Times, serif") on a label that carries a digit — see
+"Fix round 1" below. Never: `class`, `style`, `var()`, `<g>`,
 `<defs>`, `<marker>`, gradients, `<use>`, `<tspan>`, `clipPath`, filters,
 `opacity`/`fill-opacity`, arcs (`A`), `S`/`T`, any transform but a text
 rotation. Arrowheads are polygons.
@@ -136,3 +138,34 @@ Also checked on every figure: every shape states its fill; every label is
    `title` is the alt text: what is SHOWN, never the answer.
 3. `python3 build_all.py` (it runs `build_figures.py` first). If a check
    fails, fix the drawing — never the check.
+
+## Fix round 1 (MRB-352 run 2, after the examiner and visual reviews)
+
+Library-wide changes, each marked `⊕ fix round 1` in the code:
+
+- **Cell and battery plates are the same line weight** (stroke 3), the
+  short plate only shorter — as AQA 8463 v1.1 p.24 draws them. The earlier
+  comment called the short plate "a little thicker"; that is a BS
+  convention, not AQA's.
+- **Numerals line up.** Georgia's default old-style figures made "0" a
+  small "o" at phone size. `style.text()` sets any label containing a
+  digit in `style.NUM_FONT` = "Times New Roman, Times, serif" (lining
+  figures). It is attributes only, and every family in it is serif, so the
+  worksheet maps it to the same bundled DejaVu Serif as Georgia.
+  `figlib.checks` rule 6 accepts exactly that stack besides Georgia-first,
+  nothing else. Chart tick and value numerals are also one step larger
+  (`charts._num_size`: 20 against 17 on a 480 canvas).
+- **Circuits:** collinear wire segments that meet end to end are joined
+  into one `<line>` (`_merge_wires`), which removes the darker seam dots at
+  phone scale. A join is refused if it could change what paints over what.
+  When a parallel section ends the top run, the return wire drops from the
+  junction column itself instead of a second vertical beside it.
+- `symbol_figure` centres what is drawn, not the wire. `symbol_panel`
+  takes `cols` (a grid; `H` is one row's height) and `fs`.
+- `oscilloscope_compare` defaults to 2:1 screens (10 × 5 divisions).
+- `covalent_dotcross(detached=…)`: the central atom keeps the electron it
+  would have shared, drawn as one unpaired dot on its shell.
+- `motor_coil_forces`: force arrow tips land between field lines.
+  `field_point`: the arrow at P is a field arrow like the rest.
+  `resolution_triangle`: labels at 19. `plant_cell`: the cell-wall leader
+  no longer crosses the chloroplast leader.

@@ -1718,15 +1718,15 @@ QUESTIONS = [
                 "stomach and the small intestine.",
         "options": [
             {"text": "The claim does not hold up — the small intestine "
-                     "finishes every nutrient and does almost all of the "
-                     "absorption.",
+                     "finishes digesting every nutrient and does almost all "
+                     "of the absorption.",
              "correct": True},
             {"text": "The claim is correct, since the stomach is the first "
                      "organ to add any digestive juice at all.",
              "correct": False,
              "why": "Being first is not the same as doing the most — the "
                     "stomach only begins on protein, and the small intestine "
-                    "finishes every nutrient."},
+                    "finishes digesting every nutrient."},
             {"text": "The claim is correct, because the stomach absorbs "
                      "most of the meal's nutrients.", "correct": False,
              "why": "Almost nothing is absorbed through the stomach wall — "
@@ -2383,28 +2383,28 @@ QUESTIONS = [
         "band": "harder",
         "text": "A student argues: “Peristalsis pushes food along the whole "
                 "gut, so food must move at a constant speed from mouth to "
-                "anus.” Evaluate this claim using the transit times given "
-                "for each organ.",
+                "anus.” Evaluate this claim using the chart.",
         "options": [
             {"text": "It is true only for the small intestine and large "
                      "intestine, but false everywhere else.", "correct": False,
-             "why": "Even between those two organs the times differ "
-                    "hugely — about four hours against a day or more."},
+             "why": "The chart shows even those two organs differ hugely — "
+                    "about 4 hours in the small intestine against about 30 "
+                    "in the large intestine."},
             {"text": "It cannot be evaluated, since transit times were "
                      "never actually measured for each organ.", "correct": False,
-             "why": "Typical transit times are given for every stop, from "
-                    "about a minute in the mouth to many hours in the large "
-                    "intestine — they clearly are not constant."},
-            {"text": "It is false — transit times differ hugely between "
-                     "organs, from about eight seconds in the oesophagus to "
-                     "many hours in the large intestine.", "correct": True},
+             "why": "The chart gives a typical time for each organ, from "
+                    "about a minute in the mouth to about 30 hours in the "
+                    "large intestine — they clearly are not constant."},
+            {"text": "It is false — the chart shows food staying about a "
+                     "minute in the mouth but about 30 hours in the large "
+                     "intestine.", "correct": True},
             {"text": "It is true, since peristalsis is the same muscular "
                      "action the whole length of the gut.", "correct": False,
              "why": "The mechanism being the same does not mean the speed "
-                    "is — the stomach and large intestine hold material far "
-                    "longer than the oesophagus does."},
+                    "is — the chart shows the stomach and the large "
+                    "intestine holding food for hours."},
         ],
-        "figure": None,
+        "figure": "b3-gut-transit-times",
     },
     {
         "id": "b3-05-h30",

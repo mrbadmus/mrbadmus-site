@@ -266,14 +266,31 @@ def esc(txt):
                     .replace("<", "&lt;").replace(">", "&gt;"))
 
 
+# ⊕ fix round 1 (visual M3). Georgia sets old-style figures by default:
+# 0, 1 and 2 are only x-height tall, so at ~11px a "0" reads as a small "o"
+# and "10" as "1o" — on the very labels a pupil has to READ a value from.
+# A label carrying a digit is set in this lining-figure serif instead.
+# It is attributes only (no style=, no font-variant, which the worksheet
+# translator does not carry); every family in it is serif, so the backend's
+# PDF/DOCX path maps it to the same bundled DejaVu Serif as Georgia, whose
+# figures already line. The one font-family figlib.checks accepts besides
+# a Georgia-first stack.
+NUM_FONT = "Times New Roman, Times, serif"
+
+
+def label_font(txt):
+    return NUM_FONT if any(ch.isdigit() for ch in str(txt)) else STYLE["font"]
+
+
 def text(c, x, y, txt, size, fill=None, weight="bold", anchor="middle",
          rotate=None):
-    """One label, in the house font, painted by attribute (never a class)."""
+    """One label, in the house font, painted by attribute (never a class).
+    A label with a digit in it takes NUM_FONT (lining figures)."""
     fill = fill or STYLE["label"]
     tr = (' transform="rotate(%s %.1f %.1f)"' % (rotate, x, y)
           if rotate is not None else "")
     c.S.append(
-        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{STYLE["font"]}" '
+        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{label_font(txt)}" '
         f'font-size="{size}" font-weight="{weight}" fill="{fill}" '
         f'text-anchor="{anchor}"{tr}>{esc(txt)}</text>')
 

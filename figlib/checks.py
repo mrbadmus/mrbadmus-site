@@ -20,14 +20,20 @@ warnings, because every one of them is a defect a pupil sees:
     and every stroke >= 1px.
  5. AQA SYMBOLS ONLY. No motor (a circled M) and no "d.c." box: neither is
     on the AQA 8463 §4.2.1.1 list.
- 6. Georgia first in every font stack.
+ 6. Georgia first in every font stack — or exactly `style.NUM_FONT`, the
+    lining-figure serif for a label that carries a number. ⊕ fix round 1
+    (visual M3): Georgia's old-style digits made "0" a small "o" at 11px
+    on the chart labels a pupil reads values from. The rule was widened by
+    that ONE named, all-serif stack (which the worksheet maps to the same
+    DejaVu Serif as Georgia) and nothing else.
 """
 
 import math
 import re
 import xml.etree.ElementTree as ET
 
-from .style import (MIN_STROKE_PX, MIN_TEXT_PX, screen_scale, text_width)
+from .style import (MIN_STROKE_PX, MIN_TEXT_PX, NUM_FONT, screen_scale,
+                    text_width)
 
 _Q = "{http://www.w3.org/2000/svg}"
 
@@ -272,9 +278,10 @@ def check_figure(fid, svg):
             continue
         label = "".join(el.itertext()).strip()
         fam = el.get("font-family", "")
-        if not fam.startswith("Georgia"):
+        if not fam.startswith("Georgia") and fam != NUM_FONT:
             probs.append("%s: text %r font-family %r does not start with "
-                         "Georgia" % (fid, label, fam))
+                         "Georgia (nor is it the lining-figure stack %r)"
+                         % (fid, label, fam, NUM_FONT))
         fill = el.get("fill")
         if fill in (None, "none"):
             probs.append("%s: text %r has no fill" % (fid, label))

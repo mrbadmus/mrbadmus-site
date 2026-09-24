@@ -60,9 +60,9 @@ QUESTIONS = [
             {"text": "That height is inherited from your parents rather than "
                      "set by diet.",
              "correct": False,
-             "why": "You have answered question two with a question about "
-                    "question one. Whether the bars touch is a claim about the "
-                    "data. What caused the variation is a separate question."},
+             "why": "That is about what causes the variation. Whether the "
+                    "bars touch is a claim about the kind of data, not its "
+                    "cause."},
         ],
         "figure": "b10-height-bars-touching",
     },

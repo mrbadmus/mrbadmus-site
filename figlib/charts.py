@@ -38,6 +38,13 @@ def _fmt(v):
 
 # ── horizontal bars, one row per item: label above, bar below ────────────
 
+def _num_size(fs):
+    """⊕ fix round 1 (visual M3): tick and value numerals one step larger
+    than the running text — 20 against 17 on a 480 canvas, ~13.7 CSS px on
+    a phone. They are what the pupil reads a value from."""
+    return int(round(fs * 20 / 17.0))
+
+
 def hbar_chart(rows, W=480, axis=None, log=False, boundary=None,
                heading=None, bar_h=22, fill=None, value_side="label"):
     """Rows of horizontal bars, stacked down the page so long labels never
@@ -52,6 +59,7 @@ def hbar_chart(rows, W=480, axis=None, log=False, boundary=None,
     heading   a short line above the chart
     """
     fs = q_font(W)
+    fn = _num_size(fs)
     sw = q_stroke(W, 2)
     left, right = 22, W - 22
     y = 22
@@ -71,8 +79,8 @@ def hbar_chart(rows, W=480, axis=None, log=False, boundary=None,
     # height first, then draw
     h = y + (fs + 8 if heading else 0) + len(note_lines) * (fs + 6) \
         + (len(boundary["lines"]) * (fs + 4) + 8 if boundary else 0) \
-        + len(rows) * (fs + 8 + bar_h + 14) \
-        + (fs * 2 + 34 if axis else 4) + 14
+        + len(rows) * (max(fs, fn) + 8 + bar_h + 14) \
+        + (fs + fn + 34 if axis else 4) + 14
     c = Canvas(W, int(h))
     if heading:
         y += fs
@@ -85,10 +93,10 @@ def hbar_chart(rows, W=480, axis=None, log=False, boundary=None,
         y += 8
     plot_top = y
     for i, r in enumerate(rows):
-        y += fs + 4
+        y += max(fs, fn) + 4
         text(c, left, y, r["label"], fs, LBL, "bold", "start")
         if r.get("display") and value_side == "label":
-            text(c, right, y, r["display"], fs, LBL, "normal", "end")
+            text(c, right, y, r["display"], fn, LBL, "normal", "end")
         y += 6
         x1 = X(r["value"])
         c.S.append(
@@ -108,14 +116,14 @@ def hbar_chart(rows, W=480, axis=None, log=False, boundary=None,
             tx = X(t)
             line(c, tx, ay, tx, ay + 8, ST, sw)
             anchor = "middle"
-            if tx - text_width(lab, fs) / 2 < 4:
+            if tx - text_width(lab, fn) / 2 < 4:
                 anchor = "start"
-            elif tx + text_width(lab, fs) / 2 > W - 4:
+            elif tx + text_width(lab, fn) / 2 > W - 4:
                 anchor = "end"
-            text(c, tx, ay + 10 + fs, lab, fs, LBL, "normal", anchor)
-        text(c, (left + right) / 2, ay + 22 + 2 * fs,
+            text(c, tx, ay + 10 + fn, lab, fn, LBL, "normal", anchor)
+        text(c, (left + right) / 2, ay + 22 + fn + fs,
              _axis_title(axis["label"], axis.get("unit")), fs, LBL, "bold")
-        yy = ay + 22 + 2 * fs
+        yy = ay + 22 + fn + fs
         for ln in note_lines:
             yy += fs + 6
             text(c, (left + right) / 2, yy, ln, fs, LBL, "normal")
@@ -146,12 +154,13 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
     wrapped, instead of rotating it up the side where it would not fit.
     """
     fs = q_font(W)
+    fn = _num_size(fs)
     sw = q_stroke(W, 2)
     n = len(bins)
     vmax = y_max or max(b["n"] for b in bins)
     step = y_step or max(1, int(math.ceil(vmax / 5.0)))
     top = step * int(math.ceil(vmax / float(step)))
-    ox = 30 + fs * 1.3 + text_width(_fmt(top), fs)
+    ox = 30 + fs * 1.3 + text_width(_fmt(top), fn)
     aw = W - ox - 18
     gapw = 0 if touching else aw / n * 0.28
     bw = (aw - gapw * (n + 1)) / n
@@ -164,7 +173,7 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
                  if y_title == "top" else [])
     head = len(top_lines) * (fs + 5) + (8 if top_lines else 0)
     if y_title == "top":
-        ox = 24 + text_width(_fmt(top), fs) + 14
+        ox = 24 + text_width(_fmt(top), fn) + 14
         aw = W - ox - 18
         gapw = 0 if touching else aw / n * 0.28
         bw = (aw - gapw * (n + 1)) / n
@@ -174,7 +183,7 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
         oy = H - below - (len(cap_lines) * (fs + 5) + 8 if cap_lines else 0)
     nval = max((len(b["display"]) if isinstance(b.get("display"), list) else 1)
                for b in bins) if values else 0
-    ah = oy - 26 - head - (nval * (fs + 4) + 6 if values else 0)
+    ah = oy - 26 - head - (nval * (fn + 4) + 6 if values else 0)
     c = Canvas(W, H)
     yy = 14 + fs
     for ln in top_lines:
@@ -184,7 +193,7 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
         yy = oy - ah * k / float(top)
         line(c, ox, yy, ox + aw, yy, GRID, q_stroke(W, 1.2), None, "butt")
         line(c, ox - 7, yy, ox, yy, ST, sw)
-        text(c, ox - 11, yy + fs * 0.35, _fmt(k), fs, LBL, "normal", "end")
+        text(c, ox - 11, yy + fn * 0.35, _fmt(k), fn, LBL, "normal", "end")
     for i, b in enumerate(bins):
         x = ox + gapw + i * (bw + gapw)
         hh = max(min_bar, ah * b["n"] / float(top))
@@ -195,18 +204,18 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
         if values:
             disp = b.get("display", _fmt(b["n"]))
             disp = disp if isinstance(disp, list) else [disp]
-            yy = oy - hh - 8 - (len(disp) - 1) * (fs + 4)
+            yy = oy - hh - 8 - (len(disp) - 1) * (fn + 4)
             for ln in disp:
-                text(c, x + bw / 2, yy, ln, fs, LBL, "bold")
-                yy += fs + 4
+                text(c, x + bw / 2, yy, ln, fn, LBL, "bold")
+                yy += fn + 4
     line(c, ox, oy, ox + aw, oy, ST, q_stroke(W, 3))
     line(c, ox, oy, ox, oy - ah, ST, q_stroke(W, 3))
     if touching and edges:
         for i, e in enumerate(edges):
             xx = ox + gapw + i * (bw + gapw)
             line(c, xx, oy, xx, oy + 7, ST, sw)
-            text(c, xx, oy + 10 + fs, _fmt(e), fs, LBL, "normal")
-        lab_y = oy + 10 + fs
+            text(c, xx, oy + 10 + fn, _fmt(e), fn, LBL, "normal")
+        lab_y = oy + 10 + fn
     else:
         lab_y = oy
         for i, b in enumerate(bins):
@@ -283,9 +292,10 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
     drawn in the library's teal, the second in red and dashed, so two
     series differ by more than colour alone."""
     fs = q_font(W)
+    fn = _num_size(fs)
     sw = q_stroke(W, 2)
-    ox = 30 + fs * 1.3 + max(text_width(_fmt(t), fs) for t in y_ticks)
-    oy = H - (fs * 2 + 34) - (fs + 14 if legend else 0)
+    ox = 30 + fs * 1.3 + max(text_width(_fmt(t), fn) for t in y_ticks)
+    oy = H - (fs + fn + 34) - (fs + 14 if legend else 0)
     aw = W - ox - 26
     ah = oy - 26
     (x0, x1), (y0, y1) = x_range, y_range
@@ -305,11 +315,11 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
     for t in x_ticks:
         px, _ = P(t, y0)
         line(c, px, oy, px, oy + 7, ST, sw)
-        text(c, px, oy + 10 + fs, _fmt(t), fs, LBL, "normal")
+        text(c, px, oy + 10 + fn, _fmt(t), fn, LBL, "normal")
     for t in y_ticks:
         _, py = P(x0, t)
         line(c, ox - 7, py, ox, py, ST, sw)
-        text(c, ox - 11, py + fs * 0.35, _fmt(t), fs, LBL, "normal", "end")
+        text(c, ox - 11, py + fn * 0.35, _fmt(t), fn, LBL, "normal", "end")
     line(c, ox, oy, ox + aw, oy, ST, q_stroke(W, 3))
     line(c, ox, oy, ox, oy - ah, ST, q_stroke(W, 3))
     for k, s in enumerate(series):
@@ -328,7 +338,7 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
             ex, ey = pts[-1]
             c.S.append(f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="5.5" '
                        f'fill="{col}" stroke="none"/>')
-    text(c, ox + aw / 2, oy + 24 + 2 * fs, _axis_title(x_label, x_unit), fs,
+    text(c, ox + aw / 2, oy + 24 + fn + fs, _axis_title(x_label, x_unit), fs,
          LBL, "bold")
     text(c, fs + 4, oy - ah / 2, _axis_title(y_label, y_unit), fs, LBL,
          "bold", "middle", rotate=-90)
