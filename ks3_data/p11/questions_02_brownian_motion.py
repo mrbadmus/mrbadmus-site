@@ -859,23 +859,25 @@ QUESTIONS = [
     {
         "id": "p11-02-h12",
         "band": "harder",
-        "text": "A speck's path is drawn as straight segments joined at "
-                "random angles. Why is that a fair picture?",
-        "options": [            {"text": "Because each unbalanced strike sends it off in a new "
-                     "direction",
+        "text": "Through a microscope, a smoke particle in air jerks a short "
+                "way in one direction, then another, again and again. Why "
+                "does it keep changing direction?",
+        "options": [
+            {"text": "Unbalanced hits from air particles push it a new way",
              "correct": True},
-            {"text": "Because the speck travels in straight lines between "
-                     "walls of the cell",
+            {"text": "It bounces off the walls of the smoke cell each time",
              "correct": False,
-             "why": "It changes direction constantly in open fluid, nowhere "
-                    "near a wall."},
-            {"text": "Because the microscope can only record it at intervals",
+             "why": "It changes direction all the time in the middle of the "
+                    "air, nowhere near a wall."},
+            {"text": "It is alive, and moves about in the air on its own",
              "correct": False,
-             "why": "Sampling makes the drawing simpler, but the direction "
-                    "really does change."},
-            {"text": "Because the angles are always ninety degrees",
+             "why": "Smoke particles are specks of ash, not living things. "
+                    "Pollen grains and dust in water jiggle in just the same "
+                    "way."},
+            {"text": "Gravity pulls it in a different direction each time",
              "correct": False,
-             "why": "They take every value; nothing picks a right angle."},
+             "why": "Gravity always pulls downwards. It cannot send a "
+                    "particle off sideways or upwards."},
         ],
         "figure": None,
     },

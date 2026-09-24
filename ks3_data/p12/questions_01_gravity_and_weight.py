@@ -813,19 +813,23 @@ QUESTIONS = [
     {
         "id": "p12-01-e21",
         "band": "easier",
-        "text": "On the weight triangle, W sits above the line and m and g "
-                "sit below it, side by side. If you cover 'g', what are you "
-                "left looking at?",
+        "text": "Weight = mass × gravitational field strength, or W = m × g. "
+                "Which equation gives g?",
         "options": [
-            {"text": "W multiplied by m", "correct": False,
-             "why": "Multiplying is not what covering g gives; the triangle "
-                    "divides when the two remaining letters sit one above "
-                    "the other."},
-            {"text": "m divided by W", "correct": False,
-             "why": "That turns the two quantities the wrong way round."},
-            {"text": "W plus m", "correct": False,
-             "why": "A force and a mass cannot be added together."},
-            {"text": "W divided by m", "correct": True},
+            {"text": "g = W × m",
+             "correct": False,
+             "why": "Multiplying by m makes the number bigger still. To undo "
+                    "× m, divide by m."},
+            {"text": "g = m ÷ W",
+             "correct": False,
+             "why": "That has the division the wrong way round. It is W that "
+                    "is divided by m."},
+            {"text": "g = W + m",
+             "correct": False,
+             "why": "A force and a mass cannot be added together, and "
+                    "nothing in W = m × g is added."},
+            {"text": "g = W ÷ m",
+             "correct": True},
         ],
         "figure": None,
     },
