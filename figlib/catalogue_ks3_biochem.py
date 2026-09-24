@@ -110,7 +110,9 @@ CATALOGUE = [
      "desc": "The ticks run clockwise from the top, shown by a small arrow. "
              "The dot sits directly opposite Day 1."},
 
-    # F7 · b9-01-s11 — the sparrowhawk keeps distractor [2] false.
+    # F7 · b9-01-s11 — the sparrowhawk keeps distractor [2] false. NO legend
+    # (batch-2 fix round, examiner MINOR-1, commander's ruling): stating the
+    # arrow convention would answer distractor A, exactly as on F20.
     {"id": "b9-garden-web-blackbird",
      "art": "food-web",
      "params": {"W": 400, "H": 350, "clearance": 22,
@@ -125,9 +127,7 @@ CATALOGUE = [
                      "y": 310}],
                 "eats": [("nettles", "caterpillars"),
                          ("caterpillars", "blackbird"),
-                         ("bush", "blackbird"), ("blackbird", "hawk")],
-                "legend": "arrows point from the organism that is eaten to "
-                          "the organism that eats it"},
+                         ("bush", "blackbird"), ("blackbird", "hawk")]},
      "title": "A food web: five labelled boxes joined by arrows.",
      "desc": "Nettles and Berry bush at the bottom, Caterpillars above "
              "Nettles, Blackbird above them, Sparrowhawk at the top."},
@@ -139,7 +139,7 @@ CATALOGUE = [
                            {"width": 290, "label": "5 000 caterpillars"},
                            {"width": 90, "label": "20 blue tits"}],
                 "note": "Bar widths are not to scale.",
-                "W": 500, "H": 260, "cx": 170, "bar_h": 44, "label_x": 330},
+                "W": 500, "H": 212, "cx": 170, "bar_h": 44, "label_x": 330},
      "title": "A pyramid of numbers with three bars: 1 oak tree at the "
               "bottom, 5 000 caterpillars in the middle, 20 blue tits at "
               "the top.",
@@ -177,7 +177,7 @@ CATALOGUE = [
                      "arrows": [0, 3, 5, 8],
                      "points": [(20, 10), (35, 11), (52, 14), (62, 20),
                                 (58, 28), (45, 33), (30, 31), (20, 25),
-                                (15, 18), (16, 13), (21, 10.5)]}],
+                                (15, 18), (16, 13), (23, 11.5)]}],
                 "x_label": "number of prey", "x_unit": None,
                 "x_range": (0, 70), "x_ticks": list(range(0, 71, 10)),
                 "y_label": "number of predators", "y_unit": None,
@@ -210,7 +210,7 @@ CATALOGUE = [
                           {"fill": "#f2d04b", "label": "sulfur atom"}],
                 "n": 6, "r": 18, "pitch": 36, "origin": (40, 40),
                 "frame": (20, 20, 224, 224), "W": 380, "H": 264,
-                "key_x": 262, "key_y": (110, 150)},
+                "key_x": 252, "key_y": (110, 150)},
      "title": "A box of touching circles of two kinds, grey and yellow, "
               "alternating in rows.",
      "desc": "Each grey circle touches yellow circles on every side and "
@@ -287,7 +287,7 @@ CATALOGUE = [
                 "x_label": "time", "x_unit": "min", "x_range": (0, 20),
                 "x_ticks": [0, 4, 8, 12, 16, 20],
                 "y_label": "temperature", "y_unit": "°C",
-                "y_range": (0, 180), "y_ticks": [0, 40, 80, 120, 160],
+                "y_range": (0, 200), "y_ticks": [0, 40, 80, 120, 160, 200],
                 "W": 480, "H": 380},
      "title": "A graph of temperature against time: a rising line, a flat "
               "section, then a rising line again.",

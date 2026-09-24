@@ -82,10 +82,11 @@ CATALOGUE = [
                 "detached": (0, 1, 2, 3), "dashed": True, "nuclei": False,
                 "angles": (45, 135, 225, 315), "detached_seat": "shell",
                 "detached_gap": 44},
-     "title": "A dot-and-cross drawing with a C circle and four separate H "
-              "circles around it, not touching it.",
-     "desc": "The C circle carries four single dots. Each H circle carries "
-             "one cross."},
+     "title": "A dot-and-cross drawing of methane: a C circle and four H "
+              "circles.",
+     "desc": "The four H circles sit around the C circle, apart from it and "
+             "not touching it. The C circle carries four single dots. Each H "
+             "circle carries one cross."},
 
     # F25 · ks4-covalent-bonding-h23. ⚠️ DELIBERATELY WRONG: one shared pair
     # to each O (the drawing-only table entry "CO2_single"). Counted
@@ -130,7 +131,8 @@ CATALOGUE = [
      "title": "A sketch of energy against progress of reaction: a line from "
               "a lower level labelled reactants, over a small hump, up to a "
               "higher level labelled products.",
-     "desc": "The top of the hump is lower than the products level."},
+     "desc": "The line starts low at reactants, rises to a small hump, dips "
+             "a little, then rises to the highest level, products."},
 
     # F28 · ks4-condensation-polymerisation-s10. ⚠️ DELIBERATELY WRONG: a
     # free –OH and a free –COOH left inside the repeat unit (no ester link).

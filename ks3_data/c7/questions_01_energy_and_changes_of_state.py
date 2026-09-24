@@ -1707,8 +1707,8 @@ QUESTIONS = [
                 "did they most likely do?",
         "options": [
             {"text": "They heated a substance that has no boiling point", "correct": False,
-             "why": "Every substance boils if it is taken hot enough. The "
-                    "run simply stopped before that."},
+             "why": "Nothing on the graph shows the substance cannot boil; "
+                    "the run simply stopped before that."},
             {"text": "They stopped heating before the substance reached its "
                      "boiling point", "correct": True},
             {"text": "They started the run after the substance had already "

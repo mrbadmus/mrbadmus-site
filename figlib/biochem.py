@@ -30,8 +30,8 @@ Registered in `figlib.ART` through `ART_BIOCHEM` below.
 import math
 
 from .charts import _smooth_path
-from .style import (STYLE, TINT, Canvas, _pol, arrow, box, line, q_font,
-                    q_stroke, text, text_width)
+from .style import (NUM_FONT, STYLE, TINT, Canvas, _pol, arrow, box,
+                    label_font, line, q_font, q_stroke, text, text_width)
 
 INK = STYLE["stroke"]
 LBL = STYLE["label"]
@@ -277,13 +277,18 @@ def bar_model(whole, parts, W=480, H=200, x0=20, x1=460, top=30,
          "bold")
     y2 = top + bar_h + gap
     x = x0
+    # ⊕ batch-2 fix round (visual m2): the part labels are siblings, so they
+    # share ONE face — NUM_FONT for all of them if any carries a digit, or
+    # "oxygen: ? g" sat in Georgia beside "magnesium: 2.4 g" in Times.
+    fam = (NUM_FONT if any(label_font(lab) == NUM_FONT for lab, _ in parts)
+           else None)
     for lab, frac in parts:
         wd = (x1 - x0) * frac
         box(c, x, y2, wd, bar_h, "#FFFFFF", INK, sw)
         if text_width(lab, fs, True) > wd - 10:
             raise ValueError("bar_model: %r does not fit its part" % lab)
         text(c, x + wd / 2.0, y2 + bar_h / 2.0 + fs * 0.36, lab, fs, LBL,
-             "bold")
+             "bold", family=fam)
         x += wd
     return c.svg()
 

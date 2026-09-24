@@ -305,14 +305,16 @@ def label_font(txt):
 
 
 def text(c, x, y, txt, size, fill=None, weight="bold", anchor="middle",
-         rotate=None):
+         rotate=None, family=None):
     """One label, in the house font, painted by attribute (never a class).
-    A label with a digit in it takes NUM_FONT (lining figures)."""
+    A label with a digit in it takes NUM_FONT (lining figures). `family`
+    (default None = that rule) forces one stack, so a set of sibling labels
+    can share a face when only some of them carry a digit."""
     fill = fill or STYLE["label"]
     tr = (' transform="rotate(%s %.1f %.1f)"' % (rotate, x, y)
           if rotate is not None else "")
     c.S.append(
-        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{label_font(txt)}" '
+        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{family or label_font(txt)}" '
         f'font-size="{size}" font-weight="{weight}" fill="{fill}" '
         f'text-anchor="{anchor}"{tr}>{esc(txt)}</text>')
 
