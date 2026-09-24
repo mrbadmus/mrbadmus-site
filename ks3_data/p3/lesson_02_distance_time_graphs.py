@@ -363,42 +363,42 @@ LESSON = {
                    "distance–time graph is speed.",
             }},
         "explain": {
-            "q": "A graph rises steeply, then flattens, then rises gently. "
-                 "Describe that journey in words and say how you know each "
-                 "part, without using the words up or down.",
-            "field_label": "Your description",
-            "placeholder": "At the start the line is steep, which means…",
+            "q": "Explain why the steepness of a distance–time graph shows "
+                 "the speed, and why a flat section means the object has "
+                 "stopped. Use a worked example with numbers.",
+            "field_label": "Your explanation",
+            "placeholder": "The steepness shows how many metres…",
             "success": [
-                "Says the steep part is the fastest section, and that "
-                "steepness means speed.",
-                "Says the flat part is stopped, and gives the reason: the "
-                "distance from the start is not changing.",
-                "Says the gentle part is slower than the first part, not "
-                "stopped.",
+                "Says the steepness shows how many metres are covered in "
+                "each second, which is the speed.",
+                "Says a steeper line means more distance in each second, so "
+                "a faster speed.",
+                "Says a flat section means the distance from the start is "
+                "not changing, so the object is stopped.",
                 "Talks about distance from the start rather than height or "
                 "hills.",
-                "Reads at least one time or distance off the axes to pin a "
-                "section down.",
+                "Gives a worked example, such as a line rising 30 m in 10 s "
+                "showing a speed of 3 m/s.",
             ]},
         "produce": {
             "q": "A lift rises 30 m in 20 s, waits 10 s, then returns to the "
-                 "ground floor in 15 s. Describe the graph of its distance "
-                 "from the ground floor against time, giving the speed of "
-                 "each moving part with units. Then say how the graph would "
-                 "differ if you plotted total distance travelled instead.",
+                 "ground floor in 15 s. Calculate its speed going up and "
+                 "coming down, with units, and say which is faster. What is "
+                 "its speed during the wait? When it is back on the ground "
+                 "floor, how far has it travelled in total, and why is that "
+                 "not the same as its distance from the ground floor?",
             "field_label": "Your answer",
-            "placeholder": "From 0 to 20 s the line…",
+            "placeholder": "Going up, the speed is…",
             "success": [
-                "First section climbs from 0 to 30 m over 20 s, and gives "
-                "30 ÷ 20 = 1.5 m/s.",
-                "Middle section is flat for 10 s, at 30 m, because the lift "
-                "is stopped.",
-                "Last section falls from 30 m back to 0 over 15 s, and gives "
-                "30 ÷ 15 = 2 m/s.",
-                "Says the last part is faster than the first, and uses the "
-                "steeper line as the reason.",
-                "Says a total-distance-travelled graph never falls: it would "
-                "flatten and then climb to 60 m.",
+                "Going up: 30 ÷ 20 = 1.5 m/s.",
+                "Coming down: 30 ÷ 15 = 2 m/s.",
+                "Says coming down is faster, because the same 30 m takes "
+                "less time.",
+                "Says the speed is 0 m/s during the wait, because its "
+                "distance from the ground floor does not change.",
+                "Says the total distance travelled is 60 m, because distance "
+                "travelled only ever adds up, while the distance from the "
+                "ground floor is back to 0 m.",
             ]},
     },
 
