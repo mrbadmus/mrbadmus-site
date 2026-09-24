@@ -3032,12 +3032,20 @@ from .style import text_width as _q_tw  # noqa: E402
 _FORCE_GRID = "#948A70"    # ⊕ b1 fix: 3.0:1 on the card — squares are counted
 
 
-def force_grid(arrows, caption=None, W=456):
+def force_grid(arrows, caption=None, W=456, dot=None, **grid2d):
     """A box on squared paper with horizontal force arrows drawn a whole
     number of squares long — "forces drawn to scale" read by counting.
     `arrows` is [{"dir": "left"|"right", "squares": n, "label": str|None}].
     Nothing else is drawn: no resultant, no sum, no scale unless `caption`
-    states one."""
+    states one.
+
+    ⊕ MRB-352 batch 4 (KS4 physics): with `dot` (a grid point) this is the
+    two-dimensional form — arrows from a dot to grid points, a scale key,
+    optional ground row — drawn by `ks4phys.force_grid_2d`. Without `dot`
+    nothing here changes."""
+    if dot is not None:
+        from .ks4phys import force_grid_2d
+        return force_grid_2d(arrows, dot, key=caption, **grid2d)
     # ⊕ b1 fix (examiner m2, visual 3): the grid is always ONE square wider
     # than the longest arrow on each side, so no arrow tip ever lands on
     # the frame, where it merges with the border and a pupil cannot tell

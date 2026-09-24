@@ -618,7 +618,8 @@ QUESTIONS = [
         "band": "harder",
         "tier": "higher",
         "triple_only": True,
-        "text": "A student's refraction diagram shows the wave fronts closer together in the second material and the wave bending away from the normal. Explain why this cannot be right.",
+        "figure": "ks4-fig-wavefronts-student-refraction",
+        "text": "A student draws this wave front diagram for a wave passing from material 1 into material 2. Explain why it cannot be right.",
         "options": [
             "Closer fronts mean the wave has slowed, and a wave that slows bends towards the normal, not away from it",
             "Closer fronts mean the wave has sped up, and a wave that speeds up bends towards the normal, not away",
@@ -626,7 +627,7 @@ QUESTIONS = [
             "The wave should be shown turning back the way it came, because a change of spacing means reflection",
         ],
         "correct_index": 0,
-        "why": "The spacing of the fronts and the direction of the bend are two readings of the same speed change, so the diagram contradicts itself.",
+        "why": "In material 2 the wave fronts are closer together, so the wavelength is shorter and the wave has slowed down. A wave that slows down bends towards the normal, but the student's wave bends away from it. The two halves of the drawing contradict each other.",
     },
     {
         "id": "ks4-wave-front-refraction-h15",

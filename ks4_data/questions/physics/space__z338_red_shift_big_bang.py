@@ -1005,11 +1005,8 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": True,
-        "text": "On a graph of recession speed against distance, one "
-                "galaxy plots at (50 Mpc, 3500 km/s) and another at "
-                "(150 Mpc, 10 500 km/s), and both points lie on the "
-                "same straight line through the origin. Calculate the "
-                "gradient of that line.",
+        "figure": "ks4-fig-graph-hubble-two-galaxies",
+        "text": "The graph shows the recession speed of two galaxies against their distance from Earth, and the straight line through the origin that both lie on. Calculate the gradient of the line.",
         "options": [
             "70 km/s/Mpc",
             "35 km/s/Mpc",
@@ -1017,9 +1014,7 @@ QUESTIONS = [
             "700 km/s/Mpc",
         ],
         "correct_index": 0,
-        "why": "Gradient = change in speed ÷ change in distance = "
-               "(10 500 − 3500) ÷ (150 − 50) = 7000 ÷ 100 = "
-               "70 km/s/Mpc.",
+        "why": "Reading the two galaxies: (50 Mpc, 3500 km/s) and (150 Mpc, 10 500 km/s). Gradient = change in speed ÷ change in distance = (10 500 − 3500) ÷ (150 − 50) = 7000 ÷ 100 = 70 km/s/Mpc.",
     },
     {
         "id": "ks4-red-shift-big-bang-h20",
@@ -1154,32 +1149,16 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": True,
-        "text": "A graph plotting the recession speed of forty galaxies "
-                "against their distance shows a clear overall upward "
-                "trend, but the points do not lie on a perfectly "
-                "straight line — several sit noticeably above or "
-                "below it. Evaluate whether this scatter means "
-                "Hubble's Law should be rejected.",
+        "figure": "ks4-fig-graph-hubble-forty-galaxies",
+        "text": "The graph shows the recession speed of forty galaxies against their distance, with a straight line of best fit through the origin. Evaluate whether the scatter of the points about the line means Hubble's Law should be rejected.",
         "options": [
-            "It should be rejected, because a genuine physical law "
-            "would never, under any circumstances, allow a single "
-            "point to lie above or below the line that it predicts",
-            "It should not be rejected: some scatter is expected from "
-            "each galaxy's own local motion adding to or subtracting "
-            "from its recession speed, while the overall trend still "
-            "supports the law",
-            "It should be rejected, because forty galaxies is far too "
-            "small a sample for any pattern in the data to be "
-            "considered meaningful at all",
-            "It should not be rejected, but only because the scatter "
-            "proves that every galaxy's local motion is identical in "
-            "size and always adds to its recession speed",
+            "It should be rejected, because a genuine physical law would never, under any circumstances, allow a single point to lie above or below the line that it predicts",
+            "It should not be rejected: some scatter is expected from each galaxy's own local motion adding to or subtracting from its recession speed, while the overall trend still supports the law",
+            "It should be rejected, because forty galaxies is far too small a sample for any pattern in the data to be considered meaningful at all",
+            "It should not be rejected, but only because the scatter proves that every galaxy's local motion is identical in size and always adds to its recession speed",
         ],
         "correct_index": 1,
-        "why": "Real data from real, moving galaxies is expected to "
-               "scatter around the true relationship; what matters is "
-               "the trend across many galaxies, not that any single "
-               "one sits exactly on the line.",
+        "why": "The points follow a clear straight-line trend, and they sit both above and below the line. Scatter like this is expected, because each galaxy's own local motion adds to or subtracts from its recession speed. What matters is the trend across many galaxies, so the law is supported, not rejected.",
     },
     {
         "id": "ks4-red-shift-big-bang-h25",

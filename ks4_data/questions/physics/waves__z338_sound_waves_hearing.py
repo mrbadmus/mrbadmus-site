@@ -618,7 +618,8 @@ QUESTIONS = [
         "band": "harder",
         "tier": "higher",
         "triple_only": True,
-        "text": "A fishing boat's sonar trace shows the seabed and, above it, a second fainter line. Suggest what produces the second line.",
+        "figure": "ks4-fig-echo-sounder-display",
+        "text": "The diagram shows the display from a fishing boat's echo sounder as the boat moves along. Suggest what produces the fainter mark labelled X.",
         "options": [
             "A layer of colder water, which stops the pulse completely and prevents it reaching the seabed at all",
             "The surface of the sea, from which the pulse reflects downwards again on its way back to the boat",
@@ -626,7 +627,7 @@ QUESTIONS = [
             "The hull of the boat, which vibrates as the pulse leaves and sends a signal of its own to the detector",
         ],
         "correct_index": 2,
-        "why": "Anything whose density differs from the water reflects part of the pulse, so a shoal gives an earlier, weaker echo than the seabed does.",
+        "why": "X is a partial reflection from something between the boat and the seabed, and it covers only part of the boat's path. A shoal of fish reflects part of each pulse back sooner and more weakly than the seabed, while the rest of the pulse carries on to the seabed, which still shows underneath.",
     },
     {
         "id": "ks4-sound-waves-hearing-h15",

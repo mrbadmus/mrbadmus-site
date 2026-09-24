@@ -296,6 +296,26 @@ def _smooth_path(pts):
     return out
 
 
+def _markers(c, pts, kind, col, W):
+    """⊕ MRB-352 batch 4: per-series data markers — "x" a cross, "dot" a
+    filled circle — for plotted readings (with `"line": False`, a scatter)."""
+    if not kind:
+        return
+    for x, y in pts:
+        if kind == "x":
+            h = 6
+            for dx in (-h, h):
+                c.S.append(f'<line x1="{x - h:.1f}" y1="{y + dx:.1f}" '
+                           f'x2="{x + h:.1f}" y2="{y - dx:.1f}" stroke="{col}" '
+                           f'stroke-width="{q_stroke(W, 2.5)}" '
+                           f'stroke-linecap="round" fill="none"/>')
+        elif kind == "dot":
+            c.S.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="4.5" '
+                       f'fill="{col}" stroke="none"/>')
+        else:
+            raise ValueError("line_graph: markers is 'x' or 'dot'")
+
+
 def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
                x_ticks, y_ticks, W=480, H=380, grid=True, legend=False,
                x_grid=None, y_grid=None, end_dot=False, canvas=None, top=0,
@@ -305,6 +325,11 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
     drawn in the library's teal, the second in red and dashed, so two
     series differ by more than colour alone.
 
+    ⊕ MRB-352 batch 4, three optional series keys, all off by default:
+    `markers` "x" | "dot" marks each point; `line` False draws no line
+    (a scatter of readings); `colour` "ink" draws the series solid ink (a
+    line of best fit). `x_ticks` / `y_ticks` may be empty lists.
+
     ⊕ MRB-352 batch 1: `canvas` / `top` draw the graph INTO an existing
     Canvas with every y shifted down by `top` (no <g>, no transform — the
     manifest forbids both), and return nothing. `graph_panels` stacks
@@ -313,7 +338,8 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
     fs = q_font(W)
     fn = _num_size(fs)
     sw = q_stroke(W, 2)
-    ox = ox or (30 + fs * 1.3 + max(text_width(_fmt(t), fn) for t in y_ticks))
+    ox = ox or (30 + fs * 1.3 + max([text_width(_fmt(t), fn) for t in y_ticks],
+                                     default=0))   # ⊕ b4: y_ticks may be []
     oy = top + H - (fs + fn + 34) - (fs + 14 if legend else 0)
     aw = W - ox - 26
     ah = oy - top - 26
@@ -345,14 +371,18 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
         pts = [P(x, y) for x, y in s["points"]]
         col = SERIES[k % len(SERIES)]
         dash = DASHES[k % len(DASHES)]
+        if s.get("colour") == "ink":      # ⊕ b4: a solid ink best-fit line
+            col, dash = ST, None
         dd = f' stroke-dasharray="{dash}"' if dash else ""
         if s.get("smooth"):
             d = _smooth_path(pts)
         else:
             d = "M " + " L ".join("%.1f %.1f" % p for p in pts)
-        c.S.append(f'<path d="{d}" fill="none" stroke="{col}" '
-                   f'stroke-width="{q_stroke(W, 3.5)}" stroke-linecap="round" '
-                   f'stroke-linejoin="round"{dd}/>')
+        if s.get("line", True):
+            c.S.append(f'<path d="{d}" fill="none" stroke="{col}" '
+                       f'stroke-width="{q_stroke(W, 3.5)}" '
+                       f'stroke-linecap="round" stroke-linejoin="round"{dd}/>')
+        _markers(c, pts, s.get("markers"), col, W)
         if end_dot:
             ex, ey = pts[-1]
             c.S.append(f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="5.5" '

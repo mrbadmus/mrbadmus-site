@@ -58,3 +58,9 @@ def draw(rec):
         raise ValueError("figure %r names art %r, which figlib does not draw. "
                          "Known: %s" % (rec.get("id"), art, ", ".join(sorted(ART))))
     return ART[art](**(rec.get("params") or {}))
+
+
+# ⊕ MRB-352 run 2 (batch 4): the KS4 physics question builders live in their
+# own module (`figlib/ks4phys.py`) so parallel lanes cannot collide here.
+from . import ks4phys  # noqa: E402
+ART.update(ks4phys.ART_KS4PHYS)

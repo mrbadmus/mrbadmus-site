@@ -17,8 +17,10 @@ predicting a later one, finding when two travellers meet, why a line can
 never run vertically, why a stop drags the average below every moving
 section, and a set of evaluate-the-claim rows on gradient, height and shape.
 
-⚠️ Every graph in this file is DESCRIBED in words, with its coordinates
-given, because a question pool has no figure to point at. Nothing here reads
+⊕ MRB-352 run 2 (batch 4): nine rows whose stems described a graph's shape
+in words now SHOW it — each carries a `figure` (ks4_art/catalogue_run2_phys.py)
+and its stem points at the graph. The rest still give coordinates in words,
+which is a calculation, not a picture. Nothing here reads
 a velocity-time graph — gradient as acceleration and area as distance belong
 to `acceleration`.
 """
@@ -193,7 +195,8 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A plot of distance against time for a school bus is a straight line for the first 200 s, then a flat section, then another straight line of the same steepness. Describe the journey.",
+        "figure": "ks4-fig-graph-dt-school-bus",
+        "text": "The graph shows a school bus's journey. Describe the journey.",
         "options": [
             "The bus gets steadily faster, stops, then gets faster again over the last stage",
             "Steady speed, then a stop, then the same steady speed again",
@@ -201,7 +204,7 @@ QUESTIONS = [
             "The bus is stationary for the whole journey",
         ],
         "correct_index": 1,
-        "why": "Equal gradients mean equal speeds, and the flat part in between is a stop at a bus stop rather than a change of direction.",
+        "why": "The two sloping sections have the same gradient, so the bus travels at the same steady speed in both. The flat section means no distance is covered, so the bus is stopped, not reversing.",
     },
     {
         "id": "ks4-distance-time-graphs-s08",
@@ -257,7 +260,8 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Between 0 s and 60 s a train's plotted line is a smooth curve that keeps getting steeper. State how the train is moving.",
+        "figure": "ks4-fig-graph-dt-train-speeding-up",
+        "text": "The graph shows how far a train travels in the first 60 s after it leaves a station. State how the train is moving.",
         "options": [
             "At a steady speed, because the line is unbroken",
             "Backwards towards the station it left",
@@ -265,7 +269,7 @@ QUESTIONS = [
             "Slowing down, because a curve shows the speed falling away as the journey continues",
         ],
         "correct_index": 2,
-        "why": "A curve means the speed is changing; the direction of the bend says which way. Getting steeper means the speed is rising.",
+        "why": "The line gets steeper as time goes on, so its gradient, which is the speed, is increasing. The train is speeding up.",
     },
     {
         "id": "ks4-distance-time-graphs-s12",
@@ -273,7 +277,8 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Two cars start from one place at the same moment. Car J's plotted line is straight; car K's curves upwards more and more steeply and crosses J's line at 40 s. Describe what happens at 40 s.",
+        "figure": "ks4-fig-graph-dt-cars-j-k",
+        "text": "Two cars, J and K, start from the same place at the same moment. The graph shows how far each car has travelled. Describe what happens at 40 s.",
         "options": [
             "K catches up with J, and after that it is ahead",
             "The two cars collide with one another",
@@ -281,7 +286,7 @@ QUESTIONS = [
             "J and K swap places on the road, because a crossing point means the lines exchange their gradients",
         ],
         "correct_index": 0,
-        "why": "A crossing means both are the same distance from the start at the same instant; K's steeper gradient afterwards puts it in front.",
+        "why": "At 40 s the lines cross, so both cars are the same distance from the start at the same instant: K has caught up with J. After that K's line is higher, so K is ahead.",
     },
     {
         "id": "ks4-distance-time-graphs-s13",
@@ -289,7 +294,8 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A plotted line is horizontal for 25 s and then rises steeply. Explain what the driver did.",
+        "figure": "ks4-fig-graph-dt-car-waits-then-drives",
+        "text": "The graph shows a car's distance from the driver's house. Explain what the driver did.",
         "options": [
             "Drove at a steady speed for 25 s, then stopped for the rest of the time shown",
             "Waited for 25 s, then drove off quickly",
@@ -297,7 +303,7 @@ QUESTIONS = [
             "Drove slowly for 25 s, then more slowly still",
         ],
         "correct_index": 1,
-        "why": "Flat means no distance is being covered, so the car is waiting; the steep rise afterwards is a large distance in each second.",
+        "why": "For the first 25 s the line is flat, so the distance from the house is not changing: the car is waiting. Then the line rises steeply, which is a large distance covered each second, so the car drives off quickly.",
     },
     {
         "id": "ks4-distance-time-graphs-s14",
@@ -433,15 +439,16 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "On one plot of distance against time, one line is straight and another curves so that it flattens off. Compare what the two lines show.",
+        "figure": "ks4-fig-graph-dt-straight-and-flattening",
+        "text": "The graph shows the motion of two objects, A and B. Compare what the two lines show.",
         "options": [
             "Both objects move at a steady speed, since both lines keep climbing",
-            "The straight line shows a steady speed; the flattening curve shows a speed that is falling away",
-            "The straight line shows a stop",
-            "The curve shows the faster object",
+            "A moves at a steady speed; B's speed is falling until it stops",
+            "A is stationary",
+            "B is the faster object",
         ],
         "correct_index": 1,
-        "why": "Constant gradient means constant speed; a gradient that shrinks towards zero means an object slowing towards a stop.",
+        "why": "A's gradient is constant, so its speed is constant. B's gradient gets smaller until the line is flat, so B slows down and stops. B's line is never steeper than A's, so B is never the faster object.",
     },
     {
         "id": "ks4-distance-time-graphs-s23",
@@ -609,15 +616,16 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A runner's plotted line rises steeply at first and then bends until it is flat at 2400 m after 600 s. Determine her average speed and describe how her speed changed.",
+        "figure": "ks4-fig-graph-dt-runner-2400m",
+        "text": "The graph shows a runner's distance during a training run. She stops running at 600 s. Determine her average speed while she was running and describe how her speed changed.",
         "options": [
             "4.0 m/s, and her speed fell away until she stopped",
             "4.0 m/s, and her speed rose steadily to the end",
             "0.25 m/s, and her speed stayed the same",
-            "4.0 m/s, and her speed fell away because a flat part of a plot shows a slow steady walk",
+            "4.0 m/s, and her speed fell away because a flat part of the graph shows a slow steady walk",
         ],
         "correct_index": 0,
-        "why": "2400 / 600 = 4.0 m/s for the average. The gradient starts large and shrinks to zero, so she slowed to a halt rather than kept walking slowly.",
+        "why": "She covers 2400 m in 600 s, so her average speed is 2400 ÷ 600 = 4.0 m/s. The gradient starts large and shrinks to zero, so she slowed down until she stopped. A flat line means stationary, not walking slowly.",
     },
     {
         "id": "ks4-distance-time-graphs-h12",
@@ -721,15 +729,16 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A lift's motion is plotted as a series of straight sections with flat parts between them. Determine what that shape shows.",
+        "figure": "ks4-fig-graph-dt-lift-steps",
+        "text": "The graph shows how far a lift travels upwards during part of its journey. Determine what the shape of the graph shows.",
         "options": [
             "The lift accelerates smoothly all the way to the top floor",
             "The lift must be faulty, because a real journey would give one smooth unbroken curve from start to finish",
-            "The lift moves backwards during the flat parts of the plot",
+            "The lift moves backwards during the flat parts of the graph",
             "The lift moves at a steady speed, waits, then moves again",
         ],
         "correct_index": 3,
-        "why": "Each straight section is a run between floors at a near-constant speed, and each flat part is the lift standing still while its doors are open.",
+        "why": "Each sloping straight section has the same constant gradient, so the lift moves at a steady speed between floors. Each flat part means no distance is covered, so the lift is standing still, for example while its doors are open.",
     },
     {
         "id": "ks4-distance-time-graphs-h19",
@@ -785,15 +794,16 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A cyclist's plot has a straight section of gradient 9.0 m/s followed by a curve that flattens to horizontal. Determine what the cyclist does.",
+        "figure": "ks4-fig-graph-dt-cyclist-slows",
+        "text": "The graph shows a cyclist's journey. Determine what the cyclist does.",
         "options": [
             "Rides at 9.0 m/s, then speeds up before stopping",
-            "Rides at 9.0 m/s the whole way, since the gradient stays the same on this plot",
+            "Rides at 9.0 m/s the whole way, since the gradient stays the same on this graph",
             "Rides at 9.0 m/s, then slows down and stops",
             "Rides at 9.0 m/s, then reverses back to the start",
         ],
         "correct_index": 2,
-        "why": "The gradient falls from 9.0 m/s to zero, so the speed does the same. Horizontal means at rest, not reversing, which would need the line to fall.",
+        "why": "The straight section rises 180 m in 20 s, a gradient of 9.0 m/s. After that the gradient falls to zero, so the cyclist slows down and stops. A flat line means at rest; reversing would need the line to fall.",
     },
     {
         "id": "ks4-distance-time-graphs-h23",
@@ -817,15 +827,16 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Two lines on one plot have the same gradient, but one of them is twice as long. Determine what is the same and what is different about the journeys.",
+        "figure": "ks4-fig-graph-dt-parallel-journeys",
+        "text": "The graph shows two journeys, A and B. Determine what is the same and what is different about the journeys.",
         "options": [
             "The speeds are different but both cover the same distance",
-            "The longer line shows a faster journey",
-            "The longer line shows a slower journey",
-            "The speeds are equal; the longer line simply covers more distance over more time",
+            "B is a faster journey than A",
+            "B is a slower journey than A",
+            "The speeds are equal; B simply covers more distance over more time",
         ],
         "correct_index": 3,
-        "why": "Gradient fixes the speed, and it is shared. Length along the line only says the journey went on for longer, taking it further.",
+        "why": "Both lines have a gradient of 5 m/s, so the speeds are equal. B lasts 40 s instead of 20 s, so it covers 200 m instead of 100 m.",
     },
     {
         "id": "ks4-distance-time-graphs-h25",

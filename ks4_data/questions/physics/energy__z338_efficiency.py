@@ -7,7 +7,7 @@ input, one two-device comparison and one useful-over-wasted correction. This
 file takes the ground they leave: the power form as a statement rather than a
 sum, the decimal-to-percentage conversion in both directions, what counts as
 the useful output in a device where it is not obvious, the rearrangement for the
-useful OUTPUT and for the WASTE, a Sankey described in words, the impossible
+useful OUTPUT and for the WASTE, a Sankey diagram (drawn — MRB-352), the impossible
 answer as a check on your own arithmetic, a two-stage chain worked in joules,
 and the evaluations — whether an improvement is worth its price, and whether
 heating is always waste.
@@ -330,9 +330,8 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "In a Sankey diagram for a device, the input arrow is 100 mm "
-                "wide and the useful output arrow is 35 mm wide. Determine "
-                "the efficiency.",
+        "figure": "ks4-fig-sankey-100-65-useful-unlabelled",
+        "text": "The Sankey diagram shows the energy transfers for a device. Determine the efficiency of the device.",
         "options": [
             "65%",
             "35%",
@@ -340,8 +339,7 @@ QUESTIONS = [
             "286%",
         ],
         "correct_index": 1,
-        "why": "Arrow width is proportional to energy, so the useful share is "
-               "35 out of 100, which is 35%.",
+        "why": "Energy is conserved, so the useful output is 100 J − 65 J = 35 J. Efficiency = 35 ÷ 100 = 0.35, which is 35%. 65% is the wasted share, not the useful one.",
     },
     {
         "id": "ks4-efficiency-s13",

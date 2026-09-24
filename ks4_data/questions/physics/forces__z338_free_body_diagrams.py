@@ -434,7 +434,8 @@ QUESTIONS = [
         "band": "standard",
         "tier": "higher",
         "triple_only": True,
-        "text": "A diagram for a hanging sign shows three arrows from one point: 40 N down, 40 N up and nothing else. Deduce the state of the sign.",
+        "figure": "ks4-fig-free-body-sign-40n",
+        "text": "The diagram is the free body diagram for a hanging sign. Deduce the state of the sign.",
         "options": [
             "It is in equilibrium, so it is either at rest or else moving at a constant velocity",
             "It is accelerating downwards at 9.8 m/s², on the grounds that its weight has been drawn on the diagram",
@@ -442,7 +443,7 @@ QUESTIONS = [
             "The diagram cannot be read without knowing the mass of the sign in kilograms first",
         ],
         "correct_index": 0,
-        "why": "Two equal and opposite arrows give a resultant of zero, and a zero resultant is exactly what equilibrium means.",
+        "why": "The two forces are equal in size and opposite in direction, so the resultant force is zero. A zero resultant is what equilibrium means: the sign is at rest or moving at a constant velocity.",
     },
     {
         "id": "ks4-free-body-diagrams-s17",
@@ -546,7 +547,8 @@ QUESTIONS = [
         "band": "harder",
         "tier": "higher",
         "triple_only": True,
-        "text": "A small ring is in equilibrium. Its diagram shows 8 N acting vertically upwards, 6 N acting horizontally to the right and one unknown force. Determine the unknown.",
+        "figure": "ks4-fig-force-grid-ring-8n-6n",
+        "text": "A small ring is in equilibrium under three forces. The diagram shows two of them, drawn to scale. Determine the third force.",
         "options": [
             "14 N, acting down and to the left, on the grounds that the two known forces simply add together arithmetically",
             "2 N, acting down and to the left, from taking the smaller known force away from the larger one",
@@ -554,7 +556,7 @@ QUESTIONS = [
             "10 N, acting up and to the right, matching the resultant of the two forces already on the diagram",
         ],
         "correct_index": 2,
-        "why": "The two known forces have a resultant of the square root of (8² + 6²) = 10 N, so equilibrium needs 10 N pointing the opposite way.",
+        "why": "The two forces shown have a resultant of √(8² + 6²) = 10 N, pointing up and to the right; a scale drawing gives the same. For equilibrium the third force must cancel it: 10 N, down and to the left.",
     },
     {
         "id": "ks4-free-body-diagrams-h10",
@@ -578,7 +580,7 @@ QUESTIONS = [
         "band": "harder",
         "tier": "higher",
         "triple_only": True,
-        "text": "A car passes over the top of a humpback bridge, following a curve that bends downwards. Compare the two vertical arrows there.",
+        "text": "A car drives over the top of a humpback bridge, and its path curves downwards there. A student draws a free body diagram for the car at the very top. Compare the lengths of the weight arrow and the normal contact force arrow.",
         "options": [
             "The normal contact force arrow is drawn longer than the weight arrow at the top of the hump",
             "Neither arrow is drawn at the very top, because the car is momentarily leaving the road surface",
@@ -586,7 +588,7 @@ QUESTIONS = [
             "The weight arrow is drawn longer than the normal contact force arrow right at the top of the hump",
         ],
         "correct_index": 3,
-        "why": "The car accelerates towards the centre of the curve, which is downwards at the top, so the resultant points down and weight must win.",
+        "why": "At the top the car is moving along a curve whose centre is below it, so its velocity is changing and its acceleration, and therefore the resultant force, points downwards. The weight must be larger than the normal contact force, so its arrow is drawn longer.",
     },
     {
         "id": "ks4-free-body-diagrams-h12",
@@ -674,15 +676,16 @@ QUESTIONS = [
         "band": "harder",
         "tier": "higher",
         "triple_only": True,
-        "text": "For a descending parachutist a student draws weight down, drag up, and a third arrow up labelled 'the pull of the parachute'. Assess the third arrow.",
+        "figure": "ks4-fig-free-body-parachutist-three-arrows",
+        "text": "A student draws this free body diagram for a parachutist and her open parachute, together as one object, as they fall. Assess the arrow labelled 'pull of the parachute'.",
         "options": [
-            "It should not be there: the canopy's upward pull IS the drag on it, so this diagram counts one force twice over",
+            "It should not be there: the canopy's upward pull comes from the drag on it, so this diagram counts one force twice over",
             "It is correct, because the canopy pulls upwards on the harness quite separately from the drag",
             "It is correct, but it ought to be drawn downwards rather than upwards on the diagram",
             "It should not be there, because a parachute exerts no force on the person hanging beneath it",
         ],
         "correct_index": 0,
-        "why": "The air resistance on the canopy is transmitted to the parachutist through the lines; it is one force, not two, and must be drawn once.",
+        "why": "For the parachutist and parachute as one object, the pull of the lines is a force between two parts of that object, so it does not belong on its free body diagram. The only upward force from outside is the air resistance (drag), which acts mostly on the canopy. Drawing both counts that one force twice.",
     },
     {
         "id": "ks4-free-body-diagrams-h18",

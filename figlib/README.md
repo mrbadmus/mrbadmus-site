@@ -225,3 +225,30 @@ from the spec's text, each marked ⊕ in the code:
   Arrowheads avoid dots and each other; point letters stay on the card;
   the inside-magnet heads sit 40% along; the `even` map's arches start
   at the corner; new `reversed` option (a whole line, arrow backwards).
+
+## Batch 4 of the 174 (MRB-352 run 2, KS4 physics except electricity)
+
+Builders in their own module, `figlib/ks4phys.py`, registered by one line
+at the end of `__init__.py` (`ART.update(ks4phys.ART_KS4PHYS)`), so the
+parallel batches cannot collide in a shared file: `free-body`,
+`magnet-compasses`, `solenoid`, `nuclide`, `sankey-simple`, `echo-sounder`,
+`wavefront-diagram`, `wave-graph`. 34 new KS4 records in
+`ks4_art/catalogue_run2_phys.py`.
+
+- `force-grid` is EXTENDED, not duplicated: `force_grid(..., dot=…)` draws
+  the two-dimensional form (arrows from a dot to grid points, a scale key,
+  optional ground row) through `ks4phys.force_grid_2d`. Without `dot`,
+  batch 1's horizontal form is byte-identical.
+- `line_graph` gained three optional series keys, all off by default —
+  `markers` ("x" | "dot"), `line` (False for a scatter) and `colour`
+  ("ink", a solid line of best fit) — and accepts `y_ticks=[]` (the
+  `max()` over an empty list no longer raises). Existing figures draw the
+  same bytes.
+- `ks4-fig-resolution-triangle-generic` is REMOVED from the catalogue: no
+  question used it, and its "F cos θ" / "F sin θ" labels go beyond AQA
+  8463 §4.5.1.4, which assesses resolution by scale drawing only. The
+  `resolution-triangle` builder stays; the five resolving-forces rows now
+  use scale drawings on `force-grid`.
+- `magnet_compasses` colours its magnet with the library's `_pole` (N
+  salmon, S blue), not the spec's sand/blue, so every figlib magnet looks
+  alike.

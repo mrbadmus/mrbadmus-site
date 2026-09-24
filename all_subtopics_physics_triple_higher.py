@@ -5406,7 +5406,7 @@ PHYSICS_SUBTOPICS_ALL = {
                      ('The object is moving at constant speed — horizontal means steady motion', False),
                      ('The object is accelerating — the line is preparing to slope upward', False),
                      ('The object has reached maximum speed and is maintaining it', False)],
-            'q': 'A d–t graph shows a horizontal (flat) line for 5 seconds. What is the object doing?',
+            'q': 'On a distance–time graph, what does a horizontal section of the line tell you about the object?',
             'wrong_explanations': {1: 'A horizontal line on a VELOCITY–time graph means constant velocity — but on a '
                                       'DISTANCE–time graph it means zero speed (stationary).',
                                    2: 'Flat line = zero gradient = zero speed. Constant speed on a d–t graph is a '
@@ -5417,8 +5417,8 @@ PHYSICS_SUBTOPICS_ALL = {
                      ('Section B — less steep means the object is working harder to maintain motion', False),
                      ('They are the same speed — both are straight lines', False),
                      ('Section B — a gentler slope indicates faster, more efficient motion', False)],
-            'q': 'On a distance–time graph, two straight sections are drawn. Section A has gradient 8 m/s and section '
-                 'B has gradient 2 m/s. Which section shows faster motion?',
+            'q': 'Section A of a distance–time graph has a gradient of 8 m/s and section B has a gradient of 2 m/s. '
+                 'Which section shows faster motion?',
             'wrong_explanations': {1: 'Gentler slope does not imply harder work — gradient directly equals speed on a '
                                       'd–t graph.',
                                    2: 'Both are straight lines (constant speed) but at DIFFERENT speeds — the gradient '

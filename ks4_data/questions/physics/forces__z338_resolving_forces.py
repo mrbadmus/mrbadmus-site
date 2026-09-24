@@ -66,24 +66,21 @@ QUESTIONS = [
                'changes. They act on the same object, not on two.',
     },
     {
-        "id": 'ks4-resolving-forces-e07',
-        "subtopic_slug": 'resolving-forces',
-        "band": 'easier',
-        "tier": 'higher',
+        "id": "ks4-resolving-forces-e07",
+        "subtopic_slug": "resolving-forces",
+        "band": "easier",
+        "tier": "higher",
         "triple_only": True,
-        "text": 'A pull of 50 N acts along the longest side of a 3-4-5 '
-                'right-angled triangle whose horizontal side is the 4 and whose '
-                'vertical side is the 3. Calculate the vertical component.',
+        "figure": "ks4-fig-force-grid-50n-4r-3u",
+        "text": "The diagram shows a pull of 50 N drawn to scale on a square grid. Determine the vertical component of the pull.",
         "options": [
-            '40 N',
-            '50 N',
-            '37.5 N',
-            '30 N',
+            "40 N",
+            "50 N",
+            "37.5 N",
+            "30 N",
         ],
         "correct_index": 3,
-        "why": 'Scaling the triangle by 10 turns the 5 into 50 N, so the 3 '
-               'becomes 30 N and the 4 becomes 40 N. The vertical side is the 3, '
-               'giving 30 N.',
+        "why": "The arrow rises 3 squares while it runs 4 squares across. At 10 N per square, the vertical component is 3 × 10 = 30 N (and the horizontal component is 40 N).",
     },
     {
         "id": 'ks4-resolving-forces-e08',
@@ -200,25 +197,21 @@ QUESTIONS = [
                'the combined effect.',
     },
     {
-        "id": 'ks4-resolving-forces-e14',
-        "subtopic_slug": 'resolving-forces',
-        "band": 'easier',
-        "tier": 'higher',
+        "id": "ks4-resolving-forces-e14",
+        "subtopic_slug": "resolving-forces",
+        "band": "easier",
+        "tier": "higher",
         "triple_only": True,
-        "text": 'A rope pulls a sledge with a force of 100 N along a line that '
-                'makes a 6-8-10 right-angled triangle with the ground, the 8 '
-                'lying along the ground and the 6 vertical. Calculate the '
-                'horizontal component.',
+        "figure": "ks4-fig-force-grid-100n-8r-6u",
+        "text": "A rope pulls a sledge with a force of 100 N. The diagram shows the pull drawn to scale on a square grid. Determine the horizontal component of the pull.",
         "options": [
-            '80 N',
-            '60 N',
-            '75 N',
-            '50 N',
+            "80 N",
+            "60 N",
+            "75 N",
+            "50 N",
         ],
         "correct_index": 0,
-        "why": 'Scaling the triangle by 10 makes the 10 into 100 N, so the 8 '
-               'along the ground becomes 80 N. The 60 N answer is the vertical '
-               'component instead.',
+        "why": "The arrow runs 8 squares across while it rises 6 squares. At 10 N per square, the horizontal component is 8 × 10 = 80 N. 60 N is the vertical component instead.",
     },
     {
         "id": 'ks4-resolving-forces-e15',
@@ -300,25 +293,21 @@ QUESTIONS = [
     },
     # -------------------------------------------------------------- standard
     {
-        "id": 'ks4-resolving-forces-s05',
-        "subtopic_slug": 'resolving-forces',
-        "band": 'standard',
-        "tier": 'higher',
+        "id": "ks4-resolving-forces-s05",
+        "subtopic_slug": "resolving-forces",
+        "band": "standard",
+        "tier": "higher",
         "triple_only": True,
-        "text": 'A garden roller is pushed with a force of 250 N along a line '
-                'making a 3-4-5 right-angled triangle with the ground, the 4 '
-                'along the ground and the 3 vertical. Calculate the downward '
-                'component of the push.',
+        "figure": "ks4-fig-force-grid-250n-4r-3d",
+        "text": "A garden roller is pushed along its handle with a force of 250 N. The diagram shows the push drawn to scale on a square grid. Determine the downward component of the push.",
         "options": [
-            '200 N',
-            '150 N',
-            '250 N',
-            '83 N',
+            "200 N",
+            "150 N",
+            "250 N",
+            "83 N",
         ],
         "correct_index": 1,
-        "why": 'Scaling by 50 turns the 5 into 250 N, so the vertical 3 becomes '
-               '150 N and the horizontal 4 becomes 200 N. Pushing downwards like '
-               'this presses the roller harder into the lawn.',
+        "why": "The arrow drops 3 squares while it runs 4 squares across. At 50 N per square, the downward component is 3 × 50 = 150 N (and the horizontal component is 200 N). Pushing down like this presses the roller harder into the lawn.",
     },
     {
         "id": 'ks4-resolving-forces-s06',
@@ -518,24 +507,21 @@ QUESTIONS = [
                'Components add as vectors, never as plain numbers.',
     },
     {
-        "id": 'ks4-resolving-forces-s16',
-        "subtopic_slug": 'resolving-forces',
-        "band": 'standard',
-        "tier": 'higher',
+        "id": "ks4-resolving-forces-s16",
+        "subtopic_slug": "resolving-forces",
+        "band": "standard",
+        "tier": "higher",
         "triple_only": True,
-        "text": 'A wheelbarrow handle is pulled with 260 N along a line making a '
-                '5-12-13 right-angled triangle with the ground, the 12 lying '
-                'along the ground. Calculate the vertical component.',
+        "figure": "ks4-fig-force-grid-260n-12r-5u",
+        "text": "A wheelbarrow handle is pulled with a force of 260 N. The diagram shows the pull drawn to scale on a square grid. Determine the vertical component of the pull.",
         "options": [
-            '240 N',
-            '130 N',
-            '108 N',
-            '100 N',
+            "240 N",
+            "130 N",
+            "108 N",
+            "100 N",
         ],
         "correct_index": 3,
-        "why": 'Scaling by 20 turns the 13 into 260 N, so the vertical 5 becomes '
-               '100 N and the horizontal 12 becomes 240 N. The upward pull is '
-               'the smaller of the two here.',
+        "why": "The arrow rises 5 squares while it runs 12 squares across. At 20 N per square, the vertical component is 5 × 20 = 100 N (and the horizontal component is 240 N).",
     },
     {
         "id": 'ks4-resolving-forces-s17',
@@ -797,24 +783,21 @@ QUESTIONS = [
                'Their horizontal components cancel instead of adding.',
     },
     {
-        "id": 'ks4-resolving-forces-h16',
-        "subtopic_slug": 'resolving-forces',
-        "band": 'harder',
-        "tier": 'higher',
+        "id": "ks4-resolving-forces-h16",
+        "subtopic_slug": "resolving-forces",
+        "band": "harder",
+        "tier": "higher",
         "triple_only": True,
-        "text": 'A pull of 500 N acts along a line making a 3-4-5 right-angled '
-                'triangle with a horizontal floor, the 4 lying along the floor. '
-                'Determine both components and state which is larger.',
+        "figure": "ks4-fig-force-grid-500n-4r-3u",
+        "text": "The diagram shows a pull of 500 N drawn to scale on a square grid. Determine both components of the pull and state which is larger.",
         "options": [
-            'Horizontal 400 N and vertical 300 N; the horizontal is larger',
-            'Horizontal 300 N and vertical 400 N; the vertical is larger, because the line rises',
-            'Both are 250 N, so neither is larger',
-            'Horizontal 500 N and vertical 400 N',
+            "Horizontal 400 N and vertical 300 N; the horizontal is larger",
+            "Horizontal 300 N and vertical 400 N; the vertical is larger, because the line rises",
+            "Both are 250 N, so neither is larger",
+            "Horizontal 500 N and vertical 400 N",
         ],
         "correct_index": 0,
-        "why": 'Scaling by 100 gives 300 N along the 3 and 400 N along the 4, and '
-               'the 4 is the side lying along the floor, so the horizontal '
-               'component is the larger.',
+        "why": "The arrow runs 4 squares across and rises 3 squares. At 100 N per square, the horizontal component is 400 N and the vertical component is 300 N, so the horizontal one is larger.",
     },
     {
         "id": 'ks4-resolving-forces-h17',

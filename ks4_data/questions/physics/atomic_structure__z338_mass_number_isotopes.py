@@ -228,18 +228,16 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A nuclide is written in nuclear notation with 23 above the "
-                "element symbol and 11 below it. Determine the number of "
-                "neutrons in its nucleus.",
+        "figure": "ks4-fig-nuclide-sodium-23",
+        "text": "The diagram shows the nuclear symbol for an atom of sodium. Determine the number of neutrons in its nucleus.",
         "options": [
-            "23, which is the figure written above the symbol",
-            "34, from adding the two figures together",
-            "11, which is the figure written below the symbol",
+            "23",
+            "34",
+            "11",
             "12",
         ],
         "correct_index": 3,
-        "why": "The upper figure is the mass number and the lower one the "
-               "atomic number, so 23 − 11 = 12 neutrons.",
+        "why": "The top number, 23, is the mass number (protons + neutrons) and the bottom number, 11, is the atomic number (protons), so the atom has 23 − 11 = 12 neutrons.",
     },
     {
         "id": "ks4-mass-number-isotopes-s08",

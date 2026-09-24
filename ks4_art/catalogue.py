@@ -303,19 +303,6 @@ CATALOGUE = [
                 "on, without going flat.",
     },
     {
-        "id": "ks4-fig-resolution-triangle-generic",
-        "art": "resolution-triangle",
-        "params": {},
-        "title": "A right-angled triangle with a labelled diagonal side and "
-                 "two labelled shorter sides, with a small square marking "
-                 "the right angle.",
-        "desc": "A right-angled triangle. The longest side (the hypotenuse) "
-                "is labelled F. The horizontal side is labelled F cos θ and "
-                "the vertical side F sin θ. A small square marks the right "
-                "angle, and θ is marked where the hypotenuse meets the "
-                "horizontal side.",
-    },
-    {
         "id": "ks4-fig-molecule-h2o-dot-cross",
         "art": "dot-cross",
         # ⊕ fix round 1 (examiner B3): "lens" seats BOTH electrons of each

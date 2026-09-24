@@ -306,7 +306,8 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Two plotting compasses are put down close to the north pole of a bar magnet, one on each side of it. Describe the directions their needles take.",
+        "figure": "ks4-fig-magnet-compasses-near-north",
+        "text": "Two plotting compasses, A and B, are placed near the north pole of a bar magnet, as shown. Describe the directions their needles point.",
         "options": [
             "Both needles swing until they lie exactly parallel, pointing along the length of the magnet",
             "Both north ends point away from the pole, along different lines, not parallel",
@@ -314,7 +315,7 @@ QUESTIONS = [
             "Both needles point straight towards each other right across the pole",
         ],
         "correct_index": 1,
-        "why": "The lines fan outwards from a north pole, so each compass shows the local line direction. The two directions differ because the compasses sit on different lines.",
+        "why": "Field lines spread outwards from a north pole, and a compass needle's north end points along the field line where it sits. A and B sit on different lines, so both north ends point away from the pole, but in different directions.",
     },
     {
         "id": "ks4-magnetic-fields-s17",
@@ -386,15 +387,16 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A bar magnet lies east to west on a bench with its north pole to the east. A plotting compass is set down beside the middle of the magnet, close enough that the magnet's field is far stronger there than the Earth's. State the direction the needle's north end points.",
+        "figure": "ks4-fig-magnet-compass-beside-middle",
+        "text": "A plotting compass is placed beside the middle of a bar magnet, as shown. The magnet's field there is far stronger than the Earth's. State the direction the needle's north end points.",
         "options": [
-            "Eastwards, because a compass needle is pulled towards the nearer of the two magnetic poles",
+            "Eastwards, because a compass needle is pulled towards the magnet's north pole",
             "Northwards, since a compass needle lines up with the Earth's field wherever it is",
             "Westwards, running back along the magnet towards its south pole end",
             "Straight in towards the middle of the magnet, at right angles to its length",
         ],
         "correct_index": 2,
-        "why": "Alongside the middle of a magnet the field runs from the north pole end back towards the south pole end, the opposite way round to the field beyond either end.",
+        "why": "Outside a magnet the field runs from its north pole round to its south pole. Beside the middle, that means back along the magnet from the N end (east) towards the S end (west), so the needle's north end points west.",
     },
     {
         "id": "ks4-magnetic-fields-s22",
@@ -803,7 +805,8 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Two plotting compasses are placed on the axis of a long bar magnet, one a little beyond each end. Compare the directions their needles settle in.",
+        "figure": "ks4-fig-magnet-compasses-on-axis",
+        "text": "Two plotting compasses, A and B, are placed on the axis of a bar magnet, as shown. Compare the directions their needles settle in.",
         "options": [
             "Both needles lie along the magnet's long axis and point the same way",
             "The two needles point towards one another, since each one is attracted by the nearer pole",
@@ -811,7 +814,7 @@ QUESTIONS = [
             "One needle lies along the magnet and the other sits at right angles to it",
         ],
         "correct_index": 0,
-        "why": "Beyond the north pole the field points outwards; beyond the south pole it points inwards, towards that pole. Both of those are the same way along the axis.",
+        "why": "Beyond the N end the field points away from the magnet, to the right. Beyond the S end it points towards the magnet, which is also to the right. So both needles lie along the axis and point the same way.",
     },
     {
         "id": "ks4-magnetic-fields-h26",
