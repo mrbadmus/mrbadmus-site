@@ -89,7 +89,7 @@ def _normalise(text):
 
 
 # ⊕ MRB-352 run 2 — the ids a KS3 question may name: the ones figlib draws.
-from figlib.catalogue_ks3 import CATALOGUE as _QUESTION_FIGURE_CATALOGUE  # noqa: E402
+from figlib.ks3_catalogue import CATALOGUE as _QUESTION_FIGURE_CATALOGUE  # noqa: E402 — ⊕ + lane files
 QUESTION_FIGURES = {rec["id"] for rec in _QUESTION_FIGURE_CATALOGUE}
 
 

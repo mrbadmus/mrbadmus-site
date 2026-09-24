@@ -699,7 +699,8 @@ if __name__ == "__main__":
 # from the canvas (`q_font`), labels always dark sage on paper or on a
 # light tint — never on a dark fill.
 # ====================================================================
-from .style import (MUTED, TINT, arrow as _q_arrow, box as _q_box,  # noqa: E402
+from .style import (GEORGIA_WIDE, MUTED, TINT, arrow as _q_arrow,  # noqa: E402
+                    box as _q_box,
                     line as _q_line, q_font, q_stroke, text as _q_text,
                     text_width as _tw, wrap as _wrap)
 
@@ -744,7 +745,10 @@ def food_web(nodes, eats, W=640, H=420, legend=None, clearance=12):
     bh = fs + 16
     leg = []
     for ln in ([legend] if isinstance(legend, str) else (legend or [])):
-        leg.extend(_wrap(ln, fs, W - 100))
+        # ⊕ batch-2 fix round (checks rule 8): the legend starts at x=72, so
+        # it wraps to what is left of the card less the edge clearance, at
+        # the widest fallback face.
+        leg.extend(_wrap(ln, fs, (W - 72 - 12) / GEORGIA_WIDE))
     Htot = int(H + (len(leg) * (fs + 7) + 10 if leg else 0))
     c = Canvas(W, Htot)
     pos = {}

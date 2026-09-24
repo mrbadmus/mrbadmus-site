@@ -2047,7 +2047,10 @@ CHEMISTRY_SUBTOPICS_ALL = {
                ('Each atom keeps its own electrons and none are shared', False),
                ('Carbon shares one pair with each oxygen, so all reach 8', False)
               ],
-            'q': 'A dot-and-cross diagram of carbon dioxide shows O=C=O. Explain how this arrangement gives every atom a full outer shell.',
+            # ⚑ MRB-352 run 2 — frozen field changed (architecture_v2 freeze): the stem
+            # described an unseen dot-and-cross diagram (Mide's rule 2). Now uses the
+            # displayed formula as itself. For Mide's examiner review.
+            'q': 'Carbon dioxide has the displayed formula O=C=O. Explain how its bonding gives every atom a full outer shell.',
             'wrong_explanations': {
                1: 'CO₂ is covalent (all non-metals), so electrons are shared, not transferred.',
                2: 'If no electrons were shared, none of the atoms would reach a full shell.',

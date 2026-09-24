@@ -672,29 +672,27 @@ QUESTIONS = [
     {
         "id": "c4-04-s10",
         "band": "standard",
-        "text": "The lesson says conservation of mass is drawn as a bar and "
-                "never as a triangle. Why does the shape matter?",
+        "text": "Magnesium burns in oxygen to make magnesium oxide. The bar "
+                "model shows the masses. What mass of oxygen reacted?",
         "options": [
-            {"text": "Because the relationship is a sum, and a triangle is "
-                     "for multiplying and dividing",
+            {"text": "1.6 g",
              "correct": True},
-            {"text": "Because a bar can be drawn to scale and a triangle "
-                     "cannot, so only the bar shows how small the gas really "
-                     "is beside everything else on the balance",
+            {"text": "6.4 g",
              "correct": False,
-             "why": "Neither diagram here is to scale — the lesson says so. "
-                    "What the shape records is the kind of relationship"},
-            {"text": "Because a triangle only has three parts and there are "
-                     "four quantities here",
+             "why": "That adds the two masses shown. The magnesium and the "
+                    "oxygen together make the 4.0 g of product, so the oxygen "
+                    "is what is left when 2.4 g is taken away."},
+            {"text": "4.0 g",
              "correct": False,
-             "why": "There are three quantities: the whole and its two parts. "
-                    "The objection is about adding rather than counting"},
-            {"text": "Because a bar is easier to draw",
+             "why": "That is the whole bar, the magnesium oxide. The oxygen "
+                    "is only the part of it that the magnesium does not fill."},
+            {"text": "9.6 g",
              "correct": False,
-             "why": "Ease is not the reason. A triangle would tell you to "
-                    "multiply, which would give the wrong answer"},
+             "why": "That multiplies the two masses, as a formula triangle "
+                    "would tell you to. Mass is conserved by adding: the "
+                    "parts add up to the whole."},
         ],
-        "figure": None,
+        "figure": "c4-bar-model-mg-oxide",
     },
 
     # ── harder · MRB-335 top-up ─────────────────────────────────────────

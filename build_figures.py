@@ -65,7 +65,7 @@ import ks4_art
 import ks4_data
 from figlib import checks as figchecks
 from figlib import web as figweb
-from figlib.catalogue_ks3 import CATALOGUE as KS3_CATALOGUE
+from figlib.ks3_catalogue import CATALOGUE as KS3_CATALOGUE  # ⊕ + lane files
 from ks3_data.question_bank import all_questions as ks3_bank_questions
 
 REPO = os.path.dirname(os.path.abspath(__file__))
@@ -180,6 +180,7 @@ def build():
                 where[fid] = label
             except (ValueError, KeyError, TypeError) as exc:
                 problems.append("%s (%s): %s" % (fid, label, exc))
+    problems.extend(figchecks.self_test())
     problems.extend(figchecks.check_manifest(everything))
 
     ks3_ids = {r["id"] for r in KS3_CATALOGUE}

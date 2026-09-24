@@ -956,20 +956,16 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A student is given two unlabelled graphs of a body "
-                "condition over time: one oscillates gently around a fixed "
-                "line, the other rises steadily with no correction. "
-                "Determine which shows a homeostatic system working.",
+        "figure": "ks4-fig-graph-two-conditions-x-y",
+        "text": "The graph shows how two conditions in the body, X and Y, change over time. Determine which shows a homeostatic system working.",
         "options": [
-            "The steadily rising graph, because homeostasis means steady change",
+            "Y, because homeostasis means steady change",
             "Neither, because a genuinely working system would show a perfectly flat, unchanging line at all times",
             "Both, because homeostasis cannot be identified from a graph alone",
-            "The oscillating graph, since feedback keeps correcting it towards the set point",
+            "X, since feedback keeps correcting it towards the set point",
         ],
         "correct_index": 3,
-        "why": "A condition under negative feedback control drifts and is "
-               "corrected repeatedly, producing gentle oscillation rather "
-               "than either a flat line or unchecked drift.",
+        "why": "X drifts and is corrected again and again, so it oscillates gently about one level: negative feedback at work. Y rises with nothing bringing it back.",
     },
     {
         "id": "ks4-homeostasis-h23",

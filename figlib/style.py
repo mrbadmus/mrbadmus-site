@@ -255,6 +255,23 @@ def text_width(s, size, bold=False):
     return sum(table.get(ch, 1.08 if bold else 0.95) for ch in str(s)) * size
 
 
+# ⊕ MRB-352 run 2, batch-2 fix round (figlib.checks rule 8): DejaVu Serif,
+# the widest face the Georgia stack can fall back to, sets about 1.15x the
+# Georgia advance table. A label that must FIT somewhere is measured — and
+# wrapped — at that width, so it still fits on a device without Georgia.
+GEORGIA_WIDE = 1.15
+
+
+def text_width_wide(s, size, bold=False):
+    """The width of a Georgia-stack label in its widest fallback face."""
+    return text_width(s, size, bold) * GEORGIA_WIDE
+
+
+def wrap_wide(s, size, max_w, bold=False):
+    """`wrap`, to a width that still holds in the widest fallback face."""
+    return wrap(s, size, max_w / GEORGIA_WIDE, bold)
+
+
 def wrap(s, size, max_w, bold=False):
     """Greedy word wrap to `max_w` user units."""
     lines, cur = [], ""
@@ -314,14 +331,16 @@ def label_font(txt):
 
 
 def text(c, x, y, txt, size, fill=None, weight="bold", anchor="middle",
-         rotate=None):
+         rotate=None, family=None):
     """One label, in the house font, painted by attribute (never a class).
-    A label with a digit in it takes NUM_FONT (lining figures)."""
+    A label with a digit in it takes NUM_FONT (lining figures). `family`
+    (default None = that rule) forces one stack, so a set of sibling labels
+    can share a face when only some of them carry a digit."""
     fill = fill or STYLE["label"]
     tr = (' transform="rotate(%s %.1f %.1f)"' % (rotate, x, y)
           if rotate is not None else "")
     c.S.append(
-        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{label_font(txt)}" '
+        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{family or label_font(txt)}" '
         f'font-size="{size}" font-weight="{weight}" fill="{fill}" '
         f'text-anchor="{anchor}"{tr}>{esc(txt)}</text>')
 

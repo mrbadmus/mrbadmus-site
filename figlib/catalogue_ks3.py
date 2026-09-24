@@ -43,8 +43,10 @@ _OAK_WOOD = {
              ("caterpillars", "bluetits"), ("aphids", "bluetits"),
              ("aphids", "ladybirds"), ("mice", "owls"),
              ("bluetits", "hawk"), ("mice", "hawk")],
-    "legend": "arrows point from the organism that is eaten to the "
-              "organism that eats it",
+    # ⊕ MRB-352 run 2, batch-2 fix round 2 (commander's ruling): NO legend.
+    # Exam food webs carry no key, and reading the arrows' direction is what
+    # the questions on this web test (b9-01-e03, b9-01-s03, b9-03-e02) —
+    # the same ruling as b9-garden-web-blackbird and the KS4 chain.
 }
 _OAK_TITLE = "A food web: ten labelled boxes joined by arrows."
 _OAK_DESC = ("Boxes arranged in four rows, joined by one-way arrows. Bottom "
@@ -148,20 +150,24 @@ CATALOGUE = [
         "id": "b4-gas-exchange-bars",
         "art": "columns",
         "title": "A bar chart with three bars: respiration, photosynthesis, "
-                 "and a third bar labelled 'what a sensor outside the leaf "
-                 "measures'.",
+                 "and a third bar labelled 'sensor outside the leaf'.",
         "desc": "Three bars side by side on one baseline, each with its "
                 "value above it: respiration 2, photosynthesis 8.6, and a "
-                "third bar labelled 'What a sensor outside the leaf "
-                "measures', 6.6. The vertical axis is the rate of carbon "
+                "third bar labelled 'Sensor outside the leaf', 6.6. The "
+                "vertical axis is the rate of carbon "
                 "dioxide exchange in arbitrary units, from 0 to 10.",
         "params": {"bins": [{"label": "Respiration", "n": 2, "display": "2"},
                             {"label": "Photosynthesis", "n": 8.6, "display": "8.6"},
-                            {"label": "What a sensor outside the leaf measures",
+                            # fix round 2 (visual o1): was "What a sensor
+                            # outside the leaf measures" — four lines at the
+                            # widest fallback face
+                            {"label": "Sensor outside the leaf",
                              "n": 6.6, "display": "6.6"}],
                    "x_label": None, "x_unit": None,
-                   "y_label": "rate of carbon dioxide exchange "
-                              "(arbitrary units)",
+                   # fix round 2 (visual o1): the b4-light-rates-graph
+                   # form — no orphan "units)" line
+                   "y_label": "rate of CO₂ exchange",
+                   "y_unit": "arbitrary units",
                    "y_max": 10, "y_step": 2, "touching": False,
                    "values": True, "y_title": "top", "W": 480, "H": 470},
     },

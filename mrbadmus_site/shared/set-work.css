@@ -98,7 +98,13 @@
   letter-spacing: .18em;
   text-transform: uppercase;
   color: var(--st-caption);
-  overflow-wrap: anywhere;
+  /* ⊕ MRB-352 run 2 (batch 3 landing): the step word is ONE word and must
+     never break inside itself — `overflow-wrap:anywhere` put "DETAI / L" on
+     two lines at 360px, where Download joins the header. It stays whole;
+     the ≤520px block below trims the header so it fits. */
+  overflow-wrap: normal;
+  word-break: keep-all;
+  white-space: nowrap;
 }
 
 /* ── iOS FALLBACK, WIRED AND OFF ─────────────────────────────────────────
@@ -700,6 +706,11 @@
    primary. The step word is `flex:1 1 auto; min-width:0` and yields first;
    these trims buy it back enough room to stay legible. */
 @media (max-width: 520px) {
+  /* ⊕ MRB-352 run 2 (batch 3 landing): at 360px the Detail step's header
+     left the step word 44px — too narrow for "DETAIL" — so it broke inside
+     the word. A tighter gap and tracking buy the word back its width. */
+  .sw-head { gap: 8px; }
+  .sw-step { letter-spacing: .06em; }
   .sw-dl-btn { padding: 0 11px; }
   .sw-dl-menu { min-width: 156px; }
   .sw-scope + .sw-scope { margin-top: 16px; padding-top: 14px; }

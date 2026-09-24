@@ -1986,9 +1986,8 @@ QUESTIONS = [
     {
         "id": "b5-03-h26",
         "band": "harder",
-        "text": "A poster draws the cycle as a clock face with day 1 at the "
-                "top and release at the bottom. Is that drawing fair for a "
-                "35-day cycle?",
+        "text": "A student draws this poster of a 35-day menstrual cycle. Is "
+                "the position of the egg's release fair?",
         "options": [
             {"text": "Yes, because release is always halfway round whatever "
                      "the length", "correct": False,
@@ -1998,14 +1997,15 @@ QUESTIONS = [
              "correct": False,
              "why": "Putting release opposite day 1 is a claim about where it "
                     "falls, circle or not."},
-            {"text": "No, because release in a 35-day cycle falls about two "
-                     "thirds of the way round", "correct": True},
+            {"text": "No, because release comes about 14 days before the end, "
+                     "past halfway round",
+             "correct": True},
             {"text": "No, because a cycle should never be drawn as a circle at "
                      "all", "correct": False,
              "why": "A circle is a fair shape for it: the cycle ends where it "
                     "starts. It is the position of the marker that is wrong."},
         ],
-        "figure": None,
+        "figure": "b5-cycle-clock-poster",
     },
     {
         "id": "b5-03-h27",

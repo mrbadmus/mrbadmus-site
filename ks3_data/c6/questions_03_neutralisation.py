@@ -1250,14 +1250,17 @@ QUESTIONS = [
     {
         "id": "c6-03-h10",
         "band": "harder",
-        "text": "A titration trace is flat at the start, jumps, then is flat again. "
-                "Explain why it is flat at BOTH ends.",
+        "text": "The graph shows the pH as alkali is added to an acid a "
+                "little at a time. Explain why the graph is flat at BOTH ends.",
         "options": [
-            {"text": "At the start the acid consumes each drop; at the end there is "
-                      "no acid left to consume anything", "correct": True},
-            {"text": "At both ends the indicator has stopped responding to the "
-                      "solution", "correct": False,
-             "why": "The dye reports faithfully throughout. What is flat is the "
+            {"text": "At first acid uses up each drop; at the end alkali is "
+                     "in excess, so a drop barely changes it",
+             "correct": True},
+            {"text": "At both ends the pH meter has stopped responding to the "
+                     "solution",
+             "correct": False,
+             "why": "The meter reports faithfully throughout, and one drop "
+                    "later it shows an enormous change. What is flat is the "
                     "solution, not the instrument."},
             {"text": "At both ends the solutions are too dilute to change the reading", "correct": False,
              "why": "The same solutions produce an enormous change one drop later, "
@@ -1267,7 +1270,7 @@ QUESTIONS = [
              "why": "The reaction runs from the first drop to the last of the acid. "
                     "The jump is when the acid runs out."},
         ],
-        "figure": None,
+        "figure": "c6-ph-curve",
     },
     {
         "id": "c6-03-h11",

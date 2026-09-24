@@ -162,7 +162,9 @@ GATES = [
                   "build_ks3.py", "mrbadmus_site/ks3/**",
                   # ⊕ MRB-352 run 2: check 5 resolves a question's figure
                   # against the figlib question-figure catalogue
-                  "figlib/catalogue_ks3.py"],
+                  "figlib/catalogue_ks3.py",
+                  # ⊕ MRB-352 batch 2: per-lane KS3 figure files + collector
+                  "figlib/catalogue_ks3_*.py", "figlib/ks3_catalogue.py"],
          why="the KS3 question bank (MRB-269) — nine checks over every "
              "lesson's ladder and bank. THE ORPHAN: this is the gate that "
              "was red at push time in PR #8 and was not run."),

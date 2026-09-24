@@ -1540,8 +1540,9 @@ QUESTIONS = [
     {
         "id": "c9-04-s23",
         "band": "standard",
-        "text": "Which TWO materials on the shelf both meet “stiff under "
-                "load” AND “cheap by the square metre”?",
+        "text": "The table shows two properties of six materials. Which TWO "
+                "materials are both stiff under load AND cheap by the square "
+                "metre?",
         "options": [
             {"text": "PET and polythene", "correct": False,
              "why": "Both are cheap, and neither is stiff — both bend or "
@@ -1554,7 +1555,7 @@ QUESTIONS = [
              "why": "PET fails “stiff under load” — a bottle crumples in "
                     "one hand."},
         ],
-        "figure": None,
+        "figure": "c9-materials-table",
     },
     {
         "id": "c9-04-s24",

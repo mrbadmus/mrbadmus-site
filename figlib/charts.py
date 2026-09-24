@@ -17,7 +17,7 @@ import math
 
 from .style import (AMBER, MUTED, RED, STYLE, TINT, Canvas, arrow, box, esc,
                     line, num_width_wide, q_font, q_stroke, text, text_width,
-                    wrap)
+                    wrap, wrap_wide)
 from .style import grid_line  # ⊕ MRB-352 run 2 (174)
 
 ST = STYLE["stroke"]
@@ -39,6 +39,17 @@ def _axis_title(label, unit):
 
 def _fmt(v):
     return ("%g" % v).replace("-", "−")
+
+
+def _corner_drop(first_x_label, fn):
+    """⊕ MRB-352 run 2, batch-2 fix round (figlib.checks rule 8). The first
+    x-axis numeral is centred on the origin and the lowest y-axis numeral
+    ends 11 units left of it, level with the axis. A numeral of two digits
+    or more then reaches back under that "0" (e.g. "145" beneath "0" at a
+    histogram's corner), so the pair crowd together and read as one. Drop
+    the x numerals this many units lower whenever that is so; 0 otherwise,
+    so a graph whose axis starts at a single digit is unchanged."""
+    return 4 if num_width_wide(first_x_label, fn) / 2 > 8 else 0
 
 
 # ── horizontal bars, one row per item: label above, bar below ────────────
@@ -143,7 +154,7 @@ def hbar_chart(rows, W=480, axis=None, log=False, boundary=None,
 def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
                  touching=True, edges=None, y_max=None, y_step=None,
                  fill=None, values=False, caption=None, min_bar=0,
-                 y_title="side"):
+                 y_title="side", edge_label_every=1):
     """Vertical bars.
 
     With `touching=True` and `edges` (the class boundaries, one more than
@@ -160,6 +171,9 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
     `x_label=None` omits the x-axis title (a bar chart of named categories
     needs none); `y_title="top"` writes a long y-axis title above the plot,
     wrapped, instead of rotating it up the side where it would not fit.
+    ⊕ MRB-352 run 2 (batch 2): `edge_label_every=k` numbers only every k-th
+    class boundary of a histogram (every boundary still gets its tick) —
+    for many narrow classes, whose numerals cannot all fit at 360px.
     """
     fs = q_font(W)
     fn = _num_size(fs)
@@ -180,12 +194,22 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
     aw = W - ox - rpad
     gapw = 0 if touching else aw / n * 0.28
     bw = (aw - gapw * (n + 1)) / n
-    cat_lines = ([wrap(b["label"], fs, bw + gapw * 0.9) for b in bins]
+    cat_lines = ([wrap_wide(b["label"], fs, bw + gapw * 0.9) for b in bins]
                  if not (touching and edges) else [[""]])
-    cap_lines = wrap(caption, fs, W - 40) if caption else []
-    below = (fs + 10) * max(len(cl) for cl in cat_lines) + fs + 26
+    cap_lines = wrap_wide(caption, fs, W - 40) if caption else []
+    # ⊕ batch-2 fix round (checks rule 8): a histogram's x-axis title sat
+    # with its descenders about 1 unit off the card's bottom edge; its
+    # budget is now the numeral row, the title's own line box and 6 units.
+    drop = _corner_drop(_fmt(edges[0]), fn) if touching and edges else 0
+
+    def _below(cl):
+        if touching and edges:
+            return max((fs + 10) + fs + 26,
+                       10 + drop + fn + fs + 18 + 0.24 * fs + 6)
+        return (fs + 10) * max(len(c_) for c_ in cl) + fs + 26
+    below = _below(cat_lines)
     oy = H - below - (len(cap_lines) * (fs + 5) + 8 if cap_lines else 0)
-    top_lines = (wrap(_axis_title(y_label, y_unit), fs, W - 30, True)
+    top_lines = (wrap_wide(_axis_title(y_label, y_unit), fs, W - 30, True)
                  if y_title == "top" else [])
     head = len(top_lines) * (fs + 5) + (8 if top_lines else 0)
     if y_title == "top":
@@ -193,9 +217,10 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
         aw = W - ox - rpad
         gapw = 0 if touching else aw / n * 0.28
         bw = (aw - gapw * (n + 1)) / n
-        cat_lines = ([wrap(b["label"], fs, bw + gapw * 0.9) for b in bins]
+        cat_lines = ([wrap_wide(b["label"], fs, bw + gapw * 0.9)
+                      for b in bins]
                      if not (touching and edges) else [[""]])
-        below = (fs + 10) * max(len(cl) for cl in cat_lines) + fs + 26
+        below = _below(cat_lines)
         oy = H - below - (len(cap_lines) * (fs + 5) + 8 if cap_lines else 0)
     nval = max((len(b["display"]) if isinstance(b.get("display"), list) else 1)
                for b in bins) if values else 0
@@ -230,8 +255,9 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
         for i, e in enumerate(edges):
             xx = ox + gapw + i * (bw + gapw)
             line(c, xx, oy, xx, oy + 7, ST, sw)
-            text(c, xx, oy + 10 + fn, _fmt(e), fn, LBL, "normal")
-        lab_y = oy + 10 + fn
+            if i % edge_label_every == 0:
+                text(c, xx, oy + 10 + drop + fn, _fmt(e), fn, LBL, "normal")
+        lab_y = oy + 10 + drop + fn
     else:
         lab_y = oy
         for i, b in enumerate(bins):
@@ -316,12 +342,22 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
     Canvas with every y shifted down by `top` (no <g>, no transform — the
     manifest forbids both), and return nothing. `graph_panels` stacks
     graphs this way, and `ox` pins the y axis's x so stacked graphs share
-    one time axis."""
+    one time axis.
+
+    ⊕ MRB-352 run 2 (batch 2), two optional series keys, both off by
+    default: `dots` True puts a filled marker on every data point (one
+    reading per point, e.g. one per year); `arrows` [segment index, ...]
+    puts a solid arrowhead at the midpoint of each listed segment, pointing
+    along it — for a path whose ORDER matters (a loop is not x-monotone, so
+    such a series is drawn with `smooth` False)."""
     fs = q_font(W)
     fn = _num_size(fs)
     sw = q_stroke(W, 2)
-    ox = ox or (30 + fs * 1.3 + max(text_width(_fmt(t), fn) for t in y_ticks))
-    oy = top + H - (fs + fn + 34) - (fs + 14 if legend else 0)
+    ox = ox or (30 + fs * 1.3 + max((text_width(_fmt(t), fn) for t in y_ticks), default=0))
+    # an empty x_ticks list (no numerals on the x axis) has no corner
+    # numeral to crowd, so no drop.
+    drop = _corner_drop(_fmt(x_ticks[0]), fn) if x_ticks else 0
+    oy = top + H - (fs + fn + 34) - (fs + 14 if legend else 0) - drop
     aw = W - ox - 26
     ah = oy - top - 26
     (x0, x1), (y0, y1) = x_range, y_range
@@ -345,7 +381,7 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
     for t in x_ticks:
         px, _ = P(t, y0)
         line(c, px, oy, px, oy + 7, ST, sw)
-        text(c, px, oy + 10 + fn, _fmt(t), fn, LBL, "normal")
+        text(c, px, oy + 10 + drop + fn, _fmt(t), fn, LBL, "normal")
     for t in y_ticks:
         _, py = P(x0, t)
         line(c, ox - 7, py, ox, py, ST, sw)
@@ -376,12 +412,27 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
         c.S.append(f'<path d="{d}" fill="none" stroke="{col}" '
                    f'stroke-width="{q_stroke(W, 3.5)}" stroke-linecap="round" '
                    f'stroke-linejoin="round"{dd}/>')
+        if s.get("dots"):
+            for px_, py_ in pts:
+                c.S.append(f'<circle cx="{px_:.1f}" cy="{py_:.1f}" r="5" '
+                           f'fill="{col}" stroke="none"/>')
+        for k_seg in (s.get("arrows") or ()):
+            (ax_, ay_), (bx_, by_) = pts[k_seg], pts[k_seg + 1]
+            ang = math.atan2(by_ - ay_, bx_ - ax_)
+            hl = 16
+            tx_, ty_ = ((ax_ + bx_) / 2 + math.cos(ang) * hl / 2,
+                        (ay_ + by_) / 2 + math.sin(ang) * hl / 2)
+            bx2, by2 = tx_ - hl * math.cos(ang), ty_ - hl * math.sin(ang)
+            nx_, ny_ = -math.sin(ang) * hl * 0.5, math.cos(ang) * hl * 0.5
+            c.S.append(f'<polygon points="{tx_:.1f},{ty_:.1f} '
+                       f'{bx2+nx_:.1f},{by2+ny_:.1f} {bx2-nx_:.1f},{by2-ny_:.1f}" '
+                       f'fill="{col}" stroke="none"/>')
         if end_dot:
             ex, ey = pts[-1]
             c.S.append(f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="5.5" '
                        f'fill="{col}" stroke="none"/>')
-    text(c, ox + aw / 2, oy + 24 + fn + fs, _axis_title(x_label, x_unit), fs,
-         LBL, "bold")
+    text(c, ox + aw / 2, oy + 24 + drop + fn + fs,
+         _axis_title(x_label, x_unit), fs, LBL, "bold")
     text(c, fs + 4, oy - ah / 2, _axis_title(y_label, y_unit), fs, LBL,
          "bold", "middle", rotate=-90)
     if legend:
@@ -403,12 +454,16 @@ def graph_panels(panels, W=480):
     (its own H) plus `caption`. For comparing graphs whose SCALES differ —
     the drawing makes the pupil read each axis, not the slope's look."""
     fs = q_font(W)
-    H = int(sum(p.get("H", 380) + fs + 34 for p in panels))
+    # ⊕ MRB-352 run 2 (batch-2 merge, checks rule 8): the first caption's
+    # line box sat 1.4 units off the card's top edge; every panel now starts
+    # PAD units down, and the card grows by the same.
+    PAD = 8
+    H = int(PAD + sum(p.get("H", 380) + fs + 34 for p in panels))
     c = Canvas(W, H)
     fn = _num_size(fs)
-    ox = max(30 + fs * 1.3 + max(text_width(_fmt(t), fn) for t in p["y_ticks"])
+    ox = max(30 + fs * 1.3 + max((text_width(_fmt(t), fn) for t in p["y_ticks"]), default=0)
              for p in panels)          # one y-axis position: identical time axes
-    y = 0.0
+    y = float(PAD)
     for p in panels:
         p = dict(p)
         caption = p.pop("caption")
@@ -423,18 +478,27 @@ def graph_panels(panels, W=480):
 # ── a table of short verdicts (a grid of combinations) ───────────────────
 
 def table(col_heads, rows, W=480, corner="", cell_fills=None,
-          col_title=None, row_title=None):
+          col_title=None, row_title=None, head_max=None):
     """A grid with a header row and a header column. `rows` is
     [{"head": str, "cells": [[line, ...], ...]}]; a cell is a list of lines
     (wrapped further if a line is still too wide). `cell_fills[r][c]` may
     tint a cell; headers sit on sand, cells on white or their tint.
     `col_title` spans the column headers from above; `row_title` runs up
     the side of the row headers. A cell given as [] is drawn EMPTY — for a
-    grid the pupil fills in."""
+    grid the pupil fills in.
+
+    ⊕ MRB-352 run 2, batch-2 fix round 2 (visual o2): `head_max` (default
+    None = one line per row header, as before) wraps the row headers at
+    that width in the widest fallback face, so a long row header gives
+    its width to the data columns instead of forcing their headers into
+    three or four lines."""
     fs = q_font(W)
     sw = q_stroke(W, 2)
     n = len(col_heads)
-    head_w = max(text_width(r["head"], fs, True) for r in rows) + 18
+    row_heads = [wrap_wide(r["head"], fs, head_max, True) if head_max
+                 else [r["head"]] for r in rows]
+    head_w = max(text_width(ln, fs, True) for rh_ in row_heads
+                 for ln in rh_) + 18
     side = fs + 18 if row_title else 0
     col_w = (W - 24 - side - head_w) / float(n)
     x0, y0 = 12 + side, 12 + (fs + 14 if col_title else 0)
@@ -448,10 +512,13 @@ def table(col_heads, rows, W=480, corner="", cell_fills=None,
                 out.extend((w, k == 0) for w in wrap(ln, fs, col_w - 14, True))
         return out or [("", False)]
 
-    head_lines = [wrap(h, fs, col_w - 10, True) for h in col_heads]
+    # ⊕ batch-2 fix round (checks rule 8): headers wrap at the widest
+    # fallback face, so neighbouring headers cannot run into each other.
+    head_lines = [wrap_wide(h, fs, col_w - 10, True) for h in col_heads]
     head_h = max(len(h) for h in head_lines) * (fs + 4) + 16
-    row_hs = [max(len(lines_of(cl)) for cl in r["cells"]) * (fs + 4) + 18
-              for r in rows]
+    row_hs = [max([len(lines_of(cl)) for cl in r["cells"]]
+                  + [len(row_heads[i])]) * (fs + 4) + 18
+              for i, r in enumerate(rows)]
     H = int(y0 + 12 + head_h + sum(row_hs))
     c = Canvas(W, H)
     if col_title:
@@ -473,7 +540,12 @@ def table(col_heads, rows, W=480, corner="", cell_fills=None,
     for i, r in enumerate(rows):
         rh = row_hs[i]
         box(c, x0, y, head_w, rh, TINT["sand"], ST, sw)
-        text(c, x0 + head_w / 2, y + rh / 2 + fs * 0.35, r["head"], fs, LBL)
+        hl_ = row_heads[i]
+        yy = (y + (rh - len(hl_) * (fs + 4)) / 2 + fs if head_max
+              else y + rh / 2 + fs * 0.35)       # one line: as before
+        for ln in hl_:
+            text(c, x0 + head_w / 2, yy, ln, fs, LBL)
+            yy += fs + 4
         for j, cell in enumerate(r["cells"]):
             x = x0 + head_w + j * col_w
             fillc = (cell_fills[i][j] if cell_fills else None) or TINT["white"]

@@ -265,7 +265,8 @@ QUESTIONS = [
         "band": "standard",
         "tier": "higher",
         "triple_only": True,
-        "text": "A student draws a polyester's repeat unit showing a free –OH and a free –COOH group still present within it. Explain what is wrong with this drawing.",
+        "figure": "ks4-fig-polyester-repeat-unit-wrong",
+        "text": "A student draws this as the repeat unit of a polyester. Explain what is wrong with it.",
         "options": [
             "The repeat unit should never contain any oxygen atoms",
             "The repeat unit should show a carbon–carbon double bond",
@@ -273,7 +274,7 @@ QUESTIONS = [
             "Those groups should have reacted, forming an ester link and losing water",
         ],
         "correct_index": 3,
-        "why": "In a correctly drawn repeat unit, the reacting groups have already joined into an ester link, so free –OH and –COOH should not remain.",
+        "why": "The –OH and –COOH groups should have reacted with each other. They join as an ester link, losing a molecule of water, so no free –OH or –COOH is left inside the repeat unit.",
     },
     {
         "id": "ks4-condensation-polymerisation-s11",

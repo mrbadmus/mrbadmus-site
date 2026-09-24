@@ -686,9 +686,8 @@ QUESTIONS = [
     {
         "id": "b10-01-s07",
         "band": "standard",
-        "text": "A class of 12 students plots its own heights and gets a "
-                "lumpy graph with two separate peaks rather than one smooth "
-                "hump. What is the best explanation?",
+        "text": "A class of 12 students drew this histogram of their heights. "
+                "What is the best explanation for its shape?",
         "options": [
             {"text": "Height in this class is discontinuous, because two "
                      "peaks means two groups.",
@@ -714,7 +713,7 @@ QUESTIONS = [
                     "leaves most bars empty. Widening them hides the "
                     "lumpiness without curing it."},
         ],
-        "figure": None,
+        "figure": "b10-height-hist-12",
     },
     {
         "id": "b10-01-s08",
@@ -1942,8 +1941,8 @@ QUESTIONS = [
     {
         "id": "b10-01-s24",
         "band": "standard",
-        "text": "A student plots 60 heights in 1 cm groups and gets a jagged "
-                "graph with many empty bars. What should she do?",
+        "text": "A student drew this histogram of 60 students' heights, using "
+                "1 cm groups. What should she do?",
         "options": [
             {"text": "Draw the data as a bar chart with gaps instead of a "
                      "histogram.",
@@ -1966,7 +1965,7 @@ QUESTIONS = [
                      "students to show the shape.",
              "correct": True},
         ],
-        "figure": None,
+        "figure": "b10-height-hist-1cm",
     },
     {
         "id": "b10-01-s25",
@@ -2527,9 +2526,9 @@ QUESTIONS = [
     {
         "id": "b10-01-h25",
         "band": "harder",
-        "text": "A class plots the boys' and the girls' heights as two curves "
-                "that overlap heavily. A student says the graph proves height "
-                "is discontinuous, since there are two groups. Evaluate.",
+        "text": "The graph shows the heights of the boys and of the girls in "
+                "a year group. A student says the graph proves height is "
+                "discontinuous, since there are two groups. Evaluate.",
         "options": [
             {"text": "The curves overlap, so heights in between exist and "
                      "height stays continuous.",
@@ -2553,7 +2552,7 @@ QUESTIONS = [
                     "between exist, which you can answer from the overlap you "
                     "already have."},
         ],
-        "figure": None,
+        "figure": "b10-height-curves-boys-girls",
     },
     {
         "id": "b10-01-h26",

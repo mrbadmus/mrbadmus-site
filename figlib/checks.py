@@ -33,19 +33,43 @@ warnings, because every one of them is a defect a pupil sees:
     edges of the canvas, measured at the WIDEST face the stack can fall
     back to (`style.num_width_wide`) — so an end-of-axis tick like "180"
     cannot touch or clip the card on a device without Times.
+ 8. EVERY LABEL'S WHOLE BOX IS ON THE CARD AND CLEAR OF EVERY OTHER LABEL.
+    ⊕ MRB-352 run 2, batch-2 fix round (visual review, recommended check).
+    Rule 7 covers only unrotated numerals, and `_text_samples()` only five
+    interior points — so nothing checked that a rotated axis title stays on
+    the canvas or clears the tick numerals beside it. For EVERY <text>,
+    rotated or not, the box is the label at the WIDEST face its stack can
+    fall back to (`num_width_wide` for NUM_FONT, the Georgia table x 1.15
+    for DejaVu Serif otherwise) by the line box (0.92 em above the
+    baseline, 0.24 em below — Chrome's measured box), rotated with the
+    label's rotate(a cx cy). It fails within TEXT_EDGE_CLEAR units of any
+    canvas edge, and it fails when two labels' boxes, each padded by
+    TEXT_GAP / 2, intersect — naming both. ONE precise exemption, not a
+    loosening: consecutive lines of one wrapped label (same x, anchor,
+    size, weight, fill and rotation; baselines between STACK_PITCH em
+    apart) are one block of type, so their own line boxes may abut —
+    every line is still checked against every OTHER label and the edge.
+    Lines closer than STACK_PITCH[0] em still fail. ⊕ fix round 2: the
+    two lines must also be ADJACENT in document order, the second directly
+    after the first and below it — which is how every builder emits a
+    wrapped label — so two SEPARATE labels that merely share a style and
+    sit about 1 em apart are not exempt.
 """
 
 import math
 import re
 import xml.etree.ElementTree as ET
 
-from .style import (MIN_STROKE_PX, MIN_TEXT_PX, NUM_FONT, num_width_wide,
-                    screen_scale, text_width)
+from .style import (GEORGIA_WIDE, MIN_STROKE_PX, MIN_TEXT_PX, NUM_FONT,
+                    num_width_wide, screen_scale, text_width)
 
 _Q = "{http://www.w3.org/2000/svg}"
 
 MIN_CONTRAST = 4.5
 NUM_EDGE_CLEAR = 6           # rule 7: units between a numeral and the edge
+TEXT_EDGE_CLEAR = 4          # rule 8: units between any label box and the edge
+TEXT_GAP = 3                 # rule 8: minimum units between two label boxes
+STACK_PITCH = (1.05, 1.6)    # rule 8: em between baselines of one wrapped label
 DARK_LUMINANCE = 0.18        # a fill darker than this carries no text at all
 GRID_CONTRAST = 3.0          # grid rule: a data-role grid line vs its paper
 GRID_ROLES = ("grid", "grid-minor")
@@ -246,6 +270,47 @@ def self_test_grid():
     return out
 
 
+def _text_box(el, label, size, fam):
+    """Rule 8: the label's line box at its widest fallback face, rotated
+    with the label, as (x0, y0, x1, y1) plus whether it was rotated."""
+    bold = el.get("font-weight") in ("bold", "700")
+    w = (num_width_wide(label, size, bold) if fam == NUM_FONT
+         else text_width(label, size, bold) * GEORGIA_WIDE)
+    x, y = float(el.get("x", 0)), float(el.get("y", 0))
+    anchor = el.get("text-anchor", "start")
+    x0 = x - (w / 2 if anchor == "middle" else w if anchor == "end" else 0)
+    corners = [(x0, y - 0.92 * size), (x0 + w, y - 0.92 * size),
+               (x0, y + 0.24 * size), (x0 + w, y + 0.24 * size)]
+    m = _ROTATE.match(el.get("transform", "") or "")
+    if m:
+        a = math.radians(float(m.group(1)))
+        cx, cy = float(m.group(2)), float(m.group(3))
+        corners = [(cx + (px - cx) * math.cos(a) - (py - cy) * math.sin(a),
+                    cy + (px - cx) * math.sin(a) + (py - cy) * math.cos(a))
+                   for px, py in corners]
+    return (min(p[0] for p in corners), min(p[1] for p in corners),
+            max(p[0] for p in corners), max(p[1] for p in corners)), bool(m)
+
+
+def _stack_key(el, size):
+    """Rule 8: what two lines of ONE wrapped label share, plus baseline."""
+    return ((el.get("x"), el.get("text-anchor", "start"), size,
+             el.get("font-weight"), el.get("fill"),
+             (el.get("transform") or "").split(" ")[0]),
+            float(el.get("y", 0)), size)
+
+
+def _one_block(ka, kb):
+    """Rule 8: the next line of one wrapped label (the caller also requires
+    the two to be adjacent in document order) — same x, anchor,
+    size, weight, fill and angle, unrotated, baselines STACK_PITCH em
+    apart. Nothing else is exempt."""
+    (sa, ya, za), (sb, yb, _) = ka, kb
+    if sa != sb or sa[5]:
+        return False
+    return STACK_PITCH[0] * za - 1e-6 <= yb - ya <= STACK_PITCH[1] * za
+
+
 # ── the check ─────────────────────────────────────────────────────────────
 
 def check_figure(fid, svg):
@@ -267,6 +332,7 @@ def check_figure(fid, svg):
         return probs + ["%s: <svg> has no viewBox" % fid]
     W = vb[2]
     scale = screen_scale(W)
+    boxes = []                  # rule 8: (label, padded box) per <text>
 
     filled = []                 # paint-ordered shapes that can sit under text
     circles = []
@@ -370,6 +436,20 @@ def check_figure(fid, svg):
                              "fallback face — under %g units from the card "
                              "edge (canvas 0–%g)" % (fid, label, x_l, x_r,
                                                       NUM_EDGE_CLEAR, W))
+        # rule 8: the whole (rotated) box on the card, 4 units in
+        (bx0, by0, bx1, by1), rot = _text_box(el, label, size, fam)
+        e = TEXT_EDGE_CLEAR - 1e-6
+        if bx0 < vb[0] + e or by0 < vb[1] + e or \
+                bx1 > vb[0] + W - e or by1 > vb[1] + vb[3] - e:
+            probs.append("%s: text %r box %.1f,%.1f–%.1f,%.1f (%s, widest "
+                         "fallback face) is under %g units from the canvas "
+                         "edge (viewBox %s)" % (
+                             fid, label, bx0, by0, bx1, by1,
+                             "rotated" if rot else "flat", TEXT_EDGE_CLEAR,
+                             " ".join("%g" % v for v in vb)))
+        g = TEXT_GAP / 2.0
+        boxes.append((label, (bx0 - g, by0 - g, bx1 + g, by1 + g),
+                      _stack_key(el, size)))
         if size * scale < MIN_TEXT_PX - 1e-6:
             probs.append("%s: text %r is %.1fpx on screen at 320px "
                          "(font-size %g on a %g-wide canvas) — under %gpx"
@@ -407,6 +487,17 @@ def check_figure(fid, svg):
         if label.lower().replace(" ", "") in ("d.c.", "dc", "d.c"):
             probs.append("%s: draws a 'd.c.' supply box — not on the AQA "
                          "8463 list" % fid)
+    # rule 8: no two padded label boxes intersect
+    for i in range(len(boxes)):
+        la, (ax0, ay0, ax1, ay1), ka = boxes[i]
+        for j in range(i + 1, len(boxes)):
+            lb, (cx0, cy0, cx1, cy1), kb = boxes[j]
+            if j == i + 1 and _one_block(ka, kb):
+                continue
+            if min(ax1, cx1) > max(ax0, cx0) and min(ay1, cy1) > max(ay0, cy0):
+                probs.append("%s: text %r and text %r overlap (their boxes at "
+                             "the widest fallback face, each padded %g units, "
+                             "intersect)" % (fid, la, lb, TEXT_GAP / 2.0))
     return probs
 
 
@@ -421,12 +512,63 @@ def check_paper(fid, svg):
     return []
 
 
+# ── rule 8 proves itself on every build ──────────────────────────────────
+
+_ST_SVG = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">'
+           '<rect data-role="paper" x="0" y="0" width="200" height="200" '
+           'fill="#FBF7EE" stroke="none"/>%s</svg>')
+_ST_TEXT = ('<text x="%s" y="%s" font-family="Georgia, serif" font-size="17" '
+            'font-weight="700" fill="#2E5E45" text-anchor="middle"%s>%s</text>')
+
+
+def self_test():
+    """Rule 8 against drawings whose verdict is known. Returns a list of
+    problems (empty = the rule behaves). `build_figures.py` runs it before
+    the manifest, so the figure_manifest gate fails if the rule is ever
+    weakened or broken."""
+    T = _ST_TEXT
+    rot = ' transform="rotate(-90 %s %s)"'
+    cases = [
+        # (name, body, must_fail)
+        ("rotated label off the left edge",
+         T % (8, 100, rot % (8, 100), "energy"), True),
+        ("rotated label clear of the edge",
+         T % (21, 100, rot % (21, 100), "energy"), False),
+        ("two overlapping labels",
+         T % (100, 100, "", "alpha") + T % (110, 108, "", "beta"), True),
+        ("two lines of one wrapped label, adjacent, 21 units apart",
+         T % (100, 100, "", "alpha") + T % (100, 121, "", "beta"), False),
+        ("two lines of one wrapped label packed too tight (14 units)",
+         T % (100, 100, "", "alpha") + T % (100, 114, "", "beta"), True),
+        # ⊕ fix round 2: the same two same-style lines, 21 units apart, but
+        # NOT adjacent in document order — a separate label sits between
+        # them — are two separate labels, and must not be exempt.
+        ("two separate same-style labels ~1 em apart, not adjacent",
+         T % (100, 100, "", "alpha") + T % (40, 180, "", "x")
+         + T % (100, 121, "", "beta"), True),
+        # ...nor when the second is drawn ABOVE the first.
+        ("same-style labels ~1 em apart, second drawn above the first",
+         T % (100, 121, "", "beta") + T % (100, 100, "", "alpha"), True),
+    ]
+    out = []
+    for name, body, must_fail in cases:
+        failed = any("overlap" in p or " box " in p
+                     for p in check_figure("self-test", _ST_SVG % body))
+        if failed != must_fail:
+            out.append("figlib.checks self-test: %r should %s rule 8 but "
+                       "did%s" % (name, "fail" if must_fail else "pass",
+                                  "n't" if must_fail else " not"))
+    # ⊕ MRB-352 run 2 (batch 3 landing): the grid rule proves itself here
+    # too, so one self_test() call covers rule 8 AND the grid rule.
+    out.extend("figlib.checks.self_test_grid: " + p
+               for p in self_test_grid())
+    return out
+
+
 def check_manifest(manifest):
     """Every figure, plus the one cross-figure rule: no id attribute value
     appears in two figures (two figures on one page must never collide)."""
     probs, owner = [], {}
-    probs.extend("figlib.checks.self_test_grid: " + p
-                 for p in self_test_grid())       # ⊕ MRB-352 (174)
     for fid in sorted(manifest):
         svg = manifest[fid]["svg"]
         probs.extend(check_figure(fid, svg))

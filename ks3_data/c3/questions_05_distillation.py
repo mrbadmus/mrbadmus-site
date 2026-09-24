@@ -1704,9 +1704,8 @@ QUESTIONS = [
     {
         "id": "c3-05-s28",
         "band": "standard",
-        "text": "A student clamps the thermometer so the bulb sits high in "
-                "the neck of the flask, well above the side arm and out of "
-                "the vapour's path. What happens to the reading?",
+        "text": "A student sets up distillation as shown. What happens to the "
+                "thermometer reading while the liquid boils?",
         "options": [
             {"text": "It reads low, because the bulb is not in the stream of "
                      "vapour leaving", "correct": True},
@@ -1723,7 +1722,7 @@ QUESTIONS = [
              "why": "A thermometer reads whatever surrounds it, gas included. "
                     "The trouble is which gas it is reading"},
         ],
-        "figure": None,
+        "figure": "c3-thermometer-high",
     },
     {
         "id": "c3-05-s29",
@@ -1955,10 +1954,9 @@ QUESTIONS = [
     {
         "id": "c3-05-h13",
         "band": "harder",
-        "text": "A refinery column is at 350 °C at the bottom, about 200 °C a "
-                "third of the way up, about 100 °C two thirds up and about "
-                "25 °C at the top. Kerosene condenses between 150 °C and "
-                "250 °C. Where is it drawn off?",
+        "text": "The diagram shows the temperatures inside a fractionating "
+                "column. Kerosene condenses between 150 °C and 250 °C. Where "
+                "is it drawn off?",
         "options": [
             {"text": "At the very bottom, with whatever never boiled at all",
              "correct": False,
@@ -1975,7 +1973,7 @@ QUESTIONS = [
              "why": "Only substances boiling below about 25 °C get that high. "
                     "Kerosene condenses long before"},
         ],
-        "figure": None,
+        "figure": "c3-column-temperatures",
     },
     {
         "id": "c3-05-h14",

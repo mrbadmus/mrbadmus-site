@@ -1911,34 +1911,27 @@ QUESTIONS = [
     {
         "id": "c10-05-s30",
         "band": "standard",
-        "text": "The bar chart's scale note names both gases affected by "
-                "the drawing floor AND states their true combined share. "
-                "Why does it need to give BOTH pieces of information, "
-                "rather than just one?",
+        "text": "The chart shows the percentages of the two main gases in dry "
+                "air. What percentage of dry air is made up of all the other "
+                "gases together?",
         "options": [
-            {"text": "Giving the true combined share without naming the "
-                     "gases would be simpler and equally informative",
+            {"text": "About 21%",
              "correct": False,
-             "why": "Without naming which gases are affected, a reader "
-                    "would not know which parts of the bar to distrust."},
-            {"text": "Naming which gases are stretched without giving their "
-                     "true share would tell a reader something is distorted "
-                     "without saying by how much",
+             "why": "That is the oxygen bar on its own. The other gases are "
+                    "what is left after nitrogen AND oxygen are taken from "
+                    "100%."},
+            {"text": "About 1%",
              "correct": True},
-            {"text": "Both pieces of information are required by an "
-                     "official standard for drawing composition charts",
+            {"text": "About 99%",
              "correct": False,
-             "why": "There is no such official standard referred to here. "
-                    "The reason is about giving the reader a complete, "
-                    "honest picture."},
-            {"text": "There is no real reason; either piece on its own "
-                     "would tell the reader exactly as much",
+             "why": "That is nitrogen and oxygen added together. The other "
+                    "gases are what is left over: 100 − 99."},
+            {"text": "About 0.04%",
              "correct": False,
-             "why": "Each piece supplies something the other does not — "
-                    "which gases, and by how much — so both are needed "
-                    "together."},
+             "why": "That is carbon dioxide alone, which is only one of the "
+                    "other gases. Argon on its own is nearly 1%."},
         ],
-        "figure": None,
+        "figure": "c10-air-two-gases",
     },
     # -- harder --
     {
