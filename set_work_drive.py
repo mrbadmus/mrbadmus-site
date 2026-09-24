@@ -3820,7 +3820,7 @@ def check_figures_and_counts(t_teacher, scopes):
     for entry in qb.load_bank():
         for q in entry["questions"]:
             if q.get("figure"):
-                authored[q["id"]] = (entry["lesson_slug"],
+                authored[q["id"]] = (entry["lesson"],
                                      band_tier[q["band"]], q["figure"])
 
     missing, wrong, undrawable = [], [], []
