@@ -10822,41 +10822,6 @@ componentDidUpdate() {
      "checklist already read it as one; a teacher can still add or remove "
      "names."),
 
-    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 8, UI half) · ══════
-    # "SELECT ALL ON TIME THIS WEEK" SELECTED THE WRONG SET
-    #
-    # ⛔ THE BUTTON'S OWN LABEL AND ITS HANDLER DISAGREED. Design's
-    # `bulkTop` — the shoutout composer's "Select all on time this week"
-    # link — filters the roster on `r.inWeek` alone: HANDED IN this week,
-    # on time or not. A child who submitted late is `inWeek: true` (stream
-    # A's own definition #5/#6 — a cell exists once a submission is
-    # complete, and lateness is a separate fact about that cell), so the
-    # button was really "select all in this week" wearing the label of a
-    # narrower, punctuality-scoped one.
-    #
-    # ⚠️ `r.onTimeWeek` IS STREAM A'S FIELD, NOT COUNTED HERE. This ruling
-    # consumes it (`!!r.onTimeWeek` — has a cell with `late === false` on an
-    # in-week paper) and adds no counting logic of its own: whether a
-    # submission IS on time is stream A's definitions, in `buildRoster`;
-    # this is only which roster rows the button offers to a teacher who has
-    # already pressed it. If `onTimeWeek` is not yet on the roster row at
-    # whatever commit this lands on, `!!undefined` is `false` and the button
-    # selects nobody rather than mis-selecting on the OLD, wrong-by-label
-    # `inWeek` test — a silent selection of the wrong children is the worse
-    # failure of the two, on a button that is about to send a message.
-    #
-    # The composer's own count ("N selected · …") is `s.boSel.length`,
-    # recomputed on every render — pressing this button changes `boSel` and
-    # the count updates with it, with no separate ruling needed.
-    ("      bulkTop: () => this.setState({ boSel: kRoster.filter(r => "
-     "r.inWeek).map(r => r.id) }),",
-     "      bulkTop: () => this.setState({ boSel: kRoster.filter(r => "
-     "!!r.onTimeWeek).map(r => r.id) }),",
-     "\"Select all on time this week\" — selecting on `inWeek` (submitted "
-     "this week, late or not) rather than on-time-ness, which is what the "
-     "button's own label promises. `r.onTimeWeek` is stream A's field "
-     "(MRB-336 definitions #5/#6); this ruling only reads it."),
-
     # ══ ⊕ MRB-322 · A HANDLER DESIGN HAS NO COUNTERPART FOR ═════════════
     #
     # Every other row in this tuple REWRITES something Design drew. This one
