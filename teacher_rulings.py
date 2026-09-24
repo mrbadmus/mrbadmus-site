@@ -6699,8 +6699,8 @@ LOGIC = (
         { label: 'Mean score', value: Math.round(liveClasses.reduce((a, c) => a + (this.meanOf(c) || 0), 0) / liveClasses.length) + '%', sub: 'Mean of ' + liveClasses.length + ' class means' },""",
      """      digestTiles: isClassReport ? [
         { label: 'Submissions', value: MRB_WEEK_IN(k), sub: 'This week' },
-        { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + kMx.markedIdx.length + (kMx.markedIdx.length === 1 ? ' marked assignment' : ' marked assignments') },
-        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_ONTIME_SUB(kMx.markedOnTime, kMx.markedLate, kMx.markedLateUnknown, 'marked') },
+        { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + kMx.markedIdx.length + (kMx.markedIdx.length === 1 ? ' assignment with results' : ' assignments with results') },
+        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_ONTIME_SUB(kMx.markedOnTime, kMx.markedLate, kMx.markedLateUnknown, 'with results') },
         { label: 'Needs a look', value: String(kFlagged), sub: kFlagged ? 'Nothing in this week, and behind' : 'Everyone accounted for' }
       ] : [
         { label: 'Submissions', value: String(totalSubs), sub: 'Across ' + liveClasses.length + (liveClasses.length === 1 ? ' active class' : ' active classes') },
@@ -6757,7 +6757,14 @@ LOGIC = (
      "arrangement that stops agreeing the day one of them is edited, and "
      "\"57\" over rows that sum to something else is unfalsifiable by any "
      "gate we have. `dgFlagged` sums the rows, so the tile is now a total "
-     "OF the table rather than a second opinion about it."),
+     "OF the table rather than a second opinion about it.\n"
+     "\n"
+     "        ⊕ Stream D, 25 Sep 2026 (wording pass): \"marked "
+     "assignment(s)\" → \"assignment(s) with results\", and "
+     "`MRB_ONTIME_SUB`'s noun `'marked'` → `'with results'` (reads "
+     "\"N late of M with results\") — matches DEFINITIONS #7's target "
+     "copy for the student page's own \"Of M set this term\", applied "
+     "here to the class report's twin tile."),
 
     # ── the class report's On-time column: a percentage, like every other ──
     ("        ontime: p.when === 'upcoming' ? '—' : "
@@ -6844,11 +6851,15 @@ LOGIC = (
         const cohort = Math.round(raw.reduce((a, r) => a + r.mean, 0) / (raw.length || 1));""",
      """      if (all) {
         const raw = live.map(c => ({ code: c.code, ks: c.ks, mean: mx(c).classMean || 0 }));
-        if (!raw.length) { return { ...base, title: 'Class means, marked work', note: 'No class has marked work yet' }; }
+        if (!raw.length) { return { ...base, title: 'Class means, work with results', note: 'No class has work with results yet' }; }
         const cohort = Math.round(raw.reduce((a, r) => a + r.mean, 0) / (raw.length || 1));""",
      "`means / all` reads `sorted[0]` and `sorted[sorted.length - 1]` "
      "immediately afterwards. With no live classes both are `undefined` and "
-     "the chart throws, taking the whole page with it."),
+     "the chart throws, taking the whole page with it. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): title and note reworded off \"marked "
+     "work\" — stream A's redefinition means a class can have results "
+     "(released work) that is still open, and \"marked\" no longer implies "
+     "the deadline has passed."),
 
     ("""      const means = ps.map(p => m.colMean[p.idx]);
       const best = ps[means.indexOf(Math.max.apply(null, means))];
@@ -6882,12 +6893,15 @@ LOGIC = (
           const st = g.stems[qi] || { id: '—', text: '' };
           return { label: c.code, sub: st.id + ' · ' + st.text, value: min + '%', pct: min, fill: min < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)', qi, stem: st, qkey: st.question_ref || st.text || '' };
         }).filter(r => r);
-        if (!rows.length) { return { ...base, title: 'Weakest question per class, last marked set', note: 'No class has a marked paper yet' }; }""",
+        if (!rows.length) { return { ...base, title: 'Weakest question per class, last set', note: 'No class has a set yet' }; }""",
      "`questions / all`. FOUR defects in five lines: `gridFor(c, 1)` assumes "
      "paper 1 is the newest marked one; the grid can be `null` (not "
      "prefetched); `qpct` can hold nulls, and `Math.min` over `[null]` is 0 "
      "so an unmarked paper became a 0% weakest question; and `STEMS[-1]` "
-     "throws when `indexOf` misses."),
+     "throws when `indexOf` misses. ⊕ Stream D, 25 Sep 2026 (wording "
+     "pass): \"last marked set\"/\"a marked paper\" → \"last set\"/"
+     "\"a set\", matching the reteach card's own \"last set\" (no "
+     "\"marked\") elsewhere on this dashboard."),
 
     ("""      const g = this.gridFor(k, 1);
       const p = this.papersFor(k)[1];
@@ -6904,7 +6918,7 @@ LOGIC = (
       const p = gi < 0 ? null : this.papersFor(k)[gi];
       const scored = g ? g.qpct.filter(v => v != null) : [];
       if (!g || !p || !scored.length) {
-        return { ...base, type: 'cols', title: k.code + ' — question difficulty', note: g ? 'Nothing on this paper was machine-marked' : 'No marked paper yet' };
+        return { ...base, type: 'cols', title: k.code + ' — question difficulty', note: g ? 'Nothing on this paper was machine-marked' : 'No set yet' };
       }
       const min = Math.min.apply(null, scored);
       const max = Math.max.apply(null, scored);
@@ -6942,8 +6956,8 @@ LOGIC = (
           (keys.length === 1 || tally[keys[0]] > tally[keys[1]]);
         const worst = rows.slice().sort((a, b) => a.pct - b.pct)[0];
         const under50 = rows.filter(r => r.pct < 50).length;
-        return { ...base, title: 'Weakest question per class, last marked set', rows,
-          tiles: [tile('Classes', rows.length, rows.length === 1 ? 'With a marked paper' : 'With marked work'),
+        return { ...base, title: 'Weakest question per class, last set', rows,
+          tiles: [tile('Classes', rows.length, rows.length === 1 ? 'With a set' : 'With results'),
             tile('Lowest', worst.label + ' · ' + worst.value, worst.sub),
             uniqueTop
               ? tile('Most common', top.id, top.text)
@@ -6952,7 +6966,7 @@ LOGIC = (
           note: uniqueTop
             ? top.text + ' is the weakest question in ' + tally[keys[0]] + ' of ' + rows.length + ' classes'
             : (rows.length < 2
-               ? 'One class has a marked paper — nothing to compare it with yet'
+               ? 'One class has a set — nothing to compare it with yet'
                : 'No single common gap — ' + keys.length + ' different questions come last, and ' + under50 + (under50 === 1 ? ' class falls' : ' classes fall') + ' below 50% on theirs') };""",
      "⛔ THIS ONE KILLED THE PAGE, AND IT WAS SHIPPING. `STEMS` is DELETED "
      "by `DROP_FIELDS` — eight invented question stems held as a class "
@@ -6982,7 +6996,13 @@ LOGIC = (
      "        `rows.length > 1` is the third correction. With one class the "
      "top of the tally is unanimous by construction, and \"X is the weakest "
      "question in 1 of 1 classes\" has the shape of a finding and none of "
-     "the content. One class is the whole school today."),
+     "the content. One class is the whole school today.\n"
+     "\n"
+     "        ⊕ Stream D, 25 Sep 2026 (wording pass): \"last marked set\" "
+     "→ \"last set\", \"a marked paper\"/\"marked work\" → "
+     "\"a set\"/\"results\", \"a marked paper\" in the note → \"a "
+     "set\" — stream A's redefinition of `when` means these no longer "
+     "describe closed work only."),
 
     ("""      const rows = live.map(c => {
         const m = mx(c);
@@ -7162,9 +7182,9 @@ LOGIC = (
     ("""      const bands = this.BANDS.map(b => ({ label: b.label, n: avgs.filter(v => v >= b.lo && v <= b.hi).length, lo: b.lo }));""",
      """      if (!avgs.length) {
         return { ...base, title: (all ? 'Score spread, all classes' : k.code + ' — score spread'),
-          note: all ? 'No student has marked work yet'
+          note: all ? 'No student has results yet'
                     : (k.state === 'empty' ? 'No students on the roster yet'
-                                           : 'Nothing marked for this class yet') };
+                                           : 'No results for this class yet') };
       }
       const bands = this.BANDS.map(b => ({ label: b.label, n: avgs.filter(v => v >= b.lo && v <= b.hi).length, lo: b.lo }));""",
      "`spread`, both scopes. With no marked work anywhere the chart drew "
@@ -7173,14 +7193,18 @@ LOGIC = (
      "axis with no series, which reads as a measurement of a school where "
      "nobody scores anything rather than a school that has not marked "
      "anything. Photographed on `insights-nolive` and `insights-noroster`; "
-     "reachable on 68 of the working year's 69 classes."),
+     "reachable on 68 of the working year's 69 classes. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): notes reworded off \"marked work\" — "
+     "stream A's redefinition means an open-but-released paper now "
+     "contributes results too, so \"marked\" no longer describes only "
+     "closed work."),
 
     # ── on time: an empty legend under an empty chart ───────────────────
     ("""      const on = src.reduce((a, x) => a + x.on, 0);
       const tot = src.reduce((a, x) => a + x.tot, 0);""",
      """      if (!src.length) {
-        return { ...base, title: (all ? 'On time vs late, marked work' : k.code + ' — on time by assignment'),
-          note: all ? 'No class has marked work yet' : 'Nothing marked for this class yet' };
+        return { ...base, title: (all ? 'On time vs late, work with results' : k.code + ' — on time by assignment'),
+          note: all ? 'No class has work with results yet' : 'No results for this class yet' };
       }
       const on = src.reduce((a, x) => a + x.on, 0);
       const tot = src.reduce((a, x) => a + x.tot, 0);""",
@@ -7259,8 +7283,8 @@ LOGIC = (
           tile('Highest', sorted[0].code + ' · ' + sorted[0].mean + '%', ''),
           tile('Lowest', sorted[sorted.length - 1].code + ' · ' + sorted[sorted.length - 1].mean + '%', '')
         ], note: below + ' of ' + raw.length + ' classes sit below the ' + cohort + '% cohort mean',""",
-     """        return { ...base, title: 'Class means, marked work', tiles: (raw.length < 2 ? [
-          tile('Class mean', cohort + '%', sorted[0].code + ' — the only class with marked work')
+     """        return { ...base, title: 'Class means, work with results', tiles: (raw.length < 2 ? [
+          tile('Class mean', cohort + '%', sorted[0].code + ' — the only class with results')
         ] : [
           tile('Cohort mean', cohort + '%', 'Mean of ' + raw.length + ' class means'),
           tile('Highest', sorted[0].code + ' · ' + sorted[0].mean + '%', ''),
@@ -7273,7 +7297,9 @@ LOGIC = (
      "mean, over the caption \"0 of 1 classes sit below the 63% cohort "
      "mean\". Photographed on `insights-single`. Four tiles, one number, "
      "and the word \"cohort\" doing all the lying: a mean of one class is "
-     "that class."),
+     "that class. ⊕ Stream D, 25 Sep 2026 (wording pass): title and tile "
+     "reworded off \"marked work\"/\"marked work\", same reason as the "
+     "sibling ruling two above."),
 
     ("""        tiles: [tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
           tile('Strongest', Math.max.apply(null, means) + '%', best.title),
@@ -7281,13 +7307,13 @@ LOGIC = (
           tile('Open work', 'Excluded', 'Not marked yet')],
         note: 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
      """        tiles: (ps.length < 2 ? [
-          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one marked assignment'),
-          tile('Open work', 'Excluded', 'Not marked yet')
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one assignment with results'),
+          tile('Open work', 'Excluded', 'Not released yet')
         ] : [
-          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' assignments with results'),
           tile('Strongest', Math.max.apply(null, means) + '%', best.title),
           tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
-          tile('Open work', 'Excluded', 'Not marked yet')
+          tile('Open work', 'Excluded', 'Not released yet')
         ]),
         note: ps.length < 2 ? '' : 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
      "`means / class` WITH ONE MARKED PAPER. `best` and `worst` are the "
@@ -7295,7 +7321,14 @@ LOGIC = (
      "transfers** beside **Weakest 63% · Energy stores and transfers**, and "
      "the caption named it the weakest set of one. \"Across 1 marked "
      "assignments\" was the unguarded plural in the same row. One class, one "
-     "marked paper is the entirety of the working year's data."),
+     "marked paper is the entirety of the working year's data. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass, stream A's `when==='marked'` redefinition "
+     "— results are now live from release, not from the deadline): "
+     "\"marked assignment(s)\" → \"assignment(s) with results\", and "
+     "\"Not marked yet\" (labelling the OPEN work this chart excludes) "
+     "→ \"Not released yet\", since an open-but-released paper is now "
+     "included in `ps` and would misleadingly read as excluded-because-"
+     "unmarked."),
 
     # ── the sub-heading's plurals ───────────────────────────────────────
     ("""      insSub: chartScope === 'all'
@@ -8446,8 +8479,10 @@ componentDidUpdate() {
      "        { label: 'On time',\n"
      "          value: dgOnPct == null ? '—' : dgOnPct + '%',\n"
      "          sub: MRB_ONTIME_SUB(dgOnTime, dgLate, dgUnknown,\n"
-     "                              'marked submissions') },",
-     "the digest's On-time tile, over the corrected counts."),
+     "                              'submissions with results') },",
+     "the digest's On-time tile, over the corrected counts. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): noun \"marked submissions\" → "
+     "\"submissions with results\"."),
 
     ("""        stacks: src.map(x => {
           const pct = x.tot ? Math.round((x.on / x.tot) * 100) : 0;
@@ -8479,13 +8514,18 @@ componentDidUpdate() {
      "        tiles: [tile('On time', tot ? Math.round((on / tot) * 100) + "
      "'%' : '—',\n"
      "                     tot ? 'Of ' + tot + ' with a recorded deadline'\n"
-     "                         : 'No marked submission has a recorded "
+     "                         : 'No submission has a recorded "
      "deadline'),\n"
      "                tile('Late', tot ? tot - on : '—', 'Still "
-     "marked'),\n"
+     "with results'),\n"
      "                tile('Open work', 'Excluded', 'Not due yet')],",
      "the on-time chart's own tiles. `0%` of `0 marked submissions` when "
-     "nothing is known, and a Late count of 0 beside it."),
+     "nothing is known, and a Late count of 0 beside it. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): \"marked\" dropped from both empty-state "
+     "captions — `tot` counts submissions with a KNOWN `is_late`, a "
+     "data-completeness fact unrelated to stream A's `when` redefinition, "
+     "and the word was doing no work once the chart's own title already "
+     "says \"work with results\"."),
 
     ("        note: worst ? 'Weakest: ' + worst.label + ' at ' + (worst.tot ? "
      "Math.round((worst.on / worst.tot) * 100) : 0) + '% on time' : '' };",
@@ -9394,7 +9434,7 @@ componentDidUpdate() {
     # recommendation rests on — the exact defect the `lastP` correction
     # above was written to prevent.
     (dict(method="renderVals", key="lastLine"),
-     """      lastLine: lastP ? 'Marked \u00B7 ' + lastP.sub + ' submitted' : '',""",
+     """      lastLine: lastP ? lastP.sub + ' submitted' : '',""",
      "the reteach card's subtitle, with \"class mean X\" cut. The class "
      "header's stat line four inches above states the class mean already, "
      "and the card's own two bars carry the per-question detail this "
@@ -10044,16 +10084,23 @@ componentDidUpdate() {
     ("          { label: 'Submissions', value: String(stMarked.length), "
      "sub: 'Of ' + Math.max(0, kPapers.length - 1) + ' marked this term' },",
      "          { label: 'Submissions', value: String(stMarked.length),\n"
-     "            sub: 'Of ' + kMx.markedIdx.length + ' marked this term' },",
+     "            sub: 'Of ' + kMx.markedIdx.length + ' set this term' },",
      "the Submissions tile's denominator. `kPapers.length - 1` assumes "
-     "exactly one open paper; `markedIdx` counts the closed ones."),
+     "exactly one open paper; `markedIdx` counts the closed ones. ⊕ Stream "
+     "D, 25 Sep 2026 (wording pass): \"marked this term\" → \"set "
+     "this term\" — the DEFINITIONS block's own target copy for this tile "
+     "(#7), now that `markedIdx` counts released papers rather than "
+     "closed ones."),
 
     ("      ? (stMarked.length + ' of ' + Math.max(0, kPapers.length - 1) "
      "+ ' marked sets handed in'",
      "      ? (stMarked.length + ' of ' + kMx.markedIdx.length "
-     "+ ' marked sets handed in'",
+     "+ ' sets handed in'",
      "the summary sentence's denominator — the same assumption as the tile "
-     "above it, in words. Both now count the closed papers."),
+     "above it, in words. Both now count the closed papers. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): \"marked sets\" → \"sets\" — the "
+     "count itself already says how many, and \"marked\" no longer means "
+     "\"closed\"."),
 
     # ── 4. "SEND A REMINDER" SENT NOTHING ───────────────────────────────
     #
@@ -10613,12 +10660,14 @@ componentDidUpdate() {
     # of those two facts and all four are corrected here, from the one seam,
     # so they cannot answer differently.
     #
-    # ⚠️ "MARKED" BECOMES "CLOSED" ON THE PILL, AND NOWHERE ELSE. The pill
-    # names what a CHILD can do with the work — not yet, now, no longer —
-    # and "Marked" was never that claim: `when === 'marked'` is a deadline
-    # test that consults no mark at all, so a paper nobody sat and nobody
-    # marked wore the word. The reteach card's "Marked · 14 submitted" is a
-    # different sentence about a different thing and keeps Design's word.
+    # ⚠️ "MARKED" BECOMES "CLOSED" ON THE PILL, AND NOWHERE ELSE (this row
+    # was written before stream A's 24 Sep 2026 redefinition of `when` and
+    # is kept for the pill's own history; the reteach card's "Marked ·
+    # 14 submitted" it names is GONE — see the wording pass below). The
+    # pill names what a CHILD can do with the work — not yet, now, no
+    # longer — and "Marked" was never that claim: `when === 'marked'` was
+    # (and, renamed, still is) a test that consults no mark at all, so a
+    # paper nobody sat and nobody marked wore the word.
     #
     # ⚠️ SCHEDULED TAKES THE MUTED TOKEN, NOT A NEW ONE. `--st-muted` on
     # `--st-num-well` inside `--st-rule` — every value already in the sheet.
@@ -10901,6 +10950,63 @@ componentDidUpdate() {
      "        hasBucketTabs: chart.bucketTabs.length > 0,",
      "the engagement toggle's own gate, in the same derived-flag register "
      "as `hasLegend` beside it."),
+
+    # ══ ⊕ Stream D, 25 Sep 2026 (wording pass, stream A's `when` ══════════
+    # REDEFINITION) · THE MARKING SCREEN'S "SUBMITTED" TILE
+    #
+    # `pp.when === 'upcoming' ? 'Still open' : 'Marked automatically'` reads
+    # "Marked automatically" for every paper that is not upcoming — which,
+    # before stream A's 24 Sep 2026 ruling, meant every paper past its
+    # deadline (closed), and the caption was accurate: a closed paper's
+    # submission count cannot change again. Under the redefinition `when`
+    # flips to "marked" the moment a paper is RELEASED, so a paper that is
+    # released and still OPEN — more children can still submit — would have
+    # read "Marked automatically" too, which is now a claim about a count
+    # that is not final.
+    #
+    # ⚠️ `p.closed` IS THE FIELD THAT ACTUALLY MEANS "the deadline has
+    # passed" post-redefinition (DEFINITIONS #2) — `pp.when` no longer
+    # does. This branch is coded against it now; it is not yet present on
+    # this worktree (stream A merges first, per the run brief), so until
+    # that merge `pp.closed` reads `undefined`, the ternary's condition is
+    # falsy, and every paper reads "Still open" — the safe direction
+    # (understating finality) rather than the wrong one (claiming a live
+    # count is final).
+    ("          { label: 'Submitted', value: pp.sub, sub: pp.when === "
+     "'upcoming' ? 'Still open' : 'Marked automatically' },",
+     "          { label: 'Submitted', value: pp.sub, sub: pp.closed ? "
+     "'Marked automatically' : 'Still open' },",
+     "the marking screen's \"Submitted\" tile. \"Marked automatically\" "
+     "now means what it always should have: the deadline has passed and "
+     "the count is final. A released-but-open paper — new under stream "
+     "A's `when` redefinition — correctly reads \"Still open\" instead."),
+
+    # ⊕ Stream D, 25 Sep 2026 (wording pass) — the SECOND "On time vs late,
+    # marked work": the early-return guard's own copy of this title was
+    # fixed above (the "on time: an empty legend" ruling); this is the
+    # SAME title on the chart's actual populated return, which no earlier
+    # ruling touches.
+    ("      return { ...base, type: 'stack', title: (all ? 'On time vs "
+     "late, marked work' : k.code + ' — on time by assignment'),",
+     "      return { ...base, type: 'stack', title: (all ? 'On time vs "
+     "late, work with results' : k.code + ' — on time by assignment'),",
+     "the on-time chart's title on its populated return — Design's "
+     "literal, untouched by any earlier ruling. Same wording-pass reason "
+     "as its own empty-state twin."),
+
+    # ⊕ Stream D, 25 Sep 2026 (wording pass) — the "spread" chart's own
+    # "Students … With marked work" tile, Design's literal, untouched by
+    # any earlier ruling (the empty-state guard above it only handles
+    # `avgs.length === 0`).
+    ("        tiles: [tile('Students', avgs.length, 'With marked work'), "
+     "tile('Below 55%', low, 'Bottom two bands'), tile('70% or above', "
+     "high, 'Top two bands')],",
+     "        tiles: [tile('Students', avgs.length, 'With results'), "
+     "tile('Below 55%', low, 'Bottom two bands'), tile('70% or above', "
+     "high, 'Top two bands')],",
+     "the score-spread chart's \"Students\" tile — \"With marked work\" "
+     "→ \"With results\", same reason as every other tile in this "
+     "pass."),
 
 )
 
