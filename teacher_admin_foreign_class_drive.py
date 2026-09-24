@@ -221,9 +221,30 @@ def tables():
     # One assignment, so the class is in Design's "live" state rather than the
     # no-work one — the state a teacher opening someone else's class is
     # looking at real work in.
+    #
+    # ⊕ 24 Sep 2026 — `due_at`/`academic_week` USED TO BE FIXED CALENDAR
+    # CONSTANTS (`av.NOW` = 2026-08-30, `academic_week: 1`), and that is a
+    # time bomb this drive walked into rather than a defect in the product.
+    # `shared/teacher-live.js` reads REAL wall-clock time (`Date.now()`,
+    # never mocked here), so once real "now" passed 30 Aug the paper was
+    # permanently CLOSED (`buildPapers`: `open = !a.due_at || a.due_at >
+    # nowIso`) and, separately, `academic_week: 1` permanently fell out of
+    # the class screen's default week-0 bucket (`assignPaperWeeks` /
+    # `wPapers`'s `weekIdx <= 0` rule) — either alone empties `wLive`, so
+    # `cardOf` never draws a card and Design's `hasChase`-gated "Remind all"
+    # button (node 230/235) never renders. That is C7's three failures, and
+    # it reproduced identically off the MRB-336 merge base, which is why the
+    # 8 Sep report recorded it as pre-existing rather than caused by that
+    # landing.
+    #
+    # No `due_at` and no `academic_week` is not a workaround, it is the
+    # shape the code already has a name for: "an assignment with no deadline
+    # and no academic_week has no week to be in … it never closes, so it is
+    # open now" (`assignPaperWeeks`'s own comment). That bucket is INDEPENDENT
+    # of wall-clock time, so this fixture cannot rot the same way twice.
     t["assignments"] = [{
         "id": PAPER, "class_id": C_FOREIGN, "title": "Week 1 · Forces",
-        "due_at": av.NOW, "created_at": av.PAST, "academic_week": 1,
+        "due_at": None, "created_at": av.PAST, "academic_week": None,
         "subject_id": av.SUBJ_PH, "deleted_at": None,
         "subject": {"id": av.SUBJ_PH, "name": "Physics"},
     }]
