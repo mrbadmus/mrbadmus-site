@@ -2048,38 +2048,36 @@ QUESTIONS = [
          {"text": "Close to 0 V across the wire; both lamps go dark, "
                   "each reading close to 0 V too", "correct": True},
      ], "figure": None},
-    {"id": "p8-04-h28", "band": "harder",
-     "text": "A student wants a single circuit where moving a voltmeter "
-             "from position A to position B gives a SMALLER reading, "
-             "while moving an ammeter from the SAME position A to the "
-             "SAME position B in a single, unbranched loop always gives "
-             "an IDENTICAL reading. Is this combination possible in an "
-             "ordinary single loop?",
-     "options": [
-         {"text": "Yes — a voltmeter's reading depends on which two "
-                  "points it spans; current is always the same "
-                  "everywhere in one loop",
-          "correct": True},
-         {"text": "No — if the ammeter reading is identical at both "
-                  "positions, the voltmeter reading must also be "
-                  "identical at both", "correct": False,
-          "why": "Current being identical everywhere in one loop does "
-                 "not force p.d. to be identical everywhere too — p.d. "
-                 "depends on which points are compared, current does "
-                 "not."},
-         {"text": "No — a voltmeter and an ammeter do not disagree "
-                  "about the effect of moving position within one "
-                  "loop", "correct": False,
-          "why": "They routinely disagree in exactly this way, because "
-                 "they measure fundamentally different kinds of "
-                 "quantity — a flow versus a difference between points."},
-         {"text": "Only if the loop contains no resistive components",
-          "correct": False,
-          "why": "The combination is possible in an ORDINARY loop with "
-                 "genuine components in it; those components are "
-                 "exactly what gives different pairs of points "
-                 "different p.d. shares to read."},
-     ], "figure": None},
+    {
+        "id": "p8-04-h28",
+        "band": "harder",
+        "text": "In this circuit, ammeters A1 and A2 give the same reading, "
+                "but voltmeters V1 and V2 give different readings. Has the "
+                "student who set it up made a mistake?",
+        "options": [
+            {"text": "No: the current is the same all round the loop, but "
+                     "the p.d. shares can differ",
+             "correct": True},
+            {"text": "Yes: if the two currents are equal, the two p.d.s must "
+                     "be equal too",
+             "correct": False,
+             "why": "Current is the same everywhere in one loop, but p.d. "
+                    "depends on which component the voltmeter is across. "
+                    "Different components can take different shares."},
+            {"text": "Yes: A2 should read less than A1, because the lamp "
+                     "uses up some of the current",
+             "correct": False,
+             "why": "Current is not used up. What the lamp takes is energy, "
+                    "so A1 and A2 must read the same."},
+            {"text": "Yes: the voltmeters should always read the same as "
+                     "each other in a single loop",
+             "correct": False,
+             "why": "In a single loop the cell's p.d. is shared between the "
+                    "components. V1 and V2 only match if the lamp and the "
+                    "resistor take equal shares."},
+        ],
+        "figure": "p8-series-meters-lamp-resistor",
+    },
     {"id": "p8-04-h29", "band": "harder",
      "text": "A 9 V battery drives two lamps in series. The FIRST lamp "
              "is swapped for one with much LOWER resistance, while the "

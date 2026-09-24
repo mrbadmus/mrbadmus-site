@@ -589,97 +589,133 @@ QUESTIONS = [
     },
 
     # ── MRB-338 night 3 top-up · easier ───────────────────────────────
-    {"id": "p8-01-e09", "band": "easier",
-     "text": "In the circuit symbols, two long-and-short line pairs drawn one "
-             "after the other represent…",
-     "options": [
-         {"text": "a switch", "correct": False,
-          "why": "A switch is two contacts with a lever, not a pair of "
-                 "lines."},
-         {"text": "a resistor", "correct": False,
-          "why": "A resistor is drawn as a plain rectangle in the wire."},
-         {"text": "a battery", "correct": True},
-         {"text": "a lamp", "correct": False,
-          "why": "A lamp is a circle with a cross through it, not a set of "
-                 "parallel lines."},
-     ], "figure": None},
-    {"id": "p8-01-e10", "band": "easier",
-     "text": "One long line and one short line, side by side, is the symbol "
-             "for…",
-     "options": [
-         {"text": "an ammeter", "correct": False,
-          "why": "An ammeter is a circle with the letter A inside it, not a "
-                 "pair of lines."},
-         {"text": "a variable resistor", "correct": False,
-          "why": "A variable resistor is a rectangle with a diagonal arrow "
-                 "drawn across it."},
-         {"text": "a cell", "correct": True},
-         {"text": "a battery", "correct": False,
-          "why": "A battery needs two or more of these pairs in a row; one "
-                 "pair on its own is a single cell."},
-     ], "figure": None},
-    {"id": "p8-01-e11", "band": "easier",
-     "text": "A switch that is open is drawn as…",
-     "options": [
-         {"text": "a circle with a cross inside it", "correct": False,
-          "why": "That symbol is a lamp, not a switch."},
-         {"text": "a plain rectangle sitting in the wire, drawn with a "
-                  "gap along one edge", "correct": False,
-          "why": "A plain rectangle is a resistor. A switch has moving "
-                 "contacts, not a fixed shape."},
-         {"text": "a circle with the capital letter A drawn inside it",
-          "correct": False,
-          "why": "That is the ammeter symbol. A switch has no letter inside "
-                 "it at all."},
-         {"text": "two contacts with a lever lifted away from one of them",
-          "correct": True},
-     ], "figure": None},
-    {"id": "p8-01-e12", "band": "easier",
-     "text": "A plain rectangle drawn in the wire, with nothing else added to "
-             "it, is the symbol for…",
-     "options": [
-         {"text": "a fixed resistor", "correct": True},
-         {"text": "a variable resistor", "correct": False,
-          "why": "A variable resistor is the same rectangle with a diagonal "
-                 "arrow added across it."},
-         {"text": "a switch", "correct": False,
-          "why": "A switch has two contacts and a lever, never a plain "
-                 "rectangle."},
-         {"text": "a battery", "correct": False,
-          "why": "A battery is drawn as long and short lines, not a "
-                 "rectangle."},
-     ], "figure": None},
-    {"id": "p8-01-e13", "band": "easier",
-     "text": "What turns a plain resistor's symbol into a variable "
-             "resistor's symbol?",
-     "options": [
-         {"text": "A second, smaller rectangle drawn inside the first",
-          "correct": False,
-          "why": "Nothing is nested inside it. The extra mark is a line "
-                 "crossing the rectangle, not a second shape."},
-         {"text": "A diagonal arrow drawn across the rectangle",
-          "correct": True},
-         {"text": "A dashed outline instead of a solid one", "correct": False,
-          "why": "The outline stays solid. What changes is a line added "
-                 "across it."},
-         {"text": "A letter written above the rectangle", "correct": False,
-          "why": "Meters carry letters inside a circle; a variable resistor "
-                 "carries an arrow, not a letter."},
-     ], "figure": None},
-    {"id": "p8-01-e14", "band": "easier",
-     "text": "A circle with the letter V inside it, rather than the letter "
-             "A, is the symbol for…",
-     "options": [
-         {"text": "a voltmeter", "correct": True},
-         {"text": "an ammeter", "correct": False,
-          "why": "An ammeter carries the letter A inside its circle, not V."},
-         {"text": "a cell", "correct": False,
-          "why": "A cell is drawn as a long line and a short line, with no "
-                 "circle at all."},
-         {"text": "a variable resistor", "correct": False,
-          "why": "A variable resistor is a rectangle with an arrow, not a "
-                 "lettered circle."},
-     ], "figure": None},
+    {
+        "id": "p8-01-e09",
+        "band": "easier",
+        "text": "What does this circuit symbol represent?",
+        "options": [
+            {"text": "a switch",
+             "correct": False,
+             "why": "A switch has a lever that can open a gap in the wire. "
+                    "This symbol has no lever: it is cells joined together."},
+            {"text": "a resistor",
+             "correct": False,
+             "why": "A resistor is a plain rectangle. This symbol is made of "
+                    "long and short lines."},
+            {"text": "a battery",
+             "correct": True},
+            {"text": "a lamp",
+             "correct": False,
+             "why": "A lamp is a circle with a cross inside it. There is no "
+                    "circle in this symbol."},
+        ],
+        "figure": "p8-battery-symbol",
+    },
+    {
+        "id": "p8-01-e10",
+        "band": "easier",
+        "text": "Which component does this circuit symbol stand for?",
+        "options": [
+            {"text": "an ammeter",
+             "correct": False,
+             "why": "An ammeter is a circle with the letter A inside it. "
+                    "There is no circle here."},
+            {"text": "a variable resistor",
+             "correct": False,
+             "why": "A variable resistor is a rectangle with an arrow "
+                    "through it."},
+            {"text": "a cell",
+             "correct": True},
+            {"text": "a battery",
+             "correct": False,
+             "why": "A battery is two or more cells joined together. This "
+                    "symbol is one cell on its own."},
+        ],
+        "figure": "p8-cell-symbol",
+    },
+    {
+        "id": "p8-01-e11",
+        "band": "easier",
+        "text": "Which of these circuit symbols, A, B, C or D, is an open "
+                "switch?",
+        "options": [
+            {"text": "A",
+             "correct": False,
+             "why": "A is a lamp."},
+            {"text": "B",
+             "correct": False,
+             "why": "B is a resistor."},
+            {"text": "C",
+             "correct": False,
+             "why": "C is an ammeter, which measures current."},
+            {"text": "D",
+             "correct": True},
+        ],
+        "figure": "p8-symbols-find-switch",
+    },
+    {
+        "id": "p8-01-e12",
+        "band": "easier",
+        "text": "Which component has the circuit symbol shown?",
+        "options": [
+            {"text": "a fixed resistor",
+             "correct": True},
+            {"text": "a variable resistor",
+             "correct": False,
+             "why": "A variable resistor has an arrow drawn through the "
+                    "rectangle. This one has none."},
+            {"text": "a switch",
+             "correct": False,
+             "why": "A switch has two contacts and a lever, never a "
+                    "rectangle."},
+            {"text": "a battery",
+             "correct": False,
+             "why": "A battery is drawn with long and short lines, not a "
+                    "rectangle."},
+        ],
+        "figure": "p8-resistor-symbol",
+    },
+    {
+        "id": "p8-01-e13",
+        "band": "easier",
+        "text": "Which of these circuit symbols, A, B, C or D, is a variable "
+                "resistor?",
+        "options": [
+            {"text": "A",
+             "correct": False,
+             "why": "A is a fixed resistor: its resistance cannot be "
+                    "changed."},
+            {"text": "B",
+             "correct": True},
+            {"text": "C",
+             "correct": False,
+             "why": "C is a cell."},
+            {"text": "D",
+             "correct": False,
+             "why": "D is a voltmeter."},
+        ],
+        "figure": "p8-symbols-find-varres",
+    },
+    {
+        "id": "p8-01-e14",
+        "band": "easier",
+        "text": "The diagram shows a circuit symbol. Which component is it?",
+        "options": [
+            {"text": "a voltmeter",
+             "correct": True},
+            {"text": "an ammeter",
+             "correct": False,
+             "why": "An ammeter has the letter A inside its circle, not V."},
+            {"text": "a cell",
+             "correct": False,
+             "why": "A cell is a long line and a short line, with no circle."},
+            {"text": "a variable resistor",
+             "correct": False,
+             "why": "A variable resistor is a rectangle with an arrow "
+                    "through it, not a lettered circle."},
+        ],
+        "figure": "p8-voltmeter-symbol",
+    },
     {"id": "p8-01-e15", "band": "easier",
      "text": "In an equation, current is usually represented by the letter…",
      "options": [
@@ -1141,26 +1177,31 @@ QUESTIONS = [
                   "charge rather than using the charge itself up",
           "correct": True},
      ], "figure": None},
-    {"id": "p8-01-s18", "band": "standard",
-     "text": "A student says a variable resistor's symbol is just \"a "
-             "resistor with an arrow for decoration\". What is the arrow "
-             "actually showing?",
-     "options": [
-         {"text": "That the value of the resistance can be changed",
-          "correct": True},
-         {"text": "The direction conventional current flows through it",
-          "correct": False,
-          "why": "Direction is not shown by a variable resistor's arrow; "
-                 "an arrow with that meaning is not part of this symbol."},
-         {"text": "That the component works in one direction and stops "
-                  "current in the other", "correct": False,
-          "why": "A resistor, fixed or variable, works the same whichever "
-                 "way round it is connected."},
-         {"text": "That it can be swapped out for a different component "
-                  "entirely", "correct": False,
-          "why": "The symbol shows one adjustable component, not an "
-                 "invitation to swap it for something else."},
-     ], "figure": None},
+    {
+        "id": "p8-01-s18",
+        "band": "standard",
+        "text": "This is the circuit symbol for a variable resistor. What "
+                "does the arrow across it show?",
+        "options": [
+            {"text": "That the value of the resistance can be changed",
+             "correct": True},
+            {"text": "The direction conventional current flows through it",
+             "correct": False,
+             "why": "The arrow does not show a direction of current. It "
+                    "shows that the resistance can be adjusted."},
+            {"text": "That the component works in one direction and stops "
+                     "current in the other",
+             "correct": False,
+             "why": "A resistor, fixed or variable, works the same whichever "
+                    "way round it is connected."},
+            {"text": "That it can be swapped out for a different component "
+                     "entirely",
+             "correct": False,
+             "why": "The symbol shows one adjustable component, not an "
+                    "invitation to swap it for something else."},
+        ],
+        "figure": "p8-variable-resistor-symbol",
+    },
     {"id": "p8-01-s19", "band": "standard",
      "text": "A single loop holds a cell and a heater element. Doubling the "
              "time the switch stays closed does what to the current an "
@@ -1408,26 +1449,32 @@ QUESTIONS = [
                   "while pumping implies the cell is the source of it",
           "correct": True},
      ], "figure": None},
-    {"id": "p8-01-s30", "band": "standard",
-     "text": "A student sketches a battery symbol using three pairs of long "
-             "and short lines instead of two. What has changed about what "
-             "the symbol represents?",
-     "options": [
-         {"text": "It now represents three cells joined together rather "
-                  "than two", "correct": True},
-         {"text": "Nothing — a battery symbol means exactly two cells, "
-                  "whatever the number of pairs drawn", "correct": False,
-          "why": "The number of long-short pairs is exactly how many "
-                 "cells the symbol shows; it is not fixed at two."},
-         {"text": "It now represents a single, more powerful cell",
-          "correct": False,
-          "why": "Each pair still represents one ordinary cell; adding "
-                 "pairs means more cells, not one stronger one."},
-         {"text": "It becomes invalid, because a battery symbol may use "
-                  "two pairs and no more", "correct": False,
-          "why": "A battery can be drawn with any number of cell pairs "
-                 "from two upwards; three is a perfectly valid battery."},
-     ], "figure": None},
+    {
+        "id": "p8-01-s30",
+        "band": "standard",
+        "text": "What is the power supply in this circuit?",
+        "options": [
+            {"text": "A battery of three cells joined together",
+             "correct": True},
+            {"text": "A battery of two cells, whatever number is drawn",
+             "correct": False,
+             "why": "Each long-and-short pair is one cell, and three are "
+                    "drawn. A battery can have any number of cells from two "
+                    "upwards."},
+            {"text": "A single cell that is three times as powerful",
+             "correct": False,
+             "why": "Each pair of lines is one ordinary cell. More pairs "
+                    "means more cells, not one stronger cell."},
+            {"text": "Nothing valid: a battery may only be drawn as two "
+                     "cells",
+             "correct": False,
+             "why": "Drawing every cell is correct. The battery symbol in "
+                    "the AQA table is two cells with a dashed line between "
+                    "them, meaning 'more cells here', but three cells drawn "
+                    "in full are a battery too."},
+        ],
+        "figure": "p8-three-cells-lamp",
+    },
 
     # ── MRB-338 night 3 top-up · harder ───────────────────────────────
     {"id": "p8-01-h09", "band": "harder",
@@ -1902,30 +1949,38 @@ QUESTIONS = [
          {"text": "The current stops everywhere at once — the break is "
                   "just a gap in the one path", "correct": True},
      ], "figure": None},
-    {"id": "p8-01-h27", "band": "harder",
-     "text": "A component's symbol is a plain rectangle with a diagonal "
-             "arrow drawn across it. A student says the arrow must mean "
-             "current can only pass through it in one direction, like a "
-             "one-way valve. Assess this.",
-     "options": [
-         {"text": "The student is right, and the arrow shows the one "
-                  "particular direction current is drawn flowing through "
-                  "the component in a diagram", "correct": False,
-          "why": "The arrow is not a direction-of-current marker at all; "
-                 "it represents an adjustable value, and the component "
-                 "works the same whichever way round it sits."},
-         {"text": "The student is right for a variable resistor, though "
-                  "not for a fixed one", "correct": False,
-          "why": "Neither a fixed nor a variable resistor is a one-way "
-                 "component; both conduct equally in either direction."},
-         {"text": "It cannot be judged without knowing which way round "
-                  "the component is wired into the loop", "correct": False,
-          "why": "Which way round it is wired makes no difference — a "
-                 "resistor, fixed or variable, is not directional at all."},
-         {"text": "The student is wrong — the arrow shows that the "
-                  "resistance can be adjusted, not that the component "
-                  "only works one way round", "correct": True},
-     ], "figure": None},
+    {
+        "id": "p8-01-h27",
+        "band": "harder",
+        "text": "A student says the arrow on this circuit symbol means "
+                "current can only pass through the component in one "
+                "direction, like a one-way valve. Evaluate the student's "
+                "claim.",
+        "options": [
+            {"text": "The student is right, and the arrow shows the one "
+                     "particular direction current is drawn flowing through "
+                     "the component in a diagram",
+             "correct": False,
+             "why": "The arrow is not a direction-of-current marker at all; "
+                    "it represents an adjustable value, and the component "
+                    "works the same whichever way round it sits."},
+            {"text": "The student is right for a variable resistor, though "
+                     "not for a fixed one",
+             "correct": False,
+             "why": "Neither a fixed nor a variable resistor is a one-way "
+                    "component; both conduct equally in either direction."},
+            {"text": "It cannot be judged without knowing which way round "
+                     "the component is wired into the loop",
+             "correct": False,
+             "why": "Which way round it is wired makes no difference — a "
+                    "resistor, fixed or variable, is not directional at all."},
+            {"text": "The student is wrong — the arrow shows that the "
+                     "resistance can be adjusted, not that the component "
+                     "only works one way round",
+             "correct": True},
+        ],
+        "figure": "p8-variable-resistor-symbol",
+    },
     {"id": "p8-01-h28", "band": "harder",
      "text": "A single loop is switched on and every ammeter placed round "
              "it reads 0.00 A, even though the switch itself is closed. "
