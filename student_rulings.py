@@ -4003,6 +4003,20 @@ STYLE_EDIT = {
                "letter-spacing:-0.035em;display:flex;"
                "flex-direction:column;align-items:flex-end;gap:4px;"
                "text-align:right")],
+        # ── ⊕ Experience run, 24 Sep 2026 (item 13, legibility) ──────────
+        #
+        # Node 34 is the "›" between the two crumb labels at the top of the
+        # page, coloured `var(--st-crumb-sep)` — a token minted for exactly
+        # this (Design's own "breadcrumb strip" separator), and still only
+        # 1.64:1 on `--st-crumb-bg`, measured on the rendered page. That is
+        # under even the 3:1 non-text floor a purely decorative divider
+        # would need, so it is not a case for leaving it as Design's
+        # deliberate quiet touch. `--st-caption` is this page's own
+        # "captions, eyebrows, mono labels" token, already fixed to clear
+        # AA against every ground it is used on (see the token override
+        # tail below) — the crumb separator gets the same colour a crumb
+        # LABEL near it would use for its own caption-weight text.
+        34: [("color:var(--st-crumb-sep)", "color:var(--st-caption)")],
     },
     'assignment': {},
 }
@@ -4215,3 +4229,35 @@ TYPE_SCALE = {
         ("font:600 14px/1 var(--st-ui)", "font:600 15px/1 var(--st-ui)"),
     ],
 }
+
+# ══ ⊕ Experience run, 24 Sep 2026 (item 13, legibility) · THE PORT'S OWN
+#    STYLESHEET TAIL — mirrors `teacher_rulings.PORT_CSS` (MRB-340) ═══════
+#
+# ⚠️ IT IS HERE AND NOT IN `shared/student-ds.css`, BECAUSE THAT FILE IS
+# GENERATED. `build_student_port.ds_css()` rewrites it from Design's six
+# sheets on every build, so a rule typed into it survives until the next
+# `python3 build_all.py` and no longer. `build_student_port.build()` appends
+# this after `top_up`, so it is the last thing in the cascade and cannot be
+# overwritten by Design's own file.
+#
+# The teacher port grew this exact mechanism under MRB-340 for a media
+# query; this run is the first thing the student side has needed it for.
+# `student-ds.css` and `teacher-ds.css` are the SAME six sheets from Design
+# (`ds_css()` is near-identical in both builders), so a token defined wrong
+# in one is wrong in the other — `--st-caption` / `--st-faint` / `--st-ghost`
+# / `--st-muted` measure the same failing ratios here as in
+# `teacher_rulings.PORT_CSS`, for the same reason: each one's own comment in
+# Design's bundle checks it only against `--st-ground`, and each is also
+# painted against `--st-seg-bg` (darkest cream tint, e.g. the class page's
+# tier/pathway segmented control) and the other cream tints, where it
+# measures under 4.5:1 on the rendered page. See that ruling for the full
+# reasoning; the values below are identical by construction, not
+# independently chosen, so the two ports cannot drift apart.
+PORT_CSS = """
+:root {
+  --st-muted:   #605851;  /* was #6E655D — 5.20:1 on --st-seg-bg (was 4.26) */
+  --st-caption: #685E51;  /* was #7A6E5F — 4.75:1 on --st-seg-bg (was 3.71) */
+  --st-faint:   #695E4E;  /* was #7B6E5C — 4.75:1 on --st-seg-bg (was 3.71) */
+  --st-ghost:   #6E604B;  /* was #7D6D55 — 4.55:1 on --st-seg-bg (was 3.74) */
+}
+"""

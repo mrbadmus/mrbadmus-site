@@ -3967,6 +3967,15 @@ def build():
           % (len(wanted), len(topped),
              (": " + ", ".join(topped)) if topped else ""))
 
+    # ⊕ Experience run, 24 Sep 2026 — the port's own stylesheet tail, mirroring
+    # `build_teacher_port.py`'s `+= R.PORT_CSS` (MRB-340). AFTER `top_up`, not
+    # before: `top_up` appends the custom properties Design's bundle does not
+    # define, and `--st-*` tokens are all on `:root`, so an override has to
+    # come after the declaration it overrides. See `student_rulings.PORT_CSS`
+    # for what it fixes and why it lives there and not in this generated file.
+    import student_rulings
+    css += student_rulings.PORT_CSS
+
     for out_dir in (SHARED_OUT, "shared"):
         os.makedirs(out_dir, exist_ok=True)
         with open(os.path.join(out_dir, DS_CSS_NAME), "w",

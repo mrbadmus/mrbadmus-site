@@ -1611,6 +1611,58 @@ def apply_rulings(spec, roots, logic):
             a[k] = v
         attred += 1
 
+    # ── 2b. ⊕ Experience run, 24 Sep 2026 · STYLE_EDIT, THE TEACHER SIDE ──
+    #
+    # `student_rulings.STYLE_EDIT` (22 Sep 2026, the first-week fixes) rewrites
+    # one declaration run on one named node, exactly once, and asserts the
+    # count either side of the edit rather than trusting it. The student port
+    # needed it first; the teacher port did not need it until now, so it did
+    # not have it — the brief for this run asked for "the equivalent for
+    # teacher if missing", and this is that, not a new idea.
+    #
+    # A `style` is either a plain string or Design's `{"parts": [...]}` run of
+    # literals and `{"e": …}` expressions (see `student_rulings.py`'s own note
+    # on this); only the literals are ever rewritten. `R.STYLE_EDIT` is FLAT
+    # (`{node_id: [(old, new)]}`), like `SET_ATTR` above and unlike the
+    # student port's per-page table — this file's node ids are unique across
+    # the WHOLE compiled delivery (SET_ATTR's own ids already prove that: 158
+    # is "classes", 208 is "class", and so on with no collision), so there is
+    # no page key to nest under.
+    def _style_strings(node):
+        a = node.get("a")
+        if not isinstance(a, dict) or "style" not in a:
+            return
+        v = a["style"]
+        if isinstance(v, str):
+            yield v, (lambda new, _a=a: _a.__setitem__("style", new))
+            return
+        if isinstance(v, dict) and isinstance(v.get("parts"), list):
+            parts = v["parts"]
+            for i, p in enumerate(parts):
+                if isinstance(p, str):
+                    yield p, (lambda new, _p=parts, _i=i:
+                               _p.__setitem__(_i, new))
+
+    restyled = 0
+    for node, edits in R.STYLE_EDIT.items():
+        if node not in here:
+            continue
+        for old, new in edits:
+            hit = 0
+            for text, setter in list(_style_strings(here[node])):
+                if old in text:
+                    hit += text.count(old)
+                    setter(text.replace(old, new))
+            if hit != 1:
+                raise SystemExit(
+                    "build_teacher_port.py: the STYLE_EDIT ruling rewrites "
+                    "%r on template node %s, and that declaration run occurs "
+                    "%d times in that node's style, not once.\n"
+                    "  Design has redrawn it. Re-anchor it in "
+                    "teacher_rulings.STYLE_EDIT rather than dropping it."
+                    % (old, node, hit))
+            restyled += 1
+
     # ── 3. the ONE attribute whose value is sample data ──────────────────
     attr_bound = 0
     for node, (attr, expect, repl, why) in R.BIND_ATTR.items():
