@@ -535,28 +535,27 @@ LESSON = {
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
-            "q": "Two arrows on a diagram are drawn the same length, one "
-                 "pointing left and one pointing right. What does the "
-                 "diagram say?",
+            "q": "Two forces act on a box: 30 N pushing it to the left and "
+                 "30 N pushing it to the right. What is true?",
             "options": [
-                "The two forces are equal, so the object moves steadily in "
-                "the direction of the right-hand arrow.",
-                "Arrow length is just for tidiness, so the sizes could be "
-                "anything.",
+                "The box must start to move, because two forces are acting "
+                "on it.",
+                "The resultant force is 60 N, because the two forces add "
+                "together.",
                 "The two forces cancel out and stop existing.",
                 "The two forces are equal in size, so the resultant force is "
                 "0 N.",
             ],
             "answer": 3,
             "feedback": {
-                0: "Nothing is left over to move it. Equal opposite arrows "
-                   "mean a resultant of 0 N, and the arrow on the right is "
-                   "fully cancelled.",
-                1: "Length is the measurement. Drawing two unequal forces "
-                   "the same length makes the diagram say something false.",
-                2: "Both are still acting, and both would still break "
-                   "something. It is the resultant that is 0 N, not the "
-                   "forces.",
+                0: "Forces acting is not enough. They are equal and "
+                   "opposite, so the resultant is 0 N and a box at rest "
+                   "stays at rest.",
+                1: "Forces pointing opposite ways subtract, not add: "
+                   "30 N − 30 N = 0 N.",
+                2: "Both forces are still acting, and both would still "
+                   "squash the box. It is the resultant that is 0 N, not "
+                   "the forces.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {

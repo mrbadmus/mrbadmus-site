@@ -510,22 +510,26 @@ QUESTIONS = [
     {
         "id": "p4-02-e11",
         "band": "easier",
-        "text": "On one diagram, two arrows are drawn 4 cm and 8 cm long. "
-                "What does that say about the two forces?",
+        "text": "The diagram shows two forces, A and B, acting on a box. The "
+                "arrows are drawn to the same scale. What does the diagram "
+                "tell you about the two forces?",
         "options": [
-            {"text": "The second force is twice the size of the first",
+            {"text": "Force B is twice the size of force A",
              "correct": True},
-            {"text": "It lasts twice as long", "correct": False,
-             "why": "Nothing on a force diagram records time."},
-            {"text": "The second force is half the size of the first",
+            {"text": "Force B acts for twice as long as force A",
              "correct": False,
-             "why": "The longer arrow is the bigger force, so it is the other "
-                    "way round."},
-            {"text": "The second force acts twice as far away",
+             "why": "Nothing on a force diagram records time. Arrow length "
+                    "shows the size of a force."},
+            {"text": "Force B is half the size of force A",
              "correct": False,
-             "why": "Length is the size of the force, not a distance."},
+             "why": "The longer arrow is the bigger force, so it is the "
+                    "other way round."},
+            {"text": "Force B acts twice as far from the box as force A",
+             "correct": False,
+             "why": "Both arrows start on the box. Arrow length is the size "
+                    "of the force, not a distance."},
         ],
-        "figure": None,
+        "figure": "p4-grid-arrows-a-b",
     },
     {
         "id": "p4-02-e12",
@@ -968,24 +972,27 @@ QUESTIONS = [
     {
         "id": "p4-02-s11",
         "band": "standard",
-        "text": "A student draws a 30 N arrow and a 45 N arrow the same "
-                "length. What has the diagram now claimed?",
+        "text": "A student drew this force diagram for a box. What is wrong "
+                "with it?",
         "options": [
-            {"text": "That the two forces are equal, which they are not",
+            {"text": "The arrows claim the two forces are equal, and they "
+                     "are not",
              "correct": True},
-            {"text": "That the two forces act on different objects",
+            {"text": "It shows the two forces acting on different objects",
              "correct": False,
-             "why": "Which object is acted on is shown by where each arrow "
-                    "starts, not by its length."},
-            {"text": "That the drawing is neat and needs no labels",
+             "why": "Both arrows start on the same box. Which object a force "
+                    "acts on is shown by where its arrow starts."},
+            {"text": "Nothing: once each arrow has a label, its length does "
+                     "not matter",
              "correct": False,
-             "why": "Tidiness is not a claim. The lengths still state the "
-                    "sizes, truly or falsely."},
-            {"text": "That one force lasts longer", "correct": False,
+             "why": "Length is how a diagram shows the size of a force. The "
+                    "label and the length must agree, and here they do not."},
+            {"text": "It shows that one force lasts longer than the other",
+             "correct": False,
              "why": "Nothing on a force diagram records how long a force "
                     "lasts."},
         ],
-        "figure": None,
+        "figure": "p4-grid-arrows-30-45-equal",
     },
     {
         "id": "p4-02-s12",
@@ -1092,25 +1099,27 @@ QUESTIONS = [
     {
         "id": "p4-02-s17",
         "band": "standard",
-        "text": "One diagram shows a 12 N arrow 3 cm long and a 20 N arrow "
-                "4 cm long. Why is the diagram wrong?",
+        "text": "A student drew this force diagram for a box. Why is it "
+                "wrong?",
         "options": [
-            {"text": "The two arrows are not drawn to one scale",
+            {"text": "The two arrows are not drawn to the same scale",
              "correct": True},
-            {"text": "Force arrows should never be measured in centimetres",
+            {"text": "Force arrows should never be drawn on squared paper",
              "correct": False,
-             "why": "A scale drawing is exactly how arrows are set out; the "
-                    "problem is that the scale changes."},
+             "why": "Squared paper makes a scale drawing easier. The problem "
+                    "is that the two arrows use different scales: 4 N per "
+                    "square and 5 N per square."},
             {"text": "The 20 N arrow should be the shorter of the two",
              "correct": False,
-             "why": "The bigger force takes the longer arrow, so its being "
-                    "longer is right."},
+             "why": "The bigger force takes the longer arrow, so the 20 N "
+                    "arrow being longer is right. It is just not long "
+                    "enough."},
             {"text": "Two forces should never be drawn on one diagram",
              "correct": False,
-             "why": "Every force acting is drawn, and that is the point of the "
-                    "diagram."},
+             "why": "Every force acting on the box is drawn, and that is the "
+                    "point of the diagram."},
         ],
-        "figure": None,
+        "figure": "p4-grid-arrows-12-20",
     },
     {
         "id": "p4-02-s18",
@@ -1242,21 +1251,25 @@ QUESTIONS = [
     {
         "id": "p4-02-s24",
         "band": "standard",
-        "text": "On a diagram drawn at 1 cm to 10 N, the pull right is 7 cm "
-                "and the pull left is 3 cm. What is the resultant?",
+        "text": "The force diagram for a box is drawn to the scale shown. "
+                "What is the resultant force on the box?",
         "options": [
-            {"text": "4 cm to the right", "correct": False,
-             "why": "The answer to a force question is a force. Four "
-                    "centimetres is the arrow, not the resultant."},
-            {"text": "100 N to the right", "correct": False,
-             "why": "That adds the two lengths rather than taking one from the "
-                    "other."},
-            {"text": "40 N to the right", "correct": True},
-            {"text": "40 N to the left", "correct": False,
+            {"text": "4 squares to the right",
+             "correct": False,
+             "why": "The answer to a force question is a force. Four squares "
+                    "is the length of the arrow, not the size of the force."},
+            {"text": "100 N to the right",
+             "correct": False,
+             "why": "That adds the two arrows. They point opposite ways, so "
+                    "one is taken from the other."},
+            {"text": "40 N to the right",
+             "correct": True},
+            {"text": "40 N to the left",
+             "correct": False,
              "why": "The size is right and the direction is not. The longer "
-                    "arrow points right."},
+                    "arrow points to the right."},
         ],
-        "figure": None,
+        "figure": "p4-grid-arrows-scale-10n",
     },
     {
         "id": "p4-02-s25",
@@ -1673,26 +1686,30 @@ QUESTIONS = [
     {
         "id": "p4-02-h21",
         "band": "harder",
-        "text": "A diagram shows a 50 N arrow and a 10 N arrow, both drawn "
-                "5 cm long and pointing opposite ways. Which two false things "
-                "does it now say?",
+        "text": "A student drew this force diagram for a box. Which two "
+                "false things does it say?",
         "options": [
-            {"text": "That the forces are equal, and that the resultant is "
-                     "0 N", "correct": True},
+            {"text": "That the forces are equal, and that the resultant is 0 "
+                     "N",
+             "correct": True},
             {"text": "That the forces are equal, and that they act on "
-                     "different objects", "correct": False,
-             "why": "Which object is acted on comes from where each arrow "
-                    "starts, and nothing here says it is different."},
+                     "different objects",
+             "correct": False,
+             "why": "Both arrows start on the same box, so the diagram does "
+                    "not say they act on different objects."},
             {"text": "That the 10 N force is bigger, and that it acts for "
-                     "longer", "correct": False,
-             "why": "Equal lengths say the forces are equal, and a diagram "
-                    "never shows time."},
-            {"text": "That the scale is 1 cm to 10 N, and that the 50 N is "
-                     "wrong", "correct": False,
-             "why": "No single scale fits both arrows, which is why the "
-                    "drawing is false rather than mis-scaled."},
+                     "longer",
+             "correct": False,
+             "why": "Equal lengths say the forces are equal, not that one is "
+                    "bigger, and a force diagram never shows time."},
+            {"text": "That the scale is 1 square to 10 N, and that the 50 N "
+                     "is wrong",
+             "correct": False,
+             "why": "No single scale fits both arrows: one would need 10 N "
+                    "per square and the other 2 N per square. That is why "
+                    "the drawing is false."},
         ],
-        "figure": None,
+        "figure": "p4-grid-arrows-50-10-equal",
     },
     {
         "id": "p4-02-h22",
