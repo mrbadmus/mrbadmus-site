@@ -38,7 +38,8 @@ index. The last pair breaks the cycle because h03's correct answer reads
 naturally first; the COUNT is what MRB-278 measures, and it is 3/3/3/3.
 ⚠️ Every distractor is written to the correct answer's own length (MRB-177).
 
-The lesson carries no figures, so every question is figure=None.
+The lesson carries no figures. ⊕ MRB-352 run 2: some questions now carry a
+QUESTION figure from `figlib/catalogue_ks3.py` (the lesson page is untouched).
 """
 
 # XU-1 (MRB-295/MRB-298, ruled 28 Aug 2026). The estate held four
@@ -2023,31 +2024,31 @@ QUESTIONS = [
     {
         "id": "p1-04-h14",
         "band": "harder",
-        "text": "A student measures a beaker of water cooling and plots "
-                "temperature against time. The graph falls steeply at "
-                "first and then levels off, approaching room "
-                "temperature without quite reaching it in the recorded "
-                "time. What does the levelling off represent?",
+        "text": "The graph shows the temperature of a beaker of hot water as "
+                "it cools in a room at 20 °C. Why does the line level off?",
         "options": [
-            {"text": "The water running out of energy to lose",
+            {"text": "The water is running out of energy to give out to the "
+                     "room",
              "correct": False,
-             "why": "The water still holds plenty of energy as the "
-                    "curve levels off; it is the flow that has weakened, "
+             "why": "The water still holds plenty of energy as the line "
+                    "levels off. It is the rate of transfer that has fallen, "
                     "not the supply."},
-            {"text": "The shrinking temperature difference between the water and the room, which always weakens the flow",
+            {"text": "The temperature difference between the water and the "
+                     "room is shrinking, so the transfer slows",
              "correct": True},
-            {"text": "A genuine fault developing in the thermometer itself as the reading approaches room temperature",
+            {"text": "The thermometer develops a fault as its reading gets "
+                     "close to room temperature, so it stops changing",
              "correct": False,
-             "why": "A well-calibrated thermometer reads correctly "
-                    "throughout; the levelling is real physics, not an "
-                    "instrument error."},
-            {"text": "The room is slowly warming itself up until it eventually matches the water's own falling temperature exactly",
+             "why": "A thermometer reads correctly all the way down. The "
+                    "levelling off is real physics, not a fault."},
+            {"text": "The room slowly warms up until it matches the water's "
+                     "falling temperature",
              "correct": False,
-             "why": "The room is assumed roughly constant; it is the "
-                    "water's own temperature doing almost all the "
-                    "moving."},
+             "why": "A room is far bigger than a beaker, so its temperature "
+                    "hardly changes. It is the water's temperature that does "
+                    "almost all the moving."},
         ],
-        "figure": None,
+        "figure": "p1-cooling-curve",
     },
     {
         "id": "p1-04-h15",
