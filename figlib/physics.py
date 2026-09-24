@@ -3015,3 +3015,450 @@ def crate_forces(forces, W=460, label=None):
         _q_text(c, (x0 + x1) / 2, y - 16, "%g N" % f["newtons"], fs, LBL,
                 "bold")
     return c.svg()
+
+# ====================================================================
+# ⊕ MRB-352 run 2, batch 1 (KS3 physics) — five more question builders:
+# force_grid, wave_line, longitudinal, bar_field here; graph_panels in
+# charts.py. Specified in full by the examiner (spec174_ks3_physics.md,
+# "New builders"); every departure from that text is marked ⊕ and says why.
+# ====================================================================
+from .style import text_width as _q_tw  # noqa: E402
+
+_GRIDLINE = "#D5CDB8"      # the oscilloscope's grid colour — one house grid
+
+
+def force_grid(arrows, caption=None, W=456):
+    """A box on squared paper with horizontal force arrows drawn a whole
+    number of squares long — "forces drawn to scale" read by counting.
+    `arrows` is [{"dir": "left"|"right", "squares": n, "label": str|None}].
+    Nothing else is drawn: no resultant, no sum, no scale unless `caption`
+    states one."""
+    fs = q_font(W)
+    sq, cols, rows, gx, gy = 26, 16, 6, 20, 20
+    H = int(gy + rows * sq + (40 if caption else 20))
+    c = Canvas(W, H)
+    for i in range(cols + 1):
+        _q_line(c, gx + i * sq, gy, gx + i * sq, gy + rows * sq, _GRIDLINE,
+                q_stroke(W, 1.2), None, "butt")
+    for j in range(rows + 1):
+        _q_line(c, gx, gy + j * sq, gx + cols * sq, gy + j * sq, _GRIDLINE,
+                q_stroke(W, 1.2), None, "butt")
+    _q_box(c, gx, gy, cols * sq, rows * sq, "none", ST, q_stroke(W, 2))
+    bx0, bx1 = gx + 7 * sq, gx + 9 * sq
+    by0 = gy + 2 * sq
+    _q_box(c, bx0, by0, 2 * sq, 2 * sq, TINT["sand"], ST, 3)
+    y = by0 + sq
+    for a in arrows:
+        n = a["squares"]
+        if n != int(n) or not 1 <= n <= 7:
+            raise ValueError("force_grid: an arrow is 1-7 whole squares, "
+                             "not %r" % (n,))
+        if a["dir"] == "left":
+            x0, x1 = bx0, bx0 - n * sq
+        elif a["dir"] == "right":
+            x0, x1 = bx1, bx1 + n * sq
+        else:
+            raise ValueError("force_grid: dir is left or right")
+        _q_arrow(c, x0, y, x1, y, RED, q_stroke(W, 5), 18)
+        if a.get("label"):
+            _q_text(c, (x0 + x1) / 2, y - sq + fs * 0.35, a["label"], fs, LBL,
+                    "bold")
+    if caption:
+        _q_text(c, W / 2, gy + rows * sq + 14 + fs * 0.8, caption, fs, LBL,
+                "bold")
+    return c.svg()
+
+
+def wave_line(cycles, start_phase=0.0, dots=(), dimension=None, W=460,
+              H=220):
+    """A transverse wave along a dashed centre line — no axes. `dots` are
+    points on the curve (in cycles, u); `dimension` {from, to, label}
+    measures along the wave between two u-positions, with dashed drop
+    lines to a double-headed arrow under it."""
+    fs = q_font(W)
+    c = Canvas(W, H)
+    x0, x1, yc, amp = 30.0, W - 30.0, 90.0, 40.0
+
+    def X(u):
+        return x0 + (x1 - x0) * u / float(cycles)
+
+    def Y(u):
+        return yc - amp * math.sin(2 * math.pi * (u + start_phase))
+
+    _q_line(c, x0, yc, x1, yc, MUTED, q_stroke(W, 1.5), "6 6", "butt")
+    n = int(max(40, 48 * cycles))
+    pts = [(X(cycles * i / float(n)), Y(cycles * i / float(n)))
+           for i in range(n + 1)]
+    c.S.append('<polyline points="%s" fill="none" stroke="%s" '
+               'stroke-width="%s" stroke-linecap="round" '
+               'stroke-linejoin="round"/>'
+               % (" ".join("%.1f,%.1f" % p for p in pts), ACC,
+                  q_stroke(W, 3.5)))
+    if dimension:
+        ya = 165.0
+        for u in (dimension["from"], dimension["to"]):
+            _q_line(c, X(u), Y(u), X(u), ya + 8, MUTED, q_stroke(W, 1.5),
+                    "5 5", "butt")
+        xa, xb = X(dimension["from"]), X(dimension["to"])
+        _dim_arrow(c, xa, xb, ya, W)
+        _q_text(c, (xa + xb) / 2, ya + 30, dimension["label"], fs, LBL,
+                "bold")
+    for u in dots:
+        c.S.append(f'<circle cx="{X(u):.1f}" cy="{Y(u):.1f}" r="7" '
+                   f'fill="{ST}" stroke="none"/>')
+    return c.svg()
+
+
+def _dim_arrow(c, xa, xb, y, W, head=12):
+    """A double-headed measuring arrow from xa to xb (heads are polygons,
+    tips exactly on xa and xb)."""
+    sw = q_stroke(W, 2.5)
+    _q_line(c, xa + head, y, xb - head, y, ST, sw, None, "butt")
+    for tip, back in ((xa, xa + head), (xb, xb - head)):
+        c.S.append('<polygon points="%.1f,%.1f %.1f,%.1f %.1f,%.1f" '
+                   'fill="%s" stroke="none"/>'
+                   % (tip, y, back, y - head * 0.5, back, y + head * 0.5, ST))
+
+
+def longitudinal(compressions, dimension=None, W=460, H=None, per_wave=12):
+    """A sound wave drawn as a row of vertical lines, squeezed together at
+    evenly spaced compressions and spread apart between them. The row
+    starts on the first compression and ends on the last. `dimension`
+    {label} measures from the first compression's centre to the second's.
+    No text but that label, no shading, no direction arrow."""
+    n = int(compressions)
+    if n < 2:
+        raise ValueError("longitudinal: at least two compressions")
+    fs = q_font(W)
+    H = H or (190 if dimension else 150)
+    c = Canvas(W, H)
+    lam = (W - 60) / (n - 1 + 0.3)
+
+    def X(u):
+        return 30 + 0.15 * lam + lam * (u - 0.12 * math.sin(2 * math.pi * u))
+
+    for k in range(-2, per_wave * (n - 1) + 3):
+        u = k / float(per_wave)
+        if -0.15 <= u <= (n - 1) + 0.15:
+            _q_line(c, X(u), 30, X(u), 120, ST, q_stroke(W, 2.5), None, "butt")
+    if dimension:
+        xa, xb = X(0.0), X(1.0)
+        _dim_arrow(c, xa, xb, 145, W)
+        for x in (xa, xb):
+            _q_line(c, x, 136, x, 154, ST, q_stroke(W, 2), None, "butt")
+        _q_text(c, (xa + xb) / 2, 175, dimension["label"], fs, LBL, "bold")
+    return c.svg()
+
+
+# ── bar_field: the field of a bar magnet, traced, not drawn by eye ────────
+_BF_POLES = ((1.0, -80.0), (-1.0, 80.0))     # (+N, -S), 20 inside each end
+_BF_HALF_L, _BF_HALF_H = 100.0, 25.0
+
+
+def _bf_dir(x, y):
+    bx = by = 0.0
+    for q, px in _BF_POLES:
+        dx, dy = x - px, y
+        r3 = (dx * dx + dy * dy) ** 1.5
+        bx += q * dx / r3
+        by += q * dy / r3
+    m = math.hypot(bx, by)
+    return bx / m, by / m
+
+
+def _bf_inside(x, y):
+    return abs(x) <= _BF_HALF_L and abs(y) <= _BF_HALF_H
+
+
+def _bf_trace(angle, inside_panel, h=2.0, max_steps=6000):
+    """RK4 along the unit field direction from the N pole point, launched
+    at `angle` degrees (from +x towards S, anticlockwise = up). Returns
+    (points in magnet coords, y up; closed) — closed when the trace comes
+    within 22 units of the S pole point; not closed when it leaves the
+    panel (`inside_panel(x, y)` false)."""
+    a = math.radians(angle)
+    x, y = -80.0 + math.cos(a), math.sin(a)
+    pts = [(x, y)]
+    for _ in range(max_steps):
+        k1 = _bf_dir(x, y)
+        k2 = _bf_dir(x + h / 2 * k1[0], y + h / 2 * k1[1])
+        k3 = _bf_dir(x + h / 2 * k2[0], y + h / 2 * k2[1])
+        k4 = _bf_dir(x + h * k3[0], y + h * k3[1])
+        x += h / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0])
+        y += h / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1])
+        if not inside_panel(x, y):
+            return pts, False
+        pts.append((x, y))
+        if math.hypot(x - 80.0, y) < 22.0:
+            return pts, True
+    raise ValueError("bar_field: a %g° line neither closed nor left the "
+                     "panel" % angle)
+
+
+def _bf_outside_run(pts):
+    """The first run of the trace outside the magnet body, with its ends
+    moved onto the body's outline (linear interpolation), so a drawn line
+    touches the magnet instead of stopping short of it."""
+    run, started = [], False
+    for i, p in enumerate(pts):
+        if not _bf_inside(*p):
+            if not started and i > 0:
+                run.append(_bf_edge(pts[i - 1], p))
+            started = True
+            run.append(p)
+        elif started:
+            run.append(_bf_edge(p, pts[i - 1]))
+            break
+    return run
+
+
+def _bf_edge(pin, pout):
+    """The point on the body outline between an inside and an outside
+    point (bisection — the outline is a rectangle, the step is 2 units)."""
+    a, b = pin, pout
+    for _ in range(30):
+        m = ((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)
+        if _bf_inside(*m):
+            a = m
+        else:
+            b = m
+    return b
+
+
+def _arc(pts):
+    out = [0.0]
+    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+        out.append(out[-1] + math.hypot(x1 - x0, y1 - y0))
+    return out
+
+
+def _at_length(pts, cum, s):
+    """(point, unit direction) at arc length s along pts."""
+    for i in range(1, len(pts)):
+        if cum[i] >= s:
+            (x0, y0), (x1, y1) = pts[i - 1], pts[i]
+            seg = cum[i] - cum[i - 1] or 1.0
+            t = (s - cum[i - 1]) / seg
+            d = math.hypot(x1 - x0, y1 - y0) or 1.0
+            return ((x0 + t * (x1 - x0), y0 + t * (y1 - y0)),
+                    ((x1 - x0) / d, (y1 - y0) / d))
+    (x0, y0), (x1, y1) = pts[-2], pts[-1]
+    d = math.hypot(x1 - x0, y1 - y0) or 1.0
+    return pts[-1], ((x1 - x0) / d, (y1 - y0) / d)
+
+
+def _cut(pts, cum, s):
+    out = [p for p, l in zip(pts, cum) if l < s]
+    out.append(_at_length(pts, cum, s)[0])
+    return out
+
+
+def _wiggle(pts, amp, period):
+    """Offset each point along the line's normal by amp·sin(2π s/period):
+    the same path, drawn wavy."""
+    cum = _arc(pts)
+    out = []
+    for i, (p, s) in enumerate(zip(pts, cum)):
+        a, b = pts[max(0, i - 1)], pts[min(len(pts) - 1, i + 1)]
+        d = math.hypot(b[0] - a[0], b[1] - a[1]) or 1.0
+        nx, ny = -(b[1] - a[1]) / d, (b[0] - a[0]) / d
+        w = amp * math.sin(2 * math.pi * s / period)
+        out.append((p[0] + nx * w, p[1] + ny * w))
+    return out
+
+
+def _head(c, x, y, ux, uy, col, size=13):
+    """A solid arrowhead centred on (x, y), pointing along (ux, uy) in
+    canvas coordinates."""
+    tx, ty = x + ux * size * 0.55, y + uy * size * 0.55
+    bx, by = x - ux * size * 0.45, y - uy * size * 0.45
+    nx, ny = -uy * size * 0.5, ux * size * 0.5
+    c.S.append('<polygon points="%.1f,%.1f %.1f,%.1f %.1f,%.1f" fill="%s" '
+               'stroke="none"/>' % (tx, ty, bx + nx, by + ny, bx - nx,
+                                    by - ny, col))
+
+
+_BF_AT = {"axis_left": (-1, 0), "axis_right": (1, 0),
+          "above_centre": (0, 1), "below_centre": (0, -1)}
+
+
+def bar_field(panels, W=460, panel_h=300, clip=False):
+    """The magnetic field of a bar magnet (N left, S right), each line
+    TRACED from a two-pole model (+1 and -1 at 20 units inside each end;
+    B = Σ q r̂/r²) with RK4, launched from the N pole point at a given
+    angle — so crowding at the poles is the physics, not a hand's guess.
+
+    A panel is {"caption", "upper": [deg, ...], "lower": [deg, ...],
+    "faulty": {angle, fraction, label} | None, "points": [...],
+    "wavy": {amp, period} | None, "inside": n}. Lines are drawn only
+    outside the magnet (it occludes them), each with one arrowhead at the
+    middle of its drawn length, pointing N to S along the line.
+
+      * `faulty` — one more line, drawn only for the first `fraction` of
+        its length and ending in mid-air, lettered beyond its free end.
+      * `points` — [{label, at, r}] with `at` one of axis_left, axis_right,
+        above_centre, below_centre at r half-lengths from the centre; or
+        [{label, x, y}] in half-lengths (x right, y up).
+      * ⊕ `wavy` — every line drawn with a sinusoidal wiggle about its
+        true path (a "drawn for effect" map), for p10-02-h21.
+      * ⊕ `even` {n, step} — a student's evenly spaced map: n concentric
+        semicircles above and below, radius step·k, from the N half to the S
+        half, with no crowding anywhere (for p10-02-e25).
+      * ⊕ `inside` — n straight lines drawn INSIDE the magnet from the N end
+        to the S end, arrowheads pointing to S (a student's addition), for
+        p10-02-h26. Nothing is drawn inside the magnet otherwise.
+
+    `clip` False: a correct line that leaves the panel is a BUILD ERROR (a
+    clipped line would look like the faulty one). `clip` True: lines are
+    cut at a 12-unit inner margin, as in any textbook field map.
+
+    ⊕ A caption gets its own band above the panel (fs + 14 units), rather
+    than sitting inside it: centred at the top of a 320 panel it landed on
+    the outermost line, which peaks ~21 units below the panel's top edge."""
+    fs = q_font(W)
+    fsp = q_font(W, floor=22)
+    bands = [(fs + 14 if p.get("caption") else 0) for p in panels]
+    H = int(sum(panel_h + b for b in bands))
+    c = Canvas(W, H)
+    top = 0.0
+    sw = q_stroke(W, 2.5)
+    for p, band in zip(panels, bands):
+        if p.get("caption"):
+            _q_text(c, W / 2, top + fs + 4, p["caption"], fs, LBL, "bold")
+        ptop = top + band
+        cx, cy = W / 2.0, ptop + panel_h / 2.0
+        m = 12.0
+
+        def inside_panel(x, y, cx=cx, cy=cy, ptop=ptop):
+            X, Y = cx + x, cy - y
+            return m <= X <= W - m and ptop + m <= Y <= ptop + panel_h - m
+
+        def C(q, cx=cx, cy=cy):
+            return (cx + q[0], cy - q[1])
+
+        drawn = []
+        for ang in list(p.get("upper", [])) + list(p.get("lower", [])):
+            pts, closed = _bf_trace(ang, inside_panel)
+            if not closed and not clip:
+                raise ValueError("bar_field: the %g° line leaves the panel "
+                                 "before reaching S — raise panel_h, or pass "
+                                 "clip=True" % ang)
+            run = _bf_outside_run(pts)
+            if len(run) < 2:
+                continue
+            drawn.append((run, None))
+            if not closed:
+                # ⊕ a line cut at the panel edge would have come round to S
+                # off the card. The two-pole field is mirror-antisymmetric
+                # (x -> -x reverses it), so the line arriving at S from off
+                # the card is this one mirrored and reversed. Without it a
+                # clipped map crowds lines at N and leaves S bare — which
+                # reads as a stronger N pole than S (it is not).
+                drawn.append(([(-x, y) for x, y in reversed(run)], None))
+        ev = p.get("even")
+        if ev:
+            # a student's EVENLY SPACED map: concentric semicircles on the
+            # magnet's long faces, radius step·k, leaving the N half and
+            # entering the S half — equally spaced everywhere, no crowding
+            for side in (1, -1):
+                for k in range(1, int(ev["n"]) + 1):
+                    r = ev["step"] * k
+                    arc = [(-r * math.cos(math.pi * i / 90.0),
+                            side * (_BF_HALF_H + r * math.sin(math.pi * i / 90.0)))
+                           for i in range(91)]
+                    drawn.append((arc, None))
+        f = p.get("faulty")
+        if f:
+            pts, _ = _bf_trace(f["angle"], inside_panel)
+            run = _bf_outside_run(pts)
+            cum = _arc(run)
+            run = _cut(run, cum, cum[-1] * f["fraction"])
+            drawn.append((run, f.get("label")))
+        wv = p.get("wavy")
+        allpts = []
+        for run, label in drawn:
+            if wv:
+                run = _wiggle(run, wv["amp"], wv["period"])
+            cpts = [C(q) for q in run]
+            allpts.extend(cpts)
+            dec = cpts[::2] + ([cpts[-1]] if len(cpts) % 2 == 0 else [])
+            c.S.append('<polyline points="%s" fill="none" stroke="%s" '
+                       'stroke-width="%s" stroke-linecap="round" '
+                       'stroke-linejoin="round"/>'
+                       % (" ".join("%.1f,%.1f" % q for q in dec), ACC, sw))
+            cum = _arc(cpts)
+            (hx, hy), (ux, uy) = _at_length(cpts, cum, cum[-1] / 2)
+            _head(c, hx, hy, ux, uy, ACC)
+            if label:
+                (ex, ey), (ux, uy) = _at_length(cpts, cum, cum[-1])
+                d = 14 + fs * 0.5
+                _q_text(c, ex + ux * d, ey + uy * d + fs * 0.35, label, fs,
+                        LBL, "bold")
+        # the magnet, over the lines' inner ends
+        _pole(c, cx - _BF_HALF_L, cy - _BF_HALF_H, _BF_HALF_L, 2 * _BF_HALF_H,
+              "N", fsp)
+        _pole(c, cx, cy - _BF_HALF_H, _BF_HALF_L, 2 * _BF_HALF_H, "S", fsp)
+        n_in = int(p.get("inside", 0) or 0)
+        for i in range(n_in):
+            yy = cy - _BF_HALF_H + 2 * _BF_HALF_H * (i + 0.5) / n_in
+            if n_in == 2:      # clear of the N/S letters and of the outline
+                yy = cy + (-1 if i == 0 else 1) * 13
+            _q_line(c, cx - _BF_HALF_L, yy, cx + _BF_HALF_L, yy, ACC, sw,
+                    None, "butt")
+            _head(c, cx, yy, 1.0, 0.0, ACC, 11)
+        dots = []
+        for pt in p.get("points", []):
+            if "at" in pt:
+                ux, uy = _BF_AT[pt["at"]]
+                px, py = ux * pt["r"] * _BF_HALF_L, uy * pt["r"] * _BF_HALF_L
+            else:
+                px, py = pt["x"] * _BF_HALF_L, pt["y"] * _BF_HALF_L
+            dots.append((C((px, py)), pt["label"]))
+        # obstacles a letter must keep clear of: every line, the magnet's
+        # outline (sampled) and every dot
+        obst = list(allpts)
+        for k in range(41):
+            fx = cx - _BF_HALF_L + 2 * _BF_HALF_L * k / 40.0
+            obst += [(fx, cy - _BF_HALF_H), (fx, cy + _BF_HALF_H)]
+        for k in range(11):
+            fy = cy - _BF_HALF_H + 2 * _BF_HALF_H * k / 10.0
+            obst += [(cx - _BF_HALF_L, fy), (cx + _BF_HALF_L, fy)]
+        for (X, Y), _ in dots:
+            obst += [(X + 7 * math.cos(a / 8.0 * math.pi),
+                      Y + 7 * math.sin(a / 8.0 * math.pi)) for a in range(16)]
+        for (X, Y), label in dots:
+            c.S.append(f'<circle cx="{X:.1f}" cy="{Y:.1f}" r="7" '
+                       f'fill="{ST}" stroke="none"/>')
+            _bf_letter(c, X, Y, label, fs, obst,
+                       (cx - _BF_HALF_L, cy - _BF_HALF_H, cx + _BF_HALF_L,
+                        cy + _BF_HALF_H))
+        top = ptop + panel_h
+    return c.svg()
+
+
+def _bf_letter(c, X, Y, label, fs, lines, body):
+    """Letter a point where it is clearest of every drawn line, the magnet
+    and every dot, preferring above-left (the house position) when that is
+    clear enough. A position on the magnet itself is never taken."""
+    tw = _q_tw(label, fs, True)
+    best, best_d = None, -1.0
+    base = [(-16, -12), (16, -12), (-16, 14 + fs * 0.7), (16, 14 + fs * 0.7),
+            (0, -16), (0, 16 + fs * 0.7), (-22, 5), (22, 5)]
+    cands = base + [(dx * 1.6, dy * 1.5) for dx, dy in base]
+    for k, (dx, dy) in enumerate(cands):
+        anchor_x = X + dx - (tw if dx < 0 else 0 if dx > 0 else tw / 2)
+        box = (anchor_x - 3, Y + dy - fs * 0.75, anchor_x + tw + 3, Y + dy + 3)
+        if (box[0] < body[2] and box[2] > body[0] and box[1] < body[3]
+                and box[3] > body[1]):
+            continue
+        d = min((max(box[0] - px, 0, px - box[2]) ** 2 +
+                 max(box[1] - py, 0, py - box[3]) ** 2) ** 0.5
+                for px, py in lines) if lines else 99.0
+        if k == 0 and d >= 5:
+            best = (dx, dy)
+            break
+        if d > best_d:
+            best, best_d = (dx, dy), d
+    dx, dy = best
+    anchor = "end" if dx < 0 else "start" if dx > 0 else "middle"
+    _q_text(c, X + dx, Y + dy, label, fs, LBL, "bold", anchor)

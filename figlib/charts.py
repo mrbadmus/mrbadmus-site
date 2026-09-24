@@ -298,25 +298,32 @@ def _smooth_path(pts):
 
 def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
                x_ticks, y_ticks, W=480, H=380, grid=True, legend=False,
-               x_grid=None, y_grid=None, end_dot=False):
+               x_grid=None, y_grid=None, end_dot=False, canvas=None, top=0,
+               ox=None):
     """Axes, a light grid, and one or more series. A series is
     {"points": [(x, y), ...], "smooth": bool, "label": str}; the first is
     drawn in the library's teal, the second in red and dashed, so two
-    series differ by more than colour alone."""
+    series differ by more than colour alone.
+
+    ⊕ MRB-352 batch 1: `canvas` / `top` draw the graph INTO an existing
+    Canvas with every y shifted down by `top` (no <g>, no transform — the
+    manifest forbids both), and return nothing. `graph_panels` stacks
+    graphs this way, and `ox` pins the y axis's x so stacked graphs share
+    one time axis."""
     fs = q_font(W)
     fn = _num_size(fs)
     sw = q_stroke(W, 2)
-    ox = 30 + fs * 1.3 + max(text_width(_fmt(t), fn) for t in y_ticks)
-    oy = H - (fs + fn + 34) - (fs + 14 if legend else 0)
+    ox = ox or (30 + fs * 1.3 + max(text_width(_fmt(t), fn) for t in y_ticks))
+    oy = top + H - (fs + fn + 34) - (fs + 14 if legend else 0)
     aw = W - ox - 26
-    ah = oy - 26
+    ah = oy - top - 26
     (x0, x1), (y0, y1) = x_range, y_range
 
     def P(x, y):
         return (ox + aw * (x - x0) / float(x1 - x0),
                 oy - ah * (y - y0) / float(y1 - y0))
 
-    c = Canvas(W, H)
+    c = canvas if canvas is not None else Canvas(W, H)
     if grid:
         for t in (x_grid or x_ticks):
             px, _ = P(t, y0)
@@ -355,7 +362,7 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
     text(c, fs + 4, oy - ah / 2, _axis_title(y_label, y_unit), fs, LBL,
          "bold", "middle", rotate=-90)
     if legend:
-        lx, ly = ox, H - 14
+        lx, ly = ox, top + H - 14
         for k, s in enumerate(series):
             col = SERIES[k % len(SERIES)]
             dash = DASHES[k % len(DASHES)]
@@ -363,6 +370,30 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
                  q_stroke(W, 3.5), dash)
             text(c, lx + 48, ly, s["label"], fs, LBL, "bold", "start")
             lx += 60 + text_width(s["label"], fs, True) + 24
+    if canvas is None:
+        return c.svg()
+
+
+def graph_panels(panels, W=480):
+    """Two or more line graphs stacked one above the other, each captioned
+    above it ("Graph 1"). A panel is a full `line_graph` parameter set
+    (its own H) plus `caption`. For comparing graphs whose SCALES differ —
+    the drawing makes the pupil read each axis, not the slope's look."""
+    fs = q_font(W)
+    H = int(sum(p.get("H", 380) + fs + 34 for p in panels))
+    c = Canvas(W, H)
+    fn = _num_size(fs)
+    ox = max(30 + fs * 1.3 + max(text_width(_fmt(t), fn) for t in p["y_ticks"])
+             for p in panels)          # one y-axis position: identical time axes
+    y = 0.0
+    for p in panels:
+        p = dict(p)
+        caption = p.pop("caption")
+        ph = p.pop("H", 380)
+        p.pop("W", None)
+        text(c, W / 2, y + fs, caption, fs, LBL, "bold")
+        line_graph(W=W, H=ph, canvas=c, top=y + fs + 10, ox=ox, **p)
+        y += fs + 10 + ph + 24
     return c.svg()
 
 
@@ -434,5 +465,5 @@ def table(col_heads, rows, W=480, corner="", cell_fills=None,
     return c.svg()
 
 
-__all__ = ["hbar_chart", "column_chart", "line_graph", "table", "esc",
+__all__ = ["hbar_chart", "column_chart", "line_graph", "graph_panels", "table", "esc",
            "arrow", "AMBER"]

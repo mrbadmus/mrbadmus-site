@@ -29,6 +29,10 @@ ART = {
     "field-point":         physics.field_point,
     "resolution-triangle": physics.resolution_triangle,
     "oscilloscope":        physics.oscilloscope_compare,
+    "force-grid":          physics.force_grid,
+    "wave-line":           physics.wave_line,
+    "longitudinal":        physics.longitudinal,
+    "bar-field":           physics.bar_field,
     "particle-states":     physics.states_of_matter,
     # chemistry
     "dot-cross":           chemistry.covalent_dotcross,
@@ -40,6 +44,7 @@ ART = {
     "plant-cell":          biology.plant_cell,
     # any subject — data
     "graph":               charts.line_graph,
+    "graph-panels":        charts.graph_panels,
     "hbar":                charts.hbar_chart,
     "columns":             charts.column_chart,
     "table":               charts.table,

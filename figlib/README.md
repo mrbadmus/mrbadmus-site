@@ -180,3 +180,24 @@ Library-wide changes, each marked `⊕ fix round 1` in the code:
   keeps >= 6 units from the card's left and right edges, measured with
   `style.num_width_wide` (digits at 0.60 em, wider than Noto Serif's).
   A histogram's right margin now fits its last boundary numeral that way.
+
+## Batch 1 of the 174 (MRB-352 run 2, KS3 physics)
+
+Five new builders, specified by the examiner (`force-grid`, `graph-panels`,
+`wave-line`, `longitudinal`, `bar-field`), 40 new KS3 records. Departures
+from the spec's text, each marked ⊕ in the code:
+
+- `bar_field`: a caption gets its own band above its panel (centred inside
+  a 320 panel it sat on the outermost line). With `clip=True`, every line
+  that leaves the card is also drawn MIRRORED and reversed arriving at S —
+  the two-pole field is antisymmetric under x → −x, so this is exact; without
+  it the map crowded N and left S bare, which reads as a stronger N pole.
+  Point letters avoid lines, dots and the magnet. Two options added for
+  sibling figures: `wavy` (each line wiggled about its true path),
+  `inside` (lines drawn through the magnet N → S — a student's error) and
+  `even` (concentric evenly spaced arches — a student's map with no crowding).
+- `graph_panels`: every panel shares one y-axis position (`line_graph(ox=)`)
+  so the time axes are identical, as the spec requires.
+- `p6-wave-six-crests` uses `start_phase=0`: the spec's −0.25 put the crests
+  at u = 0.5, 1.5 … and its dimension (u = 0.25 → 5.25) on zero crossings;
+  its own text says crests at 0.25 … 5.25, which is `start_phase=0`.

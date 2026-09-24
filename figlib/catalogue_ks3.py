@@ -303,4 +303,727 @@ CATALOGUE = [
                 "a filled dot; the dot is lettered P.",
         "params": {},
     },
+    # ── MRB-352 run 2, batch 1: KS3 physics (spec174_ks3_physics.md, plus
+    # five P10-02 siblings drawn by the executor for the adjacent rows) ──
+    {
+        "id": 'p1-cooling-curve',
+        "art": 'graph',
+        "title": 'A graph of temperature in °C against time in minutes: a '
+                 'curved line falling from 80 °C.',
+        "desc": 'The time axis runs from 0 to 30 minutes and the '
+                'temperature axis from 0 to 80 °C. The line starts at 80 '
+                '°C, falls steeply at first, then more and more gently, '
+                'ending just above 20 °C at 30 minutes.',
+        "params": {'series': [{'points': [[0, 80],
+                                          [2, 66.7],
+                                          [4, 56.4],
+                                          [6, 48.3],
+                                          [8, 42.1],
+                                          [10, 37.2],
+                                          [15, 29.2],
+                                          [20, 24.9],
+                                          [25, 22.6],
+                                          [30, 21.4]],
+                               'smooth': True}],
+                   'x_label': 'time',
+                   'x_unit': 'minutes',
+                   'y_label': 'temperature',
+                   'y_unit': '°C',
+                   'x_range': [0, 30],
+                   'y_range': [0, 80],
+                   'x_ticks': [0, 5, 10, 15, 20, 25, 30],
+                   'y_ticks': [0, 20, 40, 60, 80],
+                   'W': 480,
+                   'H': 380,
+                   'y_grid': [0, 10, 20, 30, 40, 50, 60, 70, 80]},
+    },
+    {
+        "id": 'p3-dt-crossing',
+        "art": 'graph',
+        "title": 'A distance–time graph with two straight lines, A and B, '
+                 'that cross.',
+        "desc": 'Time from 0 to 40 s, distance from start from 0 to 80 m. '
+                'Line A rises from 0 m at 0 s to 80 m at 40 s. Line B, '
+                'dashed, rises gently from 30 m at 0 s to 50 m at 40 s. '
+                'They cross at 20 s and 40 m.',
+        "params": {'series': [{'points': [[0, 0], [40, 80]], 'label': 'A'},
+                              {'points': [[0, 30], [40, 50]], 'label': 'B'}],
+                   'x_label': 'time',
+                   'x_unit': 's',
+                   'y_label': 'distance from start',
+                   'y_unit': 'm',
+                   'x_range': [0, 40],
+                   'y_range': [0, 80],
+                   'x_ticks': [0, 10, 20, 30, 40],
+                   'y_ticks': [0, 20, 40, 60, 80],
+                   'W': 480,
+                   'H': 380,
+                   'legend': True},
+    },
+    {
+        "id": 'p3-dt-stop-start',
+        "art": 'graph',
+        "title": 'A distance–time graph made of three straight sections.',
+        "desc": 'Time from 0 to 40 s, distance from start from 0 to 80 m. '
+                'The line rises from 0 m to 40 m between 0 and 20 s, stays '
+                'level at 40 m from 20 to 30 s, then rises to 70 m at 40 s.',
+        "params": {'series': [{'points': [[0, 0], [20, 40], [30, 40], [40, 70]]}],
+                   'x_label': 'time',
+                   'x_unit': 's',
+                   'y_label': 'distance from start',
+                   'y_unit': 'm',
+                   'x_range': [0, 40],
+                   'y_range': [0, 80],
+                   'x_ticks': [0, 10, 20, 30, 40],
+                   'y_ticks': [0, 20, 40, 60, 80],
+                   'W': 480,
+                   'H': 380,
+                   'y_grid': [0, 10, 20, 30, 40, 50, 60, 70, 80]},
+    },
+    {
+        "id": 'p3-dt-same-distance',
+        "art": 'graph',
+        "title": 'A distance–time graph with two straight lines, A and B, '
+                 'from the origin.',
+        "desc": 'Time from 0 to 30 s, distance from start from 0 to 60 m. '
+                'Line A rises from the origin to 50 m at 10 s and ends '
+                'there. Line B, dashed, rises from the origin to 50 m at 25'
+                ' s and ends there. A dot marks the end of each line.',
+        "params": {'series': [{'points': [[0, 0], [10, 50]], 'label': 'A'},
+                              {'points': [[0, 0], [25, 50]], 'label': 'B'}],
+                   'x_label': 'time',
+                   'x_unit': 's',
+                   'y_label': 'distance from start',
+                   'y_unit': 'm',
+                   'x_range': [0, 30],
+                   'y_range': [0, 60],
+                   'x_ticks': [0, 5, 10, 15, 20, 25, 30],
+                   'y_ticks': [0, 10, 20, 30, 40, 50, 60],
+                   'W': 480,
+                   'H': 380,
+                   'legend': True,
+                   'end_dot': True},
+    },
+    {
+        "id": 'p3-dt-there-and-back',
+        "art": 'graph',
+        "title": 'A distance–time graph that rises, stays level, then falls'
+                 ' back to zero.',
+        "desc": 'Time from 0 to 50 s, distance from start from 0 to 100 m. '
+                'The line rises from 0 m to 100 m between 0 and 10 s, stays'
+                ' at 100 m until 30 s, then falls back to 0 m at 50 s.',
+        "params": {'series': [{'points': [[0, 0], [10, 100], [30, 100], [50, 0]]}],
+                   'x_label': 'time',
+                   'x_unit': 's',
+                   'y_label': 'distance from start',
+                   'y_unit': 'm',
+                   'x_range': [0, 50],
+                   'y_range': [0, 100],
+                   'x_ticks': [0, 10, 20, 30, 40, 50],
+                   'y_ticks': [0, 20, 40, 60, 80, 100],
+                   'W': 480,
+                   'H': 380},
+    },
+    {
+        "id": 'p3-dt-three-sections',
+        "art": 'graph',
+        "title": 'A distance–time graph made of three straight sections.',
+        "desc": 'Time from 0 to 40 s, distance from start from 0 to 60 m. '
+                'The line rises from 0 m to 30 m between 0 and 10 s, stays '
+                'at 30 m until 30 s, then rises to 60 m at 35 s.',
+        "params": {'series': [{'points': [[0, 0], [10, 30], [30, 30], [35, 60]]}],
+                   'x_label': 'time',
+                   'x_unit': 's',
+                   'y_label': 'distance from start',
+                   'y_unit': 'm',
+                   'x_range': [0, 40],
+                   'y_range': [0, 60],
+                   'x_ticks': [0, 5, 10, 15, 20, 25, 30, 35, 40],
+                   'y_ticks': [0, 10, 20, 30, 40, 50, 60],
+                   'W': 480,
+                   'H': 380},
+    },
+    {
+        "id": 'p3-dt-late-start',
+        "art": 'graph',
+        "title": 'A distance–time graph with two parallel straight lines, A'
+                 ' and B.',
+        "desc": 'Time from 0 to 60 s, distance from start from 0 to 100 m. '
+                'Line A rises from the origin to 90 m at 60 s. Line B, '
+                'dashed and parallel to A, starts on the time axis at 20 s '
+                'and rises to 60 m at 60 s.',
+        "params": {'series': [{'points': [[0, 0], [60, 90]], 'label': 'A'},
+                              {'points': [[20, 0], [60, 60]], 'label': 'B'}],
+                   'x_label': 'time',
+                   'x_unit': 's',
+                   'y_label': 'distance from start',
+                   'y_unit': 'm',
+                   'x_range': [0, 60],
+                   'y_range': [0, 100],
+                   'x_ticks': [0, 10, 20, 30, 40, 50, 60],
+                   'y_ticks': [0, 20, 40, 60, 80, 100],
+                   'W': 480,
+                   'H': 380,
+                   'legend': True},
+    },
+    {
+        "id": 'p3-dt-steady-45m',
+        "art": 'graph',
+        "title": 'A distance–time graph with one straight line from the '
+                 'origin, ending in a dot.',
+        "desc": 'Time from 0 to 25 s, distance from start from 0 to 50 m, '
+                'with gridlines every 5 m. The line rises from the origin '
+                'and ends at a dot at 20 s and 45 m.',
+        "params": {'series': [{'points': [[0, 0], [20, 45]]}],
+                   'x_label': 'time',
+                   'x_unit': 's',
+                   'y_label': 'distance from start',
+                   'y_unit': 'm',
+                   'x_range': [0, 25],
+                   'y_range': [0, 50],
+                   'x_ticks': [0, 5, 10, 15, 20, 25],
+                   'y_ticks': [0, 10, 20, 30, 40, 50],
+                   'W': 480,
+                   'H': 380,
+                   'y_grid': [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50],
+                   'end_dot': True},
+    },
+    {
+        "id": 'p3-dt-parallel',
+        "art": 'graph',
+        "title": 'A distance–time graph with two parallel straight lines, A'
+                 ' and B.',
+        "desc": 'Time from 0 to 40 s, distance from start from 0 to 100 m. '
+                'Line A rises from 20 m at 0 s to 100 m at 40 s. Line B, '
+                'dashed, rises from 0 m at 0 s to 80 m at 40 s.',
+        "params": {'series': [{'points': [[0, 20], [40, 100]], 'label': 'A'},
+                              {'points': [[0, 0], [40, 80]], 'label': 'B'}],
+                   'x_label': 'time',
+                   'x_unit': 's',
+                   'y_label': 'distance from start',
+                   'y_unit': 'm',
+                   'x_range': [0, 40],
+                   'y_range': [0, 100],
+                   'x_ticks': [0, 10, 20, 30, 40],
+                   'y_ticks': [0, 20, 40, 60, 80, 100],
+                   'W': 480,
+                   'H': 380,
+                   'legend': True},
+    },
+    {
+        "id": 'p3-dt-steep-short',
+        "art": 'graph',
+        "title": 'A distance–time graph with two straight lines, A and B, '
+                 'from the origin.',
+        "desc": 'Time from 0 to 40 s, distance from start from 0 to 60 m. '
+                'Line A rises steeply from the origin and ends at a dot at '
+                '10 s and 40 m. Line B, dashed, rises gently from the '
+                'origin and ends at a dot at 40 s and 60 m.',
+        "params": {'series': [{'points': [[0, 0], [10, 40]], 'label': 'A'},
+                              {'points': [[0, 0], [40, 60]], 'label': 'B'}],
+                   'x_label': 'time',
+                   'x_unit': 's',
+                   'y_label': 'distance from start',
+                   'y_unit': 'm',
+                   'x_range': [0, 40],
+                   'y_range': [0, 60],
+                   'x_ticks': [0, 10, 20, 30, 40],
+                   'y_ticks': [0, 10, 20, 30, 40, 50, 60],
+                   'W': 480,
+                   'H': 380,
+                   'legend': True,
+                   'end_dot': True},
+    },
+    {
+        "id": 'p3-dt-two-scales',
+        "art": 'graph-panels',
+        "title": 'Two distance–time graphs, one above the other, each with '
+                 'one straight line from the origin.',
+        "desc": 'Graph 1: distance axis from 0 to 100 m, time from 0 to 50 '
+                's; the line rises from the origin to 80 m at 50 s. Graph '
+                '2: distance axis from 0 to 1000 m, time from 0 to 50 s; '
+                'the line rises from the origin to 80 m at 50 s, close to '
+                'the time axis.',
+        "params": {'W': 480,
+                   'panels': [{'caption': 'Graph 1',
+                               'series': [{'points': [[0, 0], [50, 80]]}],
+                               'x_label': 'time',
+                               'x_unit': 's',
+                               'y_label': 'distance from start',
+                               'y_unit': 'm',
+                               'x_range': [0, 50],
+                               'y_range': [0, 100],
+                               'x_ticks': [0, 10, 20, 30, 40, 50],
+                               'y_ticks': [0, 20, 40, 60, 80, 100],
+                               'W': 480,
+                               'H': 300},
+                              {'caption': 'Graph 2',
+                               'series': [{'points': [[0, 0], [50, 80]]}],
+                               'x_label': 'time',
+                               'x_unit': 's',
+                               'y_label': 'distance from start',
+                               'y_unit': 'm',
+                               'x_range': [0, 50],
+                               'y_range': [0, 1000],
+                               'x_ticks': [0, 10, 20, 30, 40, 50],
+                               'y_ticks': [0, 200, 400, 600, 800, 1000],
+                               'W': 480,
+                               'H': 300}]},
+    },
+    {
+        "id": 'p3-dt-train-km-min',
+        "art": 'graph',
+        "title": 'A graph of distance in km against time in minutes, made '
+                 'of three straight sections.',
+        "desc": 'Time from 0 to 10 minutes, distance from 0 to 12 km. The '
+                'line rises from the origin to 6 km at 4 minutes, stays at '
+                '6 km until 6 minutes, then rises to 12 km at 10 minutes.',
+        "params": {'series': [{'points': [[0, 0], [4, 6], [6, 6], [10, 12]]}],
+                   'x_label': 'time',
+                   'x_unit': 'minutes',
+                   'y_label': 'distance',
+                   'y_unit': 'km',
+                   'x_range': [0, 10],
+                   'y_range': [0, 12],
+                   'x_ticks': [0, 2, 4, 6, 8, 10],
+                   'y_ticks': [0, 2, 4, 6, 8, 10, 12],
+                   'W': 480,
+                   'H': 380,
+                   'x_grid': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]},
+    },
+    {
+        "id": 'p4-grid-arrows-a-b',
+        "art": 'force-grid',
+        "title": 'A box drawn on squared paper with two arrows, A and B, '
+                 'pointing away from it.',
+        "desc": 'A square box in the middle of a grid of squares. Arrow A '
+                'points left from the box and is 3 squares long. Arrow B '
+                'points right from the box and is 6 squares long.',
+        "params": {'arrows': [{'dir': 'left', 'squares': 3, 'label': 'A'},
+                              {'dir': 'right', 'squares': 6, 'label': 'B'}],
+                   'caption': None},
+    },
+    {
+        "id": 'p4-grid-arrows-30-45-equal',
+        "art": 'force-grid',
+        "title": 'A box drawn on squared paper with two arrows labelled 30 '
+                 'N and 45 N.',
+        "desc": 'A square box in the middle of a grid of squares. An arrow '
+                'labelled 30 N points left from the box and is 4 squares '
+                'long. An arrow labelled 45 N points right from the box and'
+                ' is 4 squares long.',
+        "params": {'arrows': [{'dir': 'left', 'squares': 4, 'label': '30 N'},
+                              {'dir': 'right', 'squares': 4, 'label': '45 N'}],
+                   'caption': None},
+    },
+    {
+        "id": 'p4-grid-arrows-12-20',
+        "art": 'force-grid',
+        "title": 'A box drawn on squared paper with two arrows labelled 12 '
+                 'N and 20 N.',
+        "desc": 'A square box in the middle of a grid of squares. An arrow '
+                'labelled 12 N points left from the box and is 3 squares '
+                'long. An arrow labelled 20 N points right from the box and'
+                ' is 4 squares long.',
+        "params": {'arrows': [{'dir': 'left', 'squares': 3, 'label': '12 N'},
+                              {'dir': 'right', 'squares': 4, 'label': '20 N'}],
+                   'caption': None},
+    },
+    {
+        "id": 'p4-grid-arrows-scale-10n',
+        "art": 'force-grid',
+        "title": 'A box drawn on squared paper with two unlabelled arrows, '
+                 'and a scale under the grid.',
+        "desc": 'A square box in the middle of a grid of squares. One arrow'
+                ' points left from the box and is 3 squares long; the other'
+                ' points right and is 7 squares long. Under the grid: '
+                "'Scale: 1 square = 10 N'.",
+        "params": {'arrows': [{'dir': 'left', 'squares': 3, 'label': None},
+                              {'dir': 'right', 'squares': 7, 'label': None}],
+                   'caption': 'Scale: 1 square = 10 N'},
+    },
+    {
+        "id": 'p4-grid-arrows-50-10-equal',
+        "art": 'force-grid',
+        "title": 'A box drawn on squared paper with two arrows labelled 50 '
+                 'N and 10 N.',
+        "desc": 'A square box in the middle of a grid of squares. An arrow '
+                'labelled 50 N points left from the box and is 5 squares '
+                'long. An arrow labelled 10 N points right from the box and'
+                ' is 5 squares long.',
+        "params": {'arrows': [{'dir': 'left', 'squares': 5, 'label': '50 N'},
+                              {'dir': 'right', 'squares': 5, 'label': '10 N'}],
+                   'caption': None},
+    },
+    {
+        "id": 'p6-wave-dots-045',
+        "art": 'wave-line',
+        "title": 'A wave with two dots on it and a measured distance '
+                 'between the dots.',
+        "desc": 'A smooth wave of two and a half cycles along a straight '
+                'centre line. One dot sits half-way down the right-hand '
+                'side of the first crest, the other at the same place on '
+                'the next crest. A double-headed arrow below the wave, '
+                'between two thin dashed lines dropped from the dots, is '
+                'labelled 0.45 m.',
+        "params": {'cycles': 2.5,
+                   'start_phase': 0.0,
+                   'dots': [0.416667, 1.416667],
+                   'dimension': {'from': 0.416667, 'to': 1.416667, 'label': '0.45 m'}},
+    },
+    {
+        "id": 'p6-wave-six-crests',
+        "art": 'wave-line',
+        "title": 'A wave with six crests and a measured distance from the '
+                 'first crest to the last.',
+        "desc": 'A smooth wave with six crests along a straight centre '
+                'line, starting and ending a quarter-cycle beyond the first'
+                ' and last crests. Thin dashed lines drop from the first '
+                'and sixth crests to a double-headed arrow below the wave '
+                'labelled 1.5 m.',
+        "params": {'cycles': 5.5,
+                   'start_phase': 0.0,
+                   'dots': [],
+                   'dimension': {'from': 0.25, 'to': 5.25, 'label': '1.5 m'}},
+    },
+    {
+        "id": 'p6-sound-six-compressions',
+        "art": 'longitudinal',
+        "title": 'A row of vertical lines bunched together in six places, '
+                 'with a measured distance between the first two bunches.',
+        "desc": 'A long row of thin vertical lines. In six evenly spaced '
+                'places the lines are squeezed close together; between '
+                'those places they are spread apart. The row starts at the '
+                'first squeezed place and ends at the sixth. A '
+                'double-headed arrow below the row, from the centre of the '
+                'first squeezed place to the centre of the second, is '
+                'labelled 30 cm.',
+        "params": {'compressions': 6, 'dimension': {'label': '30 cm'}},
+    },
+    {
+        "id": 'p6-sound-four-compressions',
+        "art": 'longitudinal',
+        "title": 'A row of vertical lines bunched together in four places, '
+                 'with a measured distance between the first two bunches.',
+        "desc": 'As six-compressions, with four evenly spaced squeezed '
+                'places; the arrow between the first two is labelled 22 cm.',
+        "params": {'compressions': 4, 'dimension': {'label': '22 cm'}},
+    },
+    {
+        "id": 'p6-sound-three-compressions',
+        "art": 'longitudinal',
+        "title": 'A row of vertical lines bunched together in three places.',
+        "desc": 'A row of thin vertical lines, squeezed close together in '
+                'three evenly spaced places and spread apart between them. '
+                'The row starts at the first squeezed place and ends at the'
+                ' third.',
+        "params": {'compressions': 3, 'dimension': None},
+    },
+    {
+        "id": 'p8-battery-symbol',
+        "art": 'symbol',
+        "title": 'A circuit symbol in a short length of wire.',
+        "desc": 'Two pairs of upright lines, each pair a long line and a '
+                'shorter line, with a dashed line joining the pairs, in a '
+                'horizontal wire. A plus sign beside the first long line.',
+        "params": {'key': 'battery'},
+    },
+    {
+        "id": 'p8-cell-symbol',
+        "art": 'symbol',
+        "title": 'A circuit symbol in a short length of wire.',
+        "desc": 'One long upright line and one shorter upright line side by'
+                ' side in a horizontal wire, with a plus sign beside the '
+                'long line.',
+        "params": {'key': 'cell'},
+    },
+    {
+        "id": 'p8-resistor-symbol',
+        "art": 'symbol',
+        "title": 'A circuit symbol in a short length of wire.',
+        "desc": 'An empty rectangle in a horizontal wire.',
+        "params": {'key': 'resistor'},
+    },
+    {
+        "id": 'p8-variable-resistor-symbol',
+        "art": 'symbol',
+        "title": 'A circuit symbol: a rectangle in a wire with an arrow '
+                 'drawn diagonally through it.',
+        "desc": 'An empty rectangle in a horizontal wire, with a straight '
+                'arrow crossing it diagonally from lower left to upper '
+                'right, the arrowhead clear of the rectangle.',
+        "params": {'key': 'variable_resistor'},
+    },
+    {
+        "id": 'p8-voltmeter-symbol',
+        "art": 'symbol',
+        "title": 'A circuit symbol in a short length of wire.',
+        "desc": 'A circle with the capital letter V inside it, in a '
+                'horizontal wire.',
+        "params": {'key': 'voltmeter'},
+    },
+    {
+        "id": 'p8-symbols-find-switch',
+        "art": 'symbol-panel',
+        "title": 'Four circuit symbols labelled A, B, C and D.',
+        "desc": 'A grid of two rows. A: a circle with a cross inside it. B:'
+                ' an empty rectangle. C: a circle with the letter A inside '
+                'it. D: two small hollow circles with a lever from one that'
+                ' is lifted clear of the other.',
+        "params": {'items': [['A', 'lamp'],
+                             ['B', 'resistor'],
+                             ['C', 'ammeter'],
+                             ['D', 'switch']],
+                   'cols': 2},
+    },
+    {
+        "id": 'p8-symbols-find-varres',
+        "art": 'symbol-panel',
+        "title": 'Four circuit symbols labelled A, B, C and D.',
+        "desc": 'A grid of two rows. A: an empty rectangle. B: a rectangle '
+                'with an arrow drawn diagonally through it. C: a long and a'
+                ' short upright line side by side. D: a circle with the '
+                'letter V inside it.',
+        "params": {'items': [['A', 'resistor'],
+                             ['B', 'variable_resistor'],
+                             ['C', 'cell'],
+                             ['D', 'voltmeter']],
+                   'cols': 2},
+    },
+    {
+        "id": 'p8-three-cells-lamp',
+        "art": 'circuit',
+        "title": 'A circuit with three cells in a row and a lamp in one '
+                 'loop.',
+        "desc": 'A rectangular loop of wire. Along the top, three cell '
+                'symbols one after another, each a long and a short upright'
+                ' line with a plus sign by the long line, all facing the '
+                'same way, then a circle with a cross inside it.',
+        "params": {'netlist': [['cell'], ['cell'], ['cell'], ['lamp']]},
+    },
+    {
+        "id": 'p8-junction-current-lines',
+        "art": 'graph',
+        "title": 'A graph of current in A against time in s with three '
+                 'lines, P, Q and R.',
+        "desc": 'Time from 0 to 60 s, current from 0 to 0.6 A. Line P, '
+                'solid, starts at 0.5 A and curves gently down to 0.35 A. '
+                'Line Q, dashed, stays level at 0.2 A. Line R, dotted, '
+                'rises in a straight line from 0.2 A to 0.3 A.',
+        "params": {'series': [{'points': [[0, 0.5],
+                                          [10, 0.457],
+                                          [20, 0.425],
+                                          [30, 0.4],
+                                          [40, 0.38],
+                                          [50, 0.364],
+                                          [60, 0.35]],
+                               'smooth': True,
+                               'label': 'P'},
+                              {'points': [[0, 0.2], [60, 0.2]], 'label': 'Q'},
+                              {'points': [[0, 0.2], [60, 0.3]], 'label': 'R'}],
+                   'x_label': 'time',
+                   'x_unit': 's',
+                   'y_label': 'current',
+                   'y_unit': 'A',
+                   'x_range': [0, 60],
+                   'y_range': [0, 0.6],
+                   'x_ticks': [0, 10, 20, 30, 40, 50, 60],
+                   'y_ticks': [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
+                   'W': 480,
+                   'H': 380,
+                   'legend': True},
+    },
+    {
+        "id": 'p8-series-meters-lamp-resistor',
+        "art": 'circuit',
+        "title": 'A series circuit with a cell, two ammeters, a lamp, a '
+                 'resistor and two voltmeters.',
+        "desc": 'A single loop. A cell on the left side. Along the top, in '
+                'order: an ammeter labelled A1, a lamp, an ammeter labelled'
+                ' A2, and a resistor. A voltmeter labelled V1 is connected '
+                'across the lamp and a voltmeter labelled V2 across the '
+                'resistor.',
+        "params": {'netlist': [['ammeter', None, 'A1'],
+                               ['lamp'],
+                               ['voltmeter', None, 'V1'],
+                               ['ammeter', None, 'A2'],
+                               ['resistor'],
+                               ['voltmeter', None, 'V2']],
+                   'left': [['cell']]},
+    },
+    {
+        "id": 'p10-bar-field-line-x',
+        "art": 'bar-field',
+        "title": 'A bar magnet with curved field lines around it, one of '
+                 'them labelled X.',
+        "desc": 'A bar magnet, N on the left and S on the right. Curved '
+                'lines with arrowheads leave the N end and loop round to '
+                'the S end, four above the magnet and three below. One more'
+                ' line below, labelled X, leaves the N end and stops '
+                'partway round, in empty space.',
+        "params": {'panels': [{'caption': None,
+                               'upper': [55, 65, 75, 88],
+                               'lower': [-55, -70, -88],
+                               'faulty': {'angle': -80,
+                                          'fraction': 0.4,
+                                          'label': 'X'},
+                               'points': []}],
+                   'panel_h': 320,
+                   'clip': False},
+    },
+    {
+        "id": 'p10-bar-field-two-drawings',
+        "art": 'bar-field',
+        "title": 'Two drawings, A and B, of the field around the same bar '
+                 'magnet, one above the other.',
+        "desc": 'Each drawing shows a bar magnet, N on the left and S on '
+                'the right, with curved field lines looping from N to S, '
+                'crowded near the ends. Drawing A has three lines above and'
+                ' three below the magnet. Drawing B has six above and six '
+                'below.',
+        "params": {'panels': [{'caption': 'Drawing A',
+                               'upper': [55, 70, 88],
+                               'lower': [-55, -70, -88]},
+                              {'caption': 'Drawing B',
+                               'upper': [50, 57, 64, 71, 79, 88],
+                               'lower': [-50, -57, -64, -71, -79, -88]}],
+                   'panel_h': 320,
+                   'clip': False},
+    },
+    {
+        "id": 'p10-bar-field-points-xy',
+        "art": 'bar-field',
+        "title": 'A bar magnet with field lines and two marked points, X '
+                 'and Y.',
+        "desc": 'A bar magnet, N on the left and S on the right, with '
+                'curved field lines looping from N to S. Point X is a dot '
+                'beyond the N end, on the line through the middle of the '
+                'magnet. Point Y is a dot above the middle of the magnet.',
+        "params": {'panels': [{'caption': None,
+                               'upper': [20, 40, 60, 80, 100, 120, 140, 160, 180],
+                               'lower': [-20, -40, -60, -80, -100, -120, -140, -160],
+                               'points': [{'label': 'X', 'at': 'axis_left', 'r': 1.5},
+                                          {'label': 'Y',
+                                           'at': 'above_centre',
+                                           'r': 1.5}]}],
+                   'panel_h': 380,
+                   'clip': True},
+    },
+    {
+        "id": 'p10-bar-field-line-upper',
+        "art": 'bar-field',
+        "title": 'A bar magnet with curved field lines around it, one of '
+                 'them labelled X.',
+        "desc": 'A bar magnet, N on the left and S on the right. Curved '
+                'lines with arrowheads leave the N end and loop round to '
+                'the S end, three above the magnet and four below. One more'
+                ' line above, labelled X, leaves the N end and stops '
+                'partway round, in empty space.',
+        "params": {'panels': [{'caption': None,
+                               'upper': [55, 67, 88],
+                               'lower': [-55, -65, -75, -88],
+                               'faulty': {'angle': 77,
+                                          'fraction': 0.45,
+                                          'label': 'X'},
+                               'points': []}],
+                   'panel_h': 320,
+                   'clip': False},
+    },
+    {
+        "id": 'p10-bar-field-two-drawings-b',
+        "art": 'bar-field',
+        "title": 'Two drawings, A and B, of the field around the same bar '
+                 'magnet, one above the other.',
+        "desc": 'Each drawing shows a bar magnet, N on the left and S on '
+                'the right, with curved field lines looping from N to S. '
+                'Drawing A has two lines above and two below the magnet. '
+                'Drawing B has seven above and seven below.',
+        "params": {'panels': [{'caption': 'Drawing A',
+                               'upper': [60, 85],
+                               'lower': [-60, -85]},
+                              {'caption': 'Drawing B',
+                               'upper': [52, 58, 64, 70, 76, 82, 88],
+                               'lower': [-52, -58, -64, -70, -76, -82, -88]}],
+                   'panel_h': 320,
+                   'clip': False},
+    },
+    {
+        "id": 'p10-bar-field-points-abcd',
+        "art": 'bar-field',
+        "title": 'A bar magnet with field lines and four marked points, A, '
+                 'B, C and D.',
+        "desc": 'A bar magnet, N on the left and S on the right, with '
+                'curved field lines looping from N to S. Point A is a dot '
+                'well above the magnet, a little right of its middle. Point'
+                ' B is a dot up and to the left, beyond the N end. Point C '
+                'is a dot down and to the right, beyond the S end. Point D '
+                'is a dot just beyond the N end, on the line through the '
+                'middle of the magnet.',
+        "params": {'panels': [{'caption': None,
+                               'points': [{'label': 'A', 'x': 0.45, 'y': 1.6},
+                                          {'label': 'B', 'x': -1.9, 'y': 0.9},
+                                          {'label': 'C', 'x': 1.6, 'y': -1.3},
+                                          {'label': 'D', 'x': -1.15, 'y': 0}],
+                               'upper': [20, 40, 60, 80, 100, 120, 140, 160, 180],
+                               'lower': [-20,
+                                         -40,
+                                         -60,
+                                         -80,
+                                         -100,
+                                         -120,
+                                         -140,
+                                         -160]}],
+                   'panel_h': 380,
+                   'clip': True},
+    },
+    {
+        "id": 'p10-bar-field-wavy',
+        "art": 'bar-field',
+        "title": 'A bar magnet with wavy field lines around it.',
+        "desc": 'A bar magnet, N on the left and S on the right. Lines with'
+                ' arrowheads leave the N end and loop round to the S end, '
+                'three above the magnet and three below, crowded near the '
+                'ends. Every line wiggles from side to side along its '
+                'length.',
+        "params": {'panels': [{'caption': None,
+                               'upper': [55, 68, 88],
+                               'lower': [-55, -68, -88],
+                               'wavy': {'amp': 3.2, 'period': 34}}],
+                   'panel_h': 330,
+                   'clip': False},
+    },
+    {
+        "id": 'p10-bar-field-inside',
+        "art": 'bar-field',
+        "title": 'A bar magnet with field lines around it and two lines '
+                 'drawn inside it.',
+        "desc": 'A bar magnet, N on the left and S on the right. Curved '
+                'lines with arrowheads leave the N end and loop round to '
+                'the S end, three above the magnet and three below. Two '
+                'straight lines are drawn inside the magnet from the N end '
+                'to the S end, each with an arrowhead pointing towards S.',
+        "params": {'panels': [{'caption': None,
+                               'upper': [55, 70, 88],
+                               'lower': [-55, -70, -88],
+                               'inside': 2}],
+                   'panel_h': 320,
+                   'clip': False},
+    },
+    {
+        "id": 'p10-bar-field-even',
+        "art": 'bar-field',
+        "title": "A student's drawing of field lines around a bar magnet: "
+                 'evenly spaced curved lines.',
+        "desc": 'A bar magnet, N on the left and S on the right. Above it, '
+                'five curved lines with arrowheads, each an arch from the N'
+                ' half over to the S half, one inside another with equal '
+                'gaps between them. Five more arches, the same, below the '
+                'magnet.',
+        "params": {'panels': [{'caption': None,
+                               'upper': [],
+                               'lower': [],
+                               'even': {'n': 5, 'step': 20}}],
+                   'panel_h': 300,
+                   'clip': False},
+    },
 ]
