@@ -1676,6 +1676,13 @@ SET_ATTR = {
 # times over. So the attribute becomes an interpolation of a `renderVals` key,
 # computed beside `searchFoot` — Design's own idiom for exactly this sentence
 # one line further down the same overlay.
+# ⊕ Stream D, 24 Sep 2026 (experience run, item 3) — the ONE eyebrow style
+# the class screen's four glance cards share. See the BIND_ATTR entries on
+# nodes 225/240/255/267 below for which node had which value before this and
+# why `--st-caption` (not `--st-accent-text`) is the one they now share.
+_EYEBROW = ("font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+            "text-transform:uppercase;color:var(--st-caption)")
+
 BIND_ATTR = {
     # ── ⊕ MRB-336 §5/§6 · THE ASSIGNMENTS TABLE GROWS AN ACTIONS COLUMN ──
     #
@@ -1884,6 +1891,80 @@ BIND_ATTR = {
     # `build_teacher_port.py` refuses any build in which `c.meta` reappears.
     # Anyone restoring the eyebrow has to restore this row with it — that
     # refusal is what will tell them.
+
+    # ── ⊕ Stream D, 24 Sep 2026 (experience run, item 2) · THE RETEACH ──
+    # CARD'S TITLE STOPS BEING A HEADLINE WHEN THERE IS NOTHING TO SHOW.
+    #
+    # Node 241 is `{{ glance.lastTitle }}` at Design's own
+    # `font:600 21px/1.3 var(--st-ui);color:var(--st-ink)` — real-paper-title
+    # weight, unconditionally. The `renderVals` ruling on `lastTitle`
+    # (LOGIC) now also computes `glance.lastTitleStyle`, string-equal to
+    # Design's own value when there is a paper to reteach from, and equal to
+    # node 266's own quiet register ("No one flagged — the class is keeping
+    # up.") when there is not — same card family, two cards along, so this
+    # is that register applied to its neighbour rather than a new one.
+    241: ("style",
+          "margin-top:10px;font:600 21px/1.3 var(--st-ui);color:var(--st-ink);"
+          "text-wrap:pretty",
+          {"parts": [{"e": "glance.lastTitleStyle"}]},
+          "the reteach card's title/empty-state line — swapped for a "
+          "computed style so the empty state (\"Nothing to reteach yet\") "
+          "renders in the quiet caption register, not the headline one."),
+
+    # ── ⊕ Stream D, 24 Sep 2026 (experience run, item 3) · THE FOUR GLANCE ──
+    # CARD EYEBROWS ARE ONE RULE.
+    #
+    # ⛔ THE ACTUAL DIFFERENCE, FOUND BY READING DESIGN'S OWN FILE (not the
+    # port): of the four glance-card eyebrows — "This week's homework · due
+    # …" (225), "Reteach from the last set" (240), "Keep an eye on" (255),
+    # "Worth a shoutout" (267) — three are `color:var(--st-caption)`, the
+    # neutral grey the design system's own token comment names for exactly
+    # this class of element ("captions, eyebrows, mono labels — 4.51:1 on
+    # ground"). "Keep an eye on" alone is `color:var(--st-accent-text)`, the
+    # rust orange the same token file calls out as "the only orange for
+    # small text" — Design's own delivery draws it that way; this is not a
+    # port-introduced defect. Confirmed with a real build and
+    # `getComputedStyle` on `class-detail-fixture.html` at 1280 and 390.
+    #
+    # ⚠️ DECISION (recorded per the run brief, "make the sensible call"):
+    # the three-out-of-four win, matched to the design system's own
+    # documented purpose for `--st-caption`, not the reverse. These four
+    # cards sit side by side as PEERS on the class screen — none of them is
+    # more urgent than another, and painting one eyebrow in the brand's one
+    # small-text orange reads as an alarm on an ordinary section header,
+    # which is exactly the false-urgency failure mode this run's item 12
+    # names for the engagement chart. `_EYEBROW` is the single declaration
+    # all four now bind to, so a future drift on any one of them is a
+    # BIND_ATTR refusal rather than a silent re-divergence.
+    225: ("style",
+          "font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+          "text-transform:uppercase;color:var(--st-caption)",
+          _EYEBROW,
+          "the homework card's eyebrow — asserted onto the shared "
+          "declaration, unchanged in appearance."),
+    240: ("style",
+          "font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+          "text-transform:uppercase;color:var(--st-caption)",
+          _EYEBROW,
+          "the reteach card's eyebrow — asserted onto the shared "
+          "declaration, unchanged in appearance."),
+    255: ("style",
+          "font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+          "text-transform:uppercase;color:var(--st-accent-text)",
+          _EYEBROW,
+          "\"Keep an eye on\"'s eyebrow — the one that actually differs in "
+          "Design's own file, recoloured onto the shared declaration so all "
+          "four glance cards read as peers."),
+    267: ("style",
+          "margin-top:14px;padding-top:14px;border-top:1px solid "
+          "var(--st-rule-fact);font:500 13px/1.2 var(--st-mono);"
+          "letter-spacing:.16em;text-transform:uppercase;"
+          "color:var(--st-caption)",
+          "margin-top:14px;padding-top:14px;border-top:1px solid "
+          "var(--st-rule-fact);" + _EYEBROW,
+          "the shoutout card's eyebrow — the divider above it is its own "
+          "and stays; only the shared font/colour declaration is asserted "
+          "here. Unchanged in appearance."),
 }
 
 
@@ -6710,12 +6791,17 @@ LOGIC = (
       const best = ps[means.indexOf(Math.max.apply(null, means))];
       const worst = ps[means.indexOf(Math.min.apply(null, means))];""",
      """      const means = ps.map(p => m.colMean[p.idx]);
-      if (!ps.length) { return { ...base, title: k.code + ' — mean by assignment', note: 'Nothing marked yet' }; }
+      if (!ps.length) { return { ...base, title: k.code + ' — mean by assignment', note: 'Nothing to chart yet' }; }
       const best = ps[means.indexOf(Math.max.apply(null, means))];
       const worst = ps[means.indexOf(Math.min.apply(null, means))];""",
      "`means / class`. `Math.max.apply(null, [])` is `-Infinity`, "
      "`indexOf(-Infinity)` is `-1`, and `ps[-1].idx` throws. A class with no "
-     "marked work is not an edge case — it is every class in September."),
+     "marked work is not an edge case — it is every class in September. "
+     "⊕ Stream D, 24 Sep 2026 (experience run, item 2): the note reworded "
+     "from \"Nothing marked yet\" — \"marked\" no longer means \"deadline "
+     "passed\" (stream A), and a note on an empty CHART should say there is "
+     "nothing to chart, not describe a marking state that does not apply "
+     "here."),
 
     ("""        const rows = live.map(c => {
           const g = this.gridFor(c, 1);
@@ -9200,10 +9286,26 @@ componentDidUpdate() {
     # ("No work set in this week"), so this is that pattern applied to its
     # neighbour rather than a new one.
     (dict(method="renderVals", key="lastTitle"),
-     """      lastTitle: lastP ? lastP.title : 'Nothing marked yet',""",
+     """      lastTitle: lastP ? lastP.title : 'Nothing to reteach yet',
+      lastTitleStyle: lastP
+        ? 'margin-top:10px;font:600 21px/1.3 var(--st-ui);color:var(--st-ink);text-wrap:pretty'
+        : 'margin-top:10px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)',""",
      "the reteach card's empty state. A class whose closed papers nobody sat "
      "has nothing to reteach FROM, and must say so rather than render a "
-     "dash. Part of #13."),
+     "dash. Part of #13. ⊕ Stream D, 24 Sep 2026 (experience run, item 2): "
+     "reworded \"Nothing marked yet\" (ambiguous now \"marked\" means "
+     "\"released\", not \"deadline passed\" — stream A) to \"Nothing to "
+     "reteach yet\", and the empty state STOPS RENDERING IN THE CARD'S "
+     "HEADLINE STYLE. Node 241 is Design's own `font:600 21px … "
+     "color:var(--st-ink)` — the same weight and size as a real paper "
+     "title — so an empty class read as a headline claim rather than an "
+     "absence, exactly the failure mode `openTitle`'s sentence three lines "
+     "above was written to avoid for its own card. The quiet state borrows "
+     "node 266's own style byte for byte ('No one flagged — the class is "
+     "keeping up.', the identical register two cards along), keeping only "
+     "node 241's `margin-top:10px` so the empty line sits where the title "
+     "always sits. `glance.lastTitleStyle` is bound onto node 241 by "
+     "BIND_ATTR."),
 
     # ⊕ RULED, MRB-326 post-review, 6 Sep 2026 — "CLASS MEAN" IS SAID ONCE
     # ON THIS SCREEN, AND THE HEADER SAYS IT.
