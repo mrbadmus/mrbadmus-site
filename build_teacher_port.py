@@ -155,6 +155,14 @@ PICKER_JS_NAME = "teacher-picker.js"
 SETWORK_CSS_NAME = "set-work.css"
 SETWORK_JS_NAME = "set-work.js"
 
+# ⊕ Mide's item 9, 24 Sep 2026 — the Answer Breakdown panel. See `breakdown`
+# in page_html, and `AMENDED_ADDITIONS["breakdown-open"]` in
+# teacher_rulings.py for the row control that opens it. Same shape as
+# `setwork` immediately above: an overlay appended to `<body>`, outside the
+# compiled runtime, for the reason `shared/breakdown.js`'s own header gives.
+BREAKDOWN_CSS_NAME = "breakdown.css"
+BREAKDOWN_JS_NAME = "breakdown.js"
+
 # ⊕ "Add pupils (CSV)" — the admin-only CSV entry on a class's own page.
 # See `csv_upload` in page_html. A plain <script src>, the same shape as
 # `picker` below it and for the same reasons: it touches neither
@@ -283,7 +291,8 @@ STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
                 "teacher-picker.js", "rum.js",
                 SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME,
-                "figures-ks3.js", "figures-ks4.js")
+                "figures-ks3.js", "figures-ks4.js",
+                BREAKDOWN_CSS_NAME, BREAKDOWN_JS_NAME)
 
 
 def asset_hash(text):
@@ -388,6 +397,13 @@ PAGES = [
          empty_out="student-detail-empty-fixture.html",
          empty_js="teacher-fixture-student-detail-empty.js",
          title="Student \u00b7 MrBadmusAI",
+         # \u2295 Mide's item 9, 24 Sep 2026 \u2014 the Answer Breakdown panel opens
+         # from a row of THIS screen's submission history only (the button
+         # is `INSERT_AT[(366, 367)]`, inside the student screen's history
+         # table). No other page carries the trigger, so no other page
+         # needs the sheet's CSS/JS \u2014 same reasoning as `setwork`/`picker`
+         # above.
+         breakdown=True,
          overlays=("searchOpen", "bulkOpen", "hasToast"),
          retire="student-detail.html"),
     dict(screen="marking", node=258, out="assignment.html", admin_nav=True,
@@ -5041,6 +5057,18 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
                    % SETWORK_CSS_NAME if spec.get("setwork") else "")
     setwork_js = ("<script src=\"/shared/%s\"></script>\n"
                   % SETWORK_JS_NAME if spec.get("setwork") else "")
+    # ⊕ Mide's item 9, 24 Sep 2026 — the Answer Breakdown panel, on the one
+    # page that opens it. Same split as `setwork` immediately above and for
+    # the identical reason: the CSS goes in <head> because the panel can be
+    # opened the instant the page is interactive, the JS at the foot because
+    # nothing needs it until a row is pressed. Also emitted on the fixture —
+    # `teacher_behaviour.py` presses `breakdown-open` by name there, and
+    # without the script the press would find `window.MRBBreakdown`
+    # undefined rather than opening anything.
+    breakdown_css = ("<link rel=\"stylesheet\" href=\"/shared/%s\">\n"
+                     % BREAKDOWN_CSS_NAME if spec.get("breakdown") else "")
+    breakdown_js = ("<script src=\"/shared/%s\"></script>\n"
+                    % BREAKDOWN_JS_NAME if spec.get("breakdown") else "")
     # ⊕ "Add pupils (CSV)", on ONE of the six. Same shape as `picker` above
     # and emitted on the FIXTURES too, for the same reason every other tag
     # here is: the gates describe a fixture as "the same bytes apart from its
@@ -5084,6 +5112,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "<title>%s</title>\n"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
+        "%s"
         "%s"
         "<style>body{margin:0;background:var(--st-ground,#FBF3E6)}"
         "a{color:var(--ks3-accent-text);text-decoration:none}"
@@ -5302,6 +5331,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
                        LIVE_JS_NAME, spec["fixture_out"])),
            DS_CSS_URL,
            setwork_css,
+           breakdown_css,
            regions,
            json.dumps({"roots": roots, "imports": imports},
                       separators=(",", ":")).replace("<", "\\u003c"),
@@ -5335,7 +5365,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
            "    props: {}\n"
            "  }));\n"
            "};",
-           dep_map + admin_nav + picker + setwork_js + csv_js,
+           dep_map + admin_nav + picker + setwork_js + breakdown_js + csv_js,
            tail)),
         versions)
 
