@@ -1901,31 +1901,30 @@ QUESTIONS = [
     {
         "id": "p7-04-h20",
         "band": "harder",
-        "text": "A textbook diagram of a pinhole camera draws only one "
-                "ray from the top of the object and one from the "
-                "bottom, crossing at the hole. Does this mean only two "
-                "rays are really involved in forming the picture?",
+        "text": "A pinhole camera makes an image of a candle on its screen. "
+                "Which light forms the image?",
         "options": [
-            {"text": "No — every point of the object sends rays out in "
-                     "every direction, and exactly one ray from EACH "
-                     "point gets through the hole", "correct": True},
-            {"text": "Yes — only the very top and bottom points of the object "
-                     "actually contribute any rays at all",
+            {"text": "A narrow beam from every point on the candle, straight "
+                     "through the hole",
+             "correct": True},
+            {"text": "Only two rays: one from the top of the candle and one "
+                     "from the bottom",
              "correct": False,
-             "why": "Every point along the object contributes its own "
-                    "single ray through the hole, not only the two "
-                    "extreme points."},
-            {"text": "Yes, and every other point of the object is "
-                     "invisible in the resulting picture",
+             "why": "Diagrams often draw just those two rays to keep things "
+                    "clear. In fact every point on the candle sends light "
+                    "through the hole, so every point appears in the image."},
+            {"text": "Only light from the flame, because the rest of the "
+                     "candle gives out no light",
              "correct": False,
-             "why": "Every point of the object appears in the picture, "
-                    "each one imaged by its own single ray through the "
-                    "hole."},
-            {"text": "It depends on how wide the hole is drawn in the "
-                     "diagram", "correct": False,
-             "why": "The diagram simplifies for clarity regardless of "
-                    "hole width; in reality, every object point "
-                    "contributes rays whatever the hole size."},
+             "why": "The rest of the candle reflects light from the flame "
+                    "and the room. That light goes through the hole too, so "
+                    "the whole candle appears."},
+            {"text": "Rays that bend as they pass through the hole, so that "
+                     "they cross over",
+             "correct": False,
+             "why": "Light travels in straight lines through the hole. The "
+                    "image is upside down because light from the top travels "
+                    "down through it, not because it bends."},
         ],
         "figure": None,
     },

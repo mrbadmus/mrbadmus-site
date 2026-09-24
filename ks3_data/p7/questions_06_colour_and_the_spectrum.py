@@ -1091,27 +1091,29 @@ QUESTIONS = [
     {
         "id": "p7-06-s13",
         "band": "standard",
-        "text": "A textbook drawing shows the colours leaving a prism "
-                "fanned very widely apart. Why is that drawing not to "
-                "scale?",
+        "text": "White light passes through a glass prism and splits into a "
+                "spectrum. How widely are the colours actually spread as "
+                "they leave the prism?",
         "options": [
-            {"text": "Because a computer screen cannot display any of the "
-             "real spectral colours",
+            {"text": "So widely that red and violet leave in nearly opposite "
+                     "directions",
              "correct": False,
-             "why": "Screen and print colours approximate spectral colours "
-             "well enough; what is exaggerated here is the spread, not the "
-             "colour."},
-            {"text": "Because real dispersion spreads colours by only a "
-             "couple of degrees",
+             "why": "Textbook drawings fan the colours out like this to make "
+                    "them easy to see. Real glass spreads them by only a "
+                    "couple of degrees."},
+            {"text": "By only a couple of degrees between red and violet",
              "correct": True},
-            {"text": "Because the six named colours do not exist",
+            {"text": "Not at all: the colours only separate when they hit a "
+                     "screen",
              "correct": False,
-             "why": "The six names are real, useful labels for parts of a "
-             "real continuous band."},
-            {"text": "Because the prism angle drawn is impossible to build",
+             "why": "The colours separate in the prism, because glass slows "
+                    "each colour by a different amount. A screen only shows "
+                    "where they have gone."},
+            {"text": "By exactly 60°, the angle of the prism",
              "correct": False,
-             "why": "The angle drawn is a normal prism shape; what is "
-             "exaggerated is how far apart the colours are drawn."},
+             "why": "The prism's angle helps set how far the light bends, "
+                    "but the spread between red and violet is far smaller: a "
+                    "couple of degrees."},
         ],
         "figure": None,
     },
