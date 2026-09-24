@@ -535,47 +535,49 @@ LESSON = {
             },
             "title": "Rung 1 · Calculate"},
         "apply": {
-            "q": "Two arrows on a diagram are drawn the same length, one "
-                 "pointing left and one pointing right. What does the "
-                 "diagram say?",
+            "q": "Two forces act on a box: 30 N pushing it to the left and "
+                 "30 N pushing it to the right. What is true?",
             "options": [
-                "The two forces are equal, so the object moves steadily in "
-                "the direction of the right-hand arrow.",
-                "Arrow length is just for tidiness, so the sizes could be "
-                "anything.",
+                "The box must start to move, because two forces are acting "
+                "on it.",
+                "The resultant force is 60 N, because the two forces add "
+                "together.",
                 "The two forces cancel out and stop existing.",
                 "The two forces are equal in size, so the resultant force is "
                 "0 N.",
             ],
             "answer": 3,
             "feedback": {
-                0: "Nothing is left over to move it. Equal opposite arrows "
-                   "mean a resultant of 0 N, and the arrow on the right is "
-                   "fully cancelled.",
-                1: "Length is the measurement. Drawing two unequal forces "
-                   "the same length makes the diagram say something false.",
-                2: "Both are still acting, and both would still break "
-                   "something. It is the resultant that is 0 N, not the "
-                   "forces.",
+                0: "Forces acting is not enough. They are equal and "
+                   "opposite, so the resultant is 0 N and a box at rest "
+                   "stays at rest.",
+                1: "Forces pointing opposite ways subtract, not add: "
+                   "30 N − 30 N = 0 N.",
+                2: "Both forces are still acting, and both would still "
+                   "squash the box. It is the resultant that is 0 N, not "
+                   "the forces.",
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {
-            "q": "A trolley is pulled forwards with 60 N and dragged "
-                 "backwards by 20 N of friction. Describe the arrow diagram "
-                 "you would draw for it, then give the resultant force.",
-            "field_label": "Your description and answer",
-            "placeholder": "I would draw an arrow…",
+            "q": "A trolley is pulled forwards with 60 N while friction drags it "
+                 "backwards with 20 N. Work out the resultant force, giving its "
+                 "size and direction. Then explain why the friction does not just "
+                 "disappear, and what the resultant force does to a trolley that "
+                 "starts at rest.",
+            "field_label": "Your answer",
+            "placeholder": "The resultant force is…",
             "success": [
-                "Both arrows start on the trolley.",
-                "The forward arrow points forwards and the friction arrow "
-                "points backwards.",
-                "The forward arrow is drawn three times as long as the "
-                "friction arrow.",
-                "Both arrows are labelled with their size in newtons.",
-                "Gives the resultant as 40 N forwards, with the unit and the "
-                "direction.",
+                "Works out the resultant as 60 − 20 = 40 N.",
+                "Gives the direction as forwards, the direction of the bigger "
+                "force.",
+                "Says the forces are taken away from each other because they "
+                "point in opposite directions.",
+                "Says the friction is still acting: it cancels 20 N of the pull "
+                "rather than vanishing.",
+                "Says a resultant of 40 N forwards makes a trolley at rest start "
+                "to move forwards and speed up.",
             ],
-            "title": "Rung 3 · Draw and explain"},
+            "title": "Rung 3 · Explain"},
         "produce": {
             "q": "A parachutist is falling. Gravity pulls down with 700 N "
                  "and the parachute pushes up with 700 N. Then the "

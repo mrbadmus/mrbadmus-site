@@ -180,3 +180,48 @@ Library-wide changes, each marked `⊕ fix round 1` in the code:
   keeps >= 6 units from the card's left and right edges, measured with
   `style.num_width_wide` (digits at 0.60 em, wider than Noto Serif's).
   A histogram's right margin now fits its last boundary numeral that way.
+
+## Batch 1 of the 174 (MRB-352 run 2, KS3 physics)
+
+Five new builders, specified by the examiner (`force-grid`, `graph-panels`,
+`wave-line`, `longitudinal`, `bar-field`), 40 new KS3 records. Departures
+from the spec's text, each marked ⊕ in the code:
+
+- `bar_field`: a caption gets its own band above its panel (centred inside
+  a 320 panel it sat on the outermost line). With `clip=True`, every line
+  that leaves the card is also drawn MIRRORED and reversed arriving at S —
+  the two-pole field is antisymmetric under x → −x, so this is exact; without
+  it the map crowded N and left S bare, which reads as a stronger N pole.
+  Point letters avoid lines, dots and the magnet. Two options added for
+  sibling figures: `wavy` (each line wiggled about its true path),
+  `inside` (lines drawn through the magnet N → S — a student's error) and
+  `even` (concentric evenly spaced arches — a student's map with no crowding).
+- `graph_panels`: every panel shares one y-axis position (`line_graph(ox=)`)
+  so the time axes are identical, as the spec requires.
+- `p6-wave-six-crests` uses `start_phase=0`: the spec's −0.25 put the crests
+  at u = 0.5, 1.5 … and its dimension (u = 0.25 → 5.25) on zero crossings;
+  its own text says crests at 0.25 … 5.25, which is `start_phase=0`.
+
+### Batch 1 fix round (examiner + visual review)
+
+- Circuit labels (`physics._clabel`) now take `style.NUM_FONT` when they
+  carry a digit, like every other figlib label. `_clabel` predated
+  `style.text()` and hard-coded Georgia, which is why "A1"/"V1" kept
+  Georgia's x-height "1". The A/V inside a meter is drawn in symbol ink,
+  not label green, so it never reads as an answer letter (AQA p24 draws
+  it as part of the symbol). This touches the five KS4 meter figures too.
+- `force_grid`: the grid is one square wider than the longest arrow on
+  each side (a 7-square arrow no longer ends on the frame), and the grid
+  is #948A70, 3.0:1 on the card — counting squares is the task.
+- `longitudinal`: the row runs 0.4 wavelength past each end compression,
+  so the end compressions are whole bunches; `per_wave` is a parameter
+  (six-compressions uses 7).
+- `bar_field`: pole points 10 units inside the ends (was 20), launch
+  angles re-spread, so lines leave across the pole region and fan; a
+  closed line is one that re-enters the S half. A closed loop that leaves
+  the END FACE cannot fit an unclipped card at true scale (its apex is
+  ~2x the magnet's length away), so the unclipped maps' lines leave the
+  long face near the end, and only the clipped maps show end-face lines.
+  Arrowheads avoid dots and each other; point letters stay on the card;
+  the inside-magnet heads sit 40% along; the `even` map's arches start
+  at the corner; new `reversed` option (a whole line, arrow backwards).

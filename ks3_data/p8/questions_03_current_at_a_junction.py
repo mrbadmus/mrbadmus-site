@@ -1782,34 +1782,35 @@ QUESTIONS = [
          {"text": "A plain parallel junction already does this on its "
                   "own — no extra component is needed", "correct": True},
      ], "figure": None},
-    {"id": "p8-03-h19", "band": "harder",
-     "text": "A junction's main wire reading is plotted over time as a "
-             "component in one branch heats up and its resistance rises "
-             "steadily. The OTHER branch is untouched throughout. "
-             "Describe the shape of the main-wire graph, and the "
-             "unchanged branch's own graph.",
-     "options": [
-         {"text": "The main wire falls steadily as that branch's "
-                  "resistance rises; the unchanged branch stays flat",
-          "correct": True},
-         {"text": "Both graphs fall steadily together, since the "
-                  "heating branch's rising resistance affects the whole "
-                  "junction equally", "correct": False,
-          "why": "The unchanged branch's own resistance and the shared "
-                 "push have not altered, so its own current stays flat "
-                 "however the other branch's resistance rises."},
-         {"text": "The main wire's reading rises steadily, since higher "
-                  "resistance branches somehow draw more current",
-          "correct": False,
-          "why": "Higher resistance in a branch lowers that branch's own "
-                 "current, which lowers the main wire's total, not "
-                 "raises it."},
-         {"text": "The unchanged branch's reading rises to compensate "
-                  "for the heating branch's fall", "correct": False,
-          "why": "A branch does not compensate for a neighbour; the "
-                 "unchanged branch simply keeps drawing what it always "
-                 "drew, flat over time."},
-     ], "figure": None},
+    {
+        "id": "p8-03-h19",
+        "band": "harder",
+        "text": "Two branches are connected in parallel across a cell whose "
+                "p.d. stays the same. A component in one branch heats up and "
+                "its resistance rises steadily; the other branch does not "
+                "change. Which lines on the graph show the current in the "
+                "main wire and in the unchanged branch?",
+        "options": [
+            {"text": "Main wire: P. Unchanged branch: Q.",
+             "correct": True},
+            {"text": "Main wire: Q. Unchanged branch: P.",
+             "correct": False,
+             "why": "The main wire carries the two branch currents added "
+                    "together. One of them is falling, so the total falls: "
+                    "that is P."},
+            {"text": "Main wire: R. Unchanged branch: Q.",
+             "correct": False,
+             "why": "A bigger resistance means a smaller current in that "
+                    "branch, so the total in the main wire falls. It does "
+                    "not rise."},
+            {"text": "Main wire: P. Unchanged branch: R.",
+             "correct": False,
+             "why": "The unchanged branch does not make up for its "
+                    "neighbour. The p.d. across it and its resistance are "
+                    "unchanged, so its current stays the same: Q."},
+        ],
+        "figure": "p8-junction-current-lines",
+    },
     {"id": "p8-03-h20", "band": "harder",
      "text": "A junction has two branches. Branch A is fixed at 0.30 A. "
              "Branch B can be varied. State the RANGE of possible "

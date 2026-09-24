@@ -159,8 +159,9 @@ LESSON = {
                   "it with an <strong>electric field</strong>, and the water "
                   "— which is neutral, and stays neutral — has its own "
                   "charges pushed slightly to one side by that field, so it "
-                  "is pulled in. Pump the air out and the effect is "
-                  "unchanged: the field needs no material to exist in.",
+                  "is pulled in. The field needs no material to exist in: "
+                  "two charged objects in a jar with the air pumped out "
+                  "still push and pull on each other.",
     },
 
     "misconceptions": [
@@ -515,32 +516,33 @@ LESSON = {
     # and only the ORDER moves.
     "ladder": {
         "recall": {
-            "q": "A field map shows arrows pointing outwards in every "
-                 "direction, away from a single object at the centre. What "
-                 "can you say about the object and about a small negative "
-                 "charge released nearby?",
+            "q": "The electric field around a small charged object points "
+                 "outwards, away from it, in every direction. What can you "
+                 "say about the object, and about a small negative charge "
+                 "released nearby?",
             "options": [
                 "The object is negatively charged, and a negative charge "
-                "would be pushed outwards along the arrows.",
+                "would be pushed outwards along the field.",
                 "The object is positively charged, and a negative charge "
-                "would be pushed outwards along the arrows.",
+                "would be pushed outwards along the field.",
                 "The object is positively charged, and a negative charge "
-                "would be pulled inwards, against the arrows.",
-                "You cannot tell the sign from the map, only the strength.",
+                "would be pulled inwards, against the field.",
+                "You cannot tell the sign from the field's direction, only "
+                "its strength.",
             ],
             "answer": 2,
             "feedback": {
-                0: "Arrows point away from positive charges, because they "
-                   "show the push on a small positive charge. And a negative "
-                   "charge always goes against the arrows.",
-                1: "The first half is right. But the arrows show the force "
+                0: "The field points away from a positive charge, because it "
+                   "shows the push on a small positive charge. And a "
+                   "negative charge always goes against the field.",
+                1: "The first half is right. But the field shows the force "
                    "on a positive charge; a negative one feels a force in "
                    "the opposite direction, so it moves inwards.",
-                3: "The direction of the arrows is exactly what tells you "
+                3: "The direction of the field is exactly what tells you "
                    "the sign: outwards means positive, inwards means "
                    "negative.",
             },
-            "title": "Rung 1 · Read the map"},
+            "title": "Rung 1 · Read the field"},
         "apply": {
             "q": "A student says the field between two equal positive "
                  "charges must be at its strongest half-way between them, "
@@ -570,23 +572,24 @@ LESSON = {
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {
-            "q": "A charged comb bends a thin stream of water from a couple "
-                 "of centimetres away, with nothing touching. Explain what "
-                 "is happening, using the word field, and say what would "
-                 "change if the whole thing were done in a vacuum.",
+            "q": "A plastic comb, charged by rubbing it on a jumper, is held "
+                 "a centimetre above some small pieces of paper, and they "
+                 "jump up to it with nothing touching them. Explain what is "
+                 "happening, using the word field, and say what would change "
+                 "if the whole thing were done in a vacuum.",
             "field_label": "Your explanation",
             "placeholder": "The comb is charged, so it fills the space "
                            "around it with…",
             "success": [
-                "Says the comb is charged and fills the space around it with "
-                "an electric field.",
+                "Says the comb is charged and fills the space around it "
+                "with an electric field.",
                 "Says the field has a direction and a strength at every "
                 "point, and is stronger closer to the comb.",
-                "Says the water is neutral overall but its charges are "
-                "pushed to one side, so the near side becomes oppositely "
-                "charged.",
-                "Says the force on the water comes from the field where the "
-                "water is, not from anything crossing the gap.",
+                "Says the paper is neutral overall but the field shifts its "
+                "charges slightly, so the side nearest the comb becomes "
+                "oppositely charged.",
+                "Says the force on the paper comes from the field where the "
+                "paper is, not from anything crossing the gap.",
                 "Says nothing would change in a vacuum, because the field "
                 "does not need air or any material to exist in.",
             ],

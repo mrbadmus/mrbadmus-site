@@ -1682,22 +1682,25 @@ QUESTIONS = [
     {
         "id": "p6-04-h10",
         "band": "harder",
-        "text": "A wave diagram marks 6 consecutive compressions, "
-                "evenly spaced 30 cm apart from each other. What is the "
-                "distance from the first marked compression to the last?",
+        "text": "The diagram shows part of a sound wave. What is the "
+                "distance from the first compression to the last?",
         "options": [
-            {"text": "180 cm", "correct": False,
-             "why": "That multiplies the spacing by 6, one gap too "
-                    "many — there are only 5 gaps between 6 points."},
-            {"text": "150 cm", "correct": True},
-            {"text": "210 cm", "correct": False,
-             "why": "This overshoots even the 6-gap total; there are "
-                    "only 5 gaps between 6 marked points."},
-            {"text": "30 cm", "correct": False,
+            {"text": "180 cm",
+             "correct": False,
+             "why": "That multiplies 30 cm by 6, one gap too many: there are "
+                    "only 5 gaps between 6 compressions."},
+            {"text": "150 cm",
+             "correct": True},
+            {"text": "210 cm",
+             "correct": False,
+             "why": "This overshoots even the 6-gap total; there are only 5 "
+                    "gaps between 6 compressions."},
+            {"text": "30 cm",
+             "correct": False,
              "why": "That is only the gap between two neighbouring "
                     "compressions, not the span across all six."},
         ],
-        "figure": None,
+        "figure": "p6-sound-six-compressions",
     },
     {
         "id": "p6-04-h11",
@@ -1971,22 +1974,25 @@ QUESTIONS = [
     {
         "id": "p6-04-h20",
         "band": "harder",
-        "text": "A diagram marks 4 consecutive compressions, 22 cm "
-                "apart from each other. What is the total span from the "
-                "first to the last?",
+        "text": "The diagram shows part of a sound wave travelling through "
+                "air. How far is it from the first compression to the last?",
         "options": [
-            {"text": "88 cm", "correct": False,
-             "why": "That is one gap too many for 4 marked points, "
-                    "which have only 3 gaps between them."},
-            {"text": "22 cm", "correct": False,
-             "why": "That is only a single gap, not the span across "
-                    "all four points."},
-            {"text": "66 cm", "correct": True},
-            {"text": "44 cm", "correct": False,
+            {"text": "88 cm",
+             "correct": False,
+             "why": "That is one gap too many for 4 compressions, which have "
+                    "only 3 gaps between them."},
+            {"text": "22 cm",
+             "correct": False,
+             "why": "That is only a single gap, not the span across all four "
+                    "compressions."},
+            {"text": "66 cm",
+             "correct": True},
+            {"text": "44 cm",
+             "correct": False,
              "why": "That covers only 2 gaps, one short of the 3 gaps "
-                    "between 4 points."},
+                    "between 4 compressions."},
         ],
-        "figure": None,
+        "figure": "p6-sound-four-compressions",
     },
     {
         "id": "p6-04-h21",
@@ -2242,24 +2248,27 @@ QUESTIONS = [
     {
         "id": "p6-04-h29",
         "band": "harder",
-        "text": "A diagram shows 3 evenly spaced compressions, "
-                "marked from left to right, with nothing shown before the "
-                "first or after the last. How many complete wavelengths are "
-                "shown between the marked compressions?",
+        "text": "The diagram shows part of a sound wave. How many complete "
+                "wavelengths are there between the first compression and the "
+                "last?",
         "options": [
-            {"text": "3", "correct": False,
-             "why": "Counting the compressions themselves gives 3, "
-                    "but the complete wavelengths lie in the gaps between "
-                    "them, and 3 points have only 2 gaps."},
-            {"text": "1", "correct": False,
-             "why": "That undercounts; there are 2 gaps between 3 "
-                    "evenly spaced points, not 1."},
-            {"text": "2", "correct": True},
-            {"text": "4", "correct": False,
-             "why": "That overcounts; 3 points give only 2 gaps "
+            {"text": "3",
+             "correct": False,
+             "why": "Counting the compressions gives 3, but the complete "
+                    "wavelengths lie in the gaps between them, and 3 "
+                    "compressions have only 2 gaps."},
+            {"text": "1",
+             "correct": False,
+             "why": "That undercounts; there are 2 gaps between 3 evenly "
+                    "spaced compressions, not 1."},
+            {"text": "2",
+             "correct": True},
+            {"text": "4",
+             "correct": False,
+             "why": "That overcounts; 3 compressions give only 2 gaps "
                     "between them, not 4."},
         ],
-        "figure": None,
+        "figure": "p6-sound-three-compressions",
     },
     {
         "id": "p6-04-h30",

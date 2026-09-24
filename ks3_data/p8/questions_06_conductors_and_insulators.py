@@ -1117,27 +1117,32 @@ QUESTIONS = [
     {
         "id": "p8-06-s13",
         "band": "standard",
-        "text": "The resistance chart uses a scale where equal steps mean "
-                "×1000, not +1000. Why does that suit this data better than "
-                "an equal-steps-of-one scale?",
+        "text": "Look at the copper wire and plastic ruler bars on the "
+                "chart. Why could an ordinary axis, with equal steps, not "
+                "show both of them clearly?",
         "options": [
-            {"text": "Because ohms can only be measured in multiples of a "
-                     "thousand on any instrument ever built in any school or university laboratory anywhere in the world.", "correct": False,
-             "why": "Resistance can be any value in ohms; the multiples "
-                    "belong to the CHART's scale, not to the unit itself."},
-            {"text": "Because the seven materials span from hundredths of "
-                     "an ohm to trillions of ohms, and a ×1000 scale can "
-                     "show huge ratios in a small space.", "correct": True},
-            {"text": "Because it makes all seven bars come out the same "
-                     "length", "correct": False,
-             "why": "The bars are deliberately different lengths; that "
-                    "difference is the whole point of the chart."},
-            {"text": "Because scientists prefer round numbers to decimals",
+            {"text": "Because resistance can only be measured in multiples "
+                     "of a thousand ohms",
              "correct": False,
-             "why": "Preference is not the reason; the reason is fitting an "
-                    "enormous range onto one readable axis."},
+             "why": "Resistance can take any value in ohms. The thousands "
+                    "belong to this chart's axis, not to the unit."},
+            {"text": "The ruler's bar would be so long that copper's bar "
+                     "would be far too short to see",
+             "correct": True},
+            {"text": "Because an ordinary axis has to start at 1 Ω, and "
+                     "copper's resistance is below that",
+             "correct": False,
+             "why": "An ordinary axis starts at zero, so values below 1 Ω "
+                    "fit on it. The problem is the enormous range between "
+                    "the two."},
+            {"text": "Because the two bars would come out the same length on "
+                     "an ordinary axis",
+             "correct": False,
+             "why": "They would be wildly different: the ruler's bar would "
+                    "be about 40 million million times longer than the "
+                    "copper wire's."},
         ],
-        "figure": None,
+        "figure": "p8-resistance-chart-recap",
     },
     {
         "id": "p8-06-s14",
@@ -1582,29 +1587,30 @@ QUESTIONS = [
     {
         "id": "p8-06-h09",
         "band": "harder",
-        "text": "On the resistance chart, copper's bar looks only slightly "
-                "shorter than nichrome's, even though nichrome resists "
-                "about twenty times more. Why doesn't the bar length show "
-                "that clearly?",
+        "text": "On the chart, nichrome wire's resistance is about twenty "
+                "times copper wire's, yet the ends of their two bars are "
+                "close together. Why?",
         "options": [
-            {"text": "Because the axis is logarithmic — equal DISTANCES "
-                     "represent equal RATIOS, not equal differences, so a "
-                     "modest ratio like twenty makes only a small visual "
-                     "gap.", "correct": True},
-            {"text": "Because the chart-maker measured the two specimens "
-                     "incorrectly", "correct": False,
-             "why": "No measuring error is implied; the twenty-times figure "
-                    "is the true ratio."},
-            {"text": "Because copper and nichrome are actually very close "
-                     "in resistance really once you allow for the scale used to draw the whole chart from end to end", "correct": False,
-             "why": "Twenty times apart is a genuine, large difference, not "
-                    "a close one."},
-            {"text": "Because the chart rounds all small resistances to the "
-                     "same value", "correct": False,
-             "why": "No such rounding is applied; every specimen keeps its "
-                    "own true value."},
+            {"text": "Each step on this axis is ×1000, so ×20 moves less "
+                     "than half a step",
+             "correct": True},
+            {"text": "The two wires were measured incorrectly when the chart "
+                     "was made",
+             "correct": False,
+             "why": "Nothing suggests a measuring error. 0.05 Ω and 1.1 Ω "
+                    "are the true values, about twenty times apart."},
+            {"text": "Copper and nichrome really have very similar "
+                     "resistances",
+             "correct": False,
+             "why": "About twenty times apart is a big difference, not a "
+                    "small one. The axis is what makes it look small."},
+            {"text": "The chart rounds every small resistance to the same "
+                     "value",
+             "correct": False,
+             "why": "No rounding is used. Each bar ends at its own value: "
+                    "0.05 Ω and 1.1 Ω."},
         ],
-        "figure": None,
+        "figure": "p8-resistance-chart-recap",
     },
     {
         "id": "p8-06-h10",
@@ -1922,33 +1928,35 @@ QUESTIONS = [
     {
         "id": "p8-06-h21",
         "band": "harder",
-        "text": "Two materials' bars on the log chart look almost the same "
-                "length, yet a caption says one resists \"about four "
-                "hundred times as much\" as the other. How can bars that "
-                "look similar represent such different numbers?",
+        "text": "Look at the copper wire and nichrome wire bars, then at the "
+                "salt water and tap water bars. Which pair has the bigger "
+                "ratio between its two resistances, and how does the chart "
+                "show it?",
         "options": [
-            {"text": "The caption must be a printing mistake, since "
-                     "equal-length bars mean equal resistance on any "
-                     "chart, whatever scale it is drawn to",
+            {"text": "Copper and nichrome, because small values are spread "
+                     "out more on this axis",
              "correct": False,
-             "why": "On a logarithmic axis, similar bar lengths do NOT mean "
-                    "similar resistances; the caption's number is the true "
-                    "one."},
-            {"text": "The bars are only similar in COLOUR, not in length, "
-                     "once you look closely", "correct": False,
-             "why": "That sidesteps the actual explanation, which is about "
-                    "how the logarithmic scale itself compresses large "
-                    "ratios."},
-            {"text": "Because equal-looking gaps near the high end of a "
-                     "logarithmic axis correspond to far bigger real "
-                     "differences than the same gap near the low end.",
+             "why": "On this axis the same distance means the same ratio, "
+                    "wherever it is. Copper to nichrome is about 20 times; "
+                    "salt water to tap water is 100 times, and its gap is "
+                    "bigger."},
+            {"text": "Neither: ratios cannot be read from this chart without "
+                     "working them out",
+             "correct": False,
+             "why": "On this axis the distance between the ends of two bars "
+                    "shows their ratio directly: the bigger the gap, the "
+                    "bigger the ratio."},
+            {"text": "Salt water and tap water: the ends of their bars are "
+                     "further apart",
              "correct": True},
-            {"text": "Resistance charts always exaggerate small differences "
-                     "on purpose", "correct": False,
-             "why": "A logarithmic scale compresses huge ranges onto one "
-                    "axis; it does not exaggerate small differences."},
+            {"text": "Salt water and tap water, because a gap near the high "
+                     "end stands for a bigger ratio",
+             "correct": False,
+             "why": "The pair is right, but the reason is not. On this axis "
+                    "the same gap means the same ratio at either end. This "
+                    "pair wins because its gap is bigger."},
         ],
-        "figure": None,
+        "figure": "p8-resistance-chart-recap",
     },
     {
         "id": "p8-06-h22",

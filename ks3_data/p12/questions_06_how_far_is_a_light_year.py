@@ -645,14 +645,25 @@ QUESTIONS = [
             "figure": None,
         },
         {
-            "id": 'p12-06-e16',
-            "band": 'easier',
-            "text": 'A formula triangle shows d over c and t. Which rearrangement finds the TIME, given a distance and a speed?',
+            "id": "p12-06-e16",
+            "band": "easier",
+            "text": "Light travels at speed c. The distance d it covers in a "
+                    "time t is d = c × t. Which equation finds the time?",
             "options": [
-                {"text": 't = c × d ÷ 2', "correct": False, "why": 'There is no halving anywhere in this triangle; the extra division by two does not belong.'},
-                {"text": 't = d × c', "correct": False, "why": 'Two things side by side on the triangle multiply; d and c sit apart with a dividing line, so this row divides instead.'},
-                {"text": 't = c ÷ d', "correct": False, "why": 'That has the division the wrong way round; d sits on top of the triangle, so it is d that gets divided.'},
-                {"text": 't = d ÷ c', "correct": True},
+                {"text": "t = d − c",
+                 "correct": False,
+                 "why": "A distance and a speed cannot be subtracted. To "
+                        "undo × c, divide by c."},
+                {"text": "t = d × c",
+                 "correct": False,
+                 "why": "Multiplying by c makes the number bigger. To undo × "
+                        "c, divide by c."},
+                {"text": "t = c ÷ d",
+                 "correct": False,
+                 "why": "That has the division the wrong way round. It is d "
+                        "that is divided by c."},
+                {"text": "t = d ÷ c",
+                 "correct": True},
             ],
             "figure": None,
         },

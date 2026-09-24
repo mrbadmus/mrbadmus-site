@@ -1244,19 +1244,22 @@ QUESTIONS = [
     {
         "id": "p3-01-e24",
         "band": "easier",
-        "text": "In the formula triangle for speed, which letter sits on its "
-                "own above the dividing line?",
+        "text": "Speed = distance ÷ time. Which equation gives the distance?",
         "options": [
-            {"text": "s, for speed", "correct": False,
-             "why": "Speed sits underneath, beside time. Covering it leaves a "
-                    "division."},
-            {"text": "d, for distance", "correct": True},
-            {"text": "t, for time", "correct": False,
-             "why": "Time sits underneath, beside speed. Covering it leaves a "
-                    "division."},
-            {"text": "Both s and t, side by side", "correct": False,
-             "why": "Those two are the pair underneath the line, not the one "
-                    "above it."},
+            {"text": "distance = speed ÷ time",
+             "correct": False,
+             "why": "Dividing by time again makes it smaller. To undo ÷ "
+                    "time, multiply by time."},
+            {"text": "distance = speed × time",
+             "correct": True},
+            {"text": "distance = time ÷ speed",
+             "correct": False,
+             "why": "That is a time divided by a speed, which is not a "
+                    "distance. Multiply the speed by the time."},
+            {"text": "distance = speed + time",
+             "correct": False,
+             "why": "A speed and a time cannot be added together. To undo ÷ "
+                    "time, multiply by time."},
         ],
         "figure": None,
     },

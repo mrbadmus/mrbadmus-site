@@ -18,7 +18,8 @@ The discriminations:
 ⚠️ Rung 1 (horizontal between 20 s and 35 s) and Rung 2 (line A steeper
 than line B) are NOT restated; check 6 of `verify_questions.py` forbids it.
 
-The lesson carries no figures, so every question is figure=None.
+The lesson carries no figures. ⊕ MRB-352 run 2: some questions now carry a
+QUESTION figure from `figlib/catalogue_ks3.py` (the lesson page is untouched).
 """
 
 UNIT = "P3"
@@ -487,8 +488,9 @@ QUESTIONS = [
     {
         "id": "p3-02-e15",
         "band": "easier",
-        "text": "Two journeys are plotted on the same axes and the two lines "
-                "cross at 20 s. What does the crossing point mean?",
+        "text": "The graph shows two journeys, A and B, measured from the "
+                "same starting point. What does the point where the lines "
+                "cross show?",
         "options": [
             {"text": "The two objects collided at that moment",
              "correct": False,
@@ -500,14 +502,14 @@ QUESTIONS = [
             {"text": "The two objects were travelling at the same speed at "
                      "20 s",
              "correct": False,
-             "why": "Equal speed would mean equal steepness, not lines "
-                    "meeting."},
+             "why": "Equal speed would mean equally steep lines. A's line is "
+                    "much steeper than B's."},
             {"text": "One object overtook the other and stopped",
              "correct": False,
-             "why": "Stopping would show as a flat section. A crossing alone "
-                    "says nothing about stopping."},
+             "why": "Stopping shows as a flat line, and neither line goes "
+                    "flat."},
         ],
-        "figure": None,
+        "figure": "p3-dt-crossing",
     },
     {
         "id": "p3-02-e16",
@@ -573,19 +575,23 @@ QUESTIONS = [
     {
         "id": "p3-02-s06",
         "band": "standard",
-        "text": "A graph rises for 20 s, stays flat for 10 s, then rises "
-                "again for 10 s. For how long was the object moving?",
+        "text": "The graph shows one journey. For how long was the object "
+                "moving?",
         "options": [
-            {"text": "30 s, the two rising parts", "correct": True},
-            {"text": "40 s, the whole time on the graph", "correct": False,
+            {"text": "30 s, the two rising parts",
+             "correct": True},
+            {"text": "40 s, the whole time on the graph",
+             "correct": False,
              "why": "The flat 10 s is a stop, and nothing moves during it."},
-            {"text": "10 s, the flat part", "correct": False,
+            {"text": "10 s, the flat part",
+             "correct": False,
              "why": "The flat part is the only time it was NOT moving."},
-            {"text": "20 s, the first rising part only", "correct": False,
-             "why": "The second rise is movement too, so it has to be counted "
-                    "as well."},
+            {"text": "20 s, the first rising part only",
+             "correct": False,
+             "why": "The second rise is movement too, so it has to be "
+                    "counted as well."},
         ],
-        "figure": None,
+        "figure": "p3-dt-stop-start",
     },
     {
         "id": "p3-02-s07",
@@ -633,8 +639,7 @@ QUESTIONS = [
     {
         "id": "p3-02-s09",
         "band": "standard",
-        "text": "On the same axes, line A runs from the origin to 50 m at "
-                "10 s and line B from the origin to 50 m at 25 s. Which is "
+        "text": "The graph shows two journeys, A and B. Which statement is "
                 "true?",
         "options": [
             {"text": "A is faster, and both travelled the same distance",
@@ -643,15 +648,16 @@ QUESTIONS = [
              "correct": False,
              "why": "How long the line looks is not the speed. Steepness is, "
                     "and A is steeper."},
-            {"text": "A travelled further than B", "correct": False,
+            {"text": "A travelled further than B",
+             "correct": False,
              "why": "Both lines finish at 50 m, so both covered the same "
                     "distance."},
             {"text": "They travelled at the same speed for different times",
              "correct": False,
-             "why": "Same distance in different times means different speeds: "
-                    "5 m/s against 2 m/s."},
+             "why": "Same distance in different times means different "
+                    "speeds: 5 m/s against 2 m/s."},
         ],
-        "figure": None,
+        "figure": "p3-dt-same-distance",
     },
     {
         "id": "p3-02-s10",
@@ -836,24 +842,25 @@ QUESTIONS = [
     {
         "id": "p3-02-h05",
         "band": "harder",
-        "text": "A distance-from-start graph rises to 100 m in 10 s, stays "
-                "flat for 20 s, then falls back to 0 m over the next 20 s. "
-                "What is the average speed for the whole 50 s?",
+        "text": "The graph shows a cyclist's distance from the start. What "
+                "is the cyclist's average speed for the whole 50 s?",
         "options": [
             {"text": "0 m/s, because it finished where it started",
              "correct": False,
-             "why": "The graph ends at zero, but the walker really did cover "
-                    "200 m of ground getting there."},
-            {"text": "2 m/s, from 100 m divided by 50 s", "correct": False,
+             "why": "The graph ends at zero, but the cyclist really did "
+                    "cover 200 m of ground getting there."},
+            {"text": "2 m/s, from 100 m divided by 50 s",
+             "correct": False,
              "why": "100 m is the outward leg only; the return is 100 m more "
                     "of travelling."},
-            {"text": "4 m/s, from 200 m divided by 50 s", "correct": True},
+            {"text": "4 m/s, from 200 m divided by 50 s",
+             "correct": True},
             {"text": "10 m/s, the speed of the fastest section",
              "correct": False,
              "why": "That is the outward leg alone, and an average has to "
                     "include the stop and the return."},
         ],
-        "figure": None,
+        "figure": "p3-dt-there-and-back",
     },
     {
         "id": "p3-02-h06",
@@ -950,8 +957,8 @@ QUESTIONS = [
     {
         "id": "p3-02-h10",
         "band": "harder",
-        "text": "A graph rises 30 m in 10 s, is flat for 20 s, then rises "
-                "30 m in 5 s. Which section is fastest, and how fast?",
+        "text": "The graph shows a journey in three sections. Which section "
+                "is the fastest, and what is its speed?",
         "options": [
             {"text": "The first, at 3 m/s, because it comes first",
              "correct": False,
@@ -961,12 +968,14 @@ QUESTIONS = [
              "correct": False,
              "why": "A level line is 0 m/s — the slowest possible, not the "
                     "fastest."},
-            {"text": "The last, at 6 m/s", "correct": True},
-            {"text": "The last, at 30 m/s", "correct": False,
+            {"text": "The last, at 6 m/s",
+             "correct": True},
+            {"text": "The last, at 30 m/s",
+             "correct": False,
              "why": "30 m is the distance covered. It has to be divided by "
                     "the 5 s it took."},
         ],
-        "figure": None,
+        "figure": "p3-dt-three-sections",
     },
     {
         "id": "p3-02-h11",
@@ -1090,9 +1099,10 @@ QUESTIONS = [
     {
         "id": "p3-02-h16",
         "band": "harder",
-        "text": "A pupil's distance-from-home graph shows a walk to school "
-                "800 m away taking 600 s, then six hours at school, then the "
-                "walk home. Which part is horizontal, and at what height?",
+        "text": "A pupil walks 800 m from home to school in 600 s, stays at "
+                "school for six hours, then walks home. On a graph of "
+                "distance from home against time, which part is horizontal, "
+                "and at what height?",
         "options": [
             {"text": "The six hours at school, at a height of 800 m",
              "correct": True},
@@ -1165,25 +1175,26 @@ QUESTIONS = [
     {
         "id": "p3-02-e19",
         "band": "easier",
-        "text": "Two walkers are plotted on the same axes. One line begins at "
-                "0 s and the other begins at 20 s. What does that tell you?",
+        "text": "Walkers A and B set off from the same place. The graph "
+                "shows their journeys. What does the graph tell you about "
+                "walker B?",
         "options": [
-            {"text": "The second walker was 20 m behind the first",
+            {"text": "B was 20 m behind A",
              "correct": False,
              "why": "20 is read off the time axis, so it is a time in "
                     "seconds, not a distance."},
-            {"text": "The second walker was travelling more slowly",
+            {"text": "B was walking more slowly than A",
              "correct": False,
-             "why": "Speed is in the steepness of a line, and neither line's "
-                    "steepness has been given."},
-            {"text": "The second walker's clock was running slowly",
+             "why": "The two lines are equally steep, so the two walkers had "
+                    "the same speed."},
+            {"text": "B's clock was running slowly",
              "correct": False,
              "why": "Both lines share one time axis, so both walkers are "
                     "timed by the same clock."},
-            {"text": "The second walker set off 20 seconds later",
+            {"text": "B set off 20 seconds after A",
              "correct": True},
         ],
-        "figure": None,
+        "figure": "p3-dt-late-start",
     },
     {
         "id": "p3-02-e20",
@@ -1508,22 +1519,25 @@ QUESTIONS = [
     {
         "id": "p3-02-s22",
         "band": "standard",
-        "text": "On a graph the time axis is marked every 5 s, and the line "
-                "reaches 45 m at the fourth mark. What is the average speed "
-                "up to that point?",
+        "text": "The graph shows a journey. What is the average speed for "
+                "the journey?",
         "options": [
-            {"text": "2.25 m/s", "correct": True},
-            {"text": "11.25 m/s", "correct": False,
-             "why": "That divides by 4, the number of marks, instead of by "
-                    "the 20 s they stand for."},
-            {"text": "9 m/s", "correct": False,
-             "why": "That divides by 5 s, the size of one mark, rather than "
-                    "by the whole 20 s."},
-            {"text": "0.44 m/s", "correct": False,
+            {"text": "2.25 m/s",
+             "correct": True},
+            {"text": "900 m/s",
+             "correct": False,
+             "why": "That multiplies the distance by the time. Speed is "
+                    "distance divided by time."},
+            {"text": "9 m/s",
+             "correct": False,
+             "why": "That divides by 5 s, the gap between two marks on the "
+                    "time axis, not by the 20 s the journey took."},
+            {"text": "0.44 m/s",
+             "correct": False,
              "why": "That divides the time by the distance, the wrong way "
                     "round."},
         ],
-        "figure": None,
+        "figure": "p3-dt-steady-45m",
     },
     {
         "id": "p3-02-s23",
@@ -1636,27 +1650,25 @@ QUESTIONS = [
     {
         "id": "p3-02-s28",
         "band": "standard",
-        "text": "Two lines on the same axes are parallel, but one stays 20 m "
-                "above the other throughout. What does that tell you?",
+        "text": "The graph shows two journeys, A and B. What does the graph "
+                "tell you about them?",
         "options": [
-            {"text": "One object was travelling 20 m/s faster than the other",
+            {"text": "A was travelling 20 m/s faster than B",
              "correct": False,
              "why": "A difference in speed would make the two lines spread "
                     "apart rather than stay parallel."},
-            {"text": "One object set off 20 seconds before the other",
+            {"text": "A set off 20 seconds before B",
              "correct": False,
              "why": "20 is read off the distance axis, so it is a gap in "
                     "metres and not in seconds."},
-            {"text": "One object travelled for 20 seconds longer than the "
-                     "other",
+            {"text": "A travelled for 20 seconds longer than B",
              "correct": False,
-             "why": "How long each lasted is read along the bottom, and "
-                    "parallel lines say nothing about it."},
-            {"text": "Both held the same speed, one 20 m further from the "
-                     "start",
+             "why": "Both lines run from 0 s to 40 s, so both journeys "
+                    "lasted the same time."},
+            {"text": "They had the same speed, but A was 20 m ahead",
              "correct": True},
         ],
-        "figure": None,
+        "figure": "p3-dt-parallel",
     },
     {
         "id": "p3-02-s29",
@@ -1681,23 +1693,25 @@ QUESTIONS = [
     {
         "id": "p3-02-s30",
         "band": "standard",
-        "text": "Line A is steeper than line B, but B's line ends higher up "
-                "the distance axis. Which object finished further from the "
-                "start?",
+        "text": "The graph shows two journeys, A and B. Which object "
+                "finished further from the start?",
         "options": [
-            {"text": "B's, because its line ends higher up", "correct": True},
-            {"text": "A's, because its line is steeper", "correct": False,
+            {"text": "B's, because its line ends higher up",
+             "correct": True},
+            {"text": "A's, because its line is steeper",
+             "correct": False,
              "why": "Steepness is speed. How far from the start is read as a "
                     "height, not as a slope."},
-            {"text": "A's, because it was travelling faster", "correct": False,
+            {"text": "A's, because it was travelling faster",
+             "correct": False,
              "why": "A fast object travelling for a short time can finish "
                     "closer than a slow one that keeps going."},
             {"text": "Neither: the two travelled the same distance",
              "correct": False,
-             "why": "The two lines end at different heights, so the two "
+             "why": "A's line ends at 40 m and B's at 60 m, so the two "
                     "distances are different."},
         ],
-        "figure": None,
+        "figure": "p3-dt-steep-short",
     },
 
     # ── MRB-338 night 3 top-up · harder ──────────────────────────────────
@@ -1725,28 +1739,26 @@ QUESTIONS = [
     {
         "id": "p3-02-h19",
         "band": "harder",
-        "text": "The same journey is drawn twice, once with the distance axis "
-                "running to 100 m and once to 1000 m. Why does the line look "
-                "far steeper on the first?",
+        "text": "Graphs 1 and 2 show the same journey. Why does the line "
+                "look much steeper on Graph 1?",
         "options": [
-            {"text": "The object really was travelling faster on that graph",
+            {"text": "The object really was travelling faster when Graph 1 "
+                     "was drawn",
              "correct": False,
-             "why": "One journey cannot have two speeds. Only the drawing has "
-                    "changed."},
-            {"text": "The time axis must have been shortened as well",
+             "why": "One journey cannot have two speeds. Only the drawing "
+                    "has changed."},
+            {"text": "The time axis must have been shortened on Graph 1",
              "correct": False,
-             "why": "Nothing has been said about the time axis, and "
-                    "stretching the distance axis is enough on its own."},
-            {"text": "The distance axis is stretched, so the same climb looks "
-                     "bigger",
+             "why": "Both time axes run from 0 to 50 s. The change is on the "
+                    "distance axis."},
+            {"text": "Graph 1's distance axis is stretched, so the climb "
+                     "looks bigger",
              "correct": True},
-            {"text": "The first graph shows a different, faster part of the "
-                     "journey",
+            {"text": "Graph 1 shows a different, faster part of the journey",
              "correct": False,
-             "why": "Both graphs show the same journey from beginning to "
-                    "end."},
+             "why": "Both graphs show the whole journey, from 0 to 50 s."},
         ],
-        "figure": None,
+        "figure": "p3-dt-two-scales",
     },
     {
         "id": "p3-02-h20",
@@ -1775,22 +1787,26 @@ QUESTIONS = [
     {
         "id": "p3-02-h21",
         "band": "harder",
-        "text": "A train's graph has time in minutes along the bottom and "
-                "distance in kilometres up the side. One section climbs 6 km "
-                "in 4 minutes. What is that speed in metres per second?",
+        "text": "The graph shows part of a train's journey. What is the "
+                "train's speed during the first 4 minutes, in metres per "
+                "second?",
         "options": [
-            {"text": "1.5 m/s", "correct": False,
+            {"text": "1.5 m/s",
+             "correct": False,
              "why": "That is 6 ÷ 4 with neither unit changed, so it is "
                     "kilometres per minute."},
-            {"text": "1500 m/s", "correct": False,
+            {"text": "1500 m/s",
+             "correct": False,
              "why": "The kilometres were changed to metres but the minutes "
                     "were left as minutes."},
-            {"text": "0.025 m/s", "correct": False,
-             "why": "The minutes were changed to seconds but the distance was "
-                    "left in kilometres."},
-            {"text": "25 m/s", "correct": True},
+            {"text": "0.025 m/s",
+             "correct": False,
+             "why": "The minutes were changed to seconds but the distance "
+                    "was left in kilometres."},
+            {"text": "25 m/s",
+             "correct": True},
         ],
-        "figure": None,
+        "figure": "p3-dt-train-km-min",
     },
     {
         "id": "p3-02-h22",
