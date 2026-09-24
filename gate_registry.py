@@ -2074,6 +2074,72 @@ GATES = [
              "token. `--quick` (1280px only, no screenshots) is the gate; "
              "run without `--quick` for the full 1280+390 sweep with "
              "screenshots, used to produce the before/after report."),
+
+    # ── ⊕ Experience run, 24 Sep 2026 (stream G) · keyboard focus ──────
+
+    dict(name="focus_audit",
+         cmd=["python3", "focus_audit.py"],
+         speed="slow",
+         # ⚠️ MARKED `slow`, NOT THE `fast` THE ORIGINAL BRIEF NAMED. `fast`
+         # means "no browser, runs in seconds" (see the `speed` doc at the
+         # top of this file) and `prepush_gate.py` RUNS every fast gate on
+         # every push, unconditionally, inside the hook. This gate serves
+         # the whole repo and drives 17 pages through headless Chrome,
+         # tabbing up to 200 times each — tens of seconds, not seconds,
+         # and exactly the shape `slow` exists for. Making it `fast` would
+         # put a Chrome-driving sweep in the critical path of every push in
+         # the estate, which is the intolerable-hook failure mode this
+         # file's own docstring warns turns into "a gate that stops
+         # watching". Deviation recorded rather than silently followed.
+         watches=["focus_audit.py", "ks3_browser.py",
+                  "build_student_port.py", "build_teacher_port.py",
+                  "student_rulings.py", "student_template.py",
+                  "shared/student-runtime.js", "shared/student-live.js",
+                  "shared/set-work.js", "shared/set-work.css",
+                  "shared/styles.css", "shared/ks3.css", "shared/tokens.css",
+                  "shared/nav.css", "shared/mrbadmus.v2.js",
+                  "teacher_rulings.py", "teacher/today.html",
+                  "teacher/timetable.html", "teacher/admin.html",
+                  "teacher/import.html", "auth.html", "leaderboard.html",
+                  "index.html", "generate_site_v5.py", "build_ks3.py",
+                  "student/class-fixture.html",
+                  "student/assignment-fixture.html",
+                  "teacher_fixtures/*-fixture.html",
+                  "mrbadmus_site/ks3/**"],
+         needs="teacher_fixtures/class-detail-fixture.html",
+         why="production defect, found read-only 24 Sep 2026: a keyboard "
+             "user tabbing to a control on the student class page sees NO "
+             "visible change at all — most of its controls are Design's own "
+             "`<button style=\"all:unset;…\">`, and `all:unset` resets "
+             "`outline-style` to `none` AS AN INLINE DECLARATION, which "
+             "outranks any stylesheet selector regardless of specificity or "
+             "source order. This gate presses a REAL Tab key "
+             "(`Input.dispatchKeyEvent`, never a JS-dispatched "
+             "`KeyboardEvent` — an untrusted event runs no default action "
+             "and would never move focus at all) through every reachable "
+             "control on the student pages, six teacher-port fixtures, the "
+             "Set work sheet, the four hand-written teacher pages, three "
+             "root pages and one KS3 lesson, and compares each one's "
+             "computed outline/box-shadow/background/border focused "
+             "against unfocused. `_FOCUS_RING` in `build_student_port.py` "
+             "(and the equivalent inline rule in `build_teacher_port.py`, "
+             "which needed it for nothing found — see its own comment) is "
+             "the fix: the same `:focus-visible` ring Design already drew "
+             "in `shared/student-ds.css`'s R15, `!important`, which is the "
+             "one thing that can beat an inline style. "
+             "⚠️ THREE RESIDUAL FAILURES ARE KNOWN AND LEFT OPEN, and none "
+             "of them is a no-visible-change ring defect — the ring fix "
+             "closed every one of those. `student_assignment` and "
+             "`ks3_lesson` both redraw their whole mount at least once "
+             "shortly after first paint (`shared/student-runtime.js`'s "
+             "`draw()` on an async data resolve; the chat widget on "
+             "`ks3_lesson` similarly), which can silently discard this "
+             "gate's `data-mrb-fa` tags mid-sweep and read as elements Tab "
+             "never reached — reproduced before this run's CSS change too, "
+             "so it predates it. `root_leaderboard`'s one `UNREACHED` "
+             "(Sign Up) did not reproduce on a repeated isolated run and is "
+             "recorded as flaky rather than fixed blind. All three are "
+             "genuine findings for a follow-up, not gated here."),
 ]
 
 

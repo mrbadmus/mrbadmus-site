@@ -3401,6 +3401,115 @@ _ROW_DONE = (
 )
 
 
+# ── the focus ring, which was there and did nothing ──────────────────────
+#
+# ⊕ Experience run, 24 Sep 2026 (stream G). Production defect: Tab to a
+# control on either student page and NOTHING visibly changes — no outline,
+# no box-shadow, no background, no border. `focus_audit.py` names it
+# precisely: on `student_class` alone, 36 of 41 reachable controls were
+# byte-identical focused and unfocused.
+#
+# `shared/student-ds.css` ALREADY CARRIES A `:focus-visible` RULE — Design's
+# own "R15 — one focus treatment, on everything, no exceptions"
+# (`[data-mode="ks3"] :focus-visible{outline:3px solid var(--ks3-accent)…}`,
+# concatenated in verbatim from her vendored `tokens/shared-ks3.css`, see
+# `ds_css()` above). It is not broken and it is not overridden by a later
+# rule. It LOSES, unconditionally, because most of this page's buttons are
+# Design's own `<button style="all:unset;…">` (`build_student_port.py`'s
+# module docstring: "`all:unset` stays two words" — the markup is ported
+# byte-for-byte, on purpose). `all:unset` resets `outline-style` to its
+# initial value, `none`, AS AN INLINE DECLARATION — and an inline
+# declaration outranks any selector however specific, `!important` or not,
+# UNLESS the competing rule also carries `!important`. Design's R15 rule
+# does not, so on every `all:unset` button the ring computes, matches the
+# element, and loses to two words of inline CSS. This is the same failure
+# shape `_PAGE_STRONG`, `_PIP_ROW` and `_ROW_DONE` above all name for the
+# same reason: a bare declaration cannot beat an inline one, full stop.
+#
+# ⚠️ `!important` IS THE FIX, NOT A CASCADE REORDER. "Move the rule later"
+# does nothing against an inline style, which is not part of the normal
+# cascade order at all — it is checked before author stylesheets regardless
+# of where in the document they sit. The keyword is the only lever that
+# reaches an inline declaration. `:focus-visible` itself is what keeps this
+# safe to make load-bearing: it does not match on a mouse click, so nothing
+# about the pointer experience changes.
+#
+# ⚠️ SAME SELECTOR AS DESIGN'S, DELIBERATELY — not a new one, not a new
+# colour. `--ks3-accent` is the same token `--st-accent` resolves to on
+# these pages (`docs/mrb346` and the token table agree they are the same
+# #E4572E), so this is Design's own ruling made to actually apply, not a
+# competing design decision.
+#
+# BOTH PAGES: every control on both the class view and the assignment page
+# can carry `all:unset`, so this is not scoped like the class-view-only
+# rules above it.
+_FOCUS_RING = (
+    ".rd[data-mode=\"ks3\"] :focus-visible,"
+    "[data-mode=\"ks3\"] :focus-visible{"
+    "outline:3px solid var(--ks3-accent)!important;"
+    "outline-offset:2px!important;"
+    "border-radius:var(--ks3-r-focus)!important}"
+)
+
+
+# ── the same ring, RE-COLOURED inside the bench ───────────────────────────
+#
+# ⊕ Experience run, 24 Sep 2026 (stream G). `--ks3-accent` (#E4572E) is
+# measured against the fixed page ground, #FBF3E6, at 3.34:1 — clears the
+# WCAG non-text 3:1 floor with room to spare, which is why it is the right
+# colour for `_FOCUS_RING` everywhere outside the bench. It is NOT measured
+# against a bench theme's own ground, because it was never meant to sit on
+# one: `student_themes.py`'s own six-theme table (`clay #6B4A33`,
+# `chalk #EFE2CB`, …) exists precisely because the bench repaints its ground
+# per theme and nothing else on the page does. Computed here (WCAG relative
+# luminance, `#E4572E` against each theme's `--b-ground`): harbour 3.43,
+# damson 3.85, graphite 4.92, moss 3.03 — all clear 3:1 — but CLAY 2.15:1
+# and CHALK 2.88:1 do not. A ring that fails the floor on two of six themes
+# is exactly the defect this run exists to close, one surface later.
+#
+# `--b-ink` is the fix, not a new colour: it is EVERY theme's own body-text
+# tone, already asserted by `student_themes.py` against `--b-ground` on all
+# six (the table above — harbour 11.48, clay 7.19, chalk 12.93, moss 10.14,
+# damson 12.87, graphite 16.44), so reusing it as the ring's outline colour
+# clears the 3:1 non-text floor by a wide margin on every theme by
+# construction, without asserting a new pairing this run would have to
+# defend on its own.
+#
+# `[data-bench-surface]` IS THE SCOPE, not `[data-bench-theme]` on the root.
+# `data-bench-theme` lives on `documentElement` so `--b-ink` resolves
+# everywhere on the page once a theme is chosen — including the class
+# view's chrome OUTSIDE the bench, which never left the fixed cream page
+# ground. Ringing THOSE controls in `--b-ink` would move a working ring
+# (3.34:1, `_FOCUS_RING` above) onto a pairing nobody has measured, in the
+# wrong direction: harbour's `--b-ink` is `#FBF3E6`, indistinguishable from
+# the cream page ground it would then sit on. `[data-bench-surface]` is the
+# same attribute the theme bridge above already scopes every other bench
+# remap to, and it is only ever present on nodes truly inside the themed
+# panel.
+#
+# OUT-SPECIFIED, NOT JUST OUT-ORDERED — checked, not assumed. A first draft
+# of this rule read `[data-bench-surface] :focus-visible` (specificity
+# 0,2,0: one attribute, one pseudo-class) and relied on coming later in the
+# cascade than `_FOCUS_RING` to win a tie. It never won anything: measured
+# with a REAL Tab press (`Input.dispatchKeyEvent` — a script `.focus()` call
+# does not reliably engage `:focus-visible` at all, so an earlier check
+# using one silently proved nothing), the ring on a bench control stayed
+# `#E4572E` on clay, chalk AND harbour alike. `_FOCUS_RING`'s selector list
+# starts with `.rd[data-mode="ks3"] :focus-visible` — a CLASS plus an
+# attribute plus the pseudo-class, specificity 0,3,0 — which beats 0,2,0
+# regardless of source order, so it was never a tie to begin with. This
+# selector matches that shape exactly, one compound deeper, so 0,4,0 beats
+# it outright and needs no help from ordering.
+#
+# CLASS VIEW ONLY, like `_THEME_BRIDGE` beside it: the assignment page has
+# no bench and `[data-bench-surface]` cannot exist on it.
+_FOCUS_RING_BENCH = (
+    ".rd[data-mode=\"ks3\"] [data-bench-surface] :focus-visible,"
+    "[data-mode=\"ks3\"] [data-bench-surface] :focus-visible{"
+    "outline-color:var(--b-ink)!important}"
+)
+
+
 # ── the eyebrow, which is the most-used label on both pages ──────────────
 #
 # ⊕ RULED BY MIDE, 22 Sep 2026 — first-week fixes (type scale). See
@@ -3805,9 +3914,9 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
            # ASSIGNMENT-ONLY, checked rather than assumed: the class view's
            # template has no `"fig"` node (`INSERT_AT["class view"]` never
            # names one), so `.mrb-figure-scroll` cannot match there.
-           (_EYEBROW_TYPE +
-            ((_THEME_BRIDGE + _PAGE_STRONG + _PIP_ROW + _CARD_FIT
-              + _ROW_DONE)
+           (_EYEBROW_TYPE + _FOCUS_RING +
+            ((_THEME_BRIDGE + _FOCUS_RING_BENCH + _PAGE_STRONG + _PIP_ROW
+              + _CARD_FIT + _ROW_DONE)
              if spec["page"] == "class view"
              else (bench_css + _THEME_BRIDGE + _Q_EYEBROW
                    + _FIGURE_SCROLL))),
