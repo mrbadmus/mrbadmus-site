@@ -559,22 +559,25 @@ LESSON = {
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {
-            "q": "A trolley is pulled forwards with 60 N and dragged "
-                 "backwards by 20 N of friction. Describe the arrow diagram "
-                 "you would draw for it, then give the resultant force.",
-            "field_label": "Your description and answer",
-            "placeholder": "I would draw an arrow…",
+            "q": "A trolley is pulled forwards with 60 N while friction drags it "
+                 "backwards with 20 N. Work out the resultant force, giving its "
+                 "size and direction. Then explain why the friction does not just "
+                 "disappear, and what the resultant force does to a trolley that "
+                 "starts at rest.",
+            "field_label": "Your answer",
+            "placeholder": "The resultant force is…",
             "success": [
-                "Both arrows start on the trolley.",
-                "The forward arrow points forwards and the friction arrow "
-                "points backwards.",
-                "The forward arrow is drawn three times as long as the "
-                "friction arrow.",
-                "Both arrows are labelled with their size in newtons.",
-                "Gives the resultant as 40 N forwards, with the unit and the "
-                "direction.",
+                "Works out the resultant as 60 − 20 = 40 N.",
+                "Gives the direction as forwards, the direction of the bigger "
+                "force.",
+                "Says the forces are taken away from each other because they "
+                "point in opposite directions.",
+                "Says the friction is still acting: it cancels 20 N of the pull "
+                "rather than vanishing.",
+                "Says a resultant of 40 N forwards makes a trolley at rest start "
+                "to move forwards and speed up.",
             ],
-            "title": "Rung 3 · Draw and explain"},
+            "title": "Rung 3 · Explain"},
         "produce": {
             "q": "A parachutist is falling. Gravity pulls down with 700 N "
                  "and the parachute pushes up with 700 N. Then the "

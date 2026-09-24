@@ -656,20 +656,20 @@ CATALOGUE = [
                    'caption': None},
     },
     {
-        "id": 'p6-wave-dots-045',
+        "id": 'p6-wave-dots-two-waves',
         "art": 'wave-line',
-        "title": 'A wave with two dots on it and a measured distance '
-                 'between the dots.',
+        "title": 'A wave with two dots on it two whole waves apart, and a '
+                 'measured distance between the dots.',
         "desc": 'A smooth wave of two and a half cycles along a straight '
                 'centre line. One dot sits half-way down the right-hand '
                 'side of the first crest, the other at the same place on '
-                'the next crest. A double-headed arrow below the wave, '
-                'between two thin dashed lines dropped from the dots, is '
-                'labelled 0.45 m.',
+                'the third crest, so two whole waves lie between them. A '
+                'double-headed arrow below the wave, between two thin '
+                'dashed lines dropped from the dots, is labelled 0.90 m.',
         "params": {'cycles': 2.5,
                    'start_phase': 0.0,
-                   'dots': [0.416667, 1.416667],
-                   'dimension': {'from': 0.416667, 'to': 1.416667, 'label': '0.45 m'}},
+                   'dots': [0.416667, 2.416667],
+                   'dimension': {'from': 0.416667, 'to': 2.416667, 'label': '0.90 m'}},
     },
     {
         "id": 'p6-wave-six-crests',
@@ -693,12 +693,14 @@ CATALOGUE = [
                  'with a measured distance between the first two bunches.',
         "desc": 'A long row of thin vertical lines. In six evenly spaced '
                 'places the lines are squeezed close together; between '
-                'those places they are spread apart. The row starts at the '
-                'first squeezed place and ends at the sixth. A '
+                'those places they are spread apart. The row starts a '
+                'little before the first squeezed place and ends a little '
+                'after the sixth. A '
                 'double-headed arrow below the row, from the centre of the '
                 'first squeezed place to the centre of the second, is '
                 'labelled 30 cm.',
-        "params": {'compressions': 6, 'dimension': {'label': '30 cm'}},
+        "params": {'compressions': 6, 'dimension': {'label': '30 cm'},
+                   'per_wave': 7},
     },
     {
         "id": 'p6-sound-four-compressions',
@@ -715,8 +717,8 @@ CATALOGUE = [
         "title": 'A row of vertical lines bunched together in three places.',
         "desc": 'A row of thin vertical lines, squeezed close together in '
                 'three evenly spaced places and spread apart between them. '
-                'The row starts at the first squeezed place and ends at the'
-                ' third.',
+                'The row starts a little before the first squeezed place '
+                'and ends a little after the third.',
         "params": {'compressions': 3, 'dimension': None},
     },
     {
@@ -852,21 +854,20 @@ CATALOGUE = [
                    'left': [['cell']]},
     },
     {
-        "id": 'p10-bar-field-line-x',
+        "id": 'p10-bar-field-line-reversed',
         "art": 'bar-field',
         "title": 'A bar magnet with curved field lines around it, one of '
                  'them labelled X.',
         "desc": 'A bar magnet, N on the left and S on the right. Curved '
-                'lines with arrowheads leave the N end and loop round to '
-                'the S end, four above the magnet and three below. One more'
-                ' line below, labelled X, leaves the N end and stops '
-                'partway round, in empty space.',
+                'lines leave the N end and loop round to the S end, four '
+                'above the magnet and four below, each with an arrowhead. '
+                'The outermost line below, labelled X, also runs from the '
+                'N end to the S end, but its arrowhead points back towards '
+                'N; every other arrowhead points towards S.',
         "params": {'panels': [{'caption': None,
-                               'upper': [55, 65, 75, 88],
-                               'lower': [-55, -70, -88],
-                               'faulty': {'angle': -80,
-                                          'fraction': 0.4,
-                                          'label': 'X'},
+                               'upper': [38, 52, 66, 80],
+                               'lower': [-38, -54, -70],
+                               'reversed': {'angle': -86, 'label': 'X'},
                                'points': []}],
                    'panel_h': 320,
                    'clip': False},
@@ -882,11 +883,11 @@ CATALOGUE = [
                 ' three below the magnet. Drawing B has six above and six '
                 'below.',
         "params": {'panels': [{'caption': 'Drawing A',
-                               'upper': [55, 70, 88],
-                               'lower': [-55, -70, -88]},
+                               'upper': [45, 65, 85],
+                               'lower': [-45, -65, -85]},
                               {'caption': 'Drawing B',
-                               'upper': [50, 57, 64, 71, 79, 88],
-                               'lower': [-50, -57, -64, -71, -79, -88]}],
+                               'upper': [38, 48, 58, 68, 78, 87],
+                               'lower': [-38, -48, -58, -68, -78, -87]}],
                    'panel_h': 320,
                    'clip': False},
     },
@@ -900,8 +901,8 @@ CATALOGUE = [
                 'beyond the N end, on the line through the middle of the '
                 'magnet. Point Y is a dot above the middle of the magnet.',
         "params": {'panels': [{'caption': None,
-                               'upper': [20, 40, 60, 80, 100, 120, 140, 160, 180],
-                               'lower': [-20, -40, -60, -80, -100, -120, -140, -160],
+                               'upper': [35, 50, 65, 80, 100, 120, 140, 160, 180],
+                               'lower': [-35, -50, -65, -80, -100, -120, -140, -160],
                                'points': [{'label': 'X', 'at': 'axis_left', 'r': 1.5},
                                           {'label': 'Y',
                                            'at': 'above_centre',
@@ -920,9 +921,9 @@ CATALOGUE = [
                 ' line above, labelled X, leaves the N end and stops '
                 'partway round, in empty space.',
         "params": {'panels': [{'caption': None,
-                               'upper': [55, 67, 88],
-                               'lower': [-55, -65, -75, -88],
-                               'faulty': {'angle': 77,
+                               'upper': [40, 58, 86],
+                               'lower': [-40, -56, -72, -86],
+                               'faulty': {'angle': 72,
                                           'fraction': 0.45,
                                           'label': 'X'},
                                'points': []}],
@@ -939,11 +940,11 @@ CATALOGUE = [
                 'Drawing A has two lines above and two below the magnet. '
                 'Drawing B has seven above and seven below.',
         "params": {'panels': [{'caption': 'Drawing A',
-                               'upper': [60, 85],
-                               'lower': [-60, -85]},
+                               'upper': [50, 80],
+                               'lower': [-50, -80]},
                               {'caption': 'Drawing B',
-                               'upper': [52, 58, 64, 70, 76, 82, 88],
-                               'lower': [-52, -58, -64, -70, -76, -82, -88]}],
+                               'upper': [36, 45, 54, 63, 72, 80, 87],
+                               'lower': [-36, -45, -54, -63, -72, -80, -87]}],
                    'panel_h': 320,
                    'clip': False},
     },
@@ -964,15 +965,14 @@ CATALOGUE = [
                                           {'label': 'B', 'x': -1.9, 'y': 0.9},
                                           {'label': 'C', 'x': 1.6, 'y': -1.3},
                                           {'label': 'D', 'x': -1.15, 'y': 0}],
-                               'upper': [20, 40, 60, 80, 100, 120, 140, 160, 180],
-                               'lower': [-20,
-                                         -40,
-                                         -60,
+                               'upper': [35, 50, 65, 80, 100, 120, 140, 180],
+                               'lower': [-35,
+                                         -50,
+                                         -65,
                                          -80,
                                          -100,
                                          -120,
-                                         -140,
-                                         -160]}],
+                                         -140]}],
                    'panel_h': 380,
                    'clip': True},
     },
@@ -986,8 +986,8 @@ CATALOGUE = [
                 'ends. Every line wiggles from side to side along its '
                 'length.',
         "params": {'panels': [{'caption': None,
-                               'upper': [55, 68, 88],
-                               'lower': [-55, -68, -88],
+                               'upper': [42, 64, 86],
+                               'lower': [-42, -64, -86],
                                'wavy': {'amp': 3.2, 'period': 34}}],
                    'panel_h': 330,
                    'clip': False},
@@ -1003,8 +1003,8 @@ CATALOGUE = [
                 'straight lines are drawn inside the magnet from the N end '
                 'to the S end, each with an arrowhead pointing towards S.',
         "params": {'panels': [{'caption': None,
-                               'upper': [55, 70, 88],
-                               'lower': [-55, -70, -88],
+                               'upper': [42, 64, 86],
+                               'lower': [-42, -64, -86],
                                'inside': 2}],
                    'panel_h': 320,
                    'clip': False},
@@ -1022,7 +1022,7 @@ CATALOGUE = [
         "params": {'panels': [{'caption': None,
                                'upper': [],
                                'lower': [],
-                               'even': {'n': 5, 'step': 20}}],
+                               'even': {'n': 5, 'step': 13}}],
                    'panel_h': 300,
                    'clip': False},
     },

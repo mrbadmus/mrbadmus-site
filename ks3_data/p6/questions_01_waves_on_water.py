@@ -1111,13 +1111,14 @@ QUESTIONS = [
         "options": [
             {"text": "0.225 m",
              "correct": False,
-             "why": "Halving gives a distance only part of the way along one "
-                    "wave. The two dots sit at the same point on "
-                    "neighbouring waves, so they are one wavelength apart."},
+             "why": "That counts each crest and each trough as a whole wave. "
+                    "A crest and a trough together make one wave, and there "
+                    "are two whole waves between the dots."},
             {"text": "0.90 m",
              "correct": False,
-             "why": "Doubling would be two whole wavelengths. The dots are "
-                    "on neighbouring waves, one wavelength apart."},
+             "why": "That is the distance between the dots, but the dots "
+                    "are two whole waves apart, so one wavelength is half "
+                    "of it."},
             {"text": "0.45 m",
              "correct": True},
             {"text": "It cannot be told without the amplitude",
@@ -1125,7 +1126,7 @@ QUESTIONS = [
              "why": "Wavelength is a distance along the wave and does not "
                     "depend on how high the wave rises."},
         ],
-        "figure": "p6-wave-dots-045",
+        "figure": "p6-wave-dots-two-waves",
     },
     {
         "id": "p6-01-e18",

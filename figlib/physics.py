@@ -21,6 +21,7 @@ Usage:
 
 import math
 from .style import STYLE, Canvas, export   # inherit style + export
+from .style import label_font as _label_font
 
 ST = STYLE["stroke"]
 LBL = STYLE["label"]
@@ -43,11 +44,15 @@ def _dot(c, x, y, r=6):
 
 
 def _clabel(c, x, y, txt, size=22, fill=None, weight="bold"):
+    """⊕ MRB-352 b1 fix: a circuit label carrying a digit ("A1", "V1",
+    "10 Ω") takes style.NUM_FONT like every other figlib label. This helper
+    predates style.text() and hard-coded Georgia, whose old-style "1" is
+    x-height tall and read as "AI"/"VI" at phone size (visual review 5)."""
     fill = fill or LBL
     txt = (str(txt).replace("&", "&amp;")
                    .replace("<", "&lt;").replace(">", "&gt;"))
     c.S.append(
-        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{FONT}" '
+        f'<text x="{x:.1f}" y="{y:.1f}" font-family="{_label_font(txt)}" '
         f'font-size="{size}" fill="{fill}" text-anchor="middle" '
         f'font-weight="{weight}">{txt}</text>')
 
@@ -200,7 +205,7 @@ def sym_ammeter(c, x, y, name=None, value=None):
     c.S.append(
         f'<circle cx="{x}" cy="{y}" r="26" fill="none" '
         f'stroke="{ST}" stroke-width="3"/>')
-    _clabel(c, x, y+9, "A", 26)
+    _clabel(c, x, y+9, "A", 26, ST)   # ⊕ symbol ink: part of the symbol (AQA p24), never an answer letter
     if value:
         _clabel(c, x, y+50, value, 22, RED)
 
@@ -211,7 +216,7 @@ def sym_voltmeter(c, x, y, name=None, value=None, leads=True):
     c.S.append(
         f'<circle cx="{x}" cy="{y}" r="26" fill="none" '
         f'stroke="{ST}" stroke-width="3"/>')
-    _clabel(c, x, y+9, "V", 26)
+    _clabel(c, x, y+9, "V", 26, ST)   # ⊕ symbol ink: part of the symbol (AQA p24), never an answer letter
     if value:
         _clabel(c, x, y+50, value, 22, RED)
 
@@ -3024,7 +3029,7 @@ def crate_forces(forces, W=460, label=None):
 # ====================================================================
 from .style import text_width as _q_tw  # noqa: E402
 
-_GRIDLINE = "#D5CDB8"      # the oscilloscope's grid colour — one house grid
+_FORCE_GRID = "#948A70"    # ⊕ b1 fix: 3.0:1 on the card — squares are counted
 
 
 def force_grid(arrows, caption=None, W=456):
@@ -3033,18 +3038,30 @@ def force_grid(arrows, caption=None, W=456):
     `arrows` is [{"dir": "left"|"right", "squares": n, "label": str|None}].
     Nothing else is drawn: no resultant, no sum, no scale unless `caption`
     states one."""
+    # ⊕ b1 fix (examiner m2, visual 3): the grid is always ONE square wider
+    # than the longest arrow on each side, so no arrow tip ever lands on
+    # the frame, where it merges with the border and a pupil cannot tell
+    # whether the arrow ends there. Up to 6 squares this is the old
+    # 16-column grid, byte for byte; a 7-square arrow widens it to 18.
+    longest = max([int(a["squares"]) for a in arrows] + [6])
+    sq, rows, gx, gy = 26, 6, 20, 20
+    cols = 2 * (longest + 1) + 2
+    W = max(W, int(2 * gx + cols * sq))
     fs = q_font(W)
-    sq, cols, rows, gx, gy = 26, 16, 6, 20, 20
     H = int(gy + rows * sq + (40 if caption else 20))
     c = Canvas(W, H)
+    # ⊕ b1 fix (visual 4): counting squares IS the task, so the grid is
+    # drawn at 3:1 against the card (WCAG 1.4.11), not the faint house grid.
+    grid = _FORCE_GRID
     for i in range(cols + 1):
-        _q_line(c, gx + i * sq, gy, gx + i * sq, gy + rows * sq, _GRIDLINE,
+        _q_line(c, gx + i * sq, gy, gx + i * sq, gy + rows * sq, grid,
                 q_stroke(W, 1.2), None, "butt")
     for j in range(rows + 1):
-        _q_line(c, gx, gy + j * sq, gx + cols * sq, gy + j * sq, _GRIDLINE,
+        _q_line(c, gx, gy + j * sq, gx + cols * sq, gy + j * sq, grid,
                 q_stroke(W, 1.2), None, "butt")
     _q_box(c, gx, gy, cols * sq, rows * sq, "none", ST, q_stroke(W, 2))
-    bx0, bx1 = gx + 7 * sq, gx + 9 * sq
+    bx0 = gx + (cols // 2 - 1) * sq
+    bx1 = bx0 + 2 * sq
     by0 = gy + 2 * sq
     _q_box(c, bx0, by0, 2 * sq, 2 * sq, TINT["sand"], ST, 3)
     y = by0 + sq
@@ -3123,7 +3140,8 @@ def _dim_arrow(c, xa, xb, y, W, head=12):
 def longitudinal(compressions, dimension=None, W=460, H=None, per_wave=12):
     """A sound wave drawn as a row of vertical lines, squeezed together at
     evenly spaced compressions and spread apart between them. The row
-    starts on the first compression and ends on the last. `dimension`
+    starts 0.4 of a wavelength before the first compression and ends 0.4
+    after the last, so each compression is a whole bunch. `dimension`
     {label} measures from the first compression's centre to the second's.
     No text but that label, no shading, no direction arrow."""
     n = int(compressions)
@@ -3132,14 +3150,19 @@ def longitudinal(compressions, dimension=None, W=460, H=None, per_wave=12):
     fs = q_font(W)
     H = H or (190 if dimension else 150)
     c = Canvas(W, H)
-    lam = (W - 60) / (n - 1 + 0.3)
+    # ⊕ b1 fix (visual 2, examiner m3): the row runs 0.4 of a wavelength
+    # past the first and last compressions, so every compression — the
+    # two at the ends included — is a full, symmetric bunch rather than a
+    # half-sliver at the edge. The dimension still runs centre to centre.
+    pad = 0.4
+    lam = (W - 60) / (n - 1 + 2 * pad)
 
     def X(u):
-        return 30 + 0.15 * lam + lam * (u - 0.12 * math.sin(2 * math.pi * u))
+        return 30 + pad * lam + lam * (u - 0.12 * math.sin(2 * math.pi * u))
 
-    for k in range(-2, per_wave * (n - 1) + 3):
+    for k in range(-per_wave, per_wave * n + 1):
         u = k / float(per_wave)
-        if -0.15 <= u <= (n - 1) + 0.15:
+        if -pad - 1e-9 <= u <= (n - 1) + pad + 1e-9:
             _q_line(c, X(u), 30, X(u), 120, ST, q_stroke(W, 2.5), None, "butt")
     if dimension:
         xa, xb = X(0.0), X(1.0)
@@ -3151,7 +3174,12 @@ def longitudinal(compressions, dimension=None, W=460, H=None, per_wave=12):
 
 
 # ── bar_field: the field of a bar magnet, traced, not drawn by eye ────────
-_BF_POLES = ((1.0, -80.0), (-1.0, 80.0))     # (+N, -S), 20 inside each end
+# ⊕ b1 fix (visual 9): the pole points sit 10 units inside each end, not
+# 20, and the catalogue's launch angles were re-spread, so the lines leave
+# across the end region and fan out (the outermost from the corner and the
+# end face), as in a textbook map — not all from one spot on the long face.
+_BF_POLE_X = 90.0
+_BF_POLES = ((1.0, -_BF_POLE_X), (-1.0, _BF_POLE_X))   # (+N, -S)
 _BF_HALF_L, _BF_HALF_H = 100.0, 25.0
 
 
@@ -3175,9 +3203,15 @@ def _bf_trace(angle, inside_panel, h=2.0, max_steps=6000):
     at `angle` degrees (from +x towards S, anticlockwise = up). Returns
     (points in magnet coords, y up; closed) — closed when the trace comes
     within 22 units of the S pole point; not closed when it leaves the
-    panel (`inside_panel(x, y)` false)."""
+    panel (`inside_panel(x, y)` false).
+
+    ⊕ b1 fix: "closed" now means the trace has re-entered the magnet on
+    its S half (it arrives at the S end), rather than coming within 22
+    units of the S pole point — with the poles 10 units in, that radius
+    reached 12 units BEYOND the end face, and a line along the axis would
+    have stopped short of the magnet."""
     a = math.radians(angle)
-    x, y = -80.0 + math.cos(a), math.sin(a)
+    x, y = -_BF_POLE_X + math.cos(a), math.sin(a)
     pts = [(x, y)]
     for _ in range(max_steps):
         k1 = _bf_dir(x, y)
@@ -3189,7 +3223,7 @@ def _bf_trace(angle, inside_panel, h=2.0, max_steps=6000):
         if not inside_panel(x, y):
             return pts, False
         pts.append((x, y))
-        if math.hypot(x - 80.0, y) < 22.0:
+        if x > 0 and _bf_inside(x, y):
             return pts, True
     raise ValueError("bar_field: a %g° line neither closed nor left the "
                      "panel" % angle)
@@ -3304,6 +3338,9 @@ def bar_field(panels, W=460, panel_h=300, clip=False):
       * ⊕ `even` {n, step} — a student's evenly spaced map: n concentric
         semicircles above and below, radius step·k, from the N half to the S
         half, with no crowding anywhere (for p10-02-e25).
+      * ⊕ `reversed` {angle, label} — one more COMPLETE line, N to S, with
+        its arrowhead pointing back towards N (a student's error), lettered
+        beside it a quarter of the way along, where clearest (p10-02-h13).
       * ⊕ `inside` — n straight lines drawn INSIDE the magnet from the N end
         to the S end, arrowheads pointing to S (a student's addition), for
         p10-02-h26. Nothing is drawn inside the magnet otherwise.
@@ -3336,7 +3373,17 @@ def bar_field(panels, W=460, panel_h=300, clip=False):
         def C(q, cx=cx, cy=cy):
             return (cx + q[0], cy - q[1])
 
-        drawn = []
+        # the marked points first: an arrowhead must keep clear of them
+        dots = []
+        for pt in p.get("points", []):
+            if "at" in pt:
+                ux, uy = _BF_AT[pt["at"]]
+                px, py = ux * pt["r"] * _BF_HALF_L, uy * pt["r"] * _BF_HALF_L
+            else:
+                px, py = pt["x"] * _BF_HALF_L, pt["y"] * _BF_HALF_L
+            dots.append((C((px, py)), pt["label"]))
+
+        drawn = []          # (run, label, reversed-arrow)
         for ang in list(p.get("upper", [])) + list(p.get("lower", [])):
             pts, closed = _bf_trace(ang, inside_panel)
             if not closed and not clip:
@@ -3346,7 +3393,7 @@ def bar_field(panels, W=460, panel_h=300, clip=False):
             run = _bf_outside_run(pts)
             if len(run) < 2:
                 continue
-            drawn.append((run, None))
+            drawn.append((run, None, False))
             if not closed:
                 # ⊕ a line cut at the panel edge would have come round to S
                 # off the card. The two-pole field is mirror-antisymmetric
@@ -3354,29 +3401,43 @@ def bar_field(panels, W=460, panel_h=300, clip=False):
                 # the card is this one mirrored and reversed. Without it a
                 # clipped map crowds lines at N and leaves S bare — which
                 # reads as a stronger N pole than S (it is not).
-                drawn.append(([(-x, y) for x, y in reversed(run)], None))
+                drawn.append(([(-x, y) for x, y in reversed(run)], None,
+                              False))
         ev = p.get("even")
         if ev:
             # a student's EVENLY SPACED map: concentric semicircles on the
-            # magnet's long faces, radius step·k, leaving the N half and
-            # entering the S half — equally spaced everywhere, no crowding
+            # magnet's long faces, leaving the N half and entering the S
+            # half — equally spaced everywhere, no crowding.
+            # ⊕ b1 fix (visual 9): the OUTERMOST arch now starts at the
+            # magnet's corner and each one inside it is `step` smaller, so
+            # the arches leave near the ends (the innermost used to start
+            # 20 units from the magnet's middle).
             for side in (1, -1):
-                for k in range(1, int(ev["n"]) + 1):
-                    r = ev["step"] * k
+                for k in range(int(ev["n"])):
+                    r = _BF_HALF_L - ev["step"] * k
                     arc = [(-r * math.cos(math.pi * i / 90.0),
                             side * (_BF_HALF_H + r * math.sin(math.pi * i / 90.0)))
                            for i in range(91)]
-                    drawn.append((arc, None))
+                    drawn.append((arc, None, False))
         f = p.get("faulty")
         if f:
             pts, _ = _bf_trace(f["angle"], inside_panel)
             run = _bf_outside_run(pts)
             cum = _arc(run)
             run = _cut(run, cum, cum[-1] * f["fraction"])
-            drawn.append((run, f.get("label")))
+            drawn.append((run, f.get("label"), False))
+        rv = p.get("reversed")
+        if rv:
+            # ⊕ b1 fix (examiner m4): one COMPLETE line, N to S like the
+            # rest, whose arrowhead points the wrong way — back towards N.
+            pts, closed = _bf_trace(rv["angle"], inside_panel)
+            if not closed:
+                raise ValueError("bar_field: the reversed line must close")
+            drawn.append((_bf_outside_run(pts), rv.get("label"), True))
         wv = p.get("wavy")
-        allpts = []
-        for run, label in drawn:
+        allpts, heads, line_labels = [], [], []
+        dot_xy = [xy for xy, _ in dots]
+        for run, label, backwards in drawn:
             if wv:
                 run = _wiggle(run, wv["amp"], wv["period"])
             cpts = [C(q) for q in run]
@@ -3387,13 +3448,35 @@ def bar_field(panels, W=460, panel_h=300, clip=False):
                        'stroke-linejoin="round"/>'
                        % (" ".join("%.1f,%.1f" % q for q in dec), ACC, sw))
             cum = _arc(cpts)
-            (hx, hy), (ux, uy) = _at_length(cpts, cum, cum[-1] / 2)
+            # ⊕ b1 fix (visual 1, 7): the arrowhead goes at the middle of
+            # the line unless that is within 18 units of a marked point or
+            # of another line's arrowhead — then the nearest clear place
+            # along the line. A dot no longer half-hides a head, and heads
+            # on neighbouring lines no longer stack into a column.
+            best = None
+            for frac in (0.5, 0.42, 0.58, 0.35, 0.65, 0.28, 0.72):
+                (hx, hy), (ux, uy) = _at_length(cpts, cum, cum[-1] * frac)
+                clear = min([math.hypot(hx - a, hy - b)
+                             for a, b in dot_xy + heads] + [99.0])
+                if best is None or clear > best[0]:
+                    best = (clear, hx, hy, ux, uy)
+                if clear >= 18:
+                    break
+            _, hx, hy, ux, uy = best
+            heads.append((hx, hy))
+            if backwards:
+                ux, uy = -ux, -uy
             _head(c, hx, hy, ux, uy, ACC)
-            if label:
+            if label and not backwards:
                 (ex, ey), (ux, uy) = _at_length(cpts, cum, cum[-1])
                 d = 14 + fs * 0.5
                 _q_text(c, ex + ux * d, ey + uy * d + fs * 0.35, label, fs,
                         LBL, "bold")
+            elif label:
+                # lettered beside the line a quarter of the way along it,
+                # wherever is clearest (placed with the point letters below)
+                line_labels.append((_at_length(cpts, cum, cum[-1] * 0.25)[0],
+                                    label))
         # the magnet, over the lines' inner ends
         _pole(c, cx - _BF_HALF_L, cy - _BF_HALF_H, _BF_HALF_L, 2 * _BF_HALF_H,
               "N", fsp)
@@ -3405,15 +3488,8 @@ def bar_field(panels, W=460, panel_h=300, clip=False):
                 yy = cy + (-1 if i == 0 else 1) * 13
             _q_line(c, cx - _BF_HALF_L, yy, cx + _BF_HALF_L, yy, ACC, sw,
                     None, "butt")
-            _head(c, cx, yy, 1.0, 0.0, ACC, 11)
-        dots = []
-        for pt in p.get("points", []):
-            if "at" in pt:
-                ux, uy = _BF_AT[pt["at"]]
-                px, py = ux * pt["r"] * _BF_HALF_L, uy * pt["r"] * _BF_HALF_L
-            else:
-                px, py = pt["x"] * _BF_HALF_L, pt["y"] * _BF_HALF_L
-            dots.append((C((px, py)), pt["label"]))
+            # ⊕ b1 fix (visual 8): 40% along from N, clear of the N|S join
+            _head(c, cx - 0.2 * _BF_HALF_L, yy, 1.0, 0.0, ACC, 11)
         # obstacles a letter must keep clear of: every line, the magnet's
         # outline (sampled) and every dot
         obst = list(allpts)
@@ -3431,15 +3507,21 @@ def bar_field(panels, W=460, panel_h=300, clip=False):
                        f'fill="{ST}" stroke="none"/>')
             _bf_letter(c, X, Y, label, fs, obst,
                        (cx - _BF_HALF_L, cy - _BF_HALF_H, cx + _BF_HALF_L,
-                        cy + _BF_HALF_H))
+                        cy + _BF_HALF_H), (W, H))
+        for (X, Y), label in line_labels:
+            _bf_letter(c, X, Y, label, fs, obst,
+                       (cx - _BF_HALF_L, cy - _BF_HALF_H, cx + _BF_HALF_L,
+                        cy + _BF_HALF_H), (W, H))
         top = ptop + panel_h
     return c.svg()
 
 
-def _bf_letter(c, X, Y, label, fs, lines, body):
+def _bf_letter(c, X, Y, label, fs, lines, body, card=None):
     """Letter a point where it is clearest of every drawn line, the magnet
     and every dot, preferring above-left (the house position) when that is
-    clear enough. A position on the magnet itself is never taken."""
+    clear enough. A position on the magnet itself is never taken, nor
+    (⊕ b1 fix, visual M1) one whose letter would touch or cross the card's
+    edge — "A" used to sit on the top border of points-abcd."""
     tw = _q_tw(label, fs, True)
     best, best_d = None, -1.0
     base = [(-16, -12), (16, -12), (-16, 14 + fs * 0.7), (16, 14 + fs * 0.7),
@@ -3450,6 +3532,9 @@ def _bf_letter(c, X, Y, label, fs, lines, body):
         box = (anchor_x - 3, Y + dy - fs * 0.75, anchor_x + tw + 3, Y + dy + 3)
         if (box[0] < body[2] and box[2] > body[0] and box[1] < body[3]
                 and box[3] > body[1]):
+            continue
+        if card and (box[0] < 6 or box[1] < 6 or box[2] > card[0] - 6
+                     or box[3] > card[1] - 6):
             continue
         d = min((max(box[0] - px, 0, px - box[2]) ** 2 +
                  max(box[1] - py, 0, py - box[3]) ** 2) ** 0.5

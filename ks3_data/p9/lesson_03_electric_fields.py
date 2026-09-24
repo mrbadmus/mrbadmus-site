@@ -159,8 +159,9 @@ LESSON = {
                   "it with an <strong>electric field</strong>, and the water "
                   "— which is neutral, and stays neutral — has its own "
                   "charges pushed slightly to one side by that field, so it "
-                  "is pulled in. Pump the air out and the effect is "
-                  "unchanged: the field needs no material to exist in.",
+                  "is pulled in. The field needs no material to exist in: "
+                  "two charged objects in a jar with the air pumped out "
+                  "still push and pull on each other.",
     },
 
     "misconceptions": [
@@ -571,23 +572,24 @@ LESSON = {
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {
-            "q": "A charged comb bends a thin stream of water from a couple "
-                 "of centimetres away, with nothing touching. Explain what "
-                 "is happening, using the word field, and say what would "
-                 "change if the whole thing were done in a vacuum.",
+            "q": "A charged balloon is held a centimetre above some small "
+                 "pieces of paper, and they jump up to it with nothing "
+                 "touching them. Explain what is happening, using the word "
+                 "field, and say what would change if the whole thing were "
+                 "done in a vacuum.",
             "field_label": "Your explanation",
-            "placeholder": "The comb is charged, so it fills the space "
+            "placeholder": "The balloon is charged, so it fills the space "
                            "around it with…",
             "success": [
-                "Says the comb is charged and fills the space around it with "
-                "an electric field.",
+                "Says the balloon is charged and fills the space around it "
+                "with an electric field.",
                 "Says the field has a direction and a strength at every "
-                "point, and is stronger closer to the comb.",
-                "Says the water is neutral overall but its charges are "
-                "pushed to one side, so the near side becomes oppositely "
-                "charged.",
-                "Says the force on the water comes from the field where the "
-                "water is, not from anything crossing the gap.",
+                "point, and is stronger closer to the balloon.",
+                "Says the paper is neutral overall but the field shifts its "
+                "charges slightly, so the side nearest the balloon becomes "
+                "oppositely charged.",
+                "Says the force on the paper comes from the field where the "
+                "paper is, not from anything crossing the gap.",
                 "Says nothing would change in a vacuum, because the field "
                 "does not need air or any material to exist in.",
             ],

@@ -1742,29 +1742,29 @@ QUESTIONS = [
                 "around a bar magnet. The field line labelled X has been "
                 "drawn wrongly. Why is it wrong?",
         "options": [
-            {"text": "It is not wrong: a field line can stop where the field "
-                     "becomes too weak to measure",
+            {"text": "It is not wrong: a field line may point either way, "
+                     "as long as it joins the two poles",
              "correct": False,
-             "why": "The field gets weaker further away, but a field line "
-                    "never just stops. Every line carries on round to the "
-                    "south pole."},
-            {"text": "Every field line must carry on round to the south "
-                     "pole, making a closed loop",
+             "why": "A field line has one direction, set by the magnet. "
+                    "Outside the magnet it always points away from N and "
+                    "towards S, as every other line in the drawing does."},
+            {"text": "Its arrow points back towards N, but outside a magnet "
+                     "the field runs from N to S",
              "correct": True},
-            {"text": "It should start at the south pole, because outside a "
-                     "magnet field lines run from south to north",
+            {"text": "It should stop before the south pole, because the "
+                     "field runs out a long way from the magnet",
              "correct": False,
-             "why": "Outside a magnet, field lines run from the north pole "
-                    "to the south pole, so starting at N is right. The fault "
-                    "is that X stops in mid-air."},
+             "why": "A field line never stops in mid-air, so X is right to "
+                    "reach S. The fault is its arrow, which points back "
+                    "towards N."},
             {"text": "It is curved, and field lines around a bar magnet must "
                      "always be straight",
              "correct": False,
              "why": "The other lines in the drawing are curved too, and that "
-                    "is correct for a bar magnet. The fault is that X stops "
-                    "before reaching the south pole."},
+                    "is correct for a bar magnet. The fault is X's arrow, "
+                    "which points towards N instead of away from it."},
         ],
-        "figure": "p10-bar-field-line-x",
+        "figure": "p10-bar-field-line-reversed",
     },
     {
         "id": "p10-02-h14",
