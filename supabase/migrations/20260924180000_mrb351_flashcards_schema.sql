@@ -337,11 +337,19 @@ alter table public.flashcard_reviews     enable row level security;
 -- library can grey a deleted deck that is still in use); a colleague sees a
 -- live deck shared with the school; a school admin sees every live deck in
 -- the school. Pupils see none — they read the snapshot, never the deck.
+--
+-- ⚠️ "A COLLEAGUE" MEANS STAFF, AND THE POLICY MUST SAY SO. Pupils belong to
+-- the school too, so `school_id = my school AND shared_with_school` alone
+-- hands every pupil every shared deck — answers included, for decks not yet
+-- set. The who-sees-what proof on TEST caught exactly that (4 decks, 35
+-- cards visible to a pupil) before it reached production. The role check is
+-- a hoisted InitPlan, evaluated once per query.
 drop policy if exists flashcard_decks_select on public.flashcard_decks;
 create policy flashcard_decks_select on public.flashcard_decks for select using (
   created_by = (select auth.uid())
   or (deleted_at is null
       and school_id = (select public.auth_user_school_id())
+      and (select public.auth_user_role()) is distinct from 'student'
       and (shared_with_school or (select public.auth_user_has_scope('school_admin'))))
 );
 drop policy if exists flashcard_decks_insert on public.flashcard_decks;

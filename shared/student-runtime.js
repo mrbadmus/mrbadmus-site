@@ -142,6 +142,26 @@
       }
       return;
     }
+    /* ⊕ MRB-351 — FORMULA TEXT. `student_rulings.SET_FX` turns a single
+       `{{ expr }}` text child into `{t:"fx", e:expr}`: the SAME wrapper span
+       an interpolation gets (so the structure is unchanged), holding the
+       string drawn through `window.MRBFormulae` — CO2 as CO<sub>2</sub>. DOM
+       nodes only, never markup. With no formulae.js on the page (Design's
+       fixture) it is exactly the plain interpolation it replaced. */
+    if (node.t === "fx") {
+      var fv = lookup(node.e, scope, ctx.miss);
+      fv = (fv === null || fv === undefined) ? "" : String(fv);
+      var fw = document.createElement("span");
+      fw.className = "sc-interp";
+      if (window.MRBFormulae && typeof window.MRBFormulae.nodes === "function") {
+        var fn = window.MRBFormulae.nodes(fv, document);
+        for (var fi = 0; fi < fn.length; fi++) { fw.appendChild(fn[fi]); }
+      } else {
+        fw.appendChild(document.createTextNode(fv));
+      }
+      into.appendChild(fw);
+      return;
+    }
     if (node.t === "if") {
       if (lookup(node.e, scope, null)) {
         kids(node, scope, ctx, into, svg);

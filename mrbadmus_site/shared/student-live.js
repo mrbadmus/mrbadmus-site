@@ -80,7 +80,11 @@
        reads them from exactly there rather than retyping them. So does this.
        Last in the list with `ks3-lesson-urls.js` because nothing above it
        needs it, and it is loaded in the same parallel wave, not in series. */
-    "/shared/shoutouts.js"
+    "/shared/shoutouts.js",
+    /* ⊕ MRB-351 — flashcard homework: the formula renderer the card's text
+       goes through, and the engine the overlay reads in homework mode. */
+    "/shared/formulae.js",
+    "/shared/flashcard-homework.js"
   ];
 
   /* ── plain words, for when the page cannot render ───────────────────────
@@ -658,6 +662,139 @@
      ⚠️ `carryParams` FIRST, then the id — `class` and `env` must survive,
      for the reasons `carryParams` gives, and appending to its output is the
      only way to keep that one answer about which parameters travel. */
+  /* ⊕ MRB-351 — a flashcard deck's address: this class page, with a
+     fragment the page listens for (`#cards=<assignment id>`). */
+  function cardsHrefFor(id) {
+    return id ? "#cards=" + encodeURIComponent(id) : "";
+  }
+
+  /* ⊕ MRB-351 — FLASHCARD HOMEWORK, THE LIVE HALF.
+
+     The overlay (student_rulings.py, "FLASHCARD HOMEWORK") and its engine
+     (shared/flashcard-homework.js) know nothing about the network. This
+     gives the engine its ONE transport — `flashcard_record()`, the only
+     write path for a pupil's cards, ratings and timings — opens a deck
+     from a `#cards=<id>` address, and adds the two things a phone needs
+     that a template cannot say: swipe to rate, and a card whose text
+     shrinks to fit rather than spilling. Wired once per page. */
+  var hwWired = false;
+  function wireHomework(sb) {
+    var H = window.MRBHomework;
+    if (hwWired || !H) { return; }
+    hwWired = true;
+    H.transport = function (id, events) {
+      return sb.rpc("flashcard_record", { p_assignment: id, p_events: events || [] })
+        .then(function (r) { if (r.error) { throw r.error; } return r.data; });
+    };
+    /* A sitting has ended: have what the pupil WROTE checked against the
+       model answer, in the background. Fire and forget — the flag is the
+       teacher's, and nothing on this page waits for it. */
+    H.onSessionEnd = function (id) {
+      var C = window.MrBadmusConfig || {};
+      if (!C.SUPABASE_URL) { return; }
+      sb.auth.getSession().then(function (res) {
+        var t = res && res.data && res.data.session && res.data.session.access_token;
+        if (!t) { return; }
+        fetch(C.SUPABASE_URL + "/functions/v1/flashcard-answer-check", {
+          method: "POST", keepalive: true,
+          headers: { "Content-Type": "application/json", Authorization: "Bearer " + t,
+                     apikey: C.SUPABASE_ANON_KEY || "" },
+          body: JSON.stringify({ assignment_id: id })
+        }).catch(function () {});
+      }).catch(function () {});
+    };
+
+    var opened = false, first = true;
+    function openFromHash() {
+      var m = /^#cards=([0-9a-f-]{36})$/i.exec(window.location.hash || "");
+      if (m && typeof window.__MRB_OPEN_HW__ === "function") {
+        opened = true;
+        window.__MRB_OPEN_HW__(m[1].toLowerCase());
+      }
+    }
+    window.addEventListener("hashchange", openFromHash);
+
+    function active() { return H.active || null; }
+
+    /* Space turns the card; 1 · 2 · 3 are Not yet · Nearly · Got it. Never
+       while the pupil is typing their answer. */
+    document.addEventListener("keydown", function (ev) {
+      var e = active();
+      if (!e || !document.querySelector('[data-hw="strip"]')) { return; }
+      var tag = (ev.target && ev.target.tagName) || "";
+      if (tag === "TEXTAREA" || tag === "INPUT") { return; }
+      var v = e.view();
+      if ((ev.key === " " || ev.key === "Enter") && v.phase === "review" && !v.revealed) {
+        ev.preventDefault(); e.flip(); return;
+      }
+      if (v.revealed && v.card) {
+        var r = { "1": "not_yet", "2": "nearly", "3": "got_it" }[ev.key];
+        if (r) { ev.preventDefault(); e.rate(r); }
+      }
+    });
+
+    /* The overlay is rebuilt on every state change, and Design's entrance
+       (`fcIn` / `fcUp`) replays on each rebuild — a flicker on every tap.
+       It plays once, when the overlay opens, and not again while it stays
+       open. The practice deck gets the same fix for free. */
+    var overlayWasOpen = false;
+    window.__MRB_AFTER_DRAW__ = window.__MRB_AFTER_DRAW__ || [];
+    window.__MRB_AFTER_DRAW__.push(function (host) {
+      var ov = host.querySelector('[data-port-region="flashcards-overlay"]');
+      if (ov && overlayWasOpen) {
+        ov.style.animation = "none";
+        if (ov.firstElementChild) { ov.firstElementChild.style.animation = "none"; }
+      }
+      overlayWasOpen = !!ov;
+    });
+    window.__MRB_AFTER_DRAW__.push(function (host) {
+      if (first) { first = false; setTimeout(openFromHash, 0); }
+      var strip = host.querySelector('[data-hw="strip"]');
+      /* The overlay closed: drop the fragment, so the same row's button
+         opens it again (a hashchange needs the hash to change). */
+      if (!strip) {
+        if (opened && /^#cards=/.test(window.location.hash || "")) {
+          opened = false;
+          try { history.replaceState(null, "", window.location.pathname + window.location.search); }
+          catch (e) { /* an old browser keeps the fragment; harmless */ }
+        }
+        return;
+      }
+      opened = true;
+      /* Fit: a long question or answer steps down from Design's size, no
+         lower than 18px, before the face falls back to scrolling. */
+      [["10334", "10340"], ["10351", "10353"]].forEach(function (pair) {
+        var face = host.querySelector('[data-dc-tpl="' + pair[0] + '"]');
+        var text = host.querySelector('[data-dc-tpl="' + pair[1] + '"]');
+        if (!face || !text) { return; }
+        var size = parseFloat(window.getComputedStyle(text).fontSize) || 24;
+        var guard = 0;
+        while (face.scrollHeight > face.clientHeight + 1 && size > 18 && guard++ < 12) {
+          size -= 1.5;
+          text.style.fontSize = size + "px";
+        }
+      });
+      /* Swipe right = Got it, left = Not yet — once the answer is showing.
+         The buttons stay; this is a second way to press them. */
+      var card = host.querySelector('[data-dc-tpl="10333"]');
+      var e = active();
+      if (card && e && e.view().revealed) {
+        var x0 = null, y0 = null;
+        card.addEventListener("pointerdown", function (ev) { x0 = ev.clientX; y0 = ev.clientY; });
+        card.addEventListener("pointerup", function (ev) {
+          if (x0 === null) { return; }
+          var dx = ev.clientX - x0, dy = ev.clientY - y0;
+          x0 = null;
+          if (Math.abs(dx) > 70 && Math.abs(dx) > 1.5 * Math.abs(dy)) {
+            ev.preventDefault();
+            var eng = active();
+            if (eng) { eng.rate(dx > 0 ? "got_it" : "not_yet"); }
+          }
+        });
+      }
+    });
+  }
+
   function assignmentHrefFor(id) {
     if (!id) { return ""; }
     var base = carryParams("/student/assignment.html");
@@ -2314,6 +2451,23 @@
     var cards = detail.assignmentsDueNow
       .concat(detail.assignmentsComingUp, detail.assignmentsDone);
 
+    /* ⊕ MRB-351 — how many cards each flashcard homework has, for its row's
+       "Flashcards · N cards". One read of the frozen snapshot, only when the
+       class has a deck at all. A failure costs the count, never the page. */
+    var fcCounts = {};
+    var fcIds = cards.filter(function (c) { return c.kind === "flashcards"; })
+                     .map(function (c) { return c.id; });
+    if (fcIds.length) {
+      try {
+        var fcRes = await sb.from("assignment_flashcards")
+          .select("assignment_id").in("assignment_id", fcIds);
+        (fcRes.data || []).forEach(function (r) {
+          fcCounts[r.assignment_id] = (fcCounts[r.assignment_id] || 0) + 1;
+        });
+      } catch (fcErr) { /* the rows still open; only the count is missing */ }
+    }
+    wireHomework(sb);
+
     /* ── ⊕ MRB-331 — WHAT THE BENCH IS SHOWING ───────────────────
 
        The bench is the "do this now" card, and until tonight it was the auto
@@ -2426,6 +2580,10 @@
         if (w.release_at && Date.parse(w.release_at) > serverNow) { return false; }
         var card = byId[w.id];
         if (!card || card.is_submitted) { return false; }
+        /* ⊕ MRB-351 — the bench is a QUESTION set's docket ("N questions",
+           Open the assignment). A flashcard deck is homework in the list
+           below, opened in the flashcard overlay, never the bench. */
+        if (card.kind === "flashcards") { return false; }
         if (card.due_at && Date.parse(card.due_at) < serverNow) { return false; }
         return true;
       });
@@ -2488,12 +2646,17 @@
       }
 
       var brief;
-      if (c.id === currentId && currentCount) { brief = currentCount + " questions"; }
+      /* ⊕ MRB-351 — a deck says what it is: "Flashcards · 20 cards". */
+      if (c.kind === "flashcards") { brief = "Flashcards · " + (fcCounts[c.id] || 0) + " cards"; }
+      else if (c.id === currentId && currentCount) { brief = currentCount + " questions"; }
       else if (c.max_score != null)           { brief = c.max_score + " marks"; }
       else                                    { brief = c.subject_name || ""; }
 
       var detailLine;
-      if (status === "marked") {
+      if (status === "marked" && c.kind === "flashcards") {
+        /* ⊕ MRB-351 — a finished deck has no marks; it is secured. */
+        detailLine = "COMPLETED " + fmtDay(c.submitted_at) + " · DECK SECURED";
+      } else if (status === "marked") {
         /* ⊕ RULED 22 Aug 2026 — W5. "Complete" replaces "Hand it in"
            everywhere it appears, and the work rows are one of the places it
            appears. The words change; nothing else does. */
@@ -2559,12 +2722,25 @@
            the submission rather than rejecting. The assignment page has no
            deadline gate on its inputs or its Complete button either. This
            empty string was the only thing in the way. */
-        assignmentHref: c.id === currentId
-          ? assignmentHref()
-          : ((status === "open" || status === "missed")
-              ? assignmentHrefFor(c.id) : "")
+        assignmentHref: c.kind === "flashcards"
+          /* ⊕ MRB-351 — a deck opens in THIS page's flashcard overlay: the
+             address is a fragment the page listens for, so there is no
+             reload and no second page. */
+          ? cardsHrefFor(c.id)
+          : (c.id === currentId
+            ? assignmentHref()
+            : ((status === "open" || status === "missed")
+                ? assignmentHrefFor(c.id) : ""))
       };
-      if (status === "marked" && c.max_score > 0) {
+      if (c.kind === "flashcards") {
+        row.fc = true;
+        /* A finished deck's button is "Revise your cards", and it goes to
+           the same overlay — the row's lesson link is the deck. */
+        row.lessonHref = cardsHrefFor(c.id);
+      }
+      /* ⊕ MRB-351 — a secured deck's "N of N" is completion, not a mark:
+         no percentage and no CORRECT under a flashcard row. */
+      if (status === "marked" && c.max_score > 0 && c.kind !== "flashcards") {
         row.score = Math.round((c.score / c.max_score) * 100);
       }
       if (c.is_submitted && c.due_at && !c.on_time) { row.late = true; }
@@ -4135,7 +4311,7 @@
   }
 
   // ── the assignment ────────────────────────────────────────────────────
-  async function buildAssignment(klass, token, userId) {
+  async function buildAssignment(klass, token, userId, sbForKind) {
     /* ⊕ RULED 23 Aug 2026 — the bench theme, onto this page's root too.
        BEFORE the first await, so the attribute is on `document.documentElement`
        ahead of the mount and the scorecard paints right on its first frame
@@ -4187,6 +4363,29 @@
        student is concerned there is no such piece of work. No new copy, and
        nothing about how releases or holds work (CLAUDE.md §8.10). */
     var wanted = new URLSearchParams(window.location.search).get("assignment");
+
+    /* ⊕ MRB-351 — A FLASHCARD DECK IS NOT OPENED HERE. It is revised in the
+       class page's flashcard overlay; this page is for question sets. The
+       bell's "New work" item and any bookmark point here with the
+       assignment's id, so a deck's id is sent on to its class page. RLS
+       answers the read: a pupil sees the row only if it is released to a
+       class they are in. */
+    if (wanted && sbForKind) {
+      try {
+        var kindRes = await sbForKind.from("assignments").select("kind, class_id")
+          .eq("id", wanted).maybeSingle();
+        if (kindRes && kindRes.data && kindRes.data.kind === "flashcards") {
+          var qs = new URLSearchParams();
+          qs.set("class", kindRes.data.class_id);
+          var envP = new URLSearchParams(window.location.search).get("env");
+          if (envP) { qs.set("env", envP); }
+          window.location.replace("/student/class.html?" + qs.toString() +
+                                  "#cards=" + encodeURIComponent(wanted));
+          return new Promise(function () {});   // the page is leaving
+        }
+      } catch (kindErr) { /* fall through to the question-set path */ }
+    }
+
     var current;
     try {
       current = await api("/api/class/current-assignment?class_id=" + klass.id +
@@ -4937,7 +5136,7 @@
             data = spec.v;
           } else {
             data = page === "assignment"
-              ? await buildAssignment(klass, token, ctx.user.id)
+              ? await buildAssignment(klass, token, ctx.user.id, sb)
               : await buildClass(sb, ctx.user, klass, token);
           }
 

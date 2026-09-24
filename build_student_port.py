@@ -207,7 +207,9 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 # drawing unreachable for a year. Caught at landing, before the first push.
 STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
                 "student-data.js", "rum.js", "student-bell.js",
-                "shoutouts.js", "figures-ks3.js", "figures-ks4.js")
+                "shoutouts.js", "figures-ks3.js", "figures-ks4.js",
+                # ⊕ MRB-351 — injected by student-live.js like the rest.
+                "formulae.js", "flashcard-homework.js")
 
 
 def asset_hash(text):
@@ -2143,6 +2145,41 @@ def apply_rulings(page, logic, roots, donor=None):
             "template node(s) %s, and they are not in the template (or the "
             "graft that brings them in did not run). Re-anchor them."
             % (page, sorted(exprs)))
+
+    # ── ⊕ MRB-351 · formula text ──────────────────────────────────────────
+    #
+    # See `SET_FX` in student_rulings.py. The node's ONE child must be the
+    # single interpolation `{{ expr }}` it names; anything else is a node
+    # Design has redrawn, and the build stops rather than guess.
+    fxs = dict(getattr(student_rulings, "SET_FX", {}).get(page, {}))
+
+    def formula(node):
+        if not isinstance(node, dict):
+            return
+        idx = node.get("i")
+        if idx in fxs:
+            expr = fxs.pop(idx)
+            kids = node.get("c") or []
+            if (len(kids) != 1 or not isinstance(kids[0], dict)
+                    or kids[0].get("t") != "#"
+                    or kids[0].get("v") != {"parts": [{"e": expr}]}):
+                raise SystemExit(
+                    "build_student_port.py: the MRB-351 formula ruling for %r "
+                    "turns node %s's text `{{ %s }}` into formula text, and "
+                    "that node no longer holds exactly that one interpolation "
+                    "(found %r). Re-anchor student_rulings.SET_FX."
+                    % (page, idx, expr, kids))
+            node["c"] = [{"t": "fx", "e": expr}]
+        for kid in node.get("c") or []:
+            formula(kid)
+
+    for root in roots:
+        formula(root)
+    if fxs:
+        raise SystemExit(
+            "build_student_port.py: the MRB-351 formula ruling for %r names "
+            "template node(s) %s, and they are not in the template. "
+            "Re-anchor them." % (page, sorted(fxs)))
 
     # ── attributes Design never wrote ────────────────────────────────────
     #
