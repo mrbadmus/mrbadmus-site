@@ -4118,7 +4118,10 @@
     if (figureManifestLoads[src]) { return figureManifestLoads[src]; }
     figureManifestLoads[src] = new Promise(function (resolve) {
       var s = document.createElement("script");
-      s.src = src;
+      /* ⊕ STAMPED — `/shared/*` is served `immutable` for a year, so a bare
+         URL here would pin a child's first manifest forever. The build names
+         both manifests in `window.__MRB_ASSET_V__` (STAMPED_DEPS). */
+      s.src = stamped(src);
       s.onload = function () { resolve(true); };
       s.onerror = function () {
         console.error("[student-live] the figure manifest did not load; "

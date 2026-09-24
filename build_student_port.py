@@ -197,9 +197,17 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 # the six labels that fix it are a locked enum that already lives in that file.
 # Unstamped under `immutable, max-age=31536000` is a year-long pin, so it is
 # stamped for the same reason every name above it is.
+# ⊕ MRB-352 run 2 (landing, 24 Sep 2026) — `figures-ks3.js` and
+# `figures-ks4.js` join for exactly the reason `rum.js` and `student-bell.js`
+# did. `student-live.js` injects the key stage's figure manifest itself
+# (`loadFigureManifest`), and it did so with a BARE `/shared/figures-ks?.js`
+# URL — no stamp, because neither name was in this map. Under
+# `immutable, max-age=31536000` the first manifest a child's browser fetched
+# would have been the only one it ever saw: every later figure fix or new
+# drawing unreachable for a year. Caught at landing, before the first push.
 STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
                 "student-data.js", "rum.js", "student-bell.js",
-                "shoutouts.js")
+                "shoutouts.js", "figures-ks3.js", "figures-ks4.js")
 
 
 def asset_hash(text):
