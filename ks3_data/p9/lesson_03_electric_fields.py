@@ -572,21 +572,21 @@ LESSON = {
             },
             "title": "Rung 2 · The one that catches people"},
         "explain": {
-            "q": "A charged balloon is held a centimetre above some small "
-                 "pieces of paper, and they jump up to it with nothing "
-                 "touching them. Explain what is happening, using the word "
-                 "field, and say what would change if the whole thing were "
-                 "done in a vacuum.",
+            "q": "A plastic comb, charged by rubbing it on a jumper, is held "
+                 "a centimetre above some small pieces of paper, and they "
+                 "jump up to it with nothing touching them. Explain what is "
+                 "happening, using the word field, and say what would change "
+                 "if the whole thing were done in a vacuum.",
             "field_label": "Your explanation",
-            "placeholder": "The balloon is charged, so it fills the space "
+            "placeholder": "The comb is charged, so it fills the space "
                            "around it with…",
             "success": [
-                "Says the balloon is charged and fills the space around it "
+                "Says the comb is charged and fills the space around it "
                 "with an electric field.",
                 "Says the field has a direction and a strength at every "
-                "point, and is stronger closer to the balloon.",
+                "point, and is stronger closer to the comb.",
                 "Says the paper is neutral overall but the field shifts its "
-                "charges slightly, so the side nearest the balloon becomes "
+                "charges slightly, so the side nearest the comb becomes "
                 "oppositely charged.",
                 "Says the force on the paper comes from the field where the "
                 "paper is, not from anything crossing the gap.",

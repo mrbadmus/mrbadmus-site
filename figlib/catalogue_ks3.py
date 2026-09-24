@@ -658,12 +658,12 @@ CATALOGUE = [
     {
         "id": 'p6-wave-dots-two-waves',
         "art": 'wave-line',
-        "title": 'A wave with two dots on it two whole waves apart, and a '
-                 'measured distance between the dots.',
+        "title": 'A wave with two dots on it and a measured distance '
+                 'between the dots.',
         "desc": 'A smooth wave of two and a half cycles along a straight '
                 'centre line. One dot sits half-way down the right-hand '
                 'side of the first crest, the other at the same place on '
-                'the third crest, so two whole waves lie between them. A '
+                'the third crest. A '
                 'double-headed arrow below the wave, between two thin '
                 'dashed lines dropped from the dots, is labelled 0.90 m.',
         "params": {'cycles': 2.5,
@@ -867,7 +867,8 @@ CATALOGUE = [
         "params": {'panels': [{'caption': None,
                                'upper': [38, 52, 66, 80],
                                'lower': [-38, -54, -70],
-                               'reversed': {'angle': -86, 'label': 'X'},
+                               'reversed': {'angle': -86, 'label': 'X',
+                                            'label_xy': [175, 290]},
                                'points': []}],
                    'panel_h': 320,
                    'clip': False},

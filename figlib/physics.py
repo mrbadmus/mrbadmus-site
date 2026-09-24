@@ -3340,7 +3340,8 @@ def bar_field(panels, W=460, panel_h=300, clip=False):
         half, with no crowding anywhere (for p10-02-e25).
       * ⊕ `reversed` {angle, label} — one more COMPLETE line, N to S, with
         its arrowhead pointing back towards N (a student's error), lettered
-        beside it a quarter of the way along, where clearest (p10-02-h13).
+        beside it a quarter of the way along, where clearest, or at
+        `label_xy` (canvas units) when given (p10-02-h13).
       * ⊕ `inside` — n straight lines drawn INSIDE the magnet from the N end
         to the S end, arrowheads pointing to S (a student's addition), for
         p10-02-h26. Nothing is drawn inside the magnet otherwise.
@@ -3472,6 +3473,11 @@ def bar_field(panels, W=460, panel_h=300, clip=False):
                 d = 14 + fs * 0.5
                 _q_text(c, ex + ux * d, ey + uy * d + fs * 0.35, label, fs,
                         LBL, "bold")
+            elif label and rv.get("label_xy"):
+                # ⊕ b1 fix 2 (visual R2): a hand-placed letter, set just
+                # outside the loop it names
+                lx, ly = rv["label_xy"]
+                _q_text(c, lx, ly, label, fs, LBL, "bold")
             elif label:
                 # lettered beside the line a quarter of the way along it,
                 # wherever is clearest (placed with the point letters below)
