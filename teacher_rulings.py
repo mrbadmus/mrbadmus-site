@@ -2779,6 +2779,49 @@ def _fb_open_button(row, style, glyph=False):
         }]}
 
 
+# ══ ⊕ MIDE'S ITEM 9, 24 SEP 2026 · THE ANSWER BREAKDOWN PANEL ═══════════
+#
+# See AMENDED_ADDITIONS["breakdown-open"] for the ruling this registers.
+# `_BD_ROW_BTN` copies `_FB_ROW_BTN`'s own shape (block, so it stacks under
+# Design's inline status chip instead of running onto the same line —
+# `_FB_ROW_BTN`'s own header explains why `display:inline-flex` on the chip
+# made that a real defect the first time) and is coloured
+# `--st-accent-text` OUTRIGHT rather than toggled, because unlike feedback
+# there is no "already has one" / "empty" distinction to carry — a
+# submission either has answers to break down or the control is not drawn
+# at all.
+_BD_ROW_BTN = ("display:block;margin-top:7px;font:600 14.5px/1.2 var(--st-ui);"
+               "background:none;border:none;padding:0;cursor:pointer;"
+               "text-align:left;white-space:nowrap;color:var(--st-accent-text)")
+
+
+def _bd_open_button():
+    """The control that opens the Answer Breakdown panel — student screen
+    submission history, one row.
+
+    ⚠️ SAME `<if e="h.fbCan">` GATE THE FEEDBACK CONTROL USES, ON PURPOSE.
+    Both ask "is there a real submission id on this row", `fbCan`/`fbSub`
+    already answer it, and a second binding asking the identical question a
+    different way is a second place the two could disagree.
+
+    ⚠️ STUDENT SCREEN ONLY — NO MARKING-GRID TWIN. `_fb_open_button` is one
+    builder shared by two screens because Mide's feedback brief asked for
+    both; this ticket did not, and `window.MRBBreakdown.open` takes one
+    pupil and one submission, not a per-cell control across thirty of them.
+    """
+    return {
+        "t": "if", "e": "h.fbCan",
+        "c": [{
+            "t": "button",
+            "a": {"type": "button",
+                  "data-mrb-added": "breakdown-open",
+                  "style": _BD_ROW_BTN},
+            "hov": "color:var(--st-accent-hover)",
+            "on": "h.openBreakdown",
+            "c": [{"t": "#", "v": "Breakdown"}],
+        }]}
+
+
 def _fb_sheet():
     """The one feedback sheet, emitted on the student screen and on marking.
 
@@ -4407,13 +4450,25 @@ INSERT_AT = {
     # marking screen it goes inside her student cell (420, after the name at
     # 422), pushed right by `margin-left:auto` — the cell is already a flex
     # row and already has the space.
-    (366, 367): (_fb_open_button("h", _FB_ROW_BTN),
-                 "the feedback control on one row of the student screen's "
-                 "submission history. Design drew no comment affordance "
-                 "anywhere; this is Mide's ruling of 3 Sep 2026, and it is "
+    # ⊕ Mide's item 9, 24 Sep 2026 — WRAPPED IN A PLAIN <div> RATHER THAN A
+    # SECOND INSERT_AT ENTRY, and that is a mechanical necessity rather than
+    # a style choice: INSERT_AT is keyed by (parent, after-sibling), an
+    # inserted node carries no `i` (Design's numbering must not move — see
+    # the header above INSERT_AT), and a second entry keyed on the same
+    # `(366, 367)` pair would silently OVERWRITE this one in the dict rather
+    # than adding beside it. So the one entry at this anchor now inserts
+    # BOTH controls, stacked, in one wrapper.
+    (366, 367): ({"t": "div", "c": [_fb_open_button("h", _FB_ROW_BTN),
+                                     _bd_open_button()]},
+                 "the feedback control AND (⊕ Mide's item 9, 24 Sep 2026) "
+                 "the Answer Breakdown control, on one row of the student "
+                 "screen's submission history. Design drew no comment "
+                 "affordance and no breakdown affordance anywhere; the "
+                 "feedback half is Mide's ruling of 3 Sep 2026 and it is "
                  "inside her Status cell rather than in a sixth column "
                  "because her table's track list is declared twice and sized "
-                 "for five."),
+                 "for five. The breakdown control joins it in the same cell "
+                 "for the identical reason."),
     (420, 422): (_fb_open_button("r", _FB_CELL_BTN, glyph=True),
                  "the same control on one row of the marking screen's "
                  "class-by-question grid — the second of Mide's two "
@@ -4894,6 +4949,35 @@ AMENDED_ADDITIONS = (
              "disagree. Absent on a row with no submission: "
              "`submission_feedback.submission_id` is NOT NULL and there is "
              "nothing to attach a comment to."),
+
+    # ══ ⊕ MIDE'S ITEM 9, 24 SEP 2026 · THE ANSWER BREAKDOWN PANEL ═══════
+    #
+    # ⚠️ ONE ROW HERE, FOR A SURFACE THAT OPENS A WHOLE PANEL — same reading
+    # as the MRB-323 name picker's own note two entries down: the check
+    # behind this register reads the EMITTED BYTES of the compiled template
+    # for `"data-mrb-added":"<marker>"`, and only the OPENER is compiled
+    # markup. The panel itself — the summary strip, the topic groups, every
+    # question row, Prev/Next, Close — is built by `shared/breakdown.js` at
+    # press time, appended to `<body>`, and exists in no page's bytes. It is
+    # not therefore ungated: `teacher_behaviour.py`'s `snap()` was taught to
+    # read `[data-bd="overlay"]`'s own `hidden`/`data-bd-opens`/
+    # `data-bd-student` state, the identical instrument it already reads for
+    # `shared/set-work.js`'s `[data-sw="overlay"]`, so "did pressing
+    # Breakdown open something" is answered without the sweep ever looking
+    # inside a body-level overlay `host` cannot see. What happens INSIDE the
+    # panel is proven by its own drive, `breakdown_drive.py` — the same
+    # split `set_work_drive.py` takes for the Set work sheet.
+    dict(marker="breakdown-open", pages=("student-detail.html",),
+         node=366, needs_data=True,
+         label="Breakdown",
+         why="the control that opens the Answer Breakdown panel, on a "
+             "submission history row. Design drew no breakdown surface at "
+             "all — this is Mide's item 9 of 24 Sep 2026 — and it is inside "
+             "the same Status cell the feedback control occupies (366, "
+             "after node 367) for the identical reason: the table's track "
+             "list is declared twice and sized for five columns, and a "
+             "sixth would need both rewritten. Absent on a row with no "
+             "submission: there is nothing to break down."),
     dict(marker="feedback-close",
          pages=("student-detail.html", "assignment.html"),
          node=330, needs_data=True,
@@ -7945,10 +8029,32 @@ componentDidUpdate() {
      "            fbPaper: p.title, fbBody: had,\n"
      "            fbErr: '', fbConfirm: false },\n"
      "            () => MRB_FB_FILL(had));\n"
+     "        },\n"
+     "        /* ⊕ Mide's item 9, 24 Sep 2026 — the Answer Breakdown panel.\n"
+     "           `stopPropagation` first, for the identical reason `openFb`\n"
+     "           carries it above: this whole row navigates to the marking\n"
+     "           screen on Design's own `h.open`, and without it the panel\n"
+     "           would open and the page would navigate away from it in the\n"
+     "           same gesture. `window.MRBBreakdown` is a page that has\n"
+     "           loaded its HTML but not its script yet the instant it\n"
+     "           mounts — see `build_teacher_port.py`'s `breakdown` flag —\n"
+     "           so the guard is the same shape `MRB_SET_WORK_OPEN` uses for\n"
+     "           the same reason. */\n"
+     "        openBreakdown: (e) => {\n"
+     "          if (e && e.stopPropagation) { e.stopPropagation(); }\n"
+     "          if (e && e.preventDefault) { e.preventDefault(); }\n"
+     "          if (window.MRBBreakdown && window.MRBBreakdown.open) {\n"
+     "            window.MRBBreakdown.open({ classId: k && k.id,\n"
+     "              studentId: st && st.id, submissionId: fbSub });\n"
+     "          }\n"
      "        },",
-     "the student screen's feedback control, per history row. Mide's ruling "
-     "of 3 Sep 2026: feedback is authored from student detail or from "
-     "marking, attached to that submission."),
+     "the student screen's feedback control, per history row, AND (⊕ "
+     "Mide's item 9, 24 Sep 2026) the Answer Breakdown control beside it. "
+     "Mide's feedback ruling of 3 Sep 2026: feedback is authored from "
+     "student detail or from marking, attached to that submission. The "
+     "breakdown control reuses the same `fbSub`/`st`/`k` already in scope "
+     "for the identical row rather than computing a second copy of any of "
+     "them."),
 
     # ⚠️ THE SAME KEYS ON THE MARKING GRID, and it is deliberately the same
     # NAMES rather than a second vocabulary: the markup that reads them is
