@@ -170,12 +170,25 @@ compiled pages with stubbed transports (`flashcard_homework_drive.py`, `flashcar
 
 ## Gates run here (Linux container, `MRB_CHROME` → Playwright Chromium)
 
-See the PR description for the final list, with results.
+Run after the full `python3 build_all.py` (exit 0, all 7 generators) on commit 55ee37f:
+
+| gate | result |
+|---|---|
+| `flashcard_homework_drive` (pupil overlay, 390 + 360) | ✅ |
+| `flashcard_decks_drive` (Set work branch, review table, library — 110 checks) | ✅ |
+| `flashcard_progress_drive` (teacher progress page, poll, drill-down) | ✅ |
+| `student_behaviour` (ported page still matches Design's text on every drive) | ✅ |
+| `teacher_behaviour`, `teacher_reach` | ✅ |
+| `teacher_picker_drive`, `assignments_hold_drive`, `teacher_tells` | ✅ (earlier run, same code) |
+| `gate_registry --check` (59 gates), `gate_watches_check` | ✅ |
+| deno `check` + `test` for the edge functions (8 tests, corpus ≥ 90 %) | ✅ |
+| `today_drive` | ⚠ 8 failures, all "no console errors" from CDN fetches this container cannot make — not reproducible as code faults |
+| `teacher_admin_foreign_class` | not runnable here (hard-coded macOS cert path); the inherited red named in CLAUDE.md |
 
 ## Not done / open
 
-- **Push:** GitHub refused the push (403, the app is not linked for this session). The commits are
-  on the local branch. Reconnect GitHub, then push, then open the PR.
+- **Push:** GitHub refused the push (403, the app is not linked for this session). All six unit
+  commits are on the local branch. Reconnect GitHub, then push, then open the PR.
 - **Live model calls:** extraction and answer check need `ANTHROPIC_API_KEY` set as an edge-function
   secret, and as a repo secret for the live CI score.
 - **Backend follow-up (separate repo, not reachable here):**
