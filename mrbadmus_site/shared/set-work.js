@@ -569,7 +569,21 @@
     },
     /* ⊕ MRB-342.2 §1.4 — the settled line a used-up Swap shows instead of
        nothing. Ruled wording, verbatim. */
-    swapExhausted: "No more questions in this topic."
+    swapExhausted: "No more questions in this topic.",
+    /* ⊕ MRB-351 — FLASHCARDS. The type chips, the Deck step's name, the two
+       modes and the two rules. Nouns and labels; the one-word tags are the
+       mono eyebrow on each mode card. No sentence explains either mode. */
+    stepsFlash: ["Classes", "Deck", "Detail"],
+    labelType: "Type",
+    typeQuestions: "Questions",
+    typeFlashcards: "Flashcards",
+    labelMode: "Mode",
+    labelRule: "Rule",
+    mode: { make: "Pupils write the answers", review: "Ready-made cards" },
+    modeTag: { make: "Stretch", review: "Support" },
+    rule: { secure: "Secure", quick: "Quick" },
+    cards: function (n) { return n + (n === 1 ? " card" : " cards"); },
+    dueOn: function (s) { return "Due " + s; }
   };
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -850,7 +864,13 @@
       locked: false,
       keepPicked: false,
       roTier: "",
-      roScope: ""
+      roScope: "",
+      /* ⊕ MRB-351 — WHAT IS BEING SET. 'questions' is the MCQ sheet exactly
+         as it was; 'flashcards' branches inside `onPrimary`, `stepValid`,
+         `syncStep` and `submit`, and never renumbers a step. `fc` is the
+         flashcard set's own three facts. */
+      type: "questions",
+      fc: { deck: null, mode: "make", rule: "secure", cards: 0, deckTitle: "" }
     };
   }
 
@@ -1015,6 +1035,14 @@
     /* ── panel 0: Classes ── */
     var pClasses = el("div", "sw-panel");
     pClasses.setAttribute("data-sw", "panel-classes");
+    /* ⊕ MRB-351 — THE TYPE CHOICE, at the top of the Classes step. Questions
+       is the default and is the sheet it always was. */
+    var typeLbl = el("div", "sw-label", SAY.labelType);
+    typeLbl.setAttribute("data-sw", "type-label");
+    var typeChips = el("div", "sw-chips");
+    typeChips.setAttribute("data-sw", "type-chips");
+    pClasses.appendChild(typeLbl);
+    pClasses.appendChild(typeChips);
     pClasses.appendChild(el("div", "sw-label", SAY.labelClasses));
     var classList = el("div", "sw-tree");
     classList.setAttribute("data-sw", "class-list");
@@ -1076,9 +1104,51 @@
     treeRetry.hidden = true;
     pTopic.appendChild(treeRetry);
 
+    /* ── ⊕ MRB-351 · panel 1 for flashcards: Deck ──
+       A sibling of the Topic panel, never mixed into it: `syncStep` shows
+       one or the other by `S.type`. Its content is `MRBDeckSource` from
+       shared/flashcard-decks.js, loaded the first time it is needed. */
+    var pDeck = el("div", "sw-panel");
+    pDeck.setAttribute("data-sw", "panel-deck");
+    var deckHost = el("div", null);
+    deckHost.setAttribute("data-sw", "deck-host");
+    var deckNote = el("div", "sw-row-tag", SAY.loading);
+    deckNote.setAttribute("data-sw", "deck-note");
+    deckNote.hidden = true;
+    var deckRetry = btn("sw-btn sw-add", SAY.retry);
+    deckRetry.setAttribute("data-sw", "deck-retry");
+    deckRetry.hidden = true;
+    pDeck.appendChild(deckNote);
+    pDeck.appendChild(deckRetry);
+    pDeck.appendChild(deckHost);
+
     /* ── panel 2: Detail ── */
     var pDetail = el("div", "sw-panel");
     pDetail.setAttribute("data-sw", "panel-detail");
+
+    /* ⊕ MRB-351 — the flashcard set's mode and rule, at the head of the
+       Detail step. Two cards, titles only, each with a one-word tag; then
+       the rule as a two-chip toggle. Hidden on a question set. */
+    var fcTop = el("div", "fd-top");
+    fcTop.setAttribute("data-sw", "fc-top");
+    fcTop.appendChild(el("div", "sw-label", SAY.labelMode));
+    var fcModes = el("div", "fd-modes");
+    fcModes.setAttribute("data-sw", "fc-modes");
+    var fcModeBtns = ["make", "review"].map(function (k) {
+      var b = btn("fd-mode", null);
+      b.setAttribute("data-sw", "fc-mode");
+      b.setAttribute("data-sw-key", k);
+      b.appendChild(el("span", "fd-mode-tag", SAY.modeTag[k]));
+      b.appendChild(el("span", "fd-mode-title", SAY.mode[k]));
+      fcModes.appendChild(b);
+      return { key: k, node: b };
+    });
+    fcTop.appendChild(fcModes);
+    fcTop.appendChild(el("div", "sw-label", SAY.labelRule));
+    var fcRule = el("div", "sw-chips fd-rule");
+    fcRule.setAttribute("data-sw", "fc-rule");
+    fcTop.appendChild(fcRule);
+    pDetail.appendChild(fcTop);
 
     /* ⊕ MRB-336 — WHAT A RELEASED SET SHOWS INSTEAD OF ITS CONTROLS.
        Its tier and its topic, as values, at the head of the panel — where
@@ -1167,7 +1237,21 @@
     dueFields.appendChild(dueDate); dueFields.appendChild(dueTime);
     pDetail.appendChild(dueFields);
 
-    body.appendChild(pClasses); body.appendChild(pTopic); body.appendChild(pDetail);
+    /* ⊕ MRB-351 — the flashcard set, in one compact card, above nothing:
+       deck title · N cards · mode · rule · classes · due. */
+    var fcSummary = el("div", "fd-summary");
+    fcSummary.setAttribute("data-sw", "fc-summary");
+    fcSummary.hidden = true;
+    var fcSumTitle = el("div", "fd-summary-title");
+    fcSumTitle.setAttribute("data-sw", "fc-summary-title");
+    var fcSumMeta = el("div", "fd-summary-meta");
+    fcSumMeta.setAttribute("data-sw", "fc-summary-meta");
+    fcSummary.appendChild(fcSumTitle);
+    fcSummary.appendChild(fcSumMeta);
+    pDetail.appendChild(fcSummary);
+
+    body.appendChild(pClasses); body.appendChild(pTopic);
+    body.appendChild(pDeck); body.appendChild(pDetail);
     sheet.appendChild(head); sheet.appendChild(body);
     overlay.appendChild(sheet);
 
@@ -1201,7 +1285,12 @@
       relChips: relChips, relFields: relFields,
       relDate: relDate, relTime: relTime, dueDate: dueDate, dueTime: dueTime,
       toast: toast,
-      treeRows: [], classRows: []
+      treeRows: [], classRows: [],
+      /* ⊕ MRB-351 */
+      typeLbl: typeLbl, typeChips: typeChips, typeList: null,
+      pDeck: pDeck, deckHost: deckHost, deckNote: deckNote, deckRetry: deckRetry,
+      fcTop: fcTop, fcModeBtns: fcModeBtns, fcRule: fcRule, fcRuleList: null,
+      fcSummary: fcSummary, fcSumTitle: fcSumTitle, fcSumMeta: fcSumMeta
     };
 
     wireShell();
@@ -1239,6 +1328,12 @@
     els.back.addEventListener("click", function () {
       if (!S) { return; }
       if (S.step === 0) { return close(); }
+      /* ⊕ MRB-351 — AN EDIT'S FIRST STEP IS LABELLED `Cancel`, AND NOW IT IS
+         ONE. `syncValidity` has always written `Cancel` there, but this
+         handler then stepped BACK — onto the Topic step of a released set,
+         or onto the Classes step an edit never uses. Found in passing while
+         giving flashcard edits the same header; fixed for both. */
+      if (S.editId && S.step === editFirst()) { return close(); }
       /* ⊕ MRB-342 — BACK OUT OF A SLOT THE TEACHER NEVER FILLED, AND IT IS
          THE ONLY WAY TO UNDO `Add topic`. Pressing Add topic appends an
          empty scope and comes here; pressing Back with it still empty must
@@ -1269,6 +1364,32 @@
     els.treeRetry.addEventListener("click", function () {
       if (!S || !S.classId || S.scopeLoading) { return; }
       loadScope();
+    });
+    /* ⊕ MRB-351 — the type rail, the mode cards and the rule chips. */
+    els.typeList = buildChips(els.typeChips, [
+      { key: "questions", label: SAY.typeQuestions },
+      { key: "flashcards", label: SAY.typeFlashcards }
+    ], function (k) { setType(k); });
+    els.fcModeBtns.forEach(function (m) {
+      m.node.addEventListener("click", function () {
+        if (!S || S.fc.mode === m.key) { return; }
+        S.fc.mode = m.key;
+        S.clientRef = uuid();            // a different set, a different key
+        syncFlash();
+      });
+    });
+    els.fcRuleList = buildChips(els.fcRule, [
+      { key: "secure", label: SAY.rule.secure },
+      { key: "quick", label: SAY.rule.quick }
+    ], function (k) {
+      if (!S || S.fc.rule === k) { return; }
+      S.fc.rule = k;
+      S.clientRef = uuid();
+      syncFlash();
+    });
+    els.deckRetry.addEventListener("click", function () {
+      if (!S) { return; }
+      ensureDeckSource();
     });
     els.primary.addEventListener("click", onPrimary);
     els.title.addEventListener("input", function () {
@@ -1732,7 +1853,10 @@
           els.overlay.setAttribute("data-sw-class", S.classId);
           syncClasses();
           syncValidity();
-          loadScope();
+          /* ⊕ MRB-351 — a flashcard set asks `/scope` nothing: any class
+             the teacher teaches may take one deck. The scope is fetched the
+             moment the type goes back to Questions (`setType`). */
+          if (S.type === "questions") { loadScope(); }
           return;
         }
         /* Unticking the last one un-anchors: the cohort was a fact about a
@@ -1797,7 +1921,9 @@
          planning a term needs to see that 8r/Sc1 exists and cannot be set
          the same work as 10a/Bi1; hiding it would answer that with a
          silence. Same treatment, same reason, as a zero-count topic. */
-      var out = !!(S.cohortIds && !S.cohortIds[r.id]);
+      /* ⊕ MRB-351 — no cohort on a flashcard set: one deck may go to any
+         class this teacher sets work to, whatever its tier or pathway. */
+      var out = S.type !== "flashcards" && !!(S.cohortIds && !S.cohortIds[r.id]);
       r.node.setAttribute("aria-disabled", out ? "true" : "false");
       r.node.classList.toggle("is-on", on);
       r.node.setAttribute("aria-pressed", on ? "true" : "false");
@@ -2197,6 +2323,9 @@
      right now and the backend lane's half is not yet deployed here). */
   function syncNoteVisibility() {
     if (!els) { return; }
+    /* ⊕ MRB-351 — a flashcard set's note is `p_note` on its own RPC, which
+       every database carrying the RPC accepts, so it is always offered. */
+    if (S && S.type === "flashcards") { els.noteWrap.hidden = false; return; }
     var supported = !!(S && S.scope && S.scope.assignment_note === true);
     els.noteWrap.hidden = !supported;
   }
@@ -2274,7 +2403,9 @@
       S.scopeLoading = false;
       S.scope = null;
       S.scopeErr = true;
-      els.classNote.hidden = false;
+      /* ⊕ MRB-351 — a scope failure is about the QUESTION set; a teacher
+         who has switched to Flashcards is not told about it. */
+      els.classNote.hidden = (S.type === "flashcards");
       els.tree.textContent = "";
       els.treeRows = [];
       /* ⊕ first-week fixes (22 Sep 2026) — the word is in `treeNote` now, not appended into the tree
@@ -2693,6 +2824,8 @@
        Topic step carries the waiting instead, and says which of loading /
        ready / failed it is showing; see `syncScopePanel`. */
     if (S.step === 0) { return S.classes.length > 0; }
+    /* ⊕ MRB-351 — a flashcard set never reads `/scope`. */
+    if (S.type === "flashcards") { return flashStepValid(); }
     if (!S.scope) { return false; }
     if (S.step === 1) {
       var sc = cur();
@@ -2731,6 +2864,14 @@
     var many = filledScopes().length > MAX_SCOPES;
     if (!S.locked && (!total || empty || over || many)) { return false; }
     if (S.locked && (over || many)) { return false; }
+    return detailFieldsValid();
+  }
+
+  /* ⊕ MRB-351 — THE DETAIL STEP'S OWN FIELDS, lifted out of `stepValid`
+     unchanged so the flashcard set is held to exactly the same title,
+     release and deadline rules as a question set. Nothing below this line
+     was edited; it only moved. */
+  function detailFieldsValid() {
     var t = String(S.title || "").trim();
     if (!t.length || t.length > 80) { return false; }
     var due = dueIso();
@@ -2767,6 +2908,26 @@
     return true;
   }
 
+  /* ⊕ MRB-351 — a flashcard set's steps 1 and 2.
+     Deck: a READY deck with at least one card is chosen (a deck with unsaved
+     edits in the review table is not — `MRBDeckSource.chosen()` says so).
+     Detail: the same title/release/deadline rules as a question set, a note
+     inside 300, and — on an edit — a note the sheet actually knows, because
+     `flashcard_edit_assignment` always writes `p_note` and an edit that
+     never learned the stored note must not be the edit that clears it. */
+  function flashStepValid() {
+    if (S.step === 1) {
+      var d = S.fc.deck;
+      return !!(d && d.id && d.status === "ready" && Number(d.card_count) > 0);
+    }
+    if (S.busy || S.submitting) { return false; }
+    if (!S.editId && !S.classes.length) { return false; }
+    if (!S.editId && !(S.fc.deck && S.fc.deck.id)) { return false; }
+    if (S.editId && !S.noteLoaded && !S.noteEdited) { return false; }
+    if (codePointLen(els.noteValue()) > NOTE_MAX) { return false; }
+    return detailFieldsValid();
+  }
+
   function syncValidity() {
     els.primary.disabled = !stepValid();
     /* ⊕ MRB-336 — `Save` on a row that already exists, `Set work` on a new
@@ -2785,7 +2946,8 @@
        needs — at least one question on screen — and NOT on `stepValid`,
        because a missing deadline stops work being SET and has nothing to do
        with a file a teacher prints. */
-    els.dl.node.hidden = (S.step !== 2);
+    /* ⊕ MRB-351 — no worksheet of a flashcard deck. */
+    els.dl.node.hidden = (S.step !== 2) || S.type === "flashcards";
     els.dl.setEnabled(!S.busy && !anyBusy() && pickedTotal() > 0);
     /* The outline: only on a field the teacher has actually filled wrongly,
        never on one they have simply not reached yet. */
@@ -2808,6 +2970,8 @@
         (isNaN(relMs) || relMs < Date.now() - 5 * 60000));
       els.relDate.classList.toggle("sw-bad", relBad);
       els.relTime.classList.toggle("sw-bad", relBad);
+      /* ⊕ MRB-351 — the summary follows the deadline as it is typed. */
+      if (S.type === "flashcards") { syncFlash(); }
     }
   }
 
@@ -2816,10 +2980,13 @@
      ═════════════════════════════════════════════════════════════════════ */
 
   function syncStep() {
-    els.step.textContent = SAY.steps[S.step];
+    var flash = (S.type === "flashcards");
+    els.step.textContent = (flash ? SAY.stepsFlash : SAY.steps)[S.step];
     els.overlay.setAttribute("data-sw-step", String(S.step));
+    els.overlay.setAttribute("data-sw-type", S.type);
     els.pClasses.hidden = (S.step !== 0);
-    els.pTopic.hidden = (S.step !== 1);
+    els.pTopic.hidden = (S.step !== 1) || flash;
+    els.pDeck.hidden = (S.step !== 1) || !flash;
     els.pDetail.hidden = (S.step !== 2);
     /* ⊕ MRB-336 — WHAT A RELEASED SET DOES NOT OFFER. The count chips
        choose how many questions; Swap changes which ones; Release decides
@@ -2845,6 +3012,26 @@
       els.roTier.textContent = S.roTier;
       els.roScope.textContent = S.roScope;
     }
+    /* ⊕ MRB-351 — the flashcard set's Detail step: the question parts go,
+       the mode, the rule and the summary come. On an edit the mode and rule
+       are fixed (the snapshot is the snapshot) and the summary carries them. */
+    els.typeLbl.hidden = !!S.editId;
+    els.typeChips.hidden = !!S.editId;
+    syncChips(els.typeList, S.type);
+    els.qLbl.hidden = flash;
+    els.scopesHost.hidden = flash;
+    if (flash) {
+      els.addTopic.hidden = true;
+      els.roTierLbl.hidden = true;
+      els.roTier.hidden = true;
+      els.roScopeLbl.hidden = true;
+      els.roScope.hidden = true;
+    }
+    els.fcTop.hidden = !flash || !!S.editId;
+    els.fcSummary.hidden = !flash;
+    syncNoteVisibility();
+    if (flash) { syncFlash(); }
+    if (flash && S.step === 1) { ensureDeckSource(); }
     /* A step change is a NEW SCREEN, so the scroller starts at the top —
        which is the one place a scroll reset is correct, and it is not a
        selection. */
@@ -2861,6 +3048,7 @@
 
   function onPrimary() {
     if (!S || els.primary.disabled) { return; }
+    if (S.type === "flashcards") { return onPrimaryFlash(); }
     if (S.step === 0) { S.step = 1; syncStep(); syncTree(); return; }
     if (S.step === 1) {
       S.step = 2;
@@ -3076,6 +3264,444 @@
     els.toast.hidden = false;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { els.toast.hidden = true; }, 3200);
+  }
+
+  /* ═════════════════════════════════════════════════════════════════════
+     16a. FLASHCARDS — ⊕ MRB-351
+
+     The same sheet, the same Classes step, the same title / release / due /
+     note controls and the same completion path. What differs is where the
+     work comes from (a deck, not a tree) and where it is written (the
+     `flashcard_set_work` RPC, not the backend's `/api/teacher/set-work`).
+
+     ⚠️ QUESTIONS IS UNTOUCHED. Every function here is reached only when
+     `S.type === "flashcards"`; the MCQ path runs the code it ran before.
+     ═════════════════════════════════════════════════════════════════════ */
+
+  var deckSource = null;       // one MRBDeckSource for the life of the page
+  var deckLoad = null;
+
+  /* A shared asset, stamped from the build's version map when it carries
+     one. ⚠️ Without a stamp the URL is made unique rather than left bare:
+     `/shared/*` is served `immutable`, so a bare URL would pin whatever
+     bytes it first met for a year. A unique one is merely uncached. */
+  function assetUrl(name) {
+    var map = window.__MRB_ASSET_V__;
+    var v = map && map[name];
+    return "/shared/" + name + "?v=" + (v || ("u" + Date.now().toString(36)));
+  }
+
+  function loadScript(name, ready) {
+    if (ready()) { return Promise.resolve(true); }
+    return new Promise(function (resolve) {
+      var s = document.createElement("script");
+      s.src = assetUrl(name);
+      s.onload = function () { resolve(ready()); };
+      s.onerror = function () { resolve(false); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function loadDecks() {
+    if (window.MRBDeckSource && window.MRBFormulae) { return Promise.resolve(true); }
+    if (deckLoad) { return deckLoad; }
+    if (!document.querySelector('link[href*="/shared/flashcard-decks.css"]')) {
+      var l = document.createElement("link");
+      l.rel = "stylesheet";
+      l.href = assetUrl("flashcard-decks.css");
+      document.head.appendChild(l);
+    }
+    deckLoad = loadScript("formulae.js", function () { return !!window.MRBFormulae; })
+      .then(function () {
+        return loadScript("flashcard-decks.js", function () { return !!window.MRBDeckSource; });
+      }).then(function (ok) {
+        if (!ok) { deckLoad = null; }
+        return ok;
+      });
+    return deckLoad;
+  }
+
+  function ensureDeckSource() {
+    if (deckSource) {
+      els.deckNote.hidden = true;
+      els.deckRetry.hidden = true;
+      if (!deckSource.view()) { deckSource.show("upload"); }
+      return;
+    }
+    els.deckNote.textContent = SAY.loading;
+    els.deckNote.hidden = false;
+    els.deckRetry.hidden = true;
+    var mySession = session;
+    loadDecks().then(function (ok) {
+      if (!S || mySession !== session) {
+        if (ok && !deckSource) { makeDeckSource(); }
+        return;
+      }
+      if (!ok) {
+        els.deckNote.textContent = SAY.unavailable;
+        els.deckNote.hidden = false;
+        els.deckRetry.hidden = false;
+        return;
+      }
+      makeDeckSource();
+      els.deckNote.hidden = true;
+      if (S.type === "flashcards" && S.step === 1 && !deckSource.view()) {
+        deckSource.show("upload");
+      }
+      syncValidity();
+    });
+  }
+
+  function makeDeckSource() {
+    deckSource = window.MRBDeckSource.create({
+      picker: true,
+      onReady: function (deck, how) {
+        if (!S || S.type !== "flashcards") { return; }
+        S.fc.deck = deck;
+        S.fc.cards = Number(deck.card_count) || 0;
+        S.fc.deckTitle = String(deck.title || "");
+        /* A deck just saved from the review table is the teacher saying
+           "this one": the sheet moves on. A deck picked from a list is a
+           choice, and Next is theirs to press. */
+        if (how === "saved" && S.step === 1) { goDetailFlash(); return; }
+        syncValidity();
+      },
+      onChange: function (src) {
+        if (!S || S.type !== "flashcards") { return; }
+        var c = src.chosen();
+        if (!c && S.fc.deck && S.step === 1) { S.fc.deck = null; }
+        syncValidity();
+      }
+    });
+    els.deckHost.appendChild(deckSource.node);
+  }
+
+  function setType(k) {
+    if (!S || S.editId || S.type === k) { return; }
+    S.type = k;
+    S.clientRef = "";
+    if (k === "flashcards") {
+      els.classNote.hidden = true;
+      /* Warm the deck module while the teacher is still choosing classes. */
+      loadDecks();
+    } else {
+      /* Back to Questions: the cohort applies again. A class ticked while
+         the type was Flashcards may be outside it, and goes. */
+      els.classNote.hidden = !S.scopeErr;
+      if (S.scope && S.cohortIds) {
+        S.classes = S.classes.filter(function (id) { return S.cohortIds[id]; });
+        if (S.classId && S.classes.indexOf(S.classId) < 0) { S.classes.push(S.classId); }
+      } else if (S.classId && !S.scopeLoading) {
+        loadScope();
+      }
+    }
+    syncClasses();
+    syncStep();
+  }
+
+  function syncFlash() {
+    if (!S) { return; }
+    els.fcModeBtns.forEach(function (m) {
+      var on = (S.fc.mode === m.key);
+      m.node.classList.toggle("is-on", on);
+      m.node.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    syncChips(els.fcRuleList, S.fc.rule);
+    /* The summary. The deck title is DATA (a teacher's words), drawn with
+       its formulae; the rest is labels and numbers. */
+    var t = S.fc.deckTitle || (S.fc.deck && S.fc.deck.title) || "";
+    if (window.MRBFormulae) { window.MRBFormulae.fill(els.fcSumTitle, t); }
+    else { els.fcSumTitle.textContent = t; }
+    var parts = [];
+    var n = S.fc.cards || (S.fc.deck && Number(S.fc.deck.card_count)) || 0;
+    if (n) { parts.push(SAY.cards(n)); }
+    parts.push(SAY.mode[S.fc.mode] || "");
+    parts.push(SAY.rule[S.fc.rule] || "");
+    var names = S.classes.map(classNameOf).filter(Boolean);
+    if (names.length) { parts.push(names.join(", ")); }
+    var due = dueIso();
+    if (due) {
+      var p = utcToLondonParts(due);
+      parts.push(SAY.dueOn(londonDateLabel(due) + (p ? " " + p.time : "")));
+    }
+    els.fcSumMeta.textContent = parts.filter(Boolean).join(" · ");
+  }
+
+  function onPrimaryFlash() {
+    if (S.step === 0) { S.step = 1; syncStep(); return; }
+    if (S.step === 1) { goDetailFlash(); return; }
+    if (S.editId) { saveEditFlash(); return; }
+    submitFlash();
+  }
+
+  function goDetailFlash() {
+    S.step = 2;
+    if (!S.titleEdited) {
+      S.title = String(S.fc.deckTitle || (S.fc.deck && S.fc.deck.title) || "").slice(0, 80);
+      els.title.value = S.title;
+    }
+    S.dueDate = S.dueDate || londonDatePlus(7);
+    S.dueTime = S.dueTime || "18:00";
+    S.releaseDate = S.releaseDate || londonDatePlus(1);
+    els.dueDate.value = S.dueDate;
+    els.dueTime.value = S.dueTime;
+    els.relDate.value = S.releaseDate;
+    els.relTime.value = S.releaseTime;
+    /* One key per composed set: minted on arrival, reused by a retry,
+       re-minted when the mode or the rule changes. */
+    S.clientRef = uuid();
+    syncStep();
+    syncRelease();
+  }
+
+  function sbClient() {
+    var g = window.MrBadmusTeacherGuard;
+    return (g && g.getClient) ? g.getClient() : null;
+  }
+
+  function rpc(name, args) {
+    var c = sbClient();
+    if (!c) { return Promise.reject(new Error("set-work: no data layer")); }
+    return Promise.resolve(c.rpc(name, args));
+  }
+
+  /* The RPC's refusal codes, and the field each one is about. The rest
+     (deck_not_ready, class_not_yours, …) get the toast alone. */
+  var FLASH_BAD_FIELD = {
+    bad_title: "badTitle",
+    bad_note: "badNote",
+    release_past: "badRelease",
+    due_before_release: "badDue",
+    due_too_far: "badDue"
+  };
+
+  function submitFlash() {
+    if (S.busy || S.submitting) { return; }
+    if (!S.clientRef) { S.clientRef = uuid(); }
+    S.busy = true;
+    S.submitting = true;
+    syncValidity();
+    var note = els.noteValue();
+    var args = {
+      p_class_ids: S.classes.slice(),
+      p_deck: S.fc.deck.id,
+      p_mode: S.fc.mode,
+      p_rule: S.fc.rule,
+      p_title: String(S.title || "").trim(),
+      p_release_at: releaseIso(),
+      p_due_at: dueIso(),
+      p_note: note ? note : null,
+      p_client_ref: S.clientRef
+    };
+    var title = args.p_title;
+    var classCount = args.p_class_ids.length;
+    var only = classCount === 1 ? classNameOf(args.p_class_ids[0]) : "";
+    var mySession = session;
+    rpc("flashcard_set_work", args).then(function (r) {
+      var d = (r && r.data) || null;
+      var ok = !!(r && !r.error && d && (d.success || d.replayed));
+      if (!ok) {
+        if (S && mySession === session) {
+          S.busy = false;
+          S.submitting = false;
+          var code = (r && r.error && (r.error.message || r.error.code)) || "";
+          var field = FLASH_BAD_FIELD[code];
+          if (field) { S[field] = true; }
+          syncValidity();
+        }
+        toast(SAY.notSetToast);
+        return;
+      }
+      var done = { title: title, classIds: args.p_class_ids,
+                   assignmentIds: d.assignment_ids || [],
+                   releaseAt: d.release_at || null,
+                   replayed: !!d.replayed, kind: "flashcards" };
+      if (S && mySession === session) {
+        S.busy = false;
+        S.submitting = false;
+        S.clientRef = "";
+        close();
+      }
+      toast(classCount === 1 && only
+        ? SAY.setForClass(title, only)
+        : SAY.setForClasses(title, classCount));
+      if (typeof window.MRB_SET_WORK_DONE === "function") {
+        try { window.MRB_SET_WORK_DONE(done); }
+        catch (e) { console.error("[set-work] refresh hook", e); }
+      }
+    }, function () {
+      /* Transport failure: the key is KEPT, so a second press either does
+         the work or is handed back what the first one did. */
+      if (S && mySession === session) {
+        S.busy = false;
+        S.submitting = false;
+        syncValidity();
+      }
+      toast(SAY.notSetToast);
+    });
+  }
+
+  /* ⊕ MRB-351 — EDIT A FLASHCARD SET. Title, deadline and note always;
+     the release too while it is still ahead. The deck, the mode and the rule
+     never move (the pupil's cards are a snapshot), so they are shown in the
+     summary and offered nowhere. */
+  function editFlash(o) {
+    buildShell();
+    isAnchoredOpen = true;
+    opener = (document.activeElement &&
+              document.activeElement !== document.body)
+      ? document.activeElement : null;
+    session += 1;
+    S = freshState(String(o.classId || ""));
+    S.type = "flashcards";
+    S.editId = String(o.assignmentId);
+    S.fc.mode = o.mode || o.flashcardMode || "make";
+    S.fc.rule = o.rule || o.completionRule || "secure";
+    S.fc.deck = o.deckId ? { id: String(o.deckId) } : null;
+    S.fc.deckTitle = String(o.deckTitle || "");
+    S.fc.cards = Number(o.cards || o.cardCount) || 0;
+    var relMs = o.releaseAt ? Date.parse(o.releaseAt) : NaN;
+    S.locked = (o.released !== undefined && o.released !== null)
+      ? !!o.released : (!isNaN(relMs) && relMs <= Date.now());
+    S.title = String(o.title || "");
+    S.titleEdited = true;
+    S.noteLoaded = (o.note !== undefined && o.note !== null) ||
+                   (o.teacherNote !== undefined && o.teacherNote !== null);
+    S.noteEdited = false;
+    S.note = String(o.note || o.teacherNote || "");
+    applyFlashTimes(o.releaseAt, o.dueAt);
+
+    els.title.value = S.title;
+    els.noteInput.value = S.note;
+    els.noteSync();
+    els.relDate.value = S.releaseDate;
+    els.relTime.value = S.releaseTime;
+    els.dueDate.value = S.dueDate;
+    els.dueTime.value = S.dueTime;
+    els.scopesHost.textContent = "";
+    els.dl.reset();
+    els.tree.textContent = "";
+    els.treeRows = [];
+    els.classList.textContent = "";
+    els.classRows = [];
+    els.classNote.hidden = true;
+    S.step = 2;
+    S.clientRef = uuid();
+    buildClasses();
+    buildReleaseChips();
+    syncStep();
+    syncRelease();
+    els.overlay.hidden = false;
+    opens += 1;
+    els.overlay.setAttribute("data-sw-opens", String(opens));
+    els.overlay.setAttribute("data-sw-class", S.classId);
+    els.overlay.setAttribute("data-sw-edit", S.editId);
+    els.sheet.focus({ preventScroll: true });
+    loadDecks().then(function () { if (S) { syncFlash(); } });
+    loadFlashRow();
+    return true;
+  }
+
+  function applyFlashTimes(releaseAt, dueAt) {
+    var rel = releaseAt ? utcToLondonParts(releaseAt) : null;
+    if (rel) { S.release = "later"; S.releaseDate = rel.date; S.releaseTime = rel.time; }
+    var due = dueAt ? utcToLondonParts(dueAt) : null;
+    if (due) { S.dueDate = due.date; S.dueTime = due.time; }
+  }
+
+  /* The row itself, read under RLS, for whatever the caller did not pass —
+     above all the stored note, which the edit RPC always overwrites. */
+  function loadFlashRow() {
+    var c = sbClient();
+    var mySession = session, want = S.editId;
+    if (!c) { return Promise.resolve(false); }
+    return Promise.resolve(c.from("assignments")
+      .select("id,title,due_at,release_at,teacher_note,deck_id,flashcard_mode,completion_rule,class_id")
+      .eq("id", want).maybeSingle()).then(function (r) {
+      if (!S || mySession !== session || S.editId !== want) { return false; }
+      var a = r && r.data;
+      if (!a) { return false; }
+      if (!S.noteLoaded && !S.noteEdited) {
+        S.note = String(a.teacher_note || "");
+        els.noteInput.value = S.note;
+        els.noteSync();
+      }
+      S.noteLoaded = true;
+      if (a.flashcard_mode) { S.fc.mode = a.flashcard_mode; }
+      if (a.completion_rule) { S.fc.rule = a.completion_rule; }
+      if (!S.dueDate && a.due_at) { applyFlashTimes(null, a.due_at); els.dueDate.value = S.dueDate; els.dueTime.value = S.dueTime; }
+      if (a.deck_id) { S.fc.deck = { id: String(a.deck_id) }; }
+      syncFlash();
+      syncValidity();
+      if (!a.deck_id || (S.fc.deckTitle && S.fc.cards)) { return true; }
+      return Promise.resolve(c.from("flashcard_decks").select("id,title,card_count")
+        .eq("id", a.deck_id).maybeSingle()).then(function (dr) {
+        if (!S || mySession !== session || S.editId !== want) { return false; }
+        var d = dr && dr.data;
+        if (d) {
+          if (!S.fc.deckTitle) { S.fc.deckTitle = String(d.title || ""); }
+          if (!S.fc.cards) { S.fc.cards = Number(d.card_count) || 0; }
+        }
+        syncFlash();
+        return true;
+      });
+    }).catch(function () {
+      if (S && mySession === session) { syncValidity(); }
+      return false;
+    });
+  }
+
+  function saveEditFlash() {
+    if (S.busy || S.submitting) { return; }
+    S.busy = true;
+    S.submitting = true;
+    syncValidity();
+    var note = els.noteValue();
+    var rel = null;
+    if (!S.locked) {
+      rel = (S.release === "now") ? new Date().toISOString() : releaseIso();
+    }
+    var args = {
+      p_id: S.editId,
+      p_title: String(S.title || "").trim(),
+      p_due_at: dueIso(),
+      p_note: note ? note : null,
+      p_release_at: rel
+    };
+    var title = args.p_title;
+    var mySession = session;
+    rpc("flashcard_edit_assignment", args).then(function (r) {
+      var d = (r && r.data) || {};
+      var ok = !!(r && !r.error && (d.ok === true || d.success === true));
+      if (!ok) {
+        if (S && mySession === session) {
+          S.busy = false;
+          S.submitting = false;
+          var code = (r && r.error && (r.error.message || r.error.code)) || "";
+          var field = FLASH_BAD_FIELD[code];
+          if (field) { S[field] = true; }
+          syncValidity();
+        }
+        toast(SAY.notSavedToast);
+        return;
+      }
+      if (S && mySession === session) {
+        S.busy = false;
+        S.submitting = false;
+        S.clientRef = "";
+        close();
+      }
+      toast(SAY.savedFor(title));
+      if (typeof window.MRB_SET_WORK_DONE === "function") {
+        try { window.MRB_SET_WORK_DONE({ title: title, saved: true, kind: "flashcards" }); }
+        catch (e) { /* best-effort, as at POST */ }
+      }
+    }, function () {
+      if (S && mySession === session) {
+        S.busy = false; S.submitting = false; syncValidity();
+      }
+      toast(SAY.notSavedToast);
+    });
   }
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -3654,6 +4280,10 @@
     els.classList.textContent = "";
     els.classRows = [];
     els.classNote.hidden = true;
+    /* ⊕ MRB-351 — every open starts on Questions with no deck. */
+    if (deckSource) { deckSource.reset(); }
+    els.deckNote.hidden = true;
+    els.deckRetry.hidden = true;
     /* Drawn from the page before anything is asked for, so step 0 is never
        an empty panel with a dead Next. `/scope` refines it when it lands. */
     buildClasses();
@@ -3742,6 +4372,8 @@
   function edit(opts) {
     var o = opts || {};
     if (!o.assignmentId || !o.classId) { return false; }
+    /* ⊕ MRB-351 — a flashcard set has its own edit: no tree, no questions. */
+    if (o.kind === "flashcards") { return editFlash(o); }
     buildShell();
     isAnchoredOpen = true;
     opener = (document.activeElement &&

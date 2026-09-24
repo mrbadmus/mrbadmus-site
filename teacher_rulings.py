@@ -1308,7 +1308,9 @@ NAV = {
     "a.open": dict(
         nodes=(320,),
         anchor=dict(builder="assignments", key="open"),
-        to="      open: () => MRB_GO('marking', { 'class': k && k.id, paper: "
+        to="      open: () => p.kind === 'flashcards' "
+           "? MRB_GO('flashcards', { assignment: p.id }) "
+           ": MRB_GO('marking', { 'class': k && k.id, paper: "
            "p.idx })",
         why="the upcoming (166) and marked (181) assignment rows. Both are "
             "drawn by the one `paperRow` closure, so one rewrite serves both "
@@ -1321,7 +1323,9 @@ NAV = {
     "h.open": dict(
         nodes=(361,),
         anchor=dict(builder="stHistory", key="open"),
-        to="        open: () => MRB_GO('marking', { 'class': k && k.id, "
+        to="        open: () => p.kind === 'flashcards' "
+           "? MRB_GO('flashcards', { assignment: p.id }) "
+           ": MRB_GO('marking', { 'class': k && k.id, "
            "paper: p.idx })",
         why="a row of the student's assignment history. Anchored on its "
             "trailing `}) : [];` for the same reason `s.open` is. "
@@ -1379,7 +1383,9 @@ NAV = {
     "d.open (class report)": dict(
         nodes=(453,),
         anchor=dict(builder="classReportRows", key="open"),
-        to="        open: () => MRB_GO('marking', { 'class': k && k.id, "
+        to="        open: () => p.kind === 'flashcards' "
+           "? MRB_GO('flashcards', { assignment: p.id }) "
+           ": MRB_GO('marking', { 'class': k && k.id, "
            "paper: p.idx })",
         why="a row of the CLASS REPORT — `digest.html?class=<id>` — which "
             "draws the same node 453 as the whole-school digest through a "
@@ -9184,7 +9190,8 @@ componentDidUpdate() {
     # and the no-roster fixture has no papers. Neither could express "closed,
     # and empty".
     ("    const lastP = kPapers[1] || null;",
-     "    const lastMarked = kMx.markedIdx.filter(i => (kMx.colSub[i] || 0) > 0);\n"
+     "    const lastMarked = kMx.markedIdx.filter(i => (kMx.colSub[i] || 0) > 0\n"
+     "      && !(kPapers[i] && kPapers[i].kind === 'flashcards'));\n"
      "    const lastP = lastMarked.length "
      "? (kPapers[lastMarked[0]] || null) : null;",
      "the class screen's \"last marked set\". Part of #13: `kPapers[1]` is "
@@ -9412,7 +9419,13 @@ componentDidUpdate() {
         const wkStem = (wkG.stems || [])[wkAt];
         weak = ((wkStem && wkStem.id) || ('Q' + (wkAt + 1))) + ' · ' + wkMin + '%';
         weakFg = wkMin < 50 ? 'var(--st-accent-text)' : 'var(--st-muted)';
+      }
+      if (p.kind === 'flashcards') {
+        weak = p.kindLabel || 'Flashcards'; weakFg = 'var(--st-muted)';
       }""",
+     "⊕ MRB-351: a flashcard set has no weakest question — its cell reads "
+     "\"Flashcards · N cards\" (`kindLabel`, counted by teacher-live.js), "
+     "or \"Flashcards\" when the count is not in hand. "
      "the assignment table's weakest-question column. A null grid and a "
      "deleted `STEMS` are two separate throws on the one class that has "
      "work set; a null `qpct` entry is a third wrong answer that does not "
@@ -10464,7 +10477,7 @@ componentDidUpdate() {
           && s.dlArm !== p.id,
         armed: s.delArm === p.id,
         setByLine: p.set_by_name ? ('Set by ' + p.set_by_name) : '',
-        showDl: s.delArm !== p.id && s.dlArm !== p.id,
+        showDl: p.kind !== 'flashcards' && s.delArm !== p.id && s.dlArm !== p.id,
         showDel: s.dlArm !== p.id,
         dlArmed: s.dlArm === p.id,
         dl: (e) => { e.stopPropagation();
@@ -10480,7 +10493,9 @@ componentDidUpdate() {
           subject: p.set_subject || 'all',
           paper: p.paper == null ? 'both' : String(p.paper),
           releaseAt: p.release_at, dueAt: p.due_at,
-          released: p.released }); },
+          released: p.released, kind: p.kind, deckId: p.deck_id,
+          mode: p.flashcard_mode, rule: p.completion_rule,
+          note: p.kind === 'flashcards' ? p.teacher_note : undefined }); },
         cancelDel: (e) => { e.stopPropagation(); this.setState({ delArm: '' }); },
         del: (e) => {
           e.stopPropagation();
@@ -10520,7 +10535,7 @@ componentDidUpdate() {
         showEdit: pp.source === 'teacher' && s.delArm !== pp.id
           && s.dlArm !== pp.id,
         armed: s.delArm === pp.id,
-        showDl: s.delArm !== pp.id && s.dlArm !== pp.id,
+        showDl: pp.kind !== 'flashcards' && s.delArm !== pp.id && s.dlArm !== pp.id,
         showDel: s.dlArm !== pp.id,
         dlArmed: s.dlArm === pp.id,
         dl: () => this.setState({ dlArm: pp.id, delArm: '' }),
@@ -10535,7 +10550,9 @@ componentDidUpdate() {
           subject: pp.set_subject || 'all',
           paper: pp.paper == null ? 'both' : String(pp.paper),
           releaseAt: pp.release_at, dueAt: pp.due_at,
-          released: pp.released }),
+          released: pp.released, kind: pp.kind, deckId: pp.deck_id,
+          mode: pp.flashcard_mode, rule: pp.completion_rule,
+          note: pp.kind === 'flashcards' ? pp.teacher_note : undefined }),
         cancelDel: () => this.setState({ delArm: '' }),
         del: () => {
           if (s.delArm !== pp.id) { this.setState({ delArm: pp.id }); return; }
@@ -10551,6 +10568,34 @@ componentDidUpdate() {
      "table's answer; this page IS the row, and a deleted assignment's "
      "marking screen is a page about nothing. It goes back to the class it "
      "belonged to, which is where the teacher can see that it has gone."),
+
+    # ══ ⊕ MRB-351 · A HANDED-IN SET WITH NO MARK IS HANDED IN ═════════════
+    #
+    # A flashcard set is never graded (`cellOf` in teacher-live.js, and its
+    # SQL twin `teacher_class_rollup`), so its cell carries `submitted: true`
+    # and `scores: null`. Design's student history reads "handed in" as
+    # `sc != null`, which would draw a finished deck as "Nothing in" and count
+    # it among the sets never submitted. `sc` becomes '' for a cell that was
+    # handed in without a mark: every `sc != null` test then says handed in,
+    # and `score` still prints "—" because `max` is null.
+    ("      const sc = stRow ? stRow.scores[i] : null;",
+     "      const sc = stRow ? (stRow.scores[i] != null ? stRow.scores[i]\n"
+     "        : (stRow.submitted[i] === true ? '' : null)) : null;",
+     "MRB-351 — the student history's handed-in test reads `submitted`, "
+     "not `scores`, so an ungraded set (every flashcard set) reads handed "
+     "in rather than missing."),
+
+    # ⚠️ AND THE ROW'S AVERAGE IS OVER GRADED ROWS ONLY. Design's mean adds
+    # `h.pct` over every handed-in row; a null `pct` coerces to 0 in `+`, so
+    # a finished deck would drag the pupil's average down as though it were
+    # a zero. Graded rows only — the same population `studentAvg` uses.
+    ("    const stAvg = stMarked.length ? Math.round(stMarked.reduce((a, h) => "
+     "a + h.pct, 0) / stMarked.length) : null;",
+     "    const stGraded = stMarked.filter(h => h.pct != null);\n"
+     "    const stAvg = stGraded.length ? Math.round(stGraded.reduce((a, h) => "
+     "a + h.pct, 0) / stGraded.length) : null;",
+     "MRB-351 — the student screen's average leaves ungraded rows (every "
+     "flashcard set) out, rather than counting each as 0%."),
 
 )
 

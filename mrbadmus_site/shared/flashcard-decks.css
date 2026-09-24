@@ -1,0 +1,285 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   flashcard-decks.css — MRB-351. The review table, the deck step and the
+   progress bar. Everything else a deck screen draws is set-work.css's own
+   chrome (`.sw-label`, `.sw-chip`, `.sw-row`, `.sw-btn`, `.sw-input`), so a
+   deck looks the same in the Set work sheet and on the library page.
+
+   ⚠️ EVERY VALUE IS A `--st-*` TOKEN from shared/teacher-ds.css. Tap
+   targets are 44px; no mono label is under 12px; nothing may push a 360px
+   sheet sideways, so every flex child that holds text carries min-width:0.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.fd-source, .fd-editor { min-width: 0; }
+.fd-pane { margin-top: 16px; min-width: 0; }
+.fd-pane[hidden] { display: none; }
+.fd-source-chips[hidden] { display: none; }
+
+/* ── the file button: a real <input type=file>, laid over a .sw-btn ───── */
+.fd-file {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  height: auto;
+  overflow: hidden;
+  color: var(--st-accent-text);
+}
+.fd-file-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;
+}
+.fd-file:focus-within { outline: 2px solid var(--st-accent); outline-offset: 2px; }
+
+.fd-paste { display: block; min-height: 160px; resize: vertical; font-family: var(--st-ui); }
+.fd-make { margin-top: 12px; min-height: 44px; }
+
+/* ── progress ──────────────────────────────────────────────────────────── */
+.fd-prog-label {
+  font: 500 13px/1.2 var(--st-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  font-variant-numeric: tabular-nums;
+}
+.fd-track {
+  margin-top: 12px;
+  height: 8px;
+  border-radius: 99px;
+  background: var(--st-num-well);
+  overflow: hidden;
+}
+.fd-fill {
+  width: 0;
+  height: 100%;
+  border-radius: 99px;
+  background: var(--st-accent);
+  transition: width .3s ease;
+}
+.fd-cached-title {
+  font: 600 17px/1.3 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+
+/* ── button rows ───────────────────────────────────────────────────────── */
+.fd-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.fd-foot .sw-btn, .fd-edit { min-height: 44px; height: auto; white-space: normal; }
+.fd-foot .sw-btn[hidden] { display: none; }
+[data-fd="save-note"] { margin-top: 8px; }
+
+/* ── the review table ──────────────────────────────────────────────────── */
+.fd-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.fd-count {
+  flex: 1 1 auto;
+  min-width: 0;
+  font: 500 13px/1.3 var(--st-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.fd-bar .sw-btn { min-height: 44px; height: auto; }
+
+.fd-rows { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+.fd-card {
+  min-width: 0;
+  padding: 8px 10px 12px;
+  background: var(--st-paper);
+  border: 1px solid var(--st-btn-border);
+  border-radius: 10px;
+}
+/* A row that needs a look: the tinted frame the sheet already uses for a
+   chosen row, and the word "Check" in the tag slot. Never colour alone. */
+.fd-card.is-flag {
+  background: var(--st-note-bg);
+  border-color: var(--st-accent-text);
+}
+.fd-card.is-drag { opacity: .7; box-shadow: var(--st-shadow-pop); }
+
+.fd-card-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.fd-n {
+  flex: none;
+  min-width: 1.6em;
+  font: 500 13px/1.2 var(--st-mono);
+  color: var(--st-caption);
+  font-variant-numeric: tabular-nums;
+}
+.fd-flag {
+  flex: none;
+  padding: 3px 7px;
+  font: 500 12px/1.2 var(--st-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--st-accent-text);
+  border: 1px solid var(--st-accent-text);
+  border-radius: 6px;
+}
+.fd-flag[hidden] { display: none; }
+.fd-spacer { flex: 1 1 auto; min-width: 0; }
+
+.fd-icon {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: var(--st-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.fd-icon:hover { border-color: var(--st-btn-border); color: var(--st-ink); }
+.fd-icon[disabled] { opacity: .35; cursor: default; }
+.fd-icon[disabled]:hover { border-color: transparent; color: var(--st-muted); }
+.fd-handle { cursor: grab; touch-action: none; }
+.fd-card.is-drag .fd-handle { cursor: grabbing; }
+
+.fd-text {
+  display: block;
+  margin-top: 6px;
+  resize: vertical;
+  min-height: 44px;
+  font-family: var(--st-ui);
+  line-height: 1.35;
+}
+/* The read-only line under a field: the same text, formulae subscripted. */
+.fd-render {
+  margin: 5px 2px 0;
+  font: 400 15px/1.4 var(--st-ui);
+  color: var(--st-body);
+  overflow-wrap: anywhere;
+}
+.fd-render[hidden] { display: none; }
+
+.fd-ref-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  min-width: 0;
+}
+.fd-ref-label {
+  flex: none;
+  font: 500 12px/1.2 var(--st-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+}
+.fd-ref {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 220px;
+  height: 36px;
+  padding: 6px 10px;
+  font: 400 14px/1.2 var(--st-mono);
+  color: var(--st-ink);
+  background: var(--st-paper);
+  border: 1px solid var(--st-btn-border);
+  border-radius: 8px;
+}
+
+/* ── the deck picker rows ──────────────────────────────────────────────── */
+.fd-edit { flex: none; }
+
+/* ── the library panel's header: no primary, so the step word centres ── */
+.fd-head-pad { flex: none; width: 64px; }
+
+/* ── the Set work sheet's flashcard parts ─────────────────────────────── */
+.fd-modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.fd-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 88px;
+  padding: 14px;
+  text-align: left;
+  background: var(--st-paper);
+  border: 1px solid var(--st-btn-border);
+  border-radius: 12px;
+  cursor: pointer;
+  min-width: 0;
+}
+.fd-mode.is-on {
+  background: var(--st-chip-tint);
+  border-color: var(--st-chip-tint-border);
+}
+.fd-mode-tag {
+  font: 500 12px/1.2 var(--st-mono);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+}
+.fd-mode.is-on .fd-mode-tag { color: var(--st-accent-text); }
+.fd-mode-title {
+  font: 600 17px/1.25 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+.fd-rule .sw-chip { flex: 0 1 auto; min-width: 96px; padding: 11px 14px; }
+
+.fd-summary {
+  margin-top: 22px;
+  padding: 14px 16px;
+  background: var(--st-num-well);
+  border: 1px solid var(--st-rule-soft);
+  border-radius: 12px;
+  min-width: 0;
+}
+.fd-summary[hidden] { display: none; }
+.fd-summary-title {
+  font: 600 18px/1.3 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+.fd-summary-meta {
+  margin-top: 6px;
+  font: 500 13px/1.5 var(--st-mono);
+  letter-spacing: .06em;
+  color: var(--st-muted);
+  overflow-wrap: anywhere;
+}
+
+[data-sw="type-chips"] .sw-chip { flex: 1 1 0; }
+
+@media (max-width: 520px) {
+  .fd-modes { grid-template-columns: minmax(0, 1fr); }
+  .fd-card { padding: 6px 8px 10px; }
+  .fd-card-head { gap: 2px; }
+  .fd-head-pad { width: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fd-fill { transition: none; }
+}

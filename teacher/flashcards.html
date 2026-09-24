@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Flashcards — Mr Badmus AI</title>
+  <!-- ⊕ MRB-351 §5 — one flashcard set's progress, for the teacher who set
+       it. HAND-WRITTEN, like today.html and timetable.html: it is not one of
+       the six screens build_teacher_port.py generates. The page's logic is
+       shared/flashcard-progress.js; this file is the shell. -->
+  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/teacher-ds.css?v=d6e74d32"/>
+  <link rel="stylesheet" href="/shared/set-work.css?v=a5cfe289"/>
+  <link rel="stylesheet" href="/shared/flashcard-progress.css?v=b8515261"/>
+  <style>
+    html { background: var(--st-ground); }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--st-ground); color: var(--st-ink);
+      font: 400 18px/1.5 var(--st-ui); min-height: 100vh;
+      /* Revealed by the guard's onAllowed, never before. */
+      display: none;
+    }
+    /* ── the top bar: today.html's, value for value ─────────────────────── */
+    .topbar {
+      position: sticky; top: 0; z-index: 40; display: flex; align-items: center;
+      gap: 12px; height: 62px; padding: 0 22px;
+      background: var(--st-paper); border-bottom: 1px solid var(--st-rule);
+    }
+    .tb-brand {
+      flex: none; font: 600 23px/1 var(--st-display); letter-spacing: -0.025em;
+      color: var(--st-ink); text-decoration: none; white-space: nowrap;
+    }
+    .tb-brand:hover { color: var(--st-ink); text-decoration: none; }
+    .tb-seg {
+      display: flex; gap: 3px; padding: 3px; flex: none; margin-right: auto;
+      background: var(--st-seg-bg); border-radius: 10px;
+    }
+    .tb-tab {
+      padding: 7px 15px; border-radius: 8px; font: 600 15.5px/1.2 var(--st-ui);
+      color: var(--st-caption); background: transparent; text-decoration: none; white-space: nowrap;
+    }
+    .tb-tab:hover { color: var(--st-ink); text-decoration: none; }
+    .signout {
+      flex: none; height: 32px; padding: 0 12px; font: 600 15.5px/1.2 var(--st-ui);
+      color: var(--st-muted); background: transparent; border: 1px solid var(--st-btn-border);
+      border-radius: 9px; cursor: pointer;
+    }
+    .signout:hover { color: var(--st-ink); border-color: var(--st-edge); }
+    @media print { .noprint { display: none !important; } }
+    @media (max-width: 560px) {
+      .topbar { height: auto; min-height: 62px; flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
+      .tb-brand { font-size: 19px; }
+      .tb-seg { margin-right: 0; }
+      .tb-tab { padding: 6px 11px; font-size: 14px; }
+    }
+  </style>
+</head>
+<!-- `.rd[data-mode="ks3"]` is the scope the six generated teacher screens
+     draw inside; it is what defines the --ks3-ok* greens (Done). -->
+<body class="rd" data-mode="ks3">
+
+<!-- today.html's bar. `data-port-region="topbar"` is where
+     teacher-admin-nav.js puts the Admin link, and Sign out must stay the
+     LAST button in it (that module inserts before the last button). -->
+<nav class="topbar noprint" data-port-region="topbar">
+  <a class="tb-brand" href="/index.html">MrBadmusAI</a>
+  <div class="tb-seg">
+    <a class="tb-tab" data-mrb-today-nav="1" href="/teacher/today.html">Today</a>
+    <a class="tb-tab" href="/teacher/classes.html">My classes</a>
+  </div>
+  <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+</nav>
+
+<main class="fp-wrap" id="fp-main">
+  <div id="fp-skel">
+    <div class="fp-skel" style="width:180px;height:13px;"></div>
+    <div class="fp-skel" style="width:min(420px,80%);height:40px;margin-top:14px;"></div>
+    <div class="fp-skel" style="width:100%;height:260px;margin-top:28px;border-radius:11px;"></div>
+  </div>
+
+  <div id="fp-body" hidden>
+    <header class="fp-head" id="fp-head"></header>
+    <section class="fp-strip" id="fp-strip" aria-label="Class"></section>
+    <div class="fp-scroll" id="fp-scroll">
+      <table class="fp-table" id="fp-table">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="fp-notice" id="fp-notice" hidden>
+    <h1 id="fp-notice-title"></h1>
+    <a href="/teacher/classes.html">My classes</a>
+  </div>
+</main>
+
+<!-- The pupil drawer: right-hand panel on a desktop, the whole screen on a
+     phone. Read-only. -->
+<div class="fp-drawer-back noprint" id="fp-drawer-back" hidden>
+  <aside class="fp-drawer" role="dialog" aria-modal="true" aria-labelledby="fp-drawer-name">
+    <div class="fp-drawer-head">
+      <h2 class="fp-drawer-name" id="fp-drawer-name"></h2>
+      <span id="fp-drawer-status"></span>
+      <button type="button" class="fp-close" id="fp-drawer-close" aria-label="Close">×</button>
+    </div>
+    <div class="fp-drawer-body" id="fp-drawer-body"></div>
+  </aside>
+</div>
+
+<!-- Edit: set-work.css's own overlay and sheet. -->
+<div class="sw-overlay fp-edit noprint" id="fp-edit-back" hidden>
+  <div class="sw-sheet" role="dialog" aria-modal="true" aria-labelledby="fp-ed-head" style="width:560px;">
+    <div class="sw-head">
+      <div class="sw-step" id="fp-ed-head">Edit</div>
+      <button type="button" class="sw-btn" id="fp-ed-cancel">Cancel</button>
+      <button type="button" class="sw-btn sw-btn-primary" id="fp-ed-save">Save</button>
+    </div>
+    <div class="sw-body">
+      <label class="sw-label" for="fp-ed-title">Title</label>
+      <div class="sw-fields"><input class="sw-input" id="fp-ed-title" type="text" maxlength="120" autocomplete="off"/></div>
+      <div id="fp-ed-rel-wrap" hidden>
+        <label class="sw-label" for="fp-ed-rel-date">Opens</label>
+        <div class="sw-fields">
+          <input class="sw-input" id="fp-ed-rel-date" type="date" aria-label="Opens date"/>
+          <input class="sw-input" id="fp-ed-rel-time" type="time" aria-label="Opens time"/>
+        </div>
+      </div>
+      <label class="sw-label" for="fp-ed-due-date">Due</label>
+      <div class="sw-fields">
+        <input class="sw-input" id="fp-ed-due-date" type="date" aria-label="Due date"/>
+        <input class="sw-input" id="fp-ed-due-time" type="time" aria-label="Due time"/>
+      </div>
+      <label class="sw-label" for="fp-ed-note">Note</label>
+      <div class="sw-fields"><textarea class="sw-input" id="fp-ed-note" maxlength="300" rows="3"></textarea></div>
+      <div class="fp-ed-err" id="fp-ed-err" role="alert"></div>
+    </div>
+  </div>
+</div>
+
+<div class="fp-toast" id="fp-toast" role="status" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js?v=d1fecb43"></script>
+<!-- class-entry.js BEFORE teacher-data.js — CLAUDE.md's load-order rule. -->
+<script src="/shared/class-entry.js?v=a97c1d3d"></script>
+<script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
+<script src="/shared/teacher-data.js?v=7c1f2419"></script>
+<script src="/shared/teacher-admin-nav.js?v=a3d7d6fe"></script>
+<script src="/shared/formulae.js?v=e4bfb091"></script>
+<!-- For its London clock helpers (londonToUtcIso / utcToLondonParts): the
+     one conversion every Set work surface uses. It builds nothing until
+     opened. -->
+<script src="/shared/set-work.js?v=006d74ad"></script>
+<script src="/shared/flashcard-progress.js?v=f1668eaa"></script>
+<script>
+MrBadmusTeacherGuard.requireTeacherRole({
+  onDenied: function () { /* the guard redirects */ },
+  onAllowed: function () {
+    document.body.style.display = 'block';
+    window.MRBFlashcardProgress.start();
+  }
+});
+</script>
+</body>
+</html>

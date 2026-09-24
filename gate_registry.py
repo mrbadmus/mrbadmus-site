@@ -387,6 +387,89 @@ GATES = [
              "the port has run — so this SKIPS BY NAME until then rather "
              "than failing on three pages nobody has built yet."),
 
+    dict(name="flashcard_homework_drive",
+         cmd=["python3", "flashcard_homework_drive.py"],
+         speed="slow",
+         watches=["flashcard_homework_drive.py", "ks3_browser.py",
+                  "student_rulings.py", "build_student_port.py", "student_template.py",
+                  "student_templates.json",
+                  "student/class-fixture.html", "shared/student-fixture-class.js",
+                  "shared/student-runtime.js", "shared/student-live.js",
+                  "shared/student-ds.css",
+                  "shared/flashcard-homework.js", "shared/formulae.js"],
+         why="MRB-351 §4 — the pupil's flashcard homework in Design's ONE "
+             "flashcard overlay (homework mode), driven on the compiled class "
+             "page with the real engine and formula renderer and a stand-in "
+             "transport: make phase (write, Check, model answer beside theirs, "
+             "rate), 'Your deck is ready', review queue order, Reveal, Space and "
+             "1·2·3, swipe, Finish for now, the between-sittings and secured "
+             "panels, <sub> formulae, the practice deck left as Design drew it, "
+             "events carrying ids/clock/visibility and no durations, no sideways "
+             "scroll at 390 and 360. Asserts the live page's hook is the one "
+             "driven."),
+    dict(name="flashcard_progress_drive",
+         cmd=["python3", "flashcard_progress_drive.py"],
+         speed="slow",
+         watches=["flashcard_progress_drive.py", "ks3_browser.py",
+                  "teacher/flashcards.html",
+                  "shared/flashcard-progress.js", "shared/flashcard-progress.css",
+                  "shared/formulae.js", "shared/set-work.js", "shared/set-work.css",
+                  "shared/teacher-live.js", "shared/teacher-data.js",
+                  "shared/teacher-guard.js", "shared/teacher-admin-nav.js",
+                  "shared/teacher-ds.css", "shared/tokens.css",
+                  "shared/class-entry.js", "shared/config.js",
+                  "teacher_rulings.py", "build_teacher_port.py",
+                  "teacher/class-detail.html", "teacher/assignment.html",
+                  "teacher/student-detail.html"],
+         why="MRB-351 §5 — the teacher's flashcard progress page, DRIVEN with "
+             "a stubbed client: least-progress-first default sort and every "
+             "column sorting both ways, make vs review columns, the pupil "
+             "drawer (answer beside model answer, rating history, sittings), "
+             "a row flipping to Done by polling without a reload, the CSV as "
+             "displayed, the Rushed marker, no page scroll at 360/390 and no "
+             "explanatory copy. It also runs teacher-live.js's real "
+             "`buildPapers`/`buildMatrix` to prove a flashcard set is handed "
+             "in but never graded — the JS twin of "
+             "20260924180200_mrb351_rollup_kind.sql — and reads the generated "
+             "screens for the kind split (flashcard rows open this page, no "
+             "Download)."),
+
+    dict(name="flashcard_decks_drive",
+         cmd=["python3", "flashcard_decks_drive.py"],
+         speed="slow",
+         watches=["flashcard_decks_drive.py", "ks3_browser.py",
+                  "shared/set-work.js", "shared/set-work.css",
+                  "shared/flashcard-decks.js", "shared/flashcard-decks.css",
+                  "shared/formulae.js", "shared/teacher-admin-nav.js",
+                  "teacher/decks.html", "teacher/timetable.html",
+                  "teacher/today.html",
+                  "shared/teacher-guard.js", "shared/teacher-data.js",
+                  "shared/class-entry.js", "shared/config.js",
+                  "shared/teacher-ds.css", "shared/tokens.css"],
+         why="MRB-351 §3 — the TEACHER'S half of flashcard homework, DRIVEN "
+             "against a stubbed supabase client and a stubbed fetch for the "
+             "extraction function and the Set work backend. The Set work "
+             "sheet's type chips (Questions still reaches Topic and Detail "
+             "with its tree, questions and Download — the MCQ branch is "
+             "proved undisturbed, not assumed); Flashcards lifting the "
+             "cohort; Upload -> 'Reading… 35%' -> the review table with "
+             "flagged / low-confidence / empty-sided rows sorted to the top "
+             "and the live count; Save deck disabled on an empty side; swap, "
+             "swap all, add, delete, up/down and a REAL pointer drag; "
+             "flashcard_deck_save's payload; the exact flashcard_set_work "
+             "payload (classes, deck, mode, rule, release, due via "
+             "londonToUtcIso, note, client_ref) and a refusal outlining its "
+             "field with the retry reusing the key; cached / Read it again "
+             "(force=1) / Paste / Type / My decks / Shared; the flashcard "
+             "edit through flashcard_edit_assignment keeping the stored "
+             "note; the deck library's list, deleted-but-used row, Share, "
+             "two-press Delete, Duplicate-then-edit and search; the "
+             "'Flashcard decks' nav link on another teacher page; no "
+             "sideways scroll at 360/390 and no explanatory sentence on "
+             "screen. ⚠️ The stub models what RLS returns; it proves the "
+             "pages given those rows, not the policies — those are SQL's, "
+             "on TEST."),
+
     dict(name="today_drive",
          cmd=["python3", "today_drive.py"],
          speed="slow",

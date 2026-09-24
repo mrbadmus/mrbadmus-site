@@ -428,6 +428,8 @@ window.MrBadmusStudentData = (function () {
     const assignmentsPromise = settle(sb
       .from('assignments')
       .select('id, title, subject_id, due_at, deleted_at, ' +
+              // ⊕ MRB-351 — which kind of work: a question set or a deck.
+              'kind, flashcard_mode, completion_rule, ' +
               'subject:subject_id ( name )')
       .eq('class_id', classId)
       .is('deleted_at', null));
@@ -666,6 +668,9 @@ window.MrBadmusStudentData = (function () {
         max_score: isSubmitted ? sub.max_score : null,
         on_time: isSubmitted && a.due_at && sub.submitted_at <= a.due_at,
         submitted_at: isSubmitted ? sub.submitted_at : null,
+        // ⊕ MRB-351 — a flashcard deck, or (the default) a question set.
+        kind: a.kind || 'mcq_set',
+        flashcard_mode: a.flashcard_mode || null,
       };
 
       if (isSubmitted) {

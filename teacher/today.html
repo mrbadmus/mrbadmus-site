@@ -720,8 +720,8 @@
      is not already on the page, and this page's very first read needs it. -->
 <script src="/shared/class-entry.js?v=a97c1d3d"></script>
 <script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
-<script src="/shared/teacher-data.js?v=3fef17de"></script>
-<script src="/shared/teacher-admin-nav.js?v=58c0e260"></script>
+<script src="/shared/teacher-data.js?v=7c1f2419"></script>
+<script src="/shared/teacher-admin-nav.js?v=a3d7d6fe"></script>
 <!-- ⊕ MRB-323 — the name picker. Defines `window.MrBadmusPicker` and does
      nothing until a lesson row's picker button is pressed. It makes no
      request and touches no storage, so its position in this list carries no
@@ -2081,6 +2081,10 @@ function termStats(pack, nowIso) {
     marked.forEach(function (a) {
       const s = mine[a.id];
       if (!isDone(s)) { missed += 1; return; }
+      /* ⊕ MRB-351 — a flashcard set is handed in (or missed) like any work
+         and is NEVER graded: its N/N is a completion stamp, not a mark.
+         Same rule as `cellOf` and `teacher_class_rollup`. */
+      if (a.kind === 'flashcards') { return; }
       if (s.score != null && s.max_score != null && s.max_score > 0) {
         tot += s.score; totMax += s.max_score;
       }
@@ -2098,7 +2102,11 @@ function termStats(pack, nowIso) {
    all still open, which is the honest answer: a set nobody has been marked on
    cannot say what to reteach. */
 function newestMarkedPaper(pack, nowIso) {
-  const closed = markedPapers(pack, nowIso).slice().sort(function (a, b) {
+  // ⊕ MRB-351 — a flashcard set has no questions to reteach from; skipped
+  // exactly as `newestMarkedIdx` skips it.
+  const closed = markedPapers(pack, nowIso).filter(function (a) {
+    return a.kind !== 'flashcards';
+  }).sort(function (a, b) {
     if (a.due_at !== b.due_at) { return a.due_at < b.due_at ? 1 : -1; }
     return (a.title || '').localeCompare(b.title || '');
   });

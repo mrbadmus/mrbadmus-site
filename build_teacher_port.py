@@ -283,7 +283,10 @@ STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
                 "teacher-picker.js", "rum.js",
                 SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME,
-                "figures-ks3.js", "figures-ks4.js")
+                "figures-ks3.js", "figures-ks4.js",
+                # ⊕ MRB-351 — set-work.js loads these on demand when a
+                # teacher picks Flashcards; stamped like every other dep.
+                "formulae.js", "flashcard-decks.js", "flashcard-decks.css")
 
 
 def asset_hash(text):
@@ -3961,7 +3964,12 @@ function MRB_ENV(){var c=window.MrBadmusConfig;
 var MRB_PAGE = {classes:'classes.html', 'class':'class-detail.html',
   student:'student-detail.html', marking:'assignment.html',
   digest:'digest.html', 'import':'import.html', insights:'insights.html',
-  today:'today.html', timetable:'timetable.html'};
+  today:'today.html', timetable:'timetable.html',
+  /* ⊕ MRB-351 — the hand-written flashcard progress page, addressed by
+     `?assignment=<id>`. Not a ported screen, so `SCREEN_BY_PAGE` does not
+     name it either; it is here so every row that opens a flashcard set goes
+     through MRB_GO, which the gates stub. */
+  flashcards:'flashcards.html'};
 function MRB_GO(screen, params){
   var f = MRB_PAGE[screen];
   if(!f)throw new Error('teacher page: no page for screen "'+screen+'"');

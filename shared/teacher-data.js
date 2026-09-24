@@ -2103,6 +2103,13 @@ window.MrBadmusTeacherData = (function () {
             .select(
               'id, class_id, title, due_at, release_at, source, set_by, ' +
               'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
+              /* ⊕ MRB-351 — WHICH KIND OF WORK THIS IS. `kind` is
+                 'mcq_set' | 'flashcards'; the other three describe a
+                 flashcard set. Every screen needs `kind` because a flashcard
+                 set is handed in like any other work and is NEVER graded
+                 (`cellOf` in teacher-live.js, and its SQL twin in
+                 20260924180200_mrb351_rollup_kind.sql). */
+              'kind, flashcard_mode, completion_rule, deck_id, teacher_note, ' +
               'created_at, academic_week, subject_id, ' +
               'subject:subject_id ( id, name )'
             )
@@ -2297,6 +2304,12 @@ window.MrBadmusTeacherData = (function () {
         scope_ref: a.scope_ref,
         set_subject: a.set_subject || "",
         paper: a.paper,
+        // ⊕ MRB-351 — see the select above.
+        kind: a.kind || 'mcq_set',
+        flashcard_mode: a.flashcard_mode || null,
+        completion_rule: a.completion_rule || null,
+        deck_id: a.deck_id || null,
+        teacher_note: a.teacher_note == null ? null : a.teacher_note,
         created_at: a.created_at,
         academic_week: a.academic_week,
         subject_id: a.subject_id,
@@ -2547,6 +2560,37 @@ window.MrBadmusTeacherData = (function () {
    *   - query_failed_submissions
    *   - query_failed_question_attempts
    */
+  /* ⊕ MRB-351 — HOW MANY CARDS EACH FLASHCARD SET HOLDS, in one read.
+     `assignment_flashcards` is the frozen snapshot a set was made from, one
+     row per card; RLS lets a reader see the rows of any assignment they can
+     see. Resolves `{assignment_id: n}`; never throws — a failed count is a
+     label that falls back to the title, not a broken page. */
+  async function loadFlashcardCounts(assignmentIds) {
+    const ids = Array.from(new Set((assignmentIds || []).filter(isUuid)));
+    const out = {};
+    if (!ids.length) return out;
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) return out;
+    /* One HEAD count per set, in parallel: a set holds up to 200 cards, so
+       reading the rows themselves could pass PostgREST's 1,000-row page on
+       a handful of sets and undercount silently. A count cannot. */
+    try {
+      const counts = await Promise.all(ids.map(async function (id) {
+        const r = await sb.from('assignment_flashcards')
+          .select('id', { count: 'exact', head: true })
+          .eq('assignment_id', id);
+        if (r.error) throw r.error;
+        return [id, r.count];
+      }));
+      counts.forEach(function (c) { if (c[1] != null) out[c[0]] = c[1]; });
+    } catch (e) {
+      console.warn('[teacher-data] flashcard counts unavailable', e);
+      return {};
+    }
+    return out;
+  }
+
   async function loadPaperQuestions(assignmentIds) {
     const ids = Array.from(new Set((assignmentIds || []).filter(Boolean)));
     ids.forEach(function (id) {
@@ -3449,6 +3493,7 @@ window.MrBadmusTeacherData = (function () {
     // ⊕ MRB-348 WS-2 — the server-side aggregate behind the summary screens.
     loadClassSummaries,
     loadPaperQuestions,
+    loadFlashcardCounts,
     // ⊕ MRB-328 J3 — whose classes a school admin has asked to look at.
     // Additive; no existing caller changes.
     loadStaffClassScope,

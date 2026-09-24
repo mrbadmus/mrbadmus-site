@@ -813,6 +813,18 @@
         scope_ref: a.scope_ref || "",
         set_subject: a.set_subject || "",
         paper: (a.paper == null) ? null : a.paper,
+        /* ⊕ MRB-351 — WHICH KIND OF WORK. A flashcard set is handed in like
+           any other work and is never graded (`cellOf`), is never a marking
+           grid (it opens `teacher/flashcards.html`), and offers no worksheet.
+           `cards` is the snapshot's size, filled by `base()` from one count
+           read; null until then, and null for an MCQ set. */
+        kind: a.kind || "mcq_set",
+        flashcard_mode: a.flashcard_mode || null,
+        completion_rule: a.completion_rule || null,
+        deck_id: a.deck_id || null,
+        teacher_note: a.teacher_note == null ? null : a.teacher_note,
+        cards: null,
+        kindLabel: "",
         released: released,
         state: state,
         statusLabel: state === "scheduled" ? "Scheduled"
@@ -1031,8 +1043,16 @@
       var done = !!stamp || s.status === "complete";
       if (!done) { return null; }
 
+      /* ⊕ MRB-351 — A FLASHCARD CELL IS A CELL AND IS NEVER GRADED. The
+         server writes its submission as score = max_score = N when the pupil
+         meets the completion rule: a completion stamp, not a mark. Kept as a
+         mark it would add a 100% to every mean and average on every screen.
+         So it is handed in (on time / late exactly as usual) and carries no
+         score — the same `graded` predicate as `teacher_class_rollup`
+         (20260924180200_mrb351_rollup_kind.sql), so the two still agree. */
+      var graded = !(paper && paper.kind === "flashcards");
       var score = null, max = null, pct = null;
-      if (s.score != null && s.max_score != null && s.max_score > 0) {
+      if (graded && s.score != null && s.max_score != null && s.max_score > 0) {
         score = s.score;
         max = s.max_score;
         pct = Math.round((s.score / s.max_score) * 100);
@@ -1904,6 +1924,14 @@
      strict — a non-negative integer or nothing — and EVERY entry point runs a
      value through it, so `"3"` and `3` cannot produce two different keys for
      one grid. */
+  /* ⊕ MRB-351 — the flashcard progress page for one set, env threaded the
+     way `MRB_GO` threads it. */
+  function flashcardsUrl(id) {
+    var cfg = window.MrBadmusConfig;
+    var env = (cfg && cfg.environment === "test") ? "&env=test" : "";
+    return "/teacher/flashcards.html?assignment=" + encodeURIComponent(id) + env;
+  }
+
   function paperIndex(v) {
     if (v == null || v === "") { return null; }
     var n = Number(v);
@@ -2604,6 +2632,8 @@
     var papers = c.PAPERS[classId] || [];
     var paper = papers[idx];
     if (!paper) { return null; }
+    // ⊕ MRB-351 — no `assignment_questions` behind a flashcard set.
+    if (paper.kind === "flashcards") { return null; }
     var packs = await window.MrBadmusTeacherData.loadPaperQuestions([paper.id]);
     c.GRID[key] = buildGrid(c.ROSTER[classId] || [], packs[paper.id]);
     return c.GRID[key];
@@ -2621,7 +2651,9 @@
       var key = pr.classId + ":" + idx;
       if (c.GRID[key]) { return; }
       var paper = (c.PAPERS[pr.classId] || [])[idx];
-      if (paper) { wanted.push({ key: key, pr: pr, paper: paper }); }
+      if (paper && paper.kind !== "flashcards") {
+        wanted.push({ key: key, pr: pr, paper: paper });
+      }
     });
     if (!wanted.length) { return; }
     var packs = await window.MrBadmusTeacherData.loadPaperQuestions(
@@ -2636,7 +2668,8 @@
      one open paper, which is a property of the sample. */
   function newestMarkedIdx(papers) {
     for (var i = 0; i < papers.length; i++) {
-      if (papers[i].when === "marked") { return i; }
+      // ⊕ MRB-351 — a flashcard set has no questions to mark or reteach.
+      if (papers[i].when === "marked" && papers[i].kind !== "flashcards") { return i; }
     }
     return -1;
   }
@@ -3004,6 +3037,50 @@
       }
     }
 
+    /* ⊕ MRB-351 — A FLASHCARD SET IS NOT A MARKING GRID. The marking
+       screen is MCQ-only, so a flashcard set opened on it — by index from an
+       old link, or by `?assignment=<id>` — goes to its own progress page.
+       `replace`, so Back does not bounce the teacher straight here again. */
+    if (screen === "marking") {
+      var fcPapers = classId ? (c.PAPERS[classId] || []) : [];
+      var fcAsked = paperIndex(params.paperIdx);
+      var fcHit = null;
+      var fcId = new URLSearchParams(window.location.search).get("assignment");
+      if (fcId) {
+        Object.keys(c.PAPERS).forEach(function (cid) {
+          (c.PAPERS[cid] || []).forEach(function (p) {
+            if (p.id === fcId && p.kind === "flashcards") { fcHit = p; }
+          });
+        });
+      } else if (fcAsked != null && fcPapers[fcAsked] &&
+                 fcPapers[fcAsked].kind === "flashcards") {
+        fcHit = fcPapers[fcAsked];
+      }
+      if (fcHit) {
+        window.location.replace(flashcardsUrl(fcHit.id));
+        return new Promise(function () {});   // the page is leaving
+      }
+    }
+
+    /* ⊕ MRB-351 — "Flashcards · N cards", for the sets on the screens that
+       draw one class's work. One HEAD count per set; a failure leaves the
+       label empty and the row falls back to its title alone. */
+    if (classId && CELL_SCREENS.indexOf(screen) > -1) {
+      var fcSets = (c.PAPERS[classId] || []).filter(function (p) {
+        return p.kind === "flashcards" && p.cards == null;
+      });
+      if (fcSets.length && window.MrBadmusTeacherData.loadFlashcardCounts) {
+        var fcN = await window.MrBadmusTeacherData.loadFlashcardCounts(
+          fcSets.map(function (p) { return p.id; }));
+        fcSets.forEach(function (p) {
+          if (fcN[p.id] != null) {
+            p.cards = fcN[p.id];
+            p.kindLabel = "Flashcards · " + p.cards + (p.cards === 1 ? " card" : " cards");
+          }
+        });
+      }
+    }
+
     // ── prefetch only the grids this screen will actually draw ──────────
     /* ⊕ MRB-326 JOB 4b, 6 Sep 2026 — THE CLASS SCREEN IS ON THIS LIST NOW,
        AND ITS ABSENCE WAS A WHOLE CARD DRAWING NOTHING.
@@ -3046,7 +3123,11 @@
       var cMx = c.MATRIX[classId];
       var cPapers = c.PAPERS[classId] || [];
       var cSat = (cMx && cMx.markedIdx ? cMx.markedIdx : []).filter(
-        function (i) { return (cMx.colSub[i] || 0) > 0; });
+        function (i) {
+          // ⊕ MRB-351 — the same filter `lastP` applies in the ruling.
+          return (cMx.colSub[i] || 0) > 0 &&
+                 !(cPapers[i] && cPapers[i].kind === "flashcards");
+        });
       if (cSat.length && cPapers[cSat[0]]) {
         await grid(classId, cSat[0]);
       }
@@ -3724,6 +3805,11 @@
     relativeTime: relativeTime,
     weekRangeLabel: weekRangeLabel,
     newestMarkedIdx: newestMarkedIdx,
+    /* ⊕ MRB-351 — the two derivations every mean on every screen comes
+       from, so `flashcard_progress_drive.py` can prove a flashcard set is
+       never graded by running the real code rather than a copy of it. */
+    buildPapers: buildPapers,
+    buildMatrix: buildMatrix,
     screenFromLocation: screenFromLocation,
     paperIndex: paperIndex,
     initialsOf: initialsOf,
