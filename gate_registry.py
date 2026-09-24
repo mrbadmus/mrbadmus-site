@@ -2020,6 +2020,55 @@ GATES = [
              "⚠️ Its `--fixture` mode WRITES to TEST (and tears down by a "
              "snapshotted id list, never a predicate); the gate runs the "
              "DEFAULT mode, which writes nothing."),
+
+    # ── ⊕ Experience run, 24 Sep 2026 (item 13, legibility) ──────────────
+
+    dict(name="contrast_audit",
+         cmd=["python3", "contrast_audit.py", "--quick", "--gate"],
+         speed="fast",
+         watches=["contrast_audit.py", "ks3_browser.py",
+                  "shared/tokens.css", "shared/styles.css",
+                  "shared/ks4-chrome.css", "shared/ks3.css", "shared/nav.css",
+                  "teacher_rulings.py", "student_rulings.py",
+                  "build_teacher_port.py", "build_student_port.py",
+                  "build_leaderboard_port.py",
+                  "teacher_fixtures/**", "student/class-fixture.html",
+                  "student/assignment-fixture.html", "teacher/today.html",
+                  "teacher/timetable.html", "teacher/admin.html",
+                  "teacher/import.html",
+                  "ks3/biology/respiration/aerobic-respiration.html",
+                  "combined/higher/chemistry/atomic-structure.html",
+                  "combined/higher/chemistry/atomic-structure/"
+                  "model-of-the-atom.html",
+                  "auth.html", "leaderboard.html", "index.html"],
+         why="Mide, Experience run item 13: 'much of the dark text on the "
+             "cream background isn't clear enough.' Opens every teacher and "
+             "student page (plus one KS3 lesson, one KS4 lesson, one KS4 "
+             "chrome page, auth/leaderboard/index, all six student bench "
+             "themes, the Set work sheet and the shoutout composer) in "
+             "headless Chrome and measures the RENDERED contrast of every "
+             "visible text node, placeholder and disabled control — walking "
+             "ancestors and compositing real alpha AND `opacity`, not the "
+             "ratio a token's own comment claims against the one ground it "
+             "was checked on. THE GAP THAT MATTERS: `--st-caption` / "
+             "`--st-faint` / `--st-ghost` / `--st-muted` and KS4 chrome's "
+             "`--k4-muted-2` each measured AA on their DOCUMENTED ground and "
+             "under 4.5:1 on `--st-seg-bg` / `--k4-track`, the darkest cream "
+             "tint each is actually painted against — fixed by darkening at "
+             "the token (`shared/ks4-chrome.css`, and a `PORT_CSS`-style "
+             "override tail added to `student_rulings.py` mirroring "
+             "`teacher_rulings.PORT_CSS`, MRB-340, since `--st-*` lives in "
+             "Design's frozen bundle and is regenerated on every build). Also "
+             "caught: three border-hairline tokens reused for a readable "
+             "breadcrumb-separator glyph (`nav.css`, `ks3.css` ×2), a CSS "
+             "specificity collision in `ks4-chrome.css` (`button "
+             "{color:inherit}` beating `.chat-fab`'s own colour, 2.78:1), "
+             "the shared chat panel's header painting white text on the KS3 "
+             "accent at 3.68:1 regardless of any opacity, and one "
+             "`opacity`-dimmed subtitle now a solid `--on-accent-soft` "
+             "token. `--quick` (1280px only, no screenshots) is the gate; "
+             "run without `--quick` for the full 1280+390 sweep with "
+             "screenshots, used to produce the before/after report."),
 ]
 
 
