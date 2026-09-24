@@ -284,7 +284,7 @@
        KS3 "ok" green when a class is all in, muted otherwise. Not `--danger`:
        owing homework is not an error state. */
     .lesson-state.chase { color: var(--st-accent-text); }
-    .lesson-state.done  { color: var(--ks3-ok-text); }
+    .lesson-state.done  { color: var(--ok); }  /* --ks3-ok-text is scoped to .rd[data-mode="ks3"], which this page never wears; --ok sits on :root in teacher-ds.css */
     .lesson-state.clear { color: var(--st-muted); }
     .lesson-state:empty { display: none; }
     .lesson-chev { color: var(--st-rule-strong); display: flex; }
