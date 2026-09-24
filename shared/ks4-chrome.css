@@ -61,7 +61,15 @@ body[data-chrome="ks4"] {
   --k4-ink:         #1A1714;
   --k4-ink-2:       #3D352C;
   --k4-muted:       #6E655D;
-  --k4-muted-2:     #7A6E5F;
+  /* ⊕ Experience run, 24 Sep 2026 (item 13) — was #7A6E5F. That passes AA
+     against `--k4-ground` (4.51:1, the only ground it was ever checked
+     against) but this token paints kickers, eyebrows and mono labels
+     against `--k4-sunken` / `--k4-sunken-2` / `--k4-track` too, and against
+     the darkest of those (`--k4-track` #F0E4CE) it measured 3.95:1 on the
+     rendered page. Darkened, hue and saturation unchanged, to clear 4.5:1
+     on every ground it is actually painted against (4.70:1 on `--k4-track`,
+     the worst case; 5.37:1 on `--k4-ground`). */
+  --k4-muted-2:     #6D6355;
 
   --k4-accent:      #E4572E;
   --k4-accent-deep: #A93411;
@@ -122,6 +130,19 @@ body[data-chrome="ks4"] *::after { box-sizing: border-box; }
 body[data-chrome="ks4"] a { color: var(--k4-accent-deep); text-decoration: none; }
 body[data-chrome="ks4"] a:hover { color: var(--k4-accent-dark); text-decoration: underline; }
 body[data-chrome="ks4"] button { font: inherit; color: inherit; }
+/* ⊕ Experience run, 24 Sep 2026 (item 13, legibility) — the reset above is
+   for chrome's OWN buttons, but its specificity (0,1,2: one attribute, two
+   types) beats `.chat-fab` / `.close-btn` / `.chat-send-btn`'s own
+   `color: var(--on-accent)` (0,1,0) from shared/styles.css, so the floating
+   tutor widget's buttons silently inherited the page's dark ink instead of
+   white — measured on the rendered page, not read off a table:
+   rgb(26,23,20) on the accent fill, 2.78:1, on both `index.html` and every
+   KS4-chrome page. The chat widget is not chrome's own furniture; restore
+   its intended colour rather than widen the reset's exception list, which
+   would have to be kept in step with `shared/styles.css` by hand. */
+body[data-chrome="ks4"] .chat-fab,
+body[data-chrome="ks4"] .close-btn,
+body[data-chrome="ks4"] .chat-send-btn { color: var(--on-accent); }
 body[data-chrome="ks4"] ::selection { background: var(--k4-accent-soft); }
 /* ⚠️ `hidden` HAS TO WIN. The empty states below ship with the `hidden`
    attribute and are revealed by shared/ks4-chrome.js only when real data
@@ -276,7 +297,11 @@ body[data-chrome="ks4"] .k4-crumbs {
 }
 body[data-chrome="ks4"] .k4-crumbs a { color: var(--k4-accent-deep); text-decoration: none; }
 body[data-chrome="ks4"] .k4-crumbs a:hover { color: var(--k4-accent-dark); text-decoration: underline; }
-body[data-chrome="ks4"] .k4-crumbs .k4-sep { color: var(--k4-border-2); }
+/* ⊕ Experience run, 24 Sep 2026 (item 13) — was `var(--k4-border-2)`, a
+   hairline-border token borrowed for a readable glyph: 1.90:1 on
+   `--k4-ground`, measured on the rendered page. `--k4-muted` already clears
+   AA against every ground on this page (4.53:1 worst case). */
+body[data-chrome="ks4"] .k4-crumbs .k4-sep { color: var(--k4-muted); }
 
 body[data-chrome="ks4"] .k4-eyebrow {
   display: flex; align-items: center; gap: 12px;
