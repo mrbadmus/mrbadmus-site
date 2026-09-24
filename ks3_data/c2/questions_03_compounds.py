@@ -402,9 +402,8 @@ QUESTIONS = [
     {
         "id": "c2-03-e07",
         "band": "easier",
-        "text": "The particle diagram of the heated dish shows every iron "
-                "atom joined to one sulfur atom, all the way through. What is "
-                "that a picture of?",
+        "text": "The diagram shows the particles in the dish after the iron "
+                "and sulfur were heated together. What is it a picture of?",
         "options": [
             {"text": "Iron sulfide, a compound",
              "correct": True},
@@ -422,7 +421,7 @@ QUESTIONS = [
              "why": "The diagram shows them joined, one to one. Side by side "
                     "is the picture of the dish BEFORE it was heated"},
         ],
-        "figure": None,
+        "figure": "c2-iron-sulfide-particles",
     },
     {
         "id": "c2-03-e08",

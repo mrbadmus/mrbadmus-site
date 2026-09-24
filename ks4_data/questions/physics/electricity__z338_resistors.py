@@ -589,15 +589,25 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A student's I–V graph for a fixed resistor is straight at low potential differences but bends over at the highest ones. Suggest what happened and how to avoid it.",
+        "figure": "ks4-fig-graph-iv-resistor-bends",
+        "text": "A student investigates a fixed resistor and plots the graph "
+                "shown. Suggest why the line is not straight at the highest "
+                "potential differences, and how to avoid this.",
         "options": [
-            "The battery ran down during the readings; replace it with a fresh one each time",
-            "The large current warmed the resistor, raising its resistance; use smaller currents",
-            "The large current cooled the resistor, lowering its resistance; use larger currents",
-            "The resistor became a diode at high pd; put a protective resistor in series with it",
+            "The battery ran down during the readings; replace it with a "
+            "fresh one each time",
+            "The large current warmed the resistor, raising its resistance; "
+            "use smaller currents",
+            "The large current cooled the resistor, lowering its resistance; "
+            "use larger currents",
+            "The resistor became a diode at high pd; put a protective "
+            "resistor in series with it",
         ],
         "correct_index": 1,
-        "why": "A resistor is ohmic only while its temperature is constant; the largest currents heated it, so its resistance rose and the line bent over. Smaller currents keep it cool.",
+        "why": "Current is directly proportional to potential difference only "
+               "while the resistor stays at a constant temperature. The "
+               "largest currents heated it, so its resistance rose and the "
+               "line curved over. Smaller currents keep it cool.",
     },
     {
         "id": "ks4-resistors-h11",

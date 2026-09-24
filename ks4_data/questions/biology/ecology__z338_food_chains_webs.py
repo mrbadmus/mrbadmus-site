@@ -984,9 +984,8 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A chain is drawn with its arrows running from each predator "
-                "back to its prey. Explain why the species are right but the science "
-                "is wrong.",
+        "figure": "ks4-fig-food-chain-reversed-arrows",
+        "text": "A student draws this food chain. Explain why the species are in the right order but the science is wrong.",
         "options": [
             "The feeding links are correct, but the energy flow is reversed",
             "The species are in the wrong order as well as the arrows",
@@ -994,9 +993,7 @@ QUESTIONS = [
             "Nothing is wrong, since an arrow may be drawn either way round",
         ],
         "correct_index": 0,
-        "why": "The diagram identifies the right feeding relationships, but "
-               "an arrow stands for energy transfer, and energy moves from the "
-               "organism eaten to the one eating it.",
+        "why": "The chain shows the right feeding relationships, but an arrow stands for energy transfer, and energy moves from the organism eaten to the one eating it. Every arrow here points the wrong way.",
     },
     {
         "id": "ks4-food-chains-webs-h26",

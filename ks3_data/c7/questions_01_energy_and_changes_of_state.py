@@ -1703,13 +1703,12 @@ QUESTIONS = [
     {
         "id": "c7-01-s22",
         "band": "standard",
-        "text": "A student heats a substance steadily and their graph shows "
-                "one flat step and then a steady climb to the end of the "
-                "run. What did they most likely do?",
+        "text": "A student heats a solid steadily and plots this graph. What "
+                "did they most likely do?",
         "options": [
             {"text": "They heated a substance that has no boiling point", "correct": False,
-             "why": "Every substance boils if it is taken hot enough. The "
-                    "run simply stopped before that."},
+             "why": "Nothing on the graph shows the substance cannot boil; "
+                    "the run simply stopped before that."},
             {"text": "They stopped heating before the substance reached its "
                      "boiling point", "correct": True},
             {"text": "They started the run after the substance had already "
@@ -1721,7 +1720,7 @@ QUESTIONS = [
              "why": "A broken thermometer would not give a steady climb "
                     "afterwards."},
         ],
-        "figure": None,
+        "figure": "c7-heating-one-step",
     },
     {
         "id": "c7-01-s23",

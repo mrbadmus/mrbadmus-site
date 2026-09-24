@@ -16,22 +16,29 @@ rebuilt on the same id, band and tier: six around a drawn figure, four with
 the motor swapped for an AQA component. The notes below describe the file
 as first authored.
 
-This file takes what those leave, and the weight follows the CONTENT. The
-`easier` eight are the symbols the baseline never names — the alternating
-supply, the motor, the buzzer, the fuse, the plain rectangle of a fixed
-resistor, the two outward arrows that make a diode an LED, the closed switch,
-and the rule that components sit on the lines. The real demand in this
-subtopic is not symbol recall at all: it is READING a circuit that is
-described only in words — which components share a loop, how many paths the
+⊕ MRB-352 run 2, batch 3 (the 174 flagged rows): 34 more rows that painted
+a symbol or a circuit in words were rebuilt on the same id, band, tier and
+bank_position — each now SHOWS its symbol or circuit as a figure and asks
+about it. The alternating-supply circle and the buzzer are gone: neither is
+on the AQA 8463 §4.2.1.1 list (p.24), and a "small rectangle inside a
+circle" is AQA's LDR. Every symbol drawn or named here is on that list.
+
+This file takes what the original twelve leave, and the weight follows the
+CONTENT. The `easier` eight name single AQA symbols the baseline never asks
+for — the voltmeter, the ammeter, the LDR, the fuse, the plain rectangle of a
+fixed resistor, the LED, the closed switch — and the rule that components sit
+on the lines. The real demand in this subtopic is not symbol recall at all:
+it is READING a circuit — which components share a loop, how many paths the
 current has, what one switch in one branch controls, what a meter in a branch
 can and cannot read — and finding the fault in a diagram that has been drawn
-wrongly. So `standard` and `harder` carry twenty-two rows each, and most of
-them hand the pupil a circuit in prose and ask what it does.
+wrongly. So `standard` and `harder` carry twenty-two rows each. Most show the
+circuit; a few describe a physical set-up in words (a cell, a switch and a
+lamp joined in one loop) and ask what it does, never what a drawing looks
+like.
 
-Nothing here asks a pupil to look at a picture: every described circuit is
-traced in words, from the cell's long line round to its short one. Meter
-resistance, Ohm's law, the mains and the behaviour of an LED under reverse
-bias all belong to other leaves and are absent.
+Meter resistance, Ohm's law, the mains and the behaviour of an LED under
+reverse bias beyond "it does not conduct" belong to other leaves and are
+absent.
 """
 
 TOPIC = "electricity"
@@ -48,19 +55,21 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "State what a circle with a sine wave drawn inside it "
-                "stands for.",
+        "figure": "ks4-fig-circuit-symbol-voltmeter",
+        "text": "Name the component that the circuit symbol in the diagram "
+                "represents.",
         "options": [
-            "An alternating supply, such as a laboratory power pack",
-            "A single cell, drawn this way when its voltage can be set",
-            "A battery whose cells are stacked inside a circular case of "
-            "their own",
-            "A rechargeable cell, drawn this way while it is charging",
+            "A voltmeter, which measures the potential difference across a "
+            "component",
+            "An ammeter, which measures the current through a component",
+            "A lamp, which gives out light when a current passes through it",
+            "A variable resistor, whose resistance can be changed",
         ],
         "correct_index": 0,
-        "why": "The sine wave inside the circle stands for a current that "
-               "repeatedly changes direction, which is what an alternating "
-               "supply provides.",
+        "why": "A circle with the letter V inside it is the voltmeter symbol, "
+               "and V stands for volts, the unit of potential difference. An "
+               "ammeter is a circle with an A, and a lamp is a circle with a "
+               "cross.",
     },
     {
         "id": "ks4-circuit-symbols-e06",
@@ -89,18 +98,23 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram shows a small rectangle inside a circle. Name "
-                "that component.",
+        "figure": "ks4-fig-circuit-symbol-ldr",
+        "text": "Look at the circuit symbol in the diagram. Which component "
+                "is it?",
         "options": [
-            "A fuse, whose rectangle is ringed to warn a reader that it can "
-            "melt open",
-            "A buzzer, which makes a sound when a current passes through it",
-            "A battery, whose rectangle stands for the cells inside its case",
-            "A switch, whose rectangle is the lever that meets the contact",
+            "A thermistor, whose resistance changes with temperature",
+            "A light-dependent resistor (LDR), whose resistance changes with "
+            "light intensity",
+            "A light-emitting diode (LED), which gives out light when a "
+            "current passes through it",
+            "A lamp, which gives out light when a current passes through it",
         ],
         "correct_index": 1,
-        "why": "A buzzer is drawn as a circle with a rectangle inside it, "
-               "and it sounds while a current passes through it.",
+        "why": "The small rectangle is a resistor, and the two arrows "
+               "pointing IN towards it show light falling on it. This is the "
+               "LDR, whose resistance decreases as light intensity increases. "
+               "An LED's arrows point out, away from it. A thermistor has a "
+               "diagonal line with a short tail and no arrows.",
     },
     {
         "id": "ks4-circuit-symbols-e08",
@@ -108,20 +122,21 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "One symbol is a rectangle with a thin line running along "
-                "its length. Which component is it?",
+        "figure": "ks4-fig-circuit-symbol-fuse",
+        "text": "Which component is shown by the circuit symbol in the "
+                "diagram?",
         "options": [
-            "A cell, whose line through the box joins its positive end to "
-            "its negative end",
-            "A buzzer, whose line through the box stands for the sound made",
-            "A closed switch, whose line is the lever resting on a contact",
-            "A fuse, which breaks the circuit if the current becomes too "
-            "large",
+            "A cell, which provides the potential difference in a circuit",
+            "A resistor, whose resistance stays at one value",
+            "A closed switch, which completes the circuit",
+            "A fuse, which melts and breaks the circuit if the current "
+            "becomes too large",
         ],
         "correct_index": 3,
-        "why": "The line drawn through the resistor-shaped rectangle is the "
-               "thin wire of a fuse, which melts and breaks the circuit when "
-               "the current is too large.",
+        "why": "A rectangle with the wire running straight through it along "
+               "its length is the fuse. The thin wire inside it melts and "
+               "breaks the circuit if the current becomes too large. A plain "
+               "rectangle with no line through it is a resistor.",
     },
     {
         "id": "ks4-circuit-symbols-e09",
@@ -129,19 +144,20 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "On a diagram, one of the rectangles carries no extra mark. "
-                "State which component that is.",
+        "figure": "ks4-fig-circuit-symbol-resistor",
+        "text": "The diagram shows one circuit symbol. Identify the component "
+                "it stands for.",
         "options": [
-            "A variable resistor, whose resistance the user sets by hand",
+            "A variable resistor, whose resistance can be changed by hand",
             "A fixed resistor, whose resistance stays at one value",
             "A thermistor, whose resistance falls as it becomes warmer",
-            "An LDR, whose resistance falls when the light shining on its "
-            "surface brightens",
+            "An LDR, whose resistance falls as the light on it gets brighter",
         ],
         "correct_index": 1,
-        "why": "The plain rectangle is the fixed resistor; every other "
-               "member of that family adds a mark to show what changes its "
-               "resistance.",
+        "why": "A plain rectangle with no other mark is the fixed resistor. A "
+               "variable resistor adds a diagonal arrow through it, a "
+               "thermistor adds a diagonal line with a short tail, and an LDR "
+               "is drawn inside a circle with two arrows pointing in.",
     },
     {
         "id": "ks4-circuit-symbols-e10",
@@ -149,8 +165,9 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diode symbol is drawn with two arrows pointing away from "
-                "it. Which component does this show?",
+        "figure": "ks4-fig-circuit-symbol-led",
+        "text": "Which component does the circuit symbol shown in the diagram "
+                "stand for?",
         "options": [
             "A light-emitting diode, which gives out light as it conducts",
             "A diode that has been damaged and now conducts in both ways",
@@ -158,8 +175,10 @@ QUESTIONS = [
             "A light-dependent resistor, which responds to the light on it",
         ],
         "correct_index": 0,
-        "why": "Two arrows drawn pointing away from a diode show light "
-               "leaving it, which makes the symbol a light-emitting diode.",
+        "why": "The triangle and bar inside the circle are a diode. The two "
+               "arrows pointing OUT show light leaving it, so this is a "
+               "light-emitting diode. An LDR's arrows point in, towards a "
+               "small rectangle.",
     },
     {
         "id": "ks4-circuit-symbols-e11",
@@ -167,16 +186,20 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": False,
-        "text": "How is a closed switch shown on a circuit diagram?",
+        "figure": "ks4-fig-circuit-symbol-switch-closed",
+        "text": "Identify the component drawn in the diagram.",
         "options": [
-            "By a gap in the wire with the lever raised",
-            "By a circle with the letter S drawn inside",
-            "By a rectangle with a line along its length",
-            "By the lever lowered onto its contact, so the wire is whole",
+            "An open switch, which leaves a gap so there is no current",
+            "A fuse, which melts if the current becomes too large",
+            "A resistor, whose resistance stays at one value",
+            "A closed switch, which completes the circuit so there can be a "
+            "current",
         ],
         "correct_index": 3,
-        "why": "Closing a switch joins the wire again, so the symbol shows "
-               "the lever lying on its contact with no gap left.",
+        "why": "The lever runs from one contact to the other and touches "
+               "both, so there is no gap in the wire. This is a closed "
+               "switch, and it completes the circuit. An open switch's lever "
+               "is angled away from the second contact and leaves a gap.",
     },
     {
         "id": "ks4-circuit-symbols-e12",
@@ -273,18 +296,20 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A supply is drawn as three long lines, each paired with a "
-                "short line, joined end to end. State what it shows.",
+        "figure": "ks4-fig-symbol-panel-cell-fuse-battery-resistor",
+        "text": "A torch runs from two cells joined in series. The diagram "
+                "shows four circuit symbols. Which one should be drawn for "
+                "the torch's supply?",
         "options": [
-            "Three separate circuits, each of them fed by a supply of its "
-            "own",
-            "One cell that has been drawn three times over by mistake",
-            "Three cells joined in series, making a battery",
-            "Three resistors joined one after another along the loop",
+            "P",
+            "Q",
+            "R",
+            "S",
         ],
         "correct_index": 2,
-        "why": "Each long-and-short pair of lines is one cell, so three "
-               "pairs drawn end to end show three cells in series.",
+        "why": "R is a battery: two cells joined by a dashed line, which is "
+               "how two or more cells in series are drawn. P is a single "
+               "cell, Q is a fuse and S is a resistor.",
     },
     {
         "id": "ks4-circuit-symbols-s09",
@@ -368,18 +393,24 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram carries a circle with the letter A inside it, "
-                "labelled as the buzzer. Explain what is wrong.",
+        "figure": "ks4-fig-circuit-voltmeter-in-loop-lamp",
+        "text": "A student draws this circuit to measure the current in the "
+                "lamp. Explain the error.",
         "options": [
-            "The label is right, but the circle belongs on its own branch",
-            "The letter is right, but a buzzer is drawn as a rectangle",
-            "That circle is an ammeter; a buzzer holds a rectangle inside",
-            "The label is wrong: a circle holding the letter A is how an "
-            "alternating supply is drawn",
+            "The meter should be drawn after the lamp, not before it",
+            "The lamp should be drawn as a plain rectangle, because it has a "
+            "resistance",
+            "The meter is a voltmeter; current is measured with an ammeter, "
+            "connected in series",
+            "Nothing is wrong: a meter in the loop measures the current "
+            "whatever letter it carries",
         ],
         "correct_index": 2,
-        "why": "A circle with A inside it is the ammeter, while the buzzer "
-               "is the circle holding a small rectangle.",
+        "why": "The circle with V is a voltmeter, which measures potential "
+               "difference and is connected in parallel across a component. "
+               "Current is measured with an ammeter (a circle with A) "
+               "connected in series, in the same loop as the lamp. The order "
+               "of components in a series loop does not matter.",
     },
     {
         "id": "ks4-circuit-symbols-s14",
@@ -387,9 +418,9 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "On a diagram of a cell, a switch and a lamp, one wire stops "
-                "short of the cell and does not reach it. A technician "
-                "builds the circuit exactly as drawn. Predict what happens.",
+        "figure": "ks4-fig-circuit-wire-short-of-cell",
+        "text": "The diagram shows a circuit a student has drawn. A "
+                "technician builds it exactly as drawn. Predict what happens.",
         "options": [
             "Nothing happens, as a broken loop can never carry a current",
             "The lamp lights dimly, as the current crosses the small gap",
@@ -398,8 +429,9 @@ QUESTIONS = [
             "and then falls away",
         ],
         "correct_index": 0,
-        "why": "A current needs a complete loop, so a gap anywhere in a "
-               "single-loop circuit stops the current everywhere in it.",
+        "why": "A current needs a complete loop. The gap in the wire means "
+               "the circuit is not closed, so there is no current anywhere in "
+               "it and the lamp stays off.",
     },
     {
         "id": "ks4-circuit-symbols-s15",
@@ -407,17 +439,19 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram shows two rectangles: one is plain, and one has a "
-                "line drawn along its length. State what each one is.",
+        "figure": "ks4-fig-symbol-panel-resistor-fuse",
+        "text": "The diagram shows two circuit symbols, P and Q. Name each "
+                "component.",
         "options": [
-            "The plain one is a fuse and the other a fixed resistor",
-            "Both are resistors, the line marking the larger of the two",
-            "The plain one is a switch and the other a variable resistor",
-            "The plain one is a fixed resistor and the other a fuse",
+            "P is a fuse and Q is a fixed resistor",
+            "Both are resistors, and Q is the one with the larger resistance",
+            "P is a switch and Q is a variable resistor",
+            "P is a fixed resistor and Q is a fuse",
         ],
         "correct_index": 3,
-        "why": "The plain rectangle is the fixed resistor, and the line "
-               "drawn through a rectangle is the fuse wire.",
+        "why": "The plain rectangle, P, is a fixed resistor. The rectangle "
+               "with the wire running through it along its length, Q, is a "
+               "fuse.",
     },
     {
         "id": "ks4-circuit-symbols-s16",
@@ -425,18 +459,28 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diode must let the current pass from the cell to a "
-                "buzzer. Describe how its triangle should be drawn.",
+        "figure": "ks4-fig-circuit-cell-diode-reversed-lamp",
+        "text": "The diagram shows a circuit. The lamp does not light. "
+                "Explain why.",
         "options": [
-            "Pointing back at the cell, so the current is pushed on",
-            "Pointing towards the buzzer, as a diode passes current one "
-            "way only",
-            "Pointing upwards, as a diode symbol is drawn upright",
-            "Either way round, as a diode blocks only large currents",
+            "The lamp comes after the diode, so the current is used up before "
+            "it reaches the lamp",
+            "The diode is the wrong way round, so its resistance is very high "
+            "and there is almost no current",
+            "A diode only works with an alternating supply, so a cell cannot "
+            "light the lamp",
+            "A lamp can only be lit when it is placed next to the cell's "
+            "positive terminal",
         ],
         "correct_index": 1,
-        "why": "A diode passes current in the direction its triangle points, "
-               "so the triangle must point the way the current is wanted.",
+        "why": "A diode lets current flow in one direction only, the way its "
+               "triangle points, and has a very high resistance in the "
+               "reverse direction. The current from the cell leaves its "
+               "positive (+) terminal. Here the diode's triangle points back "
+               "against that current, so almost no current flows round the "
+               "loop. Where the lamp sits in the loop makes no difference: "
+               "with the diode the right way round it would light wherever it "
+               "is placed.",
     },
     {
         "id": "ks4-circuit-symbols-s17",
@@ -444,19 +488,22 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A lamp's brightness must be adjustable while the circuit "
-                "runs, but the diagram shows a plain rectangle. Suggest the "
-                "correction.",
+        "figure": "ks4-fig-circuit-cell-resistor-lamp",
+        "text": "The diagram shows a circuit for a lamp. The lamp's "
+                "brightness must be adjustable while the circuit is working. "
+                "Which change is needed?",
         "options": [
-            "Draw an arrow through the rectangle, making it a variable one",
-            "Draw a diagonal line through it, making it a thermistor",
-            "Draw two arrows pointing in at it, making it an LDR",
-            "Draw a second plain rectangle beside it",
+            "Replace the resistor with a variable resistor",
+            "Replace the resistor with a thermistor",
+            "Replace the resistor with an LDR",
+            "Add a second resistor in series with the first",
         ],
         "correct_index": 0,
-        "why": "The arrow struck through the rectangle is the variable "
-               "resistor, the component whose resistance a user can change "
-               "while the circuit runs.",
+        "why": "A variable resistor's resistance can be changed by hand while "
+               "the circuit is working. That changes the current, and so the "
+               "lamp's brightness. A thermistor or an LDR changes only with "
+               "temperature or light. A second fixed resistor would dim the "
+               "lamp by one fixed amount.",
     },
     {
         "id": "ks4-circuit-symbols-s18",
@@ -464,17 +511,23 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "On a diagram the cell is drawn with its long line on the "
-                "left. State what this tells a student.",
+        "figure": "ks4-fig-circuit-cell-led-resistor",
+        "text": "In the circuit shown, the LED is lit. The cell is then "
+                "turned round. Predict what happens to the LED.",
         "options": [
-            "That the cell is the largest component in this circuit",
-            "That the diagram is meant to be read from the left to the right",
-            "That the left-hand end is the positive terminal of the cell",
-            "That the cell has been fitted the wrong way round in its holder",
+            "The LED stays lit, because a cell pushes current either way round",
+            "The LED gets brighter, because the current now reaches it from "
+            "the other side first",
+            "The LED goes out, because the current would now have to pass "
+            "through it the wrong way",
+            "The LED flashes on and off, because the current keeps changing "
+            "direction",
         ],
         "correct_index": 2,
-        "why": "In the cell symbol the long line is the positive terminal "
-               "and the short line the negative one.",
+        "why": "An LED is a diode: current flows through it in one direction "
+               "only, and it has a very high resistance the other way. "
+               "Turning the cell round reverses the direction of the current, "
+               "so almost no current flows and the LED goes out.",
     },
     {
         "id": "ks4-circuit-symbols-s19",
@@ -522,8 +575,9 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A rectangle with a line running through it is drawn in the "
-                "wire leaving the supply. Describe what this component does.",
+        "figure": "ks4-fig-circuit-fuse-in-supply-wire",
+        "text": "The diagram shows a circuit containing a cell, a lamp and "
+                "one other component. What does that other component do?",
         "options": [
             "It stores charge, letting it go when the current drops too low",
             "It holds the current steady at the value the supply gives",
@@ -532,8 +586,10 @@ QUESTIONS = [
             "needed",
         ],
         "correct_index": 2,
-        "why": "That symbol is a fuse: a thin wire that melts and opens the "
-               "circuit once the current passing through it is too large.",
+        "why": "The other component is a fuse, drawn as a rectangle with the "
+               "wire running through it along its length. It is a thin wire "
+               "that melts and opens the circuit once the current through it "
+               "is too large.",
     },
     {
         "id": "ks4-circuit-symbols-s22",
@@ -541,19 +597,22 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram has a lamp drawn at the corner where two wires "
-                "meet. Explain why this is poor practice.",
+        "figure": "ks4-fig-symbol-panel-ldr-resistor-varres-thermistor",
+        "text": "A circuit needs a component that senses changes in "
+                "temperature. The diagram shows four circuit symbols. Which "
+                "one should be drawn?",
         "options": [
-            "The lamp is dimmer at a corner, as the wire bends",
-            "A corner carries twice the current, so the lamp may fail",
-            "A lamp is drawn at a corner when a circuit branches",
-            "The corner hides which wires join the lamp, so the loop is "
-            "unclear",
+            "W",
+            "X",
+            "Y",
+            "Z",
         ],
         "correct_index": 3,
-        "why": "A component drawn on a straight side shows its two "
-               "connections plainly; one drawn into a corner leaves a reader "
-               "guessing which wires reach it.",
+        "why": "Z is a thermistor: a rectangle with a diagonal line that ends "
+               "in a short horizontal tail. Its resistance decreases as its "
+               "temperature increases, so it is used to sense temperature. W "
+               "is an LDR, which senses light. X is a fixed resistor and Y a "
+               "variable resistor.",
     },
     {
         "id": "ks4-circuit-symbols-s23",
@@ -586,19 +645,22 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A circuit must be drawn in its switched-off state. A pupil "
-                "draws the lever resting on the contact. Explain the error.",
+        "figure": "ks4-fig-circuit-cell-closed-switch-lamp",
+        "text": "A circuit diagram must show the lamp switched off. A pupil's "
+                "drawing is shown. Explain the error.",
         "options": [
-            "A lever drawn down means the circuit is off, so it is correct",
-            "A switched-off circuit is shown by leaving the switch symbol "
-            "out of the diagram",
-            "A switched-off circuit is shown by a cross drawn over the switch",
-            "The lever must be lifted clear, leaving a gap in the wire",
+            "Nothing is wrong: a switch drawn like this is off",
+            "A switched-off circuit is shown by leaving the switch out of the "
+            "diagram",
+            "The cell should be drawn the other way round to stop the current",
+            "The switch is drawn closed; it must be drawn open, leaving a gap "
+            "in the circuit",
         ],
         "correct_index": 3,
-        "why": "The lever resting on its contact is the closed switch, so a "
-               "circuit meant to be off is drawn with the lever raised and "
-               "the wire broken.",
+        "why": "The switch in the drawing has its lever touching both "
+               "contacts. That is a closed switch, which completes the "
+               "circuit, so the lamp would be lit. To show the lamp off, the "
+               "switch must be drawn open, so there is a gap and no current.",
     },
     {
         "id": "ks4-circuit-symbols-s25",
@@ -677,19 +739,25 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram was meant to protect a circuit with a fuse, but a "
-                "plain rectangle has been drawn instead. Predict what the "
-                "built circuit does if the current becomes far too large.",
+        "figure": "ks4-fig-circuit-cell-resistor-lamp",
+        "text": "A circuit was meant to include a fuse to protect it. The "
+                "diagram shows the circuit as it was drawn and then built. "
+                "Predict what happens if the current becomes far too large.",
         "options": [
-            "The rectangle melts first, as a resistor gives way before a fuse",
-            "Nothing breaks the circuit, as a resistor does not melt open",
-            "The current is cut off, as a resistor opens above its rating",
-            "The supply shuts itself down, as the diagram shows no fuse",
+            "The resistor melts first, as a resistor gives way before a fuse "
+            "would",
+            "Nothing is designed to break the circuit, so there is no "
+            "protection from the large current",
+            "The current is cut off safely, as a resistor is designed to open "
+            "the circuit above its rating",
+            "The cell stops supplying current, as the diagram shows no fuse",
         ],
         "correct_index": 1,
-        "why": "A fixed resistor is built to carry current, not to fail, so "
-               "a circuit drawn with one in place of a fuse has no "
-               "protection at all.",
+        "why": "The component drawn is a plain rectangle, which is a "
+               "resistor, not a fuse (a fuse has the wire drawn through it). "
+               "A resistor is made to carry current, not to melt, so the "
+               "circuit as built has no protection against a very large "
+               "current.",
     },
     {
         "id": "ks4-circuit-symbols-h07",
@@ -697,23 +765,25 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram shows two circles: one lies in the loop itself, "
-                "the other on a short pair of wires bridging a resistor. "
-                "Determine which meter is which.",
+        "figure": "ks4-fig-circuit-meters-swapped-lamp",
+        "text": "A student draws this circuit to measure the current in the "
+                "lamp and the potential difference across it. Evaluate the "
+                "diagram.",
         "options": [
-            "The one in the loop is the ammeter; the bridging one is the "
-            "voltmeter",
-            "The one in the loop is the voltmeter; the bridging one is the "
-            "ammeter",
-            "Both are ammeters, as a meter is drawn inside the loop whose "
-            "current it is reading",
-            "Both are voltmeters, as each of them is reached by a pair of "
-            "wires",
+            "It is wrong: the meters are swapped — the ammeter belongs in "
+            "series and the voltmeter across the lamp",
+            "It is correct, as each meter is joined to the lamp and so reads "
+            "the lamp's value",
+            "Only the voltmeter is wrong, as an ammeter may be drawn either "
+            "in series or in parallel",
+            "Only the ammeter is wrong, as a voltmeter may be drawn either in "
+            "series or in parallel",
         ],
         "correct_index": 0,
-        "why": "An ammeter is drawn in the loop so the whole current passes "
-               "through it, while a voltmeter bridges the component it "
-               "spans.",
+        "why": "An ammeter is connected in series, so the current passes "
+               "through it. A voltmeter is connected in parallel, across the "
+               "component. Here the voltmeter is in the loop and the ammeter "
+               "bridges the lamp, so both are in the wrong place.",
     },
     {
         "id": "ks4-circuit-symbols-h08",
@@ -740,21 +810,24 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A pupil labels a supply as two cells but draws only one "
-                "long line with one short line. Evaluate the diagram.",
+        "figure": "ks4-fig-circuit-cell-closed-switch-lamp",
+        "text": "A torch holds two cells joined in series, a switch and a "
+                "bulb. A pupil draws its circuit as shown. Evaluate the "
+                "diagram.",
         "options": [
-            "It is correct, as the label tells the reader how many cells "
-            "there are",
-            "It is correct, as a single pair of lines stands for a supply "
-            "of any size",
-            "It is wrong: two cells are drawn as two long-and-short pairs "
-            "in line",
-            "It is wrong: two cells are drawn as two long lines with one "
-            "short",
+            "It is correct, as one cell symbol stands for a supply of any size",
+            "It is correct, as a circuit diagram does not need to show how "
+            "many cells there are",
+            "It is wrong: the supply is drawn as one cell, but two cells in "
+            "series are drawn as a battery",
+            "It is wrong: the switch must be drawn open, as a torch is "
+            "normally off",
         ],
         "correct_index": 2,
-        "why": "One long-and-short pair is one cell, so a battery of two "
-               "cells is drawn as two such pairs joined end to end.",
+        "why": "The supply drawn is a single cell, one long line and one "
+               "short line. Two cells joined in series make a battery, drawn "
+               "as two cells joined by a dashed line. The switch may be drawn "
+               "open or closed; the diagram just shows one state.",
     },
     {
         "id": "ks4-circuit-symbols-h10",
@@ -783,18 +856,18 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A circuit divides into two branches, one with a lamp and "
-                "one with a buzzer. A gap is left in the lamp branch only, "
-                "and the circuit is built as drawn. Determine what works.",
+        "figure": "ks4-fig-circuit-two-lamp-branches-open-switch-x",
+        "text": "The diagram shows a circuit. Determine which lamps are lit.",
         "options": [
-            "Neither works, as a gap anywhere stops the whole circuit",
-            "Both work, as the current reaches the lamp by the other branch",
-            "Only the buzzer works: its own branch is still a whole path",
-            "Only the lamp works, as the gap leaves more current for it",
+            "Neither lamp, as an open switch anywhere stops the whole circuit",
+            "Both lamps, as the current reaches lamp X by the other branch",
+            "Only lamp Y: its own branch is still a complete path",
+            "Only lamp X, as the open switch leaves more current for it",
         ],
         "correct_index": 2,
-        "why": "Each branch is a separate path, so breaking one leaves the "
-               "other joined to the supply and still carrying a current.",
+        "why": "Each branch is a separate path to the cell. The open switch "
+               "breaks lamp X's branch only, so lamp Y's branch is still a "
+               "complete path and Y stays lit.",
     },
     {
         "id": "ks4-circuit-symbols-h12",
@@ -802,20 +875,22 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
+        "figure": "ks4-fig-symbol-panel-resistor-varres",
         "text": "A model railway controller must let its user change the "
-                "current to the track while the train runs. Compare a plain "
-                "rectangle with a rectangle carrying an arrow.",
+                "current to the track while the train runs. The diagram shows "
+                "two circuit symbols, P and Q. Which one should be used?",
         "options": [
-            "The plain one, as its value is picked before drawing",
-            "The one with an arrow, as the arrow shows a resistance that is "
-            "set by hand",
-            "Either, as an arrow marks which way the current goes",
-            "Neither, as track current is changed at the supply",
+            "P, as its resistance is chosen before the circuit is built",
+            "Q, as its resistance can be changed while the circuit is working",
+            "Either, as both have a resistance that limits the current",
+            "Neither, as the current to the track can only be changed at the "
+            "supply",
         ],
         "correct_index": 1,
-        "why": "The arrow through the rectangle is the variable resistor, "
-               "the only one of the two whose resistance can be altered "
-               "while the circuit is working.",
+        "why": "Q is a variable resistor, a rectangle with a diagonal arrow "
+               "through it. Its resistance can be changed while the circuit "
+               "is working, which changes the current. P is a fixed resistor, "
+               "whose resistance stays at one value.",
     },
     {
         "id": "ks4-circuit-symbols-h13",
@@ -863,19 +938,22 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "Two lamps are wired from one cell. One lamp fails, and the "
-                "other stays lit. Determine which diagram matches what "
-                "happened.",
+        "figure": "ks4-fig-circuit-cell-switch-two-lamps-loop",
+        "text": "The diagram shows a circuit. One of the lamps fails and "
+                "stops conducting. Determine what happens to the other lamp.",
         "options": [
-            "The two lamps drawn one after the other along a single loop of "
-            "wire",
-            "The two lamps drawn on separate branches from the same cell",
-            "The two lamps drawn in one loop with a switch between the two",
-            "The two lamps drawn in one loop with the cell between them",
+            "It stays lit, as it still has the cell's potential difference "
+            "across it",
+            "It goes out, as the lamps are in series and the only path is now "
+            "broken",
+            "It gets brighter, as it now receives all of the current",
+            "It stays lit but dimmer, as the current now reaches it along one "
+            "wire only",
         ],
         "correct_index": 1,
-        "why": "A failed lamp breaks the path it sits in, so the second lamp "
-               "can only stay lit if it has a complete path of its own.",
+        "why": "The lamps are in series: one loop, one path for the current. "
+               "A failed lamp breaks that path, so the current everywhere in "
+               "the loop falls to zero and the other lamp goes out.",
     },
     {
         "id": "ks4-circuit-symbols-h16",
@@ -903,19 +981,20 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A cell feeds two branches. One branch holds a lamp on its "
-                "own; the other holds a lamp with a rectangle carrying an "
-                "arrow beside it. Determine which lamp can be dimmed.",
+        "figure": "ks4-fig-circuit-lamp-x-branch-varres-lamp-y",
+        "text": "The diagram shows a circuit. Determine which lamp can be "
+                "dimmed.",
         "options": [
-            "Both lamps, as the two branches are fed by the same cell",
-            "The lamp sharing its branch with the variable resistor",
-            "The lamp on its own, which the resistor leaves more current for",
-            "Neither lamp, as brightness is changed at the supply itself",
+            "Both lamps, as both branches are fed by the same cell",
+            "Lamp Y only, as the variable resistor is in the same branch as it",
+            "Lamp X only, as the variable resistor leaves more current for it",
+            "Neither lamp, as brightness can only be changed at the cell",
         ],
         "correct_index": 1,
-        "why": "A variable resistor changes the current in the path it is "
-               "drawn in, so it dims the lamp sharing its branch and leaves "
-               "the other branch alone.",
+        "why": "A variable resistor changes the current in the branch it is "
+               "in. It shares a branch with lamp Y, so it can dim Y. Lamp X's "
+               "branch has the cell's full potential difference across it "
+               "whatever the variable resistor is set to, so X is unaffected.",
     },
     {
         "id": "ks4-circuit-symbols-h18",
@@ -923,18 +1002,20 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram shows a cell joined to a lamp by two ruled wires, "
-                "and a pupil complains that the lamp cannot be turned off. "
-                "Determine which symbol is missing.",
+        "figure": "ks4-fig-circuit-cell-lamp",
+        "text": "The diagram shows a circuit. A pupil complains that the lamp "
+                "cannot be turned off. Which component must be added?",
         "options": [
-            "An ammeter, drawn in the loop to show when a current flows",
-            "A fuse, drawn as a rectangle with a line running through it",
-            "A second cell, drawn in series with the first one",
-            "A switch, drawn as a gap in the wire with a hinged lever",
+            "An ammeter, to show when there is a current",
+            "A fuse, to break the circuit if the current is too large",
+            "A second cell, in series with the first",
+            "A switch, to open and close the circuit",
         ],
         "correct_index": 3,
-        "why": "A switch is the component that opens and closes the loop, so "
-               "a circuit drawn without one cannot be turned off.",
+        "why": "A switch is the component that opens and closes the circuit. "
+               "Opening it leaves a gap, so there is no current and the lamp "
+               "goes off. The circuit shown has only a cell and a lamp, so it "
+               "cannot be turned off.",
     },
     {
         "id": "ks4-circuit-symbols-h19",
@@ -942,19 +1023,26 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A circuit is powered by three cells in a battery holder, "
-                "but the diagram shows the supply as a circle with a sine "
-                "wave. Suggest the correction.",
+        "figure": "ks4-fig-circuit-cell-ammeter-thermistor",
+        "text": "A pupil plans to measure how the current through a sensor "
+                "changes as the light level changes. Their circuit diagram is "
+                "shown. Suggest the correction.",
         "options": [
-            "Add the letter D inside the circle to show direct current",
-            "Replace it with three long-and-short pairs drawn end to end",
-            "Replace it with a rectangle, as a holder is a fixed component",
-            "Leave it, as any supply may be drawn as a circle with a wave",
+            "Replace the sensor drawn with a variable resistor, which the "
+            "light level can set",
+            "Replace the sensor drawn with an LDR, as the sensor drawn "
+            "responds to temperature, not light",
+            "Replace the ammeter with a voltmeter, as current cannot be "
+            "measured in series",
+            "Leave it as it is, as the sensor drawn is already the "
+            "light-dependent one",
         ],
         "correct_index": 1,
-        "why": "The circle with a sine wave is an alternating supply, while "
-               "cells give a direct current and are drawn as long-and-short "
-               "pairs in series.",
+        "why": "The sensor drawn is a thermistor: a rectangle with a diagonal "
+               "line ending in a short tail. Its resistance changes with "
+               "temperature. A sensor for light is an LDR, whose resistance "
+               "decreases as light intensity increases. The ammeter is "
+               "correctly placed in series.",
     },
     {
         "id": "ks4-circuit-symbols-h20",
@@ -962,20 +1050,19 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A single loop is drawn holding a cell, a lamp and two "
-                "switches. Determine what the lamp does when one switch is "
-                "closed and the other is left open.",
+        "figure": "ks4-fig-circuit-cell-two-switches-one-open-lamp",
+        "text": "The diagram shows a circuit. Determine what the lamp does.",
         "options": [
             "It lights fully, as one closed switch completes the loop",
-            "It lights dimly, as only half of the loop has been closed off "
-            "by the open switch",
-            "It stays off, as a loop with a switch open never carries a "
-            "current",
+            "It lights dimly, as only one of the two switches is open",
+            "It stays off, as the open switch leaves a gap in the only path",
             "It flashes, as the current passes the open switch in bursts",
         ],
         "correct_index": 2,
-        "why": "In a single loop the current has one path, so every switch "
-               "in that path has to be closed before the lamp can light.",
+        "why": "In a single loop the current has only one path. One switch is "
+               "open, which leaves a gap in that path, so there is no current "
+               "and the lamp stays off. Every switch in the loop has to be "
+               "closed before the lamp can light.",
     },
     {
         "id": "ks4-circuit-symbols-h21",
@@ -1004,20 +1091,23 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram is ruled neatly, but a lamp sits at a corner and "
-                "one wire stops short of the cell. Evaluate the diagram.",
+        "figure": "ks4-fig-circuit-main-switch-two-lamp-branches",
+        "text": "A pupil's circuit is meant to let lamp X be switched off "
+                "while lamp Y stays lit. Their diagram is shown. Evaluate the "
+                "diagram.",
         "options": [
-            "It is acceptable, as ruled lines are what a diagram is marked on",
-            "It is acceptable, as a reader can see where the missing wire "
-            "goes",
-            "It is faulty: neat ruling does not mend an open loop or a "
-            "corner",
-            "It is faulty, as the lamp at the corner is its one mistake",
+            "It is acceptable, as the two lamps are on separate branches",
+            "It is acceptable, as opening the switch turns lamp X off",
+            "It is faulty: the switch is in the main wire, so it turns both "
+            "lamps off together",
+            "It is faulty, as lamps on separate branches cannot be switched "
+            "at all",
         ],
         "correct_index": 2,
-        "why": "A diagram has to be both neat and right: the loop must close "
-               "and each component must sit on a straight side where its two "
-               "wires show.",
+        "why": "The switch is in the main wire, which all of the current "
+               "passes through, so opening it turns off both lamps at once. "
+               "To switch lamp X off on its own, the switch must be in lamp "
+               "X's branch.",
     },
     {
         "id": "ks4-circuit-symbols-h23",
@@ -1025,21 +1115,21 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "One loop is drawn holding a cell, a circle with A, a "
-                "rectangle with an arrow through it and a circle with a "
-                "cross. Determine what this circuit is for.",
+        "figure": "ks4-fig-circuit-single-loop-four-components",
+        "text": "The diagram shows a circuit. Determine what this circuit "
+                "could be used for.",
         "options": [
-            "Measuring the current while the resistance in the loop is "
-            "altered",
+            "Measuring the current while the resistance in the loop is altered",
             "Measuring the potential difference across the lamp as it warms",
-            "Comparing two lamps that are lit by one cell at the same time "
-            "as each other",
+            "Comparing the brightness of two lamps lit by the same cell",
             "Sounding an alarm when the current through the loop rises",
         ],
         "correct_index": 0,
-        "why": "The circle with A reads the current, the arrow through the "
-               "rectangle changes the resistance, and the circle with a "
-               "cross is the lamp being studied.",
+        "why": "The ammeter (the circle with A) reads the current. The "
+               "variable resistor (the rectangle with an arrow) changes the "
+               "resistance in the loop. The lamp is the component being "
+               "studied. There is no voltmeter, only one lamp and nothing "
+               "that makes a sound.",
     },
     {
         "id": "ks4-circuit-symbols-h24",
@@ -1087,18 +1177,19 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A diagram shows only a cell and a lamp joined in a loop. "
-                "Determine what must be added so the lamp can be dimmed and "
-                "also switched off.",
+        "figure": "ks4-fig-circuit-cell-lamp",
+        "text": "The diagram shows a circuit. Determine what must be added so "
+                "that the lamp can be dimmed and also switched off.",
         "options": [
-            "A thermistor and a fuse, both drawn in the same loop",
-            "A second cell and a diode, both drawn in the same loop",
-            "A rectangle with two arrows pointing in, and a hinged lever",
-            "A rectangle with an arrow through it, and a hinged lever",
+            "A thermistor and a fuse",
+            "A second cell and a diode",
+            "An LDR and a switch",
+            "A variable resistor and a switch",
         ],
         "correct_index": 3,
-        "why": "The arrow through the rectangle is the variable resistor "
-               "that dims the lamp, and the hinged lever is the switch that "
-               "breaks the loop.",
+        "why": "A variable resistor lets the user change the resistance, and "
+               "so the current, which dims the lamp. A switch opens the "
+               "circuit to turn the lamp off. A thermistor or an LDR changes "
+               "only with temperature or light, not when the user chooses.",
     },
 ]

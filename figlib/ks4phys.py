@@ -26,14 +26,13 @@ Departures from the spec's text, each marked ⊕ below:
 
 import math
 
-from .style import (MUTED, STYLE, TINT, Canvas, arrow, box, line, q_font,
-                    q_stroke, text, text_width)
+from .style import (MUTED, STYLE, TINT, Canvas, arrow, box, grid_line, line,
+                    q_font, q_stroke, text, text_width)
 
 ST = STYLE["stroke"]
 LBL = STYLE["label"]
 ACC = STYLE["arrow"]
 CREAM = STYLE["cream"]
-GRID_INK = "#948A70"       # the batch-1 force grid: 3.0:1 on the card
 WIDE = 1.15                # Georgia table -> widest fallback face, for layout
 
 
@@ -106,12 +105,14 @@ def force_grid_2d(arrows, dot, cols, rows, side=40, key=None,
     def G(gx, gy):
         return x0 + gx * side, yb - gy * side
 
+    # ⊕ MRB-352 run 2 batch 4 (landing): the squares are COUNTED divisions,
+    # so they are major gridlines drawn by style.grid_line (data-role
+    # "grid", #8C8268, 3.35:1 on the card) and the grid rule covers them.
     for i in range(cols + 1):
-        line(c, x0 + i * side, top, x0 + i * side, yb, GRID_INK,
-             q_stroke(W, 1.2), None, "butt")
+        grid_line(c, x0 + i * side, top, x0 + i * side, yb, W, "major")
     for j in range(rows + 1):
-        line(c, x0, top + j * side, x0 + cols * side, top + j * side,
-             GRID_INK, q_stroke(W, 1.2), None, "butt")
+        grid_line(c, x0, top + j * side, x0 + cols * side, top + j * side,
+                  W, "major")
     box(c, x0, top, cols * side, gh, "none", ST, q_stroke(W, 2))
 
     if ground_row is not None:

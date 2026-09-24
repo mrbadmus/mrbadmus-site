@@ -51,6 +51,12 @@ ART = {
 }
 
 
+# ⊕ MRB-352 run 2 (batch 3): KS4 electricity builders live in their own
+# module (`figlib/ks4elec.py`) so lanes cannot collide in this file.
+from . import ks4elec  # noqa: E402
+ART.update(ks4elec.ART_KS4ELEC)
+
+
 def draw(rec):
     """The library SVG for one catalogue record."""
     art = rec.get("art")
@@ -59,6 +65,11 @@ def draw(rec):
                          "Known: %s" % (rec.get("id"), art, ", ".join(sorted(ART))))
     return ART[art](**(rec.get("params") or {}))
 
+
+# ⊕ MRB-352 run 2 (batch 2): the biology/chemistry question builders live in
+# their own module (`figlib/biochem.py`) so lanes cannot collide in this file.
+from . import biochem  # noqa: E402
+ART.update(biochem.ART_BIOCHEM)
 
 # ⊕ MRB-352 run 2 (batch 4): the KS4 physics question builders live in their
 # own module (`figlib/ks4phys.py`) so parallel lanes cannot collide here.

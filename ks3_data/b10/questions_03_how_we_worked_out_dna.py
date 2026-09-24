@@ -922,8 +922,9 @@ QUESTIONS = [
     {
         "id": "b10-03-e13",
         "band": "easier",
-        "text": "An X-ray image of DNA fibres shows a cross-shaped pattern of "
-                "spots. What does that cross indicate?",
+        "text": "The picture is a drawing of the pattern made when X-rays "
+                "were passed through fibres of DNA. What did this pattern "
+                "tell scientists about the molecule?",
         "options": [
             {"text": "That the molecule is a helix",
              "correct": True},
@@ -937,10 +938,10 @@ QUESTIONS = [
                     "the molecule, not by how the fibres were laid out."},
             {"text": "That the sample was damaged by the X-rays",
              "correct": False,
-             "why": "The cross is a real signal, and it is the signal a helix "
-                    "gives. Damage would blur the pattern, not shape it."},
+             "why": "The X shape is a real signal, and it is the signal a "
+                    "helix gives. Damage would blur the pattern, not shape it."},
         ],
-        "figure": None,
+        "figure": "b10-dna-xray-pattern",
     },
     {
         "id": "b10-03-e14",

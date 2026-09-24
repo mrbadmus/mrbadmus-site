@@ -1357,12 +1357,11 @@ QUESTIONS = [
     {
         "id": "b9-02-s13",
         "band": "standard",
-        "text": "A student draws a graph of a wood in which the owl line sits "
-                "above the vole line at every point. What is wrong with the "
-                "drawing?",
+        "text": "A student drew this graph of the owl and vole populations in "
+                "a wood. What is wrong with it?",
         "options": [
-            {"text": "Predators are always far fewer than the prey they "
-                     "live on", "correct": True},
+            {"text": "Owls should be far fewer than the voles they live on",
+             "correct": True},
             {"text": "The two lines ought to cross at least once every year of "
                      "the record", "correct": False,
              "why": "Nothing says the lines must cross. On one scale the "
@@ -1370,13 +1369,13 @@ QUESTIONS = [
             {"text": "The owl line should be flat, because owls do not cycle",
              "correct": False,
              "why": "Owl numbers follow their prey up and down like any "
-                    "predator's."},
+                    "predator's, and this graph is right to show that."},
             {"text": "The vole line should be above only in summer",
              "correct": False,
              "why": "Voles outnumber owls in every season. This is not a "
                     "seasonal effect."},
         ],
-        "figure": None,
+        "figure": "b9-owl-vole-graph-wrong",
     },
     {
         "id": "b9-02-s14",
@@ -2145,9 +2144,9 @@ QUESTIONS = [
     {
         "id": "b9-02-h25",
         "band": "harder",
-        "text": "A student plots predator numbers against prey numbers for "
-                "twenty years and gets a loop rather than a straight line. "
-                "What does the loop show?",
+        "text": "A student plots predator numbers against prey numbers, one "
+                "point for each year, and joins the points in order. What "
+                "does the loop show?",
         "options": [
             {"text": "That the counts contain too much error to give a clean "
                      "relationship", "correct": False,
@@ -2164,7 +2163,7 @@ QUESTIONS = [
              "why": "Each year gives one point. The loop comes from the "
                     "timing, not from a repeated count."},
         ],
-        "figure": None,
+        "figure": "b9-predator-prey-loop",
     },
     {
         "id": "b9-02-h26",

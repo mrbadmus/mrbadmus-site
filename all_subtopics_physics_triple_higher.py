@@ -1373,16 +1373,18 @@ PHYSICS_SUBTOPICS_ALL = {
                          ('AC', 'UK mains — 230 V, 50 Hz'),
                          ('AC', 'Produced by generators in power stations')],
                'title': 'DC vs AC'},
-  'quiz': [{'opts': [('A DC supply — constant pd in one direction', True),
-                     ('An AC supply — the line shows the average value of the alternating current', False),
-                     ('No current — horizontal means the circuit is off', False),
-                     ('Very high frequency AC — oscillations too fast to see', False)],
-            'q': 'An oscilloscope shows a horizontal line above the zero axis. What does this represent?',
-            'wrong_explanations': {1: 'An AC trace is sinusoidal. A flat line means CONSTANT pd — that is DC. A line '
-                                      'at zero means no pd; above zero means a positive DC voltage.',
-                                   2: 'A horizontal line above zero means a CONSTANT positive pd — DC, not AC.',
-                                   3: 'Very fast AC would appear blurred or as a thick band — a sharp flat line '
-                                      'specifically indicates DC.'}},
+  'quiz': [{'opts': [('A direct (dc) supply — the pd is constant and always in the same direction', True),
+                     ('An alternating (ac) supply — a steady pd is the average value of an ac supply', False),
+                     ('No supply at all — a pd that never changes cannot make a current flow', False),
+                     ('A very high frequency ac supply — it changes direction too fast to notice', False)],
+            'q': 'A supply gives a potential difference that stays at the same value and never changes '
+                 'direction. What type of supply is it?',
+            'wrong_explanations': {1: 'An alternating pd keeps reversing direction. A pd that stays the same and '
+                                      'never reverses is direct.',
+                                   2: 'A constant pd still drives a current round a complete circuit. A cell or '
+                                      'battery does exactly this.',
+                                   3: 'However fast an ac supply alternates, its pd still reverses direction. This '
+                                      'pd never does, so the supply is direct.'}},
            {'opts': [('50 Hz and 230 V', True),
                      ('60 Hz and 230 V — 60 Hz is the UK standard', False),
                      ('50 Hz and 110 V — 110 V is the UK mains voltage', False),

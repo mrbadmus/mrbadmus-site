@@ -59,8 +59,7 @@ QUESTIONS = [
         "band": "easier",
         "tier": "foundation",
         "triple_only": True,
-        "text": "What does the symbol used in place of an arrow in the Haber "
-                "equation tell you about the reaction?",
+        "text": "The equation for the Haber process is N2 + 3H2 ⇌ 2NH3. What does the ⇌ symbol tell you about the reaction?",
         "options": [
             "It needs a catalyst to be added before it can start reacting",
             "It gives out heat energy to its surroundings",
@@ -68,9 +67,7 @@ QUESTIONS = [
             "It takes in heat energy from its surroundings",
         ],
         "correct_index": 2,
-        "why": "The double arrow marks a reversible reaction: products turn "
-               "back into reactants at the same time as reactants turn into "
-               "products.",
+        "why": "The ⇌ symbol marks a reversible reaction: products turn back into reactants at the same time as reactants turn into products.",
     },
     {
         "id": "ks4-haber-process-e08",

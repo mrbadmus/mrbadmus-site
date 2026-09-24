@@ -226,6 +226,47 @@ from the spec's text, each marked ⊕ in the code:
   the inside-magnet heads sit 40% along; the `even` map's arches start
   at the corner; new `reversed` option (a whole line, arrow backwards).
 
+## Batch 3 of the 174 (MRB-352 run 2, KS4 physics electricity)
+
+21 new KS4 records in `ks4_art/catalogue_run2_elec.py` (N1–N21 of the
+examiner's spec). Library changes, every one a new parameter whose default
+is the old drawing (the 94 figures already in the manifest rebuilt byte for
+byte), each marked `⊕ MRB-352 run 2 (174)`:
+
+- `circuit()`: `["voltmeter", null, null, {"inline": true}]` is an ordinary
+  series component (a voltmeter wrongly IN the loop); `{"ammeter": true}` on
+  a component bridges an ammeter across it (`sym_ammeter(leads=)`,
+  `_bridge_voltmeter(meter=)`); `{"reverse": true}` on a diode or LED
+  mirrors it end for end (`sym_diode/sym_led(reverse=)`) — the LED's
+  emission arrows still point up and out.
+- `oscilloscope_compare`: a trace whose `caption` is None or omitted draws
+  no caption row.
+- New module `figlib/ks4elec.py` with `radial_field` (`"radial-field"`): a
+  charged sphere with evenly spaced straight radial lines, one arrowhead
+  each, and lettered points placed between lines (it refuses a point or
+  label that would touch a line). Merged into `ART` from `__init__.py`.
+
+### Batch 3 fix round (examiner + visual review)
+
+- **A readable grid, defined once** (`STYLE["grid"]`, `["grid_minor"]`,
+  `["grid_axis"]`, drawn by `style.grid_line`): MAJOR gridlines (a
+  labelled tick, a counted scope division) #8C8268, 3.35:1 on the cream
+  card; MINOR gridlines (between ticks) #948A70, 3.01:1, drawn thinner so
+  they still read lighter; a scope's centre line #6F6754, heavier. Used by
+  every line graph, bar/column chart and oscilloscope screen. They were
+  #CFC7B2 / #D5CDB8, about 1.5:1. (#A89E86, suggested in review, is only
+  2.33:1 on cream.) Every gridline carries `data-role="grid"` or
+  `"grid-minor"`.
+- **New hard check (`figlib.checks`, the grid rule):** every data-role
+  grid line's stroke is >= 3:1 against the fill it sits on (the cream card
+  or a white scope screen); any other data-role on a line is refused.
+  `checks.self_test_grid()` proves the rule fires (faint greys refused on
+  both papers, the STYLE colours accepted); `check_manifest` runs it first,
+  so the `figure_manifest` gate exercises it on every build.
+- `line_graph` series option `smooth_from`: an exact straight polyline up
+  to that x, then the monotone curve leaving at the straight run's slope
+  (no kink, no early bend). Used by `ks4-fig-graph-iv-resistor-bends`.
+
 ## Batch 4 of the 174 (MRB-352 run 2, KS4 physics except electricity)
 
 Builders in their own module, `figlib/ks4phys.py`, registered by one line

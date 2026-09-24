@@ -863,20 +863,26 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": True,
-        "text": "At point A the field lines around a charged object are 2 mm "
-                "apart; at point B they are 8 mm apart. Compare the electric "
-                "force on the same small charge placed at each of the two "
-                "points.",
+        "figure": "ks4-fig-radial-field-points-a-b",
+        "text": "The diagram shows the electric field around a charged "
+                "sphere. Compare the electric force on the same small charge "
+                "placed at point A and at point B.",
         "options": [
-            "The force is larger at B, because the wider spacing gives the charge more room to be pushed",
-            "The force is the same at both points, because the same small charge is placed at each one",
-            "The force is larger at A, because closer lines mean a stronger field and so a larger force",
-            "The force is four times larger at B, because the spacing there is four times as great",
+            "The force is larger at B, because the wider spacing gives the "
+            "charge more room to be pushed",
+            "The force is the same at both points, because the same small "
+            "charge is placed at each one",
+            "The force is larger at A, because closer lines mean a stronger "
+            "field and so a larger force",
+            "There is no force at B, because B does not lie on a field line",
         ],
         "correct_index": 2,
-        "why": "Line spacing shows field strength, and F = E × q, so the same "
-               "charge feels a larger force where the lines are closer "
-               "together.",
+        "why": "The field lines are closest together near the sphere, where "
+               "the field is strongest. A is closer to the sphere than B, so "
+               "the field at A is stronger and the same charge feels a larger "
+               "force there. The field fills all the space around the sphere, "
+               "including the gaps between the lines drawn, so there is still "
+               "a force at B.",
     },
     {
         "id": "ks4-electric-fields-h19",

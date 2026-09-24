@@ -1120,7 +1120,8 @@ _MRB338_NEW_QUESTIONS = [
     {
         "id": 'b8-05-e25',
         "band": 'easier',
-        "text": 'Which row of a comparison table correctly matches ‘what it is for’ to each route?',
+        "text": "Which statement correctly matches what each type of "
+                "respiration is used for?",
         "options": [
             {"text": 'Aerobic: only during exercise. Anaerobic: everything else, all the time.', "correct": False,
              "why": 'Aerobic respiration is the default running all the time, not only during exercise.'},

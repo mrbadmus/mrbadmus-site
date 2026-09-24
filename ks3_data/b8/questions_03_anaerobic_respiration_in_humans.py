@@ -1293,10 +1293,13 @@ _MRB338_NEW_QUESTIONS = [
     {
         "id": 'b8-03-s17',
         "band": 'standard',
-        "text": 'A student sees a graph showing anaerobic energy supply rising sharply during a sprint and concludes the aerobic supply must be falling at the same time. Evaluate this conclusion.',
+        "text": "During a sprint, the energy supplied to a runner's leg "
+                "muscles by anaerobic respiration rises sharply. A student "
+                "concludes that the energy supplied by aerobic respiration "
+                "must be falling at the same time. Evaluate this conclusion.",
         "options": [
             {"text": 'It is correct, since a cell can only use one respiration route at any one moment, so as soon as one starts up the other has to switch off completely.', "correct": False,
-             "why": 'A muscle cell can and does run both routes at once during a sprint; the aerobic route continues at its highest rate throughout.'},
+             "why": 'A muscle cell can and does run both routes at once during a sprint; the aerobic route keeps going, and rises towards its maximum rate.'},
             {"text": 'It is correct, because oxygen gets used up faster than it can be replaced, which is exactly why the whole aerobic system has to shut down until the debt is repaid.', "correct": False,
              "why": 'Aerobic respiration keeps running at the fastest rate the oxygen supply allows; it does not fall, it simply cannot rise fast enough to meet the whole demand.'},
             {"text": 'It is wrong — aerobic supply keeps rising too, up to its own ceiling; anaerobic respiration only adds on top of it.', "correct": True},

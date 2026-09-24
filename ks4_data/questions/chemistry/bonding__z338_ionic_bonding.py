@@ -425,7 +425,8 @@ QUESTIONS = [
         "band": 'standard',
         "tier": 'foundation',
         "triple_only": False,
-        "text": 'A dot-and-cross diagram of magnesium oxide draws the oxide ion with eight outer electrons, two of them crosses. Explain what the two crosses show.',
+        "figure": "ks4-fig-ionic-mgo-ions",
+        "text": "The diagram shows the ions in magnesium oxide. Explain what the two crosses on the oxide ion show.",
         "options": [
             'They mark the two electrons that were transferred to the oxygen atom from the magnesium atom',
             'They mark the two electrons oxygen keeps for itself while the rest are shared',
@@ -433,7 +434,7 @@ QUESTIONS = [
             'They mark the two shells that the oxide ion now has',
         ],
         "correct_index": 0,
-        "why": 'Crosses record electrons that started on the other atom, and magnesium supplied exactly two of them.',
+        "why": "Crosses record electrons that started on the other atom. Magnesium lost its two outer electrons to the oxygen atom, so the oxide ion holds two crosses.",
     },
     {
         "id": 'ks4-ionic-bonding-s23',
