@@ -562,13 +562,13 @@ QUESTIONS = [
         "figure": "ks4-fig-graph-weight-mass-planet",
         "text": "The graph shows weight against mass for objects on an unnamed planet. Interpret the gradient of the line.",
         "options": [
-            "The objects used had a mean mass of 3.7 kg each",
-            "The field strength on that planet is 3.7 N/kg, a little over a third of the Earth's",
-            "The heaviest object weighed on that planet came out at 3.7 N",
-            "The planet is 3.7 times further from its star than the Earth is from the Sun",
+            "The objects used had a mean mass of 3.8 kg each",
+            "The field strength on that planet is 3.8 N/kg, a little over a third of the Earth's",
+            "The heaviest object weighed on that planet came out at 3.8 N",
+            "The planet is 3.8 times further from its star than the Earth is from the Sun",
         ],
         "correct_index": 1,
-        "why": "The gradient is 37 N ÷ 10 kg = 3.7 N/kg. The gradient of weight against mass is W ÷ m, which is the gravitational field strength g, so the planet's field strength is 3.7 N/kg, about the value for Mars.",
+        "why": "The gradient is 38 N ÷ 10 kg = 3.8 N/kg. The gradient of weight against mass is W ÷ m, which is the gravitational field strength g, so the planet's field strength is 3.8 N/kg.",
     },
     {
         "id": "ks4-gravity-h09",

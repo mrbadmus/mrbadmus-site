@@ -1006,7 +1006,7 @@ QUESTIONS = [
         "tier": "foundation",
         "triple_only": True,
         "figure": "ks4-fig-graph-hubble-two-galaxies",
-        "text": "The graph shows the recession speed of two galaxies against their distance from Earth, and the straight line through the origin that both lie on. Calculate the gradient of the line.",
+        "text": "The graph shows the recession speed of two galaxies against their distance from Earth. Calculate the gradient of the line.",
         "options": [
             "70 km/s/Mpc",
             "35 km/s/Mpc",

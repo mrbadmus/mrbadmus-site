@@ -72,7 +72,7 @@ QUESTIONS = [
         "tier": "higher",
         "triple_only": True,
         "figure": "ks4-fig-force-grid-50n-4r-3u",
-        "text": "The diagram shows a pull of 50 N drawn to scale on a square grid. Determine the vertical component of the pull.",
+        "text": "The diagram shows a pull drawn to scale on a square grid. Determine the vertical component of the pull.",
         "options": [
             "40 N",
             "50 N",
@@ -789,7 +789,7 @@ QUESTIONS = [
         "tier": "higher",
         "triple_only": True,
         "figure": "ks4-fig-force-grid-500n-4r-3u",
-        "text": "The diagram shows a pull of 500 N drawn to scale on a square grid. Determine both components of the pull and state which is larger.",
+        "text": "The diagram shows a pull drawn to scale on a square grid. Determine both components of the pull and state which is larger.",
         "options": [
             "Horizontal 400 N and vertical 300 N; the horizontal is larger",
             "Horizontal 300 N and vertical 400 N; the vertical is larger, because the line rises",

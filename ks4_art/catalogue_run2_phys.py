@@ -51,7 +51,8 @@ CATALOGUE = [
     {
         "id": "ks4-fig-nuclide-sodium-23",
         "art": "nuclide",
-        "params": {"symbol": "Na", "mass": 23, "atomic": 11},
+        "params": {"symbol": "Na", "mass": 23, "atomic": 11, "W": 320,
+                   "H": 190, "size": 92, "num": 36},
         "title": "A chemical symbol with one number at its upper left and "
                  "another at its lower left.",
         "desc": "The symbol Na, with 23 written at the top left and 11 at "
@@ -234,12 +235,12 @@ CATALOGUE = [
     {
         "id": "ks4-fig-free-body-sign-40n",
         "art": "free-body",
-        "params": {"obj": {"kind": "dot", "at": [180, 180], "r": 7},
-                   "arrows": [{"from": [180, 180], "dy": -110,
+        "params": {"obj": {"kind": "dot", "at": [90, 150], "r": 7},
+                   "arrows": [{"from": [90, 150], "dy": -110,
                                "label": "tension 40 N"},
-                              {"from": [180, 180], "dy": 110,
+                              {"from": [90, 150], "dy": 110,
                                "label": "weight 40 N"}],
-                   "W": 360, "H": 360},
+                   "W": 260, "H": 300},
         "title": "A free body diagram: a dot with one arrow pointing up and "
                  "one pointing down, the same length.",
         "desc": "The upward arrow is labelled tension 40 N and the downward "
@@ -333,13 +334,13 @@ CATALOGUE = [
         "art": "graph",
         "params": _graph("mass", "kg", "weight", "N", (0, 10), (0, 40),
                          _steps(0, 10, 2), _steps(0, 40, 10),
-                         [{"points": [[0, 0], [10, 37]]}],
+                         [{"points": [[0, 0], [10, 38]]}],
                          x_grid=_steps(0, 10, 1), y_grid=_steps(0, 40, 2),
                          end_dot=True),
         "title": "A graph of weight against mass: a straight line from the "
                  "origin, ending with a dot.",
         "desc": "Mass runs from 0 to 10 kg and weight from 0 to 40 N. The "
-                "line ends at 10 kg and 37 N.",
+                "line ends at 10 kg and 38 N.",
     },
     {
         "id": "ks4-fig-graph-weight-mass-two-worlds",
@@ -369,18 +370,18 @@ CATALOGUE = [
     {
         "id": "ks4-fig-graph-electromagnet-strength-current",
         "art": "graph",
-        "params": _graph("current", "A", "magnetic field strength", "mT",
-                         (0, 5), (0, 100), _steps(0, 5, 1),
-                         _steps(0, 100, 20),
+        "params": _graph("current", "A", "magnetic field strength", None,
+                         (0, 5), (0, 100), _steps(0, 5, 1), [],
                          [{"points": [[0, 0], [0.5, 20], [1, 40], [1.5, 58],
                                       [2, 72], [2.5, 82], [3, 88],
                                       [3.5, 91], [4, 93], [5, 95]],
-                           "smooth": True}]),
+                           "smooth": True}],
+                         y_grid=_steps(0, 100, 20)),
         "title": "A graph of magnetic field strength against current: a "
                  "line from the origin that rises almost straight, then "
                  "bends over and becomes nearly flat.",
-        "desc": "Current runs from 0 to 5 A and field strength from 0 to "
-                "100 mT.",
+        "desc": "Current runs from 0 to 5 A. The field-strength axis has "
+                "no numbers.",
     },
     {
         "id": "ks4-fig-magnet-compasses-near-north",
@@ -508,7 +509,7 @@ CATALOGUE = [
     {
         "id": "ks4-fig-wavefronts-student-refraction",
         "art": "wavefront-diagram",
-        "params": {"i_deg": 40, "r_deg": 60},
+        "params": {"i_deg": 40, "r_deg": 60, "refracted_head_at": 133},
         "title": "A wave front diagram: a ray with evenly spaced wave fronts "
                  "meets a horizontal boundary at a dashed normal and "
                  "continues below it with more closely spaced fronts.",

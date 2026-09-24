@@ -65,6 +65,15 @@ def _label_lines(c, x, y, lines, fs, anchor, fill=LBL, pitch=1.25):
 
 # ── force-grid, two-dimensional ───────────────────────────────────────────
 
+def _backed(c, x, y, txt, fs, anchor):
+    """⊕ b4 fix (visual 4): a label on a paper-coloured patch, so it never
+    sits on a grid line. The patch is only as big as the label's own box."""
+    w = _tw(txt, fs)
+    x0 = {"start": x, "middle": x - w / 2, "end": x - w}[anchor]
+    box(c, x0 - 3, y - fs * 0.85, w + 6, fs * 1.1, CREAM, "none", 0)
+    text(c, x, y, txt, fs, LBL, "bold", anchor)
+
+
 _SIDES = {
     "left": (-1, 0), "right": (1, 0), "above": (0, -1), "below": (0, 1),
     "upper-left": (-1, -1), "upper-right": (1, -1),
@@ -108,15 +117,14 @@ def force_grid_2d(arrows, dot, cols, rows, side=40, key=None,
     if ground_row is not None:
         gx0, gy0 = G(0, ground_row)
         gx1 = x0 + cols * side
-        lw = _tw(ground_label, fs)
-        lab_x = gx1 - 6
-        hatch_end = lab_x - lw - 8
-        hx = gx0 + 6
-        while hx + 10 <= hatch_end:
-            line(c, hx + 10, gy0 + 2, hx, gy0 + 12, ST, q_stroke(W, 1.6))
+        # ⊕ b4 fix (examiner m3): hatching runs the FULL width; the label
+        # sits under it, on a paper patch, inside the row below the ground.
+        hx = gx0 + 4
+        while hx + 8 <= gx1 - 2:
+            line(c, hx + 8, gy0 + 2, hx, gy0 + 10, ST, q_stroke(W, 1.6))
             hx += 14
         line(c, gx0, gy0, gx1, gy0, ST, q_stroke(W, 4), None, "butt")
-        text(c, lab_x, gy0 + fs + 4, ground_label, fs, LBL, "bold", "end")
+        _backed(c, gx1 - 6, gy0 + fs + 8, ground_label, fs, "end")
 
     ox, oy = G(*dot)
     sw = q_stroke(W, 4)
@@ -132,7 +140,7 @@ def force_grid_2d(arrows, dot, cols, rows, side=40, key=None,
             # push the label's centre out until its box clears the arrow
             dist = side * 0.35 + abs(ux) * lw / 2 + abs(uy) * fs * 0.6
             cx, cy = mx + ux * dist, my + uy * dist
-            text(c, cx, cy + fs * 0.35, a["label"], fs, LBL, "bold")
+            _backed(c, cx, cy + fs * 0.35, a["label"], fs, "middle")
     c.S.append(f'<circle cx="{ox:.1f}" cy="{oy:.1f}" r="7" fill="{ST}" '
                f'stroke="none"/>')
     if key:
@@ -421,7 +429,7 @@ def echo_sounder(seabed, patch, W=480, H=320, screen=(70, 20, 460, 270),
     right = 0
     for fr, d, ln in patch["dashes"]:
         xa = X(fr)
-        line(c, xa, Y(d), xa + ln, Y(d), "#8C8C8C", q_stroke(W, 3), None,
+        line(c, xa, Y(d), xa + ln, Y(d), "#858585", q_stroke(W, 3), None,
              "butt")
         right = max(right, xa + ln)
     text(c, right + 10, Y(patch["label_depth"]) + fs * 0.35, patch_label, fs,
@@ -434,7 +442,8 @@ def echo_sounder(seabed, patch, W=480, H=320, screen=(70, 20, 460, 270),
 def wavefront_diagram(i_deg=40, r_deg=60, O=(210, 190), incident_len=150,
                       refracted_len=150, incident_fronts=(30, 66, 102, 138),
                       refracted_fronts=(55, 75, 95, 115), front_len=50,
-                      W=420, H=380, labels=("material 1", "material 2")):
+                      W=420, H=380, labels=("material 1", "material 2"),
+                      incident_head_at=None, refracted_head_at=None):
     """A ray meeting a horizontal boundary at O, with a dashed normal, and
     its wave fronts drawn at right angles to it — `incident_fronts` and
     `refracted_fronts` are distances from O along each ray. The angles are
@@ -453,10 +462,16 @@ def wavefront_diagram(i_deg=40, r_deg=60, O=(210, 190), incident_len=150,
     text(c, 30, H - 30, labels[1], fs, LBL, "bold", "start")
     ix, iy = ox - d1[0] * incident_len, oy - d1[1] * incident_len
     line(c, ix, iy, ox, oy, ST, q_stroke(W, 2))
-    _mid_head(c, ix, iy, ox, oy, ST, 14)
+    # ⊕ b4 fix (visual 2): a head can be placed at a distance from O, so it
+    # sits between two wave fronts instead of on one.
+    hi = incident_head_at or incident_len / 2
+    _mid_head(c, ox - d1[0] * (hi + 7), oy - d1[1] * (hi + 7),
+              ox - d1[0] * (hi - 7), oy - d1[1] * (hi - 7), ST, 14)
     rx, ry = ox + d2[0] * refracted_len, oy + d2[1] * refracted_len
     line(c, ox, oy, rx, ry, ST, q_stroke(W, 2))
-    _mid_head(c, ox, oy, rx, ry, ST, 14)
+    hr = refracted_head_at or refracted_len / 2
+    _mid_head(c, ox + d2[0] * (hr - 7), oy + d2[1] * (hr - 7),
+              ox + d2[0] * (hr + 7), oy + d2[1] * (hr + 7), ST, 14)
     for (d, ss, sign) in ((d1, incident_fronts, -1), (d2, refracted_fronts, 1)):
         px, py = d[1], -d[0]            # perpendicular to the ray
         for s in ss:
