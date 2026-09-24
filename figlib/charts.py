@@ -429,12 +429,16 @@ def graph_panels(panels, W=480):
     (its own H) plus `caption`. For comparing graphs whose SCALES differ —
     the drawing makes the pupil read each axis, not the slope's look."""
     fs = q_font(W)
-    H = int(sum(p.get("H", 380) + fs + 34 for p in panels))
+    # ⊕ MRB-352 run 2 (batch-2 merge, checks rule 8): the first caption's
+    # line box sat 1.4 units off the card's top edge; every panel now starts
+    # PAD units down, and the card grows by the same.
+    PAD = 8
+    H = int(PAD + sum(p.get("H", 380) + fs + 34 for p in panels))
     c = Canvas(W, H)
     fn = _num_size(fs)
     ox = max(30 + fs * 1.3 + max(text_width(_fmt(t), fn) for t in p["y_ticks"])
              for p in panels)          # one y-axis position: identical time axes
-    y = 0.0
+    y = float(PAD)
     for p in panels:
         p = dict(p)
         caption = p.pop("caption")
