@@ -5282,6 +5282,29 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "[data-port-region] [style*=\"grid-template-columns\"]"
         "{break-inside:avoid;page-break-inside:avoid}"
         "}"
+        # ⊕ Experience run, 24 Sep 2026 (stream G) — the focus ring,
+        # STRENGTHENED HERE FOR THE SAME REASON `build_student_port.py`'s
+        # `_FOCUS_RING` NAMES, NOT BECAUSE THIS PORT WAS FOUND BROKEN.
+        # `focus_audit.py` measured every one of this port's fixtures
+        # (classes, class-detail, student-detail, assignment, digest,
+        # insights) plus the hand-written today/timetable/admin/import pages
+        # and the Set work sheet, and every reachable control already shows
+        # a visible change on Tab — this port does not put `all:unset` on
+        # its buttons the way the student port's ported markup does, so
+        # `shared/teacher-ds.css`'s own vendored R15 rule
+        # (`[data-mode="ks3"] :focus-visible{outline:3px solid
+        # var(--ks3-accent)…}`, concatenated in from Design's bundle exactly
+        # as the student port's is) already wins.
+        # This rule is added regardless, `!important` and all, so that
+        # SHOULD a future screen ever add an `all:unset` (or any other
+        # inline-styled) control here, the ring keeps working rather than
+        # silently losing the way it did on the student pages — a floor,
+        # not a fix for a measured defect. `:focus-visible` still means it
+        # is inert on a mouse click.
+        "[data-mode=\"ks3\"] :focus-visible{"
+        "outline:3px solid var(--ks3-accent)!important;"
+        "outline-offset:2px!important;"
+        "border-radius:var(--ks3-r-focus)!important}"
         "</style>\n"
         "</head>\n<body>\n"
         "<div id=\"mrb-teacher\" style=\"background:var(--st-ground);"
