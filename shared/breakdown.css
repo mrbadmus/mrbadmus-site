@@ -1,0 +1,392 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   breakdown.css — the Answer Breakdown panel (Mide's item 9, 24 Sep 2026),
+   Design's KS3-studio chrome, our DOM. Same reason set-work.css exists and
+   the same shape: see that file's header before changing this one.
+
+   ⚠️ WHY IT IS A SIBLING OF THE MOUNT HOST, NOT A COMPILED NODE. Design drew
+   no breakdown surface at all — there is nothing here to be faithful to —
+   and `shared/student-runtime.js`'s `draw()` empties `#mrb-teacher` and
+   rebuilds it on every `setState`. Prev/Next inside this panel re-fetch and
+   redraw the panel's OWN content without touching the page underneath, so a
+   compiled node would be destroyed under it the moment anything on the page
+   behind it re-rendered. Appended to `<body>`, `draw()` cannot reach it.
+
+   ⚠️ EVERY COLOUR, RADIUS AND FONT IS A `--st-*` (or `--ks3-*`) TOKEN read
+   out of `shared/teacher-ds.css`. Nothing here is a new design system: the
+   overlay/sheet/head/toast shapes are lifted from `shared/set-work.css`
+   verbatim, and the right/wrong marks reuse the marking grid's own tokens
+   (`--ks3-ok` / `--ks3-ok-text` for correct, `--st-accent-text` for
+   incorrect) — SHAPE differs as well as colour on both, per the marking
+   grid's own "distinguishable without colour" rule (teacher_rulings.py
+   `cellStyle`).
+
+   ⚠️ NO SIDEWAYS SCROLL AT 390px/360px. Every flex child that can hold a
+   stem, an option or a pupil's typed answer carries `min-width:0` and
+   `overflow-wrap:anywhere`.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.bd-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(26, 23, 20, .45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+}
+.bd-overlay[hidden] { display: none; }
+
+.bd-sheet {
+  width: 880px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--st-paper);
+  border: 1px solid var(--st-edge);
+  border-radius: 14px;
+  box-shadow: var(--st-shadow-frame);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ── the sticky header: Close · pupil/set · Prev/Next ────────────────── */
+.bd-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  flex: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--st-paper);
+  border-bottom: 1px solid var(--st-rule-soft);
+  flex-wrap: wrap;
+}
+.bd-close {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--st-btn-border);
+  border-radius: 8px;
+  color: var(--st-ink);
+  cursor: pointer;
+}
+.bd-close:hover { border-color: var(--st-edge); background: var(--st-note-bg); }
+
+.bd-head-main { flex: 1 1 220px; min-width: 0; }
+.bd-eyebrow {
+  font: 500 12px/1.3 var(--st-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  overflow-wrap: anywhere;
+}
+.bd-title {
+  margin-top: 2px;
+  font: 700 19px/1.25 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+.bd-subtitle {
+  margin-top: 2px;
+  font: 400 14.5px/1.35 var(--st-ui);
+  color: var(--st-muted);
+  overflow-wrap: anywhere;
+}
+
+.bd-nav {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bd-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  font: 600 13.5px/1 var(--st-ui);
+  color: var(--st-ink);
+  background: var(--st-paper);
+  border: 1px solid var(--st-btn-border);
+  border-radius: 8px;
+  cursor: pointer;
+  max-width: 160px;
+}
+.bd-nav-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bd-nav-btn:hover:not(:disabled) { border-color: var(--st-edge); background: var(--st-note-bg); }
+.bd-nav-btn:disabled { opacity: .4; cursor: default; }
+
+/* ── the body ─────────────────────────────────────────────────────────── */
+.bd-body {
+  padding: 18px 16px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* ── the summary strip ───────────────────────────────────────────────── */
+.bd-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+.bd-stat {
+  min-width: 0;
+  padding: 12px 14px;
+  background: var(--st-ground);
+  border: 1px solid var(--st-rule-soft);
+  border-radius: 11px;
+}
+.bd-stat-label {
+  font: 500 11.5px/1.2 var(--st-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+}
+.bd-stat-value {
+  margin-top: 4px;
+  font: 700 20px/1.2 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+.bd-stat-value.is-late { color: var(--st-accent-text); }
+.bd-stat-value.is-good { color: var(--ks3-ok-text); }
+.bd-stat-sub {
+  margin-top: 2px;
+  font: 400 12.5px/1.3 var(--st-ui);
+  color: var(--st-muted);
+}
+
+/* ── the empty state (Not started / In progress with no answers yet) ──── */
+.bd-empty {
+  padding: 26px 18px;
+  text-align: center;
+  background: var(--st-ground);
+  border: 1px dashed var(--st-rule-strong);
+  border-radius: 11px;
+  font: 400 15.5px/1.45 var(--st-ui);
+  color: var(--st-muted);
+}
+
+/* ── topic groups ─────────────────────────────────────────────────────── */
+.bd-topic + .bd-topic {
+  margin-top: 4px;
+  padding-top: 18px;
+  border-top: 1px solid var(--st-rule-soft);
+}
+.bd-topic-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.bd-topic-name {
+  font: 700 15.5px/1.3 var(--st-ui);
+  color: var(--st-ink);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.bd-topic-tally {
+  flex: none;
+  font: 500 12px/1.2 var(--st-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+}
+
+.bd-qlist {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── one question ─────────────────────────────────────────────────────── */
+.bd-q {
+  min-width: 0;
+  padding: 14px 14px 14px 44px;
+  position: relative;
+  background: var(--st-paper);
+  border: 1px solid var(--st-rule-soft);
+  border-radius: 11px;
+}
+.bd-q.is-wrong { border-color: var(--st-chip-tint-border); }
+.bd-q.is-right { border-color: var(--ks3-ok); }
+
+/* The tick / cross mark. SHAPE differs by state, not only colour — see the
+   file header and teacher_rulings.py's cellStyle for the rule this repeats. */
+.bd-q-mark {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+.bd-q-mark svg { display: block; width: 100%; height: 100%; }
+.bd-q-mark.is-right { color: var(--ks3-ok-text); }
+.bd-q-mark.is-wrong { color: var(--st-accent-text); }
+.bd-q-mark.is-unscored { color: var(--st-caption); }
+
+.bd-q-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.bd-q-num {
+  font: 500 12px/1.2 var(--st-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+}
+.bd-q-meta {
+  flex: none;
+  font: 400 12.5px/1.3 var(--st-ui);
+  color: var(--st-muted);
+  text-align: right;
+}
+
+.bd-q-stem {
+  margin-top: 8px;
+  font: 500 16px/1.45 var(--st-ui);
+  color: var(--st-ink);
+  overflow-wrap: anywhere;
+}
+
+/* The figure card. A plain frame — the drawing itself is Design's own
+   manifest markup via window.MRBFigures; this only frames and captions it,
+   the same treatment the assignment page gives the same figures. */
+.bd-q-fig {
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--st-ground);
+  border: 1px solid var(--st-rule-soft);
+  border-radius: 10px;
+  max-width: 320px;
+}
+.bd-q-fig svg, .bd-q-fig img { display: block; width: 100%; height: auto; }
+
+.bd-q-answers {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.bd-q-answer {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+  font: 400 14.5px/1.4 var(--st-ui);
+}
+.bd-q-answer-label {
+  flex: none;
+  width: 92px;
+  font: 500 11.5px/1.3 var(--st-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--st-caption);
+  padding-top: 1px;
+}
+.bd-q-answer-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--st-body);
+}
+.bd-q-answer.is-pupil-wrong .bd-q-answer-text { color: var(--st-accent-text); font-weight: 600; }
+.bd-q-answer.is-pupil-right .bd-q-answer-text { color: var(--ks3-ok-text); font-weight: 600; }
+.bd-q-answer.is-missing .bd-q-answer-text { color: var(--st-muted); font-style: italic; }
+
+.bd-q-foot {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.bd-q-tag {
+  font: 500 11.5px/1.3 var(--st-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: 999px;
+}
+.bd-q-tag.is-classflag {
+  color: var(--st-accent-text);
+  background: var(--st-chip-tint);
+  border: 1px solid var(--st-chip-tint-border);
+}
+
+/* ── the follow-up action ─────────────────────────────────────────────── */
+.bd-followup-row {
+  display: flex;
+  justify-content: flex-end;
+}
+.bd-followup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  font: 600 14.5px/1 var(--st-ui);
+  color: var(--st-paper);
+  background: var(--st-accent-text);
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+}
+.bd-followup:hover { background: var(--st-accent-hover); }
+.bd-followup[hidden] { display: none; }
+
+/* ── the toast ────────────────────────────────────────────────────────── */
+.bd-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  z-index: 70;
+  max-width: calc(100vw - 32px);
+  padding: 12px 18px;
+  font: 500 15px/1.35 var(--st-ui);
+  color: var(--st-paper);
+  background: var(--st-ink);
+  border-radius: 11px;
+  box-shadow: var(--st-shadow-frame);
+  overflow-wrap: anywhere;
+}
+.bd-toast[hidden] { display: none; }
+
+/* ── 390px ────────────────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .bd-overlay { padding: 0; align-items: stretch; }
+  .bd-sheet {
+    max-height: 100%;
+    height: 100%;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+  .bd-head { border-radius: 0; padding: 12px 14px; }
+  .bd-body { padding: 14px 14px 26px; }
+  .bd-nav-btn { max-width: 96px; padding: 0 8px; }
+  .bd-nav-btn .bd-nav-word { display: none; }
+  .bd-q { padding: 12px 12px 12px 40px; }
+  .bd-q-mark { left: 12px; top: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-overlay, .bd-sheet, .bd-toast { animation: none !important; transition: none !important; }
+}

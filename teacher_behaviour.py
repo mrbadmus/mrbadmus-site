@@ -436,15 +436,28 @@ _DRIVE_JS = r"""
      and after every press. Pressing the sheet's controls here as well would
      mean two gates red for one defect. */
   function sheet() { return document.querySelector('[data-sw="overlay"]'); }
+  /* ⊕ Mide's item 9, 24 Sep 2026 — the Answer Breakdown panel is a SECOND
+     sibling of `host`, for the identical reason the Set-work sheet is one:
+     see `shared/breakdown.js`'s own header. Same instrument as `sheet()`
+     immediately above, because the failure it prevents is the same one:
+     measured against `host` alone, pressing "Breakdown" opens a full-height
+     panel on `document.body` and this probe would read no text, no node
+     count and no re-render change — a live control reported dead. */
+  function breakdown() { return document.querySelector('[data-bd="overlay"]'); }
   function snap() {
     var sw = sheet();
     var swOpen = !!(sw && !sw.hidden);
+    var bd = breakdown();
+    var bdOpen = !!(bd && !bd.hidden);
     return {
-      text: (host.innerText || '') + (swOpen ? '\n' + (sw.innerText || '') : ''),
+      text: (host.innerText || '') +
+            (swOpen ? '\n' + (sw.innerText || '') : '') +
+            (bdOpen ? '\n' + (bd.innerText || '') : ''),
       renders: host.getAttribute('data-mrb-renders'),
       misses: host.getAttribute('data-mrb-misses'),
       nodes: host.querySelectorAll('*').length +
-             (swOpen ? sw.querySelectorAll('*').length + 1 : 0),
+             (swOpen ? sw.querySelectorAll('*').length + 1 : 0) +
+             (bdOpen ? bd.querySelectorAll('*').length + 1 : 0),
       /* ⊕ MRB-335 — THE SHEET'S OWN `data-mrb-renders`. Four buttons open
          one sheet, so the second one pressed in a sweep re-opens a sheet
          that is already on screen, for a different class, before the new
@@ -457,7 +470,16 @@ _DRIVE_JS = r"""
       sw: sw ? ((sw.hidden ? '0' : '1') + ':' +
                 (sw.getAttribute('data-sw-opens') || '') + ':' +
                 (sw.getAttribute('data-sw-step') || '') + ':' +
-                (sw.getAttribute('data-sw-class') || '')) : ''
+                (sw.getAttribute('data-sw-class') || '')) : '',
+      /* Same reasoning as `sw` above, for the same failure: the sweep
+         presses "Breakdown" once per history row it finds, and the second
+         press in a sweep re-opens a panel already on screen, for a
+         different pupil, before the new data has landed — one frame with
+         an identical DOM. `data-bd-opens` and `data-bd-student` are what
+         `shared/breakdown.js`'s `render()` stamps onto its own overlay. */
+      bd: bd ? ((bd.hidden ? '0' : '1') + ':' +
+                (bd.getAttribute('data-bd-opens') || '') + ':' +
+                (bd.getAttribute('data-bd-student') || '')) : ''
     };
   }
 
@@ -611,6 +633,7 @@ _DRIVE_JS = r"""
                 after.renders !== before.renders ||
                 after.nodes !== before.nodes ||
                 after.sw !== before.sw ||
+                after.bd !== before.bd ||
                 navs.length > navsBefore;
     if (!moved) {
       dead.push({i: idx, label: label, tag: c.tagName.toLowerCase()});
@@ -717,8 +740,22 @@ _DRIVE_JS = r"""
     /* WHERE the press said it was going, not just that it moved. A control
        whose whole job is to navigate proves nothing by re-rendering. */
     if (navs.length > aNavs) { addedNav[want] = navs[navs.length - 1]; }
+    /* ⊕ Mide's item 9, 24 Sep 2026 — `.sw`/`.bd` JOIN THE COMPARISON HERE
+       TOO, and this was a real gap rather than a defensive addition.
+       `breakdown-open` is the FIRST `AMENDED_ADDITIONS` entry whose effect
+       lives outside `host` (`shared/breakdown.js`'s overlay, on
+       `document.body` — same reason `shared/set-work.js`'s is), and this
+       loop presses every registered addition a SECOND time — the generic
+       ordinal sweep above already pressed it once, since it also lives
+       inside `host`. The second press re-opened the SAME error state (no
+       Supabase session on a fixture) with byte-identical `.text` and
+       `.nodes`, so this comparison alone reported a control that plainly
+       works as dead. `openSetWork` never hit this path — it is not
+       registered in `AMENDED_ADDITIONS` at all — so the gap had never been
+       exercised before. */
     if (aAfter.text === aBefore.text && aAfter.renders === aBefore.renders &&
-        aAfter.nodes === aBefore.nodes && navs.length === aNavs) {
+        aAfter.nodes === aBefore.nodes && aAfter.sw === aBefore.sw &&
+        aAfter.bd === aBefore.bd && navs.length === aNavs) {
       addedDead.push({i: want, label: aLabel,
                       tag: el.tagName.toLowerCase()});
     }
