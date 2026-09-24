@@ -681,27 +681,28 @@ QUESTIONS = [
     {
         "id": "p10-05-h10",
         "band": "harder",
-        "text": "On a motor diagram the two force arrows are drawn the same "
-                "length as each other whatever the current is. Why?",
+        "text": "The diagram shows a motor coil, seen end-on, between the "
+                "poles of a magnet. The arrows show the force on each side "
+                "of the coil. What do these two forces do to the coil?",
         "options": [
-            {"text": "Because the arrows are decorative and their length "
-                     "means nothing",
+            {"text": "Nothing: they are equal and opposite, so they cancel",
              "correct": False,
-             "why": "Arrow length is meaningful; the point is that these two "
-                    "forces really are equal."},
-            {"text": "Because the same current runs through both sides in the "
-                     "same field",
+             "why": "They are equal and opposite, but they act on opposite "
+                    "sides of the axle, one pushing down and one pushing up. "
+                    "Together they turn the coil."},
+            {"text": "They turn it anticlockwise about the axle",
              "correct": True},
-            {"text": "Because one side is always stronger and the diagram "
-                     "simplifies it",
+            {"text": "They turn it clockwise about the axle",
              "correct": False,
-             "why": "Neither side is stronger; the equality is real rather "
-                    "than a simplification."},
-            {"text": "Because the split ring makes them equal", "correct": False,
-             "why": "The split ring reverses the current; it does not balance "
-                    "two forces."},
+             "why": "The left side is pushed down and the right side is "
+                    "pushed up. Follow those two sides round: that is "
+                    "anticlockwise."},
+            {"text": "They push the whole coil towards the S pole",
+             "correct": False,
+             "why": "Both forces act up and down, across the field lines. "
+                    "Neither points along the field towards S."},
         ],
-        "figure": None,
+        "figure": "p10-motor-arrows-marked",
     },
 
     # ── MRB-338 night-3 top-up · easier ──────────────────────────────────

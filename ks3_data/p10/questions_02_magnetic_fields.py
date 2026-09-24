@@ -679,24 +679,25 @@ QUESTIONS = [
     {
         "id": "p10-02-h08",
         "band": "harder",
-        "text": "A student's map shows a line leaving the north pole and "
-                "stopping in mid-air. What is wrong?",
-        "options": [            {"text": "The line should carry on round and enter the south "
-                     "pole",
+        "text": "A student drew this field map of a bar magnet. What is "
+                "wrong with line X?",
+        "options": [
+            {"text": "Line X should carry on round and enter the south pole",
              "correct": True},
-            {"text": "Lines should always be straight", "correct": False,
-             "why": "They curve almost everywhere round a bar magnet, and "
-                    "that is correct."},
-            {"text": "The line should have gone into the north pole instead",
+            {"text": "Field lines should always be drawn as straight lines",
              "correct": False,
-             "why": "Outside a magnet the lines leave the north; entering it "
-                    "would reverse the whole map."},
-            {"text": "Nothing is wrong — lines stop where the field runs out",
+             "why": "They curve almost everywhere round a bar magnet, as the "
+                    "other lines in the drawing do, and that is correct."},
+            {"text": "Line X should have gone into the north pole instead",
              "correct": False,
-             "why": "The field fades but never stops abruptly, so a line "
-                    "ending in space is a drawing error."},
+             "why": "Outside a magnet the lines leave the north pole; a line "
+                    "entering it there would reverse the whole map."},
+            {"text": "Nothing is wrong: lines stop where the field runs out",
+             "correct": False,
+             "why": "The field fades further away but never stops abruptly, "
+                    "so a line ending in empty space is a drawing error."},
         ],
-        "figure": None,
+        "figure": "p10-bar-field-line-upper",
     },
     {
         "id": "p10-02-h09",
@@ -1015,26 +1016,25 @@ QUESTIONS = [
     {
         "id": "p10-02-e23",
         "band": "easier",
-        "text": "A student's field map shows the lines evenly spaced everywhere, "
-                "with no extra crowding near either pole. What is wrong with this "
-                "map?",
+        "text": "The drawing shows the magnetic field around a bar magnet. "
+                "At which point is the magnetic field strongest?",
         "options": [
-            {"text": "The lines should all be drawn the same length instead of "
-                     "spaced evenly, since it is length that shows the strength", "correct": False,
-             "why": "Length is not the issue being tested here — spacing is, and "
-                    "even spacing fails to show where the field is stronger."},
-            {"text": "There should be no lines drawn near the poles, since the "
-                     "field is too strong to draw there", "correct": False,
-             "why": "The poles are exactly where the most lines should appear, "
-                    "crowded together, not where lines are left out."},
-            {"text": "Nothing — even spacing is the correct way to draw any "
-                     "field map, since a field fills its whole region evenly", "correct": False,
-             "why": "Even spacing hides exactly the information a field map is "
-                    "meant to show: that the field is stronger near the poles."},
-            {"text": "The lines should crowd together near the poles, where the "
-             "field is strongest", "correct": True},
+            {"text": "Point A",
+             "correct": False,
+             "why": "A is well away from both poles, where the field lines "
+                    "are spread far apart."},
+            {"text": "Point B",
+             "correct": False,
+             "why": "B is beyond the N end but a long way from it, where the "
+                    "lines have spread out."},
+            {"text": "Point C",
+             "correct": False,
+             "why": "C is a long way from the S pole, where the field lines "
+                    "are spread far apart."},
+            {"text": "Point D",
+             "correct": True},
         ],
-        "figure": None,
+        "figure": "p10-bar-field-points-abcd",
     },
     {
         "id": "p10-02-e24",
@@ -1058,25 +1058,29 @@ QUESTIONS = [
     {
         "id": "p10-02-e25",
         "band": "easier",
-        "text": "A field map has been drawn with arrows but no crowding anywhere, "
-                "so it is impossible to tell where the field is strongest. What "
-                "single change would fix this?",
+        "text": "A student drew this field map of a bar magnet. From it, you "
+                "cannot tell where the field is strongest. What single "
+                "change would fix this?",
         "options": [
-            {"text": "Adding colour to the strongest-looking lines", "correct": False,
-             "why": "Colour is not part of the convention at all. Spacing is what "
-                    "carries the information about strength."},
+            {"text": "Adding colour to the strongest-looking lines",
+             "correct": False,
+             "why": "Colour is not part of the convention at all. Spacing is "
+                    "what carries the information about strength."},
             {"text": "Spacing the lines closer together near the poles and "
-                     "further apart elsewhere", "correct": True},
-            {"text": "Making the arrowheads bigger near the poles", "correct": False,
+                     "further apart elsewhere",
+             "correct": True},
+            {"text": "Making the arrowheads bigger near the poles",
+             "correct": False,
              "why": "Arrowhead size is not the convention used for strength. "
                     "Spacing between the lines is."},
             {"text": "Drawing extra lines at the very centre of the magnet, "
-                     "where the field builds up", "correct": False,
-             "why": "The centre of the magnet is not where the field outside is "
-                    "strongest — the poles are, and that is where the lines should "
-                    "crowd."},
+                     "where the field builds up",
+             "correct": False,
+             "why": "The centre of the magnet is not where the field outside "
+                    "is strongest — the poles are, and that is where the "
+                    "lines should crowd."},
         ],
-        "figure": None,
+        "figure": "p10-bar-field-even",
     },
     {
         "id": "p10-02-e26",
@@ -1298,33 +1302,34 @@ QUESTIONS = [
     {
         "id": "p10-02-s16",
         "band": "standard",
-        "text": "A horseshoe magnet's field between its two jaws is drawn as almost "
-                "parallel, evenly-spaced lines. Why do scientists value a region of "
-                "field shaped like this?",
+        "text": "The diagram shows the magnetic field in the gap between the "
+                "poles of a horseshoe magnet. Why is a region of field like "
+                "this one useful in experiments?",
         "options": [
-            {"text": "Because the field is nearly the same strength and direction "
-             "everywhere in that region, which makes results there easier to "
-             "predict", "correct": True},
-            {"text": "Because parallel lines mean the field there is zero, "
-                     "which is safer to work in, in the same way a neutral "
-                     "point is drawn with lines curving away from a bare patch", "correct": False,
-             "why": "Parallel, evenly-spaced lines mean a strong, steady field, "
-                    "not a zero one — a genuinely zero field would show as a bare, "
-                    "uncrossed gap instead."},
-            {"text": "Because a horseshoe shape is the only shape that can be "
-                     "magnetised at all, since bending a bar round is what "
-                     "locks the magnetism into it", "correct": False,
-             "why": "Bar magnets and every other shape can be magnetised too. The "
-                    "horseshoe shape is chosen for the useful field pattern it "
-                    "gives between its jaws."},
-            {"text": "Because it is the only shape of field that can be "
-                     "detected with a plotting compass, since a curved field "
-                     "turns the needle too far", "correct": False,
-             "why": "A compass detects any field shape perfectly well. What makes "
-                    "this one useful is that it is nearly the SAME everywhere in "
-                    "that region."},
+            {"text": "The field is nearly the same strength and direction "
+                     "all through it, so results there are easier to predict",
+             "correct": True},
+            {"text": "The field there is zero, so it is a safe place to "
+                     "work, like the bare patch at a neutral point",
+             "correct": False,
+             "why": "Evenly spaced parallel lines mean a strong, steady "
+                    "field, not a zero one. A zero field shows as a bare "
+                    "patch with lines curving away from it."},
+            {"text": "A horseshoe is the only shape that can be magnetised, "
+                     "because bending the bar locks the magnetism in",
+             "correct": False,
+             "why": "Bar magnets and many other shapes can be magnetised "
+                    "too. The horseshoe shape is chosen for the field it "
+                    "gives in its gap."},
+            {"text": "It is the only kind of field a plotting compass can "
+                     "detect, because a curved field turns the needle too "
+                     "far",
+             "correct": False,
+             "why": "A compass detects a field of any shape. What makes this "
+                    "one useful is that it is nearly the same everywhere in "
+                    "the gap."},
         ],
-        "figure": None,
+        "figure": "p10-horseshoe-field-gap",
     },
     {
         "id": "p10-02-s17",
@@ -1457,27 +1462,33 @@ QUESTIONS = [
     {
         "id": "p10-02-s22",
         "band": "standard",
-        "text": "Two field maps of the same bar magnet are drawn by two different "
-                "students: one with 10 lines, one with 50 lines. Do the two maps "
-                "disagree about the SHAPE of the field?",
+        "text": "Two students drew these field maps of the same bar magnet. "
+                "Do Drawing A and Drawing B disagree about the SHAPE of the "
+                "field?",
         "options": [
-            {"text": "It cannot be answered without measuring the magnet's strength "
-             "first", "correct": False,
-             "why": "The magnet's strength is not needed to answer this — the two "
-                    "maps of the SAME magnet describe the same shape regardless."},
+            {"text": "It cannot be answered without measuring the magnet's "
+                     "strength first",
+             "correct": False,
+             "why": "The magnet's strength is not needed to answer this — "
+                    "the two maps of the SAME magnet describe the same shape "
+                    "regardless."},
             {"text": "Yes — more lines means a different and more detailed "
-                     "shape, with extra curves that the sparser map misses out", "correct": False,
-             "why": "Extra lines add detail to the picture but do not change the "
-                    "underlying shape being represented — both maps describe the "
-                    "same field."},
-            {"text": "No — both maps show the same underlying shape, just sampled "
-             "with a different number of lines", "correct": True},
-            {"text": "Yes — the map with fewer lines is simply wrong", "correct": False,
-             "why": "A map with fewer lines is not wrong. Choosing how many lines "
-                    "to draw is a decision about how densely to sample, not a "
-                    "source of error."},
+                     "shape, with extra curves that the sparser map misses "
+                     "out",
+             "correct": False,
+             "why": "Extra lines add detail to the picture but do not change "
+                    "the underlying shape being represented — both maps "
+                    "describe the same field."},
+            {"text": "No — both maps show the same underlying shape, just "
+                     "sampled with a different number of lines",
+             "correct": True},
+            {"text": "Yes — the map with fewer lines is simply wrong",
+             "correct": False,
+             "why": "A map with fewer lines is not wrong. Choosing how many "
+                    "lines to draw is a decision about how densely to "
+                    "sample, not a source of error."},
         ],
-        "figure": None,
+        "figure": "p10-bar-field-two-drawings-b",
     },
     {
         "id": "p10-02-s23",
@@ -1727,34 +1738,33 @@ QUESTIONS = [
     {
         "id": "p10-02-h13",
         "band": "harder",
-        "text": "A field map is drawn showing a magnetic field line that starts on "
-                "the north pole and simply fades away into nothing, without "
-                "reaching the south pole. An examiner marks this map as "
-                "scientifically wrong. Explain the reasoning.",
+        "text": "The diagram shows a student's drawing of the magnetic field "
+                "around a bar magnet. The field line labelled X has been "
+                "drawn wrongly. Why is it wrong?",
         "options": [
-            {"text": "The examiner is being too strict — a line can "
-                     "legitimately fade away like this, since the field does "
-                     "run out of strength eventually", "correct": False,
-             "why": "A field never simply fades to nothing in open space around a "
-                    "magnet. Every line genuinely closes into a loop, so the "
-                    "examiner's mark is correct."},
-            {"text": "Every magnetic field line must close into a loop, running back "
-             "to the south pole and through the magnet; one that fades away "
-             "breaks that rule", "correct": True},
-            {"text": "The line should have started at the south pole instead of "
-                     "the north pole, since outside a magnet the lines run from "
-                     "south to north", "correct": False,
-             "why": "Starting at the north pole and running towards the south is "
-                    "correct. The actual fault is that the line was drawn stopping "
-                    "in mid-air rather than reaching the south pole."},
-            {"text": "Field lines are always straight, so a fading, curving "
-                     "line is automatically wrong, exactly as the rule taught "
-                     "for two flat parallel plates shows", "correct": False,
-             "why": "Curved lines are completely normal around a bar magnet. The "
-                    "real problem is that this one never reaches the south pole at "
-                    "all."},
+            {"text": "It is not wrong: a field line can stop where the field "
+                     "becomes too weak to measure",
+             "correct": False,
+             "why": "The field gets weaker further away, but a field line "
+                    "never just stops. Every line carries on round to the "
+                    "south pole."},
+            {"text": "Every field line must carry on round to the south "
+                     "pole, making a closed loop",
+             "correct": True},
+            {"text": "It should start at the south pole, because outside a "
+                     "magnet field lines run from south to north",
+             "correct": False,
+             "why": "Outside a magnet, field lines run from the north pole "
+                    "to the south pole, so starting at N is right. The fault "
+                    "is that X stops in mid-air."},
+            {"text": "It is curved, and field lines around a bar magnet must "
+                     "always be straight",
+             "correct": False,
+             "why": "The other lines in the drawing are curved too, and that "
+                    "is correct for a bar magnet. The fault is that X stops "
+                    "before reaching the south pole."},
         ],
-        "figure": None,
+        "figure": "p10-bar-field-line-x",
     },
     {
         "id": "p10-02-h14",
@@ -1814,32 +1824,33 @@ QUESTIONS = [
     {
         "id": "p10-02-h16",
         "band": "harder",
-        "text": "A field map correctly shows crowding near the poles of a bar "
-                "magnet. A second, completely separate map of the SAME magnet is "
-                "drawn with twice as many lines throughout, still correctly crowded "
-                "near the poles in the same proportion. Do the two maps disagree "
-                "about anything physical?",
+        "text": "Drawings A and B both show the magnetic field around the "
+                "same bar magnet. Do the two drawings disagree about "
+                "anything physical?",
         "options": [
-            {"text": "No — both represent the identical underlying field; only the "
-             "density of sampling differs between them", "correct": True},
-            {"text": "Yes — the map with more lines shows a physically stronger "
-             "magnet", "correct": False,
-             "why": "Drawing more lines is a choice about how densely to sample "
-                    "the SAME field. It does not mean the magnet itself is any "
+            {"text": "No: both show the same field, and B simply samples it "
+                     "with more lines",
+             "correct": True},
+            {"text": "Yes: B shows a stronger magnet, because it has more "
+                     "lines",
+             "correct": False,
+             "why": "How many lines to draw is the drawer's choice. More "
+                    "lines around the same magnet do not make it any "
                     "stronger."},
-            {"text": "Yes — doubling the lines doubles the actual number of field "
-             "lines that physically exist, the same way doubling the marks "
-             "on a ruler would double the actual length being measured", "correct": False,
-             "why": "Field lines are not physical objects with a fixed real count "
-                    "to double. They are a drawing convention chosen by whoever is "
-                    "mapping the field."},
-            {"text": "It cannot be decided without also doubling the strength "
-                     "of the real magnet, so that the extra lines have "
-                     "something to show", "correct": False,
-             "why": "Nothing about the real magnet needs to change for two "
-                    "differently-sampled maps of it to both be correct."},
+            {"text": "Yes: B shows that more field lines really exist around "
+                     "the magnet",
+             "correct": False,
+             "why": "Field lines are not objects with a real number to "
+                    "count. They are a way of drawing the field, and the "
+                    "number drawn is a choice."},
+            {"text": "It cannot be decided without measuring the real "
+                     "magnet's strength",
+             "correct": False,
+             "why": "Nothing about the real magnet needs to be measured. "
+                    "Both drawings crowd their lines at the poles in the "
+                    "same way, so both describe the same field."},
         ],
-        "figure": None,
+        "figure": "p10-bar-field-two-drawings",
     },
     {
         "id": "p10-02-h17",
@@ -1969,34 +1980,37 @@ QUESTIONS = [
     {
         "id": "p10-02-h21",
         "band": "harder",
-        "text": "A student draws a field map showing lines that are evenly spaced "
-                "everywhere but bent into random wavy shapes for artistic effect, "
-                "with the crowding and general direction still scientifically "
-                "correct. Is this map scientifically acceptable?",
+        "text": "A student drew this field map of a bar magnet, adding the "
+                "wiggles to make it look more artistic. Is the map "
+                "scientifically acceptable?",
         "options": [
-            {"text": "No — because wavy lines mean the field is changing over "
-                     "time, and this drawing is of a magnet whose field is "
-                     "perfectly steady", "correct": False,
-             "why": "Wavy, inaccurate lines are simply a drawing error here, not a "
-                    "sign of a field that changes with time — this is a static bar "
-                    "magnet's field."},
-            {"text": "No — the exact PATH each line takes between readings should "
-             "follow the field's own smooth curve, not an arbitrary wavy "
-             "shape chosen for effect", "correct": True},
-            {"text": "Yes — as long as the crowding and the general direction "
-                     "of the lines are right, the exact path each line takes "
-                     "can be drawn however the artist likes", "correct": False,
+            {"text": "No — because wavy lines mean the field is changing "
+                     "over time, and this drawing is of a magnet whose field "
+                     "is perfectly steady",
+             "correct": False,
+             "why": "Wavy, inaccurate lines are simply a drawing error here, "
+                    "not a sign of a field that changes with time — this is "
+                    "a static bar magnet's field."},
+            {"text": "No — the exact PATH each line takes between readings "
+                     "should follow the field's own smooth curve, not an "
+                     "arbitrary wavy shape chosen for effect",
+             "correct": True},
+            {"text": "Yes — as long as the crowding and the general "
+                     "direction of the lines are right, the exact path each "
+                     "line takes can be drawn however the artist likes",
+             "correct": False,
              "why": "The path a line takes is not free to choose — it should "
-                    "follow the smooth curve the compass readings actually trace "
-                    "out, not an arbitrary wavy shape."},
+                    "follow the smooth curve the compass readings actually "
+                    "trace out, not an arbitrary wavy shape."},
             {"text": "Yes, provided the map is clearly labelled as artistic "
                      "rather than scientific, which frees it from the usual "
-                     "plotting rules", "correct": False,
-             "why": "A label does not fix the underlying problem — the path drawn "
-                    "should genuinely reflect the readings taken, whatever the map "
-                    "is called."},
+                     "plotting rules",
+             "correct": False,
+             "why": "A label does not fix the underlying problem — the path "
+                    "drawn should genuinely reflect the readings taken, "
+                    "whatever the map is called."},
         ],
-        "figure": None,
+        "figure": "p10-bar-field-wavy",
     },
     {
         "id": "p10-02-h22",
@@ -2120,61 +2134,62 @@ QUESTIONS = [
     {
         "id": "p10-02-h26",
         "band": "harder",
-        "text": "A field map shows a bar magnet's lines all correctly leaving the "
-                "north pole and entering the south pole outside the metal. A "
-                "student then adds extra lines INSIDE the drawn outline of the "
-                "magnet, running from north to south, the same direction as "
-                "outside. Is this addition correct?",
+        "text": "A student drew this field map of a bar magnet, including "
+                "the two lines inside the magnet. Are the lines inside the "
+                "magnet drawn correctly?",
         "options": [
-            {"text": "Yes, provided the lines inside are drawn shorter than the ones "
-             "outside", "correct": False,
-             "why": "Length of the lines is not the issue — the direction drawn "
-                    "inside the magnet is the wrong way round, whatever length is "
-                    "used."},
-            {"text": "It cannot be judged without knowing exactly how strong the "
-             "magnet is", "correct": False,
-             "why": "Strength does not decide which way the lines run inside a "
-                    "magnet. Every magnet's internal lines run from south to "
-                    "north, regardless of strength."},
-            {"text": "No — inside the magnet the lines run the OTHER way, from "
-                     "south back to north, to close the loop", "correct": True},
+            {"text": "Yes, provided the lines inside are drawn shorter than "
+                     "the ones outside",
+             "correct": False,
+             "why": "Length of the lines is not the issue — the direction "
+                    "drawn inside the magnet is the wrong way round, "
+                    "whatever length is used."},
+            {"text": "It cannot be judged without knowing exactly how strong "
+                     "the magnet is",
+             "correct": False,
+             "why": "Strength does not decide which way the lines run inside "
+                    "a magnet. Every magnet's internal lines run from south "
+                    "to north, regardless of strength."},
+            {"text": "No — inside the magnet the lines run the OTHER way, "
+                     "from south back to north, to close the loop",
+             "correct": True},
             {"text": "Yes — the direction inside a magnet is the same as the "
-                     "direction just outside, since a line cannot turn round", "correct": False,
-             "why": "The direction reverses inside the magnet: lines run from "
-                    "south back to north there, which is what closes each line "
-                    "into a loop."},
+                     "direction just outside, since a line cannot turn round",
+             "correct": False,
+             "why": "The direction reverses inside the magnet: lines run "
+                    "from south back to north there, which is what closes "
+                    "each line into a loop."},
         ],
-        "figure": None,
+        "figure": "p10-bar-field-inside",
     },
     {
         "id": "p10-02-h27",
         "band": "harder",
-        "text": "A single bar magnet's field is mapped at two points the same "
-                "distance from its centre: point X level with a pole, and point Y "
-                "level with the middle of the magnet's side. Explain which point "
-                "reads stronger, and why.",
+        "text": "Points X and Y are the same distance from the centre of the "
+                "bar magnet. At which point is the magnetic field stronger, "
+                "and why?",
         "options": [
-            {"text": "Point Y reads stronger, because the middle of a magnet is "
-             "always its most powerful part", "correct": False,
-             "why": "The middle of a bar magnet's LENGTH is actually where the "
-                    "field outside is weakest, not strongest — the poles are where "
-                    "it concentrates."},
-            {"text": "Both points read exactly the same, since the two of them "
-                     "sit at the same distance from the magnet's own centre as "
-                     "each other", "correct": False,
-             "why": "Distance from the centre alone does not decide strength here "
-                    "— being level with a pole puts a point far closer to where "
-                    "the field actually concentrates."},
-            {"text": "Neither point gives a meaningful reading without also knowing "
-             "the magnet's total length", "correct": False,
-             "why": "The comparison between the two points can be made directly "
-                    "from their position relative to the poles, without needing "
-                    "the magnet's exact length."},
-            {"text": "Point X reads stronger, because it sits much closer to the "
-             "concentrated field right at a pole than point Y does to "
-             "anything", "correct": True},
+            {"text": "Y, because the middle of a magnet is its most powerful "
+                     "part",
+             "correct": False,
+             "why": "Outside a bar magnet the field is weakest beside the "
+                    "middle and strongest at the poles, where the field "
+                    "lines crowd together."},
+            {"text": "Neither: two points the same distance from the centre "
+                     "have the same field",
+             "correct": False,
+             "why": "Distance from the centre does not decide it. X is much "
+                    "closer to a pole, where the field is concentrated."},
+            {"text": "It cannot be decided without knowing the magnet's "
+                     "length",
+             "correct": False,
+             "why": "The drawing is enough. The field lines are much closer "
+                    "together near X than near Y."},
+            {"text": "X, because it is much closer to a pole, where the "
+                     "field lines crowd together",
+             "correct": True},
         ],
-        "figure": None,
+        "figure": "p10-bar-field-points-xy",
     },
     {
         "id": "p10-02-h28",
