@@ -1706,6 +1706,16 @@ STYLE_EDIT = {
     205: [("color:var(--st-rule-strong)", "color:var(--st-caption)")],
 }
 
+# ⊕ Stream D, 24 Sep 2026 (experience run, item 3) — the ONE eyebrow style
+# the class screen's four glance cards share. See the BIND_ATTR entries on
+# nodes 225/240/255/267 below for which node had which value before this and
+# why they share it. ⊕ Commander, 25 Sep 2026: Mide's instruction (item 3)
+# was literal — the three labels take the style AND COLOUR of "Keep an eye
+# on", which is `--st-accent-text`; stream D had matched the other three
+# instead. Ruled the product owner's way.
+_EYEBROW = ("font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+            "text-transform:uppercase;color:var(--st-accent-text)")
+
 BIND_ATTR = {
     # ── ⊕ MRB-336 §5/§6 · THE ASSIGNMENTS TABLE GROWS AN ACTIONS COLUMN ──
     #
@@ -1914,6 +1924,80 @@ BIND_ATTR = {
     # `build_teacher_port.py` refuses any build in which `c.meta` reappears.
     # Anyone restoring the eyebrow has to restore this row with it — that
     # refusal is what will tell them.
+
+    # ── ⊕ Stream D, 24 Sep 2026 (experience run, item 2) · THE RETEACH ──
+    # CARD'S TITLE STOPS BEING A HEADLINE WHEN THERE IS NOTHING TO SHOW.
+    #
+    # Node 241 is `{{ glance.lastTitle }}` at Design's own
+    # `font:600 21px/1.3 var(--st-ui);color:var(--st-ink)` — real-paper-title
+    # weight, unconditionally. The `renderVals` ruling on `lastTitle`
+    # (LOGIC) now also computes `glance.lastTitleStyle`, string-equal to
+    # Design's own value when there is a paper to reteach from, and equal to
+    # node 266's own quiet register ("No one flagged — the class is keeping
+    # up.") when there is not — same card family, two cards along, so this
+    # is that register applied to its neighbour rather than a new one.
+    241: ("style",
+          "margin-top:10px;font:600 21px/1.3 var(--st-ui);color:var(--st-ink);"
+          "text-wrap:pretty",
+          {"parts": [{"e": "glance.lastTitleStyle"}]},
+          "the reteach card's title/empty-state line — swapped for a "
+          "computed style so the empty state (\"Nothing to reteach yet\") "
+          "renders in the quiet caption register, not the headline one."),
+
+    # ── ⊕ Stream D, 24 Sep 2026 (experience run, item 3) · THE FOUR GLANCE ──
+    # CARD EYEBROWS ARE ONE RULE.
+    #
+    # ⛔ THE ACTUAL DIFFERENCE, FOUND BY READING DESIGN'S OWN FILE (not the
+    # port): of the four glance-card eyebrows — "This week's homework · due
+    # …" (225), "Reteach from the last set" (240), "Keep an eye on" (255),
+    # "Worth a shoutout" (267) — three are `color:var(--st-caption)`, the
+    # neutral grey the design system's own token comment names for exactly
+    # this class of element ("captions, eyebrows, mono labels — 4.51:1 on
+    # ground"). "Keep an eye on" alone is `color:var(--st-accent-text)`, the
+    # rust orange the same token file calls out as "the only orange for
+    # small text" — Design's own delivery draws it that way; this is not a
+    # port-introduced defect. Confirmed with a real build and
+    # `getComputedStyle` on `class-detail-fixture.html` at 1280 and 390.
+    #
+    # ⚠️ DECISION (recorded per the run brief, "make the sensible call"):
+    # the three-out-of-four win, matched to the design system's own
+    # documented purpose for `--st-caption`, not the reverse. These four
+    # cards sit side by side as PEERS on the class screen — none of them is
+    # more urgent than another, and painting one eyebrow in the brand's one
+    # small-text orange reads as an alarm on an ordinary section header,
+    # which is exactly the false-urgency failure mode this run's item 12
+    # names for the engagement chart. `_EYEBROW` is the single declaration
+    # all four now bind to, so a future drift on any one of them is a
+    # BIND_ATTR refusal rather than a silent re-divergence.
+    225: ("style",
+          "font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+          "text-transform:uppercase;color:var(--st-caption)",
+          _EYEBROW,
+          "the homework card's eyebrow — asserted onto the shared "
+          "declaration, unchanged in appearance."),
+    240: ("style",
+          "font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+          "text-transform:uppercase;color:var(--st-caption)",
+          _EYEBROW,
+          "the reteach card's eyebrow — asserted onto the shared "
+          "declaration, unchanged in appearance."),
+    255: ("style",
+          "font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+          "text-transform:uppercase;color:var(--st-accent-text)",
+          _EYEBROW,
+          "\"Keep an eye on\"'s eyebrow — the one that actually differs in "
+          "Design's own file, recoloured onto the shared declaration so all "
+          "four glance cards read as peers."),
+    267: ("style",
+          "margin-top:14px;padding-top:14px;border-top:1px solid "
+          "var(--st-rule-fact);font:500 13px/1.2 var(--st-mono);"
+          "letter-spacing:.16em;text-transform:uppercase;"
+          "color:var(--st-caption)",
+          "margin-top:14px;padding-top:14px;border-top:1px solid "
+          "var(--st-rule-fact);" + _EYEBROW,
+          "the shoutout card's eyebrow — the divider above it is its own "
+          "and stays; only the shared font/colour declaration is asserted "
+          "here. Unchanged in appearance."),
 }
 
 
@@ -3793,8 +3877,12 @@ INSERT_AT = {
             {"t": "div",
              "a": {"class": "noprint", "style": _WK_BAR},
              "c": [
+                 # ⊕ Stream D, 24 Sep 2026 (experience run, item 10) — bound
+                 # to `weekCaption` (LOGIC, anchored on `rosterWeekCol`) so
+                 # the bar's own heading says the viewed week's term once,
+                 # now that every chip below it has stopped saying it.
                  {"t": "span", "a": {"style": _WK_CAPTION},
-                  "c": [{"t": "#", "v": "Week"}]},
+                  "c": [{"t": "#", "v": {"parts": [{"e": "weekCaption"}]}}]},
                  _wk_chevron("weekBack", "Previous week", "M9 3L5 7l4 4",
                              "weekBackColor", "weekBackCursor", "week-back"),
                  {"t": "div",
@@ -4680,6 +4768,61 @@ INSERT_AT = {
         "the class screen's way into that class's seating plan. The page "
         "existed and nothing linked to it, so the only route in was a "
         "hand-typed URL carrying a uuid."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 12) · THE ENGAGEMENT ══
+    # CHART'S OWN TOGGLE, ABOVE THE CARD
+    #
+    # Node 534 is the chart card; its children are 535 (the header row,
+    # `{{ chart.title }}` + `{{ chart.scopeLabel }}`) then 538
+    # (`{{ chart.note }}`). Inserted as a new child of 534, just before 538,
+    # this sits between the header and the note, on Charts, both scopes,
+    # and only when `chart.hasBucketTabs` — true on the engagement chart
+    # alone (see LOGIC's `hasLegend` ruling), so every other chart kind on
+    # this screen is unaffected.
+    #
+    # ⚠️ THE TOGGLE IS THE LEGEND. `chart.bucketTabs` (LOGIC, the
+    # `kind === 'engagement'` ruling) carries one entry per bucket with its
+    # OWN dot colour, label and `on` state, in the same order the bars and
+    # the single-class columns use it — so this control cannot drift out of
+    # step with what it is a legend for; both read the one array.
+    (534, 538): ({
+        "t": "if", "e": "chart.hasBucketTabs",
+        "c": [{
+            "t": "div", "a": {
+                "class": "noprint",
+                "style": "display:flex;flex-wrap:wrap;gap:8px;"
+                         "margin-top:14px",
+                "data-mrb-added": "engagement-bucket-tabs"},
+            "c": [{
+                "t": "for", "e": "chart.bucketTabs", "as": "bt",
+                "c": [{
+                    "t": "button",
+                    "a": {"type": "button",
+                          "data-mrb-added": "engagement-bucket",
+                          "aria-pressed": {"parts": [{"e": "bt.on"}]},
+                          "style": {"parts": [
+                              "display:flex;align-items:center;gap:7px;"
+                              "padding:7px 13px;border-radius:999px;"
+                              "cursor:pointer;font:600 15px/1.2 var(--st-ui);"
+                              "color:", {"e": "bt.fg"}, ";background:",
+                              {"e": "bt.bg"}, ";border:1px solid ",
+                              {"e": "bt.bd"}]}},
+                    "hov": "background:var(--st-note-bg)",
+                    "on": "bt.pick",
+                    "c": [
+                        {"t": "span",
+                         "a": {"style": {"parts": [
+                             "width:9px;height:9px;border-radius:50%;"
+                             "background:", {"e": "bt.dot"}]}},
+                         "c": []},
+                        {"t": "#", "v": {"parts": [{"e": "bt.label"}]}}
+                    ]}]
+            }]}]},
+        "the engagement chart's own toggle (Today / This week / 2+ weeks). "
+        "One control, both scopes: `chartFor`'s `all` and single-class "
+        "branches both return the same `bucketTabs`, computed from the "
+        "same three-colour map, so the toggle and whatever it is a legend "
+        "for cannot say two different things."),
 }
 
 
@@ -5964,7 +6107,11 @@ LOGIC = (
     digestScope: MRB_Q('class') ? 'class' : 'all', recipient: '',
     chartKind: 'submissions', chartScope: MRB_Q('class') || 'all',
     insFrom: 'today', digestFrom: 'today',
-    yearsOpen: false
+    yearsOpen: false,
+    // ⊕ Stream D, 24 Sep 2026 (experience run, item 12) — the engagement
+    // chart's own toggle (Today / This week / 2+ weeks), surviving a
+    // redraw the same way `chartKind`/`chartScope` do.
+    engBucket: 'today'
   };""",
      "the state initialiser. See the block comment above. "
      "⊕ MRB-335, 7 Sep 2026 — THE TWELVE SET-WORK KEYS ARE OFF AGAIN, and "
@@ -6822,8 +6969,8 @@ LOGIC = (
         { label: 'Mean score', value: Math.round(liveClasses.reduce((a, c) => a + (this.meanOf(c) || 0), 0) / liveClasses.length) + '%', sub: 'Mean of ' + liveClasses.length + ' class means' },""",
      """      digestTiles: isClassReport ? [
         { label: 'Submissions', value: MRB_WEEK_IN(k), sub: 'This week' },
-        { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + kMx.markedIdx.length + (kMx.markedIdx.length === 1 ? ' marked assignment' : ' marked assignments') },
-        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_ONTIME_SUB(kMx.markedOnTime, kMx.markedLate, kMx.markedLateUnknown, 'marked') },
+        { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + kMx.markedIdx.length + (kMx.markedIdx.length === 1 ? ' assignment with results' : ' assignments with results') },
+        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_ONTIME_SUB(kMx.markedOnTime, kMx.markedLate, kMx.markedLateUnknown, 'with results') },
         { label: 'Needs a look', value: String(kFlagged), sub: kFlagged ? 'Nothing in this week, and behind' : 'Everyone accounted for' }
       ] : [
         { label: 'Submissions', value: String(totalSubs), sub: 'Across ' + liveClasses.length + (liveClasses.length === 1 ? ' active class' : ' active classes') },
@@ -6880,7 +7027,14 @@ LOGIC = (
      "arrangement that stops agreeing the day one of them is edited, and "
      "\"57\" over rows that sum to something else is unfalsifiable by any "
      "gate we have. `dgFlagged` sums the rows, so the tile is now a total "
-     "OF the table rather than a second opinion about it."),
+     "OF the table rather than a second opinion about it.\n"
+     "\n"
+     "        ⊕ Stream D, 25 Sep 2026 (wording pass): \"marked "
+     "assignment(s)\" → \"assignment(s) with results\", and "
+     "`MRB_ONTIME_SUB`'s noun `'marked'` → `'with results'` (reads "
+     "\"N late of M with results\") — matches DEFINITIONS #7's target "
+     "copy for the student page's own \"Of M set this term\", applied "
+     "here to the class report's twin tile."),
 
     # ── the class report's On-time column: a percentage, like every other ──
     ("        ontime: p.when === 'upcoming' ? '—' : "
@@ -6967,22 +7121,31 @@ LOGIC = (
         const cohort = Math.round(raw.reduce((a, r) => a + r.mean, 0) / (raw.length || 1));""",
      """      if (all) {
         const raw = live.map(c => ({ code: c.code, ks: c.ks, mean: mx(c).classMean || 0 }));
-        if (!raw.length) { return { ...base, title: 'Class means, marked work', note: 'No class has marked work yet' }; }
+        if (!raw.length) { return { ...base, title: 'Class means, work with results', note: 'No class has work with results yet' }; }
         const cohort = Math.round(raw.reduce((a, r) => a + r.mean, 0) / (raw.length || 1));""",
      "`means / all` reads `sorted[0]` and `sorted[sorted.length - 1]` "
      "immediately afterwards. With no live classes both are `undefined` and "
-     "the chart throws, taking the whole page with it."),
+     "the chart throws, taking the whole page with it. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): title and note reworded off \"marked "
+     "work\" — stream A's redefinition means a class can have results "
+     "(released work) that is still open, and \"marked\" no longer implies "
+     "the deadline has passed."),
 
     ("""      const means = ps.map(p => m.colMean[p.idx]);
       const best = ps[means.indexOf(Math.max.apply(null, means))];
       const worst = ps[means.indexOf(Math.min.apply(null, means))];""",
      """      const means = ps.map(p => m.colMean[p.idx]);
-      if (!ps.length) { return { ...base, title: k.code + ' — mean by assignment', note: 'Nothing marked yet' }; }
+      if (!ps.length) { return { ...base, title: k.code + ' — mean by assignment', note: 'Nothing to chart yet' }; }
       const best = ps[means.indexOf(Math.max.apply(null, means))];
       const worst = ps[means.indexOf(Math.min.apply(null, means))];""",
      "`means / class`. `Math.max.apply(null, [])` is `-Infinity`, "
      "`indexOf(-Infinity)` is `-1`, and `ps[-1].idx` throws. A class with no "
-     "marked work is not an edge case — it is every class in September."),
+     "marked work is not an edge case — it is every class in September. "
+     "⊕ Stream D, 24 Sep 2026 (experience run, item 2): the note reworded "
+     "from \"Nothing marked yet\" — \"marked\" no longer means \"deadline "
+     "passed\" (stream A), and a note on an empty CHART should say there is "
+     "nothing to chart, not describe a marking state that does not apply "
+     "here."),
 
     ("""        const rows = live.map(c => {
           const g = this.gridFor(c, 1);
@@ -7000,12 +7163,15 @@ LOGIC = (
           const st = g.stems[qi] || { id: '—', text: '' };
           return { label: c.code, sub: st.id + ' · ' + st.text, value: min + '%', pct: min, fill: min < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)', qi, stem: st, qkey: st.question_ref || st.text || '' };
         }).filter(r => r);
-        if (!rows.length) { return { ...base, title: 'Weakest question per class, last marked set', note: 'No class has a marked paper yet' }; }""",
+        if (!rows.length) { return { ...base, title: 'Weakest question per class, last set', note: 'No class has a set yet' }; }""",
      "`questions / all`. FOUR defects in five lines: `gridFor(c, 1)` assumes "
      "paper 1 is the newest marked one; the grid can be `null` (not "
      "prefetched); `qpct` can hold nulls, and `Math.min` over `[null]` is 0 "
      "so an unmarked paper became a 0% weakest question; and `STEMS[-1]` "
-     "throws when `indexOf` misses."),
+     "throws when `indexOf` misses. ⊕ Stream D, 25 Sep 2026 (wording "
+     "pass): \"last marked set\"/\"a marked paper\" → \"last set\"/"
+     "\"a set\", matching the reteach card's own \"last set\" (no "
+     "\"marked\") elsewhere on this dashboard."),
 
     ("""      const g = this.gridFor(k, 1);
       const p = this.papersFor(k)[1];
@@ -7022,7 +7188,7 @@ LOGIC = (
       const p = gi < 0 ? null : this.papersFor(k)[gi];
       const scored = g ? g.qpct.filter(v => v != null) : [];
       if (!g || !p || !scored.length) {
-        return { ...base, type: 'cols', title: k.code + ' — question difficulty', note: g ? 'Nothing on this paper was machine-marked' : 'No marked paper yet' };
+        return { ...base, type: 'cols', title: k.code + ' — question difficulty', note: g ? 'Nothing on this paper was machine-marked' : 'No set yet' };
       }
       const min = Math.min.apply(null, scored);
       const max = Math.max.apply(null, scored);
@@ -7060,8 +7226,8 @@ LOGIC = (
           (keys.length === 1 || tally[keys[0]] > tally[keys[1]]);
         const worst = rows.slice().sort((a, b) => a.pct - b.pct)[0];
         const under50 = rows.filter(r => r.pct < 50).length;
-        return { ...base, title: 'Weakest question per class, last marked set', rows,
-          tiles: [tile('Classes', rows.length, rows.length === 1 ? 'With a marked paper' : 'With marked work'),
+        return { ...base, title: 'Weakest question per class, last set', rows,
+          tiles: [tile('Classes', rows.length, rows.length === 1 ? 'With a set' : 'With results'),
             tile('Lowest', worst.label + ' · ' + worst.value, worst.sub),
             uniqueTop
               ? tile('Most common', top.id, top.text)
@@ -7070,7 +7236,7 @@ LOGIC = (
           note: uniqueTop
             ? top.text + ' is the weakest question in ' + tally[keys[0]] + ' of ' + rows.length + ' classes'
             : (rows.length < 2
-               ? 'One class has a marked paper — nothing to compare it with yet'
+               ? 'One class has a set — nothing to compare it with yet'
                : 'No single common gap — ' + keys.length + ' different questions come last, and ' + under50 + (under50 === 1 ? ' class falls' : ' classes fall') + ' below 50% on theirs') };""",
      "⛔ THIS ONE KILLED THE PAGE, AND IT WAS SHIPPING. `STEMS` is DELETED "
      "by `DROP_FIELDS` — eight invented question stems held as a class "
@@ -7100,7 +7266,13 @@ LOGIC = (
      "        `rows.length > 1` is the third correction. With one class the "
      "top of the tally is unanimous by construction, and \"X is the weakest "
      "question in 1 of 1 classes\" has the shape of a finding and none of "
-     "the content. One class is the whole school today."),
+     "the content. One class is the whole school today.\n"
+     "\n"
+     "        ⊕ Stream D, 25 Sep 2026 (wording pass): \"last marked set\" "
+     "→ \"last set\", \"a marked paper\"/\"marked work\" → "
+     "\"a set\"/\"results\", \"a marked paper\" in the note → \"a "
+     "set\" — stream A's redefinition of `when` means these no longer "
+     "describe closed work only."),
 
     ("""      const rows = live.map(c => {
         const m = mx(c);
@@ -7280,9 +7452,9 @@ LOGIC = (
     ("""      const bands = this.BANDS.map(b => ({ label: b.label, n: avgs.filter(v => v >= b.lo && v <= b.hi).length, lo: b.lo }));""",
      """      if (!avgs.length) {
         return { ...base, title: (all ? 'Score spread, all classes' : k.code + ' — score spread'),
-          note: all ? 'No student has marked work yet'
+          note: all ? 'No student has results yet'
                     : (k.state === 'empty' ? 'No students on the roster yet'
-                                           : 'Nothing marked for this class yet') };
+                                           : 'No results for this class yet') };
       }
       const bands = this.BANDS.map(b => ({ label: b.label, n: avgs.filter(v => v >= b.lo && v <= b.hi).length, lo: b.lo }));""",
      "`spread`, both scopes. With no marked work anywhere the chart drew "
@@ -7291,14 +7463,18 @@ LOGIC = (
      "axis with no series, which reads as a measurement of a school where "
      "nobody scores anything rather than a school that has not marked "
      "anything. Photographed on `insights-nolive` and `insights-noroster`; "
-     "reachable on 68 of the working year's 69 classes."),
+     "reachable on 68 of the working year's 69 classes. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): notes reworded off \"marked work\" — "
+     "stream A's redefinition means an open-but-released paper now "
+     "contributes results too, so \"marked\" no longer describes only "
+     "closed work."),
 
     # ── on time: an empty legend under an empty chart ───────────────────
     ("""      const on = src.reduce((a, x) => a + x.on, 0);
       const tot = src.reduce((a, x) => a + x.tot, 0);""",
      """      if (!src.length) {
-        return { ...base, title: (all ? 'On time vs late, marked work' : k.code + ' — on time by assignment'),
-          note: all ? 'No class has marked work yet' : 'Nothing marked for this class yet' };
+        return { ...base, title: (all ? 'On time vs late, work with results' : k.code + ' — on time by assignment'),
+          note: all ? 'No class has work with results yet' : 'No results for this class yet' };
       }
       const on = src.reduce((a, x) => a + x.on, 0);
       const tot = src.reduce((a, x) => a + x.tot, 0);""",
@@ -7377,8 +7553,8 @@ LOGIC = (
           tile('Highest', sorted[0].code + ' · ' + sorted[0].mean + '%', ''),
           tile('Lowest', sorted[sorted.length - 1].code + ' · ' + sorted[sorted.length - 1].mean + '%', '')
         ], note: below + ' of ' + raw.length + ' classes sit below the ' + cohort + '% cohort mean',""",
-     """        return { ...base, title: 'Class means, marked work', tiles: (raw.length < 2 ? [
-          tile('Class mean', cohort + '%', sorted[0].code + ' — the only class with marked work')
+     """        return { ...base, title: 'Class means, work with results', tiles: (raw.length < 2 ? [
+          tile('Class mean', cohort + '%', sorted[0].code + ' — the only class with results')
         ] : [
           tile('Cohort mean', cohort + '%', 'Mean of ' + raw.length + ' class means'),
           tile('Highest', sorted[0].code + ' · ' + sorted[0].mean + '%', ''),
@@ -7391,7 +7567,9 @@ LOGIC = (
      "mean, over the caption \"0 of 1 classes sit below the 63% cohort "
      "mean\". Photographed on `insights-single`. Four tiles, one number, "
      "and the word \"cohort\" doing all the lying: a mean of one class is "
-     "that class."),
+     "that class. ⊕ Stream D, 25 Sep 2026 (wording pass): title and tile "
+     "reworded off \"marked work\"/\"marked work\", same reason as the "
+     "sibling ruling two above."),
 
     ("""        tiles: [tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
           tile('Strongest', Math.max.apply(null, means) + '%', best.title),
@@ -7399,13 +7577,13 @@ LOGIC = (
           tile('Open work', 'Excluded', 'Not marked yet')],
         note: 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
      """        tiles: (ps.length < 2 ? [
-          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one marked assignment'),
-          tile('Open work', 'Excluded', 'Not marked yet')
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one assignment with results'),
+          tile('Open work', 'Excluded', 'Not released yet')
         ] : [
-          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' assignments with results'),
           tile('Strongest', Math.max.apply(null, means) + '%', best.title),
           tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
-          tile('Open work', 'Excluded', 'Not marked yet')
+          tile('Open work', 'Excluded', 'Not released yet')
         ]),
         note: ps.length < 2 ? '' : 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
      "`means / class` WITH ONE MARKED PAPER. `best` and `worst` are the "
@@ -7413,7 +7591,14 @@ LOGIC = (
      "transfers** beside **Weakest 63% · Energy stores and transfers**, and "
      "the caption named it the weakest set of one. \"Across 1 marked "
      "assignments\" was the unguarded plural in the same row. One class, one "
-     "marked paper is the entirety of the working year's data."),
+     "marked paper is the entirety of the working year's data. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass, stream A's `when==='marked'` redefinition "
+     "— results are now live from release, not from the deadline): "
+     "\"marked assignment(s)\" → \"assignment(s) with results\", and "
+     "\"Not marked yet\" (labelling the OPEN work this chart excludes) "
+     "→ \"Not released yet\", since an open-but-released paper is now "
+     "included in `ps` and would misleadingly read as excluded-because-"
+     "unmarked."),
 
     # ── the sub-heading's plurals ───────────────────────────────────────
     ("""      insSub: chartScope === 'all'
@@ -8694,8 +8879,10 @@ componentDidUpdate() {
      "        { label: 'On time',\n"
      "          value: dgOnPct == null ? '—' : dgOnPct + '%',\n"
      "          sub: MRB_ONTIME_SUB(dgOnTime, dgLate, dgUnknown,\n"
-     "                              'marked submissions') },",
-     "the digest's On-time tile, over the corrected counts."),
+     "                              'submissions with results') },",
+     "the digest's On-time tile, over the corrected counts. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): noun \"marked submissions\" → "
+     "\"submissions with results\"."),
 
     ("""        stacks: src.map(x => {
           const pct = x.tot ? Math.round((x.on / x.tot) * 100) : 0;
@@ -8727,13 +8914,18 @@ componentDidUpdate() {
      "        tiles: [tile('On time', tot ? Math.round((on / tot) * 100) + "
      "'%' : '—',\n"
      "                     tot ? 'Of ' + tot + ' with a recorded deadline'\n"
-     "                         : 'No marked submission has a recorded "
+     "                         : 'No submission has a recorded "
      "deadline'),\n"
      "                tile('Late', tot ? tot - on : '—', 'Still "
-     "marked'),\n"
+     "with results'),\n"
      "                tile('Open work', 'Excluded', 'Not due yet')],",
      "the on-time chart's own tiles. `0%` of `0 marked submissions` when "
-     "nothing is known, and a Late count of 0 beside it."),
+     "nothing is known, and a Late count of 0 beside it. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): \"marked\" dropped from both empty-state "
+     "captions — `tot` counts submissions with a KNOWN `is_late`, a "
+     "data-completeness fact unrelated to stream A's `when` redefinition, "
+     "and the word was doing no work once the chart's own title already "
+     "says \"work with results\"."),
 
     ("        note: worst ? 'Weakest: ' + worst.label + ' at ' + (worst.tot ? "
      "Math.round((worst.on / worst.tot) * 100) : 0) + '% on time' : '' };",
@@ -9603,10 +9795,26 @@ componentDidUpdate() {
     # ("No work set in this week"), so this is that pattern applied to its
     # neighbour rather than a new one.
     (dict(method="renderVals", key="lastTitle"),
-     """      lastTitle: lastP ? lastP.title : 'Nothing marked yet',""",
+     """      lastTitle: lastP ? lastP.title : 'Nothing to reteach yet',
+      lastTitleStyle: lastP
+        ? 'margin-top:10px;font:600 21px/1.3 var(--st-ui);color:var(--st-ink);text-wrap:pretty'
+        : 'margin-top:10px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)',""",
      "the reteach card's empty state. A class whose closed papers nobody sat "
      "has nothing to reteach FROM, and must say so rather than render a "
-     "dash. Part of #13."),
+     "dash. Part of #13. ⊕ Stream D, 24 Sep 2026 (experience run, item 2): "
+     "reworded \"Nothing marked yet\" (ambiguous now \"marked\" means "
+     "\"released\", not \"deadline passed\" — stream A) to \"Nothing to "
+     "reteach yet\", and the empty state STOPS RENDERING IN THE CARD'S "
+     "HEADLINE STYLE. Node 241 is Design's own `font:600 21px … "
+     "color:var(--st-ink)` — the same weight and size as a real paper "
+     "title — so an empty class read as a headline claim rather than an "
+     "absence, exactly the failure mode `openTitle`'s sentence three lines "
+     "above was written to avoid for its own card. The quiet state borrows "
+     "node 266's own style byte for byte ('No one flagged — the class is "
+     "keeping up.', the identical register two cards along), keeping only "
+     "node 241's `margin-top:10px` so the empty line sits where the title "
+     "always sits. `glance.lastTitleStyle` is bound onto node 241 by "
+     "BIND_ATTR."),
 
     # ⊕ RULED, MRB-326 post-review, 6 Sep 2026 — "CLASS MEAN" IS SAID ONCE
     # ON THIS SCREEN, AND THE HEADER SAYS IT.
@@ -9632,7 +9840,7 @@ componentDidUpdate() {
     # recommendation rests on — the exact defect the `lastP` correction
     # above was written to prevent.
     (dict(method="renderVals", key="lastLine"),
-     """      lastLine: lastP ? 'Marked \u00B7 ' + lastP.sub + ' submitted' : '',""",
+     """      lastLine: lastP ? lastP.sub + ' submitted' : '',""",
      "the reteach card's subtitle, with \"class mean X\" cut. The class "
      "header's stat line four inches above states the class mean already, "
      "and the card's own two bars carry the per-question detail this "
@@ -9974,10 +10182,15 @@ componentDidUpdate() {
     # eleven chips, because in her fiction the ranges alone identified the
     # weeks. Dated from a real academic year they do not — "5–9 Oct" says
     # nothing about which teaching week it is — so the line reads "This
-    # week" on the current chip and the term-relative label ("Autumn Week 6")
-    # on every other, in Design's own uppercase mono at her own size. The
+    # week" on the current chip and a within-year week number ("Week 6") on
+    # every other, in Design's own uppercase mono at her own size. The
     # conditional is gone rather than left always-true: a dead `if` is a
-    # control that cannot be told from a broken one.
+    # control that cannot be told from a broken one. ⊕ 24 Sep 2026
+    # (experience run, item 10): this used to say "the term-relative label
+    # ('Autumn Week 6')" — twelve chips backwards through a bar each said
+    # the term, which is the term said twelve times to say one thing.
+    # `label` is plain "Week N" now; the term is said once, in the bar's own
+    # heading (`weekCaption`, below `rosterWeekCol`).
     #
     # ⚠️ THE TERM LABEL IS AN APPROXIMATION AND THE SEAM SAYS SO. There is no
     # `terms` table — checked, not assumed — so the term comes from the
@@ -10555,6 +10768,95 @@ componentDidUpdate() {
      "picker off a class with nobody on it, and the handler that opens it "
      "on the roster this screen has already read."),
 
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 7) · THE PUPIL'S OWN ══
+    # "SEND SHOUTOUT" OPENS ON AN EMPTY COMPOSER
+    #
+    # ⛔ `openBulk` IS ONE HANDLER, USED FROM THREE BUTTONS. Design draws
+    # `onClick="{{ openBulk }}"` on the class screen's header action
+    # ("Shoutouts"), on the "Worth a shoutout" card's own "Send a shoutout"
+    # link, and — the one this ruling is for — on the student screen's "Send
+    # shoutout" button, next to "Send a reminder". All three call the SAME
+    # `this.setState({ modal: 'bulk' })`, so a teacher who opens the composer
+    # FROM a child's own page gets the identical empty picker as a teacher
+    # who opens it from the class header, and has to find that child again
+    # by name in a fifty-four-row list they were just looking straight at.
+    #
+    # ⚠️ NOT `st` ALONE. `const st = this.student()` runs unconditionally at
+    # the top of `renderVals`, and the ported `student()` method (see
+    # `METHODS["student"]` above) returns `null` rather than Design's own
+    # `rows[0]` fallback when `state.studentId` is unset — which on the LIVE
+    # pages is exactly "unset except on `student-detail.html`", because
+    # `teacher-live.js` fills `studentId` from `?student=` and that query
+    # param exists only in that page's own URL. But the SHARED populated
+    # fixture (`fixture_payload` / `design_data` in build_teacher_port.py)
+    # sets a `studentId` default on every page's data, class screen included
+    # — a pre-existing fixture-generation artifact, harmless while nothing
+    # read `studentId` off the class screen, and it is what this ruling
+    # would otherwise start reading. Checked: `class-detail-fixture.html`
+    # carries `studentId: "8rsc1-12"` and `this.student()` resolves it to a
+    # real roster row there too.
+    #
+    # So the guard is the PAGE, not the presence of a student: `s.screen`
+    # is the one thing that is genuinely per-page even in the fixtures — the
+    # build's own `page_logic` step (`build_teacher_port.py`) substitutes it
+    # from the literal token `'MRB_SCREEN'` into each of the six pages'
+    # shipped copies of this same logic class, so `s.screen === 'student'`
+    # is `true` on `student-detail.html` and only there, fixture or live.
+    #
+    # ⚠️ ANCHORED AFTER THE `pickStudent` RULING ABOVE, ON PURPOSE. Both
+    # correct the SAME property (`openBulk`); this one uses a `method`/`key`
+    # anchor rather than a literal span so it finds the line by NAME rather
+    # than by the text `pickStudent` just finished rewriting around it —
+    # `resolve_anchor` narrows to the property's own one-line span (it ends
+    # at its own trailing comma), so the two newly-appended `hasRoster` /
+    # `pickStudent` lines below it are untouched.
+    (dict(method="renderVals", key="openBulk"),
+     "      openBulk: () => this.setState({ modal: 'bulk', "
+     "boSel: (s.screen === 'student' && st) ? [st.id] : [] }),",
+     "the shoutout composer's opener, on all three buttons that share it. "
+     "Opened from a pupil's own page, that pupil is pre-selected in "
+     "`boSel`; opened from the class header or from the \"Worth a "
+     "shoutout\" card, `s.screen` is `'class'` there and the composer opens "
+     "empty, exactly as before. The composer itself is untouched — a preselected "
+     "id in `boSel` is a normal selection, and `sendBulk` / the roster "
+     "checklist already read it as one; a teacher can still add or remove "
+     "names."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 8, UI half) · ══════
+    # "SELECT ALL ON TIME THIS WEEK" SELECTED THE WRONG SET
+    #
+    # ⛔ THE BUTTON'S OWN LABEL AND ITS HANDLER DISAGREED. Design's
+    # `bulkTop` — the shoutout composer's "Select all on time this week"
+    # link — filters the roster on `r.inWeek` alone: HANDED IN this week,
+    # on time or not. A child who submitted late is `inWeek: true` (stream
+    # A's own definition #5/#6 — a cell exists once a submission is
+    # complete, and lateness is a separate fact about that cell), so the
+    # button was really "select all in this week" wearing the label of a
+    # narrower, punctuality-scoped one.
+    #
+    # ⚠️ `r.onTimeWeek` IS STREAM A'S FIELD, NOT COUNTED HERE. This ruling
+    # consumes it (`!!r.onTimeWeek` — has a cell with `late === false` on an
+    # in-week paper) and adds no counting logic of its own: whether a
+    # submission IS on time is stream A's definitions, in `buildRoster`;
+    # this is only which roster rows the button offers to a teacher who has
+    # already pressed it. If `onTimeWeek` is not yet on the roster row at
+    # whatever commit this lands on, `!!undefined` is `false` and the button
+    # selects nobody rather than mis-selecting on the OLD, wrong-by-label
+    # `inWeek` test — a silent selection of the wrong children is the worse
+    # failure of the two, on a button that is about to send a message.
+    #
+    # The composer's own count ("N selected · …") is `s.boSel.length`,
+    # recomputed on every render — pressing this button changes `boSel` and
+    # the count updates with it, with no separate ruling needed.
+    ("      bulkTop: () => this.setState({ boSel: kRoster.filter(r => "
+     "r.inWeek).map(r => r.id) }),",
+     "      bulkTop: () => this.setState({ boSel: kRoster.filter(r => "
+     "!!r.onTimeWeek).map(r => r.id) }),",
+     "\"Select all on time this week\" — selecting on `inWeek` (submitted "
+     "this week, late or not) rather than on-time-ness, which is what the "
+     "button's own label promises. `r.onTimeWeek` is stream A's field "
+     "(MRB-336 definitions #5/#6); this ruling only reads it."),
+
     # ══ ⊕ MRB-322 · A HANDLER DESIGN HAS NO COUNTERPART FOR ═════════════
     #
     # Every other row in this tuple REWRITES something Design drew. This one
@@ -10825,12 +11127,14 @@ componentDidUpdate() {
     # of those two facts and all four are corrected here, from the one seam,
     # so they cannot answer differently.
     #
-    # ⚠️ "MARKED" BECOMES "CLOSED" ON THE PILL, AND NOWHERE ELSE. The pill
-    # names what a CHILD can do with the work — not yet, now, no longer —
-    # and "Marked" was never that claim: `when === 'marked'` is a deadline
-    # test that consults no mark at all, so a paper nobody sat and nobody
-    # marked wore the word. The reteach card's "Marked · 14 submitted" is a
-    # different sentence about a different thing and keeps Design's word.
+    # ⚠️ "MARKED" BECOMES "CLOSED" ON THE PILL, AND NOWHERE ELSE (this row
+    # was written before stream A's 24 Sep 2026 redefinition of `when` and
+    # is kept for the pill's own history; the reteach card's "Marked ·
+    # 14 submitted" it names is GONE — see the wording pass below). The
+    # pill names what a CHILD can do with the work — not yet, now, no
+    # longer — and "Marked" was never that claim: `when === 'marked'` was
+    # (and, renamed, still is) a test that consults no mark at all, so a
+    # paper nobody sat and nobody marked wore the word.
     #
     # ⚠️ SCHEDULED TAKES THE MUTED TOKEN, NOT A NEW ONE. `--st-muted` on
     # `--st-num-well` inside `--st-rule` — every value already in the sheet.
@@ -11022,6 +11326,154 @@ componentDidUpdate() {
      "table's answer; this page IS the row, and a deleted assignment's "
      "marking screen is a page about nothing. It goes back to the class it "
      "belonged to, which is where the teacher can see that it has gone."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 10) · THE TERM NAME ══
+    # SAYS ITSELF ONCE, ON THE DIGEST HEADER — NOT ON EVERY WEEK
+    #
+    # The per-week fixes below (the class screen's week-bar chips, and
+    # `buildWeeks`'s own `label` in `shared/teacher-live.js`) drop "Autumn"/
+    # "Spring"/"Summer" from every chip so a teacher stops reading the term
+    # name twelve times going backwards through a bar. That leaves the term
+    # unsaid ANYWHERE on the overview digest, which Mide's own instruction
+    # for this run does not ask for — only for it to be said ONCE, where
+    # useful, and the digest's own header (title + this line under it) is
+    # exactly that: a fact about WHEN this digest is, stated once, the same
+    # register `classesEyebrow` already uses for "Autumn term · 2026–27" on
+    # the classes screen.
+    #
+    # ⚠️ THE CLASS-REPORT BRANCH IS UNTOUCHED HERE, and its own "this term"
+    # wording is already gone — the "\"this term\" is a claim the list
+    # cannot support" ruling above (`kPapers.length === 1 ? ' assignment' :
+    # ' assignments'`) removed it earlier in this same LOGIC list, which is
+    # also why this ruling's anchor is the text AFTER that one has already
+    # run, not Design's original. Appending a term name to the overview
+    # branch only (below) does not reopen that one.
+    ("      digestSub: isClassReport\n"
+     "        ? k.n + ' students · ' + kPapers.length + "
+     "(kPapers.length === 1 ? ' assignment' : ' assignments')\n"
+     "        : this.CLASSES.length + ' classes · ' + totalStudents + "
+     "' students · ' + totalSubs + ' submissions',",
+     "      digestSub: isClassReport\n"
+     "        ? k.n + ' students · ' + kPapers.length + "
+     "(kPapers.length === 1 ? ' assignment' : ' assignments')\n"
+     "        : this.CLASSES.length + ' classes · ' + totalStudents + "
+     "' students · ' + totalSubs + ' submissions'\n"
+     "          + (MRB_DATA('termLabel') ? ' · ' + "
+     "MRB_DATA('termLabel') : ''),",
+     "the overview digest's own header line — the one place on this run's "
+     "list this run ADDS the term, rather than removes it. `termLabel` "
+     "('Autumn term · 2026–27') is the same string `classesEyebrow` already "
+     "states once on the classes screen; read here from `MRB_DATA` rather "
+     "than recomputed, so the two cannot disagree about which term it is."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 10) · AND THE WEEK ══
+    # BAR'S OWN HEADING IS THE OTHER PLACE IT IS SAID
+    #
+    # The static "Week" caption beside the class screen's chevrons (Mide's
+    # 1 Sep 2026 week bar, `INSERT_AT[(208, 218)]`) is OUR OWN markup, not
+    # Design's — nothing here is asserting against a Design literal, so the
+    # text node is bound directly to a new key rather than through
+    # `BIND_ATTR`'s replace-and-assert path.
+    #
+    # ⚠️ THE SELECTED WEEK'S OWN TERM, NOT THE BAR'S FIRST CHIP. `wWeek` is
+    # already `kWeeks[wi] || null` — the currently-viewed week, the same one
+    # `rosterWeekCol` reads three lines below in the ruling above — so the
+    # heading names the term of whatever week a teacher has actually
+    # scrolled to, and does not silently disagree with it at a term
+    # boundary the way reading `kWeeks[0]` unconditionally would.
+    ("      rosterWeekCol: wWeek ? (wWeek.now ? 'This week' : wWeek.range) "
+     ": 'This week',",
+     "      rosterWeekCol: wWeek ? (wWeek.now ? 'This week' : wWeek.range) "
+     ": 'This week',\n"
+     "      weekCaption: (wWeek && wWeek.term) "
+     "? 'Week · ' + wWeek.term + ' term' : 'Week',",
+     "the week bar's own heading, the other of this run's two "
+     "\"say it once\" places. Every chip below it drops the term name "
+     "(`buildWeeks`'s `label` in `shared/teacher-live.js`); this is where "
+     "it is still said, once, for the week actually in view."),
+
+    ("if (kind === 'engagement') {\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        const stacks = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          return { label: c.code, sub: c.ks, right: b.today + ' today · ' + b.stale + ' cold',\n            segs: [{ pct: Math.round((b.today / t) * 100), fill: 'var(--ks3-ok)' }, { pct: Math.round((b.week / t) * 100), fill: 'var(--st-hatch-b)' }, { pct: Math.round((b.stale / t) * 100), fill: 'var(--st-rule-strong)' }] };\n        });\n        if (!stacks.length) {\n          return { ...base, title: 'Last seen, by class',\n            note: 'No class has work set yet' };\n        }\n        return { ...base, type: 'stack', title: 'Last seen, by class', stacks,\n          legend: [{ label: 'Today', fill: 'var(--ks3-ok)' }, { label: 'This week', fill: 'var(--st-hatch-b)' }, { label: '2+ weeks', fill: 'var(--st-rule-strong)' }],\n          tiles: [tile('Active today', totals.today, 'Across ' + live.length + (live.length === 1 ? ' class' : ' classes')), tile('This week', totals.week, ''), tile('2+ weeks', totals.stale, 'Worth chasing')],\n          note: totals.stale + ' students have not opened anything for two weeks or more' };\n      }\n      const rows = this.rosterFor(k);\n      if (!rows.length) {\n        return { ...base, title: k.code + ' — last seen',\n          note: 'No students on the roster yet' };\n      }\n      const b = this.bucketsOf(rows);\n      const cold = rows.filter(r => r.hours >= 168).map(r => r.name);\n      return { ...base, type: 'cols', title: k.code + ' — last seen',\n        cols: this.colsFrom([{ label: 'Today', value: String(b.today), raw: b.today }, { label: 'This week', value: String(b.week), raw: b.week }, { label: '2+ weeks', value: String(b.stale), raw: b.stale, flag: b.stale > 0 }]),\n        tiles: [tile('Students', k.n, 'On the roster'), tile('Active today', b.today, ''), tile('2+ weeks', b.stale, cold.length ? 'Worth chasing' : 'None')],\n        note: cold.length ? 'Not seen for two weeks: ' + cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + (cold.length - 3) + ' more' : '') : 'Nobody in this class has been quiet for two weeks or more' };\n    }",
+     'if (kind === \'engagement\') {\n      // ⊕ Stream D, 24 Sep 2026 (experience run, item 12) — ONE\n      // measure at a time, picked by the new toggle, in the SAME three\n      // colours everywhere it is drawn (the toggle\'s own dots, the bars,\n      // the single-class columns). `--st-hatch-b` (a dark red-brown) used\n      // to sit on "This week" — normal activity — while\n      // "2+ weeks" — the bucket actually worth a look — sat on\n      // `--st-rule-strong`, a pale neutral. That is backwards, and it is\n      // why a screenshot of this chart reads as an alarm over nothing.\n      // `--ks3-ok` (green) stays on Today; `--st-accent` (the studio\'s one\n      // "worth a look" orange, never `--danger`) moves to 2+ weeks; This\n      // week takes the neutral tone 2+ weeks used to have.\n      const ENG_BUCKETS = {\n        today: { label: \'Today\', fill: \'var(--ks3-ok)\' },\n        week: { label: \'This week\', fill: \'var(--st-rule-strong)\' },\n        stale: { label: \'2+ weeks\', fill: \'var(--st-accent)\' }\n      };\n      const engBucket = ENG_BUCKETS[this.state.engBucket] ? this.state.engBucket : \'today\';\n      // The toggle IS the legend here — one colour shown at a time, so\n      // a separate legend list under the chart would either repeat this or\n      // contradict it. Same order, same labels, same colours as whatever\n      // is drawn below, because both read off this one object.\n      const bucketTabs = [\'today\', \'week\', \'stale\'].map(bk => ({\n        id: bk, label: ENG_BUCKETS[bk].label, dot: ENG_BUCKETS[bk].fill,\n        on: bk === engBucket,\n        fg: bk === engBucket ? \'var(--st-ink)\' : \'var(--st-caption)\',\n        bg: bk === engBucket ? \'var(--st-num-well)\' : \'transparent\',\n        bd: bk === engBucket ? \'var(--st-btn-border)\' : \'var(--st-rule-soft)\',\n        pick: () => this.setState({ engBucket: bk })\n      }));\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        // ⚠️ EVERY CLASS, THE SAME MEASURE. One bar per class, sized to\n        // that class\'s OWN roster (not the school\'s), all in the one\n        // colour the selected bucket owns — replacing the old\n        // three-segment stacked bar, which mixed all three measures in one\n        // bar and coloured the normal one like a warning.\n        const rows = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          const n = b[engBucket];\n          return { label: c.code, sub: c.ks, value: n + \'/\' + c.n,\n            pct: Math.round((n / t) * 100), fill: ENG_BUCKETS[engBucket].fill };\n        });\n        if (!rows.length) {\n          return { ...base, title: \'Last seen, by class\',\n            note: \'No class has work set yet\' };\n        }\n        const ENG_NOTE = {\n          today: totals.today + (totals.today === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n          week: totals.week + (totals.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n          stale: totals.stale + (totals.stale === 1 ? \' student has\' : \' students have\') + \' not opened anything for two weeks or more\'\n        };\n        return { ...base, type: \'bars\', title: \'Last seen, by class\', rows, bucketTabs,\n          tiles: [tile(\'Active today\', totals.today, \'Across \' + live.length + (live.length === 1 ? \' class\' : \' classes\')), tile(\'This week\', totals.week, \'\'), tile(\'2+ weeks\', totals.stale, \'Worth chasing\')],\n          note: ENG_NOTE[engBucket] };\n      }\n      const rows2 = this.rosterFor(k);\n      if (!rows2.length) {\n        return { ...base, title: k.code + \' — last seen\',\n          note: \'No students on the roster yet\' };\n      }\n      const b2 = this.bucketsOf(rows2);\n      const cold = rows2.filter(r => r.hours >= 168).map(r => r.name);\n      // ⚠️ THE THREE COLUMNS STAY, RECOLOURED, ON PURPOSE. One class\n      // already has all three measures on screen at once and they are\n      // separately labelled — that is not the mixing defect the\n      // "all classes" bar had. What was wrong here was only the colour\n      // (Today defaulted to the same dark red-brown as everything\n      // `colsFrom` does not explicitly flag), fixed by giving all three\n      // their own fill from the same map the toggle uses. The toggle\n      // still presses through to `note`, so it has a real effect on this\n      // scope too rather than existing only for visual symmetry.\n      const ENG_NOTE2 = {\n        today: b2.today + \' of \' + k.n + (k.n === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n        week: b2.week + (b2.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n        stale: cold.length ? \'Not seen for two weeks: \' + cold.slice(0, 3).join(\', \') + (cold.length > 3 ? \' and \' + (cold.length - 3) + \' more\' : \'\') : \'Nobody in this class has been quiet for two weeks or more\'\n      };\n      return { ...base, type: \'cols\', title: k.code + \' — last seen\', bucketTabs,\n        cols: this.colsFrom([\n          { label: \'Today\', value: String(b2.today), raw: b2.today, fill: ENG_BUCKETS.today.fill },\n          { label: \'This week\', value: String(b2.week), raw: b2.week, fill: ENG_BUCKETS.week.fill },\n          { label: \'2+ weeks\', value: String(b2.stale), raw: b2.stale, fill: ENG_BUCKETS.stale.fill }\n        ]),\n        tiles: [tile(\'Students\', k.n, \'On the roster\'), tile(\'Active today\', b2.today, \'\'), tile(\'2+ weeks\', b2.stale, cold.length ? \'Worth chasing\' : \'None\')],\n        note: ENG_NOTE2[engBucket] };\n    }',
+     "Stream D, 24 Sep 2026 (experience run, item 12) — the engagement "
+     "chart, both scopes. Its colour semantics were backwards (This week "
+     "on the dark red-brown, 2+ weeks on the pale neutral) and there was "
+     "no way to see one measure at a time across every class. Now one "
+     "toggle (Today / This week / 2+ weeks), one colour per bucket used "
+     "identically everywhere it is drawn, and never `--danger` for "
+     "ordinary activity. See the block comments."),
+
+    ("const base = { type: 'bars', title: '', note: '', tiles: [], "
+     "rows: [], cols: [], stacks: [], legend: [] };",
+     "const base = { type: 'bars', title: '', note: '', tiles: [], "
+     "rows: [], cols: [], stacks: [], legend: [], bucketTabs: [] };",
+     "the chart shape's default `bucketTabs`. Every OTHER chart kind reads "
+     "`chart.bucketTabs.length` (below) to decide whether to draw the "
+     "engagement toggle at all; without a default here every kind but "
+     "engagement would throw on that read rather than simply showing no "
+     "toggle."),
+
+    (dict(method="renderVals", key="hasLegend"),
+     "        hasLegend: chart.legend.length > 0,\n"
+     "        hasBucketTabs: chart.bucketTabs.length > 0,",
+     "the engagement toggle's own gate, in the same derived-flag register "
+     "as `hasLegend` beside it."),
+
+    # ══ ⊕ Stream D, 25 Sep 2026 (wording pass, stream A's `when` ══════════
+    # REDEFINITION) · THE MARKING SCREEN'S "SUBMITTED" TILE
+    #
+    # `pp.when === 'upcoming' ? 'Still open' : 'Marked automatically'` reads
+    # "Marked automatically" for every paper that is not upcoming — which,
+    # before stream A's 24 Sep 2026 ruling, meant every paper past its
+    # deadline (closed), and the caption was accurate: a closed paper's
+    # submission count cannot change again. Under the redefinition `when`
+    # flips to "marked" the moment a paper is RELEASED, so a paper that is
+    # released and still OPEN — more children can still submit — would have
+    # read "Marked automatically" too, which is now a claim about a count
+    # that is not final.
+    #
+    # ⚠️ `p.closed` IS THE FIELD THAT ACTUALLY MEANS "the deadline has
+    # passed" post-redefinition (DEFINITIONS #2) — `pp.when` no longer
+    # does. This branch is coded against it now; it is not yet present on
+    # this worktree (stream A merges first, per the run brief), so until
+    # that merge `pp.closed` reads `undefined`, the ternary's condition is
+    # falsy, and every paper reads "Still open" — the safe direction
+    # (understating finality) rather than the wrong one (claiming a live
+    # count is final).
+    ("          { label: 'Submitted', value: pp.sub, sub: pp.when === "
+     "'upcoming' ? 'Still open' : 'Marked automatically' },",
+     "          { label: 'Submitted', value: pp.sub, sub: pp.closed ? "
+     "'Marked automatically' : 'Still open' },",
+     "the marking screen's \"Submitted\" tile. \"Marked automatically\" "
+     "now means what it always should have: the deadline has passed and "
+     "the count is final. A released-but-open paper — new under stream "
+     "A's `when` redefinition — correctly reads \"Still open\" instead."),
+
+    # ⊕ Stream D, 25 Sep 2026 (wording pass) — the SECOND "On time vs late,
+    # marked work": the early-return guard's own copy of this title was
+    # fixed above (the "on time: an empty legend" ruling); this is the
+    # SAME title on the chart's actual populated return, which no earlier
+    # ruling touches.
+    ("      return { ...base, type: 'stack', title: (all ? 'On time vs "
+     "late, marked work' : k.code + ' — on time by assignment'),",
+     "      return { ...base, type: 'stack', title: (all ? 'On time vs "
+     "late, work with results' : k.code + ' — on time by assignment'),",
+     "the on-time chart's title on its populated return — Design's "
+     "literal, untouched by any earlier ruling. Same wording-pass reason "
+     "as its own empty-state twin."),
+
+    # ⊕ Stream D, 25 Sep 2026 (wording pass) — the "spread" chart's own
+    # "Students … With marked work" tile, Design's literal, untouched by
+    # any earlier ruling (the empty-state guard above it only handles
+    # `avgs.length === 0`).
+    ("        tiles: [tile('Students', avgs.length, 'With marked work'), "
+     "tile('Below 55%', low, 'Bottom two bands'), tile('70% or above', "
+     "high, 'Top two bands')],",
+     "        tiles: [tile('Students', avgs.length, 'With results'), "
+     "tile('Below 55%', low, 'Bottom two bands'), tile('70% or above', "
+     "high, 'Top two bands')],",
+     "the score-spread chart's \"Students\" tile — \"With marked work\" "
+     "→ \"With results\", same reason as every other tile in this "
+     "pass."),
 
 )
 

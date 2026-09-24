@@ -1416,8 +1416,16 @@
 
      `term` and the within-term number come from `seasonFor`'s own Sep–Dec /
      Jan–Mar / Apr–Aug boundaries applied to each week's OWN Monday, so
-     "Autumn Week 1" is derived from the year's start date and nothing is
-     typed. ⚠️ IT IS AN APPROXIMATION AND IT IS NOT A SMALL ONE: `academic_years`
+     the term is derived from the year's start date and nothing is typed.
+     ⊕ 24 Sep 2026 (experience run, item 10) — `label` no longer CARRIES the
+     term. Twelve chips reading "Autumn Week 1" … "Autumn Week 12" backwards
+     through one bar say the term twelve times to say one thing; `term` is
+     still returned on every week object (below) for the ONE place that
+     still says it — `teacher_rulings.py`'s `weekCaption`, the bar's own
+     heading, for the week actually in view. `label` is now plain
+     "Week N" and `term` is why "N" alone would have been ambiguous at a
+     term boundary, since it restarts from 1 at the start of Spring and
+     Summer. ⚠️ IT IS AN APPROXIMATION AND IT IS NOT A SMALL ONE: `academic_years`
      records a start and an end and NOTHING about half terms, and Easter
      moves, so the count runs straight through the holidays. Half-term weeks
      are counted as teaching weeks because the data cannot say otherwise. A
@@ -1465,9 +1473,12 @@
         idx: i,
         weekOfYear: meta.week,
         term: meta.term,
-        // "Autumn Week 1" — the chip's second line, and the sentence under
-        // the bar. "This week" replaces it on the week a teacher is in.
-        label: meta.term + " Week " + meta.n,
+        // "Week 1" — the chip's second line. "This week" replaces it on the
+        // week a teacher is in. ⊕ 24 Sep 2026 (item 10): no longer prefixed
+        // with the term name — `term` above still carries it, for the ONE
+        // place it is still said (the bar's own heading, in
+        // teacher_rulings.py's `weekCaption`).
+        label: "Week " + meta.n,
         // MRB-325 ruling 7 — week-commencing only, never a Mon–Fri range.
         range: weekCommencingLabel(mon),
         now: ymd(mon) === thisMonYmd,
@@ -3339,7 +3350,13 @@
       yearLabel: yearLabel,
       yearName: (year && year.name) || "",
       academicWeek: academicWeek,
-      termWeekLabel: (year && academicWeek != null) ? season + " Week " + academicWeek : "",
+      // ⊕ 24 Sep 2026 (item 10) — no consumer binds this key today (checked:
+      // no `termWeekLabel` in teacher_rulings.py or any hand-written
+      // teacher page), but it is a per-week LABEL by name and by shape, so
+      // it follows the same rule as `buildWeeks`'s `label` above rather
+      // than being left as a trap for whoever wires it next: the term is
+      // said once, on a heading, never once per week.
+      termWeekLabel: (year && academicWeek != null) ? "Week " + academicWeek : "",
 
       /* ── ⊕ MRB-287 E1 · THE YEAR IN VIEW ──────────────────────────────
          ⚠️ `yearLabel` ABOVE IS THE WORKING YEAR AND EVERYTHING HERE IS THE
