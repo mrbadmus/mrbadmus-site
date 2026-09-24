@@ -726,6 +726,19 @@ def main():
                   "1000-row cap intact: %r" % scaleFlag)
             pg.eval("window.MRBBreakdown.close();")
 
+            # ── the brief's full width sweep — 360 and 820 join 390/1280,
+            #    reopened on the figure pupil so the two-column ≥820px
+            #    layout (S8) is actually exercised, not just the narrow
+            #    single-column one. ──────────────────────────────────────
+            pg.eval("window.MRBBreakdown.open({classId:%s, studentId:%s, submissionId:%s});"
+                    % (js_str(proof["classId"]), js_str(sid["lydia"]), js_str("sub-lydia")))
+            wait(pg)
+            for w in (360, 820):
+                pg.set_viewport(w, 900)
+                wait(pg)
+                assert_no_sideways(pg, w, "figure pupil")
+            pg.eval("window.MRBBreakdown.close();")
+
             errs = [e for e in pg.console_errors() if "favicon" not in e]
             print("\n\U0001f4f7  breakdown_shots — 8 screenshot(s) written to %s" % OUT)
             if errs:
