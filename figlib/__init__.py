@@ -51,6 +51,12 @@ ART = {
 }
 
 
+# ⊕ MRB-352 run 2 (batch 3): KS4 electricity builders live in their own
+# module (`figlib/ks4elec.py`) so lanes cannot collide in this file.
+from . import ks4elec  # noqa: E402
+ART.update(ks4elec.ART_KS4ELEC)
+
+
 def draw(rec):
     """The library SVG for one catalogue record."""
     art = rec.get("art")

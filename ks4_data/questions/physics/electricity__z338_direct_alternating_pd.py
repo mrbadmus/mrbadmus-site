@@ -224,15 +224,21 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "An oscilloscope displays a wave that rises 2.5 divisions "
-                "above the centre line and falls the same 2.5 divisions "
-                "below it, using a y-gain setting of 2.0 V per division. "
-                "Determine the peak potential difference shown.",
-        "options": ["5.0 V", "1.25 V", "10 V", "2.5 V"],
+        "figure": "ks4-fig-oscilloscope-peak-2-5-div",
+        "text": "The diagram shows the trace of an alternating supply on an "
+                "oscilloscope. Each square is one division, and the y-gain is "
+                "set to 2.0 V per division. Determine the peak potential "
+                "difference.",
+        "options": [
+            "5.0 V",
+            "1.25 V",
+            "10 V",
+            "2.5 V",
+        ],
         "correct_index": 0,
-        "why": "Peak pd is measured from the zero line to one peak, so it is "
-               "2.5 × 2.0 = 5.0 V; 10 V would be the full crest-to-trough "
-               "height.",
+        "why": "Peak potential difference is measured from the centre line to "
+               "one peak: 2.5 divisions × 2.0 V per division = 5.0 V. 10 V is "
+               "the full crest-to-trough height.",
     },
     {
         "id": "ks4-direct-alternating-pd-s09",
@@ -546,13 +552,21 @@ QUESTIONS = [
         "band": "standard",
         "tier": "foundation",
         "triple_only": False,
-        "text": "A trace shows 2.5 complete cycles across a screen 10 "
-                "divisions wide, with the time base at 4.0 ms per division. "
-                "Calculate the frequency of the supply.",
-        "options": ["25 Hz", "62.5 Hz", "160 Hz", "16 Hz"],
+        "figure": "ks4-fig-oscilloscope-2-5-cycles",
+        "text": "The diagram shows the trace of an alternating supply on an "
+                "oscilloscope. Each square is one division, and the time base "
+                "is set to 4.0 ms per division. Calculate the frequency of "
+                "the supply.",
+        "options": [
+            "25 Hz",
+            "62.5 Hz",
+            "160 Hz",
+            "16 Hz",
+        ],
         "correct_index": 1,
-        "why": "The screen covers 10 × 4.0 = 40 ms, so one cycle takes "
-               "40 ÷ 2.5 = 16 ms = 0.016 s and f = 1 ÷ 0.016 = 62.5 Hz.",
+        "why": "The screen is 10 divisions wide, so it covers 10 × 4.0 = 40 "
+               "ms. There are 2.5 cycles across it, so one cycle takes 40 ÷ "
+               "2.5 = 16 ms = 0.016 s, and f = 1 ÷ 0.016 = 62.5 Hz.",
     },
 
     # ── harder ──────────────────────────────────────────────────────────
@@ -838,17 +852,22 @@ QUESTIONS = [
         "band": "harder",
         "tier": "foundation",
         "triple_only": False,
-        "text": "An oscilloscope trace initially shows 4 complete cycles "
-                "spread across a 10-division-wide screen, with the time "
-                "base set to 2.0 ms per division. The supply's frequency "
-                "is then halved while the time base stays the same. Work "
-                "out how many complete cycles now appear across the "
-                "screen.",
-        "options": ["4 cycles", "8 cycles", "1 cycle", "2 cycles"],
+        "figure": "ks4-fig-oscilloscope-4-cycles",
+        "text": "The diagram shows an oscilloscope trace. Each square is one "
+                "division, and the time base is set to 2.0 ms per division. "
+                "The supply's frequency is then halved, with the time base "
+                "unchanged. How many complete cycles now appear across the "
+                "screen?",
+        "options": [
+            "4 cycles",
+            "8 cycles",
+            "1 cycle",
+            "2 cycles",
+        ],
         "correct_index": 3,
-        "why": "The screen covers 20 ms, so each of the 4 cycles lasted 5.0 "
-               "ms; halving the frequency doubles the period to 10 ms, and "
-               "20 ÷ 10 = 2 cycles.",
+        "why": "The screen covers 10 × 2.0 = 20 ms, so each of the 4 cycles "
+               "shown lasts 5.0 ms. Halving the frequency doubles the period "
+               "to 10 ms, and 20 ÷ 10 = 2 cycles.",
     },
     {
         "id": "ks4-direct-alternating-pd-h19",

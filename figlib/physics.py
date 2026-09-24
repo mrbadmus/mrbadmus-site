@@ -200,8 +200,11 @@ def sym_switch_closed(c, x, y, name=None, value=None):
     sym_switch(c, x, y, name, value, closed=True)
 
 
-def sym_ammeter(c, x, y, name=None, value=None):
-    half = _leads(c, x, y, 52)
+def sym_ammeter(c, x, y, name=None, value=None, leads=True):
+    # ⊕ MRB-352 run 2 (174): `leads` as sym_voltmeter has, so an ammeter
+    # can be bridged across a component (default unchanged).
+    if leads:
+        _leads(c, x, y, 52)
     c.S.append(
         f'<circle cx="{x}" cy="{y}" r="26" fill="none" '
         f'stroke="{ST}" stroke-width="3"/>')
@@ -259,24 +262,29 @@ def sym_ldr(c, x, y, name=None, value=None):
         _clabel(c, x, y+56, name, 22)
 
 
-def sym_diode(c, x, y, name=None, value=None):
+def sym_diode(c, x, y, name=None, value=None, reverse=False):
+    # ⊕ MRB-352 run 2 (174): `reverse` mirrors the symbol end for end, so
+    # the triangle points back along the wire (default unchanged).
+    s = -1 if reverse else 1
     half = _leads(c, x, y, 56)
     c.S.append(
         f'<circle cx="{x}" cy="{y}" r="28" fill="none" '
         f'stroke="{ST}" stroke-width="3"/>')
-    _wire(c, x-28, y, x+13, y, 3)                    # the wire runs through
+    _wire(c, x-28*s, y, x+13*s, y, 3)                # the wire runs through
     c.S.append(
-        f'<polygon points="{x-13},{y-15} {x-13},{y+15} {x+13},{y}" '
+        f'<polygon points="{x-13*s},{y-15} {x-13*s},{y+15} {x+13*s},{y}" '
         f'fill="none" stroke="{ST}" stroke-width="3" '
         f'stroke-linejoin="round"/>')
-    _wire(c, x+13, y-16, x+13, y+16, 3)
-    _wire(c, x+13, y, x+28, y, 3)
+    _wire(c, x+13*s, y-16, x+13*s, y+16, 3)
+    _wire(c, x+13*s, y, x+28*s, y, 3)
     if name:
         _clabel(c, x, y-40, name, 22)
 
 
-def sym_led(c, x, y, name=None, value=None):
-    sym_diode(c, x, y, name)
+def sym_led(c, x, y, name=None, value=None, reverse=False):
+    # ⊕ MRB-352 run 2 (174): `reverse` mirrors the diode only; the two
+    # emission arrows still point up and out, away from the circle.
+    sym_diode(c, x, y, name, reverse=reverse)
     # two parallel emission arrows, side by side, pointing OUT (up-right)
     for k in (0, 1):
         ax = x + 10 + k*16
@@ -345,7 +353,7 @@ def _series_width(items):
     for it in items:
         if isinstance(it, parallel):
             w += max(_series_width(b) for b in it.branches) + 80
-        elif it[0] == "voltmeter":
+        elif it[0] == "voltmeter" and not _comp(it)[3].get("inline"):
             continue            # ⊕ figlib: bridges the previous span
         else:
             w += SPAN
@@ -551,19 +559,32 @@ def _comp(it):
     return ctype, name, value, opts
 
 
-def _bridge_voltmeter(c, x0, x1, top_y, name=None, value=None):
+def _bridge_voltmeter(c, x0, x1, top_y, name=None, value=None,
+                      meter=None):
     """A voltmeter above the span x0..x1 of the top wire, joined to the
     wire at both ends of that span — i.e. in parallel with whatever is
-    drawn there."""
+    drawn there. ⊕ MRB-352 run 2 (174): `meter=sym_ammeter` bridges an
+    ammeter the same way (a student's error); default unchanged."""
     xpos = (x0 + x1) / 2
     vy = top_y - 110
-    sym_voltmeter(c, xpos, vy, name, value, leads=False)
+    (meter or sym_voltmeter)(c, xpos, vy, name, value, leads=False)
     _wire(c, x0+10, top_y, x0+10, vy)
     _wire(c, x1-10, top_y, x1-10, vy)
     _wire(c, x0+10, vy, xpos-26, vy)
     _wire(c, xpos+26, vy, x1-10, vy)
     _dot(c, x0+10, top_y, 5)
     _dot(c, x1-10, top_y, 5)
+
+
+def _sym_fn(ctype, opts):
+    """⊕ MRB-352 run 2 (174): the drawer for a component, honouring
+    {"reverse": True} on a diode or LED (and refusing it elsewhere)."""
+    if opts.get("reverse"):
+        if ctype not in ("diode", "led"):
+            raise ValueError("only a diode or an LED can be reversed")
+        import functools
+        return functools.partial(SYMBOLS[ctype], reverse=True)
+    return SYMBOLS[ctype]
 
 
 def circuit(elements, title=None, layout=None, gap=None, aqa_only=False,
@@ -600,11 +621,19 @@ def circuit(elements, title=None, layout=None, gap=None, aqa_only=False,
 
     # geometry: components run along the TOP edge; the loop closes
     # down the right, along the bottom, and up the left.
+    # ⊕ MRB-352 run 2 (174): a voltmeter carrying {"inline": True} is an
+    # ordinary series component (a student's error: a voltmeter IN the
+    # loop); {"ammeter": True} on a component bridges an ammeter across it.
+    def _inline(it):
+        return _comp(it)[3].get("inline")
     series = [it for it in top_items
-              if isinstance(it, parallel) or _comp(it)[0] != "voltmeter"]
+              if isinstance(it, parallel) or _comp(it)[0] != "voltmeter"
+              or _inline(it)]
     total_w = _series_width(series)
     has_v = any((not isinstance(it, parallel)) and
-                (_comp(it)[0] == "voltmeter" or _comp(it)[3].get("voltmeter"))
+                ((_comp(it)[0] == "voltmeter" and not _inline(it))
+                 or _comp(it)[3].get("voltmeter")
+                 or _comp(it)[3].get("ammeter"))
                 for it in top_items)
     has_par = any(isinstance(it, parallel) for it in top_items)
     # ⊕ fix round 1 (visual m4): when a parallel section ENDS the top run
@@ -662,7 +691,7 @@ def circuit(elements, title=None, layout=None, gap=None, aqa_only=False,
             for k, (yc, it) in enumerate(zip(ys, items)):
                 ct, nm, vl, _o = _comp(it)
                 _check(ct)
-                _draw_rotated(c, SYMBOLS[ct], xs, yc, nm, vl)
+                _draw_rotated(c, _sym_fn(ct, _o), xs, yc, nm, vl)
             edges = [top_y] + [yc for yc in ys] + [bot_y]
             for k in range(len(edges) - 1):
                 a = edges[k] + (SPAN/2 if k else 0)
@@ -677,7 +706,7 @@ def circuit(elements, title=None, layout=None, gap=None, aqa_only=False,
     for it in top_items:
         if not isinstance(it, parallel):
             ctype, name, value, opts = _comp(it)
-            if ctype == "voltmeter":
+            if ctype == "voltmeter" and not opts.get("inline"):
                 if prev_span is None:
                     raise ValueError("a voltmeter must follow the component "
                                      "it is connected across")
@@ -685,9 +714,12 @@ def circuit(elements, title=None, layout=None, gap=None, aqa_only=False,
                                   name, value)
                 continue
             _check(ctype)
-            _draw_centered(c, SYMBOLS[ctype], cx + SPAN/2, top_y, name, value)
+            _draw_centered(c, _sym_fn(ctype, opts), cx + SPAN/2, top_y,
+                           name, value)
             if opts.get("voltmeter"):
                 _bridge_voltmeter(c, cx, cx + SPAN, top_y)
+            if opts.get("ammeter"):
+                _bridge_voltmeter(c, cx, cx + SPAN, top_y, meter=sym_ammeter)
             prev_span = (cx, cx + SPAN)
             cx += SPAN
         else:  # parallel section
@@ -2959,12 +2991,19 @@ def oscilloscope_compare(traces, W=440, divisions=(10, 5), amplitude=2):
     div = (W - 40) / float(dx)
     sh = div * dy
     block = fs + 10 + sh + 14
-    H = int(14 + block * len(traces))
+    # ⊕ MRB-352 run 2 (174): a trace whose caption is None (or omitted)
+    # draws no caption and leaves no caption row — the screen starts at
+    # the top margin. Captioned traces are drawn exactly as before.
+    capped = [t.get("caption") is not None for t in traces]
+    H = int(14 + sum(block if k else sh + 14 for k in capped))
     c = Canvas(W, H)
     y = 14
     for t in traces:
-        _q_text(c, W / 2, y + fs, t["caption"], fs, LBL, "bold")
-        sy0 = y + fs + 12
+        if t.get("caption") is not None:
+            _q_text(c, W / 2, y + fs, t["caption"], fs, LBL, "bold")
+            sy0 = y + fs + 12
+        else:
+            sy0 = y
         sx0 = 20
         _q_box(c, sx0, sy0, div*dx, sh, TINT["white"], ST, q_stroke(W, 2.5), 6)
         for i in range(1, dx):
@@ -2986,7 +3025,7 @@ def oscilloscope_compare(traces, W=440, divisions=(10, 5), amplitude=2):
         d = "M " + " L ".join("%.1f %.1f" % p for p in pts)
         c.S.append(f'<path d="{d}" fill="none" stroke="{ACC}" '
                    f'stroke-width="{q_stroke(W, 3)}" stroke-linejoin="round"/>')
-        y += block
+        y += block if t.get("caption") is not None else sh + 14
     return c.svg()
 
 
