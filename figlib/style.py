@@ -246,6 +246,23 @@ def text_width(s, size, bold=False):
     return sum(table.get(ch, 1.08 if bold else 0.95) for ch in str(s)) * size
 
 
+# ⊕ MRB-352 run 2, batch-2 fix round (figlib.checks rule 8): DejaVu Serif,
+# the widest face the Georgia stack can fall back to, sets about 1.15x the
+# Georgia advance table. A label that must FIT somewhere is measured — and
+# wrapped — at that width, so it still fits on a device without Georgia.
+GEORGIA_WIDE = 1.15
+
+
+def text_width_wide(s, size, bold=False):
+    """The width of a Georgia-stack label in its widest fallback face."""
+    return text_width(s, size, bold) * GEORGIA_WIDE
+
+
+def wrap_wide(s, size, max_w, bold=False):
+    """`wrap`, to a width that still holds in the widest fallback face."""
+    return wrap(s, size, max_w / GEORGIA_WIDE, bold)
+
+
 def wrap(s, size, max_w, bold=False):
     """Greedy word wrap to `max_w` user units."""
     lines, cur = [], ""

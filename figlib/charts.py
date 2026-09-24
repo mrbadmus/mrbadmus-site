@@ -17,7 +17,7 @@ import math
 
 from .style import (AMBER, MUTED, RED, STYLE, TINT, Canvas, arrow, box, esc,
                     line, num_width_wide, q_font, q_stroke, text, text_width,
-                    wrap)
+                    wrap, wrap_wide)
 
 ST = STYLE["stroke"]
 LBL = STYLE["label"]
@@ -35,6 +35,17 @@ def _axis_title(label, unit):
 
 def _fmt(v):
     return ("%g" % v).replace("-", "−")
+
+
+def _corner_drop(first_x_label, fn):
+    """⊕ MRB-352 run 2, batch-2 fix round (figlib.checks rule 8). The first
+    x-axis numeral is centred on the origin and the lowest y-axis numeral
+    ends 11 units left of it, level with the axis. A numeral of two digits
+    or more then reaches back under that "0" (e.g. "145" beneath "0" at a
+    histogram's corner), so the pair crowd together and read as one. Drop
+    the x numerals this many units lower whenever that is so; 0 otherwise,
+    so a graph whose axis starts at a single digit is unchanged."""
+    return 4 if num_width_wide(first_x_label, fn) / 2 > 8 else 0
 
 
 # ── horizontal bars, one row per item: label above, bar below ────────────
@@ -179,12 +190,22 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
     aw = W - ox - rpad
     gapw = 0 if touching else aw / n * 0.28
     bw = (aw - gapw * (n + 1)) / n
-    cat_lines = ([wrap(b["label"], fs, bw + gapw * 0.9) for b in bins]
+    cat_lines = ([wrap_wide(b["label"], fs, bw + gapw * 0.9) for b in bins]
                  if not (touching and edges) else [[""]])
-    cap_lines = wrap(caption, fs, W - 40) if caption else []
-    below = (fs + 10) * max(len(cl) for cl in cat_lines) + fs + 26
+    cap_lines = wrap_wide(caption, fs, W - 40) if caption else []
+    # ⊕ batch-2 fix round (checks rule 8): a histogram's x-axis title sat
+    # with its descenders about 1 unit off the card's bottom edge; its
+    # budget is now the numeral row, the title's own line box and 6 units.
+    drop = _corner_drop(_fmt(edges[0]), fn) if touching and edges else 0
+
+    def _below(cl):
+        if touching and edges:
+            return max((fs + 10) + fs + 26,
+                       10 + drop + fn + fs + 18 + 0.24 * fs + 6)
+        return (fs + 10) * max(len(c_) for c_ in cl) + fs + 26
+    below = _below(cat_lines)
     oy = H - below - (len(cap_lines) * (fs + 5) + 8 if cap_lines else 0)
-    top_lines = (wrap(_axis_title(y_label, y_unit), fs, W - 30, True)
+    top_lines = (wrap_wide(_axis_title(y_label, y_unit), fs, W - 30, True)
                  if y_title == "top" else [])
     head = len(top_lines) * (fs + 5) + (8 if top_lines else 0)
     if y_title == "top":
@@ -192,9 +213,10 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
         aw = W - ox - rpad
         gapw = 0 if touching else aw / n * 0.28
         bw = (aw - gapw * (n + 1)) / n
-        cat_lines = ([wrap(b["label"], fs, bw + gapw * 0.9) for b in bins]
+        cat_lines = ([wrap_wide(b["label"], fs, bw + gapw * 0.9)
+                      for b in bins]
                      if not (touching and edges) else [[""]])
-        below = (fs + 10) * max(len(cl) for cl in cat_lines) + fs + 26
+        below = _below(cat_lines)
         oy = H - below - (len(cap_lines) * (fs + 5) + 8 if cap_lines else 0)
     nval = max((len(b["display"]) if isinstance(b.get("display"), list) else 1)
                for b in bins) if values else 0
@@ -230,8 +252,8 @@ def column_chart(bins, x_label, x_unit, y_label, y_unit=None, W=480, H=380,
             xx = ox + gapw + i * (bw + gapw)
             line(c, xx, oy, xx, oy + 7, ST, sw)
             if i % edge_label_every == 0:
-                text(c, xx, oy + 10 + fn, _fmt(e), fn, LBL, "normal")
-        lab_y = oy + 10 + fn
+                text(c, xx, oy + 10 + drop + fn, _fmt(e), fn, LBL, "normal")
+        lab_y = oy + 10 + drop + fn
     else:
         lab_y = oy
         for i, b in enumerate(bins):
@@ -318,7 +340,8 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
     fn = _num_size(fs)
     sw = q_stroke(W, 2)
     ox = 30 + fs * 1.3 + max(text_width(_fmt(t), fn) for t in y_ticks)
-    oy = H - (fs + fn + 34) - (fs + 14 if legend else 0)
+    drop = _corner_drop(_fmt(x_ticks[0]), fn)
+    oy = H - (fs + fn + 34) - (fs + 14 if legend else 0) - drop
     aw = W - ox - 26
     ah = oy - 26
     (x0, x1), (y0, y1) = x_range, y_range
@@ -338,7 +361,7 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
     for t in x_ticks:
         px, _ = P(t, y0)
         line(c, px, oy, px, oy + 7, ST, sw)
-        text(c, px, oy + 10 + fn, _fmt(t), fn, LBL, "normal")
+        text(c, px, oy + 10 + drop + fn, _fmt(t), fn, LBL, "normal")
     for t in y_ticks:
         _, py = P(x0, t)
         line(c, ox - 7, py, ox, py, ST, sw)
@@ -376,8 +399,8 @@ def line_graph(series, x_label, x_unit, y_label, y_unit, x_range, y_range,
             ex, ey = pts[-1]
             c.S.append(f'<circle cx="{ex:.1f}" cy="{ey:.1f}" r="5.5" '
                        f'fill="{col}" stroke="none"/>')
-    text(c, ox + aw / 2, oy + 24 + fn + fs, _axis_title(x_label, x_unit), fs,
-         LBL, "bold")
+    text(c, ox + aw / 2, oy + 24 + drop + fn + fs,
+         _axis_title(x_label, x_unit), fs, LBL, "bold")
     text(c, fs + 4, oy - ah / 2, _axis_title(y_label, y_unit), fs, LBL,
          "bold", "middle", rotate=-90)
     if legend:
@@ -420,7 +443,9 @@ def table(col_heads, rows, W=480, corner="", cell_fills=None,
                 out.extend((w, k == 0) for w in wrap(ln, fs, col_w - 14, True))
         return out or [("", False)]
 
-    head_lines = [wrap(h, fs, col_w - 10, True) for h in col_heads]
+    # ⊕ batch-2 fix round (checks rule 8): headers wrap at the widest
+    # fallback face, so neighbouring headers cannot run into each other.
+    head_lines = [wrap_wide(h, fs, col_w - 10, True) for h in col_heads]
     head_h = max(len(h) for h in head_lines) * (fs + 4) + 16
     row_hs = [max(len(lines_of(cl)) for cl in r["cells"]) * (fs + 4) + 18
               for r in rows]
