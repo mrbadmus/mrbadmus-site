@@ -3679,8 +3679,12 @@ INSERT_AT = {
             {"t": "div",
              "a": {"class": "noprint", "style": _WK_BAR},
              "c": [
+                 # ⊕ Stream D, 24 Sep 2026 (experience run, item 10) — bound
+                 # to `weekCaption` (LOGIC, anchored on `rosterWeekCol`) so
+                 # the bar's own heading says the viewed week's term once,
+                 # now that every chip below it has stopped saying it.
                  {"t": "span", "a": {"style": _WK_CAPTION},
-                  "c": [{"t": "#", "v": "Week"}]},
+                  "c": [{"t": "#", "v": {"parts": [{"e": "weekCaption"}]}}]},
                  _wk_chevron("weekBack", "Previous week", "M9 3L5 7l4 4",
                              "weekBackColor", "weekBackCursor", "week-back"),
                  {"t": "div",
@@ -9670,10 +9674,15 @@ componentDidUpdate() {
     # eleven chips, because in her fiction the ranges alone identified the
     # weeks. Dated from a real academic year they do not — "5–9 Oct" says
     # nothing about which teaching week it is — so the line reads "This
-    # week" on the current chip and the term-relative label ("Autumn Week 6")
-    # on every other, in Design's own uppercase mono at her own size. The
+    # week" on the current chip and a within-year week number ("Week 6") on
+    # every other, in Design's own uppercase mono at her own size. The
     # conditional is gone rather than left always-true: a dead `if` is a
-    # control that cannot be told from a broken one.
+    # control that cannot be told from a broken one. ⊕ 24 Sep 2026
+    # (experience run, item 10): this used to say "the term-relative label
+    # ('Autumn Week 6')" — twelve chips backwards through a bar each said
+    # the term, which is the term said twelve times to say one thing.
+    # `label` is plain "Week N" now; the term is said once, in the bar's own
+    # heading (`weekCaption`, below `rosterWeekCol`).
     #
     # ⚠️ THE TERM LABEL IS AN APPROXIMATION AND THE SEAM SAYS SO. There is no
     # `terms` table — checked, not assumed — so the term comes from the
@@ -10742,6 +10751,71 @@ componentDidUpdate() {
      "table's answer; this page IS the row, and a deleted assignment's "
      "marking screen is a page about nothing. It goes back to the class it "
      "belonged to, which is where the teacher can see that it has gone."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 10) · THE TERM NAME ══
+    # SAYS ITSELF ONCE, ON THE DIGEST HEADER — NOT ON EVERY WEEK
+    #
+    # The per-week fixes below (the class screen's week-bar chips, and
+    # `buildWeeks`'s own `label` in `shared/teacher-live.js`) drop "Autumn"/
+    # "Spring"/"Summer" from every chip so a teacher stops reading the term
+    # name twelve times going backwards through a bar. That leaves the term
+    # unsaid ANYWHERE on the overview digest, which Mide's own instruction
+    # for this run does not ask for — only for it to be said ONCE, where
+    # useful, and the digest's own header (title + this line under it) is
+    # exactly that: a fact about WHEN this digest is, stated once, the same
+    # register `classesEyebrow` already uses for "Autumn term · 2026–27" on
+    # the classes screen.
+    #
+    # ⚠️ THE CLASS-REPORT BRANCH IS UNTOUCHED HERE, and its own "this term"
+    # wording is already gone — the "\"this term\" is a claim the list
+    # cannot support" ruling above (`kPapers.length === 1 ? ' assignment' :
+    # ' assignments'`) removed it earlier in this same LOGIC list, which is
+    # also why this ruling's anchor is the text AFTER that one has already
+    # run, not Design's original. Appending a term name to the overview
+    # branch only (below) does not reopen that one.
+    ("      digestSub: isClassReport\n"
+     "        ? k.n + ' students · ' + kPapers.length + "
+     "(kPapers.length === 1 ? ' assignment' : ' assignments')\n"
+     "        : this.CLASSES.length + ' classes · ' + totalStudents + "
+     "' students · ' + totalSubs + ' submissions',",
+     "      digestSub: isClassReport\n"
+     "        ? k.n + ' students · ' + kPapers.length + "
+     "(kPapers.length === 1 ? ' assignment' : ' assignments')\n"
+     "        : this.CLASSES.length + ' classes · ' + totalStudents + "
+     "' students · ' + totalSubs + ' submissions'\n"
+     "          + (MRB_DATA('termLabel') ? ' · ' + "
+     "MRB_DATA('termLabel') : ''),",
+     "the overview digest's own header line — the one place on this run's "
+     "list this run ADDS the term, rather than removes it. `termLabel` "
+     "('Autumn term · 2026–27') is the same string `classesEyebrow` already "
+     "states once on the classes screen; read here from `MRB_DATA` rather "
+     "than recomputed, so the two cannot disagree about which term it is."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 10) · AND THE WEEK ══
+    # BAR'S OWN HEADING IS THE OTHER PLACE IT IS SAID
+    #
+    # The static "Week" caption beside the class screen's chevrons (Mide's
+    # 1 Sep 2026 week bar, `INSERT_AT[(208, 218)]`) is OUR OWN markup, not
+    # Design's — nothing here is asserting against a Design literal, so the
+    # text node is bound directly to a new key rather than through
+    # `BIND_ATTR`'s replace-and-assert path.
+    #
+    # ⚠️ THE SELECTED WEEK'S OWN TERM, NOT THE BAR'S FIRST CHIP. `wWeek` is
+    # already `kWeeks[wi] || null` — the currently-viewed week, the same one
+    # `rosterWeekCol` reads three lines below in the ruling above — so the
+    # heading names the term of whatever week a teacher has actually
+    # scrolled to, and does not silently disagree with it at a term
+    # boundary the way reading `kWeeks[0]` unconditionally would.
+    ("      rosterWeekCol: wWeek ? (wWeek.now ? 'This week' : wWeek.range) "
+     ": 'This week',",
+     "      rosterWeekCol: wWeek ? (wWeek.now ? 'This week' : wWeek.range) "
+     ": 'This week',\n"
+     "      weekCaption: (wWeek && wWeek.term) "
+     "? 'Week · ' + wWeek.term + ' term' : 'Week',",
+     "the week bar's own heading, the other of this run's two "
+     "\"say it once\" places. Every chip below it drops the term name "
+     "(`buildWeeks`'s `label` in `shared/teacher-live.js`); this is where "
+     "it is still said, once, for the week actually in view."),
 
 )
 
