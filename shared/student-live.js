@@ -2554,7 +2554,22 @@
            ⚠️ THE BENCH'S ROW KEEPS THE BARE ADDRESS. Same reasoning as
            `assignmentHrefFor` — bookmarks, and the drive's assertion — and it
            means this line is a strict superset of what it replaces: every row
-           that had a destination has the same destination. */
+           that had a destination has the same destination.
+
+           ⛔ SUPERSEDED 25 Sep 2026 (experience run, stream K — TEST N1). "The
+           bare address" is only right for the row when `benchWork.href` ITSELF
+           is bare, and it stopped always being bare the moment `benchWork`
+           could come from the week_work fallback three screens up: that branch
+           sets `href: assignmentHrefFor(pick.id)` because auto composition is
+           off and the bare address resolves nothing for it. This line kept
+           calling `assignmentHref()` regardless, so the bench card ("Open the
+           assignment") and this same row's own "Continue" pointed at two
+           different addresses, and the row's was the one `/api/class/
+           current-assignment` cannot answer — `assignment: null, reason:
+           "auto_assignments_off"` — landing on "No work has been set for this
+           week yet". Reading `benchWork.href` instead makes the row use
+           EXACTLY what the hero uses, whichever shape that is, by construction
+           rather than by re-deriving the same decision twice. */
         /* ⊕ RULED by Mide 22 Sep 2026 — first-week fixes.
            `status === "open"` used to be the whole test, and the note above
            says why: *"a missed one is Design's `Ask for an extension`, which
@@ -2571,7 +2586,7 @@
            deadline gate on its inputs or its Complete button either. This
            empty string was the only thing in the way. */
         assignmentHref: c.id === currentId
-          ? assignmentHref()
+          ? (benchWork ? benchWork.href : assignmentHref())
           : ((status === "open" || status === "missed")
               ? assignmentHrefFor(c.id) : "")
       };
