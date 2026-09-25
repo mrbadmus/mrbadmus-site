@@ -7523,10 +7523,17 @@ LOGIC = (
         cols: this.colsFrom(g.stems.map((q, i) => ({ label: q.id, value: g.qpct[i] == null ? 'Not marked' : g.qpct[i] + '%', raw: g.qpct[i] == null ? 0 : g.qpct[i], flag: g.qpct[i] != null && g.qpct[i] === min })), 100),
         tiles: [tile('Paper mean', mx(k).colMean[gi] == null ? '—' : mx(k).colMean[gi] + '%', g.submitted + ' of ' + (mx(k).colAsked[gi] || 0) + ' submitted'),
           tile('Lowest', lowest.id + ' · ' + min + '%', lowest.text), tile('Highest', max + '%', 'Best answered question')],
-        note: lowest.text ? 'Reteach ' + lowest.text.toLowerCase() + ' — ' + min + '% of the class got it' : '' };""",
+        note: lowest.text ? 'Reteach ' + lowest.text + ' — ' + min + '% of the class got it' : '' };""",
      "`questions / class`. The same four, plus `papersFor(k)[1].title` on a "
      "one-paper class, plus `k.n` as the submitted denominator, plus "
-     "`STEMS[qi].text.toLowerCase()` on a stem that no longer exists."),
+     "`STEMS[qi].text.toLowerCase()` on a stem that no longer exists. "
+     "⊕ Stream M, 25 Sep 2026 (item 26) — the `.toLowerCase()` this ruling "
+     "had kept on the stem is now dropped from the built note too: the "
+     "'Lowest' tile two lines above already prints the same stem in its own "
+     "case (`lowest.text`, no lowering), so the note read \"Reteach which "
+     "component does this circuit symbol represent?\" lower-cased right "
+     "beside a tile capitalised the ordinary way. A stem is a sentence, and "
+     "a sentence keeps its own capital."),
 
     # ── the tiles and note of `questions / all`: A DELETED FIELD, TWICE ──
     ("""        const tally = {};
