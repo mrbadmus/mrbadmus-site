@@ -1376,6 +1376,22 @@ REWRITES = {
 }
 
 
+# ⊕ Stream J, 25 Sep 2026 (experience run, item 6) — the same gap
+# `build_teacher_port.py` closes, checked and confirmed here too: `#mrb-student`
+# shipped empty until the first `draw()`, and `draw()` cannot run before
+# `shared/student-runtime.js` has loaded, `shared/student-live.js` has fetched
+# the pupil's data, and `__MRB_MOUNT__` has been called — several seconds of
+# blank cream on a slow connection, indistinguishable from a broken page. The
+# same replace-on-first-draw guarantee applies (`R.mount` empties and rebuilds
+# `#mrb-student` exactly as it does `#mrb-teacher`), so a static caption here
+# is gone the instant real content arrives and is the only thing on screen
+# before it.
+_LOADING_CAPTION = {
+    "class.html": "Loading your class…",
+    "assignment.html": "Loading this set…",
+}
+
+
 _BANNER = """<!--
   ══════════════════════════════════════════════════════════════════════════
   GENERATED — do not edit. `python3 build_student_port.py`
@@ -3874,7 +3890,10 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "%s</style>\n"
         "</head>\n<body>\n"
         "<div id=\"mrb-student\" style=\"background:var(--st-ground);"
-        "min-height:100vh\"></div>\n"
+        "min-height:100vh\">"
+        "<div style=\"padding:40px;font:400 15.5px/1.4 var(--st-ui);"
+        "color:var(--st-muted)\">%s</div>"
+        "</div>\n"
         "<script src=\"/shared/student-runtime.js\"></script>\n"
         "<script>window.__MRB_TPL__=%s;</script>\n"
         "<script>window.__MRB_BIND__=%s;</script>\n"
@@ -3920,6 +3939,7 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
              if spec["page"] == "class view"
              else (bench_css + _THEME_BRIDGE + _Q_EYEBROW
                    + _FIGURE_SCROLL))),
+           html.escape(_LOADING_CAPTION.get(spec["out"], "Loading…")),
            json.dumps({"roots": roots, "imports": tpl["imports"]},
                       separators=(",", ":")).replace("<", "\\u003c"),
            json.dumps(bind_table, separators=(",", ":")),

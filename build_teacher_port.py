@@ -475,6 +475,43 @@ PAGES = [
 ]
 
 
+# ⊕ Stream J, 25 Sep 2026 (experience run, item 6) — ONE LINE, PER SCREEN,
+# STATIC IN THE HTML THE SERVER SENDS.
+#
+# ⛔ THE GAP THIS CLOSES. `#mrb-teacher` shipped empty — `<div id="mrb-teacher"
+# ...></div>` and nothing inside it — until `student-runtime.js`'s first
+# `draw()` runs, which cannot happen before `shared/student-runtime.js` has
+# downloaded and parsed, `shared/teacher-data.js` has fetched the class pack
+# from Supabase, and the mount script has executed. On a slow connection that
+# is many seconds of a blank cream rectangle under the header — measured
+# 10–15s on the audit's Slow 3G pass — and a blank screen looks indistinguishable
+# from a broken one.
+#
+# `draw()` (this same file's own `R.mount`/`applyTemplate`, shared with
+# `build_student_port.py`) REPLACES the mount host's entire contents on
+# every render, first paint included — see `shared/student-live.js`'s own
+# note on this ("empties the entire mount host and rebuilds the whole
+# template on every setState"). So static markup placed inside
+# `#mrb-teacher` in the SERVED HTML is guaranteed to be gone the instant the
+# first real `draw()` completes, and guaranteed to be the only thing on
+# screen before it — no flash, no double-render, nothing to coordinate.
+#
+# ⚠️ ONE CAPTION PER SCREEN, not one generic string, for the same reason
+# `searchPlaceholder` names "12 classes" rather than "some classes": "Loading…"
+# with nothing else on the page reads as though the page forgot which page it
+# is. Styled in the same quiet register `renderVals['lastTitle']`'s own empty
+# state uses (`font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)`) —
+# never `--st-ink`, which is reserved for a real answer having arrived.
+_LOADING_CAPTION = {
+    "classes.html": "Loading your classes…",
+    "class-detail.html": "Loading this class…",
+    "student-detail.html": "Loading this student…",
+    "assignment.html": "Loading this set…",
+    "digest.html": "Loading your digest…",
+    "insights.html": "Loading your charts…",
+}
+
+
 _BANNER = """<!--
   ══════════════════════════════════════════════════════════════════════════
   GENERATED — do not edit. `python3 build_teacher_port.py`
@@ -5503,7 +5540,10 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "</style>\n"
         "</head>\n<body>\n"
         "<div id=\"mrb-teacher\" style=\"background:var(--st-ground);"
-        "min-height:100vh\"></div>\n"
+        "min-height:100vh\">"
+        "<div style=\"padding:40px;font:400 15.5px/1.4 var(--st-ui);"
+        "color:var(--st-muted)\">%s</div>"
+        "</div>\n"
         "%s"
         "<script src=\"/shared/student-runtime.js\"></script>\n"
         "<script>window.__MRB_TPL__=%s;</script>\n"
@@ -5521,6 +5561,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
            DS_CSS_URL,
            setwork_css,
            breakdown_css,
+           html.escape(_LOADING_CAPTION.get(spec["out"], "Loading…")),
            regions,
            json.dumps({"roots": roots, "imports": imports},
                       separators=(",", ":")).replace("<", "\\u003c"),
