@@ -4822,7 +4822,27 @@ STYLE_EDIT = {
         # LABEL near it would use for its own caption-weight text.
         34: [("color:var(--st-crumb-sep)", "color:var(--st-caption)")],
     },
-    'assignment': {},
+    # ⊕ RULED 25 Sep 2026 (experience run, stream K) — PROD N1. Node 14 is the
+    # page's own header strip — the back button, the class name, and (on a
+    # narrow phone, where `wide` is false and the title/lesson-meta column at
+    # node 52 does not render at all) the right-hand group alone: the bell,
+    # LATE and/or HANDED IN chips, and the timer. None of that group SHRINKS
+    # (`flex:none` on the back button and on the right-hand span, node 59) and
+    # the row never WRAPPED, so a late-and-complete row — LATE chip + HANDED
+    # IN/COMPLETE chip + "TOTAL 00:55" — simply ran past the viewport's right
+    # edge: `scrollWidth` 416px at both 390 and 360, with "TOTAL 00:55" cut
+    # off. `flex-wrap:wrap` is the minimal fix precisely because nothing else
+    # here needs to change: the right-hand span is already ONE flex item as
+    # far as this container is concerned (its own internal layout at node 59
+    # is untouched), so wrapping drops that whole item to its own line rather
+    # than reflowing its individual chips, and `min-height` (already a
+    # `clamp`, not a fixed height) simply grows to fit two lines instead of
+    # clipping one.
+    'assignment': {
+        14: [("display:flex;align-items:center;gap:clamp(10px,1.6cqw,20px);",
+              "display:flex;flex-wrap:wrap;row-gap:6px;align-items:center;"
+              "gap:clamp(10px,1.6cqw,20px);")],
+    },
 }
 
 
