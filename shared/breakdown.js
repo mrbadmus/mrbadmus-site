@@ -1100,8 +1100,30 @@
 
     var visible = S.wrongOnly ? rows.filter(function (r) { return r.isCorrect === false; }) : rows;
     var groups2 = groupByTopic(visible);
+    /* ⊕ Stream L, 25 Sep 2026 (experience run, item N6) — THE HEADING'S
+       TALLY IS THE PUPIL'S REAL SCORE ON THE TOPIC, NOT A COUNT OF
+       WHATEVER THE FILTER HAPPENS TO SHOW. `groups2` above is grouped from
+       `visible`, which under "Wrong only" is every WRONG row and nothing
+       else — so `g.right` (a count of `isCorrect === true` rows) is
+       structurally 0 and `g.total` is the wrong-count, not the topic's
+       question count. "Circuit symbols · 0 of 7 right" was true about the
+       seven rows on screen and false about the pupil, who got 3 of 10
+       right on the topic as a whole. Regrouping the UNFILTERED rows gives
+       the real right/total per topic; only which ROWS are drawn stays
+       filtered. */
+    if (S.wrongOnly) {
+      var fullByTopic = {};
+      groupByTopic(rows).forEach(function (g) { fullByTopic[g.key] = g; });
+      groups2.forEach(function (g) {
+        var full = fullByTopic[g.key];
+        if (full) { g.right = full.right; g.total = full.total; }
+      });
+    }
     /* COULD-1 — weakest topic first, but only while filtering to Wrong;
-       the ordinary read keeps the set's own teaching order. */
+       the ordinary read keeps the set's own teaching order. Now sorts on
+       the REAL right/total the block above just restored, so it reflects
+       the pupil's actual weakest topics rather than a degenerate 0/N tie
+       across every group. */
     if (S.wrongOnly) {
       groups2.sort(function (a, b) {
         return (a.right / a.total) - (b.right / b.total);
@@ -1249,7 +1271,22 @@
         (attemptsBySub[a.submission_id] = attemptsBySub[a.submission_id] || []).push(a);
       });
 
-      var flags = computeFlags(questions, attempts);
+      /* ⊕ Stream L, 25 Sep 2026 (experience run, item N5) — THE CLASS-WIDE
+         FLAG COUNTS FINISHED PUPILS ONLY. `attempts` carries a row from a
+         pupil's FIRST ANSWER, not from completion — the same "started, not
+         finished" shape `cellOf()` in teacher-live.js and `isDone()` on
+         Today both have to guard against — so an in-progress submission
+         with two machine-marked answers already contributed two rows here,
+         and "3 of 3 in the class got this wrong" counted a pupil every
+         other figure on the same set (2/8 submitted, the class mean) left
+         out. `isComplete()` — completed_at/submitted_at, or
+         status === 'complete', the SAME test this file already uses for
+         "hasn't started yet" above — is the one gate; nothing else about
+         `computeFlags` changes. */
+      var completeAttempts = attempts.filter(function (a) {
+        return isComplete(subById[a.submission_id]);
+      });
+      var flags = computeFlags(questions, completeAttempts);
 
       var openedStudent = roster[idx];
       S = {
