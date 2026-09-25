@@ -990,11 +990,20 @@
     var all = btn("bd-toggle-btn" + (!S.wrongOnly ? " is-on" : ""));
     all.textContent = "All " + rows.length;
     all.setAttribute("data-mrb-added", "breakdown-wrong-only-all");
+    /* ⊕ Stream N, 25 Sep 2026 (experience run, item 10 / NF8) — the
+       selected state was shown by the `is-on` class alone, with nothing in
+       the accessibility tree saying either chip was a toggle or which one
+       was pressed. `aria-pressed`, kept in step with the same `S.wrongOnly`
+       flag `is-on` already reads, the same fix N8 already gave the bulk
+       shoutout sheet's per-pupil chips (`teacher_rulings.BIND_ATTR[644]`)
+       and the Set-work sheet's own chips. */
+    all.setAttribute("aria-pressed", String(!S.wrongOnly));
     all.addEventListener("click", function () { setWrongOnly(false); });
     var wrong = btn("bd-toggle-btn" + (S.wrongOnly ? " is-on" : ""));
     wrong.textContent = "Wrong " + wrongCount;
     wrong.disabled = wrongCount === 0;
     wrong.setAttribute("data-mrb-added", "breakdown-wrong-only");
+    wrong.setAttribute("aria-pressed", String(S.wrongOnly));
     wrong.addEventListener("click", function () { setWrongOnly(true); });
     wrap.appendChild(all); wrap.appendChild(wrong);
     return wrap;
