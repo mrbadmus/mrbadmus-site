@@ -4898,7 +4898,20 @@ INSERT_AT = {
                     "t": "button",
                     "a": {"type": "button",
                           "data-mrb-added": "engagement-bucket",
-                          "aria-pressed": {"parts": [{"e": "bt.on"}]},
+                          # ⊕ Stream M, 25 Sep 2026 (experience run round 3,
+                          # N8) — bound to `bt.pressed` (a STRING) rather
+                          # than the boolean `bt.on`. `student-runtime.js`'s
+                          # attribute resolver drops any attribute whose
+                          # value is exactly `=== false` (its render loop:
+                          # `if (val === null || val === undefined ||
+                          # val === false) { continue; }`), so the two
+                          # UNSELECTED buckets carried no `aria-pressed` at
+                          # all — only the selected one, `true`, ever
+                          # reached the DOM. `bt.pressed` is pre-stringified
+                          # ('true'/'false') in the `bucketTabs` map above
+                          # (LOGIC), so every state of every button always
+                          # sets the attribute.
+                          "aria-pressed": {"parts": [{"e": "bt.pressed"}]},
                           "style": {"parts": [
                               "display:flex;align-items:center;gap:7px;"
                               "padding:7px 13px;border-radius:999px;"
