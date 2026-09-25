@@ -610,6 +610,36 @@ def ds_css():
             # The faces point at `./` inside the bundle; the site self-hosts
             # every one of the seven at /shared/fonts/.
             css = css.replace("./", SERVED_FONTS)
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — `tokens/
+        # shared-tokens.css` VENDORS ITS OWN, SEPARATE COPY of all seven of
+        # `fonts/fonts.css`'s `@font-face` rules (same seven families,
+        # narrowed to a Latin `unicode-range`) and points every one of them
+        # at `../fonts/<file>.woff2` — a path with no rewrite at all, unlike
+        # `fonts.css`'s `./`. Served from `/shared/teacher-ds.css`, `../fonts/`
+        # resolves to `/fonts/<file>.woff2`, a directory that does not exist
+        # anywhere on the site (the real files are at `/shared/fonts/`), so
+        # the browser's first attempt to load "Instrument Sans" 404s on
+        # every page — the audit's "two 404s on every page", one of the two.
+        #
+        # ⚠️ AND IT WAS INVISIBLE PRECISELY BECAUSE THE TEXT STILL RENDERED.
+        # `fonts.css` comes FOURTH in `order`, after this file, and declares
+        # the SAME family/weight/style with NO `unicode-range` restriction
+        # (i.e. every code point) — so once the browser's first (this file's,
+        # 404ing) face for "Instrument Sans" fails to load, it falls through
+        # to `fonts.css`'s later, unrestricted, WORKING declaration and the
+        # word renders correctly. Two @font-face rules can cover the same
+        # family/weight/style as a fallback CHAIN, tried in source order,
+        # which is exactly why the page never looked broken and the network
+        # tab was the only place this showed.
+        #
+        # Same fix as `fonts.css`'s own, for the same reason: rewrite the
+        # bundle's relative path to where these bytes are actually served,
+        # rather than dropping Design's (narrower, marginally cheaper)
+        # `unicode-range` subsetting. `fonts.css`'s copy still exists as the
+        # fallback it always was; this one now loads on the first try
+        # instead of 404ing before falling through to it.
+        elif rel.endswith("shared-tokens.css") and "../fonts/" in css:
+            css = css.replace("../fonts/", SERVED_FONTS)
         out.append("/* ── %s ── */\n%s" % (rel, css))
         sizes.append((rel, len(css)))
     return "\n\n".join(out), sizes
@@ -5283,6 +5313,16 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "<link rel=\"preconnect\" href=\"https://cdn.jsdelivr.net\" crossorigin>\n"
         "<link rel=\"dns-prefetch\" href=\"https://mrbadmus-backend.onrender.com\">\n"
         "<title>%s</title>\n"
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — the same
+        # `#E4572E` chevron favicon `generate_site_v5.KS4_FAVICON_LINK` gives
+        # every KS4 page, kept as its own literal here for the same reason
+        # `ds_css()`'s own comment gives for not sharing a bundle across the
+        # two ports: independence, not coupling.
+        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"data:image/svg+xml;"
+        "base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdC"
+        "b3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUi"
+        "IHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2Fw"
+        "PSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\">\n"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
         "%s"

@@ -3881,6 +3881,16 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "<link rel=\"preconnect\" href=\"https://cdn.jsdelivr.net\" crossorigin>\n"
         "<link rel=\"dns-prefetch\" href=\"https://mrbadmus-backend.onrender.com\">\n"
         "<title>%s</title>\n"
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — the same
+        # `#E4572E` chevron favicon `generate_site_v5.KS4_FAVICON_LINK` gives
+        # every KS4 page, kept as its own literal here for the same reason
+        # `ds_css()`'s own comment gives for not sharing a bundle across the
+        # two ports: independence, not coupling.
+        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"data:image/svg+xml;"
+        "base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdC"
+        "b3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUi"
+        "IHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2Fw"
+        "PSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\">\n"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
         "<style>body{margin:0;background:#FBF3E6}"
