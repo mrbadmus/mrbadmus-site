@@ -603,6 +603,58 @@ LOGIC = {
             "        if (href) { window.location.href = href; }\n"
             "      },",
         ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream K) — TEST 18. THE OPEN BENCH'S
+        # METER COUNTED A DIFFERENT THING FROM THE ROW UNDER IT.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Design's meter counts a three-item self-tick checklist (`doneCount`,
+        # from `toggleTask` — "Open it" / "Answer the questions" / "Hand it
+        # in", ticked by the STUDENT clicking each one, not by anything real
+        # happening). Ruling P1/P3 above made "Open the assignment" NAVIGATE
+        # rather than tick `t1`, so on a live page this meter cannot move past
+        # 0/3 by using the page as intended — it read "0 / 3 DONE" for a
+        # student who had genuinely answered 4 of the row's 10 questions,
+        # a few inches above a work row reading "4 OF 10 ANSWERED". Two
+        # numbers about the identical piece of work, on the identical screen,
+        # that could never agree, because neither counted what the other did.
+        #
+        # `shared/student-live.js` now derives `benchProgPct`/`benchProgText`
+        # from the SAME `qtotal`/`answered` pair the row below already shows —
+        # one number, read once, drawn in two places. Preferring it here (and
+        # falling back to Design's own checklist expression when it is empty)
+        # is what makes the two numbers the same number rather than two
+        # implementations of "how far along is this" that could drift again.
+        #
+        # ⚠️ THE CHECKLIST ITSELF IS LEFT ON THE PAGE. Its three rows are
+        # still individually tickable — that is a separate, harmless piece of
+        # Design's UI (a personal to-do list) and the brief's finding is about
+        # the NUMBER, not the checkboxes. Untouched: `benchTasks`, `toggleTask`,
+        # `t.done`/`t.boxBg`/`t.boxBorder`/`t.color` and every other consumer
+        # of `state.bench`.
+        #
+        # ⚠️ FIXTURE UNCHANGED, NOTHING TO REGISTER — BUT NOT BECAUSE OF WHAT
+        # A FIRST DRAFT OF THIS COMMENT CLAIMED. `MRB_DATA` does NOT return
+        # `undefined` for an unknown key — it THROWS ("no data for …"), which
+        # a real drive of `class-fixture.html` caught immediately (a blank
+        # page, `.rd[data-mode="ks3"]` never mounting). `benchProgPct` and
+        # `benchProgText` both had to be added to the "class view" page's own
+        # `constants` dict in `build_student_port.py`, as the empty string —
+        # the same seam `cardsEmpty` already uses, and for the same reason its
+        # own comment there gives. WITH that constant in place,
+        # `MRB_DATA('benchProgPct')` resolves to `''` on the fixture, `'' ||
+        # (Math.round(...) + '%')` takes the right-hand side, and
+        # `class-fixture.html` renders byte-identically to before this ruling.
+        (
+            "      benchTasks: benchTasks, benchPct: Math.round((doneCount / 3) * 100) + '%', benchDoneText: doneCount + ' / 3 DONE',\n",
+            "      benchTasks: benchTasks,\n"
+            "      /* ⊕ RULED 25 Sep 2026 (stream K) — TEST 18. See the section\n"
+            "         header above this tuple. */\n"
+            "      benchPct: MRB_DATA('benchProgPct')"
+            " || (Math.round((doneCount / 3) * 100) + '%'),\n"
+            "      benchDoneText: MRB_DATA('benchProgText')"
+            " || (doneCount + ' / 3 DONE'),\n",
+        ),
         # ── ⊕ RULED 22 Aug 2026 — P2. "STREAK BROKEN" BEFORE A STREAK ─────
         # ── ⊕ RETIRED 23 Aug 2026 — PHASE 3. THE SURFACE P2 RULED IS GONE. ──
         #
@@ -1267,6 +1319,14 @@ LOGIC = {
             "          back: '', mine: false };\n"
             "    return {\n"
             "      cardCount: pad(n),\n"
+            "      /* ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST N12. See\n"
+            "         SET_ATTR 10207 for the disabled/aria-disabled binding this\n"
+            "         feeds, and student_rulings.py's note beside `cardsEmpty` in\n"
+            "         shared/student-live.js for the fuller reasoning. A `false` here\n"
+            "         is SKIPPED by the runtime rather than written as an attribute\n"
+            "         (the same rule `isClay`/`isChalk` rely on above), so a normal\n"
+            "         card carries no `disabled` at all — only an empty one does. */\n"
+            "      cardsDeckEmpty: !n,\n"
             "      stackPos: n ? (pad(idx + 1) + ' / ' + pad(n)) : '',\n"
             "      topFront: card.front,\n"
             "      topMine: card.mine,\n"
@@ -2027,6 +2087,36 @@ LOGIC = {
             " || w.retake)\n",
         ),
         # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream K) — PROD N4. THE WORK ROW IS
+        # A DISCLOSURE BUTTON WITH NO DISCLOSURE STATE.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Node 161 is the whole collapsed row — one `<button onClick=
+        # "{{ r.toggle }}">` that opens and closes the panel below it — and it
+        # carries no `aria-expanded` at all, so a screen reader announces
+        # "button" with no state, on every one of the six rows, on every
+        # press. `r.expanded` already exists (`expanded: expanded` two lines
+        # above this ruling's anchor) and already drives the caret's rotation
+        # and the panel's own `<if>` — this reads the same fact for
+        # accessibility rather than inventing a second one.
+        #
+        # ⚠️ A STRING, NOT THE BARE BOOLEAN, AND THAT IS THE WHOLE POINT OF
+        # THIS BEING ITS OWN FIELD. `SET_ATTR`'s runtime skips an attribute
+        # whose resolved value is boolean `false` — the mechanism `isClay`
+        # and `cardsDeckEmpty` both rely on to draw NOTHING when a switch is
+        # off — which is right for a CSS hook nobody reads when absent, and
+        # wrong for `aria-expanded`: assistive tech expects the attribute
+        # PRESENT with an explicit "true" or "false" on a collapsed row, not
+        # silently absent. `ariaExpanded` is always a string, so the runtime
+        # writes it either way.
+        (
+            "        expanded: expanded, caret: expanded ? '225deg' : '45deg',\n",
+            "        expanded: expanded, caret: expanded ? '225deg' : '45deg',\n"
+            "        /* ⊕ RULED 25 Sep 2026 (stream K) — PROD N4. See\n"
+            "           SET_ATTR 161 for the binding. */\n"
+            "        ariaExpanded: expanded ? 'true' : 'false',\n",
+        ),
+        # ══════════════════════════════════════════════════════════════════
         # ⊕ Experience run, 25 Sep 2026 (stream H) — P1. ONE DEFINITION OF
         # "AVERAGE", MATCHING THE TEACHER SIDE.
         # ══════════════════════════════════════════════════════════════════
@@ -2117,6 +2207,50 @@ LOGIC = {
             "      const shortWord = w.status === 'open' ? 'DUE THU'"
             " : w.status === 'pending' ? 'SENT' : w.status === 'missed' ?"
             " 'MISSED' : ('MARKED' + (w.late ? ' \\u00B7 late' : ''));\n",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream K) — PROD N2. THE TUPLE ABOVE
+        # PUT "LATE" ON THE ROW TWICE AT NARROW WIDTH.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # The tuple immediately above (stream H, same night) put the word on
+        # `longWord`, and its own comment already says exactly where
+        # `longWord` is read: ONLY `metaLine` ('W' + week + ' · ' +
+        # longWord), which is Design's `<if narrow>` branch. The wide-width
+        # half of the SAME finding was handled correctly, on `scoreLabel`
+        # (the tuple below this one), which renders at every width. So a
+        # narrow pupil saw BOTH: "W02 · MARKED · late" (metaLine)
+        # immediately above "CORRECT · late" (scoreLabel) on the very
+        # same row — confirmed live, PROD N2. `scoreLabel` is the one that
+        # should carry it, because it is the ONLY one of the two that shows
+        # at every width; `longWord` reverts to plain 'MARKED' so the fact is
+        # said once, not zero times at wide and twice at narrow.
+        #
+        # ⚠️ `shortWord` IS LEFT AS STREAM H WROTE IT, DELIBERATELY UNTOUCHED
+        # rather than tidied. Its own comment already establishes it is DEAD
+        # for a marked row — `showWord: !showScore && wide` is false whenever
+        # `showScore` is true, and a marked row always has a score — so
+        # whatever `shortWord` says is never painted. Reverting it would be a
+        # second edit with no visible effect and one more place this ruling
+        # could silently stop matching Design's template on a future redraw.
+        #
+        # ⚠️ FIXTURE UNCHANGED FOR THE SAME REASON THE TUPLE ABOVE RECORDS:
+        # Design's own `work` array has no `late: true` MARKED row, so
+        # `longWord` renders 'MARKED' on her file before this ruling and
+        # 'MARKED' after it — nothing to register in RULED_DIVERGENCE.
+        (
+            "      const longWord = w.status === 'open' ? 'DUE THU 18:00'"
+            " : w.status === 'pending' ? 'WITH MR BADMUS' : w.status ==="
+            " 'missed' ? 'MISSED' : ('MARKED' + (w.late ? ' \\u00B7 late' : ''));\n",
+            "      /* ⊕ SUPERSEDED 25 Sep 2026 (stream K) — PROD N2. See\n"
+            "         the section header above this tuple: `longWord` feeds ONLY\n"
+            "         the narrow-width `metaLine`, and the SCORE CAPTION\n"
+            "         (`scoreLabel`, below) already says '\\u00B7 late' at every\n"
+            "         width — including narrow. Saying it here too meant a\n"
+            "         narrow pupil read it twice on the same row. */\n"
+            "      const longWord = w.status === 'open' ? 'DUE THU 18:00'"
+            " : w.status === 'pending' ? 'WITH MR BADMUS' : w.status ==="
+            " 'missed' ? 'MISSED' : 'MARKED';\n",
         ),
         # ══════════════════════════════════════════════════════════════════
         # ⊕ Experience run, 25 Sep 2026 (stream H) — P2, WIDE-WIDTH HALF.
@@ -2954,6 +3088,56 @@ LOGIC = {
             "    }\n"
             "    try {",
         ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Coordinator addition, 25 Sep 2026 (stream K) — TEST audit item
+        # 22(b). THE QUESTION-STRIP BUTTONS HAD A COLOUR, NOT A NAME.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # `markFor(i)` is the ONE place that decides a question's right/
+        # wrong/not-answered state, and every per-question marker button on
+        # this page is built from it: `markers` (the header strip, node 41,
+        # shown on every screen including the completed one), `grid` (the
+        # "jump to a question" panel, drawn twice — the mobile bottom sheet,
+        # node 68, and the desktop sidebar, node 274) and `endMarks` (the
+        # done screen's own compact strip under the score, node 302). All
+        # four consumers do `const m = markFor(i);` (or `const m = markFor(i)`
+        # aliased `g` in the grid loop) and then `Object.assign(m, {…})` —
+        # which MUTATES AND RETURNS the same object — so a field added here
+        # reaches every one of them from a single edit, exactly like `num`,
+        # `ok`, `bad` and `left` already do.
+        #
+        # The state a sighted student reads off colour and shape alone (ink
+        # fill = right, red outline = wrong, dashed outline = not answered)
+        # had no textual equivalent at all — every one of these buttons is
+        # icon-only, no visible text, no `aria-label`. `name` states the
+        # SAME fact in the SAME words the teacher's own breakdown strip
+        # already uses for the identical three-state question map
+        # (`buildQuestionMap` in shared/breakdown.js: "Question N: right" /
+        # "wrong" / "not answered") — one wording for one concept, on both
+        # sides of the platform, on purpose.
+        #
+        # ⚠️ `mark.name` reads `ok` and `done` from THIS SCOPE, not from
+        # the object literal being built — `bad` is `done && !ok` inline
+        # here rather than reading `m.bad`, because `m` does not exist yet:
+        # this line is inside the object literal that becomes `m`.
+        (
+            "      return {\n"
+            "        num: pad(i + 1), ok: ok, bad: done && !ok, left: !done,\n"
+            "        held: isHeld, current: i === idx,\n"
+            "        onClick: () => (wide || st.view === 'done' ? this.go(i) : this.toggleSheet())\n"
+            "      };\n"
+            "    };\n",
+            "      return {\n"
+            "        num: pad(i + 1), ok: ok, bad: done && !ok, left: !done,\n"
+            "        /* ⊕ RULED 25 Sep 2026 (stream K) — TEST 22(b). See SET_ATTR\n"
+            "           41/68/274/302 for the four bindings this feeds. */\n"
+            "        name: 'Question ' + (i + 1) + ': '"
+            " + (ok ? 'right' : (done ? 'wrong' : 'not answered')),\n"
+            "        held: isHeld, current: i === idx,\n"
+            "        onClick: () => (wide || st.view === 'done' ? this.go(i) : this.toggleSheet())\n"
+            "      };\n"
+            "    };\n",
+        ),
     ],
 }
 
@@ -3179,6 +3363,27 @@ SET_ATTR = {
     "class view": {
         55:  {"data-bench-surface": "bench", "data-port-region": "bench"},
         10204: {"data-bench-surface": "cards"},
+        # ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST N12. The
+        # launcher button (node 10207: `on: "openCards"`, the whole sidebar
+        # card) already REFUSED to open an empty deck (`openCards` in the
+        # LOGIC ruling above), which is correct and not the defect — the
+        # defect was that a button which does nothing on press still LOOKED
+        # exactly as pressable as every other one. `cardsDeckEmpty`
+        # (`cardVals`, same file) is `!n`, `false` on a real deck — which the
+        # runtime skips writing at all, same rule `isClay`/`isChalk` above
+        # rely on — so a normal card carries neither attribute. On an empty
+        # one, `disabled` makes it a genuinely disabled native `<button>`
+        # (out of tab order, no click event, dimmed by the browser); the
+        # explicit `aria-disabled` names the same fact for anything reading
+        # the accessibility tree rather than relying on native semantics
+        # alone. The message itself is `SAY.noFlashcards` via `cardsEmpty` →
+        # `topFront` (node 10211), unchanged by this entry.
+        10207: {"disabled": {"parts": [{"e": "cardsDeckEmpty"}]},
+                "aria-disabled": {"parts": [{"e": "cardsDeckEmpty"}]}},
+        # ⊕ RULED 25 Sep 2026 (experience run, stream K) — PROD N4. See the
+        # LOGIC ruling on `ariaExpanded` above for the reasoning; this is the
+        # binding half.
+        161: {"aria-expanded": {"parts": [{"e": "r.ariaExpanded"}]}},
         10329: {"data-pip-row": "1"},
         10332: {"data-card-fit": "1"},
         10384: {"data-bench-surface": "recall"},
@@ -3411,6 +3616,35 @@ SET_ATTR = {
     "assignment": {
         111: {"data-q-eyebrow": "1"},
         293: {"data-bench-surface": "scorecard"},
+        # ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST N8. Node 364
+        # is Design's `showNextQuiet` button — the 46×46 icon-only chevron
+        # beside "Confirm answer" that shares its handler (`next`) with the
+        # labelled "Next" button (`showNext`, node 360) but carries no text of
+        # its own, only an `aria-hidden` svg. A screen reader announced it as
+        # an unnamed "button". Literal text, not a data binding: the button's
+        # own destination never varies (it always advances one question,
+        # exactly like its labelled sibling), so there is no per-render value
+        # for it to disagree with.
+        364: {"aria-label": "Next question"},
+        # ⊕ Coordinator addition, 25 Sep 2026 (stream K) — TEST audit item
+        # 22(b). See the LOGIC ruling on `markFor`'s `name` field for the
+        # full reasoning. Four bindings, one per icon-only per-question
+        # marker button on this page — all four are built from the same
+        # `markFor(i)` object, so `.name` already carries the right words
+        # for whichever button reads it:
+        #
+        #   41   the header strip (`markers`, alias `m`) — shown on every
+        #        screen, including the completed one.
+        #   68   the "jump to a question" mobile bottom sheet (`grid`,
+        #        alias `g`).
+        #   274  the same panel's desktop sidebar copy (`grid`, alias `g`
+        #        again — Design draws it twice, once per width).
+        #   302  the done screen's own compact strip under the score
+        #        (`endMarks`, alias `m`).
+        41:  {"aria-label": {"parts": [{"e": "m.name"}]}},
+        68:  {"aria-label": {"parts": [{"e": "g.name"}]}},
+        274: {"aria-label": {"parts": [{"e": "g.name"}]}},
+        302: {"aria-label": {"parts": [{"e": "m.name"}]}},
         # ⊕ MRB-337, 8 Sep 2026 — the assignment header's own bell host.
         #
         # 25 is the `<span style="margin-left:auto;…">` holding the LATE chip,
@@ -3623,12 +3857,30 @@ INSERT_AT = {
         # is the tap, and the tap already expands the row — so the breakdown
         # goes in the panel the tap opens, which is Mide's "tap reveals the
         # breakdown" literally and needs no new control.
+        # ⊕ RULED 25 Sep 2026 (experience run, stream K) — PROD N2, SECOND
+        # HALF. `max-width:230px` was a CEILING, not a size — this row is a
+        # CSS grid (`rowCols`, above) whose narrow-width form is `'18px
+        # minmax(0,1fr) auto'`: the score column (node 181's wrapper, holding
+        # `scoreText`/`word`/the caret) is `auto`, sized to its OWN content
+        # per row, and the bar lives inside the `minmax(0,1fr)` column right
+        # before it — so a row whose score column is wider (a late row's
+        # "CORRECT · late" versus a plain "CORRECT") leaves the bar's
+        # column genuinely less room, and a max-width can only ever cap the
+        # bar SMALLER, never keep it the SAME across rows whose neighbouring
+        # column varies. Confirmed live: the late row's bar visibly shorter
+        # than the other four's. A fixed `width` (140px, comfortably under
+        # even a 360px-wide phone's remaining space once the status dot, the
+        # gap and a two-word score caption are accounted for) makes the bar's
+        # rendered size a property of the bar, not of its row's neighbour;
+        # `max-width:100%` is kept as a floor under the fixed width so the
+        # bar still shrinks rather than overflows in whatever narrower case
+        # this has not been measured against.
         (173, 177): (
             {"t": "if", "e": "r.hasBar", "c": [
                 {"t": "span",
                  "a": {"title": {"parts": [{"e": "r.barTitle"}]},
                        "style": "display:block;margin-top:10px;"
-                                "max-width:230px"},
+                                "width:140px;max-width:100%"},
                  "c": [
                      {"t": "span",
                       "a": {"style": "display:flex;height:7px;"
@@ -4639,7 +4891,27 @@ STYLE_EDIT = {
         # LABEL near it would use for its own caption-weight text.
         34: [("color:var(--st-crumb-sep)", "color:var(--st-caption)")],
     },
-    'assignment': {},
+    # ⊕ RULED 25 Sep 2026 (experience run, stream K) — PROD N1. Node 14 is the
+    # page's own header strip — the back button, the class name, and (on a
+    # narrow phone, where `wide` is false and the title/lesson-meta column at
+    # node 52 does not render at all) the right-hand group alone: the bell,
+    # LATE and/or HANDED IN chips, and the timer. None of that group SHRINKS
+    # (`flex:none` on the back button and on the right-hand span, node 59) and
+    # the row never WRAPPED, so a late-and-complete row — LATE chip + HANDED
+    # IN/COMPLETE chip + "TOTAL 00:55" — simply ran past the viewport's right
+    # edge: `scrollWidth` 416px at both 390 and 360, with "TOTAL 00:55" cut
+    # off. `flex-wrap:wrap` is the minimal fix precisely because nothing else
+    # here needs to change: the right-hand span is already ONE flex item as
+    # far as this container is concerned (its own internal layout at node 59
+    # is untouched), so wrapping drops that whole item to its own line rather
+    # than reflowing its individual chips, and `min-height` (already a
+    # `clamp`, not a fixed height) simply grows to fit two lines instead of
+    # clipping one.
+    'assignment': {
+        14: [("display:flex;align-items:center;gap:clamp(10px,1.6cqw,20px);",
+              "display:flex;flex-wrap:wrap;row-gap:6px;align-items:center;"
+              "gap:clamp(10px,1.6cqw,20px);")],
+    },
 }
 
 
