@@ -3566,6 +3566,16 @@ SET_ATTR = {
     "assignment": {
         111: {"data-q-eyebrow": "1"},
         293: {"data-bench-surface": "scorecard"},
+        # ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST N8. Node 364
+        # is Design's `showNextQuiet` button — the 46×46 icon-only chevron
+        # beside "Confirm answer" that shares its handler (`next`) with the
+        # labelled "Next" button (`showNext`, node 360) but carries no text of
+        # its own, only an `aria-hidden` svg. A screen reader announced it as
+        # an unnamed "button". Literal text, not a data binding: the button's
+        # own destination never varies (it always advances one question,
+        # exactly like its labelled sibling), so there is no per-render value
+        # for it to disagree with.
+        364: {"aria-label": "Next question"},
         # ⊕ MRB-337, 8 Sep 2026 — the assignment header's own bell host.
         #
         # 25 is the `<span style="margin-left:auto;…">` holding the LATE chip,
