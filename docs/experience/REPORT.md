@@ -458,6 +458,60 @@ and saved a different total; the pupil page's "Send a reminder" reminded about a
 unreleased set and never changed state; the 360-wide week strip; and a few wording and
 accessibility items. Stream N fixes those; its landing is the last entry below.
 
+### Round four landing — where the site stands tonight
+
+Stream N fixed the teacher-side fourth-pass items: the pupil page's average now comes from
+the seam (sum of marks over sum of max, one definition on every screen); Charts reads
+released sets only; the pupil page's "Send a reminder" only offers released work and
+reads "Reminded today" after a send or on reload (proven live on TEST, one row written);
+the 360-wide week strip shows real chips (121 px, was 2 px); the reteach banner keeps the
+stem's own capital and question mark; Today uses the first name; the engagement buckets
+are named honestly ("Today / Last 2 weeks / 2+ weeks", plus "Never active" for pupils with
+nothing at all); Find a student, the shoutout sheet's close and the breakdown's chips carry
+names and `aria-pressed`; "Nothing in yet" and "Scheduled" where the copy was wrong.
+
+**One change was refused by its own proof and reverted.** N also rewrote the Set work
+edit sheet's count handling and grouped over-large worksheet downloads by topic (one
+commit, `db92c429e`). The live proof on TEST refuted the first half: with it, opening Edit
+on a **not-yet-released** set showed zero kept questions at the Detail step, so a count
+change redrew the whole topic — the very defect it set out to fix, through another door
+(the sheet's only prior edit coverage drove a released row, which skips that path). The
+worksheet half was proven (an 18-subtopic set downloaded as PDF and DOCX through the
+refuse-then-regroup fallback). The two halves were interleaved across six hunks, so the
+commit was reverted whole rather than split by hand at the end of the day: round three's
+behaviour stands (note-only edits keep every topic; the other topic survives a head-topic
+count change; a head-topic count change still redraws the head topic's own questions).
+
+Landed as main **`707971eee`**, pushed through the hook with the affected receipts fresh
+and the one override; `teacher/student-detail`, `teacher/class-detail`, `student/class`,
+`teacher/insights` and `teacher/today` byte-identical live; `teacher-live.js?v=5de6cfd0`,
+`breakdown.js?v=51769f19`, `student-live.js?v=40bd5a35`, `set-work.js?v=ffac474f`,
+`teacher-ds.css?v=6ac8f824`, `mrbadmus.v2.js?v=bc5d7b31`, `styles.css?v=ce417591`
+byte-identical with a nonce.
+
+### Still open after four passes (each with a reason)
+
+| finding | why it is open |
+|---|---|
+| Editing a not-yet-released set and changing its count redraws that topic's questions (single- or multi-topic); the other topic is safe | N's fix was refuted by its proof and reverted; needs a debugger session at `onPrimary()`'s step-1 branch and `loadStoredQuestions()` in `shared/set-work.js`. Editing the note, the deadline or the release time is safe. |
+| A multi-topic set spanning more than ten subtopics cannot be downloaded (`400 too_many_scopes`, no message) | the proven regrouping fix was in the same commit as the refuted one and went with the revert; re-land it alone |
+| Slow 3G still takes ~18 s (pupil) / ~24 s (teacher) to full content | a synchronous "Loading…" caption now shows at once; the rest is backend round trips (see the MRB-348 reports) |
+| The KS4 breakdown names topics by de-slugging (`Circuit symbols` not `Standard Circuit Diagram Symbols`) | needs a generated slug → title map shipped to the browser |
+| Set work cannot open preselected on the missed subtopics | no `preselect` input on the sheet |
+| The teacher production credential | rejected twice; the teacher UI was proven on TEST only, and the live Draft feedback model call awaits Mide's first press |
+| `teacher_class_rollup_v2` not on production | parked migration (md5s above); the site is correct on the fallback |
+| Q2/Q5 of "The particle model" refer to a set-up and a drawing the pupil never sees | content — Mide's gate |
+| `set_work`'s three small-pool checks | the fixture can no longer find a small pool; shipped under the identical override every round |
+
+### Screenshots for Mide
+
+`$MRB_SHOTS` was `/private/tmp/claude-501/-Users-midebadmus-Documents-GitHub-mrbadmus-site/b37d63b5-8808-458d-bf18-cf4c7ec9a86a/scratchpad/shots/`.
+The five named captures from the final TEST pass are in `final-round3/`:
+`student-page-finished.png`, `breakdown.png`, `feedback-draft.png`, `charts.png`,
+`engagement-toggle.png`; the pupil's own finished production view is
+`final-round3-prod/student-page-finished.png`. Every stream's proof shots sit beside them
+(`a/`…`n/`, `prod-before/`, `final-prod/`, `final-test/`, `final-round2*/`, `proof-n/`).
+
 ## A build-order subtlety found in round 2 (for the next engineer)
 
 `build_all.py` step 1 (`generate_site_v5.py`) restamps the hand-written teacher pages
