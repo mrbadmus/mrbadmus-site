@@ -7725,10 +7725,19 @@ LOGIC = (
     ("""        ? live.map(c => ({ label: c.code, sub: c.ks, on: mx(c).markedOnTime, tot: mx(c).markedSub }))
         : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due, on: mx(k).colOnTime[p.idx], tot: mx(k).colSub[p.idx] }));""",
      """        ? live.map(c => ({ label: c.code, sub: c.ks, on: mx(c).markedOnTime, tot: mx(c).markedOnTime + mx(c).markedLate }))
-        : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due, on: mx(k).colOnTime[p.idx], tot: mx(k).colOnTime[p.idx] + mx(k).colLate[p.idx] }));""",
+        : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due.replace(/^Due /, ''), on: mx(k).colOnTime[p.idx], tot: mx(k).colOnTime[p.idx] + mx(k).colLate[p.idx] }));""",
      "the on-time chart. `markedSub` includes the submissions whose lateness "
      "is UNKNOWN, so the bar counted every unknown as late — the same error "
-     "as the roster row's, in a graph, where it is harder to see."),
+     "as the roster row's, in a graph, where it is harder to see. "
+     "⊕ Stream M, 25 Sep 2026 (item 26) — `.replace(/^Due /, '')` added on "
+     "`p.due`. Stream A's redefinition of `when === 'marked'` (this brief's "
+     "DEFINITIONS §2) means this filter now includes OPEN papers, and "
+     "`p.due` for an open paper already carries its own \"Due \" prefix "
+     "(`teacher-live.js`: `open ? \"Due \" + … : …`), which this line then "
+     "prefixed AGAIN — \"DUE DUE MON 28 SEP\" on the chart. The same strip "
+     "other built strings in this file already use before re-adding their "
+     "own \"Due \" (see the `.replace('Due ', '')` and `.replace(/^Due /, "
+     "'')` calls elsewhere in this table)."),
 
     ("""      note: lowP ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };""",
      """      note: (rows.length > 1 && lowP) ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };""",
