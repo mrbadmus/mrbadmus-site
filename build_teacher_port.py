@@ -4133,6 +4133,38 @@ function MRB_NEWEST_MARKED(papers, mx){
     for(var j=0;j<released.length;j++){
       if((mx.colSub[released[j]]||0)>0)return released[j];}}
   return released.length?released[0]:-1;}
+/* ⊕ experience run, 25 Sep 2026 (Mide's item 8) — THE WEAKEST-QUESTION
+   COLUMN'S OWN FETCH, ASKED FOR ONCE PER PAGE LOAD.
+
+   `teacher-live.js` exports `grid(classId, paperIdx)` for exactly this: one
+   paper's grid, fetched on demand and cached into the SAME object
+   `window.__MRB_DATA__.GRID` already points at (`load()`'s `GRID: c.GRID`
+   is a reference, not a copy), so the very next synchronous `gridFor`
+   lookup already sees it once the promise settles. Nothing before this
+   ever called it — the class screen's table read every unprefetched row as
+   "—" forever, correctly reporting "not fetched" as if it meant "nothing to
+   report".
+
+   `MRB_GRID_PENDING` is page-lifetime and keyed exactly as `grid()` keys
+   its own cache (`classId + ':' + paperIdx`), so a request already in
+   flight — or already answered — is never asked twice: `renderVals` runs
+   on every redraw, and without this a row still missing its grid would
+   fire a fresh fetch on every keystroke elsewhere on the page. */
+var MRB_GRID_PENDING = {};
+function MRB_ENSURE_GRID(classId, paperIdx){
+  var L = window.MrBadmusTeacherLive;
+  if(!L || !L.grid || !classId){return;}
+  var key = classId + ':' + paperIdx;
+  if(MRB_GRID_PENDING[key]){return;}
+  MRB_GRID_PENDING[key] = true;
+  L.grid(classId, paperIdx).then(function(){
+    // The cache write already happened inside `grid()` itself; a repaint
+    // with no state change behind it is the whole job here, the same
+    // primitive `MRB_SET_WORK_DONE` uses to repaint after a write.
+    var C = window.__MRB_CMP__;
+    if(C && C.logic){C.logic.forceUpdate();}
+  }, function(){ /* the row keeps its dash; nothing else was waiting on this */ });}
+
 /* "N late of M marked". ⚠️ AND THE UNKNOWNS ARE SHOWN, NOT HIDDEN. `is_late`
    is NULL on every submission written before 22 Aug 2026 and on any with no
    deadline, so "unknown" is a real population and not a rounding error. Folded

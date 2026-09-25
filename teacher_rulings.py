@@ -10322,6 +10322,50 @@ componentDidUpdate() {
      "work set; a null `qpct` entry is a third wrong answer that does not "
      "throw. See the block comment."),
 
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 8) · THE DASH IS
+    #    PERMANENT, AND IT DOES NOT HAVE TO BE ═══════════════════════════
+    #
+    # `gridFor` is a LOOKUP (`METHODS['gridFor']`), never a fetch — it reads
+    # `MRB_DATA('GRID')` and returns null for any key `teacher-live.js` did
+    # not prefetch. The class screen prefetches exactly one grid (the
+    # reteach card's own paper, MRB-326 JOB 4b), so every OTHER released
+    # row in the table above read "—" forever, correctly reporting "not
+    # fetched" as if it meant "nothing to report".
+    #
+    # ⚠️ THE FETCH ALREADY EXISTED AND WAS NEVER CALLED. `teacher-live.js`
+    # exports `grid(classId, paperIdx)` — "one paper's grid, fetched on
+    # demand and held" — for exactly this shape, and nothing in the estate
+    # called it. It caches into the SAME `GRID` object `window.__MRB_DATA__`
+    # already points at (`load()`'s own `GRID: c.GRID`), so once it resolves
+    # the very next `gridFor` lookup already sees it; the only missing piece
+    # is asking once and repainting once. `MRB_ENSURE_GRID` (build_teacher_
+    # port.py) is that: a page-lifetime `{}` remembers which keys are
+    # already in flight so a redraw (this fires on every one) never asks
+    # twice, and `forceUpdate()` on resolve is a repaint with no state
+    # change behind it — the same primitive `MRB_SET_WORK_DONE` already
+    # uses to repaint after a write.
+    (
+        "      if (wkMin != null) {\n"
+        "        const wkStem = (wkG.stems || [])[wkAt];\n"
+        "        weak = ((wkStem && wkStem.id) || ('Q' + (wkAt + 1))) + "
+        "' · ' + wkMin + '%';\n"
+        "        weakFg = wkMin < 50 ? 'var(--st-accent-text)' : "
+        "'var(--st-muted)';\n"
+        "      }",
+        "      if (wkMin != null) {\n"
+        "        const wkStem = (wkG.stems || [])[wkAt];\n"
+        "        weak = ((wkStem && wkStem.id) || ('Q' + (wkAt + 1))) + "
+        "' · ' + wkMin + '%';\n"
+        "        weakFg = wkMin < 50 ? 'var(--st-accent-text)' : "
+        "'var(--st-muted)';\n"
+        "      } else if (markedRow) {\n"
+        "        MRB_ENSURE_GRID(k.id, p.idx);\n"
+        "      }",
+        "the lazy fetch itself: a released row with no grid cached yet "
+        "asks for one, once, and the table fills in on its own a moment "
+        "later rather than staying blank until the next full reload."
+    ),
+
     # ── ⛔ AND THE SAME THREE THROWS AGAIN, IN `weakFor` ─────────────────
     #
     # v3-new, and worse than the one above because `renderVals` builds
