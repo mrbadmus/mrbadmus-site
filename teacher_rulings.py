@@ -1663,6 +1663,30 @@ SET_ATTR = {
     #     rejection — the same sentence the composer's own textarea carries,
     #     and Design gave this one no cap at all.
     651: {"data-compose-field": "bulk-note", "maxlength": "500"},
+
+    # ── ⊕ experience run, 25 Sep 2026 (Mide's items 2/3) · KEYBOARD REACH ──
+    #
+    # Design draws five interactive rows as a plain `<div onClick=…>` and
+    # nothing else — no `tabindex`, no `role`, no keyboard path at all, so a
+    # keyboard-only teacher could not open a class from "My classes" and
+    # could not reach a pupil through "Keep an eye on", "Worth a shoutout",
+    # the roster, or a Find-a-student result. `shared/student-runtime.js`
+    # now treats `tabindex` as the opt-in signal to ALSO fire a node's `on`
+    # handler on Enter or Space — see the comment there — so setting it here
+    # is the whole fix for the first four; the fifth (665, the search
+    # result) is inside a widget with its own arrow-key/Enter handling
+    # (`teacher_rulings.LOGIC`'s `componentDidMount`) and gets `role="option"`
+    # instead, per the ARIA listbox pattern its container (663) declares.
+    #
+    # `role="link"`, not `"button"`: every one of these presses a real
+    # navigation (`MRB_GO`) and changes nothing in place, which is exactly
+    # the semantic a link carries and a button does not.
+    179: {"tabindex": "0", "role": "link"},
+    259: {"tabindex": "0", "role": "link"},
+    270: {"tabindex": "0", "role": "link"},
+    294: {"tabindex": "0", "role": "link"},
+    663: {"role": "listbox", "aria-label": "Search results"},
+    665: {"role": "option", "aria-selected": "false"},
 }
 
 
@@ -2303,6 +2327,32 @@ PORT_CSS = """
   --st-caption: #685E51;  /* was #7A6E5F — 4.75:1 on --st-seg-bg (was 3.71) */
   --st-faint:   #695E4E;  /* was #7B6E5C — 4.75:1 on --st-seg-bg (was 3.71) */
   --st-ghost:   #6E604B;  /* was #7D6D55 — 4.55:1 on --st-seg-bg (was 3.74) */
+}
+
+/* ── ⊕ experience run, 25 Sep 2026 (Mide's items 2/3) · REACHING A PUPIL
+   BY KEYBOARD ──────────────────────────────────────────────────────────
+
+   Five of Design's cards are a plain `<div>` with a click handler and
+   nothing else: the class card (179), "Keep an eye on" (259), "Worth a
+   shoutout" (270), a roster row (294) and a Find-a-student result (665).
+   `shared/student-runtime.js` now wires Enter/Space to any node that
+   carries BOTH `on` and `tabindex` — set on exactly these five below —
+   so this stylesheet only has to draw them. The 3px ring itself is
+   already `[data-mode="ks3"] :focus-visible` above ("one focus treatment,
+   on everything, no exceptions"); nothing here duplicates it.
+
+   `.mrb-active` is the ONE exception: it marks the arrow-key cursor inside
+   the Find-a-student list, which is a highlight WITHOUT real DOM focus
+   (focus stays on the search box, exactly as `shared/search.js`'s topic
+   search already does it) — so `:focus-visible` never sees it and needs
+   its own rule. */
+[data-dc-tpl="179"],
+[data-dc-tpl="259"],
+[data-dc-tpl="270"],
+[data-dc-tpl="294"] { outline-offset: -2px; }
+
+[data-dc-tpl="665"].mrb-active {
+  background: var(--st-note-bg);
 }
 """
 
@@ -8043,6 +8093,126 @@ componentDidUpdate() {
      "Design's only caller was a screen-change handler and there are no "
      "screen changes any more. `weekIdxFor` is re-derived over weeks; the "
      "other three are v2 verbatim."),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 3) · FIND A STUDENT,
+    #    BY KEYBOARD ═══════════════════════════════════════════════════
+    #
+    # Three defects, one seam: the box does not take focus when the palette
+    # opens, Esc does not close it, and the result rows (`role="option"` via
+    # `SET_ATTR[665]`, in a `role="listbox"` box via `SET_ATTR[663]`) answer
+    # neither the arrow keys nor Enter. `shared/search.js` (MRB-26, the topic
+    # search every other page on the site already carries) solves the same
+    # shape — an input, a list, an "active" row moved by the arrows and
+    # opened by Enter — so this repeats that pattern rather than inventing a
+    # second one, DOM-only: the highlighted row is a class
+    # (`SET_ATTR[665]`'s sibling rule in `PORT_CSS`) that a keystroke here
+    # moves directly, never through `setState`, because nothing about WHICH
+    # row is highlighted needs to survive a redraw the way the typed query
+    # does.
+    #
+    # ⚠️ MERGED INTO THE ENTRY ABOVE, NOT A SEPARATE PAIR OF METHODS. The
+    # first draft of this ruling anchored on `HOURS` and added its own
+    # `componentDidMount`/`componentDidUpdate` — WRONG, and wrong in the
+    # quiet way: `WEEK_BAR_RESTORED` (immediately above) already defines
+    # both, later in the same class body, and a class body with two methods
+    # of the same name keeps only the LAST one. The standalone pair built
+    # clean, gated green on every existing check, and did nothing at all —
+    # the week rail's own `componentDidMount` silently shadowed it. Caught
+    # only by hand-tracing the compiled output for this exact reason; see
+    # the report for the general lesson. Anchoring on the rail's own two
+    # method bodies, already in the source by the time this runs, is what a
+    # SECOND definition would have been — this is the first and only one.
+    #
+    # ⚠️ `componentDidMount` RUNS ONCE, at the FIRST draw — `student-runtime`
+    # calls it straight after `mount()`'s first `api.draw()` — so the two
+    # `document` listeners it adds live for the page's whole life and read
+    # `this.state.modal` fresh on every keystroke, rather than being
+    # attached and torn down each time the overlay opens and closes. That is
+    # deliberately simpler than open/close-scoped listeners: this page never
+    # unmounts, so there is nothing to leak.
+    #
+    # ⚠️ FOCUS-ON-OPEN NEEDS `componentDidUpdate`, NOT THE OPEN HANDLER
+    # ITSELF. `openSearch` (`s.modal = 'search'`) runs before the input
+    # exists — `draw()` has not built the new DOM yet — so focusing there
+    # would focus nothing. `componentDidUpdate` runs AFTER `draw()`, and
+    # `_searchWasOpen` is an instance field rather than state so setting it
+    # cannot itself schedule a second redraw — and it does not collide with
+    # the rail's own use of the same hook: two independent bodies, one
+    # function.
+    (
+        "  componentDidMount() { this.snapWeekRail(); }\n"
+        "  componentDidUpdate() {\n"
+        "    const el = this.rail();\n"
+        "    if (el && !el.scrollLeft && el.scrollWidth > el.clientWidth) "
+        "{\n"
+        "      this.snapWeekRail();\n"
+        "    }\n"
+        "  }",
+        "  componentDidMount() {\n"
+        "    this.snapWeekRail();\n"
+        "    const self = this;\n"
+        "    document.addEventListener('keydown', (e) => {\n"
+        "      if (e.key !== 'Escape' || self.state.modal !== 'search') "
+        "return;\n"
+        "      e.preventDefault();\n"
+        "      self.setState({ modal: null, search: '' });\n"
+        "      const btn = document.querySelector('[data-dc-tpl=\"19\"]');\n"
+        "      if (btn) { btn.focus(); }\n"
+        "    });\n"
+        "    document.addEventListener('keydown', (e) => {\n"
+        "      if (self.state.modal !== 'search') return;\n"
+        "      const box = document.querySelector("
+        "'[data-port-region=\"overlay-search\"]');\n"
+        "      if (!box) return;\n"
+        "      const rows = box.querySelectorAll('[data-dc-tpl=\"665\"]');\n"
+        "      const active = box.querySelector("
+        "'[data-dc-tpl=\"665\"].mrb-active');\n"
+        "      const idx = Array.prototype.indexOf.call(rows, active);\n"
+        "      const mark = (row) => {\n"
+        "        if (active) {\n"
+        "          active.classList.remove('mrb-active');\n"
+        "          active.setAttribute('aria-selected', 'false');\n"
+        "        }\n"
+        "        if (row) {\n"
+        "          row.classList.add('mrb-active');\n"
+        "          row.setAttribute('aria-selected', 'true');\n"
+        "        }\n"
+        "      };\n"
+        "      if (e.key === 'ArrowDown' && rows.length) {\n"
+        "        e.preventDefault();\n"
+        "        mark(rows[Math.min(idx + 1, rows.length - 1)]);\n"
+        "      } else if (e.key === 'ArrowUp' && rows.length) {\n"
+        "        e.preventDefault();\n"
+        "        mark(rows[Math.max(idx - 1, 0)]);\n"
+        "      } else if (e.key === 'Enter' && rows.length) {\n"
+        "        e.preventDefault();\n"
+        "        (active || rows[0]).click();\n"
+        "      }\n"
+        "    });\n"
+        "  }\n"
+        "  componentDidUpdate() {\n"
+        "    const el = this.rail();\n"
+        "    if (el && !el.scrollLeft && el.scrollWidth > el.clientWidth) "
+        "{\n"
+        "      this.snapWeekRail();\n"
+        "    }\n"
+        "    if (this.state.modal === 'search' && !this._searchWasOpen) {\n"
+        "      this._searchWasOpen = true;\n"
+        "      setTimeout(() => {\n"
+        "        const box = document.querySelector("
+        "'[data-port-region=\"overlay-search\"]');\n"
+        "        const input = box && box.querySelector('input');\n"
+        "        if (input) { input.focus(); }\n"
+        "      }, 0);\n"
+        "    } else if (this.state.modal !== 'search') {\n"
+        "      this._searchWasOpen = false;\n"
+        "    }\n"
+        "  }",
+        "the whole of the Find-a-student keyboard fix, folded into the "
+        "rail's own two lifecycle hooks rather than declared a second time: "
+        "focus-on-open, Esc-closes-and-returns-focus, and the result list "
+        "as a listbox the arrow keys and Enter both work on."
+    ),
 
     # ══ ⊕ MRB-328 J3, 6 Sep 2026 · "1 CLASSES · 4 STUDENTS" ════════════
     #
