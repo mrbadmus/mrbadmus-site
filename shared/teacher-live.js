@@ -839,6 +839,13 @@
         scope_ref: a.scope_ref || "",
         set_subject: a.set_subject || "",
         paper: (a.paper == null) ? null : a.paper,
+        // ⊕ Stream J, 25 Sep 2026 (experience run, item 4) — the fourth
+        // answer Edit re-opens the sheet on. `shared/set-work.js`'s `edit()`
+        // already knew what to do with `o.note` (it only shows the field,
+        // never sends it back unless the teacher actually touches it or it
+        // arrived non-empty) — it was simply never PASSED one, so the field
+        // opened blank over a set that had a real note in the database.
+        note: a.teacher_note || "",
         released: released,
         state: state,
         // ⊕ Mide's 23 Sep 2026 ruling — the genuine deadline test, for the

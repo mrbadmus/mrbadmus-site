@@ -11308,7 +11308,7 @@ componentDidUpdate() {
           subject: p.set_subject || 'all',
           paper: p.paper == null ? 'both' : String(p.paper),
           releaseAt: p.release_at, dueAt: p.due_at,
-          released: p.released }); },
+          released: p.released, note: p.note || '' }); },
         cancelDel: (e) => { e.stopPropagation(); this.setState({ delArm: '' }); },
         del: (e) => {
           e.stopPropagation();
@@ -11363,7 +11363,7 @@ componentDidUpdate() {
           subject: pp.set_subject || 'all',
           paper: pp.paper == null ? 'both' : String(pp.paper),
           releaseAt: pp.release_at, dueAt: pp.due_at,
-          released: pp.released }),
+          released: pp.released, note: pp.note || '' }),
         cancelDel: () => this.setState({ delArm: '' }),
         del: () => {
           if (s.delArm !== pp.id) { this.setState({ delArm: pp.id }); return; }
