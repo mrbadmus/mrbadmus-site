@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink);">
+  <div class="ks3-endmatter">
+    <section>
+      <h2>Previous and next</h2>
+      <ul>
+        <sc-for list="{{ pn }}" as="l" hint-placeholder-count="2">
+          <li><a href="{{ l.href }}"><span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--ks3-ink-muted);">{{ l.tag }}</span>{{ l.label }}<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+        </sc-for>
+      </ul>
+    </section>
+    <section>
+      <h2>Connects to</h2>
+      <ul>
+        <sc-for list="{{ connects }}" as="l" hint-placeholder-count="2">
+          <li><a href="{{ l.href }}">{{ l.label }}<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+        </sc-for>
+      </ul>
+    </section>
+    <section class="ks3-tutor">
+      <h2>Ask Mr Badmus AI</h2>
+      <p>{{ tutorLine }}</p>
+      <a class="ks3-tutor-cta" href="#s-ladder">Ask about this lesson</a>
+    </section>
+  </div>
+  <p class="ks3-legal">{{ legal }}</p>
+  <footer class="ks3-footer" style="margin-top: 30px;"><p>MrBadmusAI · GCSE {{ subject }}</p></footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1000},&quot;prev&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{href:string,label:string}&quot;},&quot;next&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{href:string,label:string}&quot;},&quot;connects&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{href:string,label:string}&gt;&quot;},&quot;tutorLine&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;legal&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;subject&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Chemistry&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const p = this.props;
+    const pn = [];
+    if (p.prev) pn.push({ tag: 'Back · ', href: p.prev.href, label: p.prev.label });
+    if (p.next) pn.push({ tag: 'Next · ', href: p.next.href, label: p.next.label });
+    return { pn, connects: p.connects || [], tutorLine: p.tutorLine || '', legal: p.legal || '', subject: p.subject || 'Chemistry' };
+  }
+}
+</script>
+</body>
+</html>

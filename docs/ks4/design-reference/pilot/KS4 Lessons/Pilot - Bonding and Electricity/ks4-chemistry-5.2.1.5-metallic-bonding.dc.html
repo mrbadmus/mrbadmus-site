@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metallic bonding · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Bonding, structure and properties" title="Metallic bonding" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.2.1.5 · Model</p>
+        <h1>Metallic bonding</h1>
+        <p class="ks3-bigq">One picture of a metal explains why a copper wire carries current, a pan handle gets hot and gold can be beaten thinner than paper. What is that picture?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">A grain of gold, hammered into a sheet the size of a tablecloth.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Gold-beaters hammer one gram of gold into a sheet close to a square metre in area, only a few hundred atoms thick. It never cracks. Hit a grain of salt, another giant structure of charged particles, and it shatters at the first blow.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What must be true inside gold for it to bend instead of break?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>In a metal, every atom gives up its outer electrons. Those electrons do not belong to any one atom any more: they are <strong>delocalised</strong>, free to move through the whole structure. What is left behind is a regular lattice of <strong>positive metal ions</strong>, sitting in a <strong>sea of delocalised electrons</strong>. The <strong>metallic bond</strong> is the strong electrostatic attraction between the positive ions and that sea. Before you test the model, check you have the bond in the right place.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+        <p class="ks3-mis-quote">&ldquo;In a metal, each atom is bonded to the atoms next to it.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Describe" prompt="What is wrong with that description?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is the flaw." wrong-word="That keeps the wrong idea." on-commit="{{ onThink }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The electron-sea workbench</p>
+            <h2 style="margin: 6px 0 0;">One model. Three experiments. Call each one first.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ benchProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ tools }}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ benchFig }}</div>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">{{ benchCaption }}</p>
+        <sc-if value="{{ benchAsk }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 12px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ benchPrompt }}</p>
+            <div style="display: flex; flex-direction: column; gap: 9px;">
+              <sc-for list="{{ benchOpts }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ benchReplyOn }}"><p data-arrive="1" role="status" style="{{ benchReplyStyle }}"><strong>{{ benchWord }}</strong> {{ benchReply }}</p></sc-if>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Link property to model" title="Which part of the model explains it?" prompt="Six properties of metals. Each one comes from one feature of the electron-sea model." bins="{{ sBins }}" items="{{ sItems }}" done-note="Name the feature every time: delocalised electrons, layers of ions sliding, or strong attraction between ions and electrons. That naming is what earns the mark." on-done="{{ onSort }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the model: positive ions, delocalised electrons, the attraction between them.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Property, then the feature of the model that causes it.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Suggest</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Apply the model to a use you have not been taught.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">A metal is a lattice of positive ions in a sea of delocalised electrons. The metallic bond is the strong attraction between the ions and the electrons, not between atoms.</p>
+      </div>
+
+      <section style="margin: 28px 0 0; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Examiner tip</p>
+        <p style="margin: 8px 0 0; font-size: 19px; line-height: 1.6;">{{ examTip }}</p>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="metallic-bonding" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Metallic bonding" spec="AQA 5.2.1.5" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,600px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Mixing up the metallic bond with an ionic one?" legal="The workbench is a two-dimensional model of a metal lattice with one delocalised electron per ion. In the battery view the electron drift is hugely speeded up so that it can be seen; real drift speeds are fractions of a millimetre per second. In the heat view, energy is shown spreading by stronger vibration of the ions and faster electrons." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Beaten gold', short: 'HOOK' },
+  { id: 's-think', label: 'Where is the bond?', short: 'THINK' },
+  { id: 's-bench', label: 'Electron-sea workbench', short: 'BENCH' },
+  { id: 's-sort', label: 'Property to model', short: 'LINK' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const TOOLS = [
+  { id: 'battery', label: 'Connect a battery', q: 'When the battery is connected, what moves through the solid metal?',
+    o: ['The delocalised electrons drift towards the positive terminal', 'The positive ions travel along the wire', 'Nothing can move: the metal is a solid'], a: 0,
+    yes: 'The ions stay in the lattice. The sea of delocalised electrons drifts one way, and moving charge is a current. This works in the solid, with no melting needed.',
+    no: ['', 'The ions are held in the lattice and only vibrate. It is the delocalised electrons that move and carry the charge.', 'The ions are fixed, but the electrons were never fixed. They are free to move even in the solid.'] },
+  { id: 'heat', label: 'Heat the left end', q: 'You heat the left end. How does the energy reach the right end so quickly?',
+    o: ['The delocalised electrons gain energy and carry it through the metal', 'Hot ions travel from one end to the other', 'Heat rises out of the top of the metal'], a: 0,
+    yes: 'The ions at the hot end vibrate harder, and the fast-moving delocalised electrons carry energy through the lattice. The same electrons explain both kinds of conduction.',
+    no: ['', 'The ions only vibrate more strongly in place; they never leave their positions.', 'Conduction runs along the metal, whichever way it points.'] },
+  { id: 'hammer', label: 'Hammer the top', q: 'You strike the top of the metal. What happens to the layers of ions?',
+    o: ['A layer slides over the one below and the metal changes shape', 'The layers shatter apart', 'The ions squash to a smaller size'], a: 0,
+    yes: 'The layer slides, and the sea of electrons flows round the ions in their new places, so the attraction is never lost. That is why metals are malleable and ductile.',
+    no: ['', 'Shattering is what ionic crystals do, when like charges are pushed together. Here the electron sea keeps holding every ion.', 'Ions keep their size. What changes is where the layers sit.'] }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, think: null, tool: 0, pred: {}, t: 0, sort: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.tick = setInterval(() => { const tl = TOOLS[this.state.tool]; if (this.state.pred[tl.id] !== undefined && !this.reduced) this.setState((st) => ({ t: st.t + 1 })); }, 90);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';text-align:left;';
+  }
+  bench(tool, on, t) {
+    const D = window.KS4D; const cols = 7, rows = 3, s = 96, x0 = 80, y0 = 80; let b = '';
+    const W = x0 * 2 + (cols - 1) * s, H = y0 * 2 + (rows - 1) * s + (tool === 'battery' ? 60 : 30);
+    const reduced = this.reduced;
+    const slide = tool === 'hammer' && on ? (reduced ? s : Math.min(s, t * 12)) : 0;
+    let seed = 13; const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const L = x0 - 40, Rr = x0 + (cols - 1) * s + 40, span = Rr - L;
+    if (tool === 'heat' && on) b += '<rect x="20" y="' + (y0 - 50) + '" width="26" height="' + ((rows - 1) * s + 100) + '" rx="8" fill="' + D.C.red + '" opacity="0.85"/>' + D.T(33, y0 - 60, 'heat', 18, { fill: D.C.red });
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      let x = x0 + c * s + (r === 0 ? slide : 0), y = y0 + r * s;
+      if (tool === 'heat' && on) { const reach = reduced ? cols : Math.min(cols, t / 6); const amp = c < reach ? 7 * (1 - c / (cols + 2)) : 1.5; x += Math.sin(t * 1.9 + c * 1.3 + r) * amp; y += Math.cos(t * 2.3 + c) * amp; }
+      b += D.circ(x, y, 26, D.C.metal, D.C.stroke, 2) + D.T(x, y + 8, '+', 24);
+    }
+    const n = cols * rows;
+    for (let i = 0; i < n; i++) {
+      let ex = L + rnd() * span, ey = y0 - 40 + rnd() * ((rows - 1) * s + 80);
+      const gx = Math.round((ex - x0) / s), gy = Math.round((ey - y0) / s);
+      if (Math.hypot(ex - (x0 + gx * s), ey - (y0 + gy * s)) < 36) ey += 48;
+      if (tool === 'battery' && on) ex = L + ((ex - L + (reduced ? 0 : t * 7)) % span);
+      if (tool === 'heat' && on && !reduced) { ex += Math.sin(t * 3 + i) * 10; ey += Math.cos(t * 2.7 + i * 2) * 8; }
+      if (tool === 'hammer' && on && ey < y0 + s / 2) ex += slide * 0.9;
+      b += D.circ(Math.min(Rr + 20, ex), ey, 6, D.C.e);
+    }
+    if (tool === 'battery') {
+      const by = H - 30;
+      b += D.line(L - 10, y0, L - 10, by) + D.line(Rr + 10, y0, Rr + 10, by) + D.line(L - 10, by, W / 2 - 9, by) + D.line(W / 2 + 9, by, Rr + 10, by);
+      b += D.line(W / 2 - 9, by - 11, W / 2 - 9, by + 11, 7) + D.line(W / 2 + 9, by - 22, W / 2 + 9, by + 22);
+      b += D.T(W / 2 - 40, by - 30, '\u2212', 26) + D.T(W / 2 + 40, by - 30, '+', 26);
+      if (on) b += D.arrow(W / 2 - 140, y0 - 58, W / 2 + 140, y0 - 58) + D.T(W / 2, y0 - 66, 'electron drift', 18);
+    }
+    if (tool === 'hammer' && on) b += D.arrow(x0, y0 - 64, x0 + 150, y0 - 64) + D.T(x0 + 75, y0 - 72, 'top layer slides', 18, { anchor: 'middle' });
+    return D.svg(W, H, b, tool === 'battery' ? (on ? 'Electrons drifting through the lattice towards the positive terminal while the ions stay put' : 'Metal lattice wired to a cell, switched off') :
+      tool === 'heat' ? (on ? 'Ions near the heated end vibrate strongly and the vibration spreads along the lattice' : 'Metal lattice, not yet heated') :
+      (on ? 'The top layer of ions has slid one place along; the electron sea still surrounds every ion' : 'Metal lattice before being struck'));
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const slug = 'metallic-bonding';
+    const ready = !!(s.libReady && K && D);
+    const nPred = Object.keys(s.pred).length;
+    const done = [s.hook !== null, s.think !== null, nPred === 3, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const tl = TOOLS[s.tool]; const pick = s.pred[tl.id]; const on = pick !== undefined; const ok = pick === tl.a;
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    return Object.assign({}, R, {
+      video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      endPrev: { href: 'ks4-chemistry-5.2.1.4-covalent-bonding.dc.html', label: 'Covalent bonding' },
+      endNext: { href: 'ks4-chemistry-5.2.2.1-states-of-matter.dc.html', label: 'States of matter' },
+      endConnects: [{ href: 'ks4-chemistry-5.2.2.7-metals-alloys.dc.html', label: 'Metals and alloys' }, { href: 'ks4-chemistry-5.2.1.3-ionic-compounds.dc.html', label: 'Ionic compounds' }],
+      hookOptions: [
+        { text: 'Its particles can shift past each other without the bonding breaking', reply: 'That is the property the model has to explain. Test it on the bench below.' },
+        { text: 'Gold atoms are softer than sodium and chloride ions', reply: 'Softness of particles is not the reason. How they are held together is.' },
+        { text: 'Gold has no charged particles, so nothing repels', reply: 'Gold is full of charged particles. You are about to meet them.' },
+        { text: 'The hammering melts the gold a little at a time', reply: 'Gold-beating is done cold, far below gold\u2019s 1064 \u00b0C melting point.' }
+      ],
+      hookReveal: 'In gold, layers of particles can slide over one another and the whole structure stays bonded. Salt has no way to do that. The difference lies in what holds each structure together.',
+      onHook: (i) => this.setState({ hook: i }),
+      thinkOptions: [
+        { text: 'The atoms have given up their outer electrons. The bond is between the positive ions and the sea of delocalised electrons.', correct: true, reply: 'The bond is ion-to-electron-sea, spread through the whole metal.' },
+        { text: 'Nothing: metal atoms share electron pairs with their neighbours.', correct: false, reply: 'Sharing fixed pairs is covalent bonding. Metal electrons are not tied to any pair of atoms.' },
+        { text: 'The atoms are bonded to each other by electrons transferred between them.', correct: false, reply: 'Transfer makes positive and negative ions. In a metal there are no negative ions.' },
+        { text: 'The ions repel each other, so there is no bond at all.', correct: false, reply: 'The ions do repel, but the electron sea attracts every one of them more strongly.' }
+      ],
+      thinkReveal: 'Write it this way every time: positive metal ions, delocalised electrons, strong electrostatic attraction between them. Never &ldquo;between atoms&rdquo;.'.replace(/&ldquo;|&rdquo;/g, '\u201c'),
+      onThink: (i) => this.setState({ think: i }),
+      benchProgress: nPred + ' of 3 experiments',
+      tools: TOOLS.map((x, i) => ({ label: x.label + (s.pred[x.id] !== undefined ? ' \u00b7 done' : ''), pressed: s.tool === i, style: this.seg(s.tool === i), onClick: () => this.setState({ tool: i, t: 0 }) })),
+      benchFig: ready ? K.fig(this.bench(tl.id, on, s.t), '') : null,
+      benchCaption: on ? (tl.id === 'battery' ? 'Positive ions stay in place · delocalised electrons drift' : tl.id === 'heat' ? 'The hot end vibrates hardest · energy spreads along' : 'The top layer has slid one place · every ion still in the sea') : 'Metal ions (+) in a sea of delocalised electrons (dots)',
+      benchAsk: !on, benchPrompt: 'Commit first. ' + tl.q,
+      benchOpts: tl.o.map((o, i) => ({ label: o, style: this.seg(false), onClick: () => this.setState((st) => ({ pred: Object.assign({}, st.pred, { [tl.id]: i }), t: 0 })) })),
+      benchReplyOn: on, benchWord: ok ? 'Yes.' : 'Watch what happens instead.', benchReply: on ? (ok ? tl.yes : tl.no[pick] + ' ' + tl.yes) : '',
+      benchReplyStyle: 'margin:14px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      sBins: [{ id: 'e', label: 'Delocalised electrons move' }, { id: 'l', label: 'Layers of ions slide' }, { id: 'f', label: 'Strong ion\u2013electron attraction' }],
+      sItems: [
+        { text: 'Copper wire carries an electric current', bin: 'e', why: 'Moving delocalised electrons are a flow of charge.' },
+        { text: 'A metal spoon handle heats up in hot soup', bin: 'e', why: 'Delocalised electrons carry energy quickly through the lattice.' },
+        { text: 'Aluminium can be rolled into foil', bin: 'l', why: 'Malleable: layers slide without the bonding breaking.' },
+        { text: 'Copper can be drawn out into wire', bin: 'l', why: 'Ductile: the same sliding of layers.' },
+        { text: 'Tungsten melts only above 3400 \u00b0C', bin: 'f', why: 'Many strong electrostatic attractions need a lot of energy to overcome.' },
+        { text: 'Iron boils only at about 2860 \u00b0C', bin: 'f', why: 'Boiling means overcoming the attraction completely, which takes even more energy.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      examTip: ready ? K.tip(slug) : '',
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'Name the particles that are free to move in a metal') || K.find(slug, R.route, 'Describe the structure of a metal') || { options: [] }, { command: 'Describe', marks: 1, why: 'Positive ions in a lattice, surrounded by delocalised electrons.' }),
+        r2: { kind: 'data', command: 'Explain', marks: 3, prompt: 'Each observation below is explained by one feature of the metallic bonding model. Choose the feature for each.',
+          parts: [
+            { label: 'A copper saucepan heats evenly all over its base.', options: ['delocalised electrons carry energy', 'layers of ions slide', 'strong attraction between ions and electrons'], answer: 0 },
+            { label: 'Gold can be hammered into very thin leaf.', options: ['delocalised electrons carry energy', 'layers of ions slide', 'strong attraction between ions and electrons'], answer: 1 },
+            { label: 'A tungsten filament stays solid at 2500 \u00b0C.', options: ['delocalised electrons carry energy', 'layers of ions slide', 'strong attraction between ions and electrons'], answer: 2 }
+          ],
+          right: 'Three features, three properties.', wrong: 'Ask what the property needs: something moving (electrons), something changing shape (layers), or something hard to overcome (the attraction).',
+          model: ['Saucepan: delocalised electrons transfer energy through the metal.', 'Gold leaf: layers of ions slide over each other; the electron sea holds them.', 'Tungsten: many strong electrostatic attractions between ions and electrons need a lot of energy to overcome.'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why metals are good conductors of electricity. Put the links in order.',
+          links: ['Metal atoms lose their outer electrons, which become delocalised.', 'The delocalised electrons are free to move through the whole structure.', 'When a potential difference is applied, the electrons move through the metal and carry charge.'],
+          herrings: [{ text: 'The positive metal ions move through the lattice and carry the charge.', why: 'The ions stay in the lattice. Only the delocalised electrons move.' }, { text: 'The metal has to melt before charge can flow.', why: 'That is ionic compounds. Metals conduct as solids.' }] },
+        r4: { command: 'Explain', marks: 4, question: 'Use the metallic bonding model to explain why metals have high melting points and why they can be bent into shape.',
+          points: ['Metals have a lattice of positive ions surrounded by delocalised electrons.', 'There is strong electrostatic attraction between the positive ions and the delocalised electrons, and a lot of energy is needed to overcome it: high melting point.', 'The layers of ions can slide over each other.', 'The delocalised electrons still surround the ions in their new positions, so the bonding is not broken and the metal bends instead of breaking.'],
+          reject: ['\u201cThe bonds between metal atoms are strong.\u201d The attraction is between ions and electrons.', '\u201cThe covalent bonds are strong.\u201d Metals have no covalent bonds.'] }
+      } : {},
+      keyLines: ['Metals are giant structures of positive ions in a regular lattice.', 'The outer electrons are delocalised: free to move through the whole metal.', 'The metallic bond is the strong electrostatic attraction between the positive ions and the delocalised electrons.', 'Conduct electricity and heat, even as solids: the delocalised electrons move and carry charge and energy.', 'Malleable and ductile: layers of ions slide, and the electron sea keeps holding them.', 'High melting points: a lot of energy is needed to overcome the strong attraction.'],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ionic bonding · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Bonding, structure and properties" title="Ionic bonding" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.2.1.2 · Process</p>
+        <h1>Ionic bonding</h1>
+        <p class="ks3-bigq">A soft metal and a poisonous gas become the salt on your chips. Where do the electrons go, and what actually holds the salt together?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Hot sodium, a jar of chlorine, a flash of yellow light.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Drop hot sodium into chlorine gas and it burns with a bright yellow flame. When the smoke clears, the jar is coated in white crystals of sodium chloride. A sodium atom has one electron in its outer shell. A chlorine atom has seven.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Where does sodium's single outer electron end up?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>A full outer shell is stable: that is why the noble gases barely react. Sodium (2.8.1) is one electron past a full shell; chlorine (2.8.7) is one short. When a <strong>metal</strong> meets a <strong>non-metal</strong>, the metal atom loses its outer electrons and the non-metal atom gains them. Both end up with the electron arrangement of a noble gas. Neither is an atom any more: each is an <strong>ion</strong>, a particle with a charge. Watch it happen, one step at a time, and call each step before you see it.</p>
+      </section>
+
+      <section id="s-watch" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Worked · call each step</p>
+            <h2 style="margin: 6px 0 0;">{{ wTitle }}</h2>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <sc-for list="{{ wTabs }}" as="t" hint-placeholder-count="2">
+              <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" disabled="{{ t.disabled }}" style="{{ t.style }}">{{ t.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin-top: 16px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ wFig }}</div>
+        <p style="margin: 10px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ wCaption }}</p>
+        <sc-if value="{{ wAsking }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ wPrompt }}</p>
+            <div style="display: flex; flex-direction: column; gap: 9px;">
+              <sc-for list="{{ wOptions }}" as="o" hint-placeholder-count="3">
+                <button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-for list="{{ wLog }}" as="l" hint-placeholder-count="0">
+          <div data-arrive="1" role="status" style="{{ l.style }}">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ l.head }}</p>
+            <p style="margin: 4px 0 0; font-size: 18px; line-height: 1.55;"><strong>{{ l.word }}</strong> {{ l.text }}</p>
+          </div>
+        </sc-for>
+        <sc-if value="{{ wConfront }}">
+          <div data-arrive="1" class="ks3-misconception" style="margin-top: 16px; padding: 20px 22px; border-radius: var(--ks3-r-panel);">
+            <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · the most common ionic error</p></div>
+            <p class="ks3-mis-quote">&ldquo;The ionic bond is the transfer of the electron.&rdquo;</p>
+            <p style="margin: 0;">The transfer is over in an instant, and it only makes the ions. What holds the crystal together afterwards, for as long as the salt exists, is the pull between the positive and negative ions. That attraction is the bond. An answer that stops at &ldquo;the electron transfers&rdquo; describes how the ions were made and never mentions the bond.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>The charge on an ion comes from counting electrons. A Group 1 metal loses one, so it becomes 1+. Group 2 loses two: 2+. A Group 7 non-metal gains one: 1−. Group 6 gains two: 2−. The ions are held by strong <strong>electrostatic</strong> forces acting in every direction, which is why ionic compounds are giant lattices, not pairs. Now draw one yourself.</p>
+      </section>
+
+      <section id="s-draw" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Your turn · draw the dot-and-cross diagram</p>
+        <h2 style="margin: 6px 0 0;">Move the electrons. Label the charges. Then check it.</h2>
+        <p style="margin: 10px 0 0; max-width: 58ch;">Metal electrons are crosses, non-metal electrons are dots. An exam diagram earns its marks for three things: the right electrons moved, a full outer shell on each ion, and the charge written on each bracket.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ dTabs }}" as="t" hint-placeholder-count="4">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ dFig }}</div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+            <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Electrons moved</p>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <button type="button" aria-label="One fewer electron" onClick="{{ onLess }}" style="{{ stepBtn }}">−</button>
+              <span aria-live="polite" style="font-family: var(--ks3-font-mono); font-size: 24px; min-width: 2ch; text-align: center;">{{ dMoved }}</span>
+              <button type="button" aria-label="One more electron" onClick="{{ onMore }}" style="{{ stepBtn }}">+</button>
+            </div>
+          </div>
+          <label style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border); display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ dMetalLabel }}</span>
+            <select class="ks3-sim-units" value="{{ dMq }}" onChange="{{ onMq }}" style="font-size: 18px; min-height: 48px;">
+              <option value="">no charge</option>
+              <sc-for list="{{ chargeOpts }}" as="c" hint-placeholder-count="6"><option value="{{ c.value }}">{{ c.label }}</option></sc-for>
+            </select>
+          </label>
+          <label style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border); display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ dNonLabel }}</span>
+            <select class="ks3-sim-units" value="{{ dXq }}" onChange="{{ onXq }}" style="font-size: 18px; min-height: 48px;">
+              <option value="">no charge</option>
+              <sc-for list="{{ chargeOpts }}" as="c" hint-placeholder-count="6"><option value="{{ c.value }}">{{ c.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <div style="margin-top: 14px;"><button type="button" class="ks3-reveal-btn" onClick="{{ onDCheck }}">Check my diagram</button></div>
+        <sc-if value="{{ dChecked }}">
+          <div data-arrive="1" role="status" style="{{ dVerdictStyle }}">
+            <sc-for list="{{ dLines }}" as="l" hint-placeholder-count="3">
+              <p style="margin: 0 0 6px; font-size: 18px; line-height: 1.5;"><strong>{{ l.word }}</strong> {{ l.text }}</p>
+            </sc-for>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-forge" class="ks3-block" style="scroll-margin-top: 92px; background: var(--ks3-band);">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Formula forge</p>
+            <h2 style="margin: 6px 0 0;">{{ fTitle }}</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ fProgress }}</p>
+        </div>
+        <p style="margin: 10px 0 0; max-width: 58ch;">{{ fLead }}</p>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Ions in the box</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" onClick="{{ onAddM }}" disabled="{{ fLocked }}" style="{{ fBtnStyle }}">{{ fAddM }}</button>
+              <button type="button" onClick="{{ onAddX }}" disabled="{{ fLocked }}" style="{{ fBtnStyle }}">{{ fAddX }}</button>
+              <button type="button" onClick="{{ onClearF }}" disabled="{{ fLocked }}" style="{{ fBtnStyle }}">Empty the box</button>
+            </div>
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 20px;">{{ fTally }}</p>
+          </div>
+          <div style="padding: 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">Charge meter</p>
+            <div aria-hidden="true" style="margin-top: 12px; position: relative; height: 14px; border-radius: 99px; background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <span style="position: absolute; left: 50%; top: -6px; bottom: -6px; width: 2px; background: var(--ks3-ink);"></span>
+              <span style="{{ fNeedle }}"></span>
+            </div>
+            <p aria-live="polite" style="margin: 12px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 28px;">{{ fNet }}</p>
+          </div>
+        </div>
+        <sc-if value="{{ fZero }}">
+          <div data-arrive="1" role="status" style="margin-top: 14px; padding: 16px 18px; border-radius: var(--ks3-r-panel); background: var(--ks3-accent-tint); border: 2px solid var(--ks3-accent);">
+            <p style="margin: 0; font-size: 18px; line-height: 1.55;"><strong>Balanced at zero.</strong> {{ fDone }}</p>
+            <sc-if value="{{ fHasNext }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onNextF }}" style="margin-top: 12px;">Next compound</button></sc-if>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say what happens, in order. No reason needed.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Say why. Link each step to the next with &ldquo;so&rdquo; or &ldquo;because&rdquo;.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Deduce</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Work it out from what you are given. Here: from the group numbers.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Draw</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Marks are for content, not art: electrons, brackets, charges.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Electron transfer makes the ions. The ionic bond is the strong electrostatic attraction between the oppositely charged ions, and the charges always balance to zero.</p>
+      </div>
+
+      <section style="margin: 28px 0 0; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Examiner tip</p>
+        <p style="margin: 8px 0 0; font-size: 19px; line-height: 1.6;">{{ examTip }}</p>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="ionic-bonding" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Ionic bonding" spec="AQA 5.2.1.2" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,600px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure which way the electrons go, or how many?" legal="Dot-and-cross figures show every shell, with the metal's electrons as crosses and the non-metal's as dots. Real ions do not sit in neat pairs: each is surrounded on all sides by ions of the opposite charge in a giant lattice. GCSE draws only compounds of Group 1 and 2 metals with Group 6 and 7 non-metals; the forge adds nitride and aluminium ions for charge-balancing practice only." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Sodium in chlorine', short: 'HOOK' },
+  { id: 's-watch', label: 'Call each step', short: 'WATCH' },
+  { id: 's-draw', label: 'Draw it yourself', short: 'DRAW' },
+  { id: 's-forge', label: 'Formula forge', short: 'FORGE' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const NAMES = { Na: 'sodium', Cl: 'chlorine', Mg: 'magnesium', O: 'oxygen', Li: 'lithium', F: 'fluorine', K: 'potassium', Ca: 'calcium', S: 'sulfur' };
+const ION = { Cl: 'chloride', O: 'oxide', F: 'fluoride', S: 'sulfide' };
+const WORKED = [{ m: 'Na', x: 'Cl', n: 1 }, { m: 'Mg', x: 'O', n: 2 }];
+const DRAW = [{ m: 'Li', x: 'F', n: 1 }, { m: 'K', x: 'Cl', n: 1 }, { m: 'Ca', x: 'O', n: 2 }, { m: 'Mg', x: 'S', n: 2 }];
+const FORGE = [
+  { name: 'aluminium oxide', m: 'Al', mc: 3, x: 'O', xc: 2, nm: 2, nx: 3, formula: 'Al\u2082O\u2083', worked: true },
+  { name: 'lithium sulfide', m: 'Li', mc: 1, x: 'S', xc: 2, nm: 2, nx: 1, formula: 'Li\u2082S' },
+  { name: 'calcium nitride', m: 'Ca', mc: 2, x: 'N', xc: 3, nm: 3, nx: 2, formula: 'Ca\u2083N\u2082' }
+];
+const SUB = (n) => n === 1 ? '' : String(n).split('').map((d) => '\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089'[+d]).join('');
+const SUP = (n) => (Math.abs(n) === 1 ? '' : '\u2070\u00b9\u00b2\u00b3'[Math.abs(n)]) + (n > 0 ? '\u207a' : '\u207b');
+const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, w: 0, wa: [[], []], dp: 0, moved: 0, mq: '', xq: '', dChecked: false, dOk: false, f: 0, fm: 0, fx: 0, fDone: [], ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (dis && !on ? 'opacity:.5;' : '');
+  }
+  gates(p) {
+    const M = NAMES[p.m], X = NAMES[p.x];
+    return [
+      { q: 'Which atom will lose electrons?', o: [cap(M), cap(X), 'Neither: they share a pair'], a: 0,
+        yes: cap(M) + ' is the metal. Its ' + (p.n === 1 ? 'single outer electron moves' : p.n + ' outer electrons move') + ' to ' + X + '.',
+        no: ['', 'It is the other way round. ' + cap(X) + ' is the non-metal and gains electrons; ' + M + ' loses them.', 'Sharing happens between two non-metals. ' + cap(M) + ' is a metal, so electrons transfer.'] },
+      { q: 'What charge does the ' + M + ' ion carry now?', o: [p.n + '+', p.n + '\u2212', 'None: its shell is full'], a: 0,
+        yes: 'It lost ' + p.n + ' negative electron' + (p.n > 1 ? 's' : '') + ' and kept all its protons, so it is ' + p.n + '+. ' + cap(X) + ' gained them, so it is ' + p.n + '\u2212.',
+        no: ['', 'Losing negative electrons leaves the protons in charge, so the metal ion is positive.', 'A full shell does not mean no charge. It has ' + p.n + ' more proton' + (p.n > 1 ? 's' : '') + ' than electrons now.'] },
+      { q: 'What now holds the two ions together?', o: ['The transfer of the electron' + (p.n > 1 ? 's' : ''), 'The strong electrostatic attraction between the oppositely charged ions', 'A pair of electrons shared between them'], a: 1,
+        yes: 'That attraction is the ionic bond. It acts in every direction, so each ion pulls on all its neighbours in the lattice.',
+        no: ['The transfer has already finished. It made the ions; it is not what holds them.', '', 'Nothing is shared here. Every electron now belongs to one ion or the other.'] }
+    ];
+  }
+  drawFig(p, moved, mq, xq) {
+    const D = window.KS4D; const cm = D.CONFIG[p.m].slice(), cx = D.CONFIG[p.x].slice();
+    let mm = cm.slice(), left = moved;
+    while (left > 0 && mm.length) { const k = mm.length - 1; const take = Math.min(left, mm[k]); mm[k] -= take; left -= take; if (mm[k] === 0) mm.pop(); }
+    const give = moved - left;
+    const xx = cx.slice(); xx[xx.length - 1] += give;
+    const kx = xx.map((n, k) => { if (k < xx.length - 1) return 'o'; let s = ''; for (let i = 0; i < n; i++) s += i >= n - give ? 'x' : 'o'; return s; });
+    const body = D.atom(230, 190, p.m, mm, { fill: D.C.metal, kind: 'x', r0: 36, step: 26, charge: mq ? +mq : 0 }) +
+      D.atom(650, 190, p.x, xx, { fill: D.C.nm, kinds: kx, r0: 36, step: 26, charge: xq ? +xq : 0 }) +
+      D.T(230, 360, p.m + '  ' + (mm.join('.') || '0'), 22, { weight: 'normal' }) + D.T(650, 360, p.x + '  ' + xx.join('.'), 22, { weight: 'normal' });
+    return { svg: D.svg(900, 380, body, 'Your dot-and-cross diagram of ' + NAMES[p.m] + ' and ' + NAMES[p.x] + ': ' + moved + ' electrons moved'), mm, xx };
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const slug = 'ionic-bonding';
+    const ready = !!(s.libReady && K && D);
+    // worked stepper
+    const wp = WORKED[s.w]; const G = this.gates(wp); const ans = s.wa[s.w];
+    const stage = Math.min(2, ans.length);
+    const wDone = [s.wa[0].length === 3, s.wa[1].length === 3];
+    const done = [s.hook !== null, wDone[0], s.dOk, s.fDone.length >= 2, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const wLog = ans.map((a, k) => {
+      const g = G[k]; const ok = a === g.a;
+      return { head: 'Step ' + (k + 1) + ' · you said: ' + g.o[a], word: ok ? 'Yes.' : 'Not this.', text: ok ? g.yes : g.no[a] + ' ' + g.yes,
+        style: 'margin-top:12px;padding:14px 16px;border-radius:14px;border:2px solid ' + (ok ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);') };
+    });
+    const asking = ans.length < 3;
+    const gq = asking ? G[ans.length] : null;
+    // drawing bench
+    const dp = DRAW[s.dp];
+    const df = ready ? this.drawFig(dp, s.moved, s.mq, s.xq) : null;
+    const fullM = df && (df.mm.length === 0 || df.mm[df.mm.length - 1] === 8 || (df.mm.length === 1 && df.mm[0] === 2));
+    const fullX = df && df.xx[df.xx.length - 1] === 8;
+    const dLines = [];
+    if (s.dChecked && df) {
+      const okMove = s.moved === dp.n, okM = +s.mq === dp.n, okX = +s.xq === -dp.n;
+      dLines.push({ word: okMove ? 'Electrons: right.' : 'Electrons: look again.', text: okMove ? cap(NAMES[dp.m]) + ' has lost its outer shell and ' + NAMES[dp.x] + ' now has eight.' : (s.moved < dp.n ? cap(NAMES[dp.x]) + '\u2019s outer shell is not full yet.' : cap(NAMES[dp.x]) + ' now has more than eight in its outer shell, and ' + NAMES[dp.m] + ' has started losing inner electrons.') });
+      dLines.push({ word: okM ? 'Metal charge: right.' : 'Metal charge: look again.', text: okM ? 'Losing ' + dp.n + ' electron' + (dp.n > 1 ? 's' : '') + ' leaves ' + dp.n + '+.' : 'Count the electrons it lost. Each one leaves one unbalanced proton, so the charge is positive.' });
+      dLines.push({ word: okX ? 'Non-metal charge: right.' : 'Non-metal charge: look again.', text: okX ? 'Gaining ' + dp.n + ' makes it ' + dp.n + '\u2212, and the two charges cancel.' : 'Count the electrons it gained. Each extra electron adds one negative charge.' });
+    }
+    const dOkNow = s.dChecked && s.moved === dp.n && +s.mq === dp.n && +s.xq === -dp.n;
+    // forge
+    const fp = FORGE[s.f];
+    const fWorked = fp.worked && !s.fDone.includes(0);
+    const fm = fWorked ? fp.nm : s.fm, fx = fWorked ? fp.nx : s.fx;
+    const net = fm * fp.mc - fx * fp.xc;
+    const fZero = fm > 0 && fx > 0 && net === 0;
+    const fMin = fZero && fm === fp.nm && fx === fp.nx;
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const charges = [3, 2, 1, -1, -2, -3];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      endPrev: { href: 'ks4-chemistry-5.2.1.1-chemical-bonds.dc.html', label: 'Chemical bonds' },
+      endNext: { href: 'ks4-chemistry-5.2.1.3-ionic-compounds.dc.html', label: 'Ionic compounds' },
+      endConnects: [{ href: 'ks4-chemistry-5.2.1.4-covalent-bonding.dc.html', label: 'Covalent bonding' }, { href: 'ks4-chemistry-5.2.2.3-properties-ionic-compounds.dc.html', label: 'Properties of ionic compounds' }],
+      hookOptions: [
+        { text: 'It moves across to the chlorine atom', reply: 'Hold that thought and test it below.' },
+        { text: 'The two atoms share it between them', reply: 'Sharing is real, but it is not what happens here.' },
+        { text: 'It stays on sodium; the atoms just stick', reply: 'Something has to change, or sodium would still fizz in water.' },
+        { text: 'It is given off as the yellow light', reply: 'The light is energy released, not the electron.' }
+      ],
+      hookReveal: 'The electron moves from sodium to chlorine. Sodium is left with a full shell and one more proton than electrons; chlorine has a full shell and one extra electron. The white crystals are made of these charged particles, not of atoms.',
+      onHook: (i) => this.setState({ hook: i }),
+      wTitle: cap(NAMES[wp.m]) + ' and ' + NAMES[wp.x],
+      wTabs: WORKED.map((p, i) => ({ label: p.m + ' + ' + p.x, pressed: s.w === i, disabled: i === 1 && !wDone[0], style: this.seg(s.w === i, i === 1 && !wDone[0]), onClick: () => { if (i === 0 || wDone[0]) this.setState({ w: i }); } })),
+      wFig: ready ? K.fig(D.ionicTransfer(wp.m, wp.x, stage, ['Before: separate atoms', 'The transfer', 'After: two ions'][stage] + ', ' + NAMES[wp.m] + ' and ' + NAMES[wp.x]), 'Dot-and-cross diagram') : null,
+      wCaption: ['Before · two neutral atoms, crosses for ' + wp.m + ', dots for ' + wp.x, 'The transfer · the arrow shows where ' + (wp.n > 1 ? 'the electrons go' : 'the electron goes'), 'After · two ions, each with a full outer shell, in square brackets with its charge'][stage],
+      wAsking: asking, wPrompt: gq ? 'Step ' + (ans.length + 1) + ' of 3 \u00b7 ' + gq.q : '',
+      wOptions: gq ? gq.o.map((o, i) => ({ label: o, style: this.seg(false, false) + 'text-align:left;',
+        onClick: () => this.setState((st) => { const wa = st.wa.map((x) => x.slice()); if (wa[st.w].length < 3) wa[st.w].push(i); return { wa }; }) })) : [],
+      wLog, wConfront: ans.length === 3 && ans[2] === 0 || (ans.length === 3 && s.w === 0),
+      dTabs: DRAW.map((p, i) => ({ label: cap(NAMES[p.m]) + ' + ' + NAMES[p.x], pressed: s.dp === i, style: this.seg(s.dp === i, false), onClick: () => this.setState({ dp: i, moved: 0, mq: '', xq: '', dChecked: false }) })),
+      dFig: df ? K.fig(df.svg, 'Your diagram') : null,
+      dMoved: String(s.moved),
+      stepBtn: 'font:inherit;font-size:26px;font-weight:800;width:52px;height:52px;border-radius:14px;cursor:pointer;color:var(--ks3-ink);background:var(--ks3-card);border:2px solid var(--ks3-ink);',
+      onLess: () => this.setState((st) => ({ moved: Math.max(0, st.moved - 1), dChecked: false })),
+      onMore: () => this.setState((st) => ({ moved: Math.min(3, st.moved + 1), dChecked: false })),
+      dMetalLabel: 'Charge on the ' + NAMES[dp.m] + ' ion', dNonLabel: 'Charge on the ' + ION[dp.x] + ' ion',
+      chargeOpts: charges.map((c) => ({ value: String(c), label: (Math.abs(c) === 1 ? '1' : Math.abs(c)) + (c > 0 ? '+' : '\u2212') })),
+      dMq: s.mq, dXq: s.xq,
+      onMq: (e) => this.setState({ mq: e.target.value, dChecked: false }), onXq: (e) => this.setState({ xq: e.target.value, dChecked: false }),
+      onDCheck: () => this.setState((st) => ({ dChecked: true, dOk: st.dOk || (st.moved === DRAW[st.dp].n && +st.mq === DRAW[st.dp].n && +st.xq === -DRAW[st.dp].n) })),
+      dChecked: s.dChecked, dLines,
+      dVerdictStyle: 'margin-top:14px;padding:16px 18px;border-radius:14px;border:2px solid ' + (dOkNow ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-option-border);background:var(--ks3-inset);'),
+      fTitle: 'Balance ' + fp.name, fProgress: s.fDone.length + ' of 3 balanced',
+      fLead: fWorked ? 'Worked for you: aluminium forms Al\u00b3\u207a, oxide is O\u00b2\u207b. The lowest total both charges reach is 6, so two Al\u00b3\u207a (6+) balance three O\u00b2\u207b (6\u2212). Press Next compound when you have read it.' : 'Add ions until the meter sits on zero. Use as few as you can: the formula is the simplest ratio.',
+      fAddM: 'Add ' + fp.m + (fp.mc === 1 ? '\u207a' : SUP(fp.mc)), fAddX: 'Add ' + fp.x + SUP(-fp.xc),
+      fLocked: fWorked || fZero, fBtnStyle: this.seg(false, fWorked || fZero),
+      onAddM: () => this.setState((st) => ({ fm: Math.min(6, st.fm + 1) })), onAddX: () => this.setState((st) => ({ fx: Math.min(6, st.fx + 1) })), onClearF: () => this.setState({ fm: 0, fx: 0 }),
+      fTally: fm + ' \u00d7 ' + fp.m + (fp.mc === 1 ? '\u207a' : SUP(fp.mc)) + '   ' + fx + ' \u00d7 ' + fp.x + SUP(-fp.xc),
+      fNet: 'Net charge ' + (net > 0 ? '+' : net < 0 ? '\u2212' : '') + Math.abs(net),
+      fNeedle: 'position:absolute;top:-5px;width:18px;height:18px;border-radius:99px;background:var(--ks3-accent-text);border:2px solid var(--ks3-ink);transition:left .3s;left:calc(' + (50 + Math.max(-6, Math.min(6, net)) * 7.5) + '% - 9px);',
+      fZero, fHasNext: s.f < 2,
+      fDone: fMin ? 'Formula: ' + fp.formula + '. ' + fp.nm + ' \u00d7 ' + fp.mc + '+ = ' + (fp.nm * fp.mc) + '+, and ' + fp.nx + ' \u00d7 ' + fp.xc + '\u2212 = ' + (fp.nx * fp.xc) + '\u2212. The subscripts come from balancing the charges, not from the group numbers.'
+        : 'It balances, but it is not the simplest ratio. Empty the box and use fewer ions.',
+      onNextF: () => this.setState((st) => ({ fDone: st.fDone.includes(st.f) ? st.fDone : st.fDone.concat(st.f), f: Math.min(2, st.f + 1), fm: 0, fx: 0 })),
+      examTip: ready ? K.tip(slug) : '',
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'no overall electrical charge') || { options: [] }, { command: 'Explain', marks: 1, why: 'The charges on the ions add up to zero. Nothing is destroyed; the electrons just moved.' }),
+        r2: { kind: 'text', command: 'Deduce', marks: 2, prompt: 'Barium is in Group 2. Fluorine is in Group 7. Deduce the formula of barium fluoride. Type it with plain numbers, for example Na2O.', placeholder: 'formula', accept: ['BaF2', 'BaF\u2082'],
+          right: 'Ba\u00b2\u207a needs two F\u207b ions to balance.', wrong: 'Work out each charge from its group first, then balance the totals to zero.',
+          model: ['Barium, Group 2, loses 2 electrons: Ba\u00b2\u207a.', 'Fluorine, Group 7, gains 1 electron: F\u207b.', 'Two F\u207b (2\u2212) balance one Ba\u00b2\u207a (2+), so BaF\u2082.'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain how magnesium and oxygen form the ionic compound magnesium oxide. Put the links in order.',
+          links: ['Magnesium (2.8.2) loses its two outer electrons and oxygen (2.6) gains them.', 'This forms Mg\u00b2\u207a and O\u00b2\u207b ions, each with a full outer shell.', 'The oppositely charged ions are held together by strong electrostatic attraction: the ionic bond.'],
+          herrings: [{ text: 'Magnesium and oxygen share two pairs of electrons.', why: 'Sharing is covalent. Magnesium is a metal, so its electrons transfer.' }, { text: 'Oxygen loses two electrons to magnesium.', why: 'The non-metal gains electrons. Oxygen ends up 2\u2212.' }] },
+        r4: { command: 'Describe', marks: 4, question: 'Describe what happens when lithium reacts with fluorine to form lithium fluoride. Give the electron arrangements and the charges on the ions. (Li is 2.1, F is 2.7.)',
+          points: ['The lithium atom loses its one outer electron.', 'The fluorine atom gains that one electron.', 'This forms Li\u207a (2) and F\u207b (2.8) ions, each with a full outer shell.', 'The oppositely charged ions attract: strong electrostatic forces, the ionic bond.'],
+          reject: ['\u201cLithium and fluorine share an electron.\u201d That is covalent bonding.', '\u201cThe bond is the transfer of the electron.\u201d The transfer only makes the ions.'] }
+      } : {},
+      keyLines: ['Ionic bonding happens between a metal and a non-metal.', 'The metal atom loses its outer electrons and becomes a positive ion.', 'The non-metal atom gains them and becomes a negative ion. Both now have full outer shells.', 'Group 1 \u2192 1+, Group 2 \u2192 2+, Group 6 \u2192 2\u2212, Group 7 \u2192 1\u2212.', 'The ionic bond is the strong electrostatic attraction between the oppositely charged ions.', 'The charges balance, so the compound has no overall charge: MgCl\u2082, Al\u2082O\u2083.'],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+# Design's delivery, unmodified. Source zip: 'KS4 pilot lessons checkpoint.zip' (Design's Output, packaged 24 Sep 2026)
+# zip md5 2f21be9267d22c406da8f200d3aae7bd  size 1000040 bytes
+# Verify: cd docs/ks4/design-reference/pilot && md5sum -c MD5SUMS   (macOS: md5 -r <file>)
+
+0454fc3c1caab5a3b2fbab3b14ba34a1  KS4 Lessons/Pilot - Bonding and Electricity/Ks4Cfifa.dc.html
+96891e81a2bb42139d7afa149821958c  KS4 Lessons/Pilot - Bonding and Electricity/Ks4Chain.dc.html
+029dd4506e0b9550aa660ba99987a3c8  KS4 Lessons/Pilot - Bonding and Electricity/Ks4Choice.dc.html
+a67112065727183112bc7914021a6072  KS4 Lessons/Pilot - Bonding and Electricity/Ks4Chrome.dc.html
+78f325cf60ac6a159e56821c9c3acc1e  KS4 Lessons/Pilot - Bonding and Electricity/Ks4End.dc.html
+fb55a861975b0c66bcda7fe5dd1eacdb  KS4 Lessons/Pilot - Bonding and Electricity/Ks4KeyNote.dc.html
+0c355f181b1159711327bf388caeacae  KS4 Lessons/Pilot - Bonding and Electricity/Ks4Ladder.dc.html
+57f0e807fe3e73a135e5ae583f01c941  KS4 Lessons/Pilot - Bonding and Electricity/Ks4QuizBank.dc.html
+3caab7c8e6fe7124559c737569d2b24c  KS4 Lessons/Pilot - Bonding and Electricity/Ks4Sort.dc.html
+640b6cc3754e7107255bcef26097100f  KS4 Lessons/Pilot - Bonding and Electricity/Ks4Video.dc.html
+5bd355235328e528e645760625b3730f  KS4 Lessons/Pilot - Bonding and Electricity/Ks4Write.dc.html
+8f2713a28713215d6175d6b3fd8755d2  KS4 Lessons/Pilot - Bonding and Electricity/NOTES-KS4-pilot.md
+d3b907cf6e6ac0668b434ae259bca86f  KS4 Lessons/Pilot - Bonding and Electricity/README.txt
+d1357ff88e54674b0768be7b4b77d78d  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.1.1-chemical-bonds.dc.html
+695a32645e2506a118d2f8854ad5305d  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.1.2-ionic-bonding.dc.html
+1f1f9df3428435389610d626d9c12af1  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.1.3-ionic-compounds.dc.html
+0364b855dc1598cab848b1a98f199e1a  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.1.4-covalent-bonding.dc.html
+39406f1fa6c29ade52938e124bcb866c  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.1.5-metallic-bonding.dc.html
+bc584bb47a9642012ae418765480786d  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.2.1-states-of-matter.dc.html
+a51ecd85689e46d0f37fbe2ad5d77b8e  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.2.3-properties-ionic-compounds.dc.html
+e65d773288a2f78f7ef62db0d09aaa77  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.2.4-properties-small-molecules.dc.html
+5dfd83b92166ec54a1417a0e7a1dbe35  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.2.5-polymers.dc.html
+b02fcfed63773eec8bcec8781f76ed4e  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.2.6-giant-covalent-structures.dc.html
+346eabf88862520d44508da20cbeef8d  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.2.7-metals-alloys.dc.html
+a87597768d0e9167e326bee26ffc4929  KS4 Lessons/Pilot - Bonding and Electricity/ks4-chemistry-5.2.3.3-nanoparticles.dc.html
+7959be1777b0f0c3e329027ff9f47216  KS4 Lessons/Pilot - Bonding and Electricity/ks4-diagrams.js
+b765d8241fd115918bccb977388d6bd4  KS4 Lessons/Pilot - Bonding and Electricity/ks4-lib.js
+0826374f98c50f041af8cf307e2744d6  KS4 Lessons/Pilot - Bonding and Electricity/ks4-physics-6.2.1.4-resistors-iv-required-practical.dc.html
+cbbc2b0da93ae947908bc4e3c04fe558  KS4 Lessons/Pilot - Bonding and Electricity/ks4-physics-6.2.2-series-parallel-circuits.dc.html
+42c946a7c07b82ab1d5fa2b734f5d376  KS4 Lessons/Pilot - Bonding and Electricity/ks4-source.js
+69e1b11a2d63c89e584f80ab402132ca  KS4 Lessons/Pilot - Bonding and Electricity/ks4-theme.css
+ae74966964d584d7391a79601f2f5923  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.1.1-chemical-bonds.md
+9e2322319314d451c7522bb9b37f24ab  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.1.2-ionic-bonding.md
+e95cfaed5af916998af260218357457f  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.1.3-ionic-compounds.md
+ad562051eabea4312689adc7dd14be18  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.1.4-covalent-bonding.md
+2a59a5540a6a47e783b6a104a9c15edc  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.1.5-metallic-bonding.md
+74c054237a18eac718a8700143b19997  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.2.1-states-of-matter.md
+66ae79a7b6368614e28e5fd4a402e8fe  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.2.3-properties-ionic-compounds.md
+ea6e90f6b35c6561cf4c8daaa888e8a1  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.2.4-properties-small-molecules.md
+aed29c587ce6a4513e76d44a7a1229b9  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.2.5-polymers.md
+c86868f721fc505df23ecc1e4799bb7c  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.2.6-giant-covalent-structures.md
+abd710efdad7d1cc051e49fd6614f1f7  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.2.7-metals-alloys.md
+0a3dcbbe182f4ea6747f9923f252d2d7  KS4 Lessons/Pilot - Bonding and Electricity/src/chemistry-5.2.3.3-nanoparticles.md
+8a248f44fbece3a62b3a0281e1c07c54  KS4 Lessons/Pilot - Bonding and Electricity/src/physics-6.2.1.4-resistors.md
+baa689256674b1723f435a39ac636faa  KS4 Lessons/Pilot - Bonding and Electricity/src/physics-6.2.2-series-parallel-circuits.md
+951ae391b8ae72ef12e671c2fad23353  KS4 Lessons/Pilot - Bonding and Electricity/support.js
+ea04870d31b225712799727397880086  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/README.md
+65f1e5d717918db73f2e4adecfc04eaf  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_adherence.oxlintrc.json
+46131c1a919d3d2b47159686e36cf0d9  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.css
+8f6cd8367683d60adb04f02fe4a288aa  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_bundle.js
+f9a00a83fb42fdc813526f508f8112b7  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/_ds_manifest.json
+ecbeb05e3a924379abb5f460b33818ca  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/bricolage-grotesque-var-latin.woff2
+b4ddae0582126f2065734ca58716e210  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/dm-mono-400-latin.woff2
+ecb3fd43cbea393703c4d61cb7c3ceba  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/dm-mono-500-latin.woff2
+162eead04008571f7f0754272d7cfd8a  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fonts.css
+5d283517432688cbc312a7a954516cce  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/fraunces-var-latin.woff2
+ba4ed4ed75904a9f580dd42ddac4fd2c  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/instrument-sans-var-italic-latin.woff2
+e35fad09c70beb975a297c43c6af4e66  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/instrument-sans-var-latin.woff2
+52d04440a9faae0db9adc6cdc844099b  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/fonts/plus-jakarta-sans-var-latin.woff2
+4b5186177e7b1e6f683cb58a0d14b2a3  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css
+804ee7e8dd3470145c8b2f534e560066  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-ks3.css
+41b3cc1b749b5dadacfb9d7cdb9b2f23  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/shared-tokens.css
+d70ccef3e50e7707aed377511053f4a4  _ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/tokens/src-styles-tokens.css
+951ae391b8ae72ef12e671c2fad23353  support.js
+e2ffbf64e64b2dfa731a4ba80bccabbb  uploads/pasted-1790312845621-0.png

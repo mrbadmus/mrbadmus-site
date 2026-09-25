@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+  <div style="border-radius: 22px; background: var(--ks3-card); border: 2px solid var(--ks3-ink); padding: 24px;">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; flex-wrap: wrap;">
+      <div>
+        <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Practice set · {{ routeLabel }}</p>
+        <h2 style="margin: 4px 0 0; font-size: 28px; letter-spacing: -.02em;">Every question from this lesson</h2>
+      </div>
+      <p role="status" style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ progress }}</p>
+    </div>
+    <ol style="list-style: none; margin: 18px 0 0; padding: 0;">
+      <sc-for list="{{ qs }}" as="q" hint-placeholder-count="4">
+        <li style="display: flex; gap: 14px; padding: 16px 0; border-top: 1px solid var(--ks3-rule);">
+          <span style="flex: 0 0 30px; font-family: var(--ks3-font-mono); font-size: 16px; color: var(--ks3-ink-muted);">{{ q.num }}</span>
+          <div style="flex: 1 1 auto; min-width: 0;">
+            <p style="margin: 0 0 10px; font-size: 19px; font-weight: 600; line-height: 1.5;">{{ q.prompt }}</p>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <sc-for list="{{ q.options }}" as="o" hint-placeholder-count="4">
+                <button type="button" onClick="{{ o.onClick }}" disabled="{{ o.disabled }}" aria-pressed="{{ o.pressed }}" style="{{ o.style }}"><span style="font-family: var(--ks3-font-mono); flex: 0 0 22px;">{{ o.letter }}</span><span>{{ o.text }}</span></button>
+              </sc-for>
+            </div>
+            <sc-if value="{{ q.answered }}"><p role="status" style="{{ q.replyStyle }}"><strong>{{ q.word }}</strong> {{ q.reply }}</p></sc-if>
+          </div>
+        </li>
+      </sc-for>
+    </ol>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px;">
+      <sc-if value="{{ hasMore }}"><button type="button" class="ks3-reveal-btn" onClick="{{ onMore }}">{{ moreLabel }}</button></sc-if>
+      <button type="button" class="ks3-retry" onClick="{{ onRetry }}" disabled="{{ retryLocked }}" style="{{ retryStyle }}">Retry my misses</button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:860},&quot;questions&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;Array&lt;{prompt:string,options:Array&lt;{text:string,correct:boolean,reply:string}&gt;}&gt;&quot;},&quot;routeLabel&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const LETTERS = ['A', 'B', 'C', 'D'];
+class Component extends DCLogic {
+  state = { picks: {}, shown: 4, onlyMisses: false };
+  renderVals() {
+    const p = this.props; const s = this.state;
+    const all = (p.questions || []).filter(Boolean);
+    const missed = all.map((q, i) => i).filter((i) => s.picks[i] !== undefined && !all[i].options[s.picks[i]].correct);
+    const idx = s.onlyMisses ? missed.slice() : all.map((q, i) => i).slice(0, s.shown);
+    const answered = Object.keys(s.picks).length;
+    const right = Object.keys(s.picks).filter((k) => all[k] && all[k].options[s.picks[k]].correct).length;
+    return {
+      routeLabel: p.routeLabel || '',
+      progress: answered + ' of ' + all.length + ' answered · ' + right + ' matched the mark scheme',
+      qs: idx.map((i) => {
+        const q = all[i]; const pick = s.picks[i];
+        const done = pick !== undefined;
+        const chosen = done ? q.options[pick] : null;
+        return {
+          num: String(i + 1), prompt: q.prompt, answered: done,
+          word: chosen ? (chosen.correct ? 'Matches the mark scheme.' : 'Not this one.') : '',
+          reply: chosen ? chosen.reply : '',
+          replyStyle: 'margin:10px 0 0;padding:12px 14px;border-radius:12px;font-size:17px;line-height:1.55;border:2px solid ' + (chosen && !chosen.correct ? 'var(--ks3-alert-border);background:var(--ks3-alert-tint);' : 'var(--ks3-accent);background:var(--ks3-accent-tint);'),
+          options: q.options.map((o, k) => ({
+            letter: LETTERS[k], text: o.text, pressed: pick === k, disabled: done,
+            style: 'display:flex;gap:10px;text-align:left;font:inherit;font-size:17px;line-height:1.45;padding:10px 14px;min-height:46px;border-radius:12px;cursor:' + (done ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+              (pick === k ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') + ';background:' + (pick === k ? 'var(--ks3-band)' : 'var(--ks3-ground)') + ';' + (done && pick !== k ? 'opacity:.62;' : ''),
+            onClick: () => { if (!done) this.setState({ picks: Object.assign({}, s.picks, { [i]: k }) }); }
+          }))
+        };
+      }),
+      hasMore: !s.onlyMisses && s.shown < all.length,
+      moreLabel: 'Show ' + Math.min(4, all.length - s.shown) + ' more',
+      onMore: () => this.setState({ shown: s.shown + 4 }),
+      retryLocked: missed.length === 0,
+      retryStyle: missed.length === 0 ? 'opacity:.45;cursor:default;' : '',
+      onRetry: () => {
+        if (!missed.length) return;
+        const nx = Object.assign({}, s.picks); missed.forEach((i) => { delete nx[i]; });
+        this.setState({ picks: nx, onlyMisses: true });
+        setTimeout(() => this.setState({ onlyMisses: false, shown: all.length }), 0);
+      }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

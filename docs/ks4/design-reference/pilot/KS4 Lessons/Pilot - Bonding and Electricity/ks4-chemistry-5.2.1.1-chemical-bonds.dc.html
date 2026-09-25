@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chemical bonds · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Bonding, structure and properties" title="Chemical bonds" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.2.1.1 · Classify</p>
+        <h1>Chemical bonds</h1>
+        <p class="ks3-bigq">Name two elements. Can you say how they will bond, and what the substance will do, before you ever see it?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Same chlorine. Two partners. Two different worlds.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Sodium is a soft metal that fizzes on water. Chlorine is a poisonous green gas. Together they make table salt: a white crystal that stays solid until 801 °C. Swap sodium for hydrogen and chlorine makes hydrogen chloride, which stays a gas until it is cooled below −85 °C.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="What decides whether chlorine ends up in a high-melting crystal or in a gas?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>Atoms bond because a full outer shell is more stable, and there are only three ways to get one. A metal atom has one, two or three outer electrons and gives them away. A non-metal atom has four to seven and takes more in, or shares.</p>
+        <p>Metal with non-metal: electrons are <strong>transferred</strong>, the atoms become oppositely charged ions, and the ions attract. That is <strong>ionic</strong> bonding. Two non-metals: neither gives way, so they <strong>share</strong> pairs of electrons. That is <strong>covalent</strong> bonding. Metal atoms on their own release their outer electrons into a <strong>sea</strong> that belongs to the whole lump. That is <strong>metallic</strong> bonding. So the first question is always the same: metal or non-metal?</p>
+      </section>
+
+      <section id="s-decider" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The bond decider</p>
+            <h2 style="margin: 6px 0 0;">Pick two elements. Call the bond. Watch it form.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ decProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; max-width: 58ch;">Tap an element, then its partner. Tap the same element twice for the element on its own.</p>
+        <div style="margin-top: 16px; padding: 14px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-option-border); max-width: 30rem;">
+          <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px;">
+            <sc-for list="{{ groupHeads }}" as="g" hint-placeholder-count="7">
+              <span aria-hidden="true" style="{{ g.style }}">{{ g.label }}</span>
+            </sc-for>
+            <sc-for list="{{ cells }}" as="c" hint-placeholder-count="13">
+              <button type="button" onClick="{{ c.onClick }}" aria-pressed="{{ c.pressed }}" aria-label="{{ c.aria }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.sym }}</button>
+            </sc-for>
+          </div>
+          <p style="margin: 10px 0 0; font-family: var(--ks3-font-mono); font-size: 13px; color: var(--ks3-ink-muted);">Part of the periodic table, by group. Most transition metals and Group 3 are left out.</p>
+        </div>
+        <p style="margin: 14px 0 0; font-family: var(--ks3-font-mono); font-size: 18px; font-weight: 500;">{{ pairLabel }}</p>
+        <sc-if value="{{ askPredict }}">
+          <div data-arrive="1" style="margin-top: 10px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ predictPrompt }}</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+              <sc-for list="{{ predictButtons }}" as="b" hint-placeholder-count="3">
+                <button type="button" onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showChamber }}">
+          <div data-arrive="1" style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 16px; align-items: start;">
+            <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ chamberFig }}</div>
+            <div style="{{ verdictStyle }}" role="status">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ verdictHead }}</p>
+              <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 26px; line-height: 1.2;">{{ verdictTitle }}</p>
+              <p style="margin: 8px 0 0; font-size: 18px; line-height: 1.55;">{{ verdictBody }}</p>
+              <button type="button" class="ks3-reveal-btn" onClick="{{ onNewPair }}" style="margin-top: 14px;">Try another pair</button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hasLog }}">
+          <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px;">
+            <sc-for list="{{ logChips }}" as="l" hint-placeholder-count="3">
+              <span style="font-family: var(--ks3-font-mono); font-size: 14px; padding: 5px 11px; border-radius: 99px; background: var(--ks3-band); color: var(--ks3-ink);">{{ l }}</span>
+            </sc-for>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>The bond decides what the substance does. Ionic compounds and metals are giant structures, held by strong attraction all the way through, so they melt only when very hot. Covalent substances split two ways. Most are small molecules that melt and boil at low temperatures; a few, like diamond and sand, are giant networks that melt only when very hot. To carry a current you need charged particles that can move: a metal's electron sea always can, but ions only can once the solid melts or dissolves.</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+        <p class="ks3-mis-quote">&ldquo;Ice melts at 0 °C and salt at 801 °C, so the covalent bonds in water must be weak.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="What is wrong with that reasoning?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is the flaw." wrong-word="That keeps the wrong idea." on-commit="{{ onThink }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Sort" eyebrow="Sort it" title="Ionic, covalent or metallic?" prompt="Eight substances. Decide from the elements in each, not from what you remember about it." bins="{{ sortBins }}" items="{{ sortItems }}" done-note="Every call came from one question: metal or non-metal? That is the justification an examiner is looking for." on-done="{{ onSort }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="background: var(--ks3-band); box-shadow: none; border: 2px solid var(--ks3-ink);">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Identify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Name it. One word or a short phrase is enough.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Predict</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give a likely outcome. Here, say which elements are metals.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Deduce</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Reach a conclusion from the data you are given.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Justify</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Back your answer with evidence from the question.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">Metal with non-metal: ionic, electrons transferred. Non-metal with non-metal: covalent, electrons shared. Metal on its own or with other metals: metallic, electrons delocalised.</p>
+      </div>
+
+      <section style="margin: 28px 0 0; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Examiner tip</p>
+        <p style="margin: 8px 0 0; font-size: 19px; line-height: 1.6;">{{ examTip }}</p>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="chemical-bonds" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Chemical bonds" spec="AQA 5.2.1.1" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,600px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Stuck on an element that does not fit the rule?" legal="The decider uses the GCSE rule: metal with non-metal is ionic, two non-metals are covalent, metals are metallic. Real bonding is a sliding scale and a few metal compounds, such as aluminium chloride, behave covalently; GCSE questions avoid them. Dot-and-cross figures show outer shells only for covalent molecules and full shells for ions." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two partners', short: 'HOOK' },
+  { id: 's-decider', label: 'The bond decider', short: 'DECIDE' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-sort', label: 'Sort it', short: 'SORT' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const EL = [
+  { s: 'H', n: 'hydrogen', m: false, g: 1, c: 4, r: 2 },
+  { s: 'Li', n: 'lithium', m: true, g: 1, c: 1, r: 3 }, { s: 'C', n: 'carbon', m: false, g: 4, c: 4, r: 3 }, { s: 'N', n: 'nitrogen', m: false, g: 5, c: 5, r: 3 },
+  { s: 'O', n: 'oxygen', m: false, g: 6, c: 6, r: 3 }, { s: 'F', n: 'fluorine', m: false, g: 7, c: 7, r: 3 },
+  { s: 'Na', n: 'sodium', m: true, g: 1, c: 1, r: 4 }, { s: 'Mg', n: 'magnesium', m: true, g: 2, c: 2, r: 4 }, { s: 'S', n: 'sulfur', m: false, g: 6, c: 6, r: 4 }, { s: 'Cl', n: 'chlorine', m: false, g: 7, c: 7, r: 4 },
+  { s: 'K', n: 'potassium', m: true, g: 1, c: 1, r: 5 }, { s: 'Ca', n: 'calcium', m: true, g: 2, c: 2, r: 5 }, { s: 'Cu', n: 'copper', m: true, g: 0, c: 3, r: 5 }
+];
+const ANION = { H: 'hydride', C: 'carbide', N: 'nitride', O: 'oxide', F: 'fluoride', S: 'sulfide', Cl: 'chloride' };
+const MOLS = { 'H+H': ['H2', 'hydrogen, H\u2082'], 'Cl+Cl': ['Cl2', 'chlorine, Cl\u2082'], 'O+O': ['O2', 'oxygen, O\u2082'], 'N+N': ['N2', 'nitrogen, N\u2082'], 'Cl+H': ['HCl', 'hydrogen chloride, HCl'], 'H+O': ['H2O', 'water, H\u2082O'], 'H+N': ['NH3', 'ammonia, NH\u2083'], 'C+H': ['CH4', 'methane, CH\u2084'], 'C+O': ['CO2', 'carbon dioxide, CO\u2082'] };
+const SUB = (n) => n === 1 ? '' : String(n).split('').map((d) => '\u2080\u2081\u2082\u2083\u2084\u2085\u2086\u2087\u2088\u2089'[+d]).join('');
+const SUP = (n, neg) => (n === 1 ? '' : '\u2070\u00b9\u00b2\u00b3'[n]) + (neg ? '\u207b' : '\u207a');
+const gcd = (a, b) => b ? gcd(b, a % b) : a;
+const cap = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+const KIND = { ionic: 'Ionic', covalent: 'Covalent', metallic: 'Metallic' };
+
+function resolve(A, B) {
+  if (A.m && B.m) return { kind: 'metallic', same: A.s === B.s };
+  if (!A.m && !B.m) return { kind: 'covalent' };
+  const M = A.m ? A : B, X = A.m ? B : A;
+  const mc = M.g === 0 ? 2 : M.g, nc = X.s === 'H' ? 1 : 8 - X.g, L = mc * nc / gcd(mc, nc);
+  const nm = L / mc, nx = L / nc;
+  return { kind: 'ionic', M, X, mc, nc, nm, nx, formula: M.s + SUB(nm) + X.s + SUB(nx), name: M.n + ' ' + ANION[X.s], ions: M.s + SUP(mc) + ' and ' + X.s + SUP(nc, true) };
+}
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, hook: null, pick: [], pred: null, stage: 2, log: [], think: null, sort: false, ladder: false, route: null };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearTimeout(this.anim); }
+  reduced() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+  btn(on, dis) {
+    return 'font:inherit;font-size:17px;font-weight:700;padding:11px 18px;min-height:48px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  chamber(A, B, res) {
+    const D = window.KS4D; if (!D) return '';
+    const st = this.state.stage;
+    if (res.kind === 'ionic') {
+      if (res.nm === 1 && res.nx === 1 && D.CONFIG[res.M.s] && D.CONFIG[res.X.s]) return D.ionicTransfer(res.M.s, res.X.s, st, 'Dot-and-cross diagram of ' + res.name);
+      return D.svg(900, 300, D.T(450, 150, res.formula, 96) + D.T(450, 230, res.ions + ' in a ' + res.nm + ' : ' + res.nx + ' ratio', 26, { weight: 'normal' }), res.name + ', formula ' + res.formula);
+    }
+    if (res.kind === 'covalent') {
+      const key = [A.s, B.s].sort().join('+');
+      const mol = MOLS[key];
+      if (mol) return D.covalent(mol[0], { alt: 'Dot-and-cross diagram of ' + mol[1] });
+      return D.svg(900, 300, D.T(450, 160, A.s + ' shares with ' + B.s, 56) + D.T(450, 220, 'shared pairs of electrons', 26, { weight: 'normal' }), A.n + ' and ' + B.n + ' share electrons');
+    }
+    return D.metallic(5, 3, res.same ? {} : { alloy: [[1, 2]], alt: 'An alloy: a larger atom among metal ions in a sea of electrons' });
+  }
+  verdict(A, B, res, pred) {
+    const right = pred === res.kind;
+    let title, body;
+    if (res.kind === 'ionic') {
+      title = 'Ionic: ' + res.name + ', ' + res.formula;
+      body = cap(res.M.n) + ' is a metal and ' + res.X.n + ' is a non-metal, so electrons move from ' + res.M.n + ' to ' + res.X.n + '. That makes ' + res.ions + ' ions, and the attraction between them is the bond.';
+      if (res.X.s === 'C') body += ' Carbon rarely forms simple ions, so GCSE questions pair metals with Groups 6 and 7 instead.';
+    } else if (res.kind === 'covalent') {
+      const mol = MOLS[[A.s, B.s].sort().join('+')];
+      title = 'Covalent' + (mol ? ': ' + mol[1] : '');
+      body = 'Both are non-metals, so neither gives up electrons. They share pairs, and each shared pair is one covalent bond.';
+      if (A.s === 'C' && B.s === 'C') body = 'Carbon on its own shares electrons with other carbon atoms. It builds giant covalent networks such as diamond and graphite, not small molecules.';
+    } else {
+      title = res.same ? 'Metallic: pure ' + A.n : 'Metallic: an alloy of ' + A.n + ' and ' + B.n;
+      body = 'Metal atoms release their outer electrons into a sea that belongs to the whole structure. The positive ions and the electron sea attract.' + (res.same ? '' : ' A mixture of metals is still metallic.');
+    }
+    let wrong = '';
+    if (!right) {
+      const hasH = A.s === 'H' || B.s === 'H';
+      if (hasH && pred !== 'covalent' && res.kind === 'covalent') wrong = 'Hydrogen sits above Group 1, but it is a non-metal. ';
+      else if (pred === 'covalent' && res.kind === 'ionic') wrong = 'Sharing happens only between two non-metals. ';
+      else if (pred === 'ionic' && res.kind === 'metallic') wrong = 'Ions form when a metal gives electrons to a non-metal. With no non-metal here, nothing takes the electrons. ';
+      else if (pred === 'metallic') wrong = 'Metallic bonding needs every atom to be a metal. ';
+      else if (pred === 'ionic' && res.kind === 'covalent') wrong = 'Two non-metals both want electrons, so neither hands them over. ';
+    }
+    return { title, body: wrong + body, right };
+  }
+  renderVals() {
+    const s = this.state;
+    const K = window.KS4;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const slug = 'chemical-bonds';
+    const ready = !!(s.libReady && K);
+    const done = [s.hook !== null, s.log.length >= 3, s.think !== null, s.sort, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [], railCountLabel: '', railCurrentLabel: '', railBarStyle: '' };
+    const A = s.pick[0] !== undefined ? EL[s.pick[0]] : null, B = s.pick[1] !== undefined ? EL[s.pick[1]] : null;
+    const full = !!(A && B);
+    const res = full ? resolve(A, B) : null;
+    const committed = s.pred !== null;
+    const v = committed && res ? this.verdict(A, B, res, s.pred) : null;
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    return Object.assign({}, R, {
+      video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
+      railV,
+      endNext: { href: 'ks4-chemistry-5.2.1.2-ionic-bonding.dc.html', label: 'Ionic bonding' },
+      endConnects: [{ href: 'ks4-chemistry-5.2.1.4-covalent-bonding.dc.html', label: 'Covalent bonding' }, { href: 'ks4-chemistry-5.2.1.5-metallic-bonding.dc.html', label: 'Metallic bonding' }, { href: 'ks4-chemistry-5.2.2.3-properties-ionic-compounds.dc.html', label: 'Properties of ionic compounds' }],
+      theme, ready, draftVisible: this.props.showDraft !== false,
+      hookOptions: [
+        { text: 'Whether its partner is a metal or a non-metal', reply: 'You are on the idea the whole unit rests on.' },
+        { text: 'How heavy its partner\u2019s atoms are', reply: 'Mass matters less than you might think here.' },
+        { text: 'How reactive its partner is', reply: 'Sodium and hydrogen both react readily, yet the products are nothing alike.' },
+        { text: 'How many chlorine atoms join on', reply: 'Both products have one chlorine per partner atom, so the count is the same.' }
+      ],
+      hookReveal: 'Sodium is a metal; hydrogen is not, even though it sits at the top of the table above sodium. A metal gives its electron to chlorine and the two become oppositely charged ions, locked into a crystal. Hydrogen and chlorine are both non-metals: they share a pair of electrons and make small separate molecules that drift apart as a gas.',
+      onHook: (i) => this.setState({ hook: i }),
+      decProgress: s.log.length + (s.log.length === 1 ? ' pair' : ' pairs') + ' called',
+      groupHeads: ['1', '2', '', '4', '5', '6', '7'].map((g, i) => ({ label: g ? 'Group ' + g : '', style: 'grid-row:1;grid-column:' + (i + 1) + ';text-align:center;font-family:var(--ks3-font-mono);font-size:11px;line-height:1.2;color:var(--ks3-ink-muted);padding-bottom:2px;' })),
+      cells: EL.map((e, i) => {
+        const on = s.pick.indexOf(i) >= 0;
+        const lock = full;
+        return {
+          sym: e.s, aria: e.n + (e.g ? ', group ' + e.g : ', transition metal'), pressed: on, disabled: lock && !on,
+          style: 'grid-column:' + e.c + ';grid-row:' + e.r + ';min-height:50px;display:grid;place-items:center;padding:0;font:inherit;font-family:var(--ks3-font-display);font-weight:800;font-size:19px;border-radius:10px;cursor:' + (lock ? 'default' : 'pointer') +
+            ';color:var(--ks3-ink);border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-ink)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';' + (lock && !on ? 'opacity:.5;' : ''),
+          onClick: () => { if (lock) return; this.setState((st) => ({ pick: st.pick.concat(i), pred: null })); }
+        };
+      }),
+      pairLabel: A ? (A.s + ' + ' + (B ? (B === A ? A.s + '  (' + A.n + ' on its own)' : B.s) : '?')) : 'No pair yet',
+      askPredict: full && !committed,
+      predictPrompt: 'Commit first. What bond will ' + A?.n + (B && B !== A ? ' and ' + B.n : '') + ' make?',
+      predictButtons: ['ionic', 'covalent', 'metallic'].map((k) => ({
+        label: KIND[k], style: this.btn(false, false),
+        onClick: () => {
+          this.setState({ pred: k, stage: res && res.kind === 'ionic' && !this.reduced() ? 1 : 2 });
+          if (res && res.kind === 'ionic' && !this.reduced()) { clearTimeout(this.anim); this.anim = setTimeout(() => this.setState({ stage: 2 }), 900); }
+          this.setState((st) => ({ log: st.log.concat({ a: A.s, b: B.s, k: res.kind }) }));
+        }
+      })),
+      showChamber: committed && !!res,
+      chamberFig: committed && res && K ? K.fig(this.chamber(A, B, res), v.title) : null,
+      verdictHead: v ? (v.right ? 'You called ' + s.pred + ' \u00b7 the chamber agrees' : 'You called ' + s.pred + ' \u00b7 the chamber shows otherwise') : '',
+      verdictTitle: v ? v.title : '', verdictBody: v ? v.body : '',
+      verdictStyle: 'padding:18px 20px;border-radius:var(--ks3-r-panel);border:2px solid ' + (v && !v.right ? 'var(--ks3-alert-border);background:var(--ks3-alert-tint);' : 'var(--ks3-accent);background:var(--ks3-accent-tint);'),
+      onNewPair: () => { clearTimeout(this.anim); this.setState({ pick: [], pred: null, stage: 2 }); },
+      hasLog: s.log.length > 0,
+      logChips: s.log.map((l) => l.a + (l.a === l.b ? '' : ' + ' + l.b) + ' \u00b7 ' + l.k),
+      thinkOptions: [
+        { text: 'Nothing. A low melting point means weak bonds.', correct: false, reply: 'That is the idea being tested. Melting ice does not touch the bonds inside each water molecule.' },
+        { text: 'Melting separates whole water molecules from each other. The weak forces are between molecules; the O\u2013H bonds inside each one stay intact.', correct: true, reply: 'The covalent bonds are strong. Only the forces between molecules are overcome.' },
+        { text: 'Covalent bonds are weak, but they break only when water boils, not when it melts.', correct: false, reply: 'Boiling does not break them either. Steam is still H\u2082O molecules.' },
+        { text: 'The bonds do break, but they re-form straight away in the liquid.', correct: false, reply: 'If the O\u2013H bonds broke you would have hydrogen and oxygen, not liquid water.' }
+      ],
+      thinkReveal: 'A low melting point tells you the forces between molecules are weak. It tells you nothing about the covalent bonds inside them, which stay intact. You will meet this again in every covalent lesson.',
+      onThink: (i, o) => this.setState({ think: i }),
+      sortBins: [{ id: 'i', label: 'Ionic' }, { id: 'c', label: 'Covalent' }, { id: 'm', label: 'Metallic' }],
+      sortItems: [
+        { text: 'MgO', bin: 'i', why: 'Magnesium is a metal and oxygen a non-metal, so electrons transfer.' },
+        { text: 'CO\u2082', bin: 'c', why: 'Carbon and oxygen are both non-metals, so they share pairs.' },
+        { text: 'HCl', bin: 'c', why: 'Hydrogen sits above Group 1 but it is a non-metal. Two non-metals share.' },
+        { text: 'KBr', bin: 'i', why: 'Potassium is a Group 1 metal; bromine is a Group 7 non-metal.' },
+        { text: 'NH\u2083', bin: 'c', why: 'Nitrogen and hydrogen are both non-metals.' },
+        { text: 'Brass (copper with zinc)', bin: 'm', why: 'Two metals. An alloy is a mixture of metals, still held by an electron sea, not an ionic compound.' },
+        { text: 'CaCl\u2082', bin: 'i', why: 'Calcium is a Group 2 metal; chlorine a non-metal.' },
+        { text: 'Na, a lump of sodium', bin: 'm', why: 'A metal on its own is metallic. Nothing here takes its electron to make ions.' }
+      ],
+      onSort: () => this.setState({ sort: true }),
+      examTip: ready ? K.tip(slug) : '',
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'Water (H\u2082O) is made from two non-metals') || { options: [] }, { command: 'Predict', marks: 1, why: 'Two non-metals: neither gives electrons away, so they share pairs.' }),
+        r2: {
+          kind: 'data', command: 'Deduce', marks: 3,
+          prompt: 'Use the data in the table. Deduce the type of bonding in each substance.',
+          figureSvg: window.KS4D.table(['Substance', 'Melting point / \u00b0C', 'Solid conducts?', 'Molten conducts?'], [['P', '1085', 'yes', 'yes'], ['Q', '\u2212114', 'no', 'no'], ['R', '801', 'no', 'yes']], { widths: [150, 250, 210, 230], alt: 'Table. P melts at 1085 degrees and conducts solid and molten. Q melts at minus 114 and never conducts. R melts at 801, conducts only when molten.' }),
+          figureAlt: 'Data table for substances P, Q and R',
+          parts: ['P', 'Q', 'R'].map((x, i) => ({ label: 'Substance ' + x, options: ['ionic', 'covalent (small molecules)', 'metallic'], answer: [2, 1, 0][i] })),
+          right: 'All three. Conducting as a solid needs mobile electrons; conducting only when molten needs ions.',
+          wrong: 'Read the conductivity columns first. They separate the three more cleanly than the melting points do.',
+          model: ['P: metallic. High melting point, and it conducts as a solid, so it has delocalised electrons.', 'Q: covalent, small molecules. Very low melting point and it never conducts.', 'R: ionic. High melting point; its ions can move only once it is molten.']
+        },
+        r3: {
+          command: 'Explain', marks: 3,
+          prompt: 'Potassium reacts with bromine to make potassium bromide, KBr. Explain why the bonding in potassium bromide is ionic. Put the links in order.',
+          links: ['Potassium is a metal and bromine is a non-metal, so electrons are transferred rather than shared.', 'Each potassium atom loses one electron to a bromine atom, making K\u207a and Br\u207b ions.', 'The oppositely charged ions attract. That strong electrostatic attraction is the ionic bond.'],
+          herrings: [{ text: 'Potassium and bromine share a pair of electrons.', why: 'Sharing is covalent bonding, between two non-metals. Potassium is a metal.' }, { text: 'The ionic bond is the transfer of the electron.', why: 'The transfer only makes the ions. The bond is the attraction between them.' }]
+        },
+        r4: {
+          command: 'Compare', marks: 4,
+          question: 'Compare the bonding in solid copper with the bonding in solid sodium chloride, and explain why only copper conducts electricity as a solid.',
+          points: ['Copper: a lattice of positive metal ions in a sea of delocalised electrons (metallic bonding).', 'Sodium chloride: Na\u207a and Cl\u207b ions held in a lattice by strong electrostatic attraction (ionic bonding).', 'Copper\u2019s delocalised electrons are free to move through the solid and carry charge.', 'In solid sodium chloride the ions are fixed in place, so no charged particles can move.'],
+          reject: ['\u201cSodium chloride has no charged particles.\u201d It is full of ions; they just cannot move.', '\u201cElectrons flow through sodium chloride.\u201d Ionic compounds have no free electrons.']
+        }
+      } : {},
+      keyLines: ['Atoms bond to reach a full outer shell, like a noble gas.', 'Metal + non-metal: ionic. The metal transfers electrons; the ions attract.', 'Non-metal + non-metal: covalent. The atoms share pairs of electrons.', 'Metal alone or in an alloy: metallic. Positive ions in a sea of delocalised electrons.', 'Hydrogen is a non-metal, even though it sits above Group 1.', 'Justify every prediction from the elements: say which ones are metals.'],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ionic compounds · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Bonding, structure and properties" title="Ionic compounds" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.2.1.3 · Model</p>
+        <h1>Ionic compounds</h1>
+        <p class="ks3-bigq">The formula says NaCl. So is a grain of salt made of little NaCl molecules, or of something else entirely?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">Crush a salt crystal. You get smaller cubes.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Look at table salt through a hand lens and every grain is a tiny cube with flat faces and square corners. Crush one and the fragments break along flat faces into smaller cubes. Grow salt slowly from a solution and you get cubes the size of dice.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Why does salt come out as cubes at every size?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>When sodium reacts with chlorine, the ions do not pair off. Each Na⁺ pulls on every Cl⁻ near it, and each Cl⁻ pulls on every Na⁺. They settle into a <strong>giant ionic lattice</strong>: a regular, three-dimensional arrangement in which positive and negative ions alternate in every direction. The strong electrostatic forces act in all directions at once. &ldquo;Giant&rdquo; means exactly that: a single grain holds around 10¹⁸ ions, and the pattern repeats the whole way through. The cube you see is the repeat you cannot.</p>
+      </section>
+
+      <section id="s-lens" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The lattice lens</p>
+            <h2 style="margin: 6px 0 0;">How many neighbours does one ion have?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ lensProgress }}</p>
+        </div>
+        <sc-if value="{{ lensAsk }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 14px;">
+            <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">Commit first. In a real salt crystal, how many chloride ions sit right next to one sodium ion?</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <sc-for list="{{ lensOpts }}" as="o" hint-placeholder-count="4"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ lensOpen }}">
+          <div data-arrive="1" style="margin-top: 14px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <sc-for list="{{ lensTabs }}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+            </div>
+            <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 720px;">{{ lensFig }}</div>
+            <p role="status" style="{{ lensNoteStyle }}">{{ lensNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again</p></div>
+        <p class="ks3-mis-quote">&ldquo;The formula is NaCl, so salt is made of NaCl molecules: one sodium stuck to one chlorine.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="You have just counted six neighbours. What does the formula NaCl really tell you?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is it." wrong-word="That keeps the wrong idea." on-commit="{{ onThink }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section id="s-deduce" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Deduce the formula from the diagram</p>
+        <h2 style="margin: 6px 0 0;">Count the ions. Write the simplest ratio.</h2>
+        <p style="margin: 10px 0 0; max-width: 58ch;">The exam shows part of a lattice and asks for the empirical formula. Count each kind of ion in the diagram, then cancel down. Type the formula with plain numbers, for example Na2O.</p>
+        <div style="margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap;">
+          <sc-for list="{{ dxTabs }}" as="t" hint-placeholder-count="3"><button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+        </div>
+        <div style="margin-top: 14px; border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink); max-width: 720px;">{{ dxFig }}</div>
+        <div style="margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+          <label for="dx-in" style="font-weight: 700;">Empirical formula</label>
+          <input id="dx-in" type="text" value="{{ dxVal }}" onInput="{{ onDx }}" onChange="{{ onDx }}" placeholder="formula" style="font: inherit; font-family: var(--ks3-font-mono); font-size: 20px; width: 10rem; padding: 10px 12px; min-height: 48px; border-radius: 12px; border: 2px solid var(--ks3-option-border); background: var(--ks3-card); color: var(--ks3-ink);">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onDxCheck }}">Check</button>
+        </div>
+        <sc-if value="{{ dxChecked }}">
+          <p data-arrive="1" role="status" style="{{ dxStyle }}"><strong>{{ dxWord }}</strong> {{ dxText }}</p>
+        </sc-if>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>No drawing of a lattice is the real thing. A dot-and-cross diagram shows where the electrons went but not the lattice. A 2D diagram shows the alternating pattern but only one layer. A ball-and-stick model shows the 3D repeat but draws the ions far apart and joins them with sticks, as if the force ran along a line. Every model trades one truth for another. AQA asks you to say which.</p>
+      </section>
+
+      <section id="s-models" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px; margin-bottom: 18px;">
+          <figure style="margin: 0;"><div style="border-radius: 14px; overflow: hidden; border: 2px solid var(--ks3-ink);">{{ mFigA }}</div><figcaption style="margin-top: 6px; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">A · dot-and-cross</figcaption></figure>
+          <figure style="margin: 0;"><div style="border-radius: 14px; overflow: hidden; border: 2px solid var(--ks3-ink);">{{ mFigB }}</div><figcaption style="margin-top: 6px; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">B · 2D lattice</figcaption></figure>
+          <figure style="margin: 0;"><div style="border-radius: 14px; overflow: hidden; border: 2px solid var(--ks3-ink);">{{ mFigC }}</div><figcaption style="margin-top: 6px; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">C · ball-and-stick</figcaption></figure>
+        </div>
+        <dc-import name="Ks4Sort" eyebrow="Sort the limitations" title="Which model has this limitation?" prompt="Each statement is a limitation of exactly one of the three models above." bins="{{ mBins }}" items="{{ mItems }}" done-note="An exam limitation names what the model shows wrongly or leaves out, then says what is really true." on-done="{{ onModels }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Describe</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give the features: regular, 3D, alternating, forces in all directions.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Deduce</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Reach the formula from the diagram you are given. Show the count.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Evaluate</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Give strengths and limitations, then judge.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">An ionic compound is a giant lattice of alternating positive and negative ions held by strong electrostatic forces in all directions. Its formula is the simplest ratio of ions, not a molecule.</p>
+      </div>
+
+      <section style="margin: 28px 0 0; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Examiner tip</p>
+        <p style="margin: 8px 0 0; font-size: 19px; line-height: 1.6;">{{ examTip }}</p>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="ionic-compounds" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Ionic compounds" spec="AQA 5.2.1.3" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,600px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Stuck counting ions in a lattice diagram?" legal="Lattice figures are two-dimensional slices or small cut-outs of a crystal that extends in three dimensions. In sodium chloride the chloride ion is larger than the sodium ion; the figures draw them at roughly the right relative size. The ball-and-stick model is drawn with gaps and sticks on purpose, so that its limitations can be discussed." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Cubes all the way down', short: 'HOOK' },
+  { id: 's-lens', label: 'The lattice lens', short: 'LENS' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-deduce', label: 'Deduce the formula', short: 'DEDUCE' },
+  { id: 's-models', label: 'Models and limits', short: 'MODELS' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+// Each deduce item: a 2D arrangement drawn as a grid; cells hold 'M' or 'X' or ''.
+const DX = [
+  { tab: 'Compound 1', m: 'Mg\u00b2\u207a', x: 'O\u00b2\u207b', grid: ['MXMX', 'XMXM', 'MXMX'], accept: ['MgO'], why: '6 Mg\u00b2\u207a and 6 O\u00b2\u207b: 6 : 6 cancels to 1 : 1, so MgO. The 2+ and 2\u2212 charges agree.' },
+  { tab: 'Compound 2', m: 'Ca\u00b2\u207a', x: 'F\u207b', grid: ['XMX', 'XMX', 'XMX'], accept: ['CaF2'], why: '3 Ca\u00b2\u207a and 6 F\u207b: 3 : 6 cancels to 1 : 2, so CaF\u2082. Check: 2+ balances 2 \u00d7 1\u2212.' },
+  { tab: 'Compound 3', m: 'Li\u207a', x: 'O\u00b2\u207b', grid: ['MXM', 'MXM', 'MXM'], accept: ['Li2O'], why: '6 Li\u207a and 3 O\u00b2\u207b: 6 : 3 cancels to 2 : 1, so Li\u2082O. Check: two 1+ balance one 2\u2212.' }
+];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, lensPick: null, lensView: 0, lensSeen: [0], think: null, dx: 0, dxVal: ['', '', ''], dxChecked: false, dxDone: [], models: false, ladder: false };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';';
+  }
+  ion(D, x, y, pos, lab, o) {
+    o = o || {};
+    const r = pos ? 20 : 29;
+    return D.circ(x, y, r, pos ? D.C.metal : D.C.nm, o.hi ? D.C.arrow : D.C.stroke, o.hi ? 5 : 2, o.ghost ? ' opacity="0.45"' : '') + D.T(x, y + 6, lab, pos ? 14 : 16);
+  }
+  lensSvg(view) {
+    const D = window.KS4D; let b = ''; const s = 84, x0 = 110, y0 = 70, n = 5, c = 2;
+    for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) { const x = x0 + k * s, y = y0 + r * s; if (k < n - 1) b += D.line(x, y, x + s, y, 2, D.C.muted); if (r < n - 1) b += D.line(x, y, x, y + s, 2, D.C.muted); }
+    for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) {
+      const pos = (r + k) % 2 === 0, x = x0 + k * s, y = y0 + r * s;
+      const centre = r === c && k === c, nb = Math.abs(r - c) + Math.abs(k - c) === 1;
+      b += this.ion(D, x, y, pos, pos ? 'Na\u207a' : 'Cl\u207b', { hi: view > 0 && (centre || nb) });
+    }
+    const cx = x0 + c * s, cy = y0 + c * s;
+    if (view === 2) {
+      b += this.ion(D, cx + 250 + 180, cy - 90, false, 'Cl\u207b', { hi: true }) + D.T(cx + 430, cy - 136, 'layer above', 18, { weight: 'normal' });
+      b += this.ion(D, cx + 250 + 180, cy + 90, false, 'Cl\u207b', { hi: true }) + D.T(cx + 430, cy + 150, 'layer below', 18, { weight: 'normal' });
+      b += D.arrow(cx + 380, cy - 60, cx + 40, cy - 10) + D.arrow(cx + 380, cy + 60, cx + 40, cy + 10);
+    }
+    if (view > 0) b += D.T(cx + 430, cy + 8, view === 2 ? '4 + 2 = 6' : '4 in this layer', 26);
+    return D.svg(820, 480, b, view === 2 ? 'One sodium ion with its six chloride neighbours: four in its own layer and one directly above and below' : view === 1 ? 'One layer of the lattice; the centre sodium ion has four chloride neighbours in this layer' : 'One layer of a sodium chloride lattice, alternating sodium and chloride ions');
+  }
+  dxSvg(item) {
+    const D = window.KS4D; let b = ''; const s = 86, rows = item.grid.length, cols = item.grid[0].length, x0 = 70, y0 = 60;
+    item.grid.forEach((row, r) => row.split('').forEach((ch, k) => { b += this.ion(D, x0 + k * s, y0 + r * s, ch === 'M', ch === 'M' ? item.m : item.x); }));
+    return D.svg(x0 * 2 + (cols - 1) * s, y0 * 2 + (rows - 1) * s, b, 'Part of an ionic lattice made of ' + item.m + ' and ' + item.x + ' ions');
+  }
+  ballStick() {
+    const D = window.KS4D; let b = ''; const a = 118, dx = 58, dy = 44;
+    const P = (i, j, k) => [120 + i * a + k * dx, 330 - j * a - k * dy];
+    const pts = []; for (let k = 2; k >= 0; k--) for (let j = 0; j < 3; j++) for (let i = 0; i < 3; i++) pts.push([i, j, k]);
+    const sticks = [];
+    pts.forEach(([i, j, k]) => { [[1, 0, 0], [0, 1, 0], [0, 0, 1]].forEach(([p, q, t]) => { if (i + p < 3 && j + q < 3 && k + t < 3) sticks.push([[i, j, k], [i + p, j + q, k + t]]); }); });
+    sticks.sort((u, v) => (v[0][2] + v[1][2]) - (u[0][2] + u[1][2])).forEach(([u, v]) => { const A = P(...u), B = P(...v); b += D.line(A[0], A[1], B[0], B[1], 4, D.C.muted); });
+    pts.forEach(([i, j, k]) => { const [x, y] = P(i, j, k); const pos = (i + j + k) % 2 === 0; b += D.circ(x, y, pos ? 13 : 19, pos ? D.C.metal : D.C.nm, D.C.stroke, 2); });
+    return D.svg(520, 420, b, 'Ball-and-stick model of a small cube of the sodium chloride lattice');
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {} };
+    const slug = 'ionic-compounds';
+    const ready = !!(s.libReady && K && D);
+    const done = [s.hook !== null, s.lensSeen.includes(2), s.think !== null, s.dxDone.length >= 2, s.models, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const lensRight = s.lensPick === 6;
+    const item = DX[s.dx];
+    const norm = (t) => String(t || '').replace(/\s+/g, '').replace(/[\u2080-\u2089]/g, (c) => String(c.charCodeAt(0) - 0x2080));
+    const dxOk = item.accept.some((a) => norm(a) === norm(s.dxVal[s.dx]));
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    const lensNotes = [
+      'A single layer of the crystal. Positive and negative ions alternate along every row and every column: no two like charges touch.',
+      'In its own layer, the centre Na\u207a touches four Cl\u207b ions: left, right, above and below it on the page.',
+      'The crystal is three-dimensional, so there is a layer in front and a layer behind. Each adds one more Cl\u207b. Every Na\u207a has six Cl\u207b neighbours, and every Cl\u207b has six Na\u207a. ' + (s.lensPick === null ? '' : (lensRight ? 'Your six was right.' : 'You said ' + s.lensPick + '; the layers above and below are what most people miss.'))
+    ];
+    return Object.assign({}, R, {
+      video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      endPrev: { href: 'ks4-chemistry-5.2.1.2-ionic-bonding.dc.html', label: 'Ionic bonding' },
+      endNext: { href: 'ks4-chemistry-5.2.1.4-covalent-bonding.dc.html', label: 'Covalent bonding' },
+      endConnects: [{ href: 'ks4-chemistry-5.2.2.3-properties-ionic-compounds.dc.html', label: 'Properties of ionic compounds' }, { href: 'ks4-chemistry-5.2.2.6-giant-covalent-structures.dc.html', label: 'Giant covalent structures' }],
+      hookOptions: [
+        { text: 'The particles inside stack in one regular pattern that repeats', reply: 'Test that below: count what sits around one ion.' },
+        { text: 'Salt molecules are shaped like tiny cubes', reply: 'Hold that idea. You are about to meet a problem with it.' },
+        { text: 'Factories cut salt into cubes', reply: 'Salt grown in a jar at home comes out as cubes too.' },
+        { text: 'Water shapes the grains as it evaporates', reply: 'Rock salt that has never been dissolved is cubic as well.' }
+      ],
+      hookReveal: 'A crystal is a pattern that repeats in three dimensions. Salt\u2019s repeat is a cube of alternating sodium and chloride ions, so it grows, and breaks, along square faces.',
+      onHook: (i) => this.setState({ hook: i }),
+      lensProgress: s.lensSeen.length + ' of 3 views',
+      lensAsk: s.lensPick === null,
+      lensOpts: [2, 4, 6, 8].map((n) => ({ label: String(n), style: this.seg(false, false) + 'min-width:64px;', onClick: () => this.setState({ lensPick: n }) })),
+      lensOpen: s.lensPick !== null,
+      lensTabs: ['One layer', 'Neighbours in the layer', 'Add the layers above and below'].map((l, i) => ({ label: l, pressed: s.lensView === i, style: this.seg(s.lensView === i, false),
+        onClick: () => this.setState((st) => ({ lensView: i, lensSeen: st.lensSeen.includes(i) ? st.lensSeen : st.lensSeen.concat(i) })) })),
+      lensFig: ready ? K.fig(this.lensSvg(s.lensView), '') : null,
+      lensNote: lensNotes[s.lensView],
+      lensNoteStyle: 'margin:12px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid var(--ks3-accent);background:var(--ks3-accent-tint);',
+      thinkOptions: [
+        { text: 'There are exactly as many Na\u207a ions as Cl\u207b ions in the whole lattice: a 1 : 1 ratio, not a molecule.', correct: true, reply: 'The formula is the simplest ratio of ions in the lattice.' },
+        { text: 'Each Na\u207a is bonded to one particular Cl\u207b; the other five are just close by.', correct: false, reply: 'The attraction acts equally on all six neighbours. There is no partner.' },
+        { text: 'The lattice is made of NaCl molecules packed together in a cube.', correct: false, reply: 'A molecule is a fixed group of atoms held by covalent bonds. There are none in salt.' },
+        { text: 'Nothing: NaCl molecules form first and then join up into a crystal.', correct: false, reply: 'The ions go straight into the lattice. No NaCl unit ever exists on its own.' }
+      ],
+      thinkReveal: 'Every ion is held by all its neighbours at once, so there is no such thing as one NaCl unit. The formula counts ions: one sodium ion for every chloride ion in the lattice.',
+      onThink: (i) => this.setState({ think: i }),
+      dxTabs: DX.map((d, i) => ({ label: d.tab + (s.dxDone.includes(i) ? ' \u00b7 done' : ''), pressed: s.dx === i, style: this.seg(s.dx === i, false), onClick: () => this.setState({ dx: i, dxChecked: false }) })),
+      dxFig: ready ? K.fig(this.dxSvg(item), '') : null,
+      dxVal: s.dxVal[s.dx],
+      onDx: (e) => { const v = e.target.value; this.setState((st) => { const a = st.dxVal.slice(); a[st.dx] = v; return { dxVal: a, dxChecked: false }; }); },
+      onDxCheck: () => this.setState((st) => ({ dxChecked: true, dxDone: dxOk && !st.dxDone.includes(st.dx) ? st.dxDone.concat(st.dx) : st.dxDone })),
+      dxChecked: s.dxChecked,
+      dxWord: dxOk ? 'That matches the diagram.' : 'Count again.',
+      dxText: dxOk ? item.why : 'Count each kind of ion separately and write the two numbers as a ratio. Then divide both by the biggest number that goes into both.',
+      dxStyle: 'margin:14px 0 0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (dxOk ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-option-border);background:var(--ks3-inset);'),
+      mFigA: ready ? K.fig(D.ionicTransfer('Na', 'Cl', 2, 'Dot-and-cross diagram of sodium and chloride ions'), '') : null,
+      mFigB: ready ? K.fig(D.lattice('Na\u207a', 'Cl\u207b', 5, 4, { alt: 'Two-dimensional diagram of a sodium chloride lattice' }), '') : null,
+      mFigC: ready ? K.fig(this.ballStick(), '') : null,
+      mBins: [{ id: 'a', label: 'A · dot-and-cross' }, { id: 'b', label: 'B · 2D lattice' }, { id: 'c', label: 'C · ball-and-stick' }],
+      mItems: [
+        { text: 'Shows only one pair of ions, not the giant lattice they are part of.', bin: 'a', why: 'The dot-and-cross shows electron transfer between two ions, never the lattice.' },
+        { text: 'Suggests each ion belongs with one partner.', bin: 'a', why: 'Drawn as a pair, the ions look like a molecule.' },
+        { text: 'Shows a single layer, so each ion seems to have four neighbours, not six.', bin: 'b', why: 'The layers in front and behind are missing.' },
+        { text: 'Gives no idea of the crystal being three-dimensional.', bin: 'b', why: 'A flat grid cannot show depth.' },
+        { text: 'Draws sticks, as if each force acts along one line to one neighbour.', bin: 'c', why: 'Electrostatic forces act in all directions; there are no sticks.' },
+        { text: 'Leaves big gaps between ions that really touch.', bin: 'c', why: 'The ions in a real lattice are closely packed.' }
+      ],
+      onModels: () => this.setState({ models: true }),
+      examTip: ready ? K.tip(slug) : '',
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'Describe the structure of a giant ionic lattice') || K.find(slug, R.route, 'Describe how the ions are arranged') || { options: [] }, { command: 'Describe', marks: 1, why: 'Regular, three-dimensional, alternating, and held by strong forces in all directions.' }),
+        r2: { kind: 'text', command: 'Deduce', marks: 2, prompt: 'The diagram shows part of the lattice of an ionic compound of potassium and oxygen. Deduce its empirical formula. Type it with plain numbers.', placeholder: 'formula', accept: ['K2O'],
+          figureSvg: this.dxSvg({ m: 'K\u207a', x: 'O\u00b2\u207b', grid: ['MMX', 'XMM', 'MXM'] }), figureAlt: 'Part of a lattice of potassium ions and oxide ions',
+          right: 'Two K\u207a for every O\u00b2\u207b.', wrong: 'Count each kind of ion, write the ratio and cancel it down. Then check the charges balance.',
+          model: ['Count: 6 K\u207a and 3 O\u00b2\u207b, a ratio of 6 : 3, which cancels to 2 : 1.', 'Check the charges: 2 \u00d7 (1+) balances 1 \u00d7 (2\u2212).', 'Empirical formula: K\u2082O.'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why sodium chloride has a high melting point. Put the links in order.',
+          links: ['Sodium chloride is a giant lattice of oppositely charged Na\u207a and Cl\u207b ions.', 'There are strong electrostatic forces of attraction between the ions, acting in all directions.', 'A lot of energy is needed to overcome these many strong forces, so the melting point is high.'],
+          herrings: [{ text: 'A lot of energy is needed to break the covalent bonds.', why: 'There are no covalent bonds in sodium chloride: it is ionic.' }, { text: 'The forces between the NaCl molecules are strong.', why: 'There are no NaCl molecules. The forces are between ions.' }] },
+        r4: { command: 'Evaluate', marks: 4, question: 'The figure shows a ball-and-stick model of sodium chloride. Evaluate how well it represents the real structure. Give one strength and at least two limitations.', figureSvg: this.ballStick(),
+          points: ['Strength: it shows the regular, three-dimensional, alternating arrangement of ions (or the 1 : 1 ratio).', 'Limitation: the sticks suggest bonds along lines, but electrostatic forces act in all directions.', 'Limitation: the ions are shown far apart, but in the real lattice they are closely packed and touching.', 'Limitation: it shows only a few ions; the real lattice is giant, with a huge number of ions.'],
+          reject: ['\u201cIt shows molecules of NaCl.\u201d There are none.', '\u201cThe sticks are covalent bonds.\u201d Sodium chloride is ionic.'] }
+      } : {},
+      keyLines: ['Ionic compounds form a giant ionic lattice.', 'The lattice is a regular 3D arrangement of alternating positive and negative ions.', 'Strong electrostatic forces act between the ions in all directions.', 'In NaCl each ion has six neighbours of the opposite charge.', 'The formula is the simplest ratio of ions: deduce it by counting ions in a diagram.', 'Every model misses something: dot-and-cross shows no lattice, 2D shows one layer, ball-and-stick shows sticks and gaps.'],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>
