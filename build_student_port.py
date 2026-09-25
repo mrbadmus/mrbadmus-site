@@ -125,6 +125,11 @@ SERVED_FONTS = "/shared/fonts/"
 _REFUSED = {"classes.html", "settings.html", "claim-confirm.html"}
 
 LESSON_INDEX_NAME = "ks3-lesson-urls.js"
+# ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 19. The KS4 analogue
+# of the line above. See `ks4_lesson_index()` for why it carries `topic` only
+# (not `subject`, not a pathway/tier-specific path) and `ks4TopicHref` in
+# `shared/student-live.js` for what supplies the rest.
+KS4_LESSON_INDEX_NAME = "ks4-lesson-urls.js"
 RUNTIME_JS_NAME = "student-runtime.js"
 LIVE_JS_NAME = "student-live.js"
 LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
@@ -3184,6 +3189,89 @@ def lesson_index():
             "window.MRB_KS3_LESSONS = {\n%s\n};\n" % (len(index), rows)), len(index)
 
 
+# ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 19. THE SAME PROBLEM,
+# ONE KEY STAGE UP, AND WHY THE ANSWER ISN'T THE SAME SHAPE.
+#
+# "Open the lesson" on a KS4 work row had the identical defect `lesson_index()`
+# above was written to close (P3, 22 Aug 2026): the page cannot learn from
+# `shared/student-live.js` alone which lesson page a bank id draws on, because
+# that mapping is curriculum data, Python, and build-time.
+#
+# It is NOT the same shape, because a KS4 lesson page is not at one fixed
+# address the way a KS3 one is. `ks3/{discipline}/{unit}/{slug}.html` has no
+# variant; `{pathway}/{tier}/{subject}/{topic}/{slug}.html` has up to four,
+# one per (pathway, tier) that teaches the subtopic, and the RIGHT one for a
+# given student is decided by their OWN class, not by the question. So this
+# index carries only what curriculum data alone can answer — `slug: topic` —
+# and leaves `subject` (on the `ks4_assignment_bank` row itself) and
+# `pathway`/`tier` (the class) to be supplied at read time by
+# `shared/student-live.js`'s `ks4TopicHref`, which is where the four
+# candidate addresses actually get resolved down to one.
+def ks4_lesson_index():
+    """`{subtopic_slug: topic_slug}` for every authored KS4 subtopic.
+
+    Returns (js_source, n_subtopics). Stops the build if a subtopic's topic
+    directory does not exist, under ANY pathway/tier, for its own subject —
+    which is what a wrong `topic` value in `ks4_data`/`ks4_seed_sow` (a typo,
+    a topic renamed on one side and not the other) would look like: a subtopic
+    that this function is about to tell a student's browser lives somewhere
+    that was never built. `classify()`'s own uniqueness assertion (a subtopic
+    slug appearing twice across the three sciences) is relied on here rather
+    than re-checked — see its docstring — so the map is safely keyed on the
+    slug ALONE, with no subject in the key.
+    """
+    import ks4_data
+
+    cls = ks4_data.classify()
+    index = {slug: info["topic"] for slug, info in cls.items()}
+
+    missing = []
+    for slug in sorted(index):
+        info = cls[slug]
+        found = any(
+            os.path.exists(os.path.join(
+                pathway, tier, info["subject"], info["topic"], slug + ".html"))
+            for pathway in ("combined", "triple")
+            for tier in ("foundation", "higher")
+        )
+        if not found:
+            missing.append(slug)
+    if missing:
+        raise SystemExit(
+            "build_student_port.py: %d KS4 subtopic(s) named in "
+            "ks4_data.classify() have NO built page under ANY pathway/tier "
+            "for their subject, and a KS4 work row is about to link to one: "
+            "%s%s\nRun `python3 generate_site_v5.py` (or build_all.py) first "
+            "— a subtopic slug or topic that does not match the built tree "
+            "is a 404 with a student's name on it."
+            % (len(missing), ", ".join(missing[:5]),
+               " …" if len(missing) > 5 else ""))
+
+    rows = ",\n".join('  %s: %s' % (_q(s), _q(index[s]))
+                       for s in sorted(index))
+    return ("/* ══════════════════════════════════════════════════════════\n"
+            "   GENERATED — do not edit. `python3 build_student_port.py`\n"
+            "   ══════════════════════════════════════════════════════════\n"
+            "\n"
+            "   Which TOPIC each KS4 subtopic lives under, as\n"
+            "   `slug: \"topic\"`. Subject comes from the bank row itself and\n"
+            "   pathway/tier from the student's own class — see\n"
+            "   `ks4TopicHref` in shared/student-live.js, which is the only\n"
+            "   reader of this map and is where the four candidate addresses\n"
+            "   are resolved down to the one this class's copy of the\n"
+            "   subtopic lives at:\n"
+            "\n"
+            "       /{pathway}/{tier}/{subject}/\n"
+            "         + MRB_KS4_TOPICS[slug] + /slug + .html\n"
+            "\n"
+            "   Built from ks4_data.classify() and checked against the built\n"
+            "   tree: every one of these %d subtopics had a page on disk,\n"
+            "   under at least one pathway/tier for its subject, when this\n"
+            "   was written.\n"
+            "   ══════════════════════════════════════════════════════════ */\n"
+            "window.MRB_KS4_TOPICS = {\n%s\n};\n" % (len(index), rows)), len(index)
+
+
 # ── the token bridge: Design's theme tokens → the live page's ────────────
 #
 # ⊕ 22 Aug 2026 — PHASE 2a. Design's six themes move `--b-*`; the live bench,
@@ -3926,7 +4014,8 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
     dep_map = (
         "<script>window.__MRB_ASSET_V__=%s;</script>\n"
         % json.dumps({k: v for k, v in sorted((versions or {}).items())
-                      if k in STAMPED_DEPS or k == LESSON_INDEX_NAME},
+                      if k in STAMPED_DEPS or k == LESSON_INDEX_NAME
+                      or k == KS4_LESSON_INDEX_NAME},
                      separators=(",", ":"))
     )
     return stamp_versions((
@@ -4249,6 +4338,20 @@ def build():
     versions[LESSON_INDEX_NAME] = asset_hash(idx_js)
     print("     ✅ %-24s %7d bytes  (%d KS3 lesson(s), every page checked on "
           "disk)" % (LESSON_INDEX_NAME, len(idx_js), n_lessons))
+
+    # ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 19. Same
+    # publish-then-stamp discipline as the KS3 index immediately above, and
+    # for the same reason: there is no source file to fall back on, so the
+    # only correct hash is of the bytes just written.
+    ks4_idx_js, n_subtopics = ks4_lesson_index()
+    for out in (os.path.join("shared", KS4_LESSON_INDEX_NAME),
+                os.path.join(SHARED_OUT, KS4_LESSON_INDEX_NAME)):
+        with open(out, "w", encoding="utf-8") as fh:
+            fh.write(ks4_idx_js)
+    versions[KS4_LESSON_INDEX_NAME] = asset_hash(ks4_idx_js)
+    print("     ✅ %-24s %7d bytes  (%d KS4 subtopic(s), every one checked "
+          "against the built tree)"
+          % (KS4_LESSON_INDEX_NAME, len(ks4_idx_js), n_subtopics))
 
     for name in (RUNTIME_JS_NAME, LIVE_JS_NAME):
         src = os.path.join("shared", name)
