@@ -2408,7 +2408,15 @@
              KS3 resolution exactly as it was. */
           var ks4Slug = ks4SlugFromRef(r.source_ref);
           var slug = ks4Slug || bySlug[r.source_ref] || slugFromRef(r.source_ref);
-          if (slug) { coveredSlugs[slug] = true; }
+          /* ⛔ CORRECTED 25 Sep 2026 (fourth pass, TEST R1). `coveredSlugs` is
+             the list the deck reads `ks3_cards` and the practice round reads
+             `ks3_ladder_questions` BY — the two KS3 pools. A KS4 subtopic slug
+             must never enter it: eight slugs are byte-identical across the
+             key stages (`changes-of-state` is one), so a Year 10 physics class
+             was being dealt the KS3 chemistry cards and a KS3 practice
+             question for its own "Changes of State" set. A KS4 slug feeds
+             the docket name and the lesson link below, and nothing else. */
+          if (slug && !ks4Slug) { coveredSlugs[slug] = true; }
           /* ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 27. A NAME
              for the docket's "DRAWS ON" row, kept even when there is no PAGE
              to link it to — the two are different questions (see `lessonsFor`
