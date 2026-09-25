@@ -405,7 +405,26 @@
       padding: 18px; text-align: center; color: var(--st-muted);
       font: 400 16px/1.5 var(--st-ui); background: var(--st-note-bg);
     }
-    .drop input[type=file] { margin-top: 10px; font: 400 15px/1.4 var(--st-ui); }
+    /* ⊕ Stream M, 25 Sep 2026 (experience run round 3, N9) — `max-width:
+       100%; box-sizing:border-box` ADDED. THE FILE PICKER, NOT THE GRID,
+       WAS THE 388px CULPRIT AT A REAL 360px.
+       A native `<input type=file>`'s intrinsic width is "Choose File" plus
+       its filename text at the BROWSER'S OWN UI font, which does not shrink
+       for a narrower page the way page-drawn text does — measured on this
+       card at 360px: the input itself rendered 314px inside a 302px `.drop`,
+       twelve pixels wider than its own parent, and `.drop` carries no
+       `overflow:hidden` to absorb that. `max-width:100%` is the fix Chrome
+       actually honours on this control — it clips the trailing "No file
+       chosen" text with an ellipsis inside the button's own box rather than
+       letting the control claim its full intrinsic width, and the "Choose
+       File" button itself never shrinks below being pressable. Unlike the
+       grid table above, this is not a case for a local scrollbar: a file
+       picker has nothing a teacher needs to scroll to see, only a filename
+       that is fine to truncate. */
+    .drop input[type=file] {
+      margin-top: 10px; font: 400 15px/1.4 var(--st-ui);
+      max-width: 100%; box-sizing: border-box;
+    }
   </style>
 </head>
 <body>
