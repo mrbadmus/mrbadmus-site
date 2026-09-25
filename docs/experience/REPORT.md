@@ -236,7 +236,26 @@ Environment gaps, not product defects: the leaderboard cannot be tested on TEST
 (`weekly_challenges` is missing there, the backend answers 500); `index.html` does not load
 `config.js`, so a local copy points its class link at production.
 
-_(outcomes above are updated after the re-audit — see "The second pass" at the end)_
+### The second pass (round 2)
+
+Streams H (pupil side), I (blocking + wrong numbers) and J (confusing, cosmetic,
+responsive, loading) fixed every item in the two tables above at the source; each stream
+gated its own tree, then the merged tree was rebuilt and the affected slow gates were
+re-recorded: 25 green (`verify_ks3`, the four student gates, `teacher_behaviour`,
+`teacher_reach`, `focus_audit` with its new "reach a pupil by keyboard" drive,
+`teacher_rollup_equal` 1085/1085, the admin/real/foreign-class drives, the leaderboard,
+seating, import and bell drives) and `set_work` red on exactly the three inherited
+small-pool checks — plus a fourth that turned out to be the gate pinning a defect: it
+asserted Charts "still overflows by exactly the 19px it overflowed by before MRB-335",
+and stream J had fixed that overflow. The pin is retired; Charts is now held to
+no-sideways-scroll like every other page. The override on the tip names the three.
+
+Two things the second pass could not prove and says so: the weakest-question grid's
+lazy fetch against a live backend (fixtures do not load `teacher-live.js`; the rollup
+proof covers the seam, not that fetch), and the Draft feedback model call on
+production (teacher credential, above). A third Opus pass re-walks the journeys on the
+deployed round-two build; its log is `$MRB_SHOTS/final-round2/AUDIT.md` and its findings
+are appended at the very end of this file.
 
 ## Other defects found and fixed
 
