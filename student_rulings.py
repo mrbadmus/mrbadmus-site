@@ -3088,6 +3088,56 @@ LOGIC = {
             "    }\n"
             "    try {",
         ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Coordinator addition, 25 Sep 2026 (stream K) — TEST audit item
+        # 22(b). THE QUESTION-STRIP BUTTONS HAD A COLOUR, NOT A NAME.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # `markFor(i)` is the ONE place that decides a question's right/
+        # wrong/not-answered state, and every per-question marker button on
+        # this page is built from it: `markers` (the header strip, node 41,
+        # shown on every screen including the completed one), `grid` (the
+        # "jump to a question" panel, drawn twice — the mobile bottom sheet,
+        # node 68, and the desktop sidebar, node 274) and `endMarks` (the
+        # done screen's own compact strip under the score, node 302). All
+        # four consumers do `const m = markFor(i);` (or `const m = markFor(i)`
+        # aliased `g` in the grid loop) and then `Object.assign(m, {…})` —
+        # which MUTATES AND RETURNS the same object — so a field added here
+        # reaches every one of them from a single edit, exactly like `num`,
+        # `ok`, `bad` and `left` already do.
+        #
+        # The state a sighted student reads off colour and shape alone (ink
+        # fill = right, red outline = wrong, dashed outline = not answered)
+        # had no textual equivalent at all — every one of these buttons is
+        # icon-only, no visible text, no `aria-label`. `name` states the
+        # SAME fact in the SAME words the teacher's own breakdown strip
+        # already uses for the identical three-state question map
+        # (`buildQuestionMap` in shared/breakdown.js: "Question N: right" /
+        # "wrong" / "not answered") — one wording for one concept, on both
+        # sides of the platform, on purpose.
+        #
+        # ⚠️ `mark.name` reads `ok` and `done` from THIS SCOPE, not from
+        # the object literal being built — `bad` is `done && !ok` inline
+        # here rather than reading `m.bad`, because `m` does not exist yet:
+        # this line is inside the object literal that becomes `m`.
+        (
+            "      return {\n"
+            "        num: pad(i + 1), ok: ok, bad: done && !ok, left: !done,\n"
+            "        held: isHeld, current: i === idx,\n"
+            "        onClick: () => (wide || st.view === 'done' ? this.go(i) : this.toggleSheet())\n"
+            "      };\n"
+            "    };\n",
+            "      return {\n"
+            "        num: pad(i + 1), ok: ok, bad: done && !ok, left: !done,\n"
+            "        /* ⊕ RULED 25 Sep 2026 (stream K) — TEST 22(b). See SET_ATTR\n"
+            "           41/68/274/302 for the four bindings this feeds. */\n"
+            "        name: 'Question ' + (i + 1) + ': '"
+            " + (ok ? 'right' : (done ? 'wrong' : 'not answered')),\n"
+            "        held: isHeld, current: i === idx,\n"
+            "        onClick: () => (wide || st.view === 'done' ? this.go(i) : this.toggleSheet())\n"
+            "      };\n"
+            "    };\n",
+        ),
     ],
 }
 
@@ -3576,6 +3626,25 @@ SET_ATTR = {
         # exactly like its labelled sibling), so there is no per-render value
         # for it to disagree with.
         364: {"aria-label": "Next question"},
+        # ⊕ Coordinator addition, 25 Sep 2026 (stream K) — TEST audit item
+        # 22(b). See the LOGIC ruling on `markFor`'s `name` field for the
+        # full reasoning. Four bindings, one per icon-only per-question
+        # marker button on this page — all four are built from the same
+        # `markFor(i)` object, so `.name` already carries the right words
+        # for whichever button reads it:
+        #
+        #   41   the header strip (`markers`, alias `m`) — shown on every
+        #        screen, including the completed one.
+        #   68   the "jump to a question" mobile bottom sheet (`grid`,
+        #        alias `g`).
+        #   274  the same panel's desktop sidebar copy (`grid`, alias `g`
+        #        again — Design draws it twice, once per width).
+        #   302  the done screen's own compact strip under the score
+        #        (`endMarks`, alias `m`).
+        41:  {"aria-label": {"parts": [{"e": "m.name"}]}},
+        68:  {"aria-label": {"parts": [{"e": "g.name"}]}},
+        274: {"aria-label": {"parts": [{"e": "g.name"}]}},
+        302: {"aria-label": {"parts": [{"e": "m.name"}]}},
         # ⊕ MRB-337, 8 Sep 2026 — the assignment header's own bell host.
         #
         # 25 is the `<span style="margin-left:auto;…">` holding the LATE chip,
