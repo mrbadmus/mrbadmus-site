@@ -7414,6 +7414,50 @@ LOGIC = (
      "`classReportRows`. Same denominator defect: `k.n` is the CURRENT "
      "roster, and a departed student who submitted makes this negative."),
 
+    # ══ ⊕ Stream L, 25 Sep 2026 (experience run, item 2) · THE CLASS REPORT
+    #    CALLED AN OPEN SET "NEVER SUBMITTED" ═══════════════════════════════
+    #
+    # `p.when === 'upcoming'` used to be the same test as "not yet closed" —
+    # under the OLD deadline-based model `when` had exactly two values and
+    # 'upcoming' meant "due date has not passed". Stream A's 23 Sep 2026
+    # redefinition narrows what 'upcoming' means: it now means "not yet
+    # RELEASED" (scheduled), and a released-but-still-OPEN paper is 'marked'
+    # — the new meaning of that value is "results are live", not "closed".
+    # This "needs" sentence was never touched by that redefinition and kept
+    # reading `p.when` as if it still drew the open/closed line, so a class
+    # with one open set read "6 never submitted" on work that is still eleven
+    # days from its deadline — the exact defect the audit caught (item 2, and
+    # its sibling on Today, item 10/N2).
+    #
+    # ⚠️ THE `ks:` CHIP ABOVE THIS IS NOT TOUCHED HERE. It already reads
+    # `p.statusLabel` (MRB-336, a later entry in this list) by the time that
+    # ruling runs — `p.when === 'upcoming'` still exists on THIS line only
+    # because this entry runs first over the one evolving source; changing it
+    # here would make the MRB-336 entry's own anchor match zero times and
+    # fail the build. Only `needs`, which nothing downstream re-touches, is
+    # this entry's to fix.
+    #
+    # `p.closed` is the field stream A added FOR EXACTLY THIS — "is this
+    # paper missing/late", the genuine deadline test. An OPEN set now says
+    # "N not in yet", honest about work nobody has been marked late on yet;
+    # only a CLOSED set says "never submitted", because only a closed set can
+    # know that.
+    ("""        needs: missing === 0
+          ? 'Everyone submitted'
+          : (p.when === 'upcoming'
+            ? (missing === 1 ? '1 still to submit' : missing + ' still to submit')
+            : (missing === 1 ? '1 never submitted' : missing + ' never submitted')),""",
+     """        needs: missing === 0
+          ? 'Everyone submitted'
+          : (p.closed
+            ? (missing === 1 ? '1 never submitted' : missing + ' never submitted')
+            : (missing === 1 ? '1 not in yet' : missing + ' not in yet')),""",
+     "the class report's \"needs\" sentence — `p.closed` (the deadline "
+     "test) in place of `p.when === 'upcoming'` (now the release test), so "
+     "an open-but-released set reads \"N not in yet\" rather than \"N never "
+     "submitted\". The status chip beside it is untouched, on purpose — see "
+     "the note above."),
+
     # ── the SECOND copy of the `CLASSES[3]` fallback ────────────────────
     ("""    const k = all ? null : (this.klassById(scope) || this.CLASSES[3]);""",
      """    const k = all ? null : this.klass();""",
@@ -7825,6 +7869,37 @@ LOGIC = (
      "it, and \"Late — · Still marked\" describes marked work that does not "
      "exist. A legend for a series that is not there is the chart claiming "
      "to have measured something."),
+
+    # ══ ⊕ Stream L, 25 Sep 2026 (experience run, item N3) · THE "2+ WEEKS"
+    #    BUCKET WAS "7 DAYS OR MORE" ═══════════════════════════════════════
+    #
+    # Design's own boundary: `hours >= 168` is exactly seven days, so a pupil
+    # last seen a week and a bit ago fell into the bucket the label calls
+    # "2+ weeks" and the caption calls "Not seen for two weeks". Femi, last
+    # seen 12.6 days ago, was told to his teacher as a fortnight's silence
+    # when it had not been one. `336` is the same boundary in hours (14 * 24)
+    # — ONE constant, changed at its one true source (`bucketsOf`), which
+    # every consumer (the class card, Charts, the toggle) reads through.
+    ("""  bucketsOf(rows) {
+    return {
+      today: rows.filter(r => r.hours < 24).length,
+      week: rows.filter(r => r.hours >= 24 && r.hours < 168).length,
+      stale: rows.filter(r => r.hours >= 168).length
+    };
+  }""",
+     """  bucketsOf(rows) {
+    return {
+      today: rows.filter(r => r.hours < 24).length,
+      week: rows.filter(r => r.hours >= 24 && r.hours < 336).length,
+      stale: rows.filter(r => r.hours >= 336).length
+    };
+  }""",
+     "Stream L, 25 Sep 2026 (experience run, item N3) — the ONE place the "
+     "Today / This week / 2+ weeks boundary is drawn. 168 hours is seven "
+     "days, not two weeks; 336 (14 * 24) is. Every reader of `bucketsOf` — "
+     "the single-class columns, the all-classes bars, the class card, and "
+     "the two `cold` name-lists ruled below — moves with it, because none "
+     "of them carries a second copy of the boundary."),
 
     # ── engagement: "everyone" when there is nobody ─────────────────────
     ("""      const rows = this.rosterFor(k);
@@ -11601,6 +11676,23 @@ componentDidUpdate() {
         });
       const cDue = (p.due || '').replace(/^Due /, '');
       const cKey = k.id + ':' + wi + ':' + p.id;
+      /* \u2295 Stream L, 25 Sep 2026 (experience run, item 4) \u2014 THE CARD
+         FORGOT IT HAD ALREADY REMINDED TODAY, ON A RELOAD. `s.remindDone`
+         is SESSION state \u2014 it answers "did I press this in the last few
+         minutes", and a reload starts a new session with none of it. The
+         database has always known better: `student_notifications` carries
+         the real log, and `MrBadmusTeacherLive.remindedToday(assignmentId)`
+         (a fresh read, for the class actually being viewed, done once in
+         `base()`) answers the honest question \u2014 "were these children
+         ALREADY told today, by anyone" \u2014 the same question the deleted
+         `drawRemindControl` banner used to pre-read before MRB-326 JOB 4c
+         removed the fetch. It is back because Mide asked for it back
+         (experience run, item 4): a teacher who reloads must not be invited
+         to press a button that would write nothing. */
+      const cAlreadyToday = cMiss.length > 0 && cMiss.every(r => {
+        const rd = window.MrBadmusTeacherLive && window.MrBadmusTeacherLive.remindedToday(p.id);
+        return !!(rd && rd[r.id]);
+      });
       return {
         eyebrow: p.source === 'auto'
           ? (cDue ? "This week's homework \u00b7 due " + cDue
@@ -11614,26 +11706,38 @@ componentDidUpdate() {
           name: this.shortName(r.name),
           open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
         })),
-        remindLabel: (s.remindDone === cKey)
-          ? 'Reminded today' : 'Remind all ' + cMiss.length,
-        remind: () => MRB_REMIND_ALL(k && k.id,
-          [{ assignmentId: p.id, studentIds: cMiss.map(r => r.id) }]).then((r) => {
-          if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
-          this.setState({ remindDone: cKey });
-          if (!r.ok) {
-            this.ping(r.asked === 1
-              ? 'They have already been reminded about this today'
+        remindLabel: (s.remindDone === cKey || cAlreadyToday)
+          ? 'Reminded today \u00b7 ' + cMiss.length : 'Remind all ' + cMiss.length,
+        remind: () => {
+          /* A second press \u2014 this session or after a reload \u2014 writes
+             nothing new (the database's own unique index already made
+             that true) and now SAYS so up front instead of round-tripping
+             to be told. */
+          if (s.remindDone !== cKey && cAlreadyToday) {
+            this.ping(cMiss.length === 1
+              ? 'Already reminded today'
               : 'They have all already been reminded about this today');
-            return;
+            return Promise.resolve();
           }
-          if (r.ok < r.asked) {
-            this.ping('Reminded ' + r.ok + ' of ' + r.asked
-              + ' \u2014 the rest were already reminded today');
-            return;
-          }
-          this.ping('Reminder sent to ' + r.ok
-            + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
-        }),
+          return MRB_REMIND_ALL(k && k.id,
+            [{ assignmentId: p.id, studentIds: cMiss.map(r => r.id) }]).then((r) => {
+            if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
+            this.setState({ remindDone: cKey });
+            if (!r.ok) {
+              this.ping(r.asked === 1
+                ? 'They have already been reminded about this today'
+                : 'They have all already been reminded about this today');
+              return;
+            }
+            if (r.ok < r.asked) {
+              this.ping('Reminded ' + r.ok + ' of ' + r.asked
+                + ' \u2014 the rest were already reminded today');
+              return;
+            }
+            this.ping('Reminder sent to ' + r.ok
+              + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
+          });
+        },
         hasMore: false, moreLabel: '', more: () => {}
       };
     };
@@ -12028,7 +12132,7 @@ componentDidUpdate() {
      "it is still said, once, for the week actually in view."),
 
     ("if (kind === 'engagement') {\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        const stacks = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          return { label: c.code, sub: c.ks, right: b.today + ' today · ' + b.stale + ' cold',\n            segs: [{ pct: Math.round((b.today / t) * 100), fill: 'var(--ks3-ok)' }, { pct: Math.round((b.week / t) * 100), fill: 'var(--st-hatch-b)' }, { pct: Math.round((b.stale / t) * 100), fill: 'var(--st-rule-strong)' }] };\n        });\n        if (!stacks.length) {\n          return { ...base, title: 'Last seen, by class',\n            note: 'No class has work set yet' };\n        }\n        return { ...base, type: 'stack', title: 'Last seen, by class', stacks,\n          legend: [{ label: 'Today', fill: 'var(--ks3-ok)' }, { label: 'This week', fill: 'var(--st-hatch-b)' }, { label: '2+ weeks', fill: 'var(--st-rule-strong)' }],\n          tiles: [tile('Active today', totals.today, 'Across ' + live.length + (live.length === 1 ? ' class' : ' classes')), tile('This week', totals.week, ''), tile('2+ weeks', totals.stale, 'Worth chasing')],\n          note: totals.stale + ' students have not opened anything for two weeks or more' };\n      }\n      const rows = this.rosterFor(k);\n      if (!rows.length) {\n        return { ...base, title: k.code + ' — last seen',\n          note: 'No students on the roster yet' };\n      }\n      const b = this.bucketsOf(rows);\n      const cold = rows.filter(r => r.hours >= 168).map(r => r.name);\n      return { ...base, type: 'cols', title: k.code + ' — last seen',\n        cols: this.colsFrom([{ label: 'Today', value: String(b.today), raw: b.today }, { label: 'This week', value: String(b.week), raw: b.week }, { label: '2+ weeks', value: String(b.stale), raw: b.stale, flag: b.stale > 0 }]),\n        tiles: [tile('Students', k.n, 'On the roster'), tile('Active today', b.today, ''), tile('2+ weeks', b.stale, cold.length ? 'Worth chasing' : 'None')],\n        note: cold.length ? 'Not seen for two weeks: ' + cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + (cold.length - 3) + ' more' : '') : 'Nobody in this class has been quiet for two weeks or more' };\n    }",
-     'if (kind === \'engagement\') {\n      // ⊕ Stream D, 24 Sep 2026 (experience run, item 12) — ONE\n      // measure at a time, picked by the new toggle, in the SAME three\n      // colours everywhere it is drawn (the toggle\'s own dots, the bars,\n      // the single-class columns). `--st-hatch-b` (a dark red-brown) used\n      // to sit on "This week" — normal activity — while\n      // "2+ weeks" — the bucket actually worth a look — sat on\n      // `--st-rule-strong`, a pale neutral. That is backwards, and it is\n      // why a screenshot of this chart reads as an alarm over nothing.\n      // `--ks3-ok` (green) stays on Today; `--st-accent` (the studio\'s one\n      // "worth a look" orange, never `--danger`) moves to 2+ weeks; This\n      // week takes the neutral tone 2+ weeks used to have.\n      const ENG_BUCKETS = {\n        today: { label: \'Today\', fill: \'var(--ks3-ok)\' },\n        week: { label: \'This week\', fill: \'var(--st-rule-strong)\' },\n        stale: { label: \'2+ weeks\', fill: \'var(--st-accent)\' }\n      };\n      const engBucket = ENG_BUCKETS[this.state.engBucket] ? this.state.engBucket : \'today\';\n      // The toggle IS the legend here — one colour shown at a time, so\n      // a separate legend list under the chart would either repeat this or\n      // contradict it. Same order, same labels, same colours as whatever\n      // is drawn below, because both read off this one object.\n      const bucketTabs = [\'today\', \'week\', \'stale\'].map(bk => ({\n        id: bk, label: ENG_BUCKETS[bk].label, dot: ENG_BUCKETS[bk].fill,\n        on: bk === engBucket,\n        pressed: bk === engBucket ? \'true\' : \'false\',\n        fg: bk === engBucket ? \'var(--st-ink)\' : \'var(--st-caption)\',\n        bg: bk === engBucket ? \'var(--st-num-well)\' : \'transparent\',\n        bd: bk === engBucket ? \'var(--st-btn-border)\' : \'var(--st-rule-soft)\',\n        pick: () => this.setState({ engBucket: bk })\n      }));\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        // ⚠️ EVERY CLASS, THE SAME MEASURE. One bar per class, sized to\n        // that class\'s OWN roster (not the school\'s), all in the one\n        // colour the selected bucket owns — replacing the old\n        // three-segment stacked bar, which mixed all three measures in one\n        // bar and coloured the normal one like a warning.\n        const rows = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          const n = b[engBucket];\n          return { label: c.code, sub: c.ks, value: n + \'/\' + c.n,\n            pct: Math.round((n / t) * 100), fill: ENG_BUCKETS[engBucket].fill };\n        });\n        if (!rows.length) {\n          return { ...base, title: \'Last seen, by class\',\n            note: \'No class has work set yet\' };\n        }\n        const ENG_NOTE = {\n          today: totals.today + (totals.today === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n          week: totals.week + (totals.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n          stale: totals.stale + (totals.stale === 1 ? \' student has\' : \' students have\') + \' not opened anything for two weeks or more\'\n        };\n        return { ...base, type: \'bars\', title: \'Last seen, by class\', rows, bucketTabs,\n          tiles: [tile(\'Active today\', totals.today, \'Across \' + live.length + (live.length === 1 ? \' class\' : \' classes\')), tile(\'This week\', totals.week, \'\'), tile(\'2+ weeks\', totals.stale, \'Worth chasing\')],\n          note: ENG_NOTE[engBucket] };\n      }\n      const rows2 = this.rosterFor(k);\n      if (!rows2.length) {\n        return { ...base, title: k.code + \' — last seen\',\n          note: \'No students on the roster yet\' };\n      }\n      const b2 = this.bucketsOf(rows2);\n      const cold = rows2.filter(r => r.hours >= 168).map(r => r.name);\n      // ⚠️ THE THREE COLUMNS STAY, RECOLOURED, ON PURPOSE. One class\n      // already has all three measures on screen at once and they are\n      // separately labelled — that is not the mixing defect the\n      // "all classes" bar had. What was wrong here was only the colour\n      // (Today defaulted to the same dark red-brown as everything\n      // `colsFrom` does not explicitly flag), fixed by giving all three\n      // their own fill from the same map the toggle uses. The toggle\n      // still presses through to `note`, so it has a real effect on this\n      // scope too rather than existing only for visual symmetry.\n      const ENG_NOTE2 = {\n        today: b2.today + \' of \' + k.n + (k.n === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n        week: b2.week + (b2.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n        stale: cold.length ? \'Not seen for two weeks: \' + cold.slice(0, 3).join(\', \') + (cold.length > 3 ? \' and \' + (cold.length - 3) + \' more\' : \'\') : \'Nobody in this class has been quiet for two weeks or more\'\n      };\n      return { ...base, type: \'cols\', title: k.code + \' — last seen\', bucketTabs,\n        cols: this.colsFrom([\n          { label: \'Today\', value: String(b2.today), raw: b2.today, fill: ENG_BUCKETS.today.fill },\n          { label: \'This week\', value: String(b2.week), raw: b2.week, fill: ENG_BUCKETS.week.fill },\n          { label: \'2+ weeks\', value: String(b2.stale), raw: b2.stale, fill: ENG_BUCKETS.stale.fill }\n        ]),\n        tiles: [tile(\'Students\', k.n, \'On the roster\'), tile(\'Active today\', b2.today, \'\'), tile(\'2+ weeks\', b2.stale, cold.length ? \'Worth chasing\' : \'None\')],\n        note: ENG_NOTE2[engBucket] };\n    }',
+     'if (kind === \'engagement\') {\n      // ⊕ Stream D, 24 Sep 2026 (experience run, item 12) — ONE\n      // measure at a time, picked by the new toggle, in the SAME three\n      // colours everywhere it is drawn (the toggle\'s own dots, the bars,\n      // the single-class columns). `--st-hatch-b` (a dark red-brown) used\n      // to sit on "This week" — normal activity — while\n      // "2+ weeks" — the bucket actually worth a look — sat on\n      // `--st-rule-strong`, a pale neutral. That is backwards, and it is\n      // why a screenshot of this chart reads as an alarm over nothing.\n      // `--ks3-ok` (green) stays on Today; `--st-accent` (the studio\'s one\n      // "worth a look" orange, never `--danger`) moves to 2+ weeks; This\n      // week takes the neutral tone 2+ weeks used to have.\n      const ENG_BUCKETS = {\n        today: { label: \'Today\', fill: \'var(--ks3-ok)\' },\n        week: { label: \'This week\', fill: \'var(--st-rule-strong)\' },\n        stale: { label: \'2+ weeks\', fill: \'var(--st-accent)\' }\n      };\n      const engBucket = ENG_BUCKETS[this.state.engBucket] ? this.state.engBucket : \'today\';\n      // The toggle IS the legend here — one colour shown at a time, so\n      // a separate legend list under the chart would either repeat this or\n      // contradict it. Same order, same labels, same colours as whatever\n      // is drawn below, because both read off this one object.\n      const bucketTabs = [\'today\', \'week\', \'stale\'].map(bk => ({\n        id: bk, label: ENG_BUCKETS[bk].label, dot: ENG_BUCKETS[bk].fill,\n        on: bk === engBucket,\n        pressed: bk === engBucket ? \'true\' : \'false\',\n        fg: bk === engBucket ? \'var(--st-ink)\' : \'var(--st-caption)\',\n        bg: bk === engBucket ? \'var(--st-num-well)\' : \'transparent\',\n        bd: bk === engBucket ? \'var(--st-btn-border)\' : \'var(--st-rule-soft)\',\n        pick: () => this.setState({ engBucket: bk })\n      }));\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        // ⚠️ EVERY CLASS, THE SAME MEASURE. One bar per class, sized to\n        // that class\'s OWN roster (not the school\'s), all in the one\n        // colour the selected bucket owns — replacing the old\n        // three-segment stacked bar, which mixed all three measures in one\n        // bar and coloured the normal one like a warning.\n        const rows = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          const n = b[engBucket];\n          return { label: c.code, sub: c.ks, value: n + \'/\' + c.n,\n            pct: Math.round((n / t) * 100), fill: ENG_BUCKETS[engBucket].fill };\n        });\n        if (!rows.length) {\n          return { ...base, title: \'Last seen, by class\',\n            note: \'No class has work set yet\' };\n        }\n        const ENG_NOTE = {\n          today: totals.today + (totals.today === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n          week: totals.week + (totals.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n          stale: totals.stale + (totals.stale === 1 ? \' student has\' : \' students have\') + \' not opened anything for two weeks or more\'\n        };\n        return { ...base, type: \'bars\', title: \'Last seen, by class\', rows, bucketTabs,\n          tiles: [tile(\'Active today\', totals.today, \'Across \' + live.length + (live.length === 1 ? \' class\' : \' classes\')), tile(\'This week\', totals.week, \'\'), tile(\'2+ weeks\', totals.stale, \'Worth chasing\')],\n          note: ENG_NOTE[engBucket] };\n      }\n      const rows2 = this.rosterFor(k);\n      if (!rows2.length) {\n        return { ...base, title: k.code + \' — last seen\',\n          note: \'No students on the roster yet\' };\n      }\n      const b2 = this.bucketsOf(rows2);\n      const cold = rows2.filter(r => r.hours >= 336).map(r => r.name);\n      // ⚠️ THE THREE COLUMNS STAY, RECOLOURED, ON PURPOSE. One class\n      // already has all three measures on screen at once and they are\n      // separately labelled — that is not the mixing defect the\n      // "all classes" bar had. What was wrong here was only the colour\n      // (Today defaulted to the same dark red-brown as everything\n      // `colsFrom` does not explicitly flag), fixed by giving all three\n      // their own fill from the same map the toggle uses. The toggle\n      // still presses through to `note`, so it has a real effect on this\n      // scope too rather than existing only for visual symmetry.\n      const ENG_NOTE2 = {\n        today: b2.today + \' of \' + k.n + (k.n === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n        week: b2.week + (b2.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n        stale: cold.length ? \'Not seen for two weeks: \' + cold.slice(0, 3).join(\', \') + (cold.length > 3 ? \' and \' + (cold.length - 3) + \' more\' : \'\') : \'Nobody in this class has been quiet for two weeks or more\'\n      };\n      return { ...base, type: \'cols\', title: k.code + \' — last seen\', bucketTabs,\n        cols: this.colsFrom([\n          { label: \'Today\', value: String(b2.today), raw: b2.today, fill: ENG_BUCKETS.today.fill },\n          { label: \'This week\', value: String(b2.week), raw: b2.week, fill: ENG_BUCKETS.week.fill },\n          { label: \'2+ weeks\', value: String(b2.stale), raw: b2.stale, fill: ENG_BUCKETS.stale.fill }\n        ]),\n        tiles: [tile(\'Students\', k.n, \'On the roster\'), tile(\'Active today\', b2.today, \'\'), tile(\'2+ weeks\', b2.stale, cold.length ? \'Worth chasing\' : \'None\')],\n        note: ENG_NOTE2[engBucket] };\n    }',
      "Stream D, 24 Sep 2026 (experience run, item 12) — the engagement "
      "chart, both scopes. Its colour semantics were backwards (This week "
      "on the dark red-brown, 2+ weeks on the pale neutral) and there was "
