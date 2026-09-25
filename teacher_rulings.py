@@ -11280,11 +11280,17 @@ componentDidUpdate() {
      "worst.text.toLowerCase() + '. Only ' + worst.pct + '% of the class got "
      "it right.' : '',",
      "        reteachLine: worst ? worst.id\n"
-     "          + (worst.text ? ' \u2014 ' + worst.text.toLowerCase() : '')\n"
+     "          + (worst.text ? ' \u2014 ' "
+     "+ worst.text.toLowerCase().replace(/[?.!]+$/, '') : '')\n"
      "          + '. Only ' + worst.pct + '% of the class got it right.'\n"
      "          : '',",
      "the reteach banner, on a paper whose worst question carries no stem "
-     "snapshot."),
+     "snapshot, and (\u2295 stream M, item N7/26) whose stem's own trailing "
+     "\"?\" no longer collides with the banner's own full stop \u2014 Design's "
+     "sentence used to read \"\u2026represent?. Only 0% of the class got it "
+     "right.\", the two sentences' punctuation run together with no "
+     "separator; `.replace(/[?.!]+$/, '')` strips a trailing `?`, `.` or "
+     "`!` off the stem before the banner's own \".\" is appended."),
 
     # ══ ⊕ 2 Sep 2026 · THE CLASS-BY-QUESTION GRID IS EIGHT WIDE ═════════
     #
