@@ -7370,6 +7370,50 @@ LOGIC = (
      "`classReportRows`. Same denominator defect: `k.n` is the CURRENT "
      "roster, and a departed student who submitted makes this negative."),
 
+    # ══ ⊕ Stream L, 25 Sep 2026 (experience run, item 2) · THE CLASS REPORT
+    #    CALLED AN OPEN SET "NEVER SUBMITTED" ═══════════════════════════════
+    #
+    # `p.when === 'upcoming'` used to be the same test as "not yet closed" —
+    # under the OLD deadline-based model `when` had exactly two values and
+    # 'upcoming' meant "due date has not passed". Stream A's 23 Sep 2026
+    # redefinition narrows what 'upcoming' means: it now means "not yet
+    # RELEASED" (scheduled), and a released-but-still-OPEN paper is 'marked'
+    # — the new meaning of that value is "results are live", not "closed".
+    # This "needs" sentence was never touched by that redefinition and kept
+    # reading `p.when` as if it still drew the open/closed line, so a class
+    # with one open set read "6 never submitted" on work that is still eleven
+    # days from its deadline — the exact defect the audit caught (item 2, and
+    # its sibling on Today, item 10/N2).
+    #
+    # ⚠️ THE `ks:` CHIP ABOVE THIS IS NOT TOUCHED HERE. It already reads
+    # `p.statusLabel` (MRB-336, a later entry in this list) by the time that
+    # ruling runs — `p.when === 'upcoming'` still exists on THIS line only
+    # because this entry runs first over the one evolving source; changing it
+    # here would make the MRB-336 entry's own anchor match zero times and
+    # fail the build. Only `needs`, which nothing downstream re-touches, is
+    # this entry's to fix.
+    #
+    # `p.closed` is the field stream A added FOR EXACTLY THIS — "is this
+    # paper missing/late", the genuine deadline test. An OPEN set now says
+    # "N not in yet", honest about work nobody has been marked late on yet;
+    # only a CLOSED set says "never submitted", because only a closed set can
+    # know that.
+    ("""        needs: missing === 0
+          ? 'Everyone submitted'
+          : (p.when === 'upcoming'
+            ? (missing === 1 ? '1 still to submit' : missing + ' still to submit')
+            : (missing === 1 ? '1 never submitted' : missing + ' never submitted')),""",
+     """        needs: missing === 0
+          ? 'Everyone submitted'
+          : (p.closed
+            ? (missing === 1 ? '1 never submitted' : missing + ' never submitted')
+            : (missing === 1 ? '1 not in yet' : missing + ' not in yet')),""",
+     "the class report's \"needs\" sentence — `p.closed` (the deadline "
+     "test) in place of `p.when === 'upcoming'` (now the release test), so "
+     "an open-but-released set reads \"N not in yet\" rather than \"N never "
+     "submitted\". The status chip beside it is untouched, on purpose — see "
+     "the note above."),
+
     # ── the SECOND copy of the `CLASSES[3]` fallback ────────────────────
     ("""    const k = all ? null : (this.klassById(scope) || this.CLASSES[3]);""",
      """    const k = all ? null : this.klass();""",
