@@ -2795,7 +2795,15 @@
       const firstName = ctx.profile.first_name || 'teacher';
       const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) || 'prod';
 
-      $('nav-user-area').textContent = '👤 ' + firstName;
+      // ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 26) — the
+      // "👤" DROPPED. It is a retired placeholder shape (CLAUDE.md's brand
+      // rules): every other teacher screen names the signed-in teacher as
+      // plain text with no icon at all — `.tb-name` on today.html and
+      // classes.html/class-detail.html/etc's own node 30 both render just
+      // the name — and this page's `.tb-who` is styled to match that same
+      // plain-text convention. The emoji was the only thing making this one
+      // page's chip look like a different, unfinished component.
+      $('nav-user-area').textContent = firstName;
       const envEl = $('env-pill');
       envEl.textContent = env.toUpperCase();
       envEl.className = 'pill env-' + env;
