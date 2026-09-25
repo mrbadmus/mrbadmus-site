@@ -3260,7 +3260,12 @@ def check_consumers(p, base, pages, who, title, shots):
         # finding on the teacher surface and not as an MRB-335 red — and it is
         # asserted at its known size, so the day it gets WORSE this goes red
         # instead of staying quietly excused.
-        known = 409 if label == "teacher insights" else None
+        # ⊕ Experience run, 25 Sep 2026: the 19px overflow is FIXED (stream J
+        # narrowed the chart rows' fixed grid tracks at ≤560px), so the pinned
+        # 409 is retired and insights is held to the same no-sideways-scroll
+        # assertion as every other page. Kept as a branch so the history of
+        # WHY it was pinned stays readable above.
+        known = None
         if known:
             record(got["sw"] == known,
                    "…%s still overflows by exactly the %dpx it overflowed by "
