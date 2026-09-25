@@ -251,7 +251,12 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-trail a:hover { color: var(--ks3-accent-hover); text-decoration: underline; }
 .ks3-trail [aria-current] { color: var(--ks3-ink-muted); font-weight: 500; }
-.ks3-trail-sep { color: var(--ks3-rule-strong); }
+/* ⊕ Experience run, 24 Sep 2026 (item 13) — was `var(--ks3-rule-strong)`, a
+   hairline-border token borrowed for a readable glyph: 1.90:1 on
+   `--ks3-ground`, measured on the rendered page. `--ks3-ink-faint` is this
+   file's own "dimmed row text" token and clears AA against every KS3
+   ground (5.18:1+). */
+.ks3-trail-sep { color: var(--ks3-ink-faint); }
 
 /* Index pages run to the full page width; lesson pages are capped by
    .ks3-lesson (below) because prose has a measure and a browse grid
@@ -304,7 +309,9 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-crumbs a { color: var(--ks3-accent-text); text-decoration: none; font-weight: 500; }
 .ks3-crumbs a:hover { color: var(--ks3-accent-hover); text-decoration: underline; }
-.ks3-crumb-sep { color: var(--ks3-rule-strong); }
+/* ⊕ Experience run, 24 Sep 2026 (item 13) — same fix as `.ks3-trail-sep`
+   just above: a hairline-border token borrowed for a readable glyph. */
+.ks3-crumb-sep { color: var(--ks3-ink-faint); }
 
 /* ── type scale (SPEC.md §2, seven rows) ────────────────────────── */
 
@@ -1275,6 +1282,14 @@ body.rd[data-mode="ks3"] {
   resize: vertical;
 }
 .ks3-answer:hover { border-color: var(--ks3-accent); }
+/* ⊕ Experience run, 24 Sep 2026 (item 13, legibility) — no rule existed for
+   this, so the placeholder ("Start typing your answer…") rendered in
+   Chrome's UA-default grey (#757575), which measures 4.50:1 on
+   `--ks3-card` — a hair under the 4.5:1 floor on the rendered page, and an
+   accident rather than a choice: nobody set it. `--ks3-ink-muted` is the
+   token this page already uses for the label two rules up, at 5.6:1+ on
+   every KS3 ground. */
+.ks3-answer::placeholder { color: var(--ks3-ink-muted); opacity: 1; }
 .ks3-check-btn {
   margin-top: 14px;
   cursor: pointer;

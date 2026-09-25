@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 """
-mrb348_teacher_rollup_proof.py — `public.teacher_class_rollup` returns exactly
-what the browser would have computed for itself, for every value the six
-teacher screens draw about a class they are not focused on.
+mrb348_teacher_rollup_proof.py — `public.teacher_class_rollup_v2` returns
+exactly what the browser would have computed for itself, for every value the
+six teacher screens draw about a class they are not focused on.
+
+⊕ Mide's 23 Sep 2026 ruling ("results are live") points this at
+`teacher_class_rollup_v2`, a NEW function beside the untouched
+`teacher_class_rollup` — production DDL could not change in that run, so the
+JS ships behind a new RPC name rather than an edit to the old one. `marked`
+now means RELEASED, not "the deadline has passed"; `closed` is the new column
+carrying the old test; `in_week` widens to include an open paper regardless
+of its due date; `on_time_week` is new. See `paper_state()` below and
+`supabase/migrations/20260924010000_rollup_live_results.sql`.
 
     MRB_TEST_TEACHER_PASSWORD=… python3 mrb348_teacher_rollup_proof.py
     MRB_TEST_TEACHER_PASSWORD=… python3 mrb348_teacher_rollup_proof.py --fixture
@@ -294,11 +303,24 @@ def load_class_matrices(key, token, ids, with_subs=True):
 
 # ── what the page derives, from the submissions (today) ────────────────────
 
+def paper_state(a, now_iso):
+    """⊕ Mide's 23 Sep 2026 ruling — `marked` IS RELEASED, `closed` IS THE
+    DEADLINE TEST `marked` USED TO BE. Translates `buildPapers` in
+    shared/teacher-live.js: a NULL `release_at` is released (MRB-336,
+    unchanged); `closed` is `due_at IS NOT NULL AND due_at <= now`, exactly
+    what `marked` meant before this ruling."""
+    release_at = a.get("release_at")
+    return {
+        "marked": (release_at is None) or (release_at <= now_iso),
+        "closed": bool(a.get("due_at")) and not (a["due_at"] > now_iso),
+    }
+
+
 def js_values(pack, now_iso):
     """`buildPapers` + `buildMatrix` + `buildRoster` + `buildClassEntry`, for
     every value a class NOT in focus contributes to a screen."""
-    papers = [{"id": a["id"], "due_at": a.get("due_at"),
-               "marked": bool(a.get("due_at")) and not (a["due_at"] > now_iso)}
+    papers = [dict({"id": a["id"], "due_at": a.get("due_at")},
+                   **paper_state(a, now_iso))
               for a in pack["assignments"]]
     due_of = {p["id"]: p["due_at"] for p in papers}
     members = pack["members"]
@@ -343,25 +365,43 @@ def js_values(pack, now_iso):
         mine = by_student.get(sid, {})
         tot = totmax = 0
         in_week = False
+        on_time_week = False
         last = None
         missing_marked = False
         for p in papers:
             c = cell_of(mine.get(p["id"]), p["due_at"])
-            if p["marked"] and not c:
+            # ⊕ Mide's 23 Sep 2026 ruling, item 2 — `missing_marked` is a
+            # CLOSED paper with no cell, not a released one. `p["marked"]`
+            # used to BE the closed test; now it means released, so this
+            # reads `p["closed"]` instead — unchanged in effect.
+            if p["closed"] and not c:
                 missing_marked = True
             if not c:
                 continue
+            # Item 6 — a pupil's average is sum(score)/sum(max) over cells
+            # on RELEASED papers. `p["marked"]` IS released now, so this is
+            # unchanged text over a changed population.
             if p["marked"] and c["score"] is not None and c["max"]:
                 tot += c["score"]
                 totmax += c["max"]
             if c["stamp"] and (last is None or c["stamp"] > last):
                 last = c["stamp"]
-            if p["due_at"] and p["due_at"] >= w["start_at"] \
-                    and p["due_at"] < w["end_at"]:
+            # ⊕ Mide's 23 Sep 2026 ruling, item 5 — "this week's homework" is
+            # a paper that is OPEN (released, not yet closed) OR whose
+            # due_at falls inside the window; `buildMatrix`'s `inWeekPaper`.
+            # A pupil's `in_week` is true only when they have a CELL on one
+            # (this test sits after the `if not c: continue` guard, same as
+            # the JS). `on_time_week` is the same test plus `late is False`.
+            p_open = p["marked"] and not p["closed"]
+            in_win = bool(p["due_at"] and p["due_at"] >= w["start_at"]
+                          and p["due_at"] < w["end_at"])
+            if p_open or in_win:
                 in_week = True
+                if c["late"] is False:
+                    on_time_week = True
         students[sid] = {
             "avg": js_round(tot / totmax * 100) if totmax > 0 else None,
-            "in_week": in_week, "last_at": last,
+            "in_week": in_week, "on_time_week": on_time_week, "last_at": last,
             "missing_marked": missing_marked,
         }
     return assemble(pack, cols, students, marked_ids, papers)
@@ -419,8 +459,8 @@ def assemble(pack, cols, students, marked_ids, papers):
 def rollup_values(pack, roll, now_iso):
     """`matrixFromRollup()` in shared/teacher-live.js, translated. The pack
     here carries NO submissions at all — that is the point."""
-    papers = [{"id": a["id"], "due_at": a.get("due_at"),
-               "marked": bool(a.get("due_at")) and not (a["due_at"] > now_iso)}
+    papers = [dict({"id": a["id"], "due_at": a.get("due_at")},
+                   **paper_state(a, now_iso))
               for a in pack["assignments"]]
     members = pack["members"]
     prow = {p["assignment_id"]: p for p in roll["papers"]}
@@ -439,9 +479,11 @@ def rollup_values(pack, roll, now_iso):
     students = {}
     for m in members:
         sid = m["student"]["id"]
-        r = srow.get(sid) or {"avg": None, "in_week": False, "last_at": None,
+        r = srow.get(sid) or {"avg": None, "in_week": False,
+                              "on_time_week": False, "last_at": None,
                               "missing_marked": False}
         students[sid] = {"avg": r["avg"], "in_week": r["in_week"],
+                         "on_time_week": r.get("on_time_week", False),
                          "last_at": r["last_at"],
                          "missing_marked": r["missing_marked"]}
     marked_ids = [p["id"] for p in papers if p["marked"]]
@@ -529,7 +571,7 @@ def run_reader(email, note, key, pw, ids):
     packs, nmem, nasg, nsub = load_class_matrices(key, token, ids)
     windows = {cid: {"start": p["week"]["start_at"], "end": p["week"]["end_at"]}
                for cid, p in packs.items()}
-    rows = rest("rpc/teacher_class_rollup", key, token, method="POST",
+    rows = rest("rpc/teacher_class_rollup_v2", key, token, method="POST",
                 body={"p_class_ids": ids, "p_now": now_iso,
                       "p_windows": windows})
     roll = {r["class_id"]: r for r in rows}
@@ -708,14 +750,27 @@ def fixture(key, pw, srk):
             {"assignment_id": marked, "student_id": p0, "score": 8,
              "max_score": 8, "submitted_at": t(3), "completed_at": t(3),
              "status": "complete", "is_late": False, "attempts": 2},
-            # ── THIS WEEK's paper — week[0] is 1 of 3 ───────────────────
+            # ── THIS WEEK's paper — OPEN, and RESULTS ARE LIVE ON IT ────
+            # ⊕ Mide's 23 Sep 2026 ruling — extended to mirror production's
+            # own shape (10h/Ph1, 24 Sep 2026): an OPEN set with TWO complete
+            # on-time submissions and one in progress, the rest untouched.
             # p0 in progress, no stamp, not complete -> NO CELL at all
             {"assignment_id": thisweek, "student_id": p0, "score": None,
              "max_score": None, "submitted_at": None, "completed_at": None,
              "status": "in_progress", "is_late": None, "attempts": 1},
-            # p1 handed in, inside the window
+            # p1 handed in, inside the window, on time -> a cell, and now
+            # counted in `marked`/`classMean` too: it is RELEASED, and
+            # released is all "marked" means now.
             {"assignment_id": thisweek, "student_id": p1, "score": 4,
              "max_score": 4, "submitted_at": t(0, 1), "completed_at": t(0, 1),
+             "status": "complete", "is_late": False, "attempts": 1},
+            # p2 ALSO handed in, on time — the second "complete, on time"
+            # result on a paper that has not closed. Its own cell also
+            # proves `in_week` on a paper reached only through the NEW
+            # "open counts as in-week" branch, independently of the
+            # no-deadline paper below (which already does, on its own).
+            {"assignment_id": thisweek, "student_id": p2, "score": 3,
+             "max_score": 4, "submitted_at": t(0, 2), "completed_at": t(0, 2),
              "status": "complete", "is_late": False, "attempts": 1},
             # ── the NO-DEADLINE paper ───────────────────────────────────
             # completed_at with NO submitted_at: a cell, and NOT a
@@ -730,34 +785,91 @@ def fixture(key, pw, srk):
               % (len(made), len(made_subs)))
 
         # ── BY HAND ──────────────────────────────────────────────────────
+        # ⊕ Mide's 23 Sep 2026 ruling — RECOMPUTED, not just re-labelled.
+        # `marked` now means RELEASED, and every one of this class's four
+        # assignments has a NULL `release_at` (the baseline row, confirmed
+        # live on TEST — one pre-existing paper, due 21 May 2026, zero
+        # submissions — plus the three built here, none of which sets
+        # `release_at`). So ALL FOUR are now `marked`, where before only the
+        # "marked" paper (closed) was. The baseline paper contributes zero
+        # to every sum regardless (nobody ever sat it), so it changes
+        # nothing below — but `thisweek` and `nodue` are NEWLY counted in
+        # `markedSub`/`markedOnTime`/`markedLate`/`markedLateUnknown`/
+        # `classMean`, and in each pupil's `avg`, wherever that pupil has a
+        # cell on one of them.
         n_assign = len(base_assign) + 3
         hand = {
             "student_count": 3,
             "assignment_count": n_assign,
             # submitted_at IS NOT NULL over the FIRST attempts: p0, p1, p2
-            # and o1 on the marked paper, p1 on this week's. o2's row and the
-            # no-deadline cell have no submitted_at; the in-progress row has
-            # none either.
-            "submission_count": 5,
-            "completion_pct": js_round(5 / (3 * n_assign) * 100),
-            "markedSub": 5, "markedOnTime": 2, "markedLate": 2,
-            "markedLateUnknown": 1,
-            "markedPct": js_round(2 / 4 * 100),
-            "classMean": 48,          # 19/40 = 47.5 -> 48, half away from zero
-            "week0": 1, "week1": 3,
-            # p0 and p2. Every pupil is MISSING a cell on the class's own
-            # pre-existing marked paper (a May deadline nobody sat), so
-            # `missing_marked` is true for all three and the flag then turns
-            # on `inWeek` alone — which is exactly Design's rule,
-            # `!inWeek && (missingMarked || avg < 50)`.
-            "flagged": 2,
+            # and o1 on the marked paper, p1 AND p2 on this week's. o2's row
+            # and the no-deadline cell have no submitted_at; the in-progress
+            # row has none either. UNCHANGED BY THE RULING — submission_count
+            # never was scoped to `marked`/`closed` — but +1 for p2's new
+            # this-week submission: 5 -> 6.
+            "submission_count": 6,
+            "completion_pct": js_round(6 / (3 * n_assign) * 100),
+            # markedSub etc. now sum over ALL FOUR released papers:
+            # baseline(0) + marked(5) + thisweek(2, was 1) + nodue(1) = 8.
+            # on_time:  0 + 2 + 2 + 0 = 4.  late: 0 + 2 + 0 + 0 = 2.
+            # unknown:  0 + 1 + 0 + 1 = 2.
+            "markedSub": 8, "markedOnTime": 4, "markedLate": 2,
+            "markedLateUnknown": 2,
+            "markedPct": js_round(4 / 6 * 100),
+            # mean of the released columns' means that have one:
+            # marked=48 (19/40), thisweek=88 (7/8 — p1's 4/4 + p2's 3/4),
+            # nodue=13 (1/8). baseline has no cell so no mean (excluded).
+            # (48 + 88 + 13) / 3 = 49.667 -> 50, half away from zero.
+            "classMean": 50,
+            # week0: ALL THREE. p1 and p2 via the OPEN "this week" paper —
+            # the whole point of item 5: an open paper counts the moment a
+            # pupil has a cell on it, not only once its due date falls in
+            # the window. p0's own cell is on the "marked" paper, and
+            # `t(3)` — three days before the run — lands INSIDE the current
+            # teaching week's window whenever the fixture is run more than a
+            # couple of days into that week (the window is the whole
+            # calendar week, not "the last three days"); observed true on
+            # TEST on 24 Sep 2026, confirmed by `w["start_at"]`/`w["end_at"]`
+            # printed above. That was already true of the FIRST due-in-
+            # window test, before this ruling — it is not something item 5
+            # introduces — it was simply never exercised by round two's
+            # values, which this by-hand block did not check against the
+            # printed window either. `week0`/`flagged` below follow whatever
+            # the actual window says, not a day-of-week assumption; JS and
+            # SQL computing the SAME answer from the SAME window is the
+            # actual proof, and both did.
+            "week0": 3, "week1": 3,
+            # Nobody: every pupil is now `in_week` (see above), and
+            # `flagged` requires `!in_week`.
+            "flagged": 0,
         }
         hand_cols = {"sub": 5, "asked": 5, "on_time": 2, "late": 2,
                      "unknown": 1, "marked_n": 5, "mean": 48}
+        # ⊕ NEW — the open "this week" paper's own column, now that it
+        # counts: two on-time cells out of a roster of three, one in
+        # progress (no cell), mirroring 10h/Ph1 on production.
+        hand_thisweek_cols = {"sub": 2, "asked": 3, "on_time": 2, "late": 0,
+                              "unknown": 0, "marked_n": 2, "mean": 88}
         hand_students = {
-            p0: {"avg": 63, "in_week": False, "missing_marked": True},
-            p1: {"avg": 38, "in_week": True, "missing_marked": True},
-            p2: {"avg": 25, "in_week": False, "missing_marked": True},
+            # p0: avg unaffected (no cell on either new paper), but
+            # `in_week` is True via the PRE-EXISTING "marked" paper — its
+            # due date falls inside the current window (see the note on
+            # `week0` above). `on_time_week` stays False: p0's cell on
+            # `marked` is LATE, not on time.
+            p0: {"avg": 63, "in_week": True, "on_time_week": False,
+                 "missing_marked": True},
+            # p1: avg now draws on `marked` (3/8) AND `thisweek` (4/4) —
+            # (3+4)/(8+4) = 7/12 = 58.33 -> 58 (was 38, marked-only).
+            # `in_week`/`on_time_week` both True via the open thisweek cell.
+            p1: {"avg": 58, "in_week": True, "on_time_week": True,
+                 "missing_marked": True},
+            # p2: avg now draws on `marked` (2/8), `nodue` (1/8) AND
+            # `thisweek` (3/4) — (2+1+3)/(8+8+4) = 6/20 = 30 (was 25,
+            # marked+nodue only). `in_week` was already True via `nodue`
+            # being open; `on_time_week` is NEW — nodue's lateness is
+            # unknown (no due_at), but thisweek's cell is on time.
+            p2: {"avg": 30, "in_week": True, "on_time_week": True,
+                 "missing_marked": True},
         }
 
         token = sign_in("mide.badmus@test-rainford.local", key,
@@ -766,7 +878,7 @@ def fixture(key, pw, srk):
         packs, *_ = load_class_matrices(key, token, [cid])
         windows = {cid: {"start": packs[cid]["week"]["start_at"],
                          "end": packs[cid]["week"]["end_at"]}}
-        rows_out = rest("rpc/teacher_class_rollup", key, token, method="POST",
+        rows_out = rest("rpc/teacher_class_rollup_v2", key, token, method="POST",
                         body={"p_class_ids": [cid], "p_now": now_iso,
                               "p_windows": windows})
         js = js_values(packs[cid], now_iso)
@@ -791,6 +903,15 @@ def fixture(key, pw, srk):
                 fails.append("marked.%s: hand=%r js=%r sql=%r"
                              % (k, want, a, b))
         print()
+        for k, want in hand_thisweek_cols.items():
+            a, b = js["cols"][thisweek][k], sq["cols"][thisweek][k]
+            ok = (want == a == b)
+            print("  thisweek column %-7s %8s %8s %8s  %s"
+                  % (k, want, a, b, "OK" if ok else "MISMATCH"))
+            if not ok:
+                fails.append("thisweek.%s: hand=%r js=%r sql=%r"
+                             % (k, want, a, b))
+        print()
         for sid, want in hand_students.items():
             for k, v in want.items():
                 a, b = js["students"][sid][k], sq["students"][sid][k]
@@ -803,9 +924,15 @@ def fixture(key, pw, srk):
 
         # and then every remaining cell of the class, both paths
         compare(cid, js, sq, fails)
+        # Each pupil dict in `hand_students` carries 4 keys (avg, in_week,
+        # on_time_week, missing_marked); sum their lengths rather than
+        # hardcoding, so this count cannot go stale the next time a key is
+        # added or removed.
+        per_pupil_keys = sum(len(v) for v in hand_students.values())
         print("\n  %s  %d values, three ways (by hand, in JS, in SQL)"
               % ("PASS" if not fails else "FAIL %d" % len(fails),
-                 len(hand) + len(hand_cols) + 9 + cells_compared(js)))
+                 len(hand) + len(hand_cols) + len(hand_thisweek_cols)
+                 + per_pupil_keys + cells_compared(js)))
         for f in fails:
             print("     - %s" % f)
         return len(fails)

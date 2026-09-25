@@ -398,7 +398,7 @@ KS3_CHAT_OVERLAY = """<div class="chat-overlay" id="chatOverlay" inert data-iner
       <button type="button" data-clear-img aria-label="Remove the picture">%(cross)s</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Add a photo of your work">\U0001F4F7</label>
+      <label for="imgInput" class="img-btn" title="Add a photo of your work" tabindex="0" role="button" aria-label="Attach a photo">\U0001F4F7</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
       <input type="text" id="ci" placeholder="Ask Mr Badmus anything about this lesson"/>
       <button class="chat-send-btn" type="button" aria-label="Send">%(arrow)s</button>

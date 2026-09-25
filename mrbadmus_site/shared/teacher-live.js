@@ -475,24 +475,42 @@
     return pad2(mon.getDate()) + "/" + pad2(mon.getMonth() + 1) + "/" + String(mon.getFullYear()).slice(-2);
   }
 
-  /* Design's relative-time vocabulary, against real timestamps. Its own list
-     ran '9 min ago' … '9 days ago'; anything older than a fortnight is given
-     in weeks, because "23 days ago" is a number a teacher has to convert. */
+  /* ⊕ Mide's 25 Sep 2026 ruling (experience run, item 7) — CALENDAR DAYS,
+     NOT A ROLLING 24-HOUR WINDOW. `days = Math.floor(hours / 24)` treated
+     "yesterday" as "24 to 47 hours ago", so Wednesday's work read as
+     "yesterday" on Friday — 2 calendar days out, whenever the elapsed time
+     happened to land under 48 real hours. A teacher reads "yesterday"
+     against the CALENDAR, not against a stopwatch: it means the day before
+     today, whatever the clock says either timestamp was made at. Same
+     vocabulary Design's own list started from; "N weeks ago" is dropped in
+     favour of an actual date (`dayMonth`/`dayMonthYear`, already used
+     elsewhere in this file) once "N days ago" stops being a number worth
+     counting — the brief's own four buckets are today / yesterday / N days
+     ago / date, not a fifth "weeks" bucket nothing asked for. */
+  function calendarDayDiff(from, to) {
+    var a = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    var b = new Date(to.getFullYear(), to.getMonth(), to.getDate());
+    return Math.round((b.getTime() - a.getTime()) / 86400000);
+  }
+
   function relativeTime(iso, now) {
     var d = asDate(iso);
     if (!d) { return ""; }
-    var mins = Math.floor((now - d.getTime()) / 60000);
-    // A negative gap is clock skew between the device and the server, not a
-    // submission from the future. It reads as "just now", which it is.
-    if (mins < 1) { return "just now"; }
-    if (mins < 60) { return mins + " min ago"; }
-    var hours = Math.floor(mins / 60);
-    if (hours < 24) { return hours === 1 ? "1 hour ago" : hours + " hours ago"; }
-    var days = Math.floor(hours / 24);
-    if (days === 1) { return "yesterday"; }
-    if (days < 14) { return days + " days ago"; }
-    var weeks = Math.floor(days / 7);
-    return weeks + " weeks ago";
+    var nowD = new Date(now);
+    var dayDiff = calendarDayDiff(d, nowD);
+    // Still today's calendar date (or, on clock skew, not yet — either way
+    // the fine-grained minute/hour vocabulary is the honest one): a negative
+    // gap reads as "just now", exactly as it always has.
+    if (dayDiff <= 0) {
+      var mins = Math.floor((now - d.getTime()) / 60000);
+      if (mins < 1) { return "just now"; }
+      if (mins < 60) { return mins + " min ago"; }
+      var hours = Math.floor(mins / 60);
+      return hours === 1 ? "1 hour ago" : hours + " hours ago";
+    }
+    if (dayDiff === 1) { return "yesterday"; }
+    if (dayDiff < 7) { return dayDiff + " days ago"; }
+    return d.getFullYear() === nowD.getFullYear() ? dayMonth(d) : dayMonthYear(d);
   }
 
   function hoursSince(iso, now) {
@@ -668,10 +686,20 @@
      ⚠️ COLUMN 0 IS NOT NECESSARILY THE ONLY OPEN PAPER. Design assumes exactly
      one — index 0 open, 1..n marked — and reaches for `.slice(1)` when it
      wants "the marked ones". Real classes have none open, or three. So the
-     aggregates below are computed over `markedIdx`, the indices actually
-     closed, and are handed over ready-made: `classMean`, `markedSub`,
-     `markedOnTime`, `markedPct` and `studentAvg` are read straight off this
-     object by Design's code and need no slicing.                          */
+     aggregates below are computed over `markedIdx` and are handed over
+     ready-made: `classMean`, `markedSub`, `markedOnTime`, `markedPct` and
+     `studentAvg` are read straight off this object by Design's code and need
+     no slicing.
+
+     ⊕ Mide's 23 Sep 2026 ruling — `markedIdx` IS RELEASED PAPERS, NOT CLOSED
+     ONES. It used to be "the indices actually closed" (the deadline had
+     passed); results now update live as pupils complete work, so `markedIdx`
+     is every paper that is RELEASED (`state !== 'scheduled'`), open or
+     closed alike — which is exactly the population item 6 of the ruling
+     wants a pupil's and a class's average computed over. The genuine
+     deadline test — "is this paper missing/late" — is `closedIdx`, kept
+     separately for the handful of consumers that mean that instead
+     (`missingMarked` in `buildRoster`).                                   */
   function buildPapers(pack, now) {
     var roster = pack.members.length;
 
@@ -717,7 +745,23 @@
          branch on `when === 'marked'`, and every one of them is asking
          "has the deadline passed", not "can a child see it". Narrowing
          `when` would have quietly changed what gets marked and what gets
-         reteached. `state` is the new answer and it is a new field. */
+         reteached. `state` is the new answer and it is a new field.
+
+         ⊕ SUPERSEDED, Mide's ruling of 23 Sep 2026 — RESULTS ARE LIVE.
+         The paragraph above was the 8 Sep model and it is now wrong: pupils
+         are handing in real homework and a result that exists was reading
+         as absent until a deadline the teacher set, sometimes a week away.
+         `paper.when === 'marked'` no longer asks "has the deadline
+         passed" — it asks "are this paper's results visible", which is
+         true the instant the paper is RELEASED (`state !== 'scheduled'`).
+         The key name stays `when`/`'marked'` because fifty consumers branch
+         on it and a rename would be a second migration for no gain; only
+         the truth condition moves, from `state === 'closed'` to
+         `state !== 'scheduled'`. Consumers that genuinely need the OLD
+         deadline test — "is this paper missing/late", never "is it
+         visible" — read the new `paper.closed` (`state === 'closed'`) or
+         the matrix's `closedIdx` instead: `missingMarked` in `buildRoster`,
+         and any other "missing"/"late" wording. */
       var released = !a.release_at || a.release_at <= nowIso;
       var state = !released ? "scheduled" : (open ? "open" : "closed");
       /* ⊕ RULED 24 Aug 2026 — THE RAIL IS ANCHORED ON `due_at`, AND `set` IS
@@ -813,8 +857,19 @@
         scope_ref: a.scope_ref || "",
         set_subject: a.set_subject || "",
         paper: (a.paper == null) ? null : a.paper,
+        // ⊕ Stream J, 25 Sep 2026 (experience run, item 4) — the fourth
+        // answer Edit re-opens the sheet on. `shared/set-work.js`'s `edit()`
+        // already knew what to do with `o.note` (it only shows the field,
+        // never sends it back unless the teacher actually touches it or it
+        // arrived non-empty) — it was simply never PASSED one, so the field
+        // opened blank over a set that had a real note in the database.
+        note: a.teacher_note || "",
         released: released,
         state: state,
+        // ⊕ Mide's 23 Sep 2026 ruling — the genuine deadline test, for the
+        // handful of consumers that mean "missing" or "late" and must not
+        // be fooled by `when === 'marked'` now meaning "results are live".
+        closed: state === "closed",
         statusLabel: state === "scheduled" ? "Scheduled"
                    : (state === "open" ? "Open" : "Closed"),
         created_at: a.created_at,
@@ -823,7 +878,10 @@
         // The ACTIVE roster. NOT the denominator for "submitted" — see
         // `asked`, which decoratePapers fills in once the matrix is built.
         roster: roster,
-        when: open ? "upcoming" : "marked"
+        // `'marked'` now means "results are live" = released, NOT "the
+        // deadline passed". See the ⊕ SUPERSEDED note above `state`'s own
+        // derivation. Use `.closed` / `closedIdx` for the deadline test.
+        when: state === "scheduled" ? "upcoming" : "marked"
       };
     });
   }
@@ -944,8 +1002,17 @@
         scores: [], max: [], pct: [], late: [], stamp: [],
         stampShort: [], status: [], subId: [], submitted: [],
         inWeek: !!(s && s.in_week),
+        // ⊕ Mide's 23 Sep 2026 ruling, item 5 — the SQL rollup's own
+        // `on_time_week` (a cell with `late = false` on an in-week paper),
+        // carried the same way `in_week` already was.
+        onTimeWeek: !!(s && s.on_time_week),
         // Read by buildRoster INSTEAD of walking the (absent) cell arrays.
         lastIso: s ? s.last_at : null,
+        // `missing_marked` is the SQL's closed-paper-with-no-cell test (see
+        // `teacher_class_rollup_v2`'s `missing_marked` column) — genuinely
+        // the deadline test, unlike this file's own `markedIdx` which now
+        // means released. The field name is unchanged; only its SQL
+        // definition moved.
         missingMarked: !!(s && s.missing_marked),
         partial: true
       };
@@ -962,6 +1029,8 @@
       colLateUnknown: colLateUnknown,
       colMarkedN: colMarkedN,
       markedIdx: papers.filter(function (p) { return p.when === "marked"; })
+                       .map(function (p) { return p.idx; }),
+      closedIdx: papers.filter(function (p) { return p.closed; })
                        .map(function (p) { return p.idx; }),
       studentAvg: studentAvg,
       partial: true,
@@ -985,9 +1054,19 @@
     // The current teaching week's papers, from the class's own anchor day.
     // `pack.week` is teacher-data's `computeWeekWindow`, so the dashboard and
     // the class-detail page agree on where the week starts.
+    //
+    // ⊕ Mide's 23 Sep 2026 ruling — "THIS WEEK'S HOMEWORK" INCLUDES WHATEVER
+    // IS STILL OPEN, NOT ONLY WHAT IS DUE INSIDE THE WINDOW. A paper due next
+    // month that is open right now is still homework a pupil could be doing
+    // this week; a paper's due date sliding past the window on Monday must
+    // not make it vanish from "this week" on Tuesday. `p.state === 'open'`
+    // (released, not yet closed) is OR'd onto the existing due-date-in-window
+    // test, which is kept exactly as it was for a paper that has closed but
+    // whose due date still falls in this window.
     var inWeekPaper = {};
     papers.forEach(function (p) {
-      if (p.due_at && p.due_at >= pack.week.start_at && p.due_at < pack.week.end_at) {
+      if (p.state === "open" ||
+          (p.due_at && p.due_at >= pack.week.start_at && p.due_at < pack.week.end_at)) {
         inWeekPaper[p.idx] = true;
       }
     });
@@ -1074,10 +1153,35 @@
       var scores = blank(), max = blank(), pct = blank(), stamp = blank(),
           stampShort = blank(), status = blank(), late = blank(),
           subId = blank(), submitted = [];
+      // ⊕ Mide's 25 Sep 2026 ruling (experience run, item 7) — ACTIVITY,
+      // SEPARATE FROM `stamp`. `stamp[]` means "this cell was completed at
+      // …" and stays that, because `stampShort` and every existing reader
+      // of `stamp` mean exactly that and nothing else. "Last active" is a
+      // wider question — was this pupil doing ANYTHING, finished or not —
+      // and an in-progress row (`status: 'in_progress'`, no `completed_at`)
+      // was invisible to it before: `cellOf` returns null for one, so it
+      // never reached `stamp` at all. `started_at` is set the moment the
+      // row is created, at the FIRST answer, so it is the one honest
+      // "were they here" timestamp a still-open paper has.
+      var activity = blank();
       var inWeek = false;
+      // ⊕ Mide's 23 Sep 2026 ruling, item 5 — "on time this week" is a
+      // pupil-level fact for "Select all on time this week" and any roster
+      // tile that wants it: a cell with `late === false` on an in-week paper.
+      var onTimeWeek = false;
+      // ⊕ Mide's 25 Sep 2026 ruling (experience run, item 10) — a pupil
+      // mid-way through an IN-WEEK paper is not "nothing in this week", the
+      // fallback Design's `reasonFor` reached for once `inWeek` came back
+      // false. `inWeek` only ever means "has a COMPLETE cell on an in-week
+      // paper" (item 5 of the 23 Sep ruling), so it says nothing about a
+      // started-but-unfinished one.
+      var startedInWeek = false;
       for (var p = 0; p < cols; p++) {
         var c = cellOf(mine[p], papers[p]);
         if (mine[p]) { status[p] = mine[p].status || null; }
+        if (mine[p] && status[p] === "in_progress" && inWeekPaper[p]) {
+          startedInWeek = true;
+        }
         /* ⊕ MRB-306 Phase 2b — WHICH SUBMISSION ROW THIS CELL IS.
            Written feedback binds to `assignment_submissions.id` and to
            nothing else, so the id has to survive the matrix or the student
@@ -1086,6 +1190,7 @@
            submission a teacher may want to write about, and `cellOf` returns
            null for one. */
         if (mine[p]) { subId[p] = mine[p].id || null; }
+        if (!c && mine[p]) { activity[p] = mine[p].started_at || null; }
         if (!c) { submitted.push(false); continue; }
         /* `submitted[p]` is the honest predicate for "did this student hand
            this in", and it is NOT `scores[p] != null`: a submission with no
@@ -1101,15 +1206,20 @@
         status[p] = c.status;
         if (c.stamp) {
           stamp[p] = c.stamp;
+          activity[p] = c.stamp;
           var when = asDate(c.stamp);
           if (when) { stampShort[p] = dayMonth(when); }
         }
-        if (inWeekPaper[p]) { inWeek = true; }
+        if (inWeekPaper[p]) {
+          inWeek = true;
+          if (late[p] === false) { onTimeWeek = true; }
+        }
       }
       return {
         sid: sid, scores: scores, max: max, pct: pct, late: late,
-        stamp: stamp, stampShort: stampShort, status: status,
-        subId: subId, inWeek: inWeek, submitted: submitted
+        stamp: stamp, stampShort: stampShort, status: status, activity: activity,
+        subId: subId, inWeek: inWeek, onTimeWeek: onTimeWeek,
+        startedInWeek: startedInWeek, submitted: submitted
       };
     });
 
@@ -1176,9 +1286,17 @@
 
     var markedIdx = papers.filter(function (p) { return p.when === "marked"; })
                           .map(function (p) { return p.idx; });
+    // ⊕ Mide's 23 Sep 2026 ruling — THE GENUINE DEADLINE TEST, separate from
+    // `markedIdx` now that `when === 'marked'` means "released". Consumers
+    // that ask "is this paper missing/late" (`missingMarked` in
+    // `buildRoster`) read this, not `markedIdx`.
+    var closedIdx = papers.filter(function (p) { return p.closed; })
+                          .map(function (p) { return p.idx; });
 
     // Per STUDENT, so active rows only — a departed student has no row for an
-    // average to sit in. sum(score)/sum(max) over the papers that have closed.
+    // average to sit in. sum(score)/sum(max) over RELEASED papers (item 6 of
+    // the ruling) — `markedIdx` now means released, so this needs no change
+    // beyond the meaning of the index list it walks.
     var studentAvg = {};
     rows.forEach(function (r) {
       var tot = 0, totMax = 0;
@@ -1199,6 +1317,13 @@
       colLateUnknown: colLateUnknown,
       colMarkedN: colMarkedN,
       markedIdx: markedIdx,
+      closedIdx: closedIdx,
+      // ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — exposed so a
+      // reader outside this closure (Today) can ask "is there any in-week
+      // paper at all" without re-deriving the OR-of-open-or-due-in-window
+      // test a second time. Keyed by paper `idx`, exactly like `inWeekPaper`
+      // is used above.
+      inWeekPaper: inWeekPaper,
       studentAvg: studentAvg,
       byId: {}
     });
@@ -1239,25 +1364,39 @@
       if (row && row.partial) {
         lastIso = row.lastIso || null;
       } else if (row) {
-        row.stamp.forEach(function (v) {
+        // ⊕ Mide's 25 Sep 2026 ruling (experience run, item 7) — `activity`,
+        // not `stamp`: a pupil mid-way through an open paper (`started_at`,
+        // no `completed_at` yet) was invisible to `stamp`, which only ever
+        // holds a COMPLETION time, so a pupil who had answered yesterday and
+        // not yet pressed Finish read as having done nothing at all. See the
+        // field's own comment in `buildMatrix`.
+        row.activity.forEach(function (v) {
           if (v && (lastIso == null || v > lastIso)) { lastIso = v; }
         });
       }
       /* "Never active" is not "active a long time ago", and the two have to
-         be told apart. The LABEL says so in words. The HOURS — which only the
-         engagement chart reads, to bucket today / this week / 2+ weeks — fall
-         back to how long the student has been ON THE ROLL without submitting
-         anything, because that is the real elapsed time the chart is for
-         ("worth chasing"). It is measured, not invented: two real timestamps.
-         The bucket LABELS still say "last seen", which is not quite what this
-         measures for a never-active student, and that wording is in the
-         handover. */
-      var hours = lastIso != null
-        ? hoursSince(lastIso, now)
-        : hoursSince(m.joined_at, now);
+         be told apart. The LABEL says so in words.
+
+         ⊕ Mide's 25 Sep 2026 ruling (experience run, item 6) — AND NEITHER
+         IS "RECENTLY ENROLLED". The HOURS below used to fall back to
+         `joined_at` for a pupil who has never done anything, on the
+         reasoning that it is a real elapsed time worth showing — but the
+         engagement chart reads these hours to sort pupils into Today / This
+         week / 2+ weeks, and a pupil imported this morning who has touched
+         nothing landed in "Today", the one bucket that is supposed to mean
+         "did something". A pupil with no activity at all belongs in the
+         same "2+ weeks" (never) bucket regardless of how long they have been
+         on the roll — `Infinity` puts them there without inventing a second
+         rule for "how old is old enough". */
+      var hours = lastIso != null ? hoursSince(lastIso, now) : Infinity;
+      // ⊕ Mide's 23 Sep 2026 ruling, item 2 — a CLOSED paper with no complete
+      // submission, not a released one: `mx.closedIdx`, never `mx.markedIdx`.
+      // `markedIdx` now means "released" and a released-but-still-open paper
+      // is not missing anything yet — a pupil cannot be late for work that
+      // has not fallen due.
       var missingMarked = (row && row.partial)
         ? row.missingMarked
-        : mx.markedIdx.some(function (i) {
+        : mx.closedIdx.some(function (i) {
             return !(row && row.submitted[i]);
           });
       return {
@@ -1268,6 +1407,11 @@
         avatar_url: m.avatar_url,
         avg: avg == null ? null : avg,
         inWeek: !!(row && row.inWeek),
+        // ⊕ Mide's 23 Sep 2026 ruling, item 5 — "Select all on time this
+        // week" reads this: true iff the pupil has a cell with `late ===
+        // false` on an in-week paper. Present on both the full row
+        // (`buildMatrix`) and the partial one (`matrixFromRollup`).
+        onTimeWeek: !!(row && row.onTimeWeek),
         last: lastIso ? relativeTime(lastIso, now) : "No activity yet",
         lastIso: lastIso,
         hours: hours,
@@ -1336,8 +1480,16 @@
 
      `term` and the within-term number come from `seasonFor`'s own Sep–Dec /
      Jan–Mar / Apr–Aug boundaries applied to each week's OWN Monday, so
-     "Autumn Week 1" is derived from the year's start date and nothing is
-     typed. ⚠️ IT IS AN APPROXIMATION AND IT IS NOT A SMALL ONE: `academic_years`
+     the term is derived from the year's start date and nothing is typed.
+     ⊕ 24 Sep 2026 (experience run, item 10) — `label` no longer CARRIES the
+     term. Twelve chips reading "Autumn Week 1" … "Autumn Week 12" backwards
+     through one bar say the term twelve times to say one thing; `term` is
+     still returned on every week object (below) for the ONE place that
+     still says it — `teacher_rulings.py`'s `weekCaption`, the bar's own
+     heading, for the week actually in view. `label` is now plain
+     "Week N" and `term` is why "N" alone would have been ambiguous at a
+     term boundary, since it restarts from 1 at the start of Spring and
+     Summer. ⚠️ IT IS AN APPROXIMATION AND IT IS NOT A SMALL ONE: `academic_years`
      records a start and an end and NOTHING about half terms, and Easter
      moves, so the count runs straight through the holidays. Half-term weeks
      are counted as teaching weeks because the data cannot say otherwise. A
@@ -1385,9 +1537,12 @@
         idx: i,
         weekOfYear: meta.week,
         term: meta.term,
-        // "Autumn Week 1" — the chip's second line, and the sentence under
-        // the bar. "This week" replaces it on the week a teacher is in.
-        label: meta.term + " Week " + meta.n,
+        // "Week 1" — the chip's second line. "This week" replaces it on the
+        // week a teacher is in. ⊕ 24 Sep 2026 (item 10): no longer prefixed
+        // with the term name — `term` above still carries it, for the ONE
+        // place it is still said (the bar's own heading, in
+        // teacher_rulings.py's `weekCaption`).
+        label: "Week " + meta.n,
         // MRB-325 ruling 7 — week-commencing only, never a Mon–Fri range.
         range: weekCommencingLabel(mon),
         now: ymd(mon) === thisMonYmd,
@@ -1601,8 +1756,22 @@
       return markedN[i] ? Math.round((correctN[i] / markedN[i]) * 100) : null;
     });
 
+    // ⊕ Stream M, 25 Sep 2026 (experience run round 3, N7) — ONLY A
+    // COMPLETE SUBMISSION'S `max_score` COUNTS. An in-progress row's
+    // `max_score` is the max of the questions ANSWERED SO FAR (2 of 10, not
+    // 10), and this loop used to take whichever submission's `max_score` it
+    // saw LAST regardless of that — so a class mean tile could read "10
+    // questions, 2 marks" the moment one pupil was mid-attempt. `handedIn`
+    // mirrors line 1706's own definition (`completed_at || submitted_at ||
+    // status === "complete"`) so this reads the same "finished" every other
+    // figure on this screen does. `maxScore` stays `null` when nobody has
+    // finished yet, and `qLine` below already renders that as a bare
+    // question count rather than guessing a marks figure.
     var maxScore = null;
-    subs.forEach(function (s) { if (s.max_score != null) { maxScore = s.max_score; } });
+    subs.forEach(function (s) {
+      var handedIn = !!(s.completed_at || s.submitted_at || s.status === "complete");
+      if (handedIn && s.max_score != null) { maxScore = s.max_score; }
+    });
 
     return {
       rows: rows,
@@ -1926,6 +2095,15 @@
   var profile = null;      // survives reset(): a re-read of rows is not a
                            // re-authentication, and the guard hands the
                            // profile over exactly once.
+  /* ⊕ Stream L, 25 Sep 2026 (experience run, item 4) — TODAY'S REMINDER
+     LOG, for the one class `base()` is building for. `{ [assignmentId]:
+     { [studentId]: true } }`. Filled in `base()`, read by the porter's
+     `remindLabel`/`remind` ruling through `remindedToday()` below, so a
+     reload shows "Reminded today · N" rather than inviting a second press
+     that the database would then quietly refuse. Cleared and refilled on
+     every fresh `base()` call — including after `reload()` — exactly like
+     `cache` itself; it is not meant to survive past the read it answers. */
+  var remindedTodayMap = {};
   /* ⊕ MRB-287, 24 Aug 2026 — the signed-in teacher's own auth id.
 
      Held for the same reason and on the same terms as `profile`: the guard
@@ -2446,13 +2624,18 @@
        `matrixFromRollup`.
 
        ⚠️ THE FALLBACK IS THE WHOLE REASON THIS CAN SHIP BEFORE THE MIGRATION
-       DOES. `teacher_class_rollup` does not exist on production until
-       `20260922231500` is applied; PostgREST answers a missing function with
-       an error, `loadClassSummaries` throws, and this catch re-reads the
-       submissions exactly as the page did yesterday. A teacher sees the same
-       screen, a little slower, and nothing breaks. It is a safety net, NOT a
-       licence to skip the migration — an estate running on the fallback is
-       paying the full cost this ticket exists to remove, silently.
+       DOES. ⊕ Mide's 23 Sep 2026 ruling moved this onto a NEW function,
+       `teacher_class_rollup_v2` (`supabase/migrations/…_rollup_live_results.sql`,
+       parked and not applied to production by this run — the old
+       `teacher_class_rollup` is untouched and still means "the deadline has
+       passed"). `teacher_class_rollup_v2` does not exist on production at
+       all yet; PostgREST answers a missing function with `PGRST202` (Postgres
+       `42883`), `loadClassSummaries` throws `query_failed_summaries`, and
+       this catch re-reads the submissions exactly as the page did yesterday —
+       correct, live results, just slower, for EVERY class asked for. A
+       teacher sees the same screen. It is a safety net, NOT a licence to
+       skip the migration — an estate running on the fallback is paying the
+       full cost this ticket exists to remove, silently.
 
        ⚠️ AND A CLASS MISSING FROM THE ANSWER FALLS BACK TOO, not just a
        thrown error. The function drops a class id it cannot read rather than
@@ -2528,6 +2711,39 @@
        page is in the year being viewed, so the list is computed once and
        shared by reference rather than rebuilt twelve times. */
     var yearWeeks = buildWeeks(viewing, now);
+
+    /* ⊕ Stream L, 25 Sep 2026 (experience run, item 4) — TODAY'S REMINDER
+       LOG, for the class actually being viewed (`?class=`), and ONLY that
+       one: the "Remind all N" card lives on the class screen, which shows
+       one class, so this is one extra round trip per class-detail load,
+       not one per class in the teacher's list. `classes.html` and every
+       other screen leave `?class=` unset, `focusedClassId` is null, and
+       this whole block is skipped — no round trip is paid where nothing
+       reads the answer.
+
+       ⚠️ UNKNOWN IS NOT "NOT REMINDED". A failed read leaves
+       `remindedTodayMap` empty, which is exactly the map's state before
+       this ruling existed — the card falls back to session-only
+       `s.remindDone`, the same honest degradation `describeClass` and
+       every other "the read failed" branch in this codebase uses. */
+    var focusedClassId = null;
+    try { focusedClassId = new URLSearchParams(window.location.search).get("class"); }
+    catch (e) { focusedClassId = null; }
+    remindedTodayMap = {};
+    if (focusedClassId) {
+      try {
+        var remLog = await TD.remindersForClass(focusedClassId);
+        var todayP = londonPartsOf(new Date(now));
+        var todayIso = todayP ? (todayP.y + "-" + pad2(todayP.m) + "-" + pad2(todayP.d)) : null;
+        var todaysRows = (todayIso && remLog && remLog.byDay) ? (remLog.byDay[todayIso] || []) : [];
+        todaysRows.forEach(function (r) {
+          if (!remindedTodayMap[r.assignment_id]) { remindedTodayMap[r.assignment_id] = {}; }
+          remindedTodayMap[r.assignment_id][r.student_id] = true;
+        });
+      } catch (e) {
+        console.warn("[teacher-live] remindersForClass unavailable", e);
+      }
+    }
 
     classRows.forEach(function (c) {
       var pack = packs[c.id];
@@ -2631,14 +2847,32 @@
     });
   }
 
-  /* The newest MARKED paper of a class — Design reaches for index 1 and
-     assumes it exists and is closed. It is index 1 only when there is exactly
-     one open paper, which is a property of the sample. */
-  function newestMarkedIdx(papers) {
+  /* The newest paper with LIVE RESULTS, for the marking screen's default and
+     the insights question chart — Design reaches for index 1 and assumes it
+     exists and is closed. It is index 1 only when there is exactly one open
+     paper, which is a property of the sample.
+
+     ⊕ Mide's 23 Sep 2026 ruling, item 9 — `when === 'marked'` now means
+     "released", and a just-released paper can have zero submissions. A
+     marking screen or question chart defaulting to that paper would open on
+     an empty grid while an OLDER released paper with real submitted work
+     sits one click away. So: the newest RELEASED paper that has at least one
+     cell (`mx.colSub[i] > 0`), falling back to the newest released paper of
+     any kind (matching the pre-ruling behaviour) only when NONE has a cell
+     yet — never -1 while there is any released paper at all. `mx` is
+     optional so existing callers with no matrix handy degrade to the old,
+     simpler answer rather than throwing. */
+  function newestMarkedIdx(papers, mx) {
+    var released = [];
     for (var i = 0; i < papers.length; i++) {
-      if (papers[i].when === "marked") { return i; }
+      if (papers[i].when === "marked") { released.push(i); }
     }
-    return -1;
+    if (mx && mx.colSub) {
+      for (var j = 0; j < released.length; j++) {
+        if ((mx.colSub[released[j]] || 0) > 0) { return released[j]; }
+      }
+    }
+    return released.length ? released[0] : -1;
   }
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -3030,18 +3264,28 @@
        nobody asked what else that shape was silently costing.
 
        ⚠️ WHICH PAPER, AND IT MATCHES `lastP` BY CONSTRUCTION. `renderVals`
-       resolves the reteach paper as the newest CLOSED paper SOMEBODY SAT —
-       `markedIdx` narrowed by `colSub[i] > 0` — because `markedIdx` is a
-       deadline test and a deadline can pass with nothing handed in. The
-       same two lines are repeated here rather than `newestMarkedIdx()`
-       being reused, for exactly that reason: fetching the newest marked
-       paper would fetch a paper the card is not about, and the card would
-       still be empty.
+       resolves the reteach paper as the newest RELEASED paper SOMEBODY SAT —
+       `markedIdx` narrowed by `colSub[i] > 0`. The same two lines are
+       repeated here rather than `newestMarkedIdx()` being reused, so that a
+       class whose newest released paper has no submissions yet fetches
+       nothing rather than a grid the card is not about, leaving the card in
+       its honest "nothing to reteach yet" state instead of an empty half-card
+       under a subtitle that claims results.
+
+       ⊕ Mide's 23 Sep 2026 ruling — `markedIdx` used to mean "the deadline
+       has passed"; it now means "results are live" (the paper is released).
+       This filter's SHAPE is unchanged (`markedIdx` narrowed by
+       `colSub[i] > 0`) because item 8 of the ruling asks for exactly this:
+       the newest RELEASED paper with at least one cell. Only the set of
+       papers `markedIdx` draws from moved, from closed to released — a
+       released-but-still-open paper with a submission already in now
+       qualifies, where before a teacher had to wait for the deadline to see
+       a reteach card for work pupils had already finished.
 
        ONE round trip, on a screen that already makes several, and only for
-       a class that has a marked paper somebody sat. A class with none
+       a class that has a released paper somebody sat. A class with none
        fetches nothing, which is also the state in which the card says
-       "Nothing marked yet" and has no bars to draw. */
+       "Nothing to reteach yet" and has no bars to draw. */
     if (screen === "class" && classId) {
       var cMx = c.MATRIX[classId];
       var cPapers = c.PAPERS[classId] || [];
@@ -3054,7 +3298,7 @@
     if (screen === "marking" && classId) {
       var papers = c.PAPERS[classId] || [];
       var asked = paperIndex(params.paperIdx);
-      var pi = asked == null ? newestMarkedIdx(papers) : asked;
+      var pi = asked == null ? newestMarkedIdx(papers, c.MATRIX[classId]) : asked;
       if (pi >= 0 && papers[pi]) { await grid(classId, pi); }
     } else if (screen === "insights") {
       /* ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — UNCONDITIONAL, AND IT HAD
@@ -3086,7 +3330,7 @@
       var pairs = [];
       c.CLASSES.forEach(function (k) {
         if (k.state !== "live") { return; }
-        var i = newestMarkedIdx(c.PAPERS[k.id] || []);
+        var i = newestMarkedIdx(c.PAPERS[k.id] || [], c.MATRIX[k.id]);
         if (i >= 0) { pairs.push({ classId: k.id, idx: i }); }
       });
       await grids(pairs);
@@ -3155,7 +3399,7 @@
     } else if (classId && screen === "marking") {
       var mPapers = c.PAPERS[classId] || [];
       var mAsked = paperIndex(params.paperIdx);
-      var mIdx = mAsked == null ? newestMarkedIdx(mPapers) : mAsked;
+      var mIdx = mAsked == null ? newestMarkedIdx(mPapers, c.MATRIX[classId]) : mAsked;
       var mGrid = (mIdx >= 0) ? c.GRID[classId + ":" + mIdx] : null;
       if (mGrid && mGrid.rows) {
         FEEDBACK = await buildFeedback(
@@ -3226,7 +3470,13 @@
       yearLabel: yearLabel,
       yearName: (year && year.name) || "",
       academicWeek: academicWeek,
-      termWeekLabel: (year && academicWeek != null) ? season + " Week " + academicWeek : "",
+      // ⊕ 24 Sep 2026 (item 10) — no consumer binds this key today (checked:
+      // no `termWeekLabel` in teacher_rulings.py or any hand-written
+      // teacher page), but it is a per-week LABEL by name and by shape, so
+      // it follows the same rule as `buildWeeks`'s `label` above rather
+      // than being left as a trap for whoever wires it next: the term is
+      // said once, on a heading, never once per week.
+      termWeekLabel: (year && academicWeek != null) ? "Week " + academicWeek : "",
 
       /* ── ⊕ MRB-287 E1 · THE YEAR IN VIEW ──────────────────────────────
          ⚠️ `yearLabel` ABOVE IS THE WORKING YEAR AND EVERYTHING HERE IS THE
@@ -3728,7 +3978,22 @@
     paperIndex: paperIndex,
     initialsOf: initialsOf,
     hueFor: hueFor,
-    SAY: SAY
+    SAY: SAY,
+    // ⊕ Stream L, 25 Sep 2026 (experience run, item 4) — the porter's
+    // `remindLabel`/`remind` ruling reads this rather than the raw map, so
+    // a missing entry always reads as "not reminded" (an empty object) and
+    // never as a crash on `undefined[studentId]`.
+    remindedToday: function (assignmentId) { return remindedTodayMap[assignmentId] || {}; },
+    // ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — exposed so
+    // `teacher/today.html` can build papers/matrix/roster from the ONE
+    // seam definition rather than keeping its own copy of "what counts as
+    // this week's homework". Pure functions of (pack, ..., now): no DOM,
+    // no cache, no side effect a second caller could trip over. See
+    // `MRB_TEACHER_LIVE_NO_AUTORUN` below for why loading this file here
+    // does not also start a second dashboard mount.
+    buildPapers: buildPapers,
+    buildMatrix: buildMatrix,
+    buildRoster: buildRoster
   };
 
   /* ⊕ MRB-326 JOB 4c, 6 Sep 2026 — `drawRemindControl` IS DELETED.
@@ -3781,8 +4046,25 @@
     fetch("https://mrbadmus-backend.onrender.com/api/health").catch(function () {});
   } catch (e) {}
 
-  run().catch(function (err) {
-    console.error("[teacher-live]", err);
-    say(SAY.generic);
-  });
+  /* ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — LIBRARY MODE.
+     `teacher/today.html` is hand-written, mounts itself through its own
+     `MrBadmusTeacherGuard.requireTeacherRole` call, and has no
+     `__MRB_TPL__` for `run()`'s `boot()`/`__MRB_MOUNT__` to draw into —
+     its own comment says as much: "loading it here would start a second
+     dashboard inside Today." It still wants the PURE builders above
+     (`buildPapers`/`buildMatrix`/`buildRoster`), so it can call the one
+     seam definition of "this week's homework" instead of keeping its own
+     copy of the rule.
+
+     A page sets `window.MRB_TEACHER_LIVE_NO_AUTORUN = true` BEFORE this
+     script tag to get the exports without the mount — everything above
+     this line still runs (the module's functions all exist either way),
+     only the guard-and-draw below is skipped. No page does this today
+     except `today.html`. */
+  if (!window.MRB_TEACHER_LIVE_NO_AUTORUN) {
+    run().catch(function (err) {
+      console.error("[teacher-live]", err);
+      say(SAY.generic);
+    });
+  }
 })();

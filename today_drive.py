@@ -38,6 +38,17 @@ import ks3_browser as cdp
 TEACHER = "11111111-1111-1111-1111-111111111111"
 YEAR    = "22222222-2222-2222-2222-222222222222"
 
+# ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — `teacher-data.js`'s
+# `computeWeekWindow` output, matching the FROZEN clock every case below
+# runs at ("2026-09-07T09:00:00", a Monday, browser-local — the anchor
+# fallback, so the window is exactly that teaching week). Real
+# `loadClassMatrices` attaches this to every pack; a fixture that omits it
+# used to get away with it only because Today re-derived "this week" from
+# raw assignment rows instead of reading `buildMatrix`'s `inWeekPaper`. Now
+# that it reads the seam, every pack needs the field the seam requires.
+WEEK = {"start_at": "2026-09-06T23:00:00.000Z", "end_at": "2026-09-13T23:00:00.000Z",
+        "anchor_day": 1, "anchor_source": "fallback"}
+
 def klass(cid, name, ks, yg):
     return {"id": cid, "name": name, "key_stage": ks, "year_group": yg,
             "academic_year_id": YEAR, "deleted_at": None, "school_id": "s1"}
@@ -142,6 +153,22 @@ TABLES = {
 
 STUB_JS = r"""
 (function () {
+  /* ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — teacher-live.js's
+     "wake the backend" ping (`fetch('…onrender.com/api/health')`, fired
+     unconditionally at module load, before any guard) is fire-and-forget
+     in production and immaterial to anything this drive measures. In this
+     sandbox it has no route to the real internet, and Chrome reports that
+     as a cross-origin failure — a console error with nothing behind it.
+     Stubbed at the same boundary the query client is stubbed at, for the
+     same reason: this drive proves the PAGE, not whether this sandbox can
+     reach Render. Every other fetch is untouched. */
+  var realFetch = window.fetch;
+  window.fetch = function (url) {
+    if (typeof url === 'string' && url.indexOf('onrender.com/api/health') !== -1) {
+      return Promise.resolve(new Response('{}', {status: 200}));
+    }
+    return realFetch.apply(window, arguments);
+  };
   var S = window.__MRB_STUB__;
   function rows(t) { return (S.tables[t] || []).slice(); }
   function ok(row, f) {
@@ -338,10 +365,10 @@ def packs_for(with_data=True):
         return {}
     return {
         "cccccccc-0000-4000-8000-000000000001": {
-            "members": [{"student_id": "s1", "first_name": "A", "last_name": "One"},
+            "week": WEEK, "members": [{"student_id": "s1", "first_name": "A", "last_name": "One"},
                         {"student_id": "s2", "first_name": "B", "last_name": "Two"},
                         {"student_id": "s3", "first_name": "C", "last_name": "Three"}],
-            "assignments": [{"id": "a1", "title": "Particles", "due_at": "2026-09-04T16:00:00+00:00",
+            "assignments": [{"id": "a1", "title": "Particles", "due_at": "2026-09-11T16:00:00+00:00",
                              "academic_week": 1}],
             "submissions": [{"id": "x1", "assignment_id": "a1", "student_id": "s1",
                              "status": "complete", "completed_at": "2026-09-02T10:00:00+00:00",
@@ -351,14 +378,14 @@ def packs_for(with_data=True):
                              "submitted_at": None, "score": None, "max_score": None}],
         },
         "cccccccc-0000-4000-8000-000000000002": {
-            "members": [{"student_id": "s4", "first_name": "D", "last_name": "Four"}],
-            "assignments": [{"id": "a2", "title": "Forces", "due_at": "2026-09-04T16:00:00+00:00",
+            "week": WEEK, "members": [{"student_id": "s4", "first_name": "D", "last_name": "Four"}],
+            "assignments": [{"id": "a2", "title": "Forces", "due_at": "2026-09-11T16:00:00+00:00",
                              "academic_week": 1}],
             "submissions": [{"id": "x3", "assignment_id": "a2", "student_id": "s4",
                              "status": "complete", "completed_at": "2026-09-03T09:00:00+00:00",
                              "submitted_at": "2026-09-03T09:00:00+00:00", "score": 8, "max_score": 8}],
         },
-        "cccccccc-0000-4000-8000-000000000003": {"members": [{"student_id": "s5", "first_name": "E", "last_name": "Five"}],
+        "cccccccc-0000-4000-8000-000000000003": {"week": WEEK, "members": [{"student_id": "s5", "first_name": "E", "last_name": "Five"}],
                "assignments": [], "submissions": []},
     }
 
@@ -409,28 +436,28 @@ def packs_wide():
     return {
         # twelve on roll, two of them in: ten to chase
         "cccccccc-0000-4000-8000-000000000001": {
-            "members": [member(i, "a") for i in range(12)],
+            "week": WEEK, "members": [member(i, "a") for i in range(12)],
             "assignments": [{"id": "a1", "title": "Particles",
-                             "due_at": "2026-09-04T16:00:00+00:00", "academic_week": 1}],
+                             "due_at": "2026-09-11T16:00:00+00:00", "academic_week": 1}],
             "submissions": [sub(0, "a", "a1"), sub(1, "a", "a1")],
         },
         # five on roll, one in: four to chase
         "cccccccc-0000-4000-8000-000000000002": {
-            "members": [member(i, "b") for i in range(5)],
+            "week": WEEK, "members": [member(i, "b") for i in range(5)],
             "assignments": [{"id": "a2", "title": "Forces",
-                             "due_at": "2026-09-04T16:00:00+00:00", "academic_week": 1}],
+                             "due_at": "2026-09-11T16:00:00+00:00", "academic_week": 1}],
             "submissions": [sub(0, "b", "a2")],
         },
         # and one with nothing set, so the day still carries all three states
         "cccccccc-0000-4000-8000-000000000003": {
-            "members": [member(0, "c")], "assignments": [], "submissions": [],
+            "week": WEEK, "members": [member(0, "c")], "assignments": [], "submissions": [],
         },
         # ⊕ THE OFF-TIMETABLE CLASS. Three on roll, none in: three students the
         # day-scoped panel could not see at all.
         OFF_DAY_CLASS: {
-            "members": [member(i, "d") for i in range(3)],
+            "week": WEEK, "members": [member(i, "d") for i in range(3)],
             "assignments": [{"id": "a4", "title": "Acids",
-                             "due_at": "2026-09-04T16:00:00+00:00", "academic_week": 1}],
+                             "due_at": "2026-09-11T16:00:00+00:00", "academic_week": 1}],
             "submissions": [],
         },
     }
@@ -458,26 +485,84 @@ TWICE_B = "tw-second-child"
 def packs_twice():
     def paper(pid, title):
         return {"id": pid, "title": title,
-                "due_at": "2026-09-04T16:00:00+00:00", "academic_week": 1}
+                "due_at": "2026-09-11T16:00:00+00:00", "academic_week": 1}
     return {
         # 8r/Sc1 — the shared child and one other, neither of them in.
         "cccccccc-0000-4000-8000-000000000001": {
-            "members": [{"student_id": TWICE_A, "first_name": "F", "last_name": "One"},
+            "week": WEEK, "members": [{"student_id": TWICE_A, "first_name": "F", "last_name": "One"},
                         {"student_id": TWICE_B, "first_name": "G", "last_name": "Two"}],
             "assignments": [paper("a1", "Particles")],
             "submissions": [],
         },
         # 10h/Ph1 — the SAME child again, owing a DIFFERENT paper.
         "cccccccc-0000-4000-8000-000000000002": {
-            "members": [{"student_id": TWICE_A, "first_name": "F", "last_name": "One"}],
+            "week": WEEK, "members": [{"student_id": TWICE_A, "first_name": "F", "last_name": "One"}],
             "assignments": [paper("a2", "Forces")],
             "submissions": [],
         },
         # and one with nothing set, so the day still carries three states.
         "cccccccc-0000-4000-8000-000000000003": {
-            "members": [{"student_id": "tw-third-child",
+            "week": WEEK, "members": [{"student_id": "tw-third-child",
                          "first_name": "H", "last_name": "Three"}],
             "assignments": [], "submissions": [],
+        },
+    }
+
+
+# ── ⊕ Stream L, 25 Sep 2026 (experience run, item 1 / N2) · TWO OPEN SETS
+#    ON ONE CLASS ──────────────────────────────────────────────────────────
+#
+# The audit's exact shape: a class carrying Electricity (open, released
+# first) and Waves (open, released a little later, so it sorts FIRST —
+# `buildPapers` orders newest-due first). The deleted `weekState` picked a
+# SINGLE paper — the newest by due date — as "this week's work", so on this
+# fixture it would have picked Waves, counted only Waves' submissions, and
+# told the teacher to chase P Two and S Four even though P Two had already
+# handed Electricity in. `describeClass` now reads `roster[i].inWeek`, which
+# is the OR of every in-week paper, so a pupil who has done EITHER set
+# counts as in.
+#
+#   n1 P One   — complete on BOTH papers               -> in
+#   n2 Q Two   — complete on Electricity ONLY            -> in
+#   n3 R Three — complete on Waves ONLY                  -> in
+#   n4 S Four  — complete on NEITHER                     -> owing
+#
+# Correct: "3 of 4 in — chase S F". The bug this replaces would have read
+# "2 of 4 in — chase Q T, S F" (Q Two wrongly chased for a paper picked by
+# due-date alone, not read).
+TWO_OPEN_CLASS = "cccccccc-0000-4000-8000-000000000001"
+
+
+def packs_two_open():
+    def member(sid, first, last):
+        return {"student_id": sid, "first_name": first, "last_name": last}
+
+    def sub(sid, aid, when):
+        return {"id": sid + ":" + aid, "assignment_id": aid, "student_id": sid,
+                "status": "complete", "completed_at": when, "submitted_at": when,
+                "score": 6, "max_score": 8}
+
+    return {
+        TWO_OPEN_CLASS: {
+            "week": WEEK,
+            "members": [member("n1", "P", "One"), member("n2", "Q", "Two"),
+                        member("n3", "R", "Three"), member("n4", "S", "Four")],
+            # Waves is released AFTER Electricity and is due later, so it
+            # sorts to index 0 under buildPapers' newest-due-first order —
+            # exactly the paper the deleted single-paper pick would have
+            # chosen as "the" week's work.
+            "assignments": [
+                {"id": "elec", "title": "Electricity", "due_at": "2026-09-14T16:00:00+00:00",
+                 "release_at": "2026-09-07T07:00:00+00:00", "academic_week": 1},
+                {"id": "waves", "title": "Waves", "due_at": "2026-09-15T16:00:00+00:00",
+                 "release_at": "2026-09-07T07:30:00+00:00", "academic_week": 1},
+            ],
+            "submissions": [
+                sub("n1", "elec", "2026-09-07T08:00:00+00:00"),
+                sub("n1", "waves", "2026-09-07T08:10:00+00:00"),
+                sub("n2", "elec", "2026-09-07T08:05:00+00:00"),
+                sub("n3", "waves", "2026-09-07T08:15:00+00:00"),
+            ],
         },
     }
 
@@ -1355,6 +1440,36 @@ def main():
                       "over a panel showing two; got %r" % rm["label"])
             check(vis12, "twice: the page is actually PAINTED")
             check(not e12, "twice: no console errors", "; ".join(e12[:2]))
+
+            # ── 13. ⊕ Stream L, 25 Sep 2026 (experience run, item 1 / N2) ──
+            #    TWO OPEN SETS ON ONE CLASS
+            #
+            # The audit's own shape: Electricity (open) plus a same-morning
+            # Waves release, both live. `weekState` used to pick a SINGLE
+            # paper — the newest by due date (Waves, here) — as "this
+            # week's work", so a pupil who had already handed Electricity in
+            # was still read as owing. `describeClass` now reads
+            # `roster[i].inWeek`, the OR of every in-week paper.
+            t13, s13, _o13, e13, vis13, g13 = run_case(
+                b, base, "13-two-open-sets", "2026-09-07T09:00:00",
+                TABLES, packs_two_open(), args.shots)
+            print("\n--- TWO OPEN SETS ---\n" + t13[:500] + "\n")
+            check("3 of 4 in" in t13,
+                  "two-open: 'in' is the OR of every in-week paper",
+                  "P One (both), Q Two (Electricity only) and R Three "
+                  "(Waves only) all count as in; only S Four owes nothing — "
+                  "got %r" % t13[:200])
+            check("chase S F" in t13,
+                  "two-open: only the pupil who did NEITHER set is chased")
+            check("2 of 4 in" not in t13 and "1 of 4 in" not in t13,
+                  "two-open: not the single-newest-paper count the deleted "
+                  "weekState used to print")
+            check("chase Q T" not in t13,
+                  "two-open: Q Two is not chased for a paper (Electricity) "
+                  "they already handed in",
+                  "the exact defect the audit found (item 10 / N2)")
+            check(vis13, "two-open: the page is actually PAINTED")
+            check(not e13, "two-open: no console errors", "; ".join(e13[:2]))
     finally:
         try: server.shutdown()
         except Exception: pass

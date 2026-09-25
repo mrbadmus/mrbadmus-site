@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#F7F1E5"/>
   <title>Your timetable — Mr Badmus AI</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=4ac1e47c"/>
   <!-- ⊕ MRB-306 Phase 2a — v3's design system, the same sheet the six
        GENERATED teacher screens load. It carries the --st-* tokens this
        page's chrome is drawn from. It also re-ships an older copy of
@@ -15,7 +16,7 @@
        (measured — it is a strict subset), so the order of these two links
        changes nothing, and its later @font-face block points at the same
        /shared/fonts/ URLs. -->
-  <link rel="stylesheet" href="/shared/teacher-ds.css?v=d6e74d32"/>
+  <link rel="stylesheet" href="/shared/teacher-ds.css?v=6ac8f824"/>
   <style>
     html { background: var(--st-ground); }
     :root {
@@ -404,7 +405,26 @@
       padding: 18px; text-align: center; color: var(--st-muted);
       font: 400 16px/1.5 var(--st-ui); background: var(--st-note-bg);
     }
-    .drop input[type=file] { margin-top: 10px; font: 400 15px/1.4 var(--st-ui); }
+    /* ⊕ Stream M, 25 Sep 2026 (experience run round 3, N9) — `max-width:
+       100%; box-sizing:border-box` ADDED. THE FILE PICKER, NOT THE GRID,
+       WAS THE 388px CULPRIT AT A REAL 360px.
+       A native `<input type=file>`'s intrinsic width is "Choose File" plus
+       its filename text at the BROWSER'S OWN UI font, which does not shrink
+       for a narrower page the way page-drawn text does — measured on this
+       card at 360px: the input itself rendered 314px inside a 302px `.drop`,
+       twelve pixels wider than its own parent, and `.drop` carries no
+       `overflow:hidden` to absorb that. `max-width:100%` is the fix Chrome
+       actually honours on this control — it clips the trailing "No file
+       chosen" text with an ellipsis inside the button's own box rather than
+       letting the control claim its full intrinsic width, and the "Choose
+       File" button itself never shrinks below being pressable. Unlike the
+       grid table above, this is not a case for a local scrollbar: a file
+       picker has nothing a teacher needs to scroll to see, only a filename
+       that is fine to truncate. */
+    .drop input[type=file] {
+      margin-top: 10px; font: 400 15px/1.4 var(--st-ui);
+      max-width: 100%; box-sizing: border-box;
+    }
   </style>
 </head>
 <body>
@@ -496,7 +516,7 @@
 <script src="/shared/config.js?v=d1fecb43"></script>
 <script src="/shared/class-entry.js?v=a97c1d3d"></script>
 <script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
-<script src="/shared/teacher-data.js?v=3fef17de"></script>
+<script src="/shared/teacher-data.js?v=9a893cec"></script>
 <script src="/shared/teacher-admin-nav.js?v=58c0e260"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════════

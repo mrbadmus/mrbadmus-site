@@ -1481,7 +1481,8 @@ NAV = {
         nodes=(253,),
         anchor=dict(key="openMarking"),
         to="      openMarking: () => MRB_GO('marking', { 'class': k && k.id, "
-           "paper: MRB_NEWEST_MARKED(MRB_PICK('PAPERS', k && k.id)) }),",
+           "paper: MRB_NEWEST_MARKED(MRB_PICK('PAPERS', k && k.id), "
+           "MRB_PICK('MATRIX', k && k.id)) }),",
         why="\"Open the full breakdown\" under the class glance's two "
             "weakest questions. Design's own destination is the marking "
             "screen for `lastP`, the last MARKED paper — but by `paperId`, a "
@@ -1490,7 +1491,10 @@ NAV = {
             "one\", taken from `teacher-live.js` rather than reimplemented, "
             "and it is the same function every other marking link already "
             "uses. Design's `if (lastP)` guard is not needed: the whole "
-            "glance block is inside `<if klass.hasWork>`."),
+            "glance block is inside `<if klass.hasWork>`. ⊕ Mide's 23 Sep "
+            "2026 ruling — the matrix is passed now too, so this prefers a "
+            "released paper that actually has a cell over a just-released "
+            "empty one, same as every other `MRB_NEWEST_MARKED` call."),
 
     "w.open (keep an eye on)": dict(
         nodes=(259,),
@@ -1558,9 +1562,37 @@ SET_ATTR = {
     # search button stop fitting on one line, and the search is the piece
     # with an obvious smaller form — the same 38px square the library
     # drawer's own trigger (`.libtrigger--square`) already uses.
-    19:  {"class": "mrb-findbtn"},
+    # ⊕ Stream N, 25 Sep 2026 (experience run, item 10 / NF7) — `aria-label`
+    # ADDED TO THE BUTTON ITSELF. Below 560px `shared/teacher-ds.css` hides
+    # `.mrb-findlabel` and `.mrb-findkey` (nodes 23/24 — "Find a student" and
+    # "/") to leave only the magnifier icon, which is `aria-hidden` (Design's
+    # own SVG). Below that width the button's accessible name — the concat
+    # of its visible content — was empty: a real control an assistive
+    # technology user could reach and never identify, on all six generated
+    # screens at once (this is the ONE `.mrb-findbtn` markup, shared). Named
+    # the same words as the label it hides, so a sighted and a screen-reader
+    # user hear/read the same thing either side of the breakpoint. Today's
+    # own hand-written search button already carries this — see
+    # `teacher/today.html` — this brings the six generated screens to match.
+    19:  {"class": "mrb-findbtn", "aria-label": "Find a student"},
     23:  {"class": "mrb-findlabel"},
     24:  {"class": "mrb-findkey"},
+
+    # ── ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 20) ───────
+    #
+    # THREE MORE HOOKS FOR THE SAME BAR, for the same reason as the three
+    # above: Design's inline style strings give `shared`'s CSS nothing to
+    # select, and `SET_ATTR` refuses to overwrite an attribute Design already
+    # wrote, so none of these three carried a `class` before this. See the
+    # `@media (max-width:420px)` block in `build_teacher_port.py` for what
+    # they do — none of it fires above 420px, so the bar is byte-identical to
+    # Design's above that width, exactly like the 560px rule already does.
+    #
+    # 12 is the wordmark's own text span (inside node 11's flex wrapper),
+    # 17 is the class-code crumb, 30 is the signed-in teacher's name.
+    12:  {"class": "mrb-brand"},
+    17:  {"class": "mrb-crumb"},
+    30:  {"class": "mrb-teachername"},
 
     158: {"data-port-region": "classes"},
     208: {"data-port-region": "class"},
@@ -1572,6 +1604,17 @@ SET_ATTR = {
     629: {"data-port-region": "overlay-bulk"},
     656: {"data-port-region": "overlay-search"},
     672: {"data-port-region": "toast"},
+
+    # ⊕ Stream N, 25 Sep 2026 (experience run, item 10 / NF8) — the bulk
+    # shoutout sheet's close "×" (node 635). Its SVG is `aria-hidden`
+    # (Design's own attribute) and the button carries no accessible name at
+    # all — an empty string, same failure as `openBulk`'s dialog itself
+    # having no name until `data-port-region="overlay-bulk"` gave the sheet
+    # a landmark. The single-feedback modal's own close button (node 637's
+    # sibling, `feedback-close`) already carries "Close without saving";
+    # this one has nothing to discard (no field a press could lose), so the
+    # shorter word is the honest one.
+    635: {"aria-label": "Close"},
 
     # ⊕ MRB-336, 8 Sep 2026 — AN `id`, NOT A REGION, AND THE DIFFERENCE IS
     # DELIBERATE. `data-port-region` names a SCREEN or an overlay; the
@@ -1659,6 +1702,30 @@ SET_ATTR = {
     #     rejection — the same sentence the composer's own textarea carries,
     #     and Design gave this one no cap at all.
     651: {"data-compose-field": "bulk-note", "maxlength": "500"},
+
+    # ── ⊕ experience run, 25 Sep 2026 (Mide's items 2/3) · KEYBOARD REACH ──
+    #
+    # Design draws five interactive rows as a plain `<div onClick=…>` and
+    # nothing else — no `tabindex`, no `role`, no keyboard path at all, so a
+    # keyboard-only teacher could not open a class from "My classes" and
+    # could not reach a pupil through "Keep an eye on", "Worth a shoutout",
+    # the roster, or a Find-a-student result. `shared/student-runtime.js`
+    # now treats `tabindex` as the opt-in signal to ALSO fire a node's `on`
+    # handler on Enter or Space — see the comment there — so setting it here
+    # is the whole fix for the first four; the fifth (665, the search
+    # result) is inside a widget with its own arrow-key/Enter handling
+    # (`teacher_rulings.LOGIC`'s `componentDidMount`) and gets `role="option"`
+    # instead, per the ARIA listbox pattern its container (663) declares.
+    #
+    # `role="link"`, not `"button"`: every one of these presses a real
+    # navigation (`MRB_GO`) and changes nothing in place, which is exactly
+    # the semantic a link carries and a button does not.
+    179: {"tabindex": "0", "role": "link"},
+    259: {"tabindex": "0", "role": "link"},
+    270: {"tabindex": "0", "role": "link"},
+    294: {"tabindex": "0", "role": "link"},
+    663: {"role": "listbox", "aria-label": "Search results"},
+    665: {"role": "option", "aria-selected": "false"},
 }
 
 
@@ -1676,6 +1743,42 @@ SET_ATTR = {
 # times over. So the attribute becomes an interpolation of a `renderVals` key,
 # computed beside `searchFoot` — Design's own idiom for exactly this sentence
 # one line further down the same overlay.
+# ── ⊕ Experience run, 24 Sep 2026 (item 13, legibility) · STYLE_EDIT ──────
+#
+# The teacher port's own version of `student_rulings.STYLE_EDIT` — see
+# `build_teacher_port.py`'s application of it (right after `SET_ATTR`) for
+# the mechanics and for why this is the FIRST entry the teacher side has
+# needed: one node, one declaration run, rewritten and asserted exactly once.
+#
+# FLAT by node id, not nested per page (unlike the student table) — this
+# file's node ids are already unique across the whole compiled delivery, as
+# `SET_ATTR`'s own entries above prove (158 is "classes", 208 is "class", and
+# so on with no collision).
+STYLE_EDIT = {
+    # Node 205 is the "·" between the academic year label (node 204,
+    # `--st-ghost`) and the "N other years" link, shown only when
+    # `hasOtherYears`. Coloured `var(--st-rule-strong)` — a hairline-BORDER
+    # token ("section rules, kbd chips" per its own comment in
+    # `shared/teacher-ds.css`) borrowed for a readable glyph: 1.52:1 on
+    # `--st-ground`, measured on the rendered page. `--st-rule-strong` is
+    # right for the 1px rules it is named for and wrong for a character a
+    # teacher reads; `--st-caption` is the colour the very next span already
+    # uses for its own caption-weight text, so the dot now matches its
+    # neighbour rather than sitting apart from both the rule it borrowed
+    # from and the label beside it.
+    205: [("color:var(--st-rule-strong)", "color:var(--st-caption)")],
+}
+
+# ⊕ Stream D, 24 Sep 2026 (experience run, item 3) — the ONE eyebrow style
+# the class screen's four glance cards share. See the BIND_ATTR entries on
+# nodes 225/240/255/267 below for which node had which value before this and
+# why they share it. ⊕ Commander, 25 Sep 2026: Mide's instruction (item 3)
+# was literal — the three labels take the style AND COLOUR of "Keep an eye
+# on", which is `--st-accent-text`; stream D had matched the other three
+# instead. Ruled the product owner's way.
+_EYEBROW = ("font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+            "text-transform:uppercase;color:var(--st-accent-text)")
+
 BIND_ATTR = {
     # ── ⊕ MRB-336 §5/§6 · THE ASSIGNMENTS TABLE GROWS AN ACTIONS COLUMN ──
     #
@@ -1790,6 +1893,33 @@ BIND_ATTR = {
           "the question-breakdown row, widened only on a paper that carries "
           "the port's own \"Not marked\" label."),
 
+    # ⊕ Stream M, 25 Sep 2026 (experience run round 3, N8) — AN ADDITION,
+    # NOT A CORRECTION: node 644 (the bulk shoutout sheet's per-pupil chip)
+    # carries no `aria-pressed` in Design's markup at all, so `expect` is
+    # `None` — `BIND_ATTR`'s own guard reads `(here[node].get("a") or
+    # {}).get(attr)`, which is `None` for an attribute that was never
+    # written, and the check is refused only when that stops being true (a
+    # Design redraw that added one of her own). Bound to `s.pressed`, the
+    # pre-stringified field the `bulkStudents` ruling above adds — never to
+    # the boolean `s.on`, which `student-runtime.js` silently drops whenever
+    # it resolves to `false` (see that ruling's own comment).
+    644: ("aria-pressed", None, {"parts": [{"e": "s.pressed"}]},
+          "the bulk shoutout sheet's pupil chips — selection was shown by "
+          "colour alone, with nothing in the accessibility tree saying a "
+          "chip was a toggle or which ones were picked."),
+
+    # ⊕ Stream N, 25 Sep 2026 (experience run, item 5 / NF4) — ANOTHER
+    # ADDITION, SAME SHAPE AS 644 ABOVE. Node 341 ("Send a reminder") carries
+    # no `disabled` in Design's markup — `expect` is `None` for the same
+    # reason. Bound to `student.remindDisabled`, a real boolean (the
+    # single-expression `parts` case keeps its type — `student-runtime.js`'s
+    # own `resolve()` — so `false` drops the attribute entirely rather than
+    # writing `disabled="false"`, which HTML would still treat as disabled).
+    341: ("disabled", None, {"parts": [{"e": "student.remindDisabled"}]},
+          "the per-student reminder button — pressable and identical "
+          "whether or not a reminder had already gone today, until the "
+          "item 5 / NF4 fix gave it a label AND a state."),
+
     # ── THE CLASS-BY-QUESTION TABLE IS EIGHT COLUMNS WIDE ──────────────
     #
     # ⊕ RULED 2 Sep 2026 (MRB-306 Phase 2a screen 5). Both halves of the
@@ -1884,6 +2014,80 @@ BIND_ATTR = {
     # `build_teacher_port.py` refuses any build in which `c.meta` reappears.
     # Anyone restoring the eyebrow has to restore this row with it — that
     # refusal is what will tell them.
+
+    # ── ⊕ Stream D, 24 Sep 2026 (experience run, item 2) · THE RETEACH ──
+    # CARD'S TITLE STOPS BEING A HEADLINE WHEN THERE IS NOTHING TO SHOW.
+    #
+    # Node 241 is `{{ glance.lastTitle }}` at Design's own
+    # `font:600 21px/1.3 var(--st-ui);color:var(--st-ink)` — real-paper-title
+    # weight, unconditionally. The `renderVals` ruling on `lastTitle`
+    # (LOGIC) now also computes `glance.lastTitleStyle`, string-equal to
+    # Design's own value when there is a paper to reteach from, and equal to
+    # node 266's own quiet register ("No one flagged — the class is keeping
+    # up.") when there is not — same card family, two cards along, so this
+    # is that register applied to its neighbour rather than a new one.
+    241: ("style",
+          "margin-top:10px;font:600 21px/1.3 var(--st-ui);color:var(--st-ink);"
+          "text-wrap:pretty",
+          {"parts": [{"e": "glance.lastTitleStyle"}]},
+          "the reteach card's title/empty-state line — swapped for a "
+          "computed style so the empty state (\"Nothing to reteach yet\") "
+          "renders in the quiet caption register, not the headline one."),
+
+    # ── ⊕ Stream D, 24 Sep 2026 (experience run, item 3) · THE FOUR GLANCE ──
+    # CARD EYEBROWS ARE ONE RULE.
+    #
+    # ⛔ THE ACTUAL DIFFERENCE, FOUND BY READING DESIGN'S OWN FILE (not the
+    # port): of the four glance-card eyebrows — "This week's homework · due
+    # …" (225), "Reteach from the last set" (240), "Keep an eye on" (255),
+    # "Worth a shoutout" (267) — three are `color:var(--st-caption)`, the
+    # neutral grey the design system's own token comment names for exactly
+    # this class of element ("captions, eyebrows, mono labels — 4.51:1 on
+    # ground"). "Keep an eye on" alone is `color:var(--st-accent-text)`, the
+    # rust orange the same token file calls out as "the only orange for
+    # small text" — Design's own delivery draws it that way; this is not a
+    # port-introduced defect. Confirmed with a real build and
+    # `getComputedStyle` on `class-detail-fixture.html` at 1280 and 390.
+    #
+    # ⚠️ DECISION (recorded per the run brief, "make the sensible call"):
+    # the three-out-of-four win, matched to the design system's own
+    # documented purpose for `--st-caption`, not the reverse. These four
+    # cards sit side by side as PEERS on the class screen — none of them is
+    # more urgent than another, and painting one eyebrow in the brand's one
+    # small-text orange reads as an alarm on an ordinary section header,
+    # which is exactly the false-urgency failure mode this run's item 12
+    # names for the engagement chart. `_EYEBROW` is the single declaration
+    # all four now bind to, so a future drift on any one of them is a
+    # BIND_ATTR refusal rather than a silent re-divergence.
+    225: ("style",
+          "font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+          "text-transform:uppercase;color:var(--st-caption)",
+          _EYEBROW,
+          "the homework card's eyebrow — asserted onto the shared "
+          "declaration, unchanged in appearance."),
+    240: ("style",
+          "font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+          "text-transform:uppercase;color:var(--st-caption)",
+          _EYEBROW,
+          "the reteach card's eyebrow — asserted onto the shared "
+          "declaration, unchanged in appearance."),
+    255: ("style",
+          "font:500 13px/1.2 var(--st-mono);letter-spacing:.16em;"
+          "text-transform:uppercase;color:var(--st-accent-text)",
+          _EYEBROW,
+          "\"Keep an eye on\"'s eyebrow — the one that actually differs in "
+          "Design's own file, recoloured onto the shared declaration so all "
+          "four glance cards read as peers."),
+    267: ("style",
+          "margin-top:14px;padding-top:14px;border-top:1px solid "
+          "var(--st-rule-fact);font:500 13px/1.2 var(--st-mono);"
+          "letter-spacing:.16em;text-transform:uppercase;"
+          "color:var(--st-caption)",
+          "margin-top:14px;padding-top:14px;border-top:1px solid "
+          "var(--st-rule-fact);" + _EYEBROW,
+          "the shoutout card's eyebrow — the divider above it is its own "
+          "and stays; only the shared font/colour declaration is asserted "
+          "here. Unchanged in appearance."),
 }
 
 
@@ -2156,6 +2360,66 @@ PORT_CSS = """
   .mrb-findlabel,
   .mrb-findkey { display: none; }
 }
+
+/* ── ⊕ Experience run, 24 Sep 2026 (item 13, legibility) ──────────────────
+   Mide: "much of the dark text on the cream background isn't clear enough."
+   `contrast_audit.py` opens the six ported pages in headless Chrome and
+   measures the RENDERED contrast of every text node — not the ratio in
+   Design's own comment beside each token, which only ever checked the one
+   ground the token was named for. `--st-caption` / `--st-faint` /
+   `--st-ghost` / `--st-muted` are Design's four "quiet ink" tokens, and
+   each one's OWN comment claims it clears AA — true only against
+   `--st-ground` (#FBF3E6). They are also painted, constantly, against
+   `--st-seg-bg` (the segmented-control trough, #EBDDC5 — the darkest cream
+   tint in the set) via things like the classes/class-detail/insights
+   header bar's day-of-week pills and the roster's "Today" toggle, and
+   against `--st-num-well` / `--st-note-bg` / `--st-crumb-bg`. Measured on
+   the rendered page: `--st-caption` on `--st-seg-bg` is 3.71:1, not the
+   4.51:1 its own comment names.
+
+   Darkened here — not in `shared/teacher-ds.css`, which is Design's frozen
+   bundle and is regenerated on every build; this file is the ruled
+   exception, exactly as `--k4-muted-2` is fixed in `shared/ks4-chrome.css`
+   for the same reason on the KS4 chrome. Hue and saturation are untouched;
+   only lightness moves, the minimum each needs to clear 4.5:1 against
+   `--st-seg-bg` (the worst real ground) with a small margin, so a future
+   rounding difference doesn't reopen the gap. The four keep their relative
+   order (muted darkest, caption/faint next and effectively identical to
+   each other as they always were, ghost lightest) — see
+   `docs/experience-run/contrast-after.md` for the before/after ratio on
+   every ground each token is actually used against. */
+:root {
+  --st-muted:   #605851;  /* was #6E655D — 5.20:1 on --st-seg-bg (was 4.26) */
+  --st-caption: #685E51;  /* was #7A6E5F — 4.75:1 on --st-seg-bg (was 3.71) */
+  --st-faint:   #695E4E;  /* was #7B6E5C — 4.75:1 on --st-seg-bg (was 3.71) */
+  --st-ghost:   #6E604B;  /* was #7D6D55 — 4.55:1 on --st-seg-bg (was 3.74) */
+}
+
+/* ── ⊕ experience run, 25 Sep 2026 (Mide's items 2/3) · REACHING A PUPIL
+   BY KEYBOARD ──────────────────────────────────────────────────────────
+
+   Five of Design's cards are a plain `<div>` with a click handler and
+   nothing else: the class card (179), "Keep an eye on" (259), "Worth a
+   shoutout" (270), a roster row (294) and a Find-a-student result (665).
+   `shared/student-runtime.js` now wires Enter/Space to any node that
+   carries BOTH `on` and `tabindex` — set on exactly these five below —
+   so this stylesheet only has to draw them. The 3px ring itself is
+   already `[data-mode="ks3"] :focus-visible` above ("one focus treatment,
+   on everything, no exceptions"); nothing here duplicates it.
+
+   `.mrb-active` is the ONE exception: it marks the arrow-key cursor inside
+   the Find-a-student list, which is a highlight WITHOUT real DOM focus
+   (focus stays on the search box, exactly as `shared/search.js`'s topic
+   search already does it) — so `:focus-visible` never sees it and needs
+   its own rule. */
+[data-dc-tpl="179"],
+[data-dc-tpl="259"],
+[data-dc-tpl="270"],
+[data-dc-tpl="294"] { outline-offset: -2px; }
+
+[data-dc-tpl="665"].mrb-active {
+  background: var(--st-note-bg);
+}
 """
 
 _MORE_LINK = ("display:block;margin-top:14px;"
@@ -2183,6 +2447,19 @@ RETEXT_AT = {
           {"parts": [{"e": "rosterWeekCol"}]},
           "the roster table's second column heading. Under the week bar the "
           "column is the SELECTED week, and it says which one."),
+
+    # ⊕ Stream N, 25 Sep 2026 (experience run, item 5 / NF4) — "SEND A
+    # REMINDER" NEVER SAID WHEN IT HAD ALREADY BEEN SENT. Node 341's text is
+    # Design's own literal, and a literal cannot say "Reminded today" once
+    # the log says one already went, or "Nothing to remind about" for a
+    # pupil flagged on average alone with every released paper handed in.
+    # `student.remindLabel` (the `LOGIC` ruling beside `flagged: stFlagged`)
+    # is the three-state field this binds to.
+    341: ("Send a reminder",
+          {"parts": [{"e": "student.remindLabel"}]},
+          "the per-student reminder button's own label — the three states "
+          "the item 5 / NF4 fix gives it, in place of Design's one fixed "
+          "string."),
 
     # ⊕ 2 Sep 2026 (MRB-306 Phase 1c) — the six import rows re-anchored on
     # v3: 355→483 · 356→484 · 371→499 · 374→502 · 377→505 · 387→515. Every
@@ -2418,8 +2695,26 @@ _WK_CAPTION = ("flex:none;padding-left:4px;font:500 13px/1.2 var(--st-mono);"
 _WK_CHEV = ("flex:none;display:flex;align-items:center;justify-content:center;"
             "width:36px;height:52px;background:var(--st-paper);"
             "border:1px solid var(--st-rule-soft);border-radius:9px;color:")
+# ⊕ Stream J, 25 Sep 2026 (experience run, item 5) — `flex:1 1 0;min-width:0`
+# ADDED. Without a `flex` property this fell back to the default `0 1 auto`
+# — flex-basis AUTO, sized to its CONTENT (up to twelve fixed-width chips,
+# ~1000px), inside a row whose only other children are `flex:none` (the
+# caption and the two chevrons, which cannot shrink at all). At 1280px there
+# is room for that content box and the rule never gets exercised; at 390/360
+# the row is short by hundreds of pixels, and because this is the only
+# sibling ALLOWED to shrink, 100% of that deficit comes out of it — past
+# zero, since `overflow-x:auto` makes its automatic minimum width 0 rather
+# than its min-content size (the same CSS rule `_SW_TEXT`'s comment three
+# screens over already names). The visible result was the audit's "collapses
+# to 2px, only the arrows show" and, on the SAME layout, `document`-level
+# horizontal scroll shoving the header's own controls off-screen — one
+# flex-basis bug with two symptoms. `flex:1 1 0` makes the rail claim
+# whatever space is actually left over (basis 0, not its content size) and
+# `min-width:0` makes that explicit rather than relying on the overflow
+# side-effect. Nothing else in the row's own declared sizes, colours or
+# spacing changes.
 _WK_RAIL = ("display:flex;align-items:stretch;overflow-x:auto;padding:1px;"
-            "scrollbar-width:none")
+            "scrollbar-width:none;flex:1 1 0;min-width:0")
 _WK_CHIP = ("flex:none;display:flex;flex-direction:column;align-items:center;"
             "justify-content:center;gap:5px;min-height:52px;padding:8px 17px;"
             "background:")
@@ -2658,7 +2953,13 @@ _FB_CELL_BTN = ("flex:none;margin-left:auto;width:22px;height:22px;"
 
 # The sheet's own body. `_DEL_BODY` is the pad; these are what sits in it.
 _FB_CAP = _SO_CAP                                                # node 640
-_FB_CAP2 = "margin-top:20px;" + _SO_CAP
+# ⊕ experience run (Mide's item 5) — was `_FB_CAP2`, the caption's own
+# 20px-top-margin variant, used nowhere but as the caption's wrapper div. The
+# caption now shares a row with the "Draft feedback" button, so the 20px
+# margin moved from the label onto the ROW and `_FB_CAP` (no margin) sits
+# inside it unchanged — otherwise the row would carry the margin twice.
+_FB_CAP_ROW = ("margin-top:20px;display:flex;align-items:center;"
+               "justify-content:space-between;gap:12px;flex-wrap:wrap")
 
 _FB_ON = ("font:400 15.5px/1.5 var(--st-ui);color:var(--st-body)")
 
@@ -2779,6 +3080,49 @@ def _fb_open_button(row, style, glyph=False):
         }]}
 
 
+# ══ ⊕ MIDE'S ITEM 9, 24 SEP 2026 · THE ANSWER BREAKDOWN PANEL ═══════════
+#
+# See AMENDED_ADDITIONS["breakdown-open"] for the ruling this registers.
+# `_BD_ROW_BTN` copies `_FB_ROW_BTN`'s own shape (block, so it stacks under
+# Design's inline status chip instead of running onto the same line —
+# `_FB_ROW_BTN`'s own header explains why `display:inline-flex` on the chip
+# made that a real defect the first time) and is coloured
+# `--st-accent-text` OUTRIGHT rather than toggled, because unlike feedback
+# there is no "already has one" / "empty" distinction to carry — a
+# submission either has answers to break down or the control is not drawn
+# at all.
+_BD_ROW_BTN = ("display:block;margin-top:7px;font:600 14.5px/1.2 var(--st-ui);"
+               "background:none;border:none;padding:0;cursor:pointer;"
+               "text-align:left;white-space:nowrap;color:var(--st-accent-text)")
+
+
+def _bd_open_button():
+    """The control that opens the Answer Breakdown panel — student screen
+    submission history, one row.
+
+    ⚠️ SAME `<if e="h.fbCan">` GATE THE FEEDBACK CONTROL USES, ON PURPOSE.
+    Both ask "is there a real submission id on this row", `fbCan`/`fbSub`
+    already answer it, and a second binding asking the identical question a
+    different way is a second place the two could disagree.
+
+    ⚠️ STUDENT SCREEN ONLY — NO MARKING-GRID TWIN. `_fb_open_button` is one
+    builder shared by two screens because Mide's feedback brief asked for
+    both; this ticket did not, and `window.MRBBreakdown.open` takes one
+    pupil and one submission, not a per-cell control across thirty of them.
+    """
+    return {
+        "t": "if", "e": "h.fbCan",
+        "c": [{
+            "t": "button",
+            "a": {"type": "button",
+                  "data-mrb-added": "breakdown-open",
+                  "style": _BD_ROW_BTN},
+            "hov": "color:var(--st-accent-hover)",
+            "on": "h.openBreakdown",
+            "c": [{"t": "#", "v": "Breakdown"}],
+        }]}
+
+
 def _fb_sheet():
     """The one feedback sheet, emitted on the student screen and on marking.
 
@@ -2798,14 +3142,23 @@ def _fb_sheet():
     Mide's guardrail is that v1 is ONE-WAY. `submission_feedback` has no
     student INSERT policy at all, so a reply control — even greyed out, even
     behind a flag — would be a promise to a child that the database will
-    refuse. The footer says so in words instead, to the TEACHER, because the
-    person who needs to know the child cannot answer is the person writing.
+    refuse.
+
+    ⊕ experience run, 24 Sep 2026 (Mide's item 6) — THE FOOTER NO LONGER SAYS
+    SO IN WORDS on a writable year. It used to, unconditionally, and Mide's
+    ruling removed the sentence itself rather than reworded it. The guardrail
+    is still true and still enforced (there is still no reply control, and
+    still no student INSERT policy) — it is simply no longer stated to the
+    teacher on every open. It still shows on a FINISHED year ("This year is
+    read-only.") because that fact is new information each time, where the
+    one-way sentence was not.
 
     ── the three states this sheet has ──────────────────────────────────
-      · nothing written yet ......... caption, empty textarea, Save
+      · nothing written yet ......... caption + Draft feedback, empty
+                                      textarea, Save
       · this teacher's own comment .. byline, the text in the textarea to
-                                      edit, Save, and Remove behind a
-                                      second press
+                                      edit, caption + Draft feedback, Save,
+                                      and Remove behind a second press
       · a colleague's comment ....... byline, the text as READ-ONLY prose,
                                       and neither Save nor Remove — RLS's
                                       update policy is `teacher_id =
@@ -2813,6 +3166,19 @@ def _fb_sheet():
                                       be offering a refusal
     A past year removes the writing half of all three (`canWrite`), and
     leaves the reading half, for the reason above.
+
+    ── ⊕ experience run, 24 Sep 2026 (Mide's item 5) · DRAFT FEEDBACK ─────
+    A "Draft feedback" button sits beside the caption, wherever the box is
+    editable (`fbCanEdit` — a colleague's comment and a finished year both
+    have no editable box and get no button). It calls the model through
+    `POST /api/teacher/feedback/draft` (`MRB_DRAFT_FEEDBACK`) and NEVER
+    saves anything itself — the draft lands in `fbBody` and the textarea,
+    the teacher edits it, and Save is the only write, exactly as it always
+    was. Pressing it while a draft is already in flight is a no-op
+    (`draftFeedback`'s own guard) and the control also carries a REAL
+    `disabled` attribute for the same reason `shoutout-send` does. A failure
+    shows as `fbDraftErr`, a quiet inline line — never an alert — and never
+    touches `fbErr`, which the Save/Remove path owns.
     """
     return {
         "t": "if", "e": "fbOpen",
@@ -2892,9 +3258,47 @@ def _fb_sheet():
 
                         {"t": "if", "e": "fbCanEdit", "c": [
                             {"t": "div", "c": [
-                                {"t": "div", "a": {"style": _FB_CAP2},
-                                 "c": [{"t": "#", "v": {"parts": [
-                                     {"e": "fbFieldCap"}]}}]},
+                                # ⊕ experience run (Mide's item 5) — the
+                                # caption's own row, so "Draft feedback" sits
+                                # BESIDE the field it fills rather than in the
+                                # footer beside Save/Remove, which is about
+                                # the SUBMISSION rather than the box. The
+                                # caption's 20px top margin moved onto the
+                                # ROW (`_FB_CAP_ROW`), not the label alone, so
+                                # nothing shifts when the button's own text
+                                # changes width ("Draft feedback" vs
+                                # "Drafting…").
+                                {"t": "div", "a": {"style": _FB_CAP_ROW}, "c": [
+                                    {"t": "div", "a": {"style": _FB_CAP},
+                                     "c": [{"t": "#", "v": {"parts": [
+                                         {"e": "fbFieldCap"}]}}]},
+                                    # Design drew no such control; the style
+                                    # is `_HEAD_ACT`, verbatim — the marking
+                                    # screen's OWN secondary-button register
+                                    # (node 374's Edit/Download/Delete row on
+                                    # this same page), not a new one invented
+                                    # for this sheet. A REAL `disabled`
+                                    # attribute, the same idiom as
+                                    # `shoutout-send`'s `sendOff`:
+                                    # `student-runtime.js` drops an attribute
+                                    # whose value resolves to boolean
+                                    # `false`, so a crafted click or a stray
+                                    # keystroke cannot fire a second request
+                                    # while one is in flight.
+                                    {"t": "button",
+                                     "a": {"type": "button",
+                                           "data-mrb-added": "feedback-draft",
+                                           "disabled": {"parts": [
+                                               {"e": "fbDraftDisabled"}]},
+                                           "aria-label": "Draft feedback "
+                                                          "with the AI tutor",
+                                           "style": {"parts": [
+                                               _HEAD_ACT,
+                                               {"e": "fbDraftSkin"}]}},
+                                     "on": "draftFeedback",
+                                     "c": [{"t": "#", "v": {"parts": [
+                                         {"e": "fbDraftLabel"}]}}]},
+                                ]},
                                 # ⛔ THE EXISTING TEXT IS PUT IN BY
                                 # `MRB_FB_FILL`, NOT BY AN INTERPOLATION, AND
                                 # THIS WAS FOUND BY LOOKING RATHER THAN BY
@@ -2937,6 +3341,18 @@ def _fb_sheet():
                                                       "work on next",
                                        "style": _FB_NOTE},
                                  "onch": "setFbBody"},
+                                # ⊕ experience run (Mide's item 5) — a QUIET
+                                # inline line, never an alert. Reuses `_FB_ERR`
+                                # (the same register `fbErr` already draws in
+                                # below) rather than a new colour, so a
+                                # drafting failure and a save failure read as
+                                # the same KIND of thing on this sheet.
+                                {"t": "if", "e": "fbDraftErr", "c": [
+                                    {"t": "div", "a": {"style": _FB_ERR,
+                                                       "role": "alert"},
+                                     "c": [{"t": "#", "v": {"parts": [
+                                         {"e": "fbDraftErr"}]}}]},
+                                ]},
                             ]},
                         ]},
 
@@ -2948,9 +3364,19 @@ def _fb_sheet():
                         ]},
                     ]},
                     {"t": "div", "a": {"style": _FB_FOOT}, "c": [
-                        {"t": "div", "a": {"style": _DEL_FOOT_NOTE},
-                         "c": [{"t": "#", "v": {"parts": [
-                             {"e": "fbFootNote"}]}}]},
+                        # ⊕ experience run, 24 Sep 2026 (Mide's item 6) — GATED
+                        # ON `fbFootNote` ITSELF NOW. It used to render
+                        # unconditionally, because it always had something to
+                        # say; now that the writable-year case says nothing
+                        # (see `fbFootNote`'s own comment in LOGIC), an
+                        # unconditional div would be an empty line taking up
+                        # space in the footer on every open. Absent, not
+                        # blank.
+                        {"t": "if", "e": "fbFootNote", "c": [
+                            {"t": "div", "a": {"style": _DEL_FOOT_NOTE},
+                             "c": [{"t": "#", "v": {"parts": [
+                                 {"e": "fbFootNote"}]}}]},
+                        ]},
                         {"t": "div", "a": {"style": _FB_ACTIONS}, "c": [
                             {"t": "if", "e": "fbCanRemove", "c": [
                                 # ⚠️ TWO PRESSES, NOT A SECOND SHEET. The
@@ -3598,8 +4024,12 @@ INSERT_AT = {
             {"t": "div",
              "a": {"class": "noprint", "style": _WK_BAR},
              "c": [
+                 # ⊕ Stream D, 24 Sep 2026 (experience run, item 10) — bound
+                 # to `weekCaption` (LOGIC, anchored on `rosterWeekCol`) so
+                 # the bar's own heading says the viewed week's term once,
+                 # now that every chip below it has stopped saying it.
                  {"t": "span", "a": {"style": _WK_CAPTION},
-                  "c": [{"t": "#", "v": "Week"}]},
+                  "c": [{"t": "#", "v": {"parts": [{"e": "weekCaption"}]}}]},
                  _wk_chevron("weekBack", "Previous week", "M9 3L5 7l4 4",
                              "weekBackColor", "weekBackCursor", "week-back"),
                  {"t": "div",
@@ -4407,13 +4837,25 @@ INSERT_AT = {
     # marking screen it goes inside her student cell (420, after the name at
     # 422), pushed right by `margin-left:auto` — the cell is already a flex
     # row and already has the space.
-    (366, 367): (_fb_open_button("h", _FB_ROW_BTN),
-                 "the feedback control on one row of the student screen's "
-                 "submission history. Design drew no comment affordance "
-                 "anywhere; this is Mide's ruling of 3 Sep 2026, and it is "
+    # ⊕ Mide's item 9, 24 Sep 2026 — WRAPPED IN A PLAIN <div> RATHER THAN A
+    # SECOND INSERT_AT ENTRY, and that is a mechanical necessity rather than
+    # a style choice: INSERT_AT is keyed by (parent, after-sibling), an
+    # inserted node carries no `i` (Design's numbering must not move — see
+    # the header above INSERT_AT), and a second entry keyed on the same
+    # `(366, 367)` pair would silently OVERWRITE this one in the dict rather
+    # than adding beside it. So the one entry at this anchor now inserts
+    # BOTH controls, stacked, in one wrapper.
+    (366, 367): ({"t": "div", "c": [_fb_open_button("h", _FB_ROW_BTN),
+                                     _bd_open_button()]},
+                 "the feedback control AND (⊕ Mide's item 9, 24 Sep 2026) "
+                 "the Answer Breakdown control, on one row of the student "
+                 "screen's submission history. Design drew no comment "
+                 "affordance and no breakdown affordance anywhere; the "
+                 "feedback half is Mide's ruling of 3 Sep 2026 and it is "
                  "inside her Status cell rather than in a sixth column "
                  "because her table's track list is declared twice and sized "
-                 "for five."),
+                 "for five. The breakdown control joins it in the same cell "
+                 "for the identical reason."),
     (420, 422): (_fb_open_button("r", _FB_CELL_BTN, glyph=True),
                  "the same control on one row of the marking screen's "
                  "class-by-question grid — the second of Mide's two "
@@ -4473,6 +4915,74 @@ INSERT_AT = {
         "the class screen's way into that class's seating plan. The page "
         "existed and nothing linked to it, so the only route in was a "
         "hand-typed URL carrying a uuid."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 12) · THE ENGAGEMENT ══
+    # CHART'S OWN TOGGLE, ABOVE THE CARD
+    #
+    # Node 534 is the chart card; its children are 535 (the header row,
+    # `{{ chart.title }}` + `{{ chart.scopeLabel }}`) then 538
+    # (`{{ chart.note }}`). Inserted as a new child of 534, just before 538,
+    # this sits between the header and the note, on Charts, both scopes,
+    # and only when `chart.hasBucketTabs` — true on the engagement chart
+    # alone (see LOGIC's `hasLegend` ruling), so every other chart kind on
+    # this screen is unaffected.
+    #
+    # ⚠️ THE TOGGLE IS THE LEGEND. `chart.bucketTabs` (LOGIC, the
+    # `kind === 'engagement'` ruling) carries one entry per bucket with its
+    # OWN dot colour, label and `on` state, in the same order the bars and
+    # the single-class columns use it — so this control cannot drift out of
+    # step with what it is a legend for; both read the one array.
+    (534, 538): ({
+        "t": "if", "e": "chart.hasBucketTabs",
+        "c": [{
+            "t": "div", "a": {
+                "class": "noprint",
+                "style": "display:flex;flex-wrap:wrap;gap:8px;"
+                         "margin-top:14px",
+                "data-mrb-added": "engagement-bucket-tabs"},
+            "c": [{
+                "t": "for", "e": "chart.bucketTabs", "as": "bt",
+                "c": [{
+                    "t": "button",
+                    "a": {"type": "button",
+                          "data-mrb-added": "engagement-bucket",
+                          # ⊕ Stream M, 25 Sep 2026 (experience run round 3,
+                          # N8) — bound to `bt.pressed` (a STRING) rather
+                          # than the boolean `bt.on`. `student-runtime.js`'s
+                          # attribute resolver drops any attribute whose
+                          # value is exactly `=== false` (its render loop:
+                          # `if (val === null || val === undefined ||
+                          # val === false) { continue; }`), so the two
+                          # UNSELECTED buckets carried no `aria-pressed` at
+                          # all — only the selected one, `true`, ever
+                          # reached the DOM. `bt.pressed` is pre-stringified
+                          # ('true'/'false') in the `bucketTabs` map above
+                          # (LOGIC), so every state of every button always
+                          # sets the attribute.
+                          "aria-pressed": {"parts": [{"e": "bt.pressed"}]},
+                          "style": {"parts": [
+                              "display:flex;align-items:center;gap:7px;"
+                              "padding:7px 13px;border-radius:999px;"
+                              "cursor:pointer;font:600 15px/1.2 var(--st-ui);"
+                              "color:", {"e": "bt.fg"}, ";background:",
+                              {"e": "bt.bg"}, ";border:1px solid ",
+                              {"e": "bt.bd"}]}},
+                    "hov": "background:var(--st-note-bg)",
+                    "on": "bt.pick",
+                    "c": [
+                        {"t": "span",
+                         "a": {"style": {"parts": [
+                             "width:9px;height:9px;border-radius:50%;"
+                             "background:", {"e": "bt.dot"}]}},
+                         "c": []},
+                        {"t": "#", "v": {"parts": [{"e": "bt.label"}]}}
+                    ]}]
+            }]}]},
+        "the engagement chart's own toggle (Today / This week / 2+ weeks). "
+        "One control, both scopes: `chartFor`'s `all` and single-class "
+        "branches both return the same `bucketTabs`, computed from the "
+        "same three-colour map, so the toggle and whatever it is a legend "
+        "for cannot say two different things."),
 }
 
 
@@ -4894,6 +5404,35 @@ AMENDED_ADDITIONS = (
              "disagree. Absent on a row with no submission: "
              "`submission_feedback.submission_id` is NOT NULL and there is "
              "nothing to attach a comment to."),
+
+    # ══ ⊕ MIDE'S ITEM 9, 24 SEP 2026 · THE ANSWER BREAKDOWN PANEL ═══════
+    #
+    # ⚠️ ONE ROW HERE, FOR A SURFACE THAT OPENS A WHOLE PANEL — same reading
+    # as the MRB-323 name picker's own note two entries down: the check
+    # behind this register reads the EMITTED BYTES of the compiled template
+    # for `"data-mrb-added":"<marker>"`, and only the OPENER is compiled
+    # markup. The panel itself — the summary strip, the topic groups, every
+    # question row, Prev/Next, Close — is built by `shared/breakdown.js` at
+    # press time, appended to `<body>`, and exists in no page's bytes. It is
+    # not therefore ungated: `teacher_behaviour.py`'s `snap()` was taught to
+    # read `[data-bd="overlay"]`'s own `hidden`/`data-bd-opens`/
+    # `data-bd-student` state, the identical instrument it already reads for
+    # `shared/set-work.js`'s `[data-sw="overlay"]`, so "did pressing
+    # Breakdown open something" is answered without the sweep ever looking
+    # inside a body-level overlay `host` cannot see. What happens INSIDE the
+    # panel is proven by its own drive, `breakdown_drive.py` — the same
+    # split `set_work_drive.py` takes for the Set work sheet.
+    dict(marker="breakdown-open", pages=("student-detail.html",),
+         node=366, needs_data=True,
+         label="Breakdown",
+         why="the control that opens the Answer Breakdown panel, on a "
+             "submission history row. Design drew no breakdown surface at "
+             "all — this is Mide's item 9 of 24 Sep 2026 — and it is inside "
+             "the same Status cell the feedback control occupies (366, "
+             "after node 367) for the identical reason: the table's track "
+             "list is declared twice and sized for five columns, and a "
+             "sixth would need both rewritten. Absent on a row with no "
+             "submission: there is nothing to break down."),
     dict(marker="feedback-close",
          pages=("student-detail.html", "assignment.html"),
          node=330, needs_data=True,
@@ -4909,6 +5448,34 @@ AMENDED_ADDITIONS = (
              "class_shoutouts. The existing text is the textarea's CHILD "
              "rather than a `value` attribute, because a textarea's content "
              "IS its value and `value=` on one does nothing."),
+    # ⊕ experience run, 24 Sep 2026 (Mide's item 5) — "Draft feedback".
+    # Registered between `feedback-body` and `feedback-save` because that is
+    # where it sits in the DOM (beside the caption, above the textarea), but
+    # what makes it REACHABLE by this sweep is its position AFTER
+    # `feedback-open` in this list — the same reveal mechanism the other
+    # three writable-half controls rely on. `needs_data=True` for the same
+    # reason `feedback-body`/`feedback-save` carry it: all three sit inside
+    # `<if fbCanEdit>`, which is false at rest on every fixture.
+    #
+    # ⚠️ THE PRESS IS SAFE ON A FIXTURE WITH NO NETWORK CALL EVER LEAVING THE
+    # PAGE. `draftFeedback` calls `MRB_DRAFT_FEEDBACK`, which calls
+    # `MRB_TOKEN()` first — and a fixture loads only the compiled runtime,
+    # never `shared/teacher-guard.js`, so `window.MrBadmusTeacherGuard` is
+    # undefined and `MRB_TOKEN()` rejects before any `fetch()` is attempted.
+    # The control still proves live: the press flips `fbDrafting` to `true`
+    # SYNCHRONOUSLY inside the click handler (the label becomes "Drafting…"
+    # and a real `disabled` attribute appears), which is a text change this
+    # sweep's `snap()` catches on its own, before the rejected promise ever
+    # settles.
+    dict(marker="feedback-draft",
+         pages=("student-detail.html", "assignment.html"),
+         node=330, needs_data=True,
+         label="Draft feedback",
+         why="the button that drafts a paragraph via "
+             "POST /api/teacher/feedback/draft and fills the textarea with "
+             "it. Design drew none of this — it is Mide's item 5 on the "
+             "experience run — and it writes nothing itself: Save (the "
+             "control beside it) is still the only write on this path."),
     dict(marker="feedback-save",
          pages=("student-detail.html", "assignment.html"),
          node=330, needs_data=True,
@@ -5394,8 +5961,11 @@ METHODS = {
         "and fills it from real submissions, and ADDS what Design's could not "
         "carry: `pct[]` and `max[]` per cell (real papers are not out of 8), "
         "`stampShort[]` (when the work actually arrived) and `markedIdx` "
-        "(which columns are closed, because real classes do not have exactly "
-        "one open paper at index 0)."),
+        "(which columns are RELEASED — Mide's 23 Sep 2026 ruling, results are "
+        "live the instant a paper is set rather than only once its deadline "
+        "passes — plus `closedIdx` for the handful of readers that genuinely "
+        "mean the deadline, because real classes do not have exactly one "
+        "open paper at index 0)."),
     "rosterFor": (
         "    if (!k || !k.id) return [];\n"
         "    return MRB_PICK('ROSTER', k.id);",
@@ -5573,6 +6143,129 @@ del METHODS["rosterFor_noop"]
 # None of them is a bug in Design's file, where all five are true. Every one
 # of them is a wrong number on a real dashboard.
 LOGIC = (
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 4) · "N MISSED THIS
+    #    TERM" COUNTS THE WRONG PAPERS ═══════════════════════════════════
+    #
+    # Design's `reasonFor` reads `row.scores.slice(1)` — every column except
+    # the NEWEST, whatever its state — so a scheduled or still-open set that
+    # simply has not been answered yet counted as "missed", and the "Keep an
+    # eye on" caption moved every time a new set was released, before its
+    # due date and before anybody could possibly be late. Mide's 23 Sep
+    # ruling is explicit about which index list means "missing":
+    # `mx.closedIdx`, never `markedIdx` and never "everything but the
+    # newest" — a paper is only missing once its OWN deadline has passed.
+    #
+    # `mx`/`kMx` (`this.matrixFor(...)`, seamed by `METHODS['matrixFor']`
+    # onto the real `buildMatrix` output) already carries `closedIdx` for
+    # exactly this reader, so the fix is passing it in rather than deriving
+    # anything new here.
+    (
+        "  reasonFor(r, row) {\n"
+        "    const missed = row ? row.scores.slice(1).filter(v => v == "
+        "null).length : 0;",
+        "  reasonFor(r, row, closedIdx) {\n"
+        "    const missed = (row && closedIdx)\n"
+        "      ? closedIdx.filter((i) => row.scores[i] == null).length\n"
+        "      : 0;",
+        "the count itself: CLOSED papers with no cell, not every column "
+        "but the newest."
+    ),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 10) · "NOTHING IN THIS
+    #    WEEK" FOR A PUPIL WHO IS MID-ANSWER ═══════════════════════════════
+    #
+    # `reasonFor`'s last resort fires for every flagged pupil none of the
+    # earlier branches named — missing nothing, averaging 50%+, and simply
+    # `!row.inWeek` — and `inWeek` only ever means "has a COMPLETE cell on an
+    # in-week paper" (item 5 of Mide's 23 Sep ruling). A pupil two questions
+    # into an open paper is exactly that pupil: nothing complete yet, so
+    # `!inWeek`, so "Nothing in this week" on Today's chase list and the
+    # class glance's "Keep an eye on" card, describing someone who is
+    # actively working. `row.startedInWeek` (`buildMatrix`, `shared/
+    # teacher-live.js`) is the one new fact this needed.
+    (
+        "    if (r.avg != null && r.avg < 50) return 'Averaging ' + r.avg + "
+        "'%';\n"
+        "    return 'Nothing in this week';",
+        "    if (r.avg != null && r.avg < 50) return 'Averaging ' + r.avg + "
+        "'%';\n"
+        "    if (row && row.startedInWeek) return 'In progress';\n"
+        "    return 'Nothing in this week';",
+        "the fallback: a pupil mid-way through an in-week paper reads "
+        "\"In progress\", the word every other surface on this page already "
+        "uses, rather than the one line reserved for a pupil who has done "
+        "nothing at all."
+    ),
+    (
+        "this.reasonFor(r, mx.byId[r.id])",
+        "this.reasonFor(r, mx.byId[r.id], mx.closedIdx)",
+        "the Today screen's chase list, so `reasonFor` gets the closed-paper "
+        "index list its corrected body now needs."
+    ),
+    (
+        "this.reasonFor(r, kMx.byId[r.id])",
+        "this.reasonFor(r, kMx.byId[r.id], kMx.closedIdx)",
+        "the class glance's \"Keep an eye on\" list — same fix, the "
+        "class-scoped matrix."
+    ),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 5) · "UP 25 POINTS ON
+    #    THE LAST SET" IS A SCALE BUG, NOT JUST A WORDING ONE ═══════════
+    #
+    # Design's `imp.d` is `row.scores[1] - row.scores[2]` — RAW marks on
+    # whichever two columns happen to sit at index 1 and 2 — then the card
+    # renders `Math.round(imp.d * 12.5)`, her sample's 8-question assumption
+    # (100 / 8 = 12.5) turned into a percentage. On a real 10-question paper
+    # (Lydia's, in the audit) 75% → 80% is a raw-mark delta of exactly 0.5,
+    # which `* 12.5` turns into "25 points".
+    #
+    # ⚠️ AND INDEX 1/2 ARE THE WRONG COLUMNS ONCE A CLASS HAS A PAPER OPEN.
+    # Columns are newest-first; index 1 is only "the last set" when index 0
+    # (the newest) has no submission from this pupil yet — Design's sample
+    # never has that shape, a real class does every week. `row.pct[]` (the
+    # matrix's own per-cell percentage, added by the seam for exactly this)
+    # walked forward and stopped at the first two COMPLETE cells is "the
+    # pupil's last two completed sets" in every shape, not just the one
+    # Design drew.
+    #
+    # `imp.d` is now already a percentage-point difference, so the caller
+    # needs no scale factor at all — `MRB_DELTA_REASON` (build_teacher_port)
+    # phrases it, and phrases the two shapes Design's card never had to
+    # (down, level) for the one case Design's own gate (`imp.d > 0`) still
+    # lets through today: an improving pupil.
+    (
+        "    let imp = null;\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      if (row && row.scores[1] != null && row.scores[2] != null) {\n"
+        "        const d = row.scores[1] - row.scores[2];\n"
+        "        if (!imp || d > imp.d) imp = { r, d };\n"
+        "      }\n"
+        "    });",
+        "    let imp = null;\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      if (!row) return;\n"
+        "      const done = [];\n"
+        "      for (let i = 0; i < row.pct.length && done.length < 2; "
+        "i++) {\n"
+        "        if (row.pct[i] != null) done.push(row.pct[i]);\n"
+        "      }\n"
+        "      if (done.length < 2) return;\n"
+        "      const d = done[0] - done[1];\n"
+        "      if (!imp || d > imp.d) imp = { r, d };\n"
+        "    });",
+        "the `imp` derivation: the pupil's last two COMPLETE sets' real "
+        "percentages, not raw marks off two fixed columns."
+    ),
+    (
+        "reason: 'Up ' + Math.round(imp.d * 12.5) + ' points on the last "
+        "set',",
+        "reason: MRB_DELTA_REASON(imp.d),",
+        "the caption itself, now that `imp.d` is already a percentage-"
+        "point delta and needs no invented scale on top of it."
+    ),
+
     # ══ the state initialiser ═══════════════════════════════════════════
     #
     # `screen` is per-page and written by the build; `MRB_SCREEN` is the token
@@ -5697,7 +6390,11 @@ LOGIC = (
     digestScope: MRB_Q('class') ? 'class' : 'all', recipient: '',
     chartKind: 'submissions', chartScope: MRB_Q('class') || 'all',
     insFrom: 'today', digestFrom: 'today',
-    yearsOpen: false
+    yearsOpen: false,
+    // ⊕ Stream D, 24 Sep 2026 (experience run, item 12) — the engagement
+    // chart's own toggle (Today / This week / 2+ weeks), surviving a
+    // redraw the same way `chartKind`/`chartScope` do.
+    engBucket: 'today'
   };""",
      "the state initialiser. See the block comment above. "
      "⊕ MRB-335, 7 Sep 2026 — THE TWELVE SET-WORK KEYS ARE OFF AGAIN, and "
@@ -6281,6 +6978,96 @@ LOGIC = (
      "`glance`'s own keys are separate entries at the end of this tuple, "
      "because a property anchor replaces one property."),
 
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 10) · "NOT IN YET" WAS
+    #    THREE DIFFERENT PUPILS WEARING ONE WORD ══════════════════════════
+    #
+    # `wTally[r.id].in` counts COMPLETE cells only (`row.submitted[i]`, which
+    # `cellOf` sets true only past the completion guard), so "not one
+    # complete cell yet" was rendered as a single word — "Not in yet" — for
+    # three pupils Mide's vocabulary (this run's brief, item 10; the roster
+    # dot's own five-state list a few hundred lines down) says apart:
+    #
+    #   · a pupil MID-ANSWER on an open paper this week (Erin, 2 of 10) —
+    #     "In progress", the word every other surface on this page already
+    #     uses for exactly this state.
+    #   · a pupil with nothing at all once EVERY paper the week names has
+    #     CLOSED — "Missing", not an accusation levelled while the paper is
+    #     still open.
+    #   · a pupil with nothing at all while the week's paper(s) are still
+    #     open — "Not started", which is the one case "Not in yet" was ever
+    #     actually true for.
+    #
+    # `row.status[i]` already carries `'in_progress'` for a row that exists
+    # and is not complete — set before the completion guard in `buildMatrix`
+    # for this exact reason (WHICH SUBMISSION ROW THIS CELL IS, above it) —
+    # so no new read is needed, only a check nothing here was making.
+    (
+        "    const wTally = {};\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      let wIn = 0, wLateOne = null;\n"
+        "      wIdxs.forEach(i => {\n"
+        "        if (!(row && row.submitted[i])) return;\n"
+        "        wIn += 1;\n"
+        "        if (row.late[i] === true) wLateOne = true;\n"
+        "        else if (row.late[i] === false && wLateOne !== true) "
+        "wLateOne = false;\n"
+        "      });\n"
+        "      wTally[r.id] = { in: wIn, asked: wIdxs.length, late: "
+        "wLateOne };\n"
+        "    });",
+        "    const wTally = {};\n"
+        "    const wAllClosed = wPapers.length > 0 && "
+        "wPapers.every(p => p.closed);\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      let wIn = 0, wLateOne = null, wStarted = false;\n"
+        "      wIdxs.forEach(i => {\n"
+        "        if (row && row.status && row.status[i] === 'in_progress') "
+        "wStarted = true;\n"
+        "        if (!(row && row.submitted[i])) return;\n"
+        "        wIn += 1;\n"
+        "        if (row.late[i] === true) wLateOne = true;\n"
+        "        else if (row.late[i] === false && wLateOne !== true) "
+        "wLateOne = false;\n"
+        "      });\n"
+        "      wTally[r.id] = { in: wIn, asked: wIdxs.length, late: "
+        "wLateOne, started: wStarted, closed: wAllClosed };\n"
+        "    });",
+        "the tally itself: `started` (any of the week's papers has an "
+        "in-progress row for this pupil) and `closed` (every one of the "
+        "week's papers has closed) are the two facts the roster/Today word "
+        "below needs and did not have."
+    ),
+    (
+        "      week: !kPapers.length ? '—'\n"
+        "        : (!wTally[r.id].asked ? 'Nothing set'\n"
+        "          : (!wTally[r.id].in ? 'Not in yet'\n"
+        "            : (wTally[r.id].in < wTally[r.id].asked\n"
+        "              ? wTally[r.id].in + ' of ' + wTally[r.id].asked + "
+        "' in'\n"
+        "              : (wTally[r.id].late === true ? 'In · late'\n"
+        "                : (wTally[r.id].late === false ? 'In · on "
+        "time'\n"
+        "                  : 'In · timing unknown'))))),",
+        "      week: !kPapers.length ? '—'\n"
+        "        : (!wTally[r.id].asked ? 'Nothing set'\n"
+        "          : (!wTally[r.id].in\n"
+        "            ? (wTally[r.id].started ? 'In progress'\n"
+        "              : (wTally[r.id].closed ? 'Missing' : 'Not started'))\n"
+        "            : (wTally[r.id].in < wTally[r.id].asked\n"
+        "              ? wTally[r.id].in + ' of ' + wTally[r.id].asked + "
+        "' in'\n"
+        "              : (wTally[r.id].late === true ? 'In · late'\n"
+        "                : (wTally[r.id].late === false ? 'In · on "
+        "time'\n"
+        "                  : 'In · timing unknown'))))),",
+        "the roster row's own word: In progress / Missing / Not started in "
+        "place of the one word \"Not in yet\" used for all three. Read by "
+        "the class roster and, via the same `roster` builder, by Today's "
+        "chase list and the printed report."
+    ),
+
     # the two helpers those tiles now call, defined beside them
     #
     # ⊕ RE-ANCHORED FOR DESIGN'S v3, 1 Sep 2026 (MRB-306). This entry only
@@ -6555,8 +7342,8 @@ LOGIC = (
         { label: 'Mean score', value: Math.round(liveClasses.reduce((a, c) => a + (this.meanOf(c) || 0), 0) / liveClasses.length) + '%', sub: 'Mean of ' + liveClasses.length + ' class means' },""",
      """      digestTiles: isClassReport ? [
         { label: 'Submissions', value: MRB_WEEK_IN(k), sub: 'This week' },
-        { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + kMx.markedIdx.length + (kMx.markedIdx.length === 1 ? ' marked assignment' : ' marked assignments') },
-        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_ONTIME_SUB(kMx.markedOnTime, kMx.markedLate, kMx.markedLateUnknown, 'marked') },
+        { label: 'Class mean', value: kMean == null ? '—' : kMean + '%', sub: 'Across ' + kMx.markedIdx.length + (kMx.markedIdx.length === 1 ? ' assignment with results' : ' assignments with results') },
+        { label: 'On time', value: kMx.markedPct == null ? '—' : kMx.markedPct + '%', sub: MRB_ONTIME_SUB(kMx.markedOnTime, kMx.markedLate, kMx.markedLateUnknown, 'with results') },
         { label: 'Needs a look', value: String(kFlagged), sub: kFlagged ? 'Nothing in this week, and behind' : 'Everyone accounted for' }
       ] : [
         { label: 'Submissions', value: String(totalSubs), sub: 'Across ' + liveClasses.length + (liveClasses.length === 1 ? ' active class' : ' active classes') },
@@ -6613,7 +7400,14 @@ LOGIC = (
      "arrangement that stops agreeing the day one of them is edited, and "
      "\"57\" over rows that sum to something else is unfalsifiable by any "
      "gate we have. `dgFlagged` sums the rows, so the tile is now a total "
-     "OF the table rather than a second opinion about it."),
+     "OF the table rather than a second opinion about it.\n"
+     "\n"
+     "        ⊕ Stream D, 25 Sep 2026 (wording pass): \"marked "
+     "assignment(s)\" → \"assignment(s) with results\", and "
+     "`MRB_ONTIME_SUB`'s noun `'marked'` → `'with results'` (reads "
+     "\"N late of M with results\") — matches DEFINITIONS #7's target "
+     "copy for the student page's own \"Of M set this term\", applied "
+     "here to the class report's twin tile."),
 
     # ── the class report's On-time column: a percentage, like every other ──
     ("        ontime: p.when === 'upcoming' ? '—' : "
@@ -6668,6 +7462,50 @@ LOGIC = (
      "`classReportRows`. Same denominator defect: `k.n` is the CURRENT "
      "roster, and a departed student who submitted makes this negative."),
 
+    # ══ ⊕ Stream L, 25 Sep 2026 (experience run, item 2) · THE CLASS REPORT
+    #    CALLED AN OPEN SET "NEVER SUBMITTED" ═══════════════════════════════
+    #
+    # `p.when === 'upcoming'` used to be the same test as "not yet closed" —
+    # under the OLD deadline-based model `when` had exactly two values and
+    # 'upcoming' meant "due date has not passed". Stream A's 23 Sep 2026
+    # redefinition narrows what 'upcoming' means: it now means "not yet
+    # RELEASED" (scheduled), and a released-but-still-OPEN paper is 'marked'
+    # — the new meaning of that value is "results are live", not "closed".
+    # This "needs" sentence was never touched by that redefinition and kept
+    # reading `p.when` as if it still drew the open/closed line, so a class
+    # with one open set read "6 never submitted" on work that is still eleven
+    # days from its deadline — the exact defect the audit caught (item 2, and
+    # its sibling on Today, item 10/N2).
+    #
+    # ⚠️ THE `ks:` CHIP ABOVE THIS IS NOT TOUCHED HERE. It already reads
+    # `p.statusLabel` (MRB-336, a later entry in this list) by the time that
+    # ruling runs — `p.when === 'upcoming'` still exists on THIS line only
+    # because this entry runs first over the one evolving source; changing it
+    # here would make the MRB-336 entry's own anchor match zero times and
+    # fail the build. Only `needs`, which nothing downstream re-touches, is
+    # this entry's to fix.
+    #
+    # `p.closed` is the field stream A added FOR EXACTLY THIS — "is this
+    # paper missing/late", the genuine deadline test. An OPEN set now says
+    # "N not in yet", honest about work nobody has been marked late on yet;
+    # only a CLOSED set says "never submitted", because only a closed set can
+    # know that.
+    ("""        needs: missing === 0
+          ? 'Everyone submitted'
+          : (p.when === 'upcoming'
+            ? (missing === 1 ? '1 still to submit' : missing + ' still to submit')
+            : (missing === 1 ? '1 never submitted' : missing + ' never submitted')),""",
+     """        needs: missing === 0
+          ? 'Everyone submitted'
+          : (p.closed
+            ? (missing === 1 ? '1 never submitted' : missing + ' never submitted')
+            : (missing === 1 ? '1 not in yet' : missing + ' not in yet')),""",
+     "the class report's \"needs\" sentence — `p.closed` (the deadline "
+     "test) in place of `p.when === 'upcoming'` (now the release test), so "
+     "an open-but-released set reads \"N not in yet\" rather than \"N never "
+     "submitted\". The status chip beside it is untouched, on purpose — see "
+     "the note above."),
+
     # ── the SECOND copy of the `CLASSES[3]` fallback ────────────────────
     ("""    const k = all ? null : (this.klassById(scope) || this.CLASSES[3]);""",
      """    const k = all ? null : this.klass();""",
@@ -6700,22 +7538,31 @@ LOGIC = (
         const cohort = Math.round(raw.reduce((a, r) => a + r.mean, 0) / (raw.length || 1));""",
      """      if (all) {
         const raw = live.map(c => ({ code: c.code, ks: c.ks, mean: mx(c).classMean || 0 }));
-        if (!raw.length) { return { ...base, title: 'Class means, marked work', note: 'No class has marked work yet' }; }
+        if (!raw.length) { return { ...base, title: 'Class means, work with results', note: 'No class has work with results yet' }; }
         const cohort = Math.round(raw.reduce((a, r) => a + r.mean, 0) / (raw.length || 1));""",
      "`means / all` reads `sorted[0]` and `sorted[sorted.length - 1]` "
      "immediately afterwards. With no live classes both are `undefined` and "
-     "the chart throws, taking the whole page with it."),
+     "the chart throws, taking the whole page with it. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): title and note reworded off \"marked "
+     "work\" — stream A's redefinition means a class can have results "
+     "(released work) that is still open, and \"marked\" no longer implies "
+     "the deadline has passed."),
 
     ("""      const means = ps.map(p => m.colMean[p.idx]);
       const best = ps[means.indexOf(Math.max.apply(null, means))];
       const worst = ps[means.indexOf(Math.min.apply(null, means))];""",
      """      const means = ps.map(p => m.colMean[p.idx]);
-      if (!ps.length) { return { ...base, title: k.code + ' — mean by assignment', note: 'Nothing marked yet' }; }
+      if (!ps.length) { return { ...base, title: k.code + ' — mean by assignment', note: 'Nothing to chart yet' }; }
       const best = ps[means.indexOf(Math.max.apply(null, means))];
       const worst = ps[means.indexOf(Math.min.apply(null, means))];""",
      "`means / class`. `Math.max.apply(null, [])` is `-Infinity`, "
      "`indexOf(-Infinity)` is `-1`, and `ps[-1].idx` throws. A class with no "
-     "marked work is not an edge case — it is every class in September."),
+     "marked work is not an edge case — it is every class in September. "
+     "⊕ Stream D, 24 Sep 2026 (experience run, item 2): the note reworded "
+     "from \"Nothing marked yet\" — \"marked\" no longer means \"deadline "
+     "passed\" (stream A), and a note on an empty CHART should say there is "
+     "nothing to chart, not describe a marking state that does not apply "
+     "here."),
 
     ("""        const rows = live.map(c => {
           const g = this.gridFor(c, 1);
@@ -6724,7 +7571,7 @@ LOGIC = (
           return { label: c.code, sub: this.STEMS[qi].id + ' · ' + this.STEMS[qi].text, value: min + '%', pct: min, fill: min < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)', qi };
         });""",
      """        const rows = live.map(c => {
-          const gi = MRB_NEWEST_MARKED(this.papersFor(c));
+          const gi = MRB_NEWEST_MARKED(this.papersFor(c), mx(c));
           const g = gi < 0 ? null : this.gridFor(c, gi);
           const scored = g ? g.qpct.filter(v => v != null) : [];
           if (!scored.length) { return null; }
@@ -6733,12 +7580,15 @@ LOGIC = (
           const st = g.stems[qi] || { id: '—', text: '' };
           return { label: c.code, sub: st.id + ' · ' + st.text, value: min + '%', pct: min, fill: min < 50 ? 'var(--st-accent)' : 'var(--st-hatch-b)', qi, stem: st, qkey: st.question_ref || st.text || '' };
         }).filter(r => r);
-        if (!rows.length) { return { ...base, title: 'Weakest question per class, last marked set', note: 'No class has a marked paper yet' }; }""",
+        if (!rows.length) { return { ...base, title: 'Weakest question per class, last set', note: 'No class has a set yet' }; }""",
      "`questions / all`. FOUR defects in five lines: `gridFor(c, 1)` assumes "
      "paper 1 is the newest marked one; the grid can be `null` (not "
      "prefetched); `qpct` can hold nulls, and `Math.min` over `[null]` is 0 "
      "so an unmarked paper became a 0% weakest question; and `STEMS[-1]` "
-     "throws when `indexOf` misses."),
+     "throws when `indexOf` misses. ⊕ Stream D, 25 Sep 2026 (wording "
+     "pass): \"last marked set\"/\"a marked paper\" → \"last set\"/"
+     "\"a set\", matching the reteach card's own \"last set\" (no "
+     "\"marked\") elsewhere on this dashboard."),
 
     ("""      const g = this.gridFor(k, 1);
       const p = this.papersFor(k)[1];
@@ -6750,12 +7600,12 @@ LOGIC = (
         tiles: [tile('Paper mean', mx(k).colMean[1] + '%', g.submitted + ' of ' + k.n + ' submitted'),
           tile('Lowest', this.STEMS[qi].id + ' · ' + min + '%', this.STEMS[qi].text), tile('Highest', max + '%', 'Best answered question')],
         note: 'Reteach ' + this.STEMS[qi].text.toLowerCase() + ' — ' + min + '% of the class got it' };""",
-     """      const gi = MRB_NEWEST_MARKED(this.papersFor(k));
+     """      const gi = MRB_NEWEST_MARKED(this.papersFor(k), mx(k));
       const g = gi < 0 ? null : this.gridFor(k, gi);
       const p = gi < 0 ? null : this.papersFor(k)[gi];
       const scored = g ? g.qpct.filter(v => v != null) : [];
       if (!g || !p || !scored.length) {
-        return { ...base, type: 'cols', title: k.code + ' — question difficulty', note: g ? 'Nothing on this paper was machine-marked' : 'No marked paper yet' };
+        return { ...base, type: 'cols', title: k.code + ' — question difficulty', note: g ? 'Nothing on this paper was machine-marked' : 'No set yet' };
       }
       const min = Math.min.apply(null, scored);
       const max = Math.max.apply(null, scored);
@@ -6765,10 +7615,17 @@ LOGIC = (
         cols: this.colsFrom(g.stems.map((q, i) => ({ label: q.id, value: g.qpct[i] == null ? 'Not marked' : g.qpct[i] + '%', raw: g.qpct[i] == null ? 0 : g.qpct[i], flag: g.qpct[i] != null && g.qpct[i] === min })), 100),
         tiles: [tile('Paper mean', mx(k).colMean[gi] == null ? '—' : mx(k).colMean[gi] + '%', g.submitted + ' of ' + (mx(k).colAsked[gi] || 0) + ' submitted'),
           tile('Lowest', lowest.id + ' · ' + min + '%', lowest.text), tile('Highest', max + '%', 'Best answered question')],
-        note: lowest.text ? 'Reteach ' + lowest.text.toLowerCase() + ' — ' + min + '% of the class got it' : '' };""",
+        note: lowest.text ? 'Reteach ' + lowest.text + ' — ' + min + '% of the class got it' : '' };""",
      "`questions / class`. The same four, plus `papersFor(k)[1].title` on a "
      "one-paper class, plus `k.n` as the submitted denominator, plus "
-     "`STEMS[qi].text.toLowerCase()` on a stem that no longer exists."),
+     "`STEMS[qi].text.toLowerCase()` on a stem that no longer exists. "
+     "⊕ Stream M, 25 Sep 2026 (item 26) — the `.toLowerCase()` this ruling "
+     "had kept on the stem is now dropped from the built note too: the "
+     "'Lowest' tile two lines above already prints the same stem in its own "
+     "case (`lowest.text`, no lowering), so the note read \"Reteach which "
+     "component does this circuit symbol represent?\" lower-cased right "
+     "beside a tile capitalised the ordinary way. A stem is a sentence, and "
+     "a sentence keeps its own capital."),
 
     # ── the tiles and note of `questions / all`: A DELETED FIELD, TWICE ──
     ("""        const tally = {};
@@ -6793,8 +7650,8 @@ LOGIC = (
           (keys.length === 1 || tally[keys[0]] > tally[keys[1]]);
         const worst = rows.slice().sort((a, b) => a.pct - b.pct)[0];
         const under50 = rows.filter(r => r.pct < 50).length;
-        return { ...base, title: 'Weakest question per class, last marked set', rows,
-          tiles: [tile('Classes', rows.length, rows.length === 1 ? 'With a marked paper' : 'With marked work'),
+        return { ...base, title: 'Weakest question per class, last set', rows,
+          tiles: [tile('Classes', rows.length, rows.length === 1 ? 'With a set' : 'With results'),
             tile('Lowest', worst.label + ' · ' + worst.value, worst.sub),
             uniqueTop
               ? tile('Most common', top.id, top.text)
@@ -6803,7 +7660,7 @@ LOGIC = (
           note: uniqueTop
             ? top.text + ' is the weakest question in ' + tally[keys[0]] + ' of ' + rows.length + ' classes'
             : (rows.length < 2
-               ? 'One class has a marked paper — nothing to compare it with yet'
+               ? 'One class has a set — nothing to compare it with yet'
                : 'No single common gap — ' + keys.length + ' different questions come last, and ' + under50 + (under50 === 1 ? ' class falls' : ' classes fall') + ' below 50% on theirs') };""",
      "⛔ THIS ONE KILLED THE PAGE, AND IT WAS SHIPPING. `STEMS` is DELETED "
      "by `DROP_FIELDS` — eight invented question stems held as a class "
@@ -6833,7 +7690,13 @@ LOGIC = (
      "        `rows.length > 1` is the third correction. With one class the "
      "top of the tally is unanimous by construction, and \"X is the weakest "
      "question in 1 of 1 classes\" has the shape of a finding and none of "
-     "the content. One class is the whole school today."),
+     "the content. One class is the whole school today.\n"
+     "\n"
+     "        ⊕ Stream D, 25 Sep 2026 (wording pass): \"last marked set\" "
+     "→ \"last set\", \"a marked paper\"/\"marked work\" → "
+     "\"a set\"/\"results\", \"a marked paper\" in the note → \"a "
+     "set\" — stream A's redefinition of `when` means these no longer "
+     "describe closed work only."),
 
     ("""      const rows = live.map(c => {
         const m = mx(c);
@@ -6870,6 +7733,48 @@ LOGIC = (
      "`submissions / class`. Same denominator, and the value string is "
      "`p.sub`, which the seam has already built as `colSub/colAsked` — one "
      "answer rather than two."),
+
+    # ══ ⊕ Stream N, 25 Sep 2026 (experience run, NF2) — CHARTS NAMED A
+    #    SCHEDULED SET AS THE "WEAKEST RETURN" ═══════════════════════════════
+    #
+    # ⛔ THE DEFECT. `this.papersFor(k)` returns EVERY paper the class has,
+    # `when === 'upcoming'` (Stream A's new SCHEDULED state) included. A
+    # scheduled paper has no pupil able to see it, so `m.colSub[p.idx]` — its
+    # submitted count — is always 0, `pct` is always 0%, and the row sorted
+    # to the bottom of `lowP` is, almost always, the scheduled one: on the
+    # audit's seed the headline read "Weakest return: Energy + Forces at 0%"
+    # for a set that would not release until the next morning. The same
+    # unfiltered `rows` feeds "Assignments N · Set so far this year" (below),
+    # so N counted scheduled sets too.
+    #
+    # Mide's 23 Sep ruling, item 10: "Charts: every tab draws from released
+    # papers and their cells … Nothing waits for the deadline." The other two
+    # `chartFor` branches that read a per-paper list already do this — `means`
+    # filters `p.when === 'marked'` and the class-scope `ontime` does too —
+    # because `when === 'marked'` now means RELEASED, not "deadline passed"
+    # (Stream A). This is the one branch of the three that was left reading
+    # the raw list.
+    #
+    # ⚠️ ONE FILTER FIXES BOTH SYMPTOMS. `rows.length` — the "Assignments"
+    # tile a few lines below this — is read off this SAME `rows` array, so
+    # excluding scheduled papers here also stops it counting them, with
+    # nothing else to change.
+    ("""    const rows = this.papersFor(k).map(p => {
+      const asked = m.colAsked[p.idx] || 0;
+      const pct = asked ? Math.round((m.colSub[p.idx] / asked) * 100) : 0;
+      return { label: p.title, sub: (p.when === 'upcoming' ? 'Open · due ' + p.due.replace('Due ', '') : 'Marked · due ' + p.due), value: p.sub, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
+    });""",
+     """    const rows = this.papersFor(k).filter(p => p.when === 'marked').map(p => {
+      const asked = m.colAsked[p.idx] || 0;
+      const pct = asked ? Math.round((m.colSub[p.idx] / asked) * 100) : 0;
+      return { label: p.title, sub: (p.when === 'upcoming' ? 'Open · due ' + p.due.replace('Due ', '') : 'Marked · due ' + p.due), value: p.sub, pct, fill: pct < 60 ? 'var(--st-accent)' : 'var(--st-hatch-b)' };
+    });""",
+     "the class-scope Submissions chart's own rows: released papers only "
+     "(`p.when === 'marked'`, now Stream A's \"results are live\" test), "
+     "exactly like the `means` and `ontime` branches beside it. Neither "
+     "`lowP` (\"Weakest return\") nor `rows.length` (the Assignments tile) "
+     "can name a scheduled set once it is not in the list they are computed "
+     "from."),
 
     # ══ THE HANDED-OVER DEFECT: "This week", A THIRD TIME ═══════════════
     ("""      tiles: [tile('This week', m.colSub[0] + '/' + k.n, 'Open assignment'), tile('Outstanding', k.n - m.colSub[0], 'Students yet to submit'), tile('Assignments', rows.length, 'Set this term')],""",
@@ -6954,10 +7859,19 @@ LOGIC = (
     ("""        ? live.map(c => ({ label: c.code, sub: c.ks, on: mx(c).markedOnTime, tot: mx(c).markedSub }))
         : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due, on: mx(k).colOnTime[p.idx], tot: mx(k).colSub[p.idx] }));""",
      """        ? live.map(c => ({ label: c.code, sub: c.ks, on: mx(c).markedOnTime, tot: mx(c).markedOnTime + mx(c).markedLate }))
-        : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due, on: mx(k).colOnTime[p.idx], tot: mx(k).colOnTime[p.idx] + mx(k).colLate[p.idx] }));""",
+        : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due.replace(/^Due /, ''), on: mx(k).colOnTime[p.idx], tot: mx(k).colOnTime[p.idx] + mx(k).colLate[p.idx] }));""",
      "the on-time chart. `markedSub` includes the submissions whose lateness "
      "is UNKNOWN, so the bar counted every unknown as late — the same error "
-     "as the roster row's, in a graph, where it is harder to see."),
+     "as the roster row's, in a graph, where it is harder to see. "
+     "⊕ Stream M, 25 Sep 2026 (item 26) — `.replace(/^Due /, '')` added on "
+     "`p.due`. Stream A's redefinition of `when === 'marked'` (this brief's "
+     "DEFINITIONS §2) means this filter now includes OPEN papers, and "
+     "`p.due` for an open paper already carries its own \"Due \" prefix "
+     "(`teacher-live.js`: `open ? \"Due \" + … : …`), which this line then "
+     "prefixed AGAIN — \"DUE DUE MON 28 SEP\" on the chart. The same strip "
+     "other built strings in this file already use before re-adding their "
+     "own \"Due \" (see the `.replace('Due ', '')` and `.replace(/^Due /, "
+     "'')` calls elsewhere in this table)."),
 
     ("""      note: lowP ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };""",
      """      note: (rows.length > 1 && lowP) ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };""",
@@ -7013,9 +7927,9 @@ LOGIC = (
     ("""      const bands = this.BANDS.map(b => ({ label: b.label, n: avgs.filter(v => v >= b.lo && v <= b.hi).length, lo: b.lo }));""",
      """      if (!avgs.length) {
         return { ...base, title: (all ? 'Score spread, all classes' : k.code + ' — score spread'),
-          note: all ? 'No student has marked work yet'
+          note: all ? 'No student has results yet'
                     : (k.state === 'empty' ? 'No students on the roster yet'
-                                           : 'Nothing marked for this class yet') };
+                                           : 'No results for this class yet') };
       }
       const bands = this.BANDS.map(b => ({ label: b.label, n: avgs.filter(v => v >= b.lo && v <= b.hi).length, lo: b.lo }));""",
      "`spread`, both scopes. With no marked work anywhere the chart drew "
@@ -7024,14 +7938,18 @@ LOGIC = (
      "axis with no series, which reads as a measurement of a school where "
      "nobody scores anything rather than a school that has not marked "
      "anything. Photographed on `insights-nolive` and `insights-noroster`; "
-     "reachable on 68 of the working year's 69 classes."),
+     "reachable on 68 of the working year's 69 classes. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): notes reworded off \"marked work\" — "
+     "stream A's redefinition means an open-but-released paper now "
+     "contributes results too, so \"marked\" no longer describes only "
+     "closed work."),
 
     # ── on time: an empty legend under an empty chart ───────────────────
     ("""      const on = src.reduce((a, x) => a + x.on, 0);
       const tot = src.reduce((a, x) => a + x.tot, 0);""",
      """      if (!src.length) {
-        return { ...base, title: (all ? 'On time vs late, marked work' : k.code + ' — on time by assignment'),
-          note: all ? 'No class has marked work yet' : 'Nothing marked for this class yet' };
+        return { ...base, title: (all ? 'On time vs late, work with results' : k.code + ' — on time by assignment'),
+          note: all ? 'No class has work with results yet' : 'No results for this class yet' };
       }
       const on = src.reduce((a, x) => a + x.on, 0);
       const tot = src.reduce((a, x) => a + x.tot, 0);""",
@@ -7041,6 +7959,37 @@ LOGIC = (
      "it, and \"Late — · Still marked\" describes marked work that does not "
      "exist. A legend for a series that is not there is the chart claiming "
      "to have measured something."),
+
+    # ══ ⊕ Stream L, 25 Sep 2026 (experience run, item N3) · THE "2+ WEEKS"
+    #    BUCKET WAS "7 DAYS OR MORE" ═══════════════════════════════════════
+    #
+    # Design's own boundary: `hours >= 168` is exactly seven days, so a pupil
+    # last seen a week and a bit ago fell into the bucket the label calls
+    # "2+ weeks" and the caption calls "Not seen for two weeks". Femi, last
+    # seen 12.6 days ago, was told to his teacher as a fortnight's silence
+    # when it had not been one. `336` is the same boundary in hours (14 * 24)
+    # — ONE constant, changed at its one true source (`bucketsOf`), which
+    # every consumer (the class card, Charts, the toggle) reads through.
+    ("""  bucketsOf(rows) {
+    return {
+      today: rows.filter(r => r.hours < 24).length,
+      week: rows.filter(r => r.hours >= 24 && r.hours < 168).length,
+      stale: rows.filter(r => r.hours >= 168).length
+    };
+  }""",
+     """  bucketsOf(rows) {
+    return {
+      today: rows.filter(r => r.hours < 24).length,
+      week: rows.filter(r => r.hours >= 24 && r.hours < 336).length,
+      stale: rows.filter(r => r.hours >= 336).length
+    };
+  }""",
+     "Stream L, 25 Sep 2026 (experience run, item N3) — the ONE place the "
+     "Today / This week / 2+ weeks boundary is drawn. 168 hours is seven "
+     "days, not two weeks; 336 (14 * 24) is. Every reader of `bucketsOf` — "
+     "the single-class columns, the all-classes bars, the class card, and "
+     "the two `cold` name-lists ruled below — moves with it, because none "
+     "of them carries a second copy of the boundary."),
 
     # ── engagement: "everyone" when there is nobody ─────────────────────
     ("""      const rows = this.rosterFor(k);
@@ -7110,8 +8059,8 @@ LOGIC = (
           tile('Highest', sorted[0].code + ' · ' + sorted[0].mean + '%', ''),
           tile('Lowest', sorted[sorted.length - 1].code + ' · ' + sorted[sorted.length - 1].mean + '%', '')
         ], note: below + ' of ' + raw.length + ' classes sit below the ' + cohort + '% cohort mean',""",
-     """        return { ...base, title: 'Class means, marked work', tiles: (raw.length < 2 ? [
-          tile('Class mean', cohort + '%', sorted[0].code + ' — the only class with marked work')
+     """        return { ...base, title: 'Class means, work with results', tiles: (raw.length < 2 ? [
+          tile('Class mean', cohort + '%', sorted[0].code + ' — the only class with results')
         ] : [
           tile('Cohort mean', cohort + '%', 'Mean of ' + raw.length + ' class means'),
           tile('Highest', sorted[0].code + ' · ' + sorted[0].mean + '%', ''),
@@ -7124,7 +8073,9 @@ LOGIC = (
      "mean, over the caption \"0 of 1 classes sit below the 63% cohort "
      "mean\". Photographed on `insights-single`. Four tiles, one number, "
      "and the word \"cohort\" doing all the lying: a mean of one class is "
-     "that class."),
+     "that class. ⊕ Stream D, 25 Sep 2026 (wording pass): title and tile "
+     "reworded off \"marked work\"/\"marked work\", same reason as the "
+     "sibling ruling two above."),
 
     ("""        tiles: [tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
           tile('Strongest', Math.max.apply(null, means) + '%', best.title),
@@ -7132,13 +8083,13 @@ LOGIC = (
           tile('Open work', 'Excluded', 'Not marked yet')],
         note: 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
      """        tiles: (ps.length < 2 ? [
-          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one marked assignment'),
-          tile('Open work', 'Excluded', 'Not marked yet')
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one assignment with results'),
+          tile('Open work', 'Excluded', 'Not released yet')
         ] : [
-          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' marked assignments'),
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' assignments with results'),
           tile('Strongest', Math.max.apply(null, means) + '%', best.title),
           tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
-          tile('Open work', 'Excluded', 'Not marked yet')
+          tile('Open work', 'Excluded', 'Not released yet')
         ]),
         note: ps.length < 2 ? '' : 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
      "`means / class` WITH ONE MARKED PAPER. `best` and `worst` are the "
@@ -7146,7 +8097,51 @@ LOGIC = (
      "transfers** beside **Weakest 63% · Energy stores and transfers**, and "
      "the caption named it the weakest set of one. \"Across 1 marked "
      "assignments\" was the unguarded plural in the same row. One class, one "
-     "marked paper is the entirety of the working year's data."),
+     "marked paper is the entirety of the working year's data. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass, stream A's `when==='marked'` redefinition "
+     "— results are now live from release, not from the deadline): "
+     "\"marked assignment(s)\" → \"assignment(s) with results\", and "
+     "\"Not marked yet\" (labelling the OPEN work this chart excludes) "
+     "→ \"Not released yet\", since an open-but-released paper is now "
+     "included in `ps` and would misleadingly read as excluded-because-"
+     "unmarked."),
+
+    # ⊕ Stream J, 25 Sep 2026 (experience run, item 2) — "NOT RELEASED YET"
+    # STILL SAID THE TILE EXCLUDED OPEN WORK, AND IT DOES NOT. `ps`, defined
+    # above this block, is `papersFor(k).filter(p => p.when === 'marked' &&
+    # m.colMean[p.idx] != null)` — under stream A's ruling `when==='marked'`
+    # means RELEASED, so an open paper with any graded cells is already
+    # inside `ps` and inside `m.classMean`/`means`/`best`/`worst`. The prior
+    # wording pass renamed the CAPTION from "Not marked yet" to "Not
+    # released yet" but left the LABEL "Excluded" standing, which is the
+    # part that was actually false: nothing here is excluded for being
+    # open. Both tiles (the one-assignment branch and the multi-assignment
+    # branch) are corrected together, since they are one exactly-once span.
+    ("""        tiles: (ps.length < 2 ? [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one assignment with results'),
+          tile('Open work', 'Excluded', 'Not released yet')
+        ] : [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' assignments with results'),
+          tile('Strongest', Math.max.apply(null, means) + '%', best.title),
+          tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
+          tile('Open work', 'Excluded', 'Not released yet')
+        ]),
+        note: ps.length < 2 ? '' : 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
+     """        tiles: (ps.length < 2 ? [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one assignment with results'),
+          tile('Open work', 'Included', 'Results update live')
+        ] : [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' assignments with results'),
+          tile('Strongest', Math.max.apply(null, means) + '%', best.title),
+          tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
+          tile('Open work', 'Included', 'Results update live')
+        ]),
+        note: ps.length < 2 ? '' : 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
+     "the means chart's \"Open work\" tile, stale after stream A's "
+     "`when==='marked'` redefinition. An open paper with results is already "
+     "counted in `ps`/`m.classMean` above, so \"Excluded · Not released "
+     "yet\" was false — \"Included · Results update live\" says what the "
+     "chart now actually does."),
 
     # ── the sub-heading's plurals ───────────────────────────────────────
     ("""      insSub: chartScope === 'all'
@@ -7592,6 +8587,147 @@ componentDidUpdate() {
      "screen changes any more. `weekIdxFor` is re-derived over weeks; the "
      "other three are v2 verbatim."),
 
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 3) · FIND A STUDENT,
+    #    BY KEYBOARD ═══════════════════════════════════════════════════
+    #
+    # Three defects, one seam: the box does not take focus when the palette
+    # opens, Esc does not close it, and the result rows (`role="option"` via
+    # `SET_ATTR[665]`, in a `role="listbox"` box via `SET_ATTR[663]`) answer
+    # neither the arrow keys nor Enter. `shared/search.js` (MRB-26, the topic
+    # search every other page on the site already carries) solves the same
+    # shape — an input, a list, an "active" row moved by the arrows and
+    # opened by Enter — so this repeats that pattern rather than inventing a
+    # second one, DOM-only: the highlighted row is a class
+    # (`SET_ATTR[665]`'s sibling rule in `PORT_CSS`) that a keystroke here
+    # moves directly, never through `setState`, because nothing about WHICH
+    # row is highlighted needs to survive a redraw the way the typed query
+    # does.
+    #
+    # ⚠️ MERGED INTO THE ENTRY ABOVE, NOT A SEPARATE PAIR OF METHODS. The
+    # first draft of this ruling anchored on `HOURS` and added its own
+    # `componentDidMount`/`componentDidUpdate` — WRONG, and wrong in the
+    # quiet way: `WEEK_BAR_RESTORED` (immediately above) already defines
+    # both, later in the same class body, and a class body with two methods
+    # of the same name keeps only the LAST one. The standalone pair built
+    # clean, gated green on every existing check, and did nothing at all —
+    # the week rail's own `componentDidMount` silently shadowed it. Caught
+    # only by hand-tracing the compiled output for this exact reason; see
+    # the report for the general lesson. Anchoring on the rail's own two
+    # method bodies, already in the source by the time this runs, is what a
+    # SECOND definition would have been — this is the first and only one.
+    #
+    # ⚠️ `componentDidMount` RUNS ONCE, at the FIRST draw — `student-runtime`
+    # calls it straight after `mount()`'s first `api.draw()` — so the two
+    # `document` listeners it adds live for the page's whole life and read
+    # `this.state.modal` fresh on every keystroke, rather than being
+    # attached and torn down each time the overlay opens and closes. That is
+    # deliberately simpler than open/close-scoped listeners: this page never
+    # unmounts, so there is nothing to leak.
+    #
+    # ⚠️ FOCUS-ON-OPEN NEEDS `componentDidUpdate`, NOT THE OPEN HANDLER
+    # ITSELF. `openSearch` (`s.modal = 'search'`) runs before the input
+    # exists — `draw()` has not built the new DOM yet — so focusing there
+    # would focus nothing. `componentDidUpdate` runs AFTER `draw()`, and
+    # `_searchWasOpen` is an instance field rather than state so setting it
+    # cannot itself schedule a second redraw — and it does not collide with
+    # the rail's own use of the same hook: two independent bodies, one
+    # function.
+    (
+        "  componentDidMount() { this.snapWeekRail(); }\n"
+        "  componentDidUpdate() {\n"
+        "    const el = this.rail();\n"
+        "    if (el && !el.scrollLeft && el.scrollWidth > el.clientWidth) "
+        "{\n"
+        "      this.snapWeekRail();\n"
+        "    }\n"
+        "  }",
+        "  componentDidMount() {\n"
+        "    this.snapWeekRail();\n"
+        "    const self = this;\n"
+        "    document.addEventListener('keydown', (e) => {\n"
+        "      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) "
+        "return;\n"
+        "      if (self.state.modal) return;\n"
+        "      const t = e.target, tag = t && t.tagName;\n"
+        "      if (tag === 'INPUT' || tag === 'TEXTAREA' || "
+        "(t && t.isContentEditable)) return;\n"
+        "      e.preventDefault();\n"
+        "      self.setState({ modal: 'search', search: '' });\n"
+        "    });\n"
+        "    document.addEventListener('keydown', (e) => {\n"
+        "      if (e.key !== 'Escape' || self.state.modal !== 'search') "
+        "return;\n"
+        "      e.preventDefault();\n"
+        "      self.setState({ modal: null, search: '' });\n"
+        "      const btn = document.querySelector('[data-dc-tpl=\"19\"]');\n"
+        "      if (btn) { btn.focus(); }\n"
+        "    });\n"
+        "    document.addEventListener('keydown', (e) => {\n"
+        "      if (self.state.modal !== 'search') return;\n"
+        "      const box = document.querySelector("
+        "'[data-port-region=\"overlay-search\"]');\n"
+        "      if (!box) return;\n"
+        "      const rows = box.querySelectorAll('[data-dc-tpl=\"665\"]');\n"
+        "      const active = box.querySelector("
+        "'[data-dc-tpl=\"665\"].mrb-active');\n"
+        "      const idx = Array.prototype.indexOf.call(rows, active);\n"
+        "      const mark = (row) => {\n"
+        "        if (active) {\n"
+        "          active.classList.remove('mrb-active');\n"
+        "          active.setAttribute('aria-selected', 'false');\n"
+        "        }\n"
+        "        if (row) {\n"
+        "          row.classList.add('mrb-active');\n"
+        "          row.setAttribute('aria-selected', 'true');\n"
+        "        }\n"
+        "      };\n"
+        "      if (e.key === 'ArrowDown' && rows.length) {\n"
+        "        e.preventDefault();\n"
+        "        mark(rows[Math.min(idx + 1, rows.length - 1)]);\n"
+        "      } else if (e.key === 'ArrowUp' && rows.length) {\n"
+        "        e.preventDefault();\n"
+        "        mark(rows[Math.max(idx - 1, 0)]);\n"
+        "      } else if (e.key === 'Enter' && rows.length) {\n"
+        "        e.preventDefault();\n"
+        "        (active || rows[0]).click();\n"
+        "      }\n"
+        "    });\n"
+        "  }\n"
+        "  componentDidUpdate() {\n"
+        "    const el = this.rail();\n"
+        "    if (el && !el.scrollLeft && el.scrollWidth > el.clientWidth) "
+        "{\n"
+        "      this.snapWeekRail();\n"
+        "    }\n"
+        "    if (this.state.modal === 'search' && !this._searchWasOpen) {\n"
+        "      this._searchWasOpen = true;\n"
+        "      setTimeout(() => {\n"
+        "        const box = document.querySelector("
+        "'[data-port-region=\"overlay-search\"]');\n"
+        "        const input = box && box.querySelector('input');\n"
+        "        if (input) { input.focus(); }\n"
+        "      }, 0);\n"
+        "    } else if (this.state.modal !== 'search') {\n"
+        "      this._searchWasOpen = false;\n"
+        "    }\n"
+        "  }",
+        "the whole of the Find-a-student keyboard fix, folded into the "
+        "rail's own two lifecycle hooks rather than declared a second time: "
+        "open-on-'/', focus-on-open, Esc-closes-and-returns-focus, and the "
+        "result list as a listbox the arrow keys and Enter both work on. "
+        "⊕ Stream M, 25 Sep 2026 (experience run round 3, item 22/N8) — "
+        "open-on-'/' ADDED. The topbar's search button has always carried a "
+        "chip reading \"/\" (`.mrb-findkey`, node 24) advertising a "
+        "shortcut that nothing on this page implemented — pressing '/' "
+        "anywhere did nothing at all. `today.html`'s own search sheet has "
+        "carried a real '/' handler since it was written; this brings the "
+        "six generated screens to the same behaviour: '/' outside an input, "
+        "textarea or contenteditable element, with no other overlay already "
+        "open, opens the same search overlay the button does — and reuses "
+        "this hook's own `componentDidUpdate` to focus the box, exactly as "
+        "a press of the button does."
+    ),
+
     # ══ ⊕ MRB-328 J3, 6 Sep 2026 · "1 CLASSES · 4 STUDENTS" ════════════
     #
     # A plural that has always been wrong and has only just become easy to
@@ -7798,6 +8934,77 @@ componentDidUpdate() {
      "`noteCount` because it is the composer's other computed key and the "
      "only line in Design's logic that names this footer."),
 
+    # ══ ⊕ Stream M, 25 Sep 2026 (experience run round 3, N8) — THE BULK
+    #    SHEET'S PUPIL CHIPS GET `aria-pressed` ══════════════════════════
+    #
+    # Selection was shown by `on ? tint : plain` colours alone — nothing in
+    # the accessibility tree said a chip was a toggle, or which ones were
+    # picked. `pressed` is `on` PRE-STRINGIFIED ('true'/'false'): binding the
+    # markup straight to the boolean `on` would work for the SELECTED chips
+    # and silently vanish on every unselected one, because
+    # `student-runtime.js`'s attribute resolver drops any attribute whose
+    # value is exactly `=== false` (see `sendOff`'s own note, immediately
+    # above, for the same rule stated about `disabled`). The binding itself
+    # is `BIND_ATTR[644]`, below — node 644 has no `aria-pressed` at all in
+    # Design's markup, so this is an addition rather than a correction of
+    # one of her values.
+    ("      bulkStudents: kRoster.map(r => {\n"
+     "        const on = s.boSel.indexOf(r.id) > -1;\n"
+     "        return {\n"
+     "          name: r.name,\n"
+     "          fg: on ? 'var(--st-accent-text)' : 'var(--st-ink)',\n"
+     "          bg: on ? 'var(--st-chip-tint)' : 'var(--st-paper)',\n"
+     "          bc: on ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',\n"
+     "          dot: on ? 'var(--st-accent)' : this.hueFor(r.name),\n"
+     "          toggle: () => this.setState({ boSel: on ? "
+     "s.boSel.filter(x => x !== r.id) : s.boSel.concat([r.id]) })\n"
+     "        };\n"
+     "      }),",
+     "      bulkStudents: kRoster.map(r => {\n"
+     "        const on = s.boSel.indexOf(r.id) > -1;\n"
+     "        return {\n"
+     "          name: r.name,\n"
+     "          pressed: on ? 'true' : 'false',\n"
+     "          fg: on ? 'var(--st-accent-text)' : 'var(--st-ink)',\n"
+     "          bg: on ? 'var(--st-chip-tint)' : 'var(--st-paper)',\n"
+     "          bc: on ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',\n"
+     "          dot: on ? 'var(--st-accent)' : this.hueFor(r.name),\n"
+     "          toggle: () => this.setState({ boSel: on ? "
+     "s.boSel.filter(x => x !== r.id) : s.boSel.concat([r.id]) })\n"
+     "        };\n"
+     "      }),",
+     "the bulk shoutout sheet's pupil rows — one field added, `pressed`, "
+     "for `BIND_ATTR[644]`'s `aria-pressed`."),
+
+    # ══ ⊕ Mide's 23 Sep 2026 ruling · "SELECT ALL ON TIME THIS WEEK" MEANT
+    #    "IN THIS WEEK", NOT "ON TIME" — AND IT WAS NEVER WIRED AT ALL ═════
+    #
+    # ⛔ THE BUTTON'S OWN LABEL WAS THE SPEC, AND THE HANDLER DID NOT MATCH
+    # IT. Design's `bulkTop` selects `kRoster.filter(r => r.inWeek)` —
+    # everyone with a cell on an in-week paper, late or not — under a link
+    # reading "Select all on time this week". Pressed on `10h/Ph1`, it would
+    # have caught Annabel (complete, on time) and anyone who handed work in
+    # five days late alongside her, both counted as "on time" by a button
+    # that says so. This line had never been touched by any prior ruling —
+    # `bulkTop` does not appear anywhere else in this file — so the bulk
+    # shoutout sheet has been shipping Design's mismatch since the sheet went
+    # live.
+    #
+    # `r.onTimeWeek` is the real predicate, item 5 of Mide's 23 Sep 2026
+    # ruling: true iff the pupil has a cell with `late === false` on an
+    # in-week paper. Computed once in `shared/teacher-live.js`'s
+    # `buildMatrix` / `matrixFromRollup` and carried on every roster row
+    # exactly so this button (and nothing else) can read it.
+    ("      bulkTop: () => this.setState({ boSel: kRoster.filter(r => "
+     "r.inWeek).map(r => r.id) }),",
+     "      bulkTop: () => this.setState({ boSel: kRoster.filter(r => "
+     "r.onTimeWeek).map(r => r.id) }),",
+     "the bulk shoutout sheet's \"Select all on time this week\" link. "
+     "Design's own handler selected everyone IN this week's work, not "
+     "everyone ON TIME with it — the button's own label was the spec, and "
+     "nothing had ever wired this line before. `r.onTimeWeek` is item 5 of "
+     "Mide's 23 Sep 2026 ruling."),
+
     # ⛔ AND THE BULK SHEET, WHICH IS THE SAME LIE MULTIPLIED. Design's
     # `sendBulk` closes the sheet, empties the selection and toasts "Shoutout
     # sent to 6 students". Six children, none of whom were told anything.
@@ -7943,12 +9150,35 @@ componentDidUpdate() {
      "          const had = (fbRow && fbRow.body) || '';\n"
      "          this.setState({ fbSub: fbSub, fbName: st ? st.name : '',\n"
      "            fbPaper: p.title, fbBody: had,\n"
-     "            fbErr: '', fbConfirm: false },\n"
+     "            fbErr: '', fbConfirm: false,\n"
+     "            fbDrafting: false, fbDraftErr: '' },\n"
      "            () => MRB_FB_FILL(had));\n"
+     "        },\n"
+     "        /* ⊕ Mide's item 9, 24 Sep 2026 — the Answer Breakdown panel.\n"
+     "           `stopPropagation` first, for the identical reason `openFb`\n"
+     "           carries it above: this whole row navigates to the marking\n"
+     "           screen on Design's own `h.open`, and without it the panel\n"
+     "           would open and the page would navigate away from it in the\n"
+     "           same gesture. `window.MRBBreakdown` is a page that has\n"
+     "           loaded its HTML but not its script yet the instant it\n"
+     "           mounts — see `build_teacher_port.py`'s `breakdown` flag —\n"
+     "           so the guard is the same shape `MRB_SET_WORK_OPEN` uses for\n"
+     "           the same reason. */\n"
+     "        openBreakdown: (e) => {\n"
+     "          if (e && e.stopPropagation) { e.stopPropagation(); }\n"
+     "          if (e && e.preventDefault) { e.preventDefault(); }\n"
+     "          if (window.MRBBreakdown && window.MRBBreakdown.open) {\n"
+     "            window.MRBBreakdown.open({ classId: k && k.id,\n"
+     "              studentId: st && st.id, submissionId: fbSub });\n"
+     "          }\n"
      "        },",
-     "the student screen's feedback control, per history row. Mide's ruling "
-     "of 3 Sep 2026: feedback is authored from student detail or from "
-     "marking, attached to that submission."),
+     "the student screen's feedback control, per history row, AND (⊕ "
+     "Mide's item 9, 24 Sep 2026) the Answer Breakdown control beside it. "
+     "Mide's feedback ruling of 3 Sep 2026: feedback is authored from "
+     "student detail or from marking, attached to that submission. The "
+     "breakdown control reuses the same `fbSub`/`st`/`k` already in scope "
+     "for the identical row rather than computing a second copy of any of "
+     "them."),
 
     # ⚠️ THE SAME KEYS ON THE MARKING GRID, and it is deliberately the same
     # NAMES rather than a second vocabulary: the markup that reads them is
@@ -7979,7 +9209,8 @@ componentDidUpdate() {
      "        const had = (row && row.body) || '';\n"
      "        this.setState({ fbSub: r.subId, fbName: r.name,\n"
      "          fbPaper: pp ? pp.title : '', fbBody: had,\n"
-     "          fbErr: '', fbConfirm: false },\n"
+     "          fbErr: '', fbConfirm: false,\n"
+     "          fbDrafting: false, fbDraftErr: '' },\n"
      "          () => MRB_FB_FILL(had));\n"
      "      },",
      "the marking screen's feedback control, per grid row — the second of "
@@ -8055,18 +9286,73 @@ componentDidUpdate() {
      "         saying it on top of a dialog. */\n"
      "      fbRemoveLabel: s.fbConfirm\n"
      "        ? 'Remove it \\u2014 this cannot be undone' : 'Remove',\n"
-     "      /* ⛔ THE ONE-WAY GUARDRAIL, IN WORDS, TO THE PERSON WRITING.\n"
-     "         There is no reply control anywhere on the student side and\n"
-     "         there is no student INSERT policy on the table, so a child\n"
-     "         cannot answer this — and the teacher composing it is the one\n"
-     "         who needs to know that before they phrase a question. */\n"
-     "      fbFootNote: MRB_DATA('canWrite')\n"
-     "        ? 'They read this under their marking. They cannot reply.'\n"
-     "        : 'This year is read-only.',\n"
+     "      /* ⊕ experience run, 24 Sep 2026 (Mide's item 6) — THE\n"
+     "         ONE-WAY-GUARDRAIL SENTENCE IS GONE ON A WRITABLE YEAR. It used\n"
+     "         to read a fixed two-sentence caption, unconditionally, when\n"
+     "         `canWrite`. Mide's ruling is that the sentence itself is gone,\n"
+     "         not merely reworded — the one-way guardrail it used to spell\n"
+     "         out (there is no student\n"
+     "         INSERT policy on `submission_feedback`, so a reply control was\n"
+     "         never offered anywhere on this surface) still holds; it is\n"
+     "         simply no longer said to the teacher on every open. The\n"
+     "         read-only sentence for a FINISHED year stays — MRB-261 makes a\n"
+     "         past year read-only, not invisible, and that fact still needs\n"
+     "         saying. `_fb_sheet()` wraps the footer note in an `<if>` on\n"
+     "         `fbFootNote` itself now, so an empty string draws no line and\n"
+     "         no gap. */\n"
+     "      fbFootNote: MRB_DATA('canWrite') ? '' : 'This year is read-only.',\n"
+     "      /* ⊕ experience run (Mide's item 5) — DRAFT FEEDBACK. A third\n"
+     "         state beside Save/Remove: drafting is neither a read nor a\n"
+     "         write to `submission_feedback` — it calls the model and\n"
+     "         returns text, nothing is saved — so it gets its own busy flag\n"
+     "         and its own error line rather than borrowing `fbErr`, which\n"
+     "         the Save path already owns and clears on its own schedule. */\n"
+     "      fbDraftLabel: s.fbDrafting ? 'Drafting\\u2026' : 'Draft feedback',\n"
+     "      fbDraftDisabled: !!s.fbDrafting,\n"
+     "      fbDraftSkin: s.fbDrafting\n"
+     "        ? 'color:var(--st-muted);background:var(--st-note-bg);"
+     "cursor:default'\n"
+     "        : 'color:var(--st-ink);background:var(--st-paper);"
+     "cursor:pointer',\n"
+     "      fbDraftErr: s.fbDraftErr || '',\n"
      "      closeFeedback: () => this.setState({ fbSub: null, fbBody: '',\n"
-     "        fbErr: '', fbConfirm: false }),\n"
+     "        fbErr: '', fbConfirm: false,\n"
+     "        fbDrafting: false, fbDraftErr: '' }),\n"
      "      setFbBody: (e) => this.setState({ fbBody: e.target.value,\n"
      "        fbErr: '' }),\n"
+     "      /* ⊕ experience run (Mide's item 5) — the model drafts, the\n"
+     "         teacher edits, Save is still the only write anywhere on this\n"
+     "         path: this handler only ever calls `MRB_DRAFT_FEEDBACK`, which\n"
+     "         reads `POST /api/teacher/feedback/draft` and returns text —\n"
+     "         nothing server-side is written by drafting.\n"
+     "         ⚠️ NEVER OVERWRITES. If the box already has words in it\n"
+     "         (a teacher's own half-typed comment, or an earlier draft),\n"
+     "         the new draft is appended below a blank line rather than\n"
+     "         replacing what was there — a silent overwrite would be the\n"
+     "         one outcome worse than a slow draft. */\n"
+     "      draftFeedback: () => {\n"
+     "        const sub = s.fbSub;\n"
+     "        if (!sub || s.fbDrafting) { return; }\n"
+     "        this.setState({ fbDrafting: true, fbDraftErr: '' });\n"
+     "        MRB_DRAFT_FEEDBACK(sub).then((res) => {\n"
+     "          if (!res.ok) {\n"
+     "            const why = MRB_FEEDBACK_DRAFT_WHY(res.error);\n"
+     "            this.setState({ fbDrafting: false, fbDraftErr: why });\n"
+     "            return;\n"
+     "          }\n"
+     "          const had = String(s.fbBody || '');\n"
+     "          const next = had.trim()\n"
+     "            ? had.replace(/\\s+$/, '') + '\\n\\n' + res.draft\n"
+     "            : res.draft;\n"
+     "          this.setState({ fbDrafting: false, fbDraftErr: '',\n"
+     "            fbBody: next }, () => {\n"
+     "            MRB_FB_FILL(next);\n"
+     "            const el = document.querySelector(\n"
+     "              '[data-mrb-added=\"feedback-body\"]');\n"
+     "            if (el && el.focus) { el.focus(); }\n"
+     "          });\n"
+     "        });\n"
+     "      },\n"
      "      /* INSERT where there is nothing yet, UPDATE where there is — and\n"
      "         the UPDATE carries the body it replaces, because the database\n"
      "         refuses an edit that does not\n"
@@ -8160,31 +9446,53 @@ componentDidUpdate() {
      "submissions still marked\"."),
 
     ("      const late = !open && sc != null && stRow.late[i] === true;",
-     "      const lateState = (!open && sc != null) ? stRow.late[i] : null;\n"
+     "      const lateState = sc != null ? stRow.late[i] : null;\n"
      "      const late = lateState === true;",
      "⊕ THE OTHER HALF OF THE `=== true` PIN. Making `late` strict stopped an "
      "unknown being CALLED late and did nothing about it being called ON "
      "TIME, which is what the status chip did — the previous ruling's own "
      "note claimed otherwise and was wrong. The tri-state is carried on the "
-     "row now, so the chip and the tile can both see it."),
+     "row now, so the chip and the tile can both see it. "
+     "⊕ SUPERSEDED, Mide's 23 Sep 2026 ruling — the `!open &&` gate is "
+     "dropped. It used to mean \"don't show lateness for the currently open "
+     "paper\", which made sense back when a currently-open paper could not "
+     "yet have a real mark; results are live now, so a complete cell "
+     "(`sc != null`) is exactly the condition under which lateness is known, "
+     "whether or not the paper has closed."),
 
     ("      const tone = open ? 'neutral' : (sc == null || late ? 'warn' : "
      "'ok');",
-     "      const tone = open ? 'neutral'\n"
-     "        : (sc == null || late ? 'warn'\n"
-     "          : (lateState === false ? 'ok' : 'neutral'));",
+     "      const tone = sc != null\n"
+     "        ? (lateState === true ? 'warn'\n"
+     "          : (lateState === false ? 'ok' : 'neutral'))\n"
+     "        : (pState === 'closed' ? 'warn' : 'neutral');",
      "the status chip's colour. Green is Design's \"on time\"; an unknown is "
-     "not a claim and takes the neutral tone."),
+     "not a claim and takes the neutral tone. ⊕ Mide's 23 Sep 2026 ruling — "
+     "re-expressed on `sc`/`pState` rather than the retired `open`: a "
+     "COMPLETE cell earns its tone (warn if late, ok if on time, neutral if "
+     "unknown) whether or not the paper has closed, since results are live; "
+     "an incomplete row is only a warning once its paper has genuinely "
+     "closed with nothing to show for it — a scheduled or still-open paper "
+     "with no submission yet is neutral, not a warning."),
 
     ("        status: open ? (sc != null ? 'In progress' : 'Nothing in') : "
      "(sc == null ? 'Nothing in' : (late ? 'Late' : 'On time')),",
-     "        status: open ? (sc != null ? 'In progress' : 'Nothing in')\n"
-     "          : (sc == null ? 'Nothing in'\n"
-     "            : (lateState === true ? 'Late'\n"
-     "              : (lateState === false ? 'On time' : 'Submitted'))),",
+     "        status: sc != null\n"
+     "          ? (lateState === true ? 'Complete · late' : 'Complete')\n"
+     "          : (hasRow ? 'In progress'\n"
+     "            : (pState === 'scheduled' ? 'Scheduled'\n"
+     "              : (pState === 'closed' ? 'Missing' : 'Not started'))),",
      "the status chip on a row of the student's assignment history. It read "
      "\"On time\" for every submission whose timing is not recorded, which is "
-     "every submission older than 22 Aug 2026."),
+     "every submission older than 22 Aug 2026. ⊕ Mide's 23 Sep 2026 ruling, "
+     "item 4 — FIVE words, not two: Complete (a cell exists; \"· late\" "
+     "suffix when late), In progress (a submission row exists and is not "
+     "complete), Not started (the paper is open, no row at all), Missing "
+     "(the paper is closed, no complete cell), Scheduled (the paper has not "
+     "been released). A complete cell now reads Complete on an OPEN paper "
+     "too — the whole point of \"results are live\" is that a finished "
+     "pupil's work stops looking absent the moment they finish it, rather "
+     "than waiting for a deadline nobody but the teacher can see."),
 
     # ══ ⊕ 24 Aug 2026 · THE SHOUTOUT DELETE, CONFIRMED AND WIRED ═══════
     #
@@ -8297,8 +9605,10 @@ componentDidUpdate() {
      "        { label: 'On time',\n"
      "          value: dgOnPct == null ? '—' : dgOnPct + '%',\n"
      "          sub: MRB_ONTIME_SUB(dgOnTime, dgLate, dgUnknown,\n"
-     "                              'marked submissions') },",
-     "the digest's On-time tile, over the corrected counts."),
+     "                              'submissions with results') },",
+     "the digest's On-time tile, over the corrected counts. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): noun \"marked submissions\" → "
+     "\"submissions with results\"."),
 
     ("""        stacks: src.map(x => {
           const pct = x.tot ? Math.round((x.on / x.tot) * 100) : 0;
@@ -8324,19 +9634,57 @@ componentDidUpdate() {
      "KNOWN population since the earlier ruling, so a row of unknowns is "
      "`tot === 0` and drew a full late bar labelled 0%."),
 
+    # ⊕ Stream N, 25 Sep 2026 (experience run, item 11 / NF10) — "TIMING NOT
+    # RECORDED" is a true sentence about the WRONG absence. `x.tot === 0` on
+    # this chart is not "we asked and nobody's arrival time was logged" — it
+    # is a released paper with `colSub === 0`, which the audit reached with
+    # "Waves, released today, no submissions": nobody has submitted AT ALL,
+    # so there is no timing to have recorded in the first place. "Nothing in
+    # yet" says the actual, plainer fact, and matches the vocabulary the
+    # rest of the estate already uses for a paper with zero cells (the
+    # roster's own "Nothing in this week", item 10's chase list).
+    ("              right: '— · timing not recorded',",
+     "              right: 'Nothing in yet',",
+     "the on-time chart's own zero-submission row — said in terms of what "
+     "happened (nobody has submitted) rather than what a system failed to "
+     "log."),
+
     ("        tiles: [tile('On time', (tot ? Math.round((on / tot) * 100) : "
      "0) + '%', 'Of ' + tot + ' marked submissions'), tile('Late', tot - on, "
      "'Still marked'), tile('Open work', 'Excluded', 'Not due yet')],",
      "        tiles: [tile('On time', tot ? Math.round((on / tot) * 100) + "
      "'%' : '—',\n"
      "                     tot ? 'Of ' + tot + ' with a recorded deadline'\n"
-     "                         : 'No marked submission has a recorded "
+     "                         : 'No submission has a recorded "
      "deadline'),\n"
      "                tile('Late', tot ? tot - on : '—', 'Still "
-     "marked'),\n"
+     "with results'),\n"
      "                tile('Open work', 'Excluded', 'Not due yet')],",
      "the on-time chart's own tiles. `0%` of `0 marked submissions` when "
-     "nothing is known, and a Late count of 0 beside it."),
+     "nothing is known, and a Late count of 0 beside it. ⊕ Stream D, "
+     "25 Sep 2026 (wording pass): \"marked\" dropped from both empty-state "
+     "captions — `tot` counts submissions with a KNOWN `is_late`, a "
+     "data-completeness fact unrelated to stream A's `when` redefinition, "
+     "and the word was doing no work once the chart's own title already "
+     "says \"work with results\"."),
+
+    # ⊕ Stream J, 25 Sep 2026 (experience run, item 2) — THIS TILE IS STALE
+    # UNDER STREAM A'S RULING, NOT JUST WORDED WRONG. `src`, three lines
+    # above this block, is built from `this.papersFor(k).filter(p => p.when
+    # === 'marked')` — and `when === 'marked'` now means RELEASED (stream A),
+    # so an OPEN paper is already IN `src` and counted in `on`/`tot` above.
+    # "Open work · Excluded · Not due yet" told a teacher the opposite of
+    # what the chart had just done with it. Reworded to what is true rather
+    # than removed: the tile still earns its place by telling a teacher an
+    # open set's on-time figure updates as pupils finish, which is new
+    # behaviour worth a line rather than silence.
+    ("                tile('Open work', 'Excluded', 'Not due yet')],",
+     "                tile('Open work', 'Included', 'Results update live')],",
+     "the on-time chart's \"Open work\" tile, stale after stream A's "
+     "`when==='marked'` redefinition (released, not deadline-passed). An "
+     "open paper's cells are already inside `on`/`tot` above, so \"Excluded"
+     " · Not due yet\" was simply false; \"Included · Results update live\" "
+     "says what the chart now actually does."),
 
     ("        note: worst ? 'Weakest: ' + worst.label + ' at ' + (worst.tot ? "
      "Math.round((worst.on / worst.tot) * 100) : 0) + '% on time' : '' };",
@@ -8989,26 +10337,32 @@ componentDidUpdate() {
     # Order is safe: both anchor inside `const stHistory`, which no earlier
     # ruling removes, and neither touches a line another entry is looking for.
     (dict(builder="stHistory", key="submitted"),
-     "        submitted: open ? (sc != null ? st.last : 'Not yet') "
-     ": (stampS || '—'),",
-     "the SUBMITTED column, and it is the worst line in Design's file. It "
-     "renders `p.dueShort` when the work was on time and `p.lateShort` when "
+     "        submitted: sc != null ? (stampS || '—')\n"
+     "          : (hasRow ? 'In progress' : '—'),",
+     "the SUBMITTED column, and it was the worst line in Design's file. It "
+     "rendered `p.dueShort` when the work was on time and `p.lateShort` when "
      "it was late — the DEADLINE and the END OF THE WEEK. Neither is when "
      "anybody submitted anything, and on a parents' evening it would be "
      "quoted. `stampShort[]` is `completed_at` or `submitted_at` formatted, "
      "blank where there is none. "
      "⊕ 1 Sep 2026 (MRB-306) — split out of #11's ten-line `frm` onto its "
-     "own anchor; the ruling is unchanged."),
+     "own anchor. ⊕ SUPERSEDED, Mide's 23 Sep 2026 ruling — the `open ? … : "
+     "…` gate is gone with `open` itself: a complete cell shows its real "
+     "timestamp whether or not the paper has closed (results are live), an "
+     "incomplete-but-started row says so, and everything else is a dash."),
 
     (dict(builder="stHistory", key="score"),
-     "        score: open || sc == null || stRow.max[i] == null ? '—'\n"
+     "        score: sc == null || stRow.max[i] == null ? '—'\n"
      "          : sc + '/' + stRow.max[i] "
      "+ (pct == null ? '' : ' · ' + pct + '%'),",
      "the SCORE column's `/8`. Design's every paper is out of eight; a real "
      "one is out of `max[]`, and a paper whose max is unknown says so rather "
      "than dividing by a number nobody set. "
      "⊕ 1 Sep 2026 (MRB-306) — split out of #11's ten-line `frm` onto its "
-     "own anchor; the ruling is unchanged."),
+     "own anchor. ⊕ SUPERSEDED, Mide's 23 Sep 2026 ruling — dropped the "
+     "`open ||` gate that hid a mark on a still-open paper: `sc` is already "
+     "null unless a complete cell exists, so the gate was hiding a genuine "
+     "score behind a deadline nobody needed to wait for."),
 
     # ══ MRB-306 · THE WEEK BAR — THE REST OF #6 AND #13 ═════════════════
     #
@@ -9200,10 +10554,26 @@ componentDidUpdate() {
     # ("No work set in this week"), so this is that pattern applied to its
     # neighbour rather than a new one.
     (dict(method="renderVals", key="lastTitle"),
-     """      lastTitle: lastP ? lastP.title : 'Nothing marked yet',""",
+     """      lastTitle: lastP ? lastP.title : 'Nothing to reteach yet',
+      lastTitleStyle: lastP
+        ? 'margin-top:10px;font:600 21px/1.3 var(--st-ui);color:var(--st-ink);text-wrap:pretty'
+        : 'margin-top:10px;font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)',""",
      "the reteach card's empty state. A class whose closed papers nobody sat "
      "has nothing to reteach FROM, and must say so rather than render a "
-     "dash. Part of #13."),
+     "dash. Part of #13. ⊕ Stream D, 24 Sep 2026 (experience run, item 2): "
+     "reworded \"Nothing marked yet\" (ambiguous now \"marked\" means "
+     "\"released\", not \"deadline passed\" — stream A) to \"Nothing to "
+     "reteach yet\", and the empty state STOPS RENDERING IN THE CARD'S "
+     "HEADLINE STYLE. Node 241 is Design's own `font:600 21px … "
+     "color:var(--st-ink)` — the same weight and size as a real paper "
+     "title — so an empty class read as a headline claim rather than an "
+     "absence, exactly the failure mode `openTitle`'s sentence three lines "
+     "above was written to avoid for its own card. The quiet state borrows "
+     "node 266's own style byte for byte ('No one flagged — the class is "
+     "keeping up.', the identical register two cards along), keeping only "
+     "node 241's `margin-top:10px` so the empty line sits where the title "
+     "always sits. `glance.lastTitleStyle` is bound onto node 241 by "
+     "BIND_ATTR."),
 
     # ⊕ RULED, MRB-326 post-review, 6 Sep 2026 — "CLASS MEAN" IS SAID ONCE
     # ON THIS SCREEN, AND THE HEADER SAYS IT.
@@ -9229,7 +10599,7 @@ componentDidUpdate() {
     # recommendation rests on — the exact defect the `lastP` correction
     # above was written to prevent.
     (dict(method="renderVals", key="lastLine"),
-     """      lastLine: lastP ? 'Marked \u00B7 ' + lastP.sub + ' submitted' : '',""",
+     """      lastLine: lastP ? lastP.sub + ' submitted' : '',""",
      "the reteach card's subtitle, with \"class mean X\" cut. The class "
      "header's stat line four inches above states the class mean already, "
      "and the card's own two bars carry the per-question detail this "
@@ -9418,6 +10788,50 @@ componentDidUpdate() {
      "work set; a null `qpct` entry is a third wrong answer that does not "
      "throw. See the block comment."),
 
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 8) · THE DASH IS
+    #    PERMANENT, AND IT DOES NOT HAVE TO BE ═══════════════════════════
+    #
+    # `gridFor` is a LOOKUP (`METHODS['gridFor']`), never a fetch — it reads
+    # `MRB_DATA('GRID')` and returns null for any key `teacher-live.js` did
+    # not prefetch. The class screen prefetches exactly one grid (the
+    # reteach card's own paper, MRB-326 JOB 4b), so every OTHER released
+    # row in the table above read "—" forever, correctly reporting "not
+    # fetched" as if it meant "nothing to report".
+    #
+    # ⚠️ THE FETCH ALREADY EXISTED AND WAS NEVER CALLED. `teacher-live.js`
+    # exports `grid(classId, paperIdx)` — "one paper's grid, fetched on
+    # demand and held" — for exactly this shape, and nothing in the estate
+    # called it. It caches into the SAME `GRID` object `window.__MRB_DATA__`
+    # already points at (`load()`'s own `GRID: c.GRID`), so once it resolves
+    # the very next `gridFor` lookup already sees it; the only missing piece
+    # is asking once and repainting once. `MRB_ENSURE_GRID` (build_teacher_
+    # port.py) is that: a page-lifetime `{}` remembers which keys are
+    # already in flight so a redraw (this fires on every one) never asks
+    # twice, and `forceUpdate()` on resolve is a repaint with no state
+    # change behind it — the same primitive `MRB_SET_WORK_DONE` already
+    # uses to repaint after a write.
+    (
+        "      if (wkMin != null) {\n"
+        "        const wkStem = (wkG.stems || [])[wkAt];\n"
+        "        weak = ((wkStem && wkStem.id) || ('Q' + (wkAt + 1))) + "
+        "' · ' + wkMin + '%';\n"
+        "        weakFg = wkMin < 50 ? 'var(--st-accent-text)' : "
+        "'var(--st-muted)';\n"
+        "      }",
+        "      if (wkMin != null) {\n"
+        "        const wkStem = (wkG.stems || [])[wkAt];\n"
+        "        weak = ((wkStem && wkStem.id) || ('Q' + (wkAt + 1))) + "
+        "' · ' + wkMin + '%';\n"
+        "        weakFg = wkMin < 50 ? 'var(--st-accent-text)' : "
+        "'var(--st-muted)';\n"
+        "      } else if (markedRow) {\n"
+        "        MRB_ENSURE_GRID(k.id, p.idx);\n"
+        "      }",
+        "the lazy fetch itself: a released row with no grid cached yet "
+        "asks for one, once, and the table fills in on its own a moment "
+        "later rather than staying blank until the next full reload."
+    ),
+
     # ── ⛔ AND THE SAME THREE THROWS AGAIN, IN `weakFor` ─────────────────
     #
     # v3-new, and worse than the one above because `renderVals` builds
@@ -9448,7 +10862,7 @@ componentDidUpdate() {
      """  weakFor(k) {
     if (!k || k.state !== 'live') return null;
     const papers = this.papersFor(k);
-    const pi = MRB_NEWEST_MARKED(papers);
+    const pi = MRB_NEWEST_MARKED(papers, this.matrixFor(k));
     const p = pi >= 0 ? papers[pi] : null;
     const g = p ? this.gridFor(k, p.idx) : null;
     if (!g || !g.qpct) return null;
@@ -9462,7 +10876,10 @@ componentDidUpdate() {
       text: stem.text || '', paperId: p.id };
   }""",
      "the cross-class \"Worth a reteach\" list. Three throws in five lines, "
-     "on every page rather than on one. See the block comment."),
+     "on every page rather than on one. See the block comment. ⊕ Mide's "
+     "23 Sep 2026 ruling — `MRB_NEWEST_MARKED` now takes the class's matrix "
+     "so it prefers a released paper that has a submitted cell over a "
+     "just-released empty one, same as every other caller of it."),
 
     # ══ ⊕ RULED, MRB-326 JOB 4e · THE HEADER STOPS REPEATING THE CARDS ══
     #
@@ -9568,10 +10985,15 @@ componentDidUpdate() {
     # eleven chips, because in her fiction the ranges alone identified the
     # weeks. Dated from a real academic year they do not — "5–9 Oct" says
     # nothing about which teaching week it is — so the line reads "This
-    # week" on the current chip and the term-relative label ("Autumn Week 6")
-    # on every other, in Design's own uppercase mono at her own size. The
+    # week" on the current chip and a within-year week number ("Week 6") on
+    # every other, in Design's own uppercase mono at her own size. The
     # conditional is gone rather than left always-true: a dead `if` is a
-    # control that cannot be told from a broken one.
+    # control that cannot be told from a broken one. ⊕ 24 Sep 2026
+    # (experience run, item 10): this used to say "the term-relative label
+    # ('Autumn Week 6')" — twelve chips backwards through a bar each said
+    # the term, which is the term said twelve times to say one thing.
+    # `label` is plain "Week N" now; the term is said once, in the bar's own
+    # heading (`weekCaption`, below `rosterWeekCol`).
     #
     # ⚠️ THE TERM LABEL IS AN APPROXIMATION AND THE SEAM SAYS SO. There is no
     # `terms` table — checked, not assumed — so the term comes from the
@@ -9821,12 +11243,46 @@ componentDidUpdate() {
     # not the guilty one. A shorter block here would have shipped it.
     # Reported to Mide as a hazard in the anchor mechanism itself.
     ("        late, pct: open ? null : pct,",
-     "        late, lateState, pct: open ? null : pct,",
+     "        late, lateState, pct,",
      "the tri-state, PUT ON THE ROW. `lateState` was a local const the "
      "returned object never carried, so the two tile counts that filter on "
      "it were both permanently 0 and the On-time tile was permanently an em "
      "dash. One word, and it is the difference between a tile that reports "
-     "the rows and a tile that contradicts them."),
+     "the rows and a tile that contradicts them. ⊕ SUPERSEDED, Mide's "
+     "23 Sep 2026 ruling — `open ? null : pct` is gone with `open`: `pct` is "
+     "already null unless a complete cell exists (the matrix's own `pct[]`), "
+     "so gating it a second time on the retired deadline test only hid a "
+     "genuine percentage behind a paper that had not yet closed."),
+
+    # ══ ⊕ Mide's 23 Sep 2026 ruling · `marked`/`missing` NEVER HAD A RULING
+    #    AT ALL, AND THEY WERE STILL Design's `open`-BASED ORIGINAL ═════════
+    #
+    # ⛔ NEITHER LINE HAD EVER BEEN TOUCHED. `stMarked = stHistory.filter(h =>
+    # h.marked)` feeds the Submissions tile's count, the On-time tile's whole
+    # population and `stAvg`; `stMissing` feeds the "N never submitted"
+    # caption. Both read `marked`/`missing` off THIS ROW, and this row was
+    # still Design's own `!open && sc != null` / `!open && sc == null` —
+    # correct only by the coincidence that the OLD `open` meant "not closed",
+    # so `!open` meant "closed" and the two lines happened to already say
+    # "released… no, closed paper, has/hasn't a cell". Left as `open`
+    # (now retired, see the block comment above `const pState`), both lines
+    # would have silently started asking "is this paper UNRELEASED" instead.
+    #
+    # `marked` — item 6/7 of the ruling — is the population averages and the
+    # Submissions count are drawn from: a RELEASED paper this pupil has a
+    # complete cell on. `missing` — item 2 — is unchanged in effect, spelled
+    # on the paper's own `state` rather than inferred from a variable that no
+    # longer means what it used to: a CLOSED paper with no complete cell.
+    ("        marked: !open && sc != null,\n"
+     "        missing: !open && sc == null,",
+     "        marked: pState !== 'scheduled' && sc != null,\n"
+     "        missing: pState === 'closed' && sc == null,",
+     "`stMarked` and `stMissing`'s own per-row facts — never previously "
+     "ruled on, and still Design's `open`-based original right up to this "
+     "entry. `marked` now means \"released, with a complete cell\" (items 6 "
+     "and 7); `missing` is unchanged in effect — \"closed, no complete "
+     "cell\" (item 2) — spelled on `pState` because `open` no longer means "
+     "what made the old spelling correct by coincidence."),
 
     # ── 2. "OPEN" WAS A POSITION, NOT A DEADLINE ────────────────────────
     #
@@ -9854,12 +11310,36 @@ componentDidUpdate() {
     # A child's most recent marked paper disappears from the page and from
     # every number on it. Today only `8r/Sc1` has assignments at all, and
     # both of them are past their deadline the moment the first one closes.
+    # ⊕ SUPERSEDED, Mide's 23 Sep 2026 ruling. The paragraph above made
+    # "open" a deadline test — `p.when === 'upcoming'` — which was correct
+    # for as long as `when === 'marked'` meant "the deadline has passed". It
+    # no longer does: `when === 'marked'` now means "released", so
+    # `p.when === 'upcoming'` means SCHEDULED (not yet released at all), not
+    # "still open". Left as `open`, every downstream branch in this row
+    # (`marked`, `missing`, `late`, `tone`, `submitted`, `score`, `status`)
+    # would have started asking "is this unreleased" where it means "is this
+    # not yet due" — a second silent meaning-change riding on the first one.
+    #
+    # Item 4 of the ruling also asks for a FIFTH status this binary cannot
+    # hold at all: Scheduled, In progress, Not started, Missing and Complete
+    # are five distinct facts about one paper, and "results are live" is
+    # precisely the ruling that pupils are handing in real, gradeable work
+    # WHILE a paper is open — so a row must be able to say "Complete" on an
+    # open paper, which `open ? … : …` binaries can never do. `pState`
+    # carries the paper's own three-way `state` and `hasRow` is whether the
+    # pupil has STARTED a submission at all (any status, complete or not) —
+    # read off `subId[i]`, which the matrix sets from the raw submission row
+    # before the complete-cell guard, and the one fact "In progress" needs
+    # that a complete cell alone cannot supply.
     (dict(builder="stHistory", key="const open"),
-     "      const open = p.when === 'upcoming';",
-     "\"open\" is whether the DEADLINE has passed, not whether the paper is "
-     "first in the list. Design's `i === 0` is her one-open-paper fiction, "
-     "the seam warns about it by name above `buildMatrix`, and `buildPapers` "
-     "already answers it as `when`. A real class has none open, or three."),
+     "      const pState = p.state;\n"
+     "      const hasRow = !!(stRow && stRow.subId[i] != null);",
+     "the two facts every field below now reads instead of the old "
+     "`open`/`!open` binary: the paper's own state, and whether the pupil "
+     "has started a submission at all. Design's `i === 0` is her one-open-"
+     "paper fiction; `shared/teacher-live.js` warns about it by name above "
+     "`buildMatrix`. See the block comment above for why `open` itself "
+     "could not simply be corrected in place a second time."),
 
     # ── 3. AND THE DENOMINATOR THAT ASSUMED THE SAME THING ──────────────
     #
@@ -9868,22 +11348,92 @@ componentDidUpdate() {
     # #11 block lists as saying more than their figure knows, and the class
     # and digest screens were both corrected to `kMx.markedIdx.length` on
     # 24 Aug; the student screen's two occurrences were missed. Same defect,
-    # same fix, same key — `markedIdx` is the indices actually closed, so the
-    # denominator is counted rather than assumed, and it agrees with the rows
-    # because `open` above is now the same test.
+    # same fix, same key — `markedIdx` counts released papers (⊕ Mide's
+    # 23 Sep 2026 ruling — it used to count the closed ones, back when
+    # `when === 'marked'` meant the deadline had passed), so the denominator
+    # is counted rather than assumed. ⊕ AND THE WORD "MARKED" IS RETIRED FROM
+    # BOTH CAPTIONS: item 7 of the 23 Sep 2026 ruling asks for "Of M set this
+    # term", because `markedIdx.length` is no longer a count of graded work —
+    # it is a count of RELEASED papers, and "marked" over a live, possibly
+    # still-open paper is a claim this page can no longer make.
     ("          { label: 'Submissions', value: String(stMarked.length), "
      "sub: 'Of ' + Math.max(0, kPapers.length - 1) + ' marked this term' },",
      "          { label: 'Submissions', value: String(stMarked.length),\n"
-     "            sub: 'Of ' + kMx.markedIdx.length + ' marked this term' },",
+     "            sub: 'Of ' + kMx.markedIdx.length + ' set this term' },",
      "the Submissions tile's denominator. `kPapers.length - 1` assumes "
-     "exactly one open paper; `markedIdx` counts the closed ones."),
+     "exactly one open paper; `markedIdx` counts the released ones, and the "
+     "caption says \"set\" rather than \"marked\" now that it is."),
 
     ("      ? (stMarked.length + ' of ' + Math.max(0, kPapers.length - 1) "
      "+ ' marked sets handed in'",
      "      ? (stMarked.length + ' of ' + kMx.markedIdx.length "
-     "+ ' marked sets handed in'",
+     "+ ' sets handed in'",
      "the summary sentence's denominator — the same assumption as the tile "
-     "above it, in words. Both now count the closed papers."),
+     "above it, in words. Both now count the released papers, and the word "
+     "\"marked\" is dropped for the same reason as the tile's caption."),
+
+    # ══ ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 26) — "LAST
+    #    ACTIVE NO ACTIVITY YET" ═══════════════════════════════════════════
+    #
+    # The same defect the class card's `activity` line had (see
+    # "\"LAST ACTIVITY NO ACTIVITY YET\"" above), on the student summary
+    # sentence Design never gave a label to at all. `st.last` is either
+    # `relativeTime(...)` ("2 days ago") or the sentence "No activity yet",
+    # and this line always prefixed it with "last active " — so a student
+    # with no submissions read "…against a class mean of 65% · last active
+    # No activity yet", a label glued onto a sentence that already says the
+    # thing the label was there to introduce.
+    ("        + ' · last active ' + st.last)",
+     "        + (st.last === 'No activity yet' ? ' · ' + st.last\n"
+     "          : ' · last active ' + st.last))",
+     "the student summary sentence's own tail — drop the label when the "
+     "value is already a sentence, exactly as the class card's `activity` "
+     "ruling does for the same string."),
+
+    # ══ ⊕ Stream N, 25 Sep 2026 (experience run, NF1) — THE PUPIL PAGE
+    #    AVERAGED PERCENTAGES, SO IT DISAGREED WITH THE CLASS PAGE ═══════════
+    #
+    # ⛔ THE DEFECT, HAND-CHECKED ON THE AUDIT'S OWN SEED. Annabel's page read
+    # "averaging 40% against a class mean of 60%"; the class roster's own
+    # AVG column, for the same pupil, read 39%. Her two released cells are
+    # 4/8 and 3/10 — 7 marks out of 18 — which is 38.9%, rounding to 39%. The
+    # roster is right; the tile is wrong.
+    #
+    # `stAvg` is `Math.round(stMarked.reduce((a, h) => a + h.pct, 0) /
+    # stMarked.length)` — the MEAN OF EACH PAPER'S OWN PERCENTAGE (4/8 = 50%,
+    # 3/10 = 30%, mean 40%) — which is a different number from Mide's 23 Sep
+    # ruling, item 6: "a pupil's average = sum(score)/sum(max) over cells on
+    # RELEASED papers." Design's arithmetic only agrees with the ruling when
+    # every released paper is the same size; Lydia (78% either way, all her
+    # papers out of the same total) never showed it, and Annabel — two papers
+    # of different sizes — always did.
+    #
+    # `kMx.studentAvg` is that exact sum/sum definition, computed once in
+    # `buildMatrix` (`shared/teacher-live.js`) and already read by the class
+    # roster's own AVG column (`buildRoster`'s `avg: mx.studentAvg[m.student_id]`)
+    # and by `METHODS['matrixFor']`, which is how this page's `kMx` gets it at
+    # all — `matrixFor(k)` already returns the real matrix, seamed onto
+    # Design's fiction. Reading it here rather than re-deriving a second
+    # average keeps the ONE definition the ruling asks for: the class page and
+    # the pupil page can no longer disagree about the same pupil, because they
+    # are reading the same field.
+    #
+    # ⚠️ `st ? … : null`, NOT `stMarked.length ? … : null`. `kMx.studentAvg`
+    # is keyed by student id and is `null` (never 0) for a pupil with no
+    # graded cell — the same "dash, not zero" rule the ruling states for
+    # every average on this page — so the only guard this line still needs is
+    # "is there a pupil at all", which `st` already answers everywhere else in
+    # this render.
+    ("    const stAvg = stMarked.length ? Math.round(stMarked.reduce((a, h) "
+     "=> a + h.pct, 0) / stMarked.length) : null;",
+     "    const stAvg = st ? kMx.studentAvg[st.id] : null;",
+     "the pupil page's own average — sum(score)/sum(max) over released "
+     "papers, `kMx.studentAvg`, the same field the class roster's AVG column "
+     "already reads, rather than a mean of each paper's own percentage. The "
+     "two agree on a pupil whose papers are all the same size (which is why "
+     "Lydia never showed the defect) and disagree on every pupil whose "
+     "released papers differ in length (which is every pupil with a mix of "
+     "8- and 10-question sets)."),
 
     # ── 4. "SEND A REMINDER" SENT NOTHING ───────────────────────────────
     #
@@ -9911,22 +11461,115 @@ componentDidUpdate() {
     # press upserts with `ignoreDuplicates`, writes nothing, and returns an
     # empty array, which is reported as "already reminded today". A control
     # that claimed to have sent a second reminder would be lying twice.
+    #
+    # ⊕ Stream N, 25 Sep 2026 (experience run, item 5 / NF4) — TWO FURTHER
+    # DEFECTS FOUND IN THE FOURTH-PASS AUDIT, BOTH IN "WHICH PAPER". The
+    # helper above named `kPapers[0]` — the newest paper on the class,
+    # WHATEVER ITS STATE — so a class carrying a set scheduled for tomorrow
+    # reminded a pupil about TOMORROW'S set, today, which no pupil can even
+    # see yet. And the button never learned it had already fired: reload the
+    # page, and Dan's "Send a reminder" was offered again, ready to write a
+    # second row for the same day the moment RLS let it (it never does — the
+    # unique index absorbs it — but the CONTROL had no way to know that
+    # without pressing it).
+    #
+    # `stTargetPaper` is the fix for both: the newest RELEASED paper (open or
+    # closed — never `state === 'scheduled'`, Mide's ruling in terms) this
+    # pupil has NOT submitted, found in `kPapers` the same way `paper()`
+    # already walks it. `null` when there is nothing outstanding to chase —
+    # a pupil can be flagged on a low average alone, with every released
+    # paper in — and `stNothingToRemind` names that state so the button can
+    # say so rather than sending anything. `stAlreadyToday` reads
+    # `window.MrBadmusTeacherLive.remindedToday`, the exact real-log read the
+    # class page's own per-card reminder was given back in the item 4 fix
+    # immediately above this one in the file, so a reload cannot forget what
+    # the database already knows; `stRemindSentToday` folds that together
+    # with this SESSION's own `s.remindDone`, the same two-source check the
+    # class page's card makes, so the label flips the instant a send
+    # succeeds without waiting for a second read of the log.
+    (
+        "    const stFlagged = !!(st && st.flag);",
+        "    const stFlagged = !!(st && st.flag);\n"
+        "    const stTargetPaper = kPapers.filter(p => p.state !== "
+        "'scheduled'\n"
+        "      && !(stRow && stRow.submitted[p.idx]))[0] || null;\n"
+        "    const stNothingToRemind = !stTargetPaper;\n"
+        "    const stRemindKey = stTargetPaper && st\n"
+        "      ? (stTargetPaper.id + ':' + st.id) : null;\n"
+        "    const stAlreadyToday = !!(stTargetPaper && st\n"
+        "      && window.MrBadmusTeacherLive\n"
+        "      && window.MrBadmusTeacherLive.remindedToday(stTargetPaper.id)"
+        "[st.id]);\n"
+        "    const stRemindSentToday = !stNothingToRemind\n"
+        "      && (s.remindDone === stRemindKey || stAlreadyToday);",
+        "the paper a reminder from this page is actually about (the newest "
+        "RELEASED paper this pupil has not submitted — never a scheduled "
+        "one), whether there is one at all, and whether it has already been "
+        "sent today — this session's own state or the real log, read the "
+        "same way the class page's own per-card reminder reads it."
+    ),
+
     ("      remindStudent: () => this.ping('Reminder sent to ' + "
      "(st ? st.name : 'student')),",
-     "      remindStudent: () => MRB_REMIND_STUDENT(k && k.id,\n"
-     "        kPapers[0] && kPapers[0].id, st && st.id).then((r) => {\n"
+     "      remindStudent: () => {\n"
+     "        if (stNothingToRemind) {\n"
+     "          this.ping((st ? st.name : 'They')\n"
+     "            + ' has nothing outstanding to be reminded about');\n"
+     "          return Promise.resolve();\n"
+     "        }\n"
+     "        if (stRemindSentToday) {\n"
+     "          this.ping((st ? st.name : 'They')\n"
+     "            + ' has already been reminded about this today');\n"
+     "          return Promise.resolve();\n"
+     "        }\n"
+     "        return MRB_REMIND_STUDENT(k && k.id, stTargetPaper.id, "
+     "st && st.id).then((r) => {\n"
      "          if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }\n"
+     "          this.setState({ remindDone: stRemindKey });\n"
      "          if (r.already) {\n"
      "            this.ping((st ? st.name : 'They')\n"
      "              + ' has already been reminded about this today');\n"
      "            return;\n"
      "          }\n"
-     "          this.ping('Reminder sent to ' + (st ? st.name : 'student'));\n"
-     "        }),",
+     "          this.ping('Reminder sent to ' + (st ? st.name : "
+     "'student'));\n"
+     "        });\n"
+     "      },",
      "the per-student reminder. Design's handler toasted a send that never "
      "happened; this writes to `student_notifications` through the same "
-     "`sendReminders` the class screen's control uses, and says which of the "
-     "three things actually occurred."),
+     "`sendReminders` the class screen's control uses, names the newest "
+     "RELEASED paper this pupil is missing rather than `kPapers[0]` "
+     "(Stream N, item 5 / NF4 — the newest paper is not always a released "
+     "one), and refuses up front — no request at all — when there is "
+     "nothing to chase or the log already shows a reminder sent today, "
+     "exactly the honesty the class page's own reminder card was given a "
+     "few entries above this one."),
+
+    # ⊕ Stream N, 25 Sep 2026 (experience run, item 5 / NF4) — THE BUTTON
+    # ITSELF NEVER SAID WHICH STATE IT WAS IN. Design's node 341 carries the
+    # literal text "Send a reminder" and no `disabled` at all, so a pupil
+    # already reminded today — this session or on a fresh load — was offered
+    # the identical, pressable button a pupil who had not been. `RETEXT_AT`
+    # binds the label to the three-state field above (`student.remindLabel`);
+    # `BIND_ATTR` ADDS `disabled` (Design never wrote one — `expect: None`,
+    # its own documented shape for a brand-new attribute, exactly as node
+    # 644's `aria-pressed` was added for N8). Node 340's `if` gate
+    # (`student.flagged`) is untouched: a pupil is not flagged at all unless
+    # `buildRoster` already thinks something needs chasing, and a flagged
+    # pupil whose only outstanding paper is a scheduled one now reads
+    # "Nothing to remind about" instead of quietly reminding them about work
+    # they cannot see.
+    ("        flagged: stFlagged,",
+     "        flagged: stFlagged,\n"
+     "        remindLabel: stNothingToRemind ? 'Nothing to remind about'\n"
+     "          : (stRemindSentToday ? 'Reminded today' : "
+     "'Send a reminder'),\n"
+     "        remindDisabled: stNothingToRemind || stRemindSentToday,",
+     "the button's own three-state label and its disabled flag, added to "
+     "the `student:` object beside `flagged` — never sent when there is "
+     "nothing outstanding, and \"Reminded today\" once the log or this "
+     "session says one already went, same rule as the class page's "
+     "\"Remind all\"."),
 
     # ══ ⊕ 2 Sep 2026 · A RETEACH LINE WITH NO QUESTION IN IT ════════════
     #
@@ -9955,11 +11598,54 @@ componentDidUpdate() {
      "worst.text.toLowerCase() + '. Only ' + worst.pct + '% of the class got "
      "it right.' : '',",
      "        reteachLine: worst ? worst.id\n"
-     "          + (worst.text ? ' \u2014 ' + worst.text.toLowerCase() : '')\n"
+     "          + (worst.text ? ' \u2014 ' "
+     "+ worst.text.toLowerCase().replace(/[?.!]+$/, '') : '')\n"
      "          + '. Only ' + worst.pct + '% of the class got it right.'\n"
      "          : '',",
      "the reteach banner, on a paper whose worst question carries no stem "
-     "snapshot."),
+     "snapshot, and (\u2295 stream M, item N7/26) whose stem's own trailing "
+     "\"?\" no longer collides with the banner's own full stop \u2014 Design's "
+     "sentence used to read \"\u2026represent?. Only 0% of the class got it "
+     "right.\", the two sentences' punctuation run together with no "
+     "separator; `.replace(/[?.!]+$/, '')` strips a trailing `?`, `.` or "
+     "`!` off the stem before the banner's own \".\" is appended."),
+
+    # \u2295 Stream N, 25 Sep 2026 (experience run, item N7) \u2014 STREAM M's OWN FIX
+    # WENT TOO FAR THE OTHER WAY. Stripping the stem's trailing `?`/`.`/`!`
+    # stopped the collision but took the QUESTION MARK with it \u2014 a real
+    # question ("Which component does this circuit symbol represent?")
+    # lost the mark that makes it read as one, and `.toLowerCase()` on top
+    # of that lower-cased its first word too: the banner read "Q2 \u2014 which
+    # component does this circuit symbol represent. Only 0% of the class
+    # got it right." \u2014 still Design's own sentence, just with the stem's
+    # own words altered rather than merely joined to it.
+    #
+    # Mide's instruction is exact: keep the stem's own capitalisation and
+    # its "?". So neither `.toLowerCase()` nor the strip survives \u2014 the stem
+    # prints verbatim, and the JOIN is what changes instead. A stem already
+    # ending in terminal punctuation (`?`, `.` or `!`, which is every stem
+    # in the corpus) needs nothing between it and "Only \u2026"; one that does
+    # not \u2014 the only way `attempts.question_text` can lack one is a stem
+    # nobody typed a mark on, not a case the AQA-sourced banks produce today
+    # \u2014 gets the banner's own "." exactly as the no-stem branch above it
+    # already does. Never both: that is the collision this whole entry
+    # exists to avoid a second time.
+    ("        reteachLine: worst ? worst.id\n"
+     "          + (worst.text ? ' \u2014 ' "
+     "+ worst.text.toLowerCase().replace(/[?.!]+$/, '') : '')\n"
+     "          + '. Only ' + worst.pct + '% of the class got it right.'\n"
+     "          : '',",
+     "        reteachLine: worst ? worst.id\n"
+     "          + (worst.text ? ' \u2014 ' + worst.text : '')\n"
+     "          + (worst.text && /[?.!]$/.test(worst.text) ? '' : '.')\n"
+     "          + ' Only ' + worst.pct + '% of the class got it right.'\n"
+     "          : '',",
+     "the reteach banner's stem, printed VERBATIM \u2014 its own capital "
+     "letter and its own \"?\", neither lower-cased nor stripped. The join "
+     "is what avoids the collision now: a stem ending in `?`/`.`/`!` gets "
+     "no extra full stop before \"Only\u2026\"; one that does not (the "
+     "no-stem branch, or a stem authored without a terminal mark) gets "
+     "exactly the one this line always appended."),
 
     # ══ ⊕ 2 Sep 2026 · THE CLASS-BY-QUESTION GRID IS EIGHT WIDE ═════════
     #
@@ -10083,6 +11769,60 @@ componentDidUpdate() {
      "the two keys MRB-323's entry button needs: the `<if>` that keeps a "
      "picker off a class with nobody on it, and the handler that opens it "
      "on the roster this screen has already read."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 7) · THE PUPIL'S OWN ══
+    # "SEND SHOUTOUT" OPENS ON AN EMPTY COMPOSER
+    #
+    # ⛔ `openBulk` IS ONE HANDLER, USED FROM THREE BUTTONS. Design draws
+    # `onClick="{{ openBulk }}"` on the class screen's header action
+    # ("Shoutouts"), on the "Worth a shoutout" card's own "Send a shoutout"
+    # link, and — the one this ruling is for — on the student screen's "Send
+    # shoutout" button, next to "Send a reminder". All three call the SAME
+    # `this.setState({ modal: 'bulk' })`, so a teacher who opens the composer
+    # FROM a child's own page gets the identical empty picker as a teacher
+    # who opens it from the class header, and has to find that child again
+    # by name in a fifty-four-row list they were just looking straight at.
+    #
+    # ⚠️ NOT `st` ALONE. `const st = this.student()` runs unconditionally at
+    # the top of `renderVals`, and the ported `student()` method (see
+    # `METHODS["student"]` above) returns `null` rather than Design's own
+    # `rows[0]` fallback when `state.studentId` is unset — which on the LIVE
+    # pages is exactly "unset except on `student-detail.html`", because
+    # `teacher-live.js` fills `studentId` from `?student=` and that query
+    # param exists only in that page's own URL. But the SHARED populated
+    # fixture (`fixture_payload` / `design_data` in build_teacher_port.py)
+    # sets a `studentId` default on every page's data, class screen included
+    # — a pre-existing fixture-generation artifact, harmless while nothing
+    # read `studentId` off the class screen, and it is what this ruling
+    # would otherwise start reading. Checked: `class-detail-fixture.html`
+    # carries `studentId: "8rsc1-12"` and `this.student()` resolves it to a
+    # real roster row there too.
+    #
+    # So the guard is the PAGE, not the presence of a student: `s.screen`
+    # is the one thing that is genuinely per-page even in the fixtures — the
+    # build's own `page_logic` step (`build_teacher_port.py`) substitutes it
+    # from the literal token `'MRB_SCREEN'` into each of the six pages'
+    # shipped copies of this same logic class, so `s.screen === 'student'`
+    # is `true` on `student-detail.html` and only there, fixture or live.
+    #
+    # ⚠️ ANCHORED AFTER THE `pickStudent` RULING ABOVE, ON PURPOSE. Both
+    # correct the SAME property (`openBulk`); this one uses a `method`/`key`
+    # anchor rather than a literal span so it finds the line by NAME rather
+    # than by the text `pickStudent` just finished rewriting around it —
+    # `resolve_anchor` narrows to the property's own one-line span (it ends
+    # at its own trailing comma), so the two newly-appended `hasRoster` /
+    # `pickStudent` lines below it are untouched.
+    (dict(method="renderVals", key="openBulk"),
+     "      openBulk: () => this.setState({ modal: 'bulk', "
+     "boSel: (s.screen === 'student' && st) ? [st.id] : [] }),",
+     "the shoutout composer's opener, on all three buttons that share it. "
+     "Opened from a pupil's own page, that pupil is pre-selected in "
+     "`boSel`; opened from the class header or from the \"Worth a "
+     "shoutout\" card, `s.screen` is `'class'` there and the composer opens "
+     "empty, exactly as before. The composer itself is untouched — a preselected "
+     "id in `boSel` is a normal selection, and `sendBulk` / the roster "
+     "checklist already read it as one; a teacher can still add or remove "
+     "names."),
 
     # ══ ⊕ MRB-322 · A HANDLER DESIGN HAS NO COUNTERPART FOR ═════════════
     #
@@ -10216,6 +11956,23 @@ componentDidUpdate() {
         });
       const cDue = (p.due || '').replace(/^Due /, '');
       const cKey = k.id + ':' + wi + ':' + p.id;
+      /* \u2295 Stream L, 25 Sep 2026 (experience run, item 4) \u2014 THE CARD
+         FORGOT IT HAD ALREADY REMINDED TODAY, ON A RELOAD. `s.remindDone`
+         is SESSION state \u2014 it answers "did I press this in the last few
+         minutes", and a reload starts a new session with none of it. The
+         database has always known better: `student_notifications` carries
+         the real log, and `MrBadmusTeacherLive.remindedToday(assignmentId)`
+         (a fresh read, for the class actually being viewed, done once in
+         `base()`) answers the honest question \u2014 "were these children
+         ALREADY told today, by anyone" \u2014 the same question the deleted
+         `drawRemindControl` banner used to pre-read before MRB-326 JOB 4c
+         removed the fetch. It is back because Mide asked for it back
+         (experience run, item 4): a teacher who reloads must not be invited
+         to press a button that would write nothing. */
+      const cAlreadyToday = cMiss.length > 0 && cMiss.every(r => {
+        const rd = window.MrBadmusTeacherLive && window.MrBadmusTeacherLive.remindedToday(p.id);
+        return !!(rd && rd[r.id]);
+      });
       return {
         eyebrow: p.source === 'auto'
           ? (cDue ? "This week's homework \u00b7 due " + cDue
@@ -10229,26 +11986,38 @@ componentDidUpdate() {
           name: this.shortName(r.name),
           open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
         })),
-        remindLabel: (s.remindDone === cKey)
-          ? 'Reminded today' : 'Remind all ' + cMiss.length,
-        remind: () => MRB_REMIND_ALL(k && k.id,
-          [{ assignmentId: p.id, studentIds: cMiss.map(r => r.id) }]).then((r) => {
-          if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
-          this.setState({ remindDone: cKey });
-          if (!r.ok) {
-            this.ping(r.asked === 1
-              ? 'They have already been reminded about this today'
+        remindLabel: (s.remindDone === cKey || cAlreadyToday)
+          ? 'Reminded today \u00b7 ' + cMiss.length : 'Remind all ' + cMiss.length,
+        remind: () => {
+          /* A second press \u2014 this session or after a reload \u2014 writes
+             nothing new (the database's own unique index already made
+             that true) and now SAYS so up front instead of round-tripping
+             to be told. */
+          if (s.remindDone !== cKey && cAlreadyToday) {
+            this.ping(cMiss.length === 1
+              ? 'Already reminded today'
               : 'They have all already been reminded about this today');
-            return;
+            return Promise.resolve();
           }
-          if (r.ok < r.asked) {
-            this.ping('Reminded ' + r.ok + ' of ' + r.asked
-              + ' \u2014 the rest were already reminded today');
-            return;
-          }
-          this.ping('Reminder sent to ' + r.ok
-            + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
-        }),
+          return MRB_REMIND_ALL(k && k.id,
+            [{ assignmentId: p.id, studentIds: cMiss.map(r => r.id) }]).then((r) => {
+            if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
+            this.setState({ remindDone: cKey });
+            if (!r.ok) {
+              this.ping(r.asked === 1
+                ? 'They have already been reminded about this today'
+                : 'They have all already been reminded about this today');
+              return;
+            }
+            if (r.ok < r.asked) {
+              this.ping('Reminded ' + r.ok + ' of ' + r.asked
+                + ' \u2014 the rest were already reminded today');
+              return;
+            }
+            this.ping('Reminder sent to ' + r.ok
+              + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
+          });
+        },
         hasMore: false, moreLabel: '', more: () => {}
       };
     };
@@ -10257,8 +12026,23 @@ componentDidUpdate() {
        emptying the column. `hasChase` is false, so the WRAP takes the
        footer with it and there is no button offering to remind nobody. */
     if (!wCards.length) {
+      /* \u2295 Stream J, 25 Sep 2026 (experience run, item 1) \u2014 THE EMPTY STATE
+         MUST READ THE SAME PAPERS THE TABLE DOES. `wCards` is built from
+         `wLive` (open papers only, MRB-336 \u00a74.1's own rule: a card is a
+         LIVE assignment), but "No work set in this week" was shown whenever
+         THAT was empty \u2014 including a week whose only paper had already
+         closed. The Assignments table below is built from `wPapers`, every
+         state, so a past week with a closed set showed a homework card
+         claiming nothing was set while its own table listed the set right
+         under it. `wPapers.length` is the same test the table's `assignments
+         = wPapers.map(...)` runs, so the two can no longer disagree: "no
+         work" is said only when there truly is no paper in the week at all,
+         and a week with only closed/scheduled work says so instead. */
       wCards.push({ eyebrow: "This week's homework",
-        title: 'No work set in this week', count: '\u2014', pct: 0,
+        title: wPapers.length
+          ? 'Nothing open this week \u2014 see Assignments below'
+          : 'No work set in this week',
+        count: '\u2014', pct: 0,
         hasChase: false, chase: [], remindLabel: '', remind: () => {},
         hasMore: false, moreLabel: '', more: () => {} });
     }
@@ -10354,12 +12138,14 @@ componentDidUpdate() {
     # of those two facts and all four are corrected here, from the one seam,
     # so they cannot answer differently.
     #
-    # ⚠️ "MARKED" BECOMES "CLOSED" ON THE PILL, AND NOWHERE ELSE. The pill
-    # names what a CHILD can do with the work — not yet, now, no longer —
-    # and "Marked" was never that claim: `when === 'marked'` is a deadline
-    # test that consults no mark at all, so a paper nobody sat and nobody
-    # marked wore the word. The reteach card's "Marked · 14 submitted" is a
-    # different sentence about a different thing and keeps Design's word.
+    # ⚠️ "MARKED" BECOMES "CLOSED" ON THE PILL, AND NOWHERE ELSE (this row
+    # was written before stream A's 24 Sep 2026 redefinition of `when` and
+    # is kept for the pill's own history; the reteach card's "Marked ·
+    # 14 submitted" it names is GONE — see the wording pass below). The
+    # pill names what a CHILD can do with the work — not yet, now, no
+    # longer — and "Marked" was never that claim: `when === 'marked'` was
+    # (and, renamed, still is) a test that consults no mark at all, so a
+    # paper nobody sat and nobody marked wore the word.
     #
     # ⚠️ SCHEDULED TAKES THE MUTED TOKEN, NOT A NEW ONE. `--st-muted` on
     # `--st-num-well` inside `--st-rule` — every value already in the sheet.
@@ -10480,7 +12266,7 @@ componentDidUpdate() {
           subject: p.set_subject || 'all',
           paper: p.paper == null ? 'both' : String(p.paper),
           releaseAt: p.release_at, dueAt: p.due_at,
-          released: p.released }); },
+          released: p.released, note: p.note || '' }); },
         cancelDel: (e) => { e.stopPropagation(); this.setState({ delArm: '' }); },
         del: (e) => {
           e.stopPropagation();
@@ -10535,7 +12321,7 @@ componentDidUpdate() {
           subject: pp.set_subject || 'all',
           paper: pp.paper == null ? 'both' : String(pp.paper),
           releaseAt: pp.release_at, dueAt: pp.due_at,
-          released: pp.released }),
+          released: pp.released, note: pp.note || '' }),
         cancelDel: () => this.setState({ delArm: '' }),
         del: () => {
           if (s.delArm !== pp.id) { this.setState({ delArm: pp.id }); return; }
@@ -10551,6 +12337,329 @@ componentDidUpdate() {
      "table's answer; this page IS the row, and a deleted assignment's "
      "marking screen is a page about nothing. It goes back to the class it "
      "belonged to, which is where the teacher can see that it has gone."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 10) · THE TERM NAME ══
+    # SAYS ITSELF ONCE, ON THE DIGEST HEADER — NOT ON EVERY WEEK
+    #
+    # The per-week fixes below (the class screen's week-bar chips, and
+    # `buildWeeks`'s own `label` in `shared/teacher-live.js`) drop "Autumn"/
+    # "Spring"/"Summer" from every chip so a teacher stops reading the term
+    # name twelve times going backwards through a bar. That leaves the term
+    # unsaid ANYWHERE on the overview digest, which Mide's own instruction
+    # for this run does not ask for — only for it to be said ONCE, where
+    # useful, and the digest's own header (title + this line under it) is
+    # exactly that: a fact about WHEN this digest is, stated once, the same
+    # register `classesEyebrow` already uses for "Autumn term · 2026–27" on
+    # the classes screen.
+    #
+    # ⚠️ THE CLASS-REPORT BRANCH IS UNTOUCHED HERE, and its own "this term"
+    # wording is already gone — the "\"this term\" is a claim the list
+    # cannot support" ruling above (`kPapers.length === 1 ? ' assignment' :
+    # ' assignments'`) removed it earlier in this same LOGIC list, which is
+    # also why this ruling's anchor is the text AFTER that one has already
+    # run, not Design's original. Appending a term name to the overview
+    # branch only (below) does not reopen that one.
+    ("      digestSub: isClassReport\n"
+     "        ? k.n + ' students · ' + kPapers.length + "
+     "(kPapers.length === 1 ? ' assignment' : ' assignments')\n"
+     "        : this.CLASSES.length + ' classes · ' + totalStudents + "
+     "' students · ' + totalSubs + ' submissions',",
+     "      digestSub: isClassReport\n"
+     "        ? k.n + ' students · ' + kPapers.length + "
+     "(kPapers.length === 1 ? ' assignment' : ' assignments')\n"
+     "        : this.CLASSES.length\n"
+     "          + (this.CLASSES.length === 1 ? ' class · ' : ' classes · ')\n"
+     "          + totalStudents\n"
+     "          + (totalStudents === 1 ? ' student · ' : ' students · ')\n"
+     "          + totalSubs\n"
+     "          + (totalSubs === 1 ? ' submission' : ' submissions')\n"
+     "          + (MRB_DATA('termLabel') ? ' · ' + "
+     "MRB_DATA('termLabel') : ''),",
+     "the overview digest's own header line — the one place on this run's "
+     "list this run ADDS the term, rather than removes it. `termLabel` "
+     "('Autumn term · 2026–27') is the same string `classesEyebrow` already "
+     "states once on the classes screen; read here from `MRB_DATA` rather "
+     "than recomputed, so the two cannot disagree about which term it is. "
+     "⊕ Stream M, 25 Sep 2026 (item 26) — all three counts pluralised. This "
+     "line had never had the classes-screen's own \"1 classes\" fix "
+     "(MRB-328 J3, above) applied to it, and a school admin on a one-class "
+     "colleague's digest read exactly that literal string."),
+
+    # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 10) · AND THE WEEK ══
+    # BAR'S OWN HEADING IS THE OTHER PLACE IT IS SAID
+    #
+    # The static "Week" caption beside the class screen's chevrons (Mide's
+    # 1 Sep 2026 week bar, `INSERT_AT[(208, 218)]`) is OUR OWN markup, not
+    # Design's — nothing here is asserting against a Design literal, so the
+    # text node is bound directly to a new key rather than through
+    # `BIND_ATTR`'s replace-and-assert path.
+    #
+    # ⚠️ THE SELECTED WEEK'S OWN TERM, NOT THE BAR'S FIRST CHIP. `wWeek` is
+    # already `kWeeks[wi] || null` — the currently-viewed week, the same one
+    # `rosterWeekCol` reads three lines below in the ruling above — so the
+    # heading names the term of whatever week a teacher has actually
+    # scrolled to, and does not silently disagree with it at a term
+    # boundary the way reading `kWeeks[0]` unconditionally would.
+    ("      rosterWeekCol: wWeek ? (wWeek.now ? 'This week' : wWeek.range) "
+     ": 'This week',",
+     "      rosterWeekCol: wWeek ? (wWeek.now ? 'This week' : wWeek.range) "
+     ": 'This week',\n"
+     "      weekCaption: (wWeek && wWeek.term) "
+     "? 'Week · ' + wWeek.term + ' term' : 'Week',",
+     "the week bar's own heading, the other of this run's two "
+     "\"say it once\" places. Every chip below it drops the term name "
+     "(`buildWeeks`'s `label` in `shared/teacher-live.js`); this is where "
+     "it is still said, once, for the week actually in view."),
+
+    ("if (kind === 'engagement') {\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        const stacks = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          return { label: c.code, sub: c.ks, right: b.today + ' today · ' + b.stale + ' cold',\n            segs: [{ pct: Math.round((b.today / t) * 100), fill: 'var(--ks3-ok)' }, { pct: Math.round((b.week / t) * 100), fill: 'var(--st-hatch-b)' }, { pct: Math.round((b.stale / t) * 100), fill: 'var(--st-rule-strong)' }] };\n        });\n        if (!stacks.length) {\n          return { ...base, title: 'Last seen, by class',\n            note: 'No class has work set yet' };\n        }\n        return { ...base, type: 'stack', title: 'Last seen, by class', stacks,\n          legend: [{ label: 'Today', fill: 'var(--ks3-ok)' }, { label: 'This week', fill: 'var(--st-hatch-b)' }, { label: '2+ weeks', fill: 'var(--st-rule-strong)' }],\n          tiles: [tile('Active today', totals.today, 'Across ' + live.length + (live.length === 1 ? ' class' : ' classes')), tile('This week', totals.week, ''), tile('2+ weeks', totals.stale, 'Worth chasing')],\n          note: totals.stale + ' students have not opened anything for two weeks or more' };\n      }\n      const rows = this.rosterFor(k);\n      if (!rows.length) {\n        return { ...base, title: k.code + ' — last seen',\n          note: 'No students on the roster yet' };\n      }\n      const b = this.bucketsOf(rows);\n      const cold = rows.filter(r => r.hours >= 168).map(r => r.name);\n      return { ...base, type: 'cols', title: k.code + ' — last seen',\n        cols: this.colsFrom([{ label: 'Today', value: String(b.today), raw: b.today }, { label: 'This week', value: String(b.week), raw: b.week }, { label: '2+ weeks', value: String(b.stale), raw: b.stale, flag: b.stale > 0 }]),\n        tiles: [tile('Students', k.n, 'On the roster'), tile('Active today', b.today, ''), tile('2+ weeks', b.stale, cold.length ? 'Worth chasing' : 'None')],\n        note: cold.length ? 'Not seen for two weeks: ' + cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + (cold.length - 3) + ' more' : '') : 'Nobody in this class has been quiet for two weeks or more' };\n    }",
+     'if (kind === \'engagement\') {\n      // ⊕ Stream D, 24 Sep 2026 (experience run, item 12) — ONE\n      // measure at a time, picked by the new toggle, in the SAME three\n      // colours everywhere it is drawn (the toggle\'s own dots, the bars,\n      // the single-class columns). `--st-hatch-b` (a dark red-brown) used\n      // to sit on "This week" — normal activity — while\n      // "2+ weeks" — the bucket actually worth a look — sat on\n      // `--st-rule-strong`, a pale neutral. That is backwards, and it is\n      // why a screenshot of this chart reads as an alarm over nothing.\n      // `--ks3-ok` (green) stays on Today; `--st-accent` (the studio\'s one\n      // "worth a look" orange, never `--danger`) moves to 2+ weeks; This\n      // week takes the neutral tone 2+ weeks used to have.\n      const ENG_BUCKETS = {\n        today: { label: \'Today\', fill: \'var(--ks3-ok)\' },\n        week: { label: \'This week\', fill: \'var(--st-rule-strong)\' },\n        stale: { label: \'2+ weeks\', fill: \'var(--st-accent)\' }\n      };\n      const engBucket = ENG_BUCKETS[this.state.engBucket] ? this.state.engBucket : \'today\';\n      // The toggle IS the legend here — one colour shown at a time, so\n      // a separate legend list under the chart would either repeat this or\n      // contradict it. Same order, same labels, same colours as whatever\n      // is drawn below, because both read off this one object.\n      const bucketTabs = [\'today\', \'week\', \'stale\'].map(bk => ({\n        id: bk, label: ENG_BUCKETS[bk].label, dot: ENG_BUCKETS[bk].fill,\n        on: bk === engBucket,\n        pressed: bk === engBucket ? \'true\' : \'false\',\n        fg: bk === engBucket ? \'var(--st-ink)\' : \'var(--st-caption)\',\n        bg: bk === engBucket ? \'var(--st-num-well)\' : \'transparent\',\n        bd: bk === engBucket ? \'var(--st-btn-border)\' : \'var(--st-rule-soft)\',\n        pick: () => this.setState({ engBucket: bk })\n      }));\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        // ⚠️ EVERY CLASS, THE SAME MEASURE. One bar per class, sized to\n        // that class\'s OWN roster (not the school\'s), all in the one\n        // colour the selected bucket owns — replacing the old\n        // three-segment stacked bar, which mixed all three measures in one\n        // bar and coloured the normal one like a warning.\n        const rows = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          const n = b[engBucket];\n          return { label: c.code, sub: c.ks, value: n + \'/\' + c.n,\n            pct: Math.round((n / t) * 100), fill: ENG_BUCKETS[engBucket].fill };\n        });\n        if (!rows.length) {\n          return { ...base, title: \'Last seen, by class\',\n            note: \'No class has work set yet\' };\n        }\n        const ENG_NOTE = {\n          today: totals.today + (totals.today === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n          week: totals.week + (totals.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n          stale: totals.stale + (totals.stale === 1 ? \' student has\' : \' students have\') + \' not opened anything for two weeks or more\'\n        };\n        return { ...base, type: \'bars\', title: \'Last seen, by class\', rows, bucketTabs,\n          tiles: [tile(\'Active today\', totals.today, \'Across \' + live.length + (live.length === 1 ? \' class\' : \' classes\')), tile(\'This week\', totals.week, \'\'), tile(\'2+ weeks\', totals.stale, \'Worth chasing\')],\n          note: ENG_NOTE[engBucket] };\n      }\n      const rows2 = this.rosterFor(k);\n      if (!rows2.length) {\n        return { ...base, title: k.code + \' — last seen\',\n          note: \'No students on the roster yet\' };\n      }\n      const b2 = this.bucketsOf(rows2);\n      const cold = rows2.filter(r => r.hours >= 336).map(r => r.name);\n      // ⚠️ THE THREE COLUMNS STAY, RECOLOURED, ON PURPOSE. One class\n      // already has all three measures on screen at once and they are\n      // separately labelled — that is not the mixing defect the\n      // "all classes" bar had. What was wrong here was only the colour\n      // (Today defaulted to the same dark red-brown as everything\n      // `colsFrom` does not explicitly flag), fixed by giving all three\n      // their own fill from the same map the toggle uses. The toggle\n      // still presses through to `note`, so it has a real effect on this\n      // scope too rather than existing only for visual symmetry.\n      const ENG_NOTE2 = {\n        today: b2.today + \' of \' + k.n + (k.n === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n        week: b2.week + (b2.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n        stale: cold.length ? \'Not seen for two weeks: \' + cold.slice(0, 3).join(\', \') + (cold.length > 3 ? \' and \' + (cold.length - 3) + \' more\' : \'\') : \'Nobody in this class has been quiet for two weeks or more\'\n      };\n      return { ...base, type: \'cols\', title: k.code + \' — last seen\', bucketTabs,\n        cols: this.colsFrom([\n          { label: \'Today\', value: String(b2.today), raw: b2.today, fill: ENG_BUCKETS.today.fill },\n          { label: \'This week\', value: String(b2.week), raw: b2.week, fill: ENG_BUCKETS.week.fill },\n          { label: \'2+ weeks\', value: String(b2.stale), raw: b2.stale, fill: ENG_BUCKETS.stale.fill }\n        ]),\n        tiles: [tile(\'Students\', k.n, \'On the roster\'), tile(\'Active today\', b2.today, \'\'), tile(\'2+ weeks\', b2.stale, cold.length ? \'Worth chasing\' : \'None\')],\n        note: ENG_NOTE2[engBucket] };\n    }',
+     "Stream D, 24 Sep 2026 (experience run, item 12) — the engagement "
+     "chart, both scopes. Its colour semantics were backwards (This week "
+     "on the dark red-brown, 2+ weeks on the pale neutral) and there was "
+     "no way to see one measure at a time across every class. Now one "
+     "toggle (Today / This week / 2+ weeks), one colour per bucket used "
+     "identically everywhere it is drawn, and never `--danger` for "
+     "ordinary activity. See the block comments."),
+
+    # ══ ⊕ Stream N, 25 Sep 2026 (experience run, item 9 / NF6) — THE MIDDLE
+    #    BUCKET SAID "THIS WEEK" FOR A 1–13-DAY WINDOW ═════════════════════
+    #
+    # ⛔ THE DEFECT. `bucketsOf` (item N3's own fix, above the `chartFor`
+    # this block lives in) put the boundary at 336 hours — FOURTEEN days —
+    # precisely so a pupil last seen 12.9 days ago would not read as "2+
+    # weeks". It never renamed the bucket it moved the boundary OF: every
+    # toggle tab, tile, column heading and sentence still called it "This
+    # week", so Femi — seen 12 Sep, seeded to be 12.9 days before the run —
+    # read as "5 students were last seen this week" on the audit's own
+    # screenshot. A 1–13-day-old visit is not this week by any calendar a
+    # teacher owns; it is what it is, which is the last two weeks.
+    #
+    # Renamed everywhere the toggle, the legend-equivalent (`bucketTabs`,
+    # which reads `ENG_BUCKETS[bk].label` — one source, so the toggle fixes
+    # itself) and the two cards use it: `ENG_BUCKETS.week.label`, the "all
+    # classes" tile, the single-class column heading, and both prose
+    # sentences (`ENG_NOTE.week`, `ENG_NOTE2.week`) that said "last seen
+    # this week" in words as well as in the label.
+    ("week: { label: 'This week', fill: 'var(--st-rule-strong)' },",
+     "week: { label: 'Last 2 weeks', fill: 'var(--st-rule-strong)' },",
+     "the middle bucket's own label, read by the toggle tabs AND by every "
+     "other reader of `ENG_BUCKETS.week.label` — one rename, everywhere "
+     "the toggle itself is drawn."),
+
+    ("tile('This week', totals.week, '')",
+     "tile('Last 2 weeks', totals.week, '')",
+     "the \"all classes\" scope's own tile, which names the bucket a second "
+     "time as a literal rather than through `ENG_BUCKETS`."),
+
+    ("{ label: 'This week', value: String(b2.week), raw: b2.week, "
+     "fill: ENG_BUCKETS.week.fill }",
+     "{ label: 'Last 2 weeks', value: String(b2.week), raw: b2.week, "
+     "fill: ENG_BUCKETS.week.fill }",
+     "the single-class scope's own column heading, the third literal "
+     "naming this bucket."),
+
+    ("week: totals.week + (totals.week === 1 ? ' student was' : "
+     "' students were') + ' last seen this week',",
+     "week: totals.week + (totals.week === 1 ? ' student was' : "
+     "' students were') + ' seen in the last two weeks',",
+     "the \"all classes\" scope's own sentence — the label was not the only "
+     "place \"this week\" was said; the prose said it too."),
+
+    ("week: b2.week + (b2.week === 1 ? ' student was' : "
+     "' students were') + ' last seen this week',",
+     "week: b2.week + (b2.week === 1 ? ' student was' : "
+     "' students were') + ' seen in the last two weeks',",
+     "the single-class scope's own sentence, same fix."),
+
+    # ══ ⊕ Stream N, 25 Sep 2026 (experience run, item 9 / NF6) — "NOT SEEN
+    #    FOR TWO WEEKS" NAMED A PUPIL WHO HAS NEVER BEEN SEEN AT ALL ════════
+    #
+    # ⛔ THE DEFECT. `cold` — the single-class card's stale-bucket name list
+    # — is every pupil with `hours >= 336`, and `buildRoster`
+    # (`shared/teacher-live.js`) sets `hours = Infinity` for a pupil with NO
+    # `lastIso` at all, so a pupil who has never opened a single assignment
+    # sails past 336 exactly as a pupil who opened one 20 days ago does. The
+    # audit's seed named it precisely: "Not seen for two weeks: Grace Nwosu,
+    # Harry Patel" for two pupils the SAME roster's own `last` field already
+    # calls "No activity yet" — a stronger, truer fact this sentence was
+    # not reading.
+    #
+    # `r.last === 'No activity yet'` is the existing, already-established
+    # phrase for exactly this pupil (`buildRoster`'s own `last: lastIso ? "
+    # relativeTime(...) : \"No activity yet\"`) — reused as the test rather
+    # than re-deriving "never active" from `hours` a second way. Two lists,
+    # not one: `coldQuiet` (has been active before, just not for two weeks
+    # or more — the sentence this line always meant) and `coldNever` (never
+    # active at all — Mide's own word for it, "Never active"). Both can be
+    # true of the same class at once, so both print, joined, rather than one
+    # silently winning.
+    ("const cold = rows2.filter(r => r.hours >= 336).map(r => r.name);",
+     "const cold = rows2.filter(r => r.hours >= 336);\n"
+     "      const coldQuiet = cold.filter(r => r.last !== 'No activity "
+     "yet').map(r => r.name);\n"
+     "      const coldNever = cold.filter(r => r.last === 'No activity "
+     "yet').map(r => r.name);\n"
+     "      const pupilList = (names) => names.slice(0, 3).join(', ')\n"
+     "        + (names.length > 3 ? ' and ' + (names.length - 3) + "
+     "' more' : '');",
+     "`cold` keeps every pupil at or past the 336-hour boundary (its "
+     "`.length` still feeds the \"Worth chasing\" tile caption, unchanged), "
+     "and two named sub-lists split out which of them have genuinely gone "
+     "quiet from which have never been active at all. `pupilList` is the "
+     "\"first three, then 'and N more'\" phrasing this sentence already "
+     "used, pulled out once so both lists can use it."),
+
+    ("stale: cold.length ? 'Not seen for two weeks: ' + "
+     "cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + "
+     "(cold.length - 3) + ' more' : '') : 'Nobody in this class has been "
+     "quiet for two weeks or more'",
+     "stale: (coldQuiet.length || coldNever.length)\n"
+     "          ? [\n"
+     "              coldQuiet.length ? 'Not seen for two weeks: ' + "
+     "pupilList(coldQuiet) : null,\n"
+     "              coldNever.length ? 'Never active: ' + "
+     "pupilList(coldNever) : null\n"
+     "            ].filter(Boolean).join(' · ')\n"
+     "          : 'Nobody in this class has been quiet for two weeks or "
+     "more'",
+     "the stale-bucket sentence itself: \"Not seen for two weeks\" only for "
+     "pupils who have actually been seen before, \"Never active\" (Mide's "
+     "own phrase, item 9 / NF6) for the ones who have not, and both "
+     "together — joined, not overwritten — when a class has one of each. "
+     "The empty state is Design's own unchanged sentence."),
+
+    ("const base = { type: 'bars', title: '', note: '', tiles: [], "
+     "rows: [], cols: [], stacks: [], legend: [] };",
+     "const base = { type: 'bars', title: '', note: '', tiles: [], "
+     "rows: [], cols: [], stacks: [], legend: [], bucketTabs: [] };",
+     "the chart shape's default `bucketTabs`. Every OTHER chart kind reads "
+     "`chart.bucketTabs.length` (below) to decide whether to draw the "
+     "engagement toggle at all; without a default here every kind but "
+     "engagement would throw on that read rather than simply showing no "
+     "toggle."),
+
+    (dict(method="renderVals", key="hasLegend"),
+     "        hasLegend: chart.legend.length > 0,\n"
+     "        hasBucketTabs: chart.bucketTabs.length > 0,",
+     "the engagement toggle's own gate, in the same derived-flag register "
+     "as `hasLegend` beside it."),
+
+    # ══ ⊕ Stream D, 25 Sep 2026 (wording pass, stream A's `when` ══════════
+    # REDEFINITION) · THE MARKING SCREEN'S "SUBMITTED" TILE
+    #
+    # `pp.when === 'upcoming' ? 'Still open' : 'Marked automatically'` reads
+    # "Marked automatically" for every paper that is not upcoming — which,
+    # before stream A's 24 Sep 2026 ruling, meant every paper past its
+    # deadline (closed), and the caption was accurate: a closed paper's
+    # submission count cannot change again. Under the redefinition `when`
+    # flips to "marked" the moment a paper is RELEASED, so a paper that is
+    # released and still OPEN — more children can still submit — would have
+    # read "Marked automatically" too, which is now a claim about a count
+    # that is not final.
+    #
+    # ⚠️ `p.closed` IS THE FIELD THAT ACTUALLY MEANS "the deadline has
+    # passed" post-redefinition (DEFINITIONS #2) — `pp.when` no longer
+    # does. This branch is coded against it now; it is not yet present on
+    # this worktree (stream A merges first, per the run brief), so until
+    # that merge `pp.closed` reads `undefined`, the ternary's condition is
+    # falsy, and every paper reads "Still open" — the safe direction
+    # (understating finality) rather than the wrong one (claiming a live
+    # count is final).
+    ("          { label: 'Submitted', value: pp.sub, sub: pp.when === "
+     "'upcoming' ? 'Still open' : 'Marked automatically' },",
+     "          { label: 'Submitted', value: pp.sub, sub: pp.closed ? "
+     "'Marked automatically' : 'Still open' },",
+     "the marking screen's \"Submitted\" tile. \"Marked automatically\" "
+     "now means what it always should have: the deadline has passed and "
+     "the count is final. A released-but-open paper — new under stream "
+     "A's `when` redefinition — correctly reads \"Still open\" instead."),
+
+    # ⊕ Stream N, 25 Sep 2026 (experience run, item 11 / NF10) — THE TWO-WAY
+    # SPLIT ABOVE STILL HAD A THIRD STATE HIDING IN ITS "ELSE". `pp.closed ?
+    # 'Marked automatically' : 'Still open'` is right for a released paper —
+    # OPEN or CLOSED, the two states the ruling above was written to
+    # distinguish — but a SCHEDULED paper (`pp.state === 'scheduled'`,
+    # release_at still in the future) is neither, and fell into the same
+    # "else" as open: the audit's screenshot showed "SUBMITTED 0/8 · Still
+    # open" for a set that had not been released yet, which is not merely
+    # imprecise — it tells a teacher previewing tomorrow's set that pupils
+    # can submit to it today. `pp.state === 'scheduled'` is checked FIRST,
+    # so a scheduled paper reads "Scheduled" regardless of what `pp.closed`
+    # would otherwise say (a scheduled paper is never closed, but the order
+    # makes that true by construction rather than by coincidence).
+    ("          { label: 'Submitted', value: pp.sub, sub: pp.closed ? "
+     "'Marked automatically' : 'Still open' },",
+     "          { label: 'Submitted', value: pp.sub, sub: pp.state === "
+     "'scheduled' ? 'Scheduled'\n"
+     "            : (pp.closed ? 'Marked automatically' : 'Still open') },",
+     "the third state the two-way split above still called \"Still open\": "
+     "a SCHEDULED paper, not yet released, now says so rather than "
+     "claiming to be accepting submissions."),
+
+    # ⊕ Stream D, 25 Sep 2026 (wording pass) — the SECOND "On time vs late,
+    # marked work": the early-return guard's own copy of this title was
+    # fixed above (the "on time: an empty legend" ruling); this is the
+    # SAME title on the chart's actual populated return, which no earlier
+    # ruling touches.
+    ("      return { ...base, type: 'stack', title: (all ? 'On time vs "
+     "late, marked work' : k.code + ' — on time by assignment'),",
+     "      return { ...base, type: 'stack', title: (all ? 'On time vs "
+     "late, work with results' : k.code + ' — on time by assignment'),",
+     "the on-time chart's title on its populated return — Design's "
+     "literal, untouched by any earlier ruling. Same wording-pass reason "
+     "as its own empty-state twin."),
+
+    # ⊕ Stream D, 25 Sep 2026 (wording pass) — the "spread" chart's own
+    # "Students … With marked work" tile, Design's literal, untouched by
+    # any earlier ruling (the empty-state guard above it only handles
+    # `avgs.length === 0`).
+    ("        tiles: [tile('Students', avgs.length, 'With marked work'), "
+     "tile('Below 55%', low, 'Bottom two bands'), tile('70% or above', "
+     "high, 'Top two bands')],",
+     "        tiles: [tile('Students', avgs.length, 'With results'), "
+     "tile('Below 55%', low, 'Bottom two bands'), tile('70% or above', "
+     "high, 'Top two bands')],",
+     "the score-spread chart's \"Students\" tile — \"With marked work\" "
+     "→ \"With results\", same reason as every other tile in this "
+     "pass."),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 11) · THE DIGEST AND
+    #    THE CLASS PAGE COUNTED "TO CHASE" TWO DIFFERENT WAYS ═══════════
+    #
+    # The class screen's own chase list, "Remind all N" and the card
+    # eyebrow all come from `chaseFor(k)` — `rosterFor(k).filter(r =>
+    # !r.inWeek)`, everyone who has not handed in this week's work. The
+    # digest counted something narrower: `r.flag`, which ALSO requires a
+    # missing marked paper or an average under 50%. A pupil who simply
+    # has not submitted yet — no other black mark against them — was on
+    # the class page's chase list and invisible to the digest's, so a
+    # class offering "Remind all 6" showed the digest "4 to chase" for
+    # the same six children. The digest's own caption already promises
+    # the wider count ("Students with nothing in" — not "…and behind"),
+    # so it is `chaseFor` that was right and `flag` that was answering a
+    # narrower question under the wider caption.
+    #
+    # ⚠️ `flagged`/`watch` (the "Keep an eye on" card, `r.flag`) ARE NOT
+    # TOUCHED. That card is deliberately the narrower, more concerning
+    # population — nothing in AND missing-marked-or-struggling — and
+    # stays exactly as it is; only "to chase" gets the one definition.
+    (
+        "    const kFlagged = flagged.length;",
+        "    const kFlagged = this.chaseFor(k).length;",
+        "the class report's own \"Needs a look\" tile — `chaseFor(k)`, "
+        "the same count and the same method the class screen's \"Remind "
+        "all N\" already uses, in place of the narrower `flag` filter."
+    ),
+    (
+        "      const fl = live ? this.rosterFor(c).filter(r => r.flag)"
+        ".length : 0;",
+        "      const fl = this.chaseFor(c).length;",
+        "the whole-school digest's per-class row (and, through `flagN`, "
+        "the whole-school tile that sums it) — `chaseFor` already returns "
+        "`[]` for a non-live class, so the `live ? … : 0` guard is now "
+        "redundant rather than dropped: the two conditions said the same "
+        "thing under two different names."
+    ),
 
 )
 

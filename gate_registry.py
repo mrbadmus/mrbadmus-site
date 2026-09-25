@@ -1989,6 +1989,11 @@ GATES = [
          watches=["mrb348_teacher_rollup_proof.py",
                   "supabase/migrations/"
                   "20260922231500_mrb348_teacher_class_rollup.sql",
+                  # ⊕ Mide's 23 Sep 2026 ruling — the proof now also calls
+                  # `teacher_class_rollup_v2`, parked in this NEW migration
+                  # (not yet applied to production by this run).
+                  "supabase/migrations/"
+                  "20260924010000_rollup_live_results.sql",
                   "shared/teacher-data.js", "shared/teacher-live.js",
                   "shared/config.js"],
          needs="mrb348_teacher_rollup_proof.py",
@@ -2020,6 +2025,121 @@ GATES = [
              "⚠️ Its `--fixture` mode WRITES to TEST (and tears down by a "
              "snapshotted id list, never a predicate); the gate runs the "
              "DEFAULT mode, which writes nothing."),
+
+    # ── ⊕ Experience run, 24 Sep 2026 (item 13, legibility) ──────────────
+
+    dict(name="contrast_audit",
+         cmd=["python3", "contrast_audit.py", "--quick", "--gate"],
+         speed="fast",
+         watches=["contrast_audit.py", "ks3_browser.py",
+                  "shared/tokens.css", "shared/styles.css",
+                  "shared/ks4-chrome.css", "shared/ks3.css", "shared/nav.css",
+                  "teacher_rulings.py", "student_rulings.py",
+                  "build_teacher_port.py", "build_student_port.py",
+                  "build_leaderboard_port.py",
+                  "teacher_fixtures/**", "student/class-fixture.html",
+                  "student/assignment-fixture.html", "teacher/today.html",
+                  "teacher/timetable.html", "teacher/admin.html",
+                  "teacher/import.html",
+                  "ks3/biology/respiration/aerobic-respiration.html",
+                  "combined/higher/chemistry/atomic-structure.html",
+                  "combined/higher/chemistry/atomic-structure/"
+                  "model-of-the-atom.html",
+                  "auth.html", "leaderboard.html", "index.html"],
+         why="Mide, Experience run item 13: 'much of the dark text on the "
+             "cream background isn't clear enough.' Opens every teacher and "
+             "student page (plus one KS3 lesson, one KS4 lesson, one KS4 "
+             "chrome page, auth/leaderboard/index, all six student bench "
+             "themes, the Set work sheet and the shoutout composer) in "
+             "headless Chrome and measures the RENDERED contrast of every "
+             "visible text node, placeholder and disabled control — walking "
+             "ancestors and compositing real alpha AND `opacity`, not the "
+             "ratio a token's own comment claims against the one ground it "
+             "was checked on. THE GAP THAT MATTERS: `--st-caption` / "
+             "`--st-faint` / `--st-ghost` / `--st-muted` and KS4 chrome's "
+             "`--k4-muted-2` each measured AA on their DOCUMENTED ground and "
+             "under 4.5:1 on `--st-seg-bg` / `--k4-track`, the darkest cream "
+             "tint each is actually painted against — fixed by darkening at "
+             "the token (`shared/ks4-chrome.css`, and a `PORT_CSS`-style "
+             "override tail added to `student_rulings.py` mirroring "
+             "`teacher_rulings.PORT_CSS`, MRB-340, since `--st-*` lives in "
+             "Design's frozen bundle and is regenerated on every build). Also "
+             "caught: three border-hairline tokens reused for a readable "
+             "breadcrumb-separator glyph (`nav.css`, `ks3.css` ×2), a CSS "
+             "specificity collision in `ks4-chrome.css` (`button "
+             "{color:inherit}` beating `.chat-fab`'s own colour, 2.78:1), "
+             "the shared chat panel's header painting white text on the KS3 "
+             "accent at 3.68:1 regardless of any opacity, and one "
+             "`opacity`-dimmed subtitle now a solid `--on-accent-soft` "
+             "token. `--quick` (1280px only, no screenshots) is the gate; "
+             "run without `--quick` for the full 1280+390 sweep with "
+             "screenshots, used to produce the before/after report."),
+
+    # ── ⊕ Experience run, 24 Sep 2026 (stream G) · keyboard focus ──────
+
+    dict(name="focus_audit",
+         cmd=["python3", "focus_audit.py"],
+         speed="slow",
+         # ⚠️ MARKED `slow`, NOT THE `fast` THE ORIGINAL BRIEF NAMED. `fast`
+         # means "no browser, runs in seconds" (see the `speed` doc at the
+         # top of this file) and `prepush_gate.py` RUNS every fast gate on
+         # every push, unconditionally, inside the hook. This gate serves
+         # the whole repo and drives 17 pages through headless Chrome,
+         # tabbing up to 200 times each — tens of seconds, not seconds,
+         # and exactly the shape `slow` exists for. Making it `fast` would
+         # put a Chrome-driving sweep in the critical path of every push in
+         # the estate, which is the intolerable-hook failure mode this
+         # file's own docstring warns turns into "a gate that stops
+         # watching". Deviation recorded rather than silently followed.
+         watches=["focus_audit.py", "ks3_browser.py",
+                  "build_student_port.py", "build_teacher_port.py",
+                  "student_rulings.py", "student_template.py",
+                  "shared/student-runtime.js", "shared/student-live.js",
+                  "shared/set-work.js", "shared/set-work.css",
+                  "shared/styles.css", "shared/ks3.css", "shared/tokens.css",
+                  "shared/nav.css", "shared/mrbadmus.v2.js",
+                  "teacher_rulings.py", "teacher/today.html",
+                  "teacher/timetable.html", "teacher/admin.html",
+                  "teacher/import.html", "auth.html", "leaderboard.html",
+                  "index.html", "generate_site_v5.py", "build_ks3.py",
+                  "student/class-fixture.html",
+                  "student/assignment-fixture.html",
+                  "teacher_fixtures/*-fixture.html",
+                  "mrbadmus_site/ks3/**"],
+         needs="teacher_fixtures/class-detail-fixture.html",
+         why="production defect, found read-only 24 Sep 2026: a keyboard "
+             "user tabbing to a control on the student class page sees NO "
+             "visible change at all — most of its controls are Design's own "
+             "`<button style=\"all:unset;…\">`, and `all:unset` resets "
+             "`outline-style` to `none` AS AN INLINE DECLARATION, which "
+             "outranks any stylesheet selector regardless of specificity or "
+             "source order. This gate presses a REAL Tab key "
+             "(`Input.dispatchKeyEvent`, never a JS-dispatched "
+             "`KeyboardEvent` — an untrusted event runs no default action "
+             "and would never move focus at all) through every reachable "
+             "control on the student pages, six teacher-port fixtures, the "
+             "Set work sheet, the four hand-written teacher pages, three "
+             "root pages and one KS3 lesson, and compares each one's "
+             "computed outline/box-shadow/background/border focused "
+             "against unfocused. `_FOCUS_RING` in `build_student_port.py` "
+             "(and the equivalent inline rule in `build_teacher_port.py`, "
+             "which needed it for nothing found — see its own comment) is "
+             "the fix: the same `:focus-visible` ring Design already drew "
+             "in `shared/student-ds.css`'s R15, `!important`, which is the "
+             "one thing that can beat an inline style. "
+             "⚠️ THREE RESIDUAL FAILURES ARE KNOWN AND LEFT OPEN, and none "
+             "of them is a no-visible-change ring defect — the ring fix "
+             "closed every one of those. `student_assignment` and "
+             "`ks3_lesson` both redraw their whole mount at least once "
+             "shortly after first paint (`shared/student-runtime.js`'s "
+             "`draw()` on an async data resolve; the chat widget on "
+             "`ks3_lesson` similarly), which can silently discard this "
+             "gate's `data-mrb-fa` tags mid-sweep and read as elements Tab "
+             "never reached — reproduced before this run's CSS change too, "
+             "so it predates it. `root_leaderboard`'s one `UNREACHED` "
+             "(Sign Up) did not reproduce on a repeated isolated run and is "
+             "recorded as flaky rather than fixed blind. All three are "
+             "genuine findings for a follow-up, not gated here."),
 ]
 
 
@@ -2261,6 +2381,17 @@ EXCLUDED = {
     "student_shots.py":
         "photographs the wired student pages so a human can look. Produces "
         "images, asserts nothing.",
+    "breakdown_shots.py":
+        "photographs the Answer Breakdown panel (Mide's item 9) against a "
+        "fake in-page Supabase client, for the same reason student_shots "
+        "is here — mainly it produces images for a human to look at (the "
+        "topic grouping, the tick/cross marks, the class-wrong flag, a "
+        "figure), none of which it asserts. It DOES raise on one thing — "
+        "sideways scroll at 360/390/820/1280 — but that is a narrower claim "
+        "than a registered gate makes, and the control that opens the panel "
+        "is already asserted by teacher_behaviour (breakdown-open, via "
+        "AMENDED_ADDITIONS); this script is the follow-up a human runs to "
+        "look at what opens, not a pass/fail step a push depends on.",
     "student_theme_shots.py":
         "photographs the six bench themes for the same reason. The "
         "assertions about those colours live in student_themes, which IS "

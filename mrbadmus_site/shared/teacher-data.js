@@ -2103,12 +2103,33 @@ window.MrBadmusTeacherData = (function () {
             .select(
               'id, class_id, title, due_at, release_at, source, set_by, ' +
               'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
-              'created_at, academic_week, subject_id, ' +
+              'created_at, academic_week, subject_id, teacher_note, ' +
               'subject:subject_id ( id, name )'
             )
             .in('class_id', chunk)
             .is('deleted_at', null);
-          if (r.error) { r.error.__stage = 'assignments'; throw r.error; }
+          /* ⊕ Stream J, 25 Sep 2026 (experience run, item 4) — `teacher_note`
+             ADDED so the Set-work sheet's Edit form can show the note it is
+             about to overwrite (`buildPapers` in shared/teacher-live.js
+             carries it onto `p.note`, and `MRB_SET_WORK_EDIT` in
+             teacher_rulings.py passes it into `edit()`). Guarded the same
+             way `loadBankRows` guards an additive column in
+             shared/breakdown.js: retried without it on error, so a project
+             whose `assignments` table has not carried the migration yet
+             still loads every class rather than throwing on this one field. */
+          if (r.error) {
+            var r2 = await sb.from('assignments')
+              .select(
+                'id, class_id, title, due_at, release_at, source, set_by, ' +
+                'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
+                'created_at, academic_week, subject_id, ' +
+                'subject:subject_id ( id, name )'
+              )
+              .in('class_id', chunk)
+              .is('deleted_at', null);
+            if (r2.error) { r2.error.__stage = 'assignments'; throw r2.error; }
+            return r2.data || [];
+          }
           return r.data || [];
         }),
       ]);
@@ -2237,9 +2258,16 @@ window.MrBadmusTeacherData = (function () {
                note on the same drop in `loadClassDetail`). ⚠️ `id` is NOT
                droppable and was checked before it was considered: it
                becomes `subId` in `buildMatrix` (teacher-live.js ~945),
-               which is the only thing written feedback binds to. */
+               which is the only thing written feedback binds to.
+
+               ⊕ Mide's 25 Sep 2026 ruling (experience run, item 7) —
+               `started_at` ADDED. It is the one honest "were they here"
+               timestamp an IN-PROGRESS row has (`completed_at`/`submitted_at`
+               are both null until the paper is finished); `buildMatrix`'s
+               `activity[]` reads it so "last active" stops being blind to a
+               pupil still mid-way through an open paper. */
             .select('id, assignment_id, student_id, score, max_score, ' +
-                    'submitted_at, completed_at, status, is_late, attempts, attempt_no')
+                    'submitted_at, completed_at, started_at, status, is_late, attempts, attempt_no')
             .in('assignment_id', chunk)
             .is('deleted_at', null);
           if (r.error) throw r.error;
@@ -2301,6 +2329,9 @@ window.MrBadmusTeacherData = (function () {
         academic_week: a.academic_week,
         subject_id: a.subject_id,
         subject_name: a.subject ? a.subject.name : null,
+        // ⊕ Stream J, 25 Sep 2026 (experience run, item 4) — the stored
+        // note, carried through to `buildPapers` so Edit can show it.
+        teacher_note: a.teacher_note || "",
       });
     });
 
@@ -2357,9 +2388,23 @@ window.MrBadmusTeacherData = (function () {
    *                   completion_pct, class_mean, last_activity_at },
    *       papers:   [ { assignment_id, sub, off_roster, on_time, late,
    *                     unknown, marked_n, mean } ],
-   *       students: [ { student_id, in_week, last_at, avg,
+   *       students: [ { student_id, in_week, on_time_week, last_at, avg,
    *                     missing_marked } ]
    *   } }
+   *
+   * ⊕ Mide's 23 Sep 2026 ruling — RESULTS ARE LIVE, so this now calls
+   * `public.teacher_class_rollup_v2`, NOT `teacher_class_rollup`. The v1
+   * function is untouched (its `marked`/`in_week`/`missing_marked` still mean
+   * "the deadline has passed") because production DDL cannot change in this
+   * run; v2 is a NEW function, same signature, with `marked := released`,
+   * `closed := due_at passed`, `in_week := open OR due_at in window`,
+   * `missing_marked := a CLOSED paper with no cell`, and the new
+   * `on_time_week` per student. See `supabase/migrations/…_rollup_live_results.sql`
+   * (parked, not applied to production by this run) and
+   * `mrb348_teacher_rollup_proof.py` for the JS/SQL equivalence proof.
+   * `on_time_week` is `true` iff the student has a cell with `late = false`
+   * on a paper `in_week` — the same predicate `buildMatrix`'s `onTimeWeek`
+   * computes in the browser, for "Select all on time this week".
    *
    * `metrics` carries the SAME KEY NAMES `deriveClassMetrics` produces, so it
    * is a drop-in for the `classRows.forEach` metrics-fill block in
@@ -2407,9 +2452,18 @@ window.MrBadmusTeacherData = (function () {
    * Error codes:
    *   - invalid_class_id        — an id failed the UUID shape check
    *   - query_failed_summaries  — the RPC errored, INCLUDING the case where
-   *                               the function does not exist yet. The caller
-   *                               is expected to fall back to the full
-   *                               submissions read; see `base()`.
+   *                               `teacher_class_rollup_v2` does not exist yet
+   *                               on this project (PostgREST `PGRST202` /
+   *                               Postgres `42883` — the migration has not
+   *                               been applied). The caller is expected to
+   *                               fall back to the full submissions read for
+   *                               EVERY class asked for, not only the one it
+   *                               happened to be focused on; see `base()` in
+   *                               teacher-live.js, which does exactly that —
+   *                               `got` stays empty on a thrown error, so
+   *                               every id in `wantRoll` lands in `absent`
+   *                               and is re-read in full, with one
+   *                               `console.warn` naming the fallback.
    */
   async function loadClassSummaries(classIds, opts) {
     const ids = Array.from(new Set((classIds || []).filter(Boolean)));
@@ -2445,7 +2499,10 @@ window.MrBadmusTeacherData = (function () {
             if (windows[id]) { scoped[id] = windows[id]; }
           });
         }
-        const r = await sb.rpc('teacher_class_rollup', {
+        // ⊕ Mide's 23 Sep 2026 ruling — `_v2`, not `teacher_class_rollup`.
+        // See the function doc comment above for what changed and why this
+        // must be a new function name rather than an edit to the old one.
+        const r = await sb.rpc('teacher_class_rollup_v2', {
           p_class_ids: chunk,
           p_now: nowIso,
           p_windows: windows ? scoped : null,
@@ -2454,7 +2511,7 @@ window.MrBadmusTeacherData = (function () {
         return r.data || [];
       });
     } catch (err) {
-      const e = new Error('[teacher-data] teacher_class_rollup failed: ' + (err && err.message));
+      const e = new Error('[teacher-data] teacher_class_rollup_v2 failed: ' + (err && err.message));
       e.code = 'query_failed_summaries';
       e.cause = err;
       throw e;
@@ -2578,7 +2635,7 @@ window.MrBadmusTeacherData = (function () {
         inChunks(ids, async function (chunk) {
           const r = await sb.from('assignment_submissions')
             .select('id, assignment_id, student_id, score, max_score, ' +
-                    'submitted_at, completed_at, status, is_late, attempts, attempt_no')
+                    'submitted_at, completed_at, started_at, status, is_late, attempts, attempt_no')
             .in('assignment_id', chunk)
             .is('deleted_at', null);
           if (r.error) { r.error.__stage = 'submissions'; throw r.error; }

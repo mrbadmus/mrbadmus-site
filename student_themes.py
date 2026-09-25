@@ -120,19 +120,27 @@ STATED_TOL = 0.15  # beyond this, Design's stated figure gets a row. Not a fail.
 # ⚠️ NOT A FLOOR CHANGE. `AA` stays 4.5 for everything else. One string is
 # named, at one pair of colours, with its ratio pinned; nothing else in the
 # bench is excused by it, and a SECOND string appearing at 4.2 fails.
-BENCH_TEXT_EXCEPTIONS = [
-    {
-        "name": "the docket's header band",
-        "text": "This week’s assignment",
-        "fg": "#7A6E5F",
-        "bg": "#F2E8D6",
-        "ratio": 4.09,
-        "tol": 0.06,
-        "why": "Design's own docket styling, theme-independent, and it "
-               "measured 4.09 before the bench themes existed — the themes "
-               "did not move it.",
-    },
-]
+#
+# ⊕ RETIRED 24 Sep 2026 (Experience run, item 13, legibility). The entry that
+# stood here read:
+#
+#     BENCH_TEXT_EXCEPTIONS = [{"name": "the docket's header band",
+#         "text": "This week’s assignment", "fg": "#7A6E5F", "bg": "#F2E8D6",
+#         "ratio": 4.09, "tol": 0.06, "why": "Design's own docket styling, …"}]
+#
+# `contrast_audit.py`'s rendered-page sweep found the same string at the same
+# colours during Mide's "dark text on cream isn't clear enough" audit —
+# `--st-caption` (#7A6E5F) measured under 4.5:1 against every real cream tint
+# it is painted on except the one its own comment in Design's bundle checked.
+# The token was darkened at the source (`student_rulings.PORT_CSS`, mirroring
+# `teacher_rulings.PORT_CSS`) rather than exempted a second time, so this
+# string now measures 5.23:1 — this gate itself caught the registration
+# going stale (`FAIL … NOT found on the page as registered`) on the run right
+# after the fix landed, which is the self-check this comment always promised:
+# "If Design fixes it, this registration goes RED as stale and whoever is
+# here next deletes it." Deleted, not emptied-and-kept, so the floor covers
+# this string again like any other.
+BENCH_TEXT_EXCEPTIONS = []
 
 # ── page chrome: espresso, fixed, and the two near-blacks still standing ─
 #

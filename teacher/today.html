@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#F7F1E5"/>
   <title>Today — Mr Badmus AI</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=4ac1e47c"/>
   <!-- ⊕ MRB-306 Phase 2a — v3's design system, the same sheet the six
        GENERATED teacher screens load. It carries the --st-* tokens this
        page's chrome is drawn from. It also re-ships an older copy of
@@ -15,7 +16,7 @@
        (measured — it is a strict subset), so the order of these two links
        changes nothing, and its later @font-face block points at the same
        /shared/fonts/ URLs. -->
-  <link rel="stylesheet" href="/shared/teacher-ds.css?v=d6e74d32"/>
+  <link rel="stylesheet" href="/shared/teacher-ds.css?v=6ac8f824"/>
   <style>
     html { background: var(--st-ground); }
     :root {
@@ -94,10 +95,22 @@
     .tb-tab:hover { color: var(--st-ink); text-decoration: none; }
     .tb-tab.is-on { background: var(--st-paper); color: var(--st-ink); }
 
-    /* The environment badge. ⚠️ NOTHING ON THIS PAGE EVER REVEALS IT — no
-       script here touches `#env-pill` (admin.html and import.html each have
-       their own that does). Kept as it was found, hidden, and restyled so it
-       is v3-shaped the day something wires it. */
+    /* The environment badge. ⊕ Stream M, 25 Sep 2026 (experience run round
+       3, item 26) — WIRED. It used to say "nothing here touches `#env-pill`
+       … kept hidden, restyled for the day something wires it"; that day is
+       this one. A teacher signed into a TEST backend saw a plain "Good
+       morning" with no hint they were not looking at real pupils' data,
+       while every generated page (the six `build_teacher_port.py` screens)
+       already carries the same badge via `envBadge()` in
+       `shared/teacher-live.js`. This page does not load that module — it is
+       the one runtime file every generated screen pulls in, and pulling it
+       in here for six lines of logic would be a lot of script for a pill —
+       so `envPillFor()` below reimplements the same TWO rules instead:
+       env.toUpperCase() (LOCAL when unset), and — because a badge that is
+       always there warns of nothing (`envBadge`'s own comment) — nothing at
+       all on the real `mrbadmus.com` production host. See
+       `shared/teacher-live.js`'s `envBadge` for the source of truth if the
+       two are ever compared. */
     .pill {
       flex: none;
       padding: 5px 8px;
@@ -596,7 +609,7 @@
        The old bar's comment said "nothing here computes either" — this page
        computes it (`teacherName(ctx.profile)`), it just had nowhere to put it. -->
   <span class="tb-name" id="tb-name"></span>
-  <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
+  <span id="env-pill" class="pill env-prod" style="display:none;"></span>
   <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
 </nav>
 
@@ -720,7 +733,17 @@
      is not already on the page, and this page's very first read needs it. -->
 <script src="/shared/class-entry.js?v=a97c1d3d"></script>
 <script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
-<script src="/shared/teacher-data.js?v=3fef17de"></script>
+<script src="/shared/teacher-data.js?v=9a893cec"></script>
+<!-- ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — LIBRARY MODE ONLY.
+     `teacher-live.js` owns the ONE definition of "this week's homework"
+     (buildPapers/buildMatrix/buildRoster) and this page used to keep its
+     own copy of that rule, which is how it came to disagree with My
+     classes / Charts / the digest on a week carrying two open sets. The
+     flag below MUST be set before this tag: it tells the module to define
+     its exports and stop — never to call `run()`, which mounts a WHOLE
+     second dashboard against a `__MRB_TPL__` this page does not have. -->
+<script>window.MRB_TEACHER_LIVE_NO_AUTORUN = true;</script>
+<script src="/shared/teacher-live.js?v=5de6cfd0"></script>
 <script src="/shared/teacher-admin-nav.js?v=58c0e260"></script>
 <!-- ⊕ MRB-323 — the name picker. Defines `window.MrBadmusPicker` and does
      nothing until a lesson row's picker button is pressed. It makes no
@@ -843,15 +866,44 @@ function greetingFor(name) {
   return name ? (part + ', ' + name) : part;
 }
 
-/* The name students see. `display_name` is the "What name should students
-   see" field; where a teacher has not set one, fall back the same way
-   `class_teachers_for_viewer` does, so one person is never named two ways. */
+/* ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 26) — the same two
+   rules `envBadge()` in shared/teacher-live.js applies for every generated
+   screen: uppercase the configured environment (LOCAL when there is none),
+   and say nothing at all on the real production host — a badge that is
+   always there warns of nothing. Returns '' to mean "show no pill". */
+function envPillFor() {
+  const cfg = window.MrBadmusConfig || {};
+  const env = String(cfg.environment || '');
+  const host = String(window.location.hostname || '');
+  const live = (host === 'mrbadmus.com' || host === 'www.mrbadmus.com');
+  if (live && env === 'prod') { return ''; }
+  return env ? env.toUpperCase() : 'LOCAL';
+}
+
+/* ⊕ Stream N, 25 Sep 2026 (experience run, item 26) — THE FALLBACK WAS THE
+   FULL NAME; IT IS NOW THE FIRST NAME, MATCHING EVERY GENERATED SCREEN.
+   This used to read "The name STUDENTS see… fall back the same way
+   `class_teachers_for_viewer` does" — a rule copied in from a genuinely
+   different consumer (a byline a PUPIL reads, e.g. "set by your teacher"),
+   applied here to the teacher's OWN greeting and top bar, which nothing
+   else on the site treats that way: `teacher-live.js`'s
+   `teacherName: (profile && profile.first_name) || ""` is what every one
+   of the six generated screens shows, and it never falls back to a
+   surname at all. Left as the full name, a teacher with no `display_name`
+   set (nearly everyone) read "Good afternoon, Tara Audit" here and "Good
+   afternoon, Tara" on every other screen — the same person, named two ways
+   one page apart.
+
+   `display_name` ITSELF STAYS FIRST, because it is the one part of the old
+   rule that is genuinely about THIS teacher's own preference — a name they
+   chose to be shown as — and `today_drive.py`'s own fixture (`display_name:
+   "Ms Nwosu"`) already proves this bar honours it. Only the FALLBACK below
+   it changes, from "the full name" to "the plain first name". */
 function teacherName(profile) {
   if (!profile) { return ''; }
   const dn = (profile.display_name || '').trim();
   if (dn) { return dn; }
-  const fl = ((profile.first_name || '') + ' ' + (profile.last_name || '')).trim();
-  return fl || '';
+  return profile.first_name || '';
 }
 
 /* ⊕ MRB-326 JOB 3 · RULING 8 — THE EYEBROW, FROM DATA AND NOTHING ELSE.
@@ -1086,12 +1138,32 @@ MrBadmusTeacherGuard.requireTeacherRole({
        by looking at the screenshot, not by the assertions. */
     document.body.style.display = 'block';
     const TD = window.MrBadmusTeacherData;
+    /* ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — the seam's pure
+       builders, in library mode (see the script tag above). `deriveFor`
+       below is this page's only caller. */
+    const TL = window.MrBadmusTeacherLive;
 
+    /* ⊕ Stream N, 25 Sep 2026 (experience run, item 26) — see `teacherName()`
+       above, whose FALLBACK is the fix (the full-name case; a set
+       `display_name` still wins here exactly as it did before). */
     const name = teacherName(ctx && ctx.profile);
     el('greeting').textContent = greetingFor(name);
     /* Design's bar names the teacher between the search and Sign out. This
        page has always held the string; it had nowhere to put it. */
     el('tb-name').textContent = name;
+
+    /* ⊕ Stream M, 25 Sep 2026 (item 26) — the environment pill, wired. See
+       `envPillFor()`'s own comment for why this reimplements
+       `envBadge()` rather than loading `shared/teacher-live.js` for it. */
+    const envPill = el('env-pill');
+    const envWord = envPillFor();
+    if (envWord) {
+      envPill.textContent = envWord;
+      envPill.className = 'pill env-' + envWord.toLowerCase();
+      envPill.style.display = '';
+    } else {
+      envPill.style.display = 'none';
+    }
 
     /* Armed before anything is read. It makes no request until pressed. */
     armSearch(TD);
@@ -1408,6 +1480,47 @@ MrBadmusTeacherGuard.requireTeacherRole({
        and do not add a second copy of it. */
     const HELD_TEXT = 'No assignment set yet';
 
+    /* ⊕ MRB-325 ruling 1, ⊕ Stream L, 25 Sep 2026 (experience run, item 1)
+       — ONE papers/matrix/roster PER CLASS, built from the seam, cached by
+       class id. Before this the lesson row (`describeClass`) and the chase
+       panel each re-derived "this week's homework" from raw `pack` fields,
+       with `weekState` picking a SINGLE paper (`papers[0]`, newest due) —
+       which is exactly what read "0 of 8 in — chase Lydia, Annabel" on a
+       class carrying Electricity (open, 3 of 8 in) plus a Waves set released
+       a minute earlier: it counted only the new set and told the teacher to
+       chase pupils who had already finished the week's other paper. My
+       classes, Charts and the digest do not make that mistake because they
+       already go through `buildMatrix`'s `inWeekPaper`/`row.inWeek`, which
+       is the OR of every in-week paper, not the single newest one. Today
+       now reads the same two functions instead of keeping a second, looser
+       copy of "this week" that only agreed with them by coincidence. */
+    const derived = {};
+    function deriveFor(cid, pack) {
+      if (derived[cid]) { return derived[cid]; }
+      if (!pack) { return null; }
+      const now = Date.now();
+      const papers = TL.buildPapers(pack, now);
+      const mx = TL.buildMatrix(pack, papers, now);
+      const roster = TL.buildRoster(pack, mx, now);
+      const d = { pack: pack, papers: papers, mx: mx, roster: roster };
+      derived[cid] = d;
+      return d;
+    }
+
+    /* Per-student "N missed this term" — the COUNT `buildRoster`'s own
+       `missingMarked` collapses to a boolean. Same fields the seam already
+       computed (`mx.closedIdx`, `row.submitted[]`), counted instead of
+       `.some()`-stopped at the first one: not a second rule, the same rule
+       read to completion. */
+    function missedCount(mx, sid) {
+      const row = mx.byId[sid];
+      let n = 0;
+      mx.closedIdx.forEach(function (i) {
+        if (!(row && row.submitted[i])) { n += 1; }
+      });
+      return n;
+    }
+
     classIds.forEach(function (cid) {
       const cells = document.querySelectorAll('[data-state-for="' + cid + '"]');
       if (!cells.length) { return; }
@@ -1422,7 +1535,7 @@ MrBadmusTeacherGuard.requireTeacherRole({
         return;
       }
 
-      const state = describeClass(matrices[cid]);
+      const state = describeClass(deriveFor(cid, matrices[cid]));
       cells.forEach(function (c) {
         c.className = 'lesson-state ' + state.tone;
         c.textContent = state.text;
@@ -1572,41 +1685,65 @@ MrBadmusTeacherGuard.requireTeacherRole({
       return;
     }
 
-    const nowIso = new Date().toISOString();
-
     /* ── WHO OWES THIS WEEK'S WORK ────────────────────────────────────────
-       From `weekState`, the SAME derivation the lesson line beside it just
-       used, so the panel can never list a student the row above says is in.
-       The per-student figures come from `termStats`, which is `buildRoster`'s
-       two numbers on the rows this page already holds. */
+       `deriveFor`'s roster, the SAME derivation the lesson line beside it
+       just used (`describeClass`), so the panel can never list a student
+       the row above says is in. "Owing" is `!r.inWeek` — a complete cell on
+       AT LEAST ONE in-week paper — over EVERY in-week paper at once, not
+       the single newest one `weekState` used to pick. */
     const chaseRows = [];
     const chaseSeen = {};
-    const remindBy = {};   // classId -> { assignmentId, studentIds }
+    const remindBy = {};   // classId -> [{ assignmentId, studentIds }]
     /* ⊕ CORRECTION 1 — `panelIds` and `allMx`, not `classIds` and
        `matrices`: every class the teacher holds, today's first. */
     panelIds.forEach(function (cid) {
-      const pack = allMx[cid];
-      const st = weekState(pack);
-      if (st.why !== 'ok' || !st.owing.length) { return; }
-      const stats = termStats(pack, nowIso);
-      remindBy[cid] = {
-        assignmentId: st.paper.id,
-        studentIds: st.owing.map(function (m) { return m.student_id; })
-      };
-      st.owing.forEach(function (m) {
-        const s = stats[m.student_id] || { missed: 0, avg: null };
+      const d = deriveFor(cid, allMx[cid]);
+      /* A class with NO in-week paper at all (no work ever set, or only
+         closed work outside the current window) owes nothing THIS WEEK —
+         `!r.inWeek` would otherwise be true for every roster row simply
+         because there is no paper for it to be true ON, turning an empty
+         class into a chase list of its whole roll. Same guard
+         `describeClass` uses. */
+      if (!d || !d.roster.length || !Object.keys(d.mx.inWeekPaper || {}).length) { return; }
+      const owing = d.roster.filter(function (r) { return !r.inWeek; });
+      if (!owing.length) { return; }
+
+      /* One reminder GROUP per in-week paper, exactly the class screen's
+         own `kRemind` model (teacher_rulings.py, MRB-326 JOB 4c): a
+         reminder names ONE assignment, and a pupil missing two of the
+         week's papers is chased about both rather than silently one. The
+         union of every group's `studentIds` is `owing`, dedup'd by the
+         seam already having a full class picture — this is not scoped to
+         a single "the" paper because there no longer is one. */
+      const groups = [];
+      d.papers.forEach(function (p) {
+        if (!d.mx.inWeekPaper[p.idx]) { return; }
+        const row = d.mx.byId;
+        const missingIds = owing.filter(function (r) {
+          const mine = row[r.id];
+          return !(mine && mine.submitted[p.idx]);
+        }).map(function (r) { return r.id; });
+        if (missingIds.length) { groups.push({ assignmentId: p.id, studentIds: missingIds }); }
+      });
+      if (groups.length) { remindBy[cid] = groups; }
+
+      owing.forEach(function (r) {
         /* Distinct STUDENTS, not distinct rows — and `panelIds` order is
            what decides which class a twice-taught child is filed under. */
-        if (chaseSeen[m.student_id]) { return; }
-        chaseSeen[m.student_id] = true;
+        if (chaseSeen[r.id]) { return; }
+        chaseSeen[r.id] = true;
         chaseRows.push({
-          id: m.student_id,
-          name: fullName(m.first_name, m.last_name) || 'Student',
-          first: m.first_name, last: m.last_name,
+          id: r.id,
+          name: r.name,
+          first: r.first_name, last: r.last_name,
           classId: cid,
           code: codeOf[cid] || '',
-          missed: s.missed,
-          avg: s.avg
+          missed: missedCount(d.mx, r.id),
+          avg: r.avg,
+          // `startedInWeek` lives on the MATRIX row (`buildMatrix`), not the
+          // roster row `buildRoster` returns — the matrix walks the cells,
+          // the roster only summarises them.
+          startedInWeek: !!(d.mx.byId[r.id] && d.mx.byId[r.id].startedInWeek)
         });
       });
     });
@@ -1636,7 +1773,7 @@ MrBadmusTeacherGuard.requireTeacherRole({
              '<div class="panel-head"><span class="panel-name">' + esc(r.name) + '</span>' +
              (withCode ? '<span class="panel-code">' + esc(r.code) + '</span>' : '') +
              '</div>' +
-             '<div class="panel-reason">' + esc(reasonFor(r.missed, r.avg)) + '</div>' +
+             '<div class="panel-reason">' + esc(reasonFor(r.missed, r.avg, r.startedInWeek)) + '</div>' +
              '</div></div>';
     }
 
@@ -1741,13 +1878,19 @@ MrBadmusTeacherGuard.requireTeacherRole({
           remindBtn.disabled = true;
           remindBtn.textContent = remindState.label;
           try {
-            const written = await Promise.all(Object.keys(remindBy).map(function (cid) {
-              const r = remindBy[cid];
-              return TD.sendReminders({
-                classId: cid, assignmentId: r.assignmentId,
-                studentIds: r.studentIds, teacherId: teacherId
+            /* One call per (class, in-week paper) group — see the note
+               where `remindBy` is built. A class carrying two open sets is
+               two calls, not one with the wrong assignment id on it. */
+            const calls = [];
+            Object.keys(remindBy).forEach(function (cid) {
+              remindBy[cid].forEach(function (g) {
+                calls.push(TD.sendReminders({
+                  classId: cid, assignmentId: g.assignmentId,
+                  studentIds: g.studentIds, teacherId: teacherId
+                }));
               });
-            }));
+            });
+            const written = await Promise.all(calls);
             /* ⊕ MRB-326 post-review, 6 Sep 2026 — CHILDREN, NOT ROWS.
                This summed `rows.length` across the classes. `chaseRows`
                above dedups by student — a child taught by this teacher in
@@ -1813,8 +1956,14 @@ MrBadmusTeacherGuard.requireTeacherRole({
        chunks internally, so a dozen classes' newest marked papers is a couple
        of round trips, and this fires AFTER the chase panel has painted. */
     panelIds.forEach(function (cid) {
-      const paper = newestMarkedPaper(allMx[cid], nowIso);
-      if (paper) { wanted.push({ cid: cid, paper: paper }); }
+      const d = deriveFor(cid, allMx[cid]);
+      if (!d) { return; }
+      /* `newestMarkedIdx` — the same "newest RELEASED paper with a cell"
+         the class screen's reteach card and marking-screen default use
+         (THE DEFINITIONS #8/#9), not the deadline-based pick this page used
+         to make on its own. */
+      const idx = TL.newestMarkedIdx(d.papers, d.mx);
+      if (idx >= 0) { wanted.push({ cid: cid, paper: d.papers[idx] }); }
     });
 
     let qpacks = null;
@@ -1907,202 +2056,121 @@ MrBadmusTeacherGuard.requireTeacherRole({
 
 /* The doneness test, written ONCE.
 
-   ⚠️ It is the UNION — completed_at, submitted_at, or status === 'complete' —
-   the same one `teacher-live.js`'s cellOf() uses, so this page cannot
-   disagree with the class screens ("one number, one source"), and it can
-   never count a student as owing work when their own page reads Complete.
-   The literal is 'complete', NOT 'completed'. */
+   WARNING: it is the UNION -- completed_at, submitted_at, or
+   status === 'complete' -- the same one teacher-live.js's cellOf() uses, so
+   this page cannot disagree with the class screens ("one number, one
+   source"). Still used by weakestQuestion below, which works over a
+   per-QUESTION pack the seam's builders do not touch. The literal is
+   'complete', NOT 'completed'. */
 function isDone(s) {
   if (!s) { return false; }
   return !!(s.completed_at || s.submitted_at) || s.status === 'complete';
 }
 
-/* ⊕ MRB-325 ruling 1 — THIS WEEK'S PAPER AND WHO OWES IT, in one place.
-   `describeClass` used to compute this inline and was its only reader; the
-   chase panel needs the very same set of students, and deriving it a second
-   time is how the sentence on a lesson row and the names in the panel beside
-   it come to disagree. The sentences below are UNCHANGED, byte for byte —
-   only where their numbers come from moved. */
-function weekState(pack) {
-  if (!pack) { return { why: 'unknown', members: [] }; }
-  const assignments = pack.assignments || [];
-  const members = pack.members || [];
-  if (!assignments.length) { return { why: 'no-work', members: members }; }
-  if (!members.length) { return { why: 'no-students', members: members }; }
+/* =========================================================================
+   STREAM L, 25 Sep 2026 (experience run, item 1) -- THE TWO PANELS NOW
+   READ THE SEAM, NOT A SECOND COPY OF IT
+   =========================================================================
 
-  // This week's work: the newest by due date, nulls first — the same order
-  // buildPapers uses, where index 0 is the week the class opens parked on.
-  const papers = assignments.slice().sort(function (a, b) {
-    if (a.due_at == null && b.due_at == null) { return 0; }
-    if (a.due_at == null) { return -1; }
-    if (b.due_at == null) { return 1; }
-    return a.due_at < b.due_at ? 1 : -1;
-  });
-  const paper = papers[0];
-  if (!paper) { return { why: 'unknown', members: members }; }
+   This used to say shared/teacher-live.js could not be called -- it was a
+   self-running IIFE that exported nothing usable here, so weekState,
+   markedPapers, termStats and newestMarkedPaper each kept an independent
+   copy of "this week", "missed" and "the newest marked paper". weekState in
+   particular picked a SINGLE paper (the newest by due date) as "this week's
+   work" -- correct on Design's fiction, where a class never carries two
+   live sets, and wrong on a real one: with Electricity (open) and a
+   same-day Waves release both live, it counted only Waves and told the
+   teacher to chase pupils who had already handed Electricity in. That is
+   the audit's item 10 / N2.
 
-  const doneBy = {};
-  (pack.submissions || []).forEach(function (s) {
-    if (s.assignment_id !== paper.id) { return; }
-    if (isDone(s)) { doneBy[s.student_id] = true; }
-  });
+   teacher-live.js now exports its pure builders in library mode (see the
+   script tag above and MRB_TEACHER_LIVE_NO_AUTORUN in that file) --
+   buildPapers/buildMatrix/buildRoster, called once per class by deriveFor
+   near the top of onAllowed. Everything below reads THEIR output
+   (d.papers, d.mx, d.roster) instead of pack.assignments/pack.submissions
+   directly, so "this week", "in", "missing" and "the newest marked paper"
+   cannot drift from what My classes, Charts and the digest already show
+   for the same class. */
 
-  const owing = members.filter(function (m) { return !doneBy[m.student_id]; });
-  return {
-    why: 'ok',
-    paper: paper,
-    members: members,
-    total: members.length,
-    inCount: members.length - owing.length,
-    owing: owing
-  };
-}
+/* What to say about one class -- Design's describeClass, now over a
+   deriveFor bundle rather than a raw pack.
 
-/* What to say about one class, from its own submission rows.
+   MRB-326 JOB 3 -- RULING 7 -- THE NUMERIC FORM, AND DESIGN'S NAMES.
 
-   ⊕ MRB-326 JOB 3 · RULING 7 — THE NUMERIC FORM, AND DESIGN'S NAMES.
+   - CHASE. Design's own string, adopted whole: "11 of 29 in -- chase Hana P,
+     Idris B +16 more". It replaces "11 of 29 in - 18 still to hand in",
+     which said the same arithmetic twice -- 29 minus 11 IS 18 -- and named
+     nobody. Two names is Design's slice(0, 2).
+   - ALL IN. "29/29 in", replacing "All 29 homeworks in -- nothing to
+     chase". "Nothing to chase" is the absence of the chase clause and does
+     not need saying, and the summary sentence above already counts the
+     whole day's chase list.
+   - The empty-roster and no-work states keep their ONE honest sentence
+     each.
 
-   · CHASE. Design's own string, adopted whole: "11 of 29 in — chase Hana P,
-     Idris B +16 more". It replaces "11 of 29 in · 18 still to hand in", which
-     said the same arithmetic twice — 29 minus 11 IS 18 — and named nobody.
-     Two names is Design's `slice(0, 2)`.
-   · ALL IN. "29/29 in", replacing "All 29 homeworks in — nothing to chase".
-     "Nothing to chase" is the absence of the chase clause and does not need
-     saying, and the summary sentence above already counts the whole day's
-     chase list.
-   · The empty-roster and no-work states keep their ONE honest sentence each.
+   WARNING: no status line duplicates the summary. The summary counts
+   PEOPLE across the day; these count HANDINS for one class.
 
-   ⚠️ NO STATUS LINE DUPLICATES THE SUMMARY. The summary counts PEOPLE across
-   the day; these count HANDINS for one class. */
-function describeClass(pack) {
-  const st = weekState(pack);
-  if (st.why === 'unknown') { return { text: '', tone: 'clear' }; }
-  if (st.why === 'no-work') {
-    /* No work set. Say so; do NOT offer to set it — nothing on a teacher
-       surface can compose an assignment. */
+   WARNING: "in" is now the OR of every in-week paper, per THE DEFINITIONS
+   #5 -- roster[i].inWeek, which buildRoster sets true the moment a pupil
+   has a COMPLETE cell on ANY paper mx.inWeekPaper flags, not only the
+   single paper this function used to pick for itself. */
+function describeClass(d) {
+  if (!d) { return { text: '', tone: 'clear' }; }
+  if (!d.papers.length) {
+    /* No work set, ever. Say so; do NOT offer to set it -- nothing on a
+       teacher surface can compose an assignment. */
     return { text: 'No work set this week.', tone: 'clear' };
   }
-  if (st.why === 'no-students') {
+  if (!d.roster.length) {
     return { text: 'No students on this class yet.', tone: 'clear' };
   }
-
-  const owing = st.owing;
-  if (!owing.length) {
-    /* Design's `readyFg` for this state is her KS3 "ok" green, not muted —
-       a class that is all in is good news, and it reads as good news. */
-    return { text: st.total + '/' + st.total + ' in', tone: 'done' };
+  /* Work exists, but none of it is IN-WEEK (every paper is closed with a
+     due date outside the current window, or scheduled) -- the same honest
+     sentence as "never set anything", because there is nothing this week
+     to be in or out of. */
+  if (!Object.keys(d.mx.inWeekPaper || {}).length) {
+    return { text: 'No work set this week.', tone: 'clear' };
   }
-  const named = owing.slice(0, 2).map(function (m) {
-    return shortName(fullName(m.first_name, m.last_name) || 'Student');
+
+  const owing = d.roster.filter(function (r) { return !r.inWeek; });
+  if (!owing.length) {
+    /* Design's readyFg for this state is her KS3 "ok" green, not muted --
+       a class that is all in is good news, and it reads as good news. */
+    return { text: d.roster.length + '/' + d.roster.length + ' in', tone: 'done' };
+  }
+  const named = owing.slice(0, 2).map(function (r) {
+    return shortName(r.name || 'Student');
   }).join(', ');
   return {
-    text: st.inCount + ' of ' + st.total + ' in — chase ' + named +
+    text: (d.roster.length - owing.length) + ' of ' + d.roster.length + ' in — chase ' + named +
           (owing.length > 2 ? ' +' + (owing.length - 2) + ' more' : ''),
     tone: 'chase'
   };
 }
 
-/* Why this child is on the chase list — Design's `reasonFor`, branch for
+/* Why this child is on the chase list -- Design's reasonFor, branch for
    branch.
 
-   ⚠️ THE AVERAGE IS ONLY SHOWN WHEN IT IS PART OF THE REASON. This page used
-   to append "· avg 78%" to every row, which is not a reason to chase anybody
-   and pushed the number that IS one off the end of a narrow panel. Design's
-   rule: the average appears only under 50%, and where there is neither a
-   miss nor a low average the honest line is that this week's work is not in
-   — which is why the row is there at all. */
-function reasonFor(missed, avg) {
+   WARNING: the average is only shown when it is part of the reason. This
+   page used to append "- avg 78%" to every row, which is not a reason to
+   chase anybody and pushed the number that IS one off the end of a narrow
+   panel. Design's rule: the average appears only under 50%, and where
+   there is neither a miss nor a low average the honest line is that this
+   week's work is not in -- which is why the row is there at all.
+
+   Mide's 25 Sep 2026 ruling (experience run, item 12) -- an in-progress
+   pupil is NOT "nothing in this week". buildRoster's startedInWeek is
+   exactly this: a row exists on an in-week paper (first answer given) that
+   is not yet complete. Falls between the low-average branch and the
+   catch-all, the same place the class page's own status word sits between
+   "Missing" and "Complete". */
+function reasonFor(missed, avg, startedInWeek) {
   if (missed && avg != null && avg < 50) { return missed + ' missed this term · avg ' + avg + '%'; }
   if (missed) { return missed + ' missed this term'; }
   if (avg != null && avg < 50) { return 'Averaging ' + avg + '%'; }
+  if (startedInWeek) { return 'In progress'; }
   return 'Nothing in this week';
-}
-
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   \u2295 MRB-325 ruling 1 \u2014 THE TWO PANELS
-   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-
-   \u2691 WHY THESE DERIVATIONS ARE RE-DERIVED HERE RATHER THAN IMPORTED.
-   `shared/teacher-live.js` owns `buildRoster` (the "Keep an eye on" numbers)
-   and `weakFor` (the class screen's "Reteach from the last set"), which are
-   the two this page has to agree with. Neither can be called: teacher-live.js
-   is a self-running IIFE that EXPORTS NOTHING \u2014 it ends in `run().catch(\u2026)`,
-   its whole surface is closure-private, and it mounts itself against the
-   generated pages' `__MRB_TPL__`, which this hand-written page does not have.
-   Loading it here would start a second dashboard inside Today.
-
-   So the numbers are re-derived from the SAME raw fields \u2014 `pack.members`,
-   `pack.assignments`, `pack.submissions`, all already in hand for the lesson
-   lines \u2014 using the same tests, and each one below is named against the
-   function it has to match. This unit introduces NO new definition of
-   "missed", "average" or "weakest"; if one of these ever drifts from its
-   counterpart that is a defect, not a difference of opinion.               */
-
-/* A class's CLOSED papers. `buildPapers` sets `when: open ? "upcoming" :
-   "marked"` from `open = !a.due_at || a.due_at > now`, so a "marked" paper is
-   exactly one whose deadline has passed. An assignment with no deadline never
-   closes and is never counted here. */
-function markedPapers(pack, nowIso) {
-  return ((pack && pack.assignments) || []).filter(function (a) {
-    return a.due_at && a.due_at <= nowIso;
-  });
-}
-
-/* Per-student "missed this term" and "avg X%", matching `buildRoster`.
-
-   \u00B7 MISSED \u2014 `buildRoster` computes `missingMarked`, a BOOLEAN over
-     `mx.markedIdx`: "is there a marked paper this student never submitted".
-     Design's row wants the COUNT of them: the same predicate over the same
-     papers, counted rather than collapsed. Nothing else changes.
-
-   \u00B7 AVG \u2014 `buildMatrix`'s `studentAvg`: sum(score) / sum(max) over the marked
-     papers, per student, rounded. `null` \u2014 NEVER 0 \u2014 when nothing of theirs
-     is graded, because 0% is a claim about how a child did and "nothing
-     marked" is not that claim. Only a cell `cellOf` would have kept counts:
-     handed in, with both a score and a max, and max > 0.
-
-   \u26A0\uFE0F "THIS TERM" IS DESIGN'S WORD AND IT IS APPROXIMATE. The population is
-   the class's own closed assignments \u2014 a class belongs to one academic year
-   so it cannot reach across years \u2014 but `academic_years` records a start and
-   an end and NOTHING about half terms, which is the same limitation
-   `teacher-live.js`'s week bar already carries in writing. Not re-litigated
-   here; recorded so the next reader knows what the words cover. */
-function termStats(pack, nowIso) {
-  const marked = markedPapers(pack, nowIso);
-  const byStudent = {};
-  ((pack && pack.submissions) || []).forEach(function (s) {
-    if (!byStudent[s.student_id]) { byStudent[s.student_id] = {}; }
-    byStudent[s.student_id][s.assignment_id] = s;
-  });
-  const out = {};
-  ((pack && pack.members) || []).forEach(function (m) {
-    const mine = byStudent[m.student_id] || {};
-    let missed = 0, tot = 0, totMax = 0;
-    marked.forEach(function (a) {
-      const s = mine[a.id];
-      if (!isDone(s)) { missed += 1; return; }
-      if (s.score != null && s.max_score != null && s.max_score > 0) {
-        tot += s.score; totMax += s.max_score;
-      }
-    });
-    out[m.student_id] = {
-      missed: missed,
-      avg: totMax > 0 ? Math.round((tot / totMax) * 100) : null
-    };
-  });
-  return out;
-}
-
-/* The newest MARKED paper \u2014 `newestMarkedIdx` over `buildPapers`' own
-   newest-first order, which is due_at DESC. null for a class whose papers are
-   all still open, which is the honest answer: a set nobody has been marked on
-   cannot say what to reteach. */
-function newestMarkedPaper(pack, nowIso) {
-  const closed = markedPapers(pack, nowIso).slice().sort(function (a, b) {
-    if (a.due_at !== b.due_at) { return a.due_at < b.due_at ? 1 : -1; }
-    return (a.title || '').localeCompare(b.title || '');
-  });
-  return closed[0] || null;
 }
 
 /* The weakest question on one paper \u2014 `weakFor` as RULED in

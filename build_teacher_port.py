@@ -155,6 +155,14 @@ PICKER_JS_NAME = "teacher-picker.js"
 SETWORK_CSS_NAME = "set-work.css"
 SETWORK_JS_NAME = "set-work.js"
 
+# ⊕ Mide's item 9, 24 Sep 2026 — the Answer Breakdown panel. See `breakdown`
+# in page_html, and `AMENDED_ADDITIONS["breakdown-open"]` in
+# teacher_rulings.py for the row control that opens it. Same shape as
+# `setwork` immediately above: an overlay appended to `<body>`, outside the
+# compiled runtime, for the reason `shared/breakdown.js`'s own header gives.
+BREAKDOWN_CSS_NAME = "breakdown.css"
+BREAKDOWN_JS_NAME = "breakdown.js"
+
 # ⊕ "Add pupils (CSV)" — the admin-only CSV entry on a class's own page.
 # See `csv_upload` in page_html. A plain <script src>, the same shape as
 # `picker` below it and for the same reasons: it touches neither
@@ -283,7 +291,8 @@ STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
                 "teacher-picker.js", "rum.js",
                 SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME,
-                "figures-ks3.js", "figures-ks4.js")
+                "figures-ks3.js", "figures-ks4.js",
+                BREAKDOWN_CSS_NAME, BREAKDOWN_JS_NAME)
 
 
 def asset_hash(text):
@@ -388,6 +397,13 @@ PAGES = [
          empty_out="student-detail-empty-fixture.html",
          empty_js="teacher-fixture-student-detail-empty.js",
          title="Student \u00b7 MrBadmusAI",
+         # \u2295 Mide's item 9, 24 Sep 2026 \u2014 the Answer Breakdown panel opens
+         # from a row of THIS screen's submission history only (the button
+         # is `INSERT_AT[(366, 367)]`, inside the student screen's history
+         # table). No other page carries the trigger, so no other page
+         # needs the sheet's CSS/JS \u2014 same reasoning as `setwork`/`picker`
+         # above.
+         breakdown=True,
          overlays=("searchOpen", "bulkOpen", "hasToast"),
          retire="student-detail.html"),
     dict(screen="marking", node=258, out="assignment.html", admin_nav=True,
@@ -457,6 +473,43 @@ PAGES = [
          overlays=("searchOpen", "hasToast"),
          retire=None),
 ]
+
+
+# ⊕ Stream J, 25 Sep 2026 (experience run, item 6) — ONE LINE, PER SCREEN,
+# STATIC IN THE HTML THE SERVER SENDS.
+#
+# ⛔ THE GAP THIS CLOSES. `#mrb-teacher` shipped empty — `<div id="mrb-teacher"
+# ...></div>` and nothing inside it — until `student-runtime.js`'s first
+# `draw()` runs, which cannot happen before `shared/student-runtime.js` has
+# downloaded and parsed, `shared/teacher-data.js` has fetched the class pack
+# from Supabase, and the mount script has executed. On a slow connection that
+# is many seconds of a blank cream rectangle under the header — measured
+# 10–15s on the audit's Slow 3G pass — and a blank screen looks indistinguishable
+# from a broken one.
+#
+# `draw()` (this same file's own `R.mount`/`applyTemplate`, shared with
+# `build_student_port.py`) REPLACES the mount host's entire contents on
+# every render, first paint included — see `shared/student-live.js`'s own
+# note on this ("empties the entire mount host and rebuilds the whole
+# template on every setState"). So static markup placed inside
+# `#mrb-teacher` in the SERVED HTML is guaranteed to be gone the instant the
+# first real `draw()` completes, and guaranteed to be the only thing on
+# screen before it — no flash, no double-render, nothing to coordinate.
+#
+# ⚠️ ONE CAPTION PER SCREEN, not one generic string, for the same reason
+# `searchPlaceholder` names "12 classes" rather than "some classes": "Loading…"
+# with nothing else on the page reads as though the page forgot which page it
+# is. Styled in the same quiet register `renderVals['lastTitle']`'s own empty
+# state uses (`font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)`) —
+# never `--st-ink`, which is reserved for a real answer having arrived.
+_LOADING_CAPTION = {
+    "classes.html": "Loading your classes…",
+    "class-detail.html": "Loading this class…",
+    "student-detail.html": "Loading this student…",
+    "assignment.html": "Loading this set…",
+    "digest.html": "Loading your digest…",
+    "insights.html": "Loading your charts…",
+}
 
 
 _BANNER = """<!--
@@ -557,6 +610,36 @@ def ds_css():
             # The faces point at `./` inside the bundle; the site self-hosts
             # every one of the seven at /shared/fonts/.
             css = css.replace("./", SERVED_FONTS)
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — `tokens/
+        # shared-tokens.css` VENDORS ITS OWN, SEPARATE COPY of all seven of
+        # `fonts/fonts.css`'s `@font-face` rules (same seven families,
+        # narrowed to a Latin `unicode-range`) and points every one of them
+        # at `../fonts/<file>.woff2` — a path with no rewrite at all, unlike
+        # `fonts.css`'s `./`. Served from `/shared/teacher-ds.css`, `../fonts/`
+        # resolves to `/fonts/<file>.woff2`, a directory that does not exist
+        # anywhere on the site (the real files are at `/shared/fonts/`), so
+        # the browser's first attempt to load "Instrument Sans" 404s on
+        # every page — the audit's "two 404s on every page", one of the two.
+        #
+        # ⚠️ AND IT WAS INVISIBLE PRECISELY BECAUSE THE TEXT STILL RENDERED.
+        # `fonts.css` comes FOURTH in `order`, after this file, and declares
+        # the SAME family/weight/style with NO `unicode-range` restriction
+        # (i.e. every code point) — so once the browser's first (this file's,
+        # 404ing) face for "Instrument Sans" fails to load, it falls through
+        # to `fonts.css`'s later, unrestricted, WORKING declaration and the
+        # word renders correctly. Two @font-face rules can cover the same
+        # family/weight/style as a fallback CHAIN, tried in source order,
+        # which is exactly why the page never looked broken and the network
+        # tab was the only place this showed.
+        #
+        # Same fix as `fonts.css`'s own, for the same reason: rewrite the
+        # bundle's relative path to where these bytes are actually served,
+        # rather than dropping Design's (narrower, marginally cheaper)
+        # `unicode-range` subsetting. `fonts.css`'s copy still exists as the
+        # fallback it always was; this one now loads on the first try
+        # instead of 404ing before falling through to it.
+        elif rel.endswith("shared-tokens.css") and "../fonts/" in css:
+            css = css.replace("../fonts/", SERVED_FONTS)
         out.append("/* ── %s ── */\n%s" % (rel, css))
         sizes.append((rel, len(css)))
     return "\n\n".join(out), sizes
@@ -1594,6 +1677,58 @@ def apply_rulings(spec, roots, logic):
                     "Design's own values." % (k, v, node, k, a[k]))
             a[k] = v
         attred += 1
+
+    # ── 2b. ⊕ Experience run, 24 Sep 2026 · STYLE_EDIT, THE TEACHER SIDE ──
+    #
+    # `student_rulings.STYLE_EDIT` (22 Sep 2026, the first-week fixes) rewrites
+    # one declaration run on one named node, exactly once, and asserts the
+    # count either side of the edit rather than trusting it. The student port
+    # needed it first; the teacher port did not need it until now, so it did
+    # not have it — the brief for this run asked for "the equivalent for
+    # teacher if missing", and this is that, not a new idea.
+    #
+    # A `style` is either a plain string or Design's `{"parts": [...]}` run of
+    # literals and `{"e": …}` expressions (see `student_rulings.py`'s own note
+    # on this); only the literals are ever rewritten. `R.STYLE_EDIT` is FLAT
+    # (`{node_id: [(old, new)]}`), like `SET_ATTR` above and unlike the
+    # student port's per-page table — this file's node ids are unique across
+    # the WHOLE compiled delivery (SET_ATTR's own ids already prove that: 158
+    # is "classes", 208 is "class", and so on with no collision), so there is
+    # no page key to nest under.
+    def _style_strings(node):
+        a = node.get("a")
+        if not isinstance(a, dict) or "style" not in a:
+            return
+        v = a["style"]
+        if isinstance(v, str):
+            yield v, (lambda new, _a=a: _a.__setitem__("style", new))
+            return
+        if isinstance(v, dict) and isinstance(v.get("parts"), list):
+            parts = v["parts"]
+            for i, p in enumerate(parts):
+                if isinstance(p, str):
+                    yield p, (lambda new, _p=parts, _i=i:
+                               _p.__setitem__(_i, new))
+
+    restyled = 0
+    for node, edits in R.STYLE_EDIT.items():
+        if node not in here:
+            continue
+        for old, new in edits:
+            hit = 0
+            for text, setter in list(_style_strings(here[node])):
+                if old in text:
+                    hit += text.count(old)
+                    setter(text.replace(old, new))
+            if hit != 1:
+                raise SystemExit(
+                    "build_teacher_port.py: the STYLE_EDIT ruling rewrites "
+                    "%r on template node %s, and that declaration run occurs "
+                    "%d times in that node's style, not once.\n"
+                    "  Design has redrawn it. Re-anchor it in "
+                    "teacher_rulings.STYLE_EDIT rather than dropping it."
+                    % (old, node, hit))
+            restyled += 1
 
     # ── 3. the ONE attribute whose value is sample data ──────────────────
     attr_bound = 0
@@ -4045,13 +4180,58 @@ function MRB_FIRST_TEMPLATE(){var t=MRB_DATA('TEMPLATES');
    than reimplemented: Design reaches for index 1 and assumes it exists and is
    closed, which is true only when there is exactly one open paper. Two answers
    to this question is how the page and the prefetch disagree about which grid
-   was fetched. */
-function MRB_NEWEST_MARKED(papers){
+   was fetched.
+
+   ⊕ Mide's 23 Sep 2026 ruling — `mx` IS OPTIONAL AND SHOULD BE PASSED WHEN
+   HANDY. `when === 'marked'` now means "released", and a just-released paper
+   can have zero submissions; `newestMarkedIdx` prefers the newest RELEASED
+   paper that has at least one cell when it is given the class's matrix, and
+   falls back to the newest released paper of any kind (this function's old,
+   simpler behaviour) when it is not. Every call site in this file has a
+   matrix in scope (`MRB_PICK('MATRIX', id)` or the local `mx(k)` closure) and
+   passes it. */
+function MRB_NEWEST_MARKED(papers, mx){
   var L=window.MrBadmusTeacherLive;
-  if(L&&L.newestMarkedIdx)return L.newestMarkedIdx(papers||[]);
+  if(L&&L.newestMarkedIdx)return L.newestMarkedIdx(papers||[], mx);
+  var released=[];
   for(var i=0;i<(papers||[]).length;i++){
-    if(papers[i].when==='marked')return i;}
-  return -1;}
+    if(papers[i].when==='marked')released.push(i);}
+  if(mx&&mx.colSub){
+    for(var j=0;j<released.length;j++){
+      if((mx.colSub[released[j]]||0)>0)return released[j];}}
+  return released.length?released[0]:-1;}
+/* ⊕ experience run, 25 Sep 2026 (Mide's item 8) — THE WEAKEST-QUESTION
+   COLUMN'S OWN FETCH, ASKED FOR ONCE PER PAGE LOAD.
+
+   `teacher-live.js` exports `grid(classId, paperIdx)` for exactly this: one
+   paper's grid, fetched on demand and cached into the SAME object
+   `window.__MRB_DATA__.GRID` already points at (`load()`'s `GRID: c.GRID`
+   is a reference, not a copy), so the very next synchronous `gridFor`
+   lookup already sees it once the promise settles. Nothing before this
+   ever called it — the class screen's table read every unprefetched row as
+   "—" forever, correctly reporting "not fetched" as if it meant "nothing to
+   report".
+
+   `MRB_GRID_PENDING` is page-lifetime and keyed exactly as `grid()` keys
+   its own cache (`classId + ':' + paperIdx`), so a request already in
+   flight — or already answered — is never asked twice: `renderVals` runs
+   on every redraw, and without this a row still missing its grid would
+   fire a fresh fetch on every keystroke elsewhere on the page. */
+var MRB_GRID_PENDING = {};
+function MRB_ENSURE_GRID(classId, paperIdx){
+  var L = window.MrBadmusTeacherLive;
+  if(!L || !L.grid || !classId){return;}
+  var key = classId + ':' + paperIdx;
+  if(MRB_GRID_PENDING[key]){return;}
+  MRB_GRID_PENDING[key] = true;
+  L.grid(classId, paperIdx).then(function(){
+    // The cache write already happened inside `grid()` itself; a repaint
+    // with no state change behind it is the whole job here, the same
+    // primitive `MRB_SET_WORK_DONE` uses to repaint after a write.
+    var C = window.__MRB_CMP__;
+    if(C && C.logic){C.logic.forceUpdate();}
+  }, function(){ /* the row keeps its dash; nothing else was waiting on this */ });}
+
 /* "N late of M marked". ⚠️ AND THE UNKNOWNS ARE SHOWN, NOT HIDDEN. `is_late`
    is NULL on every submission written before 22 Aug 2026 and on any with no
    deadline, so "unknown" is a real population and not a rounding error. Folded
@@ -4071,6 +4251,7 @@ function MRB_NO_CLASS(){return {id:'',code:'\u2014',subject:'',year:'',
   ks:'',n:0,week:[0,0],last:'No activity yet',state:'empty'};}
 function MRB_EMPTY_MATRIX(){return {rows:[],cols:0,colSub:[],colMean:[],
   colOnTime:[],colAsked:[],colLate:[],colLateUnknown:[],markedIdx:[],
+  closedIdx:[],
   studentAvg:{},markedSub:0,markedOnTime:0,markedLate:0,markedLateUnknown:0,
   markedPct:null,classMean:null,byId:{}};}
 function MRB_LATE_LINE(late, unknown, total, noun){
@@ -4406,6 +4587,23 @@ function MRB_SEARCH_FOOT(matched, shown, pool, q){
   if(matched > 1){ head += ' · type to narrow'; }
   return head;}
 
+/* ⊕ experience run, 25 Sep 2026 (Mide's item 5) — "UP N POINTS ON THE LAST
+   SET", IN PERCENTAGE POINTS, NEVER RAW MARKS.
+
+   Design's card reported `Math.round(imp.d * 12.5)` — a raw-mark difference
+   scaled as if every paper on the site were 8 questions (100 / 8 = 12.5).
+   `imp.d` is now the difference between the pupil's last two COMPLETE
+   sets' own `pct[]` values (`teacher_rulings.LOGIC`'s fix to the `imp`
+   derivation), so this only ever has to phrase a percentage-point delta —
+   never invent a second scale on top of it. Three shapes, because a delta
+   is not always positive even though the one caller today only shows this
+   card on improvement: up, down, or unchanged. */
+function MRB_DELTA_REASON(d){
+  var n = Math.round(Math.abs(d));
+  if(d > 0){return 'Up ' + n + ' points on the last set';}
+  if(d < 0){return 'Down ' + n + ' points on the last set';}
+  return 'Level with the last set';}
+
 /* == THE SHOUTOUT DELETE ================================================
 
    ⊕ MRB-287, 24 Aug 2026. Mide's instruction: a teacher who can post a
@@ -4603,6 +4801,76 @@ function MRB_REMOVE_FEEDBACK(id){
     return TD.softDeleteSubmissionFeedback(id).then(
       function(){return {ok:true,error:null};}, no);
   }catch(e){return no(e);}}
+
+/* ══ ⊕ experience run, 24 Sep 2026 (Mide's item 5) — DRAFT FEEDBACK ══════
+
+   The model drafts, the teacher edits, Save is still the only write anywhere
+   on this path. Unlike the two helpers above, this one goes to the RENDER
+   BACKEND rather than to PostgREST directly — `MRB_TOKEN`/`MRB_API`/
+   `MRB_API_ERR` are the same three the set-work seam uses below, called here
+   ahead of their own declaration; that is safe because they are `function`
+   declarations and JavaScript hoists those within one script regardless of
+   source order — `MRB_DELETE_SET_WORK` already relies on exactly this.
+
+   ⚠️ WHY THE BACKEND AND NOT SUPABASE: the payload this sends to the model
+   is built server-side, from the submission's OWN class and questions, and
+   never carries a name, an email or a student id — see
+   `POST /api/teacher/feedback/draft` in the backend repo and its
+   `test_feedback_draft.js`. A client-side prompt would put those keys on
+   the wire whether or not anything used them; routing through one backend
+   route is what lets that promise be tested in ONE place instead of on
+   every page that could open this sheet.
+
+   ⚠️ NOTHING IS SAVED HERE. The route returns `{draft, model, submission_id}`
+   and writes nothing to `submission_feedback` — the caller decides how to
+   merge `draft` into whatever is already in the box (see `draftFeedback` in
+   `teacher_rulings.py`, which appends below a blank line rather than
+   overwriting). Resolves {ok, draft, error}, the same shape as every other
+   helper on this page — nothing here throws into a synchronous
+   `renderVals` closure. */
+function MRB_DRAFT_FEEDBACK(subId){
+  var no=function(e){return Promise.resolve({ok:false,draft:null,error:e});};
+  if(!subId){return no(new Error('teacher page: no submission'));}
+  return MRB_TOKEN().then(function(t){
+    return fetch(MRB_API()+'/api/teacher/feedback/draft',
+      {method:'POST',
+       headers:{Authorization:'Bearer '+t,
+                'Content-Type':'application/json'},
+       body:JSON.stringify({submission_id:subId})});
+  }).then(function(res){
+    return res.json().then(function(d){return {res:res,d:d};},
+                           function(){return {res:res,d:null};});
+  }).then(function(r){
+    if(!r.res.ok){
+      throw MRB_API_ERR(r.res,r.d,'/api/teacher/feedback/draft');}
+    return {ok:true, draft:(r.d&&r.d.draft)||'', error:null};
+  }).catch(function(e){return {ok:false,draft:null,error:e};});}
+
+/* Why a draft failed, in a sentence a teacher can act on. THE SERVER'S OWN
+   SENTENCE FIRST — a 422 carries `parseDraft`'s own reason the model's
+   answer was rejected, and a second wording invented here would say
+   something slightly different about the same event. Only when the server
+   gave nothing usable does this guess from the status, same pattern as
+   `MRB_SET_WORK_WHY` and `MRB_DELETE_SET_WORK_WHY` beside it. */
+function MRB_FEEDBACK_DRAFT_WHY(e){
+  if(e&&e.mrbSay){return e.mrbSay;}
+  var m=(e&&e.message)||'', st=(e&&e.mrbStatus)||0;
+  if(st===404)
+    return "Couldn't draft this time — that submission is no longer "+
+           "there.";
+  if(st===403)
+    return "Couldn't draft this time — you may no longer teach this "+
+           "class.";
+  if(st===422) return "Couldn't draft this time — try again.";
+  if(st===502) return "Couldn't draft this time — try again.";
+  if(st===429)
+    return "Couldn't draft this time — try again in a moment.";
+  if(/no data layer|not signed in/i.test(m))
+    return "Couldn't draft this time — this page is not signed in. "+
+           "Reload and try again.";
+  if(/failed to fetch|network/i.test(m))
+    return "Couldn't draft this time — no connection just now.";
+  return "Couldn't draft this time — try again.";}
 
 /* The comments re-read after a write, so the row on screen is the row in the
    database rather than an optimistic copy of what was typed.
@@ -4811,8 +5079,8 @@ function MRB_DELETE_SET_WORK(assignmentId){
   }).then(function(r){
     if(!r.res.ok){
       throw MRB_API_ERR(r.res,r.d,'/api/teacher/set-work/:id');}
-    return {ok:true, error:null};},
-    function(e){return {ok:false, error:e};});}
+    return {ok:true, error:null};
+  }).catch(function(e){return {ok:false, error:e};});}
 
 /* Why a delete failed, in a sentence a teacher can act on. The companion to
    MRB_REMIND_WHY and MRB_SHOUTOUT_WHY, separate for the same reason: a
@@ -4897,8 +5165,8 @@ function MRB_SET_AUTO_ASSIGNMENTS(classId, on){
     if(!r.res.ok){
       throw MRB_API_ERR(r.res,r.d,'/api/class/auto-assignments');}
     var st=r.d&&r.d.auto_assignments;
-    return {ok:true, state:(st===true||st===false)?st:null, error:null};},
-    function(e){return {ok:false,state:null,error:e};});}
+    return {ok:true, state:(st===true||st===false)?st:null, error:null};
+  }).catch(function(e){return {ok:false,state:null,error:e};});}
 
 /* Why a set failed, in a sentence a teacher can act on. The companion to
    MRB_SHOUTOUT_WHY and MRB_REMIND_WHY, separate for the same reason: a
@@ -5041,6 +5309,18 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
                    % SETWORK_CSS_NAME if spec.get("setwork") else "")
     setwork_js = ("<script src=\"/shared/%s\"></script>\n"
                   % SETWORK_JS_NAME if spec.get("setwork") else "")
+    # ⊕ Mide's item 9, 24 Sep 2026 — the Answer Breakdown panel, on the one
+    # page that opens it. Same split as `setwork` immediately above and for
+    # the identical reason: the CSS goes in <head> because the panel can be
+    # opened the instant the page is interactive, the JS at the foot because
+    # nothing needs it until a row is pressed. Also emitted on the fixture —
+    # `teacher_behaviour.py` presses `breakdown-open` by name there, and
+    # without the script the press would find `window.MRBBreakdown`
+    # undefined rather than opening anything.
+    breakdown_css = ("<link rel=\"stylesheet\" href=\"/shared/%s\">\n"
+                     % BREAKDOWN_CSS_NAME if spec.get("breakdown") else "")
+    breakdown_js = ("<script src=\"/shared/%s\"></script>\n"
+                    % BREAKDOWN_JS_NAME if spec.get("breakdown") else "")
     # ⊕ "Add pupils (CSV)", on ONE of the six. Same shape as `picker` above
     # and emitted on the FIXTURES too, for the same reason every other tag
     # here is: the gates describe a fixture as "the same bytes apart from its
@@ -5082,8 +5362,19 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "<link rel=\"preconnect\" href=\"https://cdn.jsdelivr.net\" crossorigin>\n"
         "<link rel=\"dns-prefetch\" href=\"https://mrbadmus-backend.onrender.com\">\n"
         "<title>%s</title>\n"
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — the same
+        # `#E4572E` chevron favicon `generate_site_v5.KS4_FAVICON_LINK` gives
+        # every KS4 page, kept as its own literal here for the same reason
+        # `ds_css()`'s own comment gives for not sharing a bundle across the
+        # two ports: independence, not coupling.
+        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"data:image/svg+xml;"
+        "base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdC"
+        "b3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUi"
+        "IHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2Fw"
+        "PSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\">\n"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
+        "%s"
         "%s"
         "<style>body{margin:0;background:var(--st-ground,#FBF3E6)}"
         "a{color:var(--ks3-accent-text);text-decoration:none}"
@@ -5233,6 +5524,133 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         # beats a selector.
         "[data-port-region] [style*=\"repeat(auto-fit,minmax(\"]"
         "{grid-template-columns:minmax(0,1fr)!important}"
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 5) — THE CHART
+        # BAR ROW IS THE FIFTH FIXED-TRACK PATTERN, AND IT IS NOT THE
+        # TABLES THE PRINT NOTE BELOW EXEMPTS. Design's node 827
+        # (`Teacher Dashboard.dc.html`) is "label 220px · bar 1fr ·
+        # value 96px" for every "Class means"/"Score spread"/"On
+        # time"/engagement row on the Charts screen. 220 + 96 + the
+        # row's own 14px gap*2 is 344px of FIXED track before the bar
+        # gets anything, and a `px` grid track does not shrink the way
+        # a `1fr` one does — it stays exactly 220 (or 96) however
+        # little room is left, so on a 390px screen the bar collapses
+        # to nothing and the value column's own text ("24/28") still
+        # sits at its full 96px slot, pushed past the viewport edge
+        # by the label column ahead of it. Measured on
+        # `insights-fixture.html`: `document.scrollingElement.
+        # scrollWidth` 409 against a 390 client width, the exact "2/8
+        # and 5/8 sit off the right edge" the audit photographed —
+        # and, unlike the five-column tables the print note below
+        # names, this row is NOT inside an `overflow:hidden` card, so
+        # the overflow reaches the document rather than stopping at a
+        # clipped edge.
+        #
+        # `minmax(0,84px) 1fr minmax(0,54px)` keeps the same three
+        # roles in the same order — Design's own layout, at a smaller
+        # scale — rather than redesigning the row. The label already
+        # carries its own `min-width:0` (Design's node 826), so
+        # shrinking its track lets its own text truncate; the value
+        # column's longest real string ("100/100") measures under
+        # 54px in the row's own `17px var(--st-mono)`.
+        "[data-port-region] [style*=\"220px 1fr 96px\"]"
+        "{grid-template-columns:minmax(0,84px) 1fr minmax(0,54px)!important}"
+        "}"
+        # ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 20) — THE TOP
+        # BAR WRAPS AT ≤420px INSTEAD OF LEAVING SIGN OUT AND FIND A STUDENT
+        # PAST THE EDGE OF A REAL PHONE.
+        #
+        # `teacher_reach.py` never caught this, and could not: its `bringIn`
+        # step scrolls the bar's own `overflow-x:auto` container (the round-2
+        # fix, above) to bring a control into view before hit-testing it, so
+        # every control in the bar IS reachable by that gate's own definition
+        # — after a horizontal scroll nothing on the page tells a teacher to
+        # make. The round-three audit found it by looking at a screenshot:
+        # at 360/390 the week-rail's `flex:1 1 0` sibling (see `_WK_RAIL`'s
+        # comment in teacher_rulings.py, the other half of this item) had
+        # nothing left to claim and rendered 2px wide, and the bar itself
+        # scrolled its own overflow away — the same "reachable, not visible"
+        # gap `teacher_reach.py`'s own banner names for a different control.
+        #
+        # The fix is not another px trimmed off one item; the bar's SEVEN
+        # `flex:none` children (wordmark, the Today/My-classes strip, the
+        # crumb, Find a student, Charts, the env badge, the teacher's name,
+        # Sign out) sum past 700px at their Design-drawn sizes, and no single
+        # one of them can be shrunk far enough on its own to close that gap.
+        # So the bar WRAPS instead of scrolling at this width, in two rows —
+        # brand and navigation on the first, everything scoped to THIS class
+        # plus the account controls on the second — and three low-cost trims
+        # close the remaining gap rather than one aggressive one:
+        #
+        #   · the teacher's own name is dropped (`.mrb-teachername`) — it is
+        #     the one item here that identifies nobody a pupil, a class or an
+        #     action names; every other item is a place to go or a person the
+        #     teacher is signed in AS having to prove nothing on a 360px
+        #     screen. `Sign out` still says whose session it is ending by
+        #     virtue of there being exactly one signed-in teacher;
+        #   · the crumb (`.mrb-crumb`) gets `overflow:hidden;text-overflow:
+        #     ellipsis` instead of running past its own shrunk box the way
+        #     `min-width:0` alone leaves a `white-space:nowrap` span to do —
+        #     Design's own class-code strings (`10h/Ph1`) never need it, a
+        #     longer one degrades instead of overlapping Find a student;
+        #   · the wordmark (`.mrb-brand`) drops from 23px to 18px, still
+        #     comfortably the plain-white-text staff wordmark this bar has
+        #     always drawn (no logo asset either side of this rule).
+        #
+        # `overflow-x:visible` UNDOES the round-2 scroll container at this
+        # width on purpose: a bar that both wraps AND scrolls sideways is two
+        # answers to the same question, and the wrap is now the complete one.
+        # `min-height` (not a fixed `height`) because Design's 62px was sized
+        # for one row and the wrapped bar is taller; `min-height` keeps that
+        # 62px for the (now two-line) content's OWN sizing rather than
+        # clipping it, which a fixed `height` on a `overflow:visible` sticky
+        # element would not do anyway but which the next reader should not
+        # have to re-derive.
+        # ⚠️ `height`, `padding`, `overflow-x` and `gap` ARE INLINE ON NODE
+        # 10 (`height:62px;padding:0 22px;gap:12px`, plus the round-2
+        # `overflow-x:auto` this file writes into the SAME inline string a
+        # few lines above), and an inline declaration beats any selector —
+        # the same reason this block's own print rules and the 560px block
+        # above it reach for `!important` on Design's other inline strings.
+        # Written without it, this rule changed nothing and the bar stayed
+        # a fixed 62px scrolling strip; `flex-wrap` alone (not inline, so no
+        # `!important` needed there) had nowhere to put the wrapped line.
+        "@media (max-width:420px){"
+        "[data-port-region=\"topbar\"]{flex-wrap:wrap;height:auto!important;"
+        "min-height:62px;row-gap:8px!important;column-gap:8px!important;"
+        "padding:10px 12px!important;overflow-x:visible!important}"
+        "[data-port-region=\"topbar\"] .mrb-brand{font-size:18px}"
+        "[data-port-region=\"topbar\"] .mrb-crumb{overflow:hidden;"
+        "text-overflow:ellipsis}"
+        "[data-port-region=\"topbar\"] .mrb-teachername{display:none}"
+        # ⊕ Stream N, 25 Sep 2026 (experience run, item 20) — THE OTHER HALF
+        # OF THIS ITEM, LEFT OPEN BY ROUND THREE. The comment immediately
+        # above named this gap without closing it: `_WK_RAIL`'s own
+        # `flex:1 1 0;min-width:0` (`teacher_rulings.py`) makes the rail
+        # claim whatever is LEFT OVER on its row, and at 360/390 what is left
+        # over is nearly nothing — `_WK_BAR` (`display:flex;gap:12px;
+        # padding:12px`) puts the caption, the rail and BOTH 36px chevrons on
+        # ONE row, and the caption (`weekCaption`, item 10 — a real string,
+        # not a fixed width) plus the two chevrons plus three 12px gaps was
+        # measured leaving the rail 2px on a 360px phone with `class-detail`'s
+        # own 40px side padding and the bar's own 12px eaten first. Fixing a
+        # SINGLE px value would only hold for today's caption text.
+        #
+        # The caption is what is stealing the row, so the caption is what
+        # moves: `flex-basis:100%` on it, inside a bar that now WRAPS, forces
+        # it onto its own line and leaves the ENTIRE row beneath it — bar
+        # width minus only the two 36px chevrons and their gaps — for the
+        # rail, at any caption length. `:has([data-rail="weeks"])` finds the
+        # bar without a new class or a `data-port-region` of its own — the
+        # attribute is already unique on the page (`rail()` in
+        # `shared/teacher-live.js` finds it the same way). Scoped to
+        # `[data-port-region="class"]` although the selector is already
+        # unique, for the same reason the topbar rules above it are scoped —
+        # a reader should not have to prove global uniqueness to trust a
+        # rule that says where it applies.
+        "[data-port-region=\"class\"] .noprint:has([data-rail=\"weeks\"])"
+        "{flex-wrap:wrap}"
+        "[data-port-region=\"class\"] .noprint:has([data-rail=\"weeks\"])"
+        " > span:first-child{flex-basis:100%%}"
         "}"
         # ⊕ MRB-306 Phase 2a screen 6 — THE PRINT RULES, MEASURED NOT
         # ASSUMED. `.noprint` alone was not enough to make the digest a
@@ -5282,10 +5700,36 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "[data-port-region] [style*=\"grid-template-columns\"]"
         "{break-inside:avoid;page-break-inside:avoid}"
         "}"
+        # ⊕ Experience run, 24 Sep 2026 (stream G) — the focus ring,
+        # STRENGTHENED HERE FOR THE SAME REASON `build_student_port.py`'s
+        # `_FOCUS_RING` NAMES, NOT BECAUSE THIS PORT WAS FOUND BROKEN.
+        # `focus_audit.py` measured every one of this port's fixtures
+        # (classes, class-detail, student-detail, assignment, digest,
+        # insights) plus the hand-written today/timetable/admin/import pages
+        # and the Set work sheet, and every reachable control already shows
+        # a visible change on Tab — this port does not put `all:unset` on
+        # its buttons the way the student port's ported markup does, so
+        # `shared/teacher-ds.css`'s own vendored R15 rule
+        # (`[data-mode="ks3"] :focus-visible{outline:3px solid
+        # var(--ks3-accent)…}`, concatenated in from Design's bundle exactly
+        # as the student port's is) already wins.
+        # This rule is added regardless, `!important` and all, so that
+        # SHOULD a future screen ever add an `all:unset` (or any other
+        # inline-styled) control here, the ring keeps working rather than
+        # silently losing the way it did on the student pages — a floor,
+        # not a fix for a measured defect. `:focus-visible` still means it
+        # is inert on a mouse click.
+        "[data-mode=\"ks3\"] :focus-visible{"
+        "outline:3px solid var(--ks3-accent)!important;"
+        "outline-offset:2px!important;"
+        "border-radius:var(--ks3-r-focus)!important}"
         "</style>\n"
         "</head>\n<body>\n"
         "<div id=\"mrb-teacher\" style=\"background:var(--st-ground);"
-        "min-height:100vh\"></div>\n"
+        "min-height:100vh\">"
+        "<div style=\"padding:40px;font:400 15.5px/1.4 var(--st-ui);"
+        "color:var(--st-muted)\">%s</div>"
+        "</div>\n"
         "%s"
         "<script src=\"/shared/student-runtime.js\"></script>\n"
         "<script>window.__MRB_TPL__=%s;</script>\n"
@@ -5302,6 +5746,8 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
                        LIVE_JS_NAME, spec["fixture_out"])),
            DS_CSS_URL,
            setwork_css,
+           breakdown_css,
+           html.escape(_LOADING_CAPTION.get(spec["out"], "Loading…")),
            regions,
            json.dumps({"roots": roots, "imports": imports},
                       separators=(",", ":")).replace("<", "\\u003c"),
@@ -5335,7 +5781,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
            "    props: {}\n"
            "  }));\n"
            "};",
-           dep_map + admin_nav + picker + setwork_js + csv_js,
+           dep_map + admin_nav + picker + setwork_js + breakdown_js + csv_js,
            tail)),
         versions)
 

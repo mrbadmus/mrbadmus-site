@@ -125,6 +125,11 @@ SERVED_FONTS = "/shared/fonts/"
 _REFUSED = {"classes.html", "settings.html", "claim-confirm.html"}
 
 LESSON_INDEX_NAME = "ks3-lesson-urls.js"
+# ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 19. The KS4 analogue
+# of the line above. See `ks4_lesson_index()` for why it carries `topic` only
+# (not `subject`, not a pathway/tier-specific path) and `ks4TopicHref` in
+# `shared/student-live.js` for what supplies the rest.
+KS4_LESSON_INDEX_NAME = "ks4-lesson-urls.js"
 RUNTIME_JS_NAME = "student-runtime.js"
 LIVE_JS_NAME = "student-live.js"
 LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
@@ -283,10 +288,21 @@ PAGES = [
          # `MRB_DATA` THROWS on a missing key and `renderVals` reads all four
          # unconditionally — a page that mounts is not evidence they were
          # optional.
+         # ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 18.
+         # `benchProgPct`/`benchProgText` join the same way `cardsEmpty` did
+         # a section above: `MRB_DATA` THROWS on a missing key and the LOGIC
+         # ruling for `benchPct`/`benchDoneText` reads both of these
+         # unconditionally now, so a page that mounts at all is not evidence
+         # they are optional. EMPTY on the fixture, deliberately — Design's
+         # bench meter is her own three-item-checklist expression, and empty
+         # is what makes the ruling's `MRB_DATA(...) || (checklist expr)`
+         # fall through to exactly that, unchanged. The live page supplies
+         # the real numbers, from shared/student-live.js.
          constants=dict(benchPrimaryHref="''", benchDone="false",
                         benchOpen="true", benchDoneMarked="false",
                         benchDoneLessons="false", benchDoneFeedback="''",
-                        cardsEmpty="''"),
+                        cardsEmpty="''", benchProgPct="''",
+                        benchProgText="''"),
          # ── ⊕ RULED BY MIDE, 22 Sep 2026 · THE FIXTURE'S PROGRESS NUMBERS ─
          #
          # The completion bar reads `w.answered` and `w.qtotal` off each work
@@ -382,10 +398,41 @@ PAGES = [
                         # question can be drawn. `assignmentNoteBody` is read
                         # by the inserted `<if>`'s own text binding and would
                         # throw the same way once `assignmentNoteVisible` is
-                        # ever true. Design drew no note surface either —
-                        # empty is her own state, not a placeholder — so the
-                        # fixture stays byte-identical to what it was.
-                        assignmentNoteHas="false", assignmentNoteBody="''")),
+                        # ever true.
+                        #
+                        # ⊕ Experience run, 25 Sep 2026 (stream H) — TEST audit
+                        # item (A). This used to read `assignmentNoteHas=
+                        # "false", assignmentNoteBody="''"` — "Design drew no
+                        # note surface either, so the fixture stays byte-
+                        # identical". True, and it is exactly why the TEST
+                        # audit's finding survived a green `student_behaviour`
+                        # run undetected: `assignmentNoteVisible` alone
+                        # renders identically whether `assignmentNoteBody`
+                        # ever reached scope or not, because with the box
+                        # closed there is no text to be missing. Turned ON
+                        # here so the gate actually exercises the seam this
+                        # ticket fixed (`renderVals` was missing the
+                        # `assignmentNoteBody: MRB_DATA('assignmentNoteBody')`
+                        # line entirely — see LOGIC) rather than merely
+                        # mounting past it. Registered as an ADDITION
+                        # (`RULED_ADDITIONS['assignment']`, student_
+                        # behaviour.py) because Design's own file has no such
+                        # box at all, on any drive.
+                        assignmentNoteHas="true",
+                        assignmentNoteBody=
+                        "'Look back at question 4 before you start: it uses "
+                        "the method from the practical.'",
+                        # ⊕ Experience run, 25 Sep 2026 (stream H) — P3, same
+                        # reason as `assignmentNoteHas` right above: LOGIC's
+                        # `pastDeadlineWarningVisible` calls `MRB_DATA
+                        # ('pastDeadlineNow')` unconditionally on every
+                        # question-view mount, so a fixture that never heard
+                        # of the key throws before drawing question 1. Design
+                        # drew no such warning either — false is her state,
+                        # not a placeholder — so the fixture stays byte-
+                        # identical and there is nothing for
+                        # `student_behaviour.py` to register.
+                        pastDeadlineNow="false")),
 ]
 
 # ── the identity strings, which are NOT in the logic ──────────────────────
@@ -1373,6 +1420,22 @@ REWRITES = {
         # bar's scale. Still no key, and still for the same reason.
 
     ],
+}
+
+
+# ⊕ Stream J, 25 Sep 2026 (experience run, item 6) — the same gap
+# `build_teacher_port.py` closes, checked and confirmed here too: `#mrb-student`
+# shipped empty until the first `draw()`, and `draw()` cannot run before
+# `shared/student-runtime.js` has loaded, `shared/student-live.js` has fetched
+# the pupil's data, and `__MRB_MOUNT__` has been called — several seconds of
+# blank cream on a slow connection, indistinguishable from a broken page. The
+# same replace-on-first-draw guarantee applies (`R.mount` empties and rebuilds
+# `#mrb-student` exactly as it does `#mrb-teacher`), so a static caption here
+# is gone the instant real content arrives and is the only thing on screen
+# before it.
+_LOADING_CAPTION = {
+    "class.html": "Loading your class…",
+    "assignment.html": "Loading this set…",
 }
 
 
@@ -3126,6 +3189,115 @@ def lesson_index():
             "window.MRB_KS3_LESSONS = {\n%s\n};\n" % (len(index), rows)), len(index)
 
 
+# ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 19. THE SAME PROBLEM,
+# ONE KEY STAGE UP, AND WHY THE ANSWER ISN'T THE SAME SHAPE.
+#
+# "Open the lesson" on a KS4 work row had the identical defect `lesson_index()`
+# above was written to close (P3, 22 Aug 2026): the page cannot learn from
+# `shared/student-live.js` alone which lesson page a bank id draws on, because
+# that mapping is curriculum data, Python, and build-time.
+#
+# It is NOT the same shape, because a KS4 lesson page is not at one fixed
+# address the way a KS3 one is. `ks3/{discipline}/{unit}/{slug}.html` has no
+# variant; `{pathway}/{tier}/{subject}/{topic}/{slug}.html` has up to four,
+# one per (pathway, tier) that teaches the subtopic, and the RIGHT one for a
+# given student is decided by their OWN class, not by the question. So this
+# index carries only what curriculum data alone can answer — `slug: topic` —
+# and leaves `subject` (on the `ks4_assignment_bank` row itself) and
+# `pathway`/`tier` (the class) to be supplied at read time by
+# `shared/student-live.js`'s `ks4TopicHref`, which is where the four
+# candidate addresses actually get resolved down to one.
+def ks4_lesson_index():
+    """`{subtopic_slug: [{subject, topic}, …]}` for every authored KS4 subtopic.
+
+    Returns (js_source, n_subtopics). Stops the build if a subtopic's topic
+    directory does not exist, under ANY pathway/tier, for its own subject —
+    which is what a wrong `topic` value in `ks4_data`/`ks4_seed_sow` (a typo,
+    a topic renamed on one side and not the other) would look like: a subtopic
+    that this function is about to tell a student's browser lives somewhere
+    that was never built.
+
+    ⊕ RULED 25 Sep 2026 (experience run, stream K), coordinator instruction —
+    THE VALUE IS A LIST, NOT A BARE STRING, AND SUBJECT RIDES IN IT.
+    `ks4_assignment_bank` used to supply the subject at read time; a KS4
+    question's ref reached the table by id to get it, and `pool_ownership.py`
+    refused that outright (check 6: no frontend surface may name the KS4
+    assignment pool at all, full stop — it is served by backend composition
+    only). So both subject and topic have to come from here, curriculum data,
+    never a database read.
+
+    `classify()` itself asserts a subtopic slug is unique WITHIN one export —
+    see its own docstring — so today this list is always length 1. It is
+    still a list and not a bare `{subject, topic}` dict: a caller
+    (`ks4TopicHref` in shared/student-live.js) that got a single dict back
+    would have no way to notice the day that assertion stopped holding and
+    would silently resolve to whichever entry the dict-literal happened to
+    keep. A list makes "more than one candidate" a shape the caller can see
+    and disambiguate (by the assignment's own subject) rather than a fact it
+    has no way to ask about.
+    """
+    import ks4_data
+
+    cls = ks4_data.classify()
+    index = {}
+    for slug, info in cls.items():
+        index.setdefault(slug, []).append(
+            {"subject": info["subject"], "topic": info["topic"]})
+
+    missing = []
+    for slug in sorted(index):
+        for entry in index[slug]:
+            found = any(
+                os.path.exists(os.path.join(
+                    pathway, tier, entry["subject"], entry["topic"],
+                    slug + ".html"))
+                for pathway in ("combined", "triple")
+                for tier in ("foundation", "higher")
+            )
+            if not found:
+                missing.append("%s (%s)" % (slug, entry["subject"]))
+    if missing:
+        raise SystemExit(
+            "build_student_port.py: %d KS4 subtopic(s) named in "
+            "ks4_data.classify() have NO built page under ANY pathway/tier "
+            "for their subject, and a KS4 work row is about to link to one: "
+            "%s%s\nRun `python3 generate_site_v5.py` (or build_all.py) first "
+            "— a subtopic slug or topic that does not match the built tree "
+            "is a 404 with a student's name on it."
+            % (len(missing), ", ".join(missing[:5]),
+               " …" if len(missing) > 5 else ""))
+
+    def _entry(e):
+        return "{subject: %s, topic: %s}" % (_q(e["subject"]), _q(e["topic"]))
+
+    rows = ",\n".join(
+        "  %s: [%s]" % (_q(s), ", ".join(_entry(e) for e in index[s]))
+        for s in sorted(index))
+    return ("/* ══════════════════════════════════════════════════════════\n"
+            "   GENERATED — do not edit. `python3 build_student_port.py`\n"
+            "   ══════════════════════════════════════════════════════════\n"
+            "\n"
+            "   Every (subject, topic) a KS4 subtopic slug could belong to,\n"
+            "   as `slug: [{subject, topic}, …]` — a LIST, because a slug's\n"
+            "   subject can no longer be read off a database row\n"
+            "   (`pool_ownership.py` forbids any frontend read of the KS4\n"
+            "   assignment pool) and this is curriculum data instead. See\n"
+            "   `ks4TopicHref` in shared/student-live.js, the only reader of\n"
+            "   this map, for how the right entry is picked and how the\n"
+            "   pathway/tier from the student's own class complete the\n"
+            "   address:\n"
+            "\n"
+            "       /{pathway}/{tier}/{entry.subject}/\n"
+            "         + entry.topic + / + slug + .html\n"
+            "\n"
+            "   Built from ks4_data.classify() and checked against the built\n"
+            "   tree: every one of these %d subtopics had a page on disk,\n"
+            "   under at least one pathway/tier for its subject, when this\n"
+            "   was written.\n"
+            "   ══════════════════════════════════════════════════════════ */\n"
+            "window.MRB_KS4_TOPICS = {\n%s\n};\n" % (len(index), rows)), len(index)
+
+
 # ── the token bridge: Design's theme tokens → the live page's ────────────
 #
 # ⊕ 22 Aug 2026 — PHASE 2a. Design's six themes move `--b-*`; the live bench,
@@ -3398,6 +3570,151 @@ _PIP_ROW = (
 # node of one template, and the assignment has no work rows.
 _ROW_DONE = (
     "[data-row-done]{background-color:var(--pg-ok)!important}"
+)
+
+
+# ── the top crumb's tap target, which was as tall as its own text ────────
+#
+# ⊕ Experience run, 25 Sep 2026 (stream H) — P11. See `SET_ATTR` 33 in
+# student_rulings.py for the ruling: the "8r/Sc1" crumb at the very top of
+# the page is `all:unset` on an 11.5px, line-height-1 line of text, so its
+# own interactive box is around 12px tall even though the header row around
+# it is at least 44px. A tap has to land on the text, not merely somewhere
+# in the row.
+#
+# ⚠️ AND IT NEEDS `!important`, for the same reason `_PAGE_STRONG`,
+# `_PIP_ROW` and `_ROW_DONE` above all do: `all:unset` is a LITERAL inside
+# Design's inline `style`, and `all:unset` resets `display` to its initial
+# value (`inline` on a `<button>`) as an inline declaration — which outranks
+# any selector however specific unless the competing rule also carries
+# `!important`. Without the keyword this parses, matches, loses, and the
+# crumb's tap target is exactly what it was.
+#
+# ⚠️ PHONE WIDTHS ONLY, per the brief, and "without changing its look":
+# `min-height:44px` on a button already vertically centred by its
+# `header`'s own `align-items:center` cannot move any visible pixel — the
+# text stays the same size, in the same place — it only grows the invisible
+# box a finger or a screen reader has to land inside. The row's own
+# `min-height:clamp(44px,3.6cqw,52px)` is at its 44px floor on a phone, so a
+# 44px button fits inside it with nothing to reflow.
+#
+# CLASS VIEW ONLY: the assignment page's own "Back to 8r/Sc1" link already
+# carries `min-height:48px` in Design's own markup (Assignment.dc.html line
+# 485) and needs no help.
+_TAP44 = (
+    "@media (max-width:719px){"
+    "[data-mrb-tap44=\"crumb-class\"]{min-height:44px!important;"
+    "display:inline-flex!important;align-items:center!important}"
+    "}"
+)
+
+
+# ── the focus ring, which was there and did nothing ──────────────────────
+#
+# ⊕ Experience run, 24 Sep 2026 (stream G). Production defect: Tab to a
+# control on either student page and NOTHING visibly changes — no outline,
+# no box-shadow, no background, no border. `focus_audit.py` names it
+# precisely: on `student_class` alone, 36 of 41 reachable controls were
+# byte-identical focused and unfocused.
+#
+# `shared/student-ds.css` ALREADY CARRIES A `:focus-visible` RULE — Design's
+# own "R15 — one focus treatment, on everything, no exceptions"
+# (`[data-mode="ks3"] :focus-visible{outline:3px solid var(--ks3-accent)…}`,
+# concatenated in verbatim from her vendored `tokens/shared-ks3.css`, see
+# `ds_css()` above). It is not broken and it is not overridden by a later
+# rule. It LOSES, unconditionally, because most of this page's buttons are
+# Design's own `<button style="all:unset;…">` (`build_student_port.py`'s
+# module docstring: "`all:unset` stays two words" — the markup is ported
+# byte-for-byte, on purpose). `all:unset` resets `outline-style` to its
+# initial value, `none`, AS AN INLINE DECLARATION — and an inline
+# declaration outranks any selector however specific, `!important` or not,
+# UNLESS the competing rule also carries `!important`. Design's R15 rule
+# does not, so on every `all:unset` button the ring computes, matches the
+# element, and loses to two words of inline CSS. This is the same failure
+# shape `_PAGE_STRONG`, `_PIP_ROW` and `_ROW_DONE` above all name for the
+# same reason: a bare declaration cannot beat an inline one, full stop.
+#
+# ⚠️ `!important` IS THE FIX, NOT A CASCADE REORDER. "Move the rule later"
+# does nothing against an inline style, which is not part of the normal
+# cascade order at all — it is checked before author stylesheets regardless
+# of where in the document they sit. The keyword is the only lever that
+# reaches an inline declaration. `:focus-visible` itself is what keeps this
+# safe to make load-bearing: it does not match on a mouse click, so nothing
+# about the pointer experience changes.
+#
+# ⚠️ SAME SELECTOR AS DESIGN'S, DELIBERATELY — not a new one, not a new
+# colour. `--ks3-accent` is the same token `--st-accent` resolves to on
+# these pages (`docs/mrb346` and the token table agree they are the same
+# #E4572E), so this is Design's own ruling made to actually apply, not a
+# competing design decision.
+#
+# BOTH PAGES: every control on both the class view and the assignment page
+# can carry `all:unset`, so this is not scoped like the class-view-only
+# rules above it.
+_FOCUS_RING = (
+    ".rd[data-mode=\"ks3\"] :focus-visible,"
+    "[data-mode=\"ks3\"] :focus-visible{"
+    "outline:3px solid var(--ks3-accent)!important;"
+    "outline-offset:2px!important;"
+    "border-radius:var(--ks3-r-focus)!important}"
+)
+
+
+# ── the same ring, RE-COLOURED inside the bench ───────────────────────────
+#
+# ⊕ Experience run, 24 Sep 2026 (stream G). `--ks3-accent` (#E4572E) is
+# measured against the fixed page ground, #FBF3E6, at 3.34:1 — clears the
+# WCAG non-text 3:1 floor with room to spare, which is why it is the right
+# colour for `_FOCUS_RING` everywhere outside the bench. It is NOT measured
+# against a bench theme's own ground, because it was never meant to sit on
+# one: `student_themes.py`'s own six-theme table (`clay #6B4A33`,
+# `chalk #EFE2CB`, …) exists precisely because the bench repaints its ground
+# per theme and nothing else on the page does. Computed here (WCAG relative
+# luminance, `#E4572E` against each theme's `--b-ground`): harbour 3.43,
+# damson 3.85, graphite 4.92, moss 3.03 — all clear 3:1 — but CLAY 2.15:1
+# and CHALK 2.88:1 do not. A ring that fails the floor on two of six themes
+# is exactly the defect this run exists to close, one surface later.
+#
+# `--b-ink` is the fix, not a new colour: it is EVERY theme's own body-text
+# tone, already asserted by `student_themes.py` against `--b-ground` on all
+# six (the table above — harbour 11.48, clay 7.19, chalk 12.93, moss 10.14,
+# damson 12.87, graphite 16.44), so reusing it as the ring's outline colour
+# clears the 3:1 non-text floor by a wide margin on every theme by
+# construction, without asserting a new pairing this run would have to
+# defend on its own.
+#
+# `[data-bench-surface]` IS THE SCOPE, not `[data-bench-theme]` on the root.
+# `data-bench-theme` lives on `documentElement` so `--b-ink` resolves
+# everywhere on the page once a theme is chosen — including the class
+# view's chrome OUTSIDE the bench, which never left the fixed cream page
+# ground. Ringing THOSE controls in `--b-ink` would move a working ring
+# (3.34:1, `_FOCUS_RING` above) onto a pairing nobody has measured, in the
+# wrong direction: harbour's `--b-ink` is `#FBF3E6`, indistinguishable from
+# the cream page ground it would then sit on. `[data-bench-surface]` is the
+# same attribute the theme bridge above already scopes every other bench
+# remap to, and it is only ever present on nodes truly inside the themed
+# panel.
+#
+# OUT-SPECIFIED, NOT JUST OUT-ORDERED — checked, not assumed. A first draft
+# of this rule read `[data-bench-surface] :focus-visible` (specificity
+# 0,2,0: one attribute, one pseudo-class) and relied on coming later in the
+# cascade than `_FOCUS_RING` to win a tie. It never won anything: measured
+# with a REAL Tab press (`Input.dispatchKeyEvent` — a script `.focus()` call
+# does not reliably engage `:focus-visible` at all, so an earlier check
+# using one silently proved nothing), the ring on a bench control stayed
+# `#E4572E` on clay, chalk AND harbour alike. `_FOCUS_RING`'s selector list
+# starts with `.rd[data-mode="ks3"] :focus-visible` — a CLASS plus an
+# attribute plus the pseudo-class, specificity 0,3,0 — which beats 0,2,0
+# regardless of source order, so it was never a tie to begin with. This
+# selector matches that shape exactly, one compound deeper, so 0,4,0 beats
+# it outright and needs no help from ordering.
+#
+# CLASS VIEW ONLY, like `_THEME_BRIDGE` beside it: the assignment page has
+# no bench and `[data-bench-surface]` cannot exist on it.
+_FOCUS_RING_BENCH = (
+    ".rd[data-mode=\"ks3\"] [data-bench-surface] :focus-visible,"
+    "[data-mode=\"ks3\"] [data-bench-surface] :focus-visible{"
+    "outline-color:var(--b-ink)!important}"
 )
 
 
@@ -3723,7 +4040,8 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
     dep_map = (
         "<script>window.__MRB_ASSET_V__=%s;</script>\n"
         % json.dumps({k: v for k, v in sorted((versions or {}).items())
-                      if k in STAMPED_DEPS or k == LESSON_INDEX_NAME},
+                      if k in STAMPED_DEPS or k == LESSON_INDEX_NAME
+                      or k == KS4_LESSON_INDEX_NAME},
                      separators=(",", ":"))
     )
     return stamp_versions((
@@ -3756,6 +4074,16 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "<link rel=\"preconnect\" href=\"https://cdn.jsdelivr.net\" crossorigin>\n"
         "<link rel=\"dns-prefetch\" href=\"https://mrbadmus-backend.onrender.com\">\n"
         "<title>%s</title>\n"
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — the same
+        # `#E4572E` chevron favicon `generate_site_v5.KS4_FAVICON_LINK` gives
+        # every KS4 page, kept as its own literal here for the same reason
+        # `ds_css()`'s own comment gives for not sharing a bundle across the
+        # two ports: independence, not coupling.
+        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"data:image/svg+xml;"
+        "base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdC"
+        "b3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUi"
+        "IHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2Fw"
+        "PSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\">\n"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
         "<style>body{margin:0;background:#FBF3E6}"
@@ -3765,7 +4093,10 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "%s</style>\n"
         "</head>\n<body>\n"
         "<div id=\"mrb-student\" style=\"background:var(--st-ground);"
-        "min-height:100vh\"></div>\n"
+        "min-height:100vh\">"
+        "<div style=\"padding:40px;font:400 15.5px/1.4 var(--st-ui);"
+        "color:var(--st-muted)\">%s</div>"
+        "</div>\n"
         "<script src=\"/shared/student-runtime.js\"></script>\n"
         "<script>window.__MRB_TPL__=%s;</script>\n"
         "<script>window.__MRB_BIND__=%s;</script>\n"
@@ -3805,12 +4136,13 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
            # ASSIGNMENT-ONLY, checked rather than assumed: the class view's
            # template has no `"fig"` node (`INSERT_AT["class view"]` never
            # names one), so `.mrb-figure-scroll` cannot match there.
-           (_EYEBROW_TYPE +
-            ((_THEME_BRIDGE + _PAGE_STRONG + _PIP_ROW + _CARD_FIT
-              + _ROW_DONE)
+           (_EYEBROW_TYPE + _FOCUS_RING +
+            ((_THEME_BRIDGE + _FOCUS_RING_BENCH + _PAGE_STRONG + _PIP_ROW
+              + _CARD_FIT + _ROW_DONE + _TAP44)
              if spec["page"] == "class view"
              else (bench_css + _THEME_BRIDGE + _Q_EYEBROW
                    + _FIGURE_SCROLL))),
+           html.escape(_LOADING_CAPTION.get(spec["out"], "Loading…")),
            json.dumps({"roots": roots, "imports": tpl["imports"]},
                       separators=(",", ":")).replace("<", "\\u003c"),
            json.dumps(bind_table, separators=(",", ":")),
@@ -3967,6 +4299,15 @@ def build():
           % (len(wanted), len(topped),
              (": " + ", ".join(topped)) if topped else ""))
 
+    # ⊕ Experience run, 24 Sep 2026 — the port's own stylesheet tail, mirroring
+    # `build_teacher_port.py`'s `+= R.PORT_CSS` (MRB-340). AFTER `top_up`, not
+    # before: `top_up` appends the custom properties Design's bundle does not
+    # define, and `--st-*` tokens are all on `:root`, so an override has to
+    # come after the declaration it overrides. See `student_rulings.PORT_CSS`
+    # for what it fixes and why it lives there and not in this generated file.
+    import student_rulings
+    css += student_rulings.PORT_CSS
+
     for out_dir in (SHARED_OUT, "shared"):
         os.makedirs(out_dir, exist_ok=True)
         with open(os.path.join(out_dir, DS_CSS_NAME), "w",
@@ -4023,6 +4364,20 @@ def build():
     versions[LESSON_INDEX_NAME] = asset_hash(idx_js)
     print("     ✅ %-24s %7d bytes  (%d KS3 lesson(s), every page checked on "
           "disk)" % (LESSON_INDEX_NAME, len(idx_js), n_lessons))
+
+    # ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 19. Same
+    # publish-then-stamp discipline as the KS3 index immediately above, and
+    # for the same reason: there is no source file to fall back on, so the
+    # only correct hash is of the bytes just written.
+    ks4_idx_js, n_subtopics = ks4_lesson_index()
+    for out in (os.path.join("shared", KS4_LESSON_INDEX_NAME),
+                os.path.join(SHARED_OUT, KS4_LESSON_INDEX_NAME)):
+        with open(out, "w", encoding="utf-8") as fh:
+            fh.write(ks4_idx_js)
+    versions[KS4_LESSON_INDEX_NAME] = asset_hash(ks4_idx_js)
+    print("     ✅ %-24s %7d bytes  (%d KS4 subtopic(s), every one checked "
+          "against the built tree)"
+          % (KS4_LESSON_INDEX_NAME, len(ks4_idx_js), n_subtopics))
 
     for name in (RUNTIME_JS_NAME, LIVE_JS_NAME):
         src = os.path.join("shared", name)
