@@ -407,6 +407,31 @@ rest on save; multi-topic worksheets fired a 400 and were named after the first 
 **Round three** (streams K, L, M) fixes all of the above at the source; its landing and the
 fourth-pass verification are recorded at the very end of this file.
 
+### Round three landing
+
+Streams K (pupil), L (teacher numbers and data safety) and M (teacher accessibility, copy,
+responsive) → main **`956271c08`**. Notable fixes: `teacher/today.html` had kept its own
+copy of the week and "marked" rules and so disagreed with every generated screen — it now
+loads `shared/teacher-live.js` in a library mode and calls the seam's own builders, with a
+new two-open-sets case in `today_drive.py`; editing a multi-topic set used to send only the
+head topic's question ids on save, and the backend's PATCH replaces the set with exactly
+what it is sent, so the other topic's questions were DELETED — `saveEdit` now sends every
+scope, proven live on TEST (note-only edit: 10/10 survive; head-count change: the other
+topic untouched); the pupil's Continue button now carries the assignment id; the
+engagement "2+ weeks" bucket starts at 14 days, in one place; "Reminded today · N"
+survives a reload; the breakdown's class flag counts finished pupils only and the
+Wrong-only tally is the real one; the 360-wide header wraps with Sign out and Find a
+student on screen; every chip carries `aria-pressed`; the advertised "/" shortcut works.
+One push was refused by the `pool_ownership` fast gate — stream K had resolved a KS4
+lesson link by reading `ks4_assignment_bank` from the student page, which the pool
+contract forbids; the link now derives the subtopic from the question id
+(`ks4-<slug>-[esh]NN`) and a generated `shared/ks4-lesson-urls.js` index, with no bank read.
+Live-verified the same way as the rounds before: `student/class` and `teacher/today`
+byte-identical; `teacher-live.js?v=5de6cfd0`, `breakdown.js?v=9d36a7d9`,
+`student-live.js?v=6175ebfe`, `student-runtime.js?v=52bf5e1a`, `teacher-ds.css?v=6ac8f824`,
+`mrbadmus.v2.js?v=bc5d7b31`, `set-work.js?v=ffac474f`, `styles.css?v=ce417591` all
+byte-identical with a nonce. Gates: 25 green, `set_work` on its three inherited checks only.
+
 ## A build-order subtlety found in round 2 (for the next engineer)
 
 `build_all.py` step 1 (`generate_site_v5.py`) restamps the hand-written teacher pages

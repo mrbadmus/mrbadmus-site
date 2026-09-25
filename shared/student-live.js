@@ -625,12 +625,20 @@
      0 and 1 whole days respectively — so a deadline within the next 24h and
      one within the next 24–48h both still get a NAME rather than "0 days
      left" / "1 days left". */
+  /* ⊕ CORRECTED 25 Sep 2026 (experience run, fourth pass, production N9).
+     `floor` of ELAPSED TIME is not a calendar: a Monday 09:00 deadline read
+     "Due tomorrow" from Saturday 09:00 and "Due today" all Sunday afternoon,
+     which tells a child the wrong day. A "day" here is a school-local
+     CALENDAR day, so the count is the difference between the deadline's
+     London date and today's London date. Saturday → "2 days left", Sunday →
+     "Due tomorrow", Monday before 09:00 → "Due today", after → "Overdue". */
   function daysLeft(dueIso, now) {
     if (!dueIso || !now) { return ""; }
     var ms = Date.parse(dueIso) - now;
     if (isNaN(ms)) { return ""; }
     if (ms <= 0) { return "Overdue"; }
-    var days = Math.floor(ms / 86400000);
+    var days = Math.round((Date.parse(londonYmd(dueIso) + "T00:00:00Z")
+                         - Date.parse(londonYmd(now) + "T00:00:00Z")) / 86400000);
     if (days < 1) { return "Due today"; }
     if (days < 2) { return "Due tomorrow"; }
     return days + " days left";
