@@ -95,10 +95,22 @@
     .tb-tab:hover { color: var(--st-ink); text-decoration: none; }
     .tb-tab.is-on { background: var(--st-paper); color: var(--st-ink); }
 
-    /* The environment badge. ⚠️ NOTHING ON THIS PAGE EVER REVEALS IT — no
-       script here touches `#env-pill` (admin.html and import.html each have
-       their own that does). Kept as it was found, hidden, and restyled so it
-       is v3-shaped the day something wires it. */
+    /* The environment badge. ⊕ Stream M, 25 Sep 2026 (experience run round
+       3, item 26) — WIRED. It used to say "nothing here touches `#env-pill`
+       … kept hidden, restyled for the day something wires it"; that day is
+       this one. A teacher signed into a TEST backend saw a plain "Good
+       morning" with no hint they were not looking at real pupils' data,
+       while every generated page (the six `build_teacher_port.py` screens)
+       already carries the same badge via `envBadge()` in
+       `shared/teacher-live.js`. This page does not load that module — it is
+       the one runtime file every generated screen pulls in, and pulling it
+       in here for six lines of logic would be a lot of script for a pill —
+       so `envPillFor()` below reimplements the same TWO rules instead:
+       env.toUpperCase() (LOCAL when unset), and — because a badge that is
+       always there warns of nothing (`envBadge`'s own comment) — nothing at
+       all on the real `mrbadmus.com` production host. See
+       `shared/teacher-live.js`'s `envBadge` for the source of truth if the
+       two are ever compared. */
     .pill {
       flex: none;
       padding: 5px 8px;
@@ -597,7 +609,7 @@
        The old bar's comment said "nothing here computes either" — this page
        computes it (`teacherName(ctx.profile)`), it just had nowhere to put it. -->
   <span class="tb-name" id="tb-name"></span>
-  <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
+  <span id="env-pill" class="pill env-prod" style="display:none;"></span>
   <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
 </nav>
 
@@ -842,6 +854,20 @@ function greetingFor(name) {
   const h = new Date().getHours();
   const part = h < 12 ? 'Good morning' : (h < 18 ? 'Good afternoon' : 'Good evening');
   return name ? (part + ', ' + name) : part;
+}
+
+/* ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 26) — the same two
+   rules `envBadge()` in shared/teacher-live.js applies for every generated
+   screen: uppercase the configured environment (LOCAL when there is none),
+   and say nothing at all on the real production host — a badge that is
+   always there warns of nothing. Returns '' to mean "show no pill". */
+function envPillFor() {
+  const cfg = window.MrBadmusConfig || {};
+  const env = String(cfg.environment || '');
+  const host = String(window.location.hostname || '');
+  const live = (host === 'mrbadmus.com' || host === 'www.mrbadmus.com');
+  if (live && env === 'prod') { return ''; }
+  return env ? env.toUpperCase() : 'LOCAL';
 }
 
 /* The name students see. `display_name` is the "What name should students
@@ -1093,6 +1119,19 @@ MrBadmusTeacherGuard.requireTeacherRole({
     /* Design's bar names the teacher between the search and Sign out. This
        page has always held the string; it had nowhere to put it. */
     el('tb-name').textContent = name;
+
+    /* ⊕ Stream M, 25 Sep 2026 (item 26) — the environment pill, wired. See
+       `envPillFor()`'s own comment for why this reimplements
+       `envBadge()` rather than loading `shared/teacher-live.js` for it. */
+    const envPill = el('env-pill');
+    const envWord = envPillFor();
+    if (envWord) {
+      envPill.textContent = envWord;
+      envPill.className = 'pill env-' + envWord.toLowerCase();
+      envPill.style.display = '';
+    } else {
+      envPill.style.display = 'none';
+    }
 
     /* Armed before anything is read. It makes no request until pressed. */
     armSearch(TD);
