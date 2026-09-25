@@ -1343,6 +1343,14 @@
     opts.forEach(function (o) {
       var b = btn("sw-chip", o.label);
       b.setAttribute("data-sw-key", String(o.key));
+      // ⊕ Stream M, 25 Sep 2026 (experience run round 3, N8) — every chip
+      // this sheet builds is a toggle (Now/Later, tier, subject, paper,
+      // the count quick-picks…) and selection was shown by the `is-on`
+      // CLASS alone, with nothing in the accessibility tree saying which
+      // one — or that they are toggles at all. `aria-pressed` starts false
+      // here and `syncChips` below keeps it in step with `is-on` on every
+      // sync, the same call that already toggles the class.
+      b.setAttribute("aria-pressed", "false");
       b.addEventListener("click", function () {
         if (b.disabled) { return; }
         onPick(o.key);
@@ -1356,7 +1364,9 @@
   function syncChips(list, active, isDisabled) {
     if (!list) { return; }
     list.forEach(function (c) {
-      c.node.classList.toggle("is-on", String(c.key) === String(active));
+      var on = String(c.key) === String(active);
+      c.node.classList.toggle("is-on", on);
+      c.node.setAttribute("aria-pressed", on ? "true" : "false");
       c.node.disabled = isDisabled ? !!isDisabled(c.key) : false;
     });
   }
