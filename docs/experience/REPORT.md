@@ -365,6 +365,19 @@ throwaway pool on TEST — a follow-up, not tonight.
 9. Backend landed first (`013cfbf`, proven by `/api/health` `build`); the route is
    additive and unused until the site landed.
 
+## A build-order subtlety found in round 2 (for the next engineer)
+
+`build_all.py` step 1 (`generate_site_v5.py`) restamps the hand-written teacher pages
+(`today.html`, `timetable.html`, `admin.html`, `import.html`, `seating.html`) against
+the `shared/teacher-ds.css` that exists at that moment; step 5 (`build_teacher_port.py`)
+then regenerates `teacher-ds.css`. So a change that alters `teacher-ds.css` (stream J's
+font-path rewrite) leaves those five pages carrying the PREVIOUS stamp until the next
+build — the six generated pages are right, the five hand-written ones are one build
+behind. The round-two build commit shipped that way; the gate round's own rebuild
+corrected it, and the report commit captured the correction, which is why thirteen
+receipts had to be re-recorded before the push. A second restamp pass after step 5
+would close it; not done tonight.
+
 ## Deviations
 
 - Deviation: streams A and D both wrote the "Select all on time this week" ruling →
