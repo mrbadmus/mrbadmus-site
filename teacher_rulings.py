@@ -1870,6 +1870,21 @@ BIND_ATTR = {
           "the question-breakdown row, widened only on a paper that carries "
           "the port's own \"Not marked\" label."),
 
+    # ⊕ Stream M, 25 Sep 2026 (experience run round 3, N8) — AN ADDITION,
+    # NOT A CORRECTION: node 644 (the bulk shoutout sheet's per-pupil chip)
+    # carries no `aria-pressed` in Design's markup at all, so `expect` is
+    # `None` — `BIND_ATTR`'s own guard reads `(here[node].get("a") or
+    # {}).get(attr)`, which is `None` for an attribute that was never
+    # written, and the check is refused only when that stops being true (a
+    # Design redraw that added one of her own). Bound to `s.pressed`, the
+    # pre-stringified field the `bulkStudents` ruling above adds — never to
+    # the boolean `s.on`, which `student-runtime.js` silently drops whenever
+    # it resolves to `false` (see that ruling's own comment).
+    644: ("aria-pressed", None, {"parts": [{"e": "s.pressed"}]},
+          "the bulk shoutout sheet's pupil chips — selection was shown by "
+          "colour alone, with nothing in the accessibility tree saying a "
+          "chip was a toggle or which ones were picked."),
+
     # ── THE CLASS-BY-QUESTION TABLE IS EIGHT COLUMNS WIDE ──────────────
     #
     # ⊕ RULED 2 Sep 2026 (MRB-306 Phase 2a screen 5). Both halves of the
