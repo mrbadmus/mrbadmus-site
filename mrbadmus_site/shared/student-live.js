@@ -2566,6 +2566,17 @@
       };
       if (status === "marked" && c.max_score > 0) {
         row.score = Math.round((c.score / c.max_score) * 100);
+        /* ⊕ Experience run, 25 Sep 2026 (stream H) — P1. The class page's
+           Average tile averaged these PER-ROW PERCENTAGES (56% over a
+           40/60/80/50/50 spread) where Mide's ruled definition is total
+           marks over total possible (16/29, 55%) — the same definition the
+           teacher side uses. `row.score` above stays a percentage (every
+           other reader wants that), so the raw pair travels alongside it
+           purely for the average: see the LOGIC ruling on `renderVals`'s
+           `avg` in student_rulings.py, which sums these rather than
+           averaging the percentages. */
+        row.rawScore = c.score;
+        row.rawMax = c.max_score;
       }
       if (c.is_submitted && c.due_at && !c.on_time) { row.late = true; }
       return row;
@@ -4431,6 +4442,15 @@
       KEY: "mrbadmusai.assignment." +
            name.replace(/[^A-Za-z0-9]/g, "") + "." + a.id + ".v1",
       DUE: fmtDue(a.due_at),
+      /* ⊕ Experience run, 25 Sep 2026 (stream H) — P3. Opening a set whose
+         deadline has already passed gave no warning at all — a pupil could
+         answer the whole thing believing it was still on time. This is the
+         SERVER CLOCK's own verdict, independent of whether this pupil has
+         submitted anything yet (that is `lateText`'s job, above, and it
+         needs a `completed_at` this page does not have until AFTER
+         submission). Read only over question 1; see the LOGIC ruling on
+         `pastDeadlineWarningVisible` in student_rulings.py. */
+      pastDeadlineNow: !!(a.due_at && serverNow && Date.parse(a.due_at) < serverNow),
 
       /* ⊕ 22 Aug 2026 — two values Design welded into one line of `renderVals`.
          `WEEK 04` was every class in every week of every year; a real week is

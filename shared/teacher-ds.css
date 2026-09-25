@@ -131,7 +131,7 @@
    Plus Jakarta Sans: variable, wght 200–800. Latin subsets. */
 @font-face {
   font-family: 'Fraunces';
-  src: url('../fonts/fraunces-var-latin.woff2') format('woff2');
+  src: url('/shared/fonts/fraunces-var-latin.woff2') format('woff2');
   font-weight: 400 700;
   font-style: normal;
   font-display: swap;
@@ -139,7 +139,7 @@
 }
 @font-face {
   font-family: 'Plus Jakarta Sans';
-  src: url('../fonts/plus-jakarta-sans-var-latin.woff2') format('woff2');
+  src: url('/shared/fonts/plus-jakarta-sans-var-latin.woff2') format('woff2');
   font-weight: 200 800;
   font-style: normal;
   font-display: swap;
@@ -167,7 +167,7 @@
    font mid-badge. Same defect class MRB-130 exists to fix. */
 @font-face {
   font-family: 'Bricolage Grotesque';
-  src: url('../fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
+  src: url('/shared/fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
   font-weight: 400 800;
   font-style: normal;
   font-display: swap;
@@ -175,7 +175,7 @@
 }
 @font-face {
   font-family: 'Instrument Sans';
-  src: url('../fonts/instrument-sans-var-latin.woff2') format('woff2');
+  src: url('/shared/fonts/instrument-sans-var-latin.woff2') format('woff2');
   font-weight: 400 700;
   font-style: normal;
   font-display: swap;
@@ -183,7 +183,7 @@
 }
 @font-face {
   font-family: 'Instrument Sans';
-  src: url('../fonts/instrument-sans-var-italic-latin.woff2') format('woff2');
+  src: url('/shared/fonts/instrument-sans-var-italic-latin.woff2') format('woff2');
   font-weight: 400 600;
   font-style: italic;
   font-display: swap;
@@ -191,7 +191,7 @@
 }
 @font-face {
   font-family: 'DM Mono';
-  src: url('../fonts/dm-mono-400-latin.woff2') format('woff2');
+  src: url('/shared/fonts/dm-mono-400-latin.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -199,7 +199,7 @@
 }
 @font-face {
   font-family: 'DM Mono';
-  src: url('../fonts/dm-mono-500-latin.woff2') format('woff2');
+  src: url('/shared/fonts/dm-mono-500-latin.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -3661,4 +3661,30 @@ a:hover { color: var(--st-accent-hover); }
   --st-caption: #685E51;  /* was #7A6E5F — 4.75:1 on --st-seg-bg (was 3.71) */
   --st-faint:   #695E4E;  /* was #7B6E5C — 4.75:1 on --st-seg-bg (was 3.71) */
   --st-ghost:   #6E604B;  /* was #7D6D55 — 4.55:1 on --st-seg-bg (was 3.74) */
+}
+
+/* ── ⊕ experience run, 25 Sep 2026 (Mide's items 2/3) · REACHING A PUPIL
+   BY KEYBOARD ──────────────────────────────────────────────────────────
+
+   Five of Design's cards are a plain `<div>` with a click handler and
+   nothing else: the class card (179), "Keep an eye on" (259), "Worth a
+   shoutout" (270), a roster row (294) and a Find-a-student result (665).
+   `shared/student-runtime.js` now wires Enter/Space to any node that
+   carries BOTH `on` and `tabindex` — set on exactly these five below —
+   so this stylesheet only has to draw them. The 3px ring itself is
+   already `[data-mode="ks3"] :focus-visible` above ("one focus treatment,
+   on everything, no exceptions"); nothing here duplicates it.
+
+   `.mrb-active` is the ONE exception: it marks the arrow-key cursor inside
+   the Find-a-student list, which is a highlight WITHOUT real DOM focus
+   (focus stays on the search box, exactly as `shared/search.js`'s topic
+   search already does it) — so `:focus-visible` never sees it and needs
+   its own rule. */
+[data-dc-tpl="179"],
+[data-dc-tpl="259"],
+[data-dc-tpl="270"],
+[data-dc-tpl="294"] { outline-offset: -2px; }
+
+[data-dc-tpl="665"].mrb-active {
+  background: var(--st-note-bg);
 }

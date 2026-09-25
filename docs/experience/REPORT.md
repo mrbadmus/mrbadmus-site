@@ -135,7 +135,108 @@ matrix does. Not-started pupils get a sentence and the questions behind a disclo
 
 ## The whole-site test (item 14)
 
-_(filled in after the live pass — see the end of this file)_
+Two passes before the fixes (a read-only production look, pupil only) and two Opus
+audits after deploy: production (pupil, with sandbox writes in 8r/Sc1) and TEST (every
+teacher and pupil journey on seeded data). Logs and screenshots: `$MRB_SHOTS/prod-before/`,
+`$MRB_SHOTS/final-prod/`, `$MRB_SHOTS/final-test/` (each has an `AUDIT.md` / `DEFECTS.md`).
+
+### Production, pupil (`midebolabadmus@gmail.com`, 8r/Sc1) — after deploy
+
+Sign in; class page (Completed 4/5, On time 4/4, Average 50%); open the one unstarted
+set; answer two questions; leave, close the tab, return in a fresh tab (both answers
+persisted, resumed at Q3); finish (4/5, 80%, "Completed · Late", 55 s); class page updates
+(5/5, On time 4/5, To do 0); flashcards (79 cards); leaderboard; a KS3 lesson with the chat
+panel opened and closed by keyboard (launcher ringed, Tab stays inside, Esc returns focus);
+the bell (2 unread, 7 messages); 360 and 390 wide with no sideways scroll; keyboard-only
+on the class page: all 32 Tab stops show a visible ring. **No console error or failed request
+on any pupil page** (one `/favicon.ico` 404 on `/auth`). Signed out.
+
+Production read-only SQL, with the v2 rules run as a plain SELECT: 10h/Ph1 reads
+**2 of 17 in, on time 2, mean 55%**, Lydia 80 and Annabel 30; 11r/Sc1 0 of 34 (its one
+submission is in progress); 8r/Sc1 completion 60%, class mean 53%. Nine of the twelve
+classes have no set yet because composition is lazy (a set is written when a pupil first
+opens the class page).
+
+**Defects found on the pupil side, and what happened to them:**
+
+| # | severity | finding | outcome |
+|---|---|---|---|
+| P1 | wrong number | the pupil's Average was a mean of percentages (56%) while the teacher's is total marks over total possible (55%) | fixed — one definition (stream H) |
+| P2 | confusing | a set finished after its deadline was never called "late" on the class page | fixed — "· late" on the row |
+| P3 | confusing | opening a missed set gave no warning it would count as late | fixed — one quiet line above Q1 |
+| P5 | accessibility | the flashcard viewer was not a dialog: Esc did nothing, Tab escaped, Close unnamed | fixed — dialog, trap, Esc, named Close |
+| P6 | confusing | the work row's bar showed questions answered, not the score (40% drew a full green bar) | fixed — score bar for completed sets |
+| P9 | cosmetic | "Complete homework" after answers were saved | fixed — "Continue" |
+| P10/P11/P13 | accessibility, cosmetic | bell badge and week buttons unnamed, tiny class-link tap target, empty "Lessons in this topic 00" box, camera button named by an emoji | fixed |
+| P4 | content | in "The particle model" Q2 refers to a 50 ml + 50 ml → 97 ml set-up the pupil never sees, and Q5 to "the drawing" that is not shown | **Mide's gate** — not touched |
+| P8 | cosmetic | the per-question timer restarts on resume (the saved total is right) | left |
+| P12 | by design | the leaderboard says "18–24 Sep" on the morning of the 25th: the KS4 challenge week turns at Friday 10:15 | left |
+| P14 | cosmetic | `/favicon.ico` 404 | left |
+
+**One production write, not removed:** the audit's own completed submission
+`50c4c9bf-5528-43f4-b682-2afe34b01624` (plus five attempt rows) on Mide's pupil account in
+8r/Sc1 — a pupil cannot delete a submission and this run forbids SQL writes on production.
+⚠️ 8r/Sc1 now has a **second teacher** (Victoria Ellingham, since 16 Sep), who can see it.
+To remove it: `delete from assignment_question_attempts where submission_id='50c4c9bf-5528-43f4-b682-2afe34b01624'; delete from assignment_submissions where id='50c4c9bf-5528-43f4-b682-2afe34b01624';`
+
+### Production, teacher — NOT tested in the browser
+
+`a.badmus@rainford.org.uk` was rejected twice ("Invalid login credentials": once by JS
+form fill, once by CDP `insertText`, the variable checked for length and stray characters
+without printing it). The account has a password and both email and Azure identities, and
+last signed in at 21:57 UTC on 24 Sep — most likely through Microsoft. No further attempt,
+no guess, no other account. Every teacher number on production above comes from read-only
+SQL; every teacher SCREEN was exercised on TEST instead (below). Consequently the
+**real model call for Draft feedback has not been exercised on production** — the route is
+proven by its unit tests, the 20 Opus prompt cases, and the 502 path on TEST. The first
+press of "Draft feedback" by Mide is the live proof. Expected also: until the parked
+migration is applied, each teacher page load logs one 404 for `teacher_class_rollup_v2`
+and takes the JS fallback.
+
+### TEST, every teacher and pupil journey (Opus, on the deployed tree)
+
+Seed: a throwaway school, a teacher and 8 pupils in `10f/Ph1`; a CLOSED set (3 on time,
+2 late, 3 missing); an OPEN set due Mon 28 Sep 08:00 (Lydia 8/10 and Annabel 3/10 on time,
+Erin in progress) including the circuit-symbol figure questions; answers posted through the
+real `/api/assignment/answer` and `/complete` routes as each pupil, backdated. Teardown by
+snapshotted ids: 0 rows in all 15 tables, 0 auth users.
+
+**Checked and correct, by hand against the seed:** every headline number on the class page,
+the pupil pages, the digest and every Charts tab in both scopes (2 of 8 in, 59% mean, 71% on
+time, averages, score spread, per-question figures); the Breakdown; Set work set / edit /
+delete; every worksheet option; feedback reaching the pupil; "Select all on time this week"
+picking exactly the two; reminders; the pupil's answer → leave → resume → finish flow.
+
+**Defects found (27), and what happened to them:**
+
+| severity | finding | outcome |
+|---|---|---|
+| blocks | Draft feedback hung on ANY error (502/422/429/403): the error was thrown inside `.then(ok, err)`'s success arm; same pattern in delete-set-work and the auto-work toggle | fixed (stream I) |
+| blocks | the teacher's note never reached the pupil: `assignmentNoteBody` bound but never returned | fixed (stream H) |
+| blocks | keyboard: a class card is a `div`, Tab skips it | fixed (I) |
+| blocks | keyboard: roster rows and the watch/shoutout names not focusable; Find a student neither focuses nor lets Enter/arrows pick — a keyboard-only teacher could not open a pupil | fixed (I) |
+| wrong number | "N missed this term" counted every set but the newest (`slice(1)`), so an open set counted as missed once a scheduled one existed | fixed → `closedIdx` (I) |
+| wrong number | "Up 25 points on the last set" was Design's `imp.d × 12.5`; the real change was +5 | fixed (I) |
+| wrong number | Engagement "3 of 8 opened something today" were the three who had done nothing (timed from `joined_at`) | fixed (I) |
+| wrong number | "Last active" ignored in-progress work; "yesterday" meant 24–47 h | fixed (I) |
+| wrong number | "Weakest question" was "—" on every set but the reteach set (only that grid fetched) | fixed (I) |
+| wrong number | Today's "Worth a reteach" still used the deadline rule | fixed (I) |
+| wrong number | a pupil's "Time taken" lost the first sitting of a two-sitting attempt | fixed (H) |
+| confusing | in-progress pupils read "Not in yet"; on a closed set, nothing read "Not in yet" instead of "Missing" | fixed (I) |
+| confusing | the digest counted 4 to chase where the class page offered 6 | fixed (I) |
+| confusing | a past week said "No work set in this week" above a table listing that week's set | fixed (J) |
+| confusing | Charts' "Open work · Excluded" tiles were stale | fixed (J) |
+| confusing | the Breakdown grouped each KS4 question under its own "topic" named by a bank id | fixed (J) |
+| confusing | the Set work edit form hid the saved note | fixed (J) |
+| cosmetic | 360/390: the week strip collapsed to 2 px; Charts and one lesson page scrolled sideways | fixed (J) |
+| confusing | slow 3G: 10–15 s of blank screen before anything drew | fixed — a synchronous loading state (J) |
+| cosmetic | two 404s on every page: a font path in `teacher-ds.css` and `/favicon.ico` (also on production) | fixed (J) |
+
+Environment gaps, not product defects: the leaderboard cannot be tested on TEST
+(`weekly_challenges` is missing there, the backend answers 500); `index.html` does not load
+`config.js`, so a local copy points its class link at production.
+
+_(outcomes above are updated after the re-audit — see "The second pass" at the end)_
 
 ## Other defects found and fixed
 
@@ -203,6 +304,22 @@ touches the question pools or the sheet's pool logic; the other 421 checks (ever
 end to end under real RLS) pass. It ships with a `GATE-OVERRIDE:` line on the tip commit
 naming exactly that. Fixing it properly means teaching the fixture to mint its own small
 throwaway pool on TEST — a follow-up, not tonight.
+
+## Landing
+
+- **Backend first**: `013cfbf` pushed to `mrbadmus---backend` main; `/api/health`
+  reported `build: 013cfbf` within four minutes.
+- **Site**: `feat/experience` fast-forwarded onto main as `9301e0b5f` (seven stream merges,
+  each stream's own one-behaviour commits underneath, plus the build commits). The push went
+  through `hooks/pre-push` with 25 fresh gate runs, 20 valid receipts and the one named override.
+- **Verified live by bytes, not by a 200.** Cloudflare Pages answers `/teacher/student-detail.html`
+  with a **308** to the clean URL, so the check follows redirects. The live page is
+  byte-identical to the committed page; the page map carries the committed stamps; and each
+  stamped asset fetched with a nonce is byte-identical to the committed build:
+  `teacher-live.js?v=3571dd09`, `breakdown.js?v=27145cb6`, `breakdown.css?v=58b756bb`,
+  `student-runtime.js?v=ec753253`, `tokens.css?v=4ac1e47c`, `mrbadmus.v2.js?v=7c0161a8`,
+  `set-work.js?v=a7d68b0a`, `teacher-ds.css?v=a682d3cd`, `student-live.js?v=54bca63b`,
+  `styles.css?v=75c28b2d`, `ks3.css?v=a50390d5`.
 
 ## Decisions I made
 
