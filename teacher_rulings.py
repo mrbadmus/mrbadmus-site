@@ -8769,6 +8769,48 @@ componentDidUpdate() {
      "`noteCount` because it is the composer's other computed key and the "
      "only line in Design's logic that names this footer."),
 
+    # ══ ⊕ Stream M, 25 Sep 2026 (experience run round 3, N8) — THE BULK
+    #    SHEET'S PUPIL CHIPS GET `aria-pressed` ══════════════════════════
+    #
+    # Selection was shown by `on ? tint : plain` colours alone — nothing in
+    # the accessibility tree said a chip was a toggle, or which ones were
+    # picked. `pressed` is `on` PRE-STRINGIFIED ('true'/'false'): binding the
+    # markup straight to the boolean `on` would work for the SELECTED chips
+    # and silently vanish on every unselected one, because
+    # `student-runtime.js`'s attribute resolver drops any attribute whose
+    # value is exactly `=== false` (see `sendOff`'s own note, immediately
+    # above, for the same rule stated about `disabled`). The binding itself
+    # is `BIND_ATTR[644]`, below — node 644 has no `aria-pressed` at all in
+    # Design's markup, so this is an addition rather than a correction of
+    # one of her values.
+    ("      bulkStudents: kRoster.map(r => {\n"
+     "        const on = s.boSel.indexOf(r.id) > -1;\n"
+     "        return {\n"
+     "          name: r.name,\n"
+     "          fg: on ? 'var(--st-accent-text)' : 'var(--st-ink)',\n"
+     "          bg: on ? 'var(--st-chip-tint)' : 'var(--st-paper)',\n"
+     "          bc: on ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',\n"
+     "          dot: on ? 'var(--st-accent)' : this.hueFor(r.name),\n"
+     "          toggle: () => this.setState({ boSel: on ? "
+     "s.boSel.filter(x => x !== r.id) : s.boSel.concat([r.id]) })\n"
+     "        };\n"
+     "      }),",
+     "      bulkStudents: kRoster.map(r => {\n"
+     "        const on = s.boSel.indexOf(r.id) > -1;\n"
+     "        return {\n"
+     "          name: r.name,\n"
+     "          pressed: on ? 'true' : 'false',\n"
+     "          fg: on ? 'var(--st-accent-text)' : 'var(--st-ink)',\n"
+     "          bg: on ? 'var(--st-chip-tint)' : 'var(--st-paper)',\n"
+     "          bc: on ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',\n"
+     "          dot: on ? 'var(--st-accent)' : this.hueFor(r.name),\n"
+     "          toggle: () => this.setState({ boSel: on ? "
+     "s.boSel.filter(x => x !== r.id) : s.boSel.concat([r.id]) })\n"
+     "        };\n"
+     "      }),",
+     "the bulk shoutout sheet's pupil rows — one field added, `pressed`, "
+     "for `BIND_ATTR[644]`'s `aria-pressed`."),
+
     # ══ ⊕ Mide's 23 Sep 2026 ruling · "SELECT ALL ON TIME THIS WEEK" MEANT
     #    "IN THIS WEEK", NOT "ON TIME" — AND IT WAS NEVER WIRED AT ALL ═════
     #
