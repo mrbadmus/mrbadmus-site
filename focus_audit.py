@@ -14,42 +14,88 @@ on the ported student/teacher pages are `<button style="all:unset;...">`
 `build_student_port.py`'s module docstring) and an inline style beats any
 stylesheet selector regardless of specificity, `:focus-visible` included.
 
+── STREAM G FOLLOW-UP, 25 Sep 2026 — TWO CORRECTIONS TO THE METHOD ───────
+
+The first version of this gate reported two false positives on the merged
+tree, both worth naming because the fix for each is a different kind of
+"measure truthfully" than the ring defect above:
+
+1. `ks3_lesson` "failed" because the chat panel's close/image/input/send
+   controls were "UNREACHED". They are unreached AT REST because the panel
+   is `inert` while closed (`shared/mrbadmus.v2.js`'s own comment on
+   `open()`: "hides it from the eye and the mouse and NOT from the
+   keyboard... A page that ships the overlay `inert` opts into having it
+   managed here") — Tab cannot reach an `inert` subtree by design, and
+   reporting that as a defect was measuring the WRONG THING. Elements
+   inside `[inert]` are now excluded from the "expected reachable" set
+   entirely (§SCAN_JS), and pages that carry a chat panel get a SEPARATE,
+   explicit check: open it with a real click, Tab through it, confirm all
+   four controls are reached and ring, confirm Tab cannot escape it
+   (`shared/mrbadmus.v2.js` now traps Tab inside `#chatOverlay` while it is
+   open, the same pattern `shared/set-work.js`'s sheet already used), and
+   confirm Escape closes it and returns focus to whichever button opened it
+   (also new — `close()` used to drop focus on `<body>`).
+
+2. `student_assignment` "failed" with unreached/no-change controls that
+   were neither: `shared/student-runtime.js`'s `draw()` empties the whole
+   mount and rebuilds it from scratch on an async data resolve, which used
+   to strip every `data-mrb-fa` attribute this gate wrote, mid-sweep, and
+   read as "Tab never reached these" for controls that were simply GIVEN
+   NEW DOM NODES under Tab's feet. Elements are no longer identified by an
+   attribute this gate writes once; each scan computes a STABLE KEY per
+   element — `tag :: visible text :: position among duplicates of that
+   pair` — and the candidate list is RE-SCANNED after every single Tab
+   press. A `draw()` that re-renders the same visible content in the same
+   order produces the same keys on the new nodes, so tracking survives the
+   replacement it used to be defeated by.
+
 ── METHOD ──────────────────────────────────────────────────────────────
 
 For every target page:
 
   1. Load it, let it settle, and — for anything with a SPA mount id — poll
      until the mount has actually rendered (`wait_for_mount`).
-  2. In the browser, tag every element that is a plausible Tab stop (the
-     same selector `shared/set-work.js`'s own focus trap uses, PLUS
-     `[role="button"]`/`[role="tab"]`/`[role="menuitem"]`/`[contenteditable]`)
-     with a `data-mrb-fa` index, and record its BASELINE computed style
-     (outline, box-shadow, background-color, border) while nothing has
-     been focused yet.
+  2. Scan for every plausible Tab stop (the same selector shape
+     `shared/set-work.js`'s own focus trap uses, PLUS `[role="button"]`/
+     `[role="tab"]`/`[role="menuitem"]`/`[contenteditable]`), excluding
+     anything inside an `[inert]` ancestor, and key each one by
+     `tag::label::n`. Repeat until two consecutive scans agree (the tree
+     has stopped moving) — this is the BASELINE.
   3. Press a REAL Tab key, N times, through `Input.dispatchKeyEvent`
      (`rawKeyDown` + `keyUp` — Tab has no `char` event). A JS-dispatched
      `KeyboardEvent` would not move focus at all (untrusted events run no
      default action), so this has to be a genuine input-layer press, the
      same reasoning `set_work_drive.py`'s `press_space` uses for Space.
-  4. After every press, read `document.activeElement`'s `data-mrb-fa`
-     index and its CURRENT computed style. Compare against the baseline
-     for that same index. Any of outline/box-shadow/background/border
-     differing counts as a visible change; all four unchanged is the
-     defect this reports.
-  5. Also record which tagged indices were never reached by Tab at all
-     (an order/trap problem, not a visibility one) and separately scan for
-     elements that look interactive (`onclick`, `cursor:pointer`) but
-     carry no `tabindex` and aren't naturally focusable — a keyboard user
-     cannot reach these AT ALL, regardless of ring.
+  4. After EVERY press, RE-SCAN (not re-read a stale tag) and read which
+     candidate — by key — is `document.activeElement`. Compare its style
+     against that same key's style from the PREVIOUS scan (which was
+     necessarily unfocused, since focus just arrived this press). Any of
+     outline/box-shadow/background/border/colour/text-decoration differing
+     counts as a visible change; all unchanged is the defect this reports.
+     Keys seen in ANY scan across the whole sweep count as "expected", so a
+     control a redraw only introduced partway through still has to be
+     reached.
+  5. Separately, once per page (not per press — nothing here needs
+     redraw-tracking), scan for elements that look interactive (`onclick`,
+     `cursor:pointer`, and not already inside `[inert]`) but carry no
+     tabindex and aren't naturally focusable — a keyboard user cannot reach
+     these AT ALL, regardless of ring.
+  6. If the page carries `#chatOverlay`, additionally: click its
+     `[data-open-chat]` launcher for real, confirm the panel opens, Tab
+     through it (redraw-robust, same as step 4, scoped to the panel) and
+     confirm every one of its controls is reached and rings, confirm Tab
+     cannot walk out of it, then press Escape and confirm the panel closes
+     AND focus returns to the launcher.
 
 A "composer"/overlay page (the Set work sheet) is opened first via its own
 public JS seam (`MRB_SET_WORK_OPEN('')`, the same function the page's own
 "Set work" buttons call) so the audit measures the sheet's real controls,
 not the page behind it.
 
-Exit code is 1 if any page has an unreached-by-order problem or a
-no-visible-change control; 0 otherwise. `--shots` never affects the exit
-code — it is a reporting side effect for the run's screenshots.
+Exit code is 1 if any page has an unreached-by-order problem, a
+no-visible-change control, or a failed chat-panel check; 0 otherwise.
+`--shots` never affects the exit code — it is a reporting side effect for
+the run's screenshots.
 """
 
 import json
@@ -64,15 +110,22 @@ import ks3_browser as cdp  # noqa: E402
 MAX_TABS = 200  # a generous cap; the busiest fixture here has ~80 stops
 
 
-# ── the tagging + baseline-capture script ──────────────────────────────
+# ── the scan: candidates (keyed, styled, redraw-survivable) + who's active ─
 #
 # ⚠️ ONE SELECTOR, deliberately the same shape `shared/set-work.js`'s own
 # `FOCUSABLE` constant uses (`button,[href],input,select,textarea,
 # [tabindex]`), widened with the ARIA-role and contenteditable cases a
 # custom control can carry instead of a native tag. Anything hidden,
-# zero-sized, or `disabled`/`tabindex="-1"` is excluded — Tab could never
-# reach it either.
-TAG_AND_BASELINE_JS = r"""
+# zero-sized, `disabled`/`tabindex="-1"`, or inside `[inert]` is excluded —
+# Tab could never reach any of those either.
+#
+# ⚠️ THE KEY IS CONTENT, NOT AN ATTRIBUTE THIS SCRIPT WROTE. `tag :: label ::
+# n` (n = how many earlier candidates in DOM order share the same tag+label)
+# survives a `draw()` that discards the DOM node and replaces it with a new
+# one rendering the same thing in the same order — which is exactly the
+# shape `shared/student-runtime.js` tears pages down and rebuilds them in.
+# An attribute tag does not survive that; content does.
+SCAN_JS = r"""
 (function () {
   var sel = 'button,[href],input,select,textarea,[tabindex],' +
             '[role="button"],[role="tab"],[role="menuitem"],' +
@@ -81,9 +134,8 @@ TAG_AND_BASELINE_JS = r"""
   var root = scope ? document.querySelector(scope) : document;
   if (!root) { return JSON.stringify({error: 'scope not found: ' + scope}); }
   var nodes = Array.prototype.slice.call(root.querySelectorAll(sel));
-  var out = [];
-  function styleOf(el) {
-    var cs = getComputedStyle(el);
+  var active = document.activeElement;
+  function styleOf(cs) {
     return {
       outline: [cs.outlineWidth, cs.outlineStyle, cs.outlineColor].join(' '),
       boxShadow: cs.boxShadow,
@@ -94,7 +146,8 @@ TAG_AND_BASELINE_JS = r"""
       textDecoration: cs.textDecorationLine
     };
   }
-  var idx = 0;
+  var counts = {};
+  var out = [];
   nodes.forEach(function (el) {
     var r = el.getBoundingClientRect();
     if (!r.width || !r.height) { return; }
@@ -103,24 +156,45 @@ TAG_AND_BASELINE_JS = r"""
     if (el.disabled) { return; }
     var ti = el.getAttribute('tabindex');
     if (ti !== null && parseInt(ti, 10) < 0) { return; }
-    el.setAttribute('data-mrb-fa', String(idx));
+    // Stream G follow-up — an `inert` ancestor removes an element from the
+    // tab order BY DESIGN (the closed chat panel's `data-inert-when-closed`
+    // is exactly this); it is not a reachability defect and does not belong
+    // in the "expected reachable at rest" set at all.
+    if (el.closest('[inert]')) { return; }
     var label = (el.innerText || el.getAttribute('aria-label') ||
                  el.getAttribute('title') || el.getAttribute('placeholder') ||
                  '').trim().replace(/\s+/g, ' ').slice(0, 60);
+    var base = el.tagName.toLowerCase() + '::' + (label || '(no label)');
+    var n = counts[base] || 0;
+    counts[base] = n + 1;
     out.push({
-      i: idx, tag: el.tagName.toLowerCase(),
+      key: base + '::' + n,
+      tag: el.tagName.toLowerCase(),
       cls: (el.getAttribute('class') || '').slice(0, 60),
       label: label || '(no label)',
-      style: styleOf(el)
+      style: styleOf(cs),
+      active: el === active
     });
-    idx += 1;
   });
-  /* Reachability check: things that LOOK clickable but are not in `sel`
-     at all — no native focusability, no tabindex, no button/link role. */
+  return JSON.stringify({candidates: out});
+})()
+"""
+
+# Run ONCE per page (not per Tab press — nothing about a redraw changes what
+# this measures, and it is the expensive full-DOM sweep of the two).
+UNREACHABLE_JS = r"""
+(function () {
+  var sel = 'button,[href],input,select,textarea,[tabindex],' +
+            '[role="button"],[role="tab"],[role="menuitem"],' +
+            '[role="link"],[contenteditable="true"]';
+  var scope = %(scope)s;
+  var root = scope ? document.querySelector(scope) : document;
+  if (!root) { return JSON.stringify({error: 'scope not found: ' + scope}); }
   var suspects = [];
   var all = root.querySelectorAll('*');
   for (var j = 0; j < all.length && suspects.length < 200; j++) {
     var e = all[j];
+    if (e.closest('[inert]')) { continue; }  // unreachable BY DESIGN, not a defect
     if (e.closest(sel)) { continue; }  // it or an ancestor is already a
                                         // real Tab stop — a decorative
                                         // icon/label inside a button is
@@ -147,30 +221,7 @@ TAG_AND_BASELINE_JS = r"""
       label: (e.innerText || '').trim().replace(/\s+/g, ' ').slice(0, 40)
     });
   }
-  return JSON.stringify({count: out.length, baseline: out,
-                          unreachable_candidates: suspects});
-})()
-"""
-
-READ_ACTIVE_JS = r"""
-(function () {
-  var el = document.activeElement;
-  if (!el || el === document.body) { return JSON.stringify({i: -1}); }
-  var idxAttr = el.getAttribute('data-mrb-fa');
-  var cs = getComputedStyle(el);
-  return JSON.stringify({
-    i: idxAttr === null ? null : parseInt(idxAttr, 10),
-    tag: el.tagName.toLowerCase(),
-    style: {
-      outline: [cs.outlineWidth, cs.outlineStyle, cs.outlineColor].join(' '),
-      boxShadow: cs.boxShadow,
-      background: cs.backgroundColor,
-      border: [cs.borderTopWidth, cs.borderTopStyle,
-               cs.borderTopColor].join(' '),
-      color: cs.color,
-      textDecoration: cs.textDecorationLine
-    }
-  });
+  return JSON.stringify({unreachable_candidates: suspects});
 })()
 """
 
@@ -185,6 +236,54 @@ def press_tab(p, shift=False):
     p.send("Input.dispatchKeyEvent", dict(common, type="rawKeyDown"))
     p.send("Input.dispatchKeyEvent", dict(common, type="keyUp"))
     time.sleep(0.06)
+
+
+def press_escape(p):
+    """A REAL Escape key — same reasoning as press_tab."""
+    common = {"key": "Escape", "code": "Escape", "windowsVirtualKeyCode": 27,
+              "nativeVirtualKeyCode": 27}
+    p.send("Input.dispatchKeyEvent", dict(common, type="rawKeyDown"))
+    p.send("Input.dispatchKeyEvent", dict(common, type="keyUp"))
+    time.sleep(0.15)
+
+
+def real_click(p, selector):
+    """A REAL mouse click at the centre of `selector`'s first match, through
+    CDP — the chat launcher's `open()` reads `document.activeElement` to
+    remember who to give focus back to, and a click is what a keyboard-free
+    user actually does; a synthetic `.click()` also skips the native
+    focus-on-click a real button press gives for free."""
+    sel_json = json.dumps(selector)
+    # ⚠️ SCROLL AND MEASURE ARE TWO SEPARATE ROUND-TRIPS, NOT ONE. `styles.css`
+    # sets `html{scroll-behavior:smooth}` sitewide, and even
+    # `scrollIntoView({behavior:'instant'})` was observed to leave
+    # `getBoundingClientRect()` reporting the PRE-scroll position when read
+    # in the same script execution right after it, on the KS3 lesson page —
+    # the click landed, hit whatever was under the button's old position,
+    # and silently did nothing. Splitting them across two `eval()` calls
+    # (each a real CDP round-trip) reliably lets the scroll actually land
+    # before the position is measured.
+    scrolled = p.eval(
+        "(function(){var el=document.querySelector(%s); if(!el) return false;"
+        "el.scrollIntoView({block:'center', behavior:'instant'}); return true;})()"
+        % sel_json)
+    if not scrolled:
+        return False
+    time.sleep(0.08)
+    rect = p.eval(
+        "(function(){var el=document.querySelector(%s); if(!el) return null;"
+        "var r=el.getBoundingClientRect(); return [r.x+r.width/2, r.y+r.height/2];})()"
+        % sel_json)
+    if not rect:
+        return False
+    x, y = rect
+    p.send("Input.dispatchMouseEvent", {"type": "mouseMoved", "x": x, "y": y})
+    p.send("Input.dispatchMouseEvent",
+           {"type": "mousePressed", "x": x, "y": y, "button": "left", "clickCount": 1})
+    p.send("Input.dispatchMouseEvent",
+           {"type": "mouseReleased", "x": x, "y": y, "button": "left", "clickCount": 1})
+    time.sleep(0.1)
+    return True
 
 
 def styles_differ(a, b):
@@ -212,11 +311,183 @@ def wait_for_mount(page, mount_id, seconds=40.0, poll=0.25):
     return last
 
 
+def wait_js_condition(page, expr, seconds=10.0, poll=0.15):
+    end = time.time() + seconds
+    while time.time() < end:
+        if page.eval(expr):
+            return True
+        time.sleep(poll)
+    return False
+
+
+def scan(p, scope_json):
+    raw = p.eval(SCAN_JS % {"scope": scope_json})
+    try:
+        return json.loads(raw)
+    except (TypeError, ValueError):
+        return {"error": "could not parse scan result: %r" % (raw,)}
+
+
+def capture_stable_scan(p, scope_json, tries=8, wait=0.4):
+    """Scan, but only trust it once the tree has stopped being torn down and
+    redrawn out from under us.
+
+    ⚠️ THIS IS NOT PARANOIA. `shared/student-runtime.js`'s `draw()` empties
+    the whole mount host and rebuilds it from scratch on every `setState` —
+    the class/assignment pages fire an async data read right after first
+    paint and redraw once it resolves. Content-based keys survive a redraw
+    that reproduces the same content in the same order; they do NOT survive
+    one still IN PROGRESS, caught mid-teardown with half the tree gone. So
+    this still polls until two consecutive scans agree on the same set of
+    keys, in the same order, before treating the result as the baseline —
+    the ONGOING robustness (surviving a redraw that happens mid-sweep, after
+    this baseline) comes from re-scanning on every Tab press instead, in
+    `audit_page` below.
+    """
+    prev = None
+    data = {}
+    for _ in range(tries):
+        data = scan(p, scope_json)
+        if "error" in data:
+            return data
+        sig = tuple(c["key"] for c in data["candidates"])
+        if sig == prev and sig:
+            return data
+        prev = sig
+        time.sleep(wait)
+    return data if "error" not in data else data
+
+
+def sweep_tabs(p, scope_json, presses, seen, expected, prev_style):
+    """Press Tab `presses` times, re-scanning (scoped to `scope_json`) after
+    every single press, tracking which KEYS get focused and whether each
+    one's style changed from its own last-seen unfocused reading.
+
+    Mutates and returns (seen, expected, prev_style, visited, no_change) —
+    `seen`/`expected`/`prev_style` are threaded through so a caller can
+    keep sweeping (e.g. the chat-panel check re-uses this after its own
+    initial scan) without losing what came before.
+    """
+    visited = set()
+    no_change = []
+    no_change_keys = set()
+    escaped = 0
+
+    for _ in range(presses):
+        press_tab(p)
+        data = scan(p, scope_json)
+        if "error" in data:
+            continue
+        cur_by_key = {c["key"]: c for c in data["candidates"]}
+        for k, c in cur_by_key.items():
+            seen[k] = c
+        expected |= set(cur_by_key)
+        active_c = next((c for c in data["candidates"] if c["active"]), None)
+        if active_c is not None:
+            k = active_c["key"]
+            visited.add(k)
+            if k not in no_change_keys:
+                base_style = prev_style.get(k)
+                if base_style is not None and not styles_differ(base_style, active_c["style"]):
+                    no_change_keys.add(k)
+                    no_change.append(active_c)
+        else:
+            escaped += 1
+        prev_style = cur_by_key
+
+    return seen, expected, prev_style, visited, no_change, escaped
+
+
+# ── the chat panel: opened for real, Tab-trapped, and returns focus ───────
+
+CHAT_HAS_JS = "!!document.getElementById('chatOverlay')"
+
+
+def audit_chat_panel(p):
+    """The chat panel is `inert` at rest, so its controls are correctly
+    excluded from the "at rest" sweep above (see the module docstring). This
+    is the SEPARATE check the coordinator asked for: open it for real, Tab
+    through it, confirm the trap `shared/mrbadmus.v2.js` now implements
+    holds, and confirm Escape both closes the panel and gives focus back to
+    whichever button opened it.
+
+    Returns None if the page has no chat panel at all; otherwise a dict —
+    see `main()` for how it is turned into pass/warn/fail lines.
+    """
+    if not p.eval(CHAT_HAS_JS):
+        return None
+
+    # ⚠️ TWO SHAPES, NOT ONE. KS3 lesson pages give the launcher
+    # `[data-open-chat]` (build_ks3.py's `.ks3-tutor-cta`); the KS4/root
+    # `.chat-fab` button instead carries a bare `onclick="MrBadmus.open()"`
+    # (index.html) — the same widget, wired two different ways depending on
+    # which generator wrote the page. Missing the second shape is exactly
+    # the kind of false "no launcher" this pass exists to stop reporting.
+    marked = p.eval("""(function(){
+      var els = document.querySelectorAll(
+        '[data-open-chat], [onclick*="MrBadmus.open"]');
+      for (var i=0;i<els.length;i++){
+        var r = els[i].getBoundingClientRect();
+        if (r.width && r.height){ els[i].setAttribute('data-mrb-launcher-check',''); return true; }
+      }
+      return false;
+    })()""")
+    if not marked:
+        return {"warn": "chat overlay present but no visible launcher "
+                         "([data-open-chat] or onclick=MrBadmus.open) found"}
+
+    if not real_click(p, "[data-mrb-launcher-check]"):
+        return {"warn": "could not click the chat launcher"}
+    # open()'s own 100ms setTimeout focuses #ci; give it room to land.
+    time.sleep(0.25)
+
+    opened = p.eval("(function(){var ov=document.getElementById('chatOverlay');"
+                     "return !!(ov && ov.classList.contains('open'));})()")
+    if not opened:
+        return {"fail": "clicking the launcher did not open #chatOverlay"}
+
+    scope_json = json.dumps("#chatOverlay")
+    data = capture_stable_scan(p, scope_json)
+    if "error" in data:
+        return {"fail": "chat panel: %s" % data["error"]}
+
+    seen = {c["key"]: c for c in data["candidates"]}
+    expected = set(seen)
+    prev_style = {c["key"]: c["style"] for c in data["candidates"]}
+
+    # A few presses past the panel's own control count, to prove the trap
+    # WRAPS rather than merely "hasn't escaped yet" after exactly N presses.
+    presses = len(expected) + 4
+    seen, expected, prev_style, visited, no_change, escaped = sweep_tabs(
+        p, scope_json, presses, seen, expected, prev_style)
+
+    unreached = [seen[k] for k in expected if k not in visited]
+
+    press_escape(p)
+    time.sleep(0.15)
+    closed = p.eval("(function(){var ov=document.getElementById('chatOverlay');"
+                     "return !ov.classList.contains('open');})()")
+    returned = bool(p.eval(
+        "!!(document.activeElement && document.activeElement.hasAttribute('data-mrb-launcher-check'))"))
+    p.eval("(function(){var el=document.querySelector('[data-mrb-launcher-check]');"
+           "if(el) el.removeAttribute('data-mrb-launcher-check');})()")
+
+    return {
+        "expected_count": len(expected),
+        "visited": len(visited),
+        "no_change": no_change,
+        "unreached": unreached,
+        "escaped": escaped,
+        "closed": closed,
+        "returned_focus": returned,
+    }
+
+
 # ── the page list ───────────────────────────────────────────────────────
 #
 # `pre_js`, when given, is evaluated once after the page (and its mount, if
-# any) has settled, and BEFORE tagging/baseline capture — this is how the
-# Set work sheet gets opened before it is measured.
+# any) has settled, and BEFORE the baseline scan — this is how the Set work
+# sheet gets opened before it is measured.
 
 PAGES = [
     dict(key="student_class", url="/student/class-fixture.html",
@@ -269,56 +540,6 @@ PAGES = [
 ]
 
 
-def wait_js_condition(page, expr, seconds=10.0, poll=0.15):
-    end = time.time() + seconds
-    while time.time() < end:
-        if page.eval(expr):
-            return True
-        time.sleep(poll)
-    return False
-
-
-def capture_stable_baseline(p, scope_json, tries=8, wait=0.4):
-    """Tag + capture the baseline, but only once the tree has stopped being
-    torn down and redrawn out from under us.
-
-    ⚠️ THIS IS NOT PARANOIA. `shared/student-runtime.js`'s `draw()` empties
-    the whole mount host and rebuilds it from scratch on every `setState` —
-    the class/assignment pages fire an async data read right after first
-    paint and redraw once it resolves, which silently strips every
-    `data-mrb-fa` tag this script just wrote. Caught on `student_assignment`:
-    the FIRST real Tab press landed on a live, on-screen button with no tag
-    at all, because the element the tag was written to had already been
-    discarded and replaced by an identical-looking new one. Re-tagging is
-    idempotent, so this simply repeats the capture until two consecutive
-    reads agree on the same count and the same labels, in the same order —
-    a proxy for "the tree isn't moving any more" cheap enough to poll.
-    """
-    prev = None
-    raw = "{}"
-    for _ in range(tries):
-        raw = p.eval(TAG_AND_BASELINE_JS % {"scope": scope_json})
-        try:
-            data = json.loads(raw)
-        except (TypeError, ValueError):
-            time.sleep(wait)
-            continue
-        if "error" in data:
-            return data
-        sig = tuple((b["tag"], b["label"]) for b in data["baseline"])
-        if sig == prev and sig:
-            return data
-        prev = sig
-        time.sleep(wait)
-    # Ran out of tries; return whatever the last read was rather than
-    # nothing — a page that never stabilises is itself worth reporting via
-    # whatever mismatches follow, not worth failing outright here.
-    try:
-        return json.loads(raw)
-    except (TypeError, ValueError):
-        return {"error": "tree never stabilised for tagging: %r" % (raw,)}
-
-
 def audit_page(browser, port, spec):
     url = "http://127.0.0.1:%d%s" % (port, spec["url"])
     p = browser.page(url)
@@ -338,55 +559,43 @@ def audit_page(browser, port, spec):
         time.sleep(0.25)
 
     scope_json = json.dumps(spec.get("scope")) if spec.get("scope") else "null"
-    data = capture_stable_baseline(p, scope_json)
+    data = capture_stable_scan(p, scope_json)
     if "error" in data:
         return data
 
-    baseline = {b["i"]: b for b in data["baseline"]}
+    seen = {c["key"]: c for c in data["candidates"]}
+    expected = set(seen)
+    prev_style = {c["key"]: c["style"] for c in data["candidates"]}
+
     # ⚠️ A MARGIN, NOT AN EXACT COUNT. `leaderboard.html` proved why: one
     # press out of a run can land on an element that did not exist at
     # baseline-capture time (a search overlay's input, mounted on focus of
-    # the control that opens it) — untagged, and READ_ACTIVE_JS correctly
-    # reports it as `i: None` rather than misattributing it. That press is
-    # not wasted in the sense of finding nothing; it is spent on a REAL
-    # control this sweep was never asked to tag. Pressing exactly
-    # `len(baseline)` times then runs out one short of the last real tagged
-    # stop, which reads as "unreached" for a control that was never actually
-    # unreachable — a harness undercount, not a page defect. The margin
-    # absorbs a handful of such stops without materially slowing the sweep.
-    n = min(len(baseline) + 10, MAX_TABS)
+    # the control that opens it) — a REAL control this sweep was never
+    # asked to expect yet. Pressing exactly `len(expected)` times then runs
+    # out one short of the last real stop, which reads as "unreached" for a
+    # control that was never actually unreachable. The margin absorbs a
+    # handful of such stops without materially slowing the sweep.
+    presses = min(len(expected) + 10, MAX_TABS)
+    seen, expected, prev_style, visited, no_change, _escaped = sweep_tabs(
+        p, scope_json, presses, seen, expected, prev_style)
 
-    visited = set()
-    no_change = []
-    seen_no_change_idx = set()
+    unreached = [seen[k] for k in expected if k not in visited]
 
-    for _ in range(n):
-        press_tab(p)
-        raw2 = p.eval(READ_ACTIVE_JS)
-        try:
-            cur = json.loads(raw2)
-        except (TypeError, ValueError):
-            continue
-        i = cur.get("i")
-        if i is None or i not in baseline:
-            continue
-        visited.add(i)
-        if i in seen_no_change_idx:
-            continue
-        base = baseline[i]["style"]
-        if not styles_differ(base, cur["style"]):
-            seen_no_change_idx.add(i)
-            no_change.append(baseline[i])
+    unreach_raw = p.eval(UNREACHABLE_JS % {"scope": scope_json})
+    try:
+        unreach_data = json.loads(unreach_raw)
+    except (TypeError, ValueError):
+        unreach_data = {"unreachable_candidates": []}
 
-    unreached = [baseline[i] for i in baseline if i not in visited]
-
-    return {
-        "count": len(baseline),
+    result = {
+        "count": len(expected),
         "visited": len(visited),
         "no_change": no_change,
         "unreached": unreached,
-        "unreachable_candidates": data.get("unreachable_candidates", []),
+        "unreachable_candidates": unreach_data.get("unreachable_candidates", []),
     }
+    result["chat"] = audit_chat_panel(p)
+    return result
 
 
 def take_named_shots(browser, port, shots_dir):
@@ -419,19 +628,50 @@ def take_named_shots(browser, port, shots_dir):
                 wait_js_condition(p, wait_js)
                 time.sleep(0.25)
             scope_json = json.dumps(scope) if scope else "null"
-            capture_stable_baseline(p, scope_json)
+            capture_stable_scan(p, scope_json)
             landed = None
             for _ in range(tabs):
                 press_tab(p)
-                raw2 = p.eval(READ_ACTIVE_JS)
-                try:
-                    landed = json.loads(raw2)
-                except (TypeError, ValueError):
-                    landed = None
+                data = scan(p, scope_json)
+                if "error" not in data:
+                    landed = next((c for c in data["candidates"] if c["active"]), landed)
             out = os.path.join(shots_dir, "%s-%d.png" % (name, width))
             p.screenshot(out, width=width, height=900, full_page=False)
             print("     shot: %s  (focused: %s)"
                   % (out, (landed or {}).get("tag")))
+
+
+def print_chat_result(key, chat):
+    """Returns True if the chat-panel check found a problem."""
+    if chat is None:
+        return False
+    if "warn" in chat:
+        print("       WARN chat panel: %s" % chat["warn"])
+        return False
+    if "fail" in chat:
+        print("       FAIL chat panel: %s" % chat["fail"])
+        return True
+    bad = (chat["no_change"] or chat["unreached"] or chat["escaped"]
+           or not chat["closed"] or not chat["returned_focus"])
+    if not bad:
+        print("       chat panel ✅  opened for real, %d/%d control(s) "
+              "reached and ringed, Tab could not escape it, Esc closed it "
+              "and returned focus to the launcher"
+              % (chat["visited"], chat["expected_count"]))
+        return False
+    print("       chat panel ❌  %d/%d reached, %d no-visible-change, "
+          "%d unreached, escaped-the-trap %s, closed-on-Esc %s, "
+          "focus-returned-to-launcher %s"
+          % (chat["visited"], chat["expected_count"], len(chat["no_change"]),
+             len(chat["unreached"]), bool(chat["escaped"]), chat["closed"],
+             chat["returned_focus"]))
+    for el in chat["no_change"][:10]:
+        print("         NO CHANGE  <%s class=%r> %r"
+              % (el["tag"], el["cls"], el["label"]))
+    for el in chat["unreached"][:10]:
+        print("         UNREACHED  <%s class=%r> %r"
+              % (el["tag"], el["cls"], el["label"]))
+    return True
 
 
 def main(argv):
@@ -457,9 +697,9 @@ def main(argv):
                 failed += 1
                 print("  %-24s ❌ %s" % (spec["key"], result["error"]))
                 continue
+            chat = result.pop("chat", None)
             problems = len(result["no_change"]) + len(result["unreached"])
             if problems:
-                failed += 1
                 print("  %-24s ❌ %d/%d visited, %d no-visible-change, "
                       "%d unreached, %d unreachable-candidate(s)"
                       % (spec["key"], result["visited"], result["count"],
@@ -478,6 +718,9 @@ def main(argv):
                 print("  %-24s ✅  %d/%d control(s), all show a visible "
                       "change on Tab" % (spec["key"], result["visited"],
                                           result["count"]))
+            chat_bad = print_chat_result(spec["key"], chat)
+            if problems or chat_bad:
+                failed += 1
 
         if shots_dir:
             print("\n  shots -> %s" % shots_dir)
@@ -491,7 +734,8 @@ def main(argv):
         print("  FAIL  %d of %d page(s).\n" % (failed, len(todo)))
         return 1
     print("  PASS  every page: every reachable control shows a visible "
-          "change on Tab, and Tab reaches everything tagged.\n")
+          "change on Tab, Tab reaches everything expected, and every "
+          "chat panel opens, traps Tab, and returns focus on close.\n")
     return 0
 
 
