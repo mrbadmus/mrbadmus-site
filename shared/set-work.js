@@ -1702,6 +1702,21 @@
      a topic being filed as several small subtopic scopes instead of one,
      never in a duplicate id the server would refuse, and never in a
      dropped one. */
+  /* ⊕ Stream N, 25 Sep 2026 (experience run, item 4 / N11/NF5) — PULLED OUT
+     of `otherScopesFor`'s own inline test so `loadStoredQuestions` (below)
+     can ask the same question the other way round: "is this lesson slug
+     one of the HEAD topic's own", rather than "is it one of the others".
+     Same rule, same two branches, unchanged. */
+  function slugBelongsToScope(scope, slug) {
+    if (scope.kind === "subtopic") { return slug === scope.ref; }
+    if (scope.kind === "topic") {
+      var r = nodeFor("subtopic", slug);
+      var parentRef = r && r.parent ? r.parent.ref : null;
+      return parentRef === scope.ref;
+    }
+    return false;
+  }
+
   function otherScopesFor(headScope, headIds) {
     var picked = S.originalPicked || [];
     if (!picked.length) { return []; }
@@ -1715,13 +1730,7 @@
     headIds.forEach(function (id) { headSet[id] = true; });
     var out = [];
     order.forEach(function (slug) {
-      if (headScope.kind === "subtopic") {
-        if (slug === headScope.ref) { return; }        // the head's own subtopic
-      } else if (headScope.kind === "topic") {
-        var r = nodeFor("subtopic", slug);
-        var parentRef = r && r.parent ? r.parent.ref : null;
-        if (parentRef === headScope.ref) { return; }    // a subtopic of the head topic
-      }
+      if (slugBelongsToScope(headScope, slug)) { return; }
       var ids = byLesson[slug].filter(function (id) { return !headSet[id]; });
       if (!ids.length) { return; }
       out.push({ scope_kind: "subtopic", scope_ref: slug,
@@ -2443,7 +2452,104 @@
     sc.capNote = capNoteFor(sc);
     S.keepPicked = false;             // ⊕ MRB-336
     syncCountChips(sc);
-    loadPreview(sc);
+    /* ⊕ Stream N, 25 Sep 2026 (experience run, item 4 / N11/NF5) — EDITING
+       AN EXISTING SET KEEPS ITS KEPT QUESTIONS, ON PURPOSE. `loadPreview`
+       (below) is a fresh `/preview` draw — right for a NEW set, where there
+       is nothing yet to keep, and wrong for an edit: the audit's own
+       two-topic set had its count raised 10 (really 7, before the head-
+       count fix above) to 15, and every one of the 7 already-set Energy
+       questions was silently re-picked along with the 8 new ones, so the
+       ids `assignment_questions` had held all week were replaced by ids
+       nobody had reviewed. `S.editId` is set for the life of an edit
+       session (`edit()`), never for a fresh `Add topic` sheet, so this
+       branch never fires on the ordinary create path. */
+    if (S.editId && sc.picked.length) {
+      adjustPickedCount(sc, sc.count);
+    } else {
+      loadPreview(sc);
+    }
+  }
+
+  /* ⊕ Stream N, 25 Sep 2026 (experience run, item 4 / N11/NF5) — GROW OR
+     SHRINK `sc.picked` AT THE MARGIN, NEVER REDRAW WHAT IS ALREADY KEPT.
+
+     Shrinking needs no network call: the kept ids are already on screen,
+     so the count simply drops the LAST rows — the ones added most
+     recently, if this is not the first count change of the session, or
+     the tail of the original list otherwise. Growing needs `target -
+     sc.picked.length` MORE questions the teacher has not already got;
+     `/preview` has no `exclude` parameter (see `loadPreview`'s own
+     comment — that is `/swap`'s contract, not this route's), so this asks
+     for the FULL new count and keeps only the ones from that answer that
+     are not already in `sc.picked`, topping up with those rather than
+     replacing anything. A pool too small to offer `need` new ones tops up
+     with whatever it has, same honesty `loadPreview` already shows via
+     `capNoteFor` when the server reports fewer than asked for. */
+  function adjustPickedCount(sc, target) {
+    var current = sc.picked;
+    if (target <= current.length) {
+      sc.picked = current.slice(0, target);
+      sc.count = sc.picked.length;
+      finishCountAdjust(sc);
+      return;
+    }
+    var need = target - current.length;
+    var mySession = session, mySeq = fetchSeq, myScopeSeq = ++sc.seq;
+    sc.busy = true;
+    sc.previewErr = false;
+    syncValidity();
+    apiGet("/api/teacher/set-work/preview?class_id=" +
+      encodeURIComponent(S.classId) +
+      "&tier=" + encodeURIComponent(S.tier) +
+      "&scope_kind=" + encodeURIComponent(sc.kind) +
+      "&scope_ref=" + encodeURIComponent(sc.ref) +
+      subjectParam(sc) +
+      "&count=" + encodeURIComponent(target)
+    ).then(function (r) {
+      if (!S || mySession !== session || mySeq !== fetchSeq ||
+          myScopeSeq !== sc.seq) { return false; }
+      var d = r.body || {};
+      sc.busy = false;
+      var fresh = d.picked || [];
+      var haveIds = {};
+      current.forEach(function (q) { haveIds[q.id] = true; });
+      var extra = fresh.filter(function (q) { return !haveIds[q.id]; })
+                        .slice(0, need);
+      extra.forEach(function (q) { S.shown[String(q.id)] = true; });
+      sc.picked = current.concat(extra);
+      sc.available = (typeof d.available === "number")
+        ? d.available : sc.available;
+      sc.cappedBy = (d.capped_by === "pool") ? "pool" :
+        (sc.cappedBy === "ceiling" ? "ceiling" : null);
+      sc.count = sc.picked.length;
+      sc.capNote = capNoteFor(sc);
+      finishCountAdjust(sc);
+      return true;
+    }, function () {
+      if (!S || mySession !== session || mySeq !== fetchSeq ||
+          myScopeSeq !== sc.seq) { return false; }
+      sc.busy = false;
+      sc.previewErr = true;
+      finishCountAdjust(sc);
+      return false;
+    });
+  }
+
+  /* The tail of both `adjustPickedCount` branches: the same bookkeeping
+     `loadPreview` does once its own `sc.picked` is settled. `sc.swapDead`/
+     `sc.swapNote`/`expanded` are cleared because they are keyed by INDEX
+     into `sc.picked`, and both a trim and a top-up can move what sits at
+     any given index; `S.clientRef` is refreshed for the same reason
+     `loadPreview` refreshes it — a different set of questions is a
+     different thing to set. */
+  function finishCountAdjust(sc) {
+    sc.swapDead = {};
+    sc.swapNote = {};
+    sc.expanded = {};
+    S.clientRef = uuid();
+    buildQuestions(sc);
+    syncScopes();
+    syncValidity();
   }
 
   /* The cap the count chips obey. Before /preview answers it is the count
@@ -3590,6 +3696,60 @@
      the two formats the way that page already offers a delete confirm:
      the same button, twice, in place, rendered by the template. This is the
      ACTION behind those presses and owns no DOM at all. */
+
+  /* ⊕ Stream N, 25 Sep 2026 (experience run, NF3) — the by-subtopic
+     fallback's own ids (`byLesson`, `order` — one array per `lesson_slug`),
+     regrouped by the TOPIC each subtopic sits under. Nothing on
+     `/api/class/current-assignment`'s question rows carries a topic id or a
+     disambiguating subject — only `lesson_slug` — so the one place either is
+     known is the class's own curriculum tree, read here the same way the
+     composer sheet's `loadScope` already does. `MAX_SCOPES` is the same
+     module-level constant `Add topic` is capped by; the backend's own cap is
+     `SW.MAX_SCOPES` in set-work-scope.js and the two are asserted equal by
+     `set_work_scope_check`.
+
+     Answers `null` — never throws, never logs — when the tree cannot be
+     read, or when grouping still leaves more topics than `MAX_SCOPES`. The
+     second case is not reachable by anything the sheet can build today (a
+     set would need eleven topics' worth of one science on it), so it is
+     handled rather than asserted away: an honest "cannot do this" beats an
+     assumption that quietly stops being true the day a limit changes
+     elsewhere. */
+  function groupByTopic(classId, byLesson, order) {
+    return apiGet("/api/teacher/set-work/scope?class_id=" +
+      encodeURIComponent(classId)).then(function (r) {
+      var tree = (r.body && r.body.tree) || [];
+      var infoBySlug = {};
+      tree.forEach(function (topic) {
+        (topic.children || []).forEach(function (child) {
+          infoBySlug[child.id] = { topicId: topic.id,
+                                    subject: topic.subject || null };
+        });
+      });
+      var byTopic = {}, topicOrder = [];
+      for (var i = 0; i < order.length; i++) {
+        var ref = order[i];
+        var info = infoBySlug[ref];
+        // A subtopic this class's own tree does not know is not expected —
+        // every id here came off a real assignment on this class — but a
+        // half-built group is worse than none, so it stops the whole thing
+        // rather than shipping a worksheet that is silently missing a
+        // question the teacher assigned.
+        if (!info) { return null; }
+        var key = (info.subject || "") + "|" + info.topicId;
+        if (!byTopic[key]) {
+          byTopic[key] = { scope_kind: "topic", scope_ref: info.topicId,
+                            subject: info.subject, question_ids: [] };
+          topicOrder.push(key);
+        }
+        byTopic[key].question_ids =
+          byTopic[key].question_ids.concat(byLesson[ref]);
+      }
+      if (!topicOrder.length || topicOrder.length > MAX_SCOPES) { return null; }
+      return topicOrder.map(function (key) { return byTopic[key]; });
+    }, function () { return null; });
+  }
+
   function downloadAssignment(row) {
     var o = row || {};
     if (!o.assignmentId || !o.classId) { return Promise.resolve(false); }
@@ -3696,27 +3856,53 @@
          disambiguates is `atomic-structure`, which is a TOPIC id in both
          chemistry and physics. Every SUBTOPIC ref in the curriculum is
          unique, and these are all subtopic refs, so omitting it can only
-         resolve to the node the question actually came from. */
-      var split = splittable && order.length > 1
-        ? order.map(function (ref) {
-            return { scope_kind: "subtopic", scope_ref: ref,
-                     subject: null, question_ids: byLesson[ref] };
-          })
-        : null;
+         resolve to the node the question actually came from.
+
+         ⊕ Stream N, 25 Sep 2026 (experience run, NF3) — RETIRED IN FAVOUR OF
+         `groupByTopic`, BELOW. This grouped by subtopic — one scope per
+         `lesson_slug` — which is what `too_many_scopes` (max `MAX_SCOPES`,
+         10) meant a set spanning more than ten subtopics could not be
+         downloaded at all: the stored scope refused (by design, above), the
+         per-subtopic fallback ALSO refused, and nothing tried a third time.
+         A topic-level set, or a multi-topic edit whose count grew (N11),
+         reaches eleven subtopics easily; a school reaching eleven TOPICS in
+         one set is not a shape the product can make. */
+      var groupable = splittable && order.length > 1;
 
       var one = {}, k;
       for (k in common) { if (common.hasOwnProperty(k)) { one[k] = common[k]; } }
       one.scopes = stored;
-      if (!split) { return download(one); }
+      if (!groupable) { return download(one); }
       one.quiet = true;
+      /* ⊕ Stream N, 25 Sep 2026 (experience run, NF3) — GROUPED BY TOPIC,
+         NOT BY SUBTOPIC. `findScope`'s `topic` branch pools EVERY subtopic
+         under that topic (`slugsForScope`, set-work-scope.js), so the same
+         ids the subtopic split would have sent reach the route as far FEWER
+         scopes when grouped by their topic instead — a set can span at most
+         as many topics as it can subtopics, and nothing in the product can
+         create a set spanning more than `MAX_SCOPES` topics. `groupByTopic`
+         reads the class's own tree once (the same `/api/teacher/set-work/
+         scope` the composer sheet already calls) to find each subtopic's
+         topic id and disambiguating subject; it answers `null` only if that
+         read fails or the ids still will not fit in `MAX_SCOPES` topics,
+         which is the one shape this cannot express — reported to the
+         teacher as `SAY.unavailable` rather than left silent, and never
+         logged as an error: a set this big is a known, named limit, not a
+         broken request. */
       return download(one).then(function (ok) {
         if (ok) { return true; }
-        var two = {};
-        for (var kk in common) {
-          if (common.hasOwnProperty(kk)) { two[kk] = common[kk]; }
-        }
-        two.scopes = split;
-        return download(two);
+        return groupByTopic(o.classId, byLesson, order).then(function (byTopic) {
+          if (!byTopic) {
+            toast(SAY.unavailable);
+            return false;
+          }
+          var two = {};
+          for (var kk in common) {
+            if (common.hasOwnProperty(kk)) { two[kk] = common[kk]; }
+          }
+          two.scopes = byTopic;
+          return download(two);
+        });
       });
     }, function () {
       toast(SAY.unavailable);
@@ -4031,6 +4217,31 @@
          existed at OPEN, not whatever `sc.picked` has been redrawn into by
          the time Save is pressed. */
       S.originalPicked = sc.picked.slice();
+      /* ⊕ Stream N, 25 Sep 2026 (experience run, item 4 / N11/NF5) — THE
+         SHEET SHOWS THE HEAD TOPIC'S OWN QUESTIONS, NOT THE WHOLE SET.
+         `qs` above is every question the ROW holds — Energy's and Forces',
+         on a set made of both — and until this line `sc.picked` held all of
+         it under Energy's own heading. A teacher opening a two-topic set
+         saw its FULL count (10) on a screen that otherwise behaves as if
+         it is composing one topic's own list, and changing that count then
+         asked `/preview` for "10 to 15 of Energy's own pool", which is not
+         the question the count control was ever being asked — the pool it
+         draws from and the count it draws are now the same topic's,
+         top-to-bottom, and Forces (`otherScopesFor`, above, unaffected —
+         it still reads the WHOLE `S.originalPicked` this line runs after)
+         is carried at Save exactly as it always was. */
+      sc.picked = sc.picked.filter(function (q) {
+        return !q.lesson || slugBelongsToScope(sc, q.lesson);
+      });
+      /* ⊕ Stream N, 25 Sep 2026 (experience run, item 4 / N11/NF5) — THE
+         COUNT CHIP NEVER LEARNED WHAT WAS ACTUALLY LOADED. `S.scopes[0]`
+         (`edit()`, above) comes out of `freshState()` with its default
+         `count: 10` and nothing in this function ever touched `sc.count`,
+         so the chip rail showed "10" whatever the row actually held — the
+         audit's own reopened set showed 18 rows under a "10" chip because
+         10 is simply where every edit sheet starts, never because 10 was
+         read from anywhere. */
+      sc.count = sc.picked.length;
       sc.available = Math.max(sc.available, sc.picked.length);
       if (S.step === 2) { syncScopes(); buildQuestions(sc); syncCountChips(sc); }
       syncValidity();
