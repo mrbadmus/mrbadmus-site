@@ -1720,7 +1720,13 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
                             continue
                         if pass_n == 1:
                             tally["found"] += 1
-                        want_labels = ["Today", "This week", "2+ weeks"]
+                        # ⊕ Stream N, 25 Sep 2026 (experience run, item 9 /
+                        # NF6) — "This week" renamed "Last 2 weeks": the
+                        # bucket it labels is 1-13 days old, which is not
+                        # this week by any calendar a teacher owns. See
+                        # `teacher_rulings.py`'s own ruling on
+                        # `ENG_BUCKETS.week.label`.
+                        want_labels = ["Today", "Last 2 weeks", "2+ weeks"]
                         if row.get("labels") != want_labels:
                             problems.append(
                                 "%s: engagement toggle under %r reads %r, "
@@ -1744,8 +1750,8 @@ def drive(page, path, is_empty, cdp, port, shots=None, slug=None):
                             if len(set(texts)) < 3:
                                 problems.append(
                                     "%s: engagement toggle under %r — "
-                                    "pressing Today / This week / 2+ weeks "
-                                    "leaves the same note (%r): a toggle "
+                                    "pressing Today / Last 2 weeks / 2+ "
+                                    "weeks leaves the same note (%r): a toggle "
                                     "that looks pressed and does not redraw"
                                     % (what, sc, texts))
                             for n in notes:
