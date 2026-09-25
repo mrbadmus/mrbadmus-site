@@ -5398,6 +5398,36 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         # beats a selector.
         "[data-port-region] [style*=\"repeat(auto-fit,minmax(\"]"
         "{grid-template-columns:minmax(0,1fr)!important}"
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 5) — THE CHART
+        # BAR ROW IS THE FIFTH FIXED-TRACK PATTERN, AND IT IS NOT THE
+        # TABLES THE PRINT NOTE BELOW EXEMPTS. Design's node 827
+        # (`Teacher Dashboard.dc.html`) is "label 220px · bar 1fr ·
+        # value 96px" for every "Class means"/"Score spread"/"On
+        # time"/engagement row on the Charts screen. 220 + 96 + the
+        # row's own 14px gap*2 is 344px of FIXED track before the bar
+        # gets anything, and a `px` grid track does not shrink the way
+        # a `1fr` one does — it stays exactly 220 (or 96) however
+        # little room is left, so on a 390px screen the bar collapses
+        # to nothing and the value column's own text ("24/28") still
+        # sits at its full 96px slot, pushed past the viewport edge
+        # by the label column ahead of it. Measured on
+        # `insights-fixture.html`: `document.scrollingElement.
+        # scrollWidth` 409 against a 390 client width, the exact "2/8
+        # and 5/8 sit off the right edge" the audit photographed —
+        # and, unlike the five-column tables the print note below
+        # names, this row is NOT inside an `overflow:hidden` card, so
+        # the overflow reaches the document rather than stopping at a
+        # clipped edge.
+        #
+        # `minmax(0,84px) 1fr minmax(0,54px)` keeps the same three
+        # roles in the same order — Design's own layout, at a smaller
+        # scale — rather than redesigning the row. The label already
+        # carries its own `min-width:0` (Design's node 826), so
+        # shrinking its track lets its own text truncate; the value
+        # column's longest real string ("100/100") measures under
+        # 54px in the row's own `17px var(--st-mono)`.
+        "[data-port-region] [style*=\"220px 1fr 96px\"]"
+        "{grid-template-columns:minmax(0,84px) 1fr minmax(0,54px)!important}"
         "}"
         # ⊕ MRB-306 Phase 2a screen 6 — THE PRINT RULES, MEASURED NOT
         # ASSUMED. `.noprint` alone was not enough to make the digest a

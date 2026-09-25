@@ -2566,8 +2566,26 @@ _WK_CAPTION = ("flex:none;padding-left:4px;font:500 13px/1.2 var(--st-mono);"
 _WK_CHEV = ("flex:none;display:flex;align-items:center;justify-content:center;"
             "width:36px;height:52px;background:var(--st-paper);"
             "border:1px solid var(--st-rule-soft);border-radius:9px;color:")
+# ⊕ Stream J, 25 Sep 2026 (experience run, item 5) — `flex:1 1 0;min-width:0`
+# ADDED. Without a `flex` property this fell back to the default `0 1 auto`
+# — flex-basis AUTO, sized to its CONTENT (up to twelve fixed-width chips,
+# ~1000px), inside a row whose only other children are `flex:none` (the
+# caption and the two chevrons, which cannot shrink at all). At 1280px there
+# is room for that content box and the rule never gets exercised; at 390/360
+# the row is short by hundreds of pixels, and because this is the only
+# sibling ALLOWED to shrink, 100% of that deficit comes out of it — past
+# zero, since `overflow-x:auto` makes its automatic minimum width 0 rather
+# than its min-content size (the same CSS rule `_SW_TEXT`'s comment three
+# screens over already names). The visible result was the audit's "collapses
+# to 2px, only the arrows show" and, on the SAME layout, `document`-level
+# horizontal scroll shoving the header's own controls off-screen — one
+# flex-basis bug with two symptoms. `flex:1 1 0` makes the rail claim
+# whatever space is actually left over (basis 0, not its content size) and
+# `min-width:0` makes that explicit rather than relying on the overflow
+# side-effect. Nothing else in the row's own declared sizes, colours or
+# spacing changes.
 _WK_RAIL = ("display:flex;align-items:stretch;overflow-x:auto;padding:1px;"
-            "scrollbar-width:none")
+            "scrollbar-width:none;flex:1 1 0;min-width:0")
 _WK_CHIP = ("flex:none;display:flex;flex-direction:column;align-items:center;"
             "justify-content:center;gap:5px;min-height:52px;padding:8px 17px;"
             "background:")
