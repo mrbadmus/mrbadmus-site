@@ -7618,6 +7618,43 @@ LOGIC = (
      "included in `ps` and would misleadingly read as excluded-because-"
      "unmarked."),
 
+    # ⊕ Stream J, 25 Sep 2026 (experience run, item 2) — "NOT RELEASED YET"
+    # STILL SAID THE TILE EXCLUDED OPEN WORK, AND IT DOES NOT. `ps`, defined
+    # above this block, is `papersFor(k).filter(p => p.when === 'marked' &&
+    # m.colMean[p.idx] != null)` — under stream A's ruling `when==='marked'`
+    # means RELEASED, so an open paper with any graded cells is already
+    # inside `ps` and inside `m.classMean`/`means`/`best`/`worst`. The prior
+    # wording pass renamed the CAPTION from "Not marked yet" to "Not
+    # released yet" but left the LABEL "Excluded" standing, which is the
+    # part that was actually false: nothing here is excluded for being
+    # open. Both tiles (the one-assignment branch and the multi-assignment
+    # branch) are corrected together, since they are one exactly-once span.
+    ("""        tiles: (ps.length < 2 ? [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one assignment with results'),
+          tile('Open work', 'Excluded', 'Not released yet')
+        ] : [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' assignments with results'),
+          tile('Strongest', Math.max.apply(null, means) + '%', best.title),
+          tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
+          tile('Open work', 'Excluded', 'Not released yet')
+        ]),
+        note: ps.length < 2 ? '' : 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
+     """        tiles: (ps.length < 2 ? [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one assignment with results'),
+          tile('Open work', 'Included', 'Results update live')
+        ] : [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' assignments with results'),
+          tile('Strongest', Math.max.apply(null, means) + '%', best.title),
+          tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
+          tile('Open work', 'Included', 'Results update live')
+        ]),
+        note: ps.length < 2 ? '' : 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
+     "the means chart's \"Open work\" tile, stale after stream A's "
+     "`when==='marked'` redefinition. An open paper with results is already "
+     "counted in `ps`/`m.classMean` above, so \"Excluded · Not released "
+     "yet\" was false — \"Included · Results update live\" says what the "
+     "chart now actually does."),
+
     # ── the sub-heading's plurals ───────────────────────────────────────
     ("""      insSub: chartScope === 'all'
         ? liveClasses.length + ' active classes · ' + totalStudents + ' students on roll'
@@ -8944,6 +8981,24 @@ componentDidUpdate() {
      "data-completeness fact unrelated to stream A's `when` redefinition, "
      "and the word was doing no work once the chart's own title already "
      "says \"work with results\"."),
+
+    # ⊕ Stream J, 25 Sep 2026 (experience run, item 2) — THIS TILE IS STALE
+    # UNDER STREAM A'S RULING, NOT JUST WORDED WRONG. `src`, three lines
+    # above this block, is built from `this.papersFor(k).filter(p => p.when
+    # === 'marked')` — and `when === 'marked'` now means RELEASED (stream A),
+    # so an OPEN paper is already IN `src` and counted in `on`/`tot` above.
+    # "Open work · Excluded · Not due yet" told a teacher the opposite of
+    # what the chart had just done with it. Reworded to what is true rather
+    # than removed: the tile still earns its place by telling a teacher an
+    # open set's on-time figure updates as pupils finish, which is new
+    # behaviour worth a line rather than silence.
+    ("                tile('Open work', 'Excluded', 'Not due yet')],",
+     "                tile('Open work', 'Included', 'Results update live')],",
+     "the on-time chart's \"Open work\" tile, stale after stream A's "
+     "`when==='marked'` redefinition (released, not deadline-passed). An "
+     "open paper's cells are already inside `on`/`tot` above, so \"Excluded"
+     " · Not due yet\" was simply false; \"Included · Results update live\" "
+     "says what the chart now actually does."),
 
     ("        note: worst ? 'Weakest: ' + worst.label + ' at ' + (worst.tot ? "
      "Math.round((worst.on / worst.tot) * 100) : 0) + '% on time' : '' };",
