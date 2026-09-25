@@ -1124,9 +1124,19 @@ def make_landing():
 # rewritten) — see the CSS comment on `.k4-facts-sr` — is the accessible
 # contract: a screen-reader user is never interrupted by a fact changing,
 # and never told about a rotation happening only for sighted visitors.
+#
+# Card redesign 25 Sep 2026: `.k4-facts-stack-1/-2` are the two decorative
+# offset rects behind the card (a dealt-deck look), from Claude Design's
+# "Science Fact Card" delivery (repo root, `Science Fact Card.html`) — the
+# stacking, the bordered card, the pulsing subject dot and the word-reveal
+# text are shared/ks4-chrome.css + shared/k4-facts.js. Nothing else about
+# this panel (data source, shuffle-bag rotation, pause-on-hover/focus,
+# reduced-motion contract) changed.
 def k4_facts_panel():
     return """
     <aside class="k4-band-side k4-facts" id="k4-facts" aria-label="A science fact">
+      <span class="k4-facts-stack k4-facts-stack-1" aria-hidden="true"></span>
+      <span class="k4-facts-stack k4-facts-stack-2" aria-hidden="true"></span>
       <div class="k4-facts-stage" id="k4-facts-stage" aria-hidden="true"></div>
       <p class="k4-facts-sr" id="k4-facts-sr"></p>
     </aside>"""
