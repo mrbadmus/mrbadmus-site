@@ -2209,6 +2209,50 @@ LOGIC = {
             " 'MISSED' : ('MARKED' + (w.late ? ' \\u00B7 late' : ''));\n",
         ),
         # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream K) — PROD N2. THE TUPLE ABOVE
+        # PUT "LATE" ON THE ROW TWICE AT NARROW WIDTH.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # The tuple immediately above (stream H, same night) put the word on
+        # `longWord`, and its own comment already says exactly where
+        # `longWord` is read: ONLY `metaLine` ('W' + week + ' · ' +
+        # longWord), which is Design's `<if narrow>` branch. The wide-width
+        # half of the SAME finding was handled correctly, on `scoreLabel`
+        # (the tuple below this one), which renders at every width. So a
+        # narrow pupil saw BOTH: "W02 · MARKED · late" (metaLine)
+        # immediately above "CORRECT · late" (scoreLabel) on the very
+        # same row — confirmed live, PROD N2. `scoreLabel` is the one that
+        # should carry it, because it is the ONLY one of the two that shows
+        # at every width; `longWord` reverts to plain 'MARKED' so the fact is
+        # said once, not zero times at wide and twice at narrow.
+        #
+        # ⚠️ `shortWord` IS LEFT AS STREAM H WROTE IT, DELIBERATELY UNTOUCHED
+        # rather than tidied. Its own comment already establishes it is DEAD
+        # for a marked row — `showWord: !showScore && wide` is false whenever
+        # `showScore` is true, and a marked row always has a score — so
+        # whatever `shortWord` says is never painted. Reverting it would be a
+        # second edit with no visible effect and one more place this ruling
+        # could silently stop matching Design's template on a future redraw.
+        #
+        # ⚠️ FIXTURE UNCHANGED FOR THE SAME REASON THE TUPLE ABOVE RECORDS:
+        # Design's own `work` array has no `late: true` MARKED row, so
+        # `longWord` renders 'MARKED' on her file before this ruling and
+        # 'MARKED' after it — nothing to register in RULED_DIVERGENCE.
+        (
+            "      const longWord = w.status === 'open' ? 'DUE THU 18:00'"
+            " : w.status === 'pending' ? 'WITH MR BADMUS' : w.status ==="
+            " 'missed' ? 'MISSED' : ('MARKED' + (w.late ? ' \\u00B7 late' : ''));\n",
+            "      /* ⊕ SUPERSEDED 25 Sep 2026 (stream K) — PROD N2. See\n"
+            "         the section header above this tuple: `longWord` feeds ONLY\n"
+            "         the narrow-width `metaLine`, and the SCORE CAPTION\n"
+            "         (`scoreLabel`, below) already says '\\u00B7 late' at every\n"
+            "         width — including narrow. Saying it here too meant a\n"
+            "         narrow pupil read it twice on the same row. */\n"
+            "      const longWord = w.status === 'open' ? 'DUE THU 18:00'"
+            " : w.status === 'pending' ? 'WITH MR BADMUS' : w.status ==="
+            " 'missed' ? 'MISSED' : 'MARKED';\n",
+        ),
+        # ══════════════════════════════════════════════════════════════════
         # ⊕ Experience run, 25 Sep 2026 (stream H) — P2, WIDE-WIDTH HALF.
         # ══════════════════════════════════════════════════════════════════
         #
@@ -3734,12 +3778,30 @@ INSERT_AT = {
         # is the tap, and the tap already expands the row — so the breakdown
         # goes in the panel the tap opens, which is Mide's "tap reveals the
         # breakdown" literally and needs no new control.
+        # ⊕ RULED 25 Sep 2026 (experience run, stream K) — PROD N2, SECOND
+        # HALF. `max-width:230px` was a CEILING, not a size — this row is a
+        # CSS grid (`rowCols`, above) whose narrow-width form is `'18px
+        # minmax(0,1fr) auto'`: the score column (node 181's wrapper, holding
+        # `scoreText`/`word`/the caret) is `auto`, sized to its OWN content
+        # per row, and the bar lives inside the `minmax(0,1fr)` column right
+        # before it — so a row whose score column is wider (a late row's
+        # "CORRECT · late" versus a plain "CORRECT") leaves the bar's
+        # column genuinely less room, and a max-width can only ever cap the
+        # bar SMALLER, never keep it the SAME across rows whose neighbouring
+        # column varies. Confirmed live: the late row's bar visibly shorter
+        # than the other four's. A fixed `width` (140px, comfortably under
+        # even a 360px-wide phone's remaining space once the status dot, the
+        # gap and a two-word score caption are accounted for) makes the bar's
+        # rendered size a property of the bar, not of its row's neighbour;
+        # `max-width:100%` is kept as a floor under the fixed width so the
+        # bar still shrinks rather than overflows in whatever narrower case
+        # this has not been measured against.
         (173, 177): (
             {"t": "if", "e": "r.hasBar", "c": [
                 {"t": "span",
                  "a": {"title": {"parts": [{"e": "r.barTitle"}]},
                        "style": "display:block;margin-top:10px;"
-                                "max-width:230px"},
+                                "width:140px;max-width:100%"},
                  "c": [
                      {"t": "span",
                       "a": {"style": "display:flex;height:7px;"
