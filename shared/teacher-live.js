@@ -1750,8 +1750,22 @@
       return markedN[i] ? Math.round((correctN[i] / markedN[i]) * 100) : null;
     });
 
+    // ⊕ Stream M, 25 Sep 2026 (experience run round 3, N7) — ONLY A
+    // COMPLETE SUBMISSION'S `max_score` COUNTS. An in-progress row's
+    // `max_score` is the max of the questions ANSWERED SO FAR (2 of 10, not
+    // 10), and this loop used to take whichever submission's `max_score` it
+    // saw LAST regardless of that — so a class mean tile could read "10
+    // questions, 2 marks" the moment one pupil was mid-attempt. `handedIn`
+    // mirrors line 1706's own definition (`completed_at || submitted_at ||
+    // status === "complete"`) so this reads the same "finished" every other
+    // figure on this screen does. `maxScore` stays `null` when nobody has
+    // finished yet, and `qLine` below already renders that as a bare
+    // question count rather than guessing a marks figure.
     var maxScore = null;
-    subs.forEach(function (s) { if (s.max_score != null) { maxScore = s.max_score; } });
+    subs.forEach(function (s) {
+      var handedIn = !!(s.completed_at || s.submitted_at || s.status === "complete");
+      if (handedIn && s.max_score != null) { maxScore = s.max_score; }
+    });
 
     return {
       rows: rows,
