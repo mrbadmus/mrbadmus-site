@@ -2075,11 +2075,26 @@ LOGIC = {
         # The On time tile already drops when a marked row's submission was
         # late (`row.late`, `shared/student-live.js`) — the fact is read,
         # just never SHOWN on the row itself, so a pupil scanning the list
-        # has no way to tell which set cost them the point. `longWord`
-        # drives both the meta line ("W03 · MARKED") and the wide-screen
-        # status word; `shortWord` is its narrow twin. Same quiet register
-        # as the teacher side's "In · late" (`teacher_rulings.py`): the
-        # status word is unchanged, a lower-case " · late" rides beside it.
+        # has no way to tell which set cost them the point.
+        #
+        # ⚠️ SUPERSEDED THE SAME NIGHT — this tuple ORIGINALLY claimed
+        # `longWord` "drives both the meta line … and the wide-screen status
+        # word", and that second half was wrong, caught by Mide reading the
+        # 1280px screenshot rather than by any gate: `showWord: !showScore
+        # && wide` (F4, below) is FALSE on every marked row, wide or narrow,
+        # because a marked row always has a score to show. So `longWord`
+        # only ever reaches the page through `metaLine`, and `metaLine`
+        # itself is `<if narrow>`-only in Design's template (`<if wide>`
+        # shows `r.brief` — descriptive prose — in that exact slot instead).
+        # A pupil on a desktop or tablet never saw "late" anywhere, which is
+        # the finding this comment now records rather than hides.
+        #
+        # This tuple is kept, unchanged in effect, for the narrow width it
+        # genuinely reaches — same quiet register as the teacher side's
+        # "In · late" (`teacher_rulings.py`): the status word is unchanged,
+        # a lower-case " · late" rides beside it. The wide-width half of P2
+        # is the SEPARATE tuple immediately below, on `scoreLabel` — the one
+        # caption a marked row shows at every width.
         #
         # ⚠️ NO MARKED ROW IN DESIGN'S FIXTURE IS LATE — checked against her
         # `work` array rather than assumed: its one `late: true` row (`a2`,
@@ -2102,6 +2117,31 @@ LOGIC = {
             "      const shortWord = w.status === 'open' ? 'DUE THU'"
             " : w.status === 'pending' ? 'SENT' : w.status === 'missed' ?"
             " 'MISSED' : ('MARKED' + (w.late ? ' \\u00B7 late' : ''));\n",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P2, WIDE-WIDTH HALF.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # `scoreLabel` ("CORRECT", under the marked row's percentage — F4,
+        # immediately below) is the one caption a marked row shows at BOTH
+        # widths: `showScore` is `isMarked && !hideScores`, with no `wide`/
+        # `narrow` branch anywhere in it, unlike `metaLine`/`brief`. Same
+        # register as the narrow tuple above: the word stands, a lower-case
+        # " · late" rides beside it.
+        #
+        # ⚠️ AND THE SAME NON-DIVERGENCE HOLDS, FOR THE SAME REASON. Design's
+        # fixture carries no `late: true` MARKED row (checked immediately
+        # above), so `scoreLabel` renders plain "CORRECT" on her file and on
+        # the port alike — nothing to register in RULED_DIVERGENCE, and
+        # `student_behaviour.py`'s DRIVES run at one viewport, 1460×1200
+        # (`VIEWPORT`), which is `wide` — so this is in fact the ONLY one of
+        # P2's two tuples that gate ever exercises the branch of, and it
+        # exercises the FALSE branch only, byte-identically either way.
+        (
+            "        scoreLabel: 'CORRECT',\n",
+            "        /* ⊕ RULED 25 Sep 2026 (stream H) — P2, wide-width half.\n"
+            "           See the section header above this tuple. */\n"
+            "        scoreLabel: 'CORRECT' + (w.late ? ' \\u00B7 late' : ''),\n",
         ),
         # ══════════════════════════════════════════════════════════════════
         # ⊕ Experience run, 25 Sep 2026 (stream H) — P6. THE ROW'S BAR SHOWED
