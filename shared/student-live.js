@@ -112,6 +112,15 @@
     pastYear:   "That class finished at the end of last year.",
     notMine:    "That class is not one of yours.",
     noPractice: "There is nothing to look back over yet. Check again after your next lesson.",
+    /* ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST N12. Its own
+       sentence, distinct from `noPractice` above: the recall round and the
+       flashcards deck are two different surfaces built from two different
+       reads (`shared/student-live.js`'s recall-round `questions` vs its
+       flashcard `cards`), and a class can genuinely be empty on one and not
+       the other. Naming "this topic" is honest about WHY a class with real
+       lessons can still have no cards: the deck is built from lessons this
+       class has covered that a card exists for, not from every lesson. */
+    noFlashcards: "No flashcards yet for this topic.",
     noWork:     "No work has been set for this week yet.",
     workNotSet: "This week’s work is not ready yet. Check again later today.",
     /* ⊕ MRB-340, 12 Sep 2026 — A SET THAT WAS DELETED WHILE A CHILD WAS
@@ -3773,13 +3782,21 @@
       cards: cards,
 
       /* ⛔ WHAT THE CARD SAYS WITH AN EMPTY DECK, and it says nothing about
-         the software. It is the sentence this file already uses for the same
-         condition one panel over — there is nothing to look back over yet —
-         rather than a second wording of the same fact. The card's button
-         refuses to open an empty overlay (see `openCards` in
-         student_rulings.py), so a student is never taken to a surface with a
-         counter reading 00 / 00 on it. */
-      cardsEmpty: SAY.noPractice,
+         the software.
+         ⊕ SUPERSEDED 25 Sep 2026 (experience run, stream K) — TEST N12. This
+         used to reuse `SAY.noPractice`, the recall round's sentence, on the
+         reasoning that it was "the same condition one panel over" — but the
+         recall round and the flashcard deck are built from different reads
+         and can differ (a class can have recall questions and no cards, or
+         the reverse), and reusing the recall round's exact words on a
+         DIFFERENT surface is a second wording of a DIFFERENT fact wearing the
+         first one's sentence. `SAY.noFlashcards` names this surface. What
+         does not change: the card's button refuses to open an empty overlay
+         (see `openCards` in student_rulings.py) AND is now rendered properly
+         `disabled` when it is empty (`cardsDeckEmpty`, same file, `cardVals`)
+         — a student is never taken to a surface with a counter reading
+         00 / 00, and the button no longer looks pressable when it is not. */
+      cardsEmpty: SAY.noFlashcards,
 
       /* ── ⊕ 23 Aug 2026 — PHASE 3. THE ROUND'S THREE KEYS ───────────────
 

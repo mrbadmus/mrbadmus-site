@@ -1319,6 +1319,14 @@ LOGIC = {
             "          back: '', mine: false };\n"
             "    return {\n"
             "      cardCount: pad(n),\n"
+            "      /* ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST N12. See\n"
+            "         SET_ATTR 10207 for the disabled/aria-disabled binding this\n"
+            "         feeds, and student_rulings.py's note beside `cardsEmpty` in\n"
+            "         shared/student-live.js for the fuller reasoning. A `false` here\n"
+            "         is SKIPPED by the runtime rather than written as an attribute\n"
+            "         (the same rule `isClay`/`isChalk` rely on above), so a normal\n"
+            "         card carries no `disabled` at all — only an empty one does. */\n"
+            "      cardsDeckEmpty: !n,\n"
             "      stackPos: n ? (pad(idx + 1) + ' / ' + pad(n)) : '',\n"
             "      topFront: card.front,\n"
             "      topMine: card.mine,\n"
@@ -2077,6 +2085,36 @@ LOGIC = {
             " 'See what you sent' : 'Complete homework',\n"
             "        primary: (w.status === 'open' || w.status === 'missed'"
             " || w.retake)\n",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream K) — PROD N4. THE WORK ROW IS
+        # A DISCLOSURE BUTTON WITH NO DISCLOSURE STATE.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Node 161 is the whole collapsed row — one `<button onClick=
+        # "{{ r.toggle }}">` that opens and closes the panel below it — and it
+        # carries no `aria-expanded` at all, so a screen reader announces
+        # "button" with no state, on every one of the six rows, on every
+        # press. `r.expanded` already exists (`expanded: expanded` two lines
+        # above this ruling's anchor) and already drives the caret's rotation
+        # and the panel's own `<if>` — this reads the same fact for
+        # accessibility rather than inventing a second one.
+        #
+        # ⚠️ A STRING, NOT THE BARE BOOLEAN, AND THAT IS THE WHOLE POINT OF
+        # THIS BEING ITS OWN FIELD. `SET_ATTR`'s runtime skips an attribute
+        # whose resolved value is boolean `false` — the mechanism `isClay`
+        # and `cardsDeckEmpty` both rely on to draw NOTHING when a switch is
+        # off — which is right for a CSS hook nobody reads when absent, and
+        # wrong for `aria-expanded`: assistive tech expects the attribute
+        # PRESENT with an explicit "true" or "false" on a collapsed row, not
+        # silently absent. `ariaExpanded` is always a string, so the runtime
+        # writes it either way.
+        (
+            "        expanded: expanded, caret: expanded ? '225deg' : '45deg',\n",
+            "        expanded: expanded, caret: expanded ? '225deg' : '45deg',\n"
+            "        /* ⊕ RULED 25 Sep 2026 (stream K) — PROD N4. See\n"
+            "           SET_ATTR 161 for the binding. */\n"
+            "        ariaExpanded: expanded ? 'true' : 'false',\n",
         ),
         # ══════════════════════════════════════════════════════════════════
         # ⊕ Experience run, 25 Sep 2026 (stream H) — P1. ONE DEFINITION OF
@@ -3231,6 +3269,27 @@ SET_ATTR = {
     "class view": {
         55:  {"data-bench-surface": "bench", "data-port-region": "bench"},
         10204: {"data-bench-surface": "cards"},
+        # ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST N12. The
+        # launcher button (node 10207: `on: "openCards"`, the whole sidebar
+        # card) already REFUSED to open an empty deck (`openCards` in the
+        # LOGIC ruling above), which is correct and not the defect — the
+        # defect was that a button which does nothing on press still LOOKED
+        # exactly as pressable as every other one. `cardsDeckEmpty`
+        # (`cardVals`, same file) is `!n`, `false` on a real deck — which the
+        # runtime skips writing at all, same rule `isClay`/`isChalk` above
+        # rely on — so a normal card carries neither attribute. On an empty
+        # one, `disabled` makes it a genuinely disabled native `<button>`
+        # (out of tab order, no click event, dimmed by the browser); the
+        # explicit `aria-disabled` names the same fact for anything reading
+        # the accessibility tree rather than relying on native semantics
+        # alone. The message itself is `SAY.noFlashcards` via `cardsEmpty` →
+        # `topFront` (node 10211), unchanged by this entry.
+        10207: {"disabled": {"parts": [{"e": "cardsDeckEmpty"}]},
+                "aria-disabled": {"parts": [{"e": "cardsDeckEmpty"}]}},
+        # ⊕ RULED 25 Sep 2026 (experience run, stream K) — PROD N4. See the
+        # LOGIC ruling on `ariaExpanded` above for the reasoning; this is the
+        # binding half.
+        161: {"aria-expanded": {"parts": [{"e": "r.ariaExpanded"}]}},
         10329: {"data-pip-row": "1"},
         10332: {"data-card-fit": "1"},
         10384: {"data-bench-surface": "recall"},
