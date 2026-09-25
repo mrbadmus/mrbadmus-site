@@ -3520,6 +3520,11 @@ def main():
                 # rows; running after it would be a check about whichever
                 # row happened to survive.
                 check_row_download(pc, base, t_teacher, scopes, ws_made)
+                # ⊕ D2, 25 Sep 2026 (experience follow-ups, item 2) — a set
+                # over ten subtopics, both formats, straight after the
+                # ordinary row download and before anything deletes rows.
+                check_row_download_over_ten(pc, base, t_teacher, scopes,
+                                            args.shots)
                 cards_made = check_cards(pc, base, t_teacher, scopes,
                                          args.shots)
                 check_remind_names_its_own_card(pc, base, cards_made)
@@ -5126,6 +5131,276 @@ def open_class_page(p, base, class_id, width=390, settle=6.5):
     time.sleep(0.8)
     return wait_for(p, "!!document.getElementById('mrb-class-assignments')",
                     tries=40)
+
+
+# ⊕ D2, 25 Sep 2026 (experience follow-ups, item 2) — A SET SPANNING MORE
+# THAN TEN SUBTOPICS, DOWNLOADED FROM ITS ROW.
+#
+# ⛔ THE DEFECT THIS PINS. `downloadAssignment` posts the row's one stored
+# scope first (refused by design for a multi-topic set), and used to fall back
+# to ONE SCOPE PER SUBTOPIC. The worksheet route caps a body at `MAX_SCOPES`
+# (10) scopes, so a set holding questions from eleven or more subtopics was
+# refused `too_many_scopes` on the fallback too — and nothing tried a third
+# time: `console.error`, no file, no toast. The page now regroups the same ids
+# by their TOPIC (`groupByTopic`, `shared/set-work.js`), which the route pools
+# (`slugsForScope`), so the same questions fit in far fewer scopes.
+#
+# ⚠️ EVERY CLAIM IS MEASURED, NONE IS ASSUMED: the ≥ 11 subtopics are counted
+# from the STORED `assignment_questions` rows joined to the bank; the request
+# sequence is read off Chrome's own network log (`Network.*` events), not off
+# a wrapper this drive installs; and the old per-subtopic body is POSTED as
+# the teacher and seen refused, so "the fallback that used to be sent cannot
+# work" is a fact of this run rather than of a comment.
+OVER_TEN_MIN = 11
+
+
+def over_ten_pick(scopes):
+    """Two topics of one KS4 class whose stocked subtopics sum to ≥ 11.
+
+    Returns `(class_id, tier, [(topic, stocked_children)…])` or None. Tried on
+    the combined class first — its tree spans three sciences, so the regroup's
+    per-topic `subject` is exercised — then the triple class."""
+    for key, cid in (("comb", FX.C_KS4_COMB), ("bi", FX.C_KS4_TRIPLE)):
+        for tier in ("foundation", "higher"):
+            cands = []
+            for t in (scopes.get(key) or {}).get("tree") or []:
+                stocked = [c for c in t.get("children") or []
+                           if (c.get("counts") or {}).get(tier, 0) >= 2]
+                if stocked:
+                    cands.append((len(stocked), t, stocked))
+            cands.sort(key=lambda x: -x[0])
+            if len(cands) >= 2 and cands[0][0] + cands[1][0] >= OVER_TEN_MIN:
+                return cid, tier, [(cands[0][1], cands[0][2]),
+                                   (cands[1][1], cands[1][2])]
+    return None
+
+
+def network_worksheet_posts(p):
+    """Every `POST /api/teacher/worksheet` in Chrome's network log since the
+    last navigation, oldest first: `{body, status, code}`.
+
+    ⚠️ READ FROM `Network.*` EVENTS, NOT FROM A FETCH WRAPPER. The class-page
+    tab must keep the browser's own network (see the comment above the
+    `cdp.Browser()` block in `main`), and a wrapper would be this drive
+    watching itself rather than watching the page."""
+    try:
+        p.send("Runtime.evaluate", {"expression": "1", "returnByValue": True})
+    except cdp.CDPError:
+        pass
+    p.drain(0.2)
+    reqs, order, status = {}, [], {}
+    for ev in p._events:                                    # noqa: SLF001
+        m = ev.get("method")
+        prm = ev.get("params") or {}
+        if m == "Network.requestWillBeSent":
+            rq = prm.get("request") or {}
+            if (rq.get("method") == "POST"
+                    and WS_PATH in (rq.get("url") or "")):
+                rid = prm.get("requestId")
+                if rid not in reqs:
+                    order.append(rid)
+                reqs[rid] = rq
+        elif m == "Network.responseReceived":
+            status[prm.get("requestId")] = (prm.get("response") or {}).get(
+                "status")
+    out = []
+    for rid in order:
+        rq = reqs[rid]
+        raw = rq.get("postData")
+        if raw is None:
+            try:
+                raw = p.send("Network.getRequestPostData",
+                             {"requestId": rid}).get("postData")
+            except cdp.CDPError:
+                raw = None
+        try:
+            body = json.loads(raw) if raw else None
+        except ValueError:
+            body = None
+        st = status.get(rid)
+        code = None
+        if st is not None and st >= 400:
+            try:
+                rb = p.send("Network.getResponseBody", {"requestId": rid})
+                code = (json.loads(rb.get("body") or "{}") or {}).get("error")
+            except (cdp.CDPError, ValueError):
+                code = None
+        out.append({"body": body, "status": st, "code": code})
+    return out
+
+
+def check_row_download_over_ten(p, base, t_teacher, scopes, shots):
+    print("\n   Download on a row whose set spans MORE than ten subtopics")
+    got = over_ten_pick(scopes)
+    if not got:
+        record(False, "row_download_over_ten_subtopics — a KS4 class offers "
+                      "two topics whose stocked subtopics sum to >= %d"
+                      % OVER_TEN_MIN)
+        return
+    cid, tier, pair = got
+    two = []
+    for topic, stocked in pair:
+        n = min(20, 2 * len(stocked))
+        qs = ws_pick(t_teacher, cid, tier, "topic", topic["id"], n,
+                     subject=topic.get("subject"))
+        two.append({"kind": "topic", "ref": topic["id"],
+                    "subject": topic.get("subject"), "questions": qs})
+    if not all(s["questions"] for s in two):
+        record(False, "row_download_over_ten_subtopics — /preview fills both "
+                      "topics", "%s" % [(s["ref"], len(s["questions"]))
+                                        for s in two])
+        return
+    title = TITLE + " · over ten subtopics"
+    st, out = post_set_scopes(t_teacher, [cid], tier, two, title)
+    aids = ((out or {}).get("assignment_ids") or []) if st == 200 else []
+    if st != 200 or len(aids) != 1:
+        record(False, "row_download_over_ten_subtopics — the two-topic set "
+                      "can be SET", "status %s · %s"
+               % (st, json.dumps(out)[:250]))
+        return
+    aid = aids[0]
+
+    # ── the STORED rows, and how many subtopics they really span ──────
+    st, rows = FX.api("GET", "/rest/v1/assignment_questions?assignment_id=eq."
+                             "%s&select=source_ref,position&order=position"
+                      % aid)
+    stored_ids = [r["source_ref"] for r in rows] if isinstance(rows, list) \
+        else []
+    slugs = {}
+    if stored_ids:
+        st2, bank = FX.api("GET", "/rest/v1/ks4_assignment_bank?id=in.(%s)"
+                                  "&select=id,subtopic_slug"
+                           % ",".join(stored_ids))
+        if isinstance(bank, list):
+            slugs = {b["id"]: b["subtopic_slug"] for b in bank}
+    spanned = sorted(set(slugs.values()))
+    record(len(stored_ids) > 0 and len(slugs) == len(stored_ids)
+           and len(spanned) >= OVER_TEN_MIN,
+           "row_download_over_ten_subtopics_stored — the set as STORED holds "
+           "questions from >= %d distinct subtopics, so a one-scope-per-"
+           "subtopic body cannot fit under `MAX_SCOPES`" % OVER_TEN_MIN,
+           "%d question(s) across %d subtopic(s) in %d topic(s) (%s) on %s "
+           "at %s" % (len(stored_ids), len(spanned), len(two),
+                      "+".join("%s/%s" % (s["subject"], s["ref"]) for s in two),
+                      cid[-2:], tier))
+    if len(spanned) < OVER_TEN_MIN:
+        return
+
+    # ── the body the page USED to fall back to, refused, as the teacher ──
+    by_sub, sub_order = {}, []
+    for qid in stored_ids:
+        s = slugs[qid]
+        if s not in by_sub:
+            by_sub[s] = []
+            sub_order.append(s)
+        by_sub[s].append({"id": qid})
+    old = [{"kind": "subtopic", "ref": s, "subject": None,
+            "questions": by_sub[s]} for s in sub_order]
+    st0, h0, d0 = call_bytes("POST", WS_PATH, t_teacher,
+                             ws_body(cid, tier, old, "pdf", True, title))
+    record(st0 == 400 and b"too_many_scopes" in d0,
+           "row_download_over_ten_old_fallback_refused — the retired "
+           "one-scope-per-subtopic body (%d scopes) is refused "
+           "`too_many_scopes`, which is why the page must regroup"
+           % len(old),
+           "status %s · %s · ratelimit-remaining %s"
+           % (st0, d0[:100], h0.get("ratelimit-remaining")))
+
+    dl_dir = os.path.join(cdp.gate_tmp(), "d2-over-ten-%d" % os.getpid())
+    if not arm_downloads(p, dl_dir):
+        record(False, "the class-page tab can save the over-ten downloads")
+        return
+    try:
+        p.send("Network.enable", {"maxPostDataSize": 1 << 20})
+    except cdp.CDPError as e:
+        record(False, "Chrome's network log can be read", str(e))
+        return
+
+    for fmt, press in (("pdf", "download-pdf"), ("docx", "download-word")):
+        seen = set(os.listdir(dl_dir))
+        if not open_class_page(p, base, cid):
+            record(False, "the class page opens for the over-ten %s "
+                          "download" % fmt)
+            continue
+        rows_now = p.eval(ROWS_JS) or []
+        if title not in [r["title"] for r in rows_now]:
+            record(False, "the over-ten set is a row on the class page",
+                   "rows: %s" % [r["title"][-26:] for r in rows_now])
+            continue
+        armed = press_row(p, title, "download") == "clicked"
+        time.sleep(0.4)
+        if shots and fmt == "pdf":
+            try:
+                p.screenshot(os.path.join(shots, "d2-over-ten-armed.png"),
+                             width=390, height=900)
+            except Exception:                                   # noqa: BLE001
+                pass
+        chose = press_row(p, title, press) == "clicked"
+        name, data, err = take_download(dl_dir, seen)
+        posts = network_worksheet_posts(p)
+        errs = [e for e in (p.console_errors() or [])
+                if "[set-work]" in e]
+        if shots:
+            try:
+                p.screenshot(os.path.join(shots, "d2-over-ten-%s-done.png"
+                                          % fmt), width=390, height=900)
+            except Exception:                                   # noqa: BLE001
+                pass
+        data = data or b""
+        if fmt == "pdf":
+            ok_bytes = data[:5] == b"%PDF-"
+            desc = "starts `%PDF-`"
+        else:
+            ok_bytes = data[:4] == b"PK\x03\x04"
+            if ok_bytes:
+                try:
+                    ok_bytes = "word/document.xml" in zipfile.ZipFile(
+                        io.BytesIO(data)).namelist()
+                except zipfile.BadZipFile:
+                    ok_bytes = False
+            desc = "starts `PK\\x03\\x04` and holds `word/document.xml`"
+        record(armed and chose and not err and ok_bytes,
+               "row_download_over_ten_%s — the row's %s saves a genuine file "
+               "(%s) for a set spanning %d subtopics"
+               % (fmt, "PDF" if fmt == "pdf" else "Word", desc, len(spanned)),
+               "%s · %d byte(s)" % (name, len(data)) if not err else err)
+
+        first = posts[0] if posts else {}
+        record(len(posts) == 2 and first.get("status") == 400
+               and first.get("code") == "questions_not_in_scope"
+               and len(((first.get("body") or {}).get("scopes")) or []) == 1,
+               "…and the network log shows the stored single scope tried "
+               "FIRST and refused (%s)" % fmt,
+               "%d POST(s): %s" % (len(posts), [
+                   (x["status"], x["code"],
+                    len(((x.get("body") or {}).get("scopes")) or []))
+                   for x in posts]))
+        last = posts[-1] if posts else {}
+        sc = ((last.get("body") or {}).get("scopes")) or []
+        sent = [i for s in sc for i in (s.get("question_ids") or [])]
+        record(len(posts) >= 2 and last.get("status") == 200
+               and 0 < len(sc) <= 10
+               and all(s.get("scope_kind") == "topic" for s in sc),
+               "row_download_over_ten_regrouped_%s — the retry carried <= 10 "
+               "scopes, every one `scope_kind: \"topic\"`, and succeeded"
+               % fmt,
+               "%d scope(s): %s · status %s"
+               % (len(sc), ["%s/%s:%d" % (s.get("subject"), s.get("scope_ref"),
+                                         len(s.get("question_ids") or []))
+                            for s in sc], last.get("status")))
+        record(sorted(sent) == sorted(stored_ids) and len(sent) == len(set(sent)),
+               "row_download_over_ten_nothing_dropped_%s — the regrouped "
+               "request's question ids are exactly the stored set's %d, none "
+               "dropped, none doubled" % (fmt, len(stored_ids)),
+               "%d sent vs %d stored" % (len(sent), len(stored_ids)))
+        record(not errs,
+               "…and no `[set-work]` console error for the expected "
+               "fallback (%s)" % fmt, "; ".join(errs)[:300])
+    try:
+        p.send("Network.disable")
+    except cdp.CDPError:
+        pass
+    drop_downloads(dl_dir)
 
 
 def check_cards(p, base, t_teacher, scopes, shots):
@@ -6998,6 +7273,11 @@ def check_worksheet_from_row(t_teacher, made):
 
     # The body the fixed `downloadAssignment` falls back to: one scope per the
     # questions' OWN subtopic, which `lesson_slug` names on every row.
+    # ⊕ D2, 25 Sep 2026 (experience follow-ups, item 2) — the PAGE now
+    # regroups these ids by TOPIC instead (`groupByTopic`), because one scope
+    # per subtopic is refused `too_many_scopes` past ten subtopics; see
+    # `check_row_download_over_ten`. This API check still stands as the
+    # route's contract: a per-subtopic body of <= 10 scopes is accepted.
     by_lesson, order = {}, []
     for q in qs:
         ref = q.get("lesson_slug")
