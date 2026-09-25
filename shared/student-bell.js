@@ -535,6 +535,17 @@
     state.open = true;
     place(lastButton);
     if (lastButton) { lastButton.setAttribute("aria-expanded", "true"); }
+    /* ⊕ Experience run, 25 Sep 2026 (stream H) — P10. The panel already
+       carries `role="dialog"` and its own `aria-label` (above), Escape
+       already closes it (`onKey`) and closing already gives focus back to
+       the bell (`hide(true)`) — but opening left focus sitting on the bell
+       button, behind the panel it had just opened, which is a dialog a
+       keyboard user cannot get INTO without first tabbing past whatever
+       else the header holds. Move it onto the one control every state of
+       the panel has: the close button, present whether the list is full,
+       empty or failed. */
+    var firstFocus = panel.querySelector(".mrb-bell-close");
+    if (firstFocus && firstFocus.focus) { firstFocus.focus(); }
     document.addEventListener("keydown", onKey, true);
     document.addEventListener("click", onOutside, true);
     window.addEventListener("resize", onMove);
