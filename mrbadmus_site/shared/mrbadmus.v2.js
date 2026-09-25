@@ -311,6 +311,24 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
   function open() {
     loadStudentSession();
     const ov = document.getElementById('chatOverlay');
+    // ⊕ RULED 25 Sep 2026 (experience run, stream K) — PROD N6. The panel
+    // traps Tab and closes on Escape (Stream G's fix, directly below) — it
+    // BEHAVES like a modal dialog everywhere on the estate already — but
+    // never SAID so: no `role="dialog"`, no `aria-modal`, no accessible
+    // accessible name of its own, unlike the flashcards overlay (`student_rulings.py`,
+    // `data-mrb-dialog="flashcards"`) which names this exact trio. A static
+    // label rather than `aria-labelledby` pointing at `#chat-head-subtitle`:
+    // that node's own text is a personalised greeting ("Hey Name! 👋") that
+    // is empty until a signed-in student's name loads and is absent
+    // entirely on a page with no such element — an accessible NAME must not
+    // depend on either. Set on every `open()` rather than once: cheap, and
+    // correct regardless of which of this file's several pages' markup
+    // happens to be on screen.
+    if (ov) {
+      ov.setAttribute('role', 'dialog');
+      ov.setAttribute('aria-modal', 'true');
+      ov.setAttribute('aria-label', 'Ask Mr Badmus');
+    }
     // Stream G follow-up — capture whichever control was focused (a mouse
     // click on a button focuses it natively) BEFORE this panel steals focus,
     // so `close()` has somewhere real to give it back to.

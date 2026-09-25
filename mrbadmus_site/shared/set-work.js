@@ -850,7 +850,13 @@
       locked: false,
       keepPicked: false,
       roTier: "",
-      roScope: ""
+      roScope: "",
+      /* ⊕ Stream L, 25 Sep 2026 (experience run, item N11 / data safety) —
+         a snapshot of `cur().picked` taken the moment `loadStoredQuestions`
+         first fills it, before this session's own count changes and swaps
+         touch it. `[]` on a fresh set, which has nothing to preserve.
+         See `otherScopesFor`. */
+      originalPicked: []
     };
   }
 
@@ -1343,6 +1349,14 @@
     opts.forEach(function (o) {
       var b = btn("sw-chip", o.label);
       b.setAttribute("data-sw-key", String(o.key));
+      // ⊕ Stream M, 25 Sep 2026 (experience run round 3, N8) — every chip
+      // this sheet builds is a toggle (Now/Later, tier, subject, paper,
+      // the count quick-picks…) and selection was shown by the `is-on`
+      // CLASS alone, with nothing in the accessibility tree saying which
+      // one — or that they are toggles at all. `aria-pressed` starts false
+      // here and `syncChips` below keeps it in step with `is-on` on every
+      // sync, the same call that already toggles the class.
+      b.setAttribute("aria-pressed", "false");
       b.addEventListener("click", function () {
         if (b.disabled) { return; }
         onPick(o.key);
@@ -1356,7 +1370,9 @@
   function syncChips(list, active, isDisabled) {
     if (!list) { return; }
     list.forEach(function (c) {
-      c.node.classList.toggle("is-on", String(c.key) === String(active));
+      var on = String(c.key) === String(active);
+      c.node.classList.toggle("is-on", on);
+      c.node.setAttribute("aria-pressed", on ? "true" : "false");
       c.node.disabled = isDisabled ? !!isDisabled(c.key) : false;
     });
   }
@@ -1643,14 +1659,104 @@
     return parent ? parent + " · " + own : own;
   }
 
-  /* ⊕ MRB-342 — THE TITLE IS THE FIRST SCOPE'S NAME, and it stays the first
-     scope's name when a second is added. A title that grew a topic every
-     time one was picked would be a composed sentence in a sheet that does
-     not write them, and would blow the 80-character field on the third. The
-     teacher may type whatever they like over it. */
+  /* ⊕ Stream L, 25 Sep 2026 (experience run, item N11 / data safety) — EVERY
+     OTHER TOPIC A MULTI-SCOPE SET HOLDS, RECONSTRUCTED FROM ITS OWN
+     QUESTIONS, TO BE SENT BACK UNCHANGED.
+
+     ⛔ THE DEFECT THIS CLOSES. `edit()` gives an edit exactly ONE scope
+     (`S.scopes[0]`, `Add topic` hidden throughout — MRB-342's own rule,
+     because `assignments` stores one scope and `PATCH` used to accept one).
+     `loadStoredQuestions` therefore poured EVERY question the set holds —
+     Energy's and Forces', on a set made of both — into that one scope's
+     `.picked`, under Energy's own heading. A teacher who changed the count
+     or swapped a question redrew from ENERGY'S pool only; the payload
+     `saveEdit` built then carried Energy's ids and nothing of Forces', and
+     the PATCH route replaces `assignment_questions` with exactly the ids it
+     is sent (see its own comment, "REPLACED WHENEVER THE BODY SENT
+     QUESTIONS"). Forces was not merely hidden from the sheet — pressing
+     Save deleted it from the database.
+
+     ⚠️ THE BACKEND ALREADY TAKES THE FIX; ONLY THE SHEET DID NOT USE IT.
+     `PATCH /api/teacher/set-work/:id` has accepted `scopes: [{scope_kind,
+     scope_ref, subject?, question_ids}, …]` since MRB-342's follow-up
+     (22 Sep 2026) — the honest mirror of the POST's own field, each scope
+     sealed against its own pool, no union taken. Nothing here is a backend
+     change; this is the sheet finally sending what the route has been able
+     to read all along.
+
+     ⚠️ A SUBTOPIC UNDER THE SAME TOPIC AS THE HEAD IS NOT "OTHER". A
+     topic-level scope's own questions legitimately span several of that
+     topic's subtopics — that is ordinary, single-scope behaviour, and
+     splitting it into one manufactured scope per subtopic would change
+     what the set is filed as without the teacher asking for that. Only a
+     slug that does NOT belong under the head topic — or does not match
+     the head's own ref, when the head IS a subtopic — is "other". Resolved
+     against `els.treeRows`, the same tree `nodeFor`/`scopeName` read.
+
+     ⚠️ AND NO ID IS EVER SENT TWICE. `headIds` — the head scope's CURRENT,
+     possibly just-changed picks — wins any overlap; an "other" group is
+     filtered down to whatever it has left and dropped if that empties it.
+     This is what keeps a save correct even in the pathological case where
+     the class's tree has not finished loading yet (`nodeFor` resolves
+     nothing, so every slug reads as "other") — it can only ever result in
+     a topic being filed as several small subtopic scopes instead of one,
+     never in a duplicate id the server would refuse, and never in a
+     dropped one. */
+  function otherScopesFor(headScope, headIds) {
+    var picked = S.originalPicked || [];
+    if (!picked.length) { return []; }
+    var byLesson = {}, order = [];
+    picked.forEach(function (q) {
+      if (!q.lesson) { return; }
+      if (!byLesson[q.lesson]) { byLesson[q.lesson] = []; order.push(q.lesson); }
+      byLesson[q.lesson].push(q.id);
+    });
+    var headSet = {};
+    headIds.forEach(function (id) { headSet[id] = true; });
+    var out = [];
+    order.forEach(function (slug) {
+      if (headScope.kind === "subtopic") {
+        if (slug === headScope.ref) { return; }        // the head's own subtopic
+      } else if (headScope.kind === "topic") {
+        var r = nodeFor("subtopic", slug);
+        var parentRef = r && r.parent ? r.parent.ref : null;
+        if (parentRef === headScope.ref) { return; }    // a subtopic of the head topic
+      }
+      var ids = byLesson[slug].filter(function (id) { return !headSet[id]; });
+      if (!ids.length) { return; }
+      out.push({ scope_kind: "subtopic", scope_ref: slug,
+                 subject: subjectOfScope({ kind: "subtopic", ref: slug }) || null,
+                 question_ids: ids });
+    });
+    return out;
+  }
+
+  /* ⊕ Stream L, 25 Sep 2026 (experience run, item 25/8) — THE TITLE NAMES
+     EVERY TOPIC, JOINED, NOT JUST THE FIRST.
+
+     ⛔ WHAT THIS REPLACES. MRB-342 made the title the FIRST scope's name,
+     unconditionally — reasoned as avoiding "a composed sentence in a sheet
+     that does not write them", and worried about the 80-character field on
+     a third topic. That reasoning held for a SENTENCE ("Energy, and also
+     Forces, and also…"); it does not hold for a short join. A two-topic
+     set titled "Energy" when it is Energy AND Forces is not a a sentence
+     problem — it is the wrong noun, on the sheet's own default AND on
+     every worksheet download that inherits it, which named its file
+     "Energy.pdf" for a document that opens on a Forces question (the
+     audit's item 25).
+
+     Joining with " · " — is already Design's own separator for a
+     topic-and-subtopic pair (`scopeName` uses it two lines below) — reads
+     wrong for two DIFFERENT topics, so " + " is used instead, matching the
+     wording the experience-run brief itself gives ("Energy + Forces"). The
+     80-character cap is UNCHANGED and still the backstop for a teacher who
+     picks several topics with long names; the teacher may still type
+     whatever they like over any of this, exactly as before. */
   function autoTitle() {
-    var first = filledScopes()[0] || cur();
-    return scopeName(first).slice(0, 80);
+    var scopes = filledScopes();
+    if (!scopes.length) { scopes = [cur()]; }
+    var names = scopes.map(scopeName).filter(function (n) { return !!n; });
+    return names.join(" + ").slice(0, 80);
   }
 
   /* ═════════════════════════════════════════════════════════════════════
@@ -3266,7 +3372,19 @@
         if (!o.quiet) { toast(e.busyMessage || SAY.unavailable); }
         return false;
       }
-      console.error("[set-work] worksheet", e);
+      /* ⊕ Stream L, 25 Sep 2026 (experience run, item 25/8) — A QUIET
+         REFUSAL IS EXPECTED, NOT AN ERROR. `downloadAssignment`'s
+         multi-topic path (above) tries the assignment's own single stored
+         scope FIRST, `quiet: true`, on the documented understanding that a
+         two-topic set will refuse it (`questions_not_in_scope` — the ids
+         of the topic that did not make it into `assignments`' one scope
+         column) and fall back to a per-subtopic body that always resolves.
+         `console.error`-ing that first, EXPECTED refusal was noise in front
+         of a feature working exactly as designed — the audit's own words,
+         "before the documented fallback". A caller that is NOT quiet still
+         gets the log: this is the one signal that a REAL failure occurred
+         on a request nothing is going to retry. */
+      if (!o.quiet) { console.error("[set-work] worksheet", e); }
       if (!o.quiet) { toast(SAY.unavailable); }
       return false;
     });
@@ -3905,6 +4023,14 @@
                  figure: q.figure || null,
                  lesson: q.lesson_slug || q.lesson || "" };
       });
+      /* ⊕ Stream L, 25 Sep 2026 (experience run, item N11 / data safety) —
+         A STABLE SNAPSHOT of what this set held BEFORE this editing
+         session touches anything. `sc.picked` is about to be mutated by
+         every count change and every swap the teacher makes; `otherScopesFor`
+         (below, read at Save) needs to know what OTHER topics' questions
+         existed at OPEN, not whatever `sc.picked` has been redrawn into by
+         the time Save is pressed. */
+      S.originalPicked = sc.picked.slice();
       sc.available = Math.max(sc.available, sc.picked.length);
       if (S.step === 2) { syncScopes(); buildQuestions(sc); syncCountChips(sc); }
       syncValidity();
@@ -3947,18 +4073,34 @@
        Same discipline as `submit()`: minted when the sheet opens on a row,
        reused by a retry after a transport failure, cleared on success. */
     if (!S.clientRef) { S.clientRef = uuid(); }
-    var payload = S.locked
-      ? { title: String(S.title || "").trim(), due_at: dueIso(),
-          client_ref: S.clientRef }
-      : { client_ref: S.clientRef,
-          tier: S.tier,
-          scope_kind: cur().kind,
-          scope_ref: cur().ref,
-          subject: subjectOfScope(cur()) || null,
-          question_ids: cur().picked.map(function (q) { return q.id; }),
-          title: String(S.title || "").trim(),
-          release_at: releaseIso(),
-          due_at: dueIso() };
+    var payload;
+    if (S.locked) {
+      payload = { title: String(S.title || "").trim(), due_at: dueIso(),
+                  client_ref: S.clientRef };
+    } else {
+      var headScope = cur();
+      var headIds = headScope.picked.map(function (q) { return q.id; });
+      /* ⊕ Stream L, 25 Sep 2026 (experience run, item N11 / data safety) —
+         every OTHER topic this set holds, unchanged. See `otherScopesFor`.
+         Empty on the ordinary single-topic edit, which is nearly every
+         edit — that case sends exactly the flat body it always sent. */
+      var others = otherScopesFor(headScope, headIds);
+      payload = { client_ref: S.clientRef,
+                  tier: S.tier,
+                  title: String(S.title || "").trim(),
+                  release_at: releaseIso(),
+                  due_at: dueIso() };
+      if (others.length) {
+        payload.scopes = [{ scope_kind: headScope.kind, scope_ref: headScope.ref,
+                             subject: subjectOfScope(headScope) || null,
+                             question_ids: headIds }].concat(others);
+      } else {
+        payload.scope_kind = headScope.kind;
+        payload.scope_ref = headScope.ref;
+        payload.subject = subjectOfScope(headScope) || null;
+        payload.question_ids = headIds;
+      }
+    }
     /* ⊕ MRB-342.2 §3.4 — SENT WHEN THE FIELD WAS LOADED, OR WHEN THE
        TEACHER ACTUALLY TOUCHED IT — never on an untouched field that
        opened blank because nothing loaded it.

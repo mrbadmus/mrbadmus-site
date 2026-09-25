@@ -1318,6 +1318,12 @@
       colMarkedN: colMarkedN,
       markedIdx: markedIdx,
       closedIdx: closedIdx,
+      // ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — exposed so a
+      // reader outside this closure (Today) can ask "is there any in-week
+      // paper at all" without re-deriving the OR-of-open-or-due-in-window
+      // test a second time. Keyed by paper `idx`, exactly like `inWeekPaper`
+      // is used above.
+      inWeekPaper: inWeekPaper,
       studentAvg: studentAvg,
       byId: {}
     });
@@ -1750,8 +1756,22 @@
       return markedN[i] ? Math.round((correctN[i] / markedN[i]) * 100) : null;
     });
 
+    // ⊕ Stream M, 25 Sep 2026 (experience run round 3, N7) — ONLY A
+    // COMPLETE SUBMISSION'S `max_score` COUNTS. An in-progress row's
+    // `max_score` is the max of the questions ANSWERED SO FAR (2 of 10, not
+    // 10), and this loop used to take whichever submission's `max_score` it
+    // saw LAST regardless of that — so a class mean tile could read "10
+    // questions, 2 marks" the moment one pupil was mid-attempt. `handedIn`
+    // mirrors line 1706's own definition (`completed_at || submitted_at ||
+    // status === "complete"`) so this reads the same "finished" every other
+    // figure on this screen does. `maxScore` stays `null` when nobody has
+    // finished yet, and `qLine` below already renders that as a bare
+    // question count rather than guessing a marks figure.
     var maxScore = null;
-    subs.forEach(function (s) { if (s.max_score != null) { maxScore = s.max_score; } });
+    subs.forEach(function (s) {
+      var handedIn = !!(s.completed_at || s.submitted_at || s.status === "complete");
+      if (handedIn && s.max_score != null) { maxScore = s.max_score; }
+    });
 
     return {
       rows: rows,
@@ -2075,6 +2095,15 @@
   var profile = null;      // survives reset(): a re-read of rows is not a
                            // re-authentication, and the guard hands the
                            // profile over exactly once.
+  /* ⊕ Stream L, 25 Sep 2026 (experience run, item 4) — TODAY'S REMINDER
+     LOG, for the one class `base()` is building for. `{ [assignmentId]:
+     { [studentId]: true } }`. Filled in `base()`, read by the porter's
+     `remindLabel`/`remind` ruling through `remindedToday()` below, so a
+     reload shows "Reminded today · N" rather than inviting a second press
+     that the database would then quietly refuse. Cleared and refilled on
+     every fresh `base()` call — including after `reload()` — exactly like
+     `cache` itself; it is not meant to survive past the read it answers. */
+  var remindedTodayMap = {};
   /* ⊕ MRB-287, 24 Aug 2026 — the signed-in teacher's own auth id.
 
      Held for the same reason and on the same terms as `profile`: the guard
@@ -2682,6 +2711,39 @@
        page is in the year being viewed, so the list is computed once and
        shared by reference rather than rebuilt twelve times. */
     var yearWeeks = buildWeeks(viewing, now);
+
+    /* ⊕ Stream L, 25 Sep 2026 (experience run, item 4) — TODAY'S REMINDER
+       LOG, for the class actually being viewed (`?class=`), and ONLY that
+       one: the "Remind all N" card lives on the class screen, which shows
+       one class, so this is one extra round trip per class-detail load,
+       not one per class in the teacher's list. `classes.html` and every
+       other screen leave `?class=` unset, `focusedClassId` is null, and
+       this whole block is skipped — no round trip is paid where nothing
+       reads the answer.
+
+       ⚠️ UNKNOWN IS NOT "NOT REMINDED". A failed read leaves
+       `remindedTodayMap` empty, which is exactly the map's state before
+       this ruling existed — the card falls back to session-only
+       `s.remindDone`, the same honest degradation `describeClass` and
+       every other "the read failed" branch in this codebase uses. */
+    var focusedClassId = null;
+    try { focusedClassId = new URLSearchParams(window.location.search).get("class"); }
+    catch (e) { focusedClassId = null; }
+    remindedTodayMap = {};
+    if (focusedClassId) {
+      try {
+        var remLog = await TD.remindersForClass(focusedClassId);
+        var todayP = londonPartsOf(new Date(now));
+        var todayIso = todayP ? (todayP.y + "-" + pad2(todayP.m) + "-" + pad2(todayP.d)) : null;
+        var todaysRows = (todayIso && remLog && remLog.byDay) ? (remLog.byDay[todayIso] || []) : [];
+        todaysRows.forEach(function (r) {
+          if (!remindedTodayMap[r.assignment_id]) { remindedTodayMap[r.assignment_id] = {}; }
+          remindedTodayMap[r.assignment_id][r.student_id] = true;
+        });
+      } catch (e) {
+        console.warn("[teacher-live] remindersForClass unavailable", e);
+      }
+    }
 
     classRows.forEach(function (c) {
       var pack = packs[c.id];
@@ -3916,7 +3978,22 @@
     paperIndex: paperIndex,
     initialsOf: initialsOf,
     hueFor: hueFor,
-    SAY: SAY
+    SAY: SAY,
+    // ⊕ Stream L, 25 Sep 2026 (experience run, item 4) — the porter's
+    // `remindLabel`/`remind` ruling reads this rather than the raw map, so
+    // a missing entry always reads as "not reminded" (an empty object) and
+    // never as a crash on `undefined[studentId]`.
+    remindedToday: function (assignmentId) { return remindedTodayMap[assignmentId] || {}; },
+    // ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — exposed so
+    // `teacher/today.html` can build papers/matrix/roster from the ONE
+    // seam definition rather than keeping its own copy of "what counts as
+    // this week's homework". Pure functions of (pack, ..., now): no DOM,
+    // no cache, no side effect a second caller could trip over. See
+    // `MRB_TEACHER_LIVE_NO_AUTORUN` below for why loading this file here
+    // does not also start a second dashboard mount.
+    buildPapers: buildPapers,
+    buildMatrix: buildMatrix,
+    buildRoster: buildRoster
   };
 
   /* ⊕ MRB-326 JOB 4c, 6 Sep 2026 — `drawRemindControl` IS DELETED.
@@ -3969,8 +4046,25 @@
     fetch("https://mrbadmus-backend.onrender.com/api/health").catch(function () {});
   } catch (e) {}
 
-  run().catch(function (err) {
-    console.error("[teacher-live]", err);
-    say(SAY.generic);
-  });
+  /* ⊕ Stream L, 25 Sep 2026 (experience run, item 1) — LIBRARY MODE.
+     `teacher/today.html` is hand-written, mounts itself through its own
+     `MrBadmusTeacherGuard.requireTeacherRole` call, and has no
+     `__MRB_TPL__` for `run()`'s `boot()`/`__MRB_MOUNT__` to draw into —
+     its own comment says as much: "loading it here would start a second
+     dashboard inside Today." It still wants the PURE builders above
+     (`buildPapers`/`buildMatrix`/`buildRoster`), so it can call the one
+     seam definition of "this week's homework" instead of keeping its own
+     copy of the rule.
+
+     A page sets `window.MRB_TEACHER_LIVE_NO_AUTORUN = true` BEFORE this
+     script tag to get the exports without the mount — everything above
+     this line still runs (the module's functions all exist either way),
+     only the guard-and-draw below is skipped. No page does this today
+     except `today.html`. */
+  if (!window.MRB_TEACHER_LIVE_NO_AUTORUN) {
+    run().catch(function (err) {
+      console.error("[teacher-live]", err);
+      say(SAY.generic);
+    });
+  }
 })();
