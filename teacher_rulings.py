@@ -1663,6 +1663,30 @@ SET_ATTR = {
     #     rejection — the same sentence the composer's own textarea carries,
     #     and Design gave this one no cap at all.
     651: {"data-compose-field": "bulk-note", "maxlength": "500"},
+
+    # ── ⊕ experience run, 25 Sep 2026 (Mide's items 2/3) · KEYBOARD REACH ──
+    #
+    # Design draws five interactive rows as a plain `<div onClick=…>` and
+    # nothing else — no `tabindex`, no `role`, no keyboard path at all, so a
+    # keyboard-only teacher could not open a class from "My classes" and
+    # could not reach a pupil through "Keep an eye on", "Worth a shoutout",
+    # the roster, or a Find-a-student result. `shared/student-runtime.js`
+    # now treats `tabindex` as the opt-in signal to ALSO fire a node's `on`
+    # handler on Enter or Space — see the comment there — so setting it here
+    # is the whole fix for the first four; the fifth (665, the search
+    # result) is inside a widget with its own arrow-key/Enter handling
+    # (`teacher_rulings.LOGIC`'s `componentDidMount`) and gets `role="option"`
+    # instead, per the ARIA listbox pattern its container (663) declares.
+    #
+    # `role="link"`, not `"button"`: every one of these presses a real
+    # navigation (`MRB_GO`) and changes nothing in place, which is exactly
+    # the semantic a link carries and a button does not.
+    179: {"tabindex": "0", "role": "link"},
+    259: {"tabindex": "0", "role": "link"},
+    270: {"tabindex": "0", "role": "link"},
+    294: {"tabindex": "0", "role": "link"},
+    663: {"role": "listbox", "aria-label": "Search results"},
+    665: {"role": "option", "aria-selected": "false"},
 }
 
 
@@ -2303,6 +2327,32 @@ PORT_CSS = """
   --st-caption: #685E51;  /* was #7A6E5F — 4.75:1 on --st-seg-bg (was 3.71) */
   --st-faint:   #695E4E;  /* was #7B6E5C — 4.75:1 on --st-seg-bg (was 3.71) */
   --st-ghost:   #6E604B;  /* was #7D6D55 — 4.55:1 on --st-seg-bg (was 3.74) */
+}
+
+/* ── ⊕ experience run, 25 Sep 2026 (Mide's items 2/3) · REACHING A PUPIL
+   BY KEYBOARD ──────────────────────────────────────────────────────────
+
+   Five of Design's cards are a plain `<div>` with a click handler and
+   nothing else: the class card (179), "Keep an eye on" (259), "Worth a
+   shoutout" (270), a roster row (294) and a Find-a-student result (665).
+   `shared/student-runtime.js` now wires Enter/Space to any node that
+   carries BOTH `on` and `tabindex` — set on exactly these five below —
+   so this stylesheet only has to draw them. The 3px ring itself is
+   already `[data-mode="ks3"] :focus-visible` above ("one focus treatment,
+   on everything, no exceptions"); nothing here duplicates it.
+
+   `.mrb-active` is the ONE exception: it marks the arrow-key cursor inside
+   the Find-a-student list, which is a highlight WITHOUT real DOM focus
+   (focus stays on the search box, exactly as `shared/search.js`'s topic
+   search already does it) — so `:focus-visible` never sees it and needs
+   its own rule. */
+[data-dc-tpl="179"],
+[data-dc-tpl="259"],
+[data-dc-tpl="270"],
+[data-dc-tpl="294"] { outline-offset: -2px; }
+
+[data-dc-tpl="665"].mrb-active {
+  background: var(--st-note-bg);
 }
 """
 
@@ -6001,6 +6051,129 @@ del METHODS["rosterFor_noop"]
 # None of them is a bug in Design's file, where all five are true. Every one
 # of them is a wrong number on a real dashboard.
 LOGIC = (
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 4) · "N MISSED THIS
+    #    TERM" COUNTS THE WRONG PAPERS ═══════════════════════════════════
+    #
+    # Design's `reasonFor` reads `row.scores.slice(1)` — every column except
+    # the NEWEST, whatever its state — so a scheduled or still-open set that
+    # simply has not been answered yet counted as "missed", and the "Keep an
+    # eye on" caption moved every time a new set was released, before its
+    # due date and before anybody could possibly be late. Mide's 23 Sep
+    # ruling is explicit about which index list means "missing":
+    # `mx.closedIdx`, never `markedIdx` and never "everything but the
+    # newest" — a paper is only missing once its OWN deadline has passed.
+    #
+    # `mx`/`kMx` (`this.matrixFor(...)`, seamed by `METHODS['matrixFor']`
+    # onto the real `buildMatrix` output) already carries `closedIdx` for
+    # exactly this reader, so the fix is passing it in rather than deriving
+    # anything new here.
+    (
+        "  reasonFor(r, row) {\n"
+        "    const missed = row ? row.scores.slice(1).filter(v => v == "
+        "null).length : 0;",
+        "  reasonFor(r, row, closedIdx) {\n"
+        "    const missed = (row && closedIdx)\n"
+        "      ? closedIdx.filter((i) => row.scores[i] == null).length\n"
+        "      : 0;",
+        "the count itself: CLOSED papers with no cell, not every column "
+        "but the newest."
+    ),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 10) · "NOTHING IN THIS
+    #    WEEK" FOR A PUPIL WHO IS MID-ANSWER ═══════════════════════════════
+    #
+    # `reasonFor`'s last resort fires for every flagged pupil none of the
+    # earlier branches named — missing nothing, averaging 50%+, and simply
+    # `!row.inWeek` — and `inWeek` only ever means "has a COMPLETE cell on an
+    # in-week paper" (item 5 of Mide's 23 Sep ruling). A pupil two questions
+    # into an open paper is exactly that pupil: nothing complete yet, so
+    # `!inWeek`, so "Nothing in this week" on Today's chase list and the
+    # class glance's "Keep an eye on" card, describing someone who is
+    # actively working. `row.startedInWeek` (`buildMatrix`, `shared/
+    # teacher-live.js`) is the one new fact this needed.
+    (
+        "    if (r.avg != null && r.avg < 50) return 'Averaging ' + r.avg + "
+        "'%';\n"
+        "    return 'Nothing in this week';",
+        "    if (r.avg != null && r.avg < 50) return 'Averaging ' + r.avg + "
+        "'%';\n"
+        "    if (row && row.startedInWeek) return 'In progress';\n"
+        "    return 'Nothing in this week';",
+        "the fallback: a pupil mid-way through an in-week paper reads "
+        "\"In progress\", the word every other surface on this page already "
+        "uses, rather than the one line reserved for a pupil who has done "
+        "nothing at all."
+    ),
+    (
+        "this.reasonFor(r, mx.byId[r.id])",
+        "this.reasonFor(r, mx.byId[r.id], mx.closedIdx)",
+        "the Today screen's chase list, so `reasonFor` gets the closed-paper "
+        "index list its corrected body now needs."
+    ),
+    (
+        "this.reasonFor(r, kMx.byId[r.id])",
+        "this.reasonFor(r, kMx.byId[r.id], kMx.closedIdx)",
+        "the class glance's \"Keep an eye on\" list — same fix, the "
+        "class-scoped matrix."
+    ),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 5) · "UP 25 POINTS ON
+    #    THE LAST SET" IS A SCALE BUG, NOT JUST A WORDING ONE ═══════════
+    #
+    # Design's `imp.d` is `row.scores[1] - row.scores[2]` — RAW marks on
+    # whichever two columns happen to sit at index 1 and 2 — then the card
+    # renders `Math.round(imp.d * 12.5)`, her sample's 8-question assumption
+    # (100 / 8 = 12.5) turned into a percentage. On a real 10-question paper
+    # (Lydia's, in the audit) 75% → 80% is a raw-mark delta of exactly 0.5,
+    # which `* 12.5` turns into "25 points".
+    #
+    # ⚠️ AND INDEX 1/2 ARE THE WRONG COLUMNS ONCE A CLASS HAS A PAPER OPEN.
+    # Columns are newest-first; index 1 is only "the last set" when index 0
+    # (the newest) has no submission from this pupil yet — Design's sample
+    # never has that shape, a real class does every week. `row.pct[]` (the
+    # matrix's own per-cell percentage, added by the seam for exactly this)
+    # walked forward and stopped at the first two COMPLETE cells is "the
+    # pupil's last two completed sets" in every shape, not just the one
+    # Design drew.
+    #
+    # `imp.d` is now already a percentage-point difference, so the caller
+    # needs no scale factor at all — `MRB_DELTA_REASON` (build_teacher_port)
+    # phrases it, and phrases the two shapes Design's card never had to
+    # (down, level) for the one case Design's own gate (`imp.d > 0`) still
+    # lets through today: an improving pupil.
+    (
+        "    let imp = null;\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      if (row && row.scores[1] != null && row.scores[2] != null) {\n"
+        "        const d = row.scores[1] - row.scores[2];\n"
+        "        if (!imp || d > imp.d) imp = { r, d };\n"
+        "      }\n"
+        "    });",
+        "    let imp = null;\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      if (!row) return;\n"
+        "      const done = [];\n"
+        "      for (let i = 0; i < row.pct.length && done.length < 2; "
+        "i++) {\n"
+        "        if (row.pct[i] != null) done.push(row.pct[i]);\n"
+        "      }\n"
+        "      if (done.length < 2) return;\n"
+        "      const d = done[0] - done[1];\n"
+        "      if (!imp || d > imp.d) imp = { r, d };\n"
+        "    });",
+        "the `imp` derivation: the pupil's last two COMPLETE sets' real "
+        "percentages, not raw marks off two fixed columns."
+    ),
+    (
+        "reason: 'Up ' + Math.round(imp.d * 12.5) + ' points on the last "
+        "set',",
+        "reason: MRB_DELTA_REASON(imp.d),",
+        "the caption itself, now that `imp.d` is already a percentage-"
+        "point delta and needs no invented scale on top of it."
+    ),
+
     # ══ the state initialiser ═══════════════════════════════════════════
     #
     # `screen` is per-page and written by the build; `MRB_SCREEN` is the token
@@ -6712,6 +6885,96 @@ LOGIC = (
      "`glance`, which the locals declared here now scope. The corrections to "
      "`glance`'s own keys are separate entries at the end of this tuple, "
      "because a property anchor replaces one property."),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 10) · "NOT IN YET" WAS
+    #    THREE DIFFERENT PUPILS WEARING ONE WORD ══════════════════════════
+    #
+    # `wTally[r.id].in` counts COMPLETE cells only (`row.submitted[i]`, which
+    # `cellOf` sets true only past the completion guard), so "not one
+    # complete cell yet" was rendered as a single word — "Not in yet" — for
+    # three pupils Mide's vocabulary (this run's brief, item 10; the roster
+    # dot's own five-state list a few hundred lines down) says apart:
+    #
+    #   · a pupil MID-ANSWER on an open paper this week (Erin, 2 of 10) —
+    #     "In progress", the word every other surface on this page already
+    #     uses for exactly this state.
+    #   · a pupil with nothing at all once EVERY paper the week names has
+    #     CLOSED — "Missing", not an accusation levelled while the paper is
+    #     still open.
+    #   · a pupil with nothing at all while the week's paper(s) are still
+    #     open — "Not started", which is the one case "Not in yet" was ever
+    #     actually true for.
+    #
+    # `row.status[i]` already carries `'in_progress'` for a row that exists
+    # and is not complete — set before the completion guard in `buildMatrix`
+    # for this exact reason (WHICH SUBMISSION ROW THIS CELL IS, above it) —
+    # so no new read is needed, only a check nothing here was making.
+    (
+        "    const wTally = {};\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      let wIn = 0, wLateOne = null;\n"
+        "      wIdxs.forEach(i => {\n"
+        "        if (!(row && row.submitted[i])) return;\n"
+        "        wIn += 1;\n"
+        "        if (row.late[i] === true) wLateOne = true;\n"
+        "        else if (row.late[i] === false && wLateOne !== true) "
+        "wLateOne = false;\n"
+        "      });\n"
+        "      wTally[r.id] = { in: wIn, asked: wIdxs.length, late: "
+        "wLateOne };\n"
+        "    });",
+        "    const wTally = {};\n"
+        "    const wAllClosed = wPapers.length > 0 && "
+        "wPapers.every(p => p.closed);\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      let wIn = 0, wLateOne = null, wStarted = false;\n"
+        "      wIdxs.forEach(i => {\n"
+        "        if (row && row.status && row.status[i] === 'in_progress') "
+        "wStarted = true;\n"
+        "        if (!(row && row.submitted[i])) return;\n"
+        "        wIn += 1;\n"
+        "        if (row.late[i] === true) wLateOne = true;\n"
+        "        else if (row.late[i] === false && wLateOne !== true) "
+        "wLateOne = false;\n"
+        "      });\n"
+        "      wTally[r.id] = { in: wIn, asked: wIdxs.length, late: "
+        "wLateOne, started: wStarted, closed: wAllClosed };\n"
+        "    });",
+        "the tally itself: `started` (any of the week's papers has an "
+        "in-progress row for this pupil) and `closed` (every one of the "
+        "week's papers has closed) are the two facts the roster/Today word "
+        "below needs and did not have."
+    ),
+    (
+        "      week: !kPapers.length ? '—'\n"
+        "        : (!wTally[r.id].asked ? 'Nothing set'\n"
+        "          : (!wTally[r.id].in ? 'Not in yet'\n"
+        "            : (wTally[r.id].in < wTally[r.id].asked\n"
+        "              ? wTally[r.id].in + ' of ' + wTally[r.id].asked + "
+        "' in'\n"
+        "              : (wTally[r.id].late === true ? 'In · late'\n"
+        "                : (wTally[r.id].late === false ? 'In · on "
+        "time'\n"
+        "                  : 'In · timing unknown'))))),",
+        "      week: !kPapers.length ? '—'\n"
+        "        : (!wTally[r.id].asked ? 'Nothing set'\n"
+        "          : (!wTally[r.id].in\n"
+        "            ? (wTally[r.id].started ? 'In progress'\n"
+        "              : (wTally[r.id].closed ? 'Missing' : 'Not started'))\n"
+        "            : (wTally[r.id].in < wTally[r.id].asked\n"
+        "              ? wTally[r.id].in + ' of ' + wTally[r.id].asked + "
+        "' in'\n"
+        "              : (wTally[r.id].late === true ? 'In · late'\n"
+        "                : (wTally[r.id].late === false ? 'In · on "
+        "time'\n"
+        "                  : 'In · timing unknown'))))),",
+        "the roster row's own word: In progress / Missing / Not started in "
+        "place of the one word \"Not in yet\" used for all three. Read by "
+        "the class roster and, via the same `roster` builder, by Today's "
+        "chase list and the printed report."
+    ),
 
     # the two helpers those tiles now call, defined beside them
     #
@@ -8098,6 +8361,126 @@ componentDidUpdate() {
      "Design's only caller was a screen-change handler and there are no "
      "screen changes any more. `weekIdxFor` is re-derived over weeks; the "
      "other three are v2 verbatim."),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 3) · FIND A STUDENT,
+    #    BY KEYBOARD ═══════════════════════════════════════════════════
+    #
+    # Three defects, one seam: the box does not take focus when the palette
+    # opens, Esc does not close it, and the result rows (`role="option"` via
+    # `SET_ATTR[665]`, in a `role="listbox"` box via `SET_ATTR[663]`) answer
+    # neither the arrow keys nor Enter. `shared/search.js` (MRB-26, the topic
+    # search every other page on the site already carries) solves the same
+    # shape — an input, a list, an "active" row moved by the arrows and
+    # opened by Enter — so this repeats that pattern rather than inventing a
+    # second one, DOM-only: the highlighted row is a class
+    # (`SET_ATTR[665]`'s sibling rule in `PORT_CSS`) that a keystroke here
+    # moves directly, never through `setState`, because nothing about WHICH
+    # row is highlighted needs to survive a redraw the way the typed query
+    # does.
+    #
+    # ⚠️ MERGED INTO THE ENTRY ABOVE, NOT A SEPARATE PAIR OF METHODS. The
+    # first draft of this ruling anchored on `HOURS` and added its own
+    # `componentDidMount`/`componentDidUpdate` — WRONG, and wrong in the
+    # quiet way: `WEEK_BAR_RESTORED` (immediately above) already defines
+    # both, later in the same class body, and a class body with two methods
+    # of the same name keeps only the LAST one. The standalone pair built
+    # clean, gated green on every existing check, and did nothing at all —
+    # the week rail's own `componentDidMount` silently shadowed it. Caught
+    # only by hand-tracing the compiled output for this exact reason; see
+    # the report for the general lesson. Anchoring on the rail's own two
+    # method bodies, already in the source by the time this runs, is what a
+    # SECOND definition would have been — this is the first and only one.
+    #
+    # ⚠️ `componentDidMount` RUNS ONCE, at the FIRST draw — `student-runtime`
+    # calls it straight after `mount()`'s first `api.draw()` — so the two
+    # `document` listeners it adds live for the page's whole life and read
+    # `this.state.modal` fresh on every keystroke, rather than being
+    # attached and torn down each time the overlay opens and closes. That is
+    # deliberately simpler than open/close-scoped listeners: this page never
+    # unmounts, so there is nothing to leak.
+    #
+    # ⚠️ FOCUS-ON-OPEN NEEDS `componentDidUpdate`, NOT THE OPEN HANDLER
+    # ITSELF. `openSearch` (`s.modal = 'search'`) runs before the input
+    # exists — `draw()` has not built the new DOM yet — so focusing there
+    # would focus nothing. `componentDidUpdate` runs AFTER `draw()`, and
+    # `_searchWasOpen` is an instance field rather than state so setting it
+    # cannot itself schedule a second redraw — and it does not collide with
+    # the rail's own use of the same hook: two independent bodies, one
+    # function.
+    (
+        "  componentDidMount() { this.snapWeekRail(); }\n"
+        "  componentDidUpdate() {\n"
+        "    const el = this.rail();\n"
+        "    if (el && !el.scrollLeft && el.scrollWidth > el.clientWidth) "
+        "{\n"
+        "      this.snapWeekRail();\n"
+        "    }\n"
+        "  }",
+        "  componentDidMount() {\n"
+        "    this.snapWeekRail();\n"
+        "    const self = this;\n"
+        "    document.addEventListener('keydown', (e) => {\n"
+        "      if (e.key !== 'Escape' || self.state.modal !== 'search') "
+        "return;\n"
+        "      e.preventDefault();\n"
+        "      self.setState({ modal: null, search: '' });\n"
+        "      const btn = document.querySelector('[data-dc-tpl=\"19\"]');\n"
+        "      if (btn) { btn.focus(); }\n"
+        "    });\n"
+        "    document.addEventListener('keydown', (e) => {\n"
+        "      if (self.state.modal !== 'search') return;\n"
+        "      const box = document.querySelector("
+        "'[data-port-region=\"overlay-search\"]');\n"
+        "      if (!box) return;\n"
+        "      const rows = box.querySelectorAll('[data-dc-tpl=\"665\"]');\n"
+        "      const active = box.querySelector("
+        "'[data-dc-tpl=\"665\"].mrb-active');\n"
+        "      const idx = Array.prototype.indexOf.call(rows, active);\n"
+        "      const mark = (row) => {\n"
+        "        if (active) {\n"
+        "          active.classList.remove('mrb-active');\n"
+        "          active.setAttribute('aria-selected', 'false');\n"
+        "        }\n"
+        "        if (row) {\n"
+        "          row.classList.add('mrb-active');\n"
+        "          row.setAttribute('aria-selected', 'true');\n"
+        "        }\n"
+        "      };\n"
+        "      if (e.key === 'ArrowDown' && rows.length) {\n"
+        "        e.preventDefault();\n"
+        "        mark(rows[Math.min(idx + 1, rows.length - 1)]);\n"
+        "      } else if (e.key === 'ArrowUp' && rows.length) {\n"
+        "        e.preventDefault();\n"
+        "        mark(rows[Math.max(idx - 1, 0)]);\n"
+        "      } else if (e.key === 'Enter' && rows.length) {\n"
+        "        e.preventDefault();\n"
+        "        (active || rows[0]).click();\n"
+        "      }\n"
+        "    });\n"
+        "  }\n"
+        "  componentDidUpdate() {\n"
+        "    const el = this.rail();\n"
+        "    if (el && !el.scrollLeft && el.scrollWidth > el.clientWidth) "
+        "{\n"
+        "      this.snapWeekRail();\n"
+        "    }\n"
+        "    if (this.state.modal === 'search' && !this._searchWasOpen) {\n"
+        "      this._searchWasOpen = true;\n"
+        "      setTimeout(() => {\n"
+        "        const box = document.querySelector("
+        "'[data-port-region=\"overlay-search\"]');\n"
+        "        const input = box && box.querySelector('input');\n"
+        "        if (input) { input.focus(); }\n"
+        "      }, 0);\n"
+        "    } else if (this.state.modal !== 'search') {\n"
+        "      this._searchWasOpen = false;\n"
+        "    }\n"
+        "  }",
+        "the whole of the Find-a-student keyboard fix, folded into the "
+        "rail's own two lifecycle hooks rather than declared a second time: "
+        "focus-on-open, Esc-closes-and-returns-focus, and the result list "
+        "as a listbox the arrow keys and Enter both work on."
+    ),
 
     # ══ ⊕ MRB-328 J3, 6 Sep 2026 · "1 CLASSES · 4 STUDENTS" ════════════
     #
@@ -10102,6 +10485,50 @@ componentDidUpdate() {
      "work set; a null `qpct` entry is a third wrong answer that does not "
      "throw. See the block comment."),
 
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 8) · THE DASH IS
+    #    PERMANENT, AND IT DOES NOT HAVE TO BE ═══════════════════════════
+    #
+    # `gridFor` is a LOOKUP (`METHODS['gridFor']`), never a fetch — it reads
+    # `MRB_DATA('GRID')` and returns null for any key `teacher-live.js` did
+    # not prefetch. The class screen prefetches exactly one grid (the
+    # reteach card's own paper, MRB-326 JOB 4b), so every OTHER released
+    # row in the table above read "—" forever, correctly reporting "not
+    # fetched" as if it meant "nothing to report".
+    #
+    # ⚠️ THE FETCH ALREADY EXISTED AND WAS NEVER CALLED. `teacher-live.js`
+    # exports `grid(classId, paperIdx)` — "one paper's grid, fetched on
+    # demand and held" — for exactly this shape, and nothing in the estate
+    # called it. It caches into the SAME `GRID` object `window.__MRB_DATA__`
+    # already points at (`load()`'s own `GRID: c.GRID`), so once it resolves
+    # the very next `gridFor` lookup already sees it; the only missing piece
+    # is asking once and repainting once. `MRB_ENSURE_GRID` (build_teacher_
+    # port.py) is that: a page-lifetime `{}` remembers which keys are
+    # already in flight so a redraw (this fires on every one) never asks
+    # twice, and `forceUpdate()` on resolve is a repaint with no state
+    # change behind it — the same primitive `MRB_SET_WORK_DONE` already
+    # uses to repaint after a write.
+    (
+        "      if (wkMin != null) {\n"
+        "        const wkStem = (wkG.stems || [])[wkAt];\n"
+        "        weak = ((wkStem && wkStem.id) || ('Q' + (wkAt + 1))) + "
+        "' · ' + wkMin + '%';\n"
+        "        weakFg = wkMin < 50 ? 'var(--st-accent-text)' : "
+        "'var(--st-muted)';\n"
+        "      }",
+        "      if (wkMin != null) {\n"
+        "        const wkStem = (wkG.stems || [])[wkAt];\n"
+        "        weak = ((wkStem && wkStem.id) || ('Q' + (wkAt + 1))) + "
+        "' · ' + wkMin + '%';\n"
+        "        weakFg = wkMin < 50 ? 'var(--st-accent-text)' : "
+        "'var(--st-muted)';\n"
+        "      } else if (markedRow) {\n"
+        "        MRB_ENSURE_GRID(k.id, p.idx);\n"
+        "      }",
+        "the lazy fetch itself: a released row with no grid cached yet "
+        "asks for one, once, and the table fills in on its own a moment "
+        "later rather than staying blank until the next full reload."
+    ),
+
     # ── ⛔ AND THE SAME THREE THROWS AGAIN, IN `weakFor` ─────────────────
     #
     # v3-new, and worse than the one above because `renderVals` builds
@@ -11527,6 +11954,44 @@ componentDidUpdate() {
      "the score-spread chart's \"Students\" tile — \"With marked work\" "
      "→ \"With results\", same reason as every other tile in this "
      "pass."),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 11) · THE DIGEST AND
+    #    THE CLASS PAGE COUNTED "TO CHASE" TWO DIFFERENT WAYS ═══════════
+    #
+    # The class screen's own chase list, "Remind all N" and the card
+    # eyebrow all come from `chaseFor(k)` — `rosterFor(k).filter(r =>
+    # !r.inWeek)`, everyone who has not handed in this week's work. The
+    # digest counted something narrower: `r.flag`, which ALSO requires a
+    # missing marked paper or an average under 50%. A pupil who simply
+    # has not submitted yet — no other black mark against them — was on
+    # the class page's chase list and invisible to the digest's, so a
+    # class offering "Remind all 6" showed the digest "4 to chase" for
+    # the same six children. The digest's own caption already promises
+    # the wider count ("Students with nothing in" — not "…and behind"),
+    # so it is `chaseFor` that was right and `flag` that was answering a
+    # narrower question under the wider caption.
+    #
+    # ⚠️ `flagged`/`watch` (the "Keep an eye on" card, `r.flag`) ARE NOT
+    # TOUCHED. That card is deliberately the narrower, more concerning
+    # population — nothing in AND missing-marked-or-struggling — and
+    # stays exactly as it is; only "to chase" gets the one definition.
+    (
+        "    const kFlagged = flagged.length;",
+        "    const kFlagged = this.chaseFor(k).length;",
+        "the class report's own \"Needs a look\" tile — `chaseFor(k)`, "
+        "the same count and the same method the class screen's \"Remind "
+        "all N\" already uses, in place of the narrower `flag` filter."
+    ),
+    (
+        "      const fl = live ? this.rosterFor(c).filter(r => r.flag)"
+        ".length : 0;",
+        "      const fl = this.chaseFor(c).length;",
+        "the whole-school digest's per-class row (and, through `flagN`, "
+        "the whole-school tile that sums it) — `chaseFor` already returns "
+        "`[]` for a non-live class, so the `live ? … : 0` guard is now "
+        "redundant rather than dropped: the two conditions said the same "
+        "thing under two different names."
+    ),
 
 )
 

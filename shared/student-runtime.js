@@ -270,6 +270,25 @@
       var fn = lookup(node.on, scope, ctx.miss);
       if (typeof fn === "function") {
         el.addEventListener("click", fn);
+        /* ⊕ experience run, 25 Sep 2026 (Mide's items 2/3) — KEYBOARD
+           ACTIVATION, OPT-IN VIA `tabindex`. A handful of Design's clickable
+           `<div>`s (a class card, a roster row, a "keep an eye on"/"worth a
+           shoutout" name) carry `on` and nothing else — no way for a
+           keyboard to reach them at all. Checked across every compiled
+           delivery (assignment, class view, leaderboard, teacher): no node
+           sets `tabindex` today, so this is inert everywhere until a ruling
+           (`teacher_rulings.SET_ATTR`) puts one on a node deliberately — it
+           can never fire on a node nobody opted in. Enter AND Space, to
+           match what a real `<button>`/`<a>` already does; Space is
+           prevented so it does not also scroll the page underneath. */
+        if (el.hasAttribute("tabindex")) {
+          el.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+              e.preventDefault();
+              fn(e);
+            }
+          });
+        }
       } else if (ctx.miss) {
         ctx.miss.push("onClick:" + node.on);
       }

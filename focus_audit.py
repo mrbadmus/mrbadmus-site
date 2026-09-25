@@ -247,6 +247,142 @@ def press_escape(p):
     time.sleep(0.15)
 
 
+# ⊕ experience run, 25 Sep 2026 (Mide's item 3) — a named key press through
+# CDP, generalised out of `press_tab`/`press_escape` rather than adding a
+# third near-duplicate: `audit_pupil_reach` below needs ArrowDown, ArrowUp
+# and Enter, and a JS-dispatched `KeyboardEvent` cannot stand in for any of
+# them for the same reason it cannot for Tab (untrusted, runs no default
+# action) — Enter's default action is irrelevant here since the app's own
+# `keydown` listener reads `e.key` itself, but the other two still move a
+# CSS class this way and nowhere else.
+_KEYS = {
+    "ArrowDown": (40, 40), "ArrowUp": (38, 38), "Enter": (13, 13),
+}
+
+
+def press_key(p, key):
+    vk, nvk = _KEYS[key]
+    common = {"key": key, "code": key, "windowsVirtualKeyCode": vk,
+              "nativeVirtualKeyCode": nvk}
+    p.send("Input.dispatchKeyEvent", dict(common, type="rawKeyDown"))
+    p.send("Input.dispatchKeyEvent", dict(common, type="keyUp"))
+    time.sleep(0.1)
+
+
+def audit_pupil_reach(browser, port):
+    """Mide's item 3 (this experience run): "a keyboard-only teacher cannot
+    open Lydia's or Annabel's page at all." Two things the AT-REST sweep in
+    `audit_page` cannot see, because both only exist once the overlay is
+    open: the search box taking focus on open, and the result list
+    answering the arrow keys and Enter as a listbox. (The four `tabindex="0"`
+    cards/rows — the OTHER half of item 3 — ARE at-rest controls and are
+    already proven by the ordinary `teacher_classes`/`teacher_class_detail`
+    sweep above; this function is the part that sweep structurally cannot
+    reach.)
+
+    Two fresh pages, not one, because `Enter` on a result row is a REAL
+    `MRB_GO` navigation — the page under test is gone once it fires, so the
+    Escape half needs its own page opened after it, exactly as
+    `audit_chat_panel` gets a clean page per call rather than reusing one
+    mid-navigation.
+
+    Returns a dict of booleans/counts; `main()` turns it into pass/fail.
+    """
+    url = "http://127.0.0.1:%d/teacher_fixtures/class-detail-fixture.html" % port
+
+    p1 = browser.page(url)
+    reach = _pupil_reach_drive(p1)
+
+    p2 = browser.page(url)
+    esc = _pupil_escape_drive(p2)
+
+    reach.update(esc)
+    return reach
+
+
+def _pupil_reach_drive(p):
+    wait_for_mount(p, "mrb-teacher")
+
+    if not real_click(p, ".mrb-findbtn"):
+        return {"fail": "could not click the Find-a-student trigger"}
+    time.sleep(0.2)
+
+    # ⚠️ NOT `.offsetParent` — the overlay is `position:fixed` (it has to
+    # be, to sit over the whole page), and a fixed element's `offsetParent`
+    # is `null` by spec whether or not it is on screen. `getBoundingClientRect`
+    # is what `real_click`/`SCAN_JS` already use for "is this actually
+    # visible" for the same reason.
+    opened = p.eval(
+        "(function(){var el=document.querySelector("
+        "'[data-port-region=\"overlay-search\"]');"
+        "if(!el) return false; var r=el.getBoundingClientRect();"
+        "return r.width>0 && r.height>0;})()")
+    if not opened:
+        return {"fail": "clicking Find a student did not open the overlay"}
+
+    focused_input = p.eval(
+        "(function(){var box=document.querySelector("
+        "'[data-port-region=\"overlay-search\"]');"
+        "var input=box&&box.querySelector('input');"
+        "return !!(input && document.activeElement===input);})()")
+
+    rows_at_open = p.eval(
+        "document.querySelectorAll('[data-port-region=\"overlay-search\"] "
+        "[data-dc-tpl=\"665\"]').length")
+
+    press_key(p, "ArrowDown")
+    active_after_one = p.eval(
+        "(function(){var a=document.querySelector('[data-dc-tpl=\"665\"]"
+        ".mrb-active');return a?a.textContent.trim().slice(0,40):null;})()")
+
+    press_key(p, "ArrowDown")
+    active_after_two = p.eval(
+        "(function(){var a=document.querySelector('[data-dc-tpl=\"665\"]"
+        ".mrb-active');return a?a.textContent.trim().slice(0,40):null;})()")
+    moved = bool(active_after_one) and active_after_two != active_after_one
+
+    url_before = p.eval("window.location.href")
+    press_key(p, "Enter")
+    time.sleep(0.2)
+    url_after = p.eval("window.location.href")
+    # ⚠️ MATCHED URL-ENCODED TOO, AND ON PURPOSE. This fixture has no real
+    # signed-in session, so `MRB_GO`'s real `window.location.href` write
+    # takes the browser to the REAL `/teacher/student-detail.html`, which
+    # then redirects to `auth.html?return=...` for exactly the same reason
+    # any other page on this site would with nobody signed in. That
+    # redirect is proof the navigation fired with the right target, not a
+    # different outcome from it — the intended URL is encoded inside
+    # `return=`.
+    enter_navigated = (url_after != url_before) and (
+        "student=" in url_after or "student%3D" in url_after)
+
+    return {
+        "focused_input": focused_input,
+        "rows_at_open": rows_at_open,
+        "active_after_one": active_after_one,
+        "moved_on_second_arrow": moved,
+        "enter_navigated": enter_navigated,
+        "url_after_enter": url_after,
+    }
+
+
+def _pupil_escape_drive(p):
+    wait_for_mount(p, "mrb-teacher")
+    real_click(p, ".mrb-findbtn")
+    time.sleep(0.2)
+    press_escape(p)
+    time.sleep(0.15)
+    closed = not p.eval(
+        "(function(){var el=document.querySelector("
+        "'[data-port-region=\"overlay-search\"]');"
+        "if(!el) return false; var r=el.getBoundingClientRect();"
+        "return r.width>0 && r.height>0;})()")
+    returned = p.eval(
+        "!!(document.activeElement && "
+        "document.activeElement.classList.contains('mrb-findbtn'))")
+    return {"closed_on_escape": closed, "focus_returned": returned}
+
+
 def real_click(p, selector):
     """A REAL mouse click at the centre of `selector`'s first match, through
     CDP — the chat launcher's `open()` reads `document.activeElement` to
@@ -721,6 +857,40 @@ def main(argv):
             chat_bad = print_chat_result(spec["key"], chat)
             if problems or chat_bad:
                 failed += 1
+
+        # ⊕ experience run, 25 Sep 2026 (Mide's item 3) — the part of "reach
+        # a pupil by keyboard" the AT-REST sweep above cannot see (see
+        # `audit_pupil_reach`'s own docstring). Same filter convention as
+        # `todo`: runs unless a filter was given and none of it matches.
+        pupil_key = "teacher_pupil_reach"
+        if not filters or any(f in pupil_key for f in filters):
+            with cdp.Browser() as b:
+                pr = audit_pupil_reach(b, port)
+            bad = [k for k in ("focused_input", "moved_on_second_arrow",
+                                "enter_navigated", "closed_on_escape",
+                                "focus_returned")
+                   if not pr.get(k)]
+            if "fail" in pr:
+                failed += 1
+                print("  %-24s ❌ %s" % (pupil_key, pr["fail"]))
+            elif bad or not pr.get("rows_at_open"):
+                failed += 1
+                print("  %-24s ❌ focus-on-open %s · %d result row(s) at "
+                      "open · arrows moved %s · Enter navigated %s "
+                      "(-> %s) · Esc closed %s · focus returned %s"
+                      % (pupil_key, pr.get("focused_input"),
+                         pr.get("rows_at_open", 0),
+                         pr.get("moved_on_second_arrow"),
+                         pr.get("enter_navigated"),
+                         pr.get("url_after_enter"),
+                         pr.get("closed_on_escape"),
+                         pr.get("focus_returned")))
+            else:
+                print("  %-24s ✅  focus lands in the search box on open, "
+                      "%d result row(s), the arrow keys move the "
+                      "highlighted row, Enter opens the pupil, Esc closes "
+                      "and returns focus to \"Find a student\""
+                      % (pupil_key, pr["rows_at_open"]))
 
         if shots_dir:
             print("\n  shots -> %s" % shots_dir)

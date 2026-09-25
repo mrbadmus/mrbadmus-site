@@ -4200,6 +4200,38 @@ function MRB_NEWEST_MARKED(papers, mx){
     for(var j=0;j<released.length;j++){
       if((mx.colSub[released[j]]||0)>0)return released[j];}}
   return released.length?released[0]:-1;}
+/* ⊕ experience run, 25 Sep 2026 (Mide's item 8) — THE WEAKEST-QUESTION
+   COLUMN'S OWN FETCH, ASKED FOR ONCE PER PAGE LOAD.
+
+   `teacher-live.js` exports `grid(classId, paperIdx)` for exactly this: one
+   paper's grid, fetched on demand and cached into the SAME object
+   `window.__MRB_DATA__.GRID` already points at (`load()`'s `GRID: c.GRID`
+   is a reference, not a copy), so the very next synchronous `gridFor`
+   lookup already sees it once the promise settles. Nothing before this
+   ever called it — the class screen's table read every unprefetched row as
+   "—" forever, correctly reporting "not fetched" as if it meant "nothing to
+   report".
+
+   `MRB_GRID_PENDING` is page-lifetime and keyed exactly as `grid()` keys
+   its own cache (`classId + ':' + paperIdx`), so a request already in
+   flight — or already answered — is never asked twice: `renderVals` runs
+   on every redraw, and without this a row still missing its grid would
+   fire a fresh fetch on every keystroke elsewhere on the page. */
+var MRB_GRID_PENDING = {};
+function MRB_ENSURE_GRID(classId, paperIdx){
+  var L = window.MrBadmusTeacherLive;
+  if(!L || !L.grid || !classId){return;}
+  var key = classId + ':' + paperIdx;
+  if(MRB_GRID_PENDING[key]){return;}
+  MRB_GRID_PENDING[key] = true;
+  L.grid(classId, paperIdx).then(function(){
+    // The cache write already happened inside `grid()` itself; a repaint
+    // with no state change behind it is the whole job here, the same
+    // primitive `MRB_SET_WORK_DONE` uses to repaint after a write.
+    var C = window.__MRB_CMP__;
+    if(C && C.logic){C.logic.forceUpdate();}
+  }, function(){ /* the row keeps its dash; nothing else was waiting on this */ });}
+
 /* "N late of M marked". ⚠️ AND THE UNKNOWNS ARE SHOWN, NOT HIDDEN. `is_late`
    is NULL on every submission written before 22 Aug 2026 and on any with no
    deadline, so "unknown" is a real population and not a rounding error. Folded
@@ -4555,6 +4587,23 @@ function MRB_SEARCH_FOOT(matched, shown, pool, q){
   if(matched > 1){ head += ' · type to narrow'; }
   return head;}
 
+/* ⊕ experience run, 25 Sep 2026 (Mide's item 5) — "UP N POINTS ON THE LAST
+   SET", IN PERCENTAGE POINTS, NEVER RAW MARKS.
+
+   Design's card reported `Math.round(imp.d * 12.5)` — a raw-mark difference
+   scaled as if every paper on the site were 8 questions (100 / 8 = 12.5).
+   `imp.d` is now the difference between the pupil's last two COMPLETE
+   sets' own `pct[]` values (`teacher_rulings.LOGIC`'s fix to the `imp`
+   derivation), so this only ever has to phrase a percentage-point delta —
+   never invent a second scale on top of it. Three shapes, because a delta
+   is not always positive even though the one caller today only shows this
+   card on improvement: up, down, or unchanged. */
+function MRB_DELTA_REASON(d){
+  var n = Math.round(Math.abs(d));
+  if(d > 0){return 'Up ' + n + ' points on the last set';}
+  if(d < 0){return 'Down ' + n + ' points on the last set';}
+  return 'Level with the last set';}
+
 /* == THE SHOUTOUT DELETE ================================================
 
    ⊕ MRB-287, 24 Aug 2026. Mide's instruction: a teacher who can post a
@@ -4794,8 +4843,8 @@ function MRB_DRAFT_FEEDBACK(subId){
   }).then(function(r){
     if(!r.res.ok){
       throw MRB_API_ERR(r.res,r.d,'/api/teacher/feedback/draft');}
-    return {ok:true, draft:(r.d&&r.d.draft)||'', error:null};},
-    function(e){return {ok:false,draft:null,error:e};});}
+    return {ok:true, draft:(r.d&&r.d.draft)||'', error:null};
+  }).catch(function(e){return {ok:false,draft:null,error:e};});}
 
 /* Why a draft failed, in a sentence a teacher can act on. THE SERVER'S OWN
    SENTENCE FIRST — a 422 carries `parseDraft`'s own reason the model's
@@ -5030,8 +5079,8 @@ function MRB_DELETE_SET_WORK(assignmentId){
   }).then(function(r){
     if(!r.res.ok){
       throw MRB_API_ERR(r.res,r.d,'/api/teacher/set-work/:id');}
-    return {ok:true, error:null};},
-    function(e){return {ok:false, error:e};});}
+    return {ok:true, error:null};
+  }).catch(function(e){return {ok:false, error:e};});}
 
 /* Why a delete failed, in a sentence a teacher can act on. The companion to
    MRB_REMIND_WHY and MRB_SHOUTOUT_WHY, separate for the same reason: a
@@ -5116,8 +5165,8 @@ function MRB_SET_AUTO_ASSIGNMENTS(classId, on){
     if(!r.res.ok){
       throw MRB_API_ERR(r.res,r.d,'/api/class/auto-assignments');}
     var st=r.d&&r.d.auto_assignments;
-    return {ok:true, state:(st===true||st===false)?st:null, error:null};},
-    function(e){return {ok:false,state:null,error:e};});}
+    return {ok:true, state:(st===true||st===false)?st:null, error:null};
+  }).catch(function(e){return {ok:false,state:null,error:e};});}
 
 /* Why a set failed, in a sentence a teacher can act on. The companion to
    MRB_SHOUTOUT_WHY and MRB_REMIND_WHY, separate for the same reason: a

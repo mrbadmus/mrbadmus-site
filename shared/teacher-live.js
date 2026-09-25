@@ -475,24 +475,42 @@
     return pad2(mon.getDate()) + "/" + pad2(mon.getMonth() + 1) + "/" + String(mon.getFullYear()).slice(-2);
   }
 
-  /* Design's relative-time vocabulary, against real timestamps. Its own list
-     ran '9 min ago' … '9 days ago'; anything older than a fortnight is given
-     in weeks, because "23 days ago" is a number a teacher has to convert. */
+  /* ⊕ Mide's 25 Sep 2026 ruling (experience run, item 7) — CALENDAR DAYS,
+     NOT A ROLLING 24-HOUR WINDOW. `days = Math.floor(hours / 24)` treated
+     "yesterday" as "24 to 47 hours ago", so Wednesday's work read as
+     "yesterday" on Friday — 2 calendar days out, whenever the elapsed time
+     happened to land under 48 real hours. A teacher reads "yesterday"
+     against the CALENDAR, not against a stopwatch: it means the day before
+     today, whatever the clock says either timestamp was made at. Same
+     vocabulary Design's own list started from; "N weeks ago" is dropped in
+     favour of an actual date (`dayMonth`/`dayMonthYear`, already used
+     elsewhere in this file) once "N days ago" stops being a number worth
+     counting — the brief's own four buckets are today / yesterday / N days
+     ago / date, not a fifth "weeks" bucket nothing asked for. */
+  function calendarDayDiff(from, to) {
+    var a = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    var b = new Date(to.getFullYear(), to.getMonth(), to.getDate());
+    return Math.round((b.getTime() - a.getTime()) / 86400000);
+  }
+
   function relativeTime(iso, now) {
     var d = asDate(iso);
     if (!d) { return ""; }
-    var mins = Math.floor((now - d.getTime()) / 60000);
-    // A negative gap is clock skew between the device and the server, not a
-    // submission from the future. It reads as "just now", which it is.
-    if (mins < 1) { return "just now"; }
-    if (mins < 60) { return mins + " min ago"; }
-    var hours = Math.floor(mins / 60);
-    if (hours < 24) { return hours === 1 ? "1 hour ago" : hours + " hours ago"; }
-    var days = Math.floor(hours / 24);
-    if (days === 1) { return "yesterday"; }
-    if (days < 14) { return days + " days ago"; }
-    var weeks = Math.floor(days / 7);
-    return weeks + " weeks ago";
+    var nowD = new Date(now);
+    var dayDiff = calendarDayDiff(d, nowD);
+    // Still today's calendar date (or, on clock skew, not yet — either way
+    // the fine-grained minute/hour vocabulary is the honest one): a negative
+    // gap reads as "just now", exactly as it always has.
+    if (dayDiff <= 0) {
+      var mins = Math.floor((now - d.getTime()) / 60000);
+      if (mins < 1) { return "just now"; }
+      if (mins < 60) { return mins + " min ago"; }
+      var hours = Math.floor(mins / 60);
+      return hours === 1 ? "1 hour ago" : hours + " hours ago";
+    }
+    if (dayDiff === 1) { return "yesterday"; }
+    if (dayDiff < 7) { return dayDiff + " days ago"; }
+    return d.getFullYear() === nowD.getFullYear() ? dayMonth(d) : dayMonthYear(d);
   }
 
   function hoursSince(iso, now) {
@@ -1135,14 +1153,35 @@
       var scores = blank(), max = blank(), pct = blank(), stamp = blank(),
           stampShort = blank(), status = blank(), late = blank(),
           subId = blank(), submitted = [];
+      // ⊕ Mide's 25 Sep 2026 ruling (experience run, item 7) — ACTIVITY,
+      // SEPARATE FROM `stamp`. `stamp[]` means "this cell was completed at
+      // …" and stays that, because `stampShort` and every existing reader
+      // of `stamp` mean exactly that and nothing else. "Last active" is a
+      // wider question — was this pupil doing ANYTHING, finished or not —
+      // and an in-progress row (`status: 'in_progress'`, no `completed_at`)
+      // was invisible to it before: `cellOf` returns null for one, so it
+      // never reached `stamp` at all. `started_at` is set the moment the
+      // row is created, at the FIRST answer, so it is the one honest
+      // "were they here" timestamp a still-open paper has.
+      var activity = blank();
       var inWeek = false;
       // ⊕ Mide's 23 Sep 2026 ruling, item 5 — "on time this week" is a
       // pupil-level fact for "Select all on time this week" and any roster
       // tile that wants it: a cell with `late === false` on an in-week paper.
       var onTimeWeek = false;
+      // ⊕ Mide's 25 Sep 2026 ruling (experience run, item 10) — a pupil
+      // mid-way through an IN-WEEK paper is not "nothing in this week", the
+      // fallback Design's `reasonFor` reached for once `inWeek` came back
+      // false. `inWeek` only ever means "has a COMPLETE cell on an in-week
+      // paper" (item 5 of the 23 Sep ruling), so it says nothing about a
+      // started-but-unfinished one.
+      var startedInWeek = false;
       for (var p = 0; p < cols; p++) {
         var c = cellOf(mine[p], papers[p]);
         if (mine[p]) { status[p] = mine[p].status || null; }
+        if (mine[p] && status[p] === "in_progress" && inWeekPaper[p]) {
+          startedInWeek = true;
+        }
         /* ⊕ MRB-306 Phase 2b — WHICH SUBMISSION ROW THIS CELL IS.
            Written feedback binds to `assignment_submissions.id` and to
            nothing else, so the id has to survive the matrix or the student
@@ -1151,6 +1190,7 @@
            submission a teacher may want to write about, and `cellOf` returns
            null for one. */
         if (mine[p]) { subId[p] = mine[p].id || null; }
+        if (!c && mine[p]) { activity[p] = mine[p].started_at || null; }
         if (!c) { submitted.push(false); continue; }
         /* `submitted[p]` is the honest predicate for "did this student hand
            this in", and it is NOT `scores[p] != null`: a submission with no
@@ -1166,6 +1206,7 @@
         status[p] = c.status;
         if (c.stamp) {
           stamp[p] = c.stamp;
+          activity[p] = c.stamp;
           var when = asDate(c.stamp);
           if (when) { stampShort[p] = dayMonth(when); }
         }
@@ -1176,8 +1217,9 @@
       }
       return {
         sid: sid, scores: scores, max: max, pct: pct, late: late,
-        stamp: stamp, stampShort: stampShort, status: status,
-        subId: subId, inWeek: inWeek, onTimeWeek: onTimeWeek, submitted: submitted
+        stamp: stamp, stampShort: stampShort, status: status, activity: activity,
+        subId: subId, inWeek: inWeek, onTimeWeek: onTimeWeek,
+        startedInWeek: startedInWeek, submitted: submitted
       };
     });
 
@@ -1316,22 +1358,31 @@
       if (row && row.partial) {
         lastIso = row.lastIso || null;
       } else if (row) {
-        row.stamp.forEach(function (v) {
+        // ⊕ Mide's 25 Sep 2026 ruling (experience run, item 7) — `activity`,
+        // not `stamp`: a pupil mid-way through an open paper (`started_at`,
+        // no `completed_at` yet) was invisible to `stamp`, which only ever
+        // holds a COMPLETION time, so a pupil who had answered yesterday and
+        // not yet pressed Finish read as having done nothing at all. See the
+        // field's own comment in `buildMatrix`.
+        row.activity.forEach(function (v) {
           if (v && (lastIso == null || v > lastIso)) { lastIso = v; }
         });
       }
       /* "Never active" is not "active a long time ago", and the two have to
-         be told apart. The LABEL says so in words. The HOURS — which only the
-         engagement chart reads, to bucket today / this week / 2+ weeks — fall
-         back to how long the student has been ON THE ROLL without submitting
-         anything, because that is the real elapsed time the chart is for
-         ("worth chasing"). It is measured, not invented: two real timestamps.
-         The bucket LABELS still say "last seen", which is not quite what this
-         measures for a never-active student, and that wording is in the
-         handover. */
-      var hours = lastIso != null
-        ? hoursSince(lastIso, now)
-        : hoursSince(m.joined_at, now);
+         be told apart. The LABEL says so in words.
+
+         ⊕ Mide's 25 Sep 2026 ruling (experience run, item 6) — AND NEITHER
+         IS "RECENTLY ENROLLED". The HOURS below used to fall back to
+         `joined_at` for a pupil who has never done anything, on the
+         reasoning that it is a real elapsed time worth showing — but the
+         engagement chart reads these hours to sort pupils into Today / This
+         week / 2+ weeks, and a pupil imported this morning who has touched
+         nothing landed in "Today", the one bucket that is supposed to mean
+         "did something". A pupil with no activity at all belongs in the
+         same "2+ weeks" (never) bucket regardless of how long they have been
+         on the roll — `Infinity` puts them there without inventing a second
+         rule for "how old is old enough". */
+      var hours = lastIso != null ? hoursSince(lastIso, now) : Infinity;
       // ⊕ Mide's 23 Sep 2026 ruling, item 2 — a CLOSED paper with no complete
       // submission, not a released one: `mx.closedIdx`, never `mx.markedIdx`.
       // `markedIdx` now means "released" and a released-but-still-open paper
