@@ -11983,15 +11983,23 @@ componentDidUpdate() {
      "      digestSub: isClassReport\n"
      "        ? k.n + ' students · ' + kPapers.length + "
      "(kPapers.length === 1 ? ' assignment' : ' assignments')\n"
-     "        : this.CLASSES.length + ' classes · ' + totalStudents + "
-     "' students · ' + totalSubs + ' submissions'\n"
+     "        : this.CLASSES.length\n"
+     "          + (this.CLASSES.length === 1 ? ' class · ' : ' classes · ')\n"
+     "          + totalStudents\n"
+     "          + (totalStudents === 1 ? ' student · ' : ' students · ')\n"
+     "          + totalSubs\n"
+     "          + (totalSubs === 1 ? ' submission' : ' submissions')\n"
      "          + (MRB_DATA('termLabel') ? ' · ' + "
      "MRB_DATA('termLabel') : ''),",
      "the overview digest's own header line — the one place on this run's "
      "list this run ADDS the term, rather than removes it. `termLabel` "
      "('Autumn term · 2026–27') is the same string `classesEyebrow` already "
      "states once on the classes screen; read here from `MRB_DATA` rather "
-     "than recomputed, so the two cannot disagree about which term it is."),
+     "than recomputed, so the two cannot disagree about which term it is. "
+     "⊕ Stream M, 25 Sep 2026 (item 26) — all three counts pluralised. This "
+     "line had never had the classes-screen's own \"1 classes\" fix "
+     "(MRB-328 J3, above) applied to it, and a school admin on a one-class "
+     "colleague's digest read exactly that literal string."),
 
     # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 10) · AND THE WEEK ══
     # BAR'S OWN HEADING IS THE OTHER PLACE IT IS SAID
