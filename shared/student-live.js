@@ -3043,6 +3043,36 @@
       });
     }
 
+    /* ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 18. THE BENCH'S
+       OWN METER, FROM THE SAME NUMBER THE ROW BELOW IT DRAWS.
+
+       Design's bench meter counts a three-item self-tick checklist
+       (`toggleTask`/`doneCount`, "Open it" / "Answer the questions" /
+       "Hand it in") that a student ticks by hand and that nothing on this
+       page ever ticks FOR them — and since ruling P1/P3 above made "Open the
+       assignment" navigate rather than tick `t1`, it cannot even reach 1/3 by
+       using the page normally. So the hero read "0 / 3 DONE" for a student
+       who had answered 4 of the row's 10 questions, on the same screen as a
+       work row reading "4 OF 10 ANSWERED" a few inches down — two numbers
+       about the same piece of work that could never agree, because they were
+       never counting the same thing.
+
+       `work` already carries the real pair for this exact assignment id, set
+       immediately above from the SAME `qTotalFor`/`answeredFor` maps the row
+       uses — one read, shown in two places. `benchProgPct`/`benchProgText`
+       are read by a LOGIC ruling in student_rulings.py, which prefers them
+       over Design's checklist expression and falls back to it (unchanged)
+       whenever the current bench item's question count is not known. */
+    var benchProgPct = "", benchProgText = "";
+    if (currentId) {
+      work.forEach(function (row) {
+        if (row.id === currentId && row.qtotal) {
+          benchProgPct = Math.round((row.answered / row.qtotal) * 100) + "%";
+          benchProgText = row.answered + " OF " + row.qtotal + " ANSWERED";
+        }
+      });
+    }
+
     /* ⊕ MRB-348 round three — the mapping is a function for `foldInPractice`'s
        sake, exactly as the two reads above are. `cardsAll` holds the UNRANKED
        rows so a late arrival re-ranks the union from the same input the first
@@ -3877,6 +3907,14 @@
             : "Answer the questions" },
         { key: "t3", label: "Complete it" }
       ],
+      /* ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 18. See the
+         section header above the `benchProgPct`/`benchProgText` computation,
+         a couple of hundred lines up, for the full reasoning. Empty string
+         when the current bench item's question count is unknown, so the
+         LOGIC ruling's `MRB_DATA(...) || …` falls back to Design's own
+         checklist expression rather than drawing "undefined". */
+      benchProgPct: benchProgPct,
+      benchProgText: benchProgText,
 
       /* ── ⊕ RULED 22 Aug 2026 — P4, the rest of the done state ──────────
          Two actions: the primary revisits the lesson, and "Practise recall"

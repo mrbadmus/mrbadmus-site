@@ -603,6 +603,58 @@ LOGIC = {
             "        if (href) { window.location.href = href; }\n"
             "      },",
         ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream K) — TEST 18. THE OPEN BENCH'S
+        # METER COUNTED A DIFFERENT THING FROM THE ROW UNDER IT.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Design's meter counts a three-item self-tick checklist (`doneCount`,
+        # from `toggleTask` — "Open it" / "Answer the questions" / "Hand it
+        # in", ticked by the STUDENT clicking each one, not by anything real
+        # happening). Ruling P1/P3 above made "Open the assignment" NAVIGATE
+        # rather than tick `t1`, so on a live page this meter cannot move past
+        # 0/3 by using the page as intended — it read "0 / 3 DONE" for a
+        # student who had genuinely answered 4 of the row's 10 questions,
+        # a few inches above a work row reading "4 OF 10 ANSWERED". Two
+        # numbers about the identical piece of work, on the identical screen,
+        # that could never agree, because neither counted what the other did.
+        #
+        # `shared/student-live.js` now derives `benchProgPct`/`benchProgText`
+        # from the SAME `qtotal`/`answered` pair the row below already shows —
+        # one number, read once, drawn in two places. Preferring it here (and
+        # falling back to Design's own checklist expression when it is empty)
+        # is what makes the two numbers the same number rather than two
+        # implementations of "how far along is this" that could drift again.
+        #
+        # ⚠️ THE CHECKLIST ITSELF IS LEFT ON THE PAGE. Its three rows are
+        # still individually tickable — that is a separate, harmless piece of
+        # Design's UI (a personal to-do list) and the brief's finding is about
+        # the NUMBER, not the checkboxes. Untouched: `benchTasks`, `toggleTask`,
+        # `t.done`/`t.boxBg`/`t.boxBorder`/`t.color` and every other consumer
+        # of `state.bench`.
+        #
+        # ⚠️ FIXTURE UNCHANGED, NOTHING TO REGISTER — BUT NOT BECAUSE OF WHAT
+        # A FIRST DRAFT OF THIS COMMENT CLAIMED. `MRB_DATA` does NOT return
+        # `undefined` for an unknown key — it THROWS ("no data for …"), which
+        # a real drive of `class-fixture.html` caught immediately (a blank
+        # page, `.rd[data-mode="ks3"]` never mounting). `benchProgPct` and
+        # `benchProgText` both had to be added to the "class view" page's own
+        # `constants` dict in `build_student_port.py`, as the empty string —
+        # the same seam `cardsEmpty` already uses, and for the same reason its
+        # own comment there gives. WITH that constant in place,
+        # `MRB_DATA('benchProgPct')` resolves to `''` on the fixture, `'' ||
+        # (Math.round(...) + '%')` takes the right-hand side, and
+        # `class-fixture.html` renders byte-identically to before this ruling.
+        (
+            "      benchTasks: benchTasks, benchPct: Math.round((doneCount / 3) * 100) + '%', benchDoneText: doneCount + ' / 3 DONE',\n",
+            "      benchTasks: benchTasks,\n"
+            "      /* ⊕ RULED 25 Sep 2026 (stream K) — TEST 18. See the section\n"
+            "         header above this tuple. */\n"
+            "      benchPct: MRB_DATA('benchProgPct')"
+            " || (Math.round((doneCount / 3) * 100) + '%'),\n"
+            "      benchDoneText: MRB_DATA('benchProgText')"
+            " || (doneCount + ' / 3 DONE'),\n",
+        ),
         # ── ⊕ RULED 22 Aug 2026 — P2. "STREAK BROKEN" BEFORE A STREAK ─────
         # ── ⊕ RETIRED 23 Aug 2026 — PHASE 3. THE SURFACE P2 RULED IS GONE. ──
         #

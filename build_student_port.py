@@ -283,10 +283,21 @@ PAGES = [
          # `MRB_DATA` THROWS on a missing key and `renderVals` reads all four
          # unconditionally — a page that mounts is not evidence they were
          # optional.
+         # ⊕ RULED 25 Sep 2026 (experience run, stream K) — TEST 18.
+         # `benchProgPct`/`benchProgText` join the same way `cardsEmpty` did
+         # a section above: `MRB_DATA` THROWS on a missing key and the LOGIC
+         # ruling for `benchPct`/`benchDoneText` reads both of these
+         # unconditionally now, so a page that mounts at all is not evidence
+         # they are optional. EMPTY on the fixture, deliberately — Design's
+         # bench meter is her own three-item-checklist expression, and empty
+         # is what makes the ruling's `MRB_DATA(...) || (checklist expr)`
+         # fall through to exactly that, unchanged. The live page supplies
+         # the real numbers, from shared/student-live.js.
          constants=dict(benchPrimaryHref="''", benchDone="false",
                         benchOpen="true", benchDoneMarked="false",
                         benchDoneLessons="false", benchDoneFeedback="''",
-                        cardsEmpty="''"),
+                        cardsEmpty="''", benchProgPct="''",
+                        benchProgText="''"),
          # ── ⊕ RULED BY MIDE, 22 Sep 2026 · THE FIXTURE'S PROGRESS NUMBERS ─
          #
          # The completion bar reads `w.answered` and `w.qtotal` off each work
