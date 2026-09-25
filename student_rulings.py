@@ -2026,6 +2026,374 @@ LOGIC = {
             "        primary: (w.status === 'open' || w.status === 'missed'"
             " || w.retake)\n",
         ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P1. ONE DEFINITION OF
+        # "AVERAGE", MATCHING THE TEACHER SIDE.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # The Average tile averaged these five rows' PERCENTAGES — a
+        # 40/60/80/50/50 spread read as 56% — while Mide's ruled definition
+        # (the DEFINITIONS section of the experience brief, item 6) is total
+        # marks over total possible: 16 of 29, 55%. Same shape as the
+        # teacher side's `buildMatrix`, on purpose — one pupil's average
+        # should not read differently depending which screen shows it.
+        #
+        # ⚠️ `w.rawScore`/`w.rawMax` DO NOT EXIST ON DESIGN'S OWN SAMPLE
+        # ROWS, and that is handled rather than assumed. Design's fixture
+        # (`work` in her `.dc.html`) carries only a bare `score` percentage
+        # on each marked row — there was never a max to divide by, because
+        # her rows are hand-authored numbers, not a database read. Falling
+        # back to `max: 100` per row with no raw pair makes the sum-of-marks
+        # formula collapse ALGEBRAICALLY onto the old mean-of-percentages
+        # one: sum(score_i)/100n *100 = mean(score_i), always, not merely on
+        # this fixture. Checked against Design's three marked sample rows
+        # (82, 71, 95): old mean rounds to 83; new sum (248) over new max
+        # (300) rounds to 83 too. So `student_behaviour.py`'s fixture drive
+        # sees the identical number and there is nothing to register in
+        # RULED_DIVERGENCE. Real data (`shared/student-live.js`, the same
+        # commit) always supplies both fields on a marked row, so it never
+        # takes this fallback at all.
+        (
+            "    const avg = marked.length ? Math.round(marked.reduce((s, w)"
+            " => s + w.score, 0) / marked.length) : null;",
+            "    /* ⊕ RULED 25 Sep 2026 (stream H) — P1. Sum the marks, not\n"
+            "       the percentages; see the section header above this\n"
+            "       tuple for the fixture-fallback proof. */\n"
+            "    const avgMarks = marked.reduce((s, w) => {\n"
+            "      s.score += (w.rawMax != null ? w.rawScore : (w.score || 0));\n"
+            "      s.max += (w.rawMax != null ? w.rawMax : 100);\n"
+            "      return s;\n"
+            "    }, { score: 0, max: 0 });\n"
+            "    const avg = avgMarks.max > 0"
+            " ? Math.round((avgMarks.score / avgMarks.max) * 100) : null;",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P2. A LATE COMPLETION
+        # READ THE SAME AS AN ON-TIME ONE.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # The On time tile already drops when a marked row's submission was
+        # late (`row.late`, `shared/student-live.js`) — the fact is read,
+        # just never SHOWN on the row itself, so a pupil scanning the list
+        # has no way to tell which set cost them the point. `longWord`
+        # drives both the meta line ("W03 · MARKED") and the wide-screen
+        # status word; `shortWord` is its narrow twin. Same quiet register
+        # as the teacher side's "In · late" (`teacher_rulings.py`): the
+        # status word is unchanged, a lower-case " · late" rides beside it.
+        #
+        # ⚠️ NO MARKED ROW IN DESIGN'S FIXTURE IS LATE — checked against her
+        # `work` array rather than assumed: its one `late: true` row (`a2`,
+        # Gas exchange) is `status: 'pending'`, which takes the `'WITH ' +
+        # …` branch above and never reaches this one. So this ruling changes
+        # nothing Design's own file renders and there is nothing to register
+        # in RULED_DIVERGENCE.
+        (
+            "      const longWord = w.status === 'open' ? 'DUE THU 18:00'"
+            " : w.status === 'pending' ? 'WITH MR BADMUS' : w.status ==="
+            " 'missed' ? 'MISSED' : 'MARKED';\n"
+            "      const shortWord = w.status === 'open' ? 'DUE THU'"
+            " : w.status === 'pending' ? 'SENT' : w.status === 'missed' ?"
+            " 'MISSED' : 'MARKED';\n",
+            "      /* ⊕ RULED 25 Sep 2026 (stream H) — P2. See the section\n"
+            "         header above this tuple. */\n"
+            "      const longWord = w.status === 'open' ? 'DUE THU 18:00'"
+            " : w.status === 'pending' ? 'WITH MR BADMUS' : w.status ==="
+            " 'missed' ? 'MISSED' : ('MARKED' + (w.late ? ' \\u00B7 late' : ''));\n"
+            "      const shortWord = w.status === 'open' ? 'DUE THU'"
+            " : w.status === 'pending' ? 'SENT' : w.status === 'missed' ?"
+            " 'MISSED' : ('MARKED' + (w.late ? ' \\u00B7 late' : ''));\n",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P6. THE ROW'S BAR SHOWED
+        # QUESTIONS ANSWERED, NOT THE SCORE.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # F4 (22 Sep 2026) gave every row a completion bar — answered against
+        # the track — which is the right reading for a row still being
+        # worked on and the wrong one for a MARKED row: a 40% set is fully
+        # answered the moment it is handed in, so the bar always finished
+        # full and green regardless of the mark. `isMarked` is already in
+        # scope two lines above; `w.score` is the row's own percentage
+        # (`shared/student-live.js`), computed once and read here rather than
+        # recomputed. `barText`/`barTitle` are UNTOUCHED — the expanded
+        # panel's "N of M answered" breakdown stays true on every row, marked
+        # or not, and the brief asks only about the bar itself.
+        #
+        # ⚠️ THE 50% LINE IS A DECISION, RECORDED HERE FOR THE SAME REASON
+        # EVERY OTHER ONE IN THIS FILE IS: Mide's brief asks for "colour
+        # follows the score" and names no threshold. Pass/fail at half marks
+        # is the plainest reading, needs no new token (`--pg-ok` / `--err`
+        # already exist and already do this job elsewhere on the row —
+        # `wordColor`, two lines below), and is a single comparison a
+        # screenshot can prove.
+        #
+        # ⚠️ NO CHANGE ON DESIGN'S FIXTURE'S `innerText`, so nothing to
+        # register. `student_behaviour.py` reads `innerText`
+        # (`shared/student-runtime.js`'s bar is three nested spans and no
+        # text node, by design — see the F4 section header) and neither
+        # `barPct` nor `barFill` ever reaches one; they paint a `style`
+        # attribute a screen reader does not narrate. `student_parity.py`
+        # has no path to this page at all (see CLAUDE.md).
+        (
+            "        barPct: qTotal > 0\n"
+            "          ? Math.round((qDone / qTotal) * 100) + '%' : '0%',\n"
+            "        barFill: qDone >= qTotal\n"
+            "          ? 'var(--pg-ok)' : 'var(--st-accent)',\n",
+            "        /* ⊕ RULED 25 Sep 2026 (stream H) — P6. See the section\n"
+            "           header above this tuple. */\n"
+            "        barPct: isMarked\n"
+            "          ? w.score + '%'\n"
+            "          : (qTotal > 0"
+            " ? Math.round((qDone / qTotal) * 100) + '%' : '0%'),\n"
+            "        barFill: isMarked\n"
+            "          ? (w.score >= 50 ? 'var(--pg-ok)' : 'var(--err)')\n"
+            "          : 'var(--st-accent)',\n",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P9. "COMPLETE HOMEWORK"
+        # SURVIVED THE FIRST SAVED ANSWER.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # `qDone` (F4, two lines above) already counts answers saved so far
+        # on every row, open or missed alike — the same number the row's own
+        # bar and breakdown read. A pupil who has started but not finished
+        # sees "Continue" instead of a label that reads as though nothing
+        # has happened yet.
+        #
+        # ⚠️ DESIGN'S ONE 'open' FIXTURE ROW HAS `qDone === 0` (no `items`,
+        # no `answered`, no `qtotal`), so this renders "Complete homework"
+        # on her file exactly as before — nothing to register.
+        (
+            "        primaryLabel: w.retake ? 'Retake it' : isMarked ?"
+            " 'Open the lesson' : w.status === 'pending' ?"
+            " 'See what you sent' : 'Complete homework',\n",
+            "        /* ⊕ RULED 25 Sep 2026 (stream H) — P9. See the section\n"
+            "           header above this tuple. */\n"
+            "        primaryLabel: w.retake ? 'Retake it' : isMarked ?"
+            " 'Open the lesson' : w.status === 'pending' ?"
+            " 'See what you sent' : (qDone > 0 ? 'Continue'"
+            " : 'Complete homework'),\n",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P11. THE WEEK BUTTONS
+        # HAD NO NAME BEYOND THEIR OWN DIGITS.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Each of the twelve week buttons' accessible name came from its own
+        # `innerText` — "01", "02" … — which a screen reader reads as a bare
+        # number with no unit. `w.weekLabel` rides beside the existing `num`
+        # field; `SET_ATTR` below binds it onto the button as a dynamic
+        # `aria-label` (the template's generic attribute resolver runs every
+        # attribute value through the same `{{ }}`-style resolution `style`
+        # already uses, so a per-iteration `{"parts": […]}` value works here
+        # exactly as it does there).
+        (
+            "        num: pad(n), onClick: () => this.pickWeek(n),",
+            "        num: pad(n), onClick: () => this.pickWeek(n),\n"
+            "        /* ⊕ RULED 25 Sep 2026 (stream H) — P11. See SET_ATTR\n"
+            "           128 for the binding. */\n"
+            "        weekLabel: 'Week ' + n,",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P5. THE FLASHCARDS
+        # OVERLAY WAS NOT A DIALOG (open/close half; see SET_ATTR for the
+        # markup half and the `componentDidMount`/`_cardsKeydown` tuples
+        # below for the Tab-trap/Escape half).
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # `openCards` and `closeAll` are the whole open/close boundary for
+        # this surface, so moving focus IN and giving it back on the way OUT
+        # both live here: `setState`'s own callback (`shared/student-
+        # runtime.js`'s `schedule`) fires only after the rebuild has already
+        # painted the new state, which is the one moment a `.focus()` call
+        # can reach something real.
+        #
+        # ⛔ FIRST DRAFT CAPTURED `document.activeElement` in `openCards` and
+        # tried to hand that OBJECT back in `closeAll`, and a real-CDP Tab
+        # drive caught it doing nothing: `draw()` rebuilds the whole tree
+        # from scratch on `cards: false` exactly as it does on `cards: true`,
+        # so the button `document.activeElement` pointed to at open time is
+        # a DETACHED node by the time `closeAll` runs — `.focus()` on a node
+        # no longer in the document is specified to do nothing, and the
+        # comment claiming this "gives focus back to the opener" was giving
+        # it to nothing, silently, with the whole build green.
+        #
+        # There is exactly one control that opens flashcards — `data-bench-
+        # surface="cards"` names its `<section>` (SET_ATTR, above the
+        # `weeks.push` tuple) — so the fix does not need to remember WHICH
+        # element was pressed, only where the one opener always is, and asks
+        # the LIVE tree for it fresh, the same discipline `_cardsKeydown`
+        # already uses for the trap.
+        #
+        # ⚠️ `closeAll` CLOSES BOTH SURFACES (its own comment, above), so the
+        # opener is only re-focused when CARDS was the one that was open —
+        # closing the account sheet must not steal focus toward the
+        # flashcards trigger a student is not looking at.
+        (
+            "  openCards = (e) => {\n"
+            "    if (e && e.preventDefault) { e.preventDefault(); }\n"
+            "    if (!this.benchDeck().length) { return; }\n"
+            "    this.setState({ cards: true, account: false, flipped: false,"
+            " recall: false });\n"
+            "  };\n",
+            "  openCards = (e) => {\n"
+            "    if (e && e.preventDefault) { e.preventDefault(); }\n"
+            "    if (!this.benchDeck().length) { return; }\n"
+            "    /* ⊕ RULED 25 Sep 2026 (stream H) — P5. See the section\n"
+            "       header above this tuple. */\n"
+            "    this.setState({ cards: true, account: false, flipped: false,"
+            " recall: false }, () => {\n"
+            "      var d = document.querySelector('[data-mrb-dialog=\"flashcards\"]');\n"
+            "      var f = d && d.querySelector('[aria-label=\"Close flashcards\"]');\n"
+            "      if (f && f.focus) { f.focus(); }\n"
+            "    });\n"
+            "  };\n",
+        ),
+        (
+            "  closeAll = () => this.setState({ account: false, cards: false });\n",
+            "  /* ⊕ RULED 25 Sep 2026 (stream H) — P5. See the section header\n"
+            "     above the `openCards` tuple. */\n"
+            "  closeAll = () => {\n"
+            "    var wasCards = this.state.cards;\n"
+            "    this.setState({ account: false, cards: false }, () => {\n"
+            "      if (!wasCards) { return; }\n"
+            "      var opener = document.querySelector("
+            "'[data-bench-surface=\"cards\"] button');\n"
+            "      if (opener && opener.focus) {\n"
+            "        try { opener.focus({ preventScroll: true }); } catch (e) {}\n"
+            "      }\n"
+            "    });\n"
+            "  };\n",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P5, PART TWO. THE TRAP
+        # MUST LIVE IN THE COMPILED CLASS, NOT IN shared/student-live.js.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # ⛔ FIRST DRAFT PUT THIS IN shared/student-live.js, matching
+        # shared/mrbadmus.v2.js's chat trap exactly, and it was WRONG —
+        # caught by driving `student/class-fixture.html` with real CDP Tab
+        # presses rather than trusting the pattern by resemblance.
+        # `student-live.js` is never loaded on either the fixture OR any
+        # page whose data has not come from Supabase; `class-fixture.html`
+        # loads `student-runtime.js`, the compiled logic and `student-
+        # fixture-class.js` and NOTHING else (checked: three `<script src>`
+        # tags, none of them `student-live.js`). A trap living there would
+        # have shipped on the real page and been invisible to every gate
+        # that could have caught it breaking — the exact failure mode this
+        # whole file exists to prevent.
+        #
+        # The compiled class ships to BOTH files identically (`apply_
+        # rulings` runs once per page, and `class-fixture.html` IS that
+        # output with Design's data substituted at mount — see student_
+        # behaviour.py's PAIRS comment), so a LOGIC ruling on
+        # `componentDidMount`/`componentWillUnmount` is the one thing that
+        # is genuinely on both.
+        #
+        # ⚠️ PROVEN WRONG BY THE SAME METHOD THAT PROVES IT RIGHT NOW: a
+        # `document.dispatchEvent(new KeyboardEvent(...))` is UNTRUSTED and
+        # moves no focus at all, so a naive drive would read "focus never
+        # left the dialog" whether or not a trap existed. `Input.
+        # dispatchKeyEvent` over CDP (`focus_audit.press_tab`) is a REAL key
+        # press and is what actually found the first draft's placement bug:
+        # four real Tabs cycled through the dialog's four controls and the
+        # fifth landed on `<body>`, escaping, because the listener that
+        # would have caught it was never on the page being tested.
+        (
+            "componentDidMount() {\n"
+            "    const el = this.rootRef.current;\n"
+            "    if (!el) return;\n"
+            "    this.measure = () => {\n"
+            "      const w = el.getBoundingClientRect().width;\n"
+            "      if (w && Math.abs(w - this.state.w) > 1) this.setState({ w: w });\n"
+            "    };\n"
+            "    window.addEventListener('resize', this.measure);\n"
+            "    window.addEventListener('orientationchange', this.measure);\n"
+            "    if (window.visualViewport) window.visualViewport.addEventListener"
+            "('resize', this.measure);\n"
+            "    /* settle poll: catches font load, scrollbar arrival and any host"
+            " reframe\n"
+            "       that a resize event does not announce */\n"
+            "    let ticks = 0;\n"
+            "    this.poll = setInterval(() => { this.measure(); if (++ticks > 24)"
+            " clearInterval(this.poll); }, 250);\n"
+            "    this.measure();\n"
+            "    requestAnimationFrame(this.measure);\n"
+            "  }\n"
+            "  componentWillUnmount() {\n"
+            "    window.removeEventListener('resize', this.measure);\n"
+            "    window.removeEventListener('orientationchange', this.measure);\n"
+            "    if (window.visualViewport) window.visualViewport."
+            "removeEventListener('resize', this.measure);\n"
+            "    clearInterval(this.poll);\n"
+            "  }",
+            "componentDidMount() {\n"
+            "    const el = this.rootRef.current;\n"
+            "    if (!el) return;\n"
+            "    this.measure = () => {\n"
+            "      const w = el.getBoundingClientRect().width;\n"
+            "      if (w && Math.abs(w - this.state.w) > 1) this.setState({ w: w });\n"
+            "    };\n"
+            "    window.addEventListener('resize', this.measure);\n"
+            "    window.addEventListener('orientationchange', this.measure);\n"
+            "    if (window.visualViewport) window.visualViewport.addEventListener"
+            "('resize', this.measure);\n"
+            "    /* settle poll: catches font load, scrollbar arrival and any host"
+            " reframe\n"
+            "       that a resize event does not announce */\n"
+            "    let ticks = 0;\n"
+            "    this.poll = setInterval(() => { this.measure(); if (++ticks > 24)"
+            " clearInterval(this.poll); }, 250);\n"
+            "    this.measure();\n"
+            "    requestAnimationFrame(this.measure);\n"
+            "    /* ⊕ RULED 25 Sep 2026 (stream H) — P5. See _cardsKeydown. */\n"
+            "    document.addEventListener('keydown', this._cardsKeydown);\n"
+            "  }\n"
+            "  componentWillUnmount() {\n"
+            "    window.removeEventListener('resize', this.measure);\n"
+            "    window.removeEventListener('orientationchange', this.measure);\n"
+            "    if (window.visualViewport) window.visualViewport."
+            "removeEventListener('resize', this.measure);\n"
+            "    clearInterval(this.poll);\n"
+            "    document.removeEventListener('keydown', this._cardsKeydown);\n"
+            "  }\n"
+            "\n"
+            "  /* ⊕ RULED 25 Sep 2026 (stream H) — P5. Tab-trap and Escape for\n"
+            "     the flashcards dialog, the one surface on this page that is\n"
+            "     modal. Re-queries the dialog and its focusable descendants on\n"
+            "     EVERY keypress rather than caching them at open time, for the\n"
+            "     reason `SET_ATTR`'s comment on node 10320 gives twice over:\n"
+            "     `draw()` rebuilds the whole tree from scratch on every\n"
+            "     `setState` (flipping a card, revealing it, moving to the next\n"
+            "     one all call it), so a cached NodeList or element reference is\n"
+            "     stale the instant any of those happen. Costs nothing while the\n"
+            "     dialog is closed: the very first line returns. Escape routes\n"
+            "     through a real `.click()` on the close button rather than\n"
+            "     calling `closeAll` directly, so the one exit this listener\n"
+            "     knows about is the SAME exit a mouse uses, and `closeAll`'s own\n"
+            "     opener-restore (two tuples above) fires exactly once either\n"
+            "     way. */\n"
+            "  _cardsKeydown = (e) => {\n"
+            "    const dialog = document.querySelector('[data-mrb-dialog=\"flashcards\"]');\n"
+            "    if (!dialog) { return; }\n"
+            "    if (e.key === 'Escape') {\n"
+            "      const closeBtn = dialog.querySelector('[aria-label=\"Close flashcards\"]');\n"
+            "      if (closeBtn) { closeBtn.click(); }\n"
+            "      return;\n"
+            "    }\n"
+            "    if (e.key !== 'Tab') { return; }\n"
+            "    const items = Array.prototype.slice.call(\n"
+            "      dialog.querySelectorAll('button,[href],input,select,textarea,[tabindex]')\n"
+            "    ).filter((n) => !n.disabled && n.getAttribute('tabindex') !== '-1' && n.offsetParent);\n"
+            "    if (!items.length) { return; }\n"
+            "    const first = items[0], last = items[items.length - 1], here = document.activeElement;\n"
+            "    if (e.shiftKey && (here === first || !dialog.contains(here))) {\n"
+            "      e.preventDefault(); last.focus();\n"
+            "    } else if (!e.shiftKey && (here === last || !dialog.contains(here))) {\n"
+            "      e.preventDefault(); first.focus();\n"
+            "    }\n"
+            "  };",
+        ),
     ],
     'assignment': [
         (
@@ -2234,7 +2602,32 @@ LOGIC = {
             "      qEyebrow: 'Question ' + pad(idx + 1) + ' of ' + pad(total),",
             "      qEyebrow: 'Question ' + pad(idx + 1) + ' of ' + pad(total),\n"
             "      /* ⊕ MRB-342.2 — see the section header above this tuple. */\n"
-            "      assignmentNoteVisible: idx === 0 && !!MRB_DATA('assignmentNoteHas'),",
+            "      assignmentNoteVisible: idx === 0 && !!MRB_DATA('assignmentNoteHas'),\n"
+            "      /* ⊕ Experience run, 25 Sep 2026 (stream H) — TEST audit\n"
+            "         item (A), BLOCKING. MRB-342.2 wired `assignmentNoteVisible`\n"
+            "         but never returned the BODY the inserted `<if>` binds to\n"
+            "         (INSERT_AT, `{\"e\": \"assignmentNoteBody\"}`) — a template\n"
+            "         binding resolves against `renderVals()`'s own RETURNED\n"
+            "         object (`shared/student-runtime.js`'s `scope = Object.\n"
+            "         create(vals)`), never against `window.__MRB_DATA__`\n"
+            "         directly, so a key merely being IN `MRB_DATA` was never\n"
+            "         enough. The box opened, empty, on every real assignment\n"
+            "         that carried a teacher's note — `assignmentNoteHas` alone\n"
+            "         cannot show that, because it renders identically whether\n"
+            "         the body did or did not make it into scope. `shared/\n"
+            "         student-live.js`'s `buildAssignment` already returns both\n"
+            "         keys from `a.teacher_note` (unchanged, checked, not the\n"
+            "         bug); the fixture's `constants` already carry\n"
+            "         `assignmentNoteBody=\"''\"`, so this is safe to read on\n"
+            "         every mount, visible or not. */\n"
+            "      assignmentNoteBody: MRB_DATA('assignmentNoteBody'),\n"
+            "      /* ⊕ Experience run, 25 Sep 2026 (stream H) — P3. Same\n"
+            "         reasoning as `assignmentNoteVisible` just above: `idx`\n"
+            "         only exists in this per-question view, so the\n"
+            "         Q1-only gate has to be computed here rather than\n"
+            "         carried in from student-live.js. See INSERT_AT for\n"
+            "         where this is read. */\n"
+            "      pastDeadlineWarningVisible: idx === 0 && !!MRB_DATA('pastDeadlineNow'),",
         ),
         # ══════════════════════════════════════════════════════════════════
         # ⊕ MRB-352, 23 Sep 2026 — `hasFig` GATES ON A DRAWABLE FIGURE, NOT
@@ -2456,6 +2849,70 @@ LOGIC = {
             "      feedbackBody: MRB_DATA('feedbackBody'),\n"
             "      feedbackBy: MRB_DATA('feedbackBy'),\n"
             "      feedbackWhen: MRB_DATA('feedbackWhen'),",
+        ),
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — TEST audit item (B),
+        # WRONG NUMBER. TWO SITTINGS, ONE CLOCK, AND ONLY THE SECOND EVER
+        # COUNTED.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Seen: answer two questions, leave, come back, finish — "TIME TAKEN
+        # 00:39" where the true figure is the ~1:49 of the first sitting plus
+        # the ~0:39 of the second.
+        #
+        # ⚑ THE BACKEND IS NOT THE BUG. `total_time_seconds` is a column
+        # written exactly ONCE, by `/api/assignment/complete`
+        # (`shared/student-live.js`'s `complete()`), and it is meant to be:
+        # a submission completes once. There is no server-side "time so far"
+        # for an IN-PROGRESS submission to have lost, because nothing ever
+        # asked it to keep one.
+        #
+        # ⚑ NOR IS THE TICK. `this.state.elapsed` increments once a second
+        # (untouched, Design's own timer) and is handed to `complete()`
+        # whole. The loss is entirely in what the counter STARTS FROM on a
+        # second sitting.
+        #
+        # ⚠️ THE WRITE SIDE ALREADY EXISTED, AND HAD FOR MONTHS. `saveLive()`
+        # (Design's own, unmodified — three methods below) persists
+        # `elapsed` to `localStorage[this.KEY]` on every 10-second tick and
+        # every answer, gated on `this.state.live` — which `resume()`
+        # (`shared/student-live.js`) sets true on every real load, not only
+        # the fixture's. So the first sitting's ~1:49 WAS on the device the
+        # whole time; W2's ruling (22 Aug 2026, immediately above in this
+        # file) simply never read it back, because "the server is the
+        # truth" is the right rule for ANSWERS (a phone and a laptop must
+        # agree) and was applied to elapsed time too, which has no server
+        # truth to defer to until the submission is already finished.
+        #
+        # ⚠️ `Math.max`, NOT AN OVERWRITE, and NOT ADDITION either — the
+        # tick that already ran once for this sitting must not be double
+        # counted, and a device that has never opened this assignment before
+        # has nothing stored (0), which must lose to whatever the server
+        # already knows. Once `fromServer.view === 'done'` the server's own
+        # recorded total is the one true number and this stops reading
+        # local storage at all — there is no third sitting a finished paper
+        # could still be losing.
+        (
+            "    const fromServer = _sinkCall('resume', null);\n"
+            "    if (fromServer) { return Object.assign(empty, fromServer); }\n"
+            "    try {",
+            "    const fromServer = _sinkCall('resume', null);\n"
+            "    if (fromServer) {\n"
+            "      /* ⊕ RULED 25 Sep 2026 (stream H) — TEST audit item (B).\n"
+            "         See the section header above this tuple. */\n"
+            "      var priorElapsed = 0;\n"
+            "      try {\n"
+            "        var raw = window.localStorage.getItem(this.KEY);\n"
+            "        var d = raw ? (JSON.parse(raw) || {}) : {};\n"
+            "        priorElapsed = Number(d.elapsed) || 0;\n"
+            "      } catch (e) { priorElapsed = 0; }\n"
+            "      return Object.assign(empty, fromServer, {\n"
+            "        elapsed: fromServer.view === 'done'\n"
+            "          ? fromServer.elapsed\n"
+            "          : Math.max(fromServer.elapsed || 0, priorElapsed)\n"
+            "      });\n"
+            "    }\n"
+            "    try {",
         ),
     ],
 }
@@ -2797,6 +3254,56 @@ SET_ATTR = {
         # spelling would put a region into that machinery that Design never
         # drew. Its own name, like `data-lessons-panel` and `data-card-fit`.
         18:  {"data-port-bell-host": "1"},
+        # ══════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P5. THE FLASHCARDS
+        # OVERLAY BECOMES A DIALOG.
+        # ══════════════════════════════════════════════════════════════
+        #
+        # 10320 is the grafted overlay's PANEL (donor 320 + GRAFT_BASE) —
+        # the 390px card, not the fixed scrim behind it (10319) — so an
+        # assistive technology user who tabs or is dropped in by a screen
+        # reader lands on the thing that is actually the dialog. Neither
+        # attribute exists on Design's donor node: measured, not assumed,
+        # from `student_templates.json`'s "class view amendments" entry.
+        #
+        # 10325 is the 44×44 close button, currently named ONLY by
+        # `title="Close"` — a tooltip a touch device never shows and a
+        # screen reader is not required to announce.
+        #
+        # `data-mrb-dialog` is this build's own name (like
+        # `data-lessons-panel`, `data-port-bell-host` above): the query
+        # `_cardsKeydown`'s Tab-trap/Escape listener (LOGIC, on
+        # `componentDidMount`) runs on every keypress while the dialog might
+        # be open, and `openCards`/`closeAll` (LOGIC) use the same selector
+        # to find the panel and its close button after a render. One name,
+        # three readers.
+        10320: {"role": "dialog", "aria-modal": "true",
+                "aria-label": "Flashcards", "data-mrb-dialog": "flashcards"},
+        10325: {"aria-label": "Close flashcards"},
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P11. Each of the
+        # twelve week buttons' only name was its own two-digit number
+        # (`w.num`, node 133's text) — a screen reader reads "zero one"
+        # with no unit. `w.weekLabel` ("Week 1" … "Week 12") is the LOGIC
+        # ruling beside `weeks.push`; the generic attribute resolver in
+        # `shared/student-runtime.js` runs `{"parts": […]}` through the
+        # same per-render lookup `style` already uses on this exact `<for>`
+        # (`w.stackH`, `w.nowDot`, two lines below this node in the
+        # template), so a per-iteration `aria-label` needs no new
+        # machinery — see that file's generic attribute loop.
+        128: {"aria-label": {"parts": [{"e": "w.weekLabel"}]}},
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P11. The "8r/Sc1"
+        # crumb at the very top of the page (`onClick="goClass"`) carries
+        # `all:unset`, so its OWN box is exactly as tall as its 11.5px
+        # text — roughly 12px — even though the header row around it is
+        # `min-height:clamp(44px,3.6cqw,52px)`. A tap has to land on the
+        # text itself, not merely somewhere in the row's height. The
+        # class's own inline `style` is Design's; the LITERAL inside it is
+        # what `_TAP44` in build_student_port.py targets with `!important`
+        # (the same shape `_PAGE_STRONG`/`_PIP_ROW` already use, for the
+        # same reason: an inline declaration outranks any selector however
+        # specific), scoped to phone widths only so nothing about the
+        # desktop crumb changes.
+        33:  {"data-mrb-tap44": "crumb-class"},
     },
     # The assignment page has no bench, no spine and no leaderboard.
     #
@@ -3407,36 +3914,99 @@ INSERT_AT = {
         # on this page uses — `student-runtime.js` resolves it with
         # `createTextNode`, never `innerHTML`. There is no way to bind a
         # string into this template as anything else.
+        #
+        # ══════════════════════════════════════════════════════════════════
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P3, GRAFTED ONTO THE
+        # SAME SEAM.
+        # ══════════════════════════════════════════════════════════════════
+        #
+        # Opening a MISSED set gave no warning at all: a pupil could answer
+        # every question believing the deadline was still ahead. Mide's
+        # wording is fixed and quiet, exactly like the teacher's note above
+        # it, and it wants the SAME position — "above the first question" —
+        # for the same reason the note's own comment gives: this screen
+        # shows one question at a time, so "above" can only mean Q1.
+        #
+        # ⚠️ (106, 111) WAS ALREADY TAKEN, and `INSERT_AT` keys on
+        # (parent, after_node) — a Python dict, one entry per key. Rather
+        # than fight the seam, this WRAPS both `<if>`s in one
+        # `display:contents` `<div>`, the same trick the figure node's host
+        # already uses (`student-runtime.js`, the `import` node) to add a
+        # DOM element with zero layout footprint: it generates no box of its
+        # own, so nothing about the teacher's note — its position, its
+        # styling, its own `<if>` — changes. `assignmentNoteVisible`'s
+        # subtree below is BYTE IDENTICAL to what shipped before this
+        # ruling; only the wrapper and the new sibling are added.
+        #
+        # ⚠️ EMPTY ON THE FIXTURE, on purpose, the same way `assignmentNote
+        # Has` is. `pastDeadlineNow` (LOGIC, `pastDeadlineWarningVisible`)
+        # reads `MRB_DATA('pastDeadlineNow')`, a key Design's delivery never
+        # had; `build_student_port.py`'s `constants` for this page pins it
+        # `"false"`, so the fixture — which drives `student_behaviour.py`
+        # against Design's own oracle — renders nothing here and stays
+        # byte-for-byte what it was. Nothing to register in
+        # RULED_ADDITIONS: there is no visible text on the page this gate
+        # drives for the new span to diverge on.
         (106, 111): ({
-            "t": "if", "e": "assignmentNoteVisible",
-            "c": [{
-                "t": "div",
-                "a": {"style": "margin-top:clamp(12px,1.4cqw,16px);"
-                               "min-width:0;"
-                               "padding:clamp(12px,1.3cqw,16px);"
-                               "border:1px solid var(--st-rule);"
-                               "border-radius:var(--st-r-card);"
-                               "background:var(--st-paper)"},
-                "c": [
-                    {"t": "span", "a": {"class": "eyebrow"},
-                     "c": [{"t": "#", "v": "From your teacher"}]},
-                    {"t": "span",
-                     "a": {"style": "display:block;margin-top:8px;"
-                                    "font:400 clamp(14px,1.15cqw,15.5px)"
-                                    "/1.6 var(--st-ui);"
-                                    "color:var(--st-body);"
-                                    "white-space:pre-wrap;"
-                                    "overflow-wrap:anywhere;"
-                                    "text-wrap:pretty"},
-                     "c": [{"t": "#", "v": {"parts": [
-                         {"e": "assignmentNoteBody"}]}}]},
-                ]}]},
+            "t": "div", "a": {"style": "display:contents"},
+            "c": [
+                {
+                    "t": "if", "e": "pastDeadlineWarningVisible",
+                    "c": [{
+                        "t": "div",
+                        "a": {"style": "margin-top:clamp(12px,1.4cqw,16px);"
+                                       "min-width:0;"
+                                       "padding:clamp(12px,1.3cqw,16px);"
+                                       "border:1px solid var(--st-rule);"
+                                       "border-radius:var(--st-r-card);"
+                                       "background:var(--st-paper)"},
+                        "c": [
+                            {"t": "span", "a": {"class": "eyebrow"},
+                             "c": [{"t": "#", "v": "Past deadline"}]},
+                            {"t": "span",
+                             "a": {"style": "display:block;margin-top:8px;"
+                                            "font:400 clamp(14px,1.15cqw,"
+                                            "15.5px)/1.6 var(--st-ui);"
+                                            "color:var(--st-body);"
+                                            "text-wrap:pretty"},
+                             "c": [{"t": "#", "v": "This set is past its "
+                                    "deadline, so it will count as late. "
+                                    "Your answers still count."}]},
+                        ]}]},
+                {
+                    "t": "if", "e": "assignmentNoteVisible",
+                    "c": [{
+                        "t": "div",
+                        "a": {"style": "margin-top:clamp(12px,1.4cqw,16px);"
+                                       "min-width:0;"
+                                       "padding:clamp(12px,1.3cqw,16px);"
+                                       "border:1px solid var(--st-rule);"
+                                       "border-radius:var(--st-r-card);"
+                                       "background:var(--st-paper)"},
+                        "c": [
+                            {"t": "span", "a": {"class": "eyebrow"},
+                             "c": [{"t": "#", "v": "From your teacher"}]},
+                            {"t": "span",
+                             "a": {"style": "display:block;margin-top:8px;"
+                                            "font:400 clamp(14px,1.15cqw,15.5px)"
+                                            "/1.6 var(--st-ui);"
+                                            "color:var(--st-body);"
+                                            "white-space:pre-wrap;"
+                                            "overflow-wrap:anywhere;"
+                                            "text-wrap:pretty"},
+                             "c": [{"t": "#", "v": {"parts": [
+                                 {"e": "assignmentNoteBody"}]}}]},
+                        ]}]},
+            ]},
          "the teacher's note (`assignments.teacher_note`) on Set work, "
          "printed above the question — contract §3.5. Visible only over "
          "question 1 (`assignmentNoteVisible`, LOGIC), plain text, no "
          "control. `eyebrow` styling read off node 111 on this same "
          "screen; card recipe read off 268/269, the same source the "
-         "(106, 251) entry above already cites for the identical shape."),
+         "(106, 251) entry above already cites for the identical shape. "
+         "Since 25 Sep 2026 (stream H, P3) this sits inside a "
+         "`display:contents` wrapper alongside the past-deadline warning — "
+         "see the section header above this entry."),
 
         # ══════════════════════════════════════════════════════════════════
         # ⊕ MRB-352, 23 Sep 2026 — THE FIGURE ITSELF, INSIDE DESIGN'S OWN
@@ -3912,6 +4482,17 @@ WRAP = {
         10125: "benchDoneMarked",
         10128: "benchDoneMarked",
         10134: "benchDoneFeedback",
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — P13. The "Lessons in
+        # this topic" box (node 225, `data-lessons-panel` — see SET_ATTR)
+        # rendered unconditionally: an eyebrow, a "00" count and an empty
+        # list, for a class whose topic has no lessons yet. `lessons` is
+        # the top-level array the box's own `<for>` reads; `<if>`'s `e` is
+        # a plain dotted-path lookup (`shared/student-runtime.js`), so
+        # `lessons.length` resolves through the array's own `.length`
+        # property with no new LOGIC key needed — 0 is falsy, N > 0 is
+        # truthy. Design's fixture carries four lessons, so this changes
+        # nothing on the page `student_behaviour.py` drives.
+        225: "lessons.length",
     },
     "assignment": {348: "assignmentLessonHref"},
 }

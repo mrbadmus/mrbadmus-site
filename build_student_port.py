@@ -382,10 +382,41 @@ PAGES = [
                         # question can be drawn. `assignmentNoteBody` is read
                         # by the inserted `<if>`'s own text binding and would
                         # throw the same way once `assignmentNoteVisible` is
-                        # ever true. Design drew no note surface either —
-                        # empty is her own state, not a placeholder — so the
-                        # fixture stays byte-identical to what it was.
-                        assignmentNoteHas="false", assignmentNoteBody="''")),
+                        # ever true.
+                        #
+                        # ⊕ Experience run, 25 Sep 2026 (stream H) — TEST audit
+                        # item (A). This used to read `assignmentNoteHas=
+                        # "false", assignmentNoteBody="''"` — "Design drew no
+                        # note surface either, so the fixture stays byte-
+                        # identical". True, and it is exactly why the TEST
+                        # audit's finding survived a green `student_behaviour`
+                        # run undetected: `assignmentNoteVisible` alone
+                        # renders identically whether `assignmentNoteBody`
+                        # ever reached scope or not, because with the box
+                        # closed there is no text to be missing. Turned ON
+                        # here so the gate actually exercises the seam this
+                        # ticket fixed (`renderVals` was missing the
+                        # `assignmentNoteBody: MRB_DATA('assignmentNoteBody')`
+                        # line entirely — see LOGIC) rather than merely
+                        # mounting past it. Registered as an ADDITION
+                        # (`RULED_ADDITIONS['assignment']`, student_
+                        # behaviour.py) because Design's own file has no such
+                        # box at all, on any drive.
+                        assignmentNoteHas="true",
+                        assignmentNoteBody=
+                        "'Look back at question 4 before you start: it uses "
+                        "the method from the practical.'",
+                        # ⊕ Experience run, 25 Sep 2026 (stream H) — P3, same
+                        # reason as `assignmentNoteHas` right above: LOGIC's
+                        # `pastDeadlineWarningVisible` calls `MRB_DATA
+                        # ('pastDeadlineNow')` unconditionally on every
+                        # question-view mount, so a fixture that never heard
+                        # of the key throws before drawing question 1. Design
+                        # drew no such warning either — false is her state,
+                        # not a placeholder — so the fixture stays byte-
+                        # identical and there is nothing for
+                        # `student_behaviour.py` to register.
+                        pastDeadlineNow="false")),
 ]
 
 # ── the identity strings, which are NOT in the logic ──────────────────────
@@ -3417,6 +3448,42 @@ _ROW_DONE = (
 )
 
 
+# ── the top crumb's tap target, which was as tall as its own text ────────
+#
+# ⊕ Experience run, 25 Sep 2026 (stream H) — P11. See `SET_ATTR` 33 in
+# student_rulings.py for the ruling: the "8r/Sc1" crumb at the very top of
+# the page is `all:unset` on an 11.5px, line-height-1 line of text, so its
+# own interactive box is around 12px tall even though the header row around
+# it is at least 44px. A tap has to land on the text, not merely somewhere
+# in the row.
+#
+# ⚠️ AND IT NEEDS `!important`, for the same reason `_PAGE_STRONG`,
+# `_PIP_ROW` and `_ROW_DONE` above all do: `all:unset` is a LITERAL inside
+# Design's inline `style`, and `all:unset` resets `display` to its initial
+# value (`inline` on a `<button>`) as an inline declaration — which outranks
+# any selector however specific unless the competing rule also carries
+# `!important`. Without the keyword this parses, matches, loses, and the
+# crumb's tap target is exactly what it was.
+#
+# ⚠️ PHONE WIDTHS ONLY, per the brief, and "without changing its look":
+# `min-height:44px` on a button already vertically centred by its
+# `header`'s own `align-items:center` cannot move any visible pixel — the
+# text stays the same size, in the same place — it only grows the invisible
+# box a finger or a screen reader has to land inside. The row's own
+# `min-height:clamp(44px,3.6cqw,52px)` is at its 44px floor on a phone, so a
+# 44px button fits inside it with nothing to reflow.
+#
+# CLASS VIEW ONLY: the assignment page's own "Back to 8r/Sc1" link already
+# carries `min-height:48px` in Design's own markup (Assignment.dc.html line
+# 485) and needs no help.
+_TAP44 = (
+    "@media (max-width:719px){"
+    "[data-mrb-tap44=\"crumb-class\"]{min-height:44px!important;"
+    "display:inline-flex!important;align-items:center!important}"
+    "}"
+)
+
+
 # ── the focus ring, which was there and did nothing ──────────────────────
 #
 # ⊕ Experience run, 24 Sep 2026 (stream G). Production defect: Tab to a
@@ -3945,7 +4012,7 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
            # names one), so `.mrb-figure-scroll` cannot match there.
            (_EYEBROW_TYPE + _FOCUS_RING +
             ((_THEME_BRIDGE + _FOCUS_RING_BENCH + _PAGE_STRONG + _PIP_ROW
-              + _CARD_FIT + _ROW_DONE)
+              + _CARD_FIT + _ROW_DONE + _TAP44)
              if spec["page"] == "class view"
              else (bench_css + _THEME_BRIDGE + _Q_EYEBROW
                    + _FIGURE_SCROLL))),

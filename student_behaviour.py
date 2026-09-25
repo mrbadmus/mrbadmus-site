@@ -265,6 +265,19 @@ DRIVES = {
         ("answer, then navigate away and back, keeps the mark",
          [("opt", 0), ("click", "Confirm answer"), ("click", "Back"),
           ("click", "Next")]),
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — TEST audit item (A).
+        # Every drive above lands on the fixture's own resume point, question
+        # 7 — Design's sample answers three, then stops, the same "returning
+        # partway through" scenario the assignment page is built to resume
+        # into. `assignmentNoteVisible` is `idx === 0` ONLY (contract §3.5:
+        # "above the FIRST question"), so no existing drive had ever put a
+        # single frame of this feature in front of a browser, in either its
+        # broken state or this one. Marker "01" is Design's own control —
+        # present and clickable on her file too, unrelated to the note — so
+        # this drive is exactly as dual-file-performable as "a marker jumps
+        # to its question" two entries above it.
+        ("a marker jumps to question 1, showing the teacher's note",
+         [("click", "01")]),
     ],
 }
 
@@ -979,6 +992,36 @@ RULED_ADDITIONS = {
         # oracle, not against the markup.
         ("the completion breakdown in an expanded row",
          r"\d+ OF \d+ ANSWERED "),
+    ],
+    "assignment": [
+        # ⊕ Experience run, 25 Sep 2026 (stream H) — TEST audit item (A),
+        # BLOCKING. MRB-342.2 (3 Sep 2026) wired `assignmentNoteVisible` but
+        # never returned `assignmentNoteBody` from `renderVals()` — a
+        # template binding resolves against what that method RETURNS, never
+        # against `MRB_DATA` directly — so the "From your teacher" box has
+        # opened empty, on every real assignment carrying a `teacher_note`,
+        # since the day it shipped. `assignmentNoteHas` alone could never
+        # have caught it: the box renders identically whether the body made
+        # it into scope or not.
+        #
+        # The fixture (`build_student_port.PAGES`, `constants`) now carries a
+        # real sample note rather than Design's original empty state, so
+        # this gate actually exercises the fix rather than mounting past it.
+        # `build_student_port.py`'s `apply_bindings`/`seam_logic` weld the
+        # string straight into the method body — checked by reading the
+        # note's own words rather than a generic pattern, so a regression
+        # that renders the BOX but not its TEXT (the exact shape of this
+        # bug) still fails this registration.
+        #
+        # ⚠️ `(?i)`, MEASURED NOT GUESSED. `.eyebrow`'s CSS is
+        # `text-transform:uppercase`, and `innerText` — which this whole
+        # gate reads (`shared/student-runtime.js`'s render, `_STATE`'s own
+        # comment) — renders the STYLED text, not the source string: "From
+        # your teacher" comes back "FROM YOUR TEACHER". The note body has no
+        # such rule and keeps its authored case.
+        ("the teacher's note on question 1",
+         r"(?i)From your teacher\s*Look back at question 4 before you "
+         r"start: it uses the method from the practical\.\s*"),
     ],
 }
 
