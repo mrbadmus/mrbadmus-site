@@ -1566,6 +1566,22 @@ SET_ATTR = {
     23:  {"class": "mrb-findlabel"},
     24:  {"class": "mrb-findkey"},
 
+    # ── ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 20) ───────
+    #
+    # THREE MORE HOOKS FOR THE SAME BAR, for the same reason as the three
+    # above: Design's inline style strings give `shared`'s CSS nothing to
+    # select, and `SET_ATTR` refuses to overwrite an attribute Design already
+    # wrote, so none of these three carried a `class` before this. See the
+    # `@media (max-width:420px)` block in `build_teacher_port.py` for what
+    # they do — none of it fires above 420px, so the bar is byte-identical to
+    # Design's above that width, exactly like the 560px rule already does.
+    #
+    # 12 is the wordmark's own text span (inside node 11's flex wrapper),
+    # 17 is the class-code crumb, 30 is the signed-in teacher's name.
+    12:  {"class": "mrb-brand"},
+    17:  {"class": "mrb-crumb"},
+    30:  {"class": "mrb-teachername"},
+
     158: {"data-port-region": "classes"},
     208: {"data-port-region": "class"},
     330: {"data-port-region": "student"},
@@ -1853,6 +1869,21 @@ BIND_ATTR = {
                      "border-top:1px solid var(--st-rule-fact)"]},
           "the question-breakdown row, widened only on a paper that carries "
           "the port's own \"Not marked\" label."),
+
+    # ⊕ Stream M, 25 Sep 2026 (experience run round 3, N8) — AN ADDITION,
+    # NOT A CORRECTION: node 644 (the bulk shoutout sheet's per-pupil chip)
+    # carries no `aria-pressed` in Design's markup at all, so `expect` is
+    # `None` — `BIND_ATTR`'s own guard reads `(here[node].get("a") or
+    # {}).get(attr)`, which is `None` for an attribute that was never
+    # written, and the check is refused only when that stops being true (a
+    # Design redraw that added one of her own). Bound to `s.pressed`, the
+    # pre-stringified field the `bulkStudents` ruling above adds — never to
+    # the boolean `s.on`, which `student-runtime.js` silently drops whenever
+    # it resolves to `false` (see that ruling's own comment).
+    644: ("aria-pressed", None, {"parts": [{"e": "s.pressed"}]},
+          "the bulk shoutout sheet's pupil chips — selection was shown by "
+          "colour alone, with nothing in the accessibility tree saying a "
+          "chip was a toggle or which ones were picked."),
 
     # ── THE CLASS-BY-QUESTION TABLE IS EIGHT COLUMNS WIDE ──────────────
     #
@@ -4867,7 +4898,20 @@ INSERT_AT = {
                     "t": "button",
                     "a": {"type": "button",
                           "data-mrb-added": "engagement-bucket",
-                          "aria-pressed": {"parts": [{"e": "bt.on"}]},
+                          # ⊕ Stream M, 25 Sep 2026 (experience run round 3,
+                          # N8) — bound to `bt.pressed` (a STRING) rather
+                          # than the boolean `bt.on`. `student-runtime.js`'s
+                          # attribute resolver drops any attribute whose
+                          # value is exactly `=== false` (its render loop:
+                          # `if (val === null || val === undefined ||
+                          # val === false) { continue; }`), so the two
+                          # UNSELECTED buckets carried no `aria-pressed` at
+                          # all — only the selected one, `true`, ever
+                          # reached the DOM. `bt.pressed` is pre-stringified
+                          # ('true'/'false') in the `bucketTabs` map above
+                          # (LOGIC), so every state of every button always
+                          # sets the attribute.
+                          "aria-pressed": {"parts": [{"e": "bt.pressed"}]},
                           "style": {"parts": [
                               "display:flex;align-items:center;gap:7px;"
                               "padding:7px 13px;border-radius:999px;"
@@ -7479,10 +7523,17 @@ LOGIC = (
         cols: this.colsFrom(g.stems.map((q, i) => ({ label: q.id, value: g.qpct[i] == null ? 'Not marked' : g.qpct[i] + '%', raw: g.qpct[i] == null ? 0 : g.qpct[i], flag: g.qpct[i] != null && g.qpct[i] === min })), 100),
         tiles: [tile('Paper mean', mx(k).colMean[gi] == null ? '—' : mx(k).colMean[gi] + '%', g.submitted + ' of ' + (mx(k).colAsked[gi] || 0) + ' submitted'),
           tile('Lowest', lowest.id + ' · ' + min + '%', lowest.text), tile('Highest', max + '%', 'Best answered question')],
-        note: lowest.text ? 'Reteach ' + lowest.text.toLowerCase() + ' — ' + min + '% of the class got it' : '' };""",
+        note: lowest.text ? 'Reteach ' + lowest.text + ' — ' + min + '% of the class got it' : '' };""",
      "`questions / class`. The same four, plus `papersFor(k)[1].title` on a "
      "one-paper class, plus `k.n` as the submitted denominator, plus "
-     "`STEMS[qi].text.toLowerCase()` on a stem that no longer exists."),
+     "`STEMS[qi].text.toLowerCase()` on a stem that no longer exists. "
+     "⊕ Stream M, 25 Sep 2026 (item 26) — the `.toLowerCase()` this ruling "
+     "had kept on the stem is now dropped from the built note too: the "
+     "'Lowest' tile two lines above already prints the same stem in its own "
+     "case (`lowest.text`, no lowering), so the note read \"Reteach which "
+     "component does this circuit symbol represent?\" lower-cased right "
+     "beside a tile capitalised the ordinary way. A stem is a sentence, and "
+     "a sentence keeps its own capital."),
 
     # ── the tiles and note of `questions / all`: A DELETED FIELD, TWICE ──
     ("""        const tally = {};
@@ -7674,10 +7725,19 @@ LOGIC = (
     ("""        ? live.map(c => ({ label: c.code, sub: c.ks, on: mx(c).markedOnTime, tot: mx(c).markedSub }))
         : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due, on: mx(k).colOnTime[p.idx], tot: mx(k).colSub[p.idx] }));""",
      """        ? live.map(c => ({ label: c.code, sub: c.ks, on: mx(c).markedOnTime, tot: mx(c).markedOnTime + mx(c).markedLate }))
-        : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due, on: mx(k).colOnTime[p.idx], tot: mx(k).colOnTime[p.idx] + mx(k).colLate[p.idx] }));""",
+        : this.papersFor(k).filter(p => p.when === 'marked').map(p => ({ label: p.title, sub: 'Due ' + p.due.replace(/^Due /, ''), on: mx(k).colOnTime[p.idx], tot: mx(k).colOnTime[p.idx] + mx(k).colLate[p.idx] }));""",
      "the on-time chart. `markedSub` includes the submissions whose lateness "
      "is UNKNOWN, so the bar counted every unknown as late — the same error "
-     "as the roster row's, in a graph, where it is harder to see."),
+     "as the roster row's, in a graph, where it is harder to see. "
+     "⊕ Stream M, 25 Sep 2026 (item 26) — `.replace(/^Due /, '')` added on "
+     "`p.due`. Stream A's redefinition of `when === 'marked'` (this brief's "
+     "DEFINITIONS §2) means this filter now includes OPEN papers, and "
+     "`p.due` for an open paper already carries its own \"Due \" prefix "
+     "(`teacher-live.js`: `open ? \"Due \" + … : …`), which this line then "
+     "prefixed AGAIN — \"DUE DUE MON 28 SEP\" on the chart. The same strip "
+     "other built strings in this file already use before re-adding their "
+     "own \"Due \" (see the `.replace('Due ', '')` and `.replace(/^Due /, "
+     "'')` calls elsewhere in this table)."),
 
     ("""      note: lowP ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };""",
      """      note: (rows.length > 1 && lowP) ? 'Weakest return: ' + lowP.label + ' at ' + lowP.pct + '%' : '' };""",
@@ -8420,6 +8480,16 @@ componentDidUpdate() {
         "    this.snapWeekRail();\n"
         "    const self = this;\n"
         "    document.addEventListener('keydown', (e) => {\n"
+        "      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) "
+        "return;\n"
+        "      if (self.state.modal) return;\n"
+        "      const t = e.target, tag = t && t.tagName;\n"
+        "      if (tag === 'INPUT' || tag === 'TEXTAREA' || "
+        "(t && t.isContentEditable)) return;\n"
+        "      e.preventDefault();\n"
+        "      self.setState({ modal: 'search', search: '' });\n"
+        "    });\n"
+        "    document.addEventListener('keydown', (e) => {\n"
         "      if (e.key !== 'Escape' || self.state.modal !== 'search') "
         "return;\n"
         "      e.preventDefault();\n"
@@ -8478,8 +8548,19 @@ componentDidUpdate() {
         "  }",
         "the whole of the Find-a-student keyboard fix, folded into the "
         "rail's own two lifecycle hooks rather than declared a second time: "
-        "focus-on-open, Esc-closes-and-returns-focus, and the result list "
-        "as a listbox the arrow keys and Enter both work on."
+        "open-on-'/', focus-on-open, Esc-closes-and-returns-focus, and the "
+        "result list as a listbox the arrow keys and Enter both work on. "
+        "⊕ Stream M, 25 Sep 2026 (experience run round 3, item 22/N8) — "
+        "open-on-'/' ADDED. The topbar's search button has always carried a "
+        "chip reading \"/\" (`.mrb-findkey`, node 24) advertising a "
+        "shortcut that nothing on this page implemented — pressing '/' "
+        "anywhere did nothing at all. `today.html`'s own search sheet has "
+        "carried a real '/' handler since it was written; this brings the "
+        "six generated screens to the same behaviour: '/' outside an input, "
+        "textarea or contenteditable element, with no other overlay already "
+        "open, opens the same search overlay the button does — and reuses "
+        "this hook's own `componentDidUpdate` to focus the box, exactly as "
+        "a press of the button does."
     ),
 
     # ══ ⊕ MRB-328 J3, 6 Sep 2026 · "1 CLASSES · 4 STUDENTS" ════════════
@@ -8687,6 +8768,48 @@ componentDidUpdate() {
      "out of node 654's style so the off state can be painted. Anchored on "
      "`noteCount` because it is the composer's other computed key and the "
      "only line in Design's logic that names this footer."),
+
+    # ══ ⊕ Stream M, 25 Sep 2026 (experience run round 3, N8) — THE BULK
+    #    SHEET'S PUPIL CHIPS GET `aria-pressed` ══════════════════════════
+    #
+    # Selection was shown by `on ? tint : plain` colours alone — nothing in
+    # the accessibility tree said a chip was a toggle, or which ones were
+    # picked. `pressed` is `on` PRE-STRINGIFIED ('true'/'false'): binding the
+    # markup straight to the boolean `on` would work for the SELECTED chips
+    # and silently vanish on every unselected one, because
+    # `student-runtime.js`'s attribute resolver drops any attribute whose
+    # value is exactly `=== false` (see `sendOff`'s own note, immediately
+    # above, for the same rule stated about `disabled`). The binding itself
+    # is `BIND_ATTR[644]`, below — node 644 has no `aria-pressed` at all in
+    # Design's markup, so this is an addition rather than a correction of
+    # one of her values.
+    ("      bulkStudents: kRoster.map(r => {\n"
+     "        const on = s.boSel.indexOf(r.id) > -1;\n"
+     "        return {\n"
+     "          name: r.name,\n"
+     "          fg: on ? 'var(--st-accent-text)' : 'var(--st-ink)',\n"
+     "          bg: on ? 'var(--st-chip-tint)' : 'var(--st-paper)',\n"
+     "          bc: on ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',\n"
+     "          dot: on ? 'var(--st-accent)' : this.hueFor(r.name),\n"
+     "          toggle: () => this.setState({ boSel: on ? "
+     "s.boSel.filter(x => x !== r.id) : s.boSel.concat([r.id]) })\n"
+     "        };\n"
+     "      }),",
+     "      bulkStudents: kRoster.map(r => {\n"
+     "        const on = s.boSel.indexOf(r.id) > -1;\n"
+     "        return {\n"
+     "          name: r.name,\n"
+     "          pressed: on ? 'true' : 'false',\n"
+     "          fg: on ? 'var(--st-accent-text)' : 'var(--st-ink)',\n"
+     "          bg: on ? 'var(--st-chip-tint)' : 'var(--st-paper)',\n"
+     "          bc: on ? 'var(--st-chip-tint-border)' : 'var(--st-btn-border)',\n"
+     "          dot: on ? 'var(--st-accent)' : this.hueFor(r.name),\n"
+     "          toggle: () => this.setState({ boSel: on ? "
+     "s.boSel.filter(x => x !== r.id) : s.boSel.concat([r.id]) })\n"
+     "        };\n"
+     "      }),",
+     "the bulk shoutout sheet's pupil rows — one field added, `pressed`, "
+     "for `BIND_ATTR[644]`'s `aria-pressed`."),
 
     # ══ ⊕ Mide's 23 Sep 2026 ruling · "SELECT ALL ON TIME THIS WEEK" MEANT
     #    "IN THIS WEEK", NOT "ON TIME" — AND IT WAS NEVER WIRED AT ALL ═════
@@ -11069,6 +11192,24 @@ componentDidUpdate() {
      "above it, in words. Both now count the released papers, and the word "
      "\"marked\" is dropped for the same reason as the tile's caption."),
 
+    # ══ ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 26) — "LAST
+    #    ACTIVE NO ACTIVITY YET" ═══════════════════════════════════════════
+    #
+    # The same defect the class card's `activity` line had (see
+    # "\"LAST ACTIVITY NO ACTIVITY YET\"" above), on the student summary
+    # sentence Design never gave a label to at all. `st.last` is either
+    # `relativeTime(...)` ("2 days ago") or the sentence "No activity yet",
+    # and this line always prefixed it with "last active " — so a student
+    # with no submissions read "…against a class mean of 65% · last active
+    # No activity yet", a label glued onto a sentence that already says the
+    # thing the label was there to introduce.
+    ("        + ' · last active ' + st.last)",
+     "        + (st.last === 'No activity yet' ? ' · ' + st.last\n"
+     "          : ' · last active ' + st.last))",
+     "the student summary sentence's own tail — drop the label when the "
+     "value is already a sentence, exactly as the class card's `activity` "
+     "ruling does for the same string."),
+
     # ── 4. "SEND A REMINDER" SENT NOTHING ───────────────────────────────
     #
     # Design draws the button (node 341), gates it on `student.flagged`, and
@@ -11139,11 +11280,17 @@ componentDidUpdate() {
      "worst.text.toLowerCase() + '. Only ' + worst.pct + '% of the class got "
      "it right.' : '',",
      "        reteachLine: worst ? worst.id\n"
-     "          + (worst.text ? ' \u2014 ' + worst.text.toLowerCase() : '')\n"
+     "          + (worst.text ? ' \u2014 ' "
+     "+ worst.text.toLowerCase().replace(/[?.!]+$/, '') : '')\n"
      "          + '. Only ' + worst.pct + '% of the class got it right.'\n"
      "          : '',",
      "the reteach banner, on a paper whose worst question carries no stem "
-     "snapshot."),
+     "snapshot, and (\u2295 stream M, item N7/26) whose stem's own trailing "
+     "\"?\" no longer collides with the banner's own full stop \u2014 Design's "
+     "sentence used to read \"\u2026represent?. Only 0% of the class got it "
+     "right.\", the two sentences' punctuation run together with no "
+     "separator; `.replace(/[?.!]+$/, '')` strips a trailing `?`, `.` or "
+     "`!` off the stem before the banner's own \".\" is appended."),
 
     # ══ ⊕ 2 Sep 2026 · THE CLASS-BY-QUESTION GRID IS EIGHT WIDE ═════════
     #
@@ -11836,15 +11983,23 @@ componentDidUpdate() {
      "      digestSub: isClassReport\n"
      "        ? k.n + ' students · ' + kPapers.length + "
      "(kPapers.length === 1 ? ' assignment' : ' assignments')\n"
-     "        : this.CLASSES.length + ' classes · ' + totalStudents + "
-     "' students · ' + totalSubs + ' submissions'\n"
+     "        : this.CLASSES.length\n"
+     "          + (this.CLASSES.length === 1 ? ' class · ' : ' classes · ')\n"
+     "          + totalStudents\n"
+     "          + (totalStudents === 1 ? ' student · ' : ' students · ')\n"
+     "          + totalSubs\n"
+     "          + (totalSubs === 1 ? ' submission' : ' submissions')\n"
      "          + (MRB_DATA('termLabel') ? ' · ' + "
      "MRB_DATA('termLabel') : ''),",
      "the overview digest's own header line — the one place on this run's "
      "list this run ADDS the term, rather than removes it. `termLabel` "
      "('Autumn term · 2026–27') is the same string `classesEyebrow` already "
      "states once on the classes screen; read here from `MRB_DATA` rather "
-     "than recomputed, so the two cannot disagree about which term it is."),
+     "than recomputed, so the two cannot disagree about which term it is. "
+     "⊕ Stream M, 25 Sep 2026 (item 26) — all three counts pluralised. This "
+     "line had never had the classes-screen's own \"1 classes\" fix "
+     "(MRB-328 J3, above) applied to it, and a school admin on a one-class "
+     "colleague's digest read exactly that literal string."),
 
     # ══ ⊕ Stream D, 24 Sep 2026 (experience run, item 10) · AND THE WEEK ══
     # BAR'S OWN HEADING IS THE OTHER PLACE IT IS SAID
@@ -11873,7 +12028,7 @@ componentDidUpdate() {
      "it is still said, once, for the week actually in view."),
 
     ("if (kind === 'engagement') {\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        const stacks = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          return { label: c.code, sub: c.ks, right: b.today + ' today · ' + b.stale + ' cold',\n            segs: [{ pct: Math.round((b.today / t) * 100), fill: 'var(--ks3-ok)' }, { pct: Math.round((b.week / t) * 100), fill: 'var(--st-hatch-b)' }, { pct: Math.round((b.stale / t) * 100), fill: 'var(--st-rule-strong)' }] };\n        });\n        if (!stacks.length) {\n          return { ...base, title: 'Last seen, by class',\n            note: 'No class has work set yet' };\n        }\n        return { ...base, type: 'stack', title: 'Last seen, by class', stacks,\n          legend: [{ label: 'Today', fill: 'var(--ks3-ok)' }, { label: 'This week', fill: 'var(--st-hatch-b)' }, { label: '2+ weeks', fill: 'var(--st-rule-strong)' }],\n          tiles: [tile('Active today', totals.today, 'Across ' + live.length + (live.length === 1 ? ' class' : ' classes')), tile('This week', totals.week, ''), tile('2+ weeks', totals.stale, 'Worth chasing')],\n          note: totals.stale + ' students have not opened anything for two weeks or more' };\n      }\n      const rows = this.rosterFor(k);\n      if (!rows.length) {\n        return { ...base, title: k.code + ' — last seen',\n          note: 'No students on the roster yet' };\n      }\n      const b = this.bucketsOf(rows);\n      const cold = rows.filter(r => r.hours >= 168).map(r => r.name);\n      return { ...base, type: 'cols', title: k.code + ' — last seen',\n        cols: this.colsFrom([{ label: 'Today', value: String(b.today), raw: b.today }, { label: 'This week', value: String(b.week), raw: b.week }, { label: '2+ weeks', value: String(b.stale), raw: b.stale, flag: b.stale > 0 }]),\n        tiles: [tile('Students', k.n, 'On the roster'), tile('Active today', b.today, ''), tile('2+ weeks', b.stale, cold.length ? 'Worth chasing' : 'None')],\n        note: cold.length ? 'Not seen for two weeks: ' + cold.slice(0, 3).join(', ') + (cold.length > 3 ? ' and ' + (cold.length - 3) + ' more' : '') : 'Nobody in this class has been quiet for two weeks or more' };\n    }",
-     'if (kind === \'engagement\') {\n      // ⊕ Stream D, 24 Sep 2026 (experience run, item 12) — ONE\n      // measure at a time, picked by the new toggle, in the SAME three\n      // colours everywhere it is drawn (the toggle\'s own dots, the bars,\n      // the single-class columns). `--st-hatch-b` (a dark red-brown) used\n      // to sit on "This week" — normal activity — while\n      // "2+ weeks" — the bucket actually worth a look — sat on\n      // `--st-rule-strong`, a pale neutral. That is backwards, and it is\n      // why a screenshot of this chart reads as an alarm over nothing.\n      // `--ks3-ok` (green) stays on Today; `--st-accent` (the studio\'s one\n      // "worth a look" orange, never `--danger`) moves to 2+ weeks; This\n      // week takes the neutral tone 2+ weeks used to have.\n      const ENG_BUCKETS = {\n        today: { label: \'Today\', fill: \'var(--ks3-ok)\' },\n        week: { label: \'This week\', fill: \'var(--st-rule-strong)\' },\n        stale: { label: \'2+ weeks\', fill: \'var(--st-accent)\' }\n      };\n      const engBucket = ENG_BUCKETS[this.state.engBucket] ? this.state.engBucket : \'today\';\n      // The toggle IS the legend here — one colour shown at a time, so\n      // a separate legend list under the chart would either repeat this or\n      // contradict it. Same order, same labels, same colours as whatever\n      // is drawn below, because both read off this one object.\n      const bucketTabs = [\'today\', \'week\', \'stale\'].map(bk => ({\n        id: bk, label: ENG_BUCKETS[bk].label, dot: ENG_BUCKETS[bk].fill,\n        on: bk === engBucket,\n        fg: bk === engBucket ? \'var(--st-ink)\' : \'var(--st-caption)\',\n        bg: bk === engBucket ? \'var(--st-num-well)\' : \'transparent\',\n        bd: bk === engBucket ? \'var(--st-btn-border)\' : \'var(--st-rule-soft)\',\n        pick: () => this.setState({ engBucket: bk })\n      }));\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        // ⚠️ EVERY CLASS, THE SAME MEASURE. One bar per class, sized to\n        // that class\'s OWN roster (not the school\'s), all in the one\n        // colour the selected bucket owns — replacing the old\n        // three-segment stacked bar, which mixed all three measures in one\n        // bar and coloured the normal one like a warning.\n        const rows = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          const n = b[engBucket];\n          return { label: c.code, sub: c.ks, value: n + \'/\' + c.n,\n            pct: Math.round((n / t) * 100), fill: ENG_BUCKETS[engBucket].fill };\n        });\n        if (!rows.length) {\n          return { ...base, title: \'Last seen, by class\',\n            note: \'No class has work set yet\' };\n        }\n        const ENG_NOTE = {\n          today: totals.today + (totals.today === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n          week: totals.week + (totals.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n          stale: totals.stale + (totals.stale === 1 ? \' student has\' : \' students have\') + \' not opened anything for two weeks or more\'\n        };\n        return { ...base, type: \'bars\', title: \'Last seen, by class\', rows, bucketTabs,\n          tiles: [tile(\'Active today\', totals.today, \'Across \' + live.length + (live.length === 1 ? \' class\' : \' classes\')), tile(\'This week\', totals.week, \'\'), tile(\'2+ weeks\', totals.stale, \'Worth chasing\')],\n          note: ENG_NOTE[engBucket] };\n      }\n      const rows2 = this.rosterFor(k);\n      if (!rows2.length) {\n        return { ...base, title: k.code + \' — last seen\',\n          note: \'No students on the roster yet\' };\n      }\n      const b2 = this.bucketsOf(rows2);\n      const cold = rows2.filter(r => r.hours >= 168).map(r => r.name);\n      // ⚠️ THE THREE COLUMNS STAY, RECOLOURED, ON PURPOSE. One class\n      // already has all three measures on screen at once and they are\n      // separately labelled — that is not the mixing defect the\n      // "all classes" bar had. What was wrong here was only the colour\n      // (Today defaulted to the same dark red-brown as everything\n      // `colsFrom` does not explicitly flag), fixed by giving all three\n      // their own fill from the same map the toggle uses. The toggle\n      // still presses through to `note`, so it has a real effect on this\n      // scope too rather than existing only for visual symmetry.\n      const ENG_NOTE2 = {\n        today: b2.today + \' of \' + k.n + (k.n === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n        week: b2.week + (b2.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n        stale: cold.length ? \'Not seen for two weeks: \' + cold.slice(0, 3).join(\', \') + (cold.length > 3 ? \' and \' + (cold.length - 3) + \' more\' : \'\') : \'Nobody in this class has been quiet for two weeks or more\'\n      };\n      return { ...base, type: \'cols\', title: k.code + \' — last seen\', bucketTabs,\n        cols: this.colsFrom([\n          { label: \'Today\', value: String(b2.today), raw: b2.today, fill: ENG_BUCKETS.today.fill },\n          { label: \'This week\', value: String(b2.week), raw: b2.week, fill: ENG_BUCKETS.week.fill },\n          { label: \'2+ weeks\', value: String(b2.stale), raw: b2.stale, fill: ENG_BUCKETS.stale.fill }\n        ]),\n        tiles: [tile(\'Students\', k.n, \'On the roster\'), tile(\'Active today\', b2.today, \'\'), tile(\'2+ weeks\', b2.stale, cold.length ? \'Worth chasing\' : \'None\')],\n        note: ENG_NOTE2[engBucket] };\n    }',
+     'if (kind === \'engagement\') {\n      // ⊕ Stream D, 24 Sep 2026 (experience run, item 12) — ONE\n      // measure at a time, picked by the new toggle, in the SAME three\n      // colours everywhere it is drawn (the toggle\'s own dots, the bars,\n      // the single-class columns). `--st-hatch-b` (a dark red-brown) used\n      // to sit on "This week" — normal activity — while\n      // "2+ weeks" — the bucket actually worth a look — sat on\n      // `--st-rule-strong`, a pale neutral. That is backwards, and it is\n      // why a screenshot of this chart reads as an alarm over nothing.\n      // `--ks3-ok` (green) stays on Today; `--st-accent` (the studio\'s one\n      // "worth a look" orange, never `--danger`) moves to 2+ weeks; This\n      // week takes the neutral tone 2+ weeks used to have.\n      const ENG_BUCKETS = {\n        today: { label: \'Today\', fill: \'var(--ks3-ok)\' },\n        week: { label: \'This week\', fill: \'var(--st-rule-strong)\' },\n        stale: { label: \'2+ weeks\', fill: \'var(--st-accent)\' }\n      };\n      const engBucket = ENG_BUCKETS[this.state.engBucket] ? this.state.engBucket : \'today\';\n      // The toggle IS the legend here — one colour shown at a time, so\n      // a separate legend list under the chart would either repeat this or\n      // contradict it. Same order, same labels, same colours as whatever\n      // is drawn below, because both read off this one object.\n      const bucketTabs = [\'today\', \'week\', \'stale\'].map(bk => ({\n        id: bk, label: ENG_BUCKETS[bk].label, dot: ENG_BUCKETS[bk].fill,\n        on: bk === engBucket,\n        pressed: bk === engBucket ? \'true\' : \'false\',\n        fg: bk === engBucket ? \'var(--st-ink)\' : \'var(--st-caption)\',\n        bg: bk === engBucket ? \'var(--st-num-well)\' : \'transparent\',\n        bd: bk === engBucket ? \'var(--st-btn-border)\' : \'var(--st-rule-soft)\',\n        pick: () => this.setState({ engBucket: bk })\n      }));\n      if (all) {\n        const totals = { today: 0, week: 0, stale: 0 };\n        // ⚠️ EVERY CLASS, THE SAME MEASURE. One bar per class, sized to\n        // that class\'s OWN roster (not the school\'s), all in the one\n        // colour the selected bucket owns — replacing the old\n        // three-segment stacked bar, which mixed all three measures in one\n        // bar and coloured the normal one like a warning.\n        const rows = live.map(c => {\n          const b = this.bucketsOf(this.rosterFor(c));\n          totals.today += b.today; totals.week += b.week; totals.stale += b.stale;\n          const t = c.n || 1;\n          const n = b[engBucket];\n          return { label: c.code, sub: c.ks, value: n + \'/\' + c.n,\n            pct: Math.round((n / t) * 100), fill: ENG_BUCKETS[engBucket].fill };\n        });\n        if (!rows.length) {\n          return { ...base, title: \'Last seen, by class\',\n            note: \'No class has work set yet\' };\n        }\n        const ENG_NOTE = {\n          today: totals.today + (totals.today === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n          week: totals.week + (totals.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n          stale: totals.stale + (totals.stale === 1 ? \' student has\' : \' students have\') + \' not opened anything for two weeks or more\'\n        };\n        return { ...base, type: \'bars\', title: \'Last seen, by class\', rows, bucketTabs,\n          tiles: [tile(\'Active today\', totals.today, \'Across \' + live.length + (live.length === 1 ? \' class\' : \' classes\')), tile(\'This week\', totals.week, \'\'), tile(\'2+ weeks\', totals.stale, \'Worth chasing\')],\n          note: ENG_NOTE[engBucket] };\n      }\n      const rows2 = this.rosterFor(k);\n      if (!rows2.length) {\n        return { ...base, title: k.code + \' — last seen\',\n          note: \'No students on the roster yet\' };\n      }\n      const b2 = this.bucketsOf(rows2);\n      const cold = rows2.filter(r => r.hours >= 168).map(r => r.name);\n      // ⚠️ THE THREE COLUMNS STAY, RECOLOURED, ON PURPOSE. One class\n      // already has all three measures on screen at once and they are\n      // separately labelled — that is not the mixing defect the\n      // "all classes" bar had. What was wrong here was only the colour\n      // (Today defaulted to the same dark red-brown as everything\n      // `colsFrom` does not explicitly flag), fixed by giving all three\n      // their own fill from the same map the toggle uses. The toggle\n      // still presses through to `note`, so it has a real effect on this\n      // scope too rather than existing only for visual symmetry.\n      const ENG_NOTE2 = {\n        today: b2.today + \' of \' + k.n + (k.n === 1 ? \' student has\' : \' students have\') + \' opened something today\',\n        week: b2.week + (b2.week === 1 ? \' student was\' : \' students were\') + \' last seen this week\',\n        stale: cold.length ? \'Not seen for two weeks: \' + cold.slice(0, 3).join(\', \') + (cold.length > 3 ? \' and \' + (cold.length - 3) + \' more\' : \'\') : \'Nobody in this class has been quiet for two weeks or more\'\n      };\n      return { ...base, type: \'cols\', title: k.code + \' — last seen\', bucketTabs,\n        cols: this.colsFrom([\n          { label: \'Today\', value: String(b2.today), raw: b2.today, fill: ENG_BUCKETS.today.fill },\n          { label: \'This week\', value: String(b2.week), raw: b2.week, fill: ENG_BUCKETS.week.fill },\n          { label: \'2+ weeks\', value: String(b2.stale), raw: b2.stale, fill: ENG_BUCKETS.stale.fill }\n        ]),\n        tiles: [tile(\'Students\', k.n, \'On the roster\'), tile(\'Active today\', b2.today, \'\'), tile(\'2+ weeks\', b2.stale, cold.length ? \'Worth chasing\' : \'None\')],\n        note: ENG_NOTE2[engBucket] };\n    }',
      "Stream D, 24 Sep 2026 (experience run, item 12) — the engagement "
      "chart, both scopes. Its colour semantics were backwards (This week "
      "on the dark red-brown, 2+ weeks on the pale neutral) and there was "

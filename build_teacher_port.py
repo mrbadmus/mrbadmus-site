@@ -5555,6 +5555,74 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "[data-port-region] [style*=\"220px 1fr 96px\"]"
         "{grid-template-columns:minmax(0,84px) 1fr minmax(0,54px)!important}"
         "}"
+        # ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 20) — THE TOP
+        # BAR WRAPS AT ≤420px INSTEAD OF LEAVING SIGN OUT AND FIND A STUDENT
+        # PAST THE EDGE OF A REAL PHONE.
+        #
+        # `teacher_reach.py` never caught this, and could not: its `bringIn`
+        # step scrolls the bar's own `overflow-x:auto` container (the round-2
+        # fix, above) to bring a control into view before hit-testing it, so
+        # every control in the bar IS reachable by that gate's own definition
+        # — after a horizontal scroll nothing on the page tells a teacher to
+        # make. The round-three audit found it by looking at a screenshot:
+        # at 360/390 the week-rail's `flex:1 1 0` sibling (see `_WK_RAIL`'s
+        # comment in teacher_rulings.py, the other half of this item) had
+        # nothing left to claim and rendered 2px wide, and the bar itself
+        # scrolled its own overflow away — the same "reachable, not visible"
+        # gap `teacher_reach.py`'s own banner names for a different control.
+        #
+        # The fix is not another px trimmed off one item; the bar's SEVEN
+        # `flex:none` children (wordmark, the Today/My-classes strip, the
+        # crumb, Find a student, Charts, the env badge, the teacher's name,
+        # Sign out) sum past 700px at their Design-drawn sizes, and no single
+        # one of them can be shrunk far enough on its own to close that gap.
+        # So the bar WRAPS instead of scrolling at this width, in two rows —
+        # brand and navigation on the first, everything scoped to THIS class
+        # plus the account controls on the second — and three low-cost trims
+        # close the remaining gap rather than one aggressive one:
+        #
+        #   · the teacher's own name is dropped (`.mrb-teachername`) — it is
+        #     the one item here that identifies nobody a pupil, a class or an
+        #     action names; every other item is a place to go or a person the
+        #     teacher is signed in AS having to prove nothing on a 360px
+        #     screen. `Sign out` still says whose session it is ending by
+        #     virtue of there being exactly one signed-in teacher;
+        #   · the crumb (`.mrb-crumb`) gets `overflow:hidden;text-overflow:
+        #     ellipsis` instead of running past its own shrunk box the way
+        #     `min-width:0` alone leaves a `white-space:nowrap` span to do —
+        #     Design's own class-code strings (`10h/Ph1`) never need it, a
+        #     longer one degrades instead of overlapping Find a student;
+        #   · the wordmark (`.mrb-brand`) drops from 23px to 18px, still
+        #     comfortably the plain-white-text staff wordmark this bar has
+        #     always drawn (no logo asset either side of this rule).
+        #
+        # `overflow-x:visible` UNDOES the round-2 scroll container at this
+        # width on purpose: a bar that both wraps AND scrolls sideways is two
+        # answers to the same question, and the wrap is now the complete one.
+        # `min-height` (not a fixed `height`) because Design's 62px was sized
+        # for one row and the wrapped bar is taller; `min-height` keeps that
+        # 62px for the (now two-line) content's OWN sizing rather than
+        # clipping it, which a fixed `height` on a `overflow:visible` sticky
+        # element would not do anyway but which the next reader should not
+        # have to re-derive.
+        # ⚠️ `height`, `padding`, `overflow-x` and `gap` ARE INLINE ON NODE
+        # 10 (`height:62px;padding:0 22px;gap:12px`, plus the round-2
+        # `overflow-x:auto` this file writes into the SAME inline string a
+        # few lines above), and an inline declaration beats any selector —
+        # the same reason this block's own print rules and the 560px block
+        # above it reach for `!important` on Design's other inline strings.
+        # Written without it, this rule changed nothing and the bar stayed
+        # a fixed 62px scrolling strip; `flex-wrap` alone (not inline, so no
+        # `!important` needed there) had nowhere to put the wrapped line.
+        "@media (max-width:420px){"
+        "[data-port-region=\"topbar\"]{flex-wrap:wrap;height:auto!important;"
+        "min-height:62px;row-gap:8px!important;column-gap:8px!important;"
+        "padding:10px 12px!important;overflow-x:visible!important}"
+        "[data-port-region=\"topbar\"] .mrb-brand{font-size:18px}"
+        "[data-port-region=\"topbar\"] .mrb-crumb{overflow:hidden;"
+        "text-overflow:ellipsis}"
+        "[data-port-region=\"topbar\"] .mrb-teachername{display:none}"
+        "}"
         # ⊕ MRB-306 Phase 2a screen 6 — THE PRINT RULES, MEASURED NOT
         # ASSUMED. `.noprint` alone was not enough to make the digest a
         # report a teacher can hand to a head of department.
