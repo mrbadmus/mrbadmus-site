@@ -6033,6 +6033,129 @@ del METHODS["rosterFor_noop"]
 # None of them is a bug in Design's file, where all five are true. Every one
 # of them is a wrong number on a real dashboard.
 LOGIC = (
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 4) · "N MISSED THIS
+    #    TERM" COUNTS THE WRONG PAPERS ═══════════════════════════════════
+    #
+    # Design's `reasonFor` reads `row.scores.slice(1)` — every column except
+    # the NEWEST, whatever its state — so a scheduled or still-open set that
+    # simply has not been answered yet counted as "missed", and the "Keep an
+    # eye on" caption moved every time a new set was released, before its
+    # due date and before anybody could possibly be late. Mide's 23 Sep
+    # ruling is explicit about which index list means "missing":
+    # `mx.closedIdx`, never `markedIdx` and never "everything but the
+    # newest" — a paper is only missing once its OWN deadline has passed.
+    #
+    # `mx`/`kMx` (`this.matrixFor(...)`, seamed by `METHODS['matrixFor']`
+    # onto the real `buildMatrix` output) already carries `closedIdx` for
+    # exactly this reader, so the fix is passing it in rather than deriving
+    # anything new here.
+    (
+        "  reasonFor(r, row) {\n"
+        "    const missed = row ? row.scores.slice(1).filter(v => v == "
+        "null).length : 0;",
+        "  reasonFor(r, row, closedIdx) {\n"
+        "    const missed = (row && closedIdx)\n"
+        "      ? closedIdx.filter((i) => row.scores[i] == null).length\n"
+        "      : 0;",
+        "the count itself: CLOSED papers with no cell, not every column "
+        "but the newest."
+    ),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 10) · "NOTHING IN THIS
+    #    WEEK" FOR A PUPIL WHO IS MID-ANSWER ═══════════════════════════════
+    #
+    # `reasonFor`'s last resort fires for every flagged pupil none of the
+    # earlier branches named — missing nothing, averaging 50%+, and simply
+    # `!row.inWeek` — and `inWeek` only ever means "has a COMPLETE cell on an
+    # in-week paper" (item 5 of Mide's 23 Sep ruling). A pupil two questions
+    # into an open paper is exactly that pupil: nothing complete yet, so
+    # `!inWeek`, so "Nothing in this week" on Today's chase list and the
+    # class glance's "Keep an eye on" card, describing someone who is
+    # actively working. `row.startedInWeek` (`buildMatrix`, `shared/
+    # teacher-live.js`) is the one new fact this needed.
+    (
+        "    if (r.avg != null && r.avg < 50) return 'Averaging ' + r.avg + "
+        "'%';\n"
+        "    return 'Nothing in this week';",
+        "    if (r.avg != null && r.avg < 50) return 'Averaging ' + r.avg + "
+        "'%';\n"
+        "    if (row && row.startedInWeek) return 'In progress';\n"
+        "    return 'Nothing in this week';",
+        "the fallback: a pupil mid-way through an in-week paper reads "
+        "\"In progress\", the word every other surface on this page already "
+        "uses, rather than the one line reserved for a pupil who has done "
+        "nothing at all."
+    ),
+    (
+        "this.reasonFor(r, mx.byId[r.id])",
+        "this.reasonFor(r, mx.byId[r.id], mx.closedIdx)",
+        "the Today screen's chase list, so `reasonFor` gets the closed-paper "
+        "index list its corrected body now needs."
+    ),
+    (
+        "this.reasonFor(r, kMx.byId[r.id])",
+        "this.reasonFor(r, kMx.byId[r.id], kMx.closedIdx)",
+        "the class glance's \"Keep an eye on\" list — same fix, the "
+        "class-scoped matrix."
+    ),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 5) · "UP 25 POINTS ON
+    #    THE LAST SET" IS A SCALE BUG, NOT JUST A WORDING ONE ═══════════
+    #
+    # Design's `imp.d` is `row.scores[1] - row.scores[2]` — RAW marks on
+    # whichever two columns happen to sit at index 1 and 2 — then the card
+    # renders `Math.round(imp.d * 12.5)`, her sample's 8-question assumption
+    # (100 / 8 = 12.5) turned into a percentage. On a real 10-question paper
+    # (Lydia's, in the audit) 75% → 80% is a raw-mark delta of exactly 0.5,
+    # which `* 12.5` turns into "25 points".
+    #
+    # ⚠️ AND INDEX 1/2 ARE THE WRONG COLUMNS ONCE A CLASS HAS A PAPER OPEN.
+    # Columns are newest-first; index 1 is only "the last set" when index 0
+    # (the newest) has no submission from this pupil yet — Design's sample
+    # never has that shape, a real class does every week. `row.pct[]` (the
+    # matrix's own per-cell percentage, added by the seam for exactly this)
+    # walked forward and stopped at the first two COMPLETE cells is "the
+    # pupil's last two completed sets" in every shape, not just the one
+    # Design drew.
+    #
+    # `imp.d` is now already a percentage-point difference, so the caller
+    # needs no scale factor at all — `MRB_DELTA_REASON` (build_teacher_port)
+    # phrases it, and phrases the two shapes Design's card never had to
+    # (down, level) for the one case Design's own gate (`imp.d > 0`) still
+    # lets through today: an improving pupil.
+    (
+        "    let imp = null;\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      if (row && row.scores[1] != null && row.scores[2] != null) {\n"
+        "        const d = row.scores[1] - row.scores[2];\n"
+        "        if (!imp || d > imp.d) imp = { r, d };\n"
+        "      }\n"
+        "    });",
+        "    let imp = null;\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      if (!row) return;\n"
+        "      const done = [];\n"
+        "      for (let i = 0; i < row.pct.length && done.length < 2; "
+        "i++) {\n"
+        "        if (row.pct[i] != null) done.push(row.pct[i]);\n"
+        "      }\n"
+        "      if (done.length < 2) return;\n"
+        "      const d = done[0] - done[1];\n"
+        "      if (!imp || d > imp.d) imp = { r, d };\n"
+        "    });",
+        "the `imp` derivation: the pupil's last two COMPLETE sets' real "
+        "percentages, not raw marks off two fixed columns."
+    ),
+    (
+        "reason: 'Up ' + Math.round(imp.d * 12.5) + ' points on the last "
+        "set',",
+        "reason: MRB_DELTA_REASON(imp.d),",
+        "the caption itself, now that `imp.d` is already a percentage-"
+        "point delta and needs no invented scale on top of it."
+    ),
+
     # ══ the state initialiser ═══════════════════════════════════════════
     #
     # `screen` is per-page and written by the build; `MRB_SCREEN` is the token

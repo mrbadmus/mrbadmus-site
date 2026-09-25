@@ -4488,6 +4488,23 @@ function MRB_SEARCH_FOOT(matched, shown, pool, q){
   if(matched > 1){ head += ' · type to narrow'; }
   return head;}
 
+/* ⊕ experience run, 25 Sep 2026 (Mide's item 5) — "UP N POINTS ON THE LAST
+   SET", IN PERCENTAGE POINTS, NEVER RAW MARKS.
+
+   Design's card reported `Math.round(imp.d * 12.5)` — a raw-mark difference
+   scaled as if every paper on the site were 8 questions (100 / 8 = 12.5).
+   `imp.d` is now the difference between the pupil's last two COMPLETE
+   sets' own `pct[]` values (`teacher_rulings.LOGIC`'s fix to the `imp`
+   derivation), so this only ever has to phrase a percentage-point delta —
+   never invent a second scale on top of it. Three shapes, because a delta
+   is not always positive even though the one caller today only shows this
+   card on improvement: up, down, or unchanged. */
+function MRB_DELTA_REASON(d){
+  var n = Math.round(Math.abs(d));
+  if(d > 0){return 'Up ' + n + ' points on the last set';}
+  if(d < 0){return 'Down ' + n + ' points on the last set';}
+  return 'Level with the last set';}
+
 /* == THE SHOUTOUT DELETE ================================================
 
    ⊕ MRB-287, 24 Aug 2026. Mide's instruction: a teacher who can post a
