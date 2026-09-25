@@ -2103,12 +2103,33 @@ window.MrBadmusTeacherData = (function () {
             .select(
               'id, class_id, title, due_at, release_at, source, set_by, ' +
               'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
-              'created_at, academic_week, subject_id, ' +
+              'created_at, academic_week, subject_id, teacher_note, ' +
               'subject:subject_id ( id, name )'
             )
             .in('class_id', chunk)
             .is('deleted_at', null);
-          if (r.error) { r.error.__stage = 'assignments'; throw r.error; }
+          /* ⊕ Stream J, 25 Sep 2026 (experience run, item 4) — `teacher_note`
+             ADDED so the Set-work sheet's Edit form can show the note it is
+             about to overwrite (`buildPapers` in shared/teacher-live.js
+             carries it onto `p.note`, and `MRB_SET_WORK_EDIT` in
+             teacher_rulings.py passes it into `edit()`). Guarded the same
+             way `loadBankRows` guards an additive column in
+             shared/breakdown.js: retried without it on error, so a project
+             whose `assignments` table has not carried the migration yet
+             still loads every class rather than throwing on this one field. */
+          if (r.error) {
+            var r2 = await sb.from('assignments')
+              .select(
+                'id, class_id, title, due_at, release_at, source, set_by, ' +
+                'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
+                'created_at, academic_week, subject_id, ' +
+                'subject:subject_id ( id, name )'
+              )
+              .in('class_id', chunk)
+              .is('deleted_at', null);
+            if (r2.error) { r2.error.__stage = 'assignments'; throw r2.error; }
+            return r2.data || [];
+          }
           return r.data || [];
         }),
       ]);
@@ -2301,6 +2322,9 @@ window.MrBadmusTeacherData = (function () {
         academic_week: a.academic_week,
         subject_id: a.subject_id,
         subject_name: a.subject ? a.subject.name : null,
+        // ⊕ Stream J, 25 Sep 2026 (experience run, item 4) — the stored
+        // note, carried through to `buildPapers` so Edit can show it.
+        teacher_note: a.teacher_note || "",
       });
     });
 

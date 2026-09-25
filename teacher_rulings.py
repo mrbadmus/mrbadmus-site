@@ -2566,8 +2566,26 @@ _WK_CAPTION = ("flex:none;padding-left:4px;font:500 13px/1.2 var(--st-mono);"
 _WK_CHEV = ("flex:none;display:flex;align-items:center;justify-content:center;"
             "width:36px;height:52px;background:var(--st-paper);"
             "border:1px solid var(--st-rule-soft);border-radius:9px;color:")
+# ⊕ Stream J, 25 Sep 2026 (experience run, item 5) — `flex:1 1 0;min-width:0`
+# ADDED. Without a `flex` property this fell back to the default `0 1 auto`
+# — flex-basis AUTO, sized to its CONTENT (up to twelve fixed-width chips,
+# ~1000px), inside a row whose only other children are `flex:none` (the
+# caption and the two chevrons, which cannot shrink at all). At 1280px there
+# is room for that content box and the rule never gets exercised; at 390/360
+# the row is short by hundreds of pixels, and because this is the only
+# sibling ALLOWED to shrink, 100% of that deficit comes out of it — past
+# zero, since `overflow-x:auto` makes its automatic minimum width 0 rather
+# than its min-content size (the same CSS rule `_SW_TEXT`'s comment three
+# screens over already names). The visible result was the audit's "collapses
+# to 2px, only the arrows show" and, on the SAME layout, `document`-level
+# horizontal scroll shoving the header's own controls off-screen — one
+# flex-basis bug with two symptoms. `flex:1 1 0` makes the rail claim
+# whatever space is actually left over (basis 0, not its content size) and
+# `min-width:0` makes that explicit rather than relying on the overflow
+# side-effect. Nothing else in the row's own declared sizes, colours or
+# spacing changes.
 _WK_RAIL = ("display:flex;align-items:stretch;overflow-x:auto;padding:1px;"
-            "scrollbar-width:none")
+            "scrollbar-width:none;flex:1 1 0;min-width:0")
 _WK_CHIP = ("flex:none;display:flex;flex-direction:column;align-items:center;"
             "justify-content:center;gap:5px;min-height:52px;padding:8px 17px;"
             "background:")
@@ -7600,6 +7618,43 @@ LOGIC = (
      "included in `ps` and would misleadingly read as excluded-because-"
      "unmarked."),
 
+    # ⊕ Stream J, 25 Sep 2026 (experience run, item 2) — "NOT RELEASED YET"
+    # STILL SAID THE TILE EXCLUDED OPEN WORK, AND IT DOES NOT. `ps`, defined
+    # above this block, is `papersFor(k).filter(p => p.when === 'marked' &&
+    # m.colMean[p.idx] != null)` — under stream A's ruling `when==='marked'`
+    # means RELEASED, so an open paper with any graded cells is already
+    # inside `ps` and inside `m.classMean`/`means`/`best`/`worst`. The prior
+    # wording pass renamed the CAPTION from "Not marked yet" to "Not
+    # released yet" but left the LABEL "Excluded" standing, which is the
+    # part that was actually false: nothing here is excluded for being
+    # open. Both tiles (the one-assignment branch and the multi-assignment
+    # branch) are corrected together, since they are one exactly-once span.
+    ("""        tiles: (ps.length < 2 ? [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one assignment with results'),
+          tile('Open work', 'Excluded', 'Not released yet')
+        ] : [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' assignments with results'),
+          tile('Strongest', Math.max.apply(null, means) + '%', best.title),
+          tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
+          tile('Open work', 'Excluded', 'Not released yet')
+        ]),
+        note: ps.length < 2 ? '' : 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
+     """        tiles: (ps.length < 2 ? [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'From one assignment with results'),
+          tile('Open work', 'Included', 'Results update live')
+        ] : [
+          tile('Class mean', (m.classMean == null ? '—' : m.classMean + '%'), 'Across ' + ps.length + ' assignments with results'),
+          tile('Strongest', Math.max.apply(null, means) + '%', best.title),
+          tile('Weakest', Math.min.apply(null, means) + '%', worst.title),
+          tile('Open work', 'Included', 'Results update live')
+        ]),
+        note: ps.length < 2 ? '' : 'Weakest set: ' + worst.title + ' at ' + m.colMean[worst.idx] + '%' };""",
+     "the means chart's \"Open work\" tile, stale after stream A's "
+     "`when==='marked'` redefinition. An open paper with results is already "
+     "counted in `ps`/`m.classMean` above, so \"Excluded · Not released "
+     "yet\" was false — \"Included · Results update live\" says what the "
+     "chart now actually does."),
+
     # ── the sub-heading's plurals ───────────────────────────────────────
     ("""      insSub: chartScope === 'all'
         ? liveClasses.length + ' active classes · ' + totalStudents + ' students on roll'
@@ -8926,6 +8981,24 @@ componentDidUpdate() {
      "data-completeness fact unrelated to stream A's `when` redefinition, "
      "and the word was doing no work once the chart's own title already "
      "says \"work with results\"."),
+
+    # ⊕ Stream J, 25 Sep 2026 (experience run, item 2) — THIS TILE IS STALE
+    # UNDER STREAM A'S RULING, NOT JUST WORDED WRONG. `src`, three lines
+    # above this block, is built from `this.papersFor(k).filter(p => p.when
+    # === 'marked')` — and `when === 'marked'` now means RELEASED (stream A),
+    # so an OPEN paper is already IN `src` and counted in `on`/`tot` above.
+    # "Open work · Excluded · Not due yet" told a teacher the opposite of
+    # what the chart had just done with it. Reworded to what is true rather
+    # than removed: the tile still earns its place by telling a teacher an
+    # open set's on-time figure updates as pupils finish, which is new
+    # behaviour worth a line rather than silence.
+    ("                tile('Open work', 'Excluded', 'Not due yet')],",
+     "                tile('Open work', 'Included', 'Results update live')],",
+     "the on-time chart's \"Open work\" tile, stale after stream A's "
+     "`when==='marked'` redefinition (released, not deadline-passed). An "
+     "open paper's cells are already inside `on`/`tot` above, so \"Excluded"
+     " · Not due yet\" was simply false; \"Included · Results update live\" "
+     "says what the chart now actually does."),
 
     ("        note: worst ? 'Weakest: ' + worst.label + ' at ' + (worst.tot ? "
      "Math.round((worst.on / worst.tot) * 100) : 0) + '% on time' : '' };",
@@ -10995,8 +11068,23 @@ componentDidUpdate() {
        emptying the column. `hasChase` is false, so the WRAP takes the
        footer with it and there is no button offering to remind nobody. */
     if (!wCards.length) {
+      /* \u2295 Stream J, 25 Sep 2026 (experience run, item 1) \u2014 THE EMPTY STATE
+         MUST READ THE SAME PAPERS THE TABLE DOES. `wCards` is built from
+         `wLive` (open papers only, MRB-336 \u00a74.1's own rule: a card is a
+         LIVE assignment), but "No work set in this week" was shown whenever
+         THAT was empty \u2014 including a week whose only paper had already
+         closed. The Assignments table below is built from `wPapers`, every
+         state, so a past week with a closed set showed a homework card
+         claiming nothing was set while its own table listed the set right
+         under it. `wPapers.length` is the same test the table's `assignments
+         = wPapers.map(...)` runs, so the two can no longer disagree: "no
+         work" is said only when there truly is no paper in the week at all,
+         and a week with only closed/scheduled work says so instead. */
       wCards.push({ eyebrow: "This week's homework",
-        title: 'No work set in this week', count: '\u2014', pct: 0,
+        title: wPapers.length
+          ? 'Nothing open this week \u2014 see Assignments below'
+          : 'No work set in this week',
+        count: '\u2014', pct: 0,
         hasChase: false, chase: [], remindLabel: '', remind: () => {},
         hasMore: false, moreLabel: '', more: () => {} });
     }
@@ -11220,7 +11308,7 @@ componentDidUpdate() {
           subject: p.set_subject || 'all',
           paper: p.paper == null ? 'both' : String(p.paper),
           releaseAt: p.release_at, dueAt: p.due_at,
-          released: p.released }); },
+          released: p.released, note: p.note || '' }); },
         cancelDel: (e) => { e.stopPropagation(); this.setState({ delArm: '' }); },
         del: (e) => {
           e.stopPropagation();
@@ -11275,7 +11363,7 @@ componentDidUpdate() {
           subject: pp.set_subject || 'all',
           paper: pp.paper == null ? 'both' : String(pp.paper),
           releaseAt: pp.release_at, dueAt: pp.due_at,
-          released: pp.released }),
+          released: pp.released, note: pp.note || '' }),
         cancelDel: () => this.setState({ delArm: '' }),
         del: () => {
           if (s.delArm !== pp.id) { this.setState({ delArm: pp.id }); return; }

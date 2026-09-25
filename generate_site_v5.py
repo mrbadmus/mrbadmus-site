@@ -5,7 +5,7 @@ Run: python3 generate_site.py
 Output: ./mrbadmus_site/ (ready to deploy on Cloudflare)
 """
 
-import os, shutil, json, glob, sys, re
+import os, shutil, json, glob, sys, re, base64
 
 # Bonding redesign (MRB-113 Phase B) — theory-block decomposition for the
 # redesigned bonding pages. Frozen source fields are never edited; blocks are
@@ -643,17 +643,45 @@ PHYSICS_COLOR   = "#1D6FB8"
 CHEMISTRY_COLOR = "#B02342"
 BIOLOGY_COLOR   = "#237A3B"
 
+# ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — a favicon, so
+# `/favicon.ico` stops 404ing on every KS4 chrome and lesson page (audit:
+# "Two 404s on every page... Both also 404 on production today"). One small
+# `#E4572E` chevron, base64'd exactly the way `build_ks3.FAVICON_LINK` and
+# `consumer_favicon_link()` already do it (no question over spaces, `#` or
+# quotes surviving into an `href`) — kept as its OWN literal here rather than
+# imported from either, matching this codebase's standing preference for
+# independent generators over cross-module coupling (the same reasoning
+# `build_teacher_port.ds_css`'s own comment gives for not sharing a bundle
+# with the student port).
+#
+# ⚠️ NOT `_CONSUMER_FAVICON_SVG`'s double chevron, and not KS3's identical
+# single chevron reused verbatim — a NEW, generic mark for a NEW surface.
+# `HEAD_ASSETS` is shared by BOTH `k4_page` (the chrome journey) and
+# `make_pathway_subtopic_page` (all 98 lesson pages), which carry two
+# DIFFERENT in-page brand marks between them (CLAUDE.md's brand table); a
+# browser-tab favicon is not the in-page mark either page is judged on, so
+# one small neutral chevron for both, rather than picking one page type's
+# mark for the other's pages.
+_KS4_FAVICON_SVG = (
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">'
+    '<path d="M4 16L12 7l8 9" fill="none" stroke="#E4572E" stroke-width="4.6" '
+    'stroke-linecap="round" stroke-linejoin="round"/></svg>')
+KS4_FAVICON_LINK = (
+    '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,%s"/>'
+    % base64.b64encode(_KS4_FAVICON_SVG.encode("utf-8")).decode("ascii"))
+
 # ── Shared <head> assets — every generated page loads the token
 #    sheet first (with font preloads), then the consuming stylesheet ──
 HEAD_ASSETS = """<link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  %s
   <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
   <script src="/shared/search-index.js" defer></script>
   <script src="/shared/search.js" defer></script>
   <script src="/shared/nav.js" defer></script>
-  <script src="/shared/class-entry.js" defer></script>"""
+  <script src="/shared/class-entry.js" defer></script>""" % KS4_FAVICON_LINK
 
 THEME_COLOR = "#F7F1E5"  # pre-paint browser chrome tint — matches --bg (light default)
 

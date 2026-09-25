@@ -475,6 +475,43 @@ PAGES = [
 ]
 
 
+# ⊕ Stream J, 25 Sep 2026 (experience run, item 6) — ONE LINE, PER SCREEN,
+# STATIC IN THE HTML THE SERVER SENDS.
+#
+# ⛔ THE GAP THIS CLOSES. `#mrb-teacher` shipped empty — `<div id="mrb-teacher"
+# ...></div>` and nothing inside it — until `student-runtime.js`'s first
+# `draw()` runs, which cannot happen before `shared/student-runtime.js` has
+# downloaded and parsed, `shared/teacher-data.js` has fetched the class pack
+# from Supabase, and the mount script has executed. On a slow connection that
+# is many seconds of a blank cream rectangle under the header — measured
+# 10–15s on the audit's Slow 3G pass — and a blank screen looks indistinguishable
+# from a broken one.
+#
+# `draw()` (this same file's own `R.mount`/`applyTemplate`, shared with
+# `build_student_port.py`) REPLACES the mount host's entire contents on
+# every render, first paint included — see `shared/student-live.js`'s own
+# note on this ("empties the entire mount host and rebuilds the whole
+# template on every setState"). So static markup placed inside
+# `#mrb-teacher` in the SERVED HTML is guaranteed to be gone the instant the
+# first real `draw()` completes, and guaranteed to be the only thing on
+# screen before it — no flash, no double-render, nothing to coordinate.
+#
+# ⚠️ ONE CAPTION PER SCREEN, not one generic string, for the same reason
+# `searchPlaceholder` names "12 classes" rather than "some classes": "Loading…"
+# with nothing else on the page reads as though the page forgot which page it
+# is. Styled in the same quiet register `renderVals['lastTitle']`'s own empty
+# state uses (`font:400 15.5px/1.4 var(--st-ui);color:var(--st-muted)`) —
+# never `--st-ink`, which is reserved for a real answer having arrived.
+_LOADING_CAPTION = {
+    "classes.html": "Loading your classes…",
+    "class-detail.html": "Loading this class…",
+    "student-detail.html": "Loading this student…",
+    "assignment.html": "Loading this set…",
+    "digest.html": "Loading your digest…",
+    "insights.html": "Loading your charts…",
+}
+
+
 _BANNER = """<!--
   ══════════════════════════════════════════════════════════════════════════
   GENERATED — do not edit. `python3 build_teacher_port.py`
@@ -573,6 +610,36 @@ def ds_css():
             # The faces point at `./` inside the bundle; the site self-hosts
             # every one of the seven at /shared/fonts/.
             css = css.replace("./", SERVED_FONTS)
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — `tokens/
+        # shared-tokens.css` VENDORS ITS OWN, SEPARATE COPY of all seven of
+        # `fonts/fonts.css`'s `@font-face` rules (same seven families,
+        # narrowed to a Latin `unicode-range`) and points every one of them
+        # at `../fonts/<file>.woff2` — a path with no rewrite at all, unlike
+        # `fonts.css`'s `./`. Served from `/shared/teacher-ds.css`, `../fonts/`
+        # resolves to `/fonts/<file>.woff2`, a directory that does not exist
+        # anywhere on the site (the real files are at `/shared/fonts/`), so
+        # the browser's first attempt to load "Instrument Sans" 404s on
+        # every page — the audit's "two 404s on every page", one of the two.
+        #
+        # ⚠️ AND IT WAS INVISIBLE PRECISELY BECAUSE THE TEXT STILL RENDERED.
+        # `fonts.css` comes FOURTH in `order`, after this file, and declares
+        # the SAME family/weight/style with NO `unicode-range` restriction
+        # (i.e. every code point) — so once the browser's first (this file's,
+        # 404ing) face for "Instrument Sans" fails to load, it falls through
+        # to `fonts.css`'s later, unrestricted, WORKING declaration and the
+        # word renders correctly. Two @font-face rules can cover the same
+        # family/weight/style as a fallback CHAIN, tried in source order,
+        # which is exactly why the page never looked broken and the network
+        # tab was the only place this showed.
+        #
+        # Same fix as `fonts.css`'s own, for the same reason: rewrite the
+        # bundle's relative path to where these bytes are actually served,
+        # rather than dropping Design's (narrower, marginally cheaper)
+        # `unicode-range` subsetting. `fonts.css`'s copy still exists as the
+        # fallback it always was; this one now loads on the first try
+        # instead of 404ing before falling through to it.
+        elif rel.endswith("shared-tokens.css") and "../fonts/" in css:
+            css = css.replace("../fonts/", SERVED_FONTS)
         out.append("/* ── %s ── */\n%s" % (rel, css))
         sizes.append((rel, len(css)))
     return "\n\n".join(out), sizes
@@ -5246,6 +5313,16 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "<link rel=\"preconnect\" href=\"https://cdn.jsdelivr.net\" crossorigin>\n"
         "<link rel=\"dns-prefetch\" href=\"https://mrbadmus-backend.onrender.com\">\n"
         "<title>%s</title>\n"
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — the same
+        # `#E4572E` chevron favicon `generate_site_v5.KS4_FAVICON_LINK` gives
+        # every KS4 page, kept as its own literal here for the same reason
+        # `ds_css()`'s own comment gives for not sharing a bundle across the
+        # two ports: independence, not coupling.
+        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"data:image/svg+xml;"
+        "base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdC"
+        "b3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUi"
+        "IHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2Fw"
+        "PSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\">\n"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
         "%s"
@@ -5398,6 +5475,36 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         # beats a selector.
         "[data-port-region] [style*=\"repeat(auto-fit,minmax(\"]"
         "{grid-template-columns:minmax(0,1fr)!important}"
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 5) — THE CHART
+        # BAR ROW IS THE FIFTH FIXED-TRACK PATTERN, AND IT IS NOT THE
+        # TABLES THE PRINT NOTE BELOW EXEMPTS. Design's node 827
+        # (`Teacher Dashboard.dc.html`) is "label 220px · bar 1fr ·
+        # value 96px" for every "Class means"/"Score spread"/"On
+        # time"/engagement row on the Charts screen. 220 + 96 + the
+        # row's own 14px gap*2 is 344px of FIXED track before the bar
+        # gets anything, and a `px` grid track does not shrink the way
+        # a `1fr` one does — it stays exactly 220 (or 96) however
+        # little room is left, so on a 390px screen the bar collapses
+        # to nothing and the value column's own text ("24/28") still
+        # sits at its full 96px slot, pushed past the viewport edge
+        # by the label column ahead of it. Measured on
+        # `insights-fixture.html`: `document.scrollingElement.
+        # scrollWidth` 409 against a 390 client width, the exact "2/8
+        # and 5/8 sit off the right edge" the audit photographed —
+        # and, unlike the five-column tables the print note below
+        # names, this row is NOT inside an `overflow:hidden` card, so
+        # the overflow reaches the document rather than stopping at a
+        # clipped edge.
+        #
+        # `minmax(0,84px) 1fr minmax(0,54px)` keeps the same three
+        # roles in the same order — Design's own layout, at a smaller
+        # scale — rather than redesigning the row. The label already
+        # carries its own `min-width:0` (Design's node 826), so
+        # shrinking its track lets its own text truncate; the value
+        # column's longest real string ("100/100") measures under
+        # 54px in the row's own `17px var(--st-mono)`.
+        "[data-port-region] [style*=\"220px 1fr 96px\"]"
+        "{grid-template-columns:minmax(0,84px) 1fr minmax(0,54px)!important}"
         "}"
         # ⊕ MRB-306 Phase 2a screen 6 — THE PRINT RULES, MEASURED NOT
         # ASSUMED. `.noprint` alone was not enough to make the digest a
@@ -5473,7 +5580,10 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "</style>\n"
         "</head>\n<body>\n"
         "<div id=\"mrb-teacher\" style=\"background:var(--st-ground);"
-        "min-height:100vh\"></div>\n"
+        "min-height:100vh\">"
+        "<div style=\"padding:40px;font:400 15.5px/1.4 var(--st-ui);"
+        "color:var(--st-muted)\">%s</div>"
+        "</div>\n"
         "%s"
         "<script src=\"/shared/student-runtime.js\"></script>\n"
         "<script>window.__MRB_TPL__=%s;</script>\n"
@@ -5491,6 +5601,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
            DS_CSS_URL,
            setwork_css,
            breakdown_css,
+           html.escape(_LOADING_CAPTION.get(spec["out"], "Loading…")),
            regions,
            json.dumps({"roots": roots, "imports": imports},
                       separators=(",", ":")).replace("<", "\\u003c"),

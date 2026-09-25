@@ -3772,11 +3772,16 @@
        capability the row's own database answers `false` for hides the field
        regardless of what is in it.
 
-       ⚠️ `S.noteLoaded` IS NOT THE SAME QUESTION AS "IS THERE TEXT". Today
-       `teacher_rulings.py` does not pass `note`/`teacherNote` at all
-       (tracked as an open item), so `o.note` is always `undefined` and
-       this field opens blank on every edit — indistinguishable, on
-       screen, from a row whose note genuinely IS empty. `saveEdit()`
+       ⚠️ `S.noteLoaded` IS NOT THE SAME QUESTION AS "IS THERE TEXT". Until
+       25 Sep 2026 `teacher_rulings.py` did not pass `note`/`teacherNote` at
+       all (the open item this comment used to track), so `o.note` was
+       always `undefined` and the field opened blank on every edit —
+       indistinguishable, on screen, from a row whose note genuinely IS
+       empty. ⊕ Stream J, 25 Sep 2026 (experience run, item 4) — CLOSED:
+       `MRB_SET_WORK_EDIT`'s two call sites now pass `note: p.note || ''`
+       (`p.note` carried from `assignments.teacher_note` by `buildPapers` in
+       shared/teacher-live.js), so `o.note` arrives as a real string on every
+       edit and this flips to `true` on its own. `saveEdit()`
        reads THIS flag, not the field's emptiness, to decide whether the
        PATCH may touch `teacher_note` at all: an edit that never learned
        what the stored note was must not be the edit that clears it. Once
@@ -3960,10 +3965,11 @@
 
        ⛔ THE FIRST VERSION OF THIS READ `if (!els.noteWrap.hidden)`,
        UNCONDITIONALLY, and that was a defect this ticket would have
-       shipped: `teacher_rulings.py` does not yet pass the stored
-       `teacher_note` into `edit()` (open item, see its own comment), so
-       `S.noteLoaded` is `false` on every edit today and the field always
-       opens blank. Sending the key regardless would have posted
+       shipped: before 25 Sep 2026 `teacher_rulings.py` did not pass the
+       stored `teacher_note` into `edit()` (see `edit()`'s own comment,
+       closed the same day), so `S.noteLoaded` was `false` on every edit and
+       the field always opened blank. Sending the key regardless would have
+       posted
        `note: ""` on EVERY save — including a save where the teacher only
        moved the deadline — and `note: ""` means "clear it" (contract
        §3.4). A teacher who had written a note, then edited the deadline a

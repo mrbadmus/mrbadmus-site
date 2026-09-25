@@ -255,9 +255,21 @@
   }
 
   async function loadAssignment(sb, assignmentId) {
+    /* ⊕ Stream J, 25 Sep 2026 (experience run, item 3) — `scope_kind`,
+       `scope_ref` and `topic` added so `groupByTopic` has a real subtopic
+       (or, failing that, a real topic/title) to fall back to when a KS4
+       question's bank row cannot be read. Tried with the MRB-335 columns
+       first; a project that has not carried that migration yet still gets
+       everything else, the same guard `loadBankRows` already uses for
+       `figure`. */
     var r = await sb.from("assignments")
-      .select("id, title, due_at, release_at, class_id")
+      .select("id, title, topic, due_at, release_at, class_id, scope_kind, scope_ref")
       .eq("id", assignmentId).limit(1);
+    if (r.error) {
+      r = await sb.from("assignments")
+        .select("id, title, due_at, release_at, class_id")
+        .eq("id", assignmentId).limit(1);
+    }
     if (r.error || !r.data || !r.data.length) {
       throw new Error("breakdown: set unavailable");
     }
@@ -342,10 +354,18 @@
       (rows || []).forEach(function (row) { out[row.id] = row; });
       return out;
     }
-    var r = await sb.from(table).select("id, figure, options").in("id", ids);
+    /* ⊕ Stream J, 25 Sep 2026 (experience run, item 3) — KS4 also reads
+       `subtopic_slug`, the REAL subtopic a bank row was authored for
+       (`ks4_assignment_bank_four_options`'s sibling column, NOT NULL since
+       MRB-332's original table — unlike `figure`, it needs no TEST-only
+       guard of its own). `groupByTopic` groups on this, never on the bank
+       row's own `id` (a per-question id like `ks4-circuit-symbols-e03`,
+       which is not a topic at all). */
+    var cols = keyStage === "KS4" ? "id, figure, options, subtopic_slug" : "id, figure, options";
+    var r = await sb.from(table).select(cols).in("id", ids);
     if (!r.error) { return indexBy(r.data); }
     if (keyStage === "KS4") {
-      var r2 = await sb.from(table).select("id, options").in("id", ids);
+      var r2 = await sb.from(table).select("id, options, subtopic_slug").in("id", ids);
       if (!r2.error) { return indexBy(r2.data); }
     }
     console.error("[breakdown] bank read failed; figures/option text will not draw", r.error);
@@ -695,6 +715,43 @@
     return deslug(parts[parts.length - 1]) || sourceRef;
   }
 
+  /* ⊕ Stream J, 25 Sep 2026 (experience run, item 3) — KS4's `source_ref`
+     (== `assignment_questions.source_ref` == `question_ref`/`bank.id`) is a
+     PER-QUESTION bank id ('ks4-circuit-symbols-e03'), never a topic —
+     `topicTitle` above only makes sense for KS3, where `source_ref` is a
+     lesson path ('unit/lesson'). Grouping KS4 rows on it put every question
+     under its own "topic", titled with the bank id itself.
+
+     The real subtopic a KS4 question was authored for is
+     `ks4_assignment_bank.subtopic_slug`, carried onto the row as
+     `subtopicSlug` in `buildRows` below. That is the group key and the
+     source of the group's title everywhere it is readable.
+
+     ⚠️ FALLBACK ORDER, for a row whose bank id could not be read (a
+     deleted/unreadable bank row — `S.bankById` has nothing for it): the
+     ASSIGNMENT's own scope — `scope_ref` when the teacher set a single
+     subtopic (`scope_kind === 'subtopic'`), else its `topic`/`title` — is
+     still a real curriculum fact, and still never a bank id. Grouping every
+     unreadable row under ONE such fallback group (rather than one bucket per
+     row, `topicTitle`'s old `"§" + row.position` behaviour) is deliberate:
+     a fallback keyed per-question is the exact defect being fixed. */
+  function ks4GroupTitle(slug) {
+    return deslug(slug) || slug;
+  }
+  function groupKeyAndTitle(row) {
+    if (S.keyStage !== "KS4") {
+      return { key: row.sourceRef || ("§" + row.position), title: topicTitle(row.sourceRef) };
+    }
+    if (row.subtopicSlug) {
+      return { key: "st:" + row.subtopicSlug, title: ks4GroupTitle(row.subtopicSlug) };
+    }
+    var a = S.assignment || {};
+    if (a.scope_kind === "subtopic" && a.scope_ref) {
+      return { key: "st:" + a.scope_ref, title: ks4GroupTitle(a.scope_ref) };
+    }
+    return { key: "assignment", title: a.topic || a.title || "This set" };
+  }
+
   /* Every question, in position order, joined to this pupil's attempt (if
      any) and the class-wide flag computed once in open(). */
   function buildRows(myAttempts) {
@@ -710,6 +767,7 @@
       return {
         position: q.position,
         sourceRef: q.source_ref,
+        subtopicSlug: bank ? bank.subtopic_slug : null,
         stem: (rep && rep.question_text) || null,
         figure: bank ? bank.figure : null,
         answered: !!mine,
@@ -732,11 +790,11 @@
   function groupByTopic(rows) {
     var order = [], byKey = {};
     rows.forEach(function (row) {
-      var key = row.sourceRef || ("§" + row.position);
-      var g = byKey[key];
+      var kt = groupKeyAndTitle(row);
+      var g = byKey[kt.key];
       if (!g) {
-        g = { key: key, title: topicTitle(row.sourceRef), rows: [], right: 0, total: 0 };
-        byKey[key] = g;
+        g = { key: kt.key, title: kt.title, rows: [], right: 0, total: 0 };
+        byKey[kt.key] = g;
         order.push(g);
       }
       g.total += 1;

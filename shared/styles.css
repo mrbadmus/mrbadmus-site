@@ -955,6 +955,23 @@ a { color: inherit; text-decoration: none; }
 .nav-arrow.next::after  { content: '→'; color: var(--accent); font-weight: 700; }
 .nav-arrow-label { font-size: var(--fs-label); color: var(--muted); font-weight: 600; }
 .nav-arrow-title { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+/* ⊕ Stream J, 25 Sep 2026 (experience run, item 5) — the SPAN wrapping the
+   label + title is a flex item of `.nav-arrow` (a flex row) but is itself a
+   plain block, so its width comes from ordinary shrink-to-fit sizing: the
+   widest child's PREFERRED width, which for `.nav-arrow-title` is its own
+   `max-width: 200px` ceiling (the un-wrapped text is wider still). A flex
+   item's default `min-width: auto` lets it claim that as its floor — so at
+   390/360, where `.nav-arrow`'s own `max-width: 45%` leaves nowhere near
+   200px of room, the SPAN rendered at ~200px anyway and spilled out of its
+   OWN parent's box (`.nav-arrow` sized correctly at 45%; its child did not
+   shrink to fit inside it), pushing `document.scrollingElement.scrollWidth`
+   past the viewport (measured 450px at 390 on a KS4 lesson page's "Next"
+   arrow — MRB catalogue's `circuit-symbols.html`, this rule is site-wide so
+   every lesson page's nav arrows are covered). `min-width: 0` removes that
+   floor so the span shrinks with its flex-item parent; `.nav-arrow-title`'s
+   own `overflow: hidden` + `text-overflow: ellipsis` then does what it was
+   always meant to at the resulting, genuinely-narrower width. */
+.nav-arrow > span { min-width: 0; }
 .subtopic-nav-spacer { flex: 1; }
 
 /* ── BREADCRUMB BAR ── */

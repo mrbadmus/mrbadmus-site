@@ -1902,6 +1902,17 @@ def page_html(roots, imports, logic, nav, fixture, versions):
         # it — which on the student pages once meant a real class name shipped
         # in a file whose own banner said it held no data.
         "<title>Leaderboard | MrBadmusAI</title>\n"
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — the same
+        # `#E4572E` chevron favicon `generate_site_v5.KS4_FAVICON_LINK` gives
+        # every KS4 chrome and lesson page, kept as its own literal here for
+        # the same reason: this port is deliberately independent of the KS4
+        # generator (see `page_html`'s own note on why the nav is read fresh
+        # rather than lifted, elsewhere in this file).
+        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"data:image/svg+xml;"
+        "base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdC"
+        "b3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUi"
+        "IHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2Fw"
+        "PSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\">\n"
         "%s"
         "<link rel=\"preload\" href=\"/shared/fonts/fraunces-var-latin.woff2\" "
         "as=\"font\" type=\"font/woff2\" crossorigin>\n"
