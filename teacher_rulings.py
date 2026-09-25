@@ -11013,8 +11013,23 @@ componentDidUpdate() {
        emptying the column. `hasChase` is false, so the WRAP takes the
        footer with it and there is no button offering to remind nobody. */
     if (!wCards.length) {
+      /* \u2295 Stream J, 25 Sep 2026 (experience run, item 1) \u2014 THE EMPTY STATE
+         MUST READ THE SAME PAPERS THE TABLE DOES. `wCards` is built from
+         `wLive` (open papers only, MRB-336 \u00a74.1's own rule: a card is a
+         LIVE assignment), but "No work set in this week" was shown whenever
+         THAT was empty \u2014 including a week whose only paper had already
+         closed. The Assignments table below is built from `wPapers`, every
+         state, so a past week with a closed set showed a homework card
+         claiming nothing was set while its own table listed the set right
+         under it. `wPapers.length` is the same test the table's `assignments
+         = wPapers.map(...)` runs, so the two can no longer disagree: "no
+         work" is said only when there truly is no paper in the week at all,
+         and a week with only closed/scheduled work says so instead. */
       wCards.push({ eyebrow: "This week's homework",
-        title: 'No work set in this week', count: '\u2014', pct: 0,
+        title: wPapers.length
+          ? 'Nothing open this week \u2014 see Assignments below'
+          : 'No work set in this week',
+        count: '\u2014', pct: 0,
         hasChase: false, chase: [], remindLabel: '', remind: () => {},
         hasMore: false, moreLabel: '', more: () => {} });
     }
