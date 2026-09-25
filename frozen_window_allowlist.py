@@ -127,6 +127,53 @@ KS3_PERMITTED_FIELDS = frozenset({"text", "options", "figure"})
 KS4_PERMITTED_FIELDS = frozenset({"text", "options", "correct_index", "why",
                                   "figure"})
 
+# ── ⊕ D3 — ONE further id, TEXT ONLY (Mide, 26 Sep 2026) ────────────────
+# A separate one-time exception, NOT a 29th member of the list above: it is
+# narrower than either MRB-352 ruling, so it gets its own list and its own
+# field set, and `ALLOWLIST` stays exactly the 28.
+#
+# c1-01-s04's stem read "Four cuts before the floor, the edge of the piece
+# stops looking smooth. Why?" — it leant on the lesson's sugar-cutting bench,
+# which a pupil served the row through Set work has never seen. Mide ruled it
+# may be edited in place under ALL of these conditions:
+#
+#   * the same id, band and bank_position;
+#   * the same options, the same correct answer and the same "why" text —
+#     byte for byte;
+#   * the ONLY change is that the question text now carries its own set-up.
+#
+# It covers exactly this one id and no other frozen row. Checked before the
+# load: `assignment_question_attempts` snapshots `question_text` at attempt
+# time, so any past answer keeps the wording the pupil actually saw.
+D3_TEXT_ONLY = [
+    "c1-01-s04",                             # pos  7  KS3 chemistry C1
+]
+
+RULING_D3 = (
+    "Mide, 26 Sep 2026 (experience follow-ups D3) — a one-time exception "
+    "like the 28 diagram rows, covering exactly c1-01-s04. Same id, band "
+    "and bank_position; same options, same correct answer, same why text; "
+    "the only change is that the question text carries its own set-up, "
+    "because pupils never saw the lesson's sugar-cutting activity."
+)
+
+# Only the stem. Options (and with them the key and every why) stay fixed.
+D3_PERMITTED_FIELDS = frozenset({"text"})
+
+
+def permitted_fields(row_id, key_stage):
+    """The fields a frozen row may differ in, or None if it may not differ
+    at all. The single place the guard and the leaf checker ask."""
+    if row_id in D3_TEXT_ONLY:
+        return D3_PERMITTED_FIELDS
+    if row_id in ALLOWLIST:
+        return KS3_PERMITTED_FIELDS if key_stage == "ks3" \
+            else KS4_PERMITTED_FIELDS
+    return None
+
+
 assert len(CONFIRMED) == 14, "the ruling covers 14 confirmed rows"
 assert len(BORDERLINE) == 14, "the ruling covers 14 borderline rows"
 assert len(ALLOWLIST) == 28, "the ruling covers exactly 28 ids, with no duplicates"
+assert len(D3_TEXT_ONLY) == 1, "the D3 ruling covers exactly one id"
+assert not (set(D3_TEXT_ONLY) & ALLOWLIST), "D3 is separate from the 28"
