@@ -11192,6 +11192,24 @@ componentDidUpdate() {
      "above it, in words. Both now count the released papers, and the word "
      "\"marked\" is dropped for the same reason as the tile's caption."),
 
+    # ══ ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 26) — "LAST
+    #    ACTIVE NO ACTIVITY YET" ═══════════════════════════════════════════
+    #
+    # The same defect the class card's `activity` line had (see
+    # "\"LAST ACTIVITY NO ACTIVITY YET\"" above), on the student summary
+    # sentence Design never gave a label to at all. `st.last` is either
+    # `relativeTime(...)` ("2 days ago") or the sentence "No activity yet",
+    # and this line always prefixed it with "last active " — so a student
+    # with no submissions read "…against a class mean of 65% · last active
+    # No activity yet", a label glued onto a sentence that already says the
+    # thing the label was there to introduce.
+    ("        + ' · last active ' + st.last)",
+     "        + (st.last === 'No activity yet' ? ' · ' + st.last\n"
+     "          : ' · last active ' + st.last))",
+     "the student summary sentence's own tail — drop the label when the "
+     "value is already a sentence, exactly as the class card's `activity` "
+     "ruling does for the same string."),
+
     # ── 4. "SEND A REMINDER" SENT NOTHING ───────────────────────────────
     #
     # Design draws the button (node 341), gates it on `student.flagged`, and
