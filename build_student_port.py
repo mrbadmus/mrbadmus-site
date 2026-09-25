@@ -3208,34 +3208,54 @@ def lesson_index():
 # `shared/student-live.js`'s `ks4TopicHref`, which is where the four
 # candidate addresses actually get resolved down to one.
 def ks4_lesson_index():
-    """`{subtopic_slug: topic_slug}` for every authored KS4 subtopic.
+    """`{subtopic_slug: [{subject, topic}, …]}` for every authored KS4 subtopic.
 
     Returns (js_source, n_subtopics). Stops the build if a subtopic's topic
     directory does not exist, under ANY pathway/tier, for its own subject —
     which is what a wrong `topic` value in `ks4_data`/`ks4_seed_sow` (a typo,
     a topic renamed on one side and not the other) would look like: a subtopic
     that this function is about to tell a student's browser lives somewhere
-    that was never built. `classify()`'s own uniqueness assertion (a subtopic
-    slug appearing twice across the three sciences) is relied on here rather
-    than re-checked — see its docstring — so the map is safely keyed on the
-    slug ALONE, with no subject in the key.
+    that was never built.
+
+    ⊕ RULED 25 Sep 2026 (experience run, stream K), coordinator instruction —
+    THE VALUE IS A LIST, NOT A BARE STRING, AND SUBJECT RIDES IN IT.
+    `ks4_assignment_bank` used to supply the subject at read time; a KS4
+    question's ref reached the table by id to get it, and `pool_ownership.py`
+    refused that outright (check 6: no frontend surface may name the KS4
+    assignment pool at all, full stop — it is served by backend composition
+    only). So both subject and topic have to come from here, curriculum data,
+    never a database read.
+
+    `classify()` itself asserts a subtopic slug is unique WITHIN one export —
+    see its own docstring — so today this list is always length 1. It is
+    still a list and not a bare `{subject, topic}` dict: a caller
+    (`ks4TopicHref` in shared/student-live.js) that got a single dict back
+    would have no way to notice the day that assertion stopped holding and
+    would silently resolve to whichever entry the dict-literal happened to
+    keep. A list makes "more than one candidate" a shape the caller can see
+    and disambiguate (by the assignment's own subject) rather than a fact it
+    has no way to ask about.
     """
     import ks4_data
 
     cls = ks4_data.classify()
-    index = {slug: info["topic"] for slug, info in cls.items()}
+    index = {}
+    for slug, info in cls.items():
+        index.setdefault(slug, []).append(
+            {"subject": info["subject"], "topic": info["topic"]})
 
     missing = []
     for slug in sorted(index):
-        info = cls[slug]
-        found = any(
-            os.path.exists(os.path.join(
-                pathway, tier, info["subject"], info["topic"], slug + ".html"))
-            for pathway in ("combined", "triple")
-            for tier in ("foundation", "higher")
-        )
-        if not found:
-            missing.append(slug)
+        for entry in index[slug]:
+            found = any(
+                os.path.exists(os.path.join(
+                    pathway, tier, entry["subject"], entry["topic"],
+                    slug + ".html"))
+                for pathway in ("combined", "triple")
+                for tier in ("foundation", "higher")
+            )
+            if not found:
+                missing.append("%s (%s)" % (slug, entry["subject"]))
     if missing:
         raise SystemExit(
             "build_student_port.py: %d KS4 subtopic(s) named in "
@@ -3247,22 +3267,28 @@ def ks4_lesson_index():
             % (len(missing), ", ".join(missing[:5]),
                " …" if len(missing) > 5 else ""))
 
-    rows = ",\n".join('  %s: %s' % (_q(s), _q(index[s]))
-                       for s in sorted(index))
+    def _entry(e):
+        return "{subject: %s, topic: %s}" % (_q(e["subject"]), _q(e["topic"]))
+
+    rows = ",\n".join(
+        "  %s: [%s]" % (_q(s), ", ".join(_entry(e) for e in index[s]))
+        for s in sorted(index))
     return ("/* ══════════════════════════════════════════════════════════\n"
             "   GENERATED — do not edit. `python3 build_student_port.py`\n"
             "   ══════════════════════════════════════════════════════════\n"
             "\n"
-            "   Which TOPIC each KS4 subtopic lives under, as\n"
-            "   `slug: \"topic\"`. Subject comes from the bank row itself and\n"
-            "   pathway/tier from the student's own class — see\n"
-            "   `ks4TopicHref` in shared/student-live.js, which is the only\n"
-            "   reader of this map and is where the four candidate addresses\n"
-            "   are resolved down to the one this class's copy of the\n"
-            "   subtopic lives at:\n"
+            "   Every (subject, topic) a KS4 subtopic slug could belong to,\n"
+            "   as `slug: [{subject, topic}, …]` — a LIST, because a slug's\n"
+            "   subject can no longer be read off a database row\n"
+            "   (`pool_ownership.py` forbids any frontend read of the KS4\n"
+            "   assignment pool) and this is curriculum data instead. See\n"
+            "   `ks4TopicHref` in shared/student-live.js, the only reader of\n"
+            "   this map, for how the right entry is picked and how the\n"
+            "   pathway/tier from the student's own class complete the\n"
+            "   address:\n"
             "\n"
-            "       /{pathway}/{tier}/{subject}/\n"
-            "         + MRB_KS4_TOPICS[slug] + /slug + .html\n"
+            "       /{pathway}/{tier}/{entry.subject}/\n"
+            "         + entry.topic + / + slug + .html\n"
             "\n"
             "   Built from ks4_data.classify() and checked against the built\n"
             "   tree: every one of these %d subtopics had a page on disk,\n"
