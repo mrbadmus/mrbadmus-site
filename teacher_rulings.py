@@ -6868,6 +6868,96 @@ LOGIC = (
      "`glance`'s own keys are separate entries at the end of this tuple, "
      "because a property anchor replaces one property."),
 
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 10) · "NOT IN YET" WAS
+    #    THREE DIFFERENT PUPILS WEARING ONE WORD ══════════════════════════
+    #
+    # `wTally[r.id].in` counts COMPLETE cells only (`row.submitted[i]`, which
+    # `cellOf` sets true only past the completion guard), so "not one
+    # complete cell yet" was rendered as a single word — "Not in yet" — for
+    # three pupils Mide's vocabulary (this run's brief, item 10; the roster
+    # dot's own five-state list a few hundred lines down) says apart:
+    #
+    #   · a pupil MID-ANSWER on an open paper this week (Erin, 2 of 10) —
+    #     "In progress", the word every other surface on this page already
+    #     uses for exactly this state.
+    #   · a pupil with nothing at all once EVERY paper the week names has
+    #     CLOSED — "Missing", not an accusation levelled while the paper is
+    #     still open.
+    #   · a pupil with nothing at all while the week's paper(s) are still
+    #     open — "Not started", which is the one case "Not in yet" was ever
+    #     actually true for.
+    #
+    # `row.status[i]` already carries `'in_progress'` for a row that exists
+    # and is not complete — set before the completion guard in `buildMatrix`
+    # for this exact reason (WHICH SUBMISSION ROW THIS CELL IS, above it) —
+    # so no new read is needed, only a check nothing here was making.
+    (
+        "    const wTally = {};\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      let wIn = 0, wLateOne = null;\n"
+        "      wIdxs.forEach(i => {\n"
+        "        if (!(row && row.submitted[i])) return;\n"
+        "        wIn += 1;\n"
+        "        if (row.late[i] === true) wLateOne = true;\n"
+        "        else if (row.late[i] === false && wLateOne !== true) "
+        "wLateOne = false;\n"
+        "      });\n"
+        "      wTally[r.id] = { in: wIn, asked: wIdxs.length, late: "
+        "wLateOne };\n"
+        "    });",
+        "    const wTally = {};\n"
+        "    const wAllClosed = wPapers.length > 0 && "
+        "wPapers.every(p => p.closed);\n"
+        "    kRoster.forEach(r => {\n"
+        "      const row = kMx.byId[r.id];\n"
+        "      let wIn = 0, wLateOne = null, wStarted = false;\n"
+        "      wIdxs.forEach(i => {\n"
+        "        if (row && row.status && row.status[i] === 'in_progress') "
+        "wStarted = true;\n"
+        "        if (!(row && row.submitted[i])) return;\n"
+        "        wIn += 1;\n"
+        "        if (row.late[i] === true) wLateOne = true;\n"
+        "        else if (row.late[i] === false && wLateOne !== true) "
+        "wLateOne = false;\n"
+        "      });\n"
+        "      wTally[r.id] = { in: wIn, asked: wIdxs.length, late: "
+        "wLateOne, started: wStarted, closed: wAllClosed };\n"
+        "    });",
+        "the tally itself: `started` (any of the week's papers has an "
+        "in-progress row for this pupil) and `closed` (every one of the "
+        "week's papers has closed) are the two facts the roster/Today word "
+        "below needs and did not have."
+    ),
+    (
+        "      week: !kPapers.length ? '—'\n"
+        "        : (!wTally[r.id].asked ? 'Nothing set'\n"
+        "          : (!wTally[r.id].in ? 'Not in yet'\n"
+        "            : (wTally[r.id].in < wTally[r.id].asked\n"
+        "              ? wTally[r.id].in + ' of ' + wTally[r.id].asked + "
+        "' in'\n"
+        "              : (wTally[r.id].late === true ? 'In · late'\n"
+        "                : (wTally[r.id].late === false ? 'In · on "
+        "time'\n"
+        "                  : 'In · timing unknown'))))),",
+        "      week: !kPapers.length ? '—'\n"
+        "        : (!wTally[r.id].asked ? 'Nothing set'\n"
+        "          : (!wTally[r.id].in\n"
+        "            ? (wTally[r.id].started ? 'In progress'\n"
+        "              : (wTally[r.id].closed ? 'Missing' : 'Not started'))\n"
+        "            : (wTally[r.id].in < wTally[r.id].asked\n"
+        "              ? wTally[r.id].in + ' of ' + wTally[r.id].asked + "
+        "' in'\n"
+        "              : (wTally[r.id].late === true ? 'In · late'\n"
+        "                : (wTally[r.id].late === false ? 'In · on "
+        "time'\n"
+        "                  : 'In · timing unknown'))))),",
+        "the roster row's own word: In progress / Missing / Not started in "
+        "place of the one word \"Not in yet\" used for all three. Read by "
+        "the class roster and, via the same `roster` builder, by Today's "
+        "chase list and the printed report."
+    ),
+
     # the two helpers those tiles now call, defined beside them
     #
     # ⊕ RE-ANCHORED FOR DESIGN'S v3, 1 Sep 2026 (MRB-306). This entry only
@@ -11776,6 +11866,44 @@ componentDidUpdate() {
      "the score-spread chart's \"Students\" tile — \"With marked work\" "
      "→ \"With results\", same reason as every other tile in this "
      "pass."),
+
+    # ══ ⊕ experience run, 25 Sep 2026 (Mide's item 11) · THE DIGEST AND
+    #    THE CLASS PAGE COUNTED "TO CHASE" TWO DIFFERENT WAYS ═══════════
+    #
+    # The class screen's own chase list, "Remind all N" and the card
+    # eyebrow all come from `chaseFor(k)` — `rosterFor(k).filter(r =>
+    # !r.inWeek)`, everyone who has not handed in this week's work. The
+    # digest counted something narrower: `r.flag`, which ALSO requires a
+    # missing marked paper or an average under 50%. A pupil who simply
+    # has not submitted yet — no other black mark against them — was on
+    # the class page's chase list and invisible to the digest's, so a
+    # class offering "Remind all 6" showed the digest "4 to chase" for
+    # the same six children. The digest's own caption already promises
+    # the wider count ("Students with nothing in" — not "…and behind"),
+    # so it is `chaseFor` that was right and `flag` that was answering a
+    # narrower question under the wider caption.
+    #
+    # ⚠️ `flagged`/`watch` (the "Keep an eye on" card, `r.flag`) ARE NOT
+    # TOUCHED. That card is deliberately the narrower, more concerning
+    # population — nothing in AND missing-marked-or-struggling — and
+    # stays exactly as it is; only "to chase" gets the one definition.
+    (
+        "    const kFlagged = flagged.length;",
+        "    const kFlagged = this.chaseFor(k).length;",
+        "the class report's own \"Needs a look\" tile — `chaseFor(k)`, "
+        "the same count and the same method the class screen's \"Remind "
+        "all N\" already uses, in place of the narrower `flag` filter."
+    ),
+    (
+        "      const fl = live ? this.rosterFor(c).filter(r => r.flag)"
+        ".length : 0;",
+        "      const fl = this.chaseFor(c).length;",
+        "the whole-school digest's per-class row (and, through `flagN`, "
+        "the whole-school tile that sums it) — `chaseFor` already returns "
+        "`[]` for a non-live class, so the `live ? … : 0` guard is now "
+        "redundant rather than dropped: the two conditions said the same "
+        "thing under two different names."
+    ),
 
 )
 
