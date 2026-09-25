@@ -5622,6 +5622,35 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "[data-port-region=\"topbar\"] .mrb-crumb{overflow:hidden;"
         "text-overflow:ellipsis}"
         "[data-port-region=\"topbar\"] .mrb-teachername{display:none}"
+        # ⊕ Stream N, 25 Sep 2026 (experience run, item 20) — THE OTHER HALF
+        # OF THIS ITEM, LEFT OPEN BY ROUND THREE. The comment immediately
+        # above named this gap without closing it: `_WK_RAIL`'s own
+        # `flex:1 1 0;min-width:0` (`teacher_rulings.py`) makes the rail
+        # claim whatever is LEFT OVER on its row, and at 360/390 what is left
+        # over is nearly nothing — `_WK_BAR` (`display:flex;gap:12px;
+        # padding:12px`) puts the caption, the rail and BOTH 36px chevrons on
+        # ONE row, and the caption (`weekCaption`, item 10 — a real string,
+        # not a fixed width) plus the two chevrons plus three 12px gaps was
+        # measured leaving the rail 2px on a 360px phone with `class-detail`'s
+        # own 40px side padding and the bar's own 12px eaten first. Fixing a
+        # SINGLE px value would only hold for today's caption text.
+        #
+        # The caption is what is stealing the row, so the caption is what
+        # moves: `flex-basis:100%` on it, inside a bar that now WRAPS, forces
+        # it onto its own line and leaves the ENTIRE row beneath it — bar
+        # width minus only the two 36px chevrons and their gaps — for the
+        # rail, at any caption length. `:has([data-rail="weeks"])` finds the
+        # bar without a new class or a `data-port-region` of its own — the
+        # attribute is already unique on the page (`rail()` in
+        # `shared/teacher-live.js` finds it the same way). Scoped to
+        # `[data-port-region="class"]` although the selector is already
+        # unique, for the same reason the topbar rules above it are scoped —
+        # a reader should not have to prove global uniqueness to trust a
+        # rule that says where it applies.
+        "[data-port-region=\"class\"] .noprint:has([data-rail=\"weeks\"])"
+        "{flex-wrap:wrap}"
+        "[data-port-region=\"class\"] .noprint:has([data-rail=\"weeks\"])"
+        " > span:first-child{flex-basis:100%%}"
         "}"
         # ⊕ MRB-306 Phase 2a screen 6 — THE PRINT RULES, MEASURED NOT
         # ASSUMED. `.noprint` alone was not enough to make the digest a

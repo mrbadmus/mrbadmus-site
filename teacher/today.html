@@ -880,15 +880,30 @@ function envPillFor() {
   return env ? env.toUpperCase() : 'LOCAL';
 }
 
-/* The name students see. `display_name` is the "What name should students
-   see" field; where a teacher has not set one, fall back the same way
-   `class_teachers_for_viewer` does, so one person is never named two ways. */
+/* ⊕ Stream N, 25 Sep 2026 (experience run, item 26) — THE FALLBACK WAS THE
+   FULL NAME; IT IS NOW THE FIRST NAME, MATCHING EVERY GENERATED SCREEN.
+   This used to read "The name STUDENTS see… fall back the same way
+   `class_teachers_for_viewer` does" — a rule copied in from a genuinely
+   different consumer (a byline a PUPIL reads, e.g. "set by your teacher"),
+   applied here to the teacher's OWN greeting and top bar, which nothing
+   else on the site treats that way: `teacher-live.js`'s
+   `teacherName: (profile && profile.first_name) || ""` is what every one
+   of the six generated screens shows, and it never falls back to a
+   surname at all. Left as the full name, a teacher with no `display_name`
+   set (nearly everyone) read "Good afternoon, Tara Audit" here and "Good
+   afternoon, Tara" on every other screen — the same person, named two ways
+   one page apart.
+
+   `display_name` ITSELF STAYS FIRST, because it is the one part of the old
+   rule that is genuinely about THIS teacher's own preference — a name they
+   chose to be shown as — and `today_drive.py`'s own fixture (`display_name:
+   "Ms Nwosu"`) already proves this bar honours it. Only the FALLBACK below
+   it changes, from "the full name" to "the plain first name". */
 function teacherName(profile) {
   if (!profile) { return ''; }
   const dn = (profile.display_name || '').trim();
   if (dn) { return dn; }
-  const fl = ((profile.first_name || '') + ' ' + (profile.last_name || '')).trim();
-  return fl || '';
+  return profile.first_name || '';
 }
 
 /* ⊕ MRB-326 JOB 3 · RULING 8 — THE EYEBROW, FROM DATA AND NOTHING ELSE.
@@ -1128,6 +1143,9 @@ MrBadmusTeacherGuard.requireTeacherRole({
        below is this page's only caller. */
     const TL = window.MrBadmusTeacherLive;
 
+    /* ⊕ Stream N, 25 Sep 2026 (experience run, item 26) — see `teacherName()`
+       above, whose FALLBACK is the fix (the full-name case; a set
+       `display_name` still wins here exactly as it did before). */
     const name = teacherName(ctx && ctx.profile);
     el('greeting').textContent = greetingFor(name);
     /* Design's bar names the teacher between the search and Sign out. This
