@@ -593,15 +593,26 @@
     return fmtSet(iso) + ", " + pad2(d.getHours()) + ":" + pad2(d.getMinutes());
   }
 
-  /* '13 days left', 'Due today', 'Overdue'. Against the SERVER's clock, and
-     rounded the way a student counts: tomorrow is one day left, not 0.7. */
+  /* '13 days left', 'Due tomorrow', 'Due today', 'Overdue'. Against the
+     SERVER's clock.
+     ⊕ SUPERSEDED 25 Sep 2026 (experience run, stream K) — TEST N10. This used
+     to say "rounded the way a student counts: tomorrow is one day left, not
+     0.7" and rounded UP (`Math.ceil`) to make good on it — which instead
+     read "8 days left" for a deadline 7 days 8 hours away: a week and a bit
+     read as more than a week. Counting on fingers from "now" to the deadline
+     gives 7 whole days, which is `Math.floor`, not `Math.ceil`. "Due today"
+     and "Due tomorrow" are the two short buckets `floor` needs of its own —
+     0 and 1 whole days respectively — so a deadline within the next 24h and
+     one within the next 24–48h both still get a NAME rather than "0 days
+     left" / "1 days left". */
   function daysLeft(dueIso, now) {
     if (!dueIso || !now) { return ""; }
     var ms = Date.parse(dueIso) - now;
     if (isNaN(ms)) { return ""; }
     if (ms <= 0) { return "Overdue"; }
-    var days = Math.ceil(ms / 86400000);
-    if (days <= 1) { return "Due today"; }
+    var days = Math.floor(ms / 86400000);
+    if (days < 1) { return "Due today"; }
+    if (days < 2) { return "Due tomorrow"; }
     return days + " days left";
   }
 
