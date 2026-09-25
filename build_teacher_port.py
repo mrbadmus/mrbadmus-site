@@ -4727,8 +4727,8 @@ function MRB_DRAFT_FEEDBACK(subId){
   }).then(function(r){
     if(!r.res.ok){
       throw MRB_API_ERR(r.res,r.d,'/api/teacher/feedback/draft');}
-    return {ok:true, draft:(r.d&&r.d.draft)||'', error:null};},
-    function(e){return {ok:false,draft:null,error:e};});}
+    return {ok:true, draft:(r.d&&r.d.draft)||'', error:null};
+  }).catch(function(e){return {ok:false,draft:null,error:e};});}
 
 /* Why a draft failed, in a sentence a teacher can act on. THE SERVER'S OWN
    SENTENCE FIRST — a 422 carries `parseDraft`'s own reason the model's
@@ -4963,8 +4963,8 @@ function MRB_DELETE_SET_WORK(assignmentId){
   }).then(function(r){
     if(!r.res.ok){
       throw MRB_API_ERR(r.res,r.d,'/api/teacher/set-work/:id');}
-    return {ok:true, error:null};},
-    function(e){return {ok:false, error:e};});}
+    return {ok:true, error:null};
+  }).catch(function(e){return {ok:false, error:e};});}
 
 /* Why a delete failed, in a sentence a teacher can act on. The companion to
    MRB_REMIND_WHY and MRB_SHOUTOUT_WHY, separate for the same reason: a
@@ -5049,8 +5049,8 @@ function MRB_SET_AUTO_ASSIGNMENTS(classId, on){
     if(!r.res.ok){
       throw MRB_API_ERR(r.res,r.d,'/api/class/auto-assignments');}
     var st=r.d&&r.d.auto_assignments;
-    return {ok:true, state:(st===true||st===false)?st:null, error:null};},
-    function(e){return {ok:false,state:null,error:e};});}
+    return {ok:true, state:(st===true||st===false)?st:null, error:null};
+  }).catch(function(e){return {ok:false,state:null,error:e};});}
 
 /* Why a set failed, in a sentence a teacher can act on. The companion to
    MRB_SHOUTOUT_WHY and MRB_REMIND_WHY, separate for the same reason: a
