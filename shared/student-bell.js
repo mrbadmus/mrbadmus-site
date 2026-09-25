@@ -464,6 +464,8 @@
     var go = hrefFor(item);
     b.setAttribute("data-go", go ? "1" : "0");
 
+    var kindLabel = KINDS[item.kind] || KIND_UNKNOWN;
+
     var kind = el("span", "", "");
     kind.className = "mrb-bell-kind";
     if (!item.read) {
@@ -471,14 +473,32 @@
       dot.className = "mrb-bell-dot";
       kind.appendChild(dot);
     }
-    kind.appendChild(document.createTextNode(
-      KINDS[item.kind] || KIND_UNKNOWN));
+    kind.appendChild(document.createTextNode(kindLabel));
 
     var text = el("span", "", item.text || "");
     text.className = "mrb-bell-text";
 
-    var date = el("span", "", when(item.created_at));
+    var dateText = when(item.created_at);
+    var date = el("span", "", dateText);
     date.className = "mrb-bell-when";
+
+    /* ⊕ RULED 25 Sep 2026 (experience run, stream K) — PROD N5. Read on this
+       row's own visible content, an unread item and a read one differ by
+       exactly one thing: a 6px coloured dot (`.mrb-bell-dot`, above), which
+       carries no text and is invisible to a screen reader. `data-unread`
+       says the same fact to CSS, which is equally silent to anyone not
+       looking at the dot. A READ row is left alone — its accessible name
+       already comes correctly off `kind`/`text`/`date`'s own text content,
+       and changing a working default for uniformity's own sake is a second
+       thing that could drift from what is actually on screen. An UNREAD row
+       gets an explicit `aria-label` that says the same three facts PLUS the
+       one the dot was carrying, in the same order they read on screen:
+       "Unread: feedback, <message>, 6 Sep". */
+    if (!item.read) {
+      b.setAttribute("aria-label", "Unread: " + kindLabel
+        + (item.text ? ", " + item.text : "")
+        + (dateText ? ", " + dateText : ""));
+    }
 
     b.appendChild(kind);
     b.appendChild(text);
