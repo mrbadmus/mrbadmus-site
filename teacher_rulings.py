@@ -1566,6 +1566,22 @@ SET_ATTR = {
     23:  {"class": "mrb-findlabel"},
     24:  {"class": "mrb-findkey"},
 
+    # ── ⊕ Stream M, 25 Sep 2026 (experience run round 3, item 20) ───────
+    #
+    # THREE MORE HOOKS FOR THE SAME BAR, for the same reason as the three
+    # above: Design's inline style strings give `shared`'s CSS nothing to
+    # select, and `SET_ATTR` refuses to overwrite an attribute Design already
+    # wrote, so none of these three carried a `class` before this. See the
+    # `@media (max-width:420px)` block in `build_teacher_port.py` for what
+    # they do — none of it fires above 420px, so the bar is byte-identical to
+    # Design's above that width, exactly like the 560px rule already does.
+    #
+    # 12 is the wordmark's own text span (inside node 11's flex wrapper),
+    # 17 is the class-code crumb, 30 is the signed-in teacher's name.
+    12:  {"class": "mrb-brand"},
+    17:  {"class": "mrb-crumb"},
+    30:  {"class": "mrb-teachername"},
+
     158: {"data-port-region": "classes"},
     208: {"data-port-region": "class"},
     330: {"data-port-region": "student"},
