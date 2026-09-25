@@ -340,6 +340,17 @@ throwaway pool on TEST — a follow-up, not tonight.
   `set-work.js?v=a7d68b0a`, `teacher-ds.css?v=a682d3cd`, `student-live.js?v=54bca63b`,
   `styles.css?v=75c28b2d`, `ks3.css?v=a50390d5`.
 
+### Round two landing
+
+`feat/experience` → main **`f63775872`** (streams H, I, J merged; build; the drive fix;
+the report). Pushed through the hook with 25 fresh green receipts and the one override.
+Live-verified the same way: `/teacher/student-detail` byte-identical to the committed
+page; `teacher-live.js?v=5d463a15`, `breakdown.js?v=d900e5f5`, `breakdown.css?v=58b756bb`,
+`student-live.js?v=c0fff9b0`, `student-runtime.js?v=52bf5e1a`, `teacher-ds.css?v=6ac8f824`,
+`mrbadmus.v2.js?v=7c0161a8`, `set-work.js?v=de6dbd23`, `styles.css?v=ce417591`,
+`tokens.css?v=4ac1e47c` all fetched with a nonce and byte-identical. Backend unchanged at
+`013cfbf`.
+
 ## Decisions I made
 
 1. **`when === 'marked'` keeps its name and changes its meaning** rather than renaming
@@ -364,6 +375,37 @@ throwaway pool on TEST — a follow-up, not tonight.
    migration and not on production.
 9. Backend landed first (`013cfbf`, proven by `/api/health` `build`); the route is
    additive and unused until the site landed.
+
+### The third pass (on the round-two build, main `f63775872`)
+
+**Production, pupil:** all nine fixed pupil items hold live (P1 Average 55% = 16/29, the
+old mean-of-percentages would say 56; "· late" at every width; the flashcards dialog traps
+and names; score bars; bell name and focus; week names; the tap target; the empty box
+gone; the camera name; the font and favicon 404s gone). P3 and P9 are in the live code but
+could not be shown because this pupil has no unstarted set left. **Zero console errors and
+zero failed requests on eleven pages at 1280/390/360; zero production writes**, proved by a
+before/after SELECT. 10h/Ph1 with the v2 rules: 2 of 17 in, both on time, mean 55%,
+identical to round one. New, all minor: the assignment header strip does not wrap at phone
+width when the LATE chip is present (26 px sideways at 390); "late" said twice at narrow
+width; work rows lack `aria-expanded`; unread bell items are marked by a dot only; the chat
+panel lacks `role="dialog"`; the 404 page has no icon link.
+
+**TEST, every journey:** of the 27 earlier findings **17 fixed, 5 partly, 5 still open, none
+regressed**; `teacher_class_rollup_v2` answered 200 on My classes, Today and the digest;
+every headline number on the card, class page, pupil pages, Charts (both scopes, all six
+tabs) and digest agreed with the seed before and after a pupil finished live (2 of 8 →
+3 of 8 in; mean 59 → 60; on time 71 → 75). Twelve new findings, one blocking: the pupil's
+Work-row **"Continue" opened the assignment page with no id**, so a class with automatic
+work off read "No work has been set for this week yet". Still open from before: Today
+(`teacher/today.html`, hand-written) kept its own copy of the deadline rule and so
+disagreed with every other screen ("0 of 8 in" vs "3 of 8"); the 360-wide week strip;
+KS4 "Open the lesson" doing nothing; a handful of aria and copy items ("DUE DUE",
+"1 classes", the engagement "2+ weeks" bucket starting at 7 days). Two data-safety finds:
+editing a multi-topic set listed every question under the first topic and would drop the
+rest on save; multi-topic worksheets fired a 400 and were named after the first topic.
+
+**Round three** (streams K, L, M) fixes all of the above at the source; its landing and the
+fourth-pass verification are recorded at the very end of this file.
 
 ## A build-order subtlety found in round 2 (for the next engineer)
 
