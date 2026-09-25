@@ -11529,6 +11529,23 @@ componentDidUpdate() {
         });
       const cDue = (p.due || '').replace(/^Due /, '');
       const cKey = k.id + ':' + wi + ':' + p.id;
+      /* \u2295 Stream L, 25 Sep 2026 (experience run, item 4) \u2014 THE CARD
+         FORGOT IT HAD ALREADY REMINDED TODAY, ON A RELOAD. `s.remindDone`
+         is SESSION state \u2014 it answers "did I press this in the last few
+         minutes", and a reload starts a new session with none of it. The
+         database has always known better: `student_notifications` carries
+         the real log, and `MrBadmusTeacherLive.remindedToday(assignmentId)`
+         (a fresh read, for the class actually being viewed, done once in
+         `base()`) answers the honest question \u2014 "were these children
+         ALREADY told today, by anyone" \u2014 the same question the deleted
+         `drawRemindControl` banner used to pre-read before MRB-326 JOB 4c
+         removed the fetch. It is back because Mide asked for it back
+         (experience run, item 4): a teacher who reloads must not be invited
+         to press a button that would write nothing. */
+      const cAlreadyToday = cMiss.length > 0 && cMiss.every(r => {
+        const rd = window.MrBadmusTeacherLive && window.MrBadmusTeacherLive.remindedToday(p.id);
+        return !!(rd && rd[r.id]);
+      });
       return {
         eyebrow: p.source === 'auto'
           ? (cDue ? "This week's homework \u00b7 due " + cDue
@@ -11542,26 +11559,38 @@ componentDidUpdate() {
           name: this.shortName(r.name),
           open: (e) => { e.stopPropagation(); MRB_GO('student', { student: r.id, 'class': k && k.id }); }
         })),
-        remindLabel: (s.remindDone === cKey)
-          ? 'Reminded today' : 'Remind all ' + cMiss.length,
-        remind: () => MRB_REMIND_ALL(k && k.id,
-          [{ assignmentId: p.id, studentIds: cMiss.map(r => r.id) }]).then((r) => {
-          if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
-          this.setState({ remindDone: cKey });
-          if (!r.ok) {
-            this.ping(r.asked === 1
-              ? 'They have already been reminded about this today'
+        remindLabel: (s.remindDone === cKey || cAlreadyToday)
+          ? 'Reminded today \u00b7 ' + cMiss.length : 'Remind all ' + cMiss.length,
+        remind: () => {
+          /* A second press \u2014 this session or after a reload \u2014 writes
+             nothing new (the database's own unique index already made
+             that true) and now SAYS so up front instead of round-tripping
+             to be told. */
+          if (s.remindDone !== cKey && cAlreadyToday) {
+            this.ping(cMiss.length === 1
+              ? 'Already reminded today'
               : 'They have all already been reminded about this today');
-            return;
+            return Promise.resolve();
           }
-          if (r.ok < r.asked) {
-            this.ping('Reminded ' + r.ok + ' of ' + r.asked
-              + ' \u2014 the rest were already reminded today');
-            return;
-          }
-          this.ping('Reminder sent to ' + r.ok
-            + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
-        }),
+          return MRB_REMIND_ALL(k && k.id,
+            [{ assignmentId: p.id, studentIds: cMiss.map(r => r.id) }]).then((r) => {
+            if (r.error) { this.ping(MRB_REMIND_WHY(r.error)); return; }
+            this.setState({ remindDone: cKey });
+            if (!r.ok) {
+              this.ping(r.asked === 1
+                ? 'They have already been reminded about this today'
+                : 'They have all already been reminded about this today');
+              return;
+            }
+            if (r.ok < r.asked) {
+              this.ping('Reminded ' + r.ok + ' of ' + r.asked
+                + ' \u2014 the rest were already reminded today');
+              return;
+            }
+            this.ping('Reminder sent to ' + r.ok
+              + (r.ok === 1 ? ' student in ' : ' students in ') + k.code);
+          });
+        },
         hasMore: false, moreLabel: '', more: () => {}
       };
     };
