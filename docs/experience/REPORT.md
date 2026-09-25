@@ -432,6 +432,32 @@ byte-identical; `teacher-live.js?v=5de6cfd0`, `breakdown.js?v=9d36a7d9`,
 `mrbadmus.v2.js?v=bc5d7b31`, `set-work.js?v=ffac474f`, `styles.css?v=ce417591` all
 byte-identical with a nonce. Gates: 25 green, `set_work` on its three inherited checks only.
 
+### The fourth pass (on the round-three build)
+
+**Production, pupil:** all six round-three pupil fixes hold live; 36 page loads (12 pages ×
+1280/390/360) with no console error, no failed request and no sideways scroll; 32 Tab stops
+ringed at both widths; **zero writes** (row checksums identical before and after). One real
+find: "days left" counted 24-hour periods, so the two live Monday 09:00 deadlines (10h/Ph1,
+17 pupils; 11r/Sc1, 34 pupils) would have read "Due today" all Sunday afternoon. Fixed the
+same hour to count London calendar days (`daysLeft` in `shared/student-live.js`, proved
+across the weekend: Sat "2 days left", Sun "Due tomorrow", Mon before 09:00 "Due today")
+and landed as main `bfc24c499`, verified live.
+
+**TEST:** of round three's 22 items, 14 fixed, 7 partly, 1 unverifiable, none went
+backwards — but **one round-three change caused a regression (R1)**: the new KS4 lesson-link
+code put KS4 subtopic slugs into the list the pupil page reads `ks3_cards` and
+`ks3_ladder_questions` by, and eight slugs are identical across the key stages, so a Year 10
+physics class was dealt the KS3 chemistry flashcards and a KS3 practice question for its own
+"Changes of State" set. That was live on 10h/Ph1 for about ninety minutes. Fixed at once
+(a KS4 slug feeds the docket name and the lesson link and nothing else), landed as the
+commit after `bfc24c499`, verified live by bytes. The pass also found: the teacher's pupil
+page still averaged percentages (the same defect fixed on the pupil side in round two);
+Charts counted a scheduled set; a multi-topic set spanning more than ten subtopics could
+not be downloaded at all; the multi-topic edit's count change swapped the kept questions
+and saved a different total; the pupil page's "Send a reminder" reminded about an
+unreleased set and never changed state; the 360-wide week strip; and a few wording and
+accessibility items. Stream N fixes those; its landing is the last entry below.
+
 ## A build-order subtlety found in round 2 (for the next engineer)
 
 `build_all.py` step 1 (`generate_site_v5.py`) restamps the hand-written teacher pages
