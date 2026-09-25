@@ -2237,9 +2237,16 @@ window.MrBadmusTeacherData = (function () {
                note on the same drop in `loadClassDetail`). ⚠️ `id` is NOT
                droppable and was checked before it was considered: it
                becomes `subId` in `buildMatrix` (teacher-live.js ~945),
-               which is the only thing written feedback binds to. */
+               which is the only thing written feedback binds to.
+
+               ⊕ Mide's 25 Sep 2026 ruling (experience run, item 7) —
+               `started_at` ADDED. It is the one honest "were they here"
+               timestamp an IN-PROGRESS row has (`completed_at`/`submitted_at`
+               are both null until the paper is finished); `buildMatrix`'s
+               `activity[]` reads it so "last active" stops being blind to a
+               pupil still mid-way through an open paper. */
             .select('id, assignment_id, student_id, score, max_score, ' +
-                    'submitted_at, completed_at, status, is_late, attempts, attempt_no')
+                    'submitted_at, completed_at, started_at, status, is_late, attempts, attempt_no')
             .in('assignment_id', chunk)
             .is('deleted_at', null);
           if (r.error) throw r.error;
@@ -2604,7 +2611,7 @@ window.MrBadmusTeacherData = (function () {
         inChunks(ids, async function (chunk) {
           const r = await sb.from('assignment_submissions')
             .select('id, assignment_id, student_id, score, max_score, ' +
-                    'submitted_at, completed_at, status, is_late, attempts, attempt_no')
+                    'submitted_at, completed_at, started_at, status, is_late, attempts, attempt_no')
             .in('assignment_id', chunk)
             .is('deleted_at', null);
           if (r.error) { r.error.__stage = 'submissions'; throw r.error; }
