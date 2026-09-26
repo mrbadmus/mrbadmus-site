@@ -2893,6 +2893,29 @@
     var lessonSlugs = (current && current.questions && current.questions.length)
       ? current.questions.map(function (q) { return q.lesson_slug; })
       : ((currentId && lessonNamesFor[currentId]) || []);
+    /* ⊕ 26 Sep 2026 (MRB-336 N2) — the already-resolved list for THIS
+       assignment, keyed by slug. `lessonHref` only ever knows KS3 — it reads
+       `window.MRB_KS3_LESSONS` and nothing else — so every card built from a
+       KS4 slug fell through to "", and "Lessons in this topic" rendered
+       Design's inert anchor for every KS4 piece of work on the platform.
+       `ks4TopicHref` is the function that DOES resolve a KS4 slug, but it
+       needs the class's pathway/tier plus this question's own subject, and
+       neither is in scope here — they already were, two hundred lines up, in
+       the `assignmentQuestions` loop that built `lessonsFor[r.assignment_id]`
+       (search `ks4TopicHref(ks4Slug, subjectForAssignment` above). Rather
+       than re-derive that lookup a second time, this reads its answer: a
+       card whose slug is in `lessonsFor[currentId]` takes THAT entry's href,
+       already correct for KS3 or KS4 alike. `lessonHref(slug)` remains the
+       fallback for a slug this list has no entry for — an auto-composed KS3
+       assignment's `current.questions[].lesson_slug` never goes through
+       `lessonsFor` at all, so it still needs the direct KS3 lookup. */
+    var resolvedLessons = (currentId && lessonsFor[currentId]) || [];
+    function resolvedHref(slug) {
+      for (var i = 0; i < resolvedLessons.length; i++) {
+        if (resolvedLessons[i].slug === slug) { return resolvedLessons[i].href; }
+      }
+      return lessonHref(slug);
+    }
     lessonSlugs.forEach(function (slug) {
       if (!slug || seen[slug]) { return; }
       seen[slug] = true;
@@ -2908,8 +2931,12 @@
            family tonight; it is only here rather than on the punch list
            because nobody had pressed it either. Empty when this build has no
            page for the slug, and the card then keeps Design's inert anchor
-           rather than pointing at a 404. */
-        href: lessonHref(slug)
+           rather than pointing at a 404.
+
+           ⊕ 26 Sep 2026 (MRB-336 N2) — `resolvedHref`, not the bare
+           `lessonHref(slug)` this line used to read. See the note above
+           `resolvedLessons`. */
+        href: resolvedHref(slug)
       });
     });
 

@@ -2140,6 +2140,54 @@ GATES = [
              "(Sign Up) did not reproduce on a repeated isolated run and is "
              "recorded as flaky rather than fixed blind. All three are "
              "genuine findings for a follow-up, not gated here."),
+
+    dict(name="ks4_pilot_check",
+         cmd=["python3", "ks4_pilot_check.py"],
+         speed="fast",
+         watches=["ks4_pilot_check.py", "build_ks4.py", "ks4_lessons/**",
+                  "ks4_rulings.py", "shared/ks4-ds.css", "shared/ks4-theme.css",
+                  "shared/ks4-lesson.css", "shared/ks4-source.js",
+                  "shared/ks4-lib.js", "shared/ks4-diagrams.js",
+                  "shared/ks4-runtime.js", "ks4_pilot_manifest.json",
+                  "mrbadmus_site/combined/foundation/chemistry/bonding/**",
+                  "mrbadmus_site/combined/higher/chemistry/bonding/**",
+                  "mrbadmus_site/triple/foundation/chemistry/bonding/**",
+                  "mrbadmus_site/triple/higher/chemistry/bonding/**",
+                  "mrbadmus_site/combined/foundation/physics/electricity/**",
+                  "mrbadmus_site/combined/higher/physics/electricity/**",
+                  "mrbadmus_site/triple/foundation/physics/electricity/**",
+                  "mrbadmus_site/triple/higher/physics/electricity/**",
+                  "combined/foundation/chemistry/bonding/**",
+                  "combined/higher/chemistry/bonding/**",
+                  "triple/foundation/chemistry/bonding/**",
+                  "triple/higher/chemistry/bonding/**",
+                  "combined/foundation/physics/electricity/**",
+                  "combined/higher/physics/electricity/**",
+                  "triple/foundation/physics/electricity/**",
+                  "triple/higher/physics/electricity/**"],
+         why="KS4 pilot port (25 Sep 2026) \u2014 the 54 ported pages match the "
+             "manifest build_ks4.py wrote (catches a generate_site_v5.py-"
+             "only run silently regressing them to the old design, since "
+             "that generator has no idea 14 of its 264 subtopics now have a "
+             "ported replacement), no other KS4 page has leaked a reference "
+             "to ks4-runtime.js, nothing on the 54 pages carries React/"
+             "Babel/unpkg/support.js, every dc-import and data-block is in "
+             "the closed registry, and every /shared/ks4-* ?v= stamp is "
+             "current."),
+
+    dict(name="student_lessons_cards_check",
+         cmd=["python3", "student_lessons_cards_check.py"],
+         speed="fast",
+         watches=["student_lessons_cards_check.py", "shared/student-live.js"],
+         why="MRB-336 N2, 26 Sep 2026 — the \"Lessons in this topic\" "
+             "cards resolve a KS4 slug's href (via lessonsFor[currentId], "
+             "the same list ks4TopicHref already fills for the docket) "
+             "instead of falling straight through the KS3-only lessonHref() "
+             "and landing on Design's inert anchor. ⚠️ TEXT "
+             "ASSERTION, NOT A BEHAVIOUR DRIVE: the fixture "
+             "student_behaviour.py drives carries no href on any lessonDefs "
+             "entry, KS3 or KS4, so it cannot see this defect either way —"
+             " see this script's own docstring."),
 ]
 
 
