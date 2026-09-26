@@ -30,7 +30,26 @@ whereas AQA also credits a variable power supply. Neither has a science error.
 
 ## 1. What is live (proved by bytes)
 
-_Filled in at landing — see §7._
+Pushed to `main` on 26 Sep 2026 as `0741525aa..08ae75e22` (10 commits).
+Cloudflare Pages deployed it, and `python3 check_ks4_pilot_live.py` then
+proved every one of the 54 pages on mrbadmus.com is this build:
+
+| proof | result |
+|---|---|
+| live page sha256 == `ks4_pilot_manifest.json` sha256 | 54 of 54 |
+| every `/shared/ks4-*?v=` asset a live page names, md5[:8] == its stamp | 7 assets per page, all match |
+| the other KS4 lesson pages (975 in the tree) changed by a byte | **0** — `git diff 0741525aa 08ae75e22` over both KS4 trees lists exactly the 54 pages × 2 mirrors and nothing else |
+| shared assets that changed | the seven new `shared/ks4-*` files and `shared/student-live.js` (the Lessons-cards line); `styles.css`, `nav.css`, `tokens.css`, `mrbadmus.v2.js` untouched |
+
+The 54 URLs: `/{combined,triple}/{foundation,higher}/chemistry/bonding/
+{chemical-bonds, ionic-bonding, ionic-compounds, covalent-bonding,
+metallic-bonding, states-of-matter, properties-ionic-compounds,
+properties-small-molecules, polymers, giant-covalent-structures,
+metals-alloys}.html`, `/triple/{foundation,higher}/chemistry/bonding/
+nanoparticles.html`, and `/{combined,triple}/{foundation,higher}/physics/
+electricity/{series-parallel-circuits, resistors}.html`. Nav, prev/next
+and the teacher/student Lessons cards all resolve to these same URLs;
+there is no sitemap or search index on this site to update.
 
 ## 2. How it was built
 
@@ -148,7 +167,18 @@ table, a "not departures" table (port mechanics), and all 22 flags.
 
 ## 7. Landing
 
-_Filled in at landing._
+- Branch `feat/ks4-pilot`, rebased onto `origin/main` (no overlapping
+  files), full `build_all.py` on the rebased tree, then
+  `prepush_gate.py --record-all` (verify_ks3, student_behaviour,
+  ks4_chrome_drive, consumer_flag_off, student_bell_drive, focus_audit,
+  ks4_parity all PASS with receipts; set_work red as in §8.12), then
+  `--check`, then push. 25 fast gates ran fresh, 7 slow passed on receipts,
+  21 skipped by rule, 8 skipped for a missing precondition.
+- Two `GATE-OVERRIDE`s on the tip commit, both inherited: `set_work` (§8.12)
+  and `figures_mirror` (the sibling backend checkout has no `figures.json`;
+  overridden with the same text on main's recent landings).
+- Live proof: §1. Final Opus audit of the live site: see
+  `docs/ks4/pilot-live-audit.md` (summary below once it lands).
 
 ## 8. Decisions I made
 
