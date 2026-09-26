@@ -426,6 +426,25 @@ _page("auth.html", "auth.html")
 _page("leaderboard.html", "leaderboard.html")
 _page("index.html", "index.html")
 
+# ── theme run (26 Sep 2026): every family, not only the ones above ──
+_page("ks4.html", "ks4.html")
+_page("ks4 chrome/pathway", "combined/index.html")
+_page("ks4 chrome/tier", "combined/higher/index.html")
+_page("ks4 pilot/ionic-bonding [Combined Higher]",
+      "combined/higher/chemistry/bonding/ionic-bonding.html")
+_page("ks3 hub", "ks3/index.html")
+_page("profile-setup.html", "profile-setup.html")
+_page("weekly-challenge.html", "weekly-challenge.html")
+_page("my-challenges.html", "my-challenges.html")
+_page("past-papers.html", "past-papers.html")
+_page("404.html", "404.html")
+_page("teacher/seating.html", "teacher/seating.html")
+_page("consumer/signup.html", "consumer/signup.html")
+_page("consumer/today.html", "consumer/today.html")
+_page("org", "org/index.html")
+_page("parents/index.html", "parents/index.html")
+_page("go/index.html", "go/index.html")
+
 _page("teacher/class-detail [Set work sheet]", "teacher_fixtures/class-detail-fixture.html",
       setup=_click_containing("Set work"), wait=0.9)
 _page("teacher/class-detail [shoutout composer]", "teacher_fixtures/class-detail-fixture.html",
@@ -456,7 +475,30 @@ _page("ks4 pilot/nanoparticles [Triple Foundation]",
 # the sweep
 # ══════════════════════════════════════════════════════════════════════════
 
-def sweep(widths=WIDTHS, shots=True, only=None):
+THEMES = ["light", "dark"]
+
+# The page is loaded, the stored choice written the way shared/theme.js writes
+# it, and the page RELOADED — so the measurement is of the real pre-paint path
+# a pupil takes, not of an attribute poked in afterwards. The OS preference is
+# pinned to the OPPOSITE of the theme under test, so a page that still follows
+# the device (and ignores the choice) is caught rather than agreeing by luck.
+_THEME_CHECK_JS = "document.documentElement.getAttribute('data-theme')"
+
+
+def _apply_theme(p, theme, url):
+    other = "dark" if theme == "light" else "light"
+    try:
+        p.send("Emulation.setEmulatedMedia", {
+            "features": [{"name": "prefers-color-scheme", "value": other}]})
+    except Exception:
+        pass
+    p.eval("try{localStorage.setItem('mrb-theme',%s)}catch(e){}" % json.dumps(theme))
+    p.goto(url)
+    return p.eval(_THEME_CHECK_JS)
+
+
+def sweep(widths=WIDTHS, shots=True, only=None, themes=None):
+    themes = themes or THEMES
     findings = []
     server, port = cdp.serve(REPO)
     try:
@@ -465,16 +507,25 @@ def sweep(widths=WIDTHS, shots=True, only=None):
                 if only and only not in spec["label"]:
                     continue
                 url = "http://127.0.0.1:%d/%s" % (port, spec["path"])
-                for width in widths:
+                for width, theme in [(w, t) for t in themes for w in widths]:
+                    label = "%s {%s}" % (spec["label"], theme)
                     p = b.page(url)
                     p.set_viewport(width, 1600 if width > 500 else 2200)
+                    got = _apply_theme(p, theme, url)
+                    if got != theme:
+                        findings.append({
+                            "page": label, "width": width,
+                            "error": "page did not take the %s theme "
+                                     "(html data-theme=%r)" % (theme, got),
+                        })
+                        continue
                     if spec["setup"]:
                         try:
                             p.eval(spec["setup"])
                             time.sleep(spec.get("wait", 0.5))
                         except Exception as e:
                             findings.append({
-                                "page": spec["label"], "width": width,
+                                "page": label, "width": width,
                                 "error": "setup failed: %s" % e,
                             })
                             continue
@@ -482,7 +533,7 @@ def sweep(widths=WIDTHS, shots=True, only=None):
                         rows = p.eval(_MEASURE_JS)
                     except Exception as e:
                         findings.append({
-                            "page": spec["label"], "width": width,
+                            "page": label, "width": width,
                             "error": "measure failed: %s" % e,
                         })
                         continue
@@ -499,7 +550,7 @@ def sweep(widths=WIDTHS, shots=True, only=None):
                             kind = kind if kind == "disabled-control" else kind + "+disabled"
                         if ratio < floor:
                             findings.append({
-                                "page": spec["label"], "width": width, "kind": kind,
+                                "page": label, "width": width, "kind": kind,
                                 "sel": row["sel"], "text": row["text"],
                                 "fg_raw": row["color"], "fg_hex": hexof(final),
                                 "bg_hex": hexof(ground), "ratio": round(ratio, 2),
@@ -509,7 +560,7 @@ def sweep(widths=WIDTHS, shots=True, only=None):
                             })
                     if shots:
                         os.makedirs(OUT_DIR, exist_ok=True)
-                        safe = re.sub(r"[^a-zA-Z0-9]+", "-", spec["label"]).strip("-")
+                        safe = re.sub(r"[^a-zA-Z0-9]+", "-", label).strip("-")
                         try:
                             p.screenshot(os.path.join(OUT_DIR, "%s-%d.png" % (safe, width)),
                                          width=width)
@@ -529,7 +580,7 @@ def write_report(findings, path, title):
     real = [f for f in findings if "error" not in f]
     real.sort(key=lambda f: f["ratio"])
     lines.append("%d failing text/placeholder/disabled instances across %d page+width combinations measured.\n"
-                  % (len(real), len(PAGES) * len(WIDTHS)))
+                  % (len(real), len(PAGES) * len(WIDTHS) * len(THEMES)))
     lines.append("| ratio | floor | page | width | kind | token | fg | bg | selector | text |")
     lines.append("|---|---|---|---|---|---|---|---|---|---|")
     for f in real:
@@ -554,10 +605,13 @@ def main():
     ap.add_argument("--after", default=None)
     ap.add_argument("--only", default=None, help="substring filter on page label")
     ap.add_argument("--gate", action="store_true")
+    ap.add_argument("--themes", default="light,dark",
+                    help="comma list of site themes to measure (light,dark)")
     args = ap.parse_args()
 
     widths = [1280] if args.quick else WIDTHS
-    findings = sweep(widths=widths, shots=not args.quick, only=args.only)
+    findings = sweep(widths=widths, shots=not args.quick, only=args.only,
+                     themes=[t for t in args.themes.split(",") if t])
     out_path = args.before or args.after or os.path.join(OUT_DIR, "contrast-before.md")
     title = "Contrast audit — %s" % ("after" if args.after else "before")
     real, errors = write_report(findings, out_path, title)
