@@ -8009,7 +8009,7 @@ def drop_downloads(path):
           "by hand; it is not swept by anything else" % path)
 
 
-def take_download(path, before, tries=160, gap=0.25):
+def take_download(path, before, tries=160, gap=0.25, expect=None):
     """The next file to finish landing in `path`. Returns `(name, bytes, err)`.
 
     ⚠️ IT IDENTIFIES THE DOWNLOAD BY A NEW NAME APPEARING, so two downloads
@@ -8024,14 +8024,31 @@ def take_download(path, before, tries=160, gap=0.25):
     renames it at the end, but a small file can be renamed before the last
     write is flushed, and a PDF read one byte short parses as a corrupt file —
     a red that looks exactly like a renderer defect.
+
+    ⊕ D3 (26 Sep 2026) — `expect`, a tuple of file suffixes, WAITS FOR THE
+    FILE THE CHECK IS ABOUT. `Browser.setDownloadBehavior` is browser-wide,
+    so the folder is not the product's alone: twice, on two different trees,
+    Chrome dropped a 33,619,428-byte `downloads.html` into it a moment before
+    the worksheet PDF, and this returned the first finished name it saw. The
+    product never names a worksheet anything but `.pdf`/`.docx`/`.zip`
+    (`fileNameFor` in shared/set-work.js). A file of another kind is now
+    passed over, not returned — and it is NAMED in the error if the expected
+    file never comes, so a product that saved only the wrong thing is still
+    a red, with the evidence in it. Nothing is weakened: the caller still
+    asserts `%PDF-` on the bytes it gets.
     """
     stable = {}
+    passed_over = set()
     for _ in range(tries):
         try:
             names = set(os.listdir(path)) - before
         except OSError as e:
             return None, None, str(e)
         done = sorted(n for n in names if not n.endswith(".crdownload"))
+        if expect:
+            passed_over.update(n for n in done
+                               if not n.lower().endswith(tuple(expect)))
+            done = [n for n in done if n.lower().endswith(tuple(expect))]
         for n in done:
             try:
                 size = os.path.getsize(os.path.join(path, n))
@@ -8042,8 +8059,13 @@ def take_download(path, before, tries=160, gap=0.25):
                     return n, fh.read(), None
             stable[n] = size
         time.sleep(gap)
-    return None, None, ("nothing finished landing in %ds; the directory holds %s"
-                        % (int(tries * gap), sorted(set(os.listdir(path)) - before)))
+    return None, None, ("nothing%s finished landing in %ds; the directory "
+                        "holds %s%s"
+                        % (" ending %s" % "/".join(expect) if expect else "",
+                           int(tries * gap),
+                           sorted(set(os.listdir(path)) - before),
+                           "; passed over %s" % sorted(passed_over)
+                           if passed_over else ""))
 
 
 def pdf_numbering(pages):
@@ -8806,11 +8828,13 @@ def check_row_download(p, base, t_teacher, scopes, made):
            str(armed))
     if not armed:
         return
-    seen = set(os.listdir(dl_dir))
 
     if not open_class_page(p, base, FX.C_KS3_A):
         record(False, "the class page opens for the row download")
         return
+    # ⊕ D3 — listed AFTER the page is open, right before the press, so a file
+    # the navigation itself leaves behind can never be taken for the sheet.
+    seen = set(os.listdir(dl_dir))
     rows = p.eval(ROWS_JS) or []
     if title not in [r["title"] for r in rows]:
         record(False, "the two-topic set is a row in the class table",
@@ -8828,7 +8852,7 @@ def check_row_download(p, base, t_teacher, scopes, made):
     time.sleep(0.4)
     record(press_row(p, title, "download-pdf") == "clicked",
            "…and the armed row offers `PDF`")
-    name, data, err = take_download(dl_dir, seen)
+    name, data, err = take_download(dl_dir, seen, expect=(".pdf",))
     if err:
         record(False, "row_download_lands — pressing PDF on the row saves a "
                       "real file", err)
@@ -8898,7 +8922,8 @@ def check_row_download(p, base, t_teacher, scopes, made):
                    "`Download` too")
             time.sleep(0.4)
             press_row(p, stitle, "download-pdf")
-            name1, data1, err1 = take_download(dl_dir, seen1)
+            name1, data1, err1 = take_download(dl_dir, seen1,
+                                               expect=(".pdf",))
             if err1:
                 record(False, "row_download_single — a ONE-topic set "
                               "downloads from its row, posting the stored "
