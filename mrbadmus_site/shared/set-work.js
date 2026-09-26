@@ -679,6 +679,12 @@
     return {
       kind: "",                // 'topic' | 'subtopic'
       ref: "",
+      /* ⊕ 25 Sep 2026 — the subject a scope RECOVERED FROM A STORED SET was
+         found under (`placeStored`). Empty on every scope the teacher picks
+         from the tree, where `subjectOfScope` reads it off the node as it
+         always has; set only where the tree cannot say which of two nodes
+         with the same id the questions came from. */
+      subject: "",
       count: 10,
       available: 0,
       /* ⊕ MRB-342.2 — the server's own word for why `count` was not what was
@@ -717,11 +723,14 @@
      `loadStoredQuestions` would have nowhere to render the work the children
      were actually given, and `pickedTotal()` would be 0 — which disables
      Save on the one screen where a teacher is only trying to move a
-     deadline. An edit is single-scope by construction (`Add topic` is hidden
-     for the whole of one), so counting its only slot can never widen a set.
+     deadline. Counting slot 0 can never widen a set: `Add topic` is hidden
+     for the whole of an edit, and the only other scopes an edit ever holds
+     are the ones `placeStored` recovered from the set's own questions.
 
      ⚠️ IT DOES NOT LEAK INTO WHAT IS SENT. `submit()` maps over this list and
-     is never reached in edit mode; `saveEdit()` reads `cur()` directly; and
+     is never reached in edit mode; `saveEdit()` sends a kind-less slot 0 in
+     the flat body exactly as it always did (a pre-MRB-335 row never gains
+     other scopes: `headOwns` gives a kind-less head every question); and
      `download()` drops any scope with no `scope_kind`/`scope_ref` of its own
      before it builds a body. */
   function filledScopes() {
@@ -843,20 +852,30 @@
       /* ⊕ MRB-336 — EDIT. Empty on a new set, which is what every branch
          below tests. `locked` is "this work has already been released", and
          the server enforces the same narrowing: after release only `title`
-         and `due_at` are accepted, anything else is `locked_after_release`.
-         `keepPicked` stops arriving at the Detail step from re-rolling
-         questions the teacher never asked to change. */
+         and `due_at` are accepted, anything else is `locked_after_release`. */
       editId: "",
       locked: false,
-      keepPicked: false,
       roTier: "",
       roScope: "",
-      /* ⊕ Stream L, 25 Sep 2026 (experience run, item N11 / data safety) —
-         a snapshot of `cur().picked` taken the moment `loadStoredQuestions`
-         first fills it, before this session's own count changes and swaps
-         touch it. `[]` on a fresh set, which has nothing to preserve.
-         See `otherScopesFor`. */
-      originalPicked: []
+      /* ⊕ 25 Sep 2026 — THE QUESTIONS AN EDITED SET ALREADY HOLDS, and
+         whether they have been PLACED. `keepPicked` (MRB-336) and
+         `originalPicked` (Stream L) are retired in favour of these; see
+         `placeStored`.
+
+           storedState  ''       not an edit
+                        loading  `/api/class/current-assignment` in flight
+                        ready    answered; `storedQs` holds the rows
+                        error    it failed: the Detail step says
+                                 Unavailable and Save sends no questions
+           storedPlaced          `placeStored` has run — once, and only
+                                 once BOTH the rows and the tree are in
+           editSubject           the row's own subject, which is what tells
+                                 `atomic-structure` (chemistry) from
+                                 `atomic-structure` (physics) */
+      storedQs: null,
+      storedState: "",
+      storedPlaced: false,
+      editSubject: ""
     };
   }
 
@@ -1590,7 +1609,7 @@
        scope. */
     sc.kind = kind;
     sc.ref = ref;
-    S.keepPicked = false;              // ⊕ MRB-336
+    sc.subject = "";                   // the tree row answers it now
     resetScopeQuestions(sc);
     if (!S.titleEdited) { S.title = autoTitle(); els.title.value = S.title; }
     syncTree();
@@ -1641,6 +1660,7 @@
 
   function subjectOfScope(sc) {
     var s = sc || cur();
+    if (s.subject) { return String(s.subject); }
     var r = nodeFor(s.kind, s.ref);
     if (!r) { return ""; }
     var top = (r.kind === "topic") ? r : r.parent;
@@ -1659,76 +1679,136 @@
     return parent ? parent + " · " + own : own;
   }
 
-  /* ⊕ Stream L, 25 Sep 2026 (experience run, item N11 / data safety) — EVERY
-     OTHER TOPIC A MULTI-SCOPE SET HOLDS, RECONSTRUCTED FROM ITS OWN
-     QUESTIONS, TO BE SENT BACK UNCHANGED.
+  /* ⊕ 25 Sep 2026 — WHERE A STORED SET'S QUESTIONS GO WHEN IT IS EDITED.
 
-     ⛔ THE DEFECT THIS CLOSES. `edit()` gives an edit exactly ONE scope
-     (`S.scopes[0]`, `Add topic` hidden throughout — MRB-342's own rule,
-     because `assignments` stores one scope and `PATCH` used to accept one).
-     `loadStoredQuestions` therefore poured EVERY question the set holds —
-     Energy's and Forces', on a set made of both — into that one scope's
-     `.picked`, under Energy's own heading. A teacher who changed the count
-     or swapped a question redrew from ENERGY'S pool only; the payload
-     `saveEdit` built then carried Energy's ids and nothing of Forces', and
-     the PATCH route replaces `assignment_questions` with exactly the ids it
-     is sent (see its own comment, "REPLACED WHENEVER THE BODY SENT
-     QUESTIONS"). Forces was not merely hidden from the sheet — pressing
-     Save deleted it from the database.
+     Mide's rule for Edit: "Adding raises the count with new questions.
+     Lowering it drops from the end. Nothing already chosen is swapped." For
+     that to mean anything the sheet has to know which of the set's questions
+     belong to which topic, because a count belongs to a topic.
 
-     ⚠️ THE BACKEND ALREADY TAKES THE FIX; ONLY THE SHEET DID NOT USE IT.
-     `PATCH /api/teacher/set-work/:id` has accepted `scopes: [{scope_kind,
-     scope_ref, subject?, question_ids}, …]` since MRB-342's follow-up
-     (22 Sep 2026) — the honest mirror of the POST's own field, each scope
-     sealed against its own pool, no union taken. Nothing here is a backend
-     change; this is the sheet finally sending what the route has been able
-     to read all along.
+     ⛔ WHAT THIS REPLACES. `otherScopesFor` (Stream L) poured every question
+     the set held into slot 0 and re-derived the other topics only at Save.
+     The follow-up that tried to split them at load (reverted in 707971eee)
+     filtered slot 0 against the TREE while `/scope` was still in flight —
+     `els.treeRows` empty, every question filtered out — and its own live
+     proof showed ZERO kept questions on the Detail step.
 
-     ⚠️ A SUBTOPIC UNDER THE SAME TOPIC AS THE HEAD IS NOT "OTHER". A
-     topic-level scope's own questions legitimately span several of that
-     topic's subtopics — that is ordinary, single-scope behaviour, and
-     splitting it into one manufactured scope per subtopic would change
-     what the set is filed as without the teacher asking for that. Only a
-     slug that does NOT belong under the head topic — or does not match
-     the head's own ref, when the head IS a subtopic — is "other". Resolved
-     against `els.treeRows`, the same tree `nodeFor`/`scopeName` read.
+     ⚠️ SO IT RUNS ONCE, WHEN BOTH HALVES ARE IN. `edit()` fires `/scope` and
+     `/api/class/current-assignment` together; each success path calls this,
+     and whichever lands second does the work. Until then `stepValid` holds
+     the Topic step's Next, so no teacher can reach the Detail step on a
+     half-placed set (the same race, in its milder form, drew a FRESH set
+     when Next beat the stored read).
 
-     ⚠️ AND NO ID IS EVER SENT TWICE. `headIds` — the head scope's CURRENT,
-     possibly just-changed picks — wins any overlap; an "other" group is
-     filtered down to whatever it has left and dropped if that empties it.
-     This is what keeps a save correct even in the pathological case where
-     the class's tree has not finished loading yet (`nodeFor` resolves
-     nothing, so every slug reads as "other") — it can only ever result in
-     a topic being filed as several small subtopic scopes instead of one,
-     never in a duplicate id the server would refuse, and never in a
-     dropped one. */
-  function otherScopesFor(headScope, headIds) {
-    var picked = S.originalPicked || [];
-    if (!picked.length) { return []; }
-    var byLesson = {}, order = [];
-    picked.forEach(function (q) {
-      if (!q.lesson) { return; }
-      if (!byLesson[q.lesson]) { byLesson[q.lesson] = []; order.push(q.lesson); }
-      byLesson[q.lesson].push(q.id);
-    });
-    var headSet = {};
-    headIds.forEach(function (id) { headSet[id] = true; });
-    var out = [];
-    order.forEach(function (slug) {
-      if (headScope.kind === "subtopic") {
-        if (slug === headScope.ref) { return; }        // the head's own subtopic
-      } else if (headScope.kind === "topic") {
-        var r = nodeFor("subtopic", slug);
-        var parentRef = r && r.parent ? r.parent.ref : null;
-        if (parentRef === headScope.ref) { return; }    // a subtopic of the head topic
+     The partition, by each question's lesson:
+       · belongs to the head (slot 0, the node the row stores) — a subtopic
+         head owns its own slug; a topic head owns every lesson whose parent
+         in the tree is that topic (and that subject, where the row says);
+       · a lesson not in the tree, or no lesson at all — stays with the head.
+         Never dropped: a question the children were given is not lost from
+         the list because the tree could not name it;
+       · every other lesson becomes a `subtopic` scope of its own, in first-
+         appearance order — the same narrowing `setWorkRecoveredScopes` makes
+         on the server — EXCEPT that two or more lessons under one other topic
+         are that topic, one `topic` scope. That is what a second topic set
+         round-robin across its subtopics looks like when it comes back, and
+         it keeps the scope count bounded by topics rather than by lessons,
+         so `MAX_SCOPES` cannot be breached by reading a set back in. */
+  function storedLesson(q) {
+    if (q.lesson) { return String(q.lesson); }
+    /* A KS4 id carries its slug (`ks4-<subtopic>-[esh]NN` — the precedent is
+       shared/student-live.js). Only reached for a row the route could not
+       resolve, i.e. a retired question. */
+    var m = /^ks4-(.+)-[esh]\d+$/.exec(String(q.id || ""));
+    return m ? m[1] : "";
+  }
+
+  function headOwns(head, node) {
+    if (!head.kind || !head.ref) { return true; }     // a pre-MRB-335 row
+    if (head.kind === "subtopic") { return node.ref === head.ref; }
+    var top = node.parent;
+    if (!top || top.ref !== head.ref) { return false; }
+    var subj = S.editSubject;
+    return !subj || !top.data || !top.data.subject ||
+           String(top.data.subject) === subj;
+  }
+
+  function placeStored() {
+    if (!S || S.storedPlaced || S.storedState !== "ready") { return; }
+    /* No tree yet: wait for it. A tree that FAILED places everything with the
+       head (nothing can be resolved), which is what the sheet showed before
+       any of this — a released set's questions must still be on screen. */
+    if (!S.scope && !S.scopeErr) { return; }
+    S.storedPlaced = true;
+    var head = S.scopes[0];
+    var mine = [], groups = {}, order = [];
+    (S.storedQs || []).forEach(function (q) {
+      var slug = storedLesson(q);
+      var node = slug ? nodeFor("subtopic", slug) : null;
+      if (!node || headOwns(head, node)) { mine.push(q); return; }
+      var top = node.parent;
+      var key = (top && top.data && top.data.subject ? top.data.subject : "") +
+                "|" + (top ? top.ref : "");
+      if (!groups[key]) {
+        groups[key] = { top: top, lessons: [], qs: [] };
+        order.push(key);
       }
-      var ids = byLesson[slug].filter(function (id) { return !headSet[id]; });
-      if (!ids.length) { return; }
-      out.push({ scope_kind: "subtopic", scope_ref: slug,
-                 subject: subjectOfScope({ kind: "subtopic", ref: slug }) || null,
-                 question_ids: ids });
+      var g = groups[key];
+      if (g.lessons.indexOf(slug) < 0) { g.lessons.push(slug); }
+      g.qs.push({ q: q, slug: slug });
     });
-    return out;
+    head.picked = mine;
+    var extra = [];
+    order.forEach(function (key) {
+      var g = groups[key];
+      var subj = (g.top && g.top.data && g.top.data.subject)
+        ? String(g.top.data.subject) : "";
+      if (g.lessons.length > 1 && g.top) {
+        var t = freshScope();
+        t.kind = "topic"; t.ref = g.top.ref; t.subject = subj;
+        t.picked = g.qs.map(function (x) { return x.q; });
+        extra.push(t);
+        return;
+      }
+      g.lessons.forEach(function (slug) {
+        var sc = freshScope();
+        sc.kind = "subtopic"; sc.ref = slug; sc.subject = subj;
+        sc.picked = g.qs.filter(function (x) { return x.slug === slug; })
+                        .map(function (x) { return x.q; });
+        extra.push(sc);
+      });
+    });
+    S.scopes = [head].concat(extra);
+    S.si = 0;
+    S.scopes.forEach(function (sc) {
+      sc.count = sc.picked.length;
+      sc.available = Math.max(sc.available, sc.picked.length);
+      sc.picked.forEach(function (q) { S.shown[String(q.id)] = true; });
+    });
+    syncTree();
+    syncTierChips();
+    if (S.step === 2) {
+      syncScopes();
+      S.scopes.forEach(function (sc) { buildQuestions(sc); });
+    }
+    syncValidity();
+  }
+
+  /* The stored read failed on an edit that could otherwise change its
+     questions. The Detail step then says Unavailable where the questions
+     would be, the count controls are dead, and Save sends no question field
+     at all — a save meant for a title must never become a redraw. */
+  function storedFailed() {
+    return !!(S && S.editId && !S.locked && S.storedState === "error");
+  }
+
+  function showStoredUnavailable() {
+    var h = S.scopes[0];
+    if (!h.els) { syncScopes(); }
+    if (!h.els) { return; }
+    h.els.qlist.textContent = "";
+    h.els.qRows = [];
+    h.els.qlist.appendChild(el("div", "sw-row-tag", SAY.unavailable));
   }
 
   /* ⊕ Stream L, 25 Sep 2026 (experience run, item 25/8) — THE TITLE NAMES
@@ -1968,7 +2048,7 @@
     els.scopesHost.appendChild(wrap);
     sc.els = { wrap: wrap, name: name, chips: chips, qlist: qlist,
                countList: null, countInput: countInput, countNote: countNote,
-               qRows: [] };
+               countCustom: countCustom, qRows: [] };
     buildCountChips(sc);
     wireCountInput(sc);
     return sc.els;
@@ -1997,12 +2077,19 @@
          which rows belong to which. */
       sc.els.name.hidden = (list.length < 2);
       sc.els.chips.hidden = !!S.locked;
+      /* ⊕ 25 Sep 2026 — the typed-count field goes with the chips. It was
+         left drawn on a RELEASED set, where the chips it sits beside are
+         removed, and typing into it redrew the questions of live work on
+         screen (the server refused the save, but the sheet had already
+         shown a different set). */
+      sc.els.countCustom.hidden = !!S.locked;
       sc.els.qlist.classList.toggle("is-ro", !!S.locked);
       syncCountChips(sc);
     });
     /* ⚠️ NOT OFFERED ON AN EDIT. A row in `assignments` carries ONE scope
-       triple, and `PATCH /api/teacher/set-work/:id` takes one; a second
-       topic added to an existing set would have nowhere to be written. */
+       triple. `PATCH` does take `scopes[]` now, and an edit SHOWS every topic
+       the set already holds (`placeStored`), but adding a new topic to live
+       work is a scope decision nobody has ruled on, so it stays hidden. */
     els.addTopic.hidden = !!S.editId;
     /* ⊕ first-week fixes (22 Sep 2026) — THE CEILING ON A SET IS ITS NUMBER OF TOPICS, and this is
        the control that wears it.
@@ -2112,6 +2199,9 @@
   function buildQuestionRow(sc, q, i) {
     var wrap = el("div", "sw-q");
     wrap.setAttribute("data-sw", "question");
+    /* The row's own id, so a drive reads WHICH question is here rather than
+       matching stems. Re-stamped by `doSwap`. */
+    wrap.setAttribute("data-sw-qid", String(q.id));
     var head = el("div", "sw-q-head");
     var n = el("span", "sw-q-n", (i + 1) + ".");
     var stem = btn("sw-q-stem", null);
@@ -2235,6 +2325,7 @@
       var q = r.body;
       S.shown[String(q.id)] = true;
       sc.picked[rec.i] = q;
+      rec.wrap.setAttribute("data-sw-qid", String(q.id));
       setFormula(rec.stem, q.stem);
       fillOptions(rec.body, q);
       rec.swap.disabled = false;
@@ -2369,6 +2460,9 @@
       /* ⊕ MRB-342.2 §3.3 — read once, per `/scope` answer, same as everything
          else this function resolves. */
       syncNoteVisibility();
+      /* ⊕ 25 Sep 2026 — an edit's stored questions, if they landed first,
+         are placed now that the tree can say where each one belongs. */
+      placeStored();
       /* ⊕ first-week fixes (22 Sep 2026) — the panel resolves IN PLACE, so a teacher who already
          walked forward to the Topic step watches `Loading` become the tree
          without touching anything. No step change, no toggle, no re-open. */
@@ -2387,6 +2481,7 @@
          itself: `buildTree()` empties `els.tree`, so a tag written in here was
          a note whose lifetime depended on which function ran last. */
       syncScopePanel();
+      placeStored();
       syncValidity();
       return false;
     });
@@ -2441,9 +2536,117 @@
        the ordinary case, without waiting on the network. */
     sc.cappedBy = overCeiling ? "ceiling" : null;
     sc.capNote = capNoteFor(sc);
-    S.keepPicked = false;             // ⊕ MRB-336
     syncCountChips(sc);
-    loadPreview(sc);
+    /* ⊕ 25 Sep 2026 — A COUNT CHANGE NEVER REDRAWS. A scope with nothing in
+       it yet asks `/preview` for its first draw, as it always did; a scope
+       that already holds questions keeps every one of them and moves only
+       at the margin (`adjustAtMargin`). One path for a new set and an
+       edited one, so a teacher who swapped two questions and then raised
+       the count keeps the swaps. `keepPicked` (MRB-336), which only ever
+       protected the FIRST arrival at the Detail step and was cleared by the
+       very first count press, is retired with this. */
+    if (!sc.picked.length) { loadPreview(sc); return; }
+    adjustAtMargin(sc, sc.count);
+  }
+
+  /* ⊕ 25 Sep 2026 — MIDE'S RULE, LITERALLY: "Adding raises the count with
+     new questions. Lowering it drops from the end. Nothing already chosen is
+     swapped."
+
+     Lowering needs no request: the list is cut at `n`, so the rows that go
+     are the last ones. Raising asks `/preview` for the scope again and keeps
+     only what is NEW — ids no scope on this sheet already holds — appended
+     after the rows already there, at most `n - picked.length` of them.
+     `/preview` returns min(count, pool) DISTINCT ids, so asking for `n` plus
+     whatever the OTHER scopes hold (two scopes can share a subtopic's pool)
+     means at least the needed number of new ones come back whenever the
+     pool has them; a shorter answer is the pool running out, and the note
+     says so (`cappedBy = "pool"`).
+
+     ⚠️ NO `exclude`. `/preview` has none — that is `/swap`'s contract — and
+     none is needed: the filter is here, over ids, after the answer. */
+  function adjustAtMargin(sc, n) {
+    if (n <= sc.picked.length) {
+      ++sc.seq;                        // an in-flight raise must not land
+      sc.busy = false;
+      sc.previewErr = false;
+      sc.picked = sc.picked.slice(0, n);
+      sc.count = sc.picked.length;
+      finishMargin(sc);
+      return Promise.resolve(true);
+    }
+    var heldElsewhere = 0;
+    S.scopes.forEach(function (o) {
+      if (o !== sc) { heldElsewhere += o.picked.length; }
+    });
+    var ask = Math.min(maxPerScope(), n + heldElsewhere);
+    var mySession = session, mySeq = fetchSeq, myScopeSeq = ++sc.seq;
+    sc.busy = true;
+    sc.previewErr = false;
+    syncValidity();
+    return apiGet("/api/teacher/set-work/preview?class_id=" +
+      encodeURIComponent(S.classId) +
+      "&tier=" + encodeURIComponent(S.tier) +
+      "&scope_kind=" + encodeURIComponent(sc.kind) +
+      "&scope_ref=" + encodeURIComponent(sc.ref) +
+      subjectParam(sc) +
+      "&count=" + encodeURIComponent(ask)
+    ).then(function (r) {
+      if (!S || mySession !== session || mySeq !== fetchSeq ||
+          myScopeSeq !== sc.seq) { return false; }
+      var d = r.body || {};
+      sc.busy = false;
+      if (!r.ok || !Array.isArray(d.picked)) {
+        sc.count = sc.picked.length;
+        finishMargin(sc, true);
+        toast(SAY.unavailable);
+        return false;
+      }
+      /* Read at ANSWER time, not request time: a swap that landed while
+         this was in flight put an id on the sheet the request never saw. */
+      var held = {};
+      S.scopes.forEach(function (o) {
+        o.picked.forEach(function (q) { held[String(q.id)] = true; });
+      });
+      var need = n - sc.picked.length;
+      var fresh = d.picked.filter(function (q) {
+        return !held[String(q.id)];
+      }).slice(0, Math.max(0, need));
+      sc.picked = sc.picked.concat(fresh);
+      if (typeof d.available === "number") { sc.available = d.available; }
+      sc.cappedBy = (sc.picked.length < n) ? "pool" :
+        (sc.cappedBy === "ceiling" ? "ceiling" : null);
+      sc.count = sc.picked.length;
+      finishMargin(sc);
+      return true;
+    }, function () {
+      if (!S || mySession !== session || mySeq !== fetchSeq ||
+          myScopeSeq !== sc.seq) { return false; }
+      /* The rows the teacher already has are still theirs; only the raise
+         failed. The count goes back to what is on screen. */
+      sc.busy = false;
+      sc.count = sc.picked.length;
+      finishMargin(sc, true);
+      toast(SAY.unavailable);
+      return false;
+    });
+  }
+
+  /* The bookkeeping `loadPreview` does once its `picked` is settled.
+     `swapDead` / `swapNote` / `expanded` are keyed by INDEX; `clientRef` is
+     re-minted because a different set of questions is a different thing to
+     set (`loadPreview`'s own reason). */
+  function finishMargin(sc, failed) {
+    if (!failed) { sc.capNote = capNoteFor(sc); }
+    else { sc.cappedBy = null; sc.capNote = null; }
+    sc.picked.forEach(function (q) { S.shown[String(q.id)] = true; });
+    sc.swapDead = {};
+    sc.swapNote = {};
+    sc.expanded = {};
+    S.clientRef = uuid();
+    buildQuestions(sc);
+    syncScopes();
+    syncValidity();
   }
 
   /* The cap the count chips obey. Before /preview answers it is the count
@@ -2560,8 +2763,9 @@
     }), function (k) {
       S.tier = k;
       /* ⊕ MRB-336 — a different tier is a different set of questions, so an
-         edit stops keeping the ones the row already holds. */
-      S.keepPicked = false;
+         edit stops keeping the ones the row already holds: every scope's
+         rows are reset EXPLICITLY below, never left for a later `/preview`
+         to overwrite. */
       /* ⊕ MRB-342 — THE TIER IS THE SET'S, NOT A SCOPE'S, so changing it
          throws away every scope's rows and not just the current one. A set
          holding Foundation questions from one topic and Higher from another
@@ -2683,12 +2887,17 @@
     /* Highlighted only when the count is exactly one of the four quick
        picks — the honest rendering of "the teacher typed 43" is that none of
        5/10/15/20 lights up. */
-    syncChips(sc.els.countList, sc.count, null);
+    /* ⊕ 25 Sep 2026 — dead, not hidden, while an edit's stored questions
+       could not be read: there is nothing on screen to count. */
+    var dead = storedFailed();
+    syncChips(sc.els.countList, sc.count,
+              dead ? function () { return true; } : null);
     /* The number field mirrors `sc.count` — EXCEPT while the teacher is
        actively typing in it, where overwriting `.value` mid-keystroke would
        fight their own fingers (the same reasoning `syncScopePanel` and every
        other "patched, not rebuilt" surface in this file already follows). */
     if (sc.els.countInput) {
+      sc.els.countInput.disabled = dead;
       sc.els.countInput.max = String(maxPerScope());
       if (document.activeElement !== sc.els.countInput) {
         sc.els.countInput.value = sc.count > 0 ? String(sc.count) : "";
@@ -2801,6 +3010,14 @@
     if (S.step === 0) { return S.classes.length > 0; }
     if (!S.scope) { return false; }
     if (S.step === 1) {
+      /* ⊕ 25 Sep 2026 — AN UNRELEASED EDIT WAITS FOR ITS OWN QUESTIONS.
+         Next used to light as soon as `/scope` did, and a teacher who pressed
+         it before `/api/class/current-assignment` answered arrived at the
+         Detail step with nothing held — and was handed a FRESH draw. Now the
+         Topic step waits until the stored questions are placed
+         (`placeStored`); if the read fails, Next lights and the Detail step
+         says so (`storedFailed`). */
+      if (S.editId && !S.locked && S.storedState === "loading") { return false; }
       var sc = cur();
       if (!sc.kind || !sc.ref) { return false; }
       return scopeAvailable(sc) > 0;
@@ -2835,8 +3052,12 @@
       return sc.picked.length > maxPerScope();
     });
     var many = filledScopes().length > MAX_SCOPES;
-    if (!S.locked && (!total || empty || over || many)) { return false; }
-    if (S.locked && (over || many)) { return false; }
+    /* ⊕ 25 Sep 2026 — an edit whose stored questions could not be read is
+       not saving questions either (`saveEdit` sends none), so it is judged
+       like a released set: an empty list is not a reason to refuse. */
+    var frozen = S.locked || storedFailed();
+    if (!frozen && (!total || empty || over || many)) { return false; }
+    if (frozen && (over || many)) { return false; }
     var t = String(S.title || "").trim();
     if (!t.length || t.length > 80) { return false; }
     var due = dueIso();
@@ -2970,7 +3191,6 @@
     if (S.step === 0) { S.step = 1; syncStep(); syncTree(); return; }
     if (S.step === 1) {
       S.step = 2;
-      cur().available = 0;
       if (!S.titleEdited) { S.title = autoTitle(); els.title.value = S.title; }
       S.dueDate = S.dueDate || londonDatePlus(7);
       S.dueTime = S.dueTime || "18:00";
@@ -2985,32 +3205,30 @@
       S.clientRef = uuid();
       syncStep();
       syncRelease();
-      /* ⊕ MRB-336 — AN EDIT DOES NOT RE-ROLL THE QUESTIONS ON THE WAY PAST.
-         `loadPreview` picks a fresh set for the scope; arriving at the
-         Detail step is not a request for different questions, and a teacher
-         correcting a title must not find twenty new ones under it. Any
-         change to tier, scope or count clears `keepPicked` and the preview
-         runs as it always did. */
-      if (S.keepPicked && cur().picked.length) {
-        S.keepPicked = false;
-        var k = cur();
-        k.available = Math.max(k.available, k.picked.length);
+      /* ⊕ MRB-336 / ⊕ 25 Sep 2026 — ARRIVING AT THE DETAIL STEP IS NOT A
+         REQUEST FOR DIFFERENT QUESTIONS. A scope that already holds rows —
+         an edit's stored set (`placeStored`), or a topic the teacher came
+         Back from — shows what it holds; only a scope with nothing in it is
+         asked for. The teacher has read those questions and may have
+         swapped two of them. */
+      if (storedFailed()) {
         syncScopes();
-        buildQuestions(k);
-        syncCountChips(k);
+        showStoredUnavailable();
         syncValidity();
         return;
       }
-      /* ⊕ MRB-342 — ONLY THE SCOPES THAT HAVE NO ROWS ARE ASKED FOR.
-         Arriving at the Detail step after adding a second topic must not
-         re-roll the first one: the teacher has already read those questions
-         and may have swapped two of them, and replacing the list they
-         approved is the same defect as replacing the node they are
-         scrolled into. */
       syncScopes();
       filledScopes().forEach(function (sc) {
-        if (!sc.picked.length) { loadPreview(sc); }
+        if (sc.picked.length) {
+          sc.available = Math.max(sc.available, sc.picked.length);
+          if (sc.els && !sc.els.qRows.length) { buildQuestions(sc); }
+          syncCountChips(sc);
+        } else {
+          sc.available = 0;
+          loadPreview(sc);
+        }
       });
+      syncValidity();
       return;
     }
     if (S.editId) { saveEdit(); return; }
@@ -3952,11 +4170,14 @@
     S = freshState(String(o.classId));
     S.editId = String(o.assignmentId);
     S.locked = !!o.released;
-    S.keepPicked = true;
+    S.storedState = "loading";
+    S.editSubject = (o.subject && o.subject !== "all") ? String(o.subject) : "";
     S.tier = o.tier || "";
-    /* ⊕ MRB-342 — AN EDIT IS ONE SCOPE, and slot 0 is where it goes. The row
-       in `assignments` carries one scope triple and `PATCH` takes one, so
-       `Add topic` is hidden for the whole of an edit (see `syncScopes`). */
+    /* ⊕ MRB-342 — AN EDIT OPENS ON ONE SCOPE, and slot 0 is where it goes:
+       the row in `assignments` carries one scope triple. ⊕ 25 Sep 2026 — the
+       set's OTHER topics are recovered from its own questions once they and
+       the tree are both in (`placeStored`). `Add topic` stays hidden for the
+       whole of an edit (see `syncScopes`). */
     S.scopes[0].kind = o.scopeKind || "";
     S.scopes[0].ref = o.scopeRef || "";
     S.si = 0;
@@ -4065,7 +4286,6 @@
     ).then(function (r) {
       if (!S || mySession !== session || S.editId !== want) { return false; }
       var qs = (r.body && r.body.questions) || [];
-      var sc = cur();
       /* ⛔ THE ROUTE'S SHAPE IS NOT THE SHEET'S SHAPE, AND READING IT AS IF
          IT WERE RENDERED FIVE BLANK ROWS. (Pre-existing — MRB-336 — found
          by MRB-342's real-bytes drive on 13 Sep 2026 and fixed here because
@@ -4089,7 +4309,7 @@
          read — and `-1` (nothing marked) must stay `-1` rather than becoming
          0, or the sheet would tick option A on a question whose key the
          bank no longer has. */
-      sc.picked = qs.map(function (q) {
+      S.storedQs = qs.map(function (q) {
         var raw = q.options || [];
         var texts = raw.map(function (o) {
           return (o && typeof o === "object") ? (o.text || "") : String(o);
@@ -4106,27 +4326,19 @@
                  figure: q.figure || null,
                  lesson: q.lesson_slug || q.lesson || "" };
       });
-      /* ⊕ Stream L, 25 Sep 2026 (experience run, item N11 / data safety) —
-         A STABLE SNAPSHOT of what this set held BEFORE this editing
-         session touches anything. `sc.picked` is about to be mutated by
-         every count change and every swap the teacher makes; `otherScopesFor`
-         (below, read at Save) needs to know what OTHER topics' questions
-         existed at OPEN, not whatever `sc.picked` has been redrawn into by
-         the time Save is pressed. */
-      S.originalPicked = sc.picked.slice();
-      sc.available = Math.max(sc.available, sc.picked.length);
-      if (S.step === 2) { syncScopes(); buildQuestions(sc); syncCountChips(sc); }
+      /* ⊕ 25 Sep 2026 — KEPT, NOT POURED. The rows are held on `S` and
+         placed into their scopes by `placeStored` — here if the tree has
+         already arrived, otherwise by `loadScope` when it does. Nothing on
+         this path reads the tree, so an early answer can no longer be
+         filtered against an empty one. */
+      S.storedState = "ready";
+      placeStored();
       syncValidity();
       return true;
     }, function () {
       if (!S || mySession !== session || S.editId !== want) { return false; }
-      S.keepPicked = false;
-      var bad = cur();
-      if (S.step === 2 && bad.els) {
-        bad.els.qlist.textContent = "";
-        bad.els.qRows = [];
-        bad.els.qlist.appendChild(el("div", "sw-row-tag", SAY.unavailable));
-      }
+      S.storedState = "error";
+      if (S.step === 2) { syncScopes(); showStoredUnavailable(); }
       syncValidity();
       return false;
     });
@@ -4160,28 +4372,44 @@
     if (S.locked) {
       payload = { title: String(S.title || "").trim(), due_at: dueIso(),
                   client_ref: S.clientRef };
+    } else if (storedFailed()) {
+      /* ⊕ 25 Sep 2026 — THE STORED QUESTIONS COULD NOT BE READ, SO NONE ARE
+         SENT. No `tier`, no scope, no ids: the route only rewrites
+         `assignment_questions` when the body touches content, and a save
+         meant for a title must never replace the set with a redraw. */
+      payload = { client_ref: S.clientRef,
+                  title: String(S.title || "").trim(),
+                  release_at: releaseIso(),
+                  due_at: dueIso() };
     } else {
-      var headScope = cur();
-      var headIds = headScope.picked.map(function (q) { return q.id; });
-      /* ⊕ Stream L, 25 Sep 2026 (experience run, item N11 / data safety) —
-         every OTHER topic this set holds, unchanged. See `otherScopesFor`.
-         Empty on the ordinary single-topic edit, which is nearly every
-         edit — that case sends exactly the flat body it always sent. */
-      var others = otherScopesFor(headScope, headIds);
+      /* ⊕ 25 Sep 2026 — BUILT FROM `S.scopes`, which is the set as the
+         teacher sees it: the head and every topic `placeStored` recovered,
+         each with its own ids in its own order. More than one filled scope
+         sends `scopes[]` (the route seals each against its own pool); one
+         sends the flat body it always did. `otherScopesFor` and
+         `originalPicked`, which rebuilt the other topics at Save from a
+         snapshot, are retired: the other topics are ON the sheet now. */
+      var list = filledScopes();
       payload = { client_ref: S.clientRef,
                   tier: S.tier,
                   title: String(S.title || "").trim(),
                   release_at: releaseIso(),
                   due_at: dueIso() };
-      if (others.length) {
-        payload.scopes = [{ scope_kind: headScope.kind, scope_ref: headScope.ref,
-                             subject: subjectOfScope(headScope) || null,
-                             question_ids: headIds }].concat(others);
+      var idsOf = function (sc) {
+        return sc.picked.map(function (q) { return q.id; });
+      };
+      if (list.length > 1) {
+        payload.scopes = list.map(function (sc) {
+          return { scope_kind: sc.kind, scope_ref: sc.ref,
+                   subject: subjectOfScope(sc) || null,
+                   question_ids: idsOf(sc) };
+        });
       } else {
+        var headScope = list[0] || cur();
         payload.scope_kind = headScope.kind;
         payload.scope_ref = headScope.ref;
         payload.subject = subjectOfScope(headScope) || null;
-        payload.question_ids = headIds;
+        payload.question_ids = idsOf(headScope);
       }
     }
     /* ⊕ MRB-342.2 §3.4 — SENT WHEN THE FIELD WAS LOADED, OR WHEN THE

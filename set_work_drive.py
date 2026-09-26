@@ -3346,6 +3346,10 @@ def cleanup(teacher_id, admin_id):
 
 
 # ════════════════════════════════════════════════════════════════════════
+class _OnlyDone(Exception):
+    """`--only-edit-margin` has run what it came for."""
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("backend", nargs="?", default=None)
@@ -3369,6 +3373,11 @@ def main():
                     help="where the 390px screenshots go (default: outside "
                          "the repo; pass --shots docs/mrb335/shots to "
                          "deliberately refresh the committed evidence)")
+    # ⊕ 25 Sep 2026 — run ONLY the Edit-at-the-margin checks (19b), with the
+    # setup they need. For iterating on that one defect; the gate runs the
+    # whole file, which includes them.
+    ap.add_argument("--only-edit-margin", action="store_true",
+                    help="run only check_edit_margin (and its setup)")
     args = ap.parse_args()
 
     pw = os.environ.get(FX.ENV_SWITCH, "")
@@ -3412,6 +3421,16 @@ def main():
         scopes = check_scope(t_teacher)
         if not scopes:
             return 1
+        if args.only_edit_margin:
+            with cdp.Browser() as bm:
+                pm = bm.attach()
+                pm.set_viewport(390, 900)
+                signed = sign_in_page(pm, base, FX.TEACHER_EMAIL, pw)
+                record(str(signed).startswith("ok"),
+                       "the teacher signs in, for the Edit-margin checks",
+                       signed)
+                check_edit_margin(pm, base, t_teacher, scopes)
+            raise _OnlyDone()
         check_preview(t_teacher, scopes)
         check_swap(t_teacher, scopes)
         check_write(t_teacher, scopes)
@@ -3538,6 +3557,10 @@ def main():
                 deleted_title = surf[1] if isinstance(surf, tuple) else None
                 check_wide(pc, base, [("8a/Sc1", FX.C_KS3_A),
                                       ("9a/Sc1", FX.C_KS3_NOAUTO)])
+                # ⊕ 25 Sep 2026 — LAST in this tab: it clears the teacher's
+                # work on 9a/Sc1 and 10b/Sc5 first, so nothing above may
+                # depend on a row it would remove.
+                check_edit_margin(pc, base, t_teacher, scopes)
 
             with cdp.Browser() as b2:
                 p2 = b2.attach()
@@ -3573,6 +3596,8 @@ def main():
         # testing.
         if ws_first:
             check_worksheet_rate_limit(t_admin, ws_first)
+    except _OnlyDone:
+        pass
     finally:
         if server:
             server.__exit__(None, None, None)
@@ -6210,6 +6235,338 @@ def check_edit_sheet(p, base, shots):
            "second piece of work",
            "%d row(s)" % (len(back) if isinstance(back, list) else -1))
     p.eval("if (window.MRBSetWork) { window.MRBSetWork.close(); }")
+
+
+# ════════════════════════════════════════════════════════════════════════
+# 10b · EDITING A SCHEDULED SET CHANGES ITS COUNT AT THE MARGIN (⊕ 25 Sep 2026)
+# ════════════════════════════════════════════════════════════════════════
+#
+# Mide's rule, in his words: "Adding raises the count with new questions.
+# Lowering it drops from the end. Nothing already chosen is swapped."
+# Multi-topic and single-topic sets alike.
+#
+# ⛔ THE DEFECT. Edit on a set that is not out yet, change a topic's count,
+# and `setScopeCount()` asked `/preview` for a FRESH draw of the new size and
+# replaced the topic's questions wholesale — so a teacher who meant "two more"
+# got an unrelated list, and a two-topic set poured every question it held
+# under the first topic's heading. A first fix (reverted in 707971eee) was
+# refuted by its own live proof: it filtered the stored rows against the tree
+# before `/scope` had answered and showed ZERO kept questions.
+#
+# ⚠️ WHY THIS LIVES HERE AND NOT IN THE API HALF. `check_edit` drives a
+# RELEASED row through the route only; an unreleased edit through the sheet had
+# never been driven, and every claim here is about what the SHEET sends — the
+# route will happily store a fresh draw if that is what it is given.
+#
+# ⚠️ IDS, NOT STEMS. Each question row carries `data-sw-qid`; a row without one
+# is read by its stem and mapped back through the questions this check set,
+# which is only ever needed to make the failing proof legible on a sheet that
+# predates the attribute.
+EDIT_SECTIONS_JS = """(function(){
+  var o=document.querySelector('[data-sw="overlay"]');
+  if(!o||o.hidden){return null;}
+  var ss=o.querySelectorAll('[data-sw="scope"]'), out=[];
+  for(var i=0;i<ss.length;i++){
+    var s=ss[i], rows=s.querySelectorAll('[data-sw="question"]'), ids=[];
+    for(var k=0;k<rows.length;k++){
+      var id=rows[k].getAttribute('data-sw-qid');
+      if(!id){var st=rows[k].querySelector('[data-sw="stem"]');
+        id='stem:'+((st&&st.textContent)||'').replace(/\\s+/g,' ').trim();}
+      ids.push(id);}
+    var on=s.querySelector('[data-sw="count-chips"] .sw-chip.is-on');
+    var inp=s.querySelector('[data-sw="count-input"]');
+    out.push({ref:s.getAttribute('data-sw-ref')||'', ids:ids,
+              chip:on?on.textContent:null, input:inp?inp.value:null,
+              inputOff:!!(inp&&inp.disabled)});}
+  return {step:o.getAttribute('data-sw-step'), sections:out,
+          primary:(o.querySelector('[data-sw="primary"]')||{}).textContent||''};
+})()"""
+
+
+def _stored(aid):
+    st, rows = FX.api("GET", "/rest/v1/assignment_questions?assignment_id=eq.%s"
+                             "&select=source_ref,position&order=position.asc"
+                      % aid)
+    rows = rows if isinstance(rows, list) else []
+    return [r["source_ref"] for r in rows], [r["position"] for r in rows]
+
+
+def _ids_of(sections, stem_to_id):
+    out = []
+    for s in sections or []:
+        ids = []
+        for x in s["ids"]:
+            if x.startswith("stem:"):
+                ids.append(stem_to_id.get(squeeze(x[5:]), x[:40]))
+            else:
+                ids.append(x)
+        out.append(ids)
+    return out
+
+
+def _count_of(sec):
+    """What the section's count control reads: the field, else the lit chip."""
+    return (sec.get("input") or sec.get("chip") or "")
+
+
+def _open_edit_and_next(p, base, class_id, title):
+    """Edit on the row, then Next the MOMENT it enables — the teacher who does
+    not wait is the case the old sheet drew fresh questions for."""
+    if not open_class_page(p, base, class_id):
+        return "the class page did not load"
+    clicked = press_row(p, title, "edit")
+    if clicked != "clicked":
+        return "Edit on %r answered %r" % (title, clicked)
+    if not wait_for(p, "(function(){var o=document.querySelector("
+                       "'[data-sw=\"overlay\"]');return !!o && !o.hidden && "
+                       "o.getAttribute('data-sw-step')==='1';})()",
+                    tries=100, gap=0.05):
+        return "the sheet did not open on the Topic step"
+    if not wait_for(p, "!document.querySelector('[data-sw=\"primary\"]')"
+                       ".disabled", tries=400, gap=0.02):
+        return "Next never enabled on the Topic step"
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    if not wait_for(p, "document.querySelector('[data-sw=\"overlay\"]')"
+                       ".getAttribute('data-sw-step')==='2'", tries=100,
+                    gap=0.05):
+        return "Next did not reach the Detail step"
+    return True
+
+
+def _wait_rows(p, index, n, tries=160):
+    return wait_for(p, """(function(){var ss=document.querySelectorAll(
+        '[data-sw="overlay"] [data-sw="scope"]'), s=ss[%d];
+        if(!s){return false;}
+        return s.querySelectorAll('[data-sw="question"]').length===%d;})()"""
+                    % (index, n), tries=tries, gap=0.05)
+
+
+def _type_count(p, index, n):
+    return p.eval("""(function(){
+        var ss=document.querySelectorAll('[data-sw="overlay"] [data-sw="scope"]'),
+            s=ss[%d]; if(!s){return 'no section';}
+        var i=s.querySelector('[data-sw="count-input"]');
+        if(!i){return 'no field';} if(i.disabled){return 'disabled';}
+        i.focus(); i.value=String(%d);
+        i.dispatchEvent(new Event('change',{bubbles:true})); i.blur();
+        return true;})()""" % (index, n))
+
+
+def _settled(p):
+    wait_stable(p, "JSON.stringify(%s)" % EDIT_SECTIONS_JS, tries=60,
+                gap=0.05, needed=6)
+    return p.eval(EDIT_SECTIONS_JS) or {}
+
+
+def _save_and_close(p):
+    wait_for(p, "!document.querySelector('[data-sw=\"primary\"]').disabled",
+             tries=100, gap=0.05)
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    return wait_for(p, "(function(){var o=document.querySelector("
+                       "'[data-sw=\"overlay\"]');return !!o && o.hidden;})()",
+                    tries=200, gap=0.05)
+
+
+def _margin_case(p, base, t_teacher, label, class_id, tier, parts, grow, shrink):
+    """One scheduled set, edited twice through the sheet.
+
+    `parts` — [(kind, ref, subject, n)], the head first. The head's count goes
+    n → `grow` → `shrink`; every other part must come through untouched."""
+    title = "%s · margin %s" % (TITLE, label)
+    got, stem_to_id = [], {}
+    for kind, ref, subject, n in parts:
+        st, prev = preview(t_teacher, class_id, tier, kind, ref, n,
+                           subject=subject)
+        qs = (prev or {}).get("picked") or []
+        if st != 200 or len(qs) < n:
+            return record(False, "%s: %d question(s) to set from %s"
+                          % (label, n, ref), "status %s, got %d" % (st, len(qs)))
+        for q in qs:
+            stem_to_id[squeeze(q.get("stem") or "")] = q["id"]
+        got.append({"kind": kind, "ref": ref, "subject": subject,
+                    "questions": qs[:n]})
+    release = (NOW + timedelta(days=2)).isoformat()
+    st, made = post_set_scopes(t_teacher, [class_id], tier, got, title,
+                               release_at=release)
+    aid = ((made or {}).get("assignment_ids") or [None])[0]
+    if st != 200 or not aid:
+        return record(False, "%s: set the scheduled work" % label,
+                      "status %s %s" % (st, json.dumps(made)[:200]))
+    want = [[q["id"] for q in g["questions"]] for g in got]
+    head = want[0]
+    flat = [i for w in want for i in w]
+    ids0, _pos = _stored(aid)
+    record(ids0 == flat, "%s: the scheduled set is stored in scope order" % label,
+           "%d stored" % len(ids0))
+
+    # ── open, Next at once, and the stored questions are what is shown ──
+    r = _open_edit_and_next(p, base, class_id, title)
+    if r is not True:
+        return record(False, "%s: open Edit and reach Detail" % label, r)
+    for i, w in enumerate(want):
+        _wait_rows(p, i, len(w))
+    s = _settled(p)
+    secs = s.get("sections") or []
+    shown = _ids_of(secs, stem_to_id)
+    counts = [_count_of(x) for x in secs]
+    record(shown == want and counts == [str(len(w)) for w in want],
+           "edit_margin_%s_opens_on_the_stored_set — Edit, then Next the moment "
+           "it enables: one section per stored topic holding exactly the "
+           "stored ids in stored order, each count control reading its own "
+           "count" % label,
+           "want %s counts %s · shown %s counts %s"
+           % ([len(w) for w in want], [len(w) for w in want],
+              [x[:3] + (["…"] if len(x) > 3 else []) for x in shown], counts))
+
+    # ── raise the head: the kept ones stay, new ones are appended ──
+    t = _type_count(p, 0, grow)
+    _wait_rows(p, 0, grow)
+    s = _settled(p)
+    shown = _ids_of(s.get("sections"), stem_to_id)
+    h = shown[0] if shown else []
+    new = [i for i in h[len(head):]]
+    record(t is True and len(h) == grow and h[:len(head)] == head
+           and len(new) == grow - len(head)
+           and not (set(new) & set(flat)) and len(set(h)) == len(h)
+           and shown[1:] == want[1:],
+           "edit_margin_%s_raise_keeps — raising %d→%d keeps the first %d ids "
+           "exactly and appends %d ids the set did not hold; the other "
+           "topic(s) are untouched" % (label, len(head), grow, len(head),
+                                       grow - len(head)),
+           "typed %r · head now %d (kept %s) · new %s"
+           % (t, len(h), h[:len(head)] == head, new))
+
+    # ── lower it: drops from the end, back to the original first few ──
+    t = _type_count(p, 0, shrink)
+    _wait_rows(p, 0, shrink)
+    s = _settled(p)
+    shown = _ids_of(s.get("sections"), stem_to_id)
+    h = shown[0] if shown else []
+    record(t is True and h == head[:shrink] and shown[1:] == want[1:],
+           "edit_margin_%s_lower_drops_from_the_end — lowering to %d leaves "
+           "exactly the original first %d ids" % (label, shrink, shrink),
+           "head %s" % h)
+
+    # ── save, and the database holds exactly that ──
+    closed = _save_and_close(p)
+    expect = head[:shrink] + [i for w in want[1:] for i in w]
+    ids1, pos1 = _stored(aid)
+    record(closed and ids1 == expect and pos1 == list(range(1, len(expect) + 1)),
+           "edit_margin_%s_saves_what_was_shown — the stored rows are the "
+           "head's first %d then every other topic's ids unchanged, positions "
+           "1..%d" % (label, shrink, len(expect)),
+           "closed %s · stored %d %s · positions %s"
+           % (closed, len(ids1), "match" if ids1 == expect else ids1, pos1))
+
+    # ── reopen: the saved set comes back as it was saved ──
+    r = _open_edit_and_next(p, base, class_id, title)
+    if r is not True:
+        record(False, "%s: reopen Edit" % label, r)
+    else:
+        want2 = [head[:shrink]] + want[1:]
+        for i, w in enumerate(want2):
+            _wait_rows(p, i, len(w))
+        s = _settled(p)
+        shown = _ids_of(s.get("sections"), stem_to_id)
+        counts = [_count_of(x) for x in (s.get("sections") or [])]
+        record(shown == want2 and counts == [str(len(w)) for w in want2],
+               "edit_margin_%s_reopens_as_saved — counts %s and the same ids"
+               % (label, [len(w) for w in want2]),
+               "counts %s" % counts)
+        p.eval("if (window.MRBSetWork) { window.MRBSetWork.close(); }")
+    return aid, expect
+
+
+def _note_only_case(p, base, t_teacher, class_id, tier, parts):
+    """(c) A save that changes nothing about the questions changes nothing
+    about the questions."""
+    title = "%s · margin note-only" % TITLE
+    got = []
+    for kind, ref, subject, n in parts:
+        st, prev = preview(t_teacher, class_id, tier, kind, ref, n,
+                           subject=subject)
+        qs = (prev or {}).get("picked") or []
+        if st != 200 or len(qs) < n:
+            return record(False, "note-only: questions from %s" % ref)
+        got.append({"kind": kind, "ref": ref, "subject": subject,
+                    "questions": qs[:n]})
+    st, made = post_set_scopes(t_teacher, [class_id], tier, got, title,
+                               release_at=(NOW + timedelta(days=2)).isoformat())
+    aid = ((made or {}).get("assignment_ids") or [None])[0]
+    if st != 200 or not aid:
+        return record(False, "note-only: set the scheduled work")
+    before = _stored(aid)
+    r = _open_edit_and_next(p, base, class_id, title)
+    if r is not True:
+        return record(False, "note-only: open Edit and reach Detail", r)
+    _wait_rows(p, 0, parts[0][3])
+    _settled(p)
+    how = p.eval("""(function(){
+        var w=document.querySelector('[data-sw="assignment-note-field"]');
+        var t=document.querySelector('[data-sw="assignment-note"]');
+        if(w && !w.hidden && t){t.value='Bring a calculator';
+          t.dispatchEvent(new Event('input',{bubbles:true})); return 'note';}
+        var ti=document.querySelector('[data-sw="title"]');
+        ti.value=ti.value+' (renamed)';
+        ti.dispatchEvent(new Event('input',{bubbles:true})); return 'title';})()""")
+    closed = _save_and_close(p)
+    after = _stored(aid)
+    record(closed and after == before and len(before[0]) == sum(x[3] for x in parts),
+           "edit_margin_note_only_keeps_every_question — a %s-only save on a "
+           "two-topic scheduled set leaves every stored id and position "
+           "identical" % how,
+           "closed %s · %d ids · identical %s" % (closed, len(after[0]),
+                                                 after == before))
+
+
+def check_edit_margin(p, base, t_teacher, scopes):
+    print("\n19b · Edit on a scheduled set — the count moves at the margin")
+    cid = FX.C_KS3_NOAUTO
+    clear_teacher_work(t_teacher, cid)
+    tier = "medium"
+    tree = (scopes.get("ks3") or {}).get("tree") or []
+    got = pick_topic(scopes["ks3"], 2, tier)
+    if not got:
+        return record(False, "a KS3 unit with two stocked lessons exists")
+    _n, unit, _stocked = got
+    other = None
+    for t in tree:
+        if t["id"] == unit["id"]:
+            continue
+        for c in t.get("children") or []:
+            if (c.get("counts") or {}).get(tier, 0) >= 6:
+                other = c
+                break
+        if other:
+            break
+    if not other:
+        return record(False, "a lesson outside %s with six questions" % unit["id"])
+    # (a) two topics — the head unit at 6, a lesson from another unit at 4
+    _margin_case(p, base, t_teacher, "two_topic", cid, tier,
+                 [("topic", unit["id"], None, 6),
+                  ("subtopic", other["id"], None, 4)], grow=9, shrink=4)
+    # (b) one topic, 5 → 8 → 3
+    _margin_case(p, base, t_teacher, "one_topic", cid, tier,
+                 [("topic", unit["id"], None, 5)], grow=8, shrink=3)
+    # (c) a note-only save on a two-topic scheduled set
+    _note_only_case(p, base, t_teacher, cid, tier,
+                    [("topic", unit["id"], None, 6),
+                     ("subtopic", other["id"], None, 4)])
+    # (d) KS4 — a combined Foundation class, one topic, 5 → 8 → 3
+    kcid = FX.C_KS4_COMB
+    clear_teacher_work(t_teacher, kcid)
+    ks4 = None
+    for t in (scopes.get("comb") or {}).get("tree") or []:
+        if t["id"] == "atomic-structure":
+            continue          # the one ambiguous id; not what this is about
+        if (t.get("counts") or {}).get("foundation", 0) >= 20:
+            ks4 = t
+            break
+    if not ks4:
+        return record(False, "a KS4 combined topic with twenty questions")
+    _margin_case(p, base, t_teacher, "ks4_one_topic", kcid, "foundation",
+                 [("topic", ks4["id"], ks4.get("subject"), 5)], grow=8,
+                 shrink=3)
 
 
 # ════════════════════════════════════════════════════════════════════════
