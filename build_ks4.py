@@ -22,6 +22,7 @@ here — a hard line (contract §2). This script reads `all_subtopics_*.py`
 only, the same files `generate_site_v5.py` reads.
 """
 
+import base64
 import hashlib
 import importlib
 import json
@@ -50,6 +51,26 @@ BLOCK_NAMES = ["Ks4Chrome", "Ks4Choice", "Ks4Sort", "Ks4Chain", "Ks4Write",
 ROUTE_CODES = ["CF", "CH", "TF", "TH"]
 ROUTE_LABEL = ks4_lessons.ROUTE_LABELS
 ROUTE_URL = ks4_lessons.ROUTE_URL
+
+# ⊕ D3 fix (26 Sep 2026, docs/ks4/pilot-live-audit.md) — the pilot pages
+# shipped no `<link rel="icon">` at all, so every one of the 54 pages 404'd
+# on the browser's `/favicon.ico` fallback (the ONLY console error the audit
+# found). The old (pre-pilot, generate_site_v5.py-built) KS4 lesson pages
+# already carry this exact icon — confirmed byte-identical via
+# `git show 0741525aa:mrbadmus_site/combined/foundation/chemistry/bonding/
+# metallic-bonding.html`, which decodes to this same `<svg>` — and it is the
+# same one `build_ks3.FAVICON_LINK` and `generate_site_v5.KS4_FAVICON_LINK`
+# each already define, independently, as their own literal (this codebase's
+# standing preference for independent generators over cross-module coupling
+# — see generate_site_v5.py's comment by KS4_FAVICON_LINK). Kept here as
+# ITS OWN literal for the same reason, not imported.
+_KS4_PILOT_FAVICON_SVG = (
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">'
+    '<path d="M4 16L12 7l8 9" fill="none" stroke="#E4572E" stroke-width="4.6" '
+    'stroke-linecap="round" stroke-linejoin="round"/></svg>')
+KS4_PILOT_FAVICON_LINK = (
+    '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,%s"/>'
+    % base64.b64encode(_KS4_PILOT_FAVICON_SVG.encode("utf-8")).decode("ascii"))
 
 # ⊕ these are OUR OWN new assets, a SEPARATE list from build_ks3.py's
 # VERSIONED_ASSETS tuple (contract §1: "add a KS4 list in build_ks4.py — do
@@ -401,21 +422,29 @@ def build_ks4_lib_js():
         "connects\n"
         "     hrefs were sibling .dc.html filenames for local review). NAV "
         "is\n"
-        "     generated from ks4_lessons.LESSONS by build_ks4.py. Falls back "
-        "to\n"
-        "     the Triple pathway at the same tier when the target does not "
-        "ship\n"
-        "     on the current pathway (nanoparticles is Triple-only — see\n"
-        "     ks4_rulings.py R-CONNECTS). */\n"
+        "     generated from ks4_lessons.LESSONS by build_ks4.py.\n"
+        "     ⊕ D2 fix (26 Sep 2026, docs/ks4/pilot-live-audit.md): this "
+        "used to\n"
+        "     fall back to the Triple pathway at the same tier when the "
+        "target did\n"
+        "     not ship on the current pathway (nanoparticles is "
+        "Triple-only), which\n"
+        "     sent a Combined pupil into chemistry-only content. It now "
+        "returns\n"
+        "     null instead — ks4_rulings.py's R-CONNECTS wraps every "
+        "endConnects\n"
+        "     array with a .filter() that drops a null-href entry, so the "
+        "link is\n"
+        "     simply absent on a route where the target has no page. */\n"
         "  var NAV = %s;\n"
         "  function hrefFor(slug, R) {\n"
         "    var n = NAV[slug];\n"
-        "    if (!n) { return '#'; }\n"
+        "    if (!n) { return null; }\n"
         "    var pathway = (R && R.isTriple) ? 'triple' : 'combined';\n"
         "    var tier = (R && R.isHigher) ? 'higher' : 'foundation';\n"
         "    var code = (pathway === 'triple' ? 'T' : 'C') + (tier === "
         "'higher' ? 'H' : 'F');\n"
-        "    if (n.routes.indexOf(code) === -1) { pathway = 'triple'; }\n"
+        "    if (n.routes.indexOf(code) === -1) { return null; }\n"
         "    return '/' + pathway + '/' + tier + '/' + n.subject + '/' + "
         "n.topic + '/' + slug + '.html';\n"
         "  }\n"
@@ -716,6 +745,15 @@ def compile_block(page, name):
     tpl, logic = template_and_logic(path)
     if name == "Ks4Chrome":
         tpl = ks4_rulings.apply_r_breadcrumb(tpl)
+    if name == "Ks4End":
+        # ⊕ R10 (ks4_rulings.py) — D1 fix: the "Ask about this lesson" CTA
+        # becomes a real button carrying the hook mrbadmus.v2.js binds.
+        tpl = ks4_rulings.apply_r10_tutor_cta(tpl)
+        # ⊕ D2 fix — drop a connects entry whose target has no page on the
+        # current route (see ks4_rulings.py's comment above
+        # apply_r_end_connects_filter for why this lives here, on the
+        # shared block, rather than on any of the 14 lessons' own logic).
+        logic = ks4_rulings.apply_r_end_connects_filter(logic)
     if name in _BLOCK_R2:
         logic = _BLOCK_R2[name](logic)
     template = compile_template_text(page, tpl)
@@ -925,8 +963,10 @@ TUTOR_OVERLAY = None  # filled from build_ks3.KS3_CHAT_OVERLAY in main()
 def tutor_block(lesson, route):
     """The tutor overlay, wired like build_ks3.py's `tutor_mount()` — same
     markup, same MrBadmus.init() call shape, same deferred-script /
-    DOMContentLoaded ordering. Differs only in the config: KS4 pages never
-    pass `keyStage`, matching every OLD KS4 lesson page's own
+    DOMContentLoaded ordering. Differs in the subtitle (TUTOR_OVERLAY has
+    already had ks4_rulings.apply_r_tutor_label() applied to it in main() —
+    D4 fix, "GCSE Science Tutor" not "KS3 Science Tutor") and in the config:
+    KS4 pages never pass `keyStage`, matching every OLD KS4 lesson page's own
     `MrBadmus.init({subject, topic})` call (mrbadmus.v2.js reads tier/
     pathway from the STUDENT'S OWN profile for any non-KS3 page, and takes
     no tier/pathway override in its config at all — contract's "supply
@@ -954,6 +994,7 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%(title)s</title>
 <link rel="canonical" href="https://mrbadmus.com%(url)s">
+%(favicon)s
 <link rel="stylesheet" href="/shared/ks4-ds.css">
 <link rel="stylesheet" href="/shared/ks4-theme.css">
 <link rel="stylesheet" href="/shared/ks4-lesson.css">
@@ -970,7 +1011,8 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 %(tutor)s
 </body>
 </html>
-""" % dict(title=title, url=url, block_scripts=block_scripts, mount_script=mount_script,
+""" % dict(title=title, url=url, favicon=KS4_PILOT_FAVICON_LINK,
+           block_scripts=block_scripts, mount_script=mount_script,
            tutor=tutor_block(lesson, route))
     import build_ks3
     return build_ks3.stamp_versions(html, versions)
@@ -990,7 +1032,12 @@ BACKEND_HOST = "mrbadmus-backend.onrender.com"
 
 
 def _real_errors(errs):
-    return [e for e in errs if "favicon.ico" not in e and BACKEND_HOST not in e]
+    # ⊕ D3 fix (26 Sep 2026) — favicon.ico is NO LONGER filtered out here.
+    # The pages now carry KS4_PILOT_FAVICON_LINK, so a favicon.ico 404
+    # should never occur; if one does, it is a real regression and must
+    # fail the build (see the explicit assertion in main(), below), not be
+    # silently absorbed the way it was before this fix.
+    return [e for e in errs if BACKEND_HOST not in e]
 
 
 PRERENDER_FREEZE_JS = """
@@ -1067,7 +1114,10 @@ def main():
     import build_ks3
 
     global TUTOR_OVERLAY
-    TUTOR_OVERLAY = build_ks3.KS3_CHAT_OVERLAY
+    # ⊕ D4 fix (26 Sep 2026, docs/ks4/pilot-live-audit.md) — the overlay is
+    # KS3's own, verbatim, EXCEPT for its subtitle: "KS3 Science Tutor" ->
+    # "GCSE Science Tutor" (ks4_rulings.R-TUTOR-LABEL).
+    TUTOR_OVERLAY = ks4_rulings.apply_r_tutor_label(build_ks3.KS3_CHAT_OVERLAY)
 
     print("\n\U0001f9f1  build_ks4 — the KS4 pilot (14 lessons, 54 pages)\n")
 
@@ -1210,6 +1260,8 @@ def main():
         raise SystemExit("build_ks4: %d console error(s) across the 54 pages "
                           "— a build failure (see above)." % total_errors)
     print("  ✓ zero console errors across %d pages at 1280 and 360px" % len(results))
+    print("  ✓ D3 verified: favicon.ico 404 is gone (KS4_PILOT_FAVICON_LINK "
+          "shipped, no favicon.ico error on any of the %d pages)" % len(results))
 
     # ── root-level mirror ────────────────────────────────────────────────
     # ⚠️ `generate_site_v5.py`'s own "Copy to repo root" step rmtree's and

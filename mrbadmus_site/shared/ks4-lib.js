@@ -123,18 +123,22 @@ window.KS4 = (function () {
   /* ⊕ ENGINE ADDITION — not in Design's delivery. Her page never needed a
      real href (Route was a review selector, and her prev/next/connects
      hrefs were sibling .dc.html filenames for local review). NAV is
-     generated from ks4_lessons.LESSONS by build_ks4.py. Falls back to
-     the Triple pathway at the same tier when the target does not ship
-     on the current pathway (nanoparticles is Triple-only — see
-     ks4_rulings.py R-CONNECTS). */
+     generated from ks4_lessons.LESSONS by build_ks4.py.
+     ⊕ D2 fix (26 Sep 2026, docs/ks4/pilot-live-audit.md): this used to
+     fall back to the Triple pathway at the same tier when the target did
+     not ship on the current pathway (nanoparticles is Triple-only), which
+     sent a Combined pupil into chemistry-only content. It now returns
+     null instead — ks4_rulings.py's R-CONNECTS wraps every endConnects
+     array with a .filter() that drops a null-href entry, so the link is
+     simply absent on a route where the target has no page. */
   var NAV = {"chemical-bonds": {"routes": ["CF", "CH", "TF", "TH"], "subject": "chemistry", "topic": "bonding"}, "covalent-bonding": {"routes": ["CF", "CH", "TF", "TH"], "subject": "chemistry", "topic": "bonding"}, "giant-covalent-structures": {"routes": ["CF", "CH", "TF", "TH"], "subject": "chemistry", "topic": "bonding"}, "ionic-bonding": {"routes": ["CF", "CH", "TF", "TH"], "subject": "chemistry", "topic": "bonding"}, "ionic-compounds": {"routes": ["CF", "CH", "TF", "TH"], "subject": "chemistry", "topic": "bonding"}, "metallic-bonding": {"routes": ["CF", "CH", "TF", "TH"], "subject": "chemistry", "topic": "bonding"}, "metals-alloys": {"routes": ["CF", "CH", "TF", "TH"], "subject": "chemistry", "topic": "bonding"}, "nanoparticles": {"routes": ["TF", "TH"], "subject": "chemistry", "topic": "bonding"}, "polymers": {"routes": ["CF", "CH", "TF", "TH"], "subject": "chemistry", "topic": "bonding"}, "properties-ionic-compounds": {"routes": ["CF", "CH", "TF", "TH"], "subject": "chemistry", "topic": "bonding"}, "properties-small-molecules": {"routes": ["CF", "CH", "TF", "TH"], "subject": "chemistry", "topic": "bonding"}, "resistors": {"routes": ["CF", "CH", "TF", "TH"], "subject": "physics", "topic": "electricity"}, "series-parallel-circuits": {"routes": ["CF", "CH", "TF", "TH"], "subject": "physics", "topic": "electricity"}, "states-of-matter": {"routes": ["CF", "CH", "TF", "TH"], "subject": "chemistry", "topic": "bonding"}};
   function hrefFor(slug, R) {
     var n = NAV[slug];
-    if (!n) { return '#'; }
+    if (!n) { return null; }
     var pathway = (R && R.isTriple) ? 'triple' : 'combined';
     var tier = (R && R.isHigher) ? 'higher' : 'foundation';
     var code = (pathway === 'triple' ? 'T' : 'C') + (tier === 'higher' ? 'H' : 'F');
-    if (n.routes.indexOf(code) === -1) { pathway = 'triple'; }
+    if (n.routes.indexOf(code) === -1) { return null; }
     return '/' + pathway + '/' + tier + '/' + n.subject + '/' + n.topic + '/' + slug + '.html';
   }
   return { rail: rail, observe: observe, route: route, ready: ready, fig: fig, ROUTES: ROUTES, EQ: EQ, EQ_BY_YEAR: EQ_BY_YEAR, EQ_YEAR: EQ_YEAR, video: video, VIDEOS: VIDEOS, src: src, routeKey: routeKey, flags: flags, item: item, quiz: quiz, find: find, bank: bank,
