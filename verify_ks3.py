@@ -988,6 +988,21 @@ def main():
 
     check("KS4 generator ran clean", ks4_gen.returncode == 0,
           ks4_gen.stderr[-200:] if ks4_gen.returncode else "exit 0")
+
+    # ⊕ 26 Sep 2026 (KS4 pilot). generate_site_v5.py on its own REGRESSES the
+    # 14 rebuilt KS4 lessons (54 pages, both trees) to the old design — it
+    # has no idea build_ks4.py (build_all.py step 1b) replaces them. Caught
+    # live: this very gate, run by prepush_gate.py --record-all, left the
+    # working tree carrying the OLD pilot pages, and the next slow gate
+    # measured those. So the KS4 build this gate performs is the SAME build
+    # build_all.py performs — both steps, in order — and the tree it leaves
+    # behind is the committed one. ks4_pilot_check (fast) is the backstop
+    # for any other caller that forgets.
+    ks4_pilot = subprocess.run([sys.executable, "build_ks4.py"],
+                               capture_output=True, text=True)
+    check("KS4 pilot generator (build_ks4.py, step 1b) ran clean after it",
+          ks4_pilot.returncode == 0,
+          ks4_pilot.stderr[-200:] if ks4_pilot.returncode else "exit 0")
     check("running the KS4 generator AFTER build_ks3 does not destroy ks3/",
           bool(ks3_pages_after) and ks3_pages_after == ks3_pages_before,
           "%d KS3 files before, %d after%s"

@@ -67,24 +67,29 @@ from `ks4_lessons/videos.py` keyed by slug.
 
 ## 3. Lesson × route — parity and examination
 
-_Parity column filled in at landing — see §7._
+`ks4_parity.py`: **1208 PASS, 0 FAIL** over all 54 pages × 5 widths —
+structure, text, layout, computed style (light and dark), state after each
+interaction, reduced motion, keyboard, console. Text differences are
+excused only through an explicit exemption keyed to a science-ruling id the
+gate validates (13 keys). Contrast audit over 15 pilot pages: 0 failures.
+No horizontal scroll at 360 or 390 on any page.
 
-| lesson | routes | examination | changes applied |
-|---|---|---|---|
-| chemical-bonds | CF CH TF TH | CHANGES REQUIRED → applied | 13 |
-| ionic-bonding | CF CH TF TH | → applied | 4 |
-| ionic-compounds | CF CH TF TH | → applied | 9 |
-| covalent-bonding | CF CH TF TH | → applied | 3 |
-| metallic-bonding | CF CH TF TH | → applied | 3 |
-| states-of-matter | CF CH TF TH | → applied | 2 |
-| properties-ionic-compounds | CF CH TF TH | → applied | 6 |
-| properties-small-molecules | CF CH TF TH | → applied | 6 |
-| polymers | CF CH TF TH | → applied | 10 |
-| giant-covalent-structures | CF CH TF TH | → applied | 5 |
-| metals-alloys | CF CH TF TH | → applied | 11 (+2 commander rulings) |
-| nanoparticles | TF TH | → applied | 8 |
-| series-parallel-circuits | CF CH TF TH | → applied | 5 |
-| resistors | CF CH TF TH | → applied | 14 |
+| lesson | routes | parity (all routes) | examination | changes applied |
+|---|---|---|---|---|
+| chemical-bonds | CF CH TF TH | PASS | CHANGES REQUIRED → applied | 13 |
+| ionic-bonding | CF CH TF TH | PASS | → applied | 4 |
+| ionic-compounds | CF CH TF TH | PASS | → applied | 9 |
+| covalent-bonding | CF CH TF TH | PASS | → applied | 3 |
+| metallic-bonding | CF CH TF TH | PASS | → applied | 3 |
+| states-of-matter | CF CH TF TH | PASS | → applied | 2 |
+| properties-ionic-compounds | CF CH TF TH | PASS | → applied | 6 |
+| properties-small-molecules | CF CH TF TH | PASS | → applied | 6 |
+| polymers | CF CH TF TH | PASS | → applied | 10 |
+| giant-covalent-structures | CF CH TF TH | PASS | → applied | 5 |
+| metals-alloys | CF CH TF TH | PASS | → applied | 11 (+2 commander rulings) |
+| nanoparticles | TF TH | PASS | → applied | 8 |
+| series-parallel-circuits | CF CH TF TH | PASS | → applied | 5 |
+| resistors | CF CH TF TH | PASS | → applied | 14 |
 
 All 14 came back CHANGES REQUIRED; every required change is applied by
 `ks4_science_rulings.py` and proved present in the built output by
@@ -181,3 +186,36 @@ _Filled in at landing._
 10. **MRB-336**: the "Lessons in this topic" cards take their link from the
     per-assignment list that `ks4TopicHref` already resolved; the fixture
     class is KS3, so the gate is a static check plus the existing drives.
+11. **Ladder storage** keeps Design's verbatim local scheme
+    (`ks4-best-<slug>`, best of 4, retry resets unscored rungs) and does NOT
+    post attempts to `/api/quiz-score`: that endpoint carries no key-stage
+    field, and eight KS4 slugs are byte-identical to KS3 lesson slugs, so a
+    submission that cannot say which key stage it is must not be sent.
+    Backend follow-up if KS4 ladder attempts should feed the class page.
+12. **Set-work gate override.** The `set_work` drive was selected by the
+    Lessons-cards line and came back 4 of 455 red: the three standing reds
+    since MRB-335 grew the bank (overridden identically on main's last four
+    Set-work landings) and `preview_figures_drawable`, a TEST backend/data
+    state two earlier reports already attributed to stale server code. None
+    is reachable by this branch; pushed under `GATE-OVERRIDE` on the tip.
+
+## 9. Deviations
+
+- **`verify_ks3.py` regressed the pilot mid-gate-run.** It proves the KS4
+  generator leaves `ks3/` intact by running `generate_site_v5.py` alone,
+  which rewrote the 54 pilot pages to the old design in the working tree;
+  the parity gate queued after it began measuring those. Caught by a dirty
+  tree that had been clean → recorder stopped by PID, pages restored from
+  the commit, and both callers that run the generator alone
+  (`verify_ks3.py`, `3d_isolation_check.py`) now run `build_ks4.py` after
+  it, exactly as `build_all.py` does. `ks4_pilot_check` is the backstop.
+- **Prerender churn on L8.** The small-molecules flagship animates, and the
+  baked prerender captures one frame, so a rebuild moves it by 0.1 px. The
+  runtime replaces the bake on mount; harmless, noted for a determinism
+  fix (freeze the tick at prerender).
+- **`student_controls_drive` skipped by name** — it needs the two
+  credentials the brief forbids; its `--fixture` mode was run and its
+  documented fixture-only failures are unrelated to the cards change.
+- **The engine executor was cut off twice** by the harness mid-build; the
+  proof steps it never reached (scope check, drive, screenshots, report)
+  were run by the commander and the integration executor.

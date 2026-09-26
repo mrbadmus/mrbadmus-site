@@ -993,6 +993,19 @@ def _real_errors(errs):
     return [e for e in errs if "favicon.ico" not in e and BACKEND_HOST not in e]
 
 
+PRERENDER_FREEZE_JS = """
+(function () {
+  window.setInterval = function () { return 0; };
+  window.clearInterval = function () {};
+  var seed = 0x9E3779B9;
+  Math.random = function () {
+    seed = (Math.imul(seed ^ (seed >>> 15), 0x2C1B3C6D) + 0x9E3779B9) | 0;
+    return ((seed >>> 0) % 1000000) / 1000000;
+  };
+})();
+"""
+
+
 def prerender_all(cdp, pages):
     """`pages`: [(out_path, url_path)]. Bakes #ks4-mount's innerHTML into
     each file and returns [(url_path, errors_1280, errors_360)]."""
@@ -1001,6 +1014,17 @@ def prerender_all(cdp, pages):
     try:
         with cdp.Browser() as b:
             page = b.attach()
+            # ⊕ 26 Sep 2026 — the bake must be DETERMINISTIC. Design's
+            # flagships animate on setInterval ticks (L5's electron sea,
+            # L8's two-forces model …) and the snapshot used to land on
+            # whichever frame the interval had reached, so every rebuild
+            # moved a molecule by 0.1 px, dirtied the 54 pages and the
+            # manifest, and a receipt-recording gate then refused the tree.
+            # For the prerender only, setInterval never fires and
+            # Math.random is a fixed-seed PRNG, so the baked frame is frame
+            # zero every time. The shipped runtime is untouched: this script
+            # exists only inside the build's own headless Chrome.
+            page.send("Page.addScriptToEvaluateOnNewDocument", {"source": PRERENDER_FREEZE_JS})
             for out_path, url_path in pages:
                 page.set_viewport(1280, 1000)
                 page.goto("http://127.0.0.1:%d%s" % (port, url_path))
