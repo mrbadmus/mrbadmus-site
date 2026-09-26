@@ -464,6 +464,8 @@
     var go = hrefFor(item);
     b.setAttribute("data-go", go ? "1" : "0");
 
+    var kindLabel = KINDS[item.kind] || KIND_UNKNOWN;
+
     var kind = el("span", "", "");
     kind.className = "mrb-bell-kind";
     if (!item.read) {
@@ -471,14 +473,32 @@
       dot.className = "mrb-bell-dot";
       kind.appendChild(dot);
     }
-    kind.appendChild(document.createTextNode(
-      KINDS[item.kind] || KIND_UNKNOWN));
+    kind.appendChild(document.createTextNode(kindLabel));
 
     var text = el("span", "", item.text || "");
     text.className = "mrb-bell-text";
 
-    var date = el("span", "", when(item.created_at));
+    var dateText = when(item.created_at);
+    var date = el("span", "", dateText);
     date.className = "mrb-bell-when";
+
+    /* ⊕ RULED 25 Sep 2026 (experience run, stream K) — PROD N5. Read on this
+       row's own visible content, an unread item and a read one differ by
+       exactly one thing: a 6px coloured dot (`.mrb-bell-dot`, above), which
+       carries no text and is invisible to a screen reader. `data-unread`
+       says the same fact to CSS, which is equally silent to anyone not
+       looking at the dot. A READ row is left alone — its accessible name
+       already comes correctly off `kind`/`text`/`date`'s own text content,
+       and changing a working default for uniformity's own sake is a second
+       thing that could drift from what is actually on screen. An UNREAD row
+       gets an explicit `aria-label` that says the same three facts PLUS the
+       one the dot was carrying, in the same order they read on screen:
+       "Unread: feedback, <message>, 6 Sep". */
+    if (!item.read) {
+      b.setAttribute("aria-label", "Unread: " + kindLabel
+        + (item.text ? ", " + item.text : "")
+        + (dateText ? ", " + dateText : ""));
+    }
 
     b.appendChild(kind);
     b.appendChild(text);
@@ -535,6 +555,17 @@
     state.open = true;
     place(lastButton);
     if (lastButton) { lastButton.setAttribute("aria-expanded", "true"); }
+    /* ⊕ Experience run, 25 Sep 2026 (stream H) — P10. The panel already
+       carries `role="dialog"` and its own `aria-label` (above), Escape
+       already closes it (`onKey`) and closing already gives focus back to
+       the bell (`hide(true)`) — but opening left focus sitting on the bell
+       button, behind the panel it had just opened, which is a dialog a
+       keyboard user cannot get INTO without first tabbing past whatever
+       else the header holds. Move it onto the one control every state of
+       the panel has: the close button, present whether the list is full,
+       empty or failed. */
+    var firstFocus = panel.querySelector(".mrb-bell-close");
+    if (firstFocus && firstFocus.focus) { firstFocus.focus(); }
     document.addEventListener("keydown", onKey, true);
     document.addEventListener("click", onOutside, true);
     window.addEventListener("resize", onMove);

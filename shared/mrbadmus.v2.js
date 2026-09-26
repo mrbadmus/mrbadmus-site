@@ -5,6 +5,9 @@
 window.MrBadmus = (function() {
   let chatInited = false, pendingImg = null, chatHistory = [], currentSubject = 'physics', currentTopic = '', systemPrompt = '';
   let studentName = null, studentProfile = null;
+  // Stream G follow-up, 25 Sep 2026 — who opened the panel, so `close()` can
+  // give the keyboard back to them rather than dropping it on <body>.
+  let chatOpener = null;
   // MRB-257 — the key stage this page belongs to. '' on every KS4 page, which
   // is every page that existed before KS3 mounted the tutor, so every branch
   // that reads it is a branch KS4 never takes.
@@ -249,6 +252,19 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     document.querySelector('.chat-send-btn')?.addEventListener('click', () => ask());
     document.getElementById('ci')?.addEventListener('keydown', e => { if(e.key==='Enter') ask(); });
     document.getElementById('imgInput')?.addEventListener('change', () => handleImg(document.getElementById('imgInput')));
+    // ⊕ Experience run, 24 Sep 2026 (stream G). `<label for="imgInput">` opens
+    // the file picker on a mouse click through native `for` association, but
+    // a `<label>` carries no keyboard activation of its own — Enter/Space
+    // only trigger the default action on elements the platform already
+    // treats as controls (button, a[href], checkbox/radio…), and a label is
+    // not one of them. `focus_audit.py` found this as an "unreachable at
+    // all" control: with the label now `tabindex="0" role="button"`
+    // (build_ks3.py, generate_site_v5.py), a keyboard user can reach it, but
+    // reaching it did nothing until Enter/Space is wired to the same click()
+    // a mouse already performs.
+    document.querySelector('.img-btn')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); }
+    });
 
   // Paste image support — Ctrl+V / Cmd+V directly into chat
   document.addEventListener('paste', function(e) {
@@ -295,6 +311,29 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
   function open() {
     loadStudentSession();
     const ov = document.getElementById('chatOverlay');
+    // ⊕ RULED 25 Sep 2026 (experience run, stream K) — PROD N6. The panel
+    // traps Tab and closes on Escape (Stream G's fix, directly below) — it
+    // BEHAVES like a modal dialog everywhere on the estate already — but
+    // never SAID so: no `role="dialog"`, no `aria-modal`, no accessible
+    // accessible name of its own, unlike the flashcards overlay (`student_rulings.py`,
+    // `data-mrb-dialog="flashcards"`) which names this exact trio. A static
+    // label rather than `aria-labelledby` pointing at `#chat-head-subtitle`:
+    // that node's own text is a personalised greeting ("Hey Name! 👋") that
+    // is empty until a signed-in student's name loads and is absent
+    // entirely on a page with no such element — an accessible NAME must not
+    // depend on either. Set on every `open()` rather than once: cheap, and
+    // correct regardless of which of this file's several pages' markup
+    // happens to be on screen.
+    if (ov) {
+      ov.setAttribute('role', 'dialog');
+      ov.setAttribute('aria-modal', 'true');
+      ov.setAttribute('aria-label', 'Ask Mr Badmus');
+    }
+    // Stream G follow-up — capture whichever control was focused (a mouse
+    // click on a button focuses it natively) BEFORE this panel steals focus,
+    // so `close()` has somewhere real to give it back to.
+    chatOpener = (document.activeElement && document.activeElement !== document.body)
+      ? document.activeElement : null;
     /* MRB-257 — the closed overlay is `opacity:0; pointer-events:none`, which
        hides it from the eye and the mouse and NOT from the keyboard: a text
        input, a file picker and two buttons sit in the tab order regardless.
@@ -321,7 +360,30 @@ You are talking to a KS3 student: roughly 11 to 14 years old, two or three years
     const ov = document.getElementById('chatOverlay');
     ov?.classList.remove('open');
     if (ov?.hasAttribute('data-inert-when-closed')) ov.setAttribute('inert', '');
+    // Stream G follow-up — give the keyboard back to whoever opened this,
+    // the same pattern shared/set-work.js's sheet already uses.
+    if (chatOpener) { try { chatOpener.focus({ preventScroll: true }); } catch (e) {} chatOpener = null; }
   }
+
+  // Stream G follow-up, 25 Sep 2026 — Escape closes the panel, and Tab stays
+  // inside it while it is open. `focus_audit.py` found the open panel let Tab
+  // walk out into the page behind it, same shape MRB-335 already fixed once
+  // for the Set work sheet (shared/set-work.js) — this is that fix, scoped to
+  // `#chatOverlay`. The list is read at press time, not cached, because the
+  // preview row and the image button come and go with `pendingImg`.
+  document.addEventListener('keydown', e => {
+    const ov = document.getElementById('chatOverlay');
+    if (!ov || !ov.classList.contains('open')) return;
+    if (e.key === 'Escape') { close(); return; }
+    if (e.key !== 'Tab') return;
+    const items = Array.prototype.slice.call(
+      ov.querySelectorAll('button,[href],input,select,textarea,[tabindex]')
+    ).filter(n => !n.disabled && n.getAttribute('tabindex') !== '-1' && n.offsetParent);
+    if (!items.length) return;
+    const first = items[0], last = items[items.length - 1], here = document.activeElement;
+    if (e.shiftKey && (here === first || !ov.contains(here))) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (here === last || !ov.contains(here))) { e.preventDefault(); first.focus(); }
+  });
 
   function handleImg(input) {
     const file = input.files[0]; if (!file) return;

@@ -131,7 +131,7 @@
    Plus Jakarta Sans: variable, wght 200–800. Latin subsets. */
 @font-face {
   font-family: 'Fraunces';
-  src: url('../fonts/fraunces-var-latin.woff2') format('woff2');
+  src: url('/shared/fonts/fraunces-var-latin.woff2') format('woff2');
   font-weight: 400 700;
   font-style: normal;
   font-display: swap;
@@ -139,7 +139,7 @@
 }
 @font-face {
   font-family: 'Plus Jakarta Sans';
-  src: url('../fonts/plus-jakarta-sans-var-latin.woff2') format('woff2');
+  src: url('/shared/fonts/plus-jakarta-sans-var-latin.woff2') format('woff2');
   font-weight: 200 800;
   font-style: normal;
   font-display: swap;
@@ -167,7 +167,7 @@
    font mid-badge. Same defect class MRB-130 exists to fix. */
 @font-face {
   font-family: 'Bricolage Grotesque';
-  src: url('../fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
+  src: url('/shared/fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
   font-weight: 400 800;
   font-style: normal;
   font-display: swap;
@@ -175,7 +175,7 @@
 }
 @font-face {
   font-family: 'Instrument Sans';
-  src: url('../fonts/instrument-sans-var-latin.woff2') format('woff2');
+  src: url('/shared/fonts/instrument-sans-var-latin.woff2') format('woff2');
   font-weight: 400 700;
   font-style: normal;
   font-display: swap;
@@ -183,7 +183,7 @@
 }
 @font-face {
   font-family: 'Instrument Sans';
-  src: url('../fonts/instrument-sans-var-italic-latin.woff2') format('woff2');
+  src: url('/shared/fonts/instrument-sans-var-italic-latin.woff2') format('woff2');
   font-weight: 400 600;
   font-style: italic;
   font-display: swap;
@@ -191,7 +191,7 @@
 }
 @font-face {
   font-family: 'DM Mono';
-  src: url('../fonts/dm-mono-400-latin.woff2') format('woff2');
+  src: url('/shared/fonts/dm-mono-400-latin.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -199,7 +199,7 @@
 }
 @font-face {
   font-family: 'DM Mono';
-  src: url('../fonts/dm-mono-500-latin.woff2') format('woff2');
+  src: url('/shared/fonts/dm-mono-500-latin.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -3627,4 +3627,64 @@ a:hover { color: var(--st-accent-hover); }
   }
   .mrb-findlabel,
   .mrb-findkey { display: none; }
+}
+
+/* ── ⊕ Experience run, 24 Sep 2026 (item 13, legibility) ──────────────────
+   Mide: "much of the dark text on the cream background isn't clear enough."
+   `contrast_audit.py` opens the six ported pages in headless Chrome and
+   measures the RENDERED contrast of every text node — not the ratio in
+   Design's own comment beside each token, which only ever checked the one
+   ground the token was named for. `--st-caption` / `--st-faint` /
+   `--st-ghost` / `--st-muted` are Design's four "quiet ink" tokens, and
+   each one's OWN comment claims it clears AA — true only against
+   `--st-ground` (#FBF3E6). They are also painted, constantly, against
+   `--st-seg-bg` (the segmented-control trough, #EBDDC5 — the darkest cream
+   tint in the set) via things like the classes/class-detail/insights
+   header bar's day-of-week pills and the roster's "Today" toggle, and
+   against `--st-num-well` / `--st-note-bg` / `--st-crumb-bg`. Measured on
+   the rendered page: `--st-caption` on `--st-seg-bg` is 3.71:1, not the
+   4.51:1 its own comment names.
+
+   Darkened here — not in `shared/teacher-ds.css`, which is Design's frozen
+   bundle and is regenerated on every build; this file is the ruled
+   exception, exactly as `--k4-muted-2` is fixed in `shared/ks4-chrome.css`
+   for the same reason on the KS4 chrome. Hue and saturation are untouched;
+   only lightness moves, the minimum each needs to clear 4.5:1 against
+   `--st-seg-bg` (the worst real ground) with a small margin, so a future
+   rounding difference doesn't reopen the gap. The four keep their relative
+   order (muted darkest, caption/faint next and effectively identical to
+   each other as they always were, ghost lightest) — see
+   `docs/experience-run/contrast-after.md` for the before/after ratio on
+   every ground each token is actually used against. */
+:root {
+  --st-muted:   #605851;  /* was #6E655D — 5.20:1 on --st-seg-bg (was 4.26) */
+  --st-caption: #685E51;  /* was #7A6E5F — 4.75:1 on --st-seg-bg (was 3.71) */
+  --st-faint:   #695E4E;  /* was #7B6E5C — 4.75:1 on --st-seg-bg (was 3.71) */
+  --st-ghost:   #6E604B;  /* was #7D6D55 — 4.55:1 on --st-seg-bg (was 3.74) */
+}
+
+/* ── ⊕ experience run, 25 Sep 2026 (Mide's items 2/3) · REACHING A PUPIL
+   BY KEYBOARD ──────────────────────────────────────────────────────────
+
+   Five of Design's cards are a plain `<div>` with a click handler and
+   nothing else: the class card (179), "Keep an eye on" (259), "Worth a
+   shoutout" (270), a roster row (294) and a Find-a-student result (665).
+   `shared/student-runtime.js` now wires Enter/Space to any node that
+   carries BOTH `on` and `tabindex` — set on exactly these five below —
+   so this stylesheet only has to draw them. The 3px ring itself is
+   already `[data-mode="ks3"] :focus-visible` above ("one focus treatment,
+   on everything, no exceptions"); nothing here duplicates it.
+
+   `.mrb-active` is the ONE exception: it marks the arrow-key cursor inside
+   the Find-a-student list, which is a highlight WITHOUT real DOM focus
+   (focus stays on the search box, exactly as `shared/search.js`'s topic
+   search already does it) — so `:focus-visible` never sees it and needs
+   its own rule. */
+[data-dc-tpl="179"],
+[data-dc-tpl="259"],
+[data-dc-tpl="270"],
+[data-dc-tpl="294"] { outline-offset: -2px; }
+
+[data-dc-tpl="665"].mrb-active {
+  background: var(--st-note-bg);
 }

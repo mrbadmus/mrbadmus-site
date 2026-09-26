@@ -3557,3 +3557,10 @@ a:hover { color: var(--st-accent-hover); }
 .rd[data-mode="ks3"] {
   --ks3-ok-dark: #40DD84;
 }
+
+:root {
+  --st-muted:   #605851;  /* was #6E655D — 5.20:1 on --st-seg-bg (was 4.26) */
+  --st-caption: #685E51;  /* was #7A6E5F — 4.75:1 on --st-seg-bg (was 3.71) */
+  --st-faint:   #695E4E;  /* was #7B6E5C — 4.75:1 on --st-seg-bg (was 3.71) */
+  --st-ghost:   #6E604B;  /* was #7D6D55 — 4.55:1 on --st-seg-bg (was 3.74) */
+}

@@ -167,6 +167,8 @@ window.__MRB_DATA__ = {
   "benchDoneMarked": false,
   "benchOpen": true,
   "benchPrimaryHref": '',
+  "benchProgPct": '',
+  "benchProgText": '',
   "cardsEmpty": '',
   "accountClassLine": "8r/Sc1 \u00a0\u00b7\u00a0 SCIENCE",
   "accountTerm": "Summer \u00a0\u00b7\u00a0 Week 01 / 39",

@@ -3260,7 +3260,12 @@ def check_consumers(p, base, pages, who, title, shots):
         # finding on the teacher surface and not as an MRB-335 red — and it is
         # asserted at its known size, so the day it gets WORSE this goes red
         # instead of staying quietly excused.
-        known = 409 if label == "teacher insights" else None
+        # ⊕ Experience run, 25 Sep 2026: the 19px overflow is FIXED (stream J
+        # narrowed the chart rows' fixed grid tracks at ≤560px), so the pinned
+        # 409 is retired and insights is held to the same no-sideways-scroll
+        # assertion as every other page. Kept as a branch so the history of
+        # WHY it was pinned stays readable above.
+        known = None
         if known:
             record(got["sw"] == known,
                    "…%s still overflows by exactly the %dpx it overflowed by "
@@ -3341,6 +3346,10 @@ def cleanup(teacher_id, admin_id):
 
 
 # ════════════════════════════════════════════════════════════════════════
+class _OnlyDone(Exception):
+    """`--only-edit-margin` has run what it came for."""
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("backend", nargs="?", default=None)
@@ -3364,6 +3373,11 @@ def main():
                     help="where the 390px screenshots go (default: outside "
                          "the repo; pass --shots docs/mrb335/shots to "
                          "deliberately refresh the committed evidence)")
+    # ⊕ 25 Sep 2026 — run ONLY the Edit-at-the-margin checks (19b), with the
+    # setup they need. For iterating on that one defect; the gate runs the
+    # whole file, which includes them.
+    ap.add_argument("--only-edit-margin", action="store_true",
+                    help="run only check_edit_margin (and its setup)")
     args = ap.parse_args()
 
     pw = os.environ.get(FX.ENV_SWITCH, "")
@@ -3407,6 +3421,16 @@ def main():
         scopes = check_scope(t_teacher)
         if not scopes:
             return 1
+        if args.only_edit_margin:
+            with cdp.Browser() as bm:
+                pm = bm.attach()
+                pm.set_viewport(390, 900)
+                signed = sign_in_page(pm, base, FX.TEACHER_EMAIL, pw)
+                record(str(signed).startswith("ok"),
+                       "the teacher signs in, for the Edit-margin checks",
+                       signed)
+                check_edit_margin(pm, base, t_teacher, scopes)
+            raise _OnlyDone()
         check_preview(t_teacher, scopes)
         check_swap(t_teacher, scopes)
         check_write(t_teacher, scopes)
@@ -3515,6 +3539,11 @@ def main():
                 # rows; running after it would be a check about whichever
                 # row happened to survive.
                 check_row_download(pc, base, t_teacher, scopes, ws_made)
+                # ⊕ D2, 25 Sep 2026 (experience follow-ups, item 2) — a set
+                # over ten subtopics, both formats, straight after the
+                # ordinary row download and before anything deletes rows.
+                check_row_download_over_ten(pc, base, t_teacher, scopes,
+                                            args.shots)
                 cards_made = check_cards(pc, base, t_teacher, scopes,
                                          args.shots)
                 check_remind_names_its_own_card(pc, base, cards_made)
@@ -3528,6 +3557,10 @@ def main():
                 deleted_title = surf[1] if isinstance(surf, tuple) else None
                 check_wide(pc, base, [("8a/Sc1", FX.C_KS3_A),
                                       ("9a/Sc1", FX.C_KS3_NOAUTO)])
+                # ⊕ 25 Sep 2026 — LAST in this tab: it clears the teacher's
+                # work on 9a/Sc1 and 10b/Sc5 first, so nothing above may
+                # depend on a row it would remove.
+                check_edit_margin(pc, base, t_teacher, scopes)
 
             with cdp.Browser() as b2:
                 p2 = b2.attach()
@@ -3563,6 +3596,8 @@ def main():
         # testing.
         if ws_first:
             check_worksheet_rate_limit(t_admin, ws_first)
+    except _OnlyDone:
+        pass
     finally:
         if server:
             server.__exit__(None, None, None)
@@ -5123,6 +5158,276 @@ def open_class_page(p, base, class_id, width=390, settle=6.5):
                     tries=40)
 
 
+# ⊕ D2, 25 Sep 2026 (experience follow-ups, item 2) — A SET SPANNING MORE
+# THAN TEN SUBTOPICS, DOWNLOADED FROM ITS ROW.
+#
+# ⛔ THE DEFECT THIS PINS. `downloadAssignment` posts the row's one stored
+# scope first (refused by design for a multi-topic set), and used to fall back
+# to ONE SCOPE PER SUBTOPIC. The worksheet route caps a body at `MAX_SCOPES`
+# (10) scopes, so a set holding questions from eleven or more subtopics was
+# refused `too_many_scopes` on the fallback too — and nothing tried a third
+# time: `console.error`, no file, no toast. The page now regroups the same ids
+# by their TOPIC (`groupByTopic`, `shared/set-work.js`), which the route pools
+# (`slugsForScope`), so the same questions fit in far fewer scopes.
+#
+# ⚠️ EVERY CLAIM IS MEASURED, NONE IS ASSUMED: the ≥ 11 subtopics are counted
+# from the STORED `assignment_questions` rows joined to the bank; the request
+# sequence is read off Chrome's own network log (`Network.*` events), not off
+# a wrapper this drive installs; and the old per-subtopic body is POSTED as
+# the teacher and seen refused, so "the fallback that used to be sent cannot
+# work" is a fact of this run rather than of a comment.
+OVER_TEN_MIN = 11
+
+
+def over_ten_pick(scopes):
+    """Two topics of one KS4 class whose stocked subtopics sum to ≥ 11.
+
+    Returns `(class_id, tier, [(topic, stocked_children)…])` or None. Tried on
+    the combined class first — its tree spans three sciences, so the regroup's
+    per-topic `subject` is exercised — then the triple class."""
+    for key, cid in (("comb", FX.C_KS4_COMB), ("bi", FX.C_KS4_TRIPLE)):
+        for tier in ("foundation", "higher"):
+            cands = []
+            for t in (scopes.get(key) or {}).get("tree") or []:
+                stocked = [c for c in t.get("children") or []
+                           if (c.get("counts") or {}).get(tier, 0) >= 2]
+                if stocked:
+                    cands.append((len(stocked), t, stocked))
+            cands.sort(key=lambda x: -x[0])
+            if len(cands) >= 2 and cands[0][0] + cands[1][0] >= OVER_TEN_MIN:
+                return cid, tier, [(cands[0][1], cands[0][2]),
+                                   (cands[1][1], cands[1][2])]
+    return None
+
+
+def network_worksheet_posts(p):
+    """Every `POST /api/teacher/worksheet` in Chrome's network log since the
+    last navigation, oldest first: `{body, status, code}`.
+
+    ⚠️ READ FROM `Network.*` EVENTS, NOT FROM A FETCH WRAPPER. The class-page
+    tab must keep the browser's own network (see the comment above the
+    `cdp.Browser()` block in `main`), and a wrapper would be this drive
+    watching itself rather than watching the page."""
+    try:
+        p.send("Runtime.evaluate", {"expression": "1", "returnByValue": True})
+    except cdp.CDPError:
+        pass
+    p.drain(0.2)
+    reqs, order, status = {}, [], {}
+    for ev in p._events:                                    # noqa: SLF001
+        m = ev.get("method")
+        prm = ev.get("params") or {}
+        if m == "Network.requestWillBeSent":
+            rq = prm.get("request") or {}
+            if (rq.get("method") == "POST"
+                    and WS_PATH in (rq.get("url") or "")):
+                rid = prm.get("requestId")
+                if rid not in reqs:
+                    order.append(rid)
+                reqs[rid] = rq
+        elif m == "Network.responseReceived":
+            status[prm.get("requestId")] = (prm.get("response") or {}).get(
+                "status")
+    out = []
+    for rid in order:
+        rq = reqs[rid]
+        raw = rq.get("postData")
+        if raw is None:
+            try:
+                raw = p.send("Network.getRequestPostData",
+                             {"requestId": rid}).get("postData")
+            except cdp.CDPError:
+                raw = None
+        try:
+            body = json.loads(raw) if raw else None
+        except ValueError:
+            body = None
+        st = status.get(rid)
+        code = None
+        if st is not None and st >= 400:
+            try:
+                rb = p.send("Network.getResponseBody", {"requestId": rid})
+                code = (json.loads(rb.get("body") or "{}") or {}).get("error")
+            except (cdp.CDPError, ValueError):
+                code = None
+        out.append({"body": body, "status": st, "code": code})
+    return out
+
+
+def check_row_download_over_ten(p, base, t_teacher, scopes, shots):
+    print("\n   Download on a row whose set spans MORE than ten subtopics")
+    got = over_ten_pick(scopes)
+    if not got:
+        record(False, "row_download_over_ten_subtopics — a KS4 class offers "
+                      "two topics whose stocked subtopics sum to >= %d"
+                      % OVER_TEN_MIN)
+        return
+    cid, tier, pair = got
+    two = []
+    for topic, stocked in pair:
+        n = min(20, 2 * len(stocked))
+        qs = ws_pick(t_teacher, cid, tier, "topic", topic["id"], n,
+                     subject=topic.get("subject"))
+        two.append({"kind": "topic", "ref": topic["id"],
+                    "subject": topic.get("subject"), "questions": qs})
+    if not all(s["questions"] for s in two):
+        record(False, "row_download_over_ten_subtopics — /preview fills both "
+                      "topics", "%s" % [(s["ref"], len(s["questions"]))
+                                        for s in two])
+        return
+    title = TITLE + " · over ten subtopics"
+    st, out = post_set_scopes(t_teacher, [cid], tier, two, title)
+    aids = ((out or {}).get("assignment_ids") or []) if st == 200 else []
+    if st != 200 or len(aids) != 1:
+        record(False, "row_download_over_ten_subtopics — the two-topic set "
+                      "can be SET", "status %s · %s"
+               % (st, json.dumps(out)[:250]))
+        return
+    aid = aids[0]
+
+    # ── the STORED rows, and how many subtopics they really span ──────
+    st, rows = FX.api("GET", "/rest/v1/assignment_questions?assignment_id=eq."
+                             "%s&select=source_ref,position&order=position"
+                      % aid)
+    stored_ids = [r["source_ref"] for r in rows] if isinstance(rows, list) \
+        else []
+    slugs = {}
+    if stored_ids:
+        st2, bank = FX.api("GET", "/rest/v1/ks4_assignment_bank?id=in.(%s)"
+                                  "&select=id,subtopic_slug"
+                           % ",".join(stored_ids))
+        if isinstance(bank, list):
+            slugs = {b["id"]: b["subtopic_slug"] for b in bank}
+    spanned = sorted(set(slugs.values()))
+    record(len(stored_ids) > 0 and len(slugs) == len(stored_ids)
+           and len(spanned) >= OVER_TEN_MIN,
+           "row_download_over_ten_subtopics_stored — the set as STORED holds "
+           "questions from >= %d distinct subtopics, so a one-scope-per-"
+           "subtopic body cannot fit under `MAX_SCOPES`" % OVER_TEN_MIN,
+           "%d question(s) across %d subtopic(s) in %d topic(s) (%s) on %s "
+           "at %s" % (len(stored_ids), len(spanned), len(two),
+                      "+".join("%s/%s" % (s["subject"], s["ref"]) for s in two),
+                      cid[-2:], tier))
+    if len(spanned) < OVER_TEN_MIN:
+        return
+
+    # ── the body the page USED to fall back to, refused, as the teacher ──
+    by_sub, sub_order = {}, []
+    for qid in stored_ids:
+        s = slugs[qid]
+        if s not in by_sub:
+            by_sub[s] = []
+            sub_order.append(s)
+        by_sub[s].append({"id": qid})
+    old = [{"kind": "subtopic", "ref": s, "subject": None,
+            "questions": by_sub[s]} for s in sub_order]
+    st0, h0, d0 = call_bytes("POST", WS_PATH, t_teacher,
+                             ws_body(cid, tier, old, "pdf", True, title))
+    record(st0 == 400 and b"too_many_scopes" in d0,
+           "row_download_over_ten_old_fallback_refused — the retired "
+           "one-scope-per-subtopic body (%d scopes) is refused "
+           "`too_many_scopes`, which is why the page must regroup"
+           % len(old),
+           "status %s · %s · ratelimit-remaining %s"
+           % (st0, d0[:100], h0.get("ratelimit-remaining")))
+
+    dl_dir = os.path.join(cdp.gate_tmp(), "d2-over-ten-%d" % os.getpid())
+    if not arm_downloads(p, dl_dir):
+        record(False, "the class-page tab can save the over-ten downloads")
+        return
+    try:
+        p.send("Network.enable", {"maxPostDataSize": 1 << 20})
+    except cdp.CDPError as e:
+        record(False, "Chrome's network log can be read", str(e))
+        return
+
+    for fmt, press in (("pdf", "download-pdf"), ("docx", "download-word")):
+        seen = set(os.listdir(dl_dir))
+        if not open_class_page(p, base, cid):
+            record(False, "the class page opens for the over-ten %s "
+                          "download" % fmt)
+            continue
+        rows_now = p.eval(ROWS_JS) or []
+        if title not in [r["title"] for r in rows_now]:
+            record(False, "the over-ten set is a row on the class page",
+                   "rows: %s" % [r["title"][-26:] for r in rows_now])
+            continue
+        armed = press_row(p, title, "download") == "clicked"
+        time.sleep(0.4)
+        if shots and fmt == "pdf":
+            try:
+                p.screenshot(os.path.join(shots, "d2-over-ten-armed.png"),
+                             width=390, height=900)
+            except Exception:                                   # noqa: BLE001
+                pass
+        chose = press_row(p, title, press) == "clicked"
+        name, data, err = take_download(dl_dir, seen)
+        posts = network_worksheet_posts(p)
+        errs = [e for e in (p.console_errors() or [])
+                if "[set-work]" in e]
+        if shots:
+            try:
+                p.screenshot(os.path.join(shots, "d2-over-ten-%s-done.png"
+                                          % fmt), width=390, height=900)
+            except Exception:                                   # noqa: BLE001
+                pass
+        data = data or b""
+        if fmt == "pdf":
+            ok_bytes = data[:5] == b"%PDF-"
+            desc = "starts `%PDF-`"
+        else:
+            ok_bytes = data[:4] == b"PK\x03\x04"
+            if ok_bytes:
+                try:
+                    ok_bytes = "word/document.xml" in zipfile.ZipFile(
+                        io.BytesIO(data)).namelist()
+                except zipfile.BadZipFile:
+                    ok_bytes = False
+            desc = "starts `PK\\x03\\x04` and holds `word/document.xml`"
+        record(armed and chose and not err and ok_bytes,
+               "row_download_over_ten_%s — the row's %s saves a genuine file "
+               "(%s) for a set spanning %d subtopics"
+               % (fmt, "PDF" if fmt == "pdf" else "Word", desc, len(spanned)),
+               "%s · %d byte(s)" % (name, len(data)) if not err else err)
+
+        first = posts[0] if posts else {}
+        record(len(posts) == 2 and first.get("status") == 400
+               and first.get("code") == "questions_not_in_scope"
+               and len(((first.get("body") or {}).get("scopes")) or []) == 1,
+               "…and the network log shows the stored single scope tried "
+               "FIRST and refused (%s)" % fmt,
+               "%d POST(s): %s" % (len(posts), [
+                   (x["status"], x["code"],
+                    len(((x.get("body") or {}).get("scopes")) or []))
+                   for x in posts]))
+        last = posts[-1] if posts else {}
+        sc = ((last.get("body") or {}).get("scopes")) or []
+        sent = [i for s in sc for i in (s.get("question_ids") or [])]
+        record(len(posts) >= 2 and last.get("status") == 200
+               and 0 < len(sc) <= 10
+               and all(s.get("scope_kind") == "topic" for s in sc),
+               "row_download_over_ten_regrouped_%s — the retry carried <= 10 "
+               "scopes, every one `scope_kind: \"topic\"`, and succeeded"
+               % fmt,
+               "%d scope(s): %s · status %s"
+               % (len(sc), ["%s/%s:%d" % (s.get("subject"), s.get("scope_ref"),
+                                         len(s.get("question_ids") or []))
+                            for s in sc], last.get("status")))
+        record(sorted(sent) == sorted(stored_ids) and len(sent) == len(set(sent)),
+               "row_download_over_ten_nothing_dropped_%s — the regrouped "
+               "request's question ids are exactly the stored set's %d, none "
+               "dropped, none doubled" % (fmt, len(stored_ids)),
+               "%d sent vs %d stored" % (len(sent), len(stored_ids)))
+        record(not errs,
+               "…and no `[set-work]` console error for the expected "
+               "fallback (%s)" % fmt, "; ".join(errs)[:300])
+    try:
+        p.send("Network.disable")
+    except cdp.CDPError:
+        pass
+    drop_downloads(dl_dir)
+
+
 def check_cards(p, base, t_teacher, scopes, shots):
     print("\n14 · ⊕ MRB-336 §4.1 · a card is ONE live assignment")
     cid = FX.C_KS3_NOAUTO
@@ -5930,6 +6235,338 @@ def check_edit_sheet(p, base, shots):
            "second piece of work",
            "%d row(s)" % (len(back) if isinstance(back, list) else -1))
     p.eval("if (window.MRBSetWork) { window.MRBSetWork.close(); }")
+
+
+# ════════════════════════════════════════════════════════════════════════
+# 10b · EDITING A SCHEDULED SET CHANGES ITS COUNT AT THE MARGIN (⊕ 25 Sep 2026)
+# ════════════════════════════════════════════════════════════════════════
+#
+# Mide's rule, in his words: "Adding raises the count with new questions.
+# Lowering it drops from the end. Nothing already chosen is swapped."
+# Multi-topic and single-topic sets alike.
+#
+# ⛔ THE DEFECT. Edit on a set that is not out yet, change a topic's count,
+# and `setScopeCount()` asked `/preview` for a FRESH draw of the new size and
+# replaced the topic's questions wholesale — so a teacher who meant "two more"
+# got an unrelated list, and a two-topic set poured every question it held
+# under the first topic's heading. A first fix (reverted in 707971eee) was
+# refuted by its own live proof: it filtered the stored rows against the tree
+# before `/scope` had answered and showed ZERO kept questions.
+#
+# ⚠️ WHY THIS LIVES HERE AND NOT IN THE API HALF. `check_edit` drives a
+# RELEASED row through the route only; an unreleased edit through the sheet had
+# never been driven, and every claim here is about what the SHEET sends — the
+# route will happily store a fresh draw if that is what it is given.
+#
+# ⚠️ IDS, NOT STEMS. Each question row carries `data-sw-qid`; a row without one
+# is read by its stem and mapped back through the questions this check set,
+# which is only ever needed to make the failing proof legible on a sheet that
+# predates the attribute.
+EDIT_SECTIONS_JS = """(function(){
+  var o=document.querySelector('[data-sw="overlay"]');
+  if(!o||o.hidden){return null;}
+  var ss=o.querySelectorAll('[data-sw="scope"]'), out=[];
+  for(var i=0;i<ss.length;i++){
+    var s=ss[i], rows=s.querySelectorAll('[data-sw="question"]'), ids=[];
+    for(var k=0;k<rows.length;k++){
+      var id=rows[k].getAttribute('data-sw-qid');
+      if(!id){var st=rows[k].querySelector('[data-sw="stem"]');
+        id='stem:'+((st&&st.textContent)||'').replace(/\\s+/g,' ').trim();}
+      ids.push(id);}
+    var on=s.querySelector('[data-sw="count-chips"] .sw-chip.is-on');
+    var inp=s.querySelector('[data-sw="count-input"]');
+    out.push({ref:s.getAttribute('data-sw-ref')||'', ids:ids,
+              chip:on?on.textContent:null, input:inp?inp.value:null,
+              inputOff:!!(inp&&inp.disabled)});}
+  return {step:o.getAttribute('data-sw-step'), sections:out,
+          primary:(o.querySelector('[data-sw="primary"]')||{}).textContent||''};
+})()"""
+
+
+def _stored(aid):
+    st, rows = FX.api("GET", "/rest/v1/assignment_questions?assignment_id=eq.%s"
+                             "&select=source_ref,position&order=position.asc"
+                      % aid)
+    rows = rows if isinstance(rows, list) else []
+    return [r["source_ref"] for r in rows], [r["position"] for r in rows]
+
+
+def _ids_of(sections, stem_to_id):
+    out = []
+    for s in sections or []:
+        ids = []
+        for x in s["ids"]:
+            if x.startswith("stem:"):
+                ids.append(stem_to_id.get(squeeze(x[5:]), x[:40]))
+            else:
+                ids.append(x)
+        out.append(ids)
+    return out
+
+
+def _count_of(sec):
+    """What the section's count control reads: the field, else the lit chip."""
+    return (sec.get("input") or sec.get("chip") or "")
+
+
+def _open_edit_and_next(p, base, class_id, title):
+    """Edit on the row, then Next the MOMENT it enables — the teacher who does
+    not wait is the case the old sheet drew fresh questions for."""
+    if not open_class_page(p, base, class_id):
+        return "the class page did not load"
+    clicked = press_row(p, title, "edit")
+    if clicked != "clicked":
+        return "Edit on %r answered %r" % (title, clicked)
+    if not wait_for(p, "(function(){var o=document.querySelector("
+                       "'[data-sw=\"overlay\"]');return !!o && !o.hidden && "
+                       "o.getAttribute('data-sw-step')==='1';})()",
+                    tries=100, gap=0.05):
+        return "the sheet did not open on the Topic step"
+    if not wait_for(p, "!document.querySelector('[data-sw=\"primary\"]')"
+                       ".disabled", tries=400, gap=0.02):
+        return "Next never enabled on the Topic step"
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    if not wait_for(p, "document.querySelector('[data-sw=\"overlay\"]')"
+                       ".getAttribute('data-sw-step')==='2'", tries=100,
+                    gap=0.05):
+        return "Next did not reach the Detail step"
+    return True
+
+
+def _wait_rows(p, index, n, tries=160):
+    return wait_for(p, """(function(){var ss=document.querySelectorAll(
+        '[data-sw="overlay"] [data-sw="scope"]'), s=ss[%d];
+        if(!s){return false;}
+        return s.querySelectorAll('[data-sw="question"]').length===%d;})()"""
+                    % (index, n), tries=tries, gap=0.05)
+
+
+def _type_count(p, index, n):
+    return p.eval("""(function(){
+        var ss=document.querySelectorAll('[data-sw="overlay"] [data-sw="scope"]'),
+            s=ss[%d]; if(!s){return 'no section';}
+        var i=s.querySelector('[data-sw="count-input"]');
+        if(!i){return 'no field';} if(i.disabled){return 'disabled';}
+        i.focus(); i.value=String(%d);
+        i.dispatchEvent(new Event('change',{bubbles:true})); i.blur();
+        return true;})()""" % (index, n))
+
+
+def _settled(p):
+    wait_stable(p, "JSON.stringify(%s)" % EDIT_SECTIONS_JS, tries=60,
+                gap=0.05, needed=6)
+    return p.eval(EDIT_SECTIONS_JS) or {}
+
+
+def _save_and_close(p):
+    wait_for(p, "!document.querySelector('[data-sw=\"primary\"]').disabled",
+             tries=100, gap=0.05)
+    p.eval("document.querySelector('[data-sw=\"primary\"]').click()")
+    return wait_for(p, "(function(){var o=document.querySelector("
+                       "'[data-sw=\"overlay\"]');return !!o && o.hidden;})()",
+                    tries=200, gap=0.05)
+
+
+def _margin_case(p, base, t_teacher, label, class_id, tier, parts, grow, shrink):
+    """One scheduled set, edited twice through the sheet.
+
+    `parts` — [(kind, ref, subject, n)], the head first. The head's count goes
+    n → `grow` → `shrink`; every other part must come through untouched."""
+    title = "%s · margin %s" % (TITLE, label)
+    got, stem_to_id = [], {}
+    for kind, ref, subject, n in parts:
+        st, prev = preview(t_teacher, class_id, tier, kind, ref, n,
+                           subject=subject)
+        qs = (prev or {}).get("picked") or []
+        if st != 200 or len(qs) < n:
+            return record(False, "%s: %d question(s) to set from %s"
+                          % (label, n, ref), "status %s, got %d" % (st, len(qs)))
+        for q in qs:
+            stem_to_id[squeeze(q.get("stem") or "")] = q["id"]
+        got.append({"kind": kind, "ref": ref, "subject": subject,
+                    "questions": qs[:n]})
+    release = (NOW + timedelta(days=2)).isoformat()
+    st, made = post_set_scopes(t_teacher, [class_id], tier, got, title,
+                               release_at=release)
+    aid = ((made or {}).get("assignment_ids") or [None])[0]
+    if st != 200 or not aid:
+        return record(False, "%s: set the scheduled work" % label,
+                      "status %s %s" % (st, json.dumps(made)[:200]))
+    want = [[q["id"] for q in g["questions"]] for g in got]
+    head = want[0]
+    flat = [i for w in want for i in w]
+    ids0, _pos = _stored(aid)
+    record(ids0 == flat, "%s: the scheduled set is stored in scope order" % label,
+           "%d stored" % len(ids0))
+
+    # ── open, Next at once, and the stored questions are what is shown ──
+    r = _open_edit_and_next(p, base, class_id, title)
+    if r is not True:
+        return record(False, "%s: open Edit and reach Detail" % label, r)
+    for i, w in enumerate(want):
+        _wait_rows(p, i, len(w))
+    s = _settled(p)
+    secs = s.get("sections") or []
+    shown = _ids_of(secs, stem_to_id)
+    counts = [_count_of(x) for x in secs]
+    record(shown == want and counts == [str(len(w)) for w in want],
+           "edit_margin_%s_opens_on_the_stored_set — Edit, then Next the moment "
+           "it enables: one section per stored topic holding exactly the "
+           "stored ids in stored order, each count control reading its own "
+           "count" % label,
+           "want %s counts %s · shown %s counts %s"
+           % ([len(w) for w in want], [len(w) for w in want],
+              [x[:3] + (["…"] if len(x) > 3 else []) for x in shown], counts))
+
+    # ── raise the head: the kept ones stay, new ones are appended ──
+    t = _type_count(p, 0, grow)
+    _wait_rows(p, 0, grow)
+    s = _settled(p)
+    shown = _ids_of(s.get("sections"), stem_to_id)
+    h = shown[0] if shown else []
+    new = [i for i in h[len(head):]]
+    record(t is True and len(h) == grow and h[:len(head)] == head
+           and len(new) == grow - len(head)
+           and not (set(new) & set(flat)) and len(set(h)) == len(h)
+           and shown[1:] == want[1:],
+           "edit_margin_%s_raise_keeps — raising %d→%d keeps the first %d ids "
+           "exactly and appends %d ids the set did not hold; the other "
+           "topic(s) are untouched" % (label, len(head), grow, len(head),
+                                       grow - len(head)),
+           "typed %r · head now %d (kept %s) · new %s"
+           % (t, len(h), h[:len(head)] == head, new))
+
+    # ── lower it: drops from the end, back to the original first few ──
+    t = _type_count(p, 0, shrink)
+    _wait_rows(p, 0, shrink)
+    s = _settled(p)
+    shown = _ids_of(s.get("sections"), stem_to_id)
+    h = shown[0] if shown else []
+    record(t is True and h == head[:shrink] and shown[1:] == want[1:],
+           "edit_margin_%s_lower_drops_from_the_end — lowering to %d leaves "
+           "exactly the original first %d ids" % (label, shrink, shrink),
+           "head %s" % h)
+
+    # ── save, and the database holds exactly that ──
+    closed = _save_and_close(p)
+    expect = head[:shrink] + [i for w in want[1:] for i in w]
+    ids1, pos1 = _stored(aid)
+    record(closed and ids1 == expect and pos1 == list(range(1, len(expect) + 1)),
+           "edit_margin_%s_saves_what_was_shown — the stored rows are the "
+           "head's first %d then every other topic's ids unchanged, positions "
+           "1..%d" % (label, shrink, len(expect)),
+           "closed %s · stored %d %s · positions %s"
+           % (closed, len(ids1), "match" if ids1 == expect else ids1, pos1))
+
+    # ── reopen: the saved set comes back as it was saved ──
+    r = _open_edit_and_next(p, base, class_id, title)
+    if r is not True:
+        record(False, "%s: reopen Edit" % label, r)
+    else:
+        want2 = [head[:shrink]] + want[1:]
+        for i, w in enumerate(want2):
+            _wait_rows(p, i, len(w))
+        s = _settled(p)
+        shown = _ids_of(s.get("sections"), stem_to_id)
+        counts = [_count_of(x) for x in (s.get("sections") or [])]
+        record(shown == want2 and counts == [str(len(w)) for w in want2],
+               "edit_margin_%s_reopens_as_saved — counts %s and the same ids"
+               % (label, [len(w) for w in want2]),
+               "counts %s" % counts)
+        p.eval("if (window.MRBSetWork) { window.MRBSetWork.close(); }")
+    return aid, expect
+
+
+def _note_only_case(p, base, t_teacher, class_id, tier, parts):
+    """(c) A save that changes nothing about the questions changes nothing
+    about the questions."""
+    title = "%s · margin note-only" % TITLE
+    got = []
+    for kind, ref, subject, n in parts:
+        st, prev = preview(t_teacher, class_id, tier, kind, ref, n,
+                           subject=subject)
+        qs = (prev or {}).get("picked") or []
+        if st != 200 or len(qs) < n:
+            return record(False, "note-only: questions from %s" % ref)
+        got.append({"kind": kind, "ref": ref, "subject": subject,
+                    "questions": qs[:n]})
+    st, made = post_set_scopes(t_teacher, [class_id], tier, got, title,
+                               release_at=(NOW + timedelta(days=2)).isoformat())
+    aid = ((made or {}).get("assignment_ids") or [None])[0]
+    if st != 200 or not aid:
+        return record(False, "note-only: set the scheduled work")
+    before = _stored(aid)
+    r = _open_edit_and_next(p, base, class_id, title)
+    if r is not True:
+        return record(False, "note-only: open Edit and reach Detail", r)
+    _wait_rows(p, 0, parts[0][3])
+    _settled(p)
+    how = p.eval("""(function(){
+        var w=document.querySelector('[data-sw="assignment-note-field"]');
+        var t=document.querySelector('[data-sw="assignment-note"]');
+        if(w && !w.hidden && t){t.value='Bring a calculator';
+          t.dispatchEvent(new Event('input',{bubbles:true})); return 'note';}
+        var ti=document.querySelector('[data-sw="title"]');
+        ti.value=ti.value+' (renamed)';
+        ti.dispatchEvent(new Event('input',{bubbles:true})); return 'title';})()""")
+    closed = _save_and_close(p)
+    after = _stored(aid)
+    record(closed and after == before and len(before[0]) == sum(x[3] for x in parts),
+           "edit_margin_note_only_keeps_every_question — a %s-only save on a "
+           "two-topic scheduled set leaves every stored id and position "
+           "identical" % how,
+           "closed %s · %d ids · identical %s" % (closed, len(after[0]),
+                                                 after == before))
+
+
+def check_edit_margin(p, base, t_teacher, scopes):
+    print("\n19b · Edit on a scheduled set — the count moves at the margin")
+    cid = FX.C_KS3_NOAUTO
+    clear_teacher_work(t_teacher, cid)
+    tier = "medium"
+    tree = (scopes.get("ks3") or {}).get("tree") or []
+    got = pick_topic(scopes["ks3"], 2, tier)
+    if not got:
+        return record(False, "a KS3 unit with two stocked lessons exists")
+    _n, unit, _stocked = got
+    other = None
+    for t in tree:
+        if t["id"] == unit["id"]:
+            continue
+        for c in t.get("children") or []:
+            if (c.get("counts") or {}).get(tier, 0) >= 6:
+                other = c
+                break
+        if other:
+            break
+    if not other:
+        return record(False, "a lesson outside %s with six questions" % unit["id"])
+    # (a) two topics — the head unit at 6, a lesson from another unit at 4
+    _margin_case(p, base, t_teacher, "two_topic", cid, tier,
+                 [("topic", unit["id"], None, 6),
+                  ("subtopic", other["id"], None, 4)], grow=9, shrink=4)
+    # (b) one topic, 5 → 8 → 3
+    _margin_case(p, base, t_teacher, "one_topic", cid, tier,
+                 [("topic", unit["id"], None, 5)], grow=8, shrink=3)
+    # (c) a note-only save on a two-topic scheduled set
+    _note_only_case(p, base, t_teacher, cid, tier,
+                    [("topic", unit["id"], None, 6),
+                     ("subtopic", other["id"], None, 4)])
+    # (d) KS4 — a combined Foundation class, one topic, 5 → 8 → 3
+    kcid = FX.C_KS4_COMB
+    clear_teacher_work(t_teacher, kcid)
+    ks4 = None
+    for t in (scopes.get("comb") or {}).get("tree") or []:
+        if t["id"] == "atomic-structure":
+            continue          # the one ambiguous id; not what this is about
+        if (t.get("counts") or {}).get("foundation", 0) >= 20:
+            ks4 = t
+            break
+    if not ks4:
+        return record(False, "a KS4 combined topic with twenty questions")
+    _margin_case(p, base, t_teacher, "ks4_one_topic", kcid, "foundation",
+                 [("topic", ks4["id"], ks4.get("subject"), 5)], grow=8,
+                 shrink=3)
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -6993,6 +7630,11 @@ def check_worksheet_from_row(t_teacher, made):
 
     # The body the fixed `downloadAssignment` falls back to: one scope per the
     # questions' OWN subtopic, which `lesson_slug` names on every row.
+    # ⊕ D2, 25 Sep 2026 (experience follow-ups, item 2) — the PAGE now
+    # regroups these ids by TOPIC instead (`groupByTopic`), because one scope
+    # per subtopic is refused `too_many_scopes` past ten subtopics; see
+    # `check_row_download_over_ten`. This API check still stands as the
+    # route's contract: a per-subtopic body of <= 10 scopes is accepted.
     by_lesson, order = {}, []
     for q in qs:
         ref = q.get("lesson_slug")
@@ -7367,7 +8009,7 @@ def drop_downloads(path):
           "by hand; it is not swept by anything else" % path)
 
 
-def take_download(path, before, tries=160, gap=0.25):
+def take_download(path, before, tries=160, gap=0.25, expect=None):
     """The next file to finish landing in `path`. Returns `(name, bytes, err)`.
 
     ⚠️ IT IDENTIFIES THE DOWNLOAD BY A NEW NAME APPEARING, so two downloads
@@ -7382,14 +8024,31 @@ def take_download(path, before, tries=160, gap=0.25):
     renames it at the end, but a small file can be renamed before the last
     write is flushed, and a PDF read one byte short parses as a corrupt file —
     a red that looks exactly like a renderer defect.
+
+    ⊕ D3 (26 Sep 2026) — `expect`, a tuple of file suffixes, WAITS FOR THE
+    FILE THE CHECK IS ABOUT. `Browser.setDownloadBehavior` is browser-wide,
+    so the folder is not the product's alone: twice, on two different trees,
+    Chrome dropped a 33,619,428-byte `downloads.html` into it a moment before
+    the worksheet PDF, and this returned the first finished name it saw. The
+    product never names a worksheet anything but `.pdf`/`.docx`/`.zip`
+    (`fileNameFor` in shared/set-work.js). A file of another kind is now
+    passed over, not returned — and it is NAMED in the error if the expected
+    file never comes, so a product that saved only the wrong thing is still
+    a red, with the evidence in it. Nothing is weakened: the caller still
+    asserts `%PDF-` on the bytes it gets.
     """
     stable = {}
+    passed_over = set()
     for _ in range(tries):
         try:
             names = set(os.listdir(path)) - before
         except OSError as e:
             return None, None, str(e)
         done = sorted(n for n in names if not n.endswith(".crdownload"))
+        if expect:
+            passed_over.update(n for n in done
+                               if not n.lower().endswith(tuple(expect)))
+            done = [n for n in done if n.lower().endswith(tuple(expect))]
         for n in done:
             try:
                 size = os.path.getsize(os.path.join(path, n))
@@ -7400,8 +8059,13 @@ def take_download(path, before, tries=160, gap=0.25):
                     return n, fh.read(), None
             stable[n] = size
         time.sleep(gap)
-    return None, None, ("nothing finished landing in %ds; the directory holds %s"
-                        % (int(tries * gap), sorted(set(os.listdir(path)) - before)))
+    return None, None, ("nothing%s finished landing in %ds; the directory "
+                        "holds %s%s"
+                        % (" ending %s" % "/".join(expect) if expect else "",
+                           int(tries * gap),
+                           sorted(set(os.listdir(path)) - before),
+                           "; passed over %s" % sorted(passed_over)
+                           if passed_over else ""))
 
 
 def pdf_numbering(pages):
@@ -8164,11 +8828,13 @@ def check_row_download(p, base, t_teacher, scopes, made):
            str(armed))
     if not armed:
         return
-    seen = set(os.listdir(dl_dir))
 
     if not open_class_page(p, base, FX.C_KS3_A):
         record(False, "the class page opens for the row download")
         return
+    # ⊕ D3 — listed AFTER the page is open, right before the press, so a file
+    # the navigation itself leaves behind can never be taken for the sheet.
+    seen = set(os.listdir(dl_dir))
     rows = p.eval(ROWS_JS) or []
     if title not in [r["title"] for r in rows]:
         record(False, "the two-topic set is a row in the class table",
@@ -8186,7 +8852,7 @@ def check_row_download(p, base, t_teacher, scopes, made):
     time.sleep(0.4)
     record(press_row(p, title, "download-pdf") == "clicked",
            "…and the armed row offers `PDF`")
-    name, data, err = take_download(dl_dir, seen)
+    name, data, err = take_download(dl_dir, seen, expect=(".pdf",))
     if err:
         record(False, "row_download_lands — pressing PDF on the row saves a "
                       "real file", err)
@@ -8256,7 +8922,8 @@ def check_row_download(p, base, t_teacher, scopes, made):
                    "`Download` too")
             time.sleep(0.4)
             press_row(p, stitle, "download-pdf")
-            name1, data1, err1 = take_download(dl_dir, seen1)
+            name1, data1, err1 = take_download(dl_dir, seen1,
+                                               expect=(".pdf",))
             if err1:
                 record(False, "row_download_single — a ONE-topic set "
                               "downloads from its row, posting the stored "

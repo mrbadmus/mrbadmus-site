@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Metals and alloys · MrBadmusAI GCSE Chemistry</title>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-source.js"></script>
+<script src="ks4-lib.js"></script>
+<script src="ks4-diagrams.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .34s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } * { transition: none !important; } }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+  input[type="range"] { accent-color: #A93411; }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" data-theme="{{ theme }}" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <dc-import name="Ks4Chrome" subject="Chemistry" unit="Bonding, structure and properties" title="Metals and alloys" rv="{{ railV }}" hint-size="100%,72px"></dc-import>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">AQA Chemistry 5.2.2.7–5.2.2.8 · Contrast</p>
+        <h1>Metals and alloys</h1>
+        <p class="ks3-bigq">Pure gold bends between your fingers, and pure iron is too soft for a bridge. Mix in a few atoms of something else and the metal turns hard. How can adding a little of another element change so much?</p>
+        <div style="margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Combined · Triple</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);">Foundation · Higher</span>
+          <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-blue); background: var(--ks3-blue-tint); color: var(--ks3-blue-text);">Contains Triple</span>
+          <label style="display: flex; align-items: center; gap: 8px; margin-left: auto; font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">Route
+            <select value="{{ route }}" onChange="{{ onRoute }}" style="font: inherit; font-size: 15px; color: var(--ks3-ink); background: var(--ks3-card); border: 2px solid var(--ks3-option-border); border-radius: 10px; padding: 8px 10px; min-height: 44px;">
+              <sc-for list="{{ routeOptions }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+            </select>
+          </label>
+        </div>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}"><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Start here</p>
+        <h2 style="margin: 6px 0 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em;">24-carat gold scratches. 18-carat gold lasts a lifetime.</h2>
+        <p style="margin: 14px 0 0; max-width: 58ch;">Pure, 24-carat gold is so soft that a ring made from it dents and scratches in weeks. Most wedding rings are 18-carat: three parts gold mixed with one part of other metals such as copper and silver. They keep their shape for decades.</p>
+        <div style="margin-top: 18px;">
+          <dc-import name="Ks4Choice" eyebrow="Commit first" prompt="Why would mixing in other metal atoms make gold harder?" options="{{ hookOptions }}" reveal="{{ hookReveal }}" on-commit="{{ onHook }}" hint-size="100%,300px"></dc-import>
+        </div>
+      </section>
+
+      <dc-import name="Ks4Video" video="{{ video }}" hint-size="100%,0px"></dc-import>
+
+      <section class="ks3-explainer">
+        <p>In a pure metal, all the atoms are the same size, so they pack in regular layers. When a force is applied, whole layers can slide over each other and the metal bends: that is why pure metals such as gold, copper, iron and aluminium are soft. An <strong>alloy</strong> is a mixture of a metal with other elements, usually other metals. The added atoms are a different size. Mix some in and test what the layers do.</p>
+      </section>
+
+      <section id="s-mixer" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1 1 22rem; min-width: 0;">
+            <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">The alloy mixer</p>
+            <h2 style="margin: 6px 0 0;">Mix in atoms. Predict. Push.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-ink-muted);">{{ mixProgress }}</p>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 14px; align-items: start;">
+          <div style="border-radius: var(--ks3-r-panel); overflow: hidden; border: 2px solid var(--ks3-ink);">{{ mixFig }}</div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <label for="pct" style="font-family: var(--ks3-font-mono); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ks3-ink-muted);">Atoms of a second element</label>
+            <input id="pct" type="range" min="0" max="4" step="1" value="{{ level }}" onInput="{{ onLevel }}" onChange="{{ onLevel }}" disabled="{{ pushing }}" aria-valuetext="{{ levelText }}" style="width: 100%; min-height: 44px;">
+            <p aria-live="polite" style="margin: 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 26px;">{{ levelText }}</p>
+            <sc-if value="{{ askOn }}" hint-placeholder-val="{{ true }}">
+              <div>
+                <p class="ks3-commit" style="color: var(--ks3-ink); margin: 0 0 10px;">{{ askPrompt }}</p>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{ askOpts }}" as="o" hint-placeholder-count="2"><button type="button" onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ pushedOn }}"><p data-arrive="1" role="status" style="{{ pushStyle }}"><strong>{{ pushWord }}</strong> {{ pushText }}</p></sc-if>
+            <sc-if value="{{ pushedOn }}"><button type="button" onClick="{{ onReset }}" style="{{ resetStyle }}">Release and try another mix</button></sc-if>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head"><span class="ks3-mis-badge" aria-hidden="true">!</span><p class="ks3-eyebrow">Think again · conducting</p></div>
+        <p class="ks3-mis-quote">&ldquo;Ionic compounds only conduct when molten, so a metal must melt before it can conduct too.&rdquo;</p>
+        <dc-import name="Ks4Choice" eyebrow="Spot the flaw" command="Explain" prompt="A solid copper wire carries current every day. What is wrong with the claim?" options="{{ thinkOptions }}" reveal="{{ thinkReveal }}" right-word="That is the flaw." wrong-word="That keeps the wrong idea." on-commit="{{ onThink }}" hint-size="100%,320px"></dc-import>
+      </section>
+
+      <section id="s-chain" class="ks3-block" style="scroll-margin-top: 92px;">
+        <dc-import name="Ks4Chain" eyebrow="Build the chain" title="Why is an alloy harder than the pure metal?" prompt="The classic 3-mark explanation. Four links in order; two are false." links="{{ cLinks }}" herrings="{{ cHerrings }}" done-note="Examiners want both halves: the pure metal's layers slide, and the alloy's distorted layers cannot." on-done="{{ onChain }}" hint-size="100%,460px"></dc-import>
+      </section>
+
+      <sc-if value="{{ isTriple }}" hint-placeholder-val="{{ true }}">
+        <section id="s-pick" class="ks3-block" style="scroll-margin-top: 92px; border: 2px solid var(--ks3-blue);">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px;">
+            <span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-blue); background: var(--ks3-blue-tint); color: var(--ks3-blue-text);">Triple</span>
+            <p class="ks3-eyebrow" style="margin: 0; color: var(--ks3-accent-text);">Alloys as useful materials · AQA 4.10.4.2 (chemistry only)</p>
+          </div>
+          <dc-import name="Ks4Sort" eyebrow="Engineer's pick" title="Which material for the job?" prompt="Bronze is copper and tin. Brass is copper and zinc. Steels are iron with carbon or other metals. Aluminium alloys are low density. Choose the material for each job." bins="{{ pBins }}" items="{{ pItems }}" done-note="Every choice rests on one property the alloy has and the pure metal lacks, or on density." on-done="{{ onPick }}" hint-size="100%,460px"></dc-import>
+        </section>
+      </sc-if>
+
+      <section class="ks3-block" style="border: 2px solid var(--ks3-ink); box-shadow: none;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">Command words in this lesson</p>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 12px;">
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Explain</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Different-sized atoms, distorted layers, cannot slide: say all three.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Compare</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Pure metal and alloy side by side, in the same sentence.</dd></div>
+          <div style="padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-option-border);"><dt style="font-family: var(--ks3-font-display); font-weight: 800; font-size: 21px;">Use the data</dt><dd style="margin: 4px 0 0; font-size: 17px; line-height: 1.5;">Describe the trend, then quote numbers from the table.</dd></div>
+        </dl>
+      </section>
+
+      <div data-key-fact="1" style="margin: 28px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em;">In an alloy, atoms of different sizes distort the layers, so they cannot slide over each other easily. That makes alloys harder than pure metals.</p>
+      </div>
+
+      <section style="margin: 28px 0 0; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Examiner tip</p>
+        <p style="margin: 8px 0 0; font-size: 19px; line-height: 1.6;">{{ examTip }}</p>
+      </section>
+
+      <section id="s-ladder" style="scroll-margin-top: 92px; margin-top: 28px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Ladder" slug="metals-and-alloys" rungs="{{ rungs }}" on-done="{{ onLadder }}" hint-size="100%,1400px"></dc-import>
+        </sc-if>
+      </section>
+
+      <section id="s-keynote" style="scroll-margin-top: 92px; margin-top: 34px;">
+        <dc-import name="Ks4KeyNote" title="Metals and alloys" spec="AQA 5.2.2.7–5.2.2.8" lines="{{ keyLines }}" hint-size="100%,420px"></dc-import>
+      </section>
+
+      <section style="margin-top: 34px;">
+        <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4QuizBank" questions="{{ bank }}" route-label="{{ route }}" hint-size="100%,600px"></dc-import>
+        </sc-if>
+      </section>
+
+      <dc-import name="Ks4End" subject="Chemistry" prev="{{ endPrev }}" next="{{ endNext }}" connects="{{ endConnects }}" tutor-line="Not sure why a few extra atoms matter so much?" legal="The mixer is a two-dimensional model with one delocalised electron per ion left out for clarity. Added atoms are drawn larger; in some alloys, such as steel, the added carbon atoms are smaller and sit in the gaps, which distorts the layers in the same way. Named alloys and their uses are separate-science content and show only on Triple routes." hint-size="100%,420px"></dc-import>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;route&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Combined Foundation&quot;,&quot;Combined Higher&quot;,&quot;Triple Foundation&quot;,&quot;Triple Higher&quot;],&quot;default&quot;:&quot;Triple Higher&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Gold rings', short: 'HOOK' },
+  { id: 's-mixer', label: 'The alloy mixer', short: 'MIX' },
+  { id: 's-think', label: 'Think again', short: 'THINK' },
+  { id: 's-chain', label: 'Why alloys are harder', short: 'CHAIN' },
+  { id: 's-ladder', label: 'Exam ladder', short: 'LADDER' }
+];
+const SITES = [[1, 3], [2, 1], [1, 6], [2, 5]];
+const LEVEL_TEXT = ['Pure metal', 'Alloy · 1 added atom', 'Alloy · 2 added atoms', 'Alloy · 3 added atoms', 'Alloy · 4 added atoms'];
+
+class Component extends DCLogic {
+  state = { active: 0, libReady: false, route: null, hook: null, level: 0, pred: null, pushed: false, tried: {}, think: null, chain: false, pick: false, ladder: false, t: 0 };
+  componentDidMount() {
+    const t = setInterval(() => { if (window.KS4 && window.KS4SRC && window.KS4D) { clearInterval(t); this.setState({ libReady: true }); this.io = window.KS4.observe(this, RAIL); } }, 40);
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.tick = setInterval(() => { if (this.state.pushed && this.state.t < 12) this.setState((st) => ({ t: this.reduced ? 12 : st.t + 1 })); }, 60);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearInterval(this.tick); }
+  seg(on) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:10px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:pointer;color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-card)') + ';text-align:left;';
+  }
+  mix(level, pushed, t) {
+    const D = window.KS4D; const cols = 8, rows = 4, s = 60, x0 = 60, y0 = 90; let b = '';
+    const sites = SITES.slice(0, level);
+    const isBig = (r, c) => sites.some(([rr, cc]) => rr === r && cc === c);
+    const frac = t / 12;
+    const slide = pushed ? (level === 0 ? s * frac : Math.min(8, 8 * frac)) : 0;
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      let x = x0 + c * s + (r < 2 ? slide : 0), y = y0 + r * s;
+      sites.forEach(([rr, cc]) => { const dx = c - cc, dy = r - rr; const d = Math.hypot(dx, dy); if (d > 0 && d < 1.6) { x += dx / d * 7; y += dy / d * 7; } });
+      const big = isBig(r, c);
+      b += D.circ(x, y, big ? 36 : 26, big ? D.C.gold : D.C.metal, D.C.stroke, 2) + (big ? '' : D.T(x, y + 8, '+', 22));
+    }
+    if (pushed) b += D.arrow(x0 - 20, 40, x0 + 170, 40) + D.T(x0 + 250, 47, level === 0 ? 'layers slide' : 'layers jam', 22, { fill: D.C.arrow });
+    else b += D.T(x0 + 210, 47, 'push the top layers \u2192', 20, { weight: 'normal' });
+    b += D.line(x0 - 30, y0 + 1.5 * s, x0 + cols * s, y0 + 1.5 * s, 2, D.C.muted, ' stroke-dasharray="6 8"');
+    return D.svg(x0 * 2 + (cols - 1) * s + 60, y0 + rows * s + 10, b, (level === 0 ? 'Pure metal: identical ions in regular layers' : 'Alloy: ' + level + ' larger atoms distort the layers') + (pushed ? (level === 0 ? '. The top layers have slid one place along.' : '. The top layers have barely moved.') : ''));
+  }
+  renderVals() {
+    const s = this.state; const K = window.KS4; const D = window.KS4D;
+    const R = K ? K.route(this) : { route: 'Triple Higher', routeOptions: [], onRoute: () => {}, isTriple: true };
+    const slug = 'metals-and-alloys';
+    const ready = !!(s.libReady && K && D);
+    const pure = s.level === 0;
+    const triedPure = s.tried.pure, triedAlloy = s.tried.alloy;
+    const done = [s.hook !== null, triedPure && triedAlloy, s.think !== null, s.chain, s.ladder];
+    const railV = K ? K.rail(RAIL, done, s.active) : { rail: [] };
+    const predRight = s.pred === (pure ? 0 : 1);
+    const theme = this.props.theme && this.props.theme !== 'auto' ? this.props.theme : undefined;
+    return Object.assign({}, R, {
+      video: K && s.hook !== null && s.hook !== undefined ? K.video(slug) : null,
+      railV, theme, ready, draftVisible: this.props.showDraft !== false,
+      endPrev: { href: 'ks4-chemistry-5.2.2.6-giant-covalent-structures.dc.html', label: 'Giant covalent structures' },
+      endNext: { href: 'ks4-chemistry-5.2.3.3-nanoparticles.dc.html', label: 'Nanoparticles (Triple)' },
+      endConnects: [{ href: 'ks4-chemistry-5.2.1.5-metallic-bonding.dc.html', label: 'Metallic bonding' }, { href: 'ks4-chemistry-5.2.2.3-properties-ionic-compounds.dc.html', label: 'Properties of ionic compounds' }],
+      hookOptions: [
+        { text: 'The different-sized atoms get in the way of the layers moving', reply: 'Push some layers and find out.' },
+        { text: 'The copper and gold react to make a hard compound', reply: 'An alloy is a mixture. No new compound forms.' },
+        { text: 'Copper atoms are harder than gold atoms', reply: 'Pure copper is soft too. It is the mixture that is hard.' },
+        { text: 'The extra metal fills gaps, so there is less space to bend into', reply: 'Close: the added atoms do change the packing. See what that does.' }
+      ],
+      hookReveal: 'The other metal atoms are a different size from gold atoms. They distort the neat layers, and distorted layers cannot slide past each other easily.',
+      onHook: (i) => this.setState({ hook: i }),
+      mixProgress: (triedPure ? 1 : 0) + (triedAlloy ? 1 : 0) + ' of 2 pushed',
+      mixFig: ready ? K.fig(this.mix(s.level, s.pushed, s.t), '') : null,
+      level: s.level, levelText: LEVEL_TEXT[s.level], pushing: s.pushed,
+      onLevel: (e) => this.setState({ level: +e.target.value, pred: null, pushed: false, t: 0 }),
+      askOn: !s.pushed,
+      askPrompt: 'Commit first. You push the top two layers of the ' + (pure ? 'pure metal' : 'alloy') + '. What happens?',
+      askOpts: ['The layers slide over each other and the metal changes shape', 'The layers hardly move: the metal resists the push'].map((l, i) => ({ label: l, style: this.seg(false),
+        onClick: () => this.setState((st) => ({ pred: i, pushed: true, t: 0, tried: Object.assign({}, st.tried, { [st.level === 0 ? 'pure' : 'alloy']: true }) })) })),
+      pushedOn: s.pushed,
+      pushWord: predRight ? 'As you said.' : 'Not what you predicted.',
+      pushText: pure ? 'Every ion is the same size, so the layers are flat and slide one place along. The electron sea keeps holding them. Soft and malleable.' : 'The larger atoms push the neighbouring ions out of line. The layers are no longer flat, so they catch on each other and cannot slide. The alloy is harder.' + (s.level === 1 ? ' Even one added atom in this patch is enough to jam it.' : ''),
+      pushStyle: 'margin:0;padding:14px 16px;border-radius:14px;font-size:18px;line-height:1.55;border:2px solid ' + (predRight ? 'var(--ks3-accent);background:var(--ks3-accent-tint);' : 'var(--ks3-alert-border);background:var(--ks3-alert-tint);'),
+      resetStyle: this.seg(false) + 'align-self:flex-start;', onReset: () => this.setState({ pushed: false, pred: null, t: 0 }),
+      thinkOptions: [
+        { text: 'A metal\u2019s delocalised electrons are already free to move in the solid. Ionic compounds need melting because their charge carriers are ions, locked in place.', correct: true, reply: 'Different charge carriers, different conditions.' },
+        { text: 'Nothing: copper wires warm up, which melts them slightly so they conduct.', correct: false, reply: 'A warm wire is still solid. It conducts from the moment the switch closes.' },
+        { text: 'Metals conduct because their positive ions move, and ions can move in solid metals.', correct: false, reply: 'The ions stay in the lattice. The delocalised electrons move.' },
+        { text: 'Metals do not really conduct as solids; they need a coating.', correct: false, reply: 'Bare copper conducts perfectly well.' }
+      ],
+      thinkReveal: 'Two different charge carriers. In a metal, delocalised electrons carry the charge, and they move in the solid. In an ionic compound, ions carry it, and they move only when it is molten or dissolved.',
+      onThink: (i) => this.setState({ think: i }),
+      cLinks: ['In a pure metal, the atoms are all the same size and arranged in regular layers.', 'The layers can slide over each other easily, so pure metals are soft.', 'In an alloy, atoms of a different size distort the layers.', 'The distorted layers cannot slide over each other easily, so the alloy is harder.'],
+      cHerrings: [{ text: 'The alloy forms stronger ionic bonds between its metals.', why: 'An alloy is a mixture held by metallic bonding. No ions are transferred.' }, { text: 'The added atoms remove the delocalised electrons, which makes it stiff.', why: 'Alloys still have delocalised electrons; they still conduct.' }],
+      onChain: () => this.setState({ chain: true }),
+      pBins: [{ id: 'st', label: 'Steel' }, { id: 'al', label: 'Aluminium alloy' }, { id: 'br', label: 'Bronze or brass' }],
+      pItems: [
+        { text: 'A bridge girder that must carry heavy loads', bin: 'st', why: 'Steel is much harder and stronger than pure iron.' },
+        { text: 'Kitchen knives that must not rust', bin: 'st', why: 'Stainless steel: iron alloyed with chromium and nickel resists corrosion.' },
+        { text: 'An aircraft body that must be light', bin: 'al', why: 'Aluminium alloys have low density but are stronger than pure aluminium.' },
+        { text: 'A bicycle frame for racing', bin: 'al', why: 'Low density and strong.' },
+        { text: 'A ship\u2019s propeller in sea water', bin: 'br', why: 'Bronze is hard and resists corrosion in sea water.' },
+        { text: 'A door handle and musical instruments', bin: 'br', why: 'Brass is hard, easy to shape and does not corrode easily.' }
+      ],
+      onPick: () => this.setState({ pick: true }),
+      examTip: ready ? K.tip(slug) : '',
+      onLadder: () => this.setState({ ladder: true }),
+      rungs: ready ? {
+        r1: Object.assign(K.find(slug, R.route, 'State what an alloy is') || K.find(slug, R.route, 'Describe the difference in structure between a pure metal and one of its alloys') || { options: [] }, { command: 'State', marks: 1, why: 'A mixture of a metal with at least one other element, usually another metal.' }),
+        r2: { kind: 'data', command: 'Use the data', marks: 2, prompt: 'The table shows the hardness of iron mixed with different percentages of carbon.',
+          figureSvg: window.KS4D.table(['Carbon / %', '0.0', '0.2', '0.4', '0.8'], [['Hardness (units)', '70', '120', '155', '220']], { widths: [230, 110, 110, 110, 110], alt: 'Hardness rises from 70 with no carbon to 120 at 0.2 percent, 155 at 0.4 percent and 220 at 0.8 percent.' }), figureAlt: 'Hardness of iron against percentage carbon',
+          parts: [{ label: 'The trend in the data', options: ['hardness increases as carbon increases', 'hardness decreases as carbon increases', 'no pattern'], answer: 0 }, { label: 'Best estimate of hardness at 0.6% carbon', options: ['about 100', 'about 190', 'about 260'], answer: 1 }],
+          right: 'Both.', wrong: 'Read along the row. 0.6% lies between 0.4% (155) and 0.8% (220).',
+          model: ['As the percentage of carbon increases, the hardness increases.', 'At 0.6% the hardness lies between 155 and 220: about 190.'] },
+        r3: { command: 'Explain', marks: 3, prompt: 'Explain why brass (copper mixed with zinc) is harder than pure copper. Put the links in order.',
+          links: ['In pure copper, the atoms are the same size and form regular layers that slide easily.', 'In brass, the zinc atoms are a different size and distort the layers.', 'The layers cannot slide over each other so easily, so brass is harder.'],
+          herrings: [{ text: 'Copper and zinc react to form a hard compound.', why: 'Brass is a mixture, not a compound.' }, { text: 'The zinc atoms make the metallic bonds weaker.', why: 'Hardness comes from the layers being unable to slide, not from weaker bonding.' }] },
+        r4: { command: 'Compare', marks: 4, question: 'Compare how solid copper and molten sodium chloride conduct electricity.',
+          points: ['Copper has a lattice of positive ions and delocalised electrons.', 'In copper, the delocalised electrons move and carry the charge, even in the solid.', 'Molten sodium chloride contains Na\u207a and Cl\u207b ions that are free to move.', 'In molten sodium chloride, the ions move and carry the charge; there are no free electrons.'],
+          reject: ['\u201cElectrons flow through the molten salt.\u201d', '\u201cCopper ions move through the wire.\u201d'] }
+      } : {},
+      keyLines: ['Metals have giant structures: positive ions in regular layers, surrounded by delocalised electrons.', 'Pure metals are soft: the layers slide over each other easily.', 'An alloy is a mixture of a metal with other elements.', 'In an alloy, different-sized atoms distort the layers so they cannot slide easily: alloys are harder.', 'Metals conduct electricity and heat as solids: the delocalised electrons carry charge and energy.', 'Ionic compounds need to be molten or dissolved to conduct; metals do not.'],
+      bank: ready ? K.bank(slug, R.route) : []
+    });
+  }
+}
+</script>
+</body>
+</html>

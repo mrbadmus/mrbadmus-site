@@ -7,9 +7,10 @@
   <title>Gravity, Stable Orbits and Orbital Speed | Physics | MrBadmusAI</title>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=bbfbe9e0"/>
-  <link rel="stylesheet" href="/shared/styles.css?v=2da37530"/>
-  <link rel="stylesheet" href="/shared/nav.css?v=8b20d995"/>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=4ac1e47c"/>
+  <link rel="stylesheet" href="/shared/styles.css?v=ce417591"/>
+  <link rel="stylesheet" href="/shared/nav.css?v=363c537c"/>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
   <script src="/shared/nav.js?v=28cd1457" defer></script>
@@ -195,7 +196,7 @@ html { background: var(--bg); }
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)" tabindex="0" role="button" aria-label="Attach a photo">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
       <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
@@ -203,7 +204,7 @@ html { background: var(--bg); }
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="/shared/mrbadmus.v2.js?v=6cb18763"></script>
+  <script src="/shared/mrbadmus.v2.js?v=bc5d7b31"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Gravity, Stable Orbits and Orbital Speed (6.8.1 (HT only, physics only))'});</script>
   <script>
 const SCORE_MESSAGES = [

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="../../_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<link rel="stylesheet" href="ks4-theme.css">
+<script src="ks4-lib.js"></script>
+<style>
+  @keyframes ks4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: ks4-arrive .3s ease-out both; }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+<div class="rd" data-mode="ks3" style="font-family: var(--ks3-font-body); color: var(--ks3-ink); text-wrap: pretty;">
+  <section class="ks3-ladder" style="margin: 0;">
+    <div class="ks3-ladder-head">
+      <div>
+        <h2>Exam ladder</h2>
+        <p class="ks3-ladder-sub">Four rungs, one point each. Every question shows its command word and what it is worth in the exam.</p>
+      </div>
+      <div class="ks3-ladder-score" aria-live="polite">
+        <p class="ks3-score">{{ scoreLine }}</p>
+        <p class="ks3-score-note">{{ scoreNote }}</p>
+      </div>
+    </div>
+    <div class="ks3-rungs">
+
+      <section class="ks3-rung">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <h3 style="margin: 0; white-space: nowrap; line-height: 1.2;">Rung 1 · Recall</h3>
+          <span style="{{ chipCmd }}">{{ r1Command }}</span>
+          <span style="{{ chipMarks }}">{{ r1Marks }}</span>
+        </div>
+        <sc-if value="{{ r1HasFigure }}"><div style="margin-top: 12px;">{{ r1Figure }}</div></sc-if>
+        <p class="ks3-rung-q">{{ r1Prompt }}</p>
+        <ul class="ks3-options">
+          <sc-for list="{{ r1Options }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                <span class="ks3-opt-mark" aria-hidden="true">
+                  <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                  <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                  <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                </span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+        <sc-if value="{{ r1Answered }}">
+          <p class="{{ r1FeedbackClass }}" role="status"><span class="ks3-feedback-word">{{ r1Word }}</span> {{ r1Feedback }}</p>
+        </sc-if>
+      </section>
+
+      <section class="ks3-rung">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;">
+          <h3 style="margin: 0; white-space: nowrap; line-height: 1.2;">Rung 2 · Apply</h3>
+          <span style="{{ chipCmd }}">{{ r2Command }}</span>
+          <span style="{{ chipMarks }}">{{ r2Marks }}</span>
+        </div>
+        <sc-if value="{{ r2HasFigure }}"><div style="margin-top: 12px;">{{ r2Figure }}</div></sc-if>
+        <p class="ks3-rung-q">{{ r2Prompt }}</p>
+        <sc-if value="{{ r2IsCalc }}">
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+              <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">C · Convert · does anything need converting?</p>
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <sc-for list="{{ r2Conv }}" as="c" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ c.onClick }}" aria-pressed="{{ c.pressed }}" disabled="{{ c.disabled }}" style="{{ c.style }}">{{ c.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding: 14px 16px; border-radius: 14px; background: var(--ks3-inset); border: 2px solid var(--ks3-option-border);">
+              <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">F I F A · work it on paper, then give the answer and its unit</p>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <label for="{{ r2NumId }}" style="position: absolute; left: -9999px;">Answer as a number</label>
+                <input type="text" inputMode="decimal" id="{{ r2NumId }}" value="{{ r2Num }}" onInput="{{ onR2Num }}" onChange="{{ onR2Num }}" disabled="{{ r2Locked }}" placeholder="number" style="font: inherit; font-family: var(--ks3-font-mono); font-size: 20px; width: 9rem; padding: 10px 12px; min-height: 48px; border-radius: 12px; border: 2px solid var(--ks3-option-border); background: var(--ks3-ground); color: var(--ks3-ink);">
+                <label for="{{ r2UnitId }}" style="position: absolute; left: -9999px;">Unit</label>
+                <select id="{{ r2UnitId }}" class="ks3-sim-units" value="{{ r2Unit }}" onChange="{{ onR2Unit }}" disabled="{{ r2Locked }}" style="font-size: 18px; min-height: 48px;">
+                  <option value="">unit</option>
+                  <sc-for list="{{ r2Units }}" as="u" hint-placeholder-count="4"><option value="{{ u }}">{{ u }}</option></sc-for>
+                </select>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ r2IsText }}">
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+            <label for="{{ r2NumId }}" style="position: absolute; left: -9999px;">Your answer</label>
+            <input type="text" id="{{ r2NumId }}" value="{{ r2Num }}" onInput="{{ onR2Num }}" onChange="{{ onR2Num }}" disabled="{{ r2Locked }}" placeholder="{{ r2Placeholder }}" style="font: inherit; font-family: var(--ks3-font-mono); font-size: 20px; width: 14rem; max-width: 100%; padding: 10px 12px; min-height: 48px; border-radius: 12px; border: 2px solid var(--ks3-option-border); background: var(--ks3-ground); color: var(--ks3-ink);">
+          </div>
+        </sc-if>
+        <sc-if value="{{ r2IsData }}">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <sc-for list="{{ r2Parts }}" as="pt" hint-placeholder-count="2">
+              <div role="group" aria-labelledby="{{ pt.id }}" style="display: flex; flex-direction: column; gap: 8px; min-width: 0;">
+                <p id="{{ pt.id }}" style="margin: 0; font-size: 18px; font-weight: 600;">{{ pt.label }}</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; min-width: 0;">
+                  <sc-for list="{{ pt.options }}" as="o" hint-placeholder-count="3"><button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button></sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <div style="margin-top: 14px;">
+          <button type="button" class="ks3-check-btn" onClick="{{ onR2Check }}" disabled="{{ r2CheckLocked }}" style="{{ r2CheckStyle }}">Check my answer</button>
+        </div>
+        <sc-if value="{{ r2Answered }}">
+          <div data-arrive="1">
+            <p class="{{ r2FeedbackClass }}" role="status"><span class="ks3-feedback-word">{{ r2Word }}</span> {{ r2Feedback }}</p>
+            <div style="margin-top: 12px; padding: 16px 18px; border-radius: 14px; background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0 0 8px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ r2ModelHead }}</p>
+              <sc-for list="{{ r2Model }}" as="m" hint-placeholder-count="3">
+                <p style="margin: 4px 0 0; font-family: var(--ks3-font-mono); font-size: 17px; line-height: 1.5;">{{ m }}</p>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </section>
+
+      <section class="ks3-rung">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-bottom: 6px;">
+          <h3 style="margin: 0; white-space: nowrap; line-height: 1.2;">Rung 3 · Explain</h3>
+          <span style="{{ chipCmd }}">{{ r3Command }}</span>
+          <span style="{{ chipMarks }}">{{ r3Marks }}</span>
+        </div>
+        <sc-if value="{{ r3Show }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Chain" prompt="{{ r3Prompt }}" links="{{ r3Links }}" herrings="{{ r3Herrings }}" scored="{{ true }}" on-done="{{ onR3 }}" hint-size="100%,420px"></dc-import>
+        </sc-if>
+        <sc-if value="{{ r3Answered }}"><p class="{{ r3FeedbackClass }}" role="status"><span class="ks3-feedback-word">{{ r3Word }}</span> {{ r3Feedback }}</p></sc-if>
+      </section>
+
+      <section class="ks3-rung ks3-rung-self">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-bottom: 10px;">
+          <h3 style="margin: 0; white-space: nowrap; line-height: 1.2;">Rung 4 · Produce</h3>
+          <span style="font-family: var(--ks3-font-mono); font-size: 14px; color: var(--ks3-ink-muted);">you write it, then you mark it</span>
+        </div>
+        <sc-if value="{{ r4Show }}" hint-placeholder-val="{{ true }}">
+          <dc-import name="Ks4Write" id="{{ r4Id }}" eyebrow="Extended response" command="{{ r4Command }}" marks="{{ r4MarksN }}" question="{{ r4Question }}" points="{{ r4Points }}" levels="{{ r4Levels }}" reject="{{ r4Reject }}" figure-svg="{{ r4FigureSvg }}" on-mark="{{ onR4 }}" hint-size="100%,380px"></dc-import>
+        </sc-if>
+        <sc-if value="{{ r4Answered }}"><p class="{{ r4FeedbackClass }}" role="status"><span class="ks3-feedback-word">{{ r4Word }}</span> {{ r4Feedback }}</p></sc-if>
+      </section>
+    </div>
+    <div class="ks3-retry-wrap">
+      <button type="button" class="ks3-retry" onClick="{{ onRetry }}" disabled="{{ retryLocked }}" style="{{ retryStyle }}">Retry my misses</button>
+      <p class="ks3-retry-note">Resets only the rungs that did not score. What you wrote is kept.</p>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1000},&quot;slug&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;demo&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;rungs&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;{r1:object,r2:object,r3:object,r4:object}&quot;},&quot;onDone&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(score:number)=&gt;void&quot;}}">
+const LETTERS = ['A', 'B', 'C', 'D'];
+function norm(t) {
+  const sub = { '\u2080': '0', '\u2081': '1', '\u2082': '2', '\u2083': '3', '\u2084': '4', '\u2085': '5', '\u2086': '6', '\u2087': '7', '\u2088': '8', '\u2089': '9' };
+  return String(t || '').replace(/[\u2080-\u2089]/g, (c) => sub[c]).replace(/\s+/g, '');
+}
+class Component extends DCLogic {
+  state = { r1: null, r2: null, r2conv: null, r2num: '', r2unit: '', r2parts: {}, r3: null, r4: null, r3Show: true, r4Show: true, bestAtStart: null };
+  componentDidMount() {
+    const best = window.KS4 ? window.KS4.load('ks4-best-' + (this.props.slug || 'x'), null) : null;
+    this.setState({ bestAtStart: best });
+  }
+  componentDidUpdate(pp, ps) {
+    const sc = this.score();
+    if (sc.done && !this.savedFor) {
+      this.savedFor = true;
+      const key = 'ks4-best-' + (this.props.slug || 'x');
+      const prev = window.KS4 ? window.KS4.load(key, null) : null;
+      if (window.KS4 && (prev === null || sc.n > prev)) window.KS4.save(key, sc.n);
+      if (typeof this.props.onDone === 'function') this.props.onDone(sc.n);
+    }
+  }
+  score() {
+    const s = this.state;
+    const vals = [s.r1, s.r2, s.r3, s.r4];
+    return { done: vals.every((v) => v !== null), n: vals.filter((v) => v === true).length };
+  }
+  svg(str, alt) { return str ? React.createElement('div', { role: 'img', 'aria-label': alt || '', style: { maxWidth: '640px' }, dangerouslySetInnerHTML: { __html: str } }) : null; }
+  renderVals() {
+    const p = this.props;
+    const s = this.state;
+    const R = p.rungs || {};
+    const r1 = R.r1 || { options: [] }, r2 = R.r2 || {}, r3 = R.r3 || {}, r4 = R.r4 || {};
+    const chipCmd = 'white-space:nowrap;font-family:var(--ks3-font-mono);font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:99px;border:2px solid var(--ks3-ink);color:var(--ks3-ink);';
+    const chipMarks = 'white-space:nowrap;font-family:var(--ks3-font-mono);font-size:13px;font-weight:500;padding:3px 10px;border-radius:99px;background:var(--ks3-ink);color:var(--ks3-ground);';
+    const mk = (n) => n + (n === 1 ? ' mark' : ' marks');
+    const sc = this.score();
+    const best = s.bestAtStart;
+    // rung 1
+    const r1opts = (r1.options || []);
+    const r1Pick = s.r1Pick;
+    const r1Chosen = typeof r1Pick === 'number' ? r1opts[r1Pick] : null;
+    // rung 2
+    const kind = r2.kind || 'calc';
+    const r2Locked = s.r2 !== null;
+    let r2Ready = false;
+    if (kind === 'calc') r2Ready = s.r2conv !== null && s.r2num.trim() && s.r2unit;
+    if (kind === 'text') r2Ready = !!s.r2num.trim();
+    if (kind === 'data') r2Ready = (r2.parts || []).every((pt, i) => s.r2parts[i] !== undefined && s.r2parts[i] !== '');
+    const grade2 = () => {
+      if (kind === 'calc') {
+        const v = parseFloat(String(s.r2num).replace(',', '.'));
+        const tol = r2.tol !== undefined ? r2.tol : Math.abs(r2.answer) * 0.02;
+        return s.r2conv === r2.convAnswer && Math.abs(v - r2.answer) <= tol && s.r2unit === r2.unit;
+      }
+      if (kind === 'text') return (r2.accept || []).some((a) => norm(a) === norm(s.r2num));
+      return (r2.parts || []).every((pt, i) => String(s.r2parts[i]) === String(pt.answer));
+    };
+    const fbClass = (ok) => 'ks3-feedback ' + (ok ? 'is-correct' : 'is-wrong');
+    const pickStyle = (on, dis) => 'font:inherit;font-family:var(--ks3-font-mono);font-size:16px;text-align:left;max-width:100%;white-space:normal;overflow-wrap:anywhere;padding:10px 14px;min-height:46px;border-radius:12px;cursor:' + (dis ? 'default' : 'pointer') + ';color:var(--ks3-ink);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';' + (dis && !on ? 'opacity:.6;' : '');
+    const r4need = Math.ceil((r4.marks || 4) / 2);
+    return {
+      scoreLine: sc.done ? 'Score ' + sc.n + ' of 4' : ([s.r1, s.r2, s.r3, s.r4].filter((v) => v !== null).length + ' of 4 rungs tried'),
+      scoreNote: best === null ? (sc.done ? 'First go on this lesson.' : 'Scored when all four are done.') : ('Best before today ' + best + ' of 4' + (sc.done ? (sc.n > best ? ' · up ' + (sc.n - best) : (sc.n === best ? ' · level with it' : ' · keep the best')) : '')),
+      chipCmd, chipMarks,
+      r1Command: r1.command || 'State', r1Marks: mk(r1.marks || 1),
+      r1HasFigure: !!r1.figureSvg, r1Figure: this.svg(r1.figureSvg, r1.figureAlt),
+      r1Prompt: r1.prompt || '',
+      r1Options: r1opts.map((o, i) => {
+        const answered = s.r1 !== null;
+        const isPick = r1Pick === i;
+        let cls = 'ks3-option';
+        if (answered && o.correct) cls += ' is-correct';
+        else if (answered && isPick) cls += ' is-wrong';
+        else if (answered) cls += ' is-spent';
+        return {
+          letter: LETTERS[i], text: o.text, className: cls, disabled: answered,
+          isCorrect: answered && o.correct, isWrong: answered && isPick && !o.correct, showLetter: !answered || (!o.correct && !isPick),
+          onClick: () => { if (s.r1 === null) this.setState({ r1: !!o.correct, r1Pick: i }); }
+        };
+      }),
+      r1Answered: s.r1 !== null,
+      r1FeedbackClass: fbClass(s.r1),
+      r1Word: s.r1 ? 'Correct.' : 'Not this time.',
+      r1Feedback: r1Chosen ? (r1Chosen.correct ? (r1.why || '') : r1Chosen.reply) : '',
+      r2Command: r2.command || 'Calculate', r2Marks: mk(r2.marks || 2),
+      r2HasFigure: !!r2.figureSvg, r2Figure: this.svg(r2.figureSvg, r2.figureAlt),
+      r2Prompt: r2.prompt || '',
+      r2IsCalc: kind === 'calc', r2IsText: kind === 'text', r2IsData: kind === 'data',
+      r2Conv: (r2.convOptions || []).map((lab, i) => ({ label: lab, pressed: s.r2conv === i, disabled: r2Locked, style: pickStyle(s.r2conv === i, r2Locked), onClick: () => { if (!r2Locked) this.setState({ r2conv: i }); } })),
+      r2NumId: (p.slug || 'x') + '-r2n', r2UnitId: (p.slug || 'x') + '-r2u',
+      r2Num: s.r2num, onR2Num: (e) => this.setState({ r2num: e.target.value }),
+      r2Unit: s.r2unit, onR2Unit: (e) => this.setState({ r2unit: e.target.value }),
+      r2Units: r2.units || [], r2Placeholder: r2.placeholder || '',
+      r2Locked,
+      r2Parts: (r2.parts || []).map((pt, i) => ({ id: (p.slug || 'x') + '-r2p' + i, label: pt.label, value: s.r2parts[i] === undefined ? '' : s.r2parts[i],
+        options: pt.options.map((o, k) => { const on = s.r2parts[i] === String(k); return { label: o, pressed: on, disabled: r2Locked, style: pickStyle(on, r2Locked),
+          onClick: () => { if (!r2Locked) this.setState({ r2parts: Object.assign({}, s.r2parts, { [i]: String(k) }) }); } }; }) })),
+      r2CheckLocked: r2Locked || !r2Ready,
+      r2CheckStyle: (r2Locked || !r2Ready) ? 'opacity:.45;cursor:default;' : '',
+      onR2Check: () => { if (!r2Locked && r2Ready) this.setState({ r2: grade2() }); },
+      r2Answered: s.r2 !== null,
+      r2FeedbackClass: fbClass(s.r2),
+      r2Word: s.r2 ? 'Correct.' : 'Not this time.',
+      r2Feedback: s.r2 ? (r2.right || '') : (r2.wrong || ''),
+      r2ModelHead: kind === 'calc' ? 'The five lines' : 'The mark scheme',
+      r2Model: r2.model || [],
+      r3Command: r3.command || 'Explain', r3Marks: mk(r3.marks || 3),
+      r3Show: s.r3Show,
+      r3Prompt: r3.prompt || '', r3Links: r3.links || [], r3Herrings: r3.herrings || [],
+      onR3: (r) => this.setState({ r3: !!r.correct }),
+      r3Answered: s.r3 !== null, r3FeedbackClass: fbClass(s.r3), r3Word: s.r3 ? 'Correct.' : 'Not first time.',
+      r3Feedback: s.r3 ? 'Every link in order on the first check. That is the chain the marking points follow.' : 'The rung scores the first check. Fix the chain above so the linked answer is the last thing you read.',
+      r4Show: s.r4Show, r4Id: (p.slug || 'x') + '-r4',
+      r4Command: r4.command || 'Explain', r4MarksN: r4.marks || 4, r4Question: r4.question || '',
+      r4Points: r4.points || [], r4Levels: r4.levels || null, r4Reject: r4.reject || [], r4FigureSvg: r4.figureSvg || '',
+      onR4: (a) => { if (a.set) this.setState({ r4: a.awarded >= r4need, r4a: a.awarded }); },
+      r4Answered: s.r4 !== null, r4FeedbackClass: fbClass(s.r4), r4Word: s.r4 ? 'Rung scored.' : 'Not yet.',
+      r4Feedback: s.r4 ? 'You gave yourself ' + s.r4a + ' of ' + (r4.marks || 4) + '. The rung scores at ' + r4need + ' or more.' : 'The rung scores at ' + r4need + ' of ' + (r4.marks || 4) + '. Add the missing points to your answer, then change your ticks.',
+      retryLocked: !sc.done || sc.n === 4,
+      retryStyle: (!sc.done || sc.n === 4) ? 'opacity:.45;cursor:default;' : '',
+      onRetry: () => {
+        if (!sc.done) return;
+        this.savedFor = false;
+        const patch = {};
+        if (s.r1 === false) { patch.r1 = null; patch.r1Pick = null; }
+        if (s.r2 === false) { patch.r2 = null; patch.r2conv = null; }
+        if (s.r3 === false) { patch.r3 = null; patch.r3Show = false; }
+        if (s.r4 === false) { patch.r4 = null; }
+        this.setState(patch, () => setTimeout(() => this.setState({ r3Show: true }), 30));
+      }
+    };
+  }
+}
+
+</script>
+</body>
+</html>

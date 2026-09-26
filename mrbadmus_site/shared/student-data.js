@@ -425,14 +425,31 @@ window.MrBadmusStudentData = (function () {
       .is('deleted_at', null)
       .single());
 
+    /* ⊕ MRB-351 — DEGRADE-SAFE. `kind` / `flashcard_mode` / `completion_rule`
+       are new columns (the schema migration is parked, not applied to
+       production — see docs/mrb351/REPORT.md). A PostgREST select naming a
+       column that does not exist fails the WHOLE request (42703), and this
+       promise used to be a bare `settle(...)` whose caller THROWS on
+       `.error` — so on production, today, this would have taken down the
+       whole class-page load rather than merely hiding Flashcards. Retried
+       once, without the three additive columns, on any error; the retry's
+       own error is what actually throws. */
     const assignmentsPromise = settle(sb
       .from('assignments')
       .select('id, title, subject_id, due_at, deleted_at, ' +
-              // ⊕ MRB-351 — which kind of work: a question set or a deck.
               'kind, flashcard_mode, completion_rule, ' +
               'subject:subject_id ( name )')
       .eq('class_id', classId)
-      .is('deleted_at', null));
+      .is('deleted_at', null))
+      .then(function (r) {
+        if (!r.error) { return r; }
+        return settle(sb
+          .from('assignments')
+          .select('id, title, subject_id, due_at, deleted_at, ' +
+                  'subject:subject_id ( name )')
+          .eq('class_id', classId)
+          .is('deleted_at', null));
+      });
 
     const mySubsPromise = settle(sb
       .from('assignment_submissions')

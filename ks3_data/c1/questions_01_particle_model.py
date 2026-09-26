@@ -246,8 +246,11 @@ QUESTIONS = [
     {
         "id": "c1-01-s04",
         "band": "standard",
-        "text": "Four cuts before the floor, the edge of the piece stops "
-                "looking smooth. Why?",
+        "text": "A sugar cube is cut in half again and again with a "
+                "perfect knife, and each new piece is drawn, magnified, as "
+                "a cross-section. Four cuts before you would reach a single "
+                "sugar particle, the edge of the piece stops looking "
+                "smooth. Why?",
         "options": [
             {"text": "The knife has started tearing the sugar instead of "
                      "cutting it.",
@@ -556,9 +559,10 @@ QUESTIONS = [
     {
         "id": "c1-01-s06",
         "band": "standard",
-        "text": "The mixed water and alcohol is left in its cylinder "
-                "overnight, sealed, and read again the next morning. What does "
-                "the model predict?",
+        "text": "50 ml of water and 50 ml of alcohol are poured together "
+                "into a measuring cylinder, and the mixture reads 97 ml. The "
+                "cylinder is sealed, left overnight, and read again the next "
+                "morning. What does the particle model predict?",
         "options": [
             {"text": "Back to 100 ml, because the particles settle apart "
                      "again overnight.",

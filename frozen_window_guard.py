@@ -243,6 +243,20 @@ def compare_pool(pool_label, id_field, leaf_fields, columns, hash_fn,
         if hash_fn(a) == hash_fn(b):
             continue
         diffs = _which_fields_differ(hash_fn, columns, id_field, a, b)
+        # ⊕ D3 (Mide, 26 Sep 2026): c1-01-s04 may differ in `text` ONLY —
+        # narrower than the 28, so it takes its own field set, not theirs.
+        if rid in fwa.D3_TEXT_ONLY:
+            bad = [f for f in diffs if f not in fwa.D3_PERMITTED_FIELDS]
+            if bad:
+                unexpected.append(rid)
+                problems.append(
+                    "%s %s: on the D3 text-only allowlist, but changed "
+                    "field(s) the ruling forbids — %s (only text may change)"
+                    % (pool_label, rid, ", ".join(bad)))
+            else:
+                print("  ⊕ %s %s differs in text only — permitted under D3 "
+                      "(Mide, 26 Sep 2026)" % (pool_label, rid))
+            continue
         if rid not in fwa.ALLOWLIST:
             unexpected.append(rid)
             problems.append(
@@ -451,7 +465,7 @@ def main():
     by_id_ks3 = {r["id"]: r for r in authored_ks3}
     by_id_ks4 = {r["id"]: r for r in authored_ks4}
     stale, moved = [], []
-    for aid in sorted(fwa.ALLOWLIST):
+    for aid in sorted(fwa.ALLOWLIST | set(fwa.D3_TEXT_ONLY)):
         row = by_id_ks3.get(aid, by_id_ks4.get(aid))
         if row is None:
             stale.append(aid)
@@ -542,7 +556,7 @@ def main():
 
     print("✅ every frozen row not on the allowlist is byte-identical to "
           "%s; all 28 allowlisted rows changed only fields the ruling "
-          "permits; positions 0-11 hold the same ids in the same order, "
+          "permits, and the D3 row (c1-01-s04) only its text; positions 0-11 hold the same ids in the same order, "
           "per leaf.\n"
           % ("the baseline" if args.baseline else "production"))
     return 0

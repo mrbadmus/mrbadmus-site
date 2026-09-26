@@ -34,6 +34,25 @@
    every date/time input pair wraps rather than pushing. RISKS A8/E11.
    ═══════════════════════════════════════════════════════════════════════ */
 
+/* ── keyboard focus — one ring for the whole sheet ─────────────────────────
+   ⊕ Experience run, 24 Sep 2026 (stream G). `focus_audit.py` found every
+   control in this sheet already showing a visible change on Tab — nothing
+   here does `all:unset` — so this is a floor, not a fix for a measured
+   defect, and it is its OWN rule rather than an assumed inheritance from
+   `shared/teacher-ds.css`'s `[data-mode="ks3"] :focus-visible`: that rule
+   lives on the element carrying `data-mode="ks3"` inside `#mrb-teacher`,
+   and `.sw-overlay` is a SIBLING of that mount, appended straight to
+   `<body>` (see the file banner above — that is the whole reason this sheet
+   left the compiled runtime), so the ks3 ring never reaches in here at all.
+   `:focus-visible` only, so a mouse click never rings. The one existing
+   focus rule below (the download checkbox's `:has()` ring) is unaffected —
+   equal-or-narrower selectors, later in the cascade, both still apply. */
+.sw-overlay :focus-visible {
+  outline: 2px solid var(--st-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
 /* ── the overlay ─────────────────────────────────────────────────────────
    Design's node 581: `position:fixed;inset:0;z-index:60;background:
    rgba(26,23,20,.45)`. The padding drops to 0 under 480px so the sheet can

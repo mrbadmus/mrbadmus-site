@@ -55,6 +55,19 @@ STEPS = [
     ("figure manifest — figures.json, shared/figures-ks{3,4}.js",
      "build_figures.py"),
     ("KS4 site — combined/, triple/, root pages, shared/", "generate_site_v5.py"),
+    # ⊕ 25 Sep 2026 (KS4 pilot) — IMMEDIATELY after generate_site_v5.py, and
+    # that ordering is load-bearing in the SAME way step 3's is (see the
+    # student-preview note below): generate_site_v5.build_site() writes the
+    # OLD (pre-port) design for these same 54 subtopic pages as part of its
+    # normal 982-page run, because it has no idea 14 of them now have a
+    # ported replacement. This step OVERWRITES exactly those 54 paths right
+    # after. Skip it, or run `generate_site_v5.py` alone, and the 14 pilot
+    # lessons silently regress to the old design — a green build that
+    # shipped the wrong pages, the exact failure mode this file's own
+    # docstring warns about for KS3.
+    ("KS4 pilot lessons — 14 rebuilt lessons on their live URLs (regresses "
+     "to the old design if skipped or if generate_site_v5.py runs alone)",
+     "build_ks4.py"),
     ("KS3 site — ks3/ (33 units, 185 lesson slots)",       "build_ks3.py"),
     # ⊕ MRB-270 phase 8a. LAST, and that ordering is load-bearing.
     # generate_site_v5.py rmtree's mrbadmus_site/ on the way in, so anything

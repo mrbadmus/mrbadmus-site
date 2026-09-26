@@ -1415,6 +1415,24 @@ RESPONSIVE_CSS = """
 }
 """
 
+# ⊕ Experience run, 24 Sep 2026 (item 13, legibility) — identical fix to
+# `teacher_rulings.PORT_CSS` / `student_rulings.PORT_CSS`, for the identical
+# reason: `ds_css()` above assembles the SAME six Design sheets, so
+# `--st-caption` (used here for "RANK" and the other table-head labels) is
+# wrong for the same reason and by the same amount. Measured on the rendered
+# leaderboard: 4.29:1 on `--st-crumb-bg`, not the 4.51:1 the token's own
+# comment names. Values are identical by construction to the other two
+# ports' overrides, not independently chosen, so the three cannot drift
+# apart. Appended after `RESPONSIVE_CSS` so it is last in the cascade.
+CONTRAST_TOKENS_CSS = """
+:root {
+  --st-muted:   #605851;
+  --st-caption: #685E51;
+  --st-faint:   #695E4E;
+  --st-ghost:   #6E604B;
+}
+"""
+
 
 def fit_hooks(roots):
     """Tag the stats grid and the table frame so R35's CSS can reach them."""
@@ -1884,6 +1902,17 @@ def page_html(roots, imports, logic, nav, fixture, versions):
         # it — which on the student pages once meant a real class name shipped
         # in a file whose own banner said it held no data.
         "<title>Leaderboard | MrBadmusAI</title>\n"
+        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — the same
+        # `#E4572E` chevron favicon `generate_site_v5.KS4_FAVICON_LINK` gives
+        # every KS4 chrome and lesson page, kept as its own literal here for
+        # the same reason: this port is deliberately independent of the KS4
+        # generator (see `page_html`'s own note on why the nav is read fresh
+        # rather than lifted, elsewhere in this file).
+        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"data:image/svg+xml;"
+        "base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdC"
+        "b3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUi"
+        "IHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2Fw"
+        "PSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\">\n"
         "%s"
         "<link rel=\"preload\" href=\"/shared/fonts/fraunces-var-latin.woff2\" "
         "as=\"font\" type=\"font/woff2\" crossorigin>\n"
@@ -2788,6 +2817,7 @@ def build():
     tpl_json = json.dumps(roots)
     css, topped = check_tokens(css, tpl_json, logic)
     css = css + RESPONSIVE_CSS      # R35
+    css = css + CONTRAST_TOKENS_CSS  # Experience run, item 13
     print("     ✅ tokens: every var(--…) resolves%s"
           % ((" (%d topped up from shared/tokens.css: %s)"
               % (len(topped), ", ".join(topped))) if topped else ""))

@@ -251,6 +251,46 @@ window.MrBadmusAdminScope = (function () {
   var DECKS_HREF = '/teacher/decks.html';
   var DECKS_LABEL = 'Flashcard decks';
 
+  /* ⊕ MRB-351 landing (27 Sep 2026) — DEGRADE-SAFE. Production has no
+     flashcard schema at all yet — the MRB-351 migrations are parked, not
+     applied (docs/mrb351/REPORT.md). This link used to be unconditional
+     ("every teacher may keep decks"), which on production would put a link
+     to a page that opens onto a table that does not exist.
+
+     `decksCapable` is null (unprobed), true or false, decided ONCE per page
+     load by the cheapest possible read — `limit(0)` on `flashcard_decks`,
+     no rows, just "does this exist and can I ask it at all" — and cached in
+     memory for the rest of the page's life. Fails CLOSED: any error
+     (missing table 42P01/PGRST205, RLS refusal, no client, network) leaves
+     the link out. Run lazily, off `watchToday`'s own boot, never blocking
+     Today or the rest of the nav on it. */
+  var decksCapable = null;
+  var decksProbe = null;
+  function probeDecksCapability() {
+    if (decksCapable !== null) { return Promise.resolve(decksCapable); }
+    if (decksProbe) { return decksProbe; }
+    decksProbe = client(4000).then(function (sb) {
+      if (!sb) { decksCapable = false; decksProbe = null; return false; }
+      return Promise.resolve(
+        sb.from('flashcard_decks').select('id', { head: true, count: 'exact' }).limit(0)
+      ).then(function (r) {
+        decksCapable = !(r && r.error);
+        decksProbe = null;
+        if (decksCapable) { injectDecks(); }
+        return decksCapable;
+      }, function () {
+        decksCapable = false;
+        decksProbe = null;
+        return false;
+      });
+    }, function () {
+      decksCapable = false;
+      decksProbe = null;
+      return false;
+    });
+    return decksProbe;
+  }
+
   function decksHref() {
     var c = window.MrBadmusConfig;
     return DECKS_HREF + (c && c.environment === 'test' ? '?env=test' : '');
@@ -269,6 +309,9 @@ window.MrBadmusAdminScope = (function () {
 
   function injectDecks() {
     if (decksIsHere()) { return true; }
+    // ⊕ MRB-351 landing — fail closed while the probe is unresolved (null)
+    // or has answered no. See `probeDecksCapability` above.
+    if (decksCapable !== true) { return false; }
     var done = false;
     /* Host A — the hand-written pages' old nav, before Sign out. */
     var so = document.querySelector('nav.top-nav .signout-btn');
@@ -342,6 +385,10 @@ window.MrBadmusAdminScope = (function () {
      keeps it alive through the ported pages' full-tree redraws. */
   function watchToday() {
     injectToday();
+    // ⊕ MRB-351 landing — fired once, off the critical path; its own
+    // `.then` re-runs `injectDecks()` the moment it resolves true, and the
+    // MutationObserver below covers every redraw in between and after.
+    probeDecksCapability();
     var mount = document.getElementById('mrb-teacher') || document.body;
     if (!mount || !window.MutationObserver) { return; }
     var pending = false;
@@ -533,5 +580,14 @@ window.MrBadmusAdminScope = (function () {
     boot();
   }
 
-  return { isAdmin: isAdmin, inject: inject };
+  /* ⊕ MRB-351 landing — the ONE flashcards capability probe, shared. Both
+     the nav's own "Flashcard decks" link (above) and `shared/set-work.js`'s
+     Flashcards type chip read THIS function, so there is exactly one probe
+     of `flashcard_decks` per page rather than one per consumer. Returns a
+     Promise<boolean>; `true` only once the read has actually succeeded. */
+  return {
+    isAdmin: isAdmin,
+    inject: inject,
+    flashcardsCapable: probeDecksCapability
+  };
 })();

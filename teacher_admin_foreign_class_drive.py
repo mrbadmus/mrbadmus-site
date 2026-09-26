@@ -221,9 +221,30 @@ def tables():
     # One assignment, so the class is in Design's "live" state rather than the
     # no-work one — the state a teacher opening someone else's class is
     # looking at real work in.
+    #
+    # ⊕ 24 Sep 2026 — `due_at`/`academic_week` USED TO BE FIXED CALENDAR
+    # CONSTANTS (`av.NOW` = 2026-08-30, `academic_week: 1`), and that is a
+    # time bomb this drive walked into rather than a defect in the product.
+    # `shared/teacher-live.js` reads REAL wall-clock time (`Date.now()`,
+    # never mocked here), so once real "now" passed 30 Aug the paper was
+    # permanently CLOSED (`buildPapers`: `open = !a.due_at || a.due_at >
+    # nowIso`) and, separately, `academic_week: 1` permanently fell out of
+    # the class screen's default week-0 bucket (`assignPaperWeeks` /
+    # `wPapers`'s `weekIdx <= 0` rule) — either alone empties `wLive`, so
+    # `cardOf` never draws a card and Design's `hasChase`-gated "Remind all"
+    # button (node 230/235) never renders. That is C7's three failures, and
+    # it reproduced identically off the MRB-336 merge base, which is why the
+    # 8 Sep report recorded it as pre-existing rather than caused by that
+    # landing.
+    #
+    # No `due_at` and no `academic_week` is not a workaround, it is the
+    # shape the code already has a name for: "an assignment with no deadline
+    # and no academic_week has no week to be in … it never closes, so it is
+    # open now" (`assignPaperWeeks`'s own comment). That bucket is INDEPENDENT
+    # of wall-clock time, so this fixture cannot rot the same way twice.
     t["assignments"] = [{
         "id": PAPER, "class_id": C_FOREIGN, "title": "Week 1 · Forces",
-        "due_at": av.NOW, "created_at": av.PAST, "academic_week": 1,
+        "due_at": None, "created_at": av.PAST, "academic_week": None,
         "subject_id": av.SUBJ_PH, "deleted_at": None,
         "subject": {"id": av.SUBJ_PH, "name": "Physics"},
     }]
@@ -1191,6 +1212,136 @@ def main():
                   "%s %s" % (repr(g5["title"]), repr(sorted(g5["cards"]))))
             check(PENDING_NAME not in g5["body"],
                   "…with the unclaimed teacher's name nowhere on it")
+
+            # ═══════════════════════════════════════════════════════════
+            #  SECTION E — 24 Sep 2026 · every sibling control, as the
+            #  PLAIN TEACHER, on the class Section C just proved an admin
+            #  can act on
+            # ═══════════════════════════════════════════════════════════
+            #
+            # ⚑ WHAT THIS IS FOR. Section A's negative control (#4) proves the
+            # refusal on `class-detail.html` itself; Section C never drives a
+            # plain teacher at all, because Section C's whole point is the
+            # ADMIN'S widened access. Nothing in this file had, until now,
+            # pressed a SINGLE write control — feedback, shoutout, reminder,
+            # seating, the student picker — as Amy, on Rich's class, to prove
+            # each one is refused THE SAME WAY the page itself is. `load()`
+            # is one function shared by every screen (`shared/teacher-live.js`
+            # — list, marking, student, digest, insights all call it), so the
+            # claim under test is that the sharing is real: not "class-detail
+            # happens to check", but "there is no screen this guard forgot".
+            #
+            # ⚠️ WHAT WOULD MAKE THIS FAIL. A page that reads `params.classId`
+            # off the URL and renders its OWN region without routing through
+            # `load()`/`yearOfClass`/`mergeForeignClass` first — the exact
+            # shape a hurried per-screen fix could take, because each of these
+            # screens LOOKS like it only needs the one row (a submission, a
+            # student) it is about, and a per-screen author reaching straight
+            # for that row rather than calling the shared loader is a real
+            # temptation. If one of them did, that screen's controls would be
+            # live for anybody who could still reach the URL.
+            print("\n  ══ E · every sibling control, as the PLAIN TEACHER ══")
+
+            def read_region_js(region_name):
+                return (r"""(function () {
+                  var host = document.getElementById('mrb-teacher');
+                  var region = host
+                    ? host.querySelector('[data-port-region="%s"]') : null;
+                  function txt(el) {
+                    return el ? (el.innerText || '').replace(/\s+/g, ' ').trim() : '';
+                  }
+                  return JSON.stringify({
+                    drawn: !!region,
+                    regionText: txt(region),
+                    bodyText: (document.body.innerText || '')
+                      .replace(/\s+/g, ' ').trim()
+                  });
+                })()""") % region_name
+
+            # ── E1 · assignment.html (marking) ─────────────────────────
+            pe1, ae1 = mount(b, base, AMY, plain_world,
+                             "%s/teacher/assignment.html?class=%s"
+                             % (base, C_FOREIGN))
+            re1 = json.loads(pe1.eval(read_region_js("marking")))
+            pe1.screenshot(os.path.join(args.shots, "teacher-marking-refused.png"),
+                           width=1280)
+            disarm(pe1, ae1)
+            check(REFUSAL in re1["bodyText"] and not re1["drawn"],
+                  "E1. MARKING — refused for the plain teacher too",
+                  re1["bodyText"][:70])
+            check("Week 1 · Forces" not in re1["bodyText"],
+                  "…with not even the paper's title leaked ahead of the refusal")
+
+            # ── E2 · student-detail.html (feedback) ────────────────────
+            pe2, ae2 = mount(b, base, AMY, plain_world,
+                             "%s/teacher/student-detail.html?class=%s&student=%s"
+                             % (base, C_FOREIGN, ROSTER[0][0]))
+            re2 = json.loads(pe2.eval(read_region_js("student")))
+            fb_ctrl = pe2.eval(
+                "document.querySelectorAll('[data-mrb-added=\"feedback-open\"]').length")
+            pe2.screenshot(os.path.join(args.shots, "teacher-student-refused.png"),
+                           width=1280)
+            disarm(pe2, ae2)
+            check(REFUSAL in re2["bodyText"] and not re2["drawn"],
+                  "E2. STUDENT-DETAIL — refused for the plain teacher too",
+                  re2["bodyText"][:70])
+            check(fb_ctrl == 0,
+                  "…and the FEEDBACK control does not even exist to press",
+                  "%d control(s)" % fb_ctrl)
+            check(ROSTER[0][1] not in re2["bodyText"],
+                  "…with not the named pupil leaked ahead of the refusal")
+
+            # ── E3 · digest.html ────────────────────────────────────────
+            pe3, ae3 = mount(b, base, AMY, plain_world,
+                             "%s/teacher/digest.html?class=%s" % (base, C_FOREIGN))
+            re3 = json.loads(pe3.eval(r"""(function () {
+              var host = document.getElementById('mrb-teacher');
+              var region = host ? host.querySelector('[data-port-region]') : null;
+              return JSON.stringify({
+                drawn: !!region,
+                bodyText: (document.body.innerText || '')
+                  .replace(/\s+/g, ' ').trim()
+              });
+            })()"""))
+            pe3.screenshot(os.path.join(args.shots, "teacher-digest-refused.png"),
+                           width=1280)
+            disarm(pe3, ae3)
+            check(REFUSAL in re3["bodyText"],
+                  "E3. DIGEST — refused for the plain teacher too",
+                  re3["bodyText"][:70])
+
+            # ── E4 · class-detail.html itself — SHOUTOUTS, REMINDERS and
+            #        the STUDENT PICKER, pressed rather than just read. #4
+            #        above only reads the body; this proves the controls
+            #        those writes go through do not exist on the refused
+            #        page, and that pressing where a selector COULD match
+            #        (a stray element elsewhere on the "unavailable" shell)
+            #        writes nothing.
+            pe4, ae4 = mount(b, base, AMY, plain_world, klass_url)
+            picker_ct = press(pe4, '[data-mrb-added="pick-open"]', settle=0.6)
+            shout_ct = press(pe4, '[data-mrb-added="shoutout-send"]', settle=0.6)
+            # Set work's own row actions — including DELETE, the one control
+            # `docs/mrb336/REPORT.md` §4.1 names as open to ANY co-teacher of
+            # the class. That ruling is about who among a class's OWN teachers
+            # may delete its work; it says nothing about a teacher who is not
+            # on the class at all, and this is that half.
+            delete_ct = press(pe4, '[data-mrb-added="set-work-delete"]', settle=0.6)
+            remind_probe = press_text(pe4, 'body', "Remind all", settle=0.6)
+            e4_writes = writes(pe4)
+            pe4.screenshot(os.path.join(args.shots, "teacher-classdetail-refused.png"),
+                           width=1280)
+            disarm(pe4, ae4)
+            check(picker_ct == 0 and shout_ct == 0 and delete_ct == 0,
+                  "E4. CLASS-DETAIL — the picker, shoutout and set-work-delete "
+                  "controls do not exist behind the refusal",
+                  "picker=%d shoutout=%d delete=%d"
+                  % (picker_ct, shout_ct, delete_ct))
+            check(remind_probe["found"] == 0,
+                  "…nor does any 'Remind all' button",
+                  repr(remind_probe))
+            check(not e4_writes,
+                  "…and nothing was written to any table",
+                  json.dumps(e4_writes)[:120])
 
     finally:
         server.shutdown()

@@ -113,6 +113,21 @@
   --accent-soft:   rgba(166, 60, 18, 0.09);   /* tinted fills, active chips */
   --accent-border: rgba(166, 60, 18, 0.28);
   --on-accent:     #FFFFFF;   /* text on accent-filled controls */
+  /* ⊕ Experience run, 24 Sep 2026 (item 13, legibility). A SOLID colour for
+     secondary text on an accent-filled surface — e.g. `.chat-head-info p`,
+     the chat panel's subtitle. It used to be `var(--on-accent)` dimmed with
+     `opacity: 0.75`, which is fine on THIS token's own #A63C12 fill (4.30:1)
+     but the chat header is shared chrome: on a KS3 page `--accent` resolves
+     to #E4572E (brighter orange), and 75%-alpha white over THAT composites
+     to 4.37:1 — under AA, and it is real: measured on the rendered page, not
+     read off a table. Fixed at both ends — `.chat-head`'s own fill moved
+     from `--accent` to the already-darker `--accent-hover` (still the same
+     hue, still clearly "the accent"), and this token replaces the opacity
+     hack so the subtitle no longer depends on which accent shade the page
+     happens to be running. 5.81:1 on this theme's `--accent-hover`
+     (#8A300C: 7.33:1); the KS3 mode block's own accent-hover (#A93411)
+     clears the same floor — see the note there. */
+  --on-accent-soft: #FBF5F3;
 
   /* ── Brand gradient (logo chevron + brand wordmark effects).
      Retoned from the dark-theme #FFD93D→#FF6B35 toward the burnt
@@ -197,6 +212,7 @@
   --accent-soft:   rgba(224, 172, 75, 0.12);
   --accent-border: rgba(224, 172, 75, 0.35);
   --on-accent:     #14110D;
+  --on-accent-soft: #241D14;   /* see the light-theme note — 9.62:1 on --accent-hover */
 
   --brand-grad-a: #E8C15E;
   --brand-grad-b: #C2551F;

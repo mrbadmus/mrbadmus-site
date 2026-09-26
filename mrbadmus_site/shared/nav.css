@@ -48,7 +48,13 @@
 
 /* ── Optional breadcrumb (left, after brand; hidden on narrow screens) ── */
 .nav-crumbs { display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
-.nav-crumbs .crumb-sep { color: var(--border-strong); font-size: 0.8rem; }
+/* ⊕ Experience run, 24 Sep 2026 (item 13) — was `var(--border-strong)`, a
+   hairline-border token borrowed for a readable glyph: 1.67:1 on `--card`,
+   measured on the rendered page. `--border-strong` is right for a 1px rule
+   and wrong for a character a student reads; `--muted` is the token this
+   file already uses for secondary text (5.8:1+ on every ground the crumb
+   bar sits on). */
+.nav-crumbs .crumb-sep { color: var(--muted); font-size: 0.8rem; }
 .nav-crumbs a.crumb {
   font-size: var(--fs-small);
   font-weight: 700;

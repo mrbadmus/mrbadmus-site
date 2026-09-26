@@ -841,8 +841,10 @@ def check_text_defects(paths, rows, scope_name):
 try:
     import frozen_window_allowlist as _mrb352
     _MRB352_ALLOWLIST = frozenset(_mrb352.ALLOWLIST)
+    _D3_TEXT_ONLY = frozenset(getattr(_mrb352, "D3_TEXT_ONLY", ()))
 except Exception:          # the checker must still run without it
     _MRB352_ALLOWLIST = frozenset()
+    _D3_TEXT_ONLY = frozenset()
 
 
 # ── 9 · the frozen window ───────────────────────────────────────────────
@@ -1031,6 +1033,21 @@ def check_frozen(stage, rows, leaves, new_ids, old_by_leaf):
             # Every other frozen row in the estate is checked exactly as
             # before. `frozen_window_guard.py` independently proves the rest
             # of the window is byte-identical to production.
+            # ⊕ D3 — Mide, 26 Sep 2026: c1-01-s04 may change its STEM and
+            # nothing else (same options, same key; the whys are held
+            # byte-identical by `frozen_window_guard.py`). Anything more
+            # than the stem falls through to the hard failure below.
+            if moved and b["id"] in _D3_TEXT_ONLY and all(
+                    m.startswith("stem ") for m in moved):
+                NOTES.append(
+                    "frozen window · %s position %d (%s) — WAIVED under D3 "
+                    "(Mide, 26 Sep 2026), stem only: %s"
+                    % (leaf, pos, b["id"], "; ".join(moved)))
+                print("    ⊕ %s position %d waived under D3, stem only (%s)"
+                      % (leaf, pos, b["id"]))
+                for m in moved:
+                    print("       %s" % m)
+                continue
             if moved and b["id"] in _MRB352_ALLOWLIST:
                 id_changed = [m for m in moved if m.startswith("id ")]
                 if not id_changed:

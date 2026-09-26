@@ -300,5 +300,23 @@ def main():
     return 0
 
 
+def _restore_ks4_pilot():
+    """⊕ 26 Sep 2026 (KS4 pilot). Every generate_site_v5.py run above REGRESSES
+    the 14 rebuilt KS4 lessons (54 pages, both trees) to the old design —
+    build_ks4.py (build_all.py step 1b) is what replaces them, and this gate
+    never ran it. verify_ks3.py had the identical hole and left a working tree
+    of old pilot pages for the next gate to measure. So, whatever this gate
+    concluded, it leaves the tree as build_all.py would: step 1b runs last.
+    Best-effort here (the gate's own verdict is already decided); the
+    ks4_pilot_check fast gate is the backstop that refuses a regressed tree."""
+    if os.path.exists(os.path.join(REPO, "build_ks4.py")):
+        subprocess.run([sys.executable, "build_ks4.py"], cwd=REPO,
+                       capture_output=True, text=True)
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        rc = main()
+    finally:
+        _restore_ks4_pilot()
+    sys.exit(rc)
