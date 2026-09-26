@@ -20,6 +20,11 @@ Asserts, purely by reading files already on disk:
      pages is in the closed registry (`ks4_lessons.blocks`).
   5. Every `/shared/ks4-*` `?v=` stamp on the 54 pages equals the md5[:8]
      of that file as it stands on disk right now.
+  6. For every lesson whose `review_state` is 'examiner-reviewed' or
+     'frozen', the compiled template + logic + served source record still
+     hash to the value `ks4_lessons/frozen.json` recorded at the last
+     `python3 build_ks4.py --freeze` — a content edit with no
+     re-examination is a red, not a silent pass (see `check_freeze()`).
 """
 
 import hashlib
@@ -28,10 +33,12 @@ import os
 import re
 import sys
 
+import build_ks4
 import ks4_lessons
 from ks4_lessons import blocks as ks4_blocks
 
 MANIFEST_PATH = "ks4_pilot_manifest.json"
+FREEZE_PATH = build_ks4.FREEZE_PATH
 OUT_ROOT = "mrbadmus_site"
 
 BAD_STRINGS = ["unpkg.com", "React.", "ReactDOM", "Babel", "support.js",
@@ -158,6 +165,69 @@ def check_version_stamps(manifest, errors):
                                "md5[:8] %s" % (path, stamped, name, want))
 
 
+def check_freeze(errors):
+    """For every lesson whose `review_state` is 'examiner-reviewed' or
+    'frozen', the CURRENT build (the compiled template + logic embedded in
+    its own page, and its served source record in shared/ks4-source.js)
+    must hash to the same value `ks4_lessons/frozen.json` recorded at the
+    last `build_ks4.py --freeze`. A mismatch means the content moved after
+    the science examination signed it off — the examination, not the code,
+    is what is now stale."""
+    if not os.path.exists(FREEZE_PATH):
+        print("ks4_pilot_check: NOTE — %s does not exist yet "
+              "(run `python3 build_ks4.py --freeze`); freeze check skipped."
+              % FREEZE_PATH)
+        return
+    with open(FREEZE_PATH, encoding="utf-8") as fh:
+        frozen = json.load(fh)
+
+    reviewed = [L for L in ks4_lessons.LESSONS
+                if L["review_state"] in ("examiner-reviewed", "frozen")]
+    if not reviewed:
+        return
+
+    source_js_path = os.path.join("shared", "ks4-source.js")
+    if not os.path.exists(source_js_path):
+        errors.append("FREEZE: %s missing — cannot verify any frozen lesson."
+                       % source_js_path)
+        return
+    source_js_text = open(source_js_path, encoding="utf-8").read()
+
+    for lesson in reviewed:
+        slug = lesson["slug"]
+        frozen_row = frozen.get(slug)
+        if frozen_row is None:
+            errors.append(
+                "FREEZE: %s is %r but has never been frozen — run "
+                "`python3 build_ks4.py --freeze` after re-running the "
+                "examination." % (slug, lesson["review_state"]))
+            continue
+        route = lesson["routes"][0]
+        url = ks4_lessons.site_url(slug, route)
+        page_path = os.path.join(OUT_ROOT, url.lstrip("/"))
+        if not os.path.exists(page_path):
+            errors.append("FREEZE: %s missing — cannot verify frozen lesson %s."
+                           % (page_path, slug))
+            continue
+        page_text = open(page_path, encoding="utf-8").read()
+        try:
+            template_json, logic, source_json = build_ks4.extract_freeze_pieces(
+                page_text, source_js_text, slug)
+        except ValueError as e:
+            errors.append("FREEZE: %s: could not extract compiled content "
+                           "to verify — %s" % (slug, e))
+            continue
+        current_hash = build_ks4.compute_freeze_hash(template_json, logic, source_json)
+        if current_hash != frozen_row.get("hash"):
+            errors.append(
+                "FREEZE: %s content has changed since it was last frozen "
+                "(review_state=%r). A science examination signed off the "
+                "PREVIOUS content; this content has not been re-examined. "
+                "Re-run the examination, then `python3 build_ks4.py "
+                "--freeze` once the examiner's changes are applied."
+                % (slug, lesson["review_state"]))
+
+
 def main():
     os.chdir(os.path.dirname(os.path.abspath(__file__)) or ".")
     manifest = load_manifest()
@@ -172,6 +242,7 @@ def main():
     check_no_react(manifest, errors)
     check_registry(manifest, errors)
     check_version_stamps(manifest, errors)
+    check_freeze(errors)
 
     if errors:
         print("\n❌ ks4_pilot_check: %d problem(s)\n" % len(errors))

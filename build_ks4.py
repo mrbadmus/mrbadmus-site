@@ -33,6 +33,7 @@ import time
 import ks4_lessons
 from ks4_lessons import blocks as ks4_blocks
 import ks4_rulings
+import ks4_science_rulings
 
 REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 DESIGN_DIR = ks4_lessons.DESIGN_DIR
@@ -75,6 +76,66 @@ KS4_OWN_ASSETS = ("ks4-ds.css", "ks4-theme.css", "ks4-lesson.css",
 
 def _shared(name):
     return os.path.join("shared", name)
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# FREEZE — the re-freeze mechanism (docs/ks4/pilot-build-contract.md /
+# the run brief's item 4). `ks4_lessons/frozen.json` (written by
+# `python3 build_ks4.py --freeze`) records, per lesson, a sha256 of exactly
+# three things concatenated: the compiled TEMPLATE json blob, the rulings-
+# applied LOGIC source, and the lesson's served SOURCE record (the quiz/
+# rp/key_note copy for every route). All three are byte-identical to what
+# ends up embedded on disk — the template/logic strings are the very ones
+# `lesson_mount_script()` interpolates into the page's mount `<script>`, and
+# the source-record string is the very one `build_source_js()` interpolates
+# into `shared/ks4-source.js` — so a fast, browser-free gate (ks4_pilot_
+# check.py) can recompute the SAME hash by lifting the same three
+# substrings back out of what's already on disk, with no recompilation and
+# no Chrome. `extract_freeze_pieces()` is that reverse operation; it MUST
+# stay byte-for-byte in step with how `lesson_mount_script()` and
+# `build_source_js()` assemble those strings, or a green freeze will not
+# reproduce.
+# ═══════════════════════════════════════════════════════════════════════
+FREEZE_PATH = os.path.join("ks4_lessons", "frozen.json")
+_FREEZE_SEP = "\x1f"  # ASCII unit separator — cannot appear in JSON or in
+                       # Design's JS source, so it cannot be forged by content
+
+
+def compute_freeze_hash(template_json_str, logic_str, source_json_str):
+    blob = _FREEZE_SEP.join([template_json_str, logic_str, source_json_str])
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+
+
+_MOUNT_MARKER = ("\nwindow.MrBadmusKS4Runtime.mount({\n"
+                 "  into: '#ks4-mount', Component: Component,\n"
+                 "  props: ")
+_SCRIPT_OPEN_MARKER = "<script>\n(function () {\n"
+_PROPS_TEMPLATE_SEP = ",\n  template: "
+_MOUNT_TAIL_MARKER = "\n});\n})();\n</script>"
+
+
+def extract_freeze_pieces(page_text, source_js_text, slug):
+    """Reverse of `lesson_mount_script()` + `build_source_js()`'s string
+    assembly: pulls the exact LOGIC and TEMPLATE-JSON substrings back out of
+    an already-built page, and the exact SOURCE-record JSON substring back
+    out of `shared/ks4-source.js`, with no parsing beyond string search
+    (both embedded blobs are single-line — `json.dumps` never emits a raw
+    newline — so a literal marker search is exact, not a heuristic)."""
+    idx_mount = page_text.index(_MOUNT_MARKER)
+    idx_open = page_text.rindex(_SCRIPT_OPEN_MARKER, 0, idx_mount)
+    logic = page_text[idx_open + len(_SCRIPT_OPEN_MARKER):idx_mount]
+
+    template_start = page_text.index(
+        _PROPS_TEMPLATE_SEP, idx_mount + len(_MOUNT_MARKER)) + len(_PROPS_TEMPLATE_SEP)
+    template_end = page_text.index(_MOUNT_TAIL_MARKER, template_start)
+    template_json = page_text[template_start:template_end]
+
+    src_marker = 'window.KS4SRC["%s"] = ' % slug
+    src_start = source_js_text.index(src_marker) + len(src_marker)
+    src_end = source_js_text.index(";\n", src_start)
+    source_json = source_js_text[src_start:src_end]
+
+    return template_json, logic, source_json
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -155,10 +216,16 @@ def build_source_js(data):
     ]
     per_slug = {}
     for lesson in ks4_lessons.LESSONS:
-        rec = build_source_record(data, lesson)
-        per_slug[lesson["slug"]] = rec
+        per_slug[lesson["slug"]] = build_source_record(data, lesson)
+
+    per_slug = ks4_science_rulings.apply_source(per_slug)
+
+    for lesson in ks4_lessons.LESSONS:
+        slug = lesson["slug"]
+        rec = per_slug[slug]
+        ks4_science_rulings.expect_present("source", slug, rec)
         lines.append('window.KS4SRC["%s"] = %s;'
-                      % (lesson["slug"], json.dumps(rec, sort_keys=True)))
+                      % (slug, json.dumps(rec, sort_keys=True)))
     return "\n".join(lines) + "\n", per_slug
 
 
@@ -368,12 +435,19 @@ def build_ks4_lib_js():
     return text
 
 
+def build_ks4_diagrams_js():
+    text = open(os.path.join(DESIGN_DIR, "ks4-diagrams.js"), encoding="utf-8").read()
+    text = ks4_science_rulings.apply("asset", "ks4-diagrams.js", text)
+    ks4_science_rulings.expect_present("asset", "ks4-diagrams.js", text)
+    return text
+
+
 def build_shared_assets():
     written = {}
     for name, content in (
         ("ks4-ds.css", build_ds_css()),
         ("ks4-theme.css", open(os.path.join(DESIGN_DIR, "ks4-theme.css"), encoding="utf-8").read()),
-        ("ks4-diagrams.js", open(os.path.join(DESIGN_DIR, "ks4-diagrams.js"), encoding="utf-8").read()),
+        ("ks4-diagrams.js", build_ks4_diagrams_js()),
         ("ks4-lib.js", build_ks4_lib_js()),
     ):
         path = _shared(name)
@@ -579,6 +653,11 @@ def compile_lesson(page, lesson, report):
     logic, tpl, slug_renamed = ks4_rulings.apply_r_slug(lesson["slug"], logic, tpl)
     logic, n_prev, n_next = ks4_rulings.apply_r_prevnext(lesson["design_file"], logic)
     logic, connects_targets = ks4_rulings.apply_r_connects(lesson["design_file"], logic)
+
+    tpl = ks4_science_rulings.apply("template", lesson["slug"], tpl)
+    ks4_science_rulings.expect_present("template", lesson["slug"], tpl)
+    logic = ks4_science_rulings.apply("logic", lesson["slug"], logic)
+    ks4_science_rulings.expect_present("logic", lesson["slug"], logic)
 
     template = compile_template_text(page, tpl)
 
@@ -875,6 +954,7 @@ def main():
     ks4_lessons.verify_slugs()
     print("  ✓ all 14 slugs verified against all_subtopics_*.py")
 
+    ks4_science_rulings.reset_applied()
     data = load_subtopics_by_route()
     source_js, per_slug = build_source_js(data)
     with open(_shared("ks4-source.js"), "w", encoding="utf-8") as fh:
@@ -930,6 +1010,12 @@ def main():
     finally:
         stub_server.shutdown()
     print("  ✓ %d lessons compiled" % len(compiled_lessons))
+
+    for _rid in ks4_science_rulings.applied_ids():
+        print("     ks4_science_rulings applied: %s" % _rid)
+    print("  ✓ ks4_science_rulings: %d of 101 rows applied (skip_apply rows "
+          "and the 2 docs-only rows excluded)"
+          % len(ks4_science_rulings.applied_ids()))
 
     for row in lesson_report:
         if row["slug_renamed"]:
@@ -1043,6 +1129,23 @@ def main():
         fh.write("\n")
     print("  ✓ %s written (%d pages, %d assets)"
           % (MANIFEST_PATH, len(manifest["pages"]), len(manifest["assets"])))
+
+    # ── freeze (only with --freeze) ─────────────────────────────────────
+    if "--freeze" in sys.argv:
+        frozen = {}
+        for lesson in ks4_lessons.LESSONS:
+            slug = lesson["slug"]
+            template_json_str = json.dumps(compiled_lessons[slug]["template"])
+            logic_str = compiled_lessons[slug]["logic"]
+            source_json_str = json.dumps(per_slug[slug], sort_keys=True)
+            frozen[slug] = {
+                "hash": compute_freeze_hash(template_json_str, logic_str, source_json_str),
+                "review_state": lesson["review_state"],
+            }
+        with open(FREEZE_PATH, "w", encoding="utf-8") as fh:
+            json.dump(frozen, fh, indent=1, sort_keys=True)
+            fh.write("\n")
+        print("  ✓ %s written (%d lesson(s) frozen)" % (FREEZE_PATH, len(frozen)))
 
     import shutil
     shutil.rmtree(stub_dir, ignore_errors=True)

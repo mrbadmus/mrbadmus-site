@@ -33,8 +33,13 @@ family      — Design's pedagogical family label (README.txt), carried for the
 routes      — the route labels this lesson ships on. 4 for every lesson except
               nanoparticles (Triple only — the whole lesson is 8462 4.2.4,
               chemistry-only content, so it has no Combined route at all).
-review_state — 'draft' for all 14 today (no science review has happened yet).
-              Feeds `showDraft` at mount.
+review_state — 'examiner-reviewed' for all 14 as of 26 Sep 2026 (the science
+              examination is complete for all 14 lessons and every required
+              change is applied and proven by `ks4_science_rulings.expect_
+              present`; see the freeze mechanism in `ks4_lessons/frozen.json`
+              and `build_ks4.py --freeze`). Was 'draft' before the
+              examination landed. Feeds `showDraft` at mount: 'draft' -> true,
+              'examiner-reviewed' / 'frozen' -> false.
 design_slug — the string literal `const slug = '...'` and the `Ks4Ladder
               slug="..."` attribute carry INSIDE Design's verbatim component,
               when it differs from the site slug. `None` when they already
@@ -56,11 +61,11 @@ LESSONS = [
     dict(slug="chemical-bonds", design_file="ks4-chemistry-5.2.1.1-chemical-bonds.dc.html",
          subject="chemistry", topic_id="bonding", title="Chemical bonds",
          spec="5.2.1.1", family="Classify", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug=None),
+         review_state="examiner-reviewed", design_slug=None),
     dict(slug="ionic-bonding", design_file="ks4-chemistry-5.2.1.2-ionic-bonding.dc.html",
          subject="chemistry", topic_id="bonding", title="Ionic bonding",
          spec="5.2.1.2", family="Process", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug=None,
+         review_state="examiner-reviewed", design_slug=None,
          # 's-forge' — "Formula forge": Al2O3/Li2S/Ca3N2 worked interactively
          # with a live charge meter (NOTES-KS4-pilot.md §7.2). A guided
          # construction exercise, not a check-your-understanding activity.
@@ -68,24 +73,24 @@ LESSONS = [
     dict(slug="ionic-compounds", design_file="ks4-chemistry-5.2.1.3-ionic-compounds.dc.html",
          subject="chemistry", topic_id="bonding", title="Ionic compounds",
          spec="5.2.1.3", family="Model", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug=None),
+         review_state="examiner-reviewed", design_slug=None),
     dict(slug="covalent-bonding", design_file="ks4-chemistry-5.2.1.4-covalent-bonding.dc.html",
          subject="chemistry", topic_id="bonding", title="Covalent bonding",
          spec="5.2.1.4", family="Process", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug=None),
+         review_state="examiner-reviewed", design_slug=None),
     dict(slug="metallic-bonding", design_file="ks4-chemistry-5.2.1.5-metallic-bonding.dc.html",
          subject="chemistry", topic_id="bonding", title="Metallic bonding",
          spec="5.2.1.5", family="Model", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug=None),
+         review_state="examiner-reviewed", design_slug=None),
     dict(slug="states-of-matter", design_file="ks4-chemistry-5.2.2.1-states-of-matter.dc.html",
          subject="chemistry", topic_id="bonding", title="States of matter",
          spec="5.2.2.1", family="Investigation", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug=None),
+         review_state="examiner-reviewed", design_slug=None),
     dict(slug="properties-ionic-compounds",
          design_file="ks4-chemistry-5.2.2.3-properties-ionic-compounds.dc.html",
          subject="chemistry", topic_id="bonding", title="Properties of ionic compounds",
          spec="5.2.2.3", family="Contrast", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug=None,
+         review_state="examiner-reviewed", design_slug=None,
          # 's-bench' — the side-by-side solid/molten/solution conductivity
          # simulation (NOTES §7.7): a practical, simulated on screen.
          # 's-examiner' — "Be the examiner": mark a sample 1/3 answer
@@ -95,20 +100,20 @@ LESSONS = [
          design_file="ks4-chemistry-5.2.2.4-properties-small-molecules.dc.html",
          subject="chemistry", topic_id="bonding", title="Properties of small molecules",
          spec="5.2.2.4", family="Model", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug=None),
+         review_state="examiner-reviewed", design_slug=None),
     dict(slug="polymers", design_file="ks4-chemistry-5.2.2.5-polymers.dc.html",
          subject="chemistry", topic_id="bonding", title="Polymers",
          spec="5.2.2.5", family="Classify", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug=None),
+         review_state="examiner-reviewed", design_slug=None),
     dict(slug="giant-covalent-structures",
          design_file="ks4-chemistry-5.2.2.6-giant-covalent-structures.dc.html",
          subject="chemistry", topic_id="bonding", title="Giant covalent structures",
          spec="5.2.2.6", family="Contrast", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug=None),
+         review_state="examiner-reviewed", design_slug=None),
     dict(slug="metals-alloys", design_file="ks4-chemistry-5.2.2.7-metals-alloys.dc.html",
          subject="chemistry", topic_id="bonding", title="Metals and alloys",
          spec="5.2.2.7", family="Contrast", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug="metals-and-alloys"),
+         review_state="examiner-reviewed", design_slug="metals-and-alloys"),
     # ⊕ flag 2 (NOTES §9): the delivered FILENAME still says 5.2.3.3 (which is
     # graphene/fullerenes, L10's content) but the PAGE ITSELF already shows
     # "AQA Chemistry 4.2.4 (chemistry only)" in its eyebrow — verified by
@@ -118,17 +123,17 @@ LESSONS = [
     dict(slug="nanoparticles", design_file="ks4-chemistry-5.2.3.3-nanoparticles.dc.html",
          subject="chemistry", topic_id="bonding", title="Nanoparticles",
          spec="4.2.4", family="Quantitative", routes=["TF", "TH"],
-         review_state="draft", design_slug=None),
+         review_state="examiner-reviewed", design_slug=None),
     dict(slug="series-parallel-circuits",
          design_file="ks4-physics-6.2.2-series-parallel-circuits.dc.html",
          subject="physics", topic_id="electricity", title="Series and parallel circuits",
          spec="6.2.2", family="System", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug="series-and-parallel"),
+         review_state="examiner-reviewed", design_slug="series-and-parallel"),
     dict(slug="resistors",
          design_file="ks4-physics-6.2.1.4-resistors-iv-required-practical.dc.html",
          subject="physics", topic_id="electricity", title="Resistors and I-V characteristics",
          spec="6.2.1.4", family="Required practical", routes=["CF", "CH", "TF", "TH"],
-         review_state="draft", design_slug="resistors-iv"),
+         review_state="examiner-reviewed", design_slug="resistors-iv"),
 ]
 
 LESSON_BY_SLUG = {L["slug"]: L for L in LESSONS}

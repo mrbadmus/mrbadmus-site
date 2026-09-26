@@ -1,0 +1,58 @@
+{
+ "chemical-bonds": {
+  "hash": "d5a68af883a0b874cf02224c1faa6b1ba527d4ed9d8a0e6e9af488486c694a12",
+  "review_state": "examiner-reviewed"
+ },
+ "covalent-bonding": {
+  "hash": "db88ff333b8b60a09bcecccd13a703b1328519644622230946d264ff8de7157c",
+  "review_state": "examiner-reviewed"
+ },
+ "giant-covalent-structures": {
+  "hash": "03dd34dde6fb112a9810f0d20e59be604a8116eac2a45067de3a1109c67727fc",
+  "review_state": "examiner-reviewed"
+ },
+ "ionic-bonding": {
+  "hash": "6361e092441cf2f2084cb542631c3381ac757f47e9cc8307ad2526460fd6d0a8",
+  "review_state": "examiner-reviewed"
+ },
+ "ionic-compounds": {
+  "hash": "01ebc3de4ee49a083ec06b2747bf1fa908ca7d11796b856d4ee0f66a8cab1879",
+  "review_state": "examiner-reviewed"
+ },
+ "metallic-bonding": {
+  "hash": "5d6b29be127581ad13109a01b0c8ba1b9f9ff3948558cf5b1931aec5cb8ff209",
+  "review_state": "examiner-reviewed"
+ },
+ "metals-alloys": {
+  "hash": "bf70df848c45dc9b1e46e051051897e390a35937057dc287f80f1f4f197caf3b",
+  "review_state": "examiner-reviewed"
+ },
+ "nanoparticles": {
+  "hash": "f41e31b4923fd654d8286dea43696accfd71a63be7a59e39280470ac1d7d0ea4",
+  "review_state": "examiner-reviewed"
+ },
+ "polymers": {
+  "hash": "c7fafefea558d5b52fa69a89be08b9d6847cefe497a9487839d69265a6523785",
+  "review_state": "examiner-reviewed"
+ },
+ "properties-ionic-compounds": {
+  "hash": "cac16fbcd5f608dfcbddfab6e6f86cb689004f488465ac68c6061c897df26286",
+  "review_state": "examiner-reviewed"
+ },
+ "properties-small-molecules": {
+  "hash": "b5c20e59a5001c53a8fc105c666ff2f21cfcddf99296cfbde4f9e22dad9bdc6e",
+  "review_state": "examiner-reviewed"
+ },
+ "resistors": {
+  "hash": "7bd6f4732c36984fef0d5ea2b5c1afda343c2839780fd1fe9be70f1ba75ddf01",
+  "review_state": "examiner-reviewed"
+ },
+ "series-parallel-circuits": {
+  "hash": "48b9a3f0c3959c97464700c373f9fefe887431cacca459572d24650d6333becb",
+  "review_state": "examiner-reviewed"
+ },
+ "states-of-matter": {
+  "hash": "957e1fe80a45a5f7fc39fa7ef853414e5e452415232c5bd1be3b4ddfaf5cb22c",
+  "review_state": "examiner-reviewed"
+ }
+}
