@@ -670,3 +670,117 @@ of this.
   hook refusal is the frozen guard doing its job, and the classifier refused `--no-verify`.
 - Deviation: `git checkout --ours` on generated files during item 1's rebase was refused by
   the classifier → `build_all.py` regenerated them and the rebase continued → same bytes.
+
+## Follow-ups (D3)
+
+Unattended run, 26 Sep 2026, in the `d2-content` worktree. It lands D2's parked item 3 under
+Mide's 26 Sep ruling, and fixes the `row_download_lands` harness flake. There are two commits
+on main, each pushed on its own:
+
+- `24ebe053b`: the harness fix.
+- `89a9cb15d`: the content and the allowlist.
+
+The KS3 bank is loaded to TEST and to production.
+
+### The two particle-model rows (main `89a9cb15d`, loaded)
+
+**The ruling fixes the options, so D2's option C rewrite came out.** D2's parked commit had
+also reworded option C of `c1-01-s04` and its "why" text. The ruling allows only the question
+text to change, so both are back to main's exact bytes. The new stem says each piece "is drawn,
+magnified, as a cross-section". That keeps a referent for option C ("too small for the drawing
+to show it accurately"), and option C stays wrong. `c1-01-s06` is D2's wording, unchanged.
+Proof from Python, main against the branch: each row differs in `text` and nothing else.
+
+**Examiner read (Opus), once, both rows: PASS.** Both stems are self-contained, both keys are
+unchanged and still the single best answer, and no distractor has become creditable. There was
+one optional note on s06 ("…at the same temperature"). It was not adopted, because the stem
+already asks what the particle model predicts.
+
+**Allowlist.** `frozen_window_allowlist.py` has a new `D3_TEXT_ONLY = ["c1-01-s04"]`, with
+`RULING_D3` quoting the ruling and `D3_PERMITTED_FIELDS = {"text"}`. It sits beside the 28
+MRB-352 ids and is kept apart from them: `ALLOWLIST` is still exactly 28, and an assertion
+keeps the two lists disjoint.
+
+- `frozen_window_guard.py` lets c1-01-s04 differ in `text` only.
+- `mrb338_leafcheck` waives it only when the stem is the only thing that moved.
+- Negative test: one option changed on s04 turns both gates red. The guard says "only text
+  may change".
+- `mrb338_land.sh --unit C1 --lesson particle-model`: all 8 gates green. s04 is cleared by
+  the waiver ("waived under D3, stem only"), not by an override.
+
+**Before the load, production was read.** Each row had been set once, in one assignment that
+was due on 15 Sep, and answered once. `assignment_question_attempts.question_text` holds the
+OLD wording for both answers, so the recorded answers keep what the pupils actually saw.
+
+**Proofs.** TEST first, then production (`export_ks3_questions.py --load prod`, target proved
+from the key's `ref` claim). The same proof script ran against both, and both were green:
+
+| proof | production |
+|---|---|
+| aggregate checksum, Python ↔ live (the exporter's own `checksum()`) | `20776d30…5b94f` both sides, 16,946 / 16,946 rows |
+| auto windows (every lesson 4/4/4 by band below position 12) | 185 lessons, 0 broken |
+| anon read of `ks3_assignment_bank` | `[]` |
+| frozen rows other than c1-01-s04, snapshot before ↔ after | 2,220 frozen, 0 changed |
+| rows the load changed at all | exactly `c1-01-s04`, `c1-01-s06`; `text` only |
+
+The production checksum before the load was `a7fdfc85…b35d5ed`. `frozen_window_guard.py` was
+green against production both before and after the load.
+
+### The harness flake (main `24ebe053b`)
+
+**What was wrong.** `take_download` returned the first finished file that appeared in the
+download folder. `Browser.setDownloadBehavior` is browser-wide, and Chrome dropped a
+33,619,428-byte `downloads.html` into that folder just before the worksheet PDF. The row check
+also listed the folder *before* the class page had opened.
+
+**The fix.**
+
+- `take_download(..., expect=(".pdf",))` skips any file of another kind and keeps waiting.
+- If the expected file never arrives, the error names the files it skipped, so a product that
+  saved only the wrong file is still red.
+- Both row-download calls pass it, and the listing is now taken just before the press.
+- The `%PDF-` assertion on the bytes is unchanged.
+
+**Proof.** Local backend at backend `origin/main` `013cfbf`, against TEST. The product code was
+identical to main.
+
+- **Before the fix:** 448 checks, 4 red: the standing three and `row_download_lands`, the same
+  33,619,428 bytes as D2.
+- **After the fix:** 455 checks, 3 red (the standing three). `row_download_lands` saves a
+  28,178-byte PDF, and the seven checks after it now run and pass.
+
+Neither push needed a `row_download_lands` override.
+
+### Open
+
+- **`edit_shows_the_questions` is intermittent.** It was red in 2 of 7 `set_work` runs this
+  session, on the same product code, and green on the re-record. It waits a fixed 3 s for the
+  Edit sheet's stored questions to render. This looks like the same kind of harness timing
+  problem, but it was not fixed here. It was not overridden either: the recorded run was
+  green.
+- **The standing three small-pool reds** are overridden on both commits, as they were in D2.
+
+### Decisions I made (D3)
+
+- **Reverted D2's option C and "why" edit on s04** and put the drawing into the stem instead,
+  because the ruling fixes options and whys byte for byte.
+- **Made D3 a separate text-only list rather than a 29th MRB-352 id.** The 28 are allowed to
+  change options, keys and figures. Adding s04 to them would have given it permissions the
+  ruling withholds.
+- **Pushed the harness commit first,** so the content push was measured with the fixed
+  harness. The two stayed separate commits and separate pushes.
+- **Ran `set_work` against a temporary backend worktree at `origin/main`.** The main backend
+  checkout is 27 commits behind its remote. Against it the drive gave shifting reds (for
+  example `preview_figures_drawable`), which were about stale server code, not this change.
+  `node_modules` was borrowed from the experience backend worktree (same `package.json`), and
+  `.env` from the main checkout (its key's `ref` proves TEST). The shared checkout was not
+  touched.
+- **Set `MRB_SET_WORK_PASSWORD` and `MRB_THROWAWAY_PASSWORD`** to throwaway values, because
+  the fixture creates its own accounts. `MRB_DRIVE_PASSWORD` and `MRB_TEST_STUDENT_PASSWORD`
+  were never set.
+
+### Deviations (D3)
+
+- Deviation: the first `set_work` recording used the stale main backend checkout, and its
+  reds did not match D2's → I measured against a fresh backend worktree at `origin/main`
+  instead → a drive only proves the server code it boots.
