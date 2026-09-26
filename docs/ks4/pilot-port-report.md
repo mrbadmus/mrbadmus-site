@@ -194,6 +194,16 @@ table, a "not departures" table (port mechanics), and all 22 flags.
   "Connects to → Nanoparticles" sent Combined pupils into a Triple URL;
   **D3** favicon 404; **D4** the tutor panel said "KS3 Science Tutor". All
   four fixed under rulings in the follow-up landing recorded below.
+- **Follow-up landing**: `08ae75e22..3b2047b74` on main (26 Sep 2026) —
+  R10 (a real button with `data-open-chat`, proved in Chrome: panel open,
+  inert off), `KS4.hrefFor` no longer falls back across pathways and the
+  shared `Ks4End` block drops a connects entry with no page on the route,
+  the old KS4 pages' favicon link byte-identical, "GCSE Science Tutor".
+  No examined content moved (`frozen.json` untouched). Gates re-recorded
+  green (ks4_chrome_drive, ks4_parity, verify_ks3); contrast 0; science
+  rulings 101/101. Live proof re-run after deploy: **54 of 54 pages byte
+  for byte, every asset matching its stamp**; the live Combined
+  giant-covalent-structures page carries no `/triple/` link.
 
 ## 8. Decisions I made
 
