@@ -481,7 +481,103 @@ def collect_lesson_css(all_files):
                "   <helmet> of the 14 lessons + 11 blocks, deduplicated "
                "(exact text match), first-seen order.\n"
                "   Never hand-edit; re-run build_ks4.py. */\n\n")
-    return header + "\n\n".join(chunks) + "\n"
+    return header + "\n\n".join(chunks) + "\n" + KS4_DARK_MODE_FIXES
+
+
+# ── Dark-mode legibility fixes (Mide's ruling, Experience run item 13;
+# ⊕ 26 Sep 2026, KS4 pilot job 3, docs/ks4/pilot-build-contract.md).
+# ADDITIVE ONLY — never edits Design's shared/ks4-theme.css or
+# shared/ks4-ds.css in place; appended here because ks4-lesson.css is the
+# LAST <link> on every pilot page, so an equal-specificity rule here wins by
+# source order alone. Each block carries both of ks4-theme.css's own two
+# dark-mode hooks (the `@media (prefers-color-scheme: dark)` block for the
+# OS setting, and the plain `[data-theme="dark"]` selector for the page's
+# own `data-theme` state, which these lesson pages DO bind live — see the
+# mount div's `data-theme="{{theme}}"`) — mirroring ks4-theme.css's own
+# selector pairs exactly. All three reuse EXISTING dark-palette tokens
+# already defined in shared/ks4-theme.css; nothing new is minted.
+KS4_DARK_MODE_FIXES = """
+/* ⊕ KS4-DARK-1 (DEPARTURES-PILOT.md) — disabled .ks3-reveal-btn/.ks3-retry
+   measured 2.01:1 in dark mode (contrast_audit.py, disabled-control floor
+   3.0). Design's own compiled Component sets `style="opacity:.45"` inline
+   per instance when a control is disabled; that inline opacity fades an
+   (in dark mode) light-cream fill and a near-black label toward the same
+   dark page ground by the SAME factor, collapsing their mutual contrast
+   from ~16:1 down to ~2:1. Only `!important` in a stylesheet can outrank
+   an inline style, so this raises that one number. .7 keeps the control
+   visibly duller than its enabled (opacity 1) state — still reads as
+   "disabled" — while composited contrast clears the floor: measured
+   4.57:1. */
+@media (prefers-color-scheme: dark) {
+  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-reveal-btn:disabled,
+  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-retry:disabled {
+    opacity: .7 !important;
+  }
+}
+.rd[data-mode="ks3"][data-theme="dark"] .ks3-reveal-btn:disabled,
+.rd[data-mode="ks3"][data-theme="dark"] .ks3-retry:disabled,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-reveal-btn:disabled,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-retry:disabled {
+  opacity: .7 !important;
+}
+
+/* ⊕ KS4-DARK-2 (DEPARTURES-PILOT.md) — the end-matter `.ks3-tutor` card's
+   h2/p measured 2.35:1 in dark mode (floor 3.0, both text large enough to
+   qualify — see ks4-ds.css's own comment on the 19px/700 reclassification
+   for the light-mode equivalent of this exact defect). `--ks3-ink` (light
+   cream, #F3ECE0) and `--ks3-accent` (#F07A4E) BOTH flip light under the
+   dark remap, so ink-on-accent — dark text on a mid orange in light mode —
+   becomes light-on-light in dark mode. `--ks3-on-dark` (#16120E) is
+   Design's own token for precisely this situation ("ink-filled controls
+   ...flip to light fills in dark mode, so their label flips dark",
+   shared/ks4-theme.css) — the accent card is exactly such a filled, bright
+   surface. Measured 6.74:1. Nothing minted. */
+@media (prefers-color-scheme: dark) {
+  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-endmatter .ks3-tutor h2,
+  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-endmatter .ks3-tutor p {
+    color: var(--ks3-on-dark);
+  }
+}
+.rd[data-mode="ks3"][data-theme="dark"] .ks3-endmatter .ks3-tutor h2,
+.rd[data-mode="ks3"][data-theme="dark"] .ks3-endmatter .ks3-tutor p,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-endmatter .ks3-tutor h2,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-endmatter .ks3-tutor p {
+  color: var(--ks3-on-dark);
+}
+
+/* ⊕ KS4-DARK-3 (DEPARTURES-PILOT.md) — the Ks4Write rung's bare
+   `<textarea>` AND the FIFA-method calc rungs' bare `<input>` fields
+   (Ks4Choice/Ks4Cfifa's per-line numeric/formula inputs, e.g.
+   `#np-q1-line0`, `#<slug>-r2n`) carry no `::placeholder` rule anywhere in
+   ks4-ds.css or ks4-theme.css, so both fall through to Chrome's own
+   UA-default placeholder grey (~#757575) — measured 3.75:1 on
+   `--ks3-card` (textarea) and 4.04:1 on `--ks3-ground` (input) in dark
+   mode, both under the 4.5 floor for ordinary text (placeholders are real
+   informational text a student reads, per this gate's own docstring).
+   Found on all 14 lessons, not just the one this job's contrast_audit
+   --only run first measured — contrast_audit.py --quick --gate --only
+   "ks4 pilot" (job 4's full-pilot sweep) is what surfaced the `<input>`
+   half of this; the fix is the SAME defect, same cause, one extra
+   selector. `--ks3-ink-muted` is the SAME token the Write rung's own
+   "Your answer" label immediately above its textarea already uses, so
+   reusing it here gives every placeholder a properly
+   de-emphasized-but-legible tone consistent with that label. Measured
+   8.66:1 on --ks3-card, 9.35:1 on --ks3-ground. Nothing minted. */
+@media (prefers-color-scheme: dark) {
+  .rd[data-mode="ks3"]:not([data-theme="light"]) input::placeholder,
+  .rd[data-mode="ks3"]:not([data-theme="light"]) textarea::placeholder {
+    color: var(--ks3-ink-muted);
+    opacity: 1;
+  }
+}
+.rd[data-mode="ks3"][data-theme="dark"] input::placeholder,
+.rd[data-mode="ks3"][data-theme="dark"] textarea::placeholder,
+[data-theme="dark"] .rd[data-mode="ks3"] input::placeholder,
+[data-theme="dark"] .rd[data-mode="ks3"] textarea::placeholder {
+  color: var(--ks3-ink-muted);
+  opacity: 1;
+}
+"""
 
 
 # ═══════════════════════════════════════════════════════════════════════

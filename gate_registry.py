@@ -2034,6 +2034,9 @@ GATES = [
          watches=["contrast_audit.py", "ks3_browser.py",
                   "shared/tokens.css", "shared/styles.css",
                   "shared/ks4-chrome.css", "shared/ks3.css", "shared/nav.css",
+                  "shared/ks4-ds.css", "shared/ks4-theme.css",
+                  "shared/ks4-lesson.css", "shared/ks4-lib.js",
+                  "shared/ks4-diagrams.js", "shared/ks4-runtime.js",
                   "teacher_rulings.py", "student_rulings.py",
                   "build_teacher_port.py", "build_student_port.py",
                   "build_leaderboard_port.py",
@@ -2045,7 +2048,30 @@ GATES = [
                   "combined/higher/chemistry/atomic-structure.html",
                   "combined/higher/chemistry/atomic-structure/"
                   "model-of-the-atom.html",
-                  "auth.html", "leaderboard.html", "index.html"],
+                  "auth.html", "leaderboard.html", "index.html",
+                  # ── KS4 pilot port (docs/ks4/pilot-build-contract.md) —
+                  # the 14 Triple Higher pilot pages + the one Triple
+                  # Foundation nanoparticles page contrast_audit.py's
+                  # PAGES list adds under the "ks4 pilot/" label prefix.
+                  "triple/higher/chemistry/bonding/chemical-bonds.html",
+                  "triple/higher/chemistry/bonding/ionic-bonding.html",
+                  "triple/higher/chemistry/bonding/ionic-compounds.html",
+                  "triple/higher/chemistry/bonding/covalent-bonding.html",
+                  "triple/higher/chemistry/bonding/metallic-bonding.html",
+                  "triple/higher/chemistry/bonding/states-of-matter.html",
+                  "triple/higher/chemistry/bonding/"
+                  "properties-ionic-compounds.html",
+                  "triple/higher/chemistry/bonding/"
+                  "properties-small-molecules.html",
+                  "triple/higher/chemistry/bonding/polymers.html",
+                  "triple/higher/chemistry/bonding/"
+                  "giant-covalent-structures.html",
+                  "triple/higher/chemistry/bonding/metals-alloys.html",
+                  "triple/higher/chemistry/bonding/nanoparticles.html",
+                  "triple/higher/physics/electricity/"
+                  "series-parallel-circuits.html",
+                  "triple/higher/physics/electricity/resistors.html",
+                  "triple/foundation/chemistry/bonding/nanoparticles.html"],
          why="Mide, Experience run item 13: 'much of the dark text on the "
              "cream background isn't clear enough.' Opens every teacher and "
              "student page (plus one KS3 lesson, one KS4 lesson, one KS4 "
@@ -2188,6 +2214,80 @@ GATES = [
              "student_behaviour.py drives carries no href on any lessonDefs "
              "entry, KS3 or KS4, so it cannot see this defect either way —"
              " see this script's own docstring."),
+
+    # ── KS4 pilot port (docs/ks4/pilot-build-contract.md) — parity gate ──
+
+    dict(name="ks4_parity",
+         cmd=["python3", "ks4_parity.py"],
+         speed="slow",
+         watches=["ks4_parity.py", "ks3_browser.py", "build_ks4.py",
+                  "ks4_lessons/**", "ks4_rulings.py", "ks4_science_rulings.py",
+                  "shared/ks4-ds.css", "shared/ks4-theme.css",
+                  "shared/ks4-lesson.css", "shared/ks4-source.js",
+                  "shared/ks4-lib.js", "shared/ks4-diagrams.js",
+                  "shared/ks4-runtime.js",
+                  "mrbadmus_site/combined/foundation/chemistry/bonding/**",
+                  "mrbadmus_site/combined/higher/chemistry/bonding/**",
+                  "mrbadmus_site/triple/foundation/chemistry/bonding/**",
+                  "mrbadmus_site/triple/higher/chemistry/bonding/**",
+                  "mrbadmus_site/combined/foundation/physics/electricity/**",
+                  "mrbadmus_site/combined/higher/physics/electricity/**",
+                  "mrbadmus_site/triple/foundation/physics/electricity/**",
+                  "mrbadmus_site/triple/higher/physics/electricity/**",
+                  "combined/foundation/chemistry/bonding/**",
+                  "combined/higher/chemistry/bonding/**",
+                  "triple/foundation/chemistry/bonding/**",
+                  "triple/higher/chemistry/bonding/**",
+                  "combined/foundation/physics/electricity/**",
+                  "combined/higher/physics/electricity/**",
+                  "triple/foundation/physics/electricity/**",
+                  "triple/higher/physics/electricity/**"],
+         why="the KS4 pilot's deep parity gate (docs/ks4/pilot-build-"
+             "contract.md) — drives all 54 ported pages in headless Chrome "
+             "across the contract's 5 widths, light+dark, keyboard, "
+             "reduced-motion and Design's own interaction sequence "
+             "(measure_design.py's functions, reused verbatim so the port "
+             "and Design are measured by identical code), and compares "
+             "against docs/ks4/pilot-inventory/reference.json through an "
+             "explicit whitelist of the named rulings (ks4_rulings.py's "
+             "R1/R6/R7/R8/R9/R-SLUG/R-PREVNEXT/R-CONNECTS, plus "
+             "ks4_science_rulings.py's rows) — never a blanket tolerance. "
+             "⚠️ NAMED, ACCEPTED GAP, mirroring CLAUDE.md's own wording for "
+             "ks3_rail_manifest / ks3_statutory: this gate's real source of "
+             "truth is docs/ks4/pilot-inventory/reference.json and the "
+             "measure_design.py functions it imports and re-runs against "
+             "the port — both live under docs/**, which "
+             "gate_watches_check.py refuses to let ANY gate's watches name "
+             "(CLAUDE.md's gate-machinery rule, unconditional), so an edit "
+             "to either cannot select this gate to re-run and cannot "
+             "invalidate its receipt. Re-run it by hand whenever either "
+             "changes."),
+
+    dict(name="ks4_science_rulings_check",
+         cmd=["python3", "ks4_science_rulings.py", "--check"],
+         speed="fast",
+         watches=["ks4_science_rulings.py", "build_ks4.py",
+                  "all_subtopics_chemistry*.py", "all_subtopics_physics*.py",
+                  "ks4_lessons/**"],
+         why="ks4_science_rulings.py's OWN `--check` self-audit — a real "
+             "assertion with a real exit code, not a data module (⚠️ found "
+             "during job 4's gate_registry.py --check sweep: this file was "
+             "quietly neither a gate nor excluded). For every `layer: "
+             "'source'` row it re-derives `shared/ks4-source.js`'s content "
+             "and proves the row's `old` text still occurs exactly once "
+             "(or, for `op: 'drop_item'`, that the named stems are still "
+             "present) in the field/route it targets, plus a set of mirror "
+             "self-checks — i.e. it proves the register has not silently "
+             "stopped matching the generator's own source. `ks4_parity.py`'s "
+             "TEXT_EXEMPTIONS table (job 1, docs/ks4/pilot-build-contract."
+             "md) trusts these ids to still mean what they say; this is the "
+             "gate that keeps that trust honest. The `template`/`logic` "
+             "layer rows have their OWN equivalent check already —  "
+             "`ks4_rulings.RulingError`, raised by build_ks4.py itself on "
+             "every build when a ruling's `old` stops matching Design's "
+             "delivery verbatim — which is why this gate's own `run_check` "
+             "only re-walks the `source` layer plus its mirrors, not all "
+             "101 rows."),
 ]
 
 
@@ -2329,6 +2429,20 @@ EXCLUDED = {
         "order. Writing is the job.",
     "build_ks3.py":
         "the KS3 generator. Its output is what the gates measure.",
+    "build_ks4.py":
+        "the KS4 pilot generator (docs/ks4/pilot-build-contract.md). Its "
+        "output is what ks4_parity, ks4_pilot_check and contrast_audit's "
+        "'ks4 pilot/*' pages measure. Writing is the job.",
+    "ks4_rulings.py":
+        "the KS4 pilot's R1/R2/.../R9/R-SLUG/R-PREVNEXT/R-CONNECTS register "
+        "— structural/engineering corrections to Design's template and "
+        "logic (as opposed to ks4_science_rulings.py's science-content "
+        "rows). It has no `main`, takes no argv and asserts nothing about "
+        "the live estate on its own; instead its `RulingError(SystemExit)` "
+        "is raised BY build_ks4.py, on every build, the moment a ruling's "
+        "`old` stops matching Design's delivery verbatim — so it is "
+        "self-checking every time the generator it is imported by runs, "
+        "which ks4_parity/ks4_pilot_check/contrast_audit all depend on.",
     "build_student.py":
         "the student PREVIEW generator, gated by student_parity.",
     "build_student_port.py":
@@ -2495,6 +2609,11 @@ EXCLUDED = {
         "verifies mrbadmus.com's KS4 and root pages AFTER a push, including "
         "the cache-bust stamps (MRB-290). It cannot run before the thing it "
         "checks exists.",
+    "check_ks4_pilot_live.py":
+        "verifies the 54 KS4 pilot pages live on mrbadmus.com AFTER a push, "
+        "byte for byte against ks4_pilot_manifest.json (page hash, then "
+        "every /shared/ks4-*?v= asset the live page itself names). It "
+        "cannot run before the thing it checks exists.",
 
     # ── MRB-308…321 · the B2C nights' two generators ────────────────────
     #

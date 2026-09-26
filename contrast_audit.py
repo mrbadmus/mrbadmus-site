@@ -243,13 +243,55 @@ _MEASURE_JS = r"""
     }
     return parts.join('>');
   }
+  // ⊕ KS4 pilot (docs/ks4/pilot-build-contract.md job 2) — SVG text/tspan
+  // ground. An inline diagram (shared/ks4-diagrams.js's svg() wrapper, and
+  // every KS4D drawer built on it) paints its own plate/shape fills as
+  // SIBLING <rect>/<circle>/... elements, never as a DOM ANCESTOR of the
+  // <text> sitting on them — so the plain ancestor walk below (bg/opacity
+  // up the parentElement chain) can never see them and falls through to
+  // whatever the PAGE's ground happens to be several ancestors further out
+  // (e.g. the dark-mode `.rd` background), which is not what the glyph is
+  // actually painted on. This is a PRECISION fix, not a tolerance: for SVG
+  // text only, find the nearest shape that (a) precedes the text in
+  // document/paint order and (b) whose box fully contains the text's box —
+  // exactly Design's own plate-then-label paint order in every KS4D
+  // drawer — and feed ITS fill in as the ground layer, still composited
+  // through the real ancestor opacity chain exactly as before. Ordinary
+  // (non-SVG) text is completely unaffected.
+  function svgPlateFill(el){
+    var svg = el.ownerSVGElement;
+    if (!svg) return null;
+    var tRect = el.getBoundingClientRect();
+    if (!(tRect.width > 0 && tRect.height > 0)) return null;
+    var shapes = svg.querySelectorAll('rect,circle,ellipse,polygon,path,use');
+    var best = null;
+    for (var i = 0; i < shapes.length; i++){
+      var c = shapes[i];
+      // c must PRECEDE el in document order (the paint-order requirement) —
+      // DOCUMENT_POSITION_FOLLOWING on (c, el) means "el follows c".
+      if (!(c.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING)) continue;
+      var fill = getComputedStyle(c).fill;
+      if (!fill || fill === 'none') continue;
+      var r = c.getBoundingClientRect();
+      if (!(r.width > 0 && r.height > 0)) continue;
+      if (r.left <= tRect.left + 0.5 && r.top <= tRect.top + 0.5 &&
+          r.right >= tRect.right - 0.5 && r.bottom >= tRect.bottom - 0.5){
+        best = fill;  // keep overwriting: the LAST (nearest) match wins.
+      }
+    }
+    return best;
+  }
   function chainOf(el){
     var out=[], p=el;
+    var isSvgText = (el.namespaceURI==='http://www.w3.org/2000/svg') &&
+                    (el.tagName==='text'||el.tagName==='tspan');
+    var plateFill = isSvgText ? svgPlateFill(el) : null;
     while(p && p.nodeType===1){
       var cs = getComputedStyle(p);
       out.push({bg: cs.backgroundColor, op: parseFloat(cs.opacity)});
       p = p.parentElement;
     }
+    if (plateFill) out.splice(1, 0, {bg: plateFill, op: 1});
     out.push({bg: 'rgb(255,255,255)', op: 1});
     return out;
   }
@@ -388,6 +430,26 @@ _page("teacher/class-detail [Set work sheet]", "teacher_fixtures/class-detail-fi
       setup=_click_containing("Set work"), wait=0.9)
 _page("teacher/class-detail [shoutout composer]", "teacher_fixtures/class-detail-fixture.html",
       setup=_click_containing("Send a shoutout"), wait=0.9)
+
+# ── KS4 pilot port (docs/ks4/pilot-build-contract.md; ks4_parity.py's own
+#    sibling gate) — the 14 Triple Higher pilot pages (the "everything"
+#    tier: every rung, badge and question-bank item a route can show) plus
+#    the one Triple Foundation page whose R9 badge-gating differs from its
+#    TH sibling (nanoparticles has no isHigher/isTriple badge of its own,
+#    but its neighbours' pages differ in exactly this axis — kept here as
+#    the one deliberate non-TH sample the brief names).
+for _slug in ("chemical-bonds", "ionic-bonding", "ionic-compounds",
+              "covalent-bonding", "metallic-bonding", "states-of-matter",
+              "properties-ionic-compounds", "properties-small-molecules",
+              "polymers", "giant-covalent-structures", "metals-alloys",
+              "nanoparticles"):
+    _page("ks4 pilot/%s" % _slug,
+          "triple/higher/chemistry/bonding/%s.html" % _slug)
+for _slug in ("series-parallel-circuits", "resistors"):
+    _page("ks4 pilot/%s" % _slug,
+          "triple/higher/physics/electricity/%s.html" % _slug)
+_page("ks4 pilot/nanoparticles [Triple Foundation]",
+      "triple/foundation/chemistry/bonding/nanoparticles.html")
 
 
 # ══════════════════════════════════════════════════════════════════════════

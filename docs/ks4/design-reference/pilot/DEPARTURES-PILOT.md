@@ -203,6 +203,48 @@ One row per ruling id. `old`/`new` truncated to ~64 characters — full text is 
 | resistors-C11 | asset | battery: function (x, y, it) { var s = leads(x, y, 70); [-22, 1… | battery: function (x, y, it) { var s = leads(x, y, 52) + line(x… | Centres the two cells, brings leads to the outer plates, and joins the cells with AQA's d… | 8463 4.2.1.1 (battery symbol) |
 | resistors-C12 | asset | circ(x - 30, y, 5, C.stroke) + circ(x + 30, y, 5, C.stroke) | circ(x - 30, y, 6, C.cream, C.stroke, 2.5) + circ(x + 30, y, 6,… | AQA's switch contacts are hollow circles; filled dots mean junctions. | 8463 4.2.1.1 (switch open/closed) |
 
+### Dark-mode legibility (Mide's ruling, Experience run item 13)
+
+Not a science ruling — no examiner is involved and nothing here changes what
+a lesson teaches. `contrast_audit.py`'s extended KS4-pilot page set (job 4,
+gate-closing run, 26 Sep 2026) found three real WCAG legibility defects in
+dark mode, all pre-existing in Design's delivery and all reachable on every
+one of the 14 lessons (shared components/CSS, not lesson-specific content).
+Fixed under Mide's standing ruling — "legibility everywhere, disabled
+controls at ≥3:1" (`contrast_audit.py`'s own docstring, Experience run
+item 13) — with the smallest additive CSS, appended by `build_ks4.py` to
+the GENERATED `shared/ks4-lesson.css` (never Design's `ks4-theme.css`/
+`ks4-ds.css` in place), under a `/* ⊕ KS4-DARK-1..3 */` header. All three
+reuse an EXISTING dark-palette token from `shared/ks4-theme.css` — nothing
+minted.
+
+| id | what | Design's dark-mode ratio | fixed ratio | why |
+|---|---|---|---|---|
+| KS4-DARK-1 | disabled `.ks3-reveal-btn` / `.ks3-retry` | 2.01:1 (floor 3.0, disabled) | 4.57:1 | Design's compiled Component sets `style="opacity:.45"` inline on disable, fading an (in dark mode) light-cream fill and near-black label toward the same dark page ground by the same factor and collapsing their mutual contrast. `!important` raises the SAME inline opacity to `.7` — still visibly duller than enabled, now legible. |
+| KS4-DARK-2 | end-matter `.ks3-tutor` h2/p | 2.35:1 (floor 3.0, large text) | 6.74:1 | `--ks3-ink` (light cream) and `--ks3-accent` (the card's background) both flip LIGHT under the dark remap, so ink-on-accent (dark-on-mid-orange in light mode) becomes light-on-light. Reuses `--ks3-on-dark`, Design's own token for exactly this situation. |
+| KS4-DARK-3 | bare `<textarea>`/`<input>` `::placeholder` (Ks4Write rung; FIFA-method calc-rung inputs) | 3.75:1 (textarea, floor 4.5) / 4.04:1 (input, floor 4.5) | 8.66:1 / 9.35:1 | No `::placeholder` rule exists anywhere for either element, so both fall through to Chrome's UA-default placeholder grey. Reuses `--ks3-ink-muted`, the same token the Write rung's own "Your answer" label already uses. |
+
+Proof: `contrast_audit.py --quick --gate --only "ks4 pilot"` — 0 AA
+failures across all 15 registered pilot pages (was 28, then 35 including
+the SVG-ground precision fix below); `contrast_audit.py --quick --gate`
+(the whole registered set) — still 0 failures, proving the fix did not
+regress any KS3/teacher/student/leaderboard page.
+
+**Also fixed (a precision improvement to the AUDIT, not a page change):**
+`contrast_audit.py`'s ancestor-walk ground computation could not see an SVG
+`<text>`'s real visual background when that background was painted by a
+SIBLING shape (`shared/ks4-diagrams.js`'s `svg()` wrapper always draws a
+cream plate `<rect>` first, and individual atom/ion circles on top of it) —
+siblings are invisible to an ancestor walk, so the audit fell through to the
+page's dark-mode ground and flagged every inline diagram label (28 "+"
+glyphs on metallic-bonding's electron-sea bench alone) as if it sat directly
+on `#1F1A15`. Proved live: a dark-mode screenshot of the bench figure shows
+every "+" clearly on its own cream/salmon shape, not on the dark page.
+`contrast_audit.py` now finds the nearest preceding shape (by document/paint
+order) whose box contains the text's box and feeds ITS fill in as the ground
+layer, still composited through the real ancestor opacity chain exactly as
+before. Ordinary (non-SVG) text is unaffected.
+
 ## Verbatim layer — the `source` rows (generated route copies)
 
 These never touch `all_subtopics_*.py` — they patch the in-memory dict `build_ks4.build_source_record()` builds, via `apply_source()`.
