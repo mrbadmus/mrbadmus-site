@@ -177,8 +177,23 @@ table, a "not departures" table (port mechanics), and all 22 flags.
 - Two `GATE-OVERRIDE`s on the tip commit, both inherited: `set_work` (§8.12)
   and `figures_mirror` (the sibling backend checkout has no `figures.json`;
   overridden with the same text on main's recent landings).
-- Live proof: §1. Final Opus audit of the live site: see
-  `docs/ks4/pilot-live-audit.md` (summary below once it lands).
+- Live proof: §1.
+- **Final Opus audit of the live site** (`docs/ks4/pilot-live-audit.md`):
+  all 54 pages walked end to end as a pupil at 360 and 1280 in light mode,
+  plus a dark pass per lesson — 122 walks. Hook, flagship (L6 heating curve
+  to 10:00, L13 switch, L14 practical with 7 readings), CFIFA, all four
+  ladder rungs and retry, key-note cover, practice bank: every step
+  responded. No "Draft", no Route select, no React/unpkg/Babel, no
+  "undefined"/"NaN" in any rendered text, no sideways scroll at 360, all
+  62 prev/next/connects URLs 200, Combined nanoparticles URLs 404 (not the
+  old page), route-tagged sections only on their routes, L13/L14 without a
+  tip, R_total chip present, 10 of 10 science spot-checks correct live.
+  Four defects, none blocking: **D1** the "Ask about this lesson" control
+  is Design's plain anchor, so the tutor panel never opened (a regression
+  against KS3 and the old pages, which carry `data-open-chat`); **D2** L10's
+  "Connects to → Nanoparticles" sent Combined pupils into a Triple URL;
+  **D3** favicon 404; **D4** the tutor panel said "KS3 Science Tutor". All
+  four fixed under rulings in the follow-up landing recorded below.
 
 ## 8. Decisions I made
 
