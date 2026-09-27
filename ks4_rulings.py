@@ -29,6 +29,7 @@ spec section number, replacing the Combined-only number on Triple routes).
 import re
 
 import ks4_lessons
+from theme_head import THEME_SLOT
 
 
 class RulingError(SystemExit):
@@ -691,3 +692,55 @@ def apply_r14_spec_number(site_slug, template_text, eyebrow_literal, keynote_lit
     _require(tpl, keynote_from, site_slug, "R14 (keynote)")
     tpl = tpl.replace(keynote_from, 'spec="{{ specNote }}"', 1)
     return tpl
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# R15 — theme run (Mide's ruling 26 Sep 2026, THEME-CONTRACT.md): every page
+# on the site carries a Light/Dark/System control. On these 54 pages the
+# control goes into the SAME flex row R12's route chip lives in — the
+# header's `<div style="margin-top: 16px; display: flex; flex-wrap: wrap;
+# align-items: center; gap: 8px 10px;">` — because that row is already the
+# lesson header's "status strip" and already carried the removed Route
+# <select> at its right-hand end (R1, `margin-left: auto`). The slot takes
+# over that same right-hand position: `margin-left:auto` on a flex child
+# pushes ONLY itself (and nothing after it) to the row's far right, so it
+# must be the row's LAST child — true for all 14 lessons at this point in
+# the pipeline (R1 already removed the only other `margin-left:auto`
+# element; R12's chip and R9's conditional badge, when present, both sit
+# BEFORE this position, never after).
+#
+# Runs LAST of the header-row rulings (after R12, after R9) precisely so
+# it lands after whatever they left behind — this function does not search
+# for R12's chip or R9's badge by name, it anchors on the row's own opening
+# `<div style=...>` tag (byte-identical across all 14 lessons, verified by
+# grep) and inserts right before that div's own closing `</div>` (the first
+# `</div>` after the opening tag — safe because nothing this ruling's
+# predecessors leave inside that row is itself a `<div>`: R12's chip is a
+# `<details>/<summary>/<ul>`, R9's badge is a `<span>` inside an `<sc-if>`).
+#
+# THEME_SLOT itself (`theme_head.THEME_SLOT`) is used byte-identical, per
+# THEME-CONTRACT.md's "import these; never retype the snippet" — only the
+# WRAPPER around it (for right-alignment in this specific flex row) is
+# page-family-specific, exactly as different families position it
+# differently in their own headers.
+# ═══════════════════════════════════════════════════════════════════════
+R15_HEADER_ROW_OPEN = (
+    '<div style="margin-top: 16px; display: flex; flex-wrap: wrap; '
+    'align-items: center; gap: 8px 10px;">'
+)
+_R15_HEADER_ROW_RE = re.compile(re.escape(R15_HEADER_ROW_OPEN) + r'(.*?)</div>', re.S)
+R15_THEME_SLOT_WRAPPED = (
+    '<span style="margin-left:auto;display:inline-flex;align-items:center;">'
+    + THEME_SLOT + '</span>'
+)
+
+
+def apply_r15_theme_slot(site_slug, template_text):
+    m = _R15_HEADER_ROW_RE.search(template_text)
+    if m is None:
+        raise RulingError(
+            "ks4_rulings R15: %s — the header status-strip row "
+            "(%r) was not found. Design's delivery moved; read the diff "
+            "before widening this ruling." % (site_slug, R15_HEADER_ROW_OPEN))
+    insert_at = m.end() - len("</div>")
+    return template_text[:insert_at] + R15_THEME_SLOT_WRAPPED + template_text[insert_at:]
