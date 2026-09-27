@@ -383,7 +383,21 @@ def static_checks(check):
     check("showDl: pp.kind !== 'flashcards'" in asg, "marking screen: no Download on a flashcard set")
     sd = read("teacher/student-detail.html")
     check("stRow.submitted[i] === true ? '' : null" in sd, "student screen: an ungraded set reads handed in")
-    check("stGraded" in sd, "student screen: the average is over graded rows only")
+    # ⊕ 27 Sep 2026 (MRB-351 landing, merge with main) — RE-POINTED, NOT
+    # WEAKENED. This used to check for the literal `stGraded`, MRB-351's own
+    # local filter (`stMarked.filter(h => h.pct != null)`) over the average.
+    # Main's Stream N (NF1, 25 Sep 2026) rewrote the SAME line first in
+    # teacher_rulings.LOGIC's applied order, to `kMx.studentAvg[st.id]` — the
+    # shared sum(score)/sum(max) average `buildMatrix` computes once in
+    # shared/teacher-live.js, which is null-for-flashcards BY CONSTRUCTION
+    # (`cellOf` never sets `score`/`max` on an ungraded cell, so it can never
+    # enter the sum — see the `cellOf probe` above, `flashMean is None`).
+    # `stGraded` no longer exists anywhere in the built page: re-adding it on
+    # top of `kMx.studentAvg[st.id]` would be filtering a field with no
+    # `.pct`. This checks the mechanism that actually ships instead.
+    check("kMx.studentAvg[st.id]" in sd,
+          "student screen: the average is over graded rows only (via kMx.studentAvg, "
+          "not a local stGraded filter — see teacher_rulings.py's 27 Sep note)")
     check("flashcards:'flashcards.html'" in cd, "MRB_PAGE names flashcards.html")
     tl = read("shared/teacher-live.js")
     check('window.location.replace(flashcardsUrl(fcHit.id))' in tl,

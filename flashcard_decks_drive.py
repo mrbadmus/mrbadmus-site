@@ -166,10 +166,25 @@ STUB_JS = r"""
     if (f.op === 'in') { return f.val.indexOf(v) !== -1; }
     return true;
   }
+  /* ⊕ MRB-351 landing (27 Sep 2026) — THE "NO SCHEMA" MODE. `F.noSchema`
+     stands in for production BEFORE the MRB-351 migrations land: no
+     `flashcard_decks`/`flashcard_cards`/`assignment_flashcards` tables at
+     all (PostgREST answers PGRST205 — "Could not find the table"), and
+     `assignments` has no `kind`/`flashcard_mode`/`completion_rule`/
+     `deck_id` columns (a `select` string naming one fails the WHOLE
+     request, 42703). `selCols` remembers what a `.select()` asked for so
+     the `assignments` case can tell a request that names the new columns
+     (refused) from the retry that does not (answered normally) — exactly
+     the two-shape retry `shared/teacher-data.js` and `shared/student-
+     data.js` do against real PostgREST. */
+  var NO_SCHEMA_TABLES = {flashcard_decks: 1, flashcard_cards: 1, assignment_flashcards: 1};
   function Q(table) {
-    var fs = [], one = false, upd = null, head = false, countMode = false, ord = null;
+    var fs = [], one = false, upd = null, head = false, countMode = false, ord = null, selCols = "";
     var api = {
-      select: function (c, o) { if (o && o.head) { head = true; } if (o && o.count) { countMode = true; } return api; },
+      select: function (c, o) {
+        selCols = c || "";
+        if (o && o.head) { head = true; } if (o && o.count) { countMode = true; } return api;
+      },
       order: function (c, o) { ord = {col: c, asc: !(o && o.ascending === false)}; return api; },
       limit: function () { return api; },
       eq: function (c, v) { fs.push({op:'eq', col:c, val:v}); return api; },
@@ -179,6 +194,19 @@ STUB_JS = r"""
       single: function () { one = true; return api; },
       maybeSingle: function () { one = true; return api; },
       then: function (res, rej) {
+        if (F.noSchema) {
+          if (NO_SCHEMA_TABLES[table]) {
+            return Promise.resolve({data: null, count: null, error: {
+              code: 'PGRST205', message: "Could not find the table 'public." + table + "' in the schema cache"
+            }}).then(res, rej);
+          }
+          if (table === 'assignments' &&
+              /\b(kind|flashcard_mode|completion_rule|deck_id)\b/.test(selCols)) {
+            return Promise.resolve({data: null, error: {
+              code: '42703', message: 'column assignments.kind does not exist'
+            }}).then(res, rej);
+          }
+        }
         var out = rows(table).filter(function (r) {
           for (var i = 0; i < fs.length; i++) { if (!match(r, fs[i])) { return false; } }
           return true;
@@ -211,6 +239,11 @@ STUB_JS = r"""
   }
   function rpc(name, args) {
     F.calls.push({kind: 'rpc', name: name, args: JSON.parse(JSON.stringify(args))});
+    if (F.noSchema && /^flashcard_/.test(name)) {
+      return Promise.resolve({data: null, error: {
+        code: 'PGRST202', message: "Could not find the function public." + name + " in the schema cache"
+      }});
+    }
     var fail = F.failNext && F.failNext[name];
     if (fail) { delete F.failNext[name]; return Promise.resolve({data: null, error: {message: fail}}); }
     if (name === 'flashcard_deck_save') {
@@ -363,10 +396,11 @@ def main():
     server, port = cdp.serve(root)
     base = "http://127.0.0.1:%d" % port
 
-    def fresh(b, jobs=None, queue=None, fail_next=None):
+    def fresh(b, jobs=None, queue=None, fail_next=None, no_schema=False):
         state = {"uid": T, "tables": json.loads(json.dumps(TABLES)), "classes": CLASSES,
                  "scope": SCOPE, "preview": PREVIEW, "jobs": jobs or {},
-                 "extractQueue": queue or [], "failNext": fail_next or {}}
+                 "extractQueue": queue or [], "failNext": fail_next or {},
+                 "noSchema": bool(no_schema)}
         pre = "window.__FD__=%s;\n" % json.dumps(state) + STUB_JS
         p = b.page("about:blank", settle=0.1)
         p.send("Page.addScriptToEvaluateOnNewDocument", {"source": pre})
@@ -394,7 +428,13 @@ def main():
                 and "ERR_NAME_NOT_RESOLVED" not in e and "ERR_INTERNET_DISCONNECTED" not in e
                 and "ERR_TUNNEL" not in e and "ERR_PROXY" not in e
                 and "Failed to load resource" not in e
-                and "config: TEST" not in e]
+                and "config: TEST" not in e
+                # ⊕ MRB-351 landing — the container this runs in cannot reach
+                # the real Render backend, so the ported pages' own /api/health
+                # probe (mrbadmus-backend.onrender.com) is CORS-blocked here
+                # regardless of any flashcard schema — the same class of noise
+                # the exclusions above already carve out for the CDN.
+                and "mrbadmus-backend.onrender.com" not in e]
 
     def sentences(p, where):
         texts = p.eval(TEXTS_JS) or []
@@ -989,6 +1029,60 @@ def main():
                                   "return n?[n.scrollWidth,n.clientWidth]:null;})()")
                     check(bool(wide) and wide[0] <= wide[1] + 1,
                           "nav: teacher/%s's bar does not scroll sideways at %dpx" % (page, w), wide)
+
+            # ═══ 7. "NO SCHEMA" — production before the MRB-351 migrations ═
+            #
+            # `F.noSchema` (see `NO_SCHEMA_TABLES` / the `assignments`
+            # branch in `STUB_JS`) answers every flashcard table with
+            # PGRST205, every `flashcard_*` RPC with PGRST202, and an
+            # `assignments` select naming `kind`/`flashcard_mode`/
+            # `completion_rule`/`deck_id` with 42703 — production's real
+            # shape today, per docs/mrb351/REPORT.md. Nothing here proves
+            # RLS (see the file's own warning above); it proves the PAGE
+            # degrades to exactly today's behaviour when the schema is not
+            # there at all: no Flashcards option, no console error, the
+            # Questions path unchanged, teacher screens render.
+            print("\n── no schema: production before the MRB-351 migrations ──")
+            p = fresh(b, no_schema=True)
+            p.goto(base + "/teacher/decks.html", settle=1.5)
+            check(bool(p.eval(INJECT_SHEET)), "no schema: set-work.js still loads on the page")
+            p.set_viewport(390, 844)
+            p.eval("MRBSetWork.open({})")
+            # The probe (window.MrBadmusAdminScope.flashcardsCapable(), a
+            # `limit(0)` read of flashcard_decks) answers false; give it a
+            # moment to resolve and redraw before asserting on it.
+            wait(p, "window.MrBadmusAdminScope && true", timeout=2.0)
+            time.sleep(0.3)
+            check(bool(p.eval("document.querySelector('[data-sw=type-chips]').hidden")),
+                  "no schema: the type picker itself is hidden (one option is not a picker)")
+            check(not bool(p.eval("!!document.querySelector('[data-sw=type-chips]').offsetParent")),
+                  "no schema: the Flashcards chip is not reachable — its container is not rendered")
+            # Questions path unchanged: still reaches Topic with the class
+            # picked, exactly as check group 1 proved with a full schema.
+            click(p, "[data-sw=class][data-sw-ref='%s']" % C1)
+            wait(p, "document.querySelector('[data-sw=overlay]').getAttribute('data-sw-scope-state')==='ready'")
+            click(p, "[data-sw=primary]")
+            step = wait(p, "document.querySelector('[data-sw=overlay]').getAttribute('data-sw-step')")
+            check(step == "1", "no schema: Questions still reaches the Topic step", step)
+            errs = errors(p)
+            check(not errs, "no schema: set-work sheet — no console errors", errs)
+
+            # timetable.html and today.html only, matching check group 6
+            # above — both hand-written pages this stub's minimal state (no
+            # academic-year/roster data) is enough to render; classes.html
+            # and the other ported screens need the full teacher-live.js
+            # data layer, which is a separate gate's job (teacher_reach.py).
+            for page in ("timetable.html", "today.html"):
+                p = fresh(b, no_schema=True)
+                p.goto(base + "/teacher/" + page, settle=2.0)
+                links = p.eval(
+                    "Array.from(document.querySelectorAll('a')).filter(function(a){"
+                    "return a.textContent.trim()==='Flashcard decks';}).length")
+                check(links == 0, "no schema: no 'Flashcard decks' link on teacher/%s" % page, links)
+                rendered = p.eval("!!document.body && document.body.children.length > 0")
+                check(bool(rendered), "no schema: teacher/%s still renders" % page)
+                errs = errors(p)
+                check(not errs, "no schema: teacher/%s — no console errors" % page, errs)
     finally:
         server.shutdown()
 
