@@ -899,6 +899,75 @@ KS4_CHIP_CSS = """
 """
 
 
+# ── the header route chip/switcher (Mide's ruling, 27 Sep 2026;
+# ks4_rulings.py R12). Every colour is a `--ks3-*` token, so light and dark
+# both "just work" the same way the rest of the page does — no separate
+# dark-mode block is needed here the way KS4-DARK-1..3 above needed one:
+# those three fought an INLINE style Design's own compiled Component sets
+# per instance (only `!important` in a stylesheet can outrank an inline
+# style); this chip carries no inline colour at all. `summary` is added to
+# the page's own focus-visible selector list (html,body's own `<style>`
+# block only names button/a/select/input/textarea) so the chip gets the
+# SAME outline every other interactive control on the page does. `list-
+# style: none` on a `<ul>` is a known VoiceOver/Safari gotcha (it can drop
+# the element's implicit list semantics) — `role="list"` on the markup
+# restores it explicitly, matching the templates rather than duplicated
+# here.
+KS4_CHIP_CSS = """
+/* ⊕ KS4-CHIP-1 (Mide's ruling, 27 Sep 2026) — replaces the two static
+   "Combined · Triple" / "Foundation · Higher" header chips with one
+   chip stating the page's own route in words, as a native disclosure.
+   Enter/Space toggles a native <details>/<summary> with no script; Tab
+   reaches the menu's links (already static <a> elements in the prerendered
+   HTML, not a runtime fetch). shared/ks4-runtime.js adds only Esc-to-close
+   plus keeping aria-expanded in sync with the open state. */
+.ks3-route-switch { position: relative; }
+.ks3-route-chip {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);
+  color: var(--ks3-ink); background: var(--ks3-card);
+  -webkit-tap-highlight-color: transparent;
+}
+.ks3-route-chip::-webkit-details-marker { display: none; }
+.ks3-route-chip::marker { content: ""; }
+.ks3-route-chip:hover { border-color: var(--ks3-accent-text); }
+.ks3-route-chip:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+.ks3-route-chip svg { flex: 0 0 auto; transition: transform .15s ease; }
+.ks3-route-switch[open] > .ks3-route-chip svg { transform: rotate(180deg); }
+.ks3-route-menu {
+  /* ⚠️ `display: none` here is LOAD-BEARING, not a default this selector
+     happens to start from. The browser's own UA stylesheet already hides a
+     closed <details>'s non-summary content (`details:not([open]) >
+     *:not(summary) { display: none }`), but an AUTHOR stylesheet's rule
+     beats a UA rule at equal-or-lower specificity regardless of source
+     order — an unconditional `display: flex` here would force the menu
+     visible EVEN WHILE CLOSED (found live via ks4_parity's G-keyboard
+     layer: 3 always-focusable <a> with non-zero rects). `[open] >` below
+     is the ONLY rule that may ever show it. */
+  display: none;
+  list-style: none; margin: 6px 0 0; padding: 6px;
+  flex-direction: column; gap: 2px;
+  position: absolute; top: 100%; left: 0; z-index: 5;
+  min-width: 15rem; max-width: min(20rem, calc(100vw - 32px));
+  background: var(--ks3-card); border: 2px solid var(--ks3-option-border);
+  border-radius: var(--ks3-r-panel); box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+}
+.ks3-route-switch[open] > .ks3-route-menu { display: flex; }
+.ks3-route-menu a {
+  display: block; padding: 9px 10px; border-radius: 8px; min-height: 44px;
+  font-family: var(--ks3-font-body); font-size: 15px; font-weight: 500;
+  line-height: 1.3; color: var(--ks3-ink); text-decoration: none;
+}
+.ks3-route-menu a:hover { background: var(--ks3-band); }
+.ks3-route-menu a:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: -3px; background: var(--ks3-band); }
+@media (max-width: 400px) {
+  .ks3-route-menu { left: 0; right: auto; }
+}
+"""
+
+
 # ═══════════════════════════════════════════════════════════════════════
 # STEP D — the browser-side template compiler (extends student_template.py's
 # _COMPILE_JS with `dc-import` → `t: 'child'`).

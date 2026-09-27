@@ -6045,8 +6045,57 @@ def check_edit_sheet(p, base, shots):
                 "'[data-sw=\"overlay\"]');"
                 "return !!o && !!(o.getAttribute('data-sw-edit')||'');})()",
              tries=40, gap=0.05)
-    wait_for(p, "document.querySelectorAll('[data-sw=\"overlay\"] "
-                "[data-sw=\"question\"]').length > 0", tries=60, gap=0.05)
+    # ⊕ 27 Sep 2026 — REPLACES A 3s-CAPPED POLL (docs/experience/REPORT.md,
+    # "Open": red in 2 of 7 `set_work` runs, same product code, green on the
+    # re-record). The poll it replaced was already condition-based
+    # (`length > 0`, not a sleep) but capped at `tries=60, gap=0.05` — 3.0s —
+    # and `loadStoredQuestions()` in shared/set-work.js is a fetch of
+    # `/api/class/current-assignment` that only sometimes lands inside that
+    # window: a cold Render instance or a loaded test backend can genuinely
+    # take longer, and a 3s cap cannot tell "still loading" from "never
+    # coming". So the wait below is on the REAL terminal state of that
+    # fetch, not an arbitrary clock: EITHER the question rows are in the DOM
+    # (the `.then` success path — `S.storedState = "ready"` then
+    # `placeStored()`), OR the sheet's own error UI has appeared (the
+    # `.then` failure path — `S.storedState = "error"` then
+    # `showStoredUnavailable()`, which appends a `.sw-row-tag` INTO
+    # `[data-sw="qlist"]` reading `SAY.unavailable`). Either is a real
+    # answer; only "neither yet" means keep waiting.
+    #
+    # ⚠️ THE ERROR TAG MUST BE SCOPED TO `[data-sw="qlist"]`, NOT TO THE
+    # OVERLAY AT LARGE. A first cut of this fix looked for any
+    # `.sw-row-tag` anywhere in the overlay and went red on the very next
+    # measurement, at 0.0s — `edit()` calls `buildClasses()` synchronously
+    # before `loadStoredQuestions()` even fires, and `buildClasses()` plants
+    # its own `.sw-row-tag` nodes (the "N student(s)" badge per class row,
+    # `SAY.pupils`) into `els.classList`, a DOM node that stays in the tree
+    # — merely hidden by the step CSS — even while step 2 is showing. That
+    # tag has nothing to do with the stored-questions fetch and is present
+    # from the moment the sheet opens, so an unscoped selector answered
+    # "done" before the fetch had even been sent. `[data-sw="qlist"]` is the
+    # one container `showStoredUnavailable()` and `placeStored()` both write
+    # into, so scoping there reads the fetch's own outcome and nothing else.
+    #
+    # The timeout is widened to 20s to comfortably absorb a slow backend
+    # without ever making a healthy run slower (`wait_for` returns the
+    # moment the condition is true). If NEITHER terminal state shows up
+    # inside 20s, `reached_terminal` is False, the row count is left at
+    # whatever it actually is (0, on a genuine defect), and the
+    # `edit_shows_the_questions` record two blocks down goes red exactly as
+    # before — nothing here weakens that assertion. What's added is
+    # diagnosis: the record's detail says how long was waited, whether a
+    # terminal state was ever reached, and what the qlist's error tag (if
+    # any) said — so a real product regression reads as one instead of
+    # being indistinguishable from a slow network.
+    wait_started = time.time()
+    reached_terminal = wait_for(
+        p, "(function(){var q=document.querySelector("
+           "'[data-sw=\"overlay\"] [data-sw=\"qlist\"]');"
+           "if(!q){return false;}"
+           "return q.querySelectorAll('[data-sw=\"question\"]').length>0"
+           "||!!q.querySelector('.sw-row-tag');})()",
+        tries=400, gap=0.05)
+    wait_elapsed = time.time() - wait_started
     wait_stable(p, "(function(){var o=document.querySelector("
                    "'[data-sw=\"overlay\"]'); return o ? "
                    "(o.getAttribute('data-sw-edit')||'') + '|' + "
@@ -6105,8 +6154,13 @@ def check_edit_sheet(p, base, shots):
     # questions on it. "The right controls are absent" and "the content is
     # there" are two claims, and only one of them was being made.
     body = p.eval("""(function(){
-      var rows=document.querySelectorAll('[data-sw="overlay"] [data-sw="question"]');
-      var out={n:rows.length, blank:0, opts:0, ticked:0, first:''};
+      var o=document.querySelector('[data-sw="overlay"]');
+      var q=o?o.querySelector('[data-sw="qlist"]'):null;
+      var rows=q?q.querySelectorAll('[data-sw="question"]'):[];
+      var tag=q?q.querySelector('.sw-row-tag'):null;
+      var out={n:rows.length, blank:0, opts:0, ticked:0, first:'',
+               tag: tag ? (tag.textContent||'').slice(0,80) : null,
+               textLen: o ? (o.textContent||'').length : 0};
       for(var i=0;i<rows.length;i++){
         var s=rows[i].querySelector('[data-sw="stem"]');
         var t=(s&&s.textContent||'').trim();
@@ -6119,12 +6173,24 @@ def check_edit_sheet(p, base, shots):
           if((os[k].textContent||'').indexOf('[object Object]')>=0){
             out.objects=(out.objects||0)+1;}}}
       return out;})()""")
+    # ⚠️ THE TIMING DIAGNOSTIC RIDES ALONG IN `detail`, IT NEVER ENTERS THE
+    # CONDITION. `body["n"] > 0 and body["blank"] == 0` is exactly the
+    # assertion this check always made; a timeout that left `n == 0` still
+    # goes red here, same as before. What changed is that the detail string
+    # now says how long was waited and, if the sheet's error tag showed up
+    # instead of questions, what it said — so "the fetch never finished
+    # because the poll gave up at 3s" and "the fetch finished and failed"
+    # read as two different findings rather than one identical blank row.
+    edit_detail = ("%d row(s), %d blank · first: %r · waited %.1fs "
+                   "(terminal state reached: %s) · error tag: %r · "
+                   "overlay text %d chars"
+                   % (body["n"], body["blank"], body["first"], wait_elapsed,
+                      reached_terminal, body["tag"], body["textLen"]))
     record(body["n"] > 0 and body["blank"] == 0,
            "edit_shows_the_questions — every row on the Edit sheet carries "
            "the stem of the question that set actually holds; a teacher "
            "editing live work is not looking at blank numbered rows",
-           "%d row(s), %d blank · first: %r"
-           % (body["n"], body["blank"], body["first"]))
+           edit_detail)
     record(body["opts"] == 4 * body["n"] and not body.get("objects"),
            "…and its four options are four strings, not four `[object "
            "Object]` — the serving route hands options as OBJECTS and the "

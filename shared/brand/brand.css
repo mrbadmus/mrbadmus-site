@@ -1,0 +1,86 @@
+/* shared/brand/brand.css — the ONE brand lockup (Mide's ruling, 13 Sep 2026).
+   Emitted by brand.py's brand_lockup() on every page; never hand-copied.
+
+   Proportions from Design's Brand Mark sheet (docs/brand/source/Brand Mark.dc.html):
+   header chevron 21 / wordmark 19 / gap 5 on a phone, 23 / 21 / 6 above it.
+   Wordmark: Bricolage Grotesque 600, letter-spacing -0.04em, as the kit draws it.
+   The chevron never changes colour; only the wordmark flips, ink → cream.
+
+   The rules are deliberately heavy-handed (every property the lockup depends
+   on is set here) so that a family's own nav styles — `.nav a`, `header a`,
+   a font stack, a text-transform — cannot reshape the mark. The count of
+   distinct marks on the site is a gate, and a mark a host page can restyle
+   is a second mark waiting to happen. */
+
+@font-face {
+  font-family: 'MrBadmus Wordmark';
+  src: url('/shared/fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+.mrb-brand {
+  --mrb-brand-word: #221E1B;
+  --mrb-brand-mark: 21px;
+  --mrb-brand-size: 19px;
+  --mrb-brand-gap: 5px;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: var(--mrb-brand-gap) !important;
+  flex: none;
+  margin: 0;
+  padding: 0;
+  background: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+  color: var(--mrb-brand-word) !important;
+  font-family: 'MrBadmus Wordmark', 'Bricolage Grotesque', system-ui, sans-serif !important;
+  font-weight: 600 !important;
+  font-style: normal !important;
+  font-size: var(--mrb-brand-size) !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1 !important;
+  white-space: nowrap;
+  -webkit-font-smoothing: antialiased;
+}
+.mrb-brand:hover, .mrb-brand:focus, .mrb-brand:active, .mrb-brand:visited {
+  color: var(--mrb-brand-word) !important;
+  text-decoration: none !important;
+  background: none !important;
+  opacity: 1 !important;
+}
+.mrb-brand:focus-visible { outline: 2px solid #E4572E; outline-offset: 4px; border-radius: 4px; }
+.mrb-brand__mark {
+  display: block !important;
+  width: var(--mrb-brand-mark) !important;
+  height: var(--mrb-brand-mark) !important;
+  flex: none;
+  overflow: visible;
+  margin: 0 !important;
+  filter: none !important;
+}
+.mrb-brand__word {
+  display: inline-block !important;
+  font: inherit !important;
+  letter-spacing: inherit !important;
+  color: inherit !important;
+  background: none !important;
+  -webkit-text-fill-color: currentColor !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+@media (min-width: 720px) {
+  .mrb-brand { --mrb-brand-mark: 23px; --mrb-brand-size: 21px; --mrb-brand-gap: 6px; }
+}
+
+/* The one variant: light-on-dark. Follows the theme (html[data-theme]),
+   and is forced on a header that is dark in both themes. */
+html[data-theme="dark"] .mrb-brand,
+.mrb-brand.mrb-brand--on-dark { --mrb-brand-word: #FBF3E6; }
+@media print {
+  .mrb-brand { --mrb-brand-word: #221E1B; }
+}
