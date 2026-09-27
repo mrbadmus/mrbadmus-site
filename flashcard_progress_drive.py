@@ -25,8 +25,12 @@ What it proves:
   · no explanatory copy, no mono label under 12px, tap targets >= 44px;
   · and, separately, that teacher-live.js's `cellOf` never grades a
     flashcard set: one MCQ paper at 50% and one flashcard set at 100% give a
-    class mean and pupil averages of 50 — the JS twin of
-    20260924180200_mrb351_rollup_kind.sql.
+    class mean and pupil averages of 50; and that `buildRoster`'s `lastIso`
+    folds in a flashcard SITTING (not just a completed cell) via GREATEST,
+    outranking an older completion and standing alone for a sitting-only
+    pupil — the JS twin of `teacher_class_rollup_v2`
+    (20260927100000_mrb351_rollup_v2_live_results_kinds.sql, which
+    superseded 20260924180200_mrb351_rollup_kind.sql's edit to v1).
 
 Exits non-zero on any failure.
 """
@@ -329,7 +333,8 @@ def cellof_check(b, base, check):
       var L = window.MrBadmusTeacherLive;
       var pack = {
         members: [{student_id: 's1', first_name: 'A', last_name: 'One', joined_at: '2026-09-01T00:00:00+00:00'},
-                  {student_id: 's2', first_name: 'B', last_name: 'Two', joined_at: '2026-09-01T00:00:00+00:00'}],
+                  {student_id: 's2', first_name: 'B', last_name: 'Two', joined_at: '2026-09-01T00:00:00+00:00'},
+                  {student_id: 's3', first_name: 'C', last_name: 'Three', joined_at: '2026-09-01T00:00:00+00:00'}],
         assignments: [
           {id: 'm1', title: 'Quiz', due_at: '2026-09-10T14:00:00+00:00', kind: 'mcq_set'},
           {id: 'f1', title: 'Deck', due_at: '2026-09-12T14:00:00+00:00', kind: asFlash ? 'flashcards' : 'mcq_set'}],
@@ -342,16 +347,29 @@ def cellof_check(b, base, check):
            completed_at: '2026-09-11T10:00:00+00:00', submitted_at: '2026-09-11T10:00:00+00:00', is_late: false},
           {id: 'x4', assignment_id: 'f1', student_id: 's2', score: 10, max_score: 10, status: 'complete',
            completed_at: '2026-09-13T10:00:00+00:00', submitted_at: '2026-09-13T10:00:00+00:00', is_late: true}],
-        week: {start_at: '2026-09-07T00:00:00.000Z', end_at: '2026-09-14T00:00:00.000Z'}
+        week: {start_at: '2026-09-07T00:00:00.000Z', end_at: '2026-09-14T00:00:00.000Z'},
+        /* ⊕ MRB-351 landing (27 Sep 2026) — Source 2 of `lastIso`
+           (LAST_ACTIVE_RULE.md): a flashcard SITTING, not a completed cell.
+           s1 has a real cell (x3, 09-11) but a LATER sitting (09-16) that
+           never became a submission — the sitting must win. s3 has NO
+           submission of any kind — the sitting is the only signal there is.
+           s2 gets none, proving an absent entry changes nothing. */
+        flashcardLastActive: { s1: '2026-09-16T08:00:00+00:00', s3: '2026-09-17T09:00:00+00:00' }
       };
       var now = Date.parse('2026-09-20T12:00:00Z');
       var papers = L.buildPapers(pack, now);
       var mx = L.buildMatrix(pack, papers, now);
+      var roster = L.buildRoster(pack, mx, now);
+      var byId = {};
+      roster.forEach(function (r) { byId[r.id] = r; });
       var fi = papers.filter(function (p) { return p.id === 'f1'; })[0].idx;
       return {classMean: mx.classMean, s1: mx.studentAvg.s1, s2: mx.studentAvg.s2,
               flashMean: mx.colMean[fi], flashSub: mx.colSub[fi], flashLate: mx.colLate[fi],
               flashKind: papers[fi].kind, submitted: mx.rows.map(function (r) { return r.submitted[fi]; }),
-              newest: L.newestMarkedIdx(papers), mcqIdx: papers.filter(function (p) { return p.id === 'm1'; })[0].idx};
+              newest: L.newestMarkedIdx(papers), mcqIdx: papers.filter(function (p) { return p.id === 'm1'; })[0].idx,
+              s1Last: byId.s1.lastIso, s1LastLabel: byId.s1.last,
+              s2Last: byId.s2.lastIso,
+              s3Last: byId.s3.lastIso, s3LastLabel: byId.s3.last};
     })(%s)
     """
     got = p.eval(probe % "true")
@@ -361,12 +379,32 @@ def cellof_check(b, base, check):
           str(got and got["classMean"]))
     check(got and got["s1"] == 50 and got["s2"] == 50, "cellOf: every pupil average 50")
     check(got and got["flashMean"] is None, "cellOf: the flashcard column has no mean")
-    check(got and got["flashSub"] == 2 and got["submitted"] == [True, True],
+    # ⊕ MRB-351 landing (27 Sep 2026) — a THIRD member, `submitted[2]`, joined
+    # this fixture for the roster/lastIso checks below (s3 has no submission
+    # of any kind); `[True, True, False]` reflects that, not a change to
+    # what "handed in" means.
+    check(got and got["flashSub"] == 2 and got["submitted"] == [True, True, False],
           "cellOf: a finished flashcard set IS handed in (2 of 2)")
     check(got and got["flashLate"] == 1, "cellOf: lateness still counts on a flashcard set")
     check(got and got["newest"] == got["mcqIdx"], "newestMarkedIdx skips the flashcard set")
     check(ctl and ctl["classMean"] == 75, "cellOf control: the same pack as two MCQ sets reads 75",
           "proves the probe can see a difference")
+    # ⊕ MRB-351 landing (27 Sep 2026) — LAST_ACTIVE_RULE.md, source 2.
+    check(got and got["s1Last"] == "2026-09-16T08:00:00+00:00",
+          "roster: a flashcard SITTING newer than a completed cell (either MCQ or deck) wins",
+          got and got["s1Last"])
+    check(got and got["s1LastLabel"] not in (None, "No activity yet"),
+          "roster: that pupil's row reads a real relative time, not 'No activity yet'",
+          got and got["s1LastLabel"])
+    check(got and got["s2Last"] == "2026-09-13T10:00:00+00:00",
+          "roster: a pupil with no flashcardLastActive entry is unaffected (cell-only, as before)",
+          got and got["s2Last"])
+    check(got and got["s3Last"] == "2026-09-17T09:00:00+00:00",
+          "roster: a pupil with ONLY a deck sitting (no submission of any kind) shows that time",
+          got and got["s3Last"])
+    check(got and got["s3LastLabel"] not in (None, "No activity yet"),
+          "roster: a sitting-only pupil reads a real relative time, not 'No activity yet'",
+          got and got["s3LastLabel"])
 
 
 def static_checks(check):

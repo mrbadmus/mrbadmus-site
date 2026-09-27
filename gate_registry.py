@@ -428,11 +428,16 @@ GATES = [
              "a row flipping to Done by polling without a reload, the CSV as "
              "displayed, the Rushed marker, no page scroll at 360/390 and no "
              "explanatory copy. It also runs teacher-live.js's real "
-             "`buildPapers`/`buildMatrix` to prove a flashcard set is handed "
-             "in but never graded — the JS twin of "
-             "20260924180200_mrb351_rollup_kind.sql — and reads the generated "
-             "screens for the kind split (flashcard rows open this page, no "
-             "Download)."),
+             "`buildPapers`/`buildMatrix`/`buildRoster` to prove a flashcard "
+             "set is handed in but never graded, and that a flashcard "
+             "SITTING (not just a completed cell) folds into a pupil's "
+             "`lastIso` via GREATEST, outranking an older completion and "
+             "standing alone for a sitting-only pupil — the JS twin of "
+             "`teacher_class_rollup_v2` "
+             "(20260927100000_mrb351_rollup_v2_live_results_kinds.sql, which "
+             "superseded 20260924180200_mrb351_rollup_kind.sql's edit to v1) "
+             "— and reads the generated screens for the kind split "
+             "(flashcard rows open this page, no Download)."),
 
     dict(name="flashcard_decks_drive",
          cmd=["python3", "flashcard_decks_drive.py"],
@@ -500,10 +505,14 @@ GATES = [
              "twice — the same first select, then ONE follow-up scoped to "
              "that row's id alone, naming only flashcard_mode/"
              "completion_rule/deck_id, proving the extra columns are never "
-             "asked for BEFORE the answer says they exist. If `git show` "
-             "cannot resolve main's commit (e.g. a shallow clone), the "
-             "count-equality checks report SKIPPED BY NAME with the reason "
-             "printed, never silently passed."),
+             "asked for BEFORE the answer says they exist. Also proves "
+             "LAST_ACTIVE_RULE.md's source 2: `flashcard_sessions` is NEVER "
+             "asked on the baseline fixture (no flashcard assignment in the "
+             "class), and asked exactly once, scoped to that assignment's "
+             "id alone, once one exists. If `git show` cannot resolve "
+             "main's commit (e.g. a shallow clone), the count-equality "
+             "checks report SKIPPED BY NAME with the reason printed, never "
+             "silently passed."),
 
     dict(name="today_drive",
          cmd=["python3", "today_drive.py"],
@@ -2108,10 +2117,18 @@ GATES = [
                   "supabase/migrations/"
                   "20260922231500_mrb348_teacher_class_rollup.sql",
                   # ⊕ Mide's 23 Sep 2026 ruling — the proof now also calls
-                  # `teacher_class_rollup_v2`, parked in this NEW migration
-                  # (not yet applied to production by this run).
+                  # `teacher_class_rollup_v2`. ⊕ 27 Sep 2026 (MRB-351
+                  # landing) — repointed to the migration that actually
+                  # defines it today: 20260924010000_rollup_live_results.sql
+                  # (D's original, no flashcard awareness) was superseded by
+                  # stream B's 20260927100000 file, which folds in the kind
+                  # split AND the flashcard last-activity fix this proof now
+                  # also asserts. Neither file lives in THIS repo (migrations
+                  # are parked on feat/mrb351-migrations, per docs/mrb351/
+                  # REPORT.md) — named here anyway so the watch is correct
+                  # the day that branch's migrations land in this tree.
                   "supabase/migrations/"
-                  "20260924010000_rollup_live_results.sql",
+                  "20260927100000_mrb351_rollup_v2_live_results_kinds.sql",
                   "shared/teacher-data.js", "shared/teacher-live.js",
                   "shared/config.js"],
          needs="mrb348_teacher_rollup_proof.py",

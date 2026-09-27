@@ -1130,8 +1130,11 @@
          meets the completion rule: a completion stamp, not a mark. Kept as a
          mark it would add a 100% to every mean and average on every screen.
          So it is handed in (on time / late exactly as usual) and carries no
-         score — the same `graded` predicate as `teacher_class_rollup`
-         (20260924180200_mrb351_rollup_kind.sql), so the two still agree. */
+         score — the same `graded` predicate as `teacher_class_rollup_v2`
+         (20260927100000_mrb351_rollup_v2_live_results_kinds.sql, which
+         retired and superseded 20260924180200_mrb351_rollup_kind.sql's
+         edit to v1 — see that migration's own header), so the two still
+         agree. */
       var graded = !(paper && paper.kind === "flashcards");
       var score = null, max = null, pct = null;
       if (graded && s.score != null && s.max_score != null && s.max_score > 0) {
@@ -1396,6 +1399,23 @@
         row.activity.forEach(function (v) {
           if (v && (lastIso == null || v > lastIso)) { lastIso = v; }
         });
+        /* ⊕ MRB-351 landing (27 Sep 2026) — SOURCE 2 of `lastIso`, per
+           docs (LAST_ACTIVE_RULE.md) and the SQL twin's `flashcard_activity`
+           CTE (teacher_class_rollup_v2, migration 20260927100000). A deck
+           writes NO `assignment_submissions` row until every card is
+           secured, so `row.activity` above (built from first-attempt
+           submissions) contributes NOTHING for a pupil mid-way through an
+           unfinished deck — worse than the MCQ in-progress case, because
+           there is no eventual "in progress" row to catch it on.
+           `pack.flashcardLastActive[sid]` is `shared/teacher-data.js`'s
+           per-pupil MAX(flashcard_sessions.last_seen_at), already scoped to
+           this class's own non-deleted, released flashcard assignments —
+           GREATEST-folded here exactly as the SQL folds `act_last`/
+           `fc_last`: only ever RAISES `lastIso`, and a pupil with no sitting
+           (the common case, or a class with no flashcard work — `pack.
+           flashcardLastActive` is `{}` then) is unaffected. */
+        var fcLast = pack.flashcardLastActive && pack.flashcardLastActive[m.student_id];
+        if (fcLast && (lastIso == null || fcLast > lastIso)) { lastIso = fcLast; }
       }
       /* "Never active" is not "active a long time ago", and the two have to
          be told apart. The LABEL says so in words.

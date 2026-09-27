@@ -2336,6 +2336,68 @@ window.MrBadmusTeacherData = (function () {
     }
     function flashcardExtraOf(a) { return flashcardExtra.get(a.id) || null; }
 
+    /* ⊕ MRB-351 landing (27 Sep 2026) — SOURCE 2 of a pupil's `lastIso`:
+       a flashcard SITTING is activity too, even before the deck is
+       finished. Full rule in LAST_ACTIVE_RULE.md; SQL twin is
+       `teacher_class_rollup_v2`'s `flashcard_activity` CTE
+       (20260927100000_mrb351_rollup_v2_live_results_kinds.sql). A deck
+       writes NO `assignment_submissions` row until every card is secured
+       (MRB-351 §1), so `activity[]` in `shared/teacher-live.js`'s
+       `buildMatrix` (built from first-attempt submissions) contributes
+       NOTHING for a pupil mid-way through an unfinished deck.
+
+       Scoped to THIS BATCH'S OWN non-deleted (`assignmentRows` already
+       excludes `deleted_at`), RELEASED flashcard assignments — the exact
+       population the SQL's `flashcard_activity` CTE joins against — and to
+       `subsScope`, same cost-bounding reasoning as Stage B above: a caller
+       that narrowed submissions to one class should not pay for every
+       other class's sittings either.
+
+       ⚠️ FIRES ONLY WHEN AT LEAST ONE SUCH ASSIGNMENT EXISTS. On a class
+       with no flashcard work at all — every class today, until Set work
+       sets one — `flashcardAssignmentIds` is empty and NO request is made:
+       the page's request count is unchanged, exactly like the
+       `flashcardExtra` follow-up above. Proved by
+       `flashcard_request_shape_drive.py`. */
+    const nowIso = new Date(opts && opts.now ? opts.now : Date.now()).toISOString();
+    const flashcardAssignments = assignmentRows.filter(function (a) {
+      return kindOf(a) === 'flashcards'
+        && (subsScope === null || subsScope.has(a.class_id))
+        && (!a.release_at || a.release_at <= nowIso);
+    });
+    const classOfFlashcardAssignment = new Map();
+    flashcardAssignments.forEach(function (a) { classOfFlashcardAssignment.set(a.id, a.class_id); });
+    const flashcardAssignmentIds = flashcardAssignments.map(function (a) { return a.id; });
+    const flashcardLastByClass = new Map();   // classId -> Map(studentId -> ISO last_seen_at)
+    if (flashcardAssignmentIds.length > 0) {
+      try {
+        const sessionRows = await inChunks(flashcardAssignmentIds, async function (chunk) {
+          const r = await sb.from('flashcard_sessions')
+            .select('assignment_id, pupil_id, last_seen_at')
+            .in('assignment_id', chunk);
+          if (r.error) throw r.error;
+          return r.data || [];
+        });
+        sessionRows.forEach(function (s) {
+          const cid = classOfFlashcardAssignment.get(s.assignment_id);
+          if (!cid || !s.last_seen_at) { return; }
+          if (!flashcardLastByClass.has(cid)) { flashcardLastByClass.set(cid, new Map()); }
+          const m = flashcardLastByClass.get(cid);
+          const prev = m.get(s.pupil_id);
+          if (!prev || s.last_seen_at > prev) { m.set(s.pupil_id, s.last_seen_at); }
+        });
+      } catch (e) {
+        console.error('[teacher-data] flashcard sessions query failed (soft-fail: '
+          + 'a sitting-only pupil may read "No activity yet" until this recovers)', e);
+      }
+    }
+    function flashcardLastActiveFor(classId) {
+      const out = {};
+      const m = flashcardLastByClass.get(classId);
+      if (m) { m.forEach(function (v, sid) { out[sid] = v; }); }
+      return out;
+    }
+
     // ── Assemble, per class ────────────────────────────────────────────
     const membersByClass = new Map();
     const departedByClass = new Map();
@@ -2429,6 +2491,13 @@ window.MrBadmusTeacherData = (function () {
         departed_count: departedByClass.get(id) || 0,
         assignments: assignmentsByClass.get(id) || [],
         submissions: submissionsByClass.get(id) || [],
+        // ⊕ MRB-351 landing — per-pupil MAX(flashcard_sessions.last_seen_at),
+        // scoped to this class's own released flashcard assignments. `{}`
+        // for a class with no flashcard work (the common case today);
+        // `shared/teacher-live.js`'s `buildRoster` GREATEST-folds this
+        // against `activity[]` to get `lastIso`. See the block above and
+        // LAST_ACTIVE_RULE.md.
+        flashcardLastActive: flashcardLastActiveFor(id),
       };
     });
     return out;

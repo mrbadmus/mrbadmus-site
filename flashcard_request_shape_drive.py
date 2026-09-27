@@ -168,6 +168,15 @@ def teacher_tables(with_flashcard_row):
         }],
         "assignments": assignments,
         "assignment_submissions": [],
+        # ⊕ MRB-351 landing (27 Sep 2026) — a sitting on the flashcard
+        # assignment, present only in the `with_flashcard_row` fixture, so
+        # the "fires ONLY when the class has ≥1 flashcard assignment" check
+        # below has something real to find when it should, and nothing when
+        # it shouldn't.
+        "flashcard_sessions": ([{
+            "assignment_id": A_FC, "pupil_id": STU, "class_id": CID,
+            "last_seen_at": "2026-09-25T09:00:00Z",
+        }] if with_flashcard_row else []),
     }
 
 
@@ -310,6 +319,10 @@ def main():
             check(len(asg_calls) == 1, "assignments asked exactly once (no follow-up needed)", len(asg_calls))
             check(any("quiz_type" in (c.get("select") or "") for c in asg_calls),
                   "the one assignments select names quiz_type")
+            fs_calls = [c for c in calls if c.get("table") == "flashcard_sessions"]
+            check(len(fs_calls) == 0,
+                  "flashcard_sessions is NEVER asked when the class has no flashcard assignment",
+                  len(fs_calls))
             teacher_baseline_count = len(calls)
 
             # ═══ 2. TEACHER — loadClassMatrices, one flashcard row ══════════
@@ -331,6 +344,18 @@ def main():
                 sel = followup.get("select") or ""
                 check(("flashcard_mode" in sel) and ("completion_rule" in sel) and ("deck_id" in sel),
                       "the follow-up select names exactly the three extra fields the edit sheet needs", sel)
+            # ⊕ MRB-351 landing (27 Sep 2026) — LAST_ACTIVE_RULE.md, source 2:
+            # `flashcard_sessions` fires ONLY once a flashcard assignment
+            # exists, scoped to that assignment's id alone.
+            fs_calls2 = [c for c in calls2 if c.get("table") == "flashcard_sessions"]
+            check(len(fs_calls2) == 1,
+                  "flashcard_sessions is asked exactly once, once a flashcard assignment exists",
+                  len(fs_calls2))
+            if fs_calls2:
+                in_filters_fs = [f for f in fs_calls2[0]["filters"] if f["op"] == "in" and f["col"] == "assignment_id"]
+                check(bool(in_filters_fs) and in_filters_fs[0]["val"] == [A_FC],
+                      "flashcard_sessions is scoped to this class's flashcard assignment id(s) alone",
+                      in_filters_fs)
 
             # ═══ 3. STUDENT — loadStudentClass, baseline ════════════════════
             print("\n── student-data.js: loadStudentClass, baseline (production shape) ──")
