@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Account — MrBadmus</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=4ac6951d"/>
-  <link rel="stylesheet" href="/shared/ks3.css?v=a50390d5"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=4ac1e47c"/>
+  <link rel="stylesheet" href="/shared/ks3.css?v=bbeaa8ce"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=f56f5454"/>
   <link rel="stylesheet" href="/consumer/consumer.css"/>
   <style>
   /* ═══════════════════════════════════════════════════════════════════════
@@ -128,8 +130,11 @@
     .ak-head { padding: 16px 48px 14px; }
   }
   </style>
+<style>.mrb-theme-float{position:fixed;top:10px;right:10px;z-index:9999;background:#FFFCF5;color:#221E1B;border-radius:999px;box-shadow:0 1px 4px rgba(0,0,0,.18)}@media print{.mrb-theme-float{display:none!important}}</style>
 </head>
 <body>
+<div class="mrb-theme-float"><span class="mrb-theme-slot" data-mrb-theme></span></div>
+
 
 <div class="rd ak-root" data-mode="ks3" id="ak-root">
   <header class="ak-head" id="ak-head"></header>
@@ -823,5 +828,6 @@
   } });
 })();
 </script>
+<script src="/shared/theme.js?v=d6238918" defer></script>
 </body>
 </html>

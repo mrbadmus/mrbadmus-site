@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
+<script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Chemical reactions · MrBadmusAI KS3</title>
 <meta name="description" content="Some changes make something new and some only move what was already there. This unit is about telling which is which, seeing what a reaction does to the atoms underneath, and learning the two ways chemists write one down."/>
@@ -18,7 +19,8 @@
 <link rel="stylesheet" href="/shared/tokens.css?v=4ac6951d"/>
 <link rel="stylesheet" href="/shared/styles.css?v=d7fa5bbc"/>
 <link rel="stylesheet" href="/shared/nav.css?v=363c537c"/>
-<link rel="stylesheet" href="/shared/ks3.css?v=a50390d5"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=bbeaa8ce"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css?v=f56f5454"/>
 </head>
 <body class="rd" data-mode="ks3" style="--subject: var(--chemistry);">
 <header class="ks3-nav">
@@ -26,7 +28,7 @@
   <span class="ks3-nav-divider" aria-hidden="true"></span>
   <nav class="ks3-crumbs" aria-label="Breadcrumb"><a href="/ks3/index.html">KS3</a><span class="ks3-crumb-sep" aria-hidden="true">›</span><a href="/ks3/chemistry/index.html">Chemistry</a><span class="ks3-crumb-sep" aria-hidden="true">›</span><span aria-current="page">Chemical reactions</span></nav>
   <span class="ks3-nav-spacer"></span>
-  </div>
+  <span class="mrb-theme-slot" data-mrb-theme></span></div>
 </header>
 <main class="ks3-main">
 <header class="ks3-unit-head">
@@ -42,6 +44,6 @@
     <p class="ks3-footer-title">MrBadmusAI · Key Stage 3 Science</p>
   </div>
 </footer>
-<script src="/shared/class-entry.js?v=a97c1d3d" defer></script>
+<script src="/shared/theme.js?v=d6238918" defer></script><script src="/shared/class-entry.js?v=a97c1d3d" defer></script>
 </body>
 </html>
