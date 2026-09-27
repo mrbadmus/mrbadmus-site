@@ -285,6 +285,32 @@ def api_requests_since_nav(p):
     return out
 
 
+def api_exchanges_since_nav(p):
+    """Like `api_requests_since_nav`, but pairs each request with its own
+    response STATUS (via `Network.responseReceived`'s matching `requestId`) —
+    needed by `--expect-schema` mode, which has to prove the capability
+    probe's request didn't just fire but came back 200, not merely "sent"."""
+    try:
+        p.send("Runtime.evaluate", {"expression": "1", "returnByValue": True})
+    except cdp.CDPError:
+        pass
+    p.drain(0.4)
+    by_id = {}
+    for ev in p._events:                                            # noqa: SLF001
+        method = ev.get("method")
+        params = ev.get("params") or {}
+        rid = params.get("requestId")
+        if method == "Network.requestWillBeSent":
+            rq = params.get("request") or {}
+            url = rq.get("url") or ""
+            if API_URL_RE.search(url) and not ASSET_RE.search(url):
+                by_id[rid] = {"method": rq.get("method"), "url": url, "status": None}
+        elif method == "Network.responseReceived" and rid in by_id:
+            resp = params.get("response") or {}
+            by_id[rid]["status"] = resp.get("status")
+    return list(by_id.values())
+
+
 def load_page(p, url, label, results, errors, ready="document.body && document.body.innerText.length>0"):
     ok = goto_ready(p, url, ready, settle=6.0, tries=3)
     time.sleep(0.6)
@@ -441,9 +467,24 @@ def run_journey(site_base, label):
         pt.eval("window.MRBSetWork.open({classId: %s})" % json.dumps(FX.C_KS3_A))
         time.sleep(1.5)
         try:
+            # ⚠️ THE CHIP ITSELF CARRIES `data-sw-key="flashcards"`, NOT
+            # `data-sw` — `buildChips()` in shared/set-work.js only puts
+            # `data-sw` on the CONTAINER (`type-chips`), whose own
+            # concatenated textContent ("QuestionsFlashcards") never equals
+            # "Flashcards" trimmed. The old `[data-sw]` + exact-text selector
+            # here could never match the chip in EITHER direction — it
+            # "passed" on no-schema TEST only because the chip is genuinely
+            # absent there regardless of selector correctness, exactly the
+            # same vacuous-pass shape as the probe firing 0 times. Also
+            # checks the type-chips HOST is not `hidden` — `fcCapable()`
+            # gates via `els.typeChips.hidden`, so an unhidden host with the
+            # keyed chip present is what "the chip is offered" means.
             has_chip = pt.eval(
-                "Array.prototype.slice.call(document.querySelectorAll('[data-sw]'))"
-                ".some(function(n){return (n.textContent||'').trim()==='Flashcards';})")
+                "(function(){"
+                "var el=document.querySelector('[data-sw-key=\"flashcards\"]');"
+                "var host=document.querySelector('[data-sw=\"type-chips\"]');"
+                "return !!el && !!host && !host.hidden;"
+                "})()")
         except Exception:                                           # noqa: BLE001
             has_chip = None
         record(has_chip is False, "%s: no 'Flashcards' chip in the Set work sheet" % label,
@@ -558,25 +599,100 @@ def main():
         print("\n── journey on origin/main's build (%s) ──" % base_b)
         reqs_b, errs_b = run_journey(base_b, "main")
     finally:
-        if server:
-            server.__exit__(None, None, None)
-        if site_a:
-            site_a.shutdown()
-        if site_b:
-            site_b.shutdown()
-        if main_dir:
-            remove_main_worktree(main_dir)
+        # ⚠️ THE SUPABASE CLEANUP RUNS FIRST, AND EACH STEP BELOW IS ISOLATED.
+        #
+        # This used to be the LAST two lines of this block, after four other
+        # cleanup calls (backend process, two static-file servers, the
+        # detached origin/main worktree) that a plain `if x: x.cleanup()`
+        # does not guard. Python re-raises whatever exception was live when a
+        # `finally` block is entered once the block finishes — but if a
+        # STATEMENT INSIDE THE FINALLY ITSELF RAISES (an http.server that
+        # will not shut down cleanly, a `git worktree remove` that refuses
+        # because `build_main_worktree` left it mid-write), that new
+        # exception ABORTS THE REST OF THE FINALLY BLOCK, and everything
+        # after it — which was `FX.clear_work()` and `FX.teardown()` — never
+        # runs at all. The database rows this run wrote (the two throwaway
+        # schools, eight classes, every composed/posted assignment, their
+        # audit trail) are real, live, on TEST, and the run reports failure
+        # (or the caller sees a crash) while none of them come back on a
+        # retry unless a human notices and runs `mrb331_fixture.py
+        # --teardown` by hand — exactly the "printed success but left
+        # residue" defect this landing was told to fix (confirmed live: TEST
+        # held the fixture's 2 schools / 8 classes / dozens of assignments
+        # and audit rows from an earlier run, with nothing in this script
+        # having flagged it).
+        #
+        # So: the one cleanup step that deletes real data goes FIRST, and
+        # every step — including it — is wrapped so a failure anywhere is
+        # printed and the NEXT step still runs, rather than being silently
+        # skipped.
+        def _best_effort(label, fn):
+            try:
+                fn()
+                return True
+            except BaseException as e:                                # noqa: BLE001
+                print("   ⚠️  cleanup step %r raised and was NOT allowed to "
+                      "skip the rest of cleanup: %r" % (label, e))
+                return False
+
         print("\nclearing the throwaway world's assignments")
-        FX.clear_work()
-        FX.teardown()
+        _best_effort("FX.clear_work", FX.clear_work)
+        teardown_ok = _best_effort("FX.teardown", FX.teardown)
+        if server:
+            _best_effort("backend server shutdown",
+                         lambda: server.__exit__(None, None, None))
+        if site_a:
+            _best_effort("site_a shutdown", site_a.shutdown)
+        if site_b:
+            _best_effort("site_b shutdown", site_b.shutdown)
+        if main_dir:
+            _best_effort("remove_main_worktree",
+                         lambda: remove_main_worktree(main_dir))
+
+        # ⚠️ VERIFIED BY QUERY, NOT BY `FX.teardown()`'s OWN CLAIM. Its
+        # internal re-check runs inside the same `_best_effort` call above —
+        # if it raised for any reason `_best_effort` already caught it, so a
+        # second, independent read here is the only thing standing between
+        # "the wrapper printed a warning" and this run's own PASS/FAIL count
+        # actually reflecting whether TEST is clean.
+        ids = ",".join(c[0] for c in FX.CLASSES)
+        residue = []
+        for table, filt in (
+            ("classes", "id=in.(%s)" % ids),
+            ("schools", "id=in.(%s,%s)" % (FX.SCHOOL_OPEN, FX.SCHOOL_HELD)),
+            ("academic_years", "id=in.(%s,%s)" % (FX.YEAR_OPEN, FX.YEAR_HELD)),
+            ("assignments", "class_id=in.(%s)" % ids),
+        ):
+            st, rows = FX.api("GET", "/rest/v1/%s?%s&select=id" % (table, filt))
+            if isinstance(rows, list) and rows:
+                residue.append("%s: %d row(s)" % (table, len(rows)))
+        for email in FX.EMAILS:
+            if FX.find_user(email):
+                residue.append("auth user " + email)
+        record(teardown_ok and not residue,
+               "the throwaway world leaves ZERO residue on TEST after this "
+               "run, verified by a fresh query (not FX.teardown()'s own claim)",
+               residue)
 
     # ── the request-shape assertions, on THIS branch's build ──────────────
     print("\n── request-shape assertions (this branch) ──")
     forbidden, flashcard_hits, probes = analyse(reqs_a)
     record(not forbidden, "no request anywhere names a forbidden column, "
            "table or rpc", forbidden[:10])
-    record(len(probes) <= 1, "the flashcard-capability probe fires at most "
-           "once across the whole teacher browser session",
+    # ⚠️ EXACTLY ONE, NOT "AT MOST ONE". `probes <= 1` is true at zero, and
+    # zero is exactly the defect that made this proof worthless the first
+    # time it ran live: the probe never sent a request at all (the 4s-wait/
+    # memoised-false bug in teacher-admin-nav.js, fixed alongside this tool),
+    # so "at most one" passed while proving nothing about whether the probe
+    # runs. A negative answer is cached to sessionStorage after the very
+    # first teacher page in this one continuous browser session, so every
+    # later teacher page load in `reqs_a` must see the cache and skip the
+    # network request — the count this browser session should show, on a
+    # true schema-less TEST, is 1: never 0 (the probe never asked), never 2+
+    # (the negative cache failed to hold).
+    record(len(probes) == 1, "the flashcard-capability probe fires EXACTLY "
+           "once across the whole teacher browser session (not zero, not "
+           "more than one)",
            "%d probe hit(s): %s" % (len(probes), probes))
     print("   probe count: %d" % len(probes))
     for label, count in ((l, len(r)) for l, r in reqs_a.items()):
@@ -660,7 +776,15 @@ def main():
     #     [not] applied") as expected, not a defect this proof should catch.
     KNOWN_BENIGN = (
         "mrbadmus-backend.onrender.com/api/health",
-        "flashcard_decks?select=id&limit=0",
+        # ⚠️ MUST MATCH THE REAL REQUEST SHAPE, EXACTLY, OR THIS EXCUSE NEVER
+        # FIRES AND EVERY PAGE'S PROBE 404 SHOWS UP AS AN UNEXPLAINED "EXTRA"
+        # CONSOLE ERROR. teacher-admin-nav.js's probe reads
+        # `sb.from('flashcard_decks').select('id').limit(1)` — this used to
+        # read `limit=0` here, which never matched the actual `limit=1` on
+        # the wire (found while landing MRB-351; the two had drifted apart,
+        # unnoticed, because nothing had run this excuse list against a
+        # console error that actually contained the URL until now).
+        "flashcard_decks?select=id&limit=1",
     )
     print("\n── console errors: mine vs main, per page ──")
     console_bad = []
@@ -684,5 +808,179 @@ def main():
     return 1 if bad else 0
 
 
+# ════════════════════════════════════════════════════════════════════════
+# --expect-schema — the mirror-image proof: TEST rolled FORWARD (the real
+# MRB-351 migrations applied), and the capability probe/link/chip/decks.html
+# are asserted PRESENT rather than absent.
+#
+# ⚠️ ASSUMES TEST IS ALREADY FORWARD when this runs (the coordinator's own
+# migration-apply step is separate, deliberately, same reasoning as the
+# no-schema mode's own docstring). Leaves TEST forward — nothing here rolls
+# anything back.
+#
+# Deliberately smaller than `main()`: no origin/main comparison build (origin/
+# main has no flashcard schema at all, so a request-shape diff against it
+# would fail on every flashcard-aware request by design — this mode's job is
+# "does the feature show up", not "is the request shape unchanged"), and no
+# second backend/site pair. One build, one backend, one browser persona
+# (the teacher — the probe and its consumers are all teacher-surfaces).
+# ════════════════════════════════════════════════════════════════════════
+def main_expect_schema():
+    pw = os.environ.get(FX.ENV_SWITCH, "")
+    if not pw:
+        raise SystemExit("Set %s." % FX.ENV_SWITCH)
+
+    print("\nMRB-351 expect-schema live proof — TEST forward, real backend, "
+          "real browser\n")
+    FX.seed()
+    gone = FX.clear_work()
+    if gone:
+        print("   cleared %d leftover assignment(s)" % gone)
+    teacher_token = sign_in(FX.TEACHER_EMAIL, pw, REPO)["access_token"]
+
+    server = None
+    site_a = None
+    try:
+        site_a, site_a_port = cdp.serve(os.path.join(REPO, "mrbadmus_site"), port=SITE_A_PORT)
+        base_a = "http://localhost:%d" % site_a_port
+        server = Server(extra_origins=[base_a])
+        server.__enter__()
+
+        # A real Questions assignment, exactly as the no-schema proof makes
+        # one, so the teacher pages have something real to render (not a
+        # requirement of the probe itself, but keeps this journey honest
+        # about what a Rainford teacher's screen actually looks like).
+        scope_ks3 = call("GET", "/api/teacher/set-work/scope?class_id=" + FX.C_KS3_A, teacher_token)[1]
+        ref = pick_ks3_scope(scope_ks3, "easy")
+        if ref:
+            ids = preview_ids(teacher_token, FX.C_KS3_A, "easy", "subtopic", ref, 5)
+            if ids:
+                due = (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
+                post_set(teacher_token, FX.C_KS3_A, "easy", "subtopic", ref, ids,
+                         "MRB-351 expect-schema proof · " + str(uuid.uuid4())[:8], due)
+
+        with cdp.Browser() as b:
+            pt = b.attach()
+            pt.set_viewport(390, 900)
+            signed = sign_in_page(pt, base_a, FX.TEACHER_EMAIL, pw)
+            record(str(signed).startswith("ok"), "teacher signs in through auth.html", signed)
+            enable_network(pt)
+
+            url = "%s/teacher/class-detail.html?class=%s&env=test&api=%s" % (
+                base_a, FX.C_KS3_A, PAGE_API)
+            ok = goto_ready(pt, url, "!!(window.MRBSetWork && window.MRBSetWork.open)",
+                             settle=6.0, tries=3)
+            record(ok, "teacher class-detail (8a/Sc1) loaded", "" if ok else url)
+            # ⚠️ THE PROBE IS OFF THE CRITICAL PATH, ON PURPOSE (see
+            # teacher-admin-nav.js's own header comment) — it waits up to 15s
+            # for window.MrBadmusTeacherGuard.getClient() before it can even
+            # send the request, so this proof has to wait at least that long
+            # before declaring the probe absent. `settle=6.0` above only
+            # waits for the PAGE; this waits for the PROBE specifically.
+            exchanges = []
+            for _ in range(20):
+                time.sleep(1.0)
+                exchanges = api_exchanges_since_nav(pt)
+                if any("flashcard_decks" in e["url"] for e in exchanges):
+                    break
+            probe = [e for e in exchanges if "flashcard_decks" in e["url"]]
+            record(bool(probe), "the flashcard-capability probe fires on TEST forward",
+                   probe or "no flashcard_decks request seen in 20s")
+            if probe:
+                record(probe[0]["status"] == 200,
+                       "the probe's request answers 200 (schema present)",
+                       "status %r on %s" % (probe[0]["status"], probe[0]["url"]))
+            try:
+                has_link = pt.eval("document.body.innerText.indexOf('Flashcard decks') > -1")
+            except Exception:                                          # noqa: BLE001
+                has_link = None
+            record(has_link is True, "'Flashcard decks' nav link IS present",
+                   "link missing" if has_link is False else "eval failed" if has_link is None else "")
+
+            pt.eval("window.MRBSetWork.open({classId: %s})" % json.dumps(FX.C_KS3_A))
+            # `probeFcCapability()` (shared/set-work.js) fires its own read of
+            # the SAME cached probe on open() and re-draws once its promise
+            # resolves — usually a microtask since teacher-admin-nav.js's own
+            # probe already settled on the class-detail page load above, but
+            # poll rather than assume a fixed sleep is enough.
+            has_chip = None
+            for _ in range(15):
+                time.sleep(0.5)
+                try:
+                    # See the no-schema journey's identical check for why
+                    # `data-sw-key`, not `data-sw`: the chip button itself
+                    # carries `data-sw-key="flashcards"`; `data-sw` is only
+                    # on the chips' container.
+                    has_chip = pt.eval(
+                        "(function(){"
+                        "var el=document.querySelector('[data-sw-key=\"flashcards\"]');"
+                        "var host=document.querySelector('[data-sw=\"type-chips\"]');"
+                        "return !!el && !!host && !host.hidden;"
+                        "})()")
+                except Exception:                                           # noqa: BLE001
+                    has_chip = None
+                if has_chip:
+                    break
+            record(has_chip is True, "'Flashcards' chip IS offered in the Set work sheet",
+                   "chip missing" if has_chip is False else "eval failed" if has_chip is None else "")
+            pt.eval("try { window.MRBSetWork.close(); } catch (e) {}")
+
+            url = "%s/teacher/decks.html?env=test&api=%s" % (base_a, PAGE_API)
+            ok = goto_ready(pt, url, "document.body && document.body.innerText.length>0",
+                             settle=6.0, tries=3)
+            record(ok, "teacher/decks.html loaded", "" if ok else url)
+            try:
+                text = pt.eval("document.body.innerText")
+            except Exception:                                           # noqa: BLE001
+                text = ""
+            not_switched_on = "not switched on" in (text or "").lower()
+            record(not not_switched_on,
+                   "decks.html does NOT show the 'not switched on' calm state",
+                   text[:300] if not_switched_on else "")
+    finally:
+        def _best_effort(label, fn):
+            try:
+                fn()
+                return True
+            except BaseException as e:                                 # noqa: BLE001
+                print("   ⚠️  cleanup step %r raised and was NOT allowed to "
+                      "skip the rest of cleanup: %r" % (label, e))
+                return False
+
+        print("\nclearing the throwaway world's assignments")
+        _best_effort("FX.clear_work", FX.clear_work)
+        teardown_ok = _best_effort("FX.teardown", FX.teardown)
+        if server:
+            _best_effort("backend server shutdown",
+                         lambda: server.__exit__(None, None, None))
+        if site_a:
+            _best_effort("site_a shutdown", site_a.shutdown)
+
+        ids = ",".join(c[0] for c in FX.CLASSES)
+        residue = []
+        for table, filt in (
+            ("classes", "id=in.(%s)" % ids),
+            ("schools", "id=in.(%s,%s)" % (FX.SCHOOL_OPEN, FX.SCHOOL_HELD)),
+            ("academic_years", "id=in.(%s,%s)" % (FX.YEAR_OPEN, FX.YEAR_HELD)),
+            ("assignments", "class_id=in.(%s)" % ids),
+        ):
+            st, rows = FX.api("GET", "/rest/v1/%s?%s&select=id" % (table, filt))
+            if isinstance(rows, list) and rows:
+                residue.append("%s: %d row(s)" % (table, len(rows)))
+        for email in FX.EMAILS:
+            if FX.find_user(email):
+                residue.append("auth user " + email)
+        record(teardown_ok and not residue,
+               "the throwaway world leaves ZERO residue on TEST after this "
+               "run, verified by a fresh query (not FX.teardown()'s own claim)",
+               residue)
+
+    bad = [c for c in checks if not c[0]]
+    print("\n%s  %d checks, %d failed\n" % ("FAIL" if bad else "PASS", len(checks), len(bad)))
+    for ok, label, detail in bad:
+        print("   - %s" % label)
+    return 1 if bad else 0
+
+
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main_expect_schema() if "--expect-schema" in sys.argv else main())

@@ -258,8 +258,10 @@ window.MrBadmusAdminScope = (function () {
      to a page that opens onto a table that does not exist.
 
      `decksCapable` is null (unprobed), true or false, decided by the
-     cheapest possible read — `limit(0)` on `flashcard_decks`, no rows, just
-     "does this exist and can I ask it at all". Fails CLOSED: any error
+     cheapest possible read — `limit(1)` on `flashcard_decks`, at most one
+     row, just "does this exist and can I ask it at all" (⚠️ not `limit(0)`:
+     see the real probe call below for why a real GET with a non-empty body
+     is required). Fails CLOSED: any error
      (missing table 42P01/PGRST205, RLS refusal, no client, network) leaves
      the link out. Run lazily, off `watchToday`'s own boot, never blocking
      Today or the rest of the nav on it.
