@@ -964,9 +964,15 @@ COMPONENTS = [
     # MRB-197: Design's nav mark. Pinned to the frozen reference's header —
     # if the wordmark shrinks below display size, the chevron's 3:1 pair
     # below stops being the whole story and this fails first.
-    dict(name="nav brand wordmark (MRB-197)", on=LESSON, sel=".ks3-brand",
-         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
-                "font-size": "22px", "color": "#221E1B"}),
+    # ⊕ UPDATED, one-mark ruling 13 Sep 2026 (Mide): MRB-197's `.ks3-brand`
+    # (Bricolage 800 / 22px "MrBadmusAI") is retired; every page wears the ONE
+    # lockup from brand.py. Pinned to the kit's own values instead — Bricolage
+    # 600 (the kit forbids any other weight), 21px from 720px (this harness
+    # lands at 756px), ink #221E1B in light. Same four properties, same
+    # strictness: the row moved to the ruled mark, it did not loosen.
+    dict(name="nav brand wordmark (one-mark ruling)", on=LESSON, sel=".mrb-brand",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "600",
+                "font-size": "21px", "color": "#221E1B"}),
     # ⊖ Design's B1 delivery drew the chevron inside a 34px accent tile. NOT
     # adopted on the replay: MRB-197 is Mide's standing brand ruling and
     # `NAV_BRAND` is one mark for all 296 KS3 pages, so taking the tile would
@@ -6490,11 +6496,14 @@ CONTRAST = [
     dict(name="breadcrumb row link on page ground", on=UNIT,
          fg=".ks3-crumbs a", bg="body", need=4.5),
     dict(name="nav brand wordmark on page ground", on=LESSON,
-         fg=".ks3-brand", bg=".ks3-nav", need=4.5),
+         # ⊕ one-mark ruling 13 Sep 2026: `.ks3-brand` → the one lockup.
+         fg=".mrb-brand__word", bg=".ks3-nav", need=4.5),
     # MRB-197: the chevron is an identifying mark, so R1's 3:1 applies. Read
     # from the SVG stroke, not `color` — the mark is drawn, not typed.
     dict(name="nav brand chevron on page ground (mark, 3:1)", on=LESSON,
-         fg=".ks3-brand svg path", bg=".ks3-nav", need=3.0, prop="stroke"),
+         # ⊕ one-mark ruling 13 Sep 2026: the FRONT (solid) chevron of the
+         # one mark — the faded back one is decoration at 0.34 opacity.
+         fg=".mrb-brand__mark path:last-child", bg=".ks3-nav", need=3.0, prop="stroke"),
     dict(name="body text on card", on=LESSON,
          fg=".ks3-check p", bg=".ks3-check", need=4.5),
     # ⊕ MRB-221 — the draft-marker contrast pair is deleted with the marker.

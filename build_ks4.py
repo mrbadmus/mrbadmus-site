@@ -22,7 +22,6 @@ here — a hard line (contract §2). This script reads `all_subtopics_*.py`
 only, the same files `generate_site_v5.py` reads.
 """
 
-import base64
 import hashlib
 import importlib
 import json
@@ -31,6 +30,7 @@ import re
 import sys
 import time
 
+import brand
 import ks4_lessons
 from ks4_lessons import blocks as ks4_blocks
 import ks4_rulings
@@ -152,13 +152,14 @@ def compute_spec_note(slug, route):
 # standing preference for independent generators over cross-module coupling
 # — see generate_site_v5.py's comment by KS4_FAVICON_LINK). Kept here as
 # ITS OWN literal for the same reason, not imported.
-_KS4_PILOT_FAVICON_SVG = (
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">'
-    '<path d="M4 16L12 7l8 9" fill="none" stroke="#E4572E" stroke-width="4.6" '
-    'stroke-linecap="round" stroke-linejoin="round"/></svg>')
-KS4_PILOT_FAVICON_LINK = (
-    '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,%s"/>'
-    % base64.b64encode(_KS4_PILOT_FAVICON_SVG.encode("utf-8")).decode("ascii"))
+# ⊕ ONE-MARK RULING (Mide, 13 Sep 2026; one-mark run 27 Sep 2026) — the
+# upward-chevron data: favicon literal this comment describes is RETIRED.
+# The pages carry the ONE mark's head tags from brand.py instead (the kit's
+# favicon, apple-touch icon and the lockup stylesheet), stamped by the same
+# stamp_versions() pass as every /shared/ks4-* asset (KS4_VERSIONED). The
+# D3 property is unchanged: every page has a real <link rel="icon">, so no
+# favicon.ico 404.
+KS4_PILOT_FAVICON_LINK = brand.brand_head()
 
 # ⊕ these are OUR OWN new assets, a SEPARATE list from build_ks3.py's
 # VERSIONED_ASSETS tuple (contract §1: "add a KS4 list in build_ks4.py — do
@@ -169,7 +170,10 @@ KS4_PILOT_FAVICON_LINK = (
 # stamped like every other /shared/ks4-* asset on these pages.
 KS4_VERSIONED = ("ks4-ds.css", "ks4-theme.css", "ks4-lesson.css",
                   "ks4-source.js", "ks4-lib.js", "ks4-diagrams.js",
-                  "ks4-runtime.js", "mrbadmus.v2.js", "theme.js")
+                  "ks4-runtime.js", "mrbadmus.v2.js", "theme.js",
+                  # ⊕ one-mark run (27 Sep 2026) — brand.brand_head()'s assets.
+                  "brand/brand.css", "brand/mrbadmus-favicon.svg",
+                  "brand/mrbadmus-icon-light-512.png")
 
 # The subset of KS4_VERSIONED this script itself WRITES (excludes
 # mrbadmus.v2.js, which it only reads — that one is generate_site_v5.py's,
@@ -1104,7 +1108,11 @@ def compile_block(page, name):
     tpl, logic = template_and_logic(path)
     if name == "Ks4Chrome":
         tpl = ks4_rulings.apply_r_breadcrumb(tpl)
+        # ⊕ R-BRAND (one-mark ruling, 13 Sep 2026) — AFTER R-BREADCRUMB.
+        tpl = ks4_rulings.apply_r_brand_chrome(tpl)
     if name == "Ks4End":
+        # ⊕ R-BRAND — the footer's sign-off says "MrBadmus".
+        tpl = ks4_rulings.apply_r_brand_footer(tpl)
         # ⊕ R10 (ks4_rulings.py) — D1 fix: the "Ask about this lesson" CTA
         # becomes a real button carrying the hook mrbadmus.v2.js binds.
         tpl = ks4_rulings.apply_r10_tutor_cta(tpl)
@@ -1369,7 +1377,9 @@ def tutor_block(lesson, route):
 def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versions):
     url = ks4_lessons.site_url(lesson["slug"], route)
     subject_label = lesson["subject"].capitalize()
-    title = "%s · MrBadmusAI GCSE %s" % (lesson["title"], subject_label)
+    # ⊕ one-mark ruling (13 Sep 2026): "X · MrBadmusAI GCSE Chemistry" →
+    # "X | GCSE Chemistry | MrBadmus", brand.title()'s one suffix.
+    title = brand.title(lesson["title"], "GCSE %s" % subject_label)
     mount_script = lesson_mount_script(compiled_lesson, route, lesson, prev_next, subject_label)
     # ⊕ THEME RUN (26 Sep 2026, THEME-CONTRACT.md rules 2/3) — THEME_HEAD
     # goes as early as possible (right after <meta charset>, before every
@@ -1454,6 +1464,25 @@ PRERENDER_FREEZE_JS = """
 """
 
 
+# ⊕ R-BRAND (one-mark ruling, 13 Sep 2026) — the baked first paint carries
+# brand.py's lockup BYTE FOR BYTE. The runtime draws the same element tree
+# from the compiled Ks4Chrome template, but a browser's innerHTML is not
+# brand.py's bytes: it adds the runtime's `data-dc-tpl` numbering and
+# serialises the boolean `data-mrb-mark` as `data-mrb-mark=""`. The static
+# HTML is what brand_one_mark reads (and what a visitor sees before
+# ks4-runtime.js runs), so the one serialised anchor is swapped back for the
+# exact lockup. Exactly one per page, or the build stops.
+_BAKED_BRAND_RE = re.compile(r'<a\b[^>]*\bclass="mrb-brand"[^>]*>.*?</a>', re.S)
+
+
+def _bake_brand(baked):
+    hits = _BAKED_BRAND_RE.findall(baked)
+    if len(hits) != 1:
+        raise SystemExit("build_ks4 R-BRAND: the baked page carries %d brand "
+                         "lockup(s), expected exactly 1" % len(hits))
+    return _BAKED_BRAND_RE.sub(lambda m: brand.brand_lockup("/index.html"), baked, count=1)
+
+
 def prerender_all(cdp, pages):
     """`pages`: [(out_path, url_path)]. Bakes #ks4-mount's innerHTML into
     each file and returns [(url_path, errors_1280, errors_360)]."""
@@ -1495,6 +1524,7 @@ def prerender_all(cdp, pages):
                 errors_360 = _real_errors(page.console_errors())
                 results.append((url_path, errors_1280, errors_360))
                 if baked is not None:
+                    baked = _bake_brand(baked)
                     full = open(out_path, encoding="utf-8").read()
                     full = full.replace('<div id="ks4-mount"></div>',
                                          '<div id="ks4-mount">%s</div>' % baked, 1)

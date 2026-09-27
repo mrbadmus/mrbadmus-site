@@ -1,11 +1,35 @@
-// Header at all three breakpoints (§01/§02/§04/§05). Brand: the reference's
-// own drawing of the public-page mark for this surface — two chevrons in
-// accent orange, second at 34% opacity, Bricolage wordmark. Nav entries
+// Header at all three breakpoints (§01/§02/§04/§05). Brand: ⊕ one-mark ruling
+// (Mide, 13 Sep 2026) — the ONE site lockup, taken at run time from
+// /shared/brand/brand.js (written by brand.py; loaded by index.html together
+// with brand.css), never redrawn here. The reference's own drawing (two
+// chevrons, halves mirrored, Bricolage 600 "MrBadmusAI") is retired. Nav entries
 // beyond the studio are drawn as the reference draws them (inert, muted)
 // until the product wires real destinations.
 
 import type { StageMode } from './Stage'
-import { BrandMark, MenuIcon } from './icons'
+import { MenuIcon } from './icons'
+
+declare global {
+  interface Window {
+    MrBadmusBrand?: { NAME: string; MARK: string; lockup: (href?: string, onDark?: boolean) => string }
+  }
+}
+
+/** The one lockup. `onDark`: the retrieval room's bar is dark whatever the
+ *  page does, so the wordmark goes cream there. Without brand.js (a unit test
+ *  in jsdom, or the script failing to load) it degrades to the wordmark
+ *  alone — never to a second drawing of the mark. */
+function Brand({ onDark }: { onDark: boolean }) {
+  const lib = typeof window !== 'undefined' ? window.MrBadmusBrand : undefined
+  if (!lib) {
+    return (
+      <a className={'mrb-brand' + (onDark ? ' mrb-brand--on-dark' : '')} href="/index.html" aria-label="MrBadmus home">
+        <span className="mrb-brand__word">MrBadmus</span>
+      </a>
+    )
+  }
+  return <span className="brand-slot" dangerouslySetInnerHTML={{ __html: lib.lockup('/index.html', onDark) }} />
+}
 
 export function ModeToggle({
   mode,
@@ -53,12 +77,7 @@ export function TopBar({
   /** phone: specimen name replaces the brand once the sheet is raised (§05) */
   phoneTitle?: string | null
 }) {
-  const brand = (
-    <a className="brand" href="/index.html">
-      <BrandMark size={layout === 'phone' ? 17 : layout === 'tablet' ? 19 : 21} />
-      MrBadmusAI
-    </a>
-  )
+  const brand = <Brand onDark={mode === 'retrieve'} />
 
   if (mode === 'retrieve') {
     return (

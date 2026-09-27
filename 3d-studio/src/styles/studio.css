@@ -94,6 +94,11 @@ a:hover { color: var(--st-accent-hover); }
 }
 .app[data-mode='retrieve'] .topbar { border-bottom-color: #2A241C; }
 
+/* ⊕ one-mark ruling (13 Sep 2026): the brand link is brand.py's lockup,
+   styled by /shared/brand/brand.css. `.brand` now only styles the phone
+   bar's specimen title, which replaces the lockup once the sheet is raised
+   (§05 B); its hover and retrieve-mode rules went with the old link. */
+.brand-slot { display: contents; }
 .brand {
   display: flex;
   align-items: center;
@@ -102,8 +107,6 @@ a:hover { color: var(--st-accent-hover); }
   font: 600 18px/1 var(--st-display);
   letter-spacing: -0.025em;
 }
-.brand:hover { color: var(--st-ink); }
-.app[data-mode='retrieve'] .brand { color: var(--st-cream); }
 
 .topbar__nav {
   display: flex;
