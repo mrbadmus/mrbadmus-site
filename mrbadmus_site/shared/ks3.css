@@ -205,22 +205,11 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-classlink:hover { background: var(--ks3-accent-tint); }
 
-/* MRB-197: Design's mark — dimensions from the frozen reference's header
-   (30px chevron, 22px/800 Bricolage wordmark, 10px gap, ink on ground).
-   ⊕ MRB-208 rule 1 amends the chevron into a 34px accent-filled tile with a
-   cream stroke; the wordmark is unchanged. */
-.ks3-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--ks3-font-display);
-  font-weight: 800;
-  font-size: 22px;
-  letter-spacing: -0.02em;
-  color: var(--ks3-ink);
-  text-decoration: none;
-}
-.ks3-brand svg { flex: 0 0 auto; }
+/* ⊕ ONE-MARK RULING (Mide, 13 Sep 2026) — the `.ks3-brand` rules (MRB-197's
+   30px chevron + 22px/800 wordmark, 10px gap) are RETIRED with the mark they
+   styled. The header now carries brand.py's `.mrb-brand` lockup, which is
+   styled entirely by shared/brand/brand.css (21/19px on a phone, 23/21px
+   from 720px, unshrinkable by construction). */
 /* ── the header trail (⊕ MRB-208 rule 1) ──
    The lesson's trail, in the same header slot the mono `.ks3-crumbs` row uses
    on every other page type. Body font at 17px, NOT the row's mono 14px — they
@@ -6721,13 +6710,12 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
      ⚠️ `ks3_parity`'s row "nav brand wordmark (MRB-197)" pins 22px. Verified
      it still passes: that harness pins no viewport and lands at 756px, where
      this block does not apply and the brand computes 22px. */
-  .ks3-brand {
-    flex-shrink: 0;
-    min-width: max-content;
-    font-size: 17px;
-    gap: 8px;
-  }
-  .ks3-brand svg { flex: 0 0 auto; width: 26px; height: 26px; }
+  /* ⊕ ONE-MARK RULING (13 Sep 2026) — the `.ks3-brand` rule this comment
+     explains is RETIRED with the mark. Its property survives in the new
+     lockup by construction: brand.css makes `.mrb-brand` `flex: none` +
+     `white-space: nowrap`, so it can never overprint the trail, and the
+     lockup is ~110px on a phone against the old 140.6px, so the trail gets
+     roughly 30px back at every width below 700px. */
 }
 
 /* ═══ BEGIN C1 ═══ */

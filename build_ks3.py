@@ -36,7 +36,6 @@ derived placement — reordering the sequence regenerates these index pages and
 changes nothing else, which is the property §9's reorder proof already tests.
 """
 
-import base64
 import hashlib
 import html
 import json
@@ -78,6 +77,7 @@ KS3_DIR = "ks3"
 KS4_BRIDGE_PATHWAY = "combined"
 KS4_BRIDGE_TIER = "foundation"
 
+import brand
 import ks3_art
 from ks3_art.kit import (
     MARKS,
@@ -201,7 +201,12 @@ VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js",
                      # (ks3-theme.css). Same staleness argument as the rest of
                      # this tuple: a cached copy of either would leave a
                      # student's page stuck on the wrong theme silently.
-                     "theme.js", "ks3-theme.css")
+                     "theme.js", "ks3-theme.css",
+                     # ⊕ one-mark run (27 Sep 2026) — the ONE brand's head
+                     # tags (brand.brand_head()). Same staleness argument:
+                     # a cached brand.css would draw last week's lockup.
+                     "brand/brand.css", "brand/mrbadmus-favicon.svg",
+                     "brand/mrbadmus-icon-light-512.png")
 
 
 def asset_versions(repo_root="."):
@@ -284,6 +289,7 @@ def family_label(family):
 # reference's header. The KS4 gold-to-rust two-chevron mark stays mandatory on
 # every other external page; this is the same key-stage split already ruled
 # for the palette under MRB-183. `.ks3-brand` is styled in shared/ks3.css.
+# ⊕ SUPERSEDED by the one-mark ruling (13 Sep 2026) — see NAV_BRAND below.
 #
 # ⊕ MRB-208 rule 1, amended 12 Aug 2026: the chevron sits INSIDE a 34px
 # accent-filled rounded tile and the stroke goes cream, rather than a bare 30px
@@ -316,13 +322,15 @@ def family_label(family):
 # surviving into an href.
 SITE_ORIGIN = "https://mrbadmus.com"
 
-_FAVICON_SVG = (
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">'
-    '<path d="M4 16L12 7l8 9" fill="none" stroke="#E4572E" stroke-width="4.6" '
-    'stroke-linecap="round" stroke-linejoin="round"/></svg>')
-FAVICON_LINK = (
-    '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,%s"/>'
-    % base64.b64encode(_FAVICON_SVG.encode("utf-8")).decode("ascii"))
+# ⊕ ONE-MARK RULING (Mide, 13 Sep 2026; one-mark run 27 Sep 2026) — the
+# upward-chevron data: favicon above is RETIRED. It used to be a base64'd
+# single upward chevron, defined here as KS3's own literal.
+# Every page now carries the ONE mark's head tags from brand.py — the kit's
+# favicon, its apple-touch icon and the lockup stylesheet — so there is no
+# KS3 drawing left to keep in step. The three /shared/brand/ assets are
+# cache-busted by the same stamp_versions() pass as everything else
+# (VERSIONED_ASSETS, above).
+FAVICON_LINK = brand.brand_head()
 
 
 def canon(path):
@@ -442,13 +450,12 @@ def tutor_mount(discipline, topic):
             % cfg)
 
 
-NAV_BRAND = (
-    '<a class="ks3-brand" href="/index.html">'
-    '<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">'
-    '<path d="M4 16L12 7l8 9" fill="none" stroke="#E4572E" stroke-width="4.6" '
-    'stroke-linecap="round" stroke-linejoin="round"/>'
-    '</svg>MrBadmusAI</a>'
-)
+# ⊕ ONE-MARK RULING (Mide, 13 Sep 2026) — MRB-197's single upward chevron
+# (the `.ks3-brand` link, an inline single-chevron SVG and "MrBadmusAI")
+# is RETIRED with every other mark on the site. KS3 now wears the ONE lockup,
+# drawn by brand.py and styled by shared/brand/brand.css; nothing here draws
+# a chevron any more.
+NAV_BRAND = brand.brand_lockup("/index.html")
 
 
 # SPEC.md §2 requires the KS3 fonts preloaded. Two of the five, matching the
@@ -625,19 +632,23 @@ def shell(title, body, crumb_html="", discipline=None, description="",
     # name="description">`, `og:description` and nothing else — so the social
     # card and the search result can never disagree about what the page is.
     desc = description or title
-    full_title = "%s · MrBadmusAI KS3" % title
+    # ⊕ one-mark ruling (13 Sep 2026): "X · MrBadmusAI KS3" → "X | KS3 | MrBadmus",
+    # the one title suffix brand.title() gives every page on the site. The
+    # four hubs whose own title already starts "KS3 …" skip the middle part
+    # rather than read "KS3 Science | KS3 | MrBadmus".
+    full_title = brand.title(title, None if title.startswith("KS3") else "KS3")
     social = ""
     if canonical:
         url = canon(canonical)
         social = (
             '<link rel="canonical" href="%s"/>\n'
             '<meta property="og:type" content="%s"/>\n'
-            '<meta property="og:site_name" content="MrBadmusAI"/>\n'
+            '<meta property="og:site_name" content="%s"/>\n'
             '<meta property="og:title" content="%s"/>\n'
             '<meta property="og:description" content="%s"/>\n'
             '<meta property="og:url" content="%s"/>\n'
             '<meta name="twitter:card" content="summary"/>\n'
-            % (e(url), e(og_type), e(full_title), e(desc), e(url)))
+            % (e(url), e(og_type), e(brand.BRAND_NAME), e(full_title), e(desc), e(url)))
 
     # ⚠️ `fetchpriority="low"` on a DEFERRED script is not redundant. `defer`
     # says "run me after parsing"; it says nothing about when to FETCH, and the
@@ -696,7 +707,7 @@ def shell(title, body, crumb_html="", discipline=None, description="",
 </main>
 <footer class="ks3-footer">
   <div class="ks3-footer-rail">
-    <p class="ks3-footer-title">MrBadmusAI · Key Stage 3 Science</p>%(links)s
+    <p class="ks3-footer-title">MrBadmus · Key Stage 3 Science</p>%(links)s
   </div>
 </footer>
 %(tail)s%(themescript)s%(scripts)s<script src="/shared/class-entry.js" defer></script>
@@ -5026,7 +5037,7 @@ def year_index(year, browse):
         "arrow": MARK_ARROW,
     }
     return shell("Year %d Science" % year, body, crumb, None,
-                 "KS3 Year %d Science — the MrBadmusAI default sequence, half "
+                 "KS3 Year %d Science — the MrBadmus default sequence, half "
                  "term by half term." % year,
                  footer_links=[("Year %d" % year,
                                 "/ks3/year-%d/index.html" % year)],
@@ -5149,7 +5160,7 @@ def half_term_index(year, half_term, browse):
         "cards": "".join(cards),
     }
     return shell("%s · Year %d" % (name, year), body, crumb, None,
-                 "KS3 Year %d, %s — the MrBadmusAI default sequence."
+                 "KS3 Year %d, %s — the MrBadmus default sequence."
                  % (year, name),
                  footer_links=[("Year %d" % year,
                                 "/ks3/year-%d/index.html" % year)],
@@ -5345,7 +5356,7 @@ def half_term_discipline_index(year, half_term, disc, browse, units_by_code):
     }
     return shell("%s · %s · Year %d" % (DISCIPLINE_TITLES[disc], name, year),
                  body, crumb, disc,
-                 "KS3 Year %d %s, %s — the MrBadmusAI default sequence."
+                 "KS3 Year %d %s, %s — the MrBadmus default sequence."
                  % (year, DISCIPLINE_TITLES[disc], name),
                  footer_links=[("Year %d" % year,
                                 "/ks3/year-%d/index.html" % year),

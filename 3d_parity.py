@@ -498,9 +498,13 @@ COMPONENTS = [
                 "font-family": "Instrument Sans"}),
     dict(name="top bar", on="s01", sel=".topbar",
          props={"height": "64px", "border-bottom-color": "#E0D2B9"}),
-    dict(name="brand wordmark", on="s01", sel=".brand",
+    # ⊕ UPDATED, one-mark ruling 13 Sep 2026 (Mide): the reference's own
+    # brand (Bricolage 600 / 18px "MrBadmusAI", #1A1714) is retired; the bar
+    # carries the ONE lockup from /shared/brand/brand.js. Pinned to the kit:
+    # Bricolage 600, 21px above 720px (s01 is the desktop screen), ink #221E1B.
+    dict(name="brand wordmark", on="s01", sel=".mrb-brand",
          props={"font-family": "Bricolage Grotesque", "font-weight": "600",
-                "font-size": "18px", "color": "#1A1714"}),
+                "font-size": "21px", "color": "#221E1B"}),
     dict(name="nav resting item", on="s01", sel=".topbar__nav span",
          props={"color": "#6E655D", "font-size": "15px"}),
     dict(name="nav current item", on="s01", sel=".topbar__nav .is-here",
@@ -614,7 +618,8 @@ COMPONENTS = [
     # ── §02 desktop retrieval (reference lines 258–335) ──
     dict(name="the room goes dark", on="s02", sel=".app",
          props={"background-color": "#15110C"}),
-    dict(name="brand flips to cream", on="s02", sel=".brand",
+    # ⊕ one-mark ruling 13 Sep 2026: the lockup's on-dark variant (cream).
+    dict(name="brand flips to cream", on="s02", sel=".mrb-brand",
          props={"color": "#FBF3E6"}),
     dict(name="hatch strip", on="s02", sel=".hatch", props={"height": "7px"}),
     dict(name="retrieve trough darkens", on="s02", sel=".modeseg",
@@ -1268,7 +1273,8 @@ def check_structure(page, screen, counts):
                      % mounted)
             return p
         # §01: header → crumb strip → library / stage / panel, in order
-        need(".topbar .brand")
+        # (⊕ one-mark ruling 13 Sep 2026: the brand is `.mrb-brand` now)
+        need(".topbar .mrb-brand")
         need(".topbar__nav span", 3, "Lessons / Practice / 3D Studio")
         need(".topbar__nav .is-here")
         if page.eval("window.__st.text('.topbar__nav .is-here')") != "3D Studio":
@@ -1469,7 +1475,7 @@ def check_structure(page, screen, counts):
 
     elif screen == "s05":
         need(".libtrigger--square")
-        need(".topbar .brand")
+        need(".topbar .mrb-brand")  # ⊕ one-mark ruling 13 Sep 2026
         need(".signin")
         need(".sheet")
         need(".sheet__grab .sheet__handle")
@@ -1499,8 +1505,11 @@ def check_structure(page, screen, counts):
             p.append("s05raised: raised sheet leaves %.0fpx of stage, "
                      "reference says 150" % stage_kept)
         # §05 B: the specimen name replaces the brand once the sheet raises
+        # ⊕ one-mark ruling 13 Sep 2026: this compared the bar's text to
+        # "MrBadmusAI"; the lockup is `.mrb-brand` now, so the check is that
+        # it has LEFT the bar and a specimen title stands in its place.
         title = page.eval("window.__st.text('.topbar .brand')")
-        if title == "MrBadmusAI":
+        if page.eval("!!window.__st.q('.topbar .mrb-brand')") or not title:
             p.append("s05raised: top bar still shows the brand; the raised "
                      "sheet swaps it for the specimen name (§05 B)")
 
@@ -2180,6 +2189,12 @@ def main():
     root = tempfile.mkdtemp(prefix="st-parity-", dir=cdp.gate_tmp())
     link = os.path.join(root, "3d")
     os.symlink(DIST, link)
+    # ⊕ one-mark ruling (13 Sep 2026): the studio's brand is the site's —
+    # index.html loads /shared/brand/brand.js + brand.css — so the gate serves
+    # /shared/ beside /3d/, exactly as mrbadmus.com does. Unlinked by hand
+    # below for the same reason `link` is.
+    shared_link = os.path.join(root, "shared")
+    os.symlink(os.path.join(HERE, "shared"), shared_link)
     server, port = cdp.serve(root)
     try:
         url = "http://127.0.0.1:%d/3d/" % port
@@ -2189,6 +2204,8 @@ def main():
         server.shutdown()
         if os.path.islink(link):
             os.unlink(link)
+        if os.path.islink(shared_link):
+            os.unlink(shared_link)
         shutil.rmtree(root, ignore_errors=True)
 
     ok_rows = sum(1 for r in style_rows if r[5])

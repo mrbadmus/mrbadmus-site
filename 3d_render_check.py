@@ -2214,6 +2214,11 @@ def serve_dist_as_3d(prefix, strip_glb=False):
                 "all, so removing one would prove nothing")
     else:
         os.symlink(DIST, target)
+    # ⊕ one-mark ruling (13 Sep 2026): the studio's brand is the site's —
+    # index.html loads /shared/brand/brand.js + brand.css — so /shared/ is
+    # served beside /3d/, exactly as mrbadmus.com does.
+    shared_link = os.path.join(root, "shared")
+    os.symlink(os.path.join(HERE, "shared"), shared_link)
 
     server, port = cdp.serve(root)
 
@@ -2223,6 +2228,8 @@ def serve_dist_as_3d(prefix, strip_glb=False):
         # other end of it and must not be within reach of a recursive delete
         if not strip_glb and os.path.islink(target):
             os.unlink(target)
+        if os.path.islink(shared_link):
+            os.unlink(shared_link)
         shutil.rmtree(root, ignore_errors=True)
 
     return "http://127.0.0.1:%d/3d/" % port, cleanup

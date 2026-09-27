@@ -520,6 +520,41 @@ def apply_r_breadcrumb(text):
 
 
 # ═══════════════════════════════════════════════════════════════════════
+# R-BRAND — the one-mark ruling (Mide, 13 Sep 2026; one-mark run 27 Sep
+# 2026). Design's Ks4Chrome draws KS3's retired mark — a cream single
+# chevron in a 34px accent tile + "MrBadmusAI" — and Ks4End's footer signs
+# off "MrBadmusAI · GCSE {{ subject }}". Every page on the site now wears
+# ONE lockup, drawn by brand.py and styled by shared/brand/brand.css, and
+# says "MrBadmus". Applied to Ks4Chrome AFTER R-BREADCRUMB (so the brand's
+# href has already become /ks4.html and R-BREADCRUMB's count of 4 is
+# untouched). The old anchor is matched by its href and the retired
+# wordmark (its class only as "some ks3- class"), never by the drawing, so
+# this file carries no copy of the old mark and the exactly-one count below
+# still fails loud if Design's header moves. The lockup's own href is the site root, like every other
+# page's.
+# ═══════════════════════════════════════════════════════════════════════
+_R_BRAND_RE = re.compile(
+    r'<a class="ks3-[a-z]+" href="/ks4\.html">(?:(?!</a>).)*?MrBadmusAI</a>', re.S)
+R_BRAND_FOOTER_FROM = "<p>MrBadmusAI · GCSE {{ subject }}</p>"
+R_BRAND_FOOTER_TO = "<p>MrBadmus · GCSE {{ subject }}</p>"
+
+
+def apply_r_brand_chrome(text):
+    import brand
+    hits = _R_BRAND_RE.findall(text)
+    if len(hits) != 1:
+        raise RulingError(
+            "ks4_rulings R-BRAND: Ks4Chrome.dc.html carries %d old brand "
+            "anchor(s), expected exactly 1. Design's delivery moved." % len(hits))
+    return _R_BRAND_RE.sub(lambda m: brand.brand_lockup("/index.html"), text, count=1)
+
+
+def apply_r_brand_footer(text):
+    _require(text, R_BRAND_FOOTER_FROM, "Ks4End.dc.html", "R-BRAND")
+    return text.replace(R_BRAND_FOOTER_FROM, R_BRAND_FOOTER_TO)
+
+
+# ═══════════════════════════════════════════════════════════════════════
 # R11 — Mide's ruling (27 Sep 2026): shared/ks4-lib.js's `route(cmp)` gains
 # four fields, all sourced from mount PROPS build_ks4.py now computes per
 # (lesson, route) — the same "one route per URL" pattern R-PREVNEXT already
