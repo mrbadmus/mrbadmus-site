@@ -597,6 +597,54 @@
     return createInstance(opts.Component, opts.props || {}, opts.template, components, host);
   }
 
+  /* ⊕ KS4-CHIP-2 (Mide's ruling, 27 Sep 2026; ks4_rulings.py R12) — the
+     header route switcher is a native <details>/<summary> disclosure,
+     which already gives Enter/Space to toggle it and Tab to reach the
+     menu's plain links with NO script at all — the links are already
+     static <a> elements in the prerendered HTML (see shared/ks4-lesson.css's
+     own comment on this). This delegated listener adds only what native
+     disclosure does not supply on its own: keeping the chip's aria-expanded
+     in sync with the open state, and (below) Esc closing the switcher and
+     returning focus to its chip. Runs once, at script load: the switcher is
+     part of the STATIC, prerendered markup, already in the DOM by the time
+     this script tag runs (it sits after #ks4-mount in every page's
+     <body>), so there is nothing to wait for.
+
+     ⚠️ Deliberately a 'click' listener, not the native 'toggle' event.
+     Native <summary> click/keyboard activation queues 'toggle' as an
+     ASYNC task (HTML spec's "details notification task steps") — it does
+     NOT fire in the same tick as the click, confirmed empirically: a gate
+     that clicks then reads aria-expanded synchronously (one eval, no
+     await) always saw the STALE value. A 'click' listener runs BEFORE the
+     browser's own default action (the toggle itself) on ANY interactive
+     element, so `d.open` read here is still the PRE-click value — the
+     click is ABOUT to flip it — and the new value can be set synchronously
+     with no race at all. Bubble phase suffices (chip clicks always reach
+     document); delegated via `.closest()` so a click anywhere inside the
+     chip (its label text, its caret svg) still resolves to the chip. */
+  document.addEventListener("click", function (e) {
+    var chip = e.target && e.target.closest && e.target.closest(".ks3-route-chip");
+    if (!chip) { return; }
+    var d = chip.closest(".ks3-route-switch");
+    if (!d) { return; }
+    chip.setAttribute("aria-expanded", d.open ? "false" : "true");
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape" && e.key !== "Esc") { return; }
+    var openSwitch = document.querySelector(".ks3-route-switch[open]");
+    if (!openSwitch) { return; }
+    var summary = openSwitch.querySelector("summary");
+    openSwitch.removeAttribute("open");
+    // Chrome does not fire 'toggle' for a script-driven attribute removal
+    // (confirmed empirically — only a real user click on <summary> fires
+    // it), so aria-expanded is set directly here rather than left to the
+    // listener above.
+    if (summary) {
+      summary.setAttribute("aria-expanded", "false");
+      summary.focus();
+    }
+  });
+
   window.MrbRef = MrbRef;
   window.DCLogic = DCLogic;
   window.MrBadmusKS4Runtime = {
