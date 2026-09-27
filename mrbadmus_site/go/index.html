@@ -6,7 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Sign in — MrBadmus</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
+  <!-- ⊕ One mark (Mide, 13 Sep 2026): the kit's favicon, app icon and
+       brand.css come from brand.py (the region below is rewritten on every
+       build by brand.stamp_brand), and brand.js hands the shell its lockup.
+       Same-origin static files: no API, Supabase or CDN request. -->
+  <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png"><link rel="stylesheet" href="/shared/brand/brand.css"><!--/mrb:brand-head-->
+  <script src="/shared/brand/brand.js"></script>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
@@ -50,13 +55,8 @@
     padding: 16px 24px 14px;
     border-bottom: 2px solid var(--ks3-ink);
   }
-  /* BRANDMARK ships at 20px; Design draws this header's at 26. Same SVG,
-     same chevron — sizing it here rather than forking the mark. */
-  .gl-head svg { width: 26px; height: 26px; }
-  .gl-word {
-    font-family: var(--ks3-font-display);
-    font-weight: 800; font-size: 22px; letter-spacing: -.02em;
-  }
+  /* ⊕ One mark: the header's own 26px mark and 800-weight `.gl-word` are
+     retired — the lockup carries the kit's size and type. */
   .gl-main {
     flex: 1; display: flex; flex-direction: column; justify-content: center;
     max-width: 460px; width: 100%; margin: 0 auto;
@@ -145,8 +145,9 @@
 
 <div class="rd gl-root" data-mode="ks3" id="c-main">
   <header class="gl-head">
+    <!-- ⊕ One mark (Mide, 13 Sep 2026): the one lockup, drawn into this
+         slot by C.brandLockup(). -->
     <span id="gl-brand"></span>
-    <span class="gl-word">MrBadmus</span>
   </header>
 
   <main class="gl-main">
@@ -246,7 +247,7 @@
                 'Check with whoever set up your account.';
 
   C.boot({ anonymous: true, run: function (ctx) {
-    document.getElementById('gl-brand').innerHTML = C.BRANDMARK;
+    document.getElementById('gl-brand').innerHTML = C.brandLockup('/go/index.html');
 
     /* ── Night 4 (MRB-317 ruling 3) — "not you?" ─────────────────────────
        A family iPad arrives here with the last child still signed in, and

@@ -6,7 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Your family — MrBadmus</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
+  <!-- ⊕ One mark (Mide, 13 Sep 2026): the kit's favicon, app icon and
+       brand.css come from brand.py (the region below is rewritten on every
+       build by brand.stamp_brand), and brand.js hands the shell its lockup.
+       Same-origin static files: no API, Supabase or CDN request. -->
+  <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png"><link rel="stylesheet" href="/shared/brand/brand.css"><!--/mrb:brand-head-->
+  <script src="/shared/brand/brand.js"></script>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
@@ -218,12 +223,8 @@
     padding: 16px 20px 14px;
     border-bottom: 2px solid var(--ks3-ink);
   }
-  .dk-brandword {
-    font-family: var(--ks3-font-display);
-    font-weight: 800;
-    font-size: 22px;
-    letter-spacing: -.02em;
-  }
+  /* ⊕ One mark (Mide, 13 Sep 2026): `.dk-brandword` retired — the brand is
+     the one lockup (`C.brandLockup`), styled by shared/brand/brand.css. */
   .dk-main { max-width: 560px; margin: 0 auto; padding: 24px 20px 40px; }
   .dk-tabbar {
     position: fixed;
@@ -799,7 +800,7 @@
     /* ── sidebar (≥960) ───────────────────────────────────────────────── */
     var side =
       '<div style="display:flex;align-items:center;gap:10px;padding:0 4px">' +
-        C.BRANDMARK + '<span class="dk-brandword">MrBadmus</span></div>' +
+        C.brandLockup('/consumer/overview.html') + '</div>' +
       '<nav style="margin-top:28px;display:flex;flex-direction:column;gap:4px">' +
         '<button data-act="tab-home" style="display:flex;align-items:center;gap:12px;min-height:46px;' +
           'padding:0 12px;border:2px solid ' + (onChat ? 'transparent' : 'var(--ks3-ink)') + ';' +
@@ -888,7 +889,7 @@
         'width:40px;height:40px;margin-left:-8px;border:0;border-radius:12px;background:none;' +
         'color:var(--ks3-ink);cursor:pointer">' + svg(MARK.back, 22) + '</button>';
     } else {
-      head += C.BRANDMARK + '<span class="dk-brandword">MrBadmus</span>';
+      head += C.brandLockup('/consumer/overview.html');
     }
     head += '<span style="flex:1;font-family:var(--ks3-font-display);font-weight:800;font-size:20px;' +
       'letter-spacing:-.02em">' + esc(screenTitle()) + '</span>' +

@@ -96,6 +96,8 @@ from build_ks3 import stamp_versions
 # ⊕ Theme run, 27 Sep 2026 — the one pre-paint snippet and slot every
 # generator emits; see theme_head.py's own docstring.
 import theme_head
+from brand_port import replace_brand_run
+import brand_port
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 REF = os.path.join("docs", "ks3", "design-reference", "teacher")
@@ -303,6 +305,9 @@ STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
                 # ⊕ MRB-351 — set-work.js loads these on demand when a
                 # teacher picks Flashcards; stamped like every other dep.
                 "formulae.js", "flashcard-decks.js", "flashcard-decks.css")
+# ⊕ One mark (Mide, 13 Sep 2026) — the kit's favicon, the lockup's
+# stylesheet and brand.js, which the runtime draws the top bar's brand from.
+STAMPED_DEPS += brand_port.BRAND_DEPS
 
 
 def asset_hash(text):
@@ -373,7 +378,7 @@ PAGES = [
          fixture_js="teacher-fixture-classes.js",
          empty_out="classes-empty-fixture.html",
          empty_js="teacher-fixture-classes-empty.js",
-         title="My classes \u00b7 MrBadmusAI",
+         title="My classes \u00b7 MrBadmus",
          # ⊕ NO `bulkOpen`. See the note above the list: `openBulk` is on
          # nodes 104/196 (class) and 232 (student) and nowhere on the classes
          # screen, so on this page the sheet was markup that could never open.
@@ -397,7 +402,7 @@ PAGES = [
          fixture_js="teacher-fixture-class-detail.js",
          empty_out="class-detail-empty-fixture.html",
          empty_js="teacher-fixture-class-detail-empty.js",
-         title="Class \u00b7 MrBadmusAI",
+         title="Class \u00b7 MrBadmus",
          setwork=True,
          overlays=("searchOpen", "bulkOpen", "hasToast"),
          retire="class-detail.html"),
@@ -406,7 +411,7 @@ PAGES = [
          fixture_js="teacher-fixture-student-detail.js",
          empty_out="student-detail-empty-fixture.html",
          empty_js="teacher-fixture-student-detail-empty.js",
-         title="Student \u00b7 MrBadmusAI",
+         title="Student \u00b7 MrBadmus",
          # \u2295 Mide's item 9, 24 Sep 2026 \u2014 the Answer Breakdown panel opens
          # from a row of THIS screen's submission history only (the button
          # is `INSERT_AT[(366, 367)]`, inside the student screen's history
@@ -421,7 +426,7 @@ PAGES = [
          fixture_js="teacher-fixture-assignment.js",
          empty_out="assignment-empty-fixture.html",
          empty_js="teacher-fixture-assignment-empty.js",
-         title="Assignment \u00b7 MrBadmusAI",
+         title="Assignment \u00b7 MrBadmus",
          # ⊕ MRB-336 §6 — THE SHEET LOADS HERE NOW. Edit reopens it on the
          # assignment this screen is about, and a button wired to a script
          # the page does not carry is a dead control — which is exactly what
@@ -435,7 +440,7 @@ PAGES = [
          fixture_js="teacher-fixture-digest.js",
          empty_out="digest-empty-fixture.html",
          empty_js="teacher-fixture-digest-empty.js",
-         title="Weekly digest \u00b7 MrBadmusAI",
+         title="Weekly digest \u00b7 MrBadmus",
          # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 6) — `searchOpen` ADDED.
          # This page kept only the toast, and the topbar's "Find a student"
          # button — which is on all six pages, because the top bar is one
@@ -471,7 +476,7 @@ PAGES = [
          fixture_js="teacher-fixture-insights.js",
          empty_out="insights-empty-fixture.html",
          empty_js="teacher-fixture-insights-empty.js",
-         title="Charts \u00b7 MrBadmusAI",
+         title="Charts \u00b7 MrBadmus",
          # ⊕ 2 Sep 2026 (MRB-306 Phase 2a screen 7) — `searchOpen` ADDED, and
          # it is the SAME ONE WORD screen 6 added to `digest.html`. Screen 6
          # found the defect on both pages, fixed the digest and left this one
@@ -1855,6 +1860,14 @@ def apply_rulings(spec, roots, logic):
                 % (node, handler, why.split(".")[0]))
         here[node][slot] = handler
         retargeted += 1
+
+    # ── 4b. ⊕ ONE MARK (Mide, 13 Sep 2026) — Design's wordmark becomes the
+    # one lockup. See `RULED_BRAND` in teacher_rulings.py; the machinery is
+    # brand_port.py, shared with the student port. The top bar is on every
+    # page, so a page that has lost the run is a redrawn delivery and stops
+    # the build rather than silently shipping Design's old wordmark.
+    replace_brand_run(roots, R.RULED_BRAND[0], R.RULED_BRAND[1],
+                      "build_teacher_port.py", "teacher_rulings.RULED_BRAND")
 
     # ── 5. the navigation rewires, asserted at their NODES ───────────────
     #
@@ -4123,7 +4136,7 @@ function MRB_GO(screen, params){
 /* ⊕ MRB-304 — the wordmark leaves the teacher portal entirely. Design hung
    `goClasses` on the brand mark, which on classes.html was a press that
    reloaded the page the teacher was already on; Mide's ruling is that
-   "MrBadmusAI" is the site's name and goes to the site's front door, from
+   the wordmark is the site's name and goes to the site's front door, from
    every teacher page, unconditionally. A NAMED helper rather than an inline
    `location.href`, like every other navigation here, so `teacher_behaviour`
    can stub it and press the control for real without navigating the fixture
@@ -5385,16 +5398,12 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "<link rel=\"preconnect\" href=\"https://cdn.jsdelivr.net\" crossorigin>\n"
         "<link rel=\"dns-prefetch\" href=\"https://mrbadmus-backend.onrender.com\">\n"
         "<title>%s</title>\n"
-        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — the same
-        # `#E4572E` chevron favicon `generate_site_v5.KS4_FAVICON_LINK` gives
-        # every KS4 page, kept as its own literal here for the same reason
-        # `ds_css()`'s own comment gives for not sharing a bundle across the
-        # two ports: independence, not coupling.
-        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"data:image/svg+xml;"
-        "base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdC"
-        "b3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUi"
-        "IHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2Fw"
-        "PSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\">\n"
+        # ⊕ One mark (Mide, 13 Sep 2026) — was Stream J's inline data: copy of
+        # KS3's retired upward-chevron favicon. Now brand.py's own head tags
+        # (the kit's favicon, app icon and brand.css) and brand.js, which the
+        # runtime's `brand` node draws the top bar's lockup from. See
+        # brand_port.py.
+        "%s"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
         "%s"
@@ -5615,9 +5624,11 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         #     `min-width:0` alone leaves a `white-space:nowrap` span to do —
         #     Design's own class-code strings (`10h/Ph1`) never need it, a
         #     longer one degrades instead of overlapping Find a student;
-        #   · the wordmark (`.mrb-brand`) drops from 23px to 18px, still
-        #     comfortably the plain-white-text staff wordmark this bar has
-        #     always drawn (no logo asset either side of this rule).
+        #   · ⊕ One mark (Mide, 13 Sep 2026) — the third trim used to drop
+        #     the wordmark (`.mrb-brand`) from 23px to 18px. The wordmark is
+        #     now the one lockup (`RULED_BRAND`), whose size is the kit's and
+        #     already steps down on a phone in shared/brand/brand.css; a
+        #     page-level override here would be a second size of the mark.
         #
         # `overflow-x:visible` UNDOES the round-2 scroll container at this
         # width on purpose: a bar that both wraps AND scrolls sideways is two
@@ -5641,7 +5652,6 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "[data-port-region=\"topbar\"]{flex-wrap:wrap;height:auto!important;"
         "min-height:62px;row-gap:8px!important;column-gap:8px!important;"
         "padding:10px 12px!important;overflow-x:visible!important}"
-        "[data-port-region=\"topbar\"] .mrb-brand{font-size:18px}"
         "[data-port-region=\"topbar\"] .mrb-crumb{overflow:hidden;"
         "text-overflow:ellipsis}"
         "[data-port-region=\"topbar\"] .mrb-teachername{display:none}"
@@ -5764,6 +5774,7 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "</body>\n</html>\n"
         % (theme_head.THEME_HEAD, theme_head.theme_script(),
            html.escape(spec["title"]),
+           brand_port.HEAD,
            (_BANNER_FIXTURE % (spec["out"][:-5].replace("-", " ").title(),
                                spec["out"])) if fixture else
            (_BANNER % (spec["out"][:-5].replace("-", " ").title(),

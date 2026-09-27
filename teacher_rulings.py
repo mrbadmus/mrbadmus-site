@@ -1058,6 +1058,31 @@ RETARGET_ON = {
           "(`boNote`), its own reset name, and actually sent."),
 }
 
+# ── ⊕ RULED BY MIDE, 13 Sep 2026 · ONE MARK (one-mark run, 27 Sep 2026) ───
+#
+# *"ONE mark on every page — Design's forward double chevron + the wordmark
+# "MrBadmus" (no "AI"). Identical on pupil, public, staff, consumer pages."*
+# It overrides CLAUDE.md's per-surface table, including the staff row's
+# plain-text wordmark this top bar used to draw (Design's node 12, a
+# "MrBadmusAI" span in 23px display type).
+#
+# `(run, why)`: the consecutive template siblings replaced IN THEIR PARENT by
+# ONE `{"t": "brand"}` node, which `shared/student-runtime.js` draws from
+# `window.MrBadmusBrand` (shared/brand/brand.js, written by brand.py) — so the
+# port never holds a copy of the mark. Machinery in brand_port.py, shared
+# with the student port's own `RULED_BRAND`, and it refuses a run that does
+# not hold Design's brand or that carries a handler.
+#
+# ⚠️ THE CLICK IS NOT MOVED. It stays on node 11 — the flex wrapper around
+# the wordmark — which `RETARGET_ON` above points at `goHome` (MRB-304: the
+# brand goes to the public homepage from every teacher page). That keeps the
+# `MRB_HOME` stub `teacher_behaviour` presses it through, and the lockup is
+# drawn as a `<span class="mrb-brand">`, not a second, un-stubbed link.
+RULED_BRAND = ((12,),
+               "one-mark ruling (Mide, 13 Sep 2026): the top bar's "
+               "MrBadmusAI wordmark becomes the one lockup, on all six pages")
+
+
 
 # ── ⊕ RULED, MRB-287 · SEVEN URLS, SO EVERY SCREEN CHANGE IS A NAVIGATION ─
 #
@@ -1594,9 +1619,14 @@ SET_ATTR = {
     # they do — none of it fires above 420px, so the bar is byte-identical to
     # Design's above that width, exactly like the 560px rule already does.
     #
-    # 12 is the wordmark's own text span (inside node 11's flex wrapper),
     # 17 is the class-code crumb, 30 is the signed-in teacher's name.
-    12:  {"class": "mrb-brand"},
+    # ⊕ One mark (Mide, 13 Sep 2026) — node 12, the wordmark's own text
+    # span, WAS named here `mrb-brand` so the 420px block could shrink it
+    # to 18px. It is gone: `RULED_BRAND` below replaces it with the one
+    # lockup, which owns the `mrb-brand` class (shared/brand/brand.css) and
+    # its own phone sizing. Kept named, this would stop the build on a node
+    # that no longer exists — and would have collided with the lockup's
+    # class if it had survived.
     17:  {"class": "mrb-crumb"},
     30:  {"class": "mrb-teachername"},
 

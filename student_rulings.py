@@ -355,6 +355,64 @@ RETARGET_ON = {
     "assignment": {15: ("goClass", "goKS3")},
 }
 
+# ── ⊕ RULED BY MIDE, 13 Sep 2026 · ONE MARK (the one-mark run, 27 Sep 2026) ─
+#
+# *"ONE mark on every page — Design's forward double chevron (back faded,
+# front solid, #E4572E) + the wordmark "MrBadmus" (no "AI")."* It overrides
+# CLAUDE.md's per-surface logo table, and it reaches this port because
+# Design's header draws its OWN copy of the mark: the `MrBadmusDS.BrandMark`
+# import (captured from her file at compile time — with the solid and faded
+# halves MIRRORED against the kit) beside a "MrBadmusAI" text span.
+#
+# ⚑ THE THIRTEENTH MECHANISM, because none of the others can put markup the
+# template does not contain where a subtree was. `PRUNE` removes, `GRAFT` and
+# `INSERT_AT` add Design's own markup, `BINDINGS` rewrites a text node's text.
+# The mark is drawn by ONE source — `brand.py`, published to pages that draw
+# their header in JavaScript as `shared/brand/brand.js` — and a copy of its
+# SVG typed into a ruling here would be exactly the second drawing the ruling
+# exists to end (`brand_one_mark.py` fails the build on one).
+#
+# So: `{page: ((node, node, …), why)}`. The named nodes must be CONSECUTIVE
+# SIBLINGS, and together they are replaced IN THEIR PARENT by ONE node
+# `{"t": "brand"}`, which `shared/student-runtime.js` renders from
+# `window.MrBadmusBrand` at mount. Asserted at build time, the same way
+# `RETARGET_ON` asserts what it expects to find:
+#
+#   · the run must hold Design's mark — a BrandMark import or a
+#     "MrBadmusAI" text node — so a redrawn header stops the build rather
+#     than replacing whatever now sits at those indices;
+#   · the run must carry NO handler. The click belongs to the CONTROL around
+#     it (node 12 / 15, retargeted to `goKS3` by `RETARGET_ON` above), which
+#     this does not touch — so the brand still goes where Mide's 23 Aug
+#     ruling sends it, and the behaviour gate's control sweep still presses
+#     the same button. The lockup is rendered as a `<span class="mrb-brand">`
+#     rather than the lockup's own `<a>`, because a link inside a button is
+#     two controls where Design drew one.
+#
+#   13, 14  the class view's BrandMark import and its "MrBadmusAI" span,
+#           inside the header button (node 12).
+#   19      the assignment's BrandMark import, inside `<if wide>` (node 18),
+#           inside the back button (node 15). Design drew no wordmark on this
+#           page; the one mark carries its own, so the page now names itself
+#           where it used to show a bare chevron. Registered in
+#           `student_behaviour.RULED_ADDITIONS`.
+#           ⚠️ STILL INSIDE DESIGN'S `<if wide>`, deliberately. Below that
+#           width Design draws this header as a task bar — back, class code,
+#           LATE / HANDED IN chip, clock, theme control — and the lockup does
+#           not fit beside them: measured at 360px, 42px free in the default
+#           state against a ~93px HANDED IN chip. Moving the ruling to node 18
+#           (the whole `<if>`) would put the mark on phones and push the clock
+#           off-screen. So at phone width this page shows no mark, as Design
+#           drew it — never a second one.
+RULED_BRAND = {
+    "class view": ((13, 14),
+                   "one-mark ruling (Mide, 13 Sep 2026): the header's "
+                   "BrandMark + MrBadmusAI become the one lockup"),
+    "assignment": ((19,),
+                   "one-mark ruling (Mide, 13 Sep 2026): the back button's "
+                   "BrandMark becomes the one lockup"),
+}
+
 # ── the logic, transformed ───────────────────────────────────────────────
 #
 # (old, new). `old` must occur exactly once in Design's logic class, or the

@@ -48,22 +48,9 @@ body {
   border-bottom: 1px solid var(--border);
   z-index: 10;
 }
-.c-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  text-decoration: none;
-  color: var(--text);
-}
-/* Bricolage Grotesque is the face Design's mark is set in; the fallback
-   chain matters because this wordmark sits next to the chevron and a
-   mismatched fallback reads as two logos. */
-.c-brand span {
-  font-family: 'Bricolage Grotesque', var(--font-sans);
-  font-weight: 800;
-  font-size: 1.15rem;
-  letter-spacing: -0.01em;
-}
+/* ⊕ One mark (Mide, 13 Sep 2026) — `.c-brand` and its wordmark span are
+   gone: the nav carries the one lockup (`.mrb-brand`, shared/brand/brand.css),
+   whose type and size are the kit's own. */
 .c-nav-right { display: flex; align-items: center; gap: var(--sp-3); }
 .c-nav-right a {
   color: var(--muted);

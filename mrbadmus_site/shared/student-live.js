@@ -209,27 +209,25 @@
       "display:flex;align-items:center;gap:9px;box-sizing:border-box;" +
       "padding:18px 20px;border-bottom:1px solid var(--st-rule,#E0D2B9);";
 
-    var a = document.createElement("a");
-    a.href = "/student/classes.html";
-    a.style.cssText =
-      "display:inline-flex;align-items:center;gap:9px;text-decoration:none;" +
-      "color:var(--st-ink,#1A1714);";
-
-    var tpl = window.__MRB_TPL__;
-    var mark = tpl && tpl.imports && tpl.imports["MrBadmusDS.BrandMark"];
-    if (mark) {
-      var m = document.createElement("span");
-      m.style.cssText = "display:inline-flex;flex:none;";
-      m.innerHTML = mark;                 // Design's own string, not user data
-      a.appendChild(m);
+    /* ⊕ ONE MARK (Mide's ruling, 13 Sep 2026). This drew Design's BrandMark
+       import (the template's own copy, halves mirrored against the kit)
+       beside a "MrBadmusAI" span. The failure screen now wears the site's
+       one lockup from `window.MrBadmusBrand` (shared/brand/brand.js, loaded
+       in the page's <head>) — mark + "MrBadmus" as one link, still to the
+       student's class list. Without brand.js it falls back to the wordmark
+       as a plain link rather than to no way out. */
+    var a;
+    var B = window.MrBadmusBrand;
+    if (B && typeof B.lockup === "function") {
+      var tmp = document.createElement("span");
+      tmp.innerHTML = B.lockup("/student/classes.html", false); // brand.py's own string
+      a = tmp.firstChild;
+    } else {
+      a = document.createElement("a");
+      a.href = "/student/classes.html";
+      a.className = "mrb-brand";
+      a.textContent = "MrBadmus";
     }
-    var w = document.createElement("span");
-    w.style.cssText =
-      "font:600 18px/1 var(--st-display,'Bricolage Grotesque',system-ui," +
-      "sans-serif);letter-spacing:-0.025em;";
-    w.textContent = "MrBadmusAI";
-    a.appendChild(w);
-
     head.appendChild(a);
     return head;
   }

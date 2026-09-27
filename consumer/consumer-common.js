@@ -46,28 +46,31 @@
 
   var SDK_URL = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
 
-  /* ── The consumer brand ─────────────────────────────────────────────────
-     Claude Design's double chevron, copied verbatim from the BrandMark that
-     student/class.html carries, plus the wordmark — and the wordmark reads
-     "MrBadmus", with NO "AI".
+  /* ── The brand ─────────────────────────────────────────────────────────
+     ⊕ ONE MARK (Mide's ruling, 13 Sep 2026; the one-mark run, 27 Sep 2026).
+     This used to be the consumer's OWN copy of Design's double chevron —
+     copied from the student page's BrandMark, with the solid and faded
+     halves MIRRORED against the brand kit — beside a "MrBadmus" span. The
+     ruling is one mark on every page, pupil, public, staff and consumer
+     alike, so the consumer shell no longer draws one: it takes the lockup
+     from `window.MrBadmusBrand` (shared/brand/brand.js, written by brand.py
+     from Design's kit), which every consumer page loads before this file.
 
-     ⚠️ THAT IS A RULING, NOT A TYPO, AND IT IS THE ONLY PLACE ON THE ESTATE
-     WHERE THE WORDMARK IS SHORT. On school surfaces the product is sold to
-     teachers who are buying an AI tutor, so the identity says so. On
-     consumer surfaces the buyer is a parent, and to a parent "AI" is a
-     feature of the thing ("an AI tutor that knows the mark scheme"), never
-     the thing itself. Do not "fix" this to MrBadmusAI for consistency with
-     the other four brand presentations — the inconsistency is the decision.
+     The consumer's wordmark was already "MrBadmus" with no "AI" — the
+     one-mark ruling makes that the wordmark everywhere, so it is no longer
+     an exception here.
 
-     Not the gold-to-rust chevron (that is the KS4 lesson + root mark) and
-     not the plain white staff wordmark (that is /teacher, /admin, /hod). */
-  var BRANDMARK =
-    '<svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true">' +
-    '<path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" ' +
-    'fill="none" stroke-linecap="round" stroke-linejoin="round"></path>' +
-    '<path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" ' +
-    'stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>' +
-    '</svg>';
+     `BRANDMARK` — the mark ALONE, for the places that use it as an icon
+     (the Today notification avatar). Still exported so nothing that reads
+     it breaks; derived from the kit's `MARK`, never redrawn. Sized 20px
+     twice over: as attributes for a page with no brand.css, and as the
+     `--mrb-brand-mark` custom property brand.css's `.mrb-brand__mark` reads
+     (outside a `.mrb-brand` lockup nothing else sets it). A header never
+     uses it: a header carries `brandLockup()`. */
+  var B = window.MrBadmusBrand || null;
+  var BRANDMARK = B
+    ? B.MARK.replace('<svg ', '<svg width="20" height="20" style="--mrb-brand-mark:20px" ')
+    : '';
 
   function escapeHtml(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -103,10 +106,19 @@
   /* ── The nav ────────────────────────────────────────────────────────────
      Deliberately thin. Night 3 replaces every one of these screens with
      Design's, so this is a brand-correct placeholder and not a design. */
+  /* The one lockup — mark + "MrBadmus", as one link — to `path` with the
+     environment carried (see `href`). Without brand.js on the page it falls
+     back to the wordmark as plain text rather than to nothing: a header that
+     silently loses its brand is the failure nobody sees. */
+  function brandLockup(path, onDark) {
+    var to = escapeHtml(href(path || '/index.html'));
+    if (B) { return B.lockup(to, !!onDark); }
+    return '<a class="mrb-brand" href="' + to + '">MrBadmus</a>';
+  }
+
   function navHtml(rightHtml) {
     return '<nav class="c-nav">' +
-      '<a class="c-brand" href="' + escapeHtml(href('/consumer/overview.html')) + '">' +
-      BRANDMARK + '<span>MrBadmus</span></a>' +
+      brandLockup('/consumer/overview.html') +
       '<div class="c-nav-right">' + (rightHtml || '') + '</div>' +
       '</nav>';
   }
@@ -851,6 +863,7 @@
   window.MrBadmusConsumer = {
     ENABLED: ENABLED,
     BRANDMARK: BRANDMARK,
+    brandLockup: brandLockup,
     boot: boot,
     api: api,
     navHtml: navHtml,

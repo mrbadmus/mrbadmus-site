@@ -6,7 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Today — MrBadmus</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
+  <!-- ⊕ One mark (Mide, 13 Sep 2026): the kit's favicon, app icon and
+       brand.css come from brand.py (the region below is rewritten on every
+       build by brand.stamp_brand), and brand.js hands the shell its lockup.
+       Same-origin static files: no API, Supabase or CDN request. -->
+  <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png"><link rel="stylesheet" href="/shared/brand/brand.css"><!--/mrb:brand-head-->
+  <script src="/shared/brand/brand.js"></script>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
@@ -52,11 +57,9 @@
     padding: 16px 20px 14px;
     border-bottom: 2px solid var(--ks3-ink);
   }
-  .td-head .td-brandmark svg { width: 26px; height: 26px; }
-  .td-word {
-    font-family: var(--ks3-font-display);
-    font-weight: 800; font-size: 22px; letter-spacing: -.02em;
-  }
+  .td-brandmark { display: inline-flex; }
+  .td-brandmark[hidden] { display: none; }
+  /* `.td-word` retired with the one-mark ruling — see the header. */
   .td-head-title {
     font-family: var(--ks3-font-display);
     font-weight: 800; font-size: 20px; letter-spacing: -.02em;
@@ -311,8 +314,10 @@
 <div class="rd td-root" data-mode="ks3" id="c-main">
 
   <header class="td-head">
+    <!-- ⊕ One mark (Mide, 13 Sep 2026): the one lockup, drawn by
+         C.brandLockup() into this slot. Design's separate 26px mark and
+         800-weight "MrBadmus" word were a second drawing of the brand. -->
     <span class="td-brandmark" id="td-brandmark"></span>
-    <span class="td-word" id="td-word">MrBadmus</span>
     <button class="td-back" id="td-back" type="button" aria-label="Back" hidden>
       <svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
     </button>
@@ -441,7 +446,7 @@
   C.boot({ requireSession: true, signInPath: C.childLoginUrl, run: function (ctx) {
     var el = function (id) { return document.getElementById(id); };
 
-    el('td-brandmark').innerHTML = C.BRANDMARK;
+    el('td-brandmark').innerHTML = C.brandLockup('/consumer/today.html');
     C.signOutControl(el('td-signout'), { sb: ctx.sb });
 
     var screen   = 'today';
@@ -463,7 +468,6 @@
       el('td-today').hidden = !isToday;
       el('td-chat').hidden = isToday;
       el('td-brandmark').hidden = !isToday;
-      el('td-word').hidden = !isToday;
       el('td-back').hidden = isToday;
       el('td-head-title').hidden = isToday;
       el('td-msg-btn').style.visibility = isToday ? 'visible' : 'hidden';

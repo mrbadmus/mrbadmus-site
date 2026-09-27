@@ -635,6 +635,18 @@ def run(cdp):
 # held to byte-for-byte parity.
 RULED_DIVERGENCE = {
     "class view": [
+        # ── ⊕ ONE MARK (Mide's ruling, 13 Sep 2026; one-mark run 27 Sep) ──
+        #
+        # *"ONE mark on every page … the wordmark "MrBadmus" (no "AI")."*
+        # `student_rulings.RULED_BRAND` replaces Design's BrandMark +
+        # "MrBadmusAI" in the header button with the site's one lockup, whose
+        # wordmark is "MrBadmus". What the port REMOVED from Design's text is
+        # exactly two letters, so exactly two letters are ruled out — the
+        # lookbehind keeps the rest of the wordmark under byte-for-byte
+        # comparison, and a port that drew "MrBadmusAI" again would match
+        # and go red. Its census twin is in RULED_CONTROL_EDITS.
+        ("the wordmark's AI (one-mark ruling, 13 Sep 2026)",
+         r"(?<=MrBadmus)AI"),
         # ── ⊕ RULED BY MIDE, 22 Sep 2026 · FIRST-WEEK FIXES ──────────────
         #
         # *"Remove MARKS ARE FINAL UNLESS A RETAKE IS OPEN. Unnecessary."*
@@ -1042,6 +1054,15 @@ RULED_ADDITIONS = {
         ("the teacher's note on question 1",
          r"(?i)From your teacher\s*Look back at question 4 before you "
          r"start: it uses the method from the practical\.\s*"),
+        # ⊕ ONE MARK (Mide's ruling, 13 Sep 2026). Design drew a bare
+        # BrandMark in this page's back button (inside `<if wide>`) and no
+        # wordmark; `student_rulings.RULED_BRAND` puts the site's one lockup
+        # there, and the lockup names itself. Anchored at the start of the
+        # page's text — the header is the first thing on it — so the word
+        # can only be stripped where the ruling put it. Census twin in
+        # RULED_CONTROL_EDITS.
+        ("the one mark's wordmark in the back button",
+         r"^MrBadmus "),
     ],
 }
 
@@ -1260,6 +1281,21 @@ RULED_CONTROL_EDITS = {
                  "carries both. The word is inside the row's single "
                  "<button>, which is why it is here as well as in "
                  "RULED_ADDITIONS."),
+        dict(label="the header brand button's wordmark (one mark)",
+             design="MrBadmusAI", port="MrBadmus", n=1,
+             why="RULED by Mide 13 Sep 2026 — one mark on every page, "
+                 "wordmark \"MrBadmus\" with no AI. The header button is one "
+                 "control on both files and still goes where RETARGET_ON "
+                 "sends it; only its label moves. Text twin in "
+                 "RULED_DIVERGENCE."),
+    ],
+    "assignment": [
+        dict(label="the back button gains the one mark's wordmark",
+             design="8r/Sc1", port="MrBadmus 8r/Sc1", n=1,
+             why="RULED by Mide 13 Sep 2026 — one mark on every page. "
+                 "Design's bare BrandMark in the back button becomes the "
+                 "site's one lockup, which carries the wordmark, so the one "
+                 "control's label gains it. Text twin in RULED_ADDITIONS."),
     ],
 }
 

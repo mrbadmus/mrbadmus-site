@@ -14,8 +14,9 @@ from the repo root with the flag on:
      today, admin (consumer card absent, no /api/consumer request), the student
      class page, the leaderboard — zero console errors, and the leaderboard's
      rendered row count recorded.
-  3. COLD GREPS of the built tree: "MrBadmusAI" and the chevron on staff/admin
-     surfaces, leftover mock constants, any "AI" wordmark on consumer surfaces.
+  3. COLD GREPS of the built tree: "MrBadmusAI", the one mark (and no other
+     chevron) on staff/admin surfaces, leftover mock constants, any "AI"
+     wordmark on consumer surfaces.
 
 Screenshots go OUTSIDE the repo by default (a gate must not write into the tree
 it attests). Exit code is the number of failures.
@@ -111,10 +112,20 @@ def flag_off_sweep(base, shots):
             url = base + path + "?env=test"
             p.goto(url)
             reqs = [u for u in requests_of(p) if not u.startswith("data:")]
+            # ⊕ One mark (Mide's ruling, 13 Sep 2026): the tab icon is now the
+            # brand kit's own favicon FILE (/shared/brand/mrbadmus-favicon.svg,
+            # from brand.brand_head()) instead of an inline data: URI, so the
+            # browser's favicon fetch is a same-origin request for exactly
+            # that file — the same allowance `favicon.ico` always had. Named
+            # file by file, not the whole folder, and on this origin only;
+            # the API / Supabase / CDN assertion below is untouched.
+            KIT_ICONS = ("/shared/brand/mrbadmus-favicon.svg",
+                         "/shared/brand/mrbadmus-icon-light-512.png")
             def own(u):
                 bare = u.split("?", 1)[0]
                 return (bare.startswith(base + path) or (bare.startswith(base) and (bare.endswith(".css") or bare.endswith(".js")
-                        or "/shared/fonts/" in bare or bare.endswith("favicon.ico"))))
+                        or "/shared/fonts/" in bare or bare.endswith("favicon.ico")
+                        or bare[len(base):] in KIT_ICONS)))
             foreign = [u for u in reqs if not own(u)]
             api = [u for u in reqs if "/api/" in u or "supabase" in u or "cdn.jsdelivr" in u or "cdnjs" in u]
             text = p.eval("document.body ? document.body.innerText : ''") or ""
@@ -201,25 +212,31 @@ def cold_greps(site):
             consumer_files += [os.path.join(d, f) for f in os.listdir(d) if f.endswith((".html", ".js"))]
     admin = os.path.join(site, "teacher", "admin.html")
     check(not grep(r"MrBadmusAI", consumer_files), "no 'MrBadmusAI' under parents/ go/ consumer/ org/", grep(r"MrBadmusAI", consumer_files)[:5])
-    # The consumer card on the admin page must not carry the old "MrBadmusAI" name.
+    # The admin page's school nav legitimately says MrBadmusAI; the consumer card must not.
     adm = strip_comments(open(admin, encoding="utf-8").read())
     card = adm[adm.find('id="consumer-card"'):] if 'id="consumer-card"' in adm else ""
     check("MrBadmusAI" not in card, "admin consumer card carries no 'MrBadmusAI'")
-    # ⊕ One-mark ruling (Mide, 13 Sep 2026): ONE mark on every page, staff
-    # surfaces included — the rule this check was written against (staff
-    # pages carry a plain wordmark and NO chevron) is overridden. What is
-    # still forbidden is any OTHER chevron: the consumer product's mark
-    # leaking onto a staff surface. So brand.py's own mark is removed
-    # first (byte-exact, nothing looser), and any chevron left is a failure.
-    import brand as _brand
-    chevron = r'stroke="#E4572E"'
+    # ⊕ ONE MARK (Mide's ruling, 13 Sep 2026; the one-mark run, 27 Sep 2026).
+    # This asserted `stroke="#E4572E"` was ABSENT from every staff surface —
+    # MRB-316 ruling 1's "a staff surface carries the wordmark alone". The
+    # one-mark ruling supersedes that rule: every page, staff included,
+    # wears the site's one lockup. So the check now asserts the RULED state,
+    # and no less strictly: every chevron SVG on a staff surface is
+    # byte-for-byte brand.py's MARK_SVG (a hand-copied or mirrored chevron
+    # still fails), and the two org pages DO carry the mark.
+    import brand
     for f in STAFF_SURFACES:
         path = os.path.join(site, f)
         body = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
         if f == "teacher/admin.html":
             body = card
-        body = body.replace(_brand.MARK_SVG, "")
-        check(chevron not in body, "no chevron other than the one mark on staff surface %s" % f)
+        svgs = [m for m in re.findall(r"<svg\b.*?</svg>", body, re.S)
+                if 'stroke="#E4572E"' in m]
+        foreign = [m for m in svgs if m != brand.MARK_SVG]
+        check(not foreign, "only the one mark's chevron on staff surface %s" % f,
+              [m[:80] for m in foreign])
+        if f.startswith("org/"):
+            check(brand.MARK_SVG in body, "staff surface %s wears the one mark" % f)
     # ⊕ MRB-321. "Brookfield" stopped being proof of a leftover fixture when
     # Design's Drop 2 Organisations page shipped `placeholder="e.g. Brookfield
     # Tuition Centre"` — her own hint text on the Organisation field, which a
