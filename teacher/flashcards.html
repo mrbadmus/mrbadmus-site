@@ -2,6 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <!-- ⊕ Theme run, 27 Sep 2026 (Mide's ruling: light by default, a
+       Light/Dark/System control on every page). THEME_HEAD, byte-identical
+       to theme_head.THEME_HEAD — theme_wiring_check.py checks for an exact
+       match, so if this ever needs to change, change theme_head.py and
+       copy its output here rather than hand-editing this line. Before any
+       stylesheet, so <html> carries data-theme before first paint. -->
+  <script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+  <script src="/shared/theme.js?v=6fd6f722" defer></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#F7F1E5"/>
   <title>Flashcards — Mr Badmus AI</title>
@@ -11,8 +19,8 @@
        shared/flashcard-progress.js; this file is the shell. -->
   <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
   <link rel="stylesheet" href="/shared/teacher-ds.css?v=186503a6"/>
-  <link rel="stylesheet" href="/shared/set-work.css?v=945b57d7"/>
-  <link rel="stylesheet" href="/shared/flashcard-progress.css?v=b8515261"/>
+  <link rel="stylesheet" href="/shared/set-work.css?v=0410163d"/>
+  <link rel="stylesheet" href="/shared/flashcard-progress.css?v=abf53d2e"/>
   <style>
     html { background: var(--st-ground); }
     * { box-sizing: border-box; }
@@ -71,6 +79,7 @@
     <a class="tb-tab" href="/teacher/classes.html">My classes</a>
   </div>
   <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+  <span class="mrb-theme-slot" data-mrb-theme></span>
 </nav>
 
 <main class="fp-wrap" id="fp-main">

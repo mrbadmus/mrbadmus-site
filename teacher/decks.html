@@ -2,6 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <!-- ⊕ Theme run, 27 Sep 2026 (Mide's ruling: light by default, a
+       Light/Dark/System control on every page). THEME_HEAD, byte-identical
+       to theme_head.THEME_HEAD — theme_wiring_check.py checks for an exact
+       match, so if this ever needs to change, change theme_head.py and
+       copy its output here rather than hand-editing this line. Before any
+       stylesheet, so <html> carries data-theme before first paint. -->
+  <script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+  <script src="/shared/theme.js?v=6fd6f722" defer></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#F7F1E5"/>
   <title>Flashcard decks — Mr Badmus AI</title>
@@ -11,8 +19,8 @@
        same frame here as it is inside the sheet: the panel below is
        `.sw-overlay` / `.sw-sheet`, and the review table is drawn in
        `.sw-label` / `.sw-chip` / `.sw-input`. -->
-  <link rel="stylesheet" href="/shared/set-work.css?v=945b57d7"/>
-  <link rel="stylesheet" href="/shared/flashcard-decks.css?v=6c46a45f"/>
+  <link rel="stylesheet" href="/shared/set-work.css?v=0410163d"/>
+  <link rel="stylesheet" href="/shared/flashcard-decks.css?v=cb9045ef"/>
   <style>
     html { background: var(--st-ground); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -148,6 +156,7 @@
   </div>
   <span class="tb-name" id="tb-name"></span>
   <button class="signout" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+  <span class="mrb-theme-slot" data-mrb-theme></span>
 </nav>
 
 <div class="container" id="main" style="display:none;">
