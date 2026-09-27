@@ -1349,7 +1349,15 @@ def tutor_block(lesson, route):
     tier/pathway from the route" is honoured by folding the route into
     `topic`, so the tutor has that context even for a student whose own
     profile tier differs from the page they are revising on)."""
-    topic = "%s (AQA %s) — %s" % (lesson["title"], lesson["spec"], ROUTE_LABEL[route])
+    # ⊕ theme run follow-up to R14 (27 Sep 2026): the tutor's context names the
+    # section in THIS route's own spec — the same verified SPEC_TEXT the
+    # eyebrow and key note read (docs/theme/spec-numbers.md) — so a Triple
+    # pupil's tutor is never told the Combined (8464) number.
+    note = compute_spec_note(lesson["slug"], route)
+    spec = note["keynote"].split(" · ")[0] if note else "AQA %s" % lesson["spec"]
+    # "AQA 4.2.1.4 (8463)" -> "AQA 8463 4.2.1.4", so the context has no nested brackets
+    spec = re.sub(r"^AQA (.+) \((\d{4})\)$", r"AQA \2 \1", spec)
+    topic = "%s (%s) — %s" % (lesson["title"], spec, ROUTE_LABEL[route])
     cfg = json.dumps({"subject": lesson["subject"], "topic": topic}, sort_keys=True)
     cfg = cfg.replace("<", "\\u003c")
     return (TUTOR_OVERLAY +
