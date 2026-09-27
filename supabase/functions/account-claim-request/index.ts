@@ -98,11 +98,12 @@ Deno.serve(async (req) => {
           method: "POST",
           headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            from: "MrBadmusAI <noreply@mrbadmus.com>",
+            from: "MrBadmus <noreply@mrbadmus.com>",
             to: [oldEmail],
-            subject: "Confirm you want to move your MrBadmusAI progress",
+            subject: "Confirm you want to move your MrBadmus progress",
             html: `<div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;color:#1a1a2e">
-              <h2 style="color:#4ECDC4">Move your old MrBadmusAI account</h2>
+              <p style="margin:0 0 20px"><img src="https://mrbadmus.com/shared/brand/mrbadmus-lockup-light-email.png" width="160" height="30" alt="MrBadmus" style="display:block;border:0;width:160px;height:auto"></p>
+              <h2 style="color:#4ECDC4">Move your old MrBadmus account</h2>
               <p>Someone signed in with a school account and asked to move the progress
               from <strong>${oldEmail}</strong> onto it.</p>
               <p>If that was you, confirm within ${TTL_MINUTES} minutes:</p>

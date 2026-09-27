@@ -2436,6 +2436,22 @@ GATES = [
 # repo root, so a new script cannot be quietly neither.
 
 EXCLUDED = {
+    # ── ⊕ one-mark run, 27 Sep 2026 · the brand's tools ──────────────────────
+    "brand.py":
+        "the ONE brand partial (Mide's ruling, 13 Sep 2026) — a library every "
+        "generator imports, plus `python3 brand.py` to rewrite "
+        "shared/brand/brand.js. Asserts nothing; `brand_one_mark` is the gate "
+        "that proves every page wears what this module draws.",
+    "brand_cards.py":
+        "redraws two raster images (the shared-link card and the email lockup "
+        "PNG) from brand.py in headless Chrome. A generator of committed "
+        "artefacts, run by hand when the kit changes; asserts nothing.",
+    "brand_fingerprint.py":
+        "the RENDERED proof of the one-mark run: drives one page per family "
+        "(local build or the live site) and counts distinct header marks. It "
+        "needs a served site and, for the live proof, the network, so it is "
+        "run at landing and recorded in docs/brand/ONE-MARK-REPORT.md; the "
+        "static `brand_one_mark` gate is what guards every push.",
     # ── ⊕ MRB-352, 23 Sep 2026 · data the gate reads, not a gate itself ─────
     "frozen_window_allowlist.py":
         "the MRB-352 ruling, verbatim, as data — the 28 ids Mide permitted "

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8"/>
 <title>MrBadmus social card — source of record</title>
@@ -11,21 +11,20 @@
      redrawn rather than re-invented — a card image with no source is a card
      image nobody can ever change.
 
-     TO REGENERATE:
-       python3 -m http.server 8899          # from the worktree root
-       # then screenshot http://localhost:8899/docs/b2c/social-card.html
-       # at exactly 1200x630, full_page=False, into docs/b2c/social-card.png
-     (the estate's headless-Chrome harness is ks3_browser.py; see the report)
+     TO REGENERATE:  python3 brand_cards.py
 
-     ⚠️ THE CHEVRON IS COPIED, NOT REDRAWN. The two <path> elements below are
-     byte-for-byte `BRANDMARK` from consumer/consumer-common.js — same d=, same
-     stroke-width 3.4, same 0.34 second-chevron opacity, same viewBox. Redrawing
-     it by eye is how a brand mark quietly acquires a fourth variant.
+     ⚠️ THE LOCKUP IS STAMPED, NOT DRAWN. The brand region below is filled
+     by brand.stamp_brand() from Design's kit (shared/brand/) — the one mark
+     (Mide's ruling, 13 Sep 2026). Regenerate with `python3 brand_cards.py`,
+     which stamps this file and redraws the PNG. (Before the one-mark run the
+     card carried a hand-copied chevron with its solid and faded halves the
+     wrong way round, and the wordmark at 800.)
 
      ⚠️ "MrBadmus", never "MrBadmusAI". The consumer wordmark carries no "AI"
      (ruled; night4_laneC_drive.py greps for violations).
      ═══════════════════════════════════════════════════════════════════════ -->
 <link rel="stylesheet" href="/shared/tokens.css"/>
+<link rel="stylesheet" href="/shared/brand/brand.css"/>
 <style>
   html, body { margin: 0; padding: 0; }
   /* The exact card box. Nothing may reflow it — a scrollbar or a stray
@@ -52,11 +51,8 @@
     content: ""; position: absolute; left: 0; right: 0; bottom: 0;
     height: 16px; background: #E4572E;
   }
-  .brand { display: flex; align-items: center; gap: 18px; }
-  .brand span {
-    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
-    font-weight: 800; font-size: 46px; letter-spacing: -.035em;
-  }
+  /* The one lockup (brand.py), at card scale: 21/19/5 × 2.4 → chevron 50, wordmark 46. */
+  .brand { zoom: 2.4; line-height: 0; }
   h1 {
     margin: 0; max-width: 17ch;
     font-family: 'Bricolage Grotesque', system-ui, sans-serif;
@@ -73,13 +69,7 @@
 </head>
 <body>
 <div class="card">
-  <div class="brand">
-    <svg width="58" height="58" viewBox="0 0 22 22" aria-hidden="true">
-      <path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
-      <path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
-    </svg>
-    <span>MrBadmus</span>
-  </div>
+  <div class="brand"><!--mrb:brand href=/parents/--><a class="mrb-brand" href="/parents/" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand--></div>
   <h1>A science teacher who sets the work, marks it, and tells you how it went.</h1>
   <div class="foot">
     <span>Science · Years 7 to 11 · England</span>
