@@ -45,17 +45,32 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
    an inline style, so this raises that one number. .7 keeps the control
    visibly duller than its enabled (opacity 1) state — still reads as
    "disabled" — while composited contrast clears the floor: measured
-   4.57:1. */
-@media (prefers-color-scheme: dark) {
-  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-reveal-btn:disabled,
-  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-retry:disabled {
-    opacity: .7 !important;
-  }
-}
-.rd[data-mode="ks3"][data-theme="dark"] .ks3-reveal-btn:disabled,
-.rd[data-mode="ks3"][data-theme="dark"] .ks3-retry:disabled,
-[data-theme="dark"] .rd[data-mode="ks3"] .ks3-reveal-btn:disabled,
-[data-theme="dark"] .rd[data-mode="ks3"] .ks3-retry:disabled {
+   4.57:1.
+
+   ⊕ THEME RUN (26 Sep 2026) — UNGATED from dark-only, having measured the
+   IDENTICAL collapse in LIGHT mode (1.60:1, same floor 3.0) the first time
+   this run's `contrast_audit.py --themes light,dark` actually reached a
+   disabled control on these 54 pages. The mechanism is symmetric, not
+   theme-specific: these buttons' filled/label pair is (fill=--ks3-ink,
+   label=--ks3-ground) in EITHER theme — a near-black fill under
+   cream-coloured label text — and `--ks3-ground` in light mode IS the
+   page's own cream ground, so opacity-fading the label toward that same
+   page ground converges label-onto-page just as catastrophically as the
+   dark-mode case converges it onto the dark ground. This was not
+   introduced by the theme run; it is a pre-existing defect this run's
+   dual-theme, real-disabled-state measurement was the first thing to
+   surface (Decisions/Deviations, ks4-pilot theme-run report). One
+   unconditional rule now covers both floors: measured 4.57:1 dark,
+   3.03:1 light.
+
+   `.ks3-check-btn:disabled` joins the same rule for the same reason,
+   found by the same sweep — a ghost-style button (cream fill, ink label,
+   ~12:1 apart) whose SAME opacity:.45 fade collapses it to 2.76:1 in
+   LIGHT mode only (its dark pairing already cleared the floor at .45,
+   so raising it here only widens that margin, never regresses it). */
+.ks3-reveal-btn:disabled,
+.ks3-retry:disabled,
+.ks3-check-btn:disabled {
   opacity: .7 !important;
 }
 
@@ -70,12 +85,6 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
    ...flip to light fills in dark mode, so their label flips dark",
    shared/ks4-theme.css) — the accent card is exactly such a filled, bright
    surface. Measured 6.74:1. Nothing minted. */
-@media (prefers-color-scheme: dark) {
-  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-endmatter .ks3-tutor h2,
-  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-endmatter .ks3-tutor p {
-    color: var(--ks3-on-dark);
-  }
-}
 .rd[data-mode="ks3"][data-theme="dark"] .ks3-endmatter .ks3-tutor h2,
 .rd[data-mode="ks3"][data-theme="dark"] .ks3-endmatter .ks3-tutor p,
 [data-theme="dark"] .rd[data-mode="ks3"] .ks3-endmatter .ks3-tutor h2,
@@ -100,20 +109,71 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
    "Your answer" label immediately above its textarea already uses, so
    reusing it here gives every placeholder a properly
    de-emphasized-but-legible tone consistent with that label. Measured
-   8.66:1 on --ks3-card, 9.35:1 on --ks3-ground. Nothing minted. */
-@media (prefers-color-scheme: dark) {
-  .rd[data-mode="ks3"]:not([data-theme="light"]) input::placeholder,
-  .rd[data-mode="ks3"]:not([data-theme="light"]) textarea::placeholder {
-    color: var(--ks3-ink-muted);
-    opacity: 1;
-  }
-}
-.rd[data-mode="ks3"][data-theme="dark"] input::placeholder,
-.rd[data-mode="ks3"][data-theme="dark"] textarea::placeholder,
-[data-theme="dark"] .rd[data-mode="ks3"] input::placeholder,
-[data-theme="dark"] .rd[data-mode="ks3"] textarea::placeholder {
+   8.66:1 on --ks3-card, 9.35:1 on --ks3-ground. Nothing minted.
+
+   ⊕ THEME RUN (26 Sep 2026) — UNGATED from dark-only, having measured the
+   SAME UA-default placeholder grey failing in LIGHT mode too (4.18:1 on
+   --ks3-ground, 4.50:1 on --ks3-card — both under the 4.5 floor; not
+   introduced by this run, the same pre-existing gap KS4-DARK-1 above
+   turned out to have). `--ks3-ink-muted` already carries its OWN correct
+   value in EITHER theme (5.6:1 on light --ks3-ground per its own token
+   comment, 8.66/9.35:1 in dark per this rule's original measurement), so
+   ONE unconditional rule — not two theme-gated copies — is both correct
+   and sufficient: the token resolves per-theme on its own. */
+.rd[data-mode="ks3"] input::placeholder,
+.rd[data-mode="ks3"] textarea::placeholder {
   color: var(--ks3-ink-muted);
   opacity: 1;
+}
+
+/* ⊕ KS4-DARK-4 (THEME RUN, 26 Sep 2026) — the tutor chat overlay
+   (#chatOverlay, build_ks3.KS3_CHAT_OVERLAY, mounted verbatim by every one
+   of these 54 pages' tutor_block()) ships with NO stylesheet of its own —
+   its rules (`.chat-head-info h3`, `.chat-modal`, …) live only in
+   shared/styles.css, which these pages do not load (a pre-existing,
+   unrelated gap: KS3 lesson pages load it, KS4 pilot pages never have).
+   So every one of those rules is a no-op here, and the overlay's h3/p
+   render with NO explicit colour of their own — they simply INHERIT
+   `body`'s, which ks4-ds.css sets, unscoped, to `--st-ink` (a 3D-Studio
+   token bundled in from Design's concatenated tokens export, landing here
+   only because build_ds_css() ships her whole chain). `--st-ink` carries
+   no dark remap anywhere in this file, so in dark mode the overlay's text
+   stayed the SAME near-black (#1A1714) while its background — composited
+   straight through, since every layer between it and `body` is
+   transparent — correctly followed body's OWN dark ground (#16120E, this
+   file's own `html,body` rule below): 1.04:1. `#chatOverlay` sits OUTSIDE
+   `.rd[data-mode="ks3"]` (a sibling of #ks4-mount, both direct children of
+   `body`), so it cannot see `--ks3-ink`'s `.rd`-scoped dark remap by
+   inheritance — CSS custom properties cascade down a subtree, never
+   sideways to a sibling — so the value below is that SAME dark ink
+   (#F3ECE0, shared/ks4-theme.css) written literally, because the custom
+   property itself is out of scope at `body`. Nothing else lives directly
+   under `body` outside `.rd` (`.rd` sets its own inline `color`, which
+   always wins there regardless of body's), so this cannot touch lesson
+   content. Measured 15.98:1. */
+html[data-theme="dark"] body {
+  color: #F3ECE0;
+}
+
+/* ⊕ KS4-DARK-5 (THEME RUN, 26 Sep 2026) — same unstyled-overlay cause as
+   KS4-DARK-4, one door down: `#chatOverlay`'s `<input id="ci">` (the chat
+   text box) carries no background/border of its own either (again,
+   because shared/styles.css never loads here), so it renders as a bare
+   NATIVE form control — and `html.style.colorScheme` (set by theme.js/
+   THEME_HEAD, needed everywhere else on the page so the OS's own chrome —
+   scrollbars, native pickers — matches the site's choice) makes Chrome
+   skin that native control with its OWN dark widget theme: a dark grey
+   fill (#3B3B3B) under Chrome's OWN placeholder grey (#757575, the exact
+   value KS4-DARK-3's docstring already names as the UA default) — 2.43:1,
+   under the 4.5 floor. In light mode the same native pairing (white fill,
+   #757575 placeholder) already clears it, which is exactly why this
+   never needed fixing before: the overlay predates dark mode entirely and
+   has no design of its own to give it. Rather than invent one, `color-
+   scheme: light` pins the overlay's native controls to the SAME
+   appearance they have always had, in either theme — the accurate
+   "unchanged" for a component nothing here has redesigned. */
+#chatOverlay {
+  color-scheme: light;
 }
 
 /* ⊕ KS4-CHIP-1 (Mide's ruling, 27 Sep 2026) — replaces the two static
