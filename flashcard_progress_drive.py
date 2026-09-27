@@ -151,8 +151,11 @@ STUB_JS = r"""
       maybeSingle: function () { api._one = true; return api; },
       then: function (res, rej) {
         var rows = (F.tables[table] || []).slice();
-        var out = api._one ? {data: rows[0] || null, error: rows.length ? null : {code: 'PGRST116'}}
-                           : {data: rows, error: null};
+        /* `status` as real supabase-js returns it: the flashcards capability
+           probe decides on the status, not on `error` (a HEAD 404 has none). */
+        var out = api._one ? {data: rows[0] || null, error: rows.length ? null : {code: 'PGRST116'},
+                              status: rows.length ? 200 : 406}
+                           : {data: rows, error: null, status: 200};
         return Promise.resolve(out).then(res, rej);
       }
     };

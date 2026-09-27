@@ -196,7 +196,16 @@ STUB_JS = r"""
       then: function (res, rej) {
         if (F.noSchema) {
           if (NO_SCHEMA_TABLES[table]) {
-            return Promise.resolve({data: null, count: null, error: {
+            /* Real PostgREST + supabase-js: a HEAD read of a missing table is a
+               404 with NO body, so `error` is null and only `status` says so.
+               The first version of this stub answered with an error object,
+               which hid a probe that trusted `!r.error` (see
+               tools/mrb351_noschema_live.py). Answer as production does. */
+            if (head) {
+              return Promise.resolve({data: null, count: null, error: null,
+                                      status: 404, statusText: 'Not Found'}).then(res, rej);
+            }
+            return Promise.resolve({data: null, count: null, status: 404, error: {
               code: 'PGRST205', message: "Could not find the table 'public." + table + "' in the schema cache"
             }}).then(res, rej);
           }
@@ -229,9 +238,9 @@ STUB_JS = r"""
           });
         }
         var payload;
-        if (head) { payload = {data: null, count: out.length, error: null}; }
-        else if (one) { payload = {data: out[0] ? JSON.parse(JSON.stringify(out[0])) : null, error: null}; }
-        else { payload = {data: JSON.parse(JSON.stringify(out)), error: null}; }
+        if (head) { payload = {data: null, count: out.length, error: null, status: 200}; }
+        else if (one) { payload = {data: out[0] ? JSON.parse(JSON.stringify(out[0])) : null, error: null, status: 200}; }
+        else { payload = {data: JSON.parse(JSON.stringify(out)), error: null, status: 200}; }
         return Promise.resolve(payload).then(res, rej);
       }
     };

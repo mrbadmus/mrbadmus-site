@@ -306,7 +306,14 @@ window.MrBadmusAdminScope = (function () {
       return Promise.resolve(
         sb.from('flashcard_decks').select('id', { head: true, count: 'exact' }).limit(0)
       ).then(function (r) {
-        decksCapable = !(r && r.error);
+        /* The STATUS decides, not `r.error`. A HEAD read of a missing table
+           comes back 404 with no body, and supabase-js then reports
+           `error: null` — so `!r.error` read "present" on production and
+           put a dead link on every teacher page (found by
+           tools/mrb351_noschema_live.py against a schema-less TEST). */
+        decksCapable = !!(r && !r.error &&
+                          typeof r.status === 'number' &&
+                          r.status >= 200 && r.status < 300);
         decksProbe = null;
         if (decksCapable) { injectDecks(); } else { writeCachedNo(); }
         return decksCapable;
