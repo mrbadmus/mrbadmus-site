@@ -52,6 +52,10 @@ import ks3_data
 from ks3_data.structure import DISCIPLINES, DISCIPLINE_TITLES
 from ks3_data.substatements import all_sub_ids, parent_of
 
+# Theme run (26 Sep 2026): the one shared pre-paint snippet, control slot and
+# script tag, imported rather than retyped — see theme_head.py.
+from theme_head import THEME_HEAD, THEME_SLOT, theme_script
+
 # The browse layer's only data source. Slugs and display names live in
 # half_terms.py rather than here on purpose: a second copy in the generator
 # would be free to drift, and a drifted slug is a 404 that appears for exactly
@@ -191,7 +195,13 @@ _KS3_ART = ks3_art.load()
 # generator hashes its own output copy, and the copy is written verbatim from
 # `shared/mrbadmus.v2.js`, so the two hashes are the same eight characters.
 VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js",
-                     "class-entry.js", "mrbadmus.v2.js")
+                     "class-entry.js", "mrbadmus.v2.js",
+                     # ⊕ theme run (26 Sep 2026) — the shared Light/Dark/System
+                     # control (theme.js) and KS3's own dark-token remap
+                     # (ks3-theme.css). Same staleness argument as the rest of
+                     # this tuple: a cached copy of either would leave a
+                     # student's page stuck on the wrong theme silently.
+                     "theme.js", "ks3-theme.css")
 
 
 def asset_versions(repo_root="."):
@@ -663,6 +673,7 @@ def shell(title, body, crumb_html="", discipline=None, description="",
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
+%(themehead)s
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>%(fulltitle)s</title>
 <meta name="description" content="%(desc)s"/>
@@ -671,13 +682,14 @@ def shell(title, body, crumb_html="", discipline=None, description="",
 <link rel="stylesheet" href="/shared/styles.css"/>
 <link rel="stylesheet" href="/shared/nav.css"/>
 <link rel="stylesheet" href="/shared/ks3.css"/>
+<link rel="stylesheet" href="/shared/ks3-theme.css"/>
 %(headlinks)s</head>
 <body class="rd" data-mode="ks3"%(lesson)s%(style)s>
 <header class="ks3-nav">
   <div class="ks3-nav-rail">%(brand)s
   %(crumbs)s
   <span class="ks3-nav-spacer"></span>
-  </div>
+  %(themeslot)s</div>
 </header>
 %(rail)s<main class="ks3-main%(mainclass)s">
 %(body)s
@@ -687,7 +699,7 @@ def shell(title, body, crumb_html="", discipline=None, description="",
     <p class="ks3-footer-title">MrBadmusAI · Key Stage 3 Science</p>%(links)s
   </div>
 </footer>
-%(tail)s%(scripts)s<script src="/shared/class-entry.js" defer></script>
+%(tail)s%(themescript)s%(scripts)s<script src="/shared/class-entry.js" defer></script>
 </body>
 </html>
 """ % {
@@ -707,6 +719,9 @@ def shell(title, body, crumb_html="", discipline=None, description="",
         "links": links_html,
         "body": body,
         "preload": FONT_PRELOADS,
+        "themehead": THEME_HEAD,
+        "themeslot": THEME_SLOT,
+        "themescript": theme_script(),
     }
 
 

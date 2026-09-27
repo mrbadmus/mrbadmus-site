@@ -156,6 +156,18 @@ MINTED_TOKENS = {
         "against its own annotation. Same 146° hue, lifted. Measured 5.51:1 on "
         "the #4A433C tile (the binding ground), 6.63:1 on --ks3-dark-panel, "
         "7.03:1 on --ks3-dark-track, 9.37:1 on --ks3-ink."),
+    "--ks3-autumn-ink": (
+        "#422E0E",
+        "Theme run, 27 Sep 2026 (Mide's contrast target for the run: 0 failures "
+        "in light and in dark). Design's autumn ink #4A3410 "
+        "measured 4.37:1 as the year page's season-meta caption on its own "
+        "--ks3-autumn tile #E08A1E — under AA in BOTH themes (the tile is a "
+        "fixed plate). Same hue, 10% darker: 4.80:1."),
+    "--ks3-summer-ink": (
+        "#09414B",
+        "Theme run, 27 Sep 2026 (same target). Design's #0B4954 measured 4.21:1 "
+        "as the season-meta caption on --ks3-summer #22B8CF, both themes. Same "
+        "hue, 10% darker: 4.72:1."),
 }
 
 

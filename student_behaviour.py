@@ -967,6 +967,20 @@ def _apply_ruled(page, d_text, g_text, problems, seen):
 # the drive compared exactly as before.
 RULED_ADDITIONS = {
     "class view": [
+        # ⊕ THEME RUN, 27 Sep 2026 — Mide's ruling: light by default, a
+        # Light/Dark/System control on every page. `shared/theme.js`
+        # (SHARED across every lane, not this port's to edit) mounts a
+        # `<fieldset>` into the `[data-mrb-theme]` slot `student_rulings.
+        # INSERT_AT` adds to the topbar: a `<legend>Colour theme</legend>`
+        # and three `<span class="mrb-theme-sr">Light|Dark|System</span>`
+        # labels, all visually hidden the standard way (1x1, clipped,
+        # absolutely positioned) — NOT `display:none`, so `innerText`
+        # (which this whole gate reads) still returns their words. Design
+        # drew no theme control on any delivery, original or amended, so
+        # this is exactly the shape `RULED_ADDITIONS` exists for: text the
+        # PORT says that Design never did.
+        ("the theme control's legend and labels",
+         r"Colour theme\s*Light\s*Dark\s*System\s*"),
         # ⊕ RULED by Mide 22 Sep 2026 — first-week fixes (completion bar).
         #
         # *"Replace the bare percentage with a completion bar … PLUS the
@@ -994,6 +1008,12 @@ RULED_ADDITIONS = {
          r"\d+ OF \d+ ANSWERED "),
     ],
     "assignment": [
+        # ⊕ THEME RUN, 27 Sep 2026 — the same theme-control text as the
+        # class view entry above; see that one for the full reasoning.
+        # `student_rulings.INSERT_AT["assignment"][(25, None)]` is the twin
+        # slot, at this page's own topbar end group.
+        ("the theme control's legend and labels",
+         r"Colour theme\s*Light\s*Dark\s*System\s*"),
         # ⊕ Experience run, 25 Sep 2026 (stream H) — TEST audit item (A),
         # BLOCKING. MRB-342.2 (3 Sep 2026) wired `assignmentNoteVisible` but
         # never returned `assignmentNoteBody` from `renderVals()` — a

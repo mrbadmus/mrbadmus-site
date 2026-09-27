@@ -576,3 +576,23 @@
 @media (prefers-reduced-motion: reduce) {
   .bd-overlay, .bd-sheet, .bd-toast { animation: none !important; transition: none !important; }
 }
+
+/* ⊕ Theme run, 27 Sep 2026 — the four filled marks, dark mode only.
+   `--success` and `--st-accent-text` are tuned BRIGHT for dark (11.7:1 /
+   8.6:1 as plain text — see teacher-ds.css's own dark block for the
+   reasoning), because four of six uses of each are plain text. These
+   four selectors are the other two: a FILL of that same bright colour
+   with a literal `color:#fff` foreground, which was 4.5:1+ against the
+   ORIGINAL dark tokens.css green/pink but is 1.6-2.0:1 against the
+   bright ones. Rather than dim the token back down for these four (and
+   break the eleven text uses across this file and shared/seating.css),
+   the foreground on just these four swaps to a fixed near-black ink —
+   #1A1714, the light theme's own --st-ink value, reused here as "a
+   dark glyph on a light fill" regardless of which theme drew the fill.
+   10.4-11.2:1 against every one of the four fills, verified. */
+html[data-theme="dark"] .bd-qmap-sq.is-right,
+html[data-theme="dark"] .bd-qmap-sq.is-wrong,
+html[data-theme="dark"] .bd-q-mark.is-right,
+html[data-theme="dark"] .bd-q-mark.is-wrong {
+  color: #1A1714;
+}

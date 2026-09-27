@@ -460,6 +460,27 @@
       ctx.vals[node.ref].current = elDom;
     }
 
+    /* ⊕ THEME RUN (26 Sep 2026) — a `data-mrb-theme` slot's children are
+       owned by shared/theme.js, not by this template. The template authors
+       ZERO children for this node on purpose (theme.js decides what a slot
+       holds, mounts a live control into it, and manages that subtree
+       itself — persistence, keyboard, System-mode updates); reconciling
+       children against that empty authored list on every render would
+       DELETE whatever theme.js has mounted the moment ANY re-render fires
+       after it — proven live: `componentDidMount`'s own first re-render
+       wiped the control while LEAVING theme.js's `data-mrb-theme-ready`
+       flag behind (attributes are patched from the template, which never
+       mentions that flag, so patchAttr above never clears it), which then
+       poisons theme.js's OWN idempotency check (`build()` returns early
+       once that flag reads "1") — so the control could never be re-mounted
+       for the rest of that page's life. Skipping child reconciliation for
+       this one attribute is the fix: the slot's own attributes still patch
+       normally exactly as any other node's do; its children are simply
+       never touched, by this render or any later one. */
+    if (node.a && Object.prototype.hasOwnProperty.call(node.a, "data-mrb-theme")) {
+      return { live: live, doms: [elDom] };
+    }
+
     var childDoms = node.c ? patchKids(node.c, scope, ctx, live.kids, isSvg) : [];
     reconcileDom(elDom, childDoms);
     return { live: live, doms: [elDom] };

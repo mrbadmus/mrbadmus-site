@@ -81,6 +81,28 @@
   .pb-wrap { padding-left: 48px !important; padding-right: 48px !important; }
 }
 
+/* ── the theme control drops to its own row below 480px (theme run, 26 Sep
+   2026) ── `nav()` in public.js now appends a ~96px Light/Dark/System
+   control after "Start free". Measured at 390px with the control mounted:
+   brand + Sign in + Start free + control together scroll the header 83px
+   past the viewport (`.pb-head`'s own inline style sets no `flex-wrap`, so
+   there was nothing stopping it). Above 480px there is room (Design's own
+   "nothing wraps" rule for the five original elements is untouched — this
+   only ever gives the SIXTH, added element a line of its own); below it,
+   forcing the slot's own flex-basis to 100% is the same technique
+   shared/ks3.css uses for the identical control in its own nav, and it
+   costs the same thing there: one extra row of header height, on phones
+   only, nothing else in the row re-measured. */
+@media (max-width: 480px) {
+  .pb-head { flex-wrap: wrap; }
+  .pb-head .mrb-theme-slot {
+    flex: 1 0 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+  }
+}
+
 /* The spinner Design uses on the Stripe hand-off. Declared here rather than
    in the signup page's own block because the checkout-return page shows the
    same one while it waits for the webhook. */

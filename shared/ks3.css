@@ -90,7 +90,14 @@ body.rd[data-mode="ks3"] {
   top: 0;
   z-index: 60;
   border-bottom: 2px solid var(--ks3-ink);
-  background: rgba(251, 243, 230, .93);
+  /* ⊕ theme run, 26 Sep 2026 — was the literal `rgba(251, 243, 230, .93)`
+     (--ks3-ground's own light value, hand-composited with its own alpha).
+     Tokenised so dark mode gets a dark translucent nav instead of a
+     still-cream one every nav-rail text colour was flipped to read
+     against: contrast_audit measured brand/crumb/theme-control text at
+     1.06–1.59:1 through the old literal in dark theme. Same alpha, same
+     blur; shared/ks3-theme.css supplies the dark value. */
+  background: var(--ks3-nav-bg, rgba(251, 243, 230, .93));
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
@@ -118,6 +125,16 @@ body.rd[data-mode="ks3"] {
    which is correct: at phone widths the rail is over-constrained, its
    `flex-basis: 0` resolves to zero, and the freed width goes to the crumbs. */
 .ks3-nav-spacer { flex: 1; }
+
+/* ── theme control slot (theme run, 26 Sep 2026) ──
+   The slot sits after the spacer, so the spacer's leftover width still does
+   its one job (push everything after it to the right edge) whether or not a
+   signed-in student's `.ks3-classlink` is also present. `flex: 0 0 auto`
+   keeps the ~96px control from being stretched or shrunk by the row's flex
+   math — the same treatment every other fixed-size rail item already gets
+   (`.ks3-nav-divider`, `.ks3-classlink`). See the ≤700px block below for what
+   happens when 96px does not fit beside the brand and the trail. */
+.ks3-nav-rail .mrb-theme-slot { flex: 0 0 auto; }
 
 /* ⊖ REMOVED by MRB-330, 6 Sep 2026 — the KS3 pill. The rule read:
 
@@ -6536,6 +6553,26 @@ html { scroll-padding-top: calc(var(--ks3-sticky-h) + 12px); }
    unit titles turn out longer than Biology's.
    ═══════════════════════════════════════════════════════════════════════ */
 @media (max-width: 700px) {
+  /* ── the theme control drops to its own row (theme run, 26 Sep 2026) ──
+     Everything ABOVE this rule in the block exists because the brand and the
+     trail are already fighting for pixels at this width (see MRB-297/MRB-330
+     above — 34.4px of trail at 320px, measured). A fixed ~96px control has no
+     honest way to win a THIRD place in that fight without reopening either
+     measurement, so it does not compete for row-1 width at all: forcing its
+     own flex-basis to 100% makes it wrap to a new line, the same technique
+     `.ks3-trail`/`.ks3-crumbs` already use internally at ≤420px for the same
+     reason ("the cost is one line of header height on phones only" — that
+     comment's reasoning applies here unchanged). Row 1 (brand + trail/crumbs
+     + spacer) is untouched byte-for-byte by this rule; nothing above it
+     changes width or wrapping behaviour. */
+  .ks3-nav-rail { flex-wrap: wrap; }
+  .ks3-nav-rail .mrb-theme-slot {
+    flex: 1 0 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+  }
+
   .ks3-trail > li:not(:nth-last-child(-n + 3)),
   .ks3-crumbs > *:not(:nth-last-child(-n + 3)) { display: none; }
 

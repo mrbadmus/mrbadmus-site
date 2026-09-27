@@ -1,0 +1,189 @@
+/* KS3 dark theme. TOKENS ONLY — no classes live here (theme run, 26 Sep
+   2026; Mide's ruling: light by default, Light/Dark/System on every page).
+
+   Owned by the KS3 lane. Do NOT edit shared/ks4-theme.css from here and do
+   not let the KS4 lane's file grow KS3's vocabulary — the two remap the same
+   --ks3-* family for two different page sets and are kept as separate files
+   on purpose (see docs/theme/REPORT.md, KS3 section).
+
+   ── the surface / ink / accent / ok / alert / stretch / blue family ──
+   Reused VERBATIM from shared/ks4-theme.css (same token family, same
+   measurements — every -text token there was checked >= 4.5:1). KS3 pages
+   carry the identical `body.rd[data-mode="ks3"]` scope KS4's chrome pages
+   carry on their own root, so the same values apply unchanged.
+
+   ── print stays light (rule 7) ──
+   KS3 never had its own `@media print` rules before this file — a printed
+   lesson just printed whatever was on screen. Dark mode is the first thing
+   that would make that wrong (dark backgrounds, light text, wasted ink), so
+   every rule in this file is wrapped in `@media screen`: printing always
+   falls through to tokens.css's un-guarded light values, whatever the
+   viewed theme was. */
+@media screen {
+[data-theme="dark"] .rd[data-mode="ks3"] {
+  /* The legacy accent pair KS3 borrows for the shared chrome (tokens.css
+     .rd[data-mode="ks3"]: --accent #E4572E, --accent-hover #A93411) does NOT
+     flip in dark, so the ink that sits on it must not flip either — without
+     this the chat header subtitle took the global dark #241D14 on rust (2.53:1). */
+  --on-accent: #FFFFFF; --on-accent-soft: #FBF5F3;
+  --ks3-ground: #16120E; --ks3-card: #1F1A15; --ks3-band: #2A231C; --ks3-inset: #231D17; --ks3-row-dim: #1B1611;
+  --ks3-rule: #3E352C; --ks3-rule-strong: #5E5246; --ks3-option-border: #4F443A; --ks3-option-spent: #2B241D;
+  --ks3-ink: #F3ECE0; --ks3-ink-body: #E3D9CA; --ks3-ink-muted: #C2B6A6; --ks3-ink-faint: #B0A493; --ks3-ink-ghost: #8A7F72;
+  --ks3-accent: #F07A4E; --ks3-accent-text: #FF9E78; --ks3-accent-tint: #3A2218; --ks3-accent-hover: #FFC2A8;
+  --ks3-ok: #3CC477; --ks3-ok-text: #86E6AC; --ks3-ok-tint: #15301F;
+  --ks3-alert: #FFC53D; --ks3-alert-text: #FFDC85; --ks3-alert-tint: #33290F; --ks3-alert-border: #D9821A;
+  --ks3-stretch: #9C7BFF; --ks3-stretch-text: #C2ADFF; --ks3-stretch-tint: #261D3D; --ks3-stretch-rule: #44386A;
+  --ks3-blue: #6C8EFF; --ks3-blue-text: #A8C0FF; --ks3-blue-tint: #1B2440;
+  /* ink-filled controls (reveal, check, retry, .ks3-btn.is-primary,
+     .ks3-compare-head, the is-wrong mark) flip to light fills in dark mode
+     (their bg is --ks3-ink or --ks3-accent-text, both flipped above), so
+     their label flips dark to stay legible on the now-light fill. */
+  --ks3-on-dark: #16120E;
+
+  /* ── the browse-layer surfaces (year/half-term browse pages) ──
+     Tints flipped the same direction as --ks3-band/--ks3-inset above: a
+     dark, desaturated cousin of the light pastel, so a large bold number
+     painted in the (now-light) --ks3-ink still reads on it. --ks3-dot is
+     the page's own texture (`body.rd[data-mode="ks3"]`'s radial-gradient) —
+     flipped to stay the same barely-there fleck it is in light mode rather
+     than becoming a field of bright dots on a dark ground. --ks3-tag mirrors
+     --ks3-band exactly, since it is the same "quiet chip" role. */
+  --ks3-year7-tint: #3A241C; --ks3-year8-tint: #1C2E22; --ks3-year9-tint: #202A42;
+  --ks3-dot: #241E17;
+  --ks3-tag: #2A231C;
+
+  /* ── subject identity (biology/chemistry/physics) ──
+     Used as large decorative marks (dots, box-shadows) AND as small mono
+     text (`.ks3-ht-n`, the half-term card's lesson number) directly on
+     --ks3-card, which is now dark. Re-pointed to the matching -text token
+     already measured for exactly that job — a light, dark-ground-legible
+     tint of the same hue — rather than minting three more values. */
+  --ks3-biology: var(--ks3-ok-text);
+  --ks3-chemistry: var(--ks3-accent-text);
+  --ks3-physics: var(--ks3-blue-text);
+
+  /* `.ks3-nav`'s own background is a literal rgba composited from
+     --ks3-ground's LIGHT value (shared/ks3.css ~line 92) — not a var(), so
+     it never flipped and every nav-rail text colour (brand, crumbs, the
+     theme control itself) was reading against a still-cream bar. Measured:
+     contrast_audit found brand text at 1.08:1, crumb links at 1.59:1. Same
+     alpha and blur, dark ground instead. */
+  --ks3-nav-bg: rgba(22, 18, 14, .93);
+
+  color-scheme: dark;
+}
+
+/* ── a dark BODY, full stop, on every page this file loads on ──
+   Several hand-written B2C pages paint `<body>`'s own background as a
+   LITERAL light hex (go/index.html: `body { background: #FBF3E6 }`,
+   "Design's login is full-bleed on the KS3 ground" — `<body>` sits OUTSIDE
+   the `.rd[data-mode="ks3"]` scope those pages put on an inner wrapper div,
+   so it cannot reach `var(--ks3-ground)` and was written as a literal
+   instead). That literal is invisible for most of a normal page load (the
+   inner wrapper's own opaque background paints over it), but
+   `consumer-common.js`'s `notFound()` — the CONSUMER_SIGNUP_ENABLED-off
+   refusal screen, which is what these pages actually show wherever the
+   backend flag is off, i.e. everywhere today — replaces `document.body`'s
+   children with `.c-notice` and nothing else, so body's own background IS
+   what paints. Low specificity (element selector only) so any page whose
+   `.rd[data-mode="ks3"]` really does sit on `<body>` keeps winning on its
+   own higher-specificity rule; this is a fallback for every other page,
+   never a fight. */
+[data-theme="dark"] body { background: #16120E; }
+
+/* The floating theme-control badge (18 hand-written B2C pages whose own
+   header markup is too heterogeneous to thread THEME_SLOT into individually
+   — see the run report). It sits as a sibling of the page's inner
+   `.rd[data-mode="ks3"]` wrapper, not a descendant, on purpose (some of
+   these pages replace that wrapper's entire contents at runtime), so it
+   cannot reach a --ks3-* token at all; its light colours are literals in
+   its own inline <style> block for the same reason. This is its dark
+   counterpart, kept in the one file that already owns every other dark
+   value rather than repeated 18 times. */
+[data-theme="dark"] .mrb-theme-float { background: #1F1A15; color: #F3ECE0; }
+
+/* ── large ink text painted directly on a season/browse fill ──
+   `.ks3-season-name` (32px/800) and `.ks3-browse-ht .ks3-code` (23px/800)
+   both paint `color: var(--ks3-ink)` directly on a season colour
+   (`--ks3-autumn`/`-spring`/`-summer`, or the derived `--ks3-season`) —
+   ks3.css's own comment names this deliberate: "large text, so ink on the
+   season fill passes at 3:1 (R1)". That measurement assumes --ks3-ink is
+   its light-theme near-black; once the general block above flips it
+   cream for body text everywhere else, these two contrast_audit-measured
+   at 2.02–2.29:1 against the same three fills. The season fill itself is
+   NOT part of the surface flip (a self-contained coloured tile, same as
+   the browse-layer season/year tokens elsewhere in this file), so its ink
+   should not be either — scoped back to the fixed light value. */
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-season-tile,
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-browse-ht .ks3-code {
+  --ks3-ink: #221E1B;
+}
+
+/* The end-of-lesson tutor CTA is the same pattern again: `background:
+   var(--ks3-accent); color: var(--ks3-ink)`, with its own comment recording
+   that 19px/700 was chosen specifically so ink-on-accent clears the LARGE
+   3:1 floor at 4.49:1 (light-mode's own near-miss, already documented
+   above it). --ks3-accent flips lighter for dark theme, --ks3-ink flips to
+   near-white, and light-on-light measured 2.35:1. Same fix: the fill+ink
+   pair is self-contained and does not participate in the general flip. */
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-endmatter .ks3-tutor {
+  --ks3-ink: #221E1B;
+}
+
+/* ── the ink-dark call-out block (hook / practical / keynote) ──
+   `.ks3-dark`'s OWN background is `--ks3-ink` (see shared/ks3.css ~line 417),
+   which the block above already flips light — unavoidably, since the same
+   token is every page's BODY TEXT colour and must flip for that to work at
+   all. That forces `.ks3-dark` itself to invert a second time: what was an
+   ink-dark panel on a light page becomes a light panel on a dark page.
+
+   Everything painted "on" that panel has to invert with it: its own text
+   (`--ks3-on-dark-body`/`-muted`) and every interactive control nested
+   inside it (`.ks3-dark .ks3-option`, `.ks3-dark .ks3-reveal`, the dozens of
+   `.ks3-dark .ks3-*-tab`/`-panel` lab controls), which sit on a NESTED
+   `--ks3-dark-panel`/`--ks3-dark-rule`/`--ks3-dark-track` tray and label
+   themselves with the same on-dark family plus, in a few places,
+   `--ks3-data`/`--ks3-blue-light`/`--ks3-ok-dark`.
+
+   ⚠️ SCOPED TO `.ks3-dark` ON PURPOSE — this is not the general dark remap
+   and must never be hoisted into the block above. Every one of these same
+   four/seven tokens has a SECOND, much more numerous life: standalone
+   instrument trays that do NOT descend from `.ks3-dark` at all (the
+   circuit-board and ray-diagram "figwrap" family, `.ks3-canvas-frame`,
+   `.ks3-iboard`/`.ks3-rbench`/`.ks3-hrig` and the rest of the interaction
+   boards, sliders, `.ks3-hook-art`). Those paint HARDCODED hex figure ink
+   (physics wires, needles, rays, particle dots — see the colour audit in
+   docs/theme/REPORT.md) directly onto this same dark-panel plate, with no
+   token in between. A diagram's plate must not invert (rule 4: figures stay
+   on their plate colour in both themes, same as a cream one would) — and
+   confirmed by reading every one of those instruments' wrapper markup in
+   ks3_art/: none of them carries the `ks3-dark` class, so scoping the flip
+   to `.ks3-dark`'s own subtree reaches only the three call-out blocks and
+   their (verified var()-only, no hardcoded hex) nested controls, and never
+   touches a single instrument's plate or ink. */
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-dark {
+  --ks3-on-dark-body: #2E2419;
+  --ks3-on-dark-muted: #4A3C2E;
+  --ks3-dark-panel: #FFFCF5;
+  --ks3-dark-rule: #FFFCF5;
+  --ks3-dark-track: #F0E9DA;
+  --ks3-data: #2545A8;
+  --ks3-blue-light: #2545A8;
+  --ks3-ok-dark: #0A6B36;
+  /* `.ks3-dark .ks3-eyebrow`/`.ks3-commit` paint the amber DIRECTLY as text
+     (`color: var(--ks3-alert)`), sound at 10.48:1 against the block's real
+     light-mode ink bg (GATE A's own measurement, this file's block
+     comment). --ks3-alert is deliberately unchanged everywhere else in dark
+     theme (it is a fill/mark colour, legible on both a light card and a
+     dark ground) — but here it is BODY-SIZE TEXT on this block's bg, which
+     this scope has just flipped light, and #FFC53D on the flipped
+     --ks3-ink measured 1.34:1. Needs the LIGHT-ground amber-as-text value —
+     which is `--ks3-alert-text`'s own LIGHT-THEME value, #5A430A. Written
+     as a literal, not `var(--ks3-alert-text)`: that variable has already
+     been flipped to its DARK-ground value (#FFDC85) by the general block
+     above, and custom properties resolve from the cascade at use, not from
+     "what this file's light-mode block said" — referencing it here would
+     silently pick up the wrong (dark-ground) amber. */
+  --ks3-alert: #5A430A;
+}
+} /* @media screen */

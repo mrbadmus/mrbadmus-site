@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+  <script src="/shared/theme.js?v=6fd6f722" defer></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#F7F1E5"/>
   <title>Revision Materials | MrBadmusAI</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=4ac1e47c"/>
-  <link rel="stylesheet" href="/shared/nav.css?v=363c537c"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
+  <link rel="stylesheet" href="/shared/nav.css?v=e0d9816d"/>
   <!-- MRB-337 — the student's messages. config.js first (it is the
        environment switcher shared/student-bell.js reads for the backend URL
        and the session key; absent, the bell falls back to production, which
@@ -19,7 +21,7 @@
   <script src="/shared/config.js?v=d1fecb43"></script>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
-  <script src="/shared/nav.js?v=28cd1457" defer></script>
+  <script src="/shared/nav.js?v=d653be2c" defer></script>
   <script src="/shared/class-entry.js?v=a97c1d3d" defer></script>
   <script src="/shared/student-bell.js?v=f46f4d9b" defer></script>
   <style>
@@ -199,6 +201,7 @@
     <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
     <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
     <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
+    <span class="mrb-theme-slot" data-mrb-theme></span>
     <span id="nav-auth-area"></span>
     <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
   </div>

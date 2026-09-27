@@ -2,41 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <meta name="theme-color" content="#F7F1E5"/>
   <title>Eukaryotes and Prokaryotes | Biology | MrBadmusAI</title>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=4ac1e47c"/>
-  <link rel="stylesheet" href="/shared/styles.css?v=ce417591"/>
-  <link rel="stylesheet" href="/shared/nav.css?v=363c537c"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
+  <link rel="stylesheet" href="/shared/styles.css?v=d7fa5bbc"/>
+  <link rel="stylesheet" href="/shared/nav.css?v=e0d9816d"/>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
-  <script src="/shared/nav.js?v=28cd1457" defer></script>
+  <script src="/shared/nav.js?v=d653be2c" defer></script>
   <script src="/shared/class-entry.js?v=a97c1d3d" defer></script>
   
 <style>
 html { background: var(--bg); }
-:root { --subject: #237A3B; }
+:root { --subject: var(--biology); }
 </style>
   
+  <script src="/shared/theme.js?v=6fd6f722" defer></script>
 </head>
 <body class="">
   <nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-crumbs">
     <span class="crumb-sep">›</span>
-    <a href="/combined/index.html" class="crumb" style="color:#1D6FB8;">Combined Science</a>
+    <a href="/combined/index.html" class="crumb" style="color:var(--combined);">Combined Science</a>
     <span class="crumb-sep">›</span>
-    <a href="/combined/higher/index.html" class="crumb" style="color:#7A5F00;">Higher</a>
+    <a href="/combined/higher/index.html" class="crumb" style="color:var(--higher);">Higher</a>
     <span class="crumb-sep">›</span>
-    <a href="/combined/higher/biology/index.html" class="crumb" style="color:#237A3B;">🌿 Biology</a></div>
+    <a href="/combined/higher/biology/index.html" class="crumb" style="color:var(--biology);">🌿 Biology</a></div>
   <div class="nav-cluster">
     <a href="/3d/" class="nav-text-link">3D Studio</a>
     <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
     <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
     <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
+    <span class="mrb-theme-slot" data-mrb-theme></span>
     <span id="nav-auth-area"></span>
     <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
   </div>

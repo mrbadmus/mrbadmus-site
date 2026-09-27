@@ -76,6 +76,38 @@ body[data-chrome="ks4"] {
   --k4-accent-dark: #7F2408;
   --k4-accent-soft: #FCE7DE;
   --k4-accent-lift: #F2946E;
+  /* ⊕ Theme run, 26 Sep 2026 — TWO new tokens, minted rather than reusing
+     what was already there, because `--k4-ink`/`--k4-accent-deep` each do
+     TWO jobs today and only one of the two may flip with the theme:
+
+       --k4-on-accent   text painted on a SOLID --k4-accent /
+                        --k4-accent-lift fill (`.k4-cta`, the
+                        `.nav-class-link:hover` fill). It used to be
+                        `var(--k4-ink)`, which is fine in light (ink is
+                        dark, the fill is a mid-bright orange) but breaks
+                        the moment `--k4-ink` flips light for dark text —
+                        the fill stays the same brightness family in both
+                        themes (an orange or a gold, never a dark colour),
+                        so the text on it must stay dark in both themes
+                        too. Fixed at its light-theme value; never
+                        redefined below, on purpose.
+       --k4-link        a plain TEXT link colour on the page ground/card
+                        (the blanket `a`, crumbs, the door-foot, the
+                        formulae-footer link, `.k4-kicker-accent`). It
+                        used to be `var(--k4-accent-deep)`, which also
+                        does a SECOND job — the fixed dark fill paired
+                        with `--k4-on-dark` cream text on the challenge
+                        chip / sign-up button / solid CTA. That fill must
+                        stay dark rust in both themes (cream text needs a
+                        dark fill), but a rust THIS dark is illegible as
+                        text directly on a dark ground. Split the two
+                        jobs apart: `--k4-accent-deep` keeps its fixed
+                        rust for the fill role; `--k4-link` takes over
+                        the text-on-ground role and gets its own,
+                        brighter, dark-theme value below. */
+  --k4-on-accent:   #1A1714;
+  --k4-link:        var(--k4-accent-deep);
+  --k4-link-hover:  var(--k4-accent-dark);
 
   --k4-dark:        #1A1714;
   --k4-dark-2:      #2A2119;
@@ -84,16 +116,28 @@ body[data-chrome="ks4"] {
   --k4-on-dark-2:   #C6B9A7;
   --k4-on-dark-3:   #B7AA98;
   --k4-on-dark-4:   #8E8272;
+  /* ⚠️ `--k4-dark`/`--k4-dark-2`/`--k4-dark-3` and `--k4-on-dark*` are a
+     SELF-CONTAINED always-dark panel (the "Top Stars" rail, the sidebar
+     challenge card) — near-black fill, cream text, already high-contrast
+     regardless of the SITE theme. Deliberately not redefined below: they
+     read exactly as they do today whichever theme the page is in. */
 
-  --k4-combined:      #1D6FB8;
+  /* ⊕ Theme run — these four used to be this file's OWN literal hex,
+     duplicating (byte-for-byte) the light values of the CORE subject/tier
+     tokens in shared/tokens.css. Pointing them at the core tokens instead
+     keeps light identical and makes dark automatic: tokens.css already
+     redefines --physics/--chemistry/--biology/--higher under
+     [data-theme="dark"], and a custom property that is itself `var(...)`
+     re-resolves live, not at parse time — no new rule needed here at all. */
+  --k4-combined:      var(--physics);
   --k4-combined-soft: #EAF2FA;
   --k4-combined-line: #B9CFE6;
   --k4-combined-deep: #15558F;
 
-  --k4-triple:        #B02342;
+  --k4-triple:        var(--chemistry);
   --k4-triple-soft:   #FAEDF0;
 
-  --k4-foundation:      #237A3B;
+  --k4-foundation:      var(--biology);
   --k4-foundation-soft: #EAF3EC;
   --k4-foundation-line: #B9D6C1;
   --k4-foundation-deep: #1B5E30;
@@ -101,10 +145,17 @@ body[data-chrome="ks4"] {
   --k4-done-soft:       #E4F7EB;
   --k4-done-deep:       #0A6B36;
 
-  --k4-higher:      #7A5F00;
+  --k4-higher:      var(--higher);
   --k4-higher-soft: #F6EFD6;
   --k4-higher-line: #D9C58A;
   --k4-higher-deep: #5F4A00;
+
+  /* ⊕ Theme run — new aliases so a subject door/dot can say what it means
+     ("this is physics") rather than borrowing the pathway token that
+     happens to share its value. Same core tokens as above. */
+  --k4-physics:   var(--physics);
+  --k4-chemistry: var(--chemistry);
+  --k4-biology:   var(--biology);
 
   --k4-display: 'Bricolage Grotesque', system-ui, sans-serif;
   --k4-body:    'Instrument Sans', system-ui, sans-serif;
@@ -123,12 +174,86 @@ body[data-chrome="ks4"] {
   text-wrap: pretty;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   DARK — theme run, 26 Sep 2026. Every --k4-* custom property the block
+   above defines is redefined here for html[data-theme="dark"]; nothing
+   else in this file changes; every rule below the base block reads one
+   of these tokens and repaints automatically. Selector is always
+   `html[data-theme="dark"] body[data-chrome="ks4"]` so it out-specifies
+   the plain `body[data-chrome="ks4"]` block regardless of source order
+   (2 elements + 2 attributes vs 1 element + 1 attribute).
+
+   NOT redefined, deliberately (see the notes at each token's definition
+   above): --k4-dark / --k4-dark-2 / --k4-dark-3 / --k4-on-dark* (a
+   self-contained always-dark panel, already high-contrast in both
+   themes), --k4-accent-deep / --k4-accent-dark / --k4-accent-lift / the
+   champ-row and stars-dot literal hex (fills always paired with the
+   fixed --k4-on-dark / --k4-on-accent text, inside the fixed-dark
+   panel), --k4-on-accent (fixed dark ink, paired with a fill that is
+   bright in BOTH themes), and --k4-done* (dead — no page reads it).
+   ═══════════════════════════════════════════════════════════════════════ */
+html[data-theme="dark"] body[data-chrome="ks4"] {
+  --k4-ground:      #14110D;
+  --k4-card:        #1D1915;
+  --k4-sunken:      #211B14;
+  --k4-sunken-2:    #19140F;
+  --k4-track:       #2A2318;
+  --k4-border:      #3A3226;
+  --k4-border-2:    #4A4030;
+
+  --k4-ink:         #EDE5D8;
+  --k4-ink-2:       #C9BEAD;
+  --k4-muted:       #A2957F;
+  --k4-muted-2:     #9C8F79;
+
+  /* the site's one dark accent — gold, matching shared/tokens.css's
+     [data-theme="dark"] --accent exactly, so the chrome and the classic
+     nav read as the same brand in dark. --k4-on-accent is NOT redefined
+     (see above): dark ink stays correct against this gold fill. */
+  --k4-accent:      #E0AC4B;
+  --k4-accent-soft: rgba(224, 172, 75, 0.14);
+
+  /* the plain text-link colour, split from --k4-accent-deep (see the
+     mint note above) — bright enough to read directly on --k4-ground /
+     --k4-card, unlike the fixed dark-rust fill value. */
+  --k4-link:        #E0AC4B;
+  --k4-link-hover:  #ECBE68;
+
+  /* pathway/tier/subject soft-tint pairs. The bare hue tokens
+     (--k4-combined etc.) already flip for free via the core tokens they
+     alias; only the SOLID pastel tint/line/deep trio painted here needs
+     its own dark value, since a solid light pastel would not adapt. */
+  --k4-combined-soft: rgba(95, 168, 224, 0.14);
+  --k4-combined-line: rgba(95, 168, 224, 0.4);
+  --k4-combined-deep: var(--physics);
+
+  --k4-triple-soft:   rgba(224, 96, 128, 0.14);
+
+  --k4-foundation-soft: rgba(85, 179, 106, 0.14);
+  --k4-foundation-line: rgba(85, 179, 106, 0.4);
+  --k4-foundation-deep: var(--biology);
+
+  --k4-higher-soft: rgba(224, 172, 75, 0.14);
+  --k4-higher-line: rgba(224, 172, 75, 0.4);
+  --k4-higher-deep: var(--higher);
+}
+/* The fact panel's kicker text is coloured by shared/k4-facts.js setting
+   `--k4-fact-color` inline to a LITERAL per-subject hex (light-theme
+   physics/chemistry/biology) — a value that cannot itself respond to
+   data-theme. Overriding `color` directly here (rather than the custom
+   property) bypasses that chain regardless of the inline value; the
+   kicker gives up its per-subject tint in dark and reads in the same
+   muted tone every other mono label already uses. Decorative uses of
+   --k4-fact-color (the dot, the progress fill) are left alone — they are
+   not text and are not gated. */
+html[data-theme="dark"] body[data-chrome="ks4"] .k4-fact-kicker { color: var(--k4-muted-2); }
+
 body[data-chrome="ks4"] *,
 body[data-chrome="ks4"] *::before,
 body[data-chrome="ks4"] *::after { box-sizing: border-box; }
 
-body[data-chrome="ks4"] a { color: var(--k4-accent-deep); text-decoration: none; }
-body[data-chrome="ks4"] a:hover { color: var(--k4-accent-dark); text-decoration: underline; }
+body[data-chrome="ks4"] a { color: var(--k4-link); text-decoration: none; }
+body[data-chrome="ks4"] a:hover { color: var(--k4-link-hover); text-decoration: underline; }
 body[data-chrome="ks4"] button { font: inherit; color: inherit; }
 /* ⊕ Experience run, 24 Sep 2026 (item 13, legibility) — the reset above is
    for chrome's OWN buttons, but its specificity (0,1,2: one attribute, two
@@ -268,11 +393,11 @@ body[data-chrome="ks4"] .nav-class-link {
   display: inline-flex; align-items: center; gap: 8px;
   height: 44px; padding: 0 16px; border-radius: 999px;
   background: var(--k4-accent-soft); border: 1.5px solid var(--k4-accent);
-  color: var(--k4-accent-deep); font-weight: 700; font-size: 16px;
+  color: var(--k4-link); font-weight: 700; font-size: 16px;
   text-decoration: none; white-space: nowrap;
 }
 body[data-chrome="ks4"] .nav-class-link:hover {
-  background: var(--k4-accent); color: var(--k4-ink); text-decoration: none;
+  background: var(--k4-accent); color: var(--k4-on-accent); text-decoration: none;
 }
 
 /* Breadcrumbs live in the page body on this design, not in the header —
@@ -295,8 +420,8 @@ body[data-chrome="ks4"] .k4-crumbs {
   font-family: var(--k4-mono); font-size: 13px; letter-spacing: .08em;
   text-transform: uppercase; color: var(--k4-muted-2); margin-bottom: 26px;
 }
-body[data-chrome="ks4"] .k4-crumbs a { color: var(--k4-accent-deep); text-decoration: none; }
-body[data-chrome="ks4"] .k4-crumbs a:hover { color: var(--k4-accent-dark); text-decoration: underline; }
+body[data-chrome="ks4"] .k4-crumbs a { color: var(--k4-link); text-decoration: none; }
+body[data-chrome="ks4"] .k4-crumbs a:hover { color: var(--k4-link-hover); text-decoration: underline; }
 /* ⊕ Experience run, 24 Sep 2026 (item 13) — was `var(--k4-border-2)`, a
    hairline-border token borrowed for a readable glyph: 1.90:1 on
    `--k4-ground`, measured on the rendered page. `--k4-muted` already clears
@@ -492,7 +617,7 @@ body[data-chrome="ks4"] .k4-kicker {
   font-family: var(--k4-mono); font-size: 12px; font-weight: 500;
   letter-spacing: .18em; text-transform: uppercase; color: var(--k4-muted-2);
 }
-body[data-chrome="ks4"] .k4-kicker.k4-kicker-accent { color: var(--k4-accent-deep); }
+body[data-chrome="ks4"] .k4-kicker.k4-kicker-accent { color: var(--k4-link); }
 body[data-chrome="ks4"] .k4-kicker.k4-kicker-ondark { color: var(--k4-accent-lift); }
 
 /* ── DOOR CARDS (landing, GCSE hub, tier, subject) ──────────────────── */
@@ -538,7 +663,7 @@ body[data-chrome="ks4"] .k4-door-foot {
   margin-top: auto; padding-top: 22px; border-top: 1.5px solid var(--k4-border);
   display: inline-flex; align-items: center; gap: 10px;
   font-family: var(--k4-display); font-weight: 800; font-size: 19px;
-  color: var(--k4-accent-deep);
+  color: var(--k4-link);
 }
 
 body[data-chrome="ks4"] .k4-pills { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -678,7 +803,7 @@ body[data-chrome="ks4"] .k4-formulae-footer-label {
 }
 body[data-chrome="ks4"] .k4-formulae-footer-link {
   display: inline-flex; align-items: center; gap: 8px;
-  font-weight: 700; font-size: 15px; color: var(--k4-accent-deep);
+  font-weight: 700; font-size: 15px; color: var(--k4-link);
   text-decoration: none;
 }
 body[data-chrome="ks4"] .k4-formulae-footer-link:hover { text-decoration: underline; }
@@ -699,11 +824,11 @@ body[data-chrome="ks4"] .k4-cta {
   margin-top: 18px; width: 100%;
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   height: 52px; border-radius: 13px; background: var(--k4-accent);
-  color: var(--k4-ink); border: 0; cursor: pointer;
+  color: var(--k4-on-accent); border: 0; cursor: pointer;
   font-family: var(--k4-display); font-weight: 800; font-size: 19px;
   text-decoration: none;
 }
-body[data-chrome="ks4"] .k4-cta:hover { background: var(--k4-accent-lift); color: var(--k4-ink); text-decoration: none; }
+body[data-chrome="ks4"] .k4-cta:hover { background: var(--k4-accent-lift); color: var(--k4-on-accent); text-decoration: none; }
 body[data-chrome="ks4"] .k4-cta-solid {
   display: inline-flex; align-items: center; gap: 10px;
   height: 52px; padding: 0 24px; border-radius: 13px;
@@ -723,7 +848,7 @@ body[data-chrome="ks4"] .k4-cta-quiet:hover { background: var(--k4-ground); colo
 body[data-chrome="ks4"] .k4-cta-light {
   margin-top: auto; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   height: 50px; padding: 0 22px; border-radius: 13px; background: var(--k4-on-dark);
-  color: var(--k4-ink); border: 0; cursor: pointer; font-weight: 700; font-size: 17px;
+  color: var(--k4-on-accent); border: 0; cursor: pointer; font-weight: 700; font-size: 17px;
   text-decoration: none; white-space: nowrap;
 }
 body[data-chrome="ks4"] .k4-cta-light:hover { background: var(--k4-card); color: var(--k4-ink); text-decoration: none; }

@@ -134,6 +134,32 @@ SCAN_JS = r"""
   var root = scope ? document.querySelector(scope) : document;
   if (!root) { return JSON.stringify({error: 'scope not found: ' + scope}); }
   var nodes = Array.prototype.slice.call(root.querySelectorAll(sel));
+  // ⊕ Theme run, 27 Sep 2026 — a native <input type="radio"> GROUP (shared
+  // `name`) is ONE Tab stop, not one per input: the browser lands Tab on
+  // the checked member (or the first, if none is checked yet) and moves
+  // the REST with the arrow keys, never Tab. Every radio this codebase had
+  // drawn before now was a styled <button>/<div role="..."> with its own
+  // explicit tabindex — this scan's "one candidate per matching element"
+  // model was never wrong until a real native radio group existed to test
+  // it against. Keeping every sibling in `expected` reads the two Tab-
+  // skipped members as UNREACHED, which is not a defect; a screen reader
+  // announces the same "radio button, 1 of 3" contract either way. So: for
+  // each `name` group, keep only the one Tab would actually land on.
+  var radioGroups = {};
+  nodes.forEach(function (el) {
+    if (el.tagName === 'INPUT' && el.type === 'radio' && el.name) {
+      var key = el.name;
+      if (!radioGroups[key]) { radioGroups[key] = []; }
+      radioGroups[key].push(el);
+    }
+  });
+  var radioSkip = new Set();
+  Object.keys(radioGroups).forEach(function (key) {
+    var group = radioGroups[key];
+    if (group.length < 2) { return; }
+    var landing = group.filter(function (r) { return r.checked; })[0] || group[0];
+    group.forEach(function (r) { if (r !== landing) { radioSkip.add(r); } });
+  });
   var active = document.activeElement;
   function styleOf(cs) {
     return {
@@ -149,6 +175,7 @@ SCAN_JS = r"""
   var counts = {};
   var out = [];
   nodes.forEach(function (el) {
+    if (radioSkip.has(el)) { return; }
     var r = el.getBoundingClientRect();
     if (!r.width || !r.height) { return; }
     var cs = getComputedStyle(el);
@@ -195,6 +222,17 @@ UNREACHABLE_JS = r"""
   for (var j = 0; j < all.length && suspects.length < 200; j++) {
     var e = all[j];
     if (e.closest('[inert]')) { continue; }  // unreachable BY DESIGN, not a defect
+    // ⊕ Theme run, 27 Sep 2026 — a <label> wrapping a real control (the
+    // native `<label><input>text</label>` pattern, new to this codebase
+    // with the theme control's radio group) is not itself a Tab stop and
+    // is not supposed to be: `e.closest(sel)` only looks at ANCESTORS, so
+    // it cannot see the INPUT this label wraps as a DESCENDANT, and a
+    // label's own default `cursor:pointer` then reads as a clickable thing
+    // with nowhere to land. `HTMLLabelElement.control` is the platform's
+    // own answer to "what does this label activate" — it resolves both a
+    // wrapped control and a `for="id"` reference — so a label is only a
+    // suspect when it has no control at all.
+    if (e.tagName === 'LABEL' && e.control) { continue; }
     if (e.closest(sel)) { continue; }  // it or an ancestor is already a
                                         // real Tab stop — a decorative
                                         // icon/label inside a button is
@@ -517,6 +555,8 @@ def sweep_tabs(p, scope_json, presses, seen, expected, prev_style):
         cur_by_key = {c["key"]: c for c in data["candidates"]}
         for k, c in cur_by_key.items():
             seen[k] = c
+        # (A native radio group's non-landing members are never emitted by
+        # SCAN_JS — see radioSkip there — so a rescan cannot re-admit them.)
         expected |= set(cur_by_key)
         active_c = next((c for c in data["candidates"] if c["active"]), None)
         if active_c is not None:

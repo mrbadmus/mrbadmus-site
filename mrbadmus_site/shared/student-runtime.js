@@ -630,6 +630,26 @@
         var keepScroll = window.scrollY;
         host.textContent = "";
         host.appendChild(frag);
+        /* ⊕ Theme run, 27 Sep 2026 — MUST run here, before `refocus`, not in
+           the `__MRB_AFTER_DRAW__` hooks below (which run AFTER it). The
+           header's `[data-mrb-theme]` slot is part of the template — it has
+           no `i` (the ninth-mechanism rule: an inserted node carries none),
+           so it is rebuilt empty on every draw exactly like everything else
+           in `frag`. `shared/theme.js`'s own MutationObserver would refill it
+           on its next animation frame regardless, but "next frame" is AFTER
+           this function returns — and if a student had Tab'd to the control
+           when an unrelated setState fired (a poll, an account-menu toggle),
+           `focusPath`/`refocus` run on THIS tick, find the slot empty, and
+           drop focus to <body>. Calling the control's own idempotent
+           `mount()` synchronously, right here, means the radio a student had
+           focused exists again before `refocus` looks for it — mount() only
+           builds a slot once (`data-mrb-theme-ready` guards it) and is
+           side-effect-free to call on a slot that already has its control. */
+        if (window.MRBTheme && window.MRBTheme.mount) {
+          try { window.MRBTheme.mount(); } catch (themeErr) {
+            console.error("[student-runtime] theme mount", themeErr);
+          }
+        }
         restoreFields(host, keepFields);
         refocus(host, keepFocus);
         if (window.scrollY !== keepScroll) { window.scrollTo(0, keepScroll); }

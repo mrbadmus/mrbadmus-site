@@ -7,6 +7,11 @@ Output: ./mrbadmus_site/ (ready to deploy on Cloudflare)
 
 import os, shutil, json, glob, sys, re, base64
 
+# Theme run (26 Sep 2026) — the ONE pre-paint snippet and control slot,
+# imported so every generator emits byte-identical bytes. See
+# THEME-CONTRACT.md and theme_head.py. Never retype THEME_HEAD by hand.
+from theme_head import THEME_HEAD, THEME_SLOT
+
 # Bonding redesign (MRB-113 Phase B) — theory-block decomposition for the
 # redesigned bonding pages. Frozen source fields are never edited; blocks are
 # authored presentation. See bonding_redesign.py and the port map.
@@ -698,10 +703,20 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
 
     ⊕ MRB-301 · `chrome=True` returns Claude Design's header instead.
 
-    The default (`chrome=False`) branch is UNCHANGED and must stay so: it is
-    what every one of the ~1,000 KS4 LESSON pages renders, and MRB-301's scope
-    wall is that a lesson page comes out of this run byte-for-byte identical.
-    Only the seven chrome makers pass `chrome=True`.
+    The default (`chrome=False`) branch was UNCHANGED for the whole of the
+    MRB-301 run: it is what every one of the ~1,000 KS4 LESSON pages renders,
+    and that run's scope wall was that a lesson page came out of it
+    byte-for-byte identical. Only the seven chrome makers passed
+    `chrome=True`.
+
+    ⊕ Theme run, 26 Sep 2026 — THAT constraint is superseded, on purpose, by
+    one line: `{THEME_SLOT}` is now emitted in both branches, right before
+    `#nav-auth-area`. Every page this function dresses — lesson pages,
+    leaderboard.html (which reads this function per MRB-301's open item),
+    and the chrome — gets the same Light/Dark/System control in the same
+    place. This is not "touching lesson content"; it is the one piece of
+    markup the theme run requires on every page, site-wide, and the two
+    branches otherwise render exactly as before.
 
     The chrome branch keeps the two hooks shared/nav.js binds to —
     `.nav-burger` and `#nav-auth-area` — so the sign-in chip, the "My class"
@@ -721,30 +736,44 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
       <a href="/weekly-challenge.html" class="challenge-chip"><svg viewBox="0 0 12 16" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M7.4 0L1 9.2h3.6L3.4 16 11 6.1H6.6L7.4 0z"/></svg> <span class="nav-chip-label">Challenge</span></a>
       <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 3h7v4.5a3.5 3.5 0 01-7 0V3zM6.5 4.2H4v1.3a2.4 2.4 0 002.4 2.4M13.5 4.2H16v1.3a2.4 2.4 0 01-2.4 2.4M10 11v3M7 17h6l-.7-2.4h-4.6L7 17z"/></svg></a>
       <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){{MRBSearch.open();}}return false;"><svg viewBox="0 0 20 20" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.6"/><path d="M13.2 13.2L17 17"/></svg></a>
+      {THEME_SLOT}
       <span id="nav-auth-area"></span>
       <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
     </div>
   </div>
 </nav>"""
 
+    # ⊕ Theme run, 26 Sep 2026 — these used to be literal hex
+    # (PATHWAY_COLORS / TIER_COLORS / SITE_DATA[...]["color"]), baked
+    # straight into an inline `style="color:#xxxxxx"`. That is static: it
+    # cannot respond to `data-theme`, and on a dark lesson page it painted
+    # light-theme blue/crimson/green/gold crumb text straight onto the new
+    # dark nav. Every one of these hexes is already, byte-for-byte, the
+    # LIGHT value of a core token in shared/tokens.css (--combined,
+    # --triple/--chemistry, --foundation/--biology are the same colour by
+    # design), and every one of those tokens already has a dark-theme
+    # value there. Pointing the inline style at `var(--token)` instead of
+    # the hex keeps light byte-identical (same resolved colour) and makes
+    # dark work for free — no new CSS, because the resolution happens
+    # live in the cascade, not at generation time.
     crumbs = ""
     if pathway and tier:
-        pc = PATHWAY_COLORS.get(pathway, "#1D6FB8")
-        tc = TIER_COLORS.get(tier, "#7A5F00")
+        pc = "var(--combined)" if pathway == "combined" else "var(--triple)"
+        tc = "var(--foundation)" if tier == "foundation" else "var(--higher)"
         crumbs = f"""
     <span class="crumb-sep">›</span>
     <a href="/{pathway}/index.html" class="crumb" style="color:{pc};">{pathway.title()} Science</a>
     <span class="crumb-sep">›</span>
     <a href="/{pathway}/{tier}/index.html" class="crumb" style="color:{tc};">{tier.title()}</a>"""
         if active_subject:
-            sc = SITE_DATA[active_subject]["color"]
+            sc = f"var(--{active_subject})"
             sl = SITE_DATA[active_subject]["label"]
             se = SITE_DATA[active_subject]["emoji"]
             crumbs += f"""
     <span class="crumb-sep">›</span>
     <a href="/{pathway}/{tier}/{active_subject}/index.html" class="crumb" style="color:{sc};">{se} {sl}</a>"""
     elif pathway:
-        pc = PATHWAY_COLORS.get(pathway, "#1D6FB8")
+        pc = "var(--combined)" if pathway == "combined" else "var(--triple)"
         crumbs = f"""
     <span class="crumb-sep">›</span>
     <a href="/{pathway}/index.html" class="crumb" style="color:{pc};">{pathway.title()} Science</a>"""
@@ -759,6 +788,7 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
     <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
     <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
     <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){{MRBSearch.open();}}return false;">🔍</a>
+    {THEME_SLOT}
     <span id="nav-auth-area"></span>
     <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
   </div>
@@ -923,11 +953,13 @@ def k4_page(title, body, description="", subject="physics", pathway="", tier="",
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  {THEME_HEAD}
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>{title}</title>{desc}
   {HEAD_ASSETS}
   <link rel="stylesheet" href="/shared/ks4-chrome.css"/>{extra_head}
+  <script src="/shared/theme.js" defer></script>
 </head>
 <body data-chrome="ks4">
   {nav_html(subject, pathway, tier, chrome=True)}
@@ -1092,8 +1124,8 @@ def make_landing():
   </section>
 
   <section class="k4-doors">
-    <a class="k4-door" href="/ks3/index.html" style="--k4-door-hue:#E4572E">
-      <div class="k4-eyebrow"><span class="k4-dot" style="background:#E4572E"></span>Years 7 to 9</div>
+    <a class="k4-door" href="/ks3/index.html" style="--k4-door-hue:var(--k4-accent)">
+      <div class="k4-eyebrow"><span class="k4-dot" style="background:var(--k4-accent)"></span>Years 7 to 9</div>
       <h2>KS3 Science</h2>
       <p>The whole national curriculum programme of study, across all three sciences — the science everything at GCSE is built on.</p>
       <div class="k4-pills">
@@ -1104,8 +1136,8 @@ def make_landing():
       <span class="k4-door-foot">Start KS3 {K4_ARROW}</span>
     </a>
 
-    <a class="k4-door" href="/ks4.html" style="--k4-door-hue:#1D6FB8;animation-delay:.06s">
-      <div class="k4-eyebrow"><span class="k4-dot" style="background:#1D6FB8"></span>Years 10 and 11</div>
+    <a class="k4-door" href="/ks4.html" style="--k4-door-hue:var(--k4-combined);animation-delay:.06s">
+      <div class="k4-eyebrow"><span class="k4-dot" style="background:var(--k4-combined)"></span>Years 10 and 11</div>
       <h2>GCSE Science</h2>
       <p>Combined and Triple Science, Foundation and Higher — full topic notes, worked examples, quizzes, past papers and the weekly challenge.</p>
       <div class="k4-pills">
@@ -1233,8 +1265,8 @@ def make_ks4_landing():
 
   <section class="k4-split">
     <div class="k4-split-main" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;align-items:start">
-      <a class="k4-door k4-door-sm" href="/combined/index.html" style="--k4-door-hue:#1D6FB8">
-        <div class="k4-eyebrow"><span class="k4-dot k4-dot-sm" style="background:#1D6FB8"></span>Two GCSEs</div>
+      <a class="k4-door k4-door-sm" href="/combined/index.html" style="--k4-door-hue:var(--k4-combined)">
+        <div class="k4-eyebrow"><span class="k4-dot k4-dot-sm" style="background:var(--k4-combined)"></span>Two GCSEs</div>
         <h2>Combined Science</h2>
         <p>Biology, chemistry and physics in one course. Six exams, two grades.</p>
         <div class="k4-pills">
@@ -1244,8 +1276,8 @@ def make_ks4_landing():
         <span class="k4-door-foot">Open Combined {K4_ARROW}</span>
       </a>
 
-      <a class="k4-door k4-door-sm" href="/triple/index.html" style="--k4-door-hue:#B02342">
-        <div class="k4-eyebrow"><span class="k4-dot k4-dot-sm" style="background:#B02342"></span>Three GCSEs</div>
+      <a class="k4-door k4-door-sm" href="/triple/index.html" style="--k4-door-hue:var(--k4-triple)">
+        <div class="k4-eyebrow"><span class="k4-dot k4-dot-sm" style="background:var(--k4-triple)"></span>Three GCSEs</div>
         <h2>Triple Science</h2>
         <p>Each science graded on its own. More content, six exams, three grades.</p>
         <div class="k4-pills">
@@ -1352,9 +1384,9 @@ def make_pathway_page(pathway):
 
     tiers = ""
     for tier, tier_hue, grades, note in [
-        ("foundation", "#237A3B", "Grades 1 to 5",
+        ("foundation", "var(--k4-foundation)", "Grades 1 to 5",
          "Every idea on the specification, at the depth Foundation papers ask for."),
-        ("higher", "#7A5F00", "Grades 4 to 9",
+        ("higher", "var(--k4-higher)", "Grades 4 to 9",
          "Everything at Foundation plus the Higher-only material — more equations, more depth."),
     ]:
         tiers += f"""
@@ -1405,13 +1437,17 @@ def make_tier_page(pathway, tier):
     K4_BRANDMARK), and a signed-out visitor being shown someone's progress
     is the failure this port is built to avoid."""
     pathway_label = "Combined Science" if pathway == "combined" else "Triple Science"
-    tier_hue = TIER_COLORS[tier]
+    # ⊕ Theme run — var() references, not literal hex; see the note on
+    # nav_html's crumbs above. Every one of these resolves to the same
+    # colour it always did in light, and picks up the dark-theme value
+    # already defined for the underlying core token for free.
+    tier_hue = "var(--k4-foundation)" if tier == "foundation" else "var(--k4-higher)"
 
     cards = ""
     for subj in ["physics", "chemistry", "biology"]:
         data = SITE_DATA[subj]
         c = k4_subject_counts(pathway, tier, subj)
-        hue = data["color"]
+        hue = f"var(--k4-{subj})"
         first = c["topics"][0]["title"] if c["topics"] else ""
         last = c["topics"][-1]["title"] if c["topics"] else ""
         # Design's own blurbs are first-topic-through-to-last-topic
@@ -1470,7 +1506,7 @@ def make_pathway_hub(pathway, tier, subject):
     STARTED — and a "This subject · 2 of 7 done" card. Both need a KS4
     progress model that does not exist, so neither is emitted."""
     data = SITE_DATA[subject]
-    hue = data["color"]
+    hue = f"var(--k4-{subject})"
     label = data["label"]
     pathway_label = "Combined Science" if pathway == "combined" else "Triple Science"
     c = k4_subject_counts(pathway, tier, subject)
@@ -5056,10 +5092,19 @@ try {{
 
 </div>"""
 
+    # ⊕ Theme run, 26 Sep 2026 — was `--subject: {color}` (SITE_DATA's
+    # literal hex, e.g. #1D6FB8). `.topic-kicker` in shared/styles.css reads
+    # `color: var(--subject, var(--accent))`, so that hex was baked in as a
+    # fixed inline custom property: fine in light (it IS the light value of
+    # `--physics`/`--chemistry`/`--biology`), illegible once the page goes
+    # dark and the kicker sits on a dark ground (measured 2.84:1 / 3.51:1 on
+    # real rendered pages). Pointing `--subject` at the matching core token
+    # instead keeps light byte-identical and repaints in dark for free —
+    # tokens.css already redefines --physics/--chemistry/--biology there.
     extra_css = f"""
 <style>
 html {{ background: var(--bg); }}
-:root {{ --subject: {color}; }}
+:root {{ --subject: var(--{subject}); }}
 </style>"""
 
     # Emit the matching <script> only when there is matching JS to run. On the
@@ -5076,12 +5121,14 @@ html {{ background: var(--bg); }}
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  {THEME_HEAD}
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <meta name="theme-color" content="{THEME_COLOR}"/>
   <title>{st['title']} | {subject_label} | MrBadmusAI</title>
   {HEAD_ASSETS}
   {extra_css}
   {redesign_css}
+  <script src="/shared/theme.js" defer></script>
 </head>
 <body class="{body_class}">
   {nav_html(subject, pathway, tier)}
@@ -5133,7 +5180,7 @@ def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtop
     the "Your progress here — 3 of 7 done" card. No KS4 progress model
     exists to fill any of it."""
     data = SITE_DATA[subject]
-    hue = data["color"]
+    hue = f"var(--k4-{subject})"
     label = data["label"]
     pathway_label = "Combined Science" if pathway == "combined" else "Triple Science"
 

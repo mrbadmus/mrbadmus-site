@@ -209,6 +209,13 @@
         '<button type="button" class="nav-drawer-close" aria-label="Close menu">&times;</button>' +
       '</div>' +
       '<nav class="nav-drawer-menu" aria-label="Full site menu">' + menuItems + '</nav>' +
+      // Theme run (27 Sep 2026): the Light / Dark / System control lives here
+      // on every width, and is the ONLY copy below 900px, where nav.css hides
+      // the bar's own slot — the bar's measured phone ladder (MRB-259/337) has
+      // no 96px to spare once a pupil is signed in and the bell is up.
+      // shared/theme.js mounts into it and keeps both copies in step.
+      '<div class="nav-drawer-theme"><span class="nav-drawer-theme-label">Theme</span>' +
+        '<span class="mrb-theme-slot" data-mrb-theme></span></div>' +
       '<div class="nav-drawer-auth" id="nav-drawer-auth"></div>';
 
     document.body.appendChild(overlay);
