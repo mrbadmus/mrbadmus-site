@@ -106,10 +106,14 @@ window.KS4 = (function () {
   function route(cmp) {
     var r = (cmp.state && cmp.state.route) || cmp.props.route || 'Triple Higher';
     var f = flags(r);
+    var rs = cmp.props.mrbRouteSwitch || {}; // ⊕ R11
+    var sn = cmp.props.mrbSpecNote || {}; // ⊕ R11
     return { route: r, isHigher: f.higher, isTriple: f.triple, isTH: f.higher && f.triple, notHigher: !f.higher, notTriple: !f.triple,
       routeOptions: ROUTES.map(function (x) { return { value: x, label: x }; }),
       eqSheetHref: f.triple ? EQ.triple : EQ.combined, eqSheetLabel: (f.triple ? 'GCSE Physics (8463)' : 'Combined Science: Trilogy and Synergy (8464/8465)') + ' · June ' + EQ_YEAR,
-      onRoute: function (e) { cmp.setState({ route: e.target.value }); } };
+      onRoute: function (e) { cmp.setState({ route: e.target.value }); },
+      routeWords: rs.words || r, routeSwitchOptions: rs.options || [],
+      specEyebrow: sn.eyebrow || '', specNote: sn.keynote || '' };
   }
   function ready(cmp) {
     var t = setInterval(function () { if (window.KS4SRC && window.KS4D) { clearInterval(t); cmp.setState({ libReady: true }); } }, 40);

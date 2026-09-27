@@ -17,11 +17,19 @@ nothing; noted here only so this file's ruling list stays the complete
 index), R9 (25 Sep 2026, header badge gating) and R10 (26 Sep 2026, the
 tutor CTA — live-audit finding D1). D2 (the same live audit) is a fix to
 R-CONNECTS, not a new ruling number.
+
+Mide's ruling (27 Sep 2026, the KS4 polish run): R11 (shared/ks4-lib.js's
+`route()` gains the mount-prop-fed fields R12/R14 read), R12 (the header
+route chip/switcher, replacing the two static pathway/tier chips), R13
+(the two physics lessons' approved exam tips, replacing the never-approved
+draft — see §0's flag 11 in the pilot report), R14 (the per-route AQA
+spec section number, replacing the Combined-only number on Triple routes).
 """
 
 import re
 
 import ks4_lessons
+from theme_head import THEME_SLOT
 
 
 class RulingError(SystemExit):
@@ -194,6 +202,14 @@ def apply_r6_rtotal_chip(text):
 # The two drafted texts are preserved verbatim in
 # docs/ks4/pilot-inventory/draft-exam-tips.md so nothing is lost, only
 # hidden from students.
+#
+# ⊕ SUPERSEDED 27 Sep 2026 (Mide's ruling, R13, below). `apply_r7_remove_
+# draft_tip` is kept — the regex it shares with R13 (`_exam_tip_section_re`)
+# still has to find the SAME section — but `compile_lesson()` in
+# build_ks4.py no longer calls it: it calls `apply_r13_approved_exam_tip`
+# instead, which replaces this section with the FINAL approved text rather
+# than deleting it. Left defined, not deleted, in case a future lesson
+# genuinely needs the old "remove, don't replace" behaviour.
 # ═══════════════════════════════════════════════════════════════════════
 def _exam_tip_section_re():
     return re.compile(
@@ -501,3 +517,230 @@ def apply_r_tutor_label(text):
 def apply_r_breadcrumb(text):
     _require(text, 'href="README.md"', "Ks4Chrome.dc.html", "R-BREADCRUMB", expect=4)
     return text.replace('href="README.md"', 'href="/ks4.html"')
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# R11 — Mide's ruling (27 Sep 2026): shared/ks4-lib.js's `route(cmp)` gains
+# four fields, all sourced from mount PROPS build_ks4.py now computes per
+# (lesson, route) — the same "one route per URL" pattern R-PREVNEXT already
+# established for `mrbPrevNext` (contract §1: a value that genuinely
+# differs by route cannot be a JS literal baked into the shared logic text,
+# because one compiled lesson mounts at up to 4 routes).
+#
+#   routeWords / routeSwitchOptions — feed R12's header chip/switcher.
+#   specEyebrow / specNote          — feed R14's per-route spec citation.
+#
+# Both mrbRouteSwitch and mrbSpecNote are computed by build_ks4.py from data
+# ks4_lessons.LESSONS already carries (routes) or from docs/theme/
+# spec-numbers.md's verified table (build_ks4.SPEC_TEXT) — nothing here
+# invents a number or a URL; this only surfaces what Python already computed
+# onto `R`, which every lesson's `renderVals()` already spreads via
+# `Object.assign({}, R, {...})`, so no per-lesson logic edit is needed for
+# either feature.
+# ═══════════════════════════════════════════════════════════════════════
+R11_ROUTE_FN_FROM = (
+    "function route(cmp) {\n"
+    "    var r = (cmp.state && cmp.state.route) || cmp.props.route || 'Triple Higher';\n"
+    "    var f = flags(r);\n"
+    "    return { route: r, isHigher: f.higher, isTriple: f.triple, isTH: f.higher && f.triple, notHigher: !f.higher, notTriple: !f.triple,\n"
+    "      routeOptions: ROUTES.map(function (x) { return { value: x, label: x }; }),\n"
+    "      eqSheetHref: f.triple ? EQ.triple : EQ.combined, eqSheetLabel: (f.triple ? 'GCSE Physics (8463)' : 'Combined Science: Trilogy and Synergy (8464/8465)') + ' · June ' + EQ_YEAR,\n"
+    "      onRoute: function (e) { cmp.setState({ route: e.target.value }); } };\n"
+    "  }"
+)
+R11_ROUTE_FN_TO = (
+    "function route(cmp) {\n"
+    "    var r = (cmp.state && cmp.state.route) || cmp.props.route || 'Triple Higher';\n"
+    "    var f = flags(r);\n"
+    "    var rs = cmp.props.mrbRouteSwitch || {}; // ⊕ R11\n"
+    "    var sn = cmp.props.mrbSpecNote || {}; // ⊕ R11\n"
+    "    return { route: r, isHigher: f.higher, isTriple: f.triple, isTH: f.higher && f.triple, notHigher: !f.higher, notTriple: !f.triple,\n"
+    "      routeOptions: ROUTES.map(function (x) { return { value: x, label: x }; }),\n"
+    "      eqSheetHref: f.triple ? EQ.triple : EQ.combined, eqSheetLabel: (f.triple ? 'GCSE Physics (8463)' : 'Combined Science: Trilogy and Synergy (8464/8465)') + ' · June ' + EQ_YEAR,\n"
+    "      onRoute: function (e) { cmp.setState({ route: e.target.value }); },\n"
+    "      routeWords: rs.words || r, routeSwitchOptions: rs.options || [],\n"
+    "      specEyebrow: sn.eyebrow || '', specNote: sn.keynote || '' };\n"
+    "  }"
+)
+
+
+def apply_r11_route_lib(text):
+    _require(text, R11_ROUTE_FN_FROM, "ks4-lib.js", "R11")
+    return text.replace(R11_ROUTE_FN_FROM, R11_ROUTE_FN_TO, 1)
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# R12 — Mide's ruling (27 Sep 2026): the header's two static "Combined ·
+# Triple" / "Foundation · Higher" chips said nothing a pupil didn't already
+# know from being on the page — every one of the 54 URLs IS one route. They
+# are replaced by ONE chip stating the page's own route in words, built as
+# a native <details>/<summary> disclosure: Enter/Space toggles it and Tab
+# reaches the menu's plain links with no script at all (the links are
+# already in the STATIC, prerendered HTML — R11's routeSwitchOptions is a
+# build-time mount prop, not a runtime fetch). shared/ks4-runtime.js adds
+# only what native disclosure does not supply on its own: Esc closes the
+# switcher and returns focus to the chip, and aria-expanded tracks the open
+# state (kept in the runtime because the native 'toggle' event does not
+# bubble in every engine — see the comment there).
+#
+# Nanoparticles carries a DIFFERENT (Triple-only, blue-styled) pathway span
+# ("Triple" rather than "Combined · Triple") in place of the standard one;
+# both variants are replaced by the same new block — its routeWords/
+# routeSwitchOptions mount props already know it ships Triple-only.
+# "Contains Higher"/"Contains Triple" (R9) and any "Required practical"
+# badge sit AFTER these two spans in every lesson and are untouched.
+# ═══════════════════════════════════════════════════════════════════════
+_CHIP_STYLE = ('font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; '
+               'letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; '
+               'border-radius: 99px; border: 2px solid var(--ks3-ink);')
+_INDENT10 = "          "
+R12_TIER_LINE = '%s<span style="%s">Foundation · Higher</span>\n' % (_INDENT10, _CHIP_STYLE)
+R12_PATHWAY_STD_SPAN = '<span style="%s">Combined · Triple</span>' % _CHIP_STYLE
+R12_PATHWAY_TRIPLE_SPAN = (
+    '<span style="font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; '
+    'letter-spacing: .06em; text-transform: uppercase; padding: 4px 11px; border-radius: 99px; '
+    'border: 2px solid var(--ks3-blue); background: var(--ks3-blue-tint); '
+    'color: var(--ks3-blue-text);">Triple</span>')
+R12_CHIP_BLOCK = (
+    '<details class="ks3-route-switch">\n'
+    '            <summary class="ks3-route-chip" aria-expanded="false"><span>{{ routeWords }}</span>'
+    '<svg aria-hidden="true" focusable="false" width="12" height="12" viewBox="0 0 12 12">'
+    '<path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" '
+    'stroke-linecap="round" stroke-linejoin="round"></path></svg></summary>\n'
+    '            <ul class="ks3-route-menu" role="list">\n'
+    '              <sc-for list="{{ routeSwitchOptions }}" as="o">'
+    '<li><a href="{{ o.href }}">{{ o.label }}</a></li></sc-for>\n'
+    '            </ul>\n'
+    '          </details>'
+)
+
+
+def apply_r12_route_chip(site_slug, template_text):
+    _require(template_text, R12_TIER_LINE, site_slug, "R12 (tier span)")
+    template_text = template_text.replace(R12_TIER_LINE, "", 1)
+    pathway_span = (R12_PATHWAY_TRIPLE_SPAN if site_slug == "nanoparticles"
+                     else R12_PATHWAY_STD_SPAN)
+    _require(template_text, pathway_span, site_slug, "R12 (pathway span)")
+    return template_text.replace(pathway_span, R12_CHIP_BLOCK, 1)
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# R13 — Mide's ruling (27 Sep 2026): the two physics lessons' draft exam
+# tips (flag 11 in the pilot report §0 — never approved, so both lessons
+# shipped with NO tip slot at all) are replaced with the FINAL, approved
+# text, word for word, in the SAME fixed slot the other 12 lessons use — a
+# plain `<section>` reading `{{ examTip }}`, no "Draft · awaiting approval"
+# badge. The approved strings are NOT hardcoded here: they live in the ONE
+# place every other lesson's tip already lives —
+# `all_subtopics_physics_triple_higher.py`'s `examiner_tip` field for these
+# two subtopics — so `K.tip(slug)` (shared/ks4-lib.js) serves them exactly
+# like every other lesson's tip, on every route (`examiner_tip` is not
+# itself route-varying: `build_ks4.build_source_record()` takes every
+# non-quiz field from the TRIPLE HIGHER record only).
+# ═══════════════════════════════════════════════════════════════════════
+R13_APPROVED_SECTION = (
+    '<section style="margin: 28px 0 0; padding: 20px 22px; border-radius: var(--ks3-r-panel); '
+    'background: var(--ks3-card); border: 2px solid var(--ks3-ink);">\n'
+    '        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; '
+    'font-weight: 500; letter-spacing: .09em; text-transform: uppercase; '
+    'color: var(--ks3-accent-text);">Examiner tip</p>\n'
+    '        <p style="margin: 8px 0 0; font-size: 19px; line-height: 1.6;">{{ examTip }}</p>\n'
+    '      </section>'
+)
+
+
+def apply_r13_approved_exam_tip(design_file, template_text):
+    matches = list(_exam_tip_section_re().finditer(template_text))
+    if len(matches) != 1:
+        raise RulingError(
+            "ks4_rulings R13: %s carries %d draft-exam-tip section(s), "
+            "expected exactly 1." % (design_file, len(matches)))
+    m = matches[0]
+    return template_text[:m.start()] + R13_APPROVED_SECTION + template_text[m.end():]
+
+
+R13_LOGIC_ANCHOR = "railV, theme, ready, draftVisible: this.props.showDraft !== false,"
+
+
+def apply_r13_exam_tip_logic(design_file, logic_text):
+    _require(logic_text, R13_LOGIC_ANCHOR, design_file, "R13 (logic)")
+    return logic_text.replace(
+        R13_LOGIC_ANCHOR,
+        R13_LOGIC_ANCHOR + "\n      examTip: ready ? K.tip(slug) : '', // ⊕ R13", 1)
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# R14 — Mide's ruling (27 Sep 2026): every route used to show the Combined
+# Science (8464) spec section number, even on a Triple/separate-science
+# route. Triple routes now show the SEPARATE science's own number (8462
+# Chemistry / 8463 Physics), verified section by section against the real
+# AQA spec PDFs — docs/theme/spec-numbers.md is the citation table this
+# ruling is built from; `build_ks4.SPEC_TEXT` is its machine copy. Combined
+# routes are byte-identical to before (the literal text simply moves from
+# the template into `build_ks4.SPEC_TEXT[slug]["combined"]`, unchanged).
+#
+# Nanoparticles is NOT in this ruling's lesson set: it has no Combined route
+# at all (8462 §4.2.4 is chemistry-only), and its eyebrow/key-note ALREADY
+# show the correct, verified 8462 number — nothing to swap.
+# ═══════════════════════════════════════════════════════════════════════
+def apply_r14_spec_number(site_slug, template_text, eyebrow_literal, keynote_literal):
+    tpl = template_text
+    eyebrow_from = '<p class="ks3-eyebrow">%s</p>' % eyebrow_literal
+    _require(tpl, eyebrow_from, site_slug, "R14 (eyebrow)")
+    tpl = tpl.replace(eyebrow_from, '<p class="ks3-eyebrow">{{ specEyebrow }}</p>', 1)
+    keynote_from = 'spec="%s"' % keynote_literal
+    _require(tpl, keynote_from, site_slug, "R14 (keynote)")
+    tpl = tpl.replace(keynote_from, 'spec="{{ specNote }}"', 1)
+    return tpl
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# R15 — theme run (Mide's ruling 26 Sep 2026, THEME-CONTRACT.md): every page
+# on the site carries a Light/Dark/System control. On these 54 pages the
+# control goes into the SAME flex row R12's route chip lives in — the
+# header's `<div style="margin-top: 16px; display: flex; flex-wrap: wrap;
+# align-items: center; gap: 8px 10px;">` — because that row is already the
+# lesson header's "status strip" and already carried the removed Route
+# <select> at its right-hand end (R1, `margin-left: auto`). The slot takes
+# over that same right-hand position: `margin-left:auto` on a flex child
+# pushes ONLY itself (and nothing after it) to the row's far right, so it
+# must be the row's LAST child — true for all 14 lessons at this point in
+# the pipeline (R1 already removed the only other `margin-left:auto`
+# element; R12's chip and R9's conditional badge, when present, both sit
+# BEFORE this position, never after).
+#
+# Runs LAST of the header-row rulings (after R12, after R9) precisely so
+# it lands after whatever they left behind — this function does not search
+# for R12's chip or R9's badge by name, it anchors on the row's own opening
+# `<div style=...>` tag (byte-identical across all 14 lessons, verified by
+# grep) and inserts right before that div's own closing `</div>` (the first
+# `</div>` after the opening tag — safe because nothing this ruling's
+# predecessors leave inside that row is itself a `<div>`: R12's chip is a
+# `<details>/<summary>/<ul>`, R9's badge is a `<span>` inside an `<sc-if>`).
+#
+# THEME_SLOT itself (`theme_head.THEME_SLOT`) is used byte-identical, per
+# THEME-CONTRACT.md's "import these; never retype the snippet" — only the
+# WRAPPER around it (for right-alignment in this specific flex row) is
+# page-family-specific, exactly as different families position it
+# differently in their own headers.
+# ═══════════════════════════════════════════════════════════════════════
+R15_HEADER_ROW_OPEN = (
+    '<div style="margin-top: 16px; display: flex; flex-wrap: wrap; '
+    'align-items: center; gap: 8px 10px;">'
+)
+_R15_HEADER_ROW_RE = re.compile(re.escape(R15_HEADER_ROW_OPEN) + r'(.*?)</div>', re.S)
+R15_THEME_SLOT_WRAPPED = (
+    '<span style="margin-left:auto;display:inline-flex;align-items:center;">'
+    + THEME_SLOT + '</span>'
+)
+
+
+def apply_r15_theme_slot(site_slug, template_text):
+    m = _R15_HEADER_ROW_RE.search(template_text)
+    if m is None:
+        raise RulingError(
+            "ks4_rulings R15: %s — the header status-strip row "
+            "(%r) was not found. Design's delivery moved; read the diff "
+            "before widening this ruling." % (site_slug, R15_HEADER_ROW_OPEN))
+    insert_at = m.end() - len("</div>")
+    return template_text[:insert_at] + R15_THEME_SLOT_WRAPPED + template_text[insert_at:]

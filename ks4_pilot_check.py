@@ -25,6 +25,27 @@ Asserts, purely by reading files already on disk:
      hash to the value `ks4_lessons/frozen.json` recorded at the last
      `python3 build_ks4.py --freeze` — a content edit with no
      re-examination is a red, not a silent pass (see `check_freeze()`).
+
+⊕ Mide's ruling (27 Sep 2026, ks4_rulings.py R11–R14) adds three more,
+still no browser (see `ks4_parity.py`'s `check_route_switch_keyboard()` for
+the one assertion that genuinely needs one — Enter/Space/Esc):
+
+  7. Every one of the 54 pages carries EXACTLY ONE route chip
+     (`.ks3-route-chip`) naming that page's own route in words
+     (`build_ks4.ROUTE_WORDS`), and its switcher (`.ks3-route-menu`) lists
+     EXACTLY the lesson's other existing routes — no more, no fewer — each
+     at the real URL `ks4_lessons.site_url()` computes, and every one of
+     those URLs exists on disk (see `check_route_chip()`).
+  8. `series-parallel-circuits` and `resistors` carry the FINAL, approved
+     exam tip byte-exact, on every route each ships on — read straight from
+     `all_subtopics_physics_triple_higher.py`'s `examiner_tip` field, the
+     same record the page itself is built from, never a second hand-copied
+     literal (see `check_exam_tips()`).
+  9. Every page's eyebrow + `Ks4KeyNote` `spec` citation matches
+     `build_ks4.SPEC_TEXT`: a Triple route (TF/TH) shows the separate
+     science's own number, a Combined route (CF/CH) shows 8464's — verified
+     against `docs/theme/spec-numbers.md`'s citation table (see
+     `check_spec_numbers()`).
 """
 
 import hashlib
@@ -228,6 +249,150 @@ def check_freeze(errors):
                 % (slug, lesson["review_state"]))
 
 
+# ═══════════════════════════════════════════════════════════════════════
+# R11–R14 (Mide's ruling, 27 Sep 2026) — three fast, browser-free checks
+# ═══════════════════════════════════════════════════════════════════════
+_CHIP_RE = re.compile(
+    r'class="ks3-route-chip"[^>]*>.*?class="sc-interp">([^<]*)</span>', re.S)
+_MENU_RE = re.compile(r'class="ks3-route-menu"[^>]*>(.*?)</ul>', re.S)
+_MENU_ITEM_RE = re.compile(
+    r'<a[^>]*href="([^"]+)"[^>]*>(?:<span[^>]*class="sc-interp">)?([^<]*)', re.S)
+
+
+def _page_path(slug, route):
+    return os.path.join(OUT_ROOT, ks4_lessons.site_url(slug, route).lstrip("/"))
+
+
+def check_route_chip(errors):
+    """R12: exactly one `.ks3-route-chip` per page, its text is
+    `build_ks4.ROUTE_WORDS[route]`, and its switcher's `<a href>`s are
+    EXACTLY the lesson's other existing routes at their real URL — a
+    missing option, an extra option, or a wrong URL is each its own error,
+    never silently tolerated by only checking set membership one way."""
+    for lesson in ks4_lessons.LESSONS:
+        route_switch = build_ks4.compute_route_switch(lesson)
+        for route in lesson["routes"]:
+            path = _page_path(lesson["slug"], route)
+            if not os.path.exists(path):
+                errors.append("ROUTE-CHIP: %s missing" % path)
+                continue
+            text = open(path, encoding="utf-8").read()
+            chips = _CHIP_RE.findall(text)
+            if len(chips) != 1:
+                errors.append(
+                    "ROUTE-CHIP: %s carries %d .ks3-route-chip element(s), "
+                    "expected exactly 1" % (path, len(chips)))
+                continue
+            want_words = build_ks4.ROUTE_WORDS[route]
+            if chips[0] != want_words:
+                errors.append(
+                    "ROUTE-CHIP: %s chip reads %r, expected %r (this "
+                    "page's own route, in words)" % (path, chips[0], want_words))
+            menus = _MENU_RE.findall(text)
+            if len(menus) != 1:
+                errors.append(
+                    "ROUTE-CHIP: %s carries %d .ks3-route-menu element(s), "
+                    "expected exactly 1" % (path, len(menus)))
+                continue
+            got_options = sorted(_MENU_ITEM_RE.findall(menus[0]))
+            want_options = sorted(
+                (o["href"], o["label"]) for o in route_switch[route]["options"])
+            if got_options != want_options:
+                errors.append(
+                    "ROUTE-CHIP: %s switcher options %r != expected %r"
+                    % (path, got_options, want_options))
+                continue
+            for href, _label in got_options:
+                target = os.path.join(OUT_ROOT, href.lstrip("/"))
+                if not os.path.exists(target):
+                    errors.append(
+                        "ROUTE-CHIP: %s switcher links to %s, which does "
+                        "not exist under %s/" % (path, href, OUT_ROOT))
+
+
+def check_exam_tips(errors):
+    """R13: the two physics lessons' approved exam tip ships BYTE-EXACT —
+    read from the SAME `examiner_tip` field the page is built from (never a
+    second, hand-copied literal that could drift from it) — and every one
+    of their routes' pages carries the `{{ examTip }}` binding that serves
+    it.
+
+    ⚠️ Cannot check the RENDERED text here: `examTip: ready ? K.tip(slug) :
+    ''` is a runtime read of `window.KS4SRC` gated on `ready` (component
+    state that only becomes true client-side), so the prerendered, static
+    HTML this fast/no-Chrome gate reads always shows it blank — true of all
+    14 lessons' tips, not just these two (confirmed against an
+    already-shipped lesson before writing this check). The RENDERED-text
+    proof, in a real browser where `ready` genuinely becomes true, is
+    `ks4_parity.py`'s `compare_section_text()` R13 branch."""
+    import all_subtopics_physics_triple_higher as phys_th
+
+    def approved_tip(slug):
+        for topic_list in phys_th.PHYSICS_SUBTOPICS_ALL.values():
+            for st in topic_list:
+                if st.get("id") == slug:
+                    return st.get("examiner_tip") or ""
+        return ""
+
+    source_js_path = os.path.join("shared", "ks4-source.js")
+    source_text = open(source_js_path, encoding="utf-8").read() if os.path.exists(source_js_path) else ""
+    if not source_text:
+        errors.append("EXAM-TIP: %s missing — cannot verify the served tip" % source_js_path)
+
+    for slug in ("series-parallel-circuits", "resistors"):
+        want = approved_tip(slug)
+        if not want:
+            errors.append(
+                "EXAM-TIP: no examiner_tip found for %r in "
+                "all_subtopics_physics_triple_higher.py" % slug)
+            continue
+        if source_text and want not in source_text:
+            errors.append(
+                "EXAM-TIP: %s does not carry the approved tip byte-exact "
+                "for %r — window.KS4SRC[%r].examiner_tip has drifted from "
+                "the all_subtopics_*.py field it is generated from"
+                % (source_js_path, slug, slug))
+        lesson = ks4_lessons.LESSON_BY_SLUG[slug]
+        for route in lesson["routes"]:
+            path = _page_path(slug, route)
+            if not os.path.exists(path):
+                errors.append("EXAM-TIP: %s missing" % path)
+                continue
+            text = open(path, encoding="utf-8").read()
+            if "Examiner tip</p>" not in text:
+                errors.append("EXAM-TIP: %s has no 'Examiner tip' slot at all" % path)
+            if '"examTip"' not in text:
+                errors.append(
+                    "EXAM-TIP: %s carries no {{ examTip }} binding in its "
+                    "compiled logic — the R13 slot did not wire up" % path)
+
+
+def check_spec_numbers(errors):
+    """R14: a Triple route (TF/TH) shows the separate science's own AQA
+    spec number (8462/8463); a Combined route (CF/CH) shows 8464's,
+    unchanged. `nanoparticles` is excluded — it has no Combined route at
+    all and already showed the correct, verified 8462 number before this
+    ruling; R14 was never applied to it (see DEPARTURES-PILOT.md)."""
+    for lesson in ks4_lessons.LESSONS:
+        slug = lesson["slug"]
+        entry = build_ks4.SPEC_TEXT.get(slug)
+        if entry is None:
+            continue
+        for route in lesson["routes"]:
+            path = _page_path(slug, route)
+            if not os.path.exists(path):
+                errors.append("SPEC-NUMBER: %s missing" % path)
+                continue
+            text = open(path, encoding="utf-8").read()
+            want = entry["triple" if route in ("TF", "TH") else "combined"]
+            for field, needle in (("eyebrow", want["eyebrow"]),
+                                   ("keynote", want["keynote"])):
+                if needle not in text:
+                    errors.append(
+                        "SPEC-NUMBER: %s (%s) does not contain the expected "
+                        "%s citation %r" % (path, route, field, needle))
+
+
 def main():
     os.chdir(os.path.dirname(os.path.abspath(__file__)) or ".")
     manifest = load_manifest()
@@ -243,6 +408,9 @@ def main():
     check_registry(manifest, errors)
     check_version_stamps(manifest, errors)
     check_freeze(errors)
+    check_route_chip(errors)
+    check_exam_tips(errors)
+    check_spec_numbers(errors)
 
     if errors:
         print("\n❌ ks4_pilot_check: %d problem(s)\n" % len(errors))

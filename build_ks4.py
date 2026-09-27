@@ -35,6 +35,7 @@ import ks4_lessons
 from ks4_lessons import blocks as ks4_blocks
 import ks4_rulings
 import ks4_science_rulings
+from theme_head import THEME_HEAD, theme_script
 
 REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 DESIGN_DIR = ks4_lessons.DESIGN_DIR
@@ -51,6 +52,93 @@ BLOCK_NAMES = ["Ks4Chrome", "Ks4Choice", "Ks4Sort", "Ks4Chain", "Ks4Write",
 ROUTE_CODES = ["CF", "CH", "TF", "TH"]
 ROUTE_LABEL = ks4_lessons.ROUTE_LABELS
 ROUTE_URL = ks4_lessons.ROUTE_URL
+
+# ⊕ Mide's ruling (27 Sep 2026, the KS4 polish run) — the header route chip
+# now states the page's route IN WORDS rather than the review-tool label
+# ("Triple Higher"). Same four routes, a reader-facing phrasing.
+ROUTE_WORDS = {
+    "CF": "Combined Science · Foundation tier",
+    "CH": "Combined Science · Higher tier",
+    "TF": "Triple Science · Foundation tier",
+    "TH": "Triple Science · Higher tier",
+}
+
+
+def compute_route_switch(lesson):
+    """One dict per route this lesson ships on: `{route_code: {"words":
+    ..., "options": [{"href", "label"}, ...]}}` — the OTHER routes this
+    SAME lesson exists on, from `ks4_lessons.LESSONS`'s own `routes` list
+    (the same ground truth `shared/ks4-lib.js`'s NAV/hrefFor mirrors for
+    prev/next/connects) via `ks4_lessons.site_url()`. Computed once per
+    lesson (not per route) since every route's option list is a subset of
+    the same `lesson["routes"]`; `ks4_rulings.R11` reads it per (lesson,
+    route) at mount time."""
+    out = {}
+    for route in lesson["routes"]:
+        others = [{"href": ks4_lessons.site_url(lesson["slug"], other),
+                   "label": ROUTE_WORDS[other]}
+                  for other in lesson["routes"] if other != route]
+        out[route] = {"words": ROUTE_WORDS[route], "options": others}
+    return out
+
+
+# ⊕ Mide's ruling (27 Sep 2026) — every route used to show the Combined
+# Science (8464) AQA spec section number, even on a Triple/separate-science
+# route. `docs/theme/spec-numbers.md` is the citation table (verified
+# against the real AQA-8462/8463-SP-2016.PDF spec PDFs, section by section,
+# never assumed by numeric pattern) this dict is the machine copy of. Every
+# lesson but `nanoparticles` gets an entry — nanoparticles has NO Combined
+# route at all (8462 §4.2.4 is chemistry-only content), and its eyebrow/
+# key-note already show the correct, verified 8462 number with nothing to
+# swap, so `ks4_rulings.apply_r14_spec_number` is never called for it.
+SPEC_TEXT = {
+    "chemical-bonds": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.1.1 · Classify", "keynote": "AQA 5.2.1.1"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.1 · Classify", "keynote": "AQA 4.2.1.1 (8462)"}},
+    "ionic-bonding": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.1.2 · Process", "keynote": "AQA 5.2.1.2"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.2 · Process", "keynote": "AQA 4.2.1.2 (8462)"}},
+    "ionic-compounds": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.1.3 · Model", "keynote": "AQA 5.2.1.3"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.3 · Model", "keynote": "AQA 4.2.1.3 (8462)"}},
+    "covalent-bonding": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.1.4 · Process", "keynote": "AQA 5.2.1.4"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.4 · Process", "keynote": "AQA 4.2.1.4 (8462)"}},
+    "metallic-bonding": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.1.5 · Model", "keynote": "AQA 5.2.1.5"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.1.5 · Model", "keynote": "AQA 4.2.1.5 (8462)"}},
+    "states-of-matter": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.1–5.2.2.2 · Investigation", "keynote": "AQA 5.2.2.1–5.2.2.2"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.1–4.2.2.2 · Investigation", "keynote": "AQA 4.2.2.1–4.2.2.2 (8462)"}},
+    "properties-ionic-compounds": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.3 · Contrast", "keynote": "AQA 5.2.2.3"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.3 · Contrast", "keynote": "AQA 4.2.2.3 (8462)"}},
+    "properties-small-molecules": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.4 · Model", "keynote": "AQA 5.2.2.4"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.4 · Model", "keynote": "AQA 4.2.2.4 (8462)"}},
+    "polymers": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.5 · Classify", "keynote": "AQA 5.2.2.5"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.5 · Classify", "keynote": "AQA 4.2.2.5 (8462)"}},
+    "giant-covalent-structures": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.6 · 5.2.3.1–5.2.3.3 · Contrast", "keynote": "AQA 5.2.2.6, 5.2.3"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.6 · 4.2.3.1–4.2.3.3 · Contrast", "keynote": "AQA 4.2.2.6, 4.2.3 (8462)"}},
+    "metals-alloys": {
+        "combined": {"eyebrow": "AQA Chemistry 5.2.2.7–5.2.2.8 · Contrast", "keynote": "AQA 5.2.2.7–5.2.2.8"},
+        "triple": {"eyebrow": "AQA Chemistry (8462) 4.2.2.7–4.2.2.8 · Contrast", "keynote": "AQA 4.2.2.7–4.2.2.8 (8462)"}},
+    "series-parallel-circuits": {
+        "combined": {"eyebrow": "AQA Physics 6.2.2 · System", "keynote": "AQA 6.2.2"},
+        "triple": {"eyebrow": "AQA Physics (8463) 4.2.2 · System", "keynote": "AQA 4.2.2 (8463)"}},
+    "resistors": {
+        "combined": {"eyebrow": "AQA Physics 6.2.1.4 · Required practical", "keynote": "AQA 6.2.1.4 · RP"},
+        "triple": {"eyebrow": "AQA Physics (8463) 4.2.1.4 · Required practical", "keynote": "AQA 4.2.1.4 (8463) · RP"}},
+}
+
+
+def compute_spec_note(slug, route):
+    entry = SPEC_TEXT.get(slug)
+    if entry is None:
+        return None
+    return entry["triple" if route in ("TF", "TH") else "combined"]
 
 # ⊕ D3 fix (26 Sep 2026, docs/ks4/pilot-live-audit.md) — the pilot pages
 # shipped no `<link rel="icon">` at all, so every one of the 54 pages 404'd
@@ -76,9 +164,12 @@ KS4_PILOT_FAVICON_LINK = (
 # VERSIONED_ASSETS tuple (contract §1: "add a KS4 list in build_ks4.py — do
 # not edit build_ks3.py's tuple in place"). mrbadmus.v2.js is included
 # because our pages load it too, even though we never write it ourselves.
+# theme.js (THEME RUN, 26 Sep 2026) is the same situation: the ONE shared
+# theme control every lane loads, never written by this script, still
+# stamped like every other /shared/ks4-* asset on these pages.
 KS4_VERSIONED = ("ks4-ds.css", "ks4-theme.css", "ks4-lesson.css",
                   "ks4-source.js", "ks4-lib.js", "ks4-diagrams.js",
-                  "ks4-runtime.js", "mrbadmus.v2.js")
+                  "ks4-runtime.js", "mrbadmus.v2.js", "theme.js")
 
 # The subset of KS4_VERSIONED this script itself WRITES (excludes
 # mrbadmus.v2.js, which it only reads — that one is generate_site_v5.py's,
@@ -412,6 +503,7 @@ def build_ds_css():
 def build_ks4_lib_js():
     text = open(os.path.join(DESIGN_DIR, "ks4-lib.js"), encoding="utf-8").read()
     text = ks4_rulings.apply_r2_ks4lib(text)
+    text = ks4_rulings.apply_r11_route_lib(text)
 
     nav = {L["slug"]: {"subject": L["subject"], "topic": L["topic_id"],
                         "routes": L["routes"]} for L in ks4_lessons.LESSONS}
@@ -471,11 +563,65 @@ def build_ks4_diagrams_js():
     return text
 
 
+# ⊕ THEME RUN (26 Sep 2026, THEME-CONTRACT.md rule 3) — shared/ks4-theme.css
+# is copied VERBATIM from Design's own delivery (DESIGN_DIR), which is
+# frozen and MD5-verified (contract §0); this is NOT a hand-edit of that
+# file, it is a build-time transform of the COPY, same as KS4_DARK_MODE_
+# FIXES above and for the identical reason: the `@media (prefers-color-
+# scheme: dark)` block guards on `.rd[data-mode="ks3"]:not([data-theme=
+# "light"])` — the `.rd` element's OWN attribute, which these pages never
+# set (their mount prop is always `theme:"auto"`) — so it fired from the
+# OS setting regardless of the site's own stored theme choice. The
+# surviving `[data-theme="dark"] .rd[data-mode="ks3"]` selector (an
+# ancestor match on `<html>`, which THEME_HEAD/theme.js DO always set)
+# covers every case the media block used to, including System mode.
+_KS4_THEME_CSS_MEDIA_BLOCK = """@media (prefers-color-scheme: dark) {
+  .rd[data-mode="ks3"]:not([data-theme="light"]):not([data-theme="light"] .rd) {
+    --ks3-ground: #16120E; --ks3-card: #1F1A15; --ks3-band: #2A231C; --ks3-inset: #231D17; --ks3-row-dim: #1B1611;
+    --ks3-rule: #3E352C; --ks3-rule-strong: #5E5246; --ks3-option-border: #4F443A; --ks3-option-spent: #2B241D;
+    --ks3-ink: #F3ECE0; --ks3-ink-body: #E3D9CA; --ks3-ink-muted: #C2B6A6; --ks3-ink-faint: #B0A493; --ks3-ink-ghost: #8A7F72;
+    --ks3-accent: #F07A4E; --ks3-accent-text: #FF9E78; --ks3-accent-tint: #3A2218; --ks3-accent-hover: #FFC2A8;
+    --ks3-ok: #3CC477; --ks3-ok-text: #86E6AC; --ks3-ok-tint: #15301F;
+    --ks3-alert: #FFC53D; --ks3-alert-text: #FFDC85; --ks3-alert-tint: #33290F; --ks3-alert-border: #D9821A;
+    --ks3-stretch: #9C7BFF; --ks3-stretch-text: #C2ADFF; --ks3-stretch-tint: #261D3D; --ks3-stretch-rule: #44386A;
+    --ks3-blue: #6C8EFF; --ks3-blue-text: #A8C0FF; --ks3-blue-tint: #1B2440;
+    --ks3-on-dark: #16120E; /* ink-filled controls (reveal, check, retry) flip to light fills in dark mode, so their label flips dark */
+  color-scheme: dark;
+  }
+}
+"""
+
+
+def build_ks4_theme_css():
+    text = open(os.path.join(DESIGN_DIR, "ks4-theme.css"), encoding="utf-8").read()
+    if _KS4_THEME_CSS_MEDIA_BLOCK not in text:
+        raise SystemExit(
+            "build_ks4: ks4-theme.css's @media (prefers-color-scheme: dark) "
+            "block moved or is missing — the THEME RUN strip in "
+            "build_ks4_theme_css() needs to be re-read against the new "
+            "text before this can be re-run.")
+    text = text.replace(_KS4_THEME_CSS_MEDIA_BLOCK, "", 1)
+    text += (
+        "\n/* ⊕ THEME RUN (26 Sep 2026) — the @media (prefers-color-scheme: "
+        "dark) block Design's own ks4-theme.css carried here has been "
+        "stripped by build_ks4.build_ks4_theme_css() at build time (never "
+        "hand-edited in Design's frozen source under docs/ks4/design-"
+        "reference/pilot/). See THEME-CONTRACT.md rule 3 and the comment "
+        "above KS4_DARK_MODE_FIXES in build_ks4.py for why: it guarded on "
+        "the .rd element's own (always-unset) data-theme attribute, not on "
+        "html[data-theme], so it fired from the OS setting regardless of "
+        "the site's own stored theme choice. The surviving non-media block "
+        "above (both its own-attribute and [data-theme=\"dark\"] ancestor "
+        "selector forms) is unchanged and covers every case this did. */\n"
+    )
+    return text
+
+
 def build_shared_assets():
     written = {}
     for name, content in (
         ("ks4-ds.css", build_ds_css()),
-        ("ks4-theme.css", open(os.path.join(DESIGN_DIR, "ks4-theme.css"), encoding="utf-8").read()),
+        ("ks4-theme.css", build_ks4_theme_css()),
         ("ks4-diagrams.js", build_ks4_diagrams_js()),
         ("ks4-lib.js", build_ks4_lib_js()),
     ):
@@ -510,7 +656,7 @@ def collect_lesson_css(all_files):
                "   <helmet> of the 14 lessons + 11 blocks, deduplicated "
                "(exact text match), first-seen order.\n"
                "   Never hand-edit; re-run build_ks4.py. */\n\n")
-    return header + "\n\n".join(chunks) + "\n" + KS4_DARK_MODE_FIXES
+    return header + "\n\n".join(chunks) + "\n" + KS4_DARK_MODE_FIXES + KS4_CHIP_CSS
 
 
 # ── Dark-mode legibility fixes (Mide's ruling, Experience run item 13;
@@ -518,13 +664,28 @@ def collect_lesson_css(all_files):
 # ADDITIVE ONLY — never edits Design's shared/ks4-theme.css or
 # shared/ks4-ds.css in place; appended here because ks4-lesson.css is the
 # LAST <link> on every pilot page, so an equal-specificity rule here wins by
-# source order alone. Each block carries both of ks4-theme.css's own two
-# dark-mode hooks (the `@media (prefers-color-scheme: dark)` block for the
-# OS setting, and the plain `[data-theme="dark"]` selector for the page's
-# own `data-theme` state, which these lesson pages DO bind live — see the
-# mount div's `data-theme="{{theme}}"`) — mirroring ks4-theme.css's own
-# selector pairs exactly. All three reuse EXISTING dark-palette tokens
-# already defined in shared/ks4-theme.css; nothing new is minted.
+# source order alone. All three reuse EXISTING dark-palette tokens already
+# defined in shared/ks4-theme.css; nothing new is minted.
+#
+# ⊕ THEME RUN (26 Sep 2026, THEME-CONTRACT.md rule 3) — each of these three
+# USED to carry a `@media (prefers-color-scheme: dark)` block (guarded
+# `.rd[data-mode="ks3"]:not([data-theme="light"])`) alongside the plain
+# `[data-theme="dark"]` selector. That guard checks the `.rd` element's OWN
+# `data-theme` attribute — bound to `{{ theme }}`, a per-lesson mount prop
+# that is always `"auto"` in production and so never actually written — so
+# `:not([data-theme="light"])` was always true, and the OS media query fired
+# regardless of the SITE'S OWN stored theme choice: a student who chose
+# Light, on a phone set to dark, still got these dark-mode overrides.
+# THEME-CONTRACT.md rule 3 is explicit that a `@media (prefers-color-scheme:
+# dark)` block "must NEVER apply on its own any more" once a page always
+# carries `data-theme` on `<html>` (these pages do, via THEME_HEAD) — so the
+# media-query path is removed outright, not merely re-guarded. The surviving
+# selector, `[data-theme="dark"] .rd[data-mode="ks3"]`, matches whenever the
+# ANCESTOR `<html>` carries `data-theme="dark"` — which is exactly and only
+# what theme.js/THEME_HEAD ever write — so System mode (which theme.js
+# resolves from the OS media query itself, once, into that same attribute)
+# still reaches these three fixes; only the double-application through the
+# `.rd`'s own dead attribute is gone.
 KS4_DARK_MODE_FIXES = """
 /* ⊕ KS4-DARK-1 (DEPARTURES-PILOT.md) — disabled .ks3-reveal-btn/.ks3-retry
    measured 2.01:1 in dark mode (contrast_audit.py, disabled-control floor
@@ -536,17 +697,32 @@ KS4_DARK_MODE_FIXES = """
    an inline style, so this raises that one number. .7 keeps the control
    visibly duller than its enabled (opacity 1) state — still reads as
    "disabled" — while composited contrast clears the floor: measured
-   4.57:1. */
-@media (prefers-color-scheme: dark) {
-  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-reveal-btn:disabled,
-  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-retry:disabled {
-    opacity: .7 !important;
-  }
-}
-.rd[data-mode="ks3"][data-theme="dark"] .ks3-reveal-btn:disabled,
-.rd[data-mode="ks3"][data-theme="dark"] .ks3-retry:disabled,
-[data-theme="dark"] .rd[data-mode="ks3"] .ks3-reveal-btn:disabled,
-[data-theme="dark"] .rd[data-mode="ks3"] .ks3-retry:disabled {
+   4.57:1.
+
+   ⊕ THEME RUN (26 Sep 2026) — UNGATED from dark-only, having measured the
+   IDENTICAL collapse in LIGHT mode (1.60:1, same floor 3.0) the first time
+   this run's `contrast_audit.py --themes light,dark` actually reached a
+   disabled control on these 54 pages. The mechanism is symmetric, not
+   theme-specific: these buttons' filled/label pair is (fill=--ks3-ink,
+   label=--ks3-ground) in EITHER theme — a near-black fill under
+   cream-coloured label text — and `--ks3-ground` in light mode IS the
+   page's own cream ground, so opacity-fading the label toward that same
+   page ground converges label-onto-page just as catastrophically as the
+   dark-mode case converges it onto the dark ground. This was not
+   introduced by the theme run; it is a pre-existing defect this run's
+   dual-theme, real-disabled-state measurement was the first thing to
+   surface (Decisions/Deviations, ks4-pilot theme-run report). One
+   unconditional rule now covers both floors: measured 4.57:1 dark,
+   3.03:1 light.
+
+   `.ks3-check-btn:disabled` joins the same rule for the same reason,
+   found by the same sweep — a ghost-style button (cream fill, ink label,
+   ~12:1 apart) whose SAME opacity:.45 fade collapses it to 2.76:1 in
+   LIGHT mode only (its dark pairing already cleared the floor at .45,
+   so raising it here only widens that margin, never regresses it). */
+.ks3-reveal-btn:disabled,
+.ks3-retry:disabled,
+.ks3-check-btn:disabled {
   opacity: .7 !important;
 }
 
@@ -561,12 +737,6 @@ KS4_DARK_MODE_FIXES = """
    ...flip to light fills in dark mode, so their label flips dark",
    shared/ks4-theme.css) — the accent card is exactly such a filled, bright
    surface. Measured 6.74:1. Nothing minted. */
-@media (prefers-color-scheme: dark) {
-  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-endmatter .ks3-tutor h2,
-  .rd[data-mode="ks3"]:not([data-theme="light"]) .ks3-endmatter .ks3-tutor p {
-    color: var(--ks3-on-dark);
-  }
-}
 .rd[data-mode="ks3"][data-theme="dark"] .ks3-endmatter .ks3-tutor h2,
 .rd[data-mode="ks3"][data-theme="dark"] .ks3-endmatter .ks3-tutor p,
 [data-theme="dark"] .rd[data-mode="ks3"] .ks3-endmatter .ks3-tutor h2,
@@ -591,20 +761,140 @@ KS4_DARK_MODE_FIXES = """
    "Your answer" label immediately above its textarea already uses, so
    reusing it here gives every placeholder a properly
    de-emphasized-but-legible tone consistent with that label. Measured
-   8.66:1 on --ks3-card, 9.35:1 on --ks3-ground. Nothing minted. */
-@media (prefers-color-scheme: dark) {
-  .rd[data-mode="ks3"]:not([data-theme="light"]) input::placeholder,
-  .rd[data-mode="ks3"]:not([data-theme="light"]) textarea::placeholder {
-    color: var(--ks3-ink-muted);
-    opacity: 1;
-  }
-}
-.rd[data-mode="ks3"][data-theme="dark"] input::placeholder,
-.rd[data-mode="ks3"][data-theme="dark"] textarea::placeholder,
-[data-theme="dark"] .rd[data-mode="ks3"] input::placeholder,
-[data-theme="dark"] .rd[data-mode="ks3"] textarea::placeholder {
+   8.66:1 on --ks3-card, 9.35:1 on --ks3-ground. Nothing minted.
+
+   ⊕ THEME RUN (26 Sep 2026) — UNGATED from dark-only, having measured the
+   SAME UA-default placeholder grey failing in LIGHT mode too (4.18:1 on
+   --ks3-ground, 4.50:1 on --ks3-card — both under the 4.5 floor; not
+   introduced by this run, the same pre-existing gap KS4-DARK-1 above
+   turned out to have). `--ks3-ink-muted` already carries its OWN correct
+   value in EITHER theme (5.6:1 on light --ks3-ground per its own token
+   comment, 8.66/9.35:1 in dark per this rule's original measurement), so
+   ONE unconditional rule — not two theme-gated copies — is both correct
+   and sufficient: the token resolves per-theme on its own. */
+.rd[data-mode="ks3"] input::placeholder,
+.rd[data-mode="ks3"] textarea::placeholder {
   color: var(--ks3-ink-muted);
   opacity: 1;
+}
+
+/* ⊕ KS4-DARK-4 (THEME RUN, 26 Sep 2026) — the tutor chat overlay
+   (#chatOverlay, build_ks3.KS3_CHAT_OVERLAY, mounted verbatim by every one
+   of these 54 pages' tutor_block()) ships with NO stylesheet of its own —
+   its rules (`.chat-head-info h3`, `.chat-modal`, …) live only in
+   shared/styles.css, which these pages do not load (a pre-existing,
+   unrelated gap: KS3 lesson pages load it, KS4 pilot pages never have).
+   So every one of those rules is a no-op here, and the overlay's h3/p
+   render with NO explicit colour of their own — they simply INHERIT
+   `body`'s, which ks4-ds.css sets, unscoped, to `--st-ink` (a 3D-Studio
+   token bundled in from Design's concatenated tokens export, landing here
+   only because build_ds_css() ships her whole chain). `--st-ink` carries
+   no dark remap anywhere in this file, so in dark mode the overlay's text
+   stayed the SAME near-black (#1A1714) while its background — composited
+   straight through, since every layer between it and `body` is
+   transparent — correctly followed body's OWN dark ground (#16120E, this
+   file's own `html,body` rule below): 1.04:1. `#chatOverlay` sits OUTSIDE
+   `.rd[data-mode="ks3"]` (a sibling of #ks4-mount, both direct children of
+   `body`), so it cannot see `--ks3-ink`'s `.rd`-scoped dark remap by
+   inheritance — CSS custom properties cascade down a subtree, never
+   sideways to a sibling — so the value below is that SAME dark ink
+   (#F3ECE0, shared/ks4-theme.css) written literally, because the custom
+   property itself is out of scope at `body`. Nothing else lives directly
+   under `body` outside `.rd` (`.rd` sets its own inline `color`, which
+   always wins there regardless of body's), so this cannot touch lesson
+   content. Measured 15.98:1. */
+html[data-theme="dark"] body {
+  color: #F3ECE0;
+}
+
+/* ⊕ KS4-DARK-5 (THEME RUN, 26 Sep 2026) — same unstyled-overlay cause as
+   KS4-DARK-4, one door down: `#chatOverlay`'s `<input id="ci">` (the chat
+   text box) carries no background/border of its own either (again,
+   because shared/styles.css never loads here), so it renders as a bare
+   NATIVE form control — and `html.style.colorScheme` (set by theme.js/
+   THEME_HEAD, needed everywhere else on the page so the OS's own chrome —
+   scrollbars, native pickers — matches the site's choice) makes Chrome
+   skin that native control with its OWN dark widget theme: a dark grey
+   fill (#3B3B3B) under Chrome's OWN placeholder grey (#757575, the exact
+   value KS4-DARK-3's docstring already names as the UA default) — 2.43:1,
+   under the 4.5 floor. In light mode the same native pairing (white fill,
+   #757575 placeholder) already clears it, which is exactly why this
+   never needed fixing before: the overlay predates dark mode entirely and
+   has no design of its own to give it. Rather than invent one, `color-
+   scheme: light` pins the overlay's native controls to the SAME
+   appearance they have always had, in either theme — the accurate
+   "unchanged" for a component nothing here has redesigned. */
+#chatOverlay {
+  color-scheme: light;
+}
+"""
+
+
+# ── the header route chip/switcher (Mide's ruling, 27 Sep 2026;
+# ks4_rulings.py R12). Every colour is a `--ks3-*` token, so light and dark
+# both "just work" the same way the rest of the page does — no separate
+# dark-mode block is needed here the way KS4-DARK-1..3 above needed one:
+# those three fought an INLINE style Design's own compiled Component sets
+# per instance (only `!important` in a stylesheet can outrank an inline
+# style); this chip carries no inline colour at all. `summary` is added to
+# the page's own focus-visible selector list (html,body's own `<style>`
+# block only names button/a/select/input/textarea) so the chip gets the
+# SAME outline every other interactive control on the page does. `list-
+# style: none` on a `<ul>` is a known VoiceOver/Safari gotcha (it can drop
+# the element's implicit list semantics) — `role="list"` on the markup
+# restores it explicitly, matching the templates rather than duplicated
+# here.
+KS4_CHIP_CSS = """
+/* ⊕ KS4-CHIP-1 (Mide's ruling, 27 Sep 2026) — replaces the two static
+   "Combined · Triple" / "Foundation · Higher" header chips with one
+   chip stating the page's own route in words, as a native disclosure.
+   Enter/Space toggles a native <details>/<summary> with no script; Tab
+   reaches the menu's links (already static <a> elements in the prerendered
+   HTML, not a runtime fetch). shared/ks4-runtime.js adds only Esc-to-close
+   plus keeping aria-expanded in sync with the open state. */
+.ks3-route-switch { position: relative; }
+.ks3-route-chip {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 4px 11px; border-radius: 99px; border: 2px solid var(--ks3-ink);
+  color: var(--ks3-ink); background: var(--ks3-card);
+  -webkit-tap-highlight-color: transparent;
+}
+.ks3-route-chip::-webkit-details-marker { display: none; }
+.ks3-route-chip::marker { content: ""; }
+.ks3-route-chip:hover { border-color: var(--ks3-accent-text); }
+.ks3-route-chip:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: 2px; }
+.ks3-route-chip svg { flex: 0 0 auto; transition: transform .15s ease; }
+.ks3-route-switch[open] > .ks3-route-chip svg { transform: rotate(180deg); }
+.ks3-route-menu {
+  /* ⚠️ `display: none` here is LOAD-BEARING, not a default this selector
+     happens to start from. The browser's own UA stylesheet already hides a
+     closed <details>'s non-summary content (`details:not([open]) >
+     *:not(summary) { display: none }`), but an AUTHOR stylesheet's rule
+     beats a UA rule at equal-or-lower specificity regardless of source
+     order — an unconditional `display: flex` here would force the menu
+     visible EVEN WHILE CLOSED (found live via ks4_parity's G-keyboard
+     layer: 3 always-focusable <a> with non-zero rects). `[open] >` below
+     is the ONLY rule that may ever show it. */
+  display: none;
+  list-style: none; margin: 6px 0 0; padding: 6px;
+  flex-direction: column; gap: 2px;
+  position: absolute; top: 100%; left: 0; z-index: 5;
+  min-width: 15rem; max-width: min(20rem, calc(100vw - 32px));
+  background: var(--ks3-card); border: 2px solid var(--ks3-option-border);
+  border-radius: var(--ks3-r-panel); box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+}
+.ks3-route-switch[open] > .ks3-route-menu { display: flex; }
+.ks3-route-menu a {
+  display: block; padding: 9px 10px; border-radius: 8px; min-height: 44px;
+  font-family: var(--ks3-font-body); font-size: 15px; font-weight: 500;
+  line-height: 1.3; color: var(--ks3-ink); text-decoration: none;
+}
+.ks3-route-menu a:hover { background: var(--ks3-band); }
+.ks3-route-menu a:focus-visible { outline: 3px solid var(--ks3-accent-text); outline-offset: -3px; background: var(--ks3-band); }
+@media (max-width: 400px) {
+  .ks3-route-menu { left: 0; right: auto; }
 }
 """
 
@@ -769,20 +1059,34 @@ def compile_lesson(page, lesson, report):
 
     # structural template edits BEFORE the browser compile — removing a node
     # renumbers everything after it (student_template.py's rule, carried
-    # over unchanged: R1/R6/R7 all touch the template, so all three run here).
+    # over unchanged: R1/R6/R7/R12/R14 all touch the template, so they all
+    # run here).
     tpl = ks4_rulings.apply_r1_route_selector(lesson["design_file"], tpl)
+    tpl = ks4_rulings.apply_r12_route_chip(lesson["slug"], tpl)
     tpl, r9_fired = ks4_rulings.apply_r9_badge_gate(lesson["slug"], tpl)
+    # ⊕ THEME RUN (26 Sep 2026, THEME-CONTRACT.md) — R15: the site's
+    # Light/Dark/System control slot, into the same header row as R12's
+    # route chip. Runs after both R12 and R9 so it lands after whatever
+    # they left in that row (see ks4_rulings.apply_r15_theme_slot).
+    tpl = ks4_rulings.apply_r15_theme_slot(lesson["slug"], tpl)
     ks4_rulings.check_r3_ready_unused(logic)
     draft_tip = None
     if lesson["slug"] == "nanoparticles":
         ks4_rulings.check_r5_nanoparticles_spec(tpl)
     if lesson["slug"] == "series-parallel-circuits":
         tpl = ks4_rulings.apply_r6_rtotal_chip(tpl)
-        tpl, draft_tip = ks4_rulings.apply_r7_remove_draft_tip(lesson["design_file"], tpl)
+        tpl = ks4_rulings.apply_r13_approved_exam_tip(lesson["design_file"], tpl)
+        logic = ks4_rulings.apply_r13_exam_tip_logic(lesson["design_file"], logic)
     if lesson["slug"] == "resistors":
-        tpl, draft_tip = ks4_rulings.apply_r7_remove_draft_tip(lesson["design_file"], tpl)
+        tpl = ks4_rulings.apply_r13_approved_exam_tip(lesson["design_file"], tpl)
+        logic = ks4_rulings.apply_r13_exam_tip_logic(lesson["design_file"], logic)
     if lesson["slug"] == "metals-alloys":
         logic = ks4_rulings.apply_r8_model_data(logic)
+    spec_text = SPEC_TEXT.get(lesson["slug"])
+    if spec_text is not None:
+        tpl = ks4_rulings.apply_r14_spec_number(
+            lesson["slug"], tpl, spec_text["combined"]["eyebrow"],
+            spec_text["combined"]["keynote"])
 
     logic, tpl, slug_renamed = ks4_rulings.apply_r_slug(lesson["slug"], logic, tpl)
     logic, n_prev, n_next = ks4_rulings.apply_r_prevnext(lesson["design_file"], logic)
@@ -940,11 +1244,14 @@ def block_registration_scripts(compiled_blocks):
 
 def lesson_mount_script(compiled_lesson, route, lesson, prev_next, subject_label):
     prev, nxt = prev_next
+    route_switch = compute_route_switch(lesson)
     props = {
         "route": ROUTE_LABEL[route],
         "theme": "auto",
         "showDraft": lesson["review_state"] == "draft",
         "mrbPrevNext": {"prev": prev, "next": nxt},
+        "mrbRouteSwitch": route_switch[route],
+        "mrbSpecNote": compute_spec_note(lesson["slug"], route),
     }
     return (
         "<script>\n(function () {\n%s\n"
@@ -987,10 +1294,26 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
     subject_label = lesson["subject"].capitalize()
     title = "%s · MrBadmusAI GCSE %s" % (lesson["title"], subject_label)
     mount_script = lesson_mount_script(compiled_lesson, route, lesson, prev_next, subject_label)
+    # ⊕ THEME RUN (26 Sep 2026, THEME-CONTRACT.md rules 2/3) — THEME_HEAD
+    # goes as early as possible (right after <meta charset>, before every
+    # stylesheet/blocking script), so no page ever paints the wrong theme
+    # even for a flash. The theme script is stamped like every other
+    # /shared/ks4-* asset (see KS4_VERSIONED, below). The old hard-coded
+    # `background:#FBF3E6` ground (there to avoid a flash before ks4-ds.css
+    # loads) becomes token-aware: the light value stays byte-identical, and
+    # a dark value (the SAME #16120E `--ks3-ground` shared/ks4-theme.css
+    # already uses under [data-theme="dark"]) is keyed on html[data-theme=
+    # "dark"] so the ground is right before ANY stylesheet loads, in either
+    # theme. theme.js itself is emitted unstamped here, like every other
+    # /shared/ks4-* asset on this page — stamp_versions() below rewrites it
+    # to /shared/theme.js?v=<hash> using the "theme.js" entry KS4_VERSIONED
+    # adds to `versions`.
     html = """<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
+%(theme_head)s
+%(theme_script)s
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%(title)s</title>
 <link rel="canonical" href="https://mrbadmus.com%(url)s">
@@ -998,7 +1321,7 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 <link rel="stylesheet" href="/shared/ks4-ds.css">
 <link rel="stylesheet" href="/shared/ks4-theme.css">
 <link rel="stylesheet" href="/shared/ks4-lesson.css">
-<style>html,body{margin:0;padding:0;background:#FBF3E6;}</style>
+<style>html,body{margin:0;padding:0;background:#FBF3E6}html[data-theme="dark"] body,html[data-theme="dark"]{background:#16120E}</style>
 </head>
 <body>
 <div id="ks4-mount"></div>
@@ -1012,6 +1335,7 @@ def render_page(lesson, route, compiled_lesson, block_scripts, prev_next, versio
 </body>
 </html>
 """ % dict(title=title, url=url, favicon=KS4_PILOT_FAVICON_LINK,
+           theme_head=THEME_HEAD, theme_script=theme_script(),
            block_scripts=block_scripts, mount_script=mount_script,
            tutor=tutor_block(lesson, route))
     import build_ks3

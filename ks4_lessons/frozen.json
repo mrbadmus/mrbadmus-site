@@ -1,58 +1,58 @@
 {
  "chemical-bonds": {
-  "hash": "d5a68af883a0b874cf02224c1faa6b1ba527d4ed9d8a0e6e9af488486c694a12",
+  "hash": "0014219b4bdd801db2f47db3a3b47d601262114abc41b5ae175cde6cb41fdc5b",
   "review_state": "examiner-reviewed"
  },
  "covalent-bonding": {
-  "hash": "db88ff333b8b60a09bcecccd13a703b1328519644622230946d264ff8de7157c",
+  "hash": "2f36b81c46405a3dfebeabd9b14bf08631fa37080ca7a085b404c8f93fd365fb",
   "review_state": "examiner-reviewed"
  },
  "giant-covalent-structures": {
-  "hash": "03dd34dde6fb112a9810f0d20e59be604a8116eac2a45067de3a1109c67727fc",
+  "hash": "b611b9d9bb939b5863c24398f62434e23ebbfade94d707de1ed7204b44d999ca",
   "review_state": "examiner-reviewed"
  },
  "ionic-bonding": {
-  "hash": "6361e092441cf2f2084cb542631c3381ac757f47e9cc8307ad2526460fd6d0a8",
+  "hash": "817b5b6aec6cf31a81385f96b3bccaa8fd3c1a77b16fe3cd31557d0bd05b53cc",
   "review_state": "examiner-reviewed"
  },
  "ionic-compounds": {
-  "hash": "01ebc3de4ee49a083ec06b2747bf1fa908ca7d11796b856d4ee0f66a8cab1879",
+  "hash": "662e4e1144bbb7b5213b855acc4d5988970e68eca0edc6228676c8fca7694cb7",
   "review_state": "examiner-reviewed"
  },
  "metallic-bonding": {
-  "hash": "5d6b29be127581ad13109a01b0c8ba1b9f9ff3948558cf5b1931aec5cb8ff209",
+  "hash": "dd0101c7d248245fb9c207c2cda7e6a4f9d6ee5413349b45f5481d00946f7ed0",
   "review_state": "examiner-reviewed"
  },
  "metals-alloys": {
-  "hash": "bf70df848c45dc9b1e46e051051897e390a35937057dc287f80f1f4f197caf3b",
+  "hash": "4f57b007658f52cde1a3eb5eeaa42180d1ebf7e0091bd5944cdd80fb6dfb11e5",
   "review_state": "examiner-reviewed"
  },
  "nanoparticles": {
-  "hash": "f41e31b4923fd654d8286dea43696accfd71a63be7a59e39280470ac1d7d0ea4",
+  "hash": "d5ea6694b6ea7b2308235ce04887ddd6f8c51eedeb97dabd5d8cdc45586be9d0",
   "review_state": "examiner-reviewed"
  },
  "polymers": {
-  "hash": "c7fafefea558d5b52fa69a89be08b9d6847cefe497a9487839d69265a6523785",
+  "hash": "fa1bb77d09d8825db08aa10f45fd9c9130eb37a77807a5a866dee04a9f7316eb",
   "review_state": "examiner-reviewed"
  },
  "properties-ionic-compounds": {
-  "hash": "cac16fbcd5f608dfcbddfab6e6f86cb689004f488465ac68c6061c897df26286",
+  "hash": "5ebd2c876f461ad540996b3b611a04413ec62c70abd9205b65b74c6a9075ba47",
   "review_state": "examiner-reviewed"
  },
  "properties-small-molecules": {
-  "hash": "b5c20e59a5001c53a8fc105c666ff2f21cfcddf99296cfbde4f9e22dad9bdc6e",
+  "hash": "2c69282d2c104eb679ca09ed498dabd1edb8d45f1c6e745a4dcd7a317d68e2e8",
   "review_state": "examiner-reviewed"
  },
  "resistors": {
-  "hash": "7bd6f4732c36984fef0d5ea2b5c1afda343c2839780fd1fe9be70f1ba75ddf01",
+  "hash": "728fffaa205bbd90826f44f33723968a07f2be42417534cc92cc57eeb44ec44a",
   "review_state": "examiner-reviewed"
  },
  "series-parallel-circuits": {
-  "hash": "48b9a3f0c3959c97464700c373f9fefe887431cacca459572d24650d6333becb",
+  "hash": "2c8334974759aec59457fae9231cadbea741d9cdb2a364c4a8e7ee7c8eb7c869",
   "review_state": "examiner-reviewed"
  },
  "states-of-matter": {
-  "hash": "957e1fe80a45a5f7fc39fa7ef853414e5e452415232c5bd1be3b4ddfaf5cb22c",
+  "hash": "941854a1865fdfc16a7fa2cc4482f25ffd4a67236a27e454e7dad5a146587032",
   "review_state": "examiner-reviewed"
  }
 }

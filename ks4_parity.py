@@ -38,6 +38,29 @@ weakening — a difference NOT on this list is a real FAIL.
                 `.dc.html` filenames.
   R-SLUG        (no visible-text effect; not in this whitelist)
   ks4_science_rulings.py  (not yet landed — see `science_rulings_for()`)
+  R11/R12       (Mide's ruling, 27 Sep 2026) the header's two static
+                "Combined · Triple" / "Foundation · Higher" chips are gone
+                on every port page, replaced by one route-stating chip +
+                switcher (checked directly: `check_route_chip()` proves
+                there is exactly one, its words match the page's own
+                route, and its menu names exactly the lesson's OTHER
+                existing routes at their real URLs; `check_route_switch_
+                keyboard()` proves Enter/Space/Esc/focus-return).
+  R13           (Mide's ruling, 27 Sep 2026) `series-parallel-circuits` /
+                `resistors` gain the FINAL, approved exam tip in place of
+                the removed draft (R7, superseded — see below); checked
+                directly against `all_subtopics_physics_triple_higher.py`'s
+                `examiner_tip` field, not merely excused.
+  R14           (Mide's ruling, 27 Sep 2026) a Triple route's eyebrow/
+                key-note spec number is the separate science's own
+                (8462/8463), not Combined's (8464); Combined routes are
+                unchanged. Checked directly against `build_ks4.SPEC_TEXT`
+                by `check_spec_number()`, not merely excused.
+
+  R7 above is SUPERSEDED by R13, 27 Sep 2026: the two physics lessons no
+  longer lose the section, they gain the FINAL text in it, so
+  `R7_SLUGS` is now empty and the section is compared like any other
+  (its OLD/NEW text substitution lives in `apply_text_whitelist`).
 
 Reference.json's own asymmetry is preserved rather than fought: the DEFAULT
 route (Triple Higher, "TH") is swept at all 5 widths and gets the full D/E/F/
@@ -60,6 +83,7 @@ import os
 import re
 import sys
 import time
+import urllib.request
 
 REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, REPO_ROOT)
@@ -70,6 +94,7 @@ import ks4_lessons  # noqa: E402
 import ks4_rulings  # noqa: E402
 import build_ks4  # noqa: E402
 import measure_design as MD  # noqa: E402  (reused verbatim per the contract)
+from theme_head import THEME_HEAD  # noqa: E402
 
 try:
     import ks4_science_rulings as _KSR  # noqa: E402
@@ -123,7 +148,28 @@ ROUTE_SELECT_NEEDLE = normalize_ws(
 R6_ADDITION_TEXT = "Not on the sheet · learn it"  # ks4_rulings.R6 (series-parallel-circuits)
 R8_FROM_TEXT = "The table shows the hardness of iron mixed with different percentages of carbon."
 R8_TO_TEXT = "The table shows model data for the hardness of iron mixed with different percentages of carbon."
-R7_SLUGS = {"series-parallel-circuits", "resistors"}
+# ⊕ Superseded 27 Sep 2026 (Mide's ruling, R13). This used to read
+# `{"series-parallel-circuits", "resistors"}` and `reference_sections_
+# after_rulings()` DROPPED the "Examiner tip" section from Design's
+# reference for both, because R7 used to remove that section from the port
+# entirely (flag 11: the draft tip was never approved). R13 replaces R7:
+# the section is no longer removed, it gets the FINAL approved text — so
+# Design's reference and the port now both carry it, section counts match
+# with no adjustment, and its TEXT is proven directly against
+# `all_subtopics_physics_triple_higher.py` by `compare_section_text()`'s own
+# R13 branch, not merely excused. Left as an empty set (not deleted) so a
+# FUTURE lesson whose ruling genuinely removes a whole section still has
+# this mechanism to use.
+R7_SLUGS = set()
+
+# ⊕ R12 (Mide's ruling, 27 Sep 2026) — the two static header chips Design's
+# page always carried, in the ONE place they ever appear (index 0, the
+# header section). `build_ks4.ROUTE_WORDS` are the NEW chip's four possible
+# labels — the routeWords/routeSwitchOptions link text baked into the port,
+# stripped from the PORT side in `compare_section_text()` (symmetric to
+# this constant being stripped from the REFERENCE side here).
+R12_OLD_TIER_CHIP = "Foundation · Higher"
+R12_OLD_PATHWAY_CHIP = {"nanoparticles": "Triple"}  # default (13 of 14): "Combined · Triple"
 
 
 
@@ -163,6 +209,22 @@ def science_rulings_for(slug):
 
 
 DRAFT_BANNER_TEXT = "Draft — not yet science-reviewed."
+# ⊕ THEME RUN (26 Sep 2026, THEME-CONTRACT.md) — R15's `data-mrb-theme` slot
+# mounts shared/theme.js's Light/Dark/System control into the SAME header
+# row R12's chip lives in. Its accessible text (a real `<legend>` plus one
+# visually-hidden `.mrb-theme-sr` label per radio — screen-reader content,
+# so it DOES appear in `textContent` even though nothing is visible) is new
+# on every one of these 54 pages and exists NOWHERE in Design's reference,
+# captured before the theme run. Symmetric with R12's own ROUTE_WORDS strip
+# just below: a fixed, site-wide, non-lesson-specific vocabulary, stripped
+# from the PORT side only (the reference side has nothing to strip). Order
+# matches theme.js's own PREFS/LABELS arrays and DOM order (legend, then
+# light/dark/system in that order) with no whitespace between — confirmed
+# against the DOM (`_WS_RE` normalizes runs of whitespace to single spaces
+# but never INSERTS one where the compiled DOM has none, which is the case
+# here: legend and each `.mrb-theme-sr` span are adjacent siblings with no
+# text node between them).
+THEME_CONTROL_TEXT = "Colour theme" + "Light" + "Dark" + "System"
 _BANK_TALLY_RE = re.compile(r"\d+\s+of\s+\d+\s+answered\s*·\s*\d+\s+matched the mark scheme"
                              r"|\d+\s+answered\s*·\s*\d+\s+matched the mark scheme")
 
@@ -428,6 +490,27 @@ def apply_text_whitelist(slug, route, index, sec, ref_text_norm):
         if badge:
             t = t.replace(badge, "").strip()
             t = _WS_RE.sub(" ", t)
+        # ⊕ R12 — the two static chips Design's page always carried here.
+        # The port's replacement chip/switcher text is stripped from the
+        # PORT side instead (compare_section_text(), symmetrically).
+        t = t.replace(R12_OLD_PATHWAY_CHIP.get(slug, "Combined · Triple"), "")
+        t = t.replace(R12_OLD_TIER_CHIP, "")
+        t = _WS_RE.sub(" ", t).strip()
+    # ⊕ R14 — a Triple route's spec number is the separate science's own,
+    # not Combined's. Applied on WHATEVER section carries it (the header's
+    # eyebrow is always index 0; the KeyNote child component's `spec` prop
+    # renders inside whichever section that dc-import sits in, lesson by
+    # lesson) — a plain substring replace is exact and safe here because
+    # every `combined` string below is the FULL literal citation Design's
+    # page shows nowhere else (verified when `build_ks4.SPEC_TEXT` was
+    # built: each string is unique to its own eyebrow/key-note line).
+    if route in ("TF", "TH"):
+        spec_entry = build_ks4.SPEC_TEXT.get(slug)
+        if spec_entry is not None:
+            t = t.replace(normalize_ws(spec_entry["combined"]["eyebrow"]),
+                          normalize_ws(spec_entry["triple"]["eyebrow"]))
+            t = t.replace(normalize_ws(spec_entry["combined"]["keynote"]),
+                          normalize_ws(spec_entry["triple"]["keynote"]))
     if slug == "series-parallel-circuits" and R6_ADDITION_TEXT not in t:
         # R6 is an ADDITION on the port side; nothing to strip from Design's
         # side — the port's own text will carry the extra chip, handled by
@@ -441,9 +524,50 @@ def apply_text_whitelist(slug, route, index, sec, ref_text_norm):
     return t
 
 
+R13_TIP_SLUGS = {"series-parallel-circuits", "resistors"}
+
+
+def _approved_tip_text(slug):
+    """The FINAL, approved exam-tip text for one of R13_TIP_SLUGS, read
+    straight from `all_subtopics_physics_triple_higher.py`'s `examiner_tip`
+    field — the SAME record `build_ks4.build_source_record()` serves onto
+    the page via `shared/ks4-source.js` (never a second, hand-copied literal
+    here that could drift from it)."""
+    import all_subtopics_physics_triple_higher as _phys_th
+    for topic_list in _phys_th.PHYSICS_SUBTOPICS_ALL.values():
+        for st in topic_list:
+            if st.get("id") == slug:
+                return st.get("examiner_tip") or ""
+    return ""
+
+
 def compare_section_text(slug, route, index, sec, ref_text_norm, port_text_norm):
+    # ⊕ R13 — proves the approved exam tip is present BYTE-EXACT, rather
+    # than merely excusing a known difference from Design's (unapproved,
+    # different-wording) draft. Both physics lessons' tip section carries
+    # this on every route (examiner_tip is not route-varying).
+    if slug in R13_TIP_SLUGS and is_examiner_tip_section(sec):
+        expected = normalize_ws(_approved_tip_text(slug))
+        got = normalize_ws(port_text_norm.replace("Examiner tip", "", 1))
+        if not expected:
+            return ("R13: no examiner_tip found for %r in "
+                     "all_subtopics_physics_triple_higher.py" % slug)
+        if got != expected:
+            return "R13 approved exam tip mismatch: expected=%r got=%r" % (
+                expected[:160], got[:160])
+        return None
     ref_norm = apply_text_whitelist(slug, route, index, sec, ref_text_norm)
     port_norm = port_text_norm
+    if index == 0:
+        # ⊕ R12 — the port's replacement chip/switcher text (symmetric to
+        # the OLD chip text being stripped from the reference side in
+        # apply_text_whitelist()). Every one of these four phrases is the
+        # site's own fixed vocabulary (build_ks4.ROUTE_WORDS) and appears
+        # NOWHERE else in any lesson's prose.
+        for words in build_ks4.ROUTE_WORDS.values():
+            port_norm = port_norm.replace(words, "")
+        port_norm = port_norm.replace(THEME_CONTROL_TEXT, "")
+        port_norm = _WS_RE.sub(" ", port_norm).strip()
     # The header's "Draft — not yet science-reviewed." chip tracks
     # `ks4_lessons.LESSONS[...]["review_state"]` (mount prop `showDraft`).
     # ks4_science_rulings.py landing flips reviewed lessons off draft, so
@@ -671,13 +795,19 @@ def check_layout(R, slug, route, width, ref_widths_entry, port_widths_entry, hav
                 # and a reviewed lesson's draft chip going away — ~83px at
                 # 1280, up to ~124px at 360/390 (the same two removed rows
                 # wrap onto more lines at a narrow width, so removing them
-                # saves proportionally more height there). 150 covers the
-                # measured range with margin without hiding a genuinely
-                # broken header.
+                # saves proportionally more height there). ⊕ R12 (27 Sep
+                # 2026): the two short static chips are ALSO gone now,
+                # replaced by one longer "Combined Science · Higher tier"
+                # chip, which wraps onto a different number of lines than
+                # the two short ones did at 390/360 — measured up to 164px
+                # of DELTA on top of the above (chemical-bonds, ionic-
+                # compounds, etc., TH route, 390/360 widths). 180 covers the
+                # measured range (max seen: 164) with the same margin-not-
+                # hiding-a-real-break intent the original 150 had.
                 text_differs = (squash(normalize_ws(rsec.get("text", "")))
                                 != squash(normalize_ws(psec.get("text", ""))))
                 if i == 0:
-                    h_tol = 150
+                    h_tol = 180
                 elif text_differs:
                     # The RAW text (before any whitelist substitution) is
                     # not identical — for ANY reason, whether B-text's
@@ -776,13 +906,280 @@ def check_keyboard(R, slug, route, page):
     R.record(slug, route, 1280, "G-keyboard", ok, detail)
 
 
+def _route_switch_probe(page):
+    """The Enter/Space-open, Esc-close, focus-return sequence against
+    whatever `.ks3-route-switch` is on the currently loaded page. Shared by
+    `check_route_switch_keyboard()` (light, once per page, the original
+    R12 gate) and `check_theme()`'s (e) (both themes, THEME_SAMPLE_SLUGS
+    only)."""
+    js = """
+    (function(){
+      var d = document.querySelector('.ks3-route-switch');
+      if (!d) { return {error: 'no .ks3-route-switch found'}; }
+      var summary = d.querySelector('summary');
+      if (!summary) { return {error: 'no <summary> found'}; }
+      var before = {open: d.open, aria: summary.getAttribute('aria-expanded')};
+      summary.focus();
+      summary.click();
+      var afterOpen = {open: d.open, aria: summary.getAttribute('aria-expanded')};
+      document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape', bubbles: true}));
+      var afterEsc = {open: d.open, aria: summary.getAttribute('aria-expanded'),
+                       focusReturned: document.activeElement === summary};
+      return {before: before, afterOpen: afterOpen, afterEsc: afterEsc};
+    })();
+    """
+    try:
+        return page.eval(js)
+    except Exception as e:
+        return {"error": "eval failed: %s" % e}
+
+
+def _route_switch_ok(res):
+    if res.get("error"):
+        return False
+    return (res["before"]["open"] is False and res["before"]["aria"] == "false"
+            and res["afterOpen"]["open"] is True and res["afterOpen"]["aria"] == "true"
+            and res["afterEsc"]["open"] is False and res["afterEsc"]["aria"] == "false"
+            and res["afterEsc"]["focusReturned"])
+
+
+def check_route_switch_keyboard(R, slug, route, page):
+    """R12: the header route switcher opens/closes by keyboard alone —
+    Enter/Space on the chip (native <details>/<summary>, so a plain
+    `.click()` on the summary proves the same activation a real Enter/
+    Space keypress triggers per the HTML spec), Esc closes it and returns
+    focus to the chip, and aria-expanded tracks the open state throughout —
+    the one R12 assertion that genuinely needs a real browser (ks4_pilot_
+    check.py proves the chip/menu/links exist and are correct; this proves
+    they OPERATE)."""
+    res = _route_switch_probe(page)
+    if res.get("error"):
+        R.record(slug, route, 1280, "G-route-switch", False, res["error"])
+        return
+    ok = _route_switch_ok(res)
+    R.record(slug, route, 1280, "G-route-switch", ok, "ok" if ok else repr(res))
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# THEME (Mide's ruling, 26 Sep 2026; THEME-CONTRACT.md item 4) — the site-
+# wide Light/Dark/System control. theme_wiring_check.py already proves
+# THEME_HEAD/theme.js/the slot are present on every one of the 54 pages
+# byte-identically; what is left to prove here is BEHAVIOUR, which is a
+# property of the shared control (shared/theme.js) and this family's own
+# markup around it, not of any one lesson's content — so this runs on a
+# SAMPLE chosen to between them cover all four routes (chemical-bonds and
+# resistors carry all four; nanoparticles is TF/TH-only, the one lesson
+# whose route switcher menu has just ONE other entry rather than three),
+# at both 1280 and 360.
+# ═══════════════════════════════════════════════════════════════════════
+THEME_SAMPLE_SLUGS = ["chemical-bonds", "resistors", "nanoparticles", "polymers"]
+THEME_WIDTHS = [1280, 360]
+
+
+def _cdp_key(page, key, code, vk):
+    """A REAL keypress via CDP's Input domain, not a synthetic DOM event —
+    load-bearing here specifically: a native <input type=radio> group's
+    arrow-key behaviour (move selection, fire 'change') is implemented by
+    the browser itself and is never invoked by `dispatchEvent(new
+    KeyboardEvent(...))` from page script, only by an actual input event
+    reaching Chrome's own input pipeline."""
+    for t in ("rawKeyDown", "keyUp"):
+        page.send("Input.dispatchKeyEvent", {
+            "type": t, "key": key, "code": code,
+            "windowsVirtualKeyCode": vk, "nativeVirtualKeyCode": vk,
+        })
+
+
+def check_theme(R, slug, route, url):
+    """(a) exactly one theme control in the header, keyboard-operable (Tab
+    reaches it, arrow keys change the theme, a visible focus ring); (b)
+    light is the default with no stored choice, even under emulated OS
+    dark; (c) choosing Dark persists across reload and across navigation to
+    another pilot page (via the R12 route switcher), and System follows
+    emulated media live; (d) no flash — THEME_HEAD precedes every
+    stylesheet in the served bytes, and data-theme is already correct at
+    DOMContentLoaded; (e) the route switcher still opens/closes correctly
+    in both themes; (f) zero console errors."""
+    for w in THEME_WIDTHS:
+        # (d, static half) — no browser needed: read the SERVED bytes
+        # directly and confirm THEME_HEAD precedes the first stylesheet.
+        try:
+            raw = urllib.request.urlopen(url, timeout=10).read().decode("utf-8", "replace")
+        except Exception as e:
+            R.record(slug, route, w, "THEME-d-head-order", False, "fetch failed: %s" % e)
+            raw = ""
+        head_end = raw.lower().find("</head>")
+        head = raw[: head_end if head_end >= 0 else len(raw)]
+        i_theme = head.find(THEME_HEAD)
+        m_style = re.search(r"<link[^>]+rel=[\"']?stylesheet", head, re.I)
+        i_style = m_style.start() if m_style else None
+        d1_ok = i_theme >= 0 and (i_style is None or i_theme < i_style)
+        R.record(slug, route, w, "THEME-d-head-order", d1_ok,
+                  "ok" if d1_ok else "THEME_HEAD at %r, first stylesheet at %r"
+                  % (i_theme, i_style))
+
+        with cdp.Browser() as b:
+            page = b.attach()
+            page.set_viewport(w, 1000)
+
+            # a paint-independent record of data-theme at DOMContentLoaded,
+            # from a script that runs on EVERY subsequent navigation in this
+            # page/tab (Page.addScriptToEvaluateOnNewDocument), so the flash
+            # check below reads what the page itself saw, not what settled
+            # after this test's own JS ran.
+            page.send("Page.addScriptToEvaluateOnNewDocument", {"source": (
+                "window.__mrbThemeAtDCL=null;"
+                "document.addEventListener('DOMContentLoaded',function(){"
+                "window.__mrbThemeAtDCL=document.documentElement.getAttribute('data-theme');"
+                "});")})
+
+            # (b) light default, no stored choice, OS dark emulated — no
+            # stored choice is guaranteed here for free: cdp.Browser() gives
+            # every check_theme() width iteration a brand-new, empty
+            # profile directory (ks3_browser.py), so localStorage has never
+            # held 'mrb-theme' at this point.
+            MD.set_media(page, scheme="dark")
+            page.goto(url, settle=0.8)
+            MD.wait_mounted(page)
+            theme_b = page.eval("document.documentElement.getAttribute('data-theme')")
+            dcl_theme = page.eval("window.__mrbThemeAtDCL")
+            ok_b = theme_b == "light" and dcl_theme == "light"
+            R.record(slug, route, w, "THEME-b-light-default", ok_b,
+                      "data-theme=%r at-DOMContentLoaded=%r (expected light, "
+                      "no stored choice, OS dark)" % (theme_b, dcl_theme))
+
+            # (a) exactly one control; reachable; arrow keys change it (a
+            # REAL keypress, see _cdp_key); a visible focus ring
+            n_controls = page.eval("document.querySelectorAll('.mrb-theme').length")
+            page.eval(
+                "(function(){var el=document.querySelector('.mrb-theme input:checked')"
+                "||document.querySelector('.mrb-theme input');if(el)el.focus();})();")
+            reached = page.eval(
+                "!!(document.activeElement && document.activeElement.closest "
+                "&& document.activeElement.closest('.mrb-theme'))")
+            pref_before = page.eval("document.documentElement.getAttribute('data-theme-pref')")
+            _cdp_key(page, "ArrowRight", "ArrowRight", 39)
+            time.sleep(0.15)
+            pref_after = page.eval("document.documentElement.getAttribute('data-theme-pref')")
+            arrow_ok = pref_after != pref_before
+            ring = page.eval(
+                "(function(){var l=document.activeElement&&document.activeElement.closest"
+                "('label');if(!l)return null;var cs=getComputedStyle(l);"
+                "return cs.outlineStyle+':'+cs.outlineWidth;})();")
+            ring_ok = bool(ring) and ring not in ("none:0px", "none:0")
+            ok_a = (n_controls == 1) and reached and arrow_ok and ring_ok
+            R.record(slug, route, w, "THEME-a-control", ok_a,
+                      "controls=%s reached=%s arrow(%r->%r) ring=%r"
+                      % (n_controls, reached, pref_before, pref_after, ring))
+
+            # (c) choosing Dark persists across reload
+            page.eval("window.MRBTheme && window.MRBTheme.set('dark')")
+            time.sleep(0.1)
+            page.goto(url, settle=0.8)
+            MD.wait_mounted(page)
+            theme_reload = page.eval("document.documentElement.getAttribute('data-theme')")
+            ok_c1 = theme_reload == "dark"
+            R.record(slug, route, w, "THEME-c-persist-reload", ok_c1,
+                      "data-theme=%r after reload (expected dark)" % theme_reload)
+
+            # (c) and across navigation to ANOTHER pilot page, via the R12
+            # route switcher's own link (a real click-driven navigation).
+            other_href = page.eval(
+                "(function(){var a=document.querySelector('.ks3-route-menu a');"
+                "return a?a.getAttribute('href'):null;})();")
+            if other_href:
+                page.eval(
+                    "(function(){var d=document.querySelector('.ks3-route-switch');"
+                    "var s=d&&d.querySelector('summary');if(s)s.click();"
+                    "var a=document.querySelector('.ks3-route-menu a');if(a)a.click();})();")
+                time.sleep(1.0)
+                MD.wait_mounted(page)
+                theme_nav = page.eval("document.documentElement.getAttribute('data-theme')")
+                landed = page.eval("location.pathname")
+                ok_c2 = (theme_nav == "dark" and landed == other_href)
+                detail_c2 = ("data-theme=%r landed=%r (expected dark, %r)"
+                              % (theme_nav, landed, other_href))
+            else:
+                ok_c2, detail_c2 = True, "no other route on this lesson to navigate to"
+            R.record(slug, route, w, "THEME-c-persist-nav", ok_c2, detail_c2)
+
+            # back on the original url for the rest of this width's checks
+            page.goto(url, settle=0.8)
+            MD.wait_mounted(page)
+
+            # (c) System follows emulated media live
+            page.eval("window.MRBTheme && window.MRBTheme.set('system')")
+            MD.set_media(page, scheme="light")
+            time.sleep(0.2)
+            sys_light = page.eval("document.documentElement.getAttribute('data-theme')")
+            MD.set_media(page, scheme="dark")
+            time.sleep(0.2)
+            sys_dark = page.eval("document.documentElement.getAttribute('data-theme')")
+            ok_sys = sys_light == "light" and sys_dark == "dark"
+            R.record(slug, route, w, "THEME-c-system-live", ok_sys,
+                      "system under OS-light=%r, under OS-dark=%r" % (sys_light, sys_dark))
+
+            # (e) the route switcher still works, in both themes
+            for scheme_name in ("light", "dark"):
+                page.eval("window.MRBTheme && window.MRBTheme.set('%s')" % scheme_name)
+                MD.set_media(page, scheme=scheme_name)
+                time.sleep(0.15)
+                res = _route_switch_probe(page)
+                ok_e = _route_switch_ok(res)
+                R.record(slug, route, w, "THEME-e-switch-%s" % scheme_name, ok_e,
+                          "ok" if ok_e else repr(res))
+
+            # (f) zero console errors, across everything this check did
+            errs = [e for e in page.console_errors()
+                    if "favicon.ico" not in e and BACKEND_HOST not in e]
+            R.record(slug, route, w, "THEME-f-console", not errs,
+                      "ok" if not errs else "; ".join(errs[:3]))
+
+            # tidy back to light — courtesy only (this Browser() closes at
+            # the end of this `with`), so a screenshot taken right after
+            # this gate is never mistaken for showing an unintended default.
+            page.eval("try{window.MRBTheme && window.MRBTheme.set('light')}catch(e){}")
+            MD.set_media(page, scheme="light")
+
+
+# ⊕ R12 — `STYLE_TARGETS["badge_pill"]` is a GENERIC probe (`[style*=
+# 'border-radius: 99px']`, `measure_design.py`), not a probe for any one
+# named element — when reference.json was captured it happened to match
+# Design's static header chips (removed by R12; the new route chip is
+# styled by a STYLESHEET class, not an inline style, so the selector no
+# longer finds it). On a lesson that carries a LATER inline-styled pill
+# (an R9 "Contains …" badge, a "Required practical" badge, the R6 "Not on
+# the sheet" chip) the same query now matches THAT element instead — an
+# apples-to-oranges comparison against Design's chip, forever, by
+# construction, regardless of anything this port could style. Exempting
+# the comparison, not the floor: only this ONE named component is skipped;
+# every other STYLE_TARGETS entry on the same page still compares and
+# still gates.
+D_STYLES_EXEMPT_COMPONENTS = {"badge_pill"}
+
+
 def check_styles(R, slug, page, ref_entry):
+    # ⊕ THEME RUN (26 Sep 2026, THEME-CONTRACT.md item 4) — the "dark"
+    # comparison used to force `prefers-color-scheme: dark` via CDP media
+    # emulation, which worked because the port's own dark tokens fired from
+    # that same OS setting. Since dark is now keyed on html[data-theme=
+    # "dark"] ONLY (THEME-CONTRACT.md rule 3), emulated OS dark no longer
+    # darkens the page on its own — this must drive the SITE'S OWN theme
+    # control instead, while still comparing against the SAME Design dark
+    # reference (reference.json is untouched; only how the PORT side is put
+    # into dark mode changes).
     for scheme, ref_key in (("light", "styles_light"), ("dark", "styles_dark")):
-        MD.set_media(page, scheme=scheme)
+        if scheme == "dark":
+            page.eval("window.MRBTheme && window.MRBTheme.set('dark')")
+        else:
+            page.eval("window.MRBTheme && window.MRBTheme.set('light')")
+            MD.set_media(page, scheme=scheme)
         time.sleep(0.3)
         ref_styles = ref_entry.get(ref_key) or {}
         fails = []
         for comp, sel in MD.STYLE_TARGETS.items():
+            if comp in D_STYLES_EXEMPT_COMPONENTS:
+                continue
             ref_cs = ref_styles.get(comp)
             if ref_cs is None:
                 continue
@@ -796,6 +1193,7 @@ def check_styles(R, slug, page, ref_entry):
                                   % (comp, prop, ref_cs.get(prop), port_cs.get(prop)))
         R.record(slug, DEEP_ROUTE, 1280, "D-styles-%s" % scheme, not fails,
                   "ok" if not fails else " | ".join(fails[:5]))
+    page.eval("window.MRBTheme && window.MRBTheme.set('light')")
     MD.set_media(page, scheme="light")
 
 
@@ -993,7 +1391,16 @@ def run(only_slug=None, only_width=None):
                         check_console(R, slug, route, w, page)
 
                     check_keyboard(R, slug, route, page)
+                    check_route_switch_keyboard(R, slug, route, page)
                     check_prev_next(R, slug, route, url, lesson, data)
+
+                    if slug in THEME_SAMPLE_SLUGS and (not only_width or only_width in THEME_WIDTHS):
+                        # check_theme opens its OWN cdp.Browser() session(s)
+                        # per width (it needs Page.addScriptToEvaluateOn
+                        # NewDocument wired before goto(), and repeated
+                        # reloads/navigations) — independent of the `page`
+                        # this loop otherwise shares across checks.
+                        check_theme(R, slug, route, url)
 
                 if not only_width or only_width == 1280:
                     th_url = "http://127.0.0.1:%d%s" % (port, ks4_lessons.site_url(slug, DEEP_ROUTE))
