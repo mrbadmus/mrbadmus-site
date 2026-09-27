@@ -295,14 +295,20 @@ window.MrBadmusAdminScope = (function () {
     if (decksCapable !== null) { return Promise.resolve(decksCapable); }
     if (readCachedNo()) { decksCapable = false; return Promise.resolve(false); }
     if (decksProbe) { return decksProbe; }
-    decksProbe = client(4000).then(function (sb) {
-      /* ⚠️ NOT CACHED. "No client within 4s" is the guard not having
+    /* 15 s, the module's normal wait: the probe is off the critical path, and
+       a short wait here on a slow sign-in used to hide the feature. */
+    decksProbe = client(15000).then(function (sb) {
+      /* ⚠️ NOT CACHED. "No client in time" is the guard not having
          arrived yet (real on the five ported pages, whose second wave can
          genuinely be slow), not an answer about the schema — writing a
          negative here could pin a whole session to "no Flashcards" from one
          slow page, on real schema. Only a real answer from the table (below)
          or its rejection is cached. */
-      if (!sb) { decksCapable = false; decksProbe = null; return false; }
+      /* Not remembered in memory either: `decksCapable` stays null so the
+         next caller (Set work's open(), a later redraw) asks again. Setting
+         it false here pinned the whole page to "no Flashcards" after one
+         slow sign-in, with the schema present. */
+      if (!sb) { decksProbe = null; return false; }
       return Promise.resolve(
         /* ⚠️ NOT `head: true`. A HEAD request has no body by definition (the
            HTTP method), and postgrest-js's own issue-295 workaround
