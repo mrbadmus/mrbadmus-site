@@ -470,6 +470,14 @@ for _slug in ("series-parallel-circuits", "resistors"):
 _page("ks4 pilot/nanoparticles [Triple Foundation]",
       "triple/foundation/chemistry/bonding/nanoparticles.html")
 
+# ── runtimes lane (theme run, 27 Sep 2026) ──
+# The three hand-written student/ pages this lane wired that were not
+# already in the list above — student/class.html, student/assignment.html
+# and the six teacher fixtures were already here.
+_page("student/classes.html", "student/classes.html")
+_page("student/settings.html", "student/settings.html")
+_page("student/claim-confirm.html", "student/claim-confirm.html")
+
 
 # ══════════════════════════════════════════════════════════════════════════
 # the sweep

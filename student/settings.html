@@ -4,6 +4,14 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#F7F1E5"/>
+  <!-- ⊕ Theme run, 27 Sep 2026 (Mide'''s ruling: light by default, a
+       Light/Dark/System control on every page). THEME_HEAD, byte-identical
+       to theme_head.THEME_HEAD -- theme_wiring_check.py checks for an exact
+       match, so if this ever needs to change, change theme_head.py and
+       copy its output here rather than hand-editing this line. Before any
+       stylesheet, so <html> carries data-theme before first paint. -->
+  <script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script>
+  <script src="/shared/theme.js?v=d6238918" defer></script>
   <title>Account settings — Mr Badmus AI</title>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
@@ -320,6 +328,7 @@
     <span id="env-pill" class="pill env-prod" title=""></span>
     <span id="nav-user-area" style="color:var(--muted);font-weight:700;font-size:0.85rem;"></span>
     <button class="signout-btn" onclick="MrBadmusStudentGuard.signOut()">Sign out</button>
+    <span class="mrb-theme-slot" data-mrb-theme></span>
   </div>
 </nav>
 
