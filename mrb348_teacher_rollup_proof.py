@@ -24,6 +24,22 @@ THE METHOD, and it is round two's (docs/mrb348/teacher-aggregate.md §3)
   2. Translate `pickFirstAttempts`, `buildPapers`, `cellOf`, `buildMatrix`,
      `buildRoster` and `buildClassEntry` line for line, including their string
      comparisons on timestamps, which is what the JavaScript actually does.
+     ⚠️ EXCEPTION, ⊕ MRB-351 landing stream J, 27 Sep 2026 — `in_win` (the
+     week-window test inside `js_values`) PARSES `due_at`/`start_at`/
+     `end_at` into real instants before comparing, rather than comparing the
+     raw strings the JS itself compares. `buildMatrix`'s literal operators
+     are `>=`/`<`, but PostgREST's `…+00:00` vs `Date.toISOString()`'s
+     `…000Z` tie the OPPOSITE way at an exact instant match ('+' 0x2B sorts
+     before '.' 0x2E) — so the browser's actual, EFFECTIVE boundary is
+     `(start, end]`: a due date tied to the window's start is excluded, one
+     tied to its end is included. `teacher_class_rollup_v2` compares real
+     `timestamptz` values and reaches `(start, end]` directly, with no
+     string tie to reproduce in the first place — see its own comment on
+     `in_week`/`on_time_week`. Comparing `in_win` on raw strings here would
+     make this mirror correct on THIS MACHINE'S formats by coincidence and
+     wrong in principle; parsing first and asserting `(start, end]`
+     explicitly is what actually proves the SQL matches the browser's real
+     behaviour rather than its literal source text.
   3. Ask the RPC, as the SAME user, in the same instant, with the same clock
      and the same teaching-week windows.
   4. Derive from the RPC's answer exactly what `matrixFromRollup()` in
@@ -314,7 +330,8 @@ def load_class_matrices(key, token, ids, with_subs=True):
     # here — `flashcard_sessions_select`'s teacher-of-class branch — never
     # through the SECURITY DEFINER rollup. `class_id` is denormalised onto
     # the table (MRB-351 migration 1), so this needs no join through
-    # `assignments` to scope by class. See the last-activity rule in supabase/MRB351-APPLY.md.
+    # `assignments` to scope by class. See the last-activity rule in
+    # supabase/MRB351-APPLY.md.
     fsess = []
     if with_subs and by_class:
         fsess = rest("flashcard_sessions?select=" + urllib.parse.quote(
@@ -403,7 +420,8 @@ def js_values(pack, now_iso):
 
     # ⊕ Opus review, 27 Sep 2026 — a flashcard SITTING is activity even
     # before the deck is finished (no `assignment_submissions` row exists
-    # until then; see `activity_at()` and the last-activity rule in supabase/MRB351-APPLY.md). Per pupil,
+    # until then; see `activity_at()` and the last-activity rule in
+    # supabase/MRB351-APPLY.md). Per pupil,
     # MAX(last_seen_at) over this class's own non-deleted, released
     # flashcard assignments — `pack["assignments"]` is already deleted_at-
     # filtered by `load_class_matrices`, exactly like the SQL's `asg`.
@@ -459,8 +477,25 @@ def js_values(pack, now_iso):
             # (this test sits after the `if not c: continue` guard, same as
             # the JS). `on_time_week` is the same test plus `late is False`.
             p_open = p["marked"] and not p["closed"]
-            in_win = bool(p["due_at"] and p["due_at"] >= w["start_at"]
-                          and p["due_at"] < w["end_at"])
+            # ⊕ MRB-351 landing stream J, corrected — `(start, end]`, PARSED
+            # AS INSTANTS, not raw strings. This is the live JS's OWN
+            # effective rule, not its literal operators: `buildMatrix`
+            # writes `p.due_at >= pack.week.start_at && p.due_at <
+            # pack.week.end_at` as a raw STRING comparison, and PostgREST's
+            # `…+00:00` vs `Date.toISOString()`'s `…000Z` tie the opposite
+            # way at an exact instant match ('+' 0x2B sorts before '.' 0x2E)
+            # — so the browser's `>=`/`<` on those two string shapes actually
+            # EXCLUDES a due date tied to `start` and INCLUDES one tied to
+            # `end`. `parse_iso()` here removes the format artefact so the
+            # comparison is a real instant comparison — using the boundary
+            # the JS's OWN FORMATS actually land on, `start < due <= end`,
+            # not the operators it happens to spell. See the migration's own
+            # comment on `in_week`/`on_time_week` for the SQL twin (which
+            # compares real `timestamptz` values and reaches the same
+            # `(start, end]` boundary directly, with no string tie to
+            # reproduce in the first place).
+            in_win = bool(p["due_at"] and parse_iso(w["start_at"]) < parse_iso(p["due_at"])
+                          and parse_iso(p["due_at"]) <= parse_iso(w["end_at"]))
             if p_open or in_win:
                 in_week = True
                 if c["late"] is False:
@@ -580,16 +615,22 @@ SCALARS = ["student_count", "assignment_count", "submission_count",
            "week0", "week1", "lastIso", "flagged"]
 
 
+def parse_iso(x):
+    """An ISO-8601 timestamp string, whatever format produced it
+    (PostgREST's `…+00:00` or `Date.toISOString()`'s `…000Z`), as a real
+    instant. Used wherever two timestamps must be compared for VALUE, not
+    for the bytes that happen to spell them."""
+    return datetime.fromisoformat(x.replace("Z", "+00:00"))
+
+
 def same_instant(a, b):
     """Timestamps come back from PostgREST as `…+00:00` and out of jsonb the
     same way, but a format difference must not be read as a value difference:
     compare the INSTANT."""
     if a is None or b is None:
         return a is None and b is None
-    def p(x):
-        return datetime.fromisoformat(x.replace("Z", "+00:00"))
     try:
-        return p(a) == p(b)
+        return parse_iso(a) == parse_iso(b)
     except ValueError:
         return a == b
 
@@ -1102,6 +1143,90 @@ def fixture(key, pw, srk):
             if not ok:
                 fails.append("p1 %s last_at: got %r, want the flashcard sitting %r"
                              % (side, got, p1_sitting_at))
+
+        # ⊕ MRB-351 landing stream J, 27 Sep 2026 — THE WEEK-WINDOW BOUNDARY,
+        # PINNED DIRECTLY. `in_week`/`on_time_week` are the half-open
+        # interval `(week_start, week_end]`: a due date landing EXACTLY on
+        # the window's start is NOT in this week (it belongs to the week
+        # that is ending), one landing EXACTLY on its end IS — this is the
+        # migration's own `>` / `<=` pair, and it is also the live browser's
+        # ACTUAL behaviour: `buildMatrix` writes `>=`/`<` as a raw STRING
+        # comparison, and PostgREST's `…+00:00` vs `Date.toISOString()`'s
+        # `…000Z` tie the opposite way at an exact instant match, landing the
+        # page on `(start, end]` in practice regardless of which operators
+        # its source reads. See the migration's own comment on
+        # `in_week`/`on_time_week` for the full account. Four stages (MCQ
+        # end, MCQ start, flashcard end, flashcard start), each built,
+        # asserted and TORN DOWN before the next, so every result is
+        # attributable to exactly ONE new paper against p0's established
+        # baseline (`in_week: False` in `hand_students` above — p0's only
+        # other cell is the permanently-closed, permanently-outside-this-week
+        # `marked` paper).
+        # ⚠️ ALL FOUR set `release_at` far in the future (`marked = False`),
+        # not only the end-boundary pair. `closed` is `due_at <= now`, and
+        # on a SUNDAY (MRB-330: "Sunday belongs to the week that is coming")
+        # `now` sits BEFORE the computed `week_start` (a Monday-local
+        # midnight in the future), so a "start"-boundary paper due exactly
+        # at `week_start` is NOT closed on a Sunday — `marked AND NOT
+        # closed` is then TRUE regardless of the due-date test, and the
+        # open-bypass (item 5's ruling) swallows the very boundary this test
+        # exists to isolate. Caught live: this fixture flaked exactly this
+        # way on 27 Sep 2026, a Sunday — the same day-of-week trap the Opus
+        # review's fix #4 (above) hit on a different paper. Forcing
+        # `marked = False` on every stage removes the open-bypass from the
+        # equation entirely, so `in_week` can only come from the due-date
+        # window test, on any day of the week, forever.
+        boundary_cases = [
+            ("boundary end mcq",   True,  w["end_at"],   "mcq_set",  t(-3650)),
+            ("boundary start mcq", False, w["start_at"], "mcq_set",  t(-3650)),
+            ("boundary end fc",    True,  w["end_at"],   "flashcards", t(-3650)),
+            ("boundary start fc",  False, w["start_at"], "flashcards", t(-3650)),
+        ]
+        for label, want, due_at, kind, release_at in boundary_cases:
+            body = {"class_id": cid, "subject_id": subject_id,
+                    "topic": "MRB-348 round three", "title": "mrb348r3 " + label,
+                    "due_at": due_at, "source": "teacher", "auto_generated": False}
+            if kind == "flashcards":
+                body.update({"school_id": klass[0]["school_id"],
+                            "teacher_id": TEACHER_ID, "set_by": TEACHER_ID,
+                            "quiz_type": "flashcards", "kind": "flashcards",
+                            "deck_id": made_deck2, "flashcard_mode": "review",
+                            "completion_rule": "quick"})
+            else:
+                body.update({"quiz_type": "topic_quiz", "academic_week": 9})
+            if release_at:
+                body["release_at"] = release_at
+            bp_id = sr("assignments", "POST", [body])[0]["id"]
+            made.append(bp_id)
+            bp_sub = sr("assignment_submissions", "POST", [{
+                "assignment_id": bp_id, "student_id": p0, "score": None,
+                "max_score": None, "submitted_at": None,
+                "completed_at": t(0, 4), "started_at": None,
+                "status": "complete", "is_late": False, "attempts": 1,
+            }])[0]
+            made_subs.append(bp_sub["id"])
+            try:
+                packs_b, *_ = load_class_matrices(key, token, [cid])
+                now_b = iso_now()
+                js_b = js_values(packs_b[cid], now_b)
+                windows_b = {cid: {"start": packs_b[cid]["week"]["start_at"],
+                                   "end": packs_b[cid]["week"]["end_at"]}}
+                rows_b = rest("rpc/teacher_class_rollup_v2", key, token,
+                              method="POST",
+                              body={"p_class_ids": [cid], "p_now": now_b,
+                                    "p_windows": windows_b})
+                sq_b = rollup_values(packs_b[cid], rows_b[0], now_b)
+                for side, val in (("js", js_b["students"][p0]["in_week"]),
+                                  ("sql", sq_b["students"][p0]["in_week"])):
+                    ok = (val == want)
+                    print("  p0 (%s) %-4s in_week=%s (want %s)  %s"
+                          % (label, side, val, want, "OK" if ok else "MISMATCH"))
+                    if not ok:
+                        fails.append("p0 %s %s in_week: got %r, want %r"
+                                     % (label, side, val, want))
+            finally:
+                sr("assignment_submissions?id=eq." + bp_sub["id"], "DELETE")
+                sr("assignments?id=eq." + bp_id, "DELETE")
 
         # and then every remaining cell of the class, both paths
         compare(cid, js, sq, fails)
