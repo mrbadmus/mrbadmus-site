@@ -5384,8 +5384,11 @@ html[data-theme="dark"] {
    because the bench itself is not read from the page's theme. */
 html[data-theme="dark"] [data-bench-surface] {
   --st-ink: #1A1714;
-  --st-caption: #7A6E5F;
-  --st-ghost: #7D6D55;
+  /* the EFFECTIVE light values — PORT_CSS above already darkened Design's
+     #7A6E5F / #7D6D55 for AA; pinning Design's originals here made the
+     bench's "This week's assignment" eyebrow 4.09:1 in dark only. */
+  --st-caption: #685E51;
+  --st-ghost: #6E604B;
   --st-accent: #E4572E;
   --st-accent-text: #A93411;
   --ks3-accent-text: #A93411;
