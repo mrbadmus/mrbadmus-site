@@ -923,10 +923,25 @@ def main():
     def drop_probe(shapes):
         return [s for s in shapes if s[0] not in EXCUSED_PATHS]
 
+    # ⚠️ ONE MORE, by exact shape and page only: the pupil assignment page's
+    # deck-redirect lookup (`shared/student-live.js` buildAssignment) —
+    # `assignments?select=quiz_type,class_id&id=eq.<the opened id>`. main has
+    # no decks, so it never asks; this branch asks once, in parallel with
+    # /api/class/current-assignment (no added serial wait), and on
+    # production it answers 200 with quiz_type != 'flashcards'. Accepted as
+    # a deliberate, invisible difference (LANDING.md, Decisions). Any other
+    # new request on that page, or this one on any other page, still fails.
+    def drop_deck_redirect(label, shapes):
+        if "pupil assignment page" not in label:
+            return shapes
+        return [s for s in shapes
+                if not (s[0] == "/rest/v1/assignments" and tuple(s[1]) == ("class_id",)
+                        and len(s[2]) == 1 and s[2][0][0] == "id")]
+
     all_bad_diff = []
     for label in reqs_a:
         blabel = label.replace("mine:", "main:")
-        sa = drop_probe(shape(reqs_a.get(label, [])))
+        sa = drop_deck_redirect(label, drop_probe(shape(reqs_a.get(label, []))))
         sb = drop_probe(shape(reqs_b.get(blabel, [])))
         only_a = [u for u in sa if u not in sb]
         only_b = [u for u in sb if u not in sa]
