@@ -434,7 +434,7 @@ a { color: inherit; text-decoration: none; }
   height: 28px;
   border-radius: var(--radius-sm);
   background: var(--success);
-  color: #FFFFFF;
+  color: var(--on-success, #FFFFFF);   /* theme run: dark ink on the brightened dark-theme green */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -561,7 +561,9 @@ a { color: inherit; text-decoration: none; }
   font-variant-numeric: tabular-nums;
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--subject, var(--accent));
+  /* theme run: 20% toward the page's text colour — darker in light, lighter in
+     dark, same hue. Physics #1D6FB8 on the sunken table read 4.25:1 in light. */
+  color: color-mix(in srgb, var(--subject, var(--accent)) 80%, var(--text));
   min-width: 28px;
 }
 .var-desc { font-size: var(--fs-small); color: var(--text); }
@@ -605,6 +607,7 @@ a { color: inherit; text-decoration: none; }
 .quiz-feedback.show, .quiz-fb.show { display: block; }
 .quiz-feedback.correct-fb, .quiz-fb.correct-fb { background: var(--success-soft); color: var(--success); border: 1px solid transparent; }
 .quiz-feedback.wrong-fb, .quiz-fb.wrong-fb { background: var(--danger-soft); color: var(--danger); border: 1px solid transparent; }
+@media screen { [data-theme="dark"] .quiz-feedback.wrong-fb, [data-theme="dark"] .quiz-fb.wrong-fb { color: color-mix(in srgb, var(--danger) 80%, #FFFFFF); } }
 
 /* ── MATCHING ACTIVITY ── */
 .match-layout { display: flex; gap: var(--sp-5); flex-wrap: wrap; }

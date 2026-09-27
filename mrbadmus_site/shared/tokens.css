@@ -89,6 +89,7 @@
 }
 
 :root {
+  --on-success: #FFFFFF;
   /* ── Surfaces — cream page vs white card is a DELIBERATE pairing.
      The warmth of the whole design comes from this relationship:
      warm cream ground, pure-white cards lifted off it by border +
@@ -243,6 +244,7 @@
    own text, on white, always. */
 @media screen {
 [data-theme="dark"] {
+  --on-success: #14110D;   /* theme run: ink on --success fills (FIFA letters) */
   --bg:        #14110D;
   --card:      #1D1915;
   --sunken:    #0F0D0A;
