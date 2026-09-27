@@ -126,3 +126,20 @@ lessons specifically**, not as a general rule for the rest of the spec —
 the brief's example of Design's team misciting "4.10.4.x" for "4.10.3.x"
 concerns a different topic area entirely, and nothing here should be read
 as evidence that pattern holds anywhere outside this batch.
+
+## Commander's check of the two extended citations (27 Sep 2026)
+
+Decision 4 of the build report said the extended ranges on `states-of-matter`
+and `giant-covalent-structures` were mapped by the digit-drop rule rather than
+looked up. They have now been looked up, by heading text, in the same three
+PDFs (`pdftotext -layout`, line numbers in the extracted text):
+
+| 8464 | heading | 8462 | heading |
+|---|---|---|---|
+| 5.2.2.2 (l.3584) | State symbols | 4.2.2.2 (l.1225) | State symbols |
+| 5.2.3 (l.3695) | Structure and bonding of carbon | 4.2.3 (l.1336) | Structure and bonding of carbon |
+| 5.2.3.1 (l.3696) | Diamond | 4.2.3.1 (l.1337) | Diamond |
+| 5.2.3.2 (l.3712) | Graphite | 4.2.3.2 (l.1353) | Graphite |
+| 5.2.3.3 (l.3729) | Graphene and fullerenes | 4.2.3.3 (l.1375) | Graphene and fullerenes |
+
+Every number shown on a Triple page is therefore now a looked-up citation.
