@@ -3962,9 +3962,15 @@ INSERT_AT = {
         # the control \u2014 the control's own CSS is scoped to itself and
         # inherits `currentColor` from wherever it lands, so it needs no
         # styling here.
+        #
+        # "compact" (theme run landing, 27 Sep 2026): below 600px theme.js
+        # draws ONE button showing the current mode that opens the same three
+        # choices, because the full three-segment control made the real class
+        # page 413px wide at 390 with a signed-in pupil and the bell up
+        # (set_work_drive, D3). The fixture's header is narrower and hid it.
         (18, None): (
             {"t": "span", "a": {"class": "mrb-theme-slot",
-                                 "data-mrb-theme": ""}},
+                                 "data-mrb-theme": "compact"}},
             "the theme control's mount slot, at the end of the topbar's "
             "account group. shared/theme.js finds it by "
             "[data-mrb-theme] and mounts the Light/Dark/System control "
@@ -4396,7 +4402,7 @@ INSERT_AT = {
         # mount/redraw/focus reasoning — identical on this page.
         (25, None): (
             {"t": "span", "a": {"class": "mrb-theme-slot",
-                                 "data-mrb-theme": ""}},
+                                 "data-mrb-theme": "compact"}},
             "the theme control's mount slot, at the end of the "
             "assignment page's topbar end group."),
     },
