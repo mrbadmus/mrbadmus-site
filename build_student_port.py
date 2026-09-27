@@ -1548,7 +1548,45 @@ def ds_css():
             css = css.replace("./", SERVED_FONTS)
         out.append("/* ── %s ── */\n%s" % (rel, css))
         sizes.append((rel, len(css)))
-    return dedupe_faces("\n\n".join(out)), sizes
+    return _wrap_bundle_dark_screen(dedupe_faces("\n\n".join(out))), sizes
+
+
+_BUNDLE_DARK_MARKER = '[data-theme="dark"] {'
+
+
+def _wrap_bundle_dark_screen(css):
+    """⊕ D8 (theme-run audit, 27 Sep 2026). The bundle's ONE bare
+    `[data-theme="dark"] { ... }` block (from `tokens/shared-tokens.css`,
+    byte-identical to `shared/tokens.css`'s own — same reasoning as that
+    file's D8 fix) is unconditional: `data-theme="dark"` is written by
+    THEME_HEAD/theme.js on every load, in every medium, so un-guarded it
+    printed the dark ground and cream ink on this port regardless of the
+    viewed theme. A build-time transform of Design's frozen concatenation,
+    never a hand-edit of her source files; asserts the marker appears
+    exactly once so a future delivery that moves it fails loud rather than
+    wrapping the wrong text (or nothing at all)."""
+    if css.count(_BUNDLE_DARK_MARKER) != 1:
+        raise SystemExit(
+            "build_student_port.py: ds_css() bundle's [data-theme=\"dark\"] "
+            "block moved, is missing, or is no longer unique (found %d) — "
+            "the D8 @media screen wrap needs to be re-read against the new "
+            "bundle before this can be re-run." % css.count(_BUNDLE_DARK_MARKER))
+    start = css.index(_BUNDLE_DARK_MARKER)
+    depth, end = 0, None
+    for i in range(start, len(css)):
+        if css[i] == "{":
+            depth += 1
+        elif css[i] == "}":
+            depth -= 1
+            if depth == 0:
+                end = i + 1
+                break
+    if end is None:
+        raise SystemExit(
+            "build_student_port.py: ds_css() bundle's [data-theme=\"dark\"] "
+            "block has no matching closing brace.")
+    return (css[:start] + "@media screen {\n" + css[start:end]
+            + "\n} /* @media screen — D8 */" + css[end:])
 
 
 _FACE_RE = re.compile(r"@font-face\s*\{[^}]*\}", re.S)

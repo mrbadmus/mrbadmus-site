@@ -3652,9 +3652,21 @@ PILOT_QUIZ_JS = """
       const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
       endMsg.textContent = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
       endMsg.style.display = 'block';
-      endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
-      endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
-      endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
+      /* ⊕ D9 (theme-run audit, 27 Sep 2026) — was literal hex/rgba
+         ('#237A3B'/'#7A5F00'/'#B3261E' and their soft rgba backgrounds),
+         set from JS so it could not respond to data-theme the way a CSS
+         rule does. Replaced with the same three var()s used elsewhere on
+         the site (--success/--higher/--danger, --success-soft/--danger-
+         soft) plus three new --quiz-end-*-border tokens minted in
+         shared/tokens.css for the one thing those existing tokens didn't
+         already cover (a border, and the "mid" band's exact light alpha,
+         0.10, not --higher-soft's 0.12) — every one of the six values is
+         BYTE-IDENTICAL to this literal in light (see tokens.css's own
+         comment), and each has a real dark value measured >=4.5:1 text /
+         >=3:1 border on the dark card ground. */
+      endMsg.style.background = ratio === 1 ? 'var(--success-soft)' : ratio >= 0.6 ? 'var(--quiz-end-mid-bg)' : 'var(--quiz-end-bad-bg)';
+      endMsg.style.color = ratio === 1 ? 'var(--success)' : ratio >= 0.6 ? 'var(--higher)' : 'var(--danger)';
+      endMsg.style.border = '1px solid ' + (ratio === 1 ? 'var(--quiz-end-ok-border)' : ratio >= 0.6 ? 'var(--quiz-end-mid-border)' : 'var(--quiz-end-bad-border)');
     }
     if (checkBtn) checkBtn.style.display = 'none';
     if (againBtn) againBtn.style.display = '';
@@ -4643,9 +4655,17 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
         const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
         endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
         endMsg.style.display = 'block';
-        endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
-        endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
-        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
+        /* ⊕ D9 (theme-run audit, 27 Sep 2026) — see the identical fix and
+           its full rationale above (the other quiz-card variant's endMsg
+           block, same file). This is a SECOND copy of the same literal
+           hex/rgba logic this build had never noticed was duplicated;
+           the audit's own repro page (a "Test Yourself" distance-time-
+           graphs lesson) renders through THIS copy, not the one already
+           fixed, which is how the fix landed once yet the live page still
+           failed until this second site was found and fixed identically. */
+        endMsg.style.background = ratio === 1 ? 'var(--success-soft)' : ratio >= 0.6 ? 'var(--quiz-end-mid-bg)' : 'var(--quiz-end-bad-bg)';
+        endMsg.style.color = ratio === 1 ? 'var(--success)' : ratio >= 0.6 ? 'var(--higher)' : 'var(--danger)';
+        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'var(--quiz-end-ok-border)' : ratio >= 0.6 ? 'var(--quiz-end-mid-border)' : 'var(--quiz-end-bad-border)');
       }
     } else {
       if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;

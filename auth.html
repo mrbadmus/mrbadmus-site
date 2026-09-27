@@ -10,7 +10,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=00791036"/>
   <script src="/shared/search-index.js?v=c016cb14" defer></script>
   <script src="/shared/search.js?v=d011978d" defer></script>
   <style>
@@ -65,15 +65,33 @@
     .handle-status.ok { color: var(--success); }
     .handle-status.err { color: var(--danger); }
     .handle-status.checking { color: var(--muted); }
+
+    /* ⊕ D16 (theme-run audit, 27 Sep 2026) — at 320–390px the brand
+       ("MrBadmusAI"), the theme control (~96px) and "← Back to site" never
+       had room on one row (no wrap, no shrink, nothing preventing the two
+       right-hand items pressing straight up against the brand once the
+       row ran out of space) — measured: 0px gap between the brand and the
+       control, and "← Back to site" splitting across 2–3 lines.
+       `flex-wrap: wrap` on the nav lets the right-hand GROUP drop to its
+       own row as one unit instead of letting its own children wrap
+       independently; `white-space: nowrap` on the back-link is what stops
+       THAT link splitting internally once it has its own row and still
+       is not full width. `row-gap` is the fix for the touching brand: a
+       real gap even when the group above it is a full row taller. */
+    @media (max-width: 460px) {
+      .auth-nav { flex-wrap: wrap; row-gap: 8px; padding: 10px 16px !important; }
+      .auth-nav-right { flex-wrap: nowrap; margin-left: auto; }
+      .auth-back-link { white-space: nowrap; }
+    }
   </style>
 </head>
 <body>
 
-<nav style="position:fixed;top:0;left:0;right:0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid var(--border);z-index:10;">
-  <a href="/index.html" style="display:flex;align-items:center;gap:8px;font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;font-size:1.3rem;text-decoration:none;color:var(--text);letter-spacing:-0.01em;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
-  <div style="display:flex;align-items:center;gap:12px;">
+<nav class="auth-nav" style="position:fixed;top:0;left:0;right:0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid var(--border);z-index:10;">
+  <a href="/index.html" class="auth-nav-brand" style="display:flex;align-items:center;gap:8px;font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;font-size:1.3rem;text-decoration:none;color:var(--text);letter-spacing:-0.01em;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <div class="auth-nav-right" style="display:flex;align-items:center;gap:12px;">
     <span class="mrb-theme-slot" data-mrb-theme></span>
-    <a href="/index.html" style="color:var(--muted);font-size:0.85rem;font-weight:700;text-decoration:none;">← Back to site</a>
+    <a href="/index.html" class="auth-back-link" style="color:var(--muted);font-size:0.85rem;font-weight:700;text-decoration:none;">← Back to site</a>
   </div>
 </nav>
 

@@ -143,3 +143,40 @@ PDFs (`pdftotext -layout`, line numbers in the extracted text):
 | 5.2.3.3 (l.3729) | Graphene and fullerenes | 4.2.3.3 (l.1375) | Graphene and fullerenes |
 
 Every number shown on a Triple page is therefore now a looked-up citation.
+
+## D13 update (theme-run audit, 27 Sep 2026) — Combined now names its own spec too
+
+Everything above this section is unchanged and still the citation record —
+every number in the table is still correct. What changed is presentation,
+not citation: **the Combined side of all 13 Combined-route lessons now
+shows "(8464)" in the eyebrow and key note**, in the same position the
+Triple side has always shown "(8462)"/"(8463)". Before this, a Combined
+pupil saw a bare section number ("AQA Chemistry 5.2.1.1") with no spec
+code at all, while a Triple pupil on the very same lesson saw one ("AQA
+Chemistry (8462) 4.2.1.1") — inconsistent, and the kind of asymmetry an
+independent audit (not this document's own author) caught live. The fix
+is in `build_ks4.SPEC_TEXT`'s "combined" values; `ks4_rulings.
+apply_r14_spec_number` itself is unchanged (it still just finds Design's
+original literal and swaps in the `{{ specEyebrow }}`/`{{ specNote }}`
+placeholder — `build_ks4.compile_lesson()` now derives that original
+literal by stripping "(8464) "/" (8464)" back out of `SPEC_TEXT`'s new
+value, rather than storing the pre-8464 text a second time).
+
+**Nanoparticles' flag above — "the site's current '4.2.4' is already the
+correct, verified 8462 number — no change needed there" — is superseded,
+not wrong.** The section number was, and remains, correct. What it lacked
+was the SAME thing every other lesson lacked before this run: the spec
+CODE beside the number. `ks4_rulings.apply_r5_nanoparticles_spec` (was
+`check_r5_nanoparticles_spec`, a no-op assertion; now a real rewrite) adds
+"(8462)" to both the eyebrow and the `Ks4KeyNote` `spec=` attribute, in the
+same position its 13 combined/triple siblings carry their own code. The
+tutor's context string picks up the same code for nanoparticles via a
+small dedicated branch in `build_ks4.tutor_block()` (nanoparticles is the
+one lesson outside `SPEC_TEXT`, so it cannot read the code from there the
+way every other lesson's tutor context does).
+
+Proof this moved nothing else: `build_ks4.extract_freeze_pieces()` was
+diffed before/after on all 54 pages — only the two eyebrow/keynote strings
+(and, on the 12 Combined-route lessons plus nanoparticles' tutor context,
+the derived spec text fed to the template) differ; `ks4_lessons/
+frozen.json` was re-stamped with `python3 build_ks4.py --freeze` afterward.

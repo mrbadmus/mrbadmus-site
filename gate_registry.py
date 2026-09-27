@@ -2070,6 +2070,10 @@ GATES = [
                   "combined/higher/chemistry/atomic-structure/"
                   "model-of-the-atom.html",
                   "auth.html", "leaderboard.html", "index.html",
+                  # ⊕ D14 (theme-run audit, 27 Sep 2026) — in PAGES
+                  # (`_page("revision.html", "revision.html")`) since the
+                  # CORE lane added it, but missing from watches until now.
+                  "revision.html",
                   # ── KS4 pilot port (docs/ks4/pilot-build-contract.md) —
                   # the 14 Triple Higher pilot pages + the one Triple
                   # Foundation nanoparticles page contrast_audit.py's
@@ -2121,6 +2125,60 @@ GATES = [
              "token. `--quick` (1280px only, no screenshots) is the gate; "
              "run without `--quick` for the full 1280+390 sweep with "
              "screenshots, used to produce the before/after report."),
+
+    # ⊕ theme-run audit follow-up, 27 Sep 2026 — "the contrast gate missed
+    # all of these because it measures pages at rest." `contrast_audit`
+    # above only ever measures a page AS LOADED; every one of D1/D2/D3/D5/
+    # D6/D7/D9 was a state reachable only after an interaction (chat opened
+    # and a message sent, an instrument answered, a card flipped, a toast
+    # fired) or a surface this harness has no backend for (leaderboard week
+    # data). `contrast_audit.py --interactions --gate` sweeps
+    # `INTERACTION_PAGES` — the same measurement code, a different, shorter
+    # page list, kept OUT of the fast gate above so the at-rest sweep every
+    # other page stays fast for is not slowed by driving instrument
+    # controls and injecting DOM one page at a time. SLOW because D3's
+    # 42-node inject and D9's click-every-option-then-check are real
+    # per-page interactions, not just more pages.
+    dict(name="contrast_audit_interactions",
+         cmd=["python3", "contrast_audit.py", "--interactions", "--quick", "--gate"],
+         speed="slow",
+         watches=["contrast_audit.py", "ks3_browser.py",
+                  "shared/ks3.js", "shared/ks3.css", "shared/ks3-theme.css",
+                  "shared/mrbadmus.v2.js", "shared/styles.css",
+                  "shared/tokens.css", "shared/theme.js",
+                  "student_rulings.py", "build_student_port.py",
+                  "build_leaderboard_port.py", "shared/set-work.js",
+                  "shared/set-work.css", "generate_site_v5.py",
+                  "ks3/physics/electric-circuits/current-and-circuits.html",
+                  "ks3/biology/health-and-drugs/"
+                  "substance-misuse-and-decisions.html",
+                  "ks3/biology/health-and-drugs/alcohol-and-smoking.html",
+                  "ks3/biology/health-and-drugs/"
+                  "what-drugs-do-to-the-body.html",
+                  "ks3/biology/inheritance-and-dna/"
+                  "how-we-worked-out-dna.html",
+                  "student/class-fixture.html",
+                  "teacher_fixtures/class-detail-fixture.html",
+                  "leaderboard.html",
+                  "combined/higher/physics/forces/"
+                  "distance-time-graphs.html"],
+         why="theme-run audit, 27 Sep 2026: D1 (KS3 tutor chat, unreadable "
+             "in dark once opened with a message on screen), D2 (the "
+             "drugs-lesson safeguarding box, static content the fast gate's "
+             "page list never included at all), D3 (the ~30 KS3 'ink "
+             "ground' verdict/reveal/report panels that turn cream-on-cream "
+             "after a student answers — reproduced as the audit's own 42 "
+             "synthetic (panel, text) pairings, not by driving 15 real "
+             "instruments), D5 (flashcards' Next button, visible only once "
+             "a card is flipped), D6 (the leaderboard's selected week chip "
+             "— real data needs a backend this harness cannot reach, so the "
+             "chip's exact rendered shape is reproduced directly), D7 (the "
+             "teacher Set work toast, a save round trip away), and D9 (an "
+             "older KS4 lesson's Test Yourself result banner, shown only "
+             "after answering). Target: 0 failures in light AND dark, same "
+             "as the fast gate's own target — this is the same measurement "
+             "code and the same floor, on a page list the fast gate cannot "
+             "afford to also carry."),
 
     # ── ⊕ Experience run, 24 Sep 2026 (stream G) · keyboard focus ──────
 

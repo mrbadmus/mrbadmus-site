@@ -461,8 +461,35 @@ body.rd[data-mode="ks3"] {
   font-size: 22px;
   font-weight: 700;
   line-height: 1.35;
-  color: var(--ks3-alert);
+  color: var(--ks3-ink);
 }
+/* ⊕ D10 (theme-run audit, 27 Sep 2026) — the base rule above used to read
+   `color: var(--ks3-alert)`. Gate A (below) proves every `.ks3-commit`
+   inside `.ks3-dark` resolves correctly regardless of what this base rule
+   says, because `.ks3-dark .ks3-commit` (0,2,0) always wins there on
+   specificity — so the base value only ever actually PAINTS a `.ks3-commit`
+   that is NOT inside `.ks3-dark` and has no more-specific override of its
+   own. Two such cases were found live: `/ks3/physics/energy-at-home/
+   energy-in-food`'s calorimeter (`.ks3-calor-gate`, background
+   `--ks3-inset`, no colour override at all) and `/ks3/chemistry/particles-
+   and-their-behaviour/particle-model`'s cut-bench (a bare `.ks3-benchgate`,
+   background inherited from `.ks3-block`'s `--ks3-card`, only a margin
+   override) — amber #FFC53D on cream measured 1.38–1.54:1. Both are two
+   more instances of a pattern this file was ALREADY patching one instrument
+   at a time: every OTHER `<family> .ks3-commit` rule in this file (still-
+   predict, arr-gate, bbench, burner, tempb, phbench-guess, amgrid-predict,
+   namer-ask, catb-predict, switch-predict, btally-gate, rtotal-gate, lever-
+   gate — thirteen of them) already sets its OWN `color: var(--ks3-ink)` or
+   `var(--ks3-accent-text)`, none of them amber, because none of THEM sit on
+   an ink ground either. Making the base match what every specific instance
+   already had to override it to is the general fix rule 3 asks for, not a
+   fourteenth one-off: it fixes the calorimeter and the cut-bench (and any
+   future bare `.ks3-commit` this file has not yet met) with nothing
+   instrument-specific added, and it changes nothing for `.ks3-dark`'s own
+   children — the whole reason Gate A could say "all of them resolve to the
+   same ground" is that the override, not the base, was doing the work.
+   `--ks3-ink` on `--ks3-inset`/`--ks3-card` (both near-white) clears well
+   past AAA; nothing minted, `--ks3-ink` is Design's own frozen token. */
 /* ⊕ GATE A — the amber above had never once landed. `.ks3-commit` is (0,1,0)
    and `.ks3-dark p` is (0,1,1), so on every ink block the commit line resolved
    to `--ks3-on-dark-body` and read as ordinary body copy. The reasoning at

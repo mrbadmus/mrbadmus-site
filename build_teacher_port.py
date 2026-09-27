@@ -93,6 +93,7 @@ import sys
 # generate_site_v5.py carries a second inline copy; a third here would be the
 # copy that drifts.
 from build_ks3 import stamp_versions
+from build_student_port import _wrap_bundle_dark_screen
 # ⊕ Theme run, 27 Sep 2026 — the one pre-paint snippet and slot every
 # generator emits; see theme_head.py's own docstring.
 import theme_head
@@ -649,7 +650,11 @@ def ds_css():
             css = css.replace("../fonts/", SERVED_FONTS)
         out.append("/* ── %s ── */\n%s" % (rel, css))
         sizes.append((rel, len(css)))
-    return "\n\n".join(out), sizes
+    # ⊕ D8 (theme-run audit, 27 Sep 2026) — see build_student_port.
+    # _wrap_bundle_dark_screen's own docstring: the bundle's bare
+    # [data-theme="dark"] block is unconditional, so printing this port in
+    # dark mode printed the dark ground and cream ink verbatim.
+    return _wrap_bundle_dark_screen("\n\n".join(out)), sizes
 
 
 # ── every token the page references must resolve ──────────────────────────
