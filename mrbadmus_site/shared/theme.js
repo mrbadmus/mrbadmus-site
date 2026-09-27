@@ -104,7 +104,10 @@
   }
 
   function build(slot) {
-    if (slot.getAttribute('data-mrb-theme-ready') === '1') return;
+    /* A renderer that patches in place can empty the slot but keep the
+       element (and this flag) — the KS4 pilot runtime did. Trust the control
+       being present, not the flag. */
+    if (slot.getAttribute('data-mrb-theme-ready') === '1' && slot.querySelector('.mrb-theme')) return;
     slot.setAttribute('data-mrb-theme-ready', '1');
     var name = 'mrb-theme-' + (++uid);
     var fs = document.createElement('fieldset');
@@ -177,7 +180,10 @@
     var queued = false;
     var check = function () {
       queued = false;
-      if (document.querySelector('[data-mrb-theme]:not([data-mrb-theme-ready="1"])')) mountAll();
+      var slots = document.querySelectorAll('[data-mrb-theme]');
+      for (var i = 0; i < slots.length; i++) {
+        if (!slots[i].querySelector('.mrb-theme')) { mountAll(); return; }
+      }
     };
     new MutationObserver(function () {
       if (queued) return;
