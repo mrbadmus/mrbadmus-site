@@ -4651,12 +4651,37 @@
        bell's "New work" item and any bookmark point here with the
        assignment's id, so a deck's id is sent on to its class page. RLS
        answers the read: a pupil sees the row only if it is released to a
-       class they are in. */
-    if (wanted && sbForKind) {
+       class they are in.
+
+       ⊕ MRB-351 landing (27 Sep 2026) — `kind` DERIVED from `quiz_type`,
+       never selected, and the read runs ALONGSIDE `current-assignment`
+       rather than before it. `assignments.kind` does not exist on
+       production, so the old `.select("kind, class_id")` 400'd on every
+       `?assignment=` load; `quiz_type` exists today and is never
+       `'flashcards'` on production, so `kindOf` below always answers
+       `'mcq_set'` there, matching every other reader of this table (see
+       `student-data.js` / `teacher-data.js`). Kicking the read off here and
+       awaiting it only once — right before the redirect decision, with
+       `currentPromise` already in flight — means an MCQ load pays for
+       whichever of the two reads is slower, never the sum of both: the old
+       code paid the sum, serially, on every single load. */
+    var kindPromise = (wanted && sbForKind)
+      ? Promise.resolve(sbForKind.from("assignments").select("quiz_type, class_id")
+          .eq("id", wanted).maybeSingle())
+          .catch(function () { return null; })
+      : null;
+
+    var currentPromise = api("/api/class/current-assignment?class_id=" + klass.id +
+      (wanted ? "&assignment_id=" + encodeURIComponent(wanted) : ""), token);
+    /* Handled below by the `await`; this no-op only stops a rejection that
+       lands while the kind read is still out (or on the deck redirect, which
+       never awaits it) being reported as unhandled. */
+    currentPromise.catch(function () {});
+
+    if (kindPromise) {
       try {
-        var kindRes = await sbForKind.from("assignments").select("kind, class_id")
-          .eq("id", wanted).maybeSingle();
-        if (kindRes && kindRes.data && kindRes.data.kind === "flashcards") {
+        var kindRes = await kindPromise;
+        if (kindRes && kindRes.data && kindRes.data.quiz_type === "flashcards") {
           var qs = new URLSearchParams();
           qs.set("class", kindRes.data.class_id);
           var envP = new URLSearchParams(window.location.search).get("env");
@@ -4670,8 +4695,7 @@
 
     var current;
     try {
-      current = await api("/api/class/current-assignment?class_id=" + klass.id +
-        (wanted ? "&assignment_id=" + encodeURIComponent(wanted) : ""), token);
+      current = await currentPromise;
     } catch (err) {
       if (wanted && err && err.status === 404) {
         var gone = new Error("assignment " + wanted + " is not this student's to open");

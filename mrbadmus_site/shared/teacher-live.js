@@ -1400,7 +1400,7 @@
           if (v && (lastIso == null || v > lastIso)) { lastIso = v; }
         });
         /* ⊕ MRB-351 landing (27 Sep 2026) — SOURCE 2 of `lastIso`, per
-           docs (LAST_ACTIVE_RULE.md) and the SQL twin's `flashcard_activity`
+           docs (the last-activity rule in supabase/MRB351-APPLY.md) and the SQL twin's `flashcard_activity`
            CTE (teacher_class_rollup_v2, migration 20260927100000). A deck
            writes NO `assignment_submissions` row until every card is
            secured, so `row.activity` above (built from first-attempt

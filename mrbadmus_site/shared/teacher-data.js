@@ -2338,7 +2338,7 @@ window.MrBadmusTeacherData = (function () {
 
     /* ⊕ MRB-351 landing (27 Sep 2026) — SOURCE 2 of a pupil's `lastIso`:
        a flashcard SITTING is activity too, even before the deck is
-       finished. Full rule in LAST_ACTIVE_RULE.md; SQL twin is
+       finished. Full rule in the last-activity rule in supabase/MRB351-APPLY.md; SQL twin is
        `teacher_class_rollup_v2`'s `flashcard_activity` CTE
        (20260927100000_mrb351_rollup_v2_live_results_kinds.sql). A deck
        writes NO `assignment_submissions` row until every card is secured
@@ -2496,7 +2496,7 @@ window.MrBadmusTeacherData = (function () {
         // for a class with no flashcard work (the common case today);
         // `shared/teacher-live.js`'s `buildRoster` GREATEST-folds this
         // against `activity[]` to get `lastIso`. See the block above and
-        // LAST_ACTIVE_RULE.md.
+        // the last-activity rule in supabase/MRB351-APPLY.md.
         flashcardLastActive: flashcardLastActiveFor(id),
       };
     });

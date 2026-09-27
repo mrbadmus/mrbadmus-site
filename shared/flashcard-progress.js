@@ -826,8 +826,8 @@
        never called: it would otherwise read `assignments`/the flashcard
        RPCs directly and fail (PGRST205/42703 on production today). */
     var scope = window.MrBadmusAdminScope;
-    var capable = scope && scope.flashcardsCapable
-      ? await scope.flashcardsCapable().catch(function () { return false; })
+    var capable = scope && scope.flashcardsCapableSettled
+      ? await scope.flashcardsCapableSettled().catch(function () { return false; })
       : false;
     if (!capable) { S.notSwitchedOn = true; fail({ code: "not_switched_on" }); return; }
     try {

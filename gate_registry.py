@@ -506,7 +506,7 @@ GATES = [
              "that row's id alone, naming only flashcard_mode/"
              "completion_rule/deck_id, proving the extra columns are never "
              "asked for BEFORE the answer says they exist. Also proves "
-             "LAST_ACTIVE_RULE.md's source 2: `flashcard_sessions` is NEVER "
+             "the last-activity rule in supabase/MRB351-APPLY.md's source 2: `flashcard_sessions` is NEVER "
              "asked on the baseline fixture (no flashcard assignment in the "
              "class), and asked exactly once, scoped to that assignment's "
              "id alone, once one exists. If `git show` cannot resolve "

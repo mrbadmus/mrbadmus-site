@@ -314,7 +314,7 @@ def load_class_matrices(key, token, ids, with_subs=True):
     # here — `flashcard_sessions_select`'s teacher-of-class branch — never
     # through the SECURITY DEFINER rollup. `class_id` is denormalised onto
     # the table (MRB-351 migration 1), so this needs no join through
-    # `assignments` to scope by class. See LAST_ACTIVE_RULE.md.
+    # `assignments` to scope by class. See the last-activity rule in supabase/MRB351-APPLY.md.
     fsess = []
     if with_subs and by_class:
         fsess = rest("flashcard_sessions?select=" + urllib.parse.quote(
@@ -403,7 +403,7 @@ def js_values(pack, now_iso):
 
     # ⊕ Opus review, 27 Sep 2026 — a flashcard SITTING is activity even
     # before the deck is finished (no `assignment_submissions` row exists
-    # until then; see `activity_at()` and LAST_ACTIVE_RULE.md). Per pupil,
+    # until then; see `activity_at()` and the last-activity rule in supabase/MRB351-APPLY.md). Per pupil,
     # MAX(last_seen_at) over this class's own non-deleted, released
     # flashcard assignments — `pack["assignments"]` is already deleted_at-
     # filtered by `load_class_matrices`, exactly like the SQL's `asg`.

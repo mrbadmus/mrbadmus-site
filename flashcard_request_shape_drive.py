@@ -344,7 +344,7 @@ def main():
                 sel = followup.get("select") or ""
                 check(("flashcard_mode" in sel) and ("completion_rule" in sel) and ("deck_id" in sel),
                       "the follow-up select names exactly the three extra fields the edit sheet needs", sel)
-            # ⊕ MRB-351 landing (27 Sep 2026) — LAST_ACTIVE_RULE.md, source 2:
+            # ⊕ MRB-351 landing (27 Sep 2026) — the last-activity rule in supabase/MRB351-APPLY.md, source 2:
             # `flashcard_sessions` fires ONLY once a flashcard assignment
             # exists, scoped to that assignment's id alone.
             fs_calls2 = [c for c in calls2 if c.get("table") == "flashcard_sessions"]

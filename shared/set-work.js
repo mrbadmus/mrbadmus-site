@@ -3808,10 +3808,13 @@
       ? scope.flashcardsCapable()
       : Promise.resolve(false);
     Promise.resolve(ask).then(function (ok) {
-      fcCapableCache = !!ok;
+      /* Remember only a DEFINITE answer. "Not known yet" (no client in
+         time, a network blip) leaves the cache null, so the next open()
+         asks again instead of pinning the chip hidden for the page. */
+      var st = (scope && scope.flashcardsState) ? scope.flashcardsState() : (ok ? true : null);
+      if (st === true || st === false) { fcCapableCache = st; }
       if (S) { syncStep(); }
     }, function () {
-      fcCapableCache = false;
       if (S) { syncStep(); }
     });
   }

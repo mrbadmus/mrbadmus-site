@@ -286,12 +286,29 @@ window.MrBadmusAdminScope = (function () {
      blocked site data must degrade to "probe again", never to a throw. */
   var decksCapable = null;
   var decksProbe = null;
-  var DECKS_CAP_KEY = 'mrb-fc-cap:v1';
+  /* v2: the value is the time the "no" was learned. It expires after
+     DECKS_NO_TTL_MS, so a tab left open across the day the migrations are
+     applied picks the feature up within ten minutes, without a new tab. */
+  var DECKS_CAP_KEY = 'mrb-fc-cap:v2';
+  var DECKS_NO_TTL_MS = 10 * 60 * 1000;
   function readCachedNo() {
-    try { return sessionStorage.getItem(DECKS_CAP_KEY) === '0'; } catch (e) { return false; }
+    try {
+      var at = Number(sessionStorage.getItem(DECKS_CAP_KEY));
+      return at > 0 && (Date.now() - at) < DECKS_NO_TTL_MS;
+    } catch (e) { return false; }
   }
   function writeCachedNo() {
-    try { sessionStorage.setItem(DECKS_CAP_KEY, '0'); } catch (e) { /* private window, or blocked */ }
+    try { sessionStorage.setItem(DECKS_CAP_KEY, String(Date.now())); } catch (e) { /* private window, or blocked */ }
+  }
+  /* "No flashcard schema" is ONLY a missing-table answer. Anything else — a
+     network drop (postgrest-js reports status 0 rather than rejecting), a
+     5xx, a 401/42501 from an expired session read as anon, PostgREST's
+     schema cache reloading just after the DDL — says nothing about the
+     schema, so it is answered "not now" and never remembered. */
+  function saysTableMissing(r) {
+    var e = r && r.error;
+    var code = e && e.code;
+    return code === 'PGRST205' || code === '42P01' || (r && r.status === 404);
   }
   function probeDecksCapability() {
     if (decksCapable !== null) { return Promise.resolve(decksCapable); }
@@ -329,25 +346,38 @@ window.MrBadmusAdminScope = (function () {
            payload to at most one row's `id`. */
         sb.from('flashcard_decks').select('id').limit(1)
       ).then(function (r) {
-        decksCapable = !!(r && !r.error &&
-                          typeof r.status === 'number' &&
-                          r.status >= 200 && r.status < 300);
         decksProbe = null;
-        if (decksCapable) { injectDecks(); } else { writeCachedNo(); }
-        return decksCapable;
+        var ok = !!(r && !r.error &&
+                    typeof r.status === 'number' &&
+                    r.status >= 200 && r.status < 300);
+        if (ok) { decksCapable = true; injectDecks(); return true; }
+        if (saysTableMissing(r)) { decksCapable = false; writeCachedNo(); }
+        /* else: unknown — decksCapable stays null, the next caller asks. */
+        return false;
       }, function () {
-        decksCapable = false;
-        writeCachedNo();
-        decksProbe = null;
+        decksProbe = null;           /* unknown, not remembered */
         return false;
       });
     }, function () {
-      decksCapable = false;
-      writeCachedNo();
-      decksProbe = null;
+      decksProbe = null;             /* unknown, not remembered */
       return false;
     });
     return decksProbe;
+  }
+  /* true / false once definitely known, null while unknown. */
+  function decksCapabilityState() { return decksCapable; }
+  /* For a page whose whole content depends on the answer (decks.html,
+     flashcards.html): ask up to three times, 3 s apart, while the answer is
+     unknown, then settle. A definite answer returns at once. */
+  function probeDecksCapabilitySettled() {
+    var tries = 0;
+    function go() {
+      return probeDecksCapability().then(function (ok) {
+        if (ok || decksCapable === false || ++tries >= 3) { return !!ok; }
+        return new Promise(function (res) { setTimeout(res, 3000); }).then(go);
+      });
+    }
+    return go();
   }
 
   function decksHref() {
@@ -647,6 +677,8 @@ window.MrBadmusAdminScope = (function () {
   return {
     isAdmin: isAdmin,
     inject: inject,
-    flashcardsCapable: probeDecksCapability
+    flashcardsCapable: probeDecksCapability,
+    flashcardsCapableSettled: probeDecksCapabilitySettled,
+    flashcardsState: decksCapabilityState
   };
 })();

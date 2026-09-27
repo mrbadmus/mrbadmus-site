@@ -352,7 +352,7 @@ def cellof_check(b, base, check):
            completed_at: '2026-09-13T10:00:00+00:00', submitted_at: '2026-09-13T10:00:00+00:00', is_late: true}],
         week: {start_at: '2026-09-07T00:00:00.000Z', end_at: '2026-09-14T00:00:00.000Z'},
         /* ⊕ MRB-351 landing (27 Sep 2026) — Source 2 of `lastIso`
-           (LAST_ACTIVE_RULE.md): a flashcard SITTING, not a completed cell.
+           (the last-activity rule in supabase/MRB351-APPLY.md): a flashcard SITTING, not a completed cell.
            s1 has a real cell (x3, 09-11) but a LATER sitting (09-16) that
            never became a submission — the sitting must win. s3 has NO
            submission of any kind — the sitting is the only signal there is.
@@ -392,7 +392,7 @@ def cellof_check(b, base, check):
     check(got and got["newest"] == got["mcqIdx"], "newestMarkedIdx skips the flashcard set")
     check(ctl and ctl["classMean"] == 75, "cellOf control: the same pack as two MCQ sets reads 75",
           "proves the probe can see a difference")
-    # ⊕ MRB-351 landing (27 Sep 2026) — LAST_ACTIVE_RULE.md, source 2.
+    # ⊕ MRB-351 landing (27 Sep 2026) — the last-activity rule in supabase/MRB351-APPLY.md, source 2.
     check(got and got["s1Last"] == "2026-09-16T08:00:00+00:00",
           "roster: a flashcard SITTING newer than a completed cell (either MCQ or deck) wins",
           got and got["s1Last"])
