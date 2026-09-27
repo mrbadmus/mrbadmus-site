@@ -30,21 +30,8 @@
   z-index: 100;
 }
 
-/* ── Brand / wordmark (left) ── */
-.nav-brand {
-  font-family: var(--font-serif);
-  font-optical-sizing: auto;
-  font-size: 1.35rem;
-  font-weight: 600;
-  color: var(--text);
-  letter-spacing: -0.01em;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  text-decoration: none;
-  flex-shrink: 0;
-}
-.brand-logo { flex-shrink: 0; }
+/* ── Brand (left) — the one lockup, styled by shared/brand/brand.css
+   (one-mark ruling, 13 Sep 2026). `.nav-brand` / `.brand-logo` retired. ── */
 
 /* ── Optional breadcrumb (left, after brand; hidden on narrow screens) ── */
 .nav-crumbs { display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
@@ -395,7 +382,6 @@
 @media (max-width: 600px) { .nav-text-link { display: none; } }
 @media (max-width: 560px) {
   .nav { padding: 0 var(--sp-3); gap: var(--sp-2); }
-  .nav-brand { font-size: 1.1rem; gap: 7px; }
   .nav-cluster { gap: 3px; }
   .challenge-chip .nav-chip-label { display: none; }   /* ⚡ only on small screens */
   .challenge-chip { padding: 7px 9px; }
@@ -416,7 +402,4 @@
      students carry is a bell nobody reads. Nothing else collapses here: the
      display name yields the last of the room on its own, by the shrink rule
      above, which costs a long name some characters and a short one nothing. */
-}
-@media (max-width: 360px) {
-  .nav-brand { font-size: 1rem; }
 }

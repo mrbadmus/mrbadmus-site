@@ -6,8 +6,8 @@
   <script src="/shared/theme.js?v=6fd6f722" defer></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#F7F1E5"/>
-  <title>Sign In | MrBadmusAI</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
+  <title>Sign In | MrBadmus</title>
+  <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614"><!--/mrb:brand-head-->
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
@@ -21,6 +21,12 @@
     .card { background: var(--card); border-radius: var(--radius-lg); padding: 40px 36px; width: 100%; max-width: 420px; border: 1px solid var(--border); box-shadow: var(--shadow-card); }
     .logo { text-align: center; margin-bottom: 28px; }
     .logo h1 { font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600; font-size: 2rem; display: inline-flex; align-items: center; gap: 10px; color: var(--text); letter-spacing: -0.01em; }
+    /* The card heading carries the one lockup (one-mark ruling, 13 Sep 2026),
+       scaled up in the kit's own proportions — the mark itself is unchanged. */
+    /* A 360px phone: the lockup, the theme control and "Back to site" share
+       one bar, so the bar's side padding gives way before they touch. */
+    @media (max-width: 420px) { .auth-nav { padding: 12px 14px !important; } }
+    .logo h1 .mrb-brand { --mrb-brand-mark: 33px; --mrb-brand-size: 30px; --mrb-brand-gap: 8px; }
     .logo p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
     .tabs { display: flex; background: var(--sunken); border-radius: var(--radius); padding: 4px; margin-bottom: 28px; }
     .tab { flex: 1; padding: 10px; text-align: center; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700; font-size: 0.9rem; color: var(--muted); transition: all 0.2s; }
@@ -69,8 +75,8 @@
 </head>
 <body>
 
-<nav style="position:fixed;top:0;left:0;right:0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid var(--border);z-index:10;">
-  <a href="/index.html" style="display:flex;align-items:center;gap:8px;font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;font-size:1.3rem;text-decoration:none;color:var(--text);letter-spacing:-0.01em;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
+<nav class="auth-nav" style="position:fixed;top:0;left:0;right:0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border-bottom:1px solid var(--border);z-index:10;">
+  <!--mrb:brand--><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
   <div style="display:flex;align-items:center;gap:12px;">
     <span class="mrb-theme-slot" data-mrb-theme></span>
     <a href="/index.html" style="color:var(--muted);font-size:0.85rem;font-weight:700;text-decoration:none;">← Back to site</a>
@@ -79,7 +85,7 @@
 
 <div class="card" style="margin-top:60px;">
   <div class="logo">
-    <h1><svg width="30" height="30" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M4 6l4-4 4 4" stroke="url(#authHeroGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#authHeroGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="authHeroGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</h1>
+    <h1><!--mrb:brand--><a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand--></h1>
     <p>GCSE Science Revision</p>
   </div>
 

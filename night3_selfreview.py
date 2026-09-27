@@ -201,17 +201,25 @@ def cold_greps(site):
             consumer_files += [os.path.join(d, f) for f in os.listdir(d) if f.endswith((".html", ".js"))]
     admin = os.path.join(site, "teacher", "admin.html")
     check(not grep(r"MrBadmusAI", consumer_files), "no 'MrBadmusAI' under parents/ go/ consumer/ org/", grep(r"MrBadmusAI", consumer_files)[:5])
-    # The admin page's school nav legitimately says MrBadmusAI; the consumer card must not.
+    # The consumer card on the admin page must not carry the old "MrBadmusAI" name.
     adm = strip_comments(open(admin, encoding="utf-8").read())
     card = adm[adm.find('id="consumer-card"'):] if 'id="consumer-card"' in adm else ""
     check("MrBadmusAI" not in card, "admin consumer card carries no 'MrBadmusAI'")
+    # ⊕ One-mark ruling (Mide, 13 Sep 2026): ONE mark on every page, staff
+    # surfaces included — the rule this check was written against (staff
+    # pages carry a plain wordmark and NO chevron) is overridden. What is
+    # still forbidden is any OTHER chevron: the consumer product's mark
+    # leaking onto a staff surface. So brand.py's own mark is removed
+    # first (byte-exact, nothing looser), and any chevron left is a failure.
+    import brand as _brand
     chevron = r'stroke="#E4572E"'
     for f in STAFF_SURFACES:
         path = os.path.join(site, f)
         body = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
         if f == "teacher/admin.html":
             body = card
-        check(chevron not in body, "no chevron on staff surface %s" % f)
+        body = body.replace(_brand.MARK_SVG, "")
+        check(chevron not in body, "no chevron other than the one mark on staff surface %s" % f)
     # ⊕ MRB-321. "Brookfield" stopped being proof of a leftover fixture when
     # Design's Drop 2 Organisations page shipped `placeholder="e.g. Brookfield
     # Tuition Centre"` — her own hint text on the Organisation field, which a

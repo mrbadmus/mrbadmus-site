@@ -169,28 +169,45 @@ def check_chrome(page, label, chrome_expected):
         fail("%s — data-chrome=\"ks4\" is %s, expected %s"
              % (label, has_attr, chrome_expected))
     if chrome_expected:
+        # ⊕ One-mark ruling (Mide, 13 Sep 2026): the header carries the ONE
+        # lockup brand.py draws — `.mrb-brand` with the kit's double chevron
+        # (back chevron faded, front solid, #E4572E) and the wordmark
+        # "MrBadmus" in Bricolage Grotesque 600. This used to pin Design's
+        # `.nav-brand` BrandMark and the "MrBadmusAI" wordmark; every
+        # property it checked is still checked, against the ruled mark, plus
+        # the direction of the fade and the wordmark weight. (Byte-level
+        # identity with brand.py is brand_one_mark.py's job.)
         brand = page.eval(
-            "(function(){var a=document.querySelector('.nav-brand');"
+            "(function(){var a=document.querySelector('nav .mrb-brand');"
             "if(!a) return null;"
-            "var s=a.querySelector('svg');"
+            "var s=a.querySelector('svg[data-mrb-mark]');"
+            "var p=s?s.querySelectorAll('path'):[];"
             "return {text:a.textContent.trim(),"
-            " chevrons:s?s.querySelectorAll('path').length:0,"
-            " stroke:s?(s.querySelector('path')||{}).getAttribute"
-            "&&s.querySelector('path').getAttribute('stroke'):null,"
-            " font:getComputedStyle(a).fontFamily};})()")
+            " chevrons:p.length,"
+            " stroke:p.length?p[1].getAttribute('stroke'):null,"
+            " backFaded:p.length?p[0].getAttribute('stroke-opacity'):null,"
+            " frontFaded:p.length?p[1].getAttribute('stroke-opacity'):null,"
+            " font:getComputedStyle(a).fontFamily,"
+            " weight:getComputedStyle(a).fontWeight};})()")
         if not brand:
-            fail("%s — no .nav-brand in the header" % label)
+            fail("%s — no .mrb-brand lockup in the header" % label)
         else:
-            if brand["text"] != "MrBadmusAI":
+            if brand["text"] != "MrBadmus":
                 fail("%s — brand wordmark reads %r" % (label, brand["text"]))
             if brand["chevrons"] != 2:
-                fail("%s — Design's BrandMark is a DOUBLE chevron; found %d path(s)"
+                fail("%s — the one mark is a DOUBLE chevron; found %d path(s)"
                      % (label, brand["chevrons"]))
             if (brand["stroke"] or "").upper() != "#E4572E":
                 fail("%s — brand stroke is %r, not #E4572E" % (label, brand["stroke"]))
-            if "Bricolage" not in (brand["font"] or ""):
+            if brand["backFaded"] != "0.34" or brand["frontFaded"] is not None:
+                fail("%s — the back chevron must be the faded one (0.34) and the "
+                     "front solid; found back=%r front=%r"
+                     % (label, brand["backFaded"], brand["frontFaded"]))
+            if "Bricolage" not in (brand["font"] or "") and "MrBadmus Wordmark" not in (brand["font"] or ""):
                 fail("%s — brand font resolves to %r, not Bricolage Grotesque"
                      % (label, brand["font"]))
+            if str(brand["weight"]) != "600":
+                fail("%s — wordmark weight is %r, not 600" % (label, brand["weight"]))
 
 
 def check_no_progress(page, label, signed_in):

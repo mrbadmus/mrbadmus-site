@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <script>(function(){var p='light';try{p=localStorage.getItem('mrb-theme')||'light'}catch(e){}if(p!=='dark'&&p!=='system')p='light';var d=p==='dark'||(p==='system'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches),r=document.documentElement;r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-pref',p);r.style.colorScheme=d?'dark':'light'})()</script><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#F7F1E5">
-<title>Leaderboard | MrBadmusAI</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==">
+<title>Leaderboard | MrBadmus</title>
+<link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg?v=414f7a61"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png?v=cffd3cc4"><link rel="stylesheet" href="/shared/brand/brand.css?v=9c818614">
 <!--
   ══════════════════════════════════════════════════════════════════════════
   GENERATED — do not edit. `python3 build_leaderboard_port.py`
@@ -20,7 +20,7 @@
 <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin>
 <script src="/shared/config.js?v=d1fecb43" defer></script>
 <link rel="stylesheet" href="/shared/tokens.css?v=66931d71">
-<link rel="stylesheet" href="/shared/nav.css?v=e0d9816d">
+<link rel="stylesheet" href="/shared/nav.css?v=7415488f">
 <script src="/shared/search-index.js?v=c016cb14" defer></script>
 <script src="/shared/search.js?v=d011978d" defer></script>
 <script src="/shared/nav.js?v=d653be2c" defer></script>
@@ -32,7 +32,7 @@
 </head>
 <body>
 <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="mrb-brand" href="/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a>
   
   <div class="nav-cluster">
     <a href="/3d/" class="nav-text-link">3D Studio</a>
@@ -466,7 +466,7 @@ window.__MRB_MOUNT__ = function () {
   });
 };
 </script>
-<script>window.__MRB_ASSET_V__={"class-entry.js":"a97c1d3d","config.js":"d1fecb43","leaderboard-live.js":"63e39bcd","nav.css":"e0d9816d","nav.js":"d653be2c","search-index.js":"c016cb14","search.js":"d011978d","student-bell.js":"f46f4d9b","theme.js":"6fd6f722","tokens.css":"66931d71"};</script>
+<script>window.__MRB_ASSET_V__={"class-entry.js":"a97c1d3d","config.js":"d1fecb43","leaderboard-live.js":"63e39bcd","nav.css":"7415488f","nav.js":"d653be2c","search-index.js":"c016cb14","search.js":"d011978d","student-bell.js":"f46f4d9b","theme.js":"6fd6f722","tokens.css":"66931d71"};</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/shared/leaderboard-live.js?v=63e39bcd"></script>
 </body>

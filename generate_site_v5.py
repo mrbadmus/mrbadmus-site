@@ -11,6 +11,7 @@ import os, shutil, json, glob, sys, re, base64
 # imported so every generator emits byte-identical bytes. See
 # THEME-CONTRACT.md and theme_head.py. Never retype THEME_HEAD by hand.
 from theme_head import THEME_HEAD, THEME_SLOT
+import brand  # the ONE brand mark (one-mark ruling, 13 Sep 2026)
 
 # Bonding redesign (MRB-113 Phase B) — theory-block decomposition for the
 # redesigned bonding pages. Frozen source fields are never edited; blocks are
@@ -648,32 +649,13 @@ PHYSICS_COLOR   = "#1D6FB8"
 CHEMISTRY_COLOR = "#B02342"
 BIOLOGY_COLOR   = "#237A3B"
 
-# ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — a favicon, so
-# `/favicon.ico` stops 404ing on every KS4 chrome and lesson page (audit:
-# "Two 404s on every page... Both also 404 on production today"). One small
-# `#E4572E` chevron, base64'd exactly the way `build_ks3.FAVICON_LINK` and
-# `consumer_favicon_link()` already do it (no question over spaces, `#` or
-# quotes surviving into an `href`) — kept as its OWN literal here rather than
-# imported from either, matching this codebase's standing preference for
-# independent generators over cross-module coupling (the same reasoning
-# `build_teacher_port.ds_css`'s own comment gives for not sharing a bundle
-# with the student port).
-#
-# ⚠️ NOT `_CONSUMER_FAVICON_SVG`'s double chevron, and not KS3's identical
-# single chevron reused verbatim — a NEW, generic mark for a NEW surface.
-# `HEAD_ASSETS` is shared by BOTH `k4_page` (the chrome journey) and
-# `make_pathway_subtopic_page` (all 98 lesson pages), which carry two
-# DIFFERENT in-page brand marks between them (CLAUDE.md's brand table); a
-# browser-tab favicon is not the in-page mark either page is judged on, so
-# one small neutral chevron for both, rather than picking one page type's
-# mark for the other's pages.
-_KS4_FAVICON_SVG = (
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">'
-    '<path d="M4 16L12 7l8 9" fill="none" stroke="#E4572E" stroke-width="4.6" '
-    'stroke-linecap="round" stroke-linejoin="round"/></svg>')
-KS4_FAVICON_LINK = (
-    '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,%s"/>'
-    % base64.b64encode(_KS4_FAVICON_SVG.encode("utf-8")).decode("ascii"))
+# ⊕ One-mark ruling (Mide, 13 Sep 2026; one-mark run 27 Sep 2026) — the
+# favicon, the apple-touch icon and the lockup's stylesheet all come from
+# brand.brand_head(). This replaces Stream J's inline base64 upward chevron
+# (`_KS4_FAVICON_SVG`), which was a third, different drawing of the mark on
+# the same pages as the gradient one. Every KS4 page — chrome and lesson —
+# now carries the kit favicon and the one lockup.
+KS4_FAVICON_LINK = brand.BRAND_HEAD
 
 # ── Shared <head> assets — every generated page loads the token
 #    sheet first (with font preloads), then the consuming stylesheet ──
@@ -730,7 +712,7 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
     if chrome:
         return f"""<nav class="nav">
   <div class="k4-navbar">
-    <a class="nav-brand" href="/index.html">{K4_BRANDMARK} MrBadmusAI</a>
+    {brand.brand_lockup("/index.html")}
     <div class="nav-cluster">
       <a href="/3d/" class="nav-text-link">3D Studio</a>
       <a href="/weekly-challenge.html" class="challenge-chip"><svg viewBox="0 0 12 16" width="12" height="15" fill="currentColor" aria-hidden="true"><path d="M7.4 0L1 9.2h3.6L3.4 16 11 6.1H6.6L7.4 0z"/></svg> <span class="nav-chip-label">Challenge</span></a>
@@ -781,7 +763,7 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
     crumbs_block = f'<div class="nav-crumbs">{crumbs}</div>' if crumbs else ""
 
     return f"""<nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
+  {brand.brand_lockup("/index.html")}
   {crumbs_block}
   <div class="nav-cluster">
     <a href="/3d/" class="nav-text-link">3D Studio</a>
@@ -844,17 +826,10 @@ def nav_html(active_subject="", pathway="", tier="", chrome=False):
 # What IS live: the weekly challenge and the leaderboard, both of which
 # have real endpoints, both wired below.
 
-# Design's BrandMark — a right-pointing DOUBLE chevron, the second at 0.34
-# opacity. Lifted from her _ds bundle (components/general/BrandMark), not
-# redrawn. ⚠️ This is NOT the KS3 lessons' mark (a single UPWARD chevron at
-# stroke-width 4.6) and the two are not interchangeable; see CLAUDE.md's
-# four brand presentations.
-K4_BRANDMARK = ('<svg width="21" height="21" viewBox="0 0 22 22" aria-hidden="true">'
-                '<path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" '
-                'fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-                '<path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" '
-                'stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-                '</svg>')
+# ⊕ One-mark ruling (13 Sep 2026) — `K4_BRANDMARK` (Design's BrandMark,
+# lifted from her _ds bundle with the solid and faded halves the wrong way
+# round) is GONE. Both branches of nav_html() now emit brand.brand_lockup(),
+# the one mark every page on the site carries.
 
 # The one arrow in the delivery, used on every forward affordance.
 K4_ARROW = ('<svg viewBox="0 0 20 12" width="19" height="12" fill="none" stroke="currentColor" '
@@ -934,7 +909,7 @@ def k4_footer():
     return f"""
 <footer class="k4-footer">
   <div class="k4-footer-inner">
-    <span class="k4-footer-mark">MrBadmusAI · Science revision for Years 7 to 11</span>
+    <span class="k4-footer-mark">MrBadmus · Science revision for Years 7 to 11</span>
     <span class="k4-footer-links">
       <a href="/leaderboard.html">Leaderboard</a>
       <a href="/past-papers.html">Past papers</a>
@@ -973,7 +948,7 @@ def k4_page(title, body, description="", subject="physics", pathway="", tier="",
 
 
 def chat_html():
-    return """<button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+    return """<button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.5h16v10H9.5L5 19.5v-4H4z" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
@@ -1041,7 +1016,7 @@ def page_shell(title, subject, body_html, topic_id="", topic_title="", pathway="
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="{THEME_COLOR}"/>
-  <title>{title} | MrBadmusAI</title>
+  <title>{title} | MrBadmus</title>
   {HEAD_ASSETS}
   <style>
     html {{ background: var(--bg); }}
@@ -1154,7 +1129,7 @@ def make_landing():
 </main>"""
 
     return k4_page(
-        "MrBadmusAI — Free KS3 &amp; GCSE Science Revision",
+        "MrBadmus — Free KS3 &amp; GCSE Science Revision",
         body,
         description="Free science revision for Years 7 to 11. KS3 Science for Years 7–9 and GCSE Combined and Triple Science for Years 10–11, with an AI tutor, quizzes and full topic notes.",
         extra_head='\n  <script src="/shared/ks4-chrome.js" defer></script>'
@@ -1293,7 +1268,7 @@ def make_ks4_landing():
 </main>"""
 
     return k4_page(
-        "MrBadmusAI — GCSE Science Revision",
+        "MrBadmus — GCSE Science Revision",
         body,
         description="Free GCSE Science revision with AI tutor, FIFA worked examples, quizzes and full topic notes. Physics, Chemistry, Biology.",
         extra_head='\n  <script src="/shared/ks4-chrome.js" defer></script>')
@@ -1417,7 +1392,7 @@ def make_pathway_page(pathway):
   </section>
 </main>"""
 
-    return k4_page(f"{label} | MrBadmusAI", body, pathway=pathway)
+    return k4_page(f"{label} | MrBadmus", body, pathway=pathway)
 
 
 
@@ -1490,7 +1465,7 @@ def make_tier_page(pathway, tier):
   </section>
 </main>"""
 
-    return k4_page(f"{pathway_label} {tier.title()} | MrBadmusAI", body,
+    return k4_page(f"{pathway_label} {tier.title()} | MrBadmus", body,
                    pathway=pathway, tier=tier)
 
 
@@ -1592,7 +1567,7 @@ def make_pathway_hub(pathway, tier, subject):
   </section>
 </main>"""
 
-    return k4_page(f"{label} | {tier.title()} | {pathway_label} | MrBadmusAI",
+    return k4_page(f"{label} | {tier.title()} | {pathway_label} | MrBadmus",
                    body, subject=subject, pathway=pathway, tier=tier)
 
 
@@ -4284,7 +4259,8 @@ html {{ background: #0F0F1A; }}
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#0F0F1A"/>
-  <title>{st['title']} | Electricity | Physics | MrBadmusAI</title>
+  <title>{st['title']} | Electricity | Physics | MrBadmus</title>
+  {brand.BRAND_HEAD}
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
   <script src="/shared/nav.js" defer></script>
@@ -4395,7 +4371,8 @@ html {{ background: #0F0F1A; }}
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <meta name="theme-color" content="#0F0F1A"/>
-  <title>Electricity | Physics | MrBadmusAI</title>
+  <title>Electricity | Physics | MrBadmus</title>
+  {brand.BRAND_HEAD}
   <link rel="stylesheet" href="/shared/styles.css"/>
   <link rel="stylesheet" href="/shared/nav.css"/>
   <script src="/shared/nav.js" defer></script>
@@ -5124,7 +5101,7 @@ html {{ background: var(--bg); }}
   {THEME_HEAD}
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <meta name="theme-color" content="{THEME_COLOR}"/>
-  <title>{st['title']} | {subject_label} | MrBadmusAI</title>
+  <title>{st['title']} | {subject_label} | MrBadmus</title>
   {HEAD_ASSETS}
   {extra_css}
   {redesign_css}
@@ -5325,7 +5302,7 @@ def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtop
   </section>
 </main>"""
 
-    return k4_page(f"{topic['title']} | {label} | MrBadmusAI", body,
+    return k4_page(f"{topic['title']} | {label} | MrBadmus", body,
                    subject=subject, pathway=pathway, tier=tier,
                    topic_title=f"{topic['title']} ({topic['spec']})")
 
@@ -5662,43 +5639,13 @@ def _robots_txt():
 # `.rd[data-mode="ks3"]`, so anything outside that element resolves to
 # nothing.
 
-# The double chevron, copied from `BRANDMARK` in consumer/consumer-common.js.
-# Not redrawn — CLAUDE.md already tracks four brand presentations and the
-# difference between the consumer mark and the KS3 one is a stroke width and
-# a direction, which is exactly the kind of difference an eye reproduces
-# wrongly. Sized up from Design's 20px to 26px for a standalone page.
-_C_BRANDMARK = (
-    '<svg width="26" height="26" viewBox="0 0 22 22" aria-hidden="true">'
-    '<path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" '
-    'fill="none" stroke-linecap="round" stroke-linejoin="round"></path>'
-    '<path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" '
-    'stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>'
-    '</svg>'
-)
-
-# The tab icon, as a data: URI so it costs no request — the same technique
-# build_ks3.py uses, and the reason it matters here is that the flag-off
-# drive asserts a public page makes ZERO requests.
-#
-# ⚠️ THE DOUBLE CHEVRON, NOT KS3's SINGLE ONE. CLAUDE.md gives the consumer
-# and student surfaces Claude Design's double-chevron BrandMark and KS3 a
-# single upward chevron at stroke-width 4.6; they are both Design's, both
-# #E4572E, and they are not interchangeable. A consumer page wearing the KS3
-# favicon is brand drift introduced by a fix.
-_CONSUMER_FAVICON_SVG = (
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22">'
-    '<path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" '
-    'fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-    '<path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" '
-    'stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
-    '</svg>'
-)
-
-
-def consumer_favicon_link():
-    import base64 as _b64
-    return ('<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,%s"/>'
-            % _b64.b64encode(_CONSUMER_FAVICON_SVG.encode("utf-8")).decode("ascii"))
+# ⊕ One-mark ruling (13 Sep 2026) — `_C_BRANDMARK`, `_CONSUMER_FAVICON_SVG`
+# and `consumer_favicon_link()` are GONE. They were hand-copies of the
+# consumer-common.js mark (mirrored: the back chevron solid, the front one
+# faded) and a data: favicon of the same. The status pages now take the
+# lockup and the head tags from brand.py like every other page. The kit
+# favicon costs one request; these pages are written on flag-ON builds only,
+# so the flag-off zero-request sweep never sees them.
 
 
 def _status_page(kind, tokens_href):
@@ -5741,19 +5688,15 @@ def _status_page(kind, tokens_href):
 <meta name="theme-color" content="#FBF3E6"/>
 <meta name="robots" content="noindex"/>
 <title>%(title)s</title>
-%(favicon)s
+%(brand_head)s
 <link rel="stylesheet" href="%(tokens)s"/>
 <style>
   html { background: #FBF3E6; }
   body { margin: 0; padding: 0; background: #FBF3E6; color: #221E1B;
          font-family: 'Instrument Sans', system-ui, sans-serif;
          font-size: 18px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
-  .cs-head { display: flex; align-items: center; gap: 10px;
+  .cs-head { display: flex; align-items: center;
              padding: 20px 20px 0; max-width: 760px; margin: 0 auto; }
-  .cs-head span { font-family: 'Bricolage Grotesque', system-ui, sans-serif;
-                  font-weight: 800; font-size: 21px; letter-spacing: -.03em; }
-  .cs-head a { display: flex; align-items: center; gap: 10px;
-               color: #221E1B; text-decoration: none; }
   main { max-width: 760px; margin: 0 auto; padding: 64px 20px 96px; }
   .cs-eyebrow { margin: 0; font-family: 'DM Mono', ui-monospace, monospace;
                 font-size: 13px; letter-spacing: .14em; text-transform: uppercase;
@@ -5777,7 +5720,7 @@ def _status_page(kind, tokens_href):
 </head>
 <body>
 <div class="rd" data-mode="ks3">
-  <header class="cs-head"><a href="/parents/">%(brand)s<span>MrBadmus</span></a></header>
+  <header class="cs-head">%(brand)s</header>
   <main>
     <p class="cs-eyebrow">%(eyebrow)s</p>
     <h1>%(h1)s</h1>
@@ -5790,8 +5733,8 @@ def _status_page(kind, tokens_href):
 </div>
 </body>
 </html>
-""" % {"title": title, "favicon": consumer_favicon_link(), "tokens": tokens_href,
-       "brand": _C_BRANDMARK, "eyebrow": eyebrow, "h1": h1, "blurb": blurb, "btns": btns}
+""" % {"title": title, "brand_head": brand.BRAND_HEAD, "tokens": tokens_href,
+       "brand": brand.brand_lockup("/parents/"), "eyebrow": eyebrow, "h1": h1, "blurb": blurb, "btns": btns}
 
 
 def publish_consumer_launch(output_dir, asset_ver):
@@ -5921,6 +5864,12 @@ def build_site(output_dir="mrbadmus_site"):
     }
 
     print(f"\n🏗️  Building MrBadmusAI v5 → {output_dir}/\n")
+
+    # The one mark's JavaScript copy (shared/brand/brand.js) is WRITTEN from
+    # brand.py, here, before shared/ is copied below — so the published file
+    # is always this build's, never a stale one (one-mark ruling, 13 Sep 2026).
+    if brand.write_brand_js():
+        print("  ✅ shared/brand/brand.js regenerated from brand.py")
 
     # ── Wipe the deploy tree — except output this generator does not own ───
     # build_site() rebuilds output_dir from scratch. That is correct for
@@ -6343,6 +6292,42 @@ def build_site(output_dir="mrbadmus_site"):
     # output_dir and the copy-to-repo-root round-trip below finds it exactly
     # where it belongs — the root ks3/ mirror stays faithful without help.
 
+    # ── One mark: stamp every hand-written page (one-mark ruling, 13 Sep 2026) ──
+    # A hand-written page (root pages, teacher/, student/, consumer/, parents/,
+    # go/, org/) marks where its lockup and head tags go with
+    # <!--mrb:brand-->…<!--/mrb:brand--> and <!--mrb:brand-head-->…; this
+    # rewrites both regions from brand.py on every build. It runs on the
+    # DEPLOY tree after every copy above, so the round-trip below writes the
+    # stamped bytes back over the repo copies — the source always holds what
+    # ships. A page with no markers is returned unchanged by stamp_brand().
+    # The foreign trees (ks3/, 3d/) are skipped for the usual reason: one
+    # tree, one writer.
+    _brand_stamped = _brand_pages = 0
+    for _root, _subdirs, _files in os.walk(output_dir):
+        if os.path.abspath(_root) == os.path.abspath(output_dir):
+            for _d in FOREIGN_OUTPUT_DIRS:
+                if _d in _subdirs:
+                    _subdirs.remove(_d)
+        for _fn in _files:
+            if not _fn.endswith(".html"):
+                continue
+            _fp = os.path.join(_root, _fn)
+            with open(_fp, "r", encoding="utf-8") as _fh:
+                _content = _fh.read()
+            if brand.BRAND_START[:-3] not in _content and brand.HEAD_START not in _content:
+                continue
+            _brand_pages += 1
+            _new = brand.stamp_brand(_content)
+            if _new != _content:
+                with open(_fp, "w", encoding="utf-8") as _fh:
+                    _fh.write(_new)
+                # The cache-bust pass below re-adds the ?v= stamps stamp_brand
+                # just wrote without, so only a change beyond them counts.
+                if re.sub(r"\?v=[0-9a-f]+", "", _new) != re.sub(r"\?v=[0-9a-f]+", "", _content):
+                    _brand_stamped += 1
+    print(f"  ✅ one mark: {_brand_pages} hand-written page(s) carry the brand markers; "
+          f"{_brand_stamped} changed by this build")
+
     # ── Safety net — fail loudly if the round-trip would delete source files ──
     # The "Copy to repo root" round-trip below does shutil.rmtree(./<dir>) for
     # each top-level dir in mrbadmus_site/ before copytree-ing it back. If a
@@ -6457,6 +6442,14 @@ def build_site(output_dir="mrbadmus_site"):
          if _fn.endswith((".css", ".js"))
          and os.path.isfile(os.path.join(output_dir, "shared", _fn))],
         key=lambda _n: (-len(_n), _n))
+    # ⊕ One-mark ruling (13 Sep 2026) — the brand kit files brand_head()
+    # links (favicon, app icon, brand.css) live in shared/brand/, a
+    # SUBDIRECTORY, which the top-level list above never reaches. /shared/*
+    # is served `immutable` for a year (_headers), so an unstamped brand.css
+    # would pin today's lockup styles in every browser that ever loads it.
+    # Stamped from their own bytes, by the same pass, and verified below
+    # like the rest. Names are read out of BRAND_HEAD, not listed here.
+    _versioned_assets += re.findall(r'/shared/(brand/[^"?]+)"', brand.BRAND_HEAD)
     _asset_ver = {}
     for _name in _versioned_assets:
         _p = os.path.join(output_dir, "shared", _name)

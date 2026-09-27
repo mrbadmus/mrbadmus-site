@@ -77,6 +77,7 @@ import sys
 
 # One stamping scheme, four writers. See build_teacher_port.py's note.
 from build_ks3 import stamp_versions
+import brand  # the ONE brand mark (one-mark ruling, 13 Sep 2026)
 # ⊕ Theme run, 27 Sep 2026 — the one pre-paint snippet every generator
 # emits; see theme_head.py's own docstring. The control's slot itself is
 # NOT added here — this page's header is `generate_site_v5.nav_html()`
@@ -1779,13 +1780,13 @@ def live_nav():
             "time either changed." % e)
     nav = nav_html()
     for want, why in (
-            ('class="nav-brand"', "the gold-to-rust two-chevron + wordmark "
-                                  "CLAUDE.md requires on an external root page"),
-            ('class="brand-logo"', "the CLASSIC chevron's own class. Without "
-                                   "this check the assertion above passes on "
-                                   "MRB-301's chrome nav too — it also has a "
-                                   "`.nav-brand` — which is exactly how the "
-                                   "new header reached this page unnoticed"),
+            # ⊕ One-mark ruling (Mide, 13 Sep 2026): the nav's brand is the
+            # ONE lockup brand.py draws — the gold-to-rust `.nav-brand` /
+            # `.brand-logo` pair this used to require is retired. Checked by
+            # the lockup's own class and by the mark's data attribute, so a
+            # nav carrying any other drawing fails here.
+            ('class="mrb-brand"', "the one brand lockup (brand.brand_lockup)"),
+            (brand.MARK_SVG, "brand.py's mark, byte for byte"),
             ('id="nav-auth-area"', "nav.js's sign-in slot"),
             ('class="nav-burger"', "the drawer trigger"),
             ('class="nav-cluster"', "the right-hand cluster")):
@@ -1918,18 +1919,11 @@ def page_html(roots, imports, logic, nav, fixture, versions):
         # `#mrb-leaderboard` and never touches <head>, so no binding can reach
         # it — which on the student pages once meant a real class name shipped
         # in a file whose own banner said it held no data.
-        "<title>Leaderboard | MrBadmusAI</title>\n"
-        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — the same
-        # `#E4572E` chevron favicon `generate_site_v5.KS4_FAVICON_LINK` gives
-        # every KS4 chrome and lesson page, kept as its own literal here for
-        # the same reason: this port is deliberately independent of the KS4
-        # generator (see `page_html`'s own note on why the nav is read fresh
-        # rather than lifted, elsewhere in this file).
-        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"data:image/svg+xml;"
-        "base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdC"
-        "b3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUi"
-        "IHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2Fw"
-        "PSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\">\n"
+        "<title>Leaderboard | MrBadmus</title>\n"
+        # ⊕ One-mark ruling (13 Sep 2026) — the kit favicon, apple-touch
+        # icon and the lockup's stylesheet, from brand.py (it replaced Stream
+        # J's inline base64 upward chevron, a third drawing of the mark).
+        "%s\n"
         "%s"
         "<link rel=\"preload\" href=\"/shared/fonts/fraunces-var-latin.woff2\" "
         "as=\"font\" type=\"font/woff2\" crossorigin>\n"
@@ -1958,6 +1952,7 @@ def page_html(roots, imports, logic, nav, fixture, versions):
         "%s"
         "</body>\n</html>\n"
         % (theme_head.THEME_HEAD,
+           brand.BRAND_HEAD,
            (_BANNER_FIXTURE % FIXTURE_OUT) if fixture
            else (_BANNER % LIVE_JS_NAME),
            head_links,
@@ -2892,6 +2887,15 @@ def build():
         # URL that will never change again.
         with open(os.path.join(SHARED_OUT, name), "wb") as fh:
             fh.write(body)
+
+    # ⊕ One-mark ruling (13 Sep 2026) — brand.BRAND_HEAD links the kit's
+    # favicon, app icon and the lockup's stylesheet under /shared/brand/.
+    # Stamped from their own bytes like every other /shared/ link here, so
+    # `_verify_stamps` holds them to the same standard. The names are read
+    # out of BRAND_HEAD, not listed, so a kit file brand.py adds is stamped
+    # without an edit here. generate_site_v5 publishes shared/brand/ whole.
+    for name in re.findall(r'/shared/(brand/[^"?]+)"', brand.BRAND_HEAD):
+        versions[name] = asset_hash(open(os.path.join(SHARED_SRC, name), "rb").read())
 
     # ── retire the hand-written original ─────────────────────────────────
     retire_original()
