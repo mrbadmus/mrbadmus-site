@@ -245,6 +245,102 @@ order) whose box contains the text's box and feeds ITS fill in as the ground
 layer, still composited through the real ancestor opacity chain exactly as
 before. Ordinary (non-SVG) text is unaffected.
 
+### Header route chip, exam-tip slot and per-route spec number (Mide's ruling, 27 Sep 2026)
+
+Not a science ruling — no examiner is involved and no taught content changes
+on any lesson. Three RULED departures from Design's own delivery, all
+reachable on every one of the 14 lessons (they touch the shared header
+markup / a fixed content slot / an eyebrow citation, not lesson-specific
+pedagogy), applied by `ks4_rulings.py` (R11–R14) and `build_ks4.py`. Each is
+a KEYED, NAMED exemption in `ks4_parity.py` — not a blanket tolerance —
+alongside the pre-existing `TEXT_EXEMPTIONS` table:
+
+- `apply_text_whitelist()` strips the two OLD static chip strings from
+  Design's reference header text (R12) and substitutes the Combined→Triple
+  spec citation on a Triple route (R14); `compare_section_text()` strips the
+  NEW chip/switcher text from the PORT side symmetrically, and proves the
+  R13 exam-tip section's rendered text against `all_subtopics_physics_
+  triple_higher.py`'s `examiner_tip` field directly (not merely excused).
+- `reference_sections_after_rulings()`'s `R7_SLUGS` is now an EMPTY set
+  (was `{"series-parallel-circuits", "resistors"}`) — R13 supersedes R7
+  (see below), so the exam-tip section is no longer dropped from the
+  reference and section counts match with no adjustment.
+- `check_styles()`'s `D_STYLES_EXEMPT_COMPONENTS = {"badge_pill"}` — the
+  generic `[style*='border-radius: 99px']` probe used to match the removed
+  static chip; it now matches a DIFFERENT, unrelated inline-styled pill on
+  lessons that have one (an R9 badge, a "Required practical" badge), an
+  apples-to-oranges comparison forever, by construction. Named, scoped to
+  this one component only; every other `STYLE_TARGETS` entry still gates.
+- `check_layout()`'s header `h_tol` (already 150, for R1's route-selector
+  removal) is raised to 180 at narrow widths — R12's one longer chip wraps
+  differently than the two short ones did (measured max: 164px of extra
+  delta), still nowhere near hiding a genuinely broken header.
+- New, POSITIVE assertions (not exemptions) prove the ruling did the right
+  thing rather than merely permitting a difference:
+  `ks4_pilot_check.check_route_chip()` (exactly one chip, its words, its
+  switcher's options and URLs), `check_exam_tips()` (the served source
+  carries the approved tip byte-exact and the page wires `{{ examTip }}`),
+  `check_spec_numbers()` (every page's eyebrow/key-note citation matches
+  `build_ks4.SPEC_TEXT`); `ks4_parity.check_route_switch_keyboard()` (Enter/
+  Space opens, Esc closes and returns focus, aria-expanded tracks state, in
+  a real browser).
+
+**1. Route chip + switcher (R11, R12).** Design's header carried two static,
+review-tool-only chips — "Combined · Triple" and "Foundation · Higher" — that
+said nothing a reader didn't already know from being on the page: every one
+of the 54 URLs IS one route. Replaced with ONE chip stating the page's own
+route in words ("Combined Science · Higher tier" etc.), built as a native
+`<details>/<summary>` disclosure listing the SAME lesson's other existing
+routes as plain links. The links are computed in Python
+(`build_ks4.compute_route_switch()`, from `ks4_lessons.LESSONS`'s own
+`routes` — the same ground truth `shared/ks4-lib.js`'s `hrefFor`/`NAV`
+mirrors) and arrive as a per-route mount prop, so they are already real `<a>`
+elements in the STATIC, prerendered HTML — no script required to read them,
+only to open/close the disclosure nicely (native `<details>` already gives
+Enter/Space and Tab for free; `shared/ks4-runtime.js` adds Esc-to-close and
+keeps `aria-expanded` in sync). Nanoparticles (Triple-only) gets a
+one-option menu (its only other route); every other lesson gets up to three.
+"Contains Higher"/"Contains Triple" (R9) and the "Required practical" badge
+sit immediately after these two spans in Design's own markup and are
+untouched.
+
+**2. The two physics lessons' exam tips (R13).** `series-parallel-circuits`
+and `resistors` shipped live with NO exam-tip slot at all (pilot report §0,
+flag 11 — Design's drafted tip was never approved; two named defects,
+neither a science error). Mide approved final text for both, word for word
+(quoted in full in the run's own report); it replaces the removed draft in
+the SAME fixed slot the other 12 lessons use — a plain `<section>` reading
+`{{ examTip }}`, no "Draft · awaiting approval" badge. The strings live in
+`all_subtopics_physics_triple_higher.py`'s `examiner_tip` field for these two
+subtopics (the same file every OTHER lesson's tip already comes from), never
+hardcoded in the ruling — `K.tip(slug)` serves it exactly like every other
+lesson's tip, on every route (not itself route-varying).
+
+**3. Per-route AQA spec section number (R14).** Every route used to show the
+Combined Science (8464) spec number, even a Triple/separate-science route.
+Triple routes now show the separate science's own verified number (8462
+Chemistry / 8463 Physics) in the eyebrow and the `Ks4KeyNote` `spec` prop;
+Combined routes are byte-identical to before. Every number is individually
+verified against the real AQA spec PDFs, section by section, never assumed
+by digit-pattern — `docs/theme/spec-numbers.md` is the citation table (spec
+code, PDF URL, page); `build_ks4.SPEC_TEXT` is its machine copy.
+`nanoparticles` carries no Combined route at all (8462 §4.2.4 is
+chemistry-only) and its eyebrow/key-note already showed the correct,
+verified 8462 number — R14 is never applied to it; nothing to swap. The
+already-shipped "both numbers named" required-practical citations
+(`series-parallel-circuits-C5`, `resistors-C13`/`C14` above) are
+DELIBERATELY left as they are: they are examined, frozen science content in
+`ks4_science_rulings.py`, not an eyebrow/key-note citation, and making them
+route-conditional would mean re-touching examined content this run's hard
+line puts out of scope — see the run's own report for the reasoning.
+
+Proof this landed cleanly: for every one of the 14 lessons, a structural
+diff of the three FREEZE pieces (`build_ks4.extract_freeze_pieces()` run
+against the PRE-this-run committed build) shows the ONLY differences are
+the ones named above — no other text, attribute, or JS line moved anywhere
+in the 14-lesson corpus. `python3 build_ks4.py --freeze` re-stamped
+`ks4_lessons/frozen.json` only after that diff was checked.
+
 ## Verbatim layer — the `source` rows (generated route copies)
 
 These never touch `all_subtopics_*.py` — they patch the in-memory dict `build_ks4.build_source_record()` builds, via `apply_source()`.
