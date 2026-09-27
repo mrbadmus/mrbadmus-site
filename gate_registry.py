@@ -2322,6 +2322,12 @@ GATES = [
 # repo root, so a new script cannot be quietly neither.
 
 EXCLUDED = {
+    # ── ⊕ theme run, 27 Sep 2026 ─────────────────────────────────────────────
+    "theme_head.py":
+        "the ONE pre-paint theme snippet and header slot every generator "
+        "imports (Mide's ruling, 26 Sep 2026: light by default, Light / Dark / "
+        "System on every page). A library; asserts nothing. "
+        "`theme_wiring_check` is the gate that proves every page carries it.",
     # ── ⊕ one-mark run, 27 Sep 2026 · the brand's tools ──────────────────────
     "brand.py":
         "the ONE brand partial (Mide's ruling, 13 Sep 2026) — a library every "
