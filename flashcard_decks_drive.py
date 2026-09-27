@@ -1067,6 +1067,39 @@ def main():
             errs = errors(p)
             check(not errs, "no schema: set-work sheet — no console errors", errs)
 
+            # ── 7b. A DIRECT/BOOKMARKED URL, WITH NO SCHEMA ────────────────
+            #
+            # decks.html and flashcards.html are hand-written, and neither
+            # is only reachable through a gated entry point: decks.html has
+            # its own address (bookmarkable regardless of the nav link), and
+            # flashcards.html's is carried in a flashcard assignment row's
+            # own bell link. Both must call the shared capability probe
+            # themselves and show a calm sentence rather than let their own
+            # table/RPC reads fail. Fresh pages (no INJECT_SHEET, no manual
+            # MRBSetWork.open) so this exercises each page's OWN boot path.
+            print("\n── no schema: a direct URL to decks.html / flashcards.html ──")
+            p = fresh(b, no_schema=True)
+            p.goto(base + "/teacher/decks.html", settle=2.0)
+            note = wait(p, "(function(){var n=document.getElementById('lib-note');"
+                           "return n && n.textContent==\"Flashcard decks aren't switched on yet.\" ? n.textContent : null;})()",
+                        timeout=3.0)
+            check(note == "Flashcard decks aren't switched on yet.",
+                  "no schema: decks.html shows the calm 'not switched on' state", note)
+            check(bool(p.eval("document.getElementById('new-deck').hidden")),
+                  "no schema: decks.html hides New deck rather than offering a dead control")
+            errs = errors(p)
+            check(not errs, "no schema: decks.html — no console errors", errs)
+
+            p = fresh(b, no_schema=True)
+            p.goto(base + "/teacher/flashcards.html?assignment=" + D1, settle=2.0)
+            title = wait(p, "(function(){var n=document.getElementById('fp-notice-title');"
+                            "return (n && !document.getElementById('fp-notice').hidden) ? n.textContent : null;})()",
+                         timeout=3.0)
+            check(title == "Flashcard decks aren't switched on yet.",
+                  "no schema: flashcards.html shows the calm 'not switched on' state", title)
+            errs = errors(p)
+            check(not errs, "no schema: flashcards.html — no console errors", errs)
+
             # timetable.html and today.html only, matching check group 6
             # above — both hand-written pages this stub's minimal state (no
             # academic-year/roster data) is enough to render; classes.html

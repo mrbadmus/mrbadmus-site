@@ -425,31 +425,33 @@ window.MrBadmusStudentData = (function () {
       .is('deleted_at', null)
       .single());
 
-    /* ⊕ MRB-351 — DEGRADE-SAFE. `kind` / `flashcard_mode` / `completion_rule`
-       are new columns (the schema migration is parked, not applied to
-       production — see docs/mrb351/REPORT.md). A PostgREST select naming a
-       column that does not exist fails the WHOLE request (42703), and this
-       promise used to be a bare `settle(...)` whose caller THROWS on
-       `.error` — so on production, today, this would have taken down the
-       whole class-page load rather than merely hiding Flashcards. Retried
-       once, without the three additive columns, on any error; the retry's
-       own error is what actually throws. */
+    /* ⊕ MRB-351 landing (27 Sep 2026) — NEVER NAME `kind` / `flashcard_mode`
+       / `completion_rule` / `deck_id` ON THE HOT PATH. Those four columns do
+       not exist on production (the schema migration is parked — see
+       docs/mrb351/REPORT.md), and a PostgREST select naming a column that
+       does not exist fails the WHOLE request (42703). A previous version of
+       this promise asked for them anyway and retried without them on error —
+       which is a 400 in the console and network log, and a second round
+       trip, on EVERY pupil class-page load, forever, until the migration
+       lands. "The live site must behave exactly as today" rules that out.
+
+       `quiz_type` is different: it EXISTS on production today (stream C
+       verified NOT NULL, CHECK constrained to topic_quiz/subtopic_quiz/
+       weekly_challenge), and MRB-351's `flashcard_set_work()` function
+       always writes `quiz_type='flashcards'` alongside `kind='flashcards'`
+       (supabase/migrations/20260924180100_mrb351_flashcards_functions.sql,
+       the INSERT in the class_ids loop). So `kind` is DERIVED from
+       `quiz_type` (`kindOf` below) rather than selected — on production,
+       `quiz_type` is never `'flashcards'`, so `kindOf` always answers
+       `'mcq_set'` and the request shape below is identical to main's, plus
+       one harmless extra column. No retry, because `quiz_type` cannot 42703
+       — it is exactly as safe to name as `due_at`. */
     const assignmentsPromise = settle(sb
       .from('assignments')
-      .select('id, title, subject_id, due_at, deleted_at, ' +
-              'kind, flashcard_mode, completion_rule, ' +
+      .select('id, title, subject_id, due_at, deleted_at, quiz_type, ' +
               'subject:subject_id ( name )')
       .eq('class_id', classId)
-      .is('deleted_at', null))
-      .then(function (r) {
-        if (!r.error) { return r; }
-        return settle(sb
-          .from('assignments')
-          .select('id, title, subject_id, due_at, deleted_at, ' +
-                  'subject:subject_id ( name )')
-          .eq('class_id', classId)
-          .is('deleted_at', null));
-      });
+      .is('deleted_at', null));
 
     const mySubsPromise = settle(sb
       .from('assignment_submissions')
@@ -598,6 +600,31 @@ window.MrBadmusStudentData = (function () {
 
     // 5. Compute viewer stats.
     const assignments = assignmentsRes.data || [];
+
+    /* ⊕ MRB-351 landing — `kind` DERIVED, never selected. See the comment on
+       `assignmentsPromise` above. On production `quiz_type` is never
+       `'flashcards'`, so `flashcardIds` is always empty and NO request is
+       made here — the page's request count is unchanged from before this
+       feature existed. Only once a real flashcard row exists does this fire
+       ONE follow-up read, scoped to those ids alone, for the one field this
+       page actually reads off it (`flashcard_mode`). */
+    function kindOf(a) { return a.quiz_type === 'flashcards' ? 'flashcards' : 'mcq_set'; }
+    const flashcardIds = assignments.filter(function (a) { return kindOf(a) === 'flashcards'; })
+                                     .map(function (a) { return a.id; });
+    const flashcardExtra = new Map();
+    if (flashcardIds.length > 0) {
+      try {
+        const fx = await sb.from('assignments').select('id, flashcard_mode').in('id', flashcardIds);
+        if (!fx.error) {
+          (fx.data || []).forEach(function (r) { flashcardExtra.set(r.id, r); });
+        }
+      } catch (e) { /* soft-fail: the deck still shows, just without a mode */ }
+    }
+    function flashcardModeOf(a) {
+      const x = flashcardExtra.get(a.id);
+      return x ? (x.flashcard_mode || null) : null;
+    }
+
     const ownFirstAttempts = pickFirstAttempts(mySubsRes.data || []);
 
     let submissions_completed = 0;
@@ -686,8 +713,9 @@ window.MrBadmusStudentData = (function () {
         on_time: isSubmitted && a.due_at && sub.submitted_at <= a.due_at,
         submitted_at: isSubmitted ? sub.submitted_at : null,
         // ⊕ MRB-351 — a flashcard deck, or (the default) a question set.
-        kind: a.kind || 'mcq_set',
-        flashcard_mode: a.flashcard_mode || null,
+        // Both DERIVED from `quiz_type`, never selected — see above.
+        kind: kindOf(a),
+        flashcard_mode: flashcardModeOf(a),
       };
 
       if (isSubmitted) {

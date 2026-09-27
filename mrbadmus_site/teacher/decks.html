@@ -177,8 +177,8 @@
 <script src="/shared/config.js?v=d1fecb43"></script>
 <script src="/shared/class-entry.js?v=a97c1d3d"></script>
 <script src="/shared/teacher-guard.js?v=f7fbad7c"></script>
-<script src="/shared/teacher-data.js?v=587bb862"></script>
-<script src="/shared/teacher-admin-nav.js?v=54ee625c"></script>
+<script src="/shared/teacher-data.js?v=0174fe7c"></script>
+<script src="/shared/teacher-admin-nav.js?v=7fead972"></script>
 <script src="/shared/formulae.js?v=e4bfb091"></script>
 <script src="/shared/flashcard-decks.js?v=efe64210"></script>
 <script>
@@ -395,6 +395,29 @@
     return p.display_name || [p.first_name, p.last_name].filter(Boolean).join(" ");
   }
 
+  /* ⊕ MRB-351 landing (27 Sep 2026) — A HAND-TYPED OR BOOKMARKED URL, WITH
+     NO SCHEMA, GETS A CALM SENTENCE, NOT A FAILED TABLE READ. The nav link
+     that would normally bring a teacher here is itself capability-gated
+     (`shared/teacher-admin-nav.js`'s `probeDecksCapability`) and so never
+     appears on production today — but this page has its own address, and a
+     teacher who already knows it (a bookmark from a demo, a colleague's
+     link) can open it directly regardless. `flashcardsCapable()` is the
+     SAME shared, cached probe the nav link and the Set work sheet both use
+     — one probe, three readers — so this costs no extra request beyond
+     what a visit to any other teacher page already pays. On a `false`
+     answer, `load()` is never called: `API.list()` would otherwise ask
+     `flashcard_decks` directly and fail (PGRST205 on production today),
+     landing on the existing "Unavailable" retry state — a claim that
+     something is temporarily broken, when the honest answer is that the
+     feature has not shipped yet. */
+  function showNotSwitchedOn() {
+    $("new-deck").hidden = true;
+    $("tabs").hidden = true;
+    $("lib-search").hidden = true;
+    $("lib-retry").hidden = true;
+    note("Flashcard decks aren't switched on yet.");
+  }
+
   MrBadmusTeacherGuard.requireTeacherRole({
     onDenied: function () { /* the guard redirects */ },
     onAllowed: function (ctx) {
@@ -408,7 +431,12 @@
         ? window.MrBadmusAdminScope.isAdmin(sb, uid).catch(function () { return false; })
         : Promise.resolve(false);
       adminP.then(function (a) { state.admin = !!a; if (state.decks.length) { render(); } });
-      load();
+      var capP = (window.MrBadmusAdminScope && window.MrBadmusAdminScope.flashcardsCapable)
+        ? window.MrBadmusAdminScope.flashcardsCapable().catch(function () { return false; })
+        : Promise.resolve(false);
+      capP.then(function (capable) {
+        if (capable) { load(); } else { showNotSwitchedOn(); }
+      });
     }
   });
 })();

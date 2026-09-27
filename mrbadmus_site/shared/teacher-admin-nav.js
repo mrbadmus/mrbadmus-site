@@ -257,34 +257,68 @@ window.MrBadmusAdminScope = (function () {
      ("every teacher may keep decks"), which on production would put a link
      to a page that opens onto a table that does not exist.
 
-     `decksCapable` is null (unprobed), true or false, decided ONCE per page
-     load by the cheapest possible read — `limit(0)` on `flashcard_decks`,
-     no rows, just "does this exist and can I ask it at all" — and cached in
-     memory for the rest of the page's life. Fails CLOSED: any error
+     `decksCapable` is null (unprobed), true or false, decided by the
+     cheapest possible read — `limit(0)` on `flashcard_decks`, no rows, just
+     "does this exist and can I ask it at all". Fails CLOSED: any error
      (missing table 42P01/PGRST205, RLS refusal, no client, network) leaves
      the link out. Run lazily, off `watchToday`'s own boot, never blocking
-     Today or the rest of the nav on it. */
+     Today or the rest of the nav on it.
+
+     ⚠️ A NEGATIVE ANSWER IS CACHED IN `sessionStorage`, A POSITIVE ONE IS
+     NOT. On production this probe answers false on every single page in
+     the tab session — every Today, every timetable, every class list — and
+     without a cache that is one guaranteed-to-fail request (a 404/PGRST205
+     line in the console and network log, on the very question CLAUDE.md's
+     degrade-safety rule says must not appear) on every one of them. Exactly
+     the same shape of expected-failure `teacher-live.js`'s `matrixFromRollup`
+     already documents for `teacher_class_rollup_v2` (PGRST202 until ITS
+     migration lands) — a safety net, not a licence to skip the migration.
+     Once true, it is safe to trust for the rest of the tab (the schema does
+     not appear and disappear), so a positive answer stays in-memory only —
+     nothing to invalidate, and nothing written for a shared machine to
+     leak a capability flag through (harmless as that would be; simplest to
+     just not). `sessionStorage` dies with the tab, so a genuine migration
+     lands within one browser session of a teacher's next visit at the
+     latest — reading `try`/`catch`-guarded throughout, exactly like
+     `class-entry.js`'s own cache helpers, because a private window or
+     blocked site data must degrade to "probe again", never to a throw. */
   var decksCapable = null;
   var decksProbe = null;
+  var DECKS_CAP_KEY = 'mrb-fc-cap:v1';
+  function readCachedNo() {
+    try { return sessionStorage.getItem(DECKS_CAP_KEY) === '0'; } catch (e) { return false; }
+  }
+  function writeCachedNo() {
+    try { sessionStorage.setItem(DECKS_CAP_KEY, '0'); } catch (e) { /* private window, or blocked */ }
+  }
   function probeDecksCapability() {
     if (decksCapable !== null) { return Promise.resolve(decksCapable); }
+    if (readCachedNo()) { decksCapable = false; return Promise.resolve(false); }
     if (decksProbe) { return decksProbe; }
     decksProbe = client(4000).then(function (sb) {
+      /* ⚠️ NOT CACHED. "No client within 4s" is the guard not having
+         arrived yet (real on the five ported pages, whose second wave can
+         genuinely be slow), not an answer about the schema — writing a
+         negative here could pin a whole session to "no Flashcards" from one
+         slow page, on real schema. Only a real answer from the table (below)
+         or its rejection is cached. */
       if (!sb) { decksCapable = false; decksProbe = null; return false; }
       return Promise.resolve(
         sb.from('flashcard_decks').select('id', { head: true, count: 'exact' }).limit(0)
       ).then(function (r) {
         decksCapable = !(r && r.error);
         decksProbe = null;
-        if (decksCapable) { injectDecks(); }
+        if (decksCapable) { injectDecks(); } else { writeCachedNo(); }
         return decksCapable;
       }, function () {
         decksCapable = false;
+        writeCachedNo();
         decksProbe = null;
         return false;
       });
     }, function () {
       decksCapable = false;
+      writeCachedNo();
       decksProbe = null;
       return false;
     });

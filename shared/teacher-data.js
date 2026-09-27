@@ -2100,31 +2100,34 @@ window.MrBadmusTeacherData = (function () {
                for a KS3 combined class is "Science" and matches no node in
                any tree. Sending the second where the first belongs would not
                have been a fix. */
-            /* ⊕ MRB-351 — WHICH KIND OF WORK THIS IS. `kind` is
-               'mcq_set' | 'flashcards'; the other three describe a
-               flashcard set. Every screen needs `kind` because a flashcard
-               set is handed in like any other work and is NEVER graded
-               (`cellOf` in teacher-live.js, and its SQL twin in
-               20260924180200_mrb351_rollup_kind.sql).
-
-               ⚠️ DEGRADE-SAFE BY DESIGN. Production has `teacher_note` today
-               (pre-existing) but NOT `kind` / `flashcard_mode` /
-               `completion_rule` / `deck_id` (MRB-351's schema migration is
-               parked, not applied — see docs/mrb351/REPORT.md and
-               CLAUDE.md's "when a migration may touch PRODUCTION"). A
+            /* ⊕ MRB-351 landing (27 Sep 2026) — NEVER NAME `kind` /
+               `flashcard_mode` / `completion_rule` / `deck_id` ON THE HOT
+               PATH. Those four columns do not exist on production (the
+               schema migration is parked — see docs/mrb351/REPORT.md), and a
                PostgREST select naming a column that does not exist fails the
-               WHOLE request (42703), so the four new columns are asked for
-               FIRST and, on any error, retried without them — landing
-               exactly on production's real current shape (has
-               `teacher_note`, lacks the rest) — and if THAT also errors
-               (a project with neither), retried a second time without
-               `teacher_note` either. Every retry is a plain re-ask, never a
-               throw, so a class list loads on every one of the three shapes:
-               full MRB-351 schema, today's production, and pre-Stream-J. */
+               WHOLE request (42703). A previous version of this select asked
+               for them anyway and retried without them on error — a 400 in
+               the console and network log, plus a second round trip, on
+               EVERY teacher page load, forever, until the migration lands.
+               "The live site must behave exactly as today" rules that out.
+
+               `quiz_type` is different: it EXISTS on production today
+               (stream C verified NOT NULL, CHECK constrained to
+               topic_quiz/subtopic_quiz/weekly_challenge), and MRB-351's
+               `flashcard_set_work()` function always writes
+               `quiz_type='flashcards'` alongside `kind='flashcards'`
+               (supabase/migrations/20260924180100_mrb351_flashcards_
+               functions.sql, the INSERT in the class_ids loop). So `kind` is
+               DERIVED from `quiz_type` (`kindOf` below, after this batch
+               resolves) rather than selected. On production `quiz_type` is
+               never `'flashcards'`, so the request shape below is identical
+               to before this feature existed, plus one harmless extra
+               column — `quiz_type` cannot 42703, so it carries no retry of
+               its own. */
             .select(
               'id, class_id, title, due_at, release_at, source, set_by, ' +
               'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
-              'kind, flashcard_mode, completion_rule, deck_id, teacher_note, ' +
+              'quiz_type, teacher_note, ' +
               'created_at, academic_week, subject_id, ' +
               'subject:subject_id ( id, name )'
             )
@@ -2144,24 +2147,12 @@ window.MrBadmusTeacherData = (function () {
               .select(
                 'id, class_id, title, due_at, release_at, source, set_by, ' +
                 'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
-                'teacher_note, created_at, academic_week, subject_id, ' +
+                'quiz_type, created_at, academic_week, subject_id, ' +
                 'subject:subject_id ( id, name )'
               )
               .in('class_id', chunk)
               .is('deleted_at', null);
-            if (r2.error) {
-              var r3 = await sb.from('assignments')
-                .select(
-                  'id, class_id, title, due_at, release_at, source, set_by, ' +
-                  'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
-                  'created_at, academic_week, subject_id, ' +
-                  'subject:subject_id ( id, name )'
-                )
-                .in('class_id', chunk)
-                .is('deleted_at', null);
-              if (r3.error) { r3.error.__stage = 'assignments'; throw r3.error; }
-              return r3.data || [];
-            }
+            if (r2.error) { r2.error.__stage = 'assignments'; throw r2.error; }
             return r2.data || [];
           }
           return r.data || [];
@@ -2315,6 +2306,36 @@ window.MrBadmusTeacherData = (function () {
       }
     }
 
+    /* ⊕ MRB-351 landing (27 Sep 2026) — `kind` DERIVED from `quiz_type`,
+       never selected. See the comment on the `assignments` select above. On
+       production `quiz_type` is never `'flashcards'`, so `flashcardIds` is
+       always empty and NO request is made here — the page's request count
+       is unchanged from before this feature existed. Only once a real
+       flashcard row exists does this fire ONE follow-up read, scoped to
+       those ids alone, for the three fields the Set-work Edit sheet and the
+       kind split actually need (`flashcard_mode`, `completion_rule`,
+       `deck_id`) — chunked like every other id-scoped read in this file. */
+    function kindOf(a) { return a.quiz_type === 'flashcards' ? 'flashcards' : 'mcq_set'; }
+    const flashcardIds = assignmentRows.filter(function (a) { return kindOf(a) === 'flashcards'; })
+                                        .map(function (a) { return a.id; });
+    const flashcardExtra = new Map();
+    if (flashcardIds.length > 0) {
+      try {
+        const fxRows = await inChunks(flashcardIds, async function (chunk) {
+          const r = await sb.from('assignments')
+            .select('id, flashcard_mode, completion_rule, deck_id')
+            .in('id', chunk);
+          if (r.error) throw r.error;
+          return r.data || [];
+        });
+        fxRows.forEach(function (r) { flashcardExtra.set(r.id, r); });
+      } catch (e) {
+        console.error('[teacher-data] flashcard extras query failed (soft-fail: '
+          + 'kind still shows, mode/rule/deck stay null)', e);
+      }
+    }
+    function flashcardExtraOf(a) { return flashcardExtra.get(a.id) || null; }
+
     // ── Assemble, per class ────────────────────────────────────────────
     const membersByClass = new Map();
     const departedByClass = new Map();
@@ -2359,12 +2380,11 @@ window.MrBadmusTeacherData = (function () {
         scope_ref: a.scope_ref,
         set_subject: a.set_subject || "",
         paper: a.paper,
-        // ⊕ MRB-351 — see the select above.
-        kind: a.kind || 'mcq_set',
-        flashcard_mode: a.flashcard_mode || null,
-        completion_rule: a.completion_rule || null,
-        deck_id: a.deck_id || null,
-        teacher_note: a.teacher_note == null ? null : a.teacher_note,
+        // ⊕ MRB-351 landing — DERIVED from `quiz_type`, never selected.
+        kind: kindOf(a),
+        flashcard_mode: (flashcardExtraOf(a) || {}).flashcard_mode || null,
+        completion_rule: (flashcardExtraOf(a) || {}).completion_rule || null,
+        deck_id: (flashcardExtraOf(a) || {}).deck_id || null,
         created_at: a.created_at,
         academic_week: a.academic_week,
         subject_id: a.subject_id,

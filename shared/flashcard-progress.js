@@ -43,6 +43,12 @@
   var SAY = {
     notFound: "Flashcard set not found",
     failed: "Couldn't load this set",
+    // ⊕ MRB-351 landing (27 Sep 2026) — a hand-typed/bookmarked URL, with no
+    // schema on production, reads a calm sentence rather than "Couldn't
+    // load this set" — which is a claim that something is temporarily
+    // broken, when the honest answer is that the feature is not switched
+    // on yet. See `start()`'s capability check below.
+    notSwitchedOn: "Flashcard decks aren't switched on yet.",
     noPupils: "No pupils in this class",
     saved: "Saved",
     saveFailed: "Couldn't save",
@@ -540,7 +546,10 @@
   function stopPolling() { if (S.timer) { clearInterval(S.timer); S.timer = null; } }
 
   document.addEventListener("visibilitychange", function () {
-    if (!S.id || !S.sb) { return; }
+    // ⊕ MRB-351 landing — `S.notSwitchedOn` (set by `start()`'s capability
+    // check) stops a tab-focus refresh from re-attempting the same read
+    // `start()` already declined to make.
+    if (!S.id || !S.sb || S.notSwitchedOn) { return; }
     if (document.visibilityState === "hidden") { stopPolling(); }
     else { refresh(); startPolling(); }
   });
@@ -776,7 +785,9 @@
     var n = $("fp-notice");
     n.hidden = false;
     $("fp-notice-title").textContent =
-      (/not_found|not_yours|42501|invalid input syntax/i.test(code)) ? SAY.notFound : SAY.failed;
+      code === "not_switched_on" ? SAY.notSwitchedOn
+        : (/not_found|not_yours|42501|invalid input syntax/i.test(code)) ? SAY.notFound
+        : SAY.failed;
     stopPolling();
   }
 
@@ -805,6 +816,20 @@
     var guard = window.MrBadmusTeacherGuard;
     S.sb = guard && guard.getClient ? guard.getClient() : null;
     if (!S.id || !S.sb) { fail({ code: "not_found" }); return; }
+    /* ⊕ MRB-351 landing (27 Sep 2026) — the SAME shared, cached probe the
+       Set work sheet and the "Flashcard decks" nav link both use
+       (`window.MrBadmusAdminScope.flashcardsCapable()`). This page's own
+       address is only ever reached from a live flashcard assignment row —
+       which cannot exist without the schema, so this is unreachable in the
+       ordinary click-through flow — but a hand-typed or bookmarked
+       `?assignment=<id>` bypasses that. On `false`, `fetchProgress()` is
+       never called: it would otherwise read `assignments`/the flashcard
+       RPCs directly and fail (PGRST205/42703 on production today). */
+    var scope = window.MrBadmusAdminScope;
+    var capable = scope && scope.flashcardsCapable
+      ? await scope.flashcardsCapable().catch(function () { return false; })
+      : false;
+    if (!capable) { S.notSwitchedOn = true; fail({ code: "not_switched_on" }); return; }
     try {
       render(await fetchProgress());
     } catch (e) { fail(e); return; }

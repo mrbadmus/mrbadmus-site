@@ -443,6 +443,9 @@ GATES = [
                   "shared/formulae.js", "shared/teacher-admin-nav.js",
                   "teacher/decks.html", "teacher/timetable.html",
                   "teacher/today.html",
+                  # ⊕ MRB-351 landing (27 Sep 2026) — the no-schema block's
+                  # direct-URL checks now also drive flashcards.html itself.
+                  "teacher/flashcards.html", "shared/flashcard-progress.js",
                   "shared/teacher-guard.js", "shared/teacher-data.js",
                   "shared/class-entry.js", "shared/config.js",
                   "shared/teacher-ds.css", "shared/tokens.css"],
@@ -469,6 +472,38 @@ GATES = [
              "screen. ⚠️ The stub models what RLS returns; it proves the "
              "pages given those rows, not the policies — those are SQL's, "
              "on TEST."),
+
+    dict(name="flashcard_request_shape_drive",
+         cmd=["python3", "flashcard_request_shape_drive.py"],
+         speed="slow",
+         watches=["flashcard_request_shape_drive.py", "ks3_browser.py",
+                  "shared/teacher-data.js", "shared/student-data.js",
+                  "shared/class-entry.js"],
+         why="⊕ MRB-351 landing, 27 Sep 2026 (Mide's ruling) — 'the live "
+             "site must behave exactly as today'. Calls "
+             "MrBadmusTeacherData.loadClassMatrices and "
+             "MrBadmusStudentData.loadStudentClass DIRECTLY (the one data "
+             "layer under classes/class-detail/student-detail/digest/"
+             "insights/Today and the student class page respectively — "
+             "proving the request shape here proves it for all of them "
+             "transitively) against a recording stub, never a real network. "
+             "On production's real shape (no assignments row has "
+             "quiz_type='flashcards'): no select ever names kind/"
+             "flashcard_mode/completion_rule/deck_id, no flashcard table or "
+             "RPC is touched, assignments is asked exactly once (quiz_type "
+             "added, nothing else), and the TOTAL call count is proved "
+             "EQUAL to origin/main's own file on the identical fixture — "
+             "fetched live with `git show <the exact commit this branch "
+             "merged>:shared/{teacher,student}-data.js` into a throwaway "
+             "same-origin directory, not asserted by inspection. On a "
+             "fixture with one flashcard row: assignments is asked exactly "
+             "twice — the same first select, then ONE follow-up scoped to "
+             "that row's id alone, naming only flashcard_mode/"
+             "completion_rule/deck_id, proving the extra columns are never "
+             "asked for BEFORE the answer says they exist. If `git show` "
+             "cannot resolve main's commit (e.g. a shallow clone), the "
+             "count-equality checks report SKIPPED BY NAME with the reason "
+             "printed, never silently passed."),
 
     dict(name="today_drive",
          cmd=["python3", "today_drive.py"],
