@@ -494,11 +494,11 @@
      half-term NUMBERS (23px/800) are "large text" and pass at 3:1 with
      --ks3-ink, which is why they may stay ink. */
   --ks3-autumn:      #E08A1E;
-  --ks3-autumn-ink:  #4A3410;
+  --ks3-autumn-ink:  #422E0E;   /* theme run: was #4A3410, 4.37:1 on --ks3-autumn under the season tile; now 4.80:1 */
   --ks3-spring:      #7FB927;
   --ks3-spring-ink:  #2E4409;
   --ks3-summer:      #22B8CF;
-  --ks3-summer-ink:  #0B4954;
+  --ks3-summer-ink:  #09414B;   /* theme run: was #0B4954, 4.21:1 on --ks3-summer; now 4.72:1 */
 
   /* ── year identity tints — the year card's number tile ── */
   --ks3-year7-tint:  #FDE8DF;

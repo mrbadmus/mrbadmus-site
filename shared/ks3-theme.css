@@ -21,6 +21,11 @@
    viewed theme was. */
 @media screen {
 [data-theme="dark"] .rd[data-mode="ks3"] {
+  /* The legacy accent pair KS3 borrows for the shared chrome (tokens.css
+     .rd[data-mode="ks3"]: --accent #E4572E, --accent-hover #A93411) does NOT
+     flip in dark, so the ink that sits on it must not flip either — without
+     this the chat header subtitle took the global dark #241D14 on rust (2.53:1). */
+  --on-accent: #FFFFFF; --on-accent-soft: #FBF5F3;
   --ks3-ground: #16120E; --ks3-card: #1F1A15; --ks3-band: #2A231C; --ks3-inset: #231D17; --ks3-row-dim: #1B1611;
   --ks3-rule: #3E352C; --ks3-rule-strong: #5E5246; --ks3-option-border: #4F443A; --ks3-option-spent: #2B241D;
   --ks3-ink: #F3ECE0; --ks3-ink-body: #E3D9CA; --ks3-ink-muted: #C2B6A6; --ks3-ink-faint: #B0A493; --ks3-ink-ghost: #8A7F72;
