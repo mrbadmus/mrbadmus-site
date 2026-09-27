@@ -362,6 +362,18 @@
 
 /* ── Responsive tightening ── */
 @media (max-width: 900px) { .nav-crumbs { display: none; } }
+/* Theme run (27 Sep 2026): the theme control leaves the bar at the same rung
+   just above the crumbs (clean from 916px on a signed-in lesson page with
+   the bell; 960 for headroom) and lives in the drawer below it (nav.js). By
+   student_bell_drive's width ladder: with a signed-in chip and the bell up,
+   the bar's own copy cost 7-42px of sideways scroll at 360-430. */
+@media (max-width: 960px) { .nav-cluster > .mrb-theme-slot { display: none; } }
+.nav-drawer-theme {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: 10px; padding: 10px 12px; border-top: 1px solid var(--border);
+  color: var(--text);
+}
+.nav-drawer-theme-label { font-weight: 600; font-size: 0.95rem; }
 /* 3D Studio collapses one rung ABOVE Sign Up, not with it, and the extra rung
    is measured rather than chosen. It is a word, so it is the widest item in the
    cluster (~103px on a generated topic page, where reading density scales the
