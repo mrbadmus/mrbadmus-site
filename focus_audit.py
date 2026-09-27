@@ -172,27 +172,6 @@ SCAN_JS = r"""
       textDecoration: cs.textDecorationLine
     };
   }
-  // ⊕ theme run, 26 Sep 2026 — a NATIVE `input[type=radio]` group (the
-  // Light/Dark/System control shared/theme.js mounts into every
-  // `[data-mrb-theme]` slot, site-wide) has ROVING TABINDEX by platform
-  // design: only ONE member of a same-`name` group is ever a forward-Tab
-  // stop (the checked one, or the first if none is checked) — the other
-  // members are reached with the arrow keys, never with Tab, and that is
-  // correct, accessible, standards-shape behaviour, not a defect. This
-  // gate's candidate scan (below) previously required EVERY radio to be
-  // its own Tab stop, which is the wrong thing to measure for any native
-  // radio group and is what made `root_auth`, `root_index`,
-  // `teacher_today/admin/import` all report the theme control's two
-  // non-tab-stop radios "UNREACHED" (see focus_audit's own docstring,
-  // Stream G follow-up, for the two earlier cases of this exact kind of
-  // "measuring the wrong thing"). Grouped by `name` (theme.js mints a
-  // unique name per mounted control, so this never conflates two groups).
-  var radioGroupTabStop = {};  // name -> the element that IS the Tab stop
-  Array.prototype.slice.call(document.querySelectorAll('input[type="radio"][name]'))
-    .forEach(function (r) {
-      var g = radioGroupTabStop[r.name];
-      if (r.checked || !g) { radioGroupTabStop[r.name] = r; }
-    });
   var counts = {};
   var out = [];
   nodes.forEach(function (el) {
@@ -215,16 +194,13 @@ SCAN_JS = r"""
     var base = el.tagName.toLowerCase() + '::' + (label || '(no label)');
     var n = counts[base] || 0;
     counts[base] = n + 1;
-    var isRadio = el.tagName === 'INPUT' && el.type === 'radio' && el.name;
-    var radioSkip = isRadio && radioGroupTabStop[el.name] !== el;
     out.push({
       key: base + '::' + n,
       tag: el.tagName.toLowerCase(),
       cls: (el.getAttribute('class') || '').slice(0, 60),
       label: label || '(no label)',
       style: styleOf(cs),
-      active: el === active,
-      radioSkip: radioSkip
+      active: el === active
     });
   });
   return JSON.stringify({candidates: out});
@@ -261,17 +237,6 @@ UNREACHABLE_JS = r"""
                                         // real Tab stop — a decorative
                                         // icon/label inside a button is
                                         // not a separate defect
-    // ⊕ theme run, 26 Sep 2026 — the mirror case: a `<label>` WRAPPING a
-    // real focusable control (shared/theme.js's `<label><input
-    // type=radio>…</label>`, the standard native label-around-input
-    // pattern) has `cursor:pointer` from its own CSS and no tabindex of
-    // its own, which used to flag it here as "not focusable at all". The
-    // label itself was never meant to be a separate Tab stop — the input
-    // it wraps IS the keyboard target, exactly as clicking the label
-    // already activates that input. An element that CONTAINS a real Tab
-    // stop is not a missed-focus defect any more than one that sits
-    // inside one is (the check three lines up).
-    if (e.querySelector(sel)) { continue; }
     var hasClick = !!e.getAttribute('onclick');
     var cur = getComputedStyle(e).cursor === 'pointer';
     if (!hasClick && !cur) { continue; }
@@ -590,12 +555,9 @@ def sweep_tabs(p, scope_json, presses, seen, expected, prev_style):
         cur_by_key = {c["key"]: c for c in data["candidates"]}
         for k, c in cur_by_key.items():
             seen[k] = c
-        # ⊕ theme run, 26 Sep 2026 — same `radioSkip` exclusion as the
-        # initial `expected` build (see audit_page/audit_chat_panel): a
-        # re-scan mid-sweep must not re-admit a native radio-group sibling
-        # that isn't its group's Tab stop, or the initial exclusion is
-        # undone on the very next press.
-        expected |= set(k for k, c in cur_by_key.items() if not c.get("radioSkip"))
+        # (A native radio group's non-landing members are never emitted by
+        # SCAN_JS — see radioSkip there — so a rescan cannot re-admit them.)
+        expected |= set(cur_by_key)
         active_c = next((c for c in data["candidates"] if c["active"]), None)
         if active_c is not None:
             k = active_c["key"]
@@ -666,14 +628,7 @@ def audit_chat_panel(p):
         return {"fail": "chat panel: %s" % data["error"]}
 
     seen = {c["key"]: c for c in data["candidates"]}
-    # ⊕ theme run, 26 Sep 2026 — a radio flagged `radioSkip` by SCAN_JS is a
-    # real, native, correctly-reachable control (via the arrow keys) that is
-    # simply not its OWN forward-Tab stop, because it shares a `name` with a
-    # sibling that IS the group's one roving-tabindex stop. Requiring Tab to
-    # land on it separately is asking for something no radio group anywhere
-    # does. It stays in `seen` (so a stray Tab press landing on it still
-    # updates tracking correctly) but drops out of `expected`.
-    expected = set(k for k, c in seen.items() if not c.get("radioSkip"))
+    expected = set(seen)
     prev_style = {c["key"]: c["style"] for c in data["candidates"]}
 
     # A few presses past the panel's own control count, to prove the trap
@@ -785,14 +740,7 @@ def audit_page(browser, port, spec):
         return data
 
     seen = {c["key"]: c for c in data["candidates"]}
-    # ⊕ theme run, 26 Sep 2026 — a radio flagged `radioSkip` by SCAN_JS is a
-    # real, native, correctly-reachable control (via the arrow keys) that is
-    # simply not its OWN forward-Tab stop, because it shares a `name` with a
-    # sibling that IS the group's one roving-tabindex stop. Requiring Tab to
-    # land on it separately is asking for something no radio group anywhere
-    # does. It stays in `seen` (so a stray Tab press landing on it still
-    # updates tracking correctly) but drops out of `expected`.
-    expected = set(k for k, c in seen.items() if not c.get("radioSkip"))
+    expected = set(seen)
     prev_style = {c["key"]: c["style"] for c in data["candidates"]}
 
     # ⚠️ A MARGIN, NOT AN EXACT COUNT. `leaderboard.html` proved why: one
