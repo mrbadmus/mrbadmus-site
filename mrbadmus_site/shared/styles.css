@@ -538,9 +538,9 @@ a { color: inherit; text-decoration: none; }
 .mistake-title { font-weight: 700; color: var(--danger); margin-bottom: var(--sp-2); }
 /* Examiner Tip — amber/gold exam-technique callout (site-wide, one per page) */
 .examiner-box {
-  background: #FFF6E4;
+  background: var(--examiner-tint);
   border: 1px solid transparent;
-  border-left: 3px solid #E0A21A;
+  border-left: 3px solid var(--examiner-border);
   border-radius: var(--radius-sm);
   padding: var(--sp-4) var(--sp-5);
 }
