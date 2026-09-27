@@ -209,7 +209,10 @@ def stub(progress1, progress2, detail):
     fx = {"uid": TEACHER,
           "tables": {"profiles": [{"id": TEACHER, "role": "teacher", "first_name": "Tess",
                                    "last_name": "Teacher", "school_id": "s", "deleted_at": None}],
-                     "staff_scopes": []},
+                     "staff_scopes": [],
+                     # ⊕ Set from class (M), 27 Sep 2026 — formulae are drawn
+                     # only on a Chemistry assignment; start() reads it here.
+                     "assignments": [{"id": ASSIGN, "subject": {"name": "Chemistry"}}]},
           "progress": progress1, "progress2": progress2, "detail": detail}
     return "window.__FP__=%s;\n%s" % (json.dumps(fx), STUB_JS)
 

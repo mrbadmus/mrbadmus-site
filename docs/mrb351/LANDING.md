@@ -153,3 +153,97 @@ Theme screenshots (not committed; in `~/tmp/mrb351-theme-shots/`): `review-table
   - Assets, each md5[:8] equal to its stamp: `flashcard-decks.css?v=cb9045ef`, `flashcard-decks.js?v=3acf513a`, `flashcard-progress.css?v=abf53d2e`, `flashcard-progress.js?v=d789beed`, `set-work.css?v=0410163d`, `set-work.js?v=adc79707`, `student-ds.css?v=a95e6c87`, `student-live.js?v=79338c4d`, `teacher-admin-nav.js?v=7582ce57`, `teacher-data.js?v=8743d7e1`, `teacher-live.js?v=123910f9`, `theme.js?v=6fd6f722`.
 - **Production is unchanged underneath.** Read-only, with the public anon key: `GET /rest/v1/flashcard_decks` → 404 `PGRST205`. That is exactly the answer the capability probe caches as "not switched on", so the feature stays hidden until the chat applies the migrations.
 - **Migrations** parked on `origin/feat/mrb351-migrations` `e0b39085f`: one commit on main holding the six files and `supabase/MRB351-APPLY.md`, md5s as in the first table. Its push re-ran `teacher_rollup_equal` against TEST: green.
+
+---
+
+## Set from class (M) — 27 Sep 2026
+
+Written for Mide and the chat. Mide could upload a deck on production but could not set it to a class. This section says what was wrong, what changed, and how each change was proved. Production credentials were not on this machine, so every live proof ran on **TEST**. Mide does the final production click in 8r/Sc1.
+
+### Edge function — the chat deploys `flashcard-extract` to production
+
+| file | md5 |
+|---|---|
+| `supabase/functions/flashcard-extract/index.ts` | `fc844d3272c9fe3a1f3c095b4ffa651d` |
+| `supabase/functions/_shared/flashcards/pipeline.ts` | `fa85e30cc6cce58561a4ae62e3024264` |
+| `supabase/functions/_shared/flashcards/extract_test.ts` (test only, not deployed) | `157a3a2c9fb94de3dd299eab5523fe68` |
+| `supabase/functions/_shared/flashcards/redact.ts`, `redact_test.ts` | **deleted** |
+
+`flashcard-answer-check` is unchanged, so it needs no redeploy.
+
+### 1. The blocker: no Flashcards choice when Set work opens from a class page
+
+**Cause.** `probeFcCapability()` in `shared/set-work.js` only asked `window.MrBadmusAdminScope`. The class page lazy-loads that module, so it is often not there yet when Set work opens. With the module missing, the sheet read "no", and the choice stayed hidden for as long as the page stayed open.
+
+**Fix.** The sheet now gets its own answer:
+
+- If the nav module is on the page, the sheet uses that module's cached probe, so the nav link and the sheet always agree.
+- If it is not, the sheet runs the same one-row GET of `flashcard_decks` itself. It follows the same rules: it never uses `head:true`, it treats only a missing table as "no", and it uses the same sessionStorage key for a "no".
+- If the answer is unknown, the sheet asks again while it is open. When an answer arrives, only the type choice is redrawn (`syncTypeChoice`), so the scroll position is kept.
+
+**Proof.**
+- `tools/mrb351_set_from_class_live.py` on TEST reproduced production's condition: `MrBadmusAdminScope` was removed before pressing the class page's own Set work button. The choice appeared **0.3 s** after the press, from the sheet's own probe.
+- Stubbed drive `flashcard_decks_drive` §5c: the same case passes, and Flashcards goes to Deck while Questions goes back to Classes.
+
+### 2. Questions and Flashcards side by side, at the top of the sheet
+
+The type choice is now its own block, `[data-sw=type]`. It is the first child of the sheet body, above every panel. It shows on the step the sheet opens on and on the step after (Topic or Deck), for new sets only. The two chips are equal, full-size options, using the same chip style as the Tier and Subject chips.
+
+- **Choosing Flashcards** goes straight to the Deck step when a class is already ticked (always true from a class page). With no class ticked yet, the sheet stays on Classes, and Next goes to Deck.
+- **Choosing Questions** returns to the Classes step, which is where the Questions flow starts. The Questions flow itself is unchanged.
+
+**Proof.** Live TEST: "it is the first thing on the sheet", and choosing Flashcards goes straight to Deck. Drive checks that the chips are equal width (±1 px). Screenshot `01-class-setwork-type-1280.png`.
+
+### 2b. A wider sheet
+
+From 1100 px wide, the sheet is `min(88vw, 1400px)`: **1126 px at 1280, 1267 px at 1440, and 1400 px at 1920**. The height is unchanged.
+
+- The class list and the topic tree go two columns.
+- Chip rows stay on one line.
+- The question list on the Detail step stays one column.
+
+Below 1100 px nothing changes, and phones stay exactly as they were (390 px wide).
+
+**Proof.** Live TEST at 1280, 1440, 1920 and 390, in light and dark: all 8 combinations have no sideways scroll. Screenshots are `10-sheet-*` and `11-sheet-topic-*`.
+
+### 3. "Set to a class" in the deck library
+
+Every ready deck with cards now has a **Set to a class** button (the primary style). It opens the same Set work sheet on Flashcards, with that deck chosen, on the Classes step. The deck is already chosen, so Next goes straight to Detail; Back still leads to the Deck step if the teacher wants a different deck. The page has no compiled class list, so the button reads the teacher's own classes once (`loadTeacherClasses(null, {metrics:false})`) and passes them to `MRBSetWork.open({deck, classes})`. The colleague toggle now reads **"Share with colleagues"** / **"Stop sharing with colleagues"**.
+
+**Proof.** Live TEST: the library row opens the sheet on Flashcards, the teacher's class is listed, Next goes straight to Detail, and the save is confirmed by a service-role read. Screenshots `07`–`09`. The stubbed drive checks the exact `flashcard_set_work` payload.
+
+### 4. Upload friction removed
+
+- The upload warning is deleted.
+- The pre-model redaction is deleted: `redact.ts` is gone, and `pipeline.ts` now sends text straight to the model.
+- Staff-only access and the answer-check escaping are untouched.
+- The "no names leaked" test is replaced by two tests. Both prove that `300 000 000 m/s` and `31536000` survive extraction exactly: one goes through the model call, the other through the no-model table path.
+- **Addition beyond the brief:** the cached-upload reply now carries the deck's `subject`, so item 5 can draw its title correctly.
+
+**Proof.** `deno test` in `_shared/flashcards`: 14 passed, 0 failed.
+
+### 5. Formula subscripts only on Chemistry decks
+
+Everywhere else, flashcard text is shown exactly as typed:
+
+- **Deck component:** `draw` and `hasFormula` take the deck's subject. The editor's preview follows the subject chips.
+- **Set work:** the deck summary title.
+- **Teacher progress page:** one read of `assignments → subjects(name)`.
+- **Pupil overlay:** the runtime's `fx` node draws plain text when the card carries `plain`. `hwVals` sets `plain` unless the assignment's subject is Chemistry. The page gets each assignment's subject from `window.__MRB_FC_SUBJECT__`, built from the work list's `subject_name`. That name comes from `flashcard_set_work`'s `subject_id`, which it takes from the deck's own subject; an untagged deck gets "Science".
+
+**Proof.**
+- `flashcard_decks_drive`: an untagged deck shows no subscript, and Chemistry does.
+- `flashcard_homework_drive` and `flashcard_progress_drive` pass, with Chemistry data.
+- `student_behaviour` is unchanged.
+
+### Live TEST proof
+
+`tools/mrb351_set_from_class_live.py` scored **27/27**. It used the throwaway world from `mrb331_fixture`, a real backend at `origin/main` 36f429e, and the built site. The pupil saw the deck in the work list, and the overlay opened on card 1 of 10. Teardown deleted rows by captured ids only, and a fresh query found **zero residue**. Screenshots are in `$MRB_SHOTS/set-from-class/`.
+
+### Decisions I made
+
+- **The Today page:** it has no Set work button, by an existing ruling (`teacher/today.html:645`), so "from Today" had no entry point to change. The type choice lives in the one sheet, so every entry point gets it: class page, Classes screen and deck library.
+- **The probe:** I chose "run the same GET itself" over "load `teacher-admin-nav.js`". Loading that module would boot its nav injection on the class page as a side effect.
+- **"Returns to the normal flow"** is read as going back to the Classes step, the start of the Questions flow.
+- **TEST uses the fixture's class** (8a/Sc1), because 8r/Sc1 exists only on production.
+- **Pupil subject:** comes from the work list's `subject_name`, not from a new read or any database change.

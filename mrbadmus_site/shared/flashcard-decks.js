@@ -20,6 +20,9 @@
      textContent or drawn by `MRBFormulae.fill` (text nodes and <sub>).
    · FORMULAE ARE DRAWN, NEVER STORED. An editing field holds the flat string
      (`CO2`); the read-only line under it and every list title draws CO₂.
+     ⊕ Set from class (M), 27 Sep 2026 — on a CHEMISTRY deck only. Physics,
+     Biology and untagged decks show text exactly as typed (N2 can be
+     Newton's second law, F2 the second filial generation).
    · NO SENTENCES. Labels, counts, button verbs and short status nouns. A
      disabled Save and an outlined field are the whole of validation.
    · The chrome is set-work.css's: `.sw-label`, `.sw-chip`, `.sw-row`,
@@ -48,16 +51,6 @@
     myDecks: "My decks",
     shared: "Shared",
     chooseFile: "Choose file",
-    /* ⊕ MRB-351 landing (27 Sep 2026) — a hard line (BRIEF.md: "no pupil
-       names / emails / admission numbers to any model"). TEXT files get a
-       mechanical redaction pass server-side before anything reaches a model
-       (`_shared/flashcards/redact.ts`); a photo or a scan cannot be, since
-       it goes to the model as pixels. This is the one line standing between
-       a teacher and that gap, so it is a real sentence — an exception to
-       this file's own "NO SENTENCES" rule, made deliberately for a caution
-       a teacher has to read and understand, not a status word. */
-    uploadPrivacyNote: "Don’t upload anything with pupils’ names on it — " +
-      "class lists, registers or marked work. Photos and scans are sent as they are.",
     makeCards: "Make cards",
     reading: function (p) { return "Reading… " + p + "%"; },
     useBefore: "Use the cards extracted before",
@@ -160,13 +153,14 @@
 
   /* Read-only text: formulae drawn with <sub>. Editing fields never pass
      through here — they hold the flat string the teacher typed. */
-  function draw(node, text) {
-    var F = formulae();
+  function draw(node, text, subject) {
+    var F = subject === "chemistry" ? formulae() : null;
     if (F && F.fill) { F.fill(node, String(text == null ? "" : text)); }
     else { node.textContent = String(text == null ? "" : text); }
     return node;
   }
-  function hasFormula(text) {
+  function hasFormula(text, subject) {
+    if (subject !== "chemistry") { return false; }
     var F = formulae();
     if (!F || !F.segments || !text) { return false; }
     var segs = F.segments(String(text));
@@ -454,6 +448,7 @@
         subject = (subject === k) ? "" : k;
         touch();
         syncSubject();
+        redrawLines();
         sync();
       });
       subjHost.appendChild(b);
@@ -492,9 +487,18 @@
     }
 
     function renderLine(node, text) {
-      var show = hasFormula(text);
+      var show = hasFormula(text, subject);
       node.hidden = !show;
-      if (show) { draw(node, text); } else { node.textContent = ""; }
+      if (show) { draw(node, text, subject); } else { node.textContent = ""; }
+    }
+    /* ⊕ Set from class (M), 27 Sep 2026 — the subject chip decides whether
+       formulae are drawn, so changing it redraws every preview line. */
+    function redrawLines() {
+      cards.forEach(function (c) {
+        if (!c.els) { return; }
+        renderLine(c.els.qLine, c.question);
+        renderLine(c.els.aLine, c.answer);
+      });
     }
 
     function buildRow(c) {
@@ -859,7 +863,6 @@
     fileLabel.appendChild(el("span", null, SAY.chooseFile));
     fileLabel.appendChild(fileInput);
     pUpload.appendChild(fileLabel);
-    pUpload.appendChild(mark(el("div", "fd-privacy-note", SAY.uploadPrivacyNote), "privacy-note"));
 
     var pPaste = pane("paste");
     var pasteBox = mark(document.createElement("textarea"), "paste");
@@ -1024,7 +1027,7 @@
       var b = (r && r.body) || {};
       if (r && r.status === 200 && b.cached) {
         cachedTitle.textContent = "";
-        draw(cachedTitle, String(b.cached.title || ""));
+        draw(cachedTitle, String(b.cached.title || ""), b.cached.subject || null);
         var meta = el("span", "sw-row-tag", SAY.cards(Number(b.cached.card_count) || 0));
         cachedTitle.appendChild(meta);
         pCached.__cached = b.cached;
@@ -1182,7 +1185,7 @@
       var row = mark(btn("sw-row", null), "deck");
       row.setAttribute("data-fd-id", String(d.id));
       var main = el("span", "sw-row-main");
-      main.appendChild(draw(el("span", "sw-row-name"), d.title || ""));
+      main.appendChild(draw(el("span", "sw-row-name"), d.title || "", d.subject || null));
       main.appendChild(el("span", "sw-row-tag", deckMeta(d)));
       row.appendChild(main);
       head.appendChild(row);

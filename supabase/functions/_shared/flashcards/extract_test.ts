@@ -13,7 +13,7 @@
 import { assert, assertEquals } from "jsr:@std/assert@1";
 import { readFile, render } from "./read_file.ts";
 import { linePairs, tablePairs } from "./pairs.ts";
-import { extract } from "./pipeline.ts";
+import { extract, pasteBytes } from "./pipeline.ts";
 import { scoreFixture, type Expected } from "./score.ts";
 
 const DIR = new URL("../../../../tests/fixtures/flashcards/", import.meta.url);
@@ -115,22 +115,37 @@ Deno.test("the scorer is not a rubber stamp: answers shifted by one card recover
   assertEquals(invented.recovered, 0);
 });
 
-Deno.test("redaction: the em_spectrum_with_class_list fixture's names never reach the model call", async () => {
-  const name = "em_spectrum_with_class_list.pptx";
-  const forbidden = EXPECTED[name].forbidden;
-  assert(forbidden.length > 0);
+// ⊕ Set from class (M), 27 Sep 2026 — the pre-model redaction pass is gone
+// (teachers upload question-and-answer files, not pupil data). It used to
+// scrub any long digit run, which ate real answers. These prove a 6+-digit
+// number reaches the model, and the deck, byte for byte.
+const BIG_NUMBERS = "What is the speed of light? | 300 000 000 m/s\nHow many seconds in a year (approx)? | 31536000";
+
+Deno.test("long numbers: a pasted 6+-digit answer reaches the model call exactly", async () => {
   let sentText: string | null = null;
-  await extract(name, bytes(name), {
+  const res = await extract("paste.txt", pasteBytes(BIG_NUMBERS), {
     model: (rr, _n) => {
       if (rr.kind === "text") sentText = render(rr.units);
       return Promise.resolve({
-        result: { method: "model", cards: [], unpaired_questions: [], unpaired_answers: [] },
+        result: { method: "model", cards: [
+          { question: "What is the speed of light?", answer: "300 000 000 m/s", source_ref: null, confidence: 1, flagged: false },
+          { question: "How many seconds in a year (approx)?", answer: "31536000", source_ref: null, confidence: 1, flagged: false },
+        ], unpaired_questions: [], unpaired_answers: [] },
         usage: { model: "recorded", input_tokens: 0, output_tokens: 0 },
       });
     },
   });
   assert(sentText !== null, "the model stub was never called (a no-model rule matched instead?)");
-  for (const n of forbidden) {
-    assert(!(sentText as string).includes(n), `redaction leaked "${n}" into the text sent to the model`);
-  }
+  assert((sentText as string).includes("31536000"), sentText!);
+  assert((sentText as string).includes("300 000 000"), sentText!);
+  assertEquals(res.rows.map((r) => r.answer), ["300 000 000 m/s", "31536000"]);
+});
+
+Deno.test("long numbers: a table with 6+-digit answers pairs them exactly without a model", async () => {
+  const csv = "What is the speed of light?,300 000 000 m/s\nHow many seconds in a year (approx)?,31536000\nWhat is the charge on an electron?,-1\n";
+  const res = await extract("numbers.csv", pasteBytes(csv), {
+    model: () => { throw new Error("the model must not be called for a clean table"); },
+  });
+  assertEquals(res.method, "table");
+  assertEquals(res.rows.map((r) => r.answer), ["300 000 000 m/s", "31536000", "-1"]);
 });

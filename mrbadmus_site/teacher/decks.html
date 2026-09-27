@@ -19,8 +19,8 @@
        same frame here as it is inside the sheet: the panel below is
        `.sw-overlay` / `.sw-sheet`, and the review table is drawn in
        `.sw-label` / `.sw-chip` / `.sw-input`. -->
-  <link rel="stylesheet" href="/shared/set-work.css?v=0410163d"/>
-  <link rel="stylesheet" href="/shared/flashcard-decks.css?v=cb9045ef"/>
+  <link rel="stylesheet" href="/shared/set-work.css?v=91d649e0"/>
+  <link rel="stylesheet" href="/shared/flashcard-decks.css?v=3da3c46d"/>
   <style>
     html { background: var(--st-ground); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -189,7 +189,8 @@
 <script src="/shared/teacher-data.js?v=8743d7e1"></script>
 <script src="/shared/teacher-admin-nav.js?v=7582ce57"></script>
 <script src="/shared/formulae.js?v=e4bfb091"></script>
-<script src="/shared/flashcard-decks.js?v=3acf513a"></script>
+<script src="/shared/flashcard-decks.js?v=2610cf68"></script>
+<script src="/shared/set-work.js?v=2ed11396"></script>
 <script>
 /* ══════════════════════════════════════════════════════════════════════════
    MRB-351 — THE DECK LIBRARY
@@ -208,7 +209,13 @@
   var SAY = {
     usedIn: function (n) { return "Used in " + n + (n === 1 ? " assignment" : " assignments"); },
     deletedUsed: function (n) { return "Deleted · used in " + n + (n === 1 ? " assignment" : " assignments"); },
-    edit: "Edit", duplicate: "Duplicate", share: "Share", unshare: "Unshare",
+    /* ⊕ Set from class (M), 27 Sep 2026 — "Share" read as "send to a
+       class" (Mide expected exactly that). It only ever shared the deck with
+       colleagues, so it now says so; sending a deck to a class is
+       "Set to a class", which opens the Set work sheet. */
+    edit: "Edit", duplicate: "Duplicate",
+    share: "Share with colleagues", unshare: "Stop sharing with colleagues",
+    setTo: "Set to a class",
     del: "Delete", confirm: "Confirm", deck: "Deck", newDeck: "New deck",
     loading: "Loading", unavailable: "Unavailable", noDecks: "No decks yet", noMatch: "No decks"
   };
@@ -271,6 +278,42 @@
     });
   }
 
+  /* ⊕ Set from class (M), 27 Sep 2026 — "SET TO A CLASS". The same Set work
+     sheet every class page opens, started on Flashcards with this deck
+     chosen, on the Classes step. This page has no compiled class list (the
+     ported pages carry `SET_WORK_CLASSES`), so it reads the teacher's OWN
+     classes for the working year — `loadTeacherClasses`, the list "My
+     classes" draws — once, on the first press, and hands them to `open`. */
+  var classesP = null;
+  function ownClasses() {
+    if (classesP) { return classesP; }
+    var TD = window.MrBadmusTeacherData;
+    classesP = Promise.resolve(TD && TD.loadTeacherClasses
+      ? TD.loadTeacherClasses(null, { metrics: false }) : []).then(function (rows) {
+        return (rows || []).map(function (c) { return { id: c.id, name: c.name }; });
+      }).catch(function () { classesP = null; return []; });
+    return classesP;
+  }
+  function setToClass(d, b, r) {
+    if (!(window.MRBSetWork && window.MRBSetWork.open)) { flash(r); return; }
+    b.disabled = true;
+    ownClasses().then(function (cls) {
+      b.disabled = false;
+      var d0 = window.__MRB_DATA__;
+      if (!cls.length && !(d0 && d0.SET_WORK_CLASSES && d0.SET_WORK_CLASSES.length)) {
+        flash(r);
+        return;
+      }
+      window.MRBSetWork.open({ deck: d, classes: cls });
+    });
+  }
+  /* A deck set to a class is a deck in use: the row's count follows. */
+  var priorDone = window.MRB_SET_WORK_DONE;
+  window.MRB_SET_WORK_DONE = function (d) {
+    if (typeof priorDone === "function") { try { priorDone(d); } catch (e) { /* not ours */ } }
+    load();
+  };
+
   function render() {
     var host = $("lib-list");
     host.textContent = "";
@@ -287,7 +330,7 @@
     r.setAttribute("data-fd-id", d.id);
     var main = el("div", "lib-main");
     var t = el("div", "lib-title");
-    window.MRBDecks.draw(t, d.title || "");
+    window.MRBDecks.draw(t, d.title || "", d.subject);
     var metaText = window.MRBDecks.deckMeta(d);
     if (d.deleted_at) {
       r.classList.add("is-deleted");
@@ -300,6 +343,15 @@
     r.appendChild(main);
 
     var acts = el("div", "lib-acts");
+    /* ⊕ Set from class (M) — every READY deck with cards, mine or a
+       colleague's: the database decides the rest (`flashcard_set_work`
+       refuses a deck the caller cannot read or a class they do not teach). */
+    if (!d.deleted_at && d.status === "ready" && Number(d.card_count) > 0) {
+      var st = button(SAY.setTo, "lib-set");
+      st.classList.add("btn-primary");
+      st.addEventListener("click", function () { setToClass(d, st, r); });
+      acts.appendChild(st);
+    }
     var canEdit = !d.deleted_at && (d.mine || state.admin);
     if (canEdit) {
       var e = button(SAY.edit, "lib-edit");
