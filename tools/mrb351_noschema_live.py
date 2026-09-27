@@ -484,8 +484,18 @@ def post_set(token, class_id, tier, scope_kind, scope_ref, question_ids, title, 
     return call("POST", "/api/teacher/set-work", token, body)
 
 
-def run_journey(site_base, label):
+def run_journey(site_base, label, mcq_assignment_id=None):
     """One full journey (teacher + pupil), returns (reqs_by_page, errs_by_page).
+
+    `mcq_assignment_id`, when given, is the id of the ordinary Questions
+    assignment `main()` posted through the real Set work route before either
+    journey runs. Both journeys (this branch's build AND origin/main's — the
+    id is the same row either way, since it was written once, before the
+    per-build loop) load `student/assignment.html?assignment=<id>` for it, so
+    the pupil's ONE OTHER assignment-reading page — not just class.html — is
+    covered by the request-shape proof too, and the forbidden-column check in
+    `analyse()` (already scoped to any `/rest/v1/assignments` request, on any
+    page) gets a second, independent page to watch it on.
 
     ⚠️ TWO SEPARATE cdp.Browser() INSTANCES, ONE PER PERSONA — the same
     convention set_work_drive.py uses ("ONE BROWSER PER PERSONA,
@@ -648,6 +658,11 @@ def run_journey(site_base, label):
         errs_by_page["%s: pupil bell opened" % label] = \
             [e for e in pp.console_errors() if "favicon.ico" not in e]
 
+        if mcq_assignment_id:
+            url = "%s/student/assignment.html?assignment=%s&env=test&api=%s" % (
+                site_base, mcq_assignment_id, PAGE_API)
+            load_page(pp, url, "%s: pupil assignment page (MCQ)" % label, reqs_by_page, errs_by_page)
+
     return reqs_by_page, errs_by_page
 
 
@@ -685,6 +700,7 @@ def main():
         record(bool(ref), "a stocked KS3 subtopic exists to set work from",
                ref or scope_ks3)
         made_title = None
+        mcq_assignment_id = None
         if ref:
             ids = preview_ids(teacher_token, FX.C_KS3_A, "easy", "subtopic", ref, 5)
             record(bool(ids), "preview returns question ids for %s" % ref, ids)
@@ -695,11 +711,16 @@ def main():
                                     ids, made_title, due)
                 record(st == 200, "POST /api/teacher/set-work (real route) wrote a Questions assignment",
                        "status %s %s" % (st, json.dumps(out)[:200]))
+                if st == 200:
+                    mcq_assignment_id = ((out or {}).get("assignment_ids") or [None])[0]
+                record(bool(mcq_assignment_id),
+                       "an MCQ assignment id came back to drive student/assignment.html with",
+                       out if not mcq_assignment_id else "")
 
         print("\n── journey on THIS BRANCH's build (%s) ──" % base_a)
-        reqs_a, errs_a = run_journey(base_a, "mine")
+        reqs_a, errs_a = run_journey(base_a, "mine", mcq_assignment_id)
         print("\n── journey on origin/main's build (%s) ──" % base_b)
-        reqs_b, errs_b = run_journey(base_b, "main")
+        reqs_b, errs_b = run_journey(base_b, "main", mcq_assignment_id)
     finally:
         # ⚠️ THE SUPABASE CLEANUP RUNS FIRST, AND EACH STEP BELOW IS ISOLATED.
         #

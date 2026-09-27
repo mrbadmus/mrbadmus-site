@@ -50,9 +50,23 @@ And on the one-flashcard-row fixture:
     (`flashcard_mode, completion_rule, deck_id` / `flashcard_mode`);
   · the follow-up's `.in()` filter carries ONLY the flashcard row's id, never
     an MCQ row's.
+
+A THIRD consumer, `student-live.js`'s `buildAssignment` (the loader behind
+`student/assignment.html`), is checked too, but not by driving the function —
+it reaches its own backend `/api/class/current-assignment`, not just
+Supabase, and mounts a whole page — which is what
+`tools/mrb351_noschema_live.py`'s real browser + real TEST run already
+exercises end to end. What is proper to this STATIC drive is the one claim
+that function makes about its OWN deck-redirect read: it never selects
+`kind` (which does not exist on production and would 400 the read on every
+`?assignment=` load, per the comment right above it), and it does select
+`quiz_type` (the column it actually branches on). That is checked here by
+reading the shipped source and matching the exact `.select(...)` call, not
+by executing it.
 """
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -206,6 +220,20 @@ def main():
         print("   SKIP  %s  - %s" % (what, why))
 
     root = os.path.dirname(os.path.abspath(__file__))
+
+    # ═══ 0. student-live.js — buildAssignment's deck-redirect select() ══════
+    # No browser, no stub: reads the shipped source and matches the exact
+    # call, per the module docstring's "A THIRD consumer" note.
+    print("── student-live.js: buildAssignment's deck-redirect select() ──")
+    sl_path = os.path.join(root, "shared", "student-live.js")
+    sl_src = open(sl_path, encoding="utf-8").read()
+    m = re.search(r'sbForKind\.from\(\s*"assignments"\s*\)\.select\(\s*"([^"]*)"\s*\)', sl_src)
+    check(bool(m), "buildAssignment's deck-redirect select() was found in shared/student-live.js")
+    if m:
+        cols = [c.strip() for c in m.group(1).split(",")]
+        check("quiz_type" in cols, "the deck-redirect select names quiz_type", cols)
+        check("kind" not in cols,
+              "the deck-redirect select does not name kind (kind does not exist on production)", cols)
 
     # Each "side" (this worktree, main) gets its own throwaway directory
     # holding ONLY an inert harness page plus a same-origin copy of the two
