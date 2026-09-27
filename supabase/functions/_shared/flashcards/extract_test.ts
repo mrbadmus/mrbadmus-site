@@ -114,3 +114,23 @@ Deno.test("the scorer is not a rubber stamp: answers shifted by one card recover
     EXPECTED["enzymes_questions_only.md"].pairs.map((p) => ({ question: p.q, answer: "an invented answer" })));
   assertEquals(invented.recovered, 0);
 });
+
+Deno.test("redaction: the em_spectrum_with_class_list fixture's names never reach the model call", async () => {
+  const name = "em_spectrum_with_class_list.pptx";
+  const forbidden = EXPECTED[name].forbidden;
+  assert(forbidden.length > 0);
+  let sentText: string | null = null;
+  await extract(name, bytes(name), {
+    model: (rr, _n) => {
+      if (rr.kind === "text") sentText = render(rr.units);
+      return Promise.resolve({
+        result: { method: "model", cards: [], unpaired_questions: [], unpaired_answers: [] },
+        usage: { model: "recorded", input_tokens: 0, output_tokens: 0 },
+      });
+    },
+  });
+  assert(sentText !== null, "the model stub was never called (a no-model rule matched instead?)");
+  for (const n of forbidden) {
+    assert(!(sentText as string).includes(n), `redaction leaked "${n}" into the text sent to the model`);
+  }
+});

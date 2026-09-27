@@ -36,6 +36,18 @@
 }
 .fd-file:focus-within { outline: 2px solid var(--st-accent); outline-offset: 2px; }
 
+/* ⊕ MRB-351 landing (27 Sep 2026) — the pupil-data notice under the file
+   picker. Deliberately NOT `.sw-row-tag` (uppercase mono, built for a
+   one-word status): this is sentence-case caption text a teacher has to
+   read once and understand, so it is styled to read like a sentence. */
+.fd-privacy-note {
+  display: block;
+  margin-top: 8px;
+  font: 400 13px/1.35 var(--st-ui);
+  color: var(--st-caption);
+  max-width: 46ch;
+}
+
 .fd-paste { display: block; min-height: 160px; resize: vertical; font-family: var(--st-ui); }
 .fd-make { margin-top: 12px; min-height: 44px; }
 

@@ -48,6 +48,16 @@
     myDecks: "My decks",
     shared: "Shared",
     chooseFile: "Choose file",
+    /* ⊕ MRB-351 landing (27 Sep 2026) — a hard line (BRIEF.md: "no pupil
+       names / emails / admission numbers to any model"). TEXT files get a
+       mechanical redaction pass server-side before anything reaches a model
+       (`_shared/flashcards/redact.ts`); a photo or a scan cannot be, since
+       it goes to the model as pixels. This is the one line standing between
+       a teacher and that gap, so it is a real sentence — an exception to
+       this file's own "NO SENTENCES" rule, made deliberately for a caution
+       a teacher has to read and understand, not a status word. */
+    uploadPrivacyNote: "Don’t upload anything with pupils’ names on it — " +
+      "class lists, registers or marked work. Photos and scans are sent as they are.",
     makeCards: "Make cards",
     reading: function (p) { return "Reading… " + p + "%"; },
     useBefore: "Use the cards extracted before",
@@ -849,6 +859,7 @@
     fileLabel.appendChild(el("span", null, SAY.chooseFile));
     fileLabel.appendChild(fileInput);
     pUpload.appendChild(fileLabel);
+    pUpload.appendChild(mark(el("div", "fd-privacy-note", SAY.uploadPrivacyNote), "privacy-note"));
 
     var pPaste = pane("paste");
     var pasteBox = mark(document.createElement("textarea"), "paste");

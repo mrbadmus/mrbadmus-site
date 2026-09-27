@@ -34,6 +34,16 @@ import { extOf, MAX_BYTES, ReadError } from "../_shared/flashcards/read_file.ts"
 import { extract, pasteBytes } from "../_shared/flashcards/pipeline.ts";
 import type { SupabaseClient } from "jsr:@supabase/supabase-js@2";
 
+// MRB-351 landing (27 Sep 2026) — the only people who may extract cards are
+// staff. This used to refuse just `role === "student"`, which let a parent
+// account (MRB-308's `role='parent'`) through: parents have no class to set
+// a deck to and no legitimate reason to spend a model call here. The
+// allowlist matches `profiles_role_check`'s staff roles exactly
+// (`20260501212106_schools_layer.sql`), same convention as
+// `shared/teacher-guard.js`'s `ALLOWED_ROLES` and MRB-322's
+// `auth_user_role() in ('teacher', 'hod', 'admin')`.
+const STAFF_ROLES = new Set(["teacher", "hod", "admin"]);
+
 const MIME: Record<string, string> = {
   pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -54,7 +64,7 @@ Deno.serve(async (req) => {
   const svc = serviceClient();
   const who = await caller(req, svc);
   if (!who) return json(401, { error: "not_signed_in" });
-  if (who.role === "student" || !who.school_id) return json(403, { error: "not_staff" });
+  if (!STAFF_ROLES.has(who.role) || !who.school_id) return json(403, { error: "not_staff" });
 
   // ── what came in ────────────────────────────────────────────────────
   let fileName = "", bytes: Uint8Array | null = null, deckId: string | null = null;

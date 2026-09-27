@@ -4,6 +4,7 @@
 import { readFile, type Readable } from "./read_file.ts";
 import { linePairs, tablePairs, toDeckRows, type Card, type Extraction } from "./pairs.ts";
 import { extractWithModel, type Usage } from "./model.ts";
+import { redactUnits } from "./redact.ts";
 
 export type PipelineResult = {
   rows: Card[];
@@ -27,7 +28,12 @@ export async function extract(
     if (!opts.apiKey) throw new Error("no_api_key");
     return extractWithModel(rr, n, opts.apiKey);
   });
-  const { result, usage } = await call(r, fileName);
+  // MRB-351 landing — a conservative, mechanical redaction pass runs on TEXT
+  // content only, right before the one place it can reach a model. See
+  // redact.ts for what it removes and why. PDFs and images pass through
+  // unchanged — see the module docstring there.
+  const forModel: Readable = r.kind === "text" ? { ...r, units: redactUnits(r.units) } : r;
+  const { result, usage } = await call(forModel, fileName);
   return { rows: toDeckRows(result), method: "model", usage, pages: r.kind === "image" ? 1 : r.pages };
 }
 
