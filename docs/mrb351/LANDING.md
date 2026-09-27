@@ -144,3 +144,12 @@ Theme screenshots (not committed; in `~/tmp/mrb351-theme-shots/`): `review-table
 - Deviation: the theme pass fixed four dark-mode contrast defects its new coverage measured for the first time. One of them, Set Work's disabled Next/Save (opacity 0.45 → a flat muted style), also changes the existing Questions path → a small visible change beyond "exactly as today", taken because it failed AA in the dark theme that is now live.
 - Deviation: two parallel agents both rolled TEST forward at once → verified afterwards: no duplicate policies, triggers or overloads, one row per migration, all 15 fingerprints exact. The migrations use `drop … if exists` and re-apply cleanly.
 - Deviation: agents stalled three times on the stream watchdog → the small critical fixes were done directly, and fresh agents were started for the rest.
+
+## Landing (done)
+
+- **Backend** `36f429e` on mrbadmus---backend main. `/api/health` reported `build: 36f429ea7291…` within a minute of the push.
+- **Site** `78edceb11` on main, a fast-forward pushed through `hooks/pre-push`: 29 gates fresh, 24 on unchanged receipts, and `set_work` under the override above. Verified live **by bytes**: every page below and every stamped asset below, fetched from mrbadmus.com with a nonce, is byte-identical to the committed build.
+  - Pages: `teacher/class-detail`, `teacher/decks`, `teacher/flashcards`, `teacher/today`, `teacher/classes`, `student/class`, `student/assignment`.
+  - Assets, each md5[:8] equal to its stamp: `flashcard-decks.css?v=cb9045ef`, `flashcard-decks.js?v=3acf513a`, `flashcard-progress.css?v=abf53d2e`, `flashcard-progress.js?v=d789beed`, `set-work.css?v=0410163d`, `set-work.js?v=adc79707`, `student-ds.css?v=a95e6c87`, `student-live.js?v=79338c4d`, `teacher-admin-nav.js?v=7582ce57`, `teacher-data.js?v=8743d7e1`, `teacher-live.js?v=123910f9`, `theme.js?v=6fd6f722`.
+- **Production is unchanged underneath.** Read-only, with the public anon key: `GET /rest/v1/flashcard_decks` → 404 `PGRST205`. That is exactly the answer the capability probe caches as "not switched on", so the feature stays hidden until the chat applies the migrations.
+- **Migrations** parked on `origin/feat/mrb351-migrations` `e0b39085f`: one commit on main holding the six files and `supabase/MRB351-APPLY.md`, md5s as in the first table. Its push re-ran `teacher_rollup_equal` against TEST: green.
