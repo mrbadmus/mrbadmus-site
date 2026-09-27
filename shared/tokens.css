@@ -165,6 +165,14 @@
   --success:      #237A3B;
   --success-soft: rgba(35, 122, 59, 0.10);
 
+  /* ⊕ Theme run, 26 Sep 2026 — minted so `.examiner-box` (shared/styles.css,
+     the amber exam-technique callout on the bonding-redesign lesson pages)
+     stops painting a literal light-cream fill that a dark-theme reader's
+     default (flipping) --text would land on unreadably. Light values are
+     the box's existing hex, byte-identical; dark values redefined below. */
+  --examiner-tint:   #FFF6E4;
+  --examiner-border: #E0A21A;
+
   /* ── Type — serif for headlines and topic/section titles ONLY.
      Body text and all UI stay sans (readability, dyslexic students). ── */
   --font-serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
@@ -231,6 +239,9 @@
   --danger-soft:  rgba(229, 101, 92, 0.13);
   --success:      #55B36A;
   --success-soft: rgba(85, 179, 106, 0.14);
+
+  --examiner-tint:   rgba(224, 172, 75, 0.14);
+  --examiner-border: #E0AC4B;
 
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.45);
   --shadow-pop:  0 2px 6px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.6);
@@ -697,3 +708,17 @@
   --fs-section:    calc(1.375rem * var(--rd-fs-scale));
   --fs-page-title: clamp(calc(1.875rem * var(--rd-fs-scale)), calc((1.1rem + 2.6vw) * var(--rd-fs-scale)), calc(3.75rem * var(--rd-fs-scale)));
 }
+
+/* ⊕ Theme run, 26 Sep 2026 — every plain input/textarea's placeholder,
+   site-wide (every page loads this file). Chromium's UA default dims a
+   placeholder to roughly half-opacity of the input's own `color`, which on
+   this site is almost always `var(--text)`. That composites fine in light
+   but under 4.5:1 once `--text` flips light-on-dark — measured on real
+   rendered pages at 3.79:1 (the chat panel's message box, auth.html,
+   teacher-profile.html — anywhere a bare `<input>`/`<textarea>` sits).
+   `--muted` already clears AA on every ground in both themes, so pointing
+   the placeholder at it (opacity:1, so the browser does not dim it AGAIN)
+   fixes every affected page in one place. KS3 is unaffected: its inputs
+   carry the more specific `.ks3-answer::placeholder` rule in shared/ks3.css,
+   which wins on specificity regardless of what this bare rule says. */
+::placeholder { color: var(--muted); opacity: 1; }
