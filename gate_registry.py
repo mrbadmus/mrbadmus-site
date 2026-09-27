@@ -2200,6 +2200,19 @@ GATES = [
                   "student/assignment-fixture.html", "teacher/today.html",
                   "teacher/timetable.html", "teacher/admin.html",
                   "teacher/import.html",
+                  # ⊕ MRB-351 theme pass, 27 Sep 2026 — the four flashcard
+                  # surfaces added to PAGES. The two hand-written pages
+                  # (never a fixture — see flashcard_decks_drive.py's own
+                  # comment on why) plus every asset either renders or the
+                  # sweep's own stub imports/loads to reach them.
+                  "teacher/decks.html", "teacher/flashcards.html",
+                  "shared/flashcard-decks.js", "shared/flashcard-decks.css",
+                  "shared/flashcard-progress.js",
+                  "shared/flashcard-progress.css",
+                  "shared/flashcard-homework.js", "shared/formulae.js",
+                  "shared/set-work.js", "shared/set-work.css",
+                  "flashcard_decks_drive.py", "flashcard_progress_drive.py",
+                  "flashcard_homework_drive.py",
                   "ks3/biology/respiration/aerobic-respiration.html",
                   "combined/higher/chemistry/atomic-structure.html",
                   "combined/higher/chemistry/atomic-structure/"
