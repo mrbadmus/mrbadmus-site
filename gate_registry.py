@@ -2482,6 +2482,14 @@ EXCLUDED = {
         "generator imports, plus `python3 brand.py` to rewrite "
         "shared/brand/brand.js. Asserts nothing; `brand_one_mark` is the gate "
         "that proves every page wears what this module draws.",
+    "brand_port.py":
+        "the one-mark substitution the two compiled Design ports share "
+        "(Mide's ruling, 13 Sep 2026): `RULED_BRAND` in student_rulings.py / "
+        "teacher_rulings.py replaces Design's header brand run with ONE "
+        "`brand` node the runtime draws from brand.js. A library imported by "
+        "build_student_port.py and build_teacher_port.py; its own refusals "
+        "stop the build. `student_behaviour` / `teacher_behaviour` drive the "
+        "result, `brand_one_mark` proves the page draws from brand.js.",
     "brand_cards.py":
         "redraws two raster images (the shared-link card and the email lockup "
         "PNG) from brand.py in headless Chrome. A generator of committed "

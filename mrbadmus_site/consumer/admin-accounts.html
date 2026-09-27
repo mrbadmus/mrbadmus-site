@@ -6,7 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="theme-color" content="#15110C"/>
 <meta name="robots" content="noindex"/>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
+<!-- ⊕ One mark (Mide, 13 Sep 2026): the kit's favicon, app icon and
+     brand.css come from brand.py (the region below is rewritten on every
+     build by brand.stamp_brand), and brand.js hands the shell its lockup.
+     Same-origin static files: no API, Supabase or CDN request. -->
+<!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png"><link rel="stylesheet" href="/shared/brand/brand.css"><!--/mrb:brand-head-->
+<script src="/shared/brand/brand.js"></script>
 <title>Admin — Accounts — MrBadmus</title>
 <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
 <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
@@ -49,10 +54,12 @@
    consumer page needs (see shared/ks3.css's own specificity-trap note).
 
    ── BRAND ──────────────────────────────────────────────────────────────
-   Plain "MrBadmus" wordmark, no logo asset — Design drew it that way on
-   both admin screens, and it also matches CLAUDE.md's staff-surface rule
-   (plain white/light text, no chevron) for an internal instrument nobody
-   outside the business ever sees.
+   ⊕ ONE MARK (Mide's ruling, 13 Sep 2026). This read: plain "MrBadmus"
+   wordmark, no logo asset, per CLAUDE.md's old staff-surface rule. The
+   ruling is one mark on every page, staff included, so both admin screens
+   carry the one lockup (brand.py, stamped into the marked region), in its
+   light-on-dark variant because this console's header is dark in both
+   themes.
    ═══════════════════════════════════════════════════════════════════════ */
 :root {
   --st-room:        #15110C;
@@ -95,8 +102,8 @@ input::placeholder, textarea::placeholder { color: #8A7F72; }
   border-bottom: 1px solid var(--ks3-dark-rule);
   flex-wrap: wrap;
 }
-.ac-word { font-family: var(--ks3-font-display); font-weight: 800; font-size: 20px; letter-spacing: -.02em; color: var(--st-room-text); }
-.ac-word:hover { color: var(--st-room-text); }
+/* ⊕ One mark (Mide, 13 Sep 2026): `.ac-word` retired — the header carries
+   the one lockup (on-dark: this console is dark in both themes). */
 .ac-badge {
   padding: 3px 9px; border-radius: 999px; font: 600 12px/1.4 var(--ks3-font-mono);
   letter-spacing: .08em; text-transform: uppercase;
@@ -289,7 +296,7 @@ input::placeholder, textarea::placeholder { color: #8A7F72; }
          Visually hidden (the visible title is the "Accounts" nav link), and
          inside <header> so it sits within a landmark. -->
     <h1 class="ks3-sr-only">Accounts</h1>
-    <a class="ac-word" href="/consumer/admin-accounts.html">MrBadmus</a>
+    <!--mrb:brand href=/consumer/admin-accounts.html on_dark--><a class="mrb-brand mrb-brand--on-dark" href="/consumer/admin-accounts.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
     <span class="ac-badge">Admin</span>
     <nav class="ac-nav">
       <a class="is-on" href="/consumer/admin-accounts.html">Accounts</a>

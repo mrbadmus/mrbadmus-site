@@ -86,6 +86,8 @@ from build_ks3 import stamp_versions
 # ⊕ Theme run, 27 Sep 2026 — the one pre-paint snippet and slot every
 # generator emits; see theme_head.py's own docstring.
 import theme_head
+from brand_port import replace_brand_run
+import brand_port
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 REF = os.path.join("docs", "ks3", "design-reference", "student")
@@ -226,6 +228,9 @@ STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
                 "theme.js",
                 # ⊕ MRB-351 — injected by student-live.js like the rest.
                 "formulae.js", "flashcard-homework.js")
+# ⊕ One mark (Mide, 13 Sep 2026) — the kit's favicon, the lockup's
+# stylesheet and brand.js, which the runtime draws the header brand from.
+STAMPED_DEPS += brand_port.BRAND_DEPS
 
 
 def asset_hash(text):
@@ -244,9 +249,9 @@ PAGES = [
     dict(page="class view", out="class.html",
          fixture_out="class-fixture.html",
          fixture_js="student-fixture-class.js",
-         title="My class · MrBadmusAI",
+         title="My class · MrBadmus",
          title_expr="MRB_DATA('className') + "
-                    "' \\u00B7 My class \\u00B7 MrBadmusAI'",
+                    "' \\u00B7 My class \\u00B7 MrBadmus'",
          fields=["work", "roster", "weekPts", "lessonDefs", "questions"],
          # ⊕ 22 Aug 2026 — `boardWeek` joins `streak`. Design opens the
          # leaderboard on WEEK 04 because that is the week Design drew, and a
@@ -353,9 +358,9 @@ PAGES = [
     dict(page="assignment", out="assignment.html",
          fixture_out="assignment-fixture.html",
          fixture_js="student-fixture-assignment.js",
-         title="Assignment · MrBadmusAI",
+         title="Assignment · MrBadmus",
          title_expr="'Assignment \\u00B7 ' + MRB_DATA('className') + "
-                    "' \\u00B7 MrBadmusAI'",
+                    "' \\u00B7 MrBadmus'",
          fields=["questions", "wrongPlan", "figCaptions", "KEY", "DUE"],
          state_fields=[],
          # ── constants ────────────────────────────────────────────────────
@@ -2402,6 +2407,15 @@ def apply_rulings(page, logic, roots, donor=None):
             "skipped move leaves the control pointing where it always did "
             "and the build green. Re-anchor it." % (page, sorted(moves)))
 
+    # ── ⊕ ONE MARK (Mide, 13 Sep 2026) · THE THIRTEENTH MECHANISM ────────
+    # See `RULED_BRAND` in student_rulings.py. The machinery is shared with
+    # the teacher port (`replace_brand_run`), so the two ports cannot come to
+    # disagree about what a brand substitution asserts.
+    if page in student_rulings.RULED_BRAND:
+        run, why = student_rulings.RULED_BRAND[page]
+        replace_brand_run(roots, run, why, "build_student_port.py",
+                          "student_rulings.RULED_BRAND[%r]" % page)
+
     # ── a live node that has to STOP RENDERING in a state Design draws
     #    separately ─────────────────────────────────────────────────────
     #
@@ -4146,16 +4160,12 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "<link rel=\"preconnect\" href=\"https://cdn.jsdelivr.net\" crossorigin>\n"
         "<link rel=\"dns-prefetch\" href=\"https://mrbadmus-backend.onrender.com\">\n"
         "<title>%s</title>\n"
-        # ⊕ Stream J, 25 Sep 2026 (experience run, item 7) — the same
-        # `#E4572E` chevron favicon `generate_site_v5.KS4_FAVICON_LINK` gives
-        # every KS4 page, kept as its own literal here for the same reason
-        # `ds_css()`'s own comment gives for not sharing a bundle across the
-        # two ports: independence, not coupling.
-        "<link rel=\"icon\" type=\"image/svg+xml\" href=\"data:image/svg+xml;"
-        "base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdC"
-        "b3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgMTZMMTIgN2w4IDkiIGZpbGw9Im5vbmUi"
-        "IHN0cm9rZT0iI0U0NTcyRSIgc3Ryb2tlLXdpZHRoPSI0LjYiIHN0cm9rZS1saW5lY2Fw"
-        "PSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\">\n"
+        # ⊕ One mark (Mide, 13 Sep 2026) — was Stream J's inline data: copy of
+        # KS3's retired upward-chevron favicon. Now brand.py's own head tags
+        # (the kit's favicon, app icon and brand.css) and brand.js, which the
+        # runtime's `brand` node draws the header lockup from. See
+        # brand_port.py.
+        "%s"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
         # ⊕ Theme run, 27 Sep 2026 — was a hard-coded #FBF3E6. Same light
@@ -4183,6 +4193,7 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "</body>\n</html>\n"
         % (theme_head.THEME_HEAD, theme_head.theme_script(),
            html.escape(spec["title"]),
+           brand_port.HEAD,
            (_BANNER_FIXTURE % (spec["page"].capitalize(), spec["out"]))
            if fixture else
            (_BANNER % (spec["page"].capitalize(), LIVE_JS_NAME,

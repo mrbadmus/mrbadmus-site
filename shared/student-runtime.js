@@ -194,6 +194,37 @@
       into.appendChild(host);
       return;
     }
+    if (node.t === "brand") {
+      /* ⊕ ONE MARK (Mide's ruling, 13 Sep 2026). The site's one lockup —
+         the kit's double chevron + "MrBadmus" — put where Design drew her
+         own copy of the brand, by `RULED_BRAND` in student_rulings.py /
+         teacher_rulings.py (machinery: brand_port.py). Drawn from
+         `window.MrBadmusBrand` (shared/brand/brand.js, written by brand.py),
+         never from a copy of the SVG here.
+
+         Rendered as a SPAN carrying the lockup's own classes and children,
+         not the lockup's `<a>`: every ported brand sits inside a control
+         Design drew (a button / a clickable div) that carries the ruled
+         click, and a link inside it would be a second control. The markup
+         comes from innerHTML of brand.js's own string — trusted, built by
+         brand.py — never from page data. */
+      var bhost = document.createElement("span");
+      bhost.setAttribute("style", "display: contents;");
+      if (node.i !== undefined) { bhost.setAttribute("data-dc-tpl", node.i); }
+      var B = window.MrBadmusBrand;
+      if (B && typeof B.lockup === "function") {
+        bhost.innerHTML = B.lockup("/index.html", false);
+        var a = bhost.firstChild;
+        if (a && a.nodeType === 1) {
+          var sp = document.createElement("span");
+          sp.className = a.className;
+          while (a.firstChild) { sp.appendChild(a.firstChild); }
+          bhost.replaceChild(sp, a);
+        }
+      }
+      into.appendChild(bhost);
+      return;
+    }
 
     /* ⊕ MRB-352 — A QUESTION FIGURE, RESOLVED BY ID AGAINST A BUILD-TIME
        MANIFEST. `node.e` is a property path, exactly like `if`/`for` above,

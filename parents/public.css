@@ -137,5 +137,15 @@
     border-right: 2px solid #221E1B;
     background: #FFFCF5;
   }
+  /* ⊕ One-mark run, 27 Sep 2026 — an adjacent theme defect this run's
+     screenshots caught. Design's two literals kept the rail CREAM under
+     html[data-theme="dark"] while everything inside it (the step labels,
+     the brand's wordmark) took dark-theme ink — cream text on a cream rail,
+     the brand invisible. In dark the rail takes the dark card and rule
+     tokens; light is byte-identical to Design's. */
+  html[data-theme="dark"] .su-rail {
+    border-right-color: var(--ks3-ink);
+    background: var(--ks3-card);
+  }
   .su-main { max-width: 640px !important; padding: 64px 56px 96px !important; margin: 0 !important; }
 }

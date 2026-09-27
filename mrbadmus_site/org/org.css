@@ -23,12 +23,12 @@
    the flag gate failing closed, and it stays exactly where it is.
 
    ── BRAND ──────────────────────────────────────────────────────────────
-   ⚠️ NO CHEVRON ON THESE TWO PAGES. Design drew `MrBadmusDS.BrandMark`
-   beside the wordmark on both; Mide's ruling 1 on MRB-316 overrides her —
-   Org Sign In and Org Dashboard are STAFF surfaces, and a staff surface
-   carries the wordmark alone. The wordmark is "MrBadmus" with no "AI",
-   which is the consumer-side spelling and is deliberate (see the note in
-   consumer-common.js). So: no logo asset, no chevron, no "AI".
+   ⊕ ONE MARK (Mide's ruling, 13 Sep 2026). This used to say NO CHEVRON on
+   these two pages (MRB-316 ruling 1: a staff surface carries the wordmark
+   alone). The one-mark ruling supersedes it: both pages carry the site's
+   one lockup — the kit's double chevron + "MrBadmus" — from brand.py,
+   stamped into a marked region. `.og-word` below now styles only the
+   mobile header's ORGANISATION name.
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* Design's own `body{margin:0;background:#FBF3E6}` — as tokens. */

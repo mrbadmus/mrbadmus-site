@@ -28,17 +28,13 @@
   var C = window.MrBadmusConsumer;
   var esc = C.escapeHtml;
 
-  /* Design sets her BrandMark at size 26 on every public surface; the
-     shared constant is drawn at 20 for the consumer nav. Re-stamping the
-     two attributes keeps ONE drawing on the estate — the alternative is a
-     second copy of the chevron path that can drift from the first, which is
-     precisely the brand drift CLAUDE.md warns about. If the constant is
-     ever redrawn without those attributes, the replace is a no-op and the
-     mark renders at its own size rather than not at all. */
-  function brand(size) {
-    var px = String(size || 26);
-    return C.BRANDMARK.replace('width="20" height="20"',
-                               'width="' + px + '" height="' + px + '"');
+  /* ⊕ ONE MARK (Mide's ruling, 13 Sep 2026). This used to re-stamp the
+     consumer's own copy of the chevron at 26px beside a separate 800-weight
+     "MrBadmus" span. The ruling is one mark on every page, so every public
+     header now carries the one lockup — mark + "MrBadmus" as one link, from
+     shared/brand/brand.js via `C.brandLockup` — at the kit's own size. */
+  function lockup(key) {
+    return C.brandLockup(PAGES[key || 'home'].href);
   }
 
   var PAGES = {
@@ -100,11 +96,7 @@
     return '<header class="pb-wrap pb-head" style="display:flex;align-items:center;gap:12px;' +
       'padding:18px 20px;border-bottom:2px solid var(--ks3-ink);position:sticky;top:0;' +
       'background:var(--ks3-ground);z-index:5">' +
-      '<a href="' + url('home') + '" style="display:flex;align-items:center;gap:10px;color:var(--ks3-ink)">' +
-        brand(26) +
-        '<span style="font-family:var(--ks3-font-display);font-weight:800;font-size:22px;' +
-        'letter-spacing:-.02em">MrBadmus</span>' +
-      '</a>' +
+      lockup('home') +
       '<nav class="pb-nav-links" style="margin-left:16px;gap:18px;font-weight:600;font-size:15px">' +
         link('how') + link('homeEd') + link('pricing') + link('orgs') +
       '</nav>' +
@@ -265,7 +257,7 @@
     PENDING: PENDING,
     PATH: PATH,
     SUBJECT_DOT: SUBJECT_DOT,
-    brand: brand,
+    lockup: lockup,
     url: url,
     nav: nav,
     footer: footer,

@@ -6,7 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#FBF3E6"/>
   <title>Pupils — MrBadmus</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMiAyMiI+PHBhdGggZD0iTTMuNSAzLjUgTDExIDExIEwzLjUgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utd2lkdGg9IjMuNCIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTEyIDMuNSBMMTkuNSAxMSBMMTIgMTguNSIgc3Ryb2tlPSIjRTQ1NzJFIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIgc3Ryb2tlLXdpZHRoPSIzLjQiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=="/>
+  <!-- ⊕ One mark (Mide, 13 Sep 2026): the kit's favicon, app icon and
+       brand.css come from brand.py (the region below is rewritten on every
+       build by brand.stamp_brand), and brand.js hands the shell its lockup.
+       Same-origin static files: no API, Supabase or CDN request. -->
+  <!--mrb:brand-head--><link rel="icon" type="image/svg+xml" href="/shared/brand/mrbadmus-favicon.svg"><link rel="apple-touch-icon" href="/shared/brand/mrbadmus-icon-light-512.png"><link rel="stylesheet" href="/shared/brand/brand.css"><!--/mrb:brand-head-->
+  <script src="/shared/brand/brand.js"></script>
   <link rel="preload" href="/shared/fonts/bricolage-grotesque-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/instrument-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css?v=66931d71"/>
@@ -25,8 +30,9 @@
   <!-- ── the sidebar (≥960 only) ──────────────────────────────────────── -->
   <aside class="og-side og-noprint">
     <div class="og-side-brand">
-      <!-- ⚠️ NO CHEVRON — staff surface. Mide's ruling 1 on MRB-316. -->
-      <span class="og-word" style="font-size:22px;">MrBadmus</span>
+      <!-- ⊕ One mark (Mide, 13 Sep 2026) — supersedes MRB-316 ruling 1's
+           "no chevron on a staff surface": every page carries the one lockup. -->
+      <!--mrb:brand href=/org/index.html--><a class="mrb-brand" href="/org/index.html" aria-label="MrBadmus home"><svg class="mrb-brand__mark" data-mrb-mark viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="mrb-brand__word">MrBadmus</span></a><!--/mrb:brand-->
     </div>
     <div class="og-side-org">
       <p class="og-side-kind" id="side-kind">—</p>
@@ -75,9 +81,11 @@
    reproduced from the fields `GET /api/consumer/org` actually sends.
 
    ── WHAT SHE DREW, AND THE THREE PLACES THIS DEPARTS FROM IT ───────────
-   1. NO CHEVRON. She put `MrBadmusDS.BrandMark` beside both wordmarks.
-      Mide's ruling 1 on MRB-316: an organisation dashboard is a STAFF
-      surface and carries the wordmark alone.
+   1. THE BRAND. She put `MrBadmusDS.BrandMark` beside both wordmarks.
+      Mide's ruling 1 on MRB-316 took the chevron off (a STAFF surface
+      carried the wordmark alone); ⊕ the one-mark ruling (Mide, 13 Sep
+      2026) supersedes that — the sidebar carries the site's one lockup.
+      The mobile header shows the ORGANISATION's name, not the brand.
    2. THE ACCOUNT CARD'S PLAN WORDING (ruling 2). Hers reads "{seats} seats
       · invoiced termly" and "£{perSeat} per seat per term. Next invoice
       {date}, payable by BACS within 30 days." Organisations are invoiced
