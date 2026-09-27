@@ -2028,10 +2028,31 @@ GATES = [
 
     # ── ⊕ Experience run, 24 Sep 2026 (item 13, legibility) ──────────────
 
+    dict(name="theme_wiring_check",
+         cmd=["python3", "theme_wiring_check.py"],
+         speed="fast",
+         watches=["theme_wiring_check.py", "theme_head.py", "shared/theme.js",
+                  "generate_site_v5.py", "build_ks3.py", "build_ks4.py",
+                  "build_student_port.py", "build_teacher_port.py",
+                  "build_leaderboard_port.py", "student_rulings.py",
+                  "teacher_rulings.py", "ks4_rulings.py", "parents/public.js",
+                  "mrbadmus_site/**/*.html"],
+         why="THEME RUN, 26 Sep 2026 (Mide's ruling: light by default, a "
+             "Light / Dark / System control on every page). Every served page "
+             "must carry the one pre-paint snippet from theme_head.py before its "
+             "first stylesheet (or it flashes the wrong theme), load "
+             "/shared/theme.js, and carry a data-mrb-theme slot. A new page family "
+             "that forgets any of the three turns this red; exemptions are named "
+             "with their reason inside the script."),
     dict(name="contrast_audit",
          cmd=["python3", "contrast_audit.py", "--quick", "--gate"],
          speed="fast",
          watches=["contrast_audit.py", "ks3_browser.py",
+                  # ⊕ theme run, 27 Sep 2026 — the audit now measures every
+                  # page in light AND dark through the real stored choice.
+                  "shared/theme.js", "theme_head.py", "shared/ks3-theme.css",
+                  "shared/breakdown.css", "build_ks3.py", "build_ks4.py",
+                  "generate_site_v5.py", "parents/public.css",
                   "shared/tokens.css", "shared/styles.css",
                   "shared/ks4-chrome.css", "shared/ks3.css", "shared/nav.css",
                   "shared/ks4-ds.css", "shared/ks4-theme.css",
