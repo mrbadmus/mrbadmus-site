@@ -251,6 +251,7 @@
 }
 
 /* ═══ DARK — opt-in via <html data-theme="dark">. Gold on near-black. ═══ */
+@media screen {
 [data-theme="dark"] {
   --bg:        #14110D;
   --card:      #1D1915;
@@ -290,6 +291,7 @@
 
   color-scheme: dark;
 }
+} /* @media screen — D8 */
 
 /* ═══ KS3 — playful variant hook. Same bones, different energy.
    Full KS3 styling lands in a later pass; these are the dials. ═══
@@ -3576,6 +3578,15 @@ a:hover { color: var(--st-accent-hover); }
   --st-ghost:   #6E604B;
 }
 
+/* ⊕ D8 (theme-run audit, 27 Sep 2026). Every `html[data-theme="dark"]`
+   rule below (the whole rest of this file, including the D6 week-chip
+   fix) is now wrapped in `@media screen`. `data-theme="dark"` is
+   unconditional — THEME_HEAD/theme.js write it on every load, in every
+   medium, including print — so un-guarded, printing the leaderboard in
+   dark mode printed the dark ground and cream ink verbatim. Rule 7: print
+   is always dark text on white, whatever the viewed theme. Matches the
+   guard `shared/ks3-theme.css` already uses for the identical reason. */
+@media screen {
 
 /* ═══ THEME RUN, 27 Sep 2026 (Mide's ruling: light by default, a
    Light/Dark/System control on every page) — DARK VALUES FOR THE TOKENS
@@ -3688,6 +3699,31 @@ html[data-theme="dark"] {
      now theme-variant) rather than let the capture carry the new dark
      value through. */
   --st-docket-paper: #FFFDF8;
+}
+
+/* ⊕ D6 (theme-run audit, 27 Sep 2026). The week rail's SELECTED chip (the
+   only inline-styled node on this page whose computed `bg` is
+   `var(--st-ink)` — `docs/ks3/design-reference/leaderboard/source/KS4
+   Weekly Leaderboard.dc.html:434-436`, `bg: on ? 'var(--st-ink)' : …, fg:
+   on ? 'var(--st-cream)' : …`) is the same "inverted ink card" idiom as
+   the KS3/student ink panels: `--st-ink` flips light for dark-theme body
+   text (above), so the selected chip's card flips from a dark pill to a
+   light one, and its label (`--st-cream`, deliberately excluded from the
+   general remap above because its OTHER job is "cream on an
+   always-dark plate") stays light too — 1.07:1, measured, and it is
+   selected BY DEFAULT (the current week).
+   Fixed by attribute selector rather than by node index, matching
+   `shared/teacher-ds.css`'s `[style*="color:var(--st-paper)"]` pattern:
+   `w.bg`/`w.fg` are template-driven strings baked into the DOM `style`
+   attribute at render time (never a CSS class), and grepping the whole
+   .dc.html source confirms this is the ONLY node whose inline style ever
+   sets `background: var(--st-ink)` — no other element's `--st-cream` use
+   is reachable through this selector, so nothing else moves. 15.75:1 on
+   the flipped ink-card in dark (#F3EBDD bg / #16120D text, the same ink
+   `--pg-on-accent-text` uses for the identical reason on the student
+   port). */
+html[data-theme="dark"] [style*="background: var(--st-ink)"] {
+  --st-cream: #16120D;
 }
 
 /* ═══ THEME RUN, 27 Sep 2026 — dark values for `.rd[data-mode="ks3"]`'s
@@ -3833,4 +3869,6 @@ html[data-theme="dark"] textarea::placeholder {
   color: var(--st-ghost);
   opacity: 1;
 }
+
+} /* @media screen — D8 */
 

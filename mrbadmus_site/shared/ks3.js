@@ -12406,8 +12406,26 @@
                    " H" + (X0 + 36))
                 : null);
 
+      /* ⊕ D15 (theme-run audit, 27 Sep 2026) — was the literal "#C6B9A7",
+         which is `--ks3-on-dark-muted`'s own (unscoped) default value,
+         hand-copied rather than referenced. `.ks3-scope-block` carries
+         `ks3-dark` (a "practical" shell), so its `--ks3-dark-panel`-family
+         figure plate is meant to stay dark in both themes (rule 4) but its
+         effective ground — `rgba(255,255,255,.06)` composited over
+         `.ks3-dark`'s own `--ks3-ink` background — inverts to CREAM in
+         Dark along with everything else `--ks3-ink` governs (measured:
+         the plate itself, not this label, is the thing that moves). A
+         fixed literal ink then reads fine on the ground it was picked for
+         (Light: still dark, matches) and fails on the one it was not
+         (Dark: now light, 1.6–1.9:1). `var(--ks3-on-dark-muted)` is the
+         SAME token `.ks3-dark`'s own nested-panel text already uses for
+         this exact ground — unflipped outside `.ks3-dark` (byte-identical
+         to the literal it replaces) and correctly flipped DARK inside it
+         once the ground goes light, tracking the plate instead of
+         fighting it. Not a figure recolour: this labels a readout, it
+         does not ink a drawn ray or wire. */
       fillSpan(wrap, "scope", "amp", mm.toFixed(1) + " mm",
-               tagStyle(0.115, (MID - ampPx - 18) / 420, "#C6B9A7", "start"));
+               tagStyle(0.115, (MID - ampPx - 18) / 420, "var(--ks3-on-dark-muted)", "start"));
 
       var other = mm === 2 ? "0.4" : "0.2";
       setOut(wrap, "scope", "freq", f + " Hz");
@@ -13617,9 +13635,24 @@
         img.setAttribute("style", "stroke-width:" + blurPx.toFixed(1) + ";");
       }
 
+      /* ⊕ D15 (theme-run audit, 27 Sep 2026) — was the literal "#C6B9A7",
+         `--ks3-on-dark-muted`'s own (unscoped) default value, hand-copied
+         rather than referenced. `.ks3-pinh-block` carries `ks3-dark`; its
+         figwrap's plate (`--ks3-dark-panel`) is meant to stay dark in both
+         themes (rule 4), but `.ks3-dark`'s own scope flips
+         `--ks3-dark-panel` to cream for the call-out blocks' OWN nested
+         trays and reaches this figure tray too (measured: dark in Light,
+         cream in Dark — the plate, not this label, is what moved). A fixed
+         literal then mismatches the ground it was not picked for (1.6–
+         1.9:1 in Dark). `var(--ks3-on-dark-muted)` is the SAME token
+         paired with `--ks3-dark-panel` everywhere else in this scope —
+         unflipped outside `.ks3-dark` (byte-identical to the literal it
+         replaces) and correctly flipped dark once the plate goes light,
+         tracking the plate rather than fighting it. Not a figure recolour:
+         this labels the hole width, it does not ink a drawn ray. */
       fillSpan(wrap, "pinh", "hole",
                "HOLE " + h.getAttribute("data-name"),
-               absP7(((hx / 1000) * 100).toFixed(2) + "%", "2%", "#C6B9A7",
+               absP7(((hx / 1000) * 100).toFixed(2) + "%", "2%", "var(--ks3-on-dark-muted)",
                      "translate(-50%,0)"));
 
       setOut(wrap, "pinh", "u", u + " mm");

@@ -35,6 +35,19 @@ html, body { margin: 0; padding: 0; background: #FBF3E6; }
   [data-arrive] { animation: ks4-arrive .3s ease-out both; }
   @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
 
+/* ⊕ D8 (theme-run audit, 27 Sep 2026) — every rule below is guarded inside
+   `@media screen`. All five fixes key off `[data-theme="dark"]` (directly,
+   or via `html[data-theme="dark"] body`'s inherited colour), and the
+   attribute is unconditional — it is written by THEME_HEAD/theme.js on
+   every load of every one of these 54 pages, in EVERY medium, including
+   print. Un-guarded, printing a pilot page in dark mode printed the dark
+   ground (`html[data-theme="dark"] body`'s own rule a few lines down being
+   the clearest case: it sets print's own text colour to the dark-mode
+   cream) with "print background graphics" on, or faint low-contrast text
+   without it — both wrong; rule 7 is print stays light text on white
+   regardless of the viewed theme. Matches the guard `shared/ks3-theme.css`
+   already uses for the identical reason. */
+@media screen {
 /* ⊕ KS4-DARK-1 (DEPARTURES-PILOT.md) — disabled .ks3-reveal-btn/.ks3-retry
    measured 2.01:1 in dark mode (contrast_audit.py, disabled-control floor
    3.0). Design's own compiled Component sets `style="opacity:.45"` inline
@@ -175,6 +188,7 @@ html[data-theme="dark"] body {
 #chatOverlay {
   color-scheme: light;
 }
+} /* @media screen — D8 */
 
 /* ⊕ KS4-CHIP-1 (Mide's ruling, 27 Sep 2026) — replaces the two static
    "Combined · Triple" / "Foundation · Higher" header chips with one

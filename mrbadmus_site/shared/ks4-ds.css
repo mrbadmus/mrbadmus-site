@@ -318,6 +318,7 @@
 }
 
 /* ═══ DARK — opt-in via <html data-theme="dark">. Gold on near-black. ═══ */
+@media screen {
 [data-theme="dark"] {
   --bg:        #14110D;
   --card:      #1D1915;
@@ -357,6 +358,7 @@
 
   color-scheme: dark;
 }
+} /* @media screen — D8 */
 
 /* ═══ KS3 — playful variant hook. Same bones, different energy.
    Full KS3 styling lands in a later pass; these are the dials. ═══
