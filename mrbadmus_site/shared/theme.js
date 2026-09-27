@@ -92,6 +92,18 @@
     '.mrb-theme .mrb-theme-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}',
     '.mrb-theme svg{display:block;pointer-events:none}',
     '@media (forced-colors:active){.mrb-theme label:has(input:checked){outline:2px solid CanvasText}}',
+    /* compact slots (data-mrb-theme="compact"): below 600px, one button that
+       shows the current mode and opens the same three choices */
+    '.mrb-theme-c{position:relative;display:inline-flex;align-items:center;vertical-align:middle}',
+    '.mrb-theme-menu{display:none;position:relative}',
+    '.mrb-theme-menu>summary{list-style:none;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;border:1px solid color-mix(in srgb,currentColor 28%,transparent);cursor:pointer;color:inherit}',
+    '.mrb-theme-menu>summary::-webkit-details-marker{display:none}',
+    '.mrb-theme-menu>summary:focus-visible{outline:3px solid var(--mrb-focus,#E4572E);outline-offset:1px}',
+    '.mrb-theme-pop{position:absolute;right:0;top:calc(100% + 6px);z-index:1000;background:Canvas;color:CanvasText;border:1px solid color-mix(in srgb,CanvasText 22%,transparent);border-radius:14px;padding:6px;box-shadow:0 8px 24px rgba(0,0,0,.18)}',
+    '.mrb-theme-pop .mrb-theme{flex-direction:column;align-items:stretch;border:0;padding:0;border-radius:0}',
+    '.mrb-theme-pop .mrb-theme label{width:auto;height:36px;justify-content:flex-start;gap:10px;padding:0 14px 0 10px;border-radius:10px}',
+    '.mrb-theme-pop .mrb-theme .mrb-theme-sr{position:static;width:auto;height:auto;margin:0;overflow:visible;clip:auto;white-space:nowrap;font-size:.9rem;font-weight:600}',
+    '@media (max-width:600px){.mrb-theme-c>.mrb-theme{display:none}.mrb-theme-menu{display:inline-block}}',
     '@media print{.mrb-theme{display:none!important}}'
   ].join('');
 
@@ -109,6 +121,29 @@
        being present, not the flag. */
     if (slot.getAttribute('data-mrb-theme-ready') === '1' && slot.querySelector('.mrb-theme')) return;
     slot.setAttribute('data-mrb-theme-ready', '1');
+    if (slot.getAttribute('data-mrb-theme') === 'compact') {
+      var wrap = document.createElement('span');
+      wrap.className = 'mrb-theme-c';
+      wrap.appendChild(group());
+      var menu = document.createElement('details');
+      menu.className = 'mrb-theme-menu';
+      var sum = document.createElement('summary');
+      menu.appendChild(sum);
+      var pop = document.createElement('div');
+      pop.className = 'mrb-theme-pop';
+      pop.appendChild(group());
+      menu.appendChild(pop);
+      menu.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && menu.open) { menu.open = false; sum.focus(); e.stopPropagation(); }
+      });
+      wrap.appendChild(menu);
+      slot.appendChild(wrap);
+      return;
+    }
+    slot.appendChild(group());
+  }
+
+  function group() {
     var name = 'mrb-theme-' + (++uid);
     var fs = document.createElement('fieldset');
     fs.className = 'mrb-theme';
@@ -123,12 +158,18 @@
       var t = e.target;
       if (t && t.name === name) set(t.value);
     });
-    slot.appendChild(fs);
+    return fs;
   }
 
   function syncControls(p) {
     var inputs = document.querySelectorAll('.mrb-theme input');
     for (var i = 0; i < inputs.length; i++) inputs[i].checked = inputs[i].value === p;
+    var sums = document.querySelectorAll('.mrb-theme-menu > summary');
+    for (var j = 0; j < sums.length; j++) {
+      sums[j].innerHTML = ICONS[p];
+      sums[j].setAttribute('aria-label', 'Colour theme: ' + LABELS[p]);
+      sums[j].title = 'Colour theme: ' + LABELS[p];
+    }
   }
 
   function mountAll() {
@@ -150,6 +191,14 @@
     if (mq.addEventListener) mq.addEventListener('change', onDevice);
     else if (mq.addListener) mq.addListener(onDevice);
   }
+
+  /* One listener for every compact menu: a tap outside closes it. */
+  document.addEventListener('click', function (e) {
+    var open = document.querySelectorAll('.mrb-theme-menu[open]');
+    for (var i = 0; i < open.length; i++) {
+      if (!open[i].contains(e.target)) open[i].open = false;
+    }
+  });
 
   /* Another tab changed the choice: follow it. */
   window.addEventListener('storage', function (e) {
