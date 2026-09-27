@@ -1169,6 +1169,14 @@ PHYSICS_SUBTOPICS_ALL = {
   'fifas': [],
   'higher': None,
   'id': 'resistors',
+  # ⊕ Mide's ruling (27 Sep 2026, the KS4 polish run) — approved word for
+  # word; feeds every route's fixed exam-tip slot via K.tip(slug)
+  # (shared/ks4-lib.js), the same mechanism the other 12 pilot lessons'
+  # tips already use. Never route-varying, like every other non-quiz field
+  # here (build_ks4.build_source_record() reads it from THIS file only).
+  'examiner_tip': 'In a method question, say how you change the p.d. across the component: a variable resistor or a '
+                  'variable power supply. Put the ammeter in series and the voltmeter in parallel, and say you reverse '
+                  'the connections to get negative values.',
   'key_note': 'Ohmic resistor: constant R, straight I–V. Filament lamp: R increases with temperature, curved I–V. '
               'Diode: one direction only. Thermistor (NTC): R decreases with temperature. LDR: R decreases with light. '
               'RP16: investigate I–V graphs for resistor, lamp, diode.',
@@ -1275,6 +1283,14 @@ PHYSICS_SUBTOPICS_ALL = {
                        ('A', 'I = 2 A throughout; V₁ = 6 V; V₂ = 14 V (check: 6 + 14 = 20 V ✓)')]}],
   'higher': None,
   'id': 'series-parallel-circuits',
+  # ⊕ Mide's ruling (27 Sep 2026, the KS4 polish run) — approved word for
+  # word; feeds every route's fixed exam-tip slot via K.tip(slug)
+  # (shared/ks4-lib.js), the same mechanism the other 12 pilot lessons'
+  # tips already use. Never route-varying, like every other non-quiz field
+  # here (build_ks4.build_source_record() reads it from THIS file only).
+  'examiner_tip': 'Before you calculate anything, say which arrangement you are looking at. In series, one current '
+                  'flows through every component and the resistances add; in parallel, every branch has the same '
+                  "p.d. and the branch currents add. Don't mix the two rules.",
   'key_note': 'Series: same I, pd splits, R adds. Parallel: same pd, I splits, total R less than smallest. Household = '
               'parallel — full voltage, independent. Series break = all stop. Parallel break = others continue.',
   'matching': {'instruction': 'Match each property to the correct circuit type.',
