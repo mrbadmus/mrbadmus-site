@@ -470,6 +470,24 @@ for _slug in ("series-parallel-circuits", "resistors"):
 _page("ks4 pilot/nanoparticles [Triple Foundation]",
       "triple/foundation/chemistry/bonding/nanoparticles.html")
 
+# ── KS3 lane (theme run, 26 Sep 2026) ──
+# The base commit already registered "ks3 lesson" (a biology lesson, no
+# instrument) and "ks3 hub". This adds the browse layer (a year page, a unit
+# page) and two more instrument-bearing lessons, one per remaining subject —
+# chemistry's state-bench (particle model) and physics' circuit board — so
+# the sweep actually exercises the `.ks3-dark` ink-block family and the
+# standalone dark-panel instrument trays this lane's dark remap has to get
+# right. (The chemistry pick started as `particle-model.html`; swapped to
+# `solids-liquids-and-gases.html` after the first run surfaced a
+# PRE-EXISTING, unrelated light-mode defect on the former — see the run
+# report — rather than one this lane introduced or should paper over.)
+_page("ks3 year page", "ks3/year-7/index.html")
+_page("ks3 unit page", "ks3/physics/electric-circuits/index.html")
+_page("ks3 lesson [chemistry, instrument]",
+      "ks3/chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html")
+_page("ks3 lesson [physics, instrument]",
+      "ks3/physics/electric-circuits/current-and-circuits.html")
+
 
 # ══════════════════════════════════════════════════════════════════════════
 # the sweep

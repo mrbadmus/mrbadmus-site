@@ -113,6 +113,11 @@
       '<a href="' + url('signUp') + '" style="display:flex;align-items:center;min-height:44px;' +
       'padding:0 18px;border:2px solid var(--ks3-ink);border-radius:var(--ks3-r-control);' +
       'background:var(--ks3-ink);color:var(--ks3-on-dark);font-weight:700;font-size:16px">Start free</a>' +
+      /* Theme run (26 Sep 2026): the shared Light/Dark/System control, at
+         the right-hand end next to Sign in / Start free. shared/theme.js
+         mounts into any [data-mrb-theme] slot; this is the one slot every
+         page that calls nav() shares. */
+      '<span class="mrb-theme-slot" data-mrb-theme></span>' +
       '</header>';
   }
 
