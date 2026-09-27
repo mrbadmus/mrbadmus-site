@@ -3141,7 +3141,8 @@ html[data-theme="dark"] {
    the flipped ink-card in dark (#F3EBDD bg / #16120D text, the same ink
    `--pg-on-accent-text` uses for the identical reason on the student
    port). */
-html[data-theme="dark"] [style*="background: var(--st-ink)"] {
+html[data-theme="dark"] [style*="background: var(--st-ink)"],
+html[data-theme="dark"] [style*="background:var(--st-ink)"] {
   --st-cream: #16120D;
 }
 

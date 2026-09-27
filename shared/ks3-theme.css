@@ -26,6 +26,9 @@
      flip in dark, so the ink that sits on it must not flip either — without
      this the chat header subtitle took the global dark #241D14 on rust (2.53:1). */
   --on-accent: #FFFFFF; --on-accent-soft: #FBF5F3;
+  /* theme run, interaction gate: the borrowed chrome's soft accent (the chat's
+     own-message bubble) stayed KS3's light wash under dark ink — 1.03:1. */
+  --accent-soft: #3A2218; --accent-border: #6B3A28;
   --ks3-ground: #16120E; --ks3-card: #1F1A15; --ks3-band: #2A231C; --ks3-inset: #231D17; --ks3-row-dim: #1B1611;
   --ks3-rule: #3E352C; --ks3-rule-strong: #5E5246; --ks3-option-border: #4F443A; --ks3-option-spent: #2B241D;
   --ks3-ink: #F3ECE0; --ks3-ink-body: #E3D9CA; --ks3-ink-muted: #C2B6A6; --ks3-ink-faint: #B0A493; --ks3-ink-ghost: #8A7F72;
@@ -289,4 +292,7 @@
      silently pick up the wrong (dark-ground) amber. */
   --ks3-alert: #5A430A;
 }
+/* theme run, interaction gate: a disabled Check read 2.96:1 at .45 opacity in
+   dark against the 3:1 disabled floor. */
+[data-theme="dark"] .rd[data-mode="ks3"] .ks3-ccheck-check[disabled] { opacity: .55; }
 } /* @media screen */
