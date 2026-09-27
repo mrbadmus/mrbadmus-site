@@ -21,7 +21,13 @@
 }
 .fp-crumb { color: var(--st-accent-text); text-decoration: none; letter-spacing: .08em; text-transform: none; }
 .fp-crumb:hover { color: var(--st-accent-hover); text-decoration: underline; }
-.fp-sep { opacity: .6; }
+/* ⊕ MRB-351 theme pass, 27 Sep 2026 — FOUND LIVE, contrast_audit's first
+   pass over this page. `--st-caption` is ALREADY only just at the AA
+   floor at full opacity (4.51:1 light, per its own token comment) — the
+   0.6 dim this separator carried pushed it to 2.53:1 light / 2.84:1 dark,
+   under both floors in both themes. No opacity: full colour reads as
+   subtle enough next to the eyebrow's own caps-and-tracking styling. */
+.fp-sep { opacity: 1; }
 .fp-title {
   margin: 10px 0 0; font: 600 44px/1.05 var(--st-display); letter-spacing: -0.03em;
   color: var(--st-ink); overflow-wrap: anywhere;

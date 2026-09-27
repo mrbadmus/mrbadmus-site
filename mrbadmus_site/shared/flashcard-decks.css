@@ -167,8 +167,18 @@
   cursor: pointer;
 }
 .fd-icon:hover { border-color: var(--st-btn-border); color: var(--st-ink); }
-.fd-icon[disabled] { opacity: .35; cursor: default; }
-.fd-icon[disabled]:hover { border-color: transparent; color: var(--st-muted); }
+/* ⊕ MRB-351 theme pass, 27 Sep 2026 — FOUND LIVE by contrast_audit.py, the
+   first coverage this page has had. `.fd-icon` at rest is already only
+   "secondary" contrast (`--st-muted` on the transparent-over-paper ground,
+   5.61:1 light / 6.28:1 dark); fading it further with opacity for the
+   disabled Up/Down state pushed it under the 3:1 disabled floor (1.72:1
+   light, 1.89:1 dark — opacity dims toward the SAME paper the token is
+   already legible against, so it just erases the margin). `--st-ghost`
+   at full opacity — the token this file names for "the dimmest legible" —
+   reads as dimmer than the resting icon without an opacity fade: 4.93:1
+   light, 5.14:1 dark. */
+.fd-icon[disabled] { opacity: 1; color: var(--st-ghost); cursor: default; }
+.fd-icon[disabled]:hover { border-color: transparent; color: var(--st-ghost); }
 .fd-handle { cursor: grab; touch-action: none; }
 .fd-card.is-drag .fd-handle { cursor: grabbing; }
 

@@ -168,7 +168,28 @@
    on a filled button reads as "off" at a glance and still passes contrast
    against the paper it sits on. */
 .sw-btn[disabled] { opacity: .45; cursor: default; }
-.sw-btn-primary[disabled]:hover { background: var(--st-accent-text); }
+/* ⊕ MRB-351 theme pass, 27 Sep 2026 — FOUND LIVE by contrast_audit.py once
+   it first drove the sheet's flashcards branch far enough to see a
+   disabled Next/Save (nothing in this file's own coverage had reached
+   that state before). `.sw-btn-primary` pairs TWO colours that flip in
+   OPPOSITE directions across the theme, `color:var(--st-paper)` on
+   `background:var(--st-accent-text)` — 6.48:1 light, 8.65:1 dark, both
+   fine at full opacity. The generic `.sw-btn[disabled]` rule above dims
+   the WHOLE element toward whatever is behind it, and both colours are
+   warm and light-on-the-page in their own theme, so they converge into
+   two near-identical washed tints of the same hue: 1.45:1 light, 1.64:1
+   dark, both under the 3:1 disabled floor. Opacity is fine for `.sw-btn`'s
+   plain outline variant (one ink colour fading against its own paper);
+   it cannot work for a two-tone fill+text pair, in either theme — so the
+   primary variant gets its own flat disabled treatment instead of a
+   fade: `--st-muted` on `--st-num-well`, un-dimmed, 4.69:1 light / 6.15:1
+   dark. */
+.sw-btn-primary[disabled] {
+  opacity: 1;
+  background: var(--st-num-well);
+  color: var(--st-muted);
+}
+.sw-btn-primary[disabled]:hover { background: var(--st-num-well); }
 
 /* ── body ───────────────────────────────────────────────────────────────── */
 .sw-body { padding: 18px 16px 22px; min-width: 0; }

@@ -5475,7 +5475,7 @@ INSERT_AT["class view"].update({
                 {"t": "button", "on": "hwCheck",
                  "a": {"type": "button", "data-hw": "check",
                        "disabled": {"parts": [{"e": "hwCheckOff"}]},
-                       "style": {"parts": [_HW_BTN + "border:0;background:var(--pg-accent-text);color:#FFF7EC;opacity:",
+                       "style": {"parts": [_HW_BTN + "border:0;background:var(--pg-accent-text);color:var(--on-accent);opacity:",
                                            {"e": "hwCheckOpacity"}, ";"]}},
                  "c": [{"t": "#", "v": "Check"}]},
             ]}]},
@@ -5489,10 +5489,10 @@ INSERT_AT["class view"].update({
             "a": {"data-hw": "rate", "role": "group", "aria-label": "Rate this card",
                   "style": "display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;"},
             "c": [
-                _hw_btn("hwNotYet", "Not yet", "border:0;background:var(--pg-accent-text);color:#FFF7EC;", "not_yet"),
+                _hw_btn("hwNotYet", "Not yet", "border:0;background:var(--pg-accent-text);color:var(--on-accent);", "not_yet"),
                 _hw_btn("hwNearly", "Nearly", "border:1.5px solid var(--pg-ink);background:var(--pg-card);"
                                               "color:var(--pg-ink);", "nearly"),
-                _hw_btn("hwGot", "Got it", "border:0;background:var(--pg-ok-text);color:#FFFFFF;", "got_it"),
+                _hw_btn("hwGot", "Got it", "border:0;background:var(--pg-ok-text);color:var(--on-accent);", "got_it"),
             ]}]},
         {"t": "if", "e": "hwPanel", "c": [{
             "t": "div",
@@ -5973,6 +5973,28 @@ html[data-theme="dark"] {
 html[data-theme="dark"] textarea::placeholder {
   color: var(--st-ghost);
   opacity: 1;
+}
+/* ⊕ MRB-351 theme pass, 27 Sep 2026 — FOUND LIVE, contrast_audit's first
+   pass over the flashcard homework overlay (nothing had reached this
+   state before this ticket). The Check / Not yet / Got it buttons pair
+   `color:var(--on-accent)` with a fill that DOES flip dark
+   (`--pg-accent-text` / `--pg-ok-text`, both correctly turning into LIGHT
+   tints in dark mode) — the same "text on accent" shape the --st-paper
+   fix above handles. `--on-accent` itself is the right token (the
+   generic dark value is #14110D, matching a light fill turning light),
+   but never reaches these buttons: the OLDER `.rd` block (this file's
+   own "Redesign opt-in" section, predating this run) pins
+   `--on-accent: #FFFFFF` unconditionally, and at equal (0,1,0)
+   specificity it wins on source order regardless of theme — measured
+   1.59:1 / 1.99:1, both invisible. Re-declared on the two containers the
+   buttons actually sit in (`data-hw="write"` holds Check; `data-hw="rate"`
+   holds all three ratings) rather than touching `.rd` itself, which
+   would reach every OTHER already-passing use of --on-accent on this
+   page and everywhere else `.rd` is loaded. 9.45:1 / 11.8:1 against the
+   two dark fills. */
+html[data-theme="dark"] [data-hw="write"],
+html[data-theme="dark"] [data-hw="rate"] {
+  --on-accent: #14110D;
 }
 
 """
