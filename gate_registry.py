@@ -184,6 +184,24 @@ GATES = [
          why="garbage strings in the built key stage — unsubstituted "
              "placeholders, stray markup, `undefined` reaching a page."),
 
+    dict(name="brand_one_mark",
+         cmd=["python3", "brand_one_mark.py"],
+         speed="fast",
+         watches=["brand_one_mark.py", "brand.py", "shared/brand/**",
+                  "generate_site_v5.py", "build_ks3.py", "build_ks4.py",
+                  "ks4_rulings.py", "build_student_port.py", "build_teacher_port.py",
+                  "brand_port.py", "student_rulings.py", "teacher_rulings.py",
+                  "build_leaderboard_port.py", "shared/*.js", "shared/*.css",
+                  "consumer/**", "parents/**", "org/**", "go/**", "teacher/**",
+                  "student/**", "3d-studio/src/**", "3d-studio/index.html",
+                  "*.html", "mrbadmus_site/**"],
+         why="the one-mark ruling (Mide, 13 Sep 2026): ONE logo on every page. "
+             "Before 27 Sep 2026 the site carried seven, each a good-faith "
+             "copy; three were mirrored. Fails on any retired mark, any "
+             "chevron not byte-for-byte brand.MARK_SVG, 'MrBadmusAI' in a "
+             "title/og/brand link, a stale brand.js, a kit file that differs "
+             "from Design's original, or a source spelling out the chevron."),
+
     dict(name="answer_positions",
          cmd=["python3", "verify_answer_positions.py"],
          speed="fast",

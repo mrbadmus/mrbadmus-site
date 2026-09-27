@@ -6450,6 +6450,9 @@ def build_site(output_dir="mrbadmus_site"):
     # Stamped from their own bytes, by the same pass, and verified below
     # like the rest. Names are read out of BRAND_HEAD, not listed here.
     _versioned_assets += re.findall(r'/shared/(brand/[^"?]+)"', brand.BRAND_HEAD)
+    # brand.js too: pages that draw their header in JavaScript (consumer,
+    # parents, go, 3D) load it by hand, and it is just as immutable.
+    _versioned_assets.append("brand/brand.js")
     _asset_ver = {}
     for _name in _versioned_assets:
         _p = os.path.join(output_dir, "shared", _name)

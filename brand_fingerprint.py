@@ -7,7 +7,7 @@ chevron geometry and colours, the wordmark text, typeface and weight. Pages
 whose fingerprints match wear the same mark; the number of distinct
 fingerprints is the number of logos on the site.
 
-    python3 brand_fingerprint.py                      # local build (serves mrbadmus_site/)
+    python3 brand_fingerprint.py                      # local build (serves the repo root)
     python3 brand_fingerprint.py --base https://mrbadmus.com
     python3 brand_fingerprint.py --themes light,dark --widths 360,1280 --shots DIR
     python3 brand_fingerprint.py --expect-one         # exit 1 unless every family shows the ONE mark
@@ -32,9 +32,12 @@ import ks3_browser as cdp
 
 HERE = Path(__file__).resolve().parent
 
-# One representative page per family. Signed-in surfaces are measured on the
-# fixture/preview pages their generators publish beside them (same template,
-# same header) because the live page redirects a signed-out browser away.
+# One representative page per family. The compiled student and teacher
+# screens draw their header only once real data arrives, so they are
+# measured on the fixture pages their port generators write beside them
+# (same template, same rulings, fixture data). teacher_fixtures/ is not
+# published, so on --base https://… those two rows report "no brand found";
+# the live proof for them is the bytes check in docs/brand/ONE-MARK-REPORT.md.
 FAMILIES = [
     ("landing",            "/index.html"),
     ("ks4-gcse-hub",       "/ks4.html"),
@@ -52,8 +55,11 @@ FAMILIES = [
     ("student-classes",    "/student/classes.html"),
     ("student-settings",   "/student/settings.html"),
     ("teacher-today",      "/teacher/today.html"),
-    ("teacher-classes",    "/teacher/classes.html"),
+    ("teacher-classes",    "/teacher_fixtures/classes-fixture.html"),
     ("teacher-admin",      "/teacher/admin.html"),
+    ("teacher-class",      "/teacher_fixtures/class-detail-fixture.html"),
+    ("teacher-timetable",  "/teacher/timetable.html"),
+    ("teacher-seating",    "/teacher/seating.html"),
     ("teacher-profile",    "/teacher-profile.html"),
     ("auth",               "/auth.html"),
     ("leaderboard",        "/leaderboard.html"),
@@ -67,7 +73,9 @@ FAMILIES = [
     ("parents-public",     "/parents/index.html"),
     ("parents-sign-in",    "/parents/sign-in.html"),
     ("consumer",           "/consumer/signup.html"),
+    ("consumer-admin",     "/consumer/admin-accounts.html"),
     ("org",                "/org/index.html"),
+    ("org-sign-in",        "/org/sign-in.html"),
     ("go",                 "/go/index.html"),
     ("3d-studio",          "/3d/index.html"),
 ]
@@ -79,7 +87,7 @@ FIND_JS = r"""
 (() => {
   const NAME = /^\s*Mr\s?Badmus(\s?AI)?(\s+KS3)?\s*$/i;
   const visible = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
-    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && r.top < 160 && r.bottom > -5; };
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && r.top < 420 && r.bottom > -5; };
   let word = null;
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   while (walker.nextNode()) {
@@ -124,8 +132,12 @@ FIND_JS = r"""
     markSize: [Math.round(mr.width), Math.round(mr.height)],
     rect: [r.left, r.top, r.width, r.height],
     partial: !!box.querySelector('[data-mrb-mark]'),
+    ground: (() => { let e = box; while (e) { const c = getComputedStyle(e).backgroundColor;
+      if (c && c !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(c)) return c; e = e.parentElement; }
+      return getComputedStyle(document.documentElement).backgroundColor || 'rgb(255, 255, 255)'; })(),
     onDark: !!(box.closest('.mrb-brand--on-dark')),
     theme: document.documentElement.getAttribute('data-theme'),
+    url: location.pathname,
     title: document.title,
   };
 })()
@@ -135,11 +147,31 @@ FIND_JS = r"""
 WORD_FAMILIES = {"MrBadmus Wordmark": "Bricolage Grotesque"}
 INK, CREAM = "rgb(34, 30, 27)", "rgb(251, 243, 230)"
 
+# Where a page deliberately shows NO mark, by ruling, at or below a width.
+# student/assignment.html is Design's exam task bar: below her `wide`
+# breakpoint the bar holds back-link, class, clock and HANDED IN chip, and the
+# lockup would push the clock off a 360px screen (lane C, one-mark run; the
+# reasoning is beside RULED_BRAND in student_rulings.py). No mark is not a
+# second mark; it is reported, never counted as one.
+NO_MARK_BY_RULING = {"student-assignment": 719}
+
+
+def _lum(rgb):
+    import re as _re
+    v = [int(x) / 255 for x in _re.findall(r"\d+", rgb)[:3]]
+    v = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in v]
+    return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]
+
+
+def contrast(a, b):
+    la, lb = sorted((_lum(a), _lum(b)), reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
 
 def fingerprint(d):
     """The mark, minus the one permitted variant (the wordmark's colour)."""
     if not d.get("found"):
-        return "NONE", "no brand found"
+        return "NONE", "no brand found" + (f" ({d['error']})" if d.get("error") else "")
     fam = WORD_FAMILIES.get(d["family"], d["family"])
     key = {"word": d["word"], "family": fam, "weight": d["weight"],
            "svgs": d["svgs"], "imgs": d["imgs"]}
@@ -150,10 +182,47 @@ def fingerprint(d):
     return h, desc
 
 
+# Signed-in pages send a signed-out browser to /auth.html (or stay blank
+# behind a guard). The mark is in the page's own header either way, so the
+# guard, Supabase and the backend are blocked and the body is revealed —
+# the header is measured as the page ships it, never through a redirect.
+BLOCK = ["*teacher-guard.js*", "*student-guard.js*"]
+REVEAL_JS = ("(()=>{for(const e of [document.documentElement,document.body]){if(!e)continue;"
+             "e.style.setProperty('visibility','visible','important');e.style.setProperty('opacity','1','important');"
+             "e.hidden=false;if(getComputedStyle(e).display==='none')e.style.setProperty('display','block','important')};return 1})()")
+
+
+def serve_build():
+    """mrbadmus_site/ as published, falling back to the repo root for the
+    unpublished fixture trees (teacher_fixtures/)."""
+    import http.server
+    import threading
+    site, root = HERE / "mrbadmus_site", HERE
+
+    class H(http.server.SimpleHTTPRequestHandler):
+        def translate_path(self, path):
+            p = super().translate_path(path)
+            rel = os.path.relpath(p, os.getcwd())
+            for base in (site, root):
+                cand = base / rel
+                if cand.exists():
+                    return str(cand)
+            return str(site / rel)
+
+        def log_message(self, *a):
+            pass
+
+    srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), H)
+    srv.daemon_threads = True
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    return srv, srv.server_address[1]
+
+
 def set_theme(page, url, theme):
     page.goto(url)
     page.eval(f"(()=>{{try{{localStorage.setItem('mrb-theme','{theme}')}}catch(e){{}};return 1}})()")
     page.goto(url)
+    page.eval(REVEAL_JS)
 
 
 def clip_png(page, rect, path, pad=12):
@@ -166,7 +235,7 @@ def clip_png(page, rect, path, pad=12):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--base", default=None, help="site origin; default serves ./mrbadmus_site")
+    ap.add_argument("--base", default=None, help="site origin; default serves the local build")
     ap.add_argument("--themes", default="light")
     ap.add_argument("--widths", default="1280")
     ap.add_argument("--shots", default=None, help="screenshot dir (default $MRB_SHOTS/brand or gate tmp)")
@@ -179,7 +248,7 @@ def main():
     server = None
     base = a.base
     if not base:
-        server, port = cdp.serve(str(HERE / "mrbadmus_site"))
+        server, port = serve_build()
         base = f"http://127.0.0.1:{port}"
     base = base.rstrip("/")
     shots = Path(a.shots or os.path.join(os.environ.get("MRB_SHOTS") or cdp.gate_tmp(), "brand"))
@@ -192,6 +261,13 @@ def main():
     rows, problems = [], []
     with cdp.Browser() as b:
         page = b.page("about:blank")
+        page.send("Network.enable")
+        page.send("Network.setBlockedURLs", {"urls": BLOCK})
+        # The consumer product is behind CONSUMER_SIGNUP_ENABLED (off on the
+        # live site). Its pages are measured in the ON state, exactly as the
+        # consumer drives do, so the header that WILL ship is the one counted.
+        from mrb327_marketing_drive import FLAG_ON_JS
+        page.send("Page.addScriptToEvaluateOnNewDocument", {"source": FLAG_ON_JS})
         for theme in a.themes.split(","):
             for width in [int(w) for w in a.widths.split(",")]:
                 page.set_viewport(width, 900)
@@ -217,21 +293,31 @@ def main():
                             pass
                     rows.append({"family": fam, "path": path, "theme": theme, "width": width,
                                  "fp": fp, "desc": desc, "data": d})
-                    if a.expect_one and d.get("found"):
-                        want = CREAM if (theme == "dark" or d.get("onDark")) else INK
-                        if d.get("wordColor") and d["wordColor"] != want:
-                            problems.append(f"{tag}: wordmark {d['wordColor']}, want {want}")
+                    if not (d.get("found") and d.get("partial")) and width <= NO_MARK_BY_RULING.get(fam, -1):
+                        rows[-1]["fp"], rows[-1]["desc"] = "RULED-NONE", "no mark at this width, by ruling"
+                    if a.expect_one and d.get("found") and rows[-1]["fp"] != "RULED-NONE":
+                        # The one variant: ink or cream, whichever reads on
+                        # the ground the header actually sits on.
+                        wc, g = d.get("wordColor"), d.get("ground")
+                        if wc not in (INK, CREAM):
+                            problems.append(f"{tag}: wordmark {wc} is neither ink nor cream")
+                        elif g and contrast(wc, g) < 4.5:
+                            problems.append(f"{tag}: wordmark {wc} on {g} is {contrast(wc, g):.2f}:1 (< 4.5)")
     if server:
         server.shutdown()
 
-    by_fp = {}
+    by_fp, ruled = {}, [r for r in rows if r["fp"] == "RULED-NONE"]
     for r in rows:
+        if r["fp"] == "RULED-NONE":
+            continue
         by_fp.setdefault(r["fp"], []).append(r)
     print(f"\n{len(by_fp)} distinct mark(s) across {len({r['family'] for r in rows})} families\n")
     for fp, rs in sorted(by_fp.items(), key=lambda kv: -len(kv[1])):
         fams_ = sorted({r["family"] for r in rs})
         print(f"  [{fp}] {rs[0]['desc']}")
         print(f"      {len(fams_)} families: {', '.join(fams_)}")
+    for r in ruled:
+        print(f"  (ruled) {r['family']} {r['theme']} {r['width']}px — no mark by ruling")
     if a.json:
         Path(a.json).write_text(json.dumps(rows, indent=1))
     print(f"\n  crops: {shots}")

@@ -101,108 +101,81 @@ The name "MrBadmus" refers to Mide Badmus, the teacher who built this site for h
 
 ---
 
-## Brand presentation rule
+## Brand — ONE mark, everywhere ⊕ (Mide's ruling, 13 Sep 2026; landed by the one-mark run, 27 Sep 2026)
 
-The site has FOUR brand presentations. Always check which applies before adding nav markup to a new page.
+> **ONE mark everywhere:** a forward (right-pointing) double chevron **+** the
+> wordmark **"MrBadmus"**. "AI" is dropped from the name. The front chevron is
+> solid, the back chevron is faded. Identical on every page — pupil, public,
+> staff, consumer — and in every email. The only variant is light-on-dark.
+> The green octopus and the ⚗️ alembic are retired. **Exception:** teacher
+> worksheets (PDF and DOCX) carry the chevron only, no wordmark.
 
-**Why:** External pages need a visible brand for prospective students, parents, and schools (first impression, marketing). STAFF surfaces stay clean and utilitarian — they're working instruments for authenticated adults, no marketing surface needed. KS3 pages take Claude Design's mark (MRB-197, ruled by Mide) — the same key-stage split already ruled for the palette under MRB-183. STUDENT surfaces take Design's mark too (MRB-197 extended, 20 Aug 2026): a student's class page is the product, and it is continuous with the KS3 lesson pages the same student has been reading all term.
+This REPLACES the per-surface table that used to live here (KS4 chrome / KS4
+lesson + root / KS3 / student / staff — five different marks, plus a sixth on
+the KS4 pilot lessons and a seventh on the consumer pages). That table is gone
+on purpose: every row of it was a real, ruled, good-faith decision, and the
+sum of them was "too many different logos just floating around" (Mide).
+**Who the page is for no longer decides anything.** A teacher page, a pupil
+page and the landing page wear the same mark.
 
-| Surface | Brand markup |
+### Where the mark comes from — and the only place it may come from
+
+| what | where |
 |---|---|
-| **KS4 CHROME pages** ⊕ | Claude Design's `BrandMark`: a right-pointing **double** chevron in `#E4572E` (second chevron at `stroke-opacity="0.34"`, stroke-width 3.4, viewBox `0 0 22 22`) **+** "MrBadmusAI" in Bricolage Grotesque 800. Emitted by `nav_html(chrome=True)` in `generate_site_v5.py`, styled by `shared/ks4-chrome.css`. Applies to the seven pages of the front-door journey: `index.html`, `ks4.html`, `{combined,triple}/index.html`, the four tier pages, the twelve subject hubs and all 98 topic pages. |
-| **Other external / public pages (KS4 + root)** | Gold-to-rust two-chevron SVG **+** "MrBadmusAI" text. Uses `nav-brand` + `brand-logo` classes from `shared/styles.css`. Applies to: `auth.html`, `leaderboard.html`, `past-papers.html`, `weekly-challenge.html`, `my-challenges.html`, `revision.html`, every KS4 **lesson** (subtopic) page, and any future external/public page **outside KS3** that is not part of the KS4 chrome. |
-| **KS3 pages** | Claude Design's mark: a single bold `#E4572E` chevron + "MrBadmusAI" wordmark in Bricolage Grotesque 800, exactly as drawn in the frozen reference (`docs/ks3/design-reference/`). Emitted by `build_ks3.py` (`NAV_BRAND`), styled by `.ks3-brand` in `shared/ks3.css`. Never hand-copy it onto a page — KS3 pages are generated. |
-| **Student surfaces** | Claude Design's `BrandMark`: a right-pointing **double** chevron in `#E4572E` (the second chevron at `stroke-opacity="0.34"`) **+** "MrBadmusAI" in Bricolage Grotesque 600. Drawn by Design in the 19 Aug 2026 student delivery; emitted by `build_student.py` from that delivery. Applies to: `student/class.html`, `student/assignment.html` and every future student-facing page. ⚠️ This is NOT the same drawing as the KS3 lessons' mark — that one is a single *upward* chevron at stroke-width 4.6. Both are Design's, both `#E4572E`, both carry the wordmark; they are not interchangeable, and neither is hand-copied (both are generated). |
-| **Staff / school-operations pages** | Plain white text "MrBadmusAI", **no logo asset**, with the exact styling pinned below. Applies to: all `/teacher/*`, `/admin/*` and `/hod/*` pages, and all current/future HoD / SLT / admin dashboards. |
+| **Design's kit** — the source of truth | `docs/brand/source/` (untouched originals + Design's *Brand Mark* sheet). Published, metadata-stripped copies in `shared/brand/`. Never redrawn; `brand_one_mark` fails if a shipped kit file differs from the original minus `<metadata>`. |
+| **The partial** | `brand.py` — reads the chevron's two paths out of `shared/brand/mrbadmus-chevron.svg` at import. `brand_lockup(href, on_dark=False)` is the header lockup; `brand_head()` the favicon/app-icon/stylesheet tags; `title()` the `… \| MrBadmus` suffix. |
+| **Styling** | `shared/brand/brand.css` — Design's proportions (chevron 21 / wordmark 19 / gap 5 on a phone; 23 / 21 / 6 at ≥720px), wordmark Bricolage Grotesque **600**. |
+| **Pages that draw their header in JS** | `shared/brand/brand.js` (`window.MrBadmusBrand.lockup()`), **written by `brand.py`** on every build. Never edit it. |
+| **Hand-written pages** | carry `<!--mrb:brand-->…<!--/mrb:brand-->` (options inside the comment: `<!--mrb:brand href=/parents/ on_dark-->`) and `<!--mrb:brand-head-->…<!--/mrb:brand-head-->`; `brand.stamp_brand()` rewrites both regions on every build. Whatever is between the markers is build output. |
+| **Emails** | `shared/brand/mrbadmus-lockup-light-email.png` (email clients do not render inline SVG), drawn from the partial by `brand_cards.py`. |
+| **Shared-link card** | `docs/b2c/social-card.png`, redrawn from the partial by `brand_cards.py`. |
+| **Worksheets** | the backend's `worksheet.js` `MARK_FRONT`/`MARK_BACK` — chevron only. |
 
-### ⊕ MRB-301, 29 Aug 2026 — the external row SPLIT in two
+**Never hand-copy the SVG onto a page, into a generator or into a script.**
+Every copy that ever existed drifted: three of the seven retired marks were
+"byte-for-byte copies" of each other with the solid and faded halves
+mirrored, and the worksheet inherited the mirror from one of them.
 
-There used to be one external row, and it read: *"Gold-to-rust two-chevron
-SVG + 'MrBadmusAI' text … Applies to: `index.html`, `auth.html`,
-`combined/index.html`, `triple/index.html`, all generator-output KS4 topic
-pages, and any future external/public page outside KS3."*
+### The one variant: light-on-dark
 
-It is kept here rather than deleted because it named `index.html` and the KS4
-topic pages explicitly, and following it on one of those pages now would
-UNDO the port.
+The chevron never changes colour (`#E4572E`, back chevron at
+`stroke-opacity 0.34`). Only the wordmark flips: ink `#221E1B` on light,
+cream `#FBF3E6` on dark. It follows `html[data-theme]` (the theme run's
+Light/Dark/System control) automatically. A header that is dark in BOTH
+themes passes `on_dark=True`.
 
-**What changed.** MRB-301 landed Claude Design's chrome redesign on the front
-door and the whole KS4 navigation journey — landing, GCSE hub, pathway, tier,
-subject picker, topic list, topic page. Design drew those with her own
-`BrandMark`, the same double chevron the student surfaces have carried since
-MRB-197, and Mide's instruction for the run was to keep it.
+### Wordmark weight — 600, not 800
 
-**What did NOT change, and why the row had to split rather than move.** The
-KS4 **lesson** pages are a separate run. They still load `shared/nav.css` and
-still render `nav_html()`'s default branch, so they still wear the gold-to-rust
-chevron — as do `auth.html`, `leaderboard.html` and the other hand-written
-root pages, none of which MRB-301 was allowed to touch. Rewriting the single
-row in place would have declared those pages non-conformant overnight.
+Design's front-door `MANIFEST.md` says "Bricolage 800"; her kit's lockup SVGs
+and her *Brand Mark* sheet say 600, and the sheet lists "Wordmark in anything
+but Bricolage Grotesque 600" as a don't. The kit wins.
 
-So the site currently has TWO external marks, deliberately, for the length of
-one run. When the lesson pages are ported, the two rows collapse back into one
-and the gold-to-rust chevron retires with them. ⚠️ Until then, do not "fix"
-a lesson page's brand to match the chrome: that is the seam, not drift.
+### The gate
 
-⚠️ `build_leaderboard_port.py` used to lift its nav out of `index.html`
-verbatim (Mide's MRB-290 R1). It now reads `generate_site_v5.nav_html()`
-instead, so the leaderboard keeps the classic nav while the chrome wears
-Design's. That is an OPEN item on Mide, written up in the MRB-301 report.
+`brand_one_mark` (fast) fails the push if any published page carries a retired
+mark (`navGrad`, KS3's `M4 16L12 7`, `ks3-brand`, an inline `data:` favicon,
+the octopus, the alembic), any chevron SVG that is not byte-for-byte
+`brand.MARK_SVG`, or "MrBadmusAI" in a `<title>`, an og:/twitter: tag or a
+brand link — and if any generator or shared script outside `brand.py` spells
+out the chevron's paths. `brand_fingerprint.py` is the rendered proof: it
+drives one page per family in headless Chrome and counts distinct marks
+(`--expect-one` for a pass/fail).
 
-### Canonical KS4-chrome brand markup
+### Tutor labels are not the brand
 
-This one is GENERATED — `nav_html(chrome=True)`. Never hand-copy it onto a
-page; a chrome page is a generator output, exactly like a KS3 page.
+Feature labels that name the AI tutor ("Ask MrBadmusAI", the chat header)
+kept their wording in the one-mark run; they are listed in
+`docs/brand/ONE-MARK-REPORT.md` for Mide to decide. Legal text, the company
+name (3rd Eye Ltd) and the domain are unchanged.
 
-### Canonical external chevron markup (KS4 lesson + root — NOT KS3, NOT KS4 chrome)
+### ⚠️ Retired — never use, and the gate refuses them
 
-Copy this verbatim into the nav of any external page outside KS3:
-
-```html
-<a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
-```
-
-Requires `shared/styles.css` to be loaded (for `.nav-brand` + `.brand-logo`).
-
-### Canonical staff text markup
-
-Copy this verbatim into the nav of any staff / school-operations page:
-
-```html
-<a href="/index.html" style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:0.01em;">MrBadmusAI</a>
-```
-
-No stylesheet dependency — fully inline-styled. This is the canonical staff brand styling — match it exactly on every new staff page.
-
-### ⊕ Superseded 20 Aug 2026 (MRB-197 extended) — the student/staff fork
-
-The staff row above used to read *"Dashboards / school-operations pages … Applies to:
-all `/teacher/*` pages, and all current/future **student** / HoD / SLT / admin
-dashboards."* That sentence is kept here rather than deleted, because it is the one
-that caused the fork.
-
-**Two written rules disagreed.** The 19 August 2026 student handover told Design that
-student pages carry the chevron, and Design drew them that way. This file said student
-dashboards take the plain white wordmark, and the then-live `student/class.html`
-followed it and carried no logo. Design flagged the contradiction rather than resolving
-it unilaterally: *"If Mide reads the plain-white-text rule as covering these too, it is
-one component swap in the header."*
-
-**Ruled 20 Aug 2026: the chevron stays on student surfaces.** The plain-white-wordmark
-rule covers STAFF surfaces only — `/teacher/*`, `/admin/*`, `/hod/*` and school-ops
-pages — because those are working instruments for adults. A student's class page is the
-product.
-
-So "dashboard" is no longer the word that decides it; **who the page is for** is. A page
-for a student takes Design's mark whether or not it is shaped like a dashboard; a page
-for a teacher takes the plain wordmark whether or not it is.
-
-### ⚠️ Retired placeholders — never use on a new page
-
-- The green octopus logo (obsolete)
-- The alembic emoji `⚗️` (quick stand-in, fully retired)
-
-If you find either on a page, that's brand drift — flag it, don't propagate it.
+- The gold-to-rust gradient chevron (`nav-brand` + `brand-logo` + `navGrad`)
+- KS3's single upward chevron (`.ks3-brand`, `M4 16L12 7l8 9`)
+- The plain-text staff wordmark (`Sora` 700 "MrBadmusAI", no logo)
+- Any hand-copied `BrandMark` / `K4_BRANDMARK` / `_C_BRANDMARK` / `BRANDMARK`
+- The green octopus logo and the alembic emoji `⚗️`
+- The name "MrBadmusAI" in any chrome, title or meta tag
 
 ---
 

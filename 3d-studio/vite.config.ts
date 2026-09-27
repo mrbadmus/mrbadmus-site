@@ -1,5 +1,6 @@
 /// <reference types="vitest/config" />
-import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import { dirname, join, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { defineConfig, type Plugin } from 'vite'
@@ -113,6 +114,28 @@ stageDracoDecoder()
 
 // base is architecturally fixed: the app is served from mrbadmus.com/3d, and the
 // Stage 9 publication step copies 3d-studio/dist/ to mrbadmus_site/3d/ (MRB-194).
+// ── The one brand mark, cache-busted ─────────────────────────────────────────
+// index.html loads the site's shared brand files (/shared/brand/*: brand.js,
+// brand.css, favicon, app icon — one-mark ruling, Mide 13 Sep 2026). /shared/*
+// is served immutable for a year, so each link carries ?v=md5[:8] of the
+// file's own bytes, the same scheme generate_site_v5.py stamps every other
+// page with. Stamped HERE because the generator must publish dist/ byte for
+// byte (3d_isolation_check) and so never rewrites /3d/.
+function stampBrandAssets(): Plugin {
+  const shared = resolve(here, '../shared')
+  return {
+    name: 'stamp-brand-assets',
+    transformIndexHtml(html) {
+      return html.replace(/\/shared\/(brand\/[^"?]+)(?:\?v=[a-f0-9]+)?"/g, (whole, name: string) => {
+        const file = join(shared, name)
+        if (!existsSync(file)) return whole
+        const v = createHash('md5').update(readFileSync(file)).digest('hex').slice(0, 8)
+        return `/shared/${name}?v=${v}"`
+      })
+    },
+  }
+}
+
 export default defineConfig(({ command }) => {
   // `vite dev` and `vite preview` keep the stand-ins, so local review at
   // localhost:8899/3d/ is exactly as it was. Only a production build goes
@@ -145,7 +168,7 @@ export default defineConfig(({ command }) => {
 
   return {
     base: BASE,
-    plugins: [react(), stripGeneratedFixtures()],
+    plugins: [react(), stripGeneratedFixtures(), stampBrandAssets()],
     // drei reaches three through three-stdlib; two copies of three in one
     // bundle break every instanceof check inside it.
     resolve: { dedupe: ['three'] },
