@@ -530,6 +530,11 @@ def sweep(widths=WIDTHS, shots=True, only=None, themes=None):
                             })
                             continue
                     try:
+                        # Measure the SETTLED page: an entrance fade (the landing's
+                        # k4-rise strip) otherwise reads as a contrast failure
+                        # partway through its opacity ramp.
+                        p.eval("(document.getAnimations?document.getAnimations():[])"
+                               ".forEach(function(a){try{a.finish()}catch(e){}})")
                         rows = p.eval(_MEASURE_JS)
                     except Exception as e:
                         findings.append({
