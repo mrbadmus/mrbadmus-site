@@ -387,6 +387,133 @@ GATES = [
              "the port has run — so this SKIPS BY NAME until then rather "
              "than failing on three pages nobody has built yet."),
 
+    dict(name="flashcard_homework_drive",
+         cmd=["python3", "flashcard_homework_drive.py"],
+         speed="slow",
+         watches=["flashcard_homework_drive.py", "ks3_browser.py",
+                  "student_rulings.py", "build_student_port.py", "student_template.py",
+                  "student_templates.json",
+                  "student/class-fixture.html", "shared/student-fixture-class.js",
+                  "shared/student-runtime.js", "shared/student-live.js",
+                  "shared/student-ds.css",
+                  "shared/flashcard-homework.js", "shared/formulae.js"],
+         why="MRB-351 §4 — the pupil's flashcard homework in Design's ONE "
+             "flashcard overlay (homework mode), driven on the compiled class "
+             "page with the real engine and formula renderer and a stand-in "
+             "transport: make phase (write, Check, model answer beside theirs, "
+             "rate), 'Your deck is ready', review queue order, Reveal, Space and "
+             "1·2·3, swipe, Finish for now, the between-sittings and secured "
+             "panels, <sub> formulae, the practice deck left as Design drew it, "
+             "events carrying ids/clock/visibility and no durations, no sideways "
+             "scroll at 390 and 360. Asserts the live page's hook is the one "
+             "driven."),
+    dict(name="flashcard_progress_drive",
+         cmd=["python3", "flashcard_progress_drive.py"],
+         speed="slow",
+         watches=["flashcard_progress_drive.py", "ks3_browser.py",
+                  "teacher/flashcards.html",
+                  "shared/flashcard-progress.js", "shared/flashcard-progress.css",
+                  "shared/formulae.js", "shared/set-work.js", "shared/set-work.css",
+                  "shared/teacher-live.js", "shared/teacher-data.js",
+                  "shared/teacher-guard.js", "shared/teacher-admin-nav.js",
+                  "shared/teacher-ds.css", "shared/tokens.css",
+                  "shared/class-entry.js", "shared/config.js",
+                  "teacher_rulings.py", "build_teacher_port.py",
+                  "teacher/class-detail.html", "teacher/assignment.html",
+                  "teacher/student-detail.html"],
+         why="MRB-351 §5 — the teacher's flashcard progress page, DRIVEN with "
+             "a stubbed client: least-progress-first default sort and every "
+             "column sorting both ways, make vs review columns, the pupil "
+             "drawer (answer beside model answer, rating history, sittings), "
+             "a row flipping to Done by polling without a reload, the CSV as "
+             "displayed, the Rushed marker, no page scroll at 360/390 and no "
+             "explanatory copy. It also runs teacher-live.js's real "
+             "`buildPapers`/`buildMatrix`/`buildRoster` to prove a flashcard "
+             "set is handed in but never graded, and that a flashcard "
+             "SITTING (not just a completed cell) folds into a pupil's "
+             "`lastIso` via GREATEST, outranking an older completion and "
+             "standing alone for a sitting-only pupil — the JS twin of "
+             "`teacher_class_rollup_v2` "
+             "(20260927100000_mrb351_rollup_v2_live_results_kinds.sql, which "
+             "superseded 20260924180200_mrb351_rollup_kind.sql's edit to v1) "
+             "— and reads the generated screens for the kind split "
+             "(flashcard rows open this page, no Download)."),
+
+    dict(name="flashcard_decks_drive",
+         cmd=["python3", "flashcard_decks_drive.py"],
+         speed="slow",
+         watches=["flashcard_decks_drive.py", "ks3_browser.py",
+                  "shared/set-work.js", "shared/set-work.css",
+                  "shared/flashcard-decks.js", "shared/flashcard-decks.css",
+                  "shared/formulae.js", "shared/teacher-admin-nav.js",
+                  "teacher/decks.html", "teacher/timetable.html",
+                  "teacher/today.html",
+                  # ⊕ MRB-351 landing (27 Sep 2026) — the no-schema block's
+                  # direct-URL checks now also drive flashcards.html itself.
+                  "teacher/flashcards.html", "shared/flashcard-progress.js",
+                  "shared/teacher-guard.js", "shared/teacher-data.js",
+                  "shared/class-entry.js", "shared/config.js",
+                  "shared/teacher-ds.css", "shared/tokens.css"],
+         why="MRB-351 §3 — the TEACHER'S half of flashcard homework, DRIVEN "
+             "against a stubbed supabase client and a stubbed fetch for the "
+             "extraction function and the Set work backend. The Set work "
+             "sheet's type chips (Questions still reaches Topic and Detail "
+             "with its tree, questions and Download — the MCQ branch is "
+             "proved undisturbed, not assumed); Flashcards lifting the "
+             "cohort; Upload -> 'Reading… 35%' -> the review table with "
+             "flagged / low-confidence / empty-sided rows sorted to the top "
+             "and the live count; Save deck disabled on an empty side; swap, "
+             "swap all, add, delete, up/down and a REAL pointer drag; "
+             "flashcard_deck_save's payload; the exact flashcard_set_work "
+             "payload (classes, deck, mode, rule, release, due via "
+             "londonToUtcIso, note, client_ref) and a refusal outlining its "
+             "field with the retry reusing the key; cached / Read it again "
+             "(force=1) / Paste / Type / My decks / Shared; the flashcard "
+             "edit through flashcard_edit_assignment keeping the stored "
+             "note; the deck library's list, deleted-but-used row, Share, "
+             "two-press Delete, Duplicate-then-edit and search; the "
+             "'Flashcard decks' nav link on another teacher page; no "
+             "sideways scroll at 360/390 and no explanatory sentence on "
+             "screen. ⚠️ The stub models what RLS returns; it proves the "
+             "pages given those rows, not the policies — those are SQL's, "
+             "on TEST."),
+
+    dict(name="flashcard_request_shape_drive",
+         cmd=["python3", "flashcard_request_shape_drive.py"],
+         speed="slow",
+         watches=["flashcard_request_shape_drive.py", "ks3_browser.py",
+                  "shared/teacher-data.js", "shared/student-data.js",
+                  "shared/class-entry.js"],
+         why="⊕ MRB-351 landing, 27 Sep 2026 (Mide's ruling) — 'the live "
+             "site must behave exactly as today'. Calls "
+             "MrBadmusTeacherData.loadClassMatrices and "
+             "MrBadmusStudentData.loadStudentClass DIRECTLY (the one data "
+             "layer under classes/class-detail/student-detail/digest/"
+             "insights/Today and the student class page respectively — "
+             "proving the request shape here proves it for all of them "
+             "transitively) against a recording stub, never a real network. "
+             "On production's real shape (no assignments row has "
+             "quiz_type='flashcards'): no select ever names kind/"
+             "flashcard_mode/completion_rule/deck_id, no flashcard table or "
+             "RPC is touched, assignments is asked exactly once (quiz_type "
+             "added, nothing else), and the TOTAL call count is proved "
+             "EQUAL to origin/main's own file on the identical fixture — "
+             "fetched live with `git show <the exact commit this branch "
+             "merged>:shared/{teacher,student}-data.js` into a throwaway "
+             "same-origin directory, not asserted by inspection. On a "
+             "fixture with one flashcard row: assignments is asked exactly "
+             "twice — the same first select, then ONE follow-up scoped to "
+             "that row's id alone, naming only flashcard_mode/"
+             "completion_rule/deck_id, proving the extra columns are never "
+             "asked for BEFORE the answer says they exist. Also proves "
+             "the last-activity rule in supabase/MRB351-APPLY.md's source 2: `flashcard_sessions` is NEVER "
+             "asked on the baseline fixture (no flashcard assignment in the "
+             "class), and asked exactly once, scoped to that assignment's "
+             "id alone, once one exists. If `git show` cannot resolve "
+             "main's commit (e.g. a shallow clone), the count-equality "
+             "checks report SKIPPED BY NAME with the reason printed, never "
+             "silently passed."),
+
     dict(name="today_drive",
          cmd=["python3", "today_drive.py"],
          speed="slow",
@@ -1990,10 +2117,18 @@ GATES = [
                   "supabase/migrations/"
                   "20260922231500_mrb348_teacher_class_rollup.sql",
                   # ⊕ Mide's 23 Sep 2026 ruling — the proof now also calls
-                  # `teacher_class_rollup_v2`, parked in this NEW migration
-                  # (not yet applied to production by this run).
+                  # `teacher_class_rollup_v2`. ⊕ 27 Sep 2026 (MRB-351
+                  # landing) — repointed to the migration that actually
+                  # defines it today: 20260924010000_rollup_live_results.sql
+                  # (D's original, no flashcard awareness) was superseded by
+                  # stream B's 20260927100000 file, which folds in the kind
+                  # split AND the flashcard last-activity fix this proof now
+                  # also asserts. Neither file lives in THIS repo (migrations
+                  # are parked on feat/mrb351-migrations, per docs/mrb351/
+                  # REPORT.md) — named here anyway so the watch is correct
+                  # the day that branch's migrations land in this tree.
                   "supabase/migrations/"
-                  "20260924010000_rollup_live_results.sql",
+                  "20260927100000_mrb351_rollup_v2_live_results_kinds.sql",
                   "shared/teacher-data.js", "shared/teacher-live.js",
                   "shared/config.js"],
          needs="mrb348_teacher_rollup_proof.py",
@@ -2065,6 +2200,19 @@ GATES = [
                   "student/assignment-fixture.html", "teacher/today.html",
                   "teacher/timetable.html", "teacher/admin.html",
                   "teacher/import.html",
+                  # ⊕ MRB-351 theme pass, 27 Sep 2026 — the four flashcard
+                  # surfaces added to PAGES. The two hand-written pages
+                  # (never a fixture — see flashcard_decks_drive.py's own
+                  # comment on why) plus every asset either renders or the
+                  # sweep's own stub imports/loads to reach them.
+                  "teacher/decks.html", "teacher/flashcards.html",
+                  "shared/flashcard-decks.js", "shared/flashcard-decks.css",
+                  "shared/flashcard-progress.js",
+                  "shared/flashcard-progress.css",
+                  "shared/flashcard-homework.js", "shared/formulae.js",
+                  "shared/set-work.js", "shared/set-work.css",
+                  "flashcard_decks_drive.py", "flashcard_progress_drive.py",
+                  "flashcard_homework_drive.py",
                   "ks3/biology/respiration/aerobic-respiration.html",
                   "combined/higher/chemistry/atomic-structure.html",
                   "combined/higher/chemistry/atomic-structure/"

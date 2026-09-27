@@ -237,7 +237,199 @@ window.MrBadmusAdminScope = (function () {
   function injectToday() {
     var a = injectTodayTopNav();
     var b = injectTodayTopbar();
+    injectDecks();
     return a || b;
+  }
+
+  /* ⊕ MRB-351 — FLASHCARD DECKS, the third link, and it rides Today's
+     machinery exactly: not scope-gated (every teacher may keep decks),
+     injected at DOM-ready into both hosts, and re-injected by the same
+     observer after every redraw of a ported page. It is here for Today's
+     reason — a new file would need a `<script>` tag on the generated pages,
+     and this module is already on every one of them. */
+  var DECKS_MARK = 'data-mrb-decks-nav';
+  var DECKS_HREF = '/teacher/decks.html';
+  var DECKS_LABEL = 'Flashcard decks';
+
+  /* ⊕ MRB-351 landing (27 Sep 2026) — DEGRADE-SAFE. Production has no
+     flashcard schema at all yet — the MRB-351 migrations are parked, not
+     applied (docs/mrb351/REPORT.md). This link used to be unconditional
+     ("every teacher may keep decks"), which on production would put a link
+     to a page that opens onto a table that does not exist.
+
+     `decksCapable` is null (unprobed), true or false, decided by the
+     cheapest possible read — `limit(1)` on `flashcard_decks`, at most one
+     row, just "does this exist and can I ask it at all" (⚠️ not `limit(0)`:
+     see the real probe call below for why a real GET with a non-empty body
+     is required). Fails CLOSED: any error
+     (missing table 42P01/PGRST205, RLS refusal, no client, network) leaves
+     the link out. Run lazily, off `watchToday`'s own boot, never blocking
+     Today or the rest of the nav on it.
+
+     ⚠️ A NEGATIVE ANSWER IS CACHED IN `sessionStorage`, A POSITIVE ONE IS
+     NOT. On production this probe answers false on every single page in
+     the tab session — every Today, every timetable, every class list — and
+     without a cache that is one guaranteed-to-fail request (a 404/PGRST205
+     line in the console and network log, on the very question CLAUDE.md's
+     degrade-safety rule says must not appear) on every one of them. Exactly
+     the same shape of expected-failure `teacher-live.js`'s `matrixFromRollup`
+     already documents for `teacher_class_rollup_v2` (PGRST202 until ITS
+     migration lands) — a safety net, not a licence to skip the migration.
+     Once true, it is safe to trust for the rest of the tab (the schema does
+     not appear and disappear), so a positive answer stays in-memory only —
+     nothing to invalidate, and nothing written for a shared machine to
+     leak a capability flag through (harmless as that would be; simplest to
+     just not). `sessionStorage` dies with the tab, so a genuine migration
+     lands within one browser session of a teacher's next visit at the
+     latest — reading `try`/`catch`-guarded throughout, exactly like
+     `class-entry.js`'s own cache helpers, because a private window or
+     blocked site data must degrade to "probe again", never to a throw. */
+  var decksCapable = null;
+  var decksProbe = null;
+  /* v2: the value is the time the "no" was learned. It expires after
+     DECKS_NO_TTL_MS, so a tab left open across the day the migrations are
+     applied picks the feature up within ten minutes, without a new tab. */
+  var DECKS_CAP_KEY = 'mrb-fc-cap:v2';
+  var DECKS_NO_TTL_MS = 10 * 60 * 1000;
+  function readCachedNo() {
+    try {
+      var at = Number(sessionStorage.getItem(DECKS_CAP_KEY));
+      return at > 0 && (Date.now() - at) < DECKS_NO_TTL_MS;
+    } catch (e) { return false; }
+  }
+  function writeCachedNo() {
+    try { sessionStorage.setItem(DECKS_CAP_KEY, String(Date.now())); } catch (e) { /* private window, or blocked */ }
+  }
+  /* "No flashcard schema" is ONLY a missing-table answer. Anything else — a
+     network drop (postgrest-js reports status 0 rather than rejecting), a
+     5xx, a 401/42501 from an expired session read as anon, PostgREST's
+     schema cache reloading just after the DDL — says nothing about the
+     schema, so it is answered "not now" and never remembered. */
+  function saysTableMissing(r) {
+    var e = r && r.error;
+    var code = e && e.code;
+    return code === 'PGRST205' || code === '42P01' || (r && r.status === 404);
+  }
+  function probeDecksCapability() {
+    if (decksCapable !== null) { return Promise.resolve(decksCapable); }
+    if (readCachedNo()) { decksCapable = false; return Promise.resolve(false); }
+    if (decksProbe) { return decksProbe; }
+    /* 15 s, the module's normal wait: the probe is off the critical path, and
+       a short wait here on a slow sign-in used to hide the feature. */
+    decksProbe = client(15000).then(function (sb) {
+      /* ⚠️ NOT CACHED. "No client in time" is the guard not having
+         arrived yet (real on the five ported pages, whose second wave can
+         genuinely be slow), not an answer about the schema — writing a
+         negative here could pin a whole session to "no Flashcards" from one
+         slow page, on real schema. Only a real answer from the table (below)
+         or its rejection is cached. */
+      /* Not remembered in memory either: `decksCapable` stays null so the
+         next caller (Set work's open(), a later redraw) asks again. Setting
+         it false here pinned the whole page to "no Flashcards" after one
+         slow sign-in, with the schema present. */
+      if (!sb) { decksProbe = null; return false; }
+      return Promise.resolve(
+        /* ⚠️ NOT `head: true`. A HEAD request has no body by definition (the
+           HTTP method), and postgrest-js's own issue-295 workaround
+           (PostgrestBuilder: `if (res.status === 404 && body === '') { status
+           = 204 }`) rewrites EVERY 404-with-empty-body into a fake success —
+           `{error: null, status: 204}` — with no way left to tell "missing
+           table" from "table exists, no rows". So a `head: true` probe cannot
+           ever answer this question correctly, on any body of code: the
+           real 404 is thrown away by the client library before this function
+           sees it (confirmed live against a schema-less TEST — the previous
+           fix here still read `decksCapable = true` on every page because
+           `r.status` was already 204 coming in, not 404). A real GET keeps
+           its JSON error body (`{code:'PGRST205', ...}`), which is never
+           empty, so the workaround's `body === ''` branch never fires and
+           `r.status`/`r.error` reach here genuine. `limit(1)` keeps the
+           payload to at most one row's `id`. */
+        sb.from('flashcard_decks').select('id').limit(1)
+      ).then(function (r) {
+        decksProbe = null;
+        var ok = !!(r && !r.error &&
+                    typeof r.status === 'number' &&
+                    r.status >= 200 && r.status < 300);
+        if (ok) { decksCapable = true; injectDecks(); return true; }
+        if (saysTableMissing(r)) { decksCapable = false; writeCachedNo(); }
+        /* else: unknown — decksCapable stays null, the next caller asks. */
+        return false;
+      }, function () {
+        decksProbe = null;           /* unknown, not remembered */
+        return false;
+      });
+    }, function () {
+      decksProbe = null;             /* unknown, not remembered */
+      return false;
+    });
+    return decksProbe;
+  }
+  /* true / false once definitely known, null while unknown. */
+  function decksCapabilityState() { return decksCapable; }
+  /* For a page whose whole content depends on the answer (decks.html,
+     flashcards.html): ask up to three times, 3 s apart, while the answer is
+     unknown, then settle. A definite answer returns at once. */
+  function probeDecksCapabilitySettled() {
+    var tries = 0;
+    function go() {
+      return probeDecksCapability().then(function (ok) {
+        if (ok || decksCapable === false || ++tries >= 3) { return !!ok; }
+        return new Promise(function (res) { setTimeout(res, 3000); }).then(go);
+      });
+    }
+    return go();
+  }
+
+  function decksHref() {
+    var c = window.MrBadmusConfig;
+    return DECKS_HREF + (c && c.environment === 'test' ? '?env=test' : '');
+  }
+  function decksIsHere() {
+    return window.location.pathname === DECKS_HREF;
+  }
+  function decksAlreadyIn(host) {
+    if (host.querySelector('[' + DECKS_MARK + ']')) { return true; }
+    var els = host.querySelectorAll('a, button');
+    for (var i = 0; i < els.length; i++) {
+      if ((els[i].textContent || '').trim() === DECKS_LABEL) { return true; }
+    }
+    return false;
+  }
+
+  function injectDecks() {
+    if (decksIsHere()) { return true; }
+    // ⊕ MRB-351 landing — fail closed while the probe is unresolved (null)
+    // or has answered no. See `probeDecksCapability` above.
+    if (decksCapable !== true) { return false; }
+    var done = false;
+    /* Host A — the hand-written pages' old nav, before Sign out. */
+    var so = document.querySelector('nav.top-nav .signout-btn');
+    if (so && so.parentNode) {
+      if (!decksAlreadyIn(so.parentNode)) {
+        so.parentNode.insertBefore(
+          make('color:var(--muted);font-weight:700;font-size:0.85rem;' +
+               'text-decoration:none;', DECKS_LABEL, DECKS_MARK, decksHref()), so);
+      }
+      done = true;
+    }
+    /* Host B — v3's top bar, before its last button (Sign out). */
+    var bar = document.querySelector('[data-port-region="topbar"]');
+    if (bar) {
+      if (!decksAlreadyIn(bar)) {
+        var buttons = bar.querySelectorAll('button');
+        var out = buttons.length ? buttons[buttons.length - 1] : null;
+        var link = make(
+          'flex:none;height:32px;padding:0 12px;display:inline-flex;' +
+          'align-items:center;font:600 15.5px/1.2 var(--st-ui);' +
+          'color:var(--st-muted);background:transparent;' +
+          'border:1px solid var(--st-btn-border);border-radius:9px;' +
+          'cursor:pointer;text-decoration:none;white-space:nowrap;',
+          DECKS_LABEL, DECKS_MARK, decksHref());
+        if (out) { bar.insertBefore(link, out); } else { bar.appendChild(link); }
+      }
+      done = true;
+    }
+    return done;
   }
 
   /* Host B — the five ported pages, whose topbar is `data-port-region`
@@ -282,6 +474,10 @@ window.MrBadmusAdminScope = (function () {
      keeps it alive through the ported pages' full-tree redraws. */
   function watchToday() {
     injectToday();
+    // ⊕ MRB-351 landing — fired once, off the critical path; its own
+    // `.then` re-runs `injectDecks()` the moment it resolves true, and the
+    // MutationObserver below covers every redraw in between and after.
+    probeDecksCapability();
     var mount = document.getElementById('mrb-teacher') || document.body;
     if (!mount || !window.MutationObserver) { return; }
     var pending = false;
@@ -473,5 +669,16 @@ window.MrBadmusAdminScope = (function () {
     boot();
   }
 
-  return { isAdmin: isAdmin, inject: inject };
+  /* ⊕ MRB-351 landing — the ONE flashcards capability probe, shared. Both
+     the nav's own "Flashcard decks" link (above) and `shared/set-work.js`'s
+     Flashcards type chip read THIS function, so there is exactly one probe
+     of `flashcard_decks` per page rather than one per consumer. Returns a
+     Promise<boolean>; `true` only once the read has actually succeeded. */
+  return {
+    isAdmin: isAdmin,
+    inject: inject,
+    flashcardsCapable: probeDecksCapability,
+    flashcardsCapableSettled: probeDecksCapabilitySettled,
+    flashcardsState: decksCapabilityState
+  };
 })();

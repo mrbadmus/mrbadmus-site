@@ -100,6 +100,12 @@ import urllib.error
 import urllib.request
 
 CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+# ⊕ MRB-351: `MRB_CHROME` points every gate at another Chrome/Chromium — a
+# Linux container's Playwright build, say — without touching a gate. When it
+# is set and we run as root (a container), Chrome refuses to start without
+# --no-sandbox, so that flag is added for that case only.
+CHROME = os.environ.get("MRB_CHROME") or CHROME
+_ROOT_NEEDS_NO_SANDBOX = bool(os.environ.get("MRB_CHROME")) and hasattr(os, "geteuid") and os.geteuid() == 0
 
 DEFAULT_SETTLE = 0.6
 MAX_CLIP_HEIGHT = 30000
@@ -666,6 +672,8 @@ class Browser:
         self.settle = settle
         self.launch_timeout = launch_timeout
         self.extra_args = list(extra_args or [])
+        if _ROOT_NEEDS_NO_SANDBOX and "--no-sandbox" not in self.extra_args:
+            self.extra_args.append("--no-sandbox")
         self.port: int | None = None
         self.proc: subprocess.Popen | None = None
         self.user_data_dir: str | None = None

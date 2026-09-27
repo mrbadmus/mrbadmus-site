@@ -2100,10 +2100,35 @@ window.MrBadmusTeacherData = (function () {
                for a KS3 combined class is "Science" and matches no node in
                any tree. Sending the second where the first belongs would not
                have been a fix. */
+            /* ⊕ MRB-351 landing (27 Sep 2026) — NEVER NAME `kind` /
+               `flashcard_mode` / `completion_rule` / `deck_id` ON THE HOT
+               PATH. Those four columns do not exist on production (the
+               schema migration is parked — see docs/mrb351/REPORT.md), and a
+               PostgREST select naming a column that does not exist fails the
+               WHOLE request (42703). A previous version of this select asked
+               for them anyway and retried without them on error — a 400 in
+               the console and network log, plus a second round trip, on
+               EVERY teacher page load, forever, until the migration lands.
+               "The live site must behave exactly as today" rules that out.
+
+               `quiz_type` is different: it EXISTS on production today
+               (stream C verified NOT NULL, CHECK constrained to
+               topic_quiz/subtopic_quiz/weekly_challenge), and MRB-351's
+               `flashcard_set_work()` function always writes
+               `quiz_type='flashcards'` alongside `kind='flashcards'`
+               (supabase/migrations/20260924180100_mrb351_flashcards_
+               functions.sql, the INSERT in the class_ids loop). So `kind` is
+               DERIVED from `quiz_type` (`kindOf` below, after this batch
+               resolves) rather than selected. On production `quiz_type` is
+               never `'flashcards'`, so the request shape below is identical
+               to before this feature existed, plus one harmless extra
+               column — `quiz_type` cannot 42703, so it carries no retry of
+               its own. */
             .select(
               'id, class_id, title, due_at, release_at, source, set_by, ' +
               'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
-              'created_at, academic_week, subject_id, teacher_note, ' +
+              'quiz_type, teacher_note, ' +
+              'created_at, academic_week, subject_id, ' +
               'subject:subject_id ( id, name )'
             )
             .in('class_id', chunk)
@@ -2122,7 +2147,7 @@ window.MrBadmusTeacherData = (function () {
               .select(
                 'id, class_id, title, due_at, release_at, source, set_by, ' +
                 'set_tier, scope_kind, scope_ref, set_subject:subject, paper, ' +
-                'created_at, academic_week, subject_id, ' +
+                'quiz_type, created_at, academic_week, subject_id, ' +
                 'subject:subject_id ( id, name )'
               )
               .in('class_id', chunk)
@@ -2281,6 +2306,98 @@ window.MrBadmusTeacherData = (function () {
       }
     }
 
+    /* ⊕ MRB-351 landing (27 Sep 2026) — `kind` DERIVED from `quiz_type`,
+       never selected. See the comment on the `assignments` select above. On
+       production `quiz_type` is never `'flashcards'`, so `flashcardIds` is
+       always empty and NO request is made here — the page's request count
+       is unchanged from before this feature existed. Only once a real
+       flashcard row exists does this fire ONE follow-up read, scoped to
+       those ids alone, for the three fields the Set-work Edit sheet and the
+       kind split actually need (`flashcard_mode`, `completion_rule`,
+       `deck_id`) — chunked like every other id-scoped read in this file. */
+    function kindOf(a) { return a.quiz_type === 'flashcards' ? 'flashcards' : 'mcq_set'; }
+    const flashcardIds = assignmentRows.filter(function (a) { return kindOf(a) === 'flashcards'; })
+                                        .map(function (a) { return a.id; });
+    const flashcardExtra = new Map();
+    if (flashcardIds.length > 0) {
+      try {
+        const fxRows = await inChunks(flashcardIds, async function (chunk) {
+          const r = await sb.from('assignments')
+            .select('id, flashcard_mode, completion_rule, deck_id')
+            .in('id', chunk);
+          if (r.error) throw r.error;
+          return r.data || [];
+        });
+        fxRows.forEach(function (r) { flashcardExtra.set(r.id, r); });
+      } catch (e) {
+        console.error('[teacher-data] flashcard extras query failed (soft-fail: '
+          + 'kind still shows, mode/rule/deck stay null)', e);
+      }
+    }
+    function flashcardExtraOf(a) { return flashcardExtra.get(a.id) || null; }
+
+    /* ⊕ MRB-351 landing (27 Sep 2026) — SOURCE 2 of a pupil's `lastIso`:
+       a flashcard SITTING is activity too, even before the deck is
+       finished. Full rule in the last-activity rule in supabase/MRB351-APPLY.md; SQL twin is
+       `teacher_class_rollup_v2`'s `flashcard_activity` CTE
+       (20260927100000_mrb351_rollup_v2_live_results_kinds.sql). A deck
+       writes NO `assignment_submissions` row until every card is secured
+       (MRB-351 §1), so `activity[]` in `shared/teacher-live.js`'s
+       `buildMatrix` (built from first-attempt submissions) contributes
+       NOTHING for a pupil mid-way through an unfinished deck.
+
+       Scoped to THIS BATCH'S OWN non-deleted (`assignmentRows` already
+       excludes `deleted_at`), RELEASED flashcard assignments — the exact
+       population the SQL's `flashcard_activity` CTE joins against — and to
+       `subsScope`, same cost-bounding reasoning as Stage B above: a caller
+       that narrowed submissions to one class should not pay for every
+       other class's sittings either.
+
+       ⚠️ FIRES ONLY WHEN AT LEAST ONE SUCH ASSIGNMENT EXISTS. On a class
+       with no flashcard work at all — every class today, until Set work
+       sets one — `flashcardAssignmentIds` is empty and NO request is made:
+       the page's request count is unchanged, exactly like the
+       `flashcardExtra` follow-up above. Proved by
+       `flashcard_request_shape_drive.py`. */
+    const nowIso = new Date(opts && opts.now ? opts.now : Date.now()).toISOString();
+    const flashcardAssignments = assignmentRows.filter(function (a) {
+      return kindOf(a) === 'flashcards'
+        && (subsScope === null || subsScope.has(a.class_id))
+        && (!a.release_at || a.release_at <= nowIso);
+    });
+    const classOfFlashcardAssignment = new Map();
+    flashcardAssignments.forEach(function (a) { classOfFlashcardAssignment.set(a.id, a.class_id); });
+    const flashcardAssignmentIds = flashcardAssignments.map(function (a) { return a.id; });
+    const flashcardLastByClass = new Map();   // classId -> Map(studentId -> ISO last_seen_at)
+    if (flashcardAssignmentIds.length > 0) {
+      try {
+        const sessionRows = await inChunks(flashcardAssignmentIds, async function (chunk) {
+          const r = await sb.from('flashcard_sessions')
+            .select('assignment_id, pupil_id, last_seen_at')
+            .in('assignment_id', chunk);
+          if (r.error) throw r.error;
+          return r.data || [];
+        });
+        sessionRows.forEach(function (s) {
+          const cid = classOfFlashcardAssignment.get(s.assignment_id);
+          if (!cid || !s.last_seen_at) { return; }
+          if (!flashcardLastByClass.has(cid)) { flashcardLastByClass.set(cid, new Map()); }
+          const m = flashcardLastByClass.get(cid);
+          const prev = m.get(s.pupil_id);
+          if (!prev || s.last_seen_at > prev) { m.set(s.pupil_id, s.last_seen_at); }
+        });
+      } catch (e) {
+        console.error('[teacher-data] flashcard sessions query failed (soft-fail: '
+          + 'a sitting-only pupil may read "No activity yet" until this recovers)', e);
+      }
+    }
+    function flashcardLastActiveFor(classId) {
+      const out = {};
+      const m = flashcardLastByClass.get(classId);
+      if (m) { m.forEach(function (v, sid) { out[sid] = v; }); }
+      return out;
+    }
+
     // ── Assemble, per class ────────────────────────────────────────────
     const membersByClass = new Map();
     const departedByClass = new Map();
@@ -2325,6 +2442,11 @@ window.MrBadmusTeacherData = (function () {
         scope_ref: a.scope_ref,
         set_subject: a.set_subject || "",
         paper: a.paper,
+        // ⊕ MRB-351 landing — DERIVED from `quiz_type`, never selected.
+        kind: kindOf(a),
+        flashcard_mode: (flashcardExtraOf(a) || {}).flashcard_mode || null,
+        completion_rule: (flashcardExtraOf(a) || {}).completion_rule || null,
+        deck_id: (flashcardExtraOf(a) || {}).deck_id || null,
         created_at: a.created_at,
         academic_week: a.academic_week,
         subject_id: a.subject_id,
@@ -2369,6 +2491,13 @@ window.MrBadmusTeacherData = (function () {
         departed_count: departedByClass.get(id) || 0,
         assignments: assignmentsByClass.get(id) || [],
         submissions: submissionsByClass.get(id) || [],
+        // ⊕ MRB-351 landing — per-pupil MAX(flashcard_sessions.last_seen_at),
+        // scoped to this class's own released flashcard assignments. `{}`
+        // for a class with no flashcard work (the common case today);
+        // `shared/teacher-live.js`'s `buildRoster` GREATEST-folds this
+        // against `activity[]` to get `lastIso`. See the block above and
+        // the last-activity rule in supabase/MRB351-APPLY.md.
+        flashcardLastActive: flashcardLastActiveFor(id),
       };
     });
     return out;
@@ -2604,6 +2733,37 @@ window.MrBadmusTeacherData = (function () {
    *   - query_failed_submissions
    *   - query_failed_question_attempts
    */
+  /* ⊕ MRB-351 — HOW MANY CARDS EACH FLASHCARD SET HOLDS, in one read.
+     `assignment_flashcards` is the frozen snapshot a set was made from, one
+     row per card; RLS lets a reader see the rows of any assignment they can
+     see. Resolves `{assignment_id: n}`; never throws — a failed count is a
+     label that falls back to the title, not a broken page. */
+  async function loadFlashcardCounts(assignmentIds) {
+    const ids = Array.from(new Set((assignmentIds || []).filter(isUuid)));
+    const out = {};
+    if (!ids.length) return out;
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) return out;
+    /* One HEAD count per set, in parallel: a set holds up to 200 cards, so
+       reading the rows themselves could pass PostgREST's 1,000-row page on
+       a handful of sets and undercount silently. A count cannot. */
+    try {
+      const counts = await Promise.all(ids.map(async function (id) {
+        const r = await sb.from('assignment_flashcards')
+          .select('id', { count: 'exact', head: true })
+          .eq('assignment_id', id);
+        if (r.error) throw r.error;
+        return [id, r.count];
+      }));
+      counts.forEach(function (c) { if (c[1] != null) out[c[0]] = c[1]; });
+    } catch (e) {
+      console.warn('[teacher-data] flashcard counts unavailable', e);
+      return {};
+    }
+    return out;
+  }
+
   async function loadPaperQuestions(assignmentIds) {
     const ids = Array.from(new Set((assignmentIds || []).filter(Boolean)));
     ids.forEach(function (id) {
@@ -3506,6 +3666,7 @@ window.MrBadmusTeacherData = (function () {
     // ⊕ MRB-348 WS-2 — the server-side aggregate behind the summary screens.
     loadClassSummaries,
     loadPaperQuestions,
+    loadFlashcardCounts,
     // ⊕ MRB-328 J3 — whose classes a school admin has asked to look at.
     // Additive; no existing caller changes.
     loadStaffClassScope,

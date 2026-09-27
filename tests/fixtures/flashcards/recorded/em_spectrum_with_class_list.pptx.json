@@ -1,0 +1,42 @@
+{
+  "cards": [
+    {
+      "question": "What is the speed of light in a vacuum?",
+      "answer": "300 000 000 m/s",
+      "source_ref": "slide 2",
+      "confidence": 1
+    },
+    {
+      "question": "Name the part of the electromagnetic spectrum with the longest wavelength.",
+      "answer": "Radio waves",
+      "source_ref": "slide 3",
+      "confidence": 1
+    },
+    {
+      "question": "Which electromagnetic waves are used to cook food?",
+      "answer": "Microwaves",
+      "source_ref": "slide 4",
+      "confidence": 1
+    },
+    {
+      "question": "Which electromagnetic waves are used in remote controls?",
+      "answer": "Infrared",
+      "source_ref": "slide 5",
+      "confidence": 1
+    },
+    {
+      "question": "Which electromagnetic waves can cause skin cancer?",
+      "answer": "Ultraviolet",
+      "source_ref": "slide 6",
+      "confidence": 1
+    },
+    {
+      "question": "Which electromagnetic waves are used to image broken bones?",
+      "answer": "X-rays",
+      "source_ref": "slide 7",
+      "confidence": 1
+    }
+  ],
+  "unpaired_questions": [],
+  "unpaired_answers": []
+}

@@ -62,6 +62,21 @@ sys.path.insert(0, REPO)
 
 import ks3_browser as cdp  # noqa: E402
 
+# ⊕ MRB-351 theme pass, 27 Sep 2026 — the flashcard surfaces this file's own
+# coverage sweep did not reach yet. `teacher/decks.html` and
+# `teacher/flashcards.html` are hand-written pages driven, in their own
+# gates, by stubbing the data layer with a script injected before the
+# page's own scripts run (`Page.addScriptToEvaluateOnNewDocument`) rather
+# than by a separate fixture file — there is no fixture for either page,
+# only the real one. Reusing each drive's own fixture data (not a fresh
+# copy of it) means this sweep renders the exact same rows those drives
+# already proved correct, so a real content mismatch would show up as a
+# drive failure first. Each module is import-only: no top-level code runs
+# beyond constant/function definitions (`main()` sits behind `__main__`).
+import flashcard_decks_drive as _fd_drive      # noqa: E402
+import flashcard_progress_drive as _fp_drive   # noqa: E402
+import flashcard_homework_drive as _fh_drive   # noqa: E402
+
 SHOTS_ROOT = os.environ.get("MRB_SHOTS") or os.environ.get("KS3_GATE_TMP") or os.path.expanduser("~/tmp/ks3-gates")
 OUT_DIR = os.path.join(SHOTS_ROOT, "f")
 
@@ -402,8 +417,13 @@ BENCH_THEMES = ["harbour", "clay", "chalk", "moss", "damson", "graphite"]
 PAGES = []
 
 
-def _page(label, path, setup=None, wait=0.5):
-    PAGES.append({"label": label, "path": path, "setup": setup, "wait": wait})
+def _page(label, path, setup=None, wait=0.5, prescript=None):
+    """`prescript`: JS injected with `Page.addScriptToEvaluateOnNewDocument`
+    BEFORE the page's own scripts run — for a page a real gate drives by
+    stubbing its data layer this way rather than through a fixture file
+    (the flashcard surfaces below). `setup` still runs after load, as ever."""
+    PAGES.append({"label": label, "path": path, "setup": setup, "wait": wait,
+                  "prescript": prescript})
 
 
 for _name in ["classes", "class-detail", "student-detail", "assignment", "digest", "insights"]:
@@ -504,6 +524,123 @@ _page("ks3 lesson [physics, instrument]",
 _page("student/classes.html", "student/classes.html")
 _page("student/settings.html", "student/settings.html")
 _page("student/claim-confirm.html", "student/claim-confirm.html")
+
+# ── MRB-351 theme pass, 27 Sep 2026 — the four flashcard surfaces Mide's
+# instruction named: the pupil overlay in homework mode, the Set work
+# sheet's Flashcards-branch review table, the deck library, and the
+# progress page. Each is driven exactly the way its own gate drives it
+# (see the comment on the imports above) — a stubbed data layer, not a
+# fixture file, for the two hand-written teacher pages; the existing
+# `student/class-fixture.html` plus the homework drive's own transport
+# stand-in for the pupil overlay.
+_POLL_JS = (
+    "function __poll(fn,timeout){return new Promise(function(resolve,reject){"
+    "var t0=Date.now();(function tick(){var v;try{v=fn();}catch(e){v=false;}"
+    "if(v)return resolve(v);if(Date.now()-t0>(timeout||4000))return reject("
+    "new Error('contrast_audit poll timeout'));setTimeout(tick,50);})();});}"
+)
+
+_FD_STATE = {"uid": _fd_drive.T, "tables": _fd_drive.TABLES, "classes": _fd_drive.CLASSES,
+             "scope": _fd_drive.SCOPE, "preview": _fd_drive.PREVIEW,
+             "jobs": {}, "extractQueue": [], "failNext": {}, "noSchema": False}
+_FD_PRE = "window.__FD__=%s;\n" % json.dumps(_FD_STATE) + _fd_drive.STUB_JS
+
+# the library's own list, as decks.html renders it unopened
+_FD_LIST_SETUP = (
+    "(async function(){" + _POLL_JS +
+    "await __poll(function(){return !!document.querySelector('[data-fd=lib-row]');});"
+    "return true;})()"
+)
+_page("teacher/decks.html", "teacher/decks.html",
+      prescript=_FD_PRE, setup=_FD_LIST_SETUP, wait=0.6)
+
+# the library's OWN review table (Duplicate a colleague's shared deck —
+# `flashcard_decks_drive.py`'s own "library: the copy opens in the review
+# table", the simplest path to it with no upload/extraction polling)
+_FD_LIB_DUP_SETUP = (
+    "(async function(){" + _POLL_JS +
+    "await __poll(function(){return !!document.querySelector('[data-fd=lib-row]');});"
+    "var tabs=document.querySelectorAll('[data-fd=lib-tabs] [data-fd-key]');"
+    "for(var i=0;i<tabs.length;i++){"
+    "if(tabs[i].getAttribute('data-fd-key')==='shared'){tabs[i].click();break;}}"
+    "await __poll(function(){return !!document.querySelector("
+    "'[data-fd=lib-row] [data-fd=lib-duplicate]');});"
+    "document.querySelector('[data-fd=lib-row] [data-fd=lib-duplicate]').click();"
+    "await __poll(function(){return !!document.querySelector("
+    "'[data-fd=panel]:not([hidden]) [data-fd=editor]');});"
+    "return true;})()"
+)
+_page("teacher/decks.html [library review table]", "teacher/decks.html",
+      prescript=_FD_PRE, setup=_FD_LIB_DUP_SETUP, wait=0.6)
+
+# the SET WORK SHEET's own Flashcards branch (`shared/set-work.js` +
+# `.css`), which decks.html does not load by default — dynamically added
+# the same way `flashcard_decks_drive.py`'s `INJECT_SHEET` does — then the
+# "type" source, the one review-table path with no extraction/upload wait
+# at all (three rows, filled here for a representative screenshot).
+_FD_SHEET_SETUP = (
+    "(async function(){" + _POLL_JS +
+    "await (" + _fd_drive.INJECT_SHEET + ");"
+    "MRBSetWork.open({classId:" + json.dumps(_fd_drive.C2) + "});"
+    "await __poll(function(){return !!document.querySelector('[data-sw=type-chips]');});"
+    "document.querySelector('[data-sw=type-chips] [data-sw-key=flashcards]').click();"
+    "document.querySelector('[data-sw=primary]').click();"
+    "await __poll(function(){return !!document.querySelector('[data-fd=source-chips]');});"
+    "document.querySelector('[data-fd=source-chips] [data-fd-key=type]').click();"
+    "await __poll(function(){return document.querySelectorAll('[data-fd=card]').length===3;});"
+    "var qs=document.querySelectorAll('[data-fd=q]'),as=document.querySelectorAll('[data-fd=a]');"
+    "var sample=[['What is the unit of force?','The newton (N)'],"
+    "['What is the formula of water?','H2O'],"
+    "['What is weight?','The force acting on an object due to gravity']];"
+    "for(var i=0;i<3;i++){qs[i].value=sample[i][0];"
+    "qs[i].dispatchEvent(new Event('input'));as[i].value=sample[i][1];"
+    "as[i].dispatchEvent(new Event('input'));}"
+    "return true;})()"
+)
+_page("teacher/decks.html [Set work sheet, Flashcards branch]", "teacher/decks.html",
+      prescript=_FD_PRE, setup=_FD_SHEET_SETUP, wait=0.8)
+
+# the progress page (teacher/flashcards.html) — six pupil rows, auto-loaded
+# from the ?assignment= query param, exactly as flashcard_progress_drive.py
+# drives it.
+_FP_PRE = _fp_drive.stub(_fp_drive.progress(), None, {})
+_FP_SETUP = (
+    "(async function(){" + _POLL_JS +
+    "await __poll(function(){return document.querySelectorAll("
+    "'#fp-table tbody tr.fp-row').length>0;});"
+    "return true;})()"
+)
+_page("teacher/flashcards.html [progress table]",
+      "teacher/flashcards.html?assignment=" + _fp_drive.ASSIGN,
+      prescript=_FP_PRE, setup=_FP_SETUP, wait=0.6)
+
+# the pupil overlay, in homework mode — the same in-page transport
+# stand-in flashcard_homework_drive.py injects, opened via the class
+# page's own `window.__MRB_OPEN_HW__`, taken as far as the rated-buttons
+# state (the exact colours the MRB-351 dark-mode fix above touches).
+_FC_PRE = _fh_drive.FAKE
+_FC_HW_SETUP = (
+    "(async function(){" + _POLL_JS +
+    "try{localStorage.clear();}catch(e){}"
+    "function __add(src){return new Promise(function(ok,bad){"
+    "var s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=bad;"
+    "document.head.appendChild(s);});}"
+    "await __add('/shared/formulae.js');"
+    "await __add('/shared/flashcard-homework.js');"
+    "window.MRBHomework.transport=window.__FC_FAKE__.transport;"
+    "await __poll(function(){return !!window.__MRB_OPEN_HW__;});"
+    "window.__MRB_OPEN_HW__(" + json.dumps(_fh_drive.AID) + ");"
+    "await __poll(function(){return !!document.querySelector('[data-hw=answer]');});"
+    "var t=document.querySelector('[data-hw=answer]');t.value='newton';"
+    "t.dispatchEvent(new Event('input',{bubbles:true}));"
+    "await __poll(function(){var c=document.querySelector('[data-hw=check]');"
+    "return c&&!c.disabled;},2000);"
+    "document.querySelector('[data-hw=check]').click();"
+    "await __poll(function(){return !!document.querySelector('[data-hw=rate]');});"
+    "return true;})()"
+)
+_page("student/class.html [flashcard homework]", "student/class-fixture.html",
+      prescript=_FC_PRE, setup=_FC_HW_SETUP, wait=0.8)
 
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -745,6 +882,26 @@ def sweep(widths=WIDTHS, shots=True, only=None, themes=None, page_list=None):
     pages = PAGES if page_list is None else page_list
     findings = []
     server, port = cdp.serve(REPO)
+    # The one page target is reused across every spec (`b.page()` re-navigates
+    # it, never opens a second tab), so a `prescript` left over from a
+    # PREVIOUS spec would otherwise leak into the next page's real scripts.
+    # Track the CDP identifier of whichever one is live and remove it before
+    # arming the next (or removing outright, for a spec with none).
+    prescript_id = [None]
+
+    def arm_prescript(p, source):
+        if prescript_id[0] is not None:
+            try:
+                p.send("Page.removeScriptToEvaluateOnNewDocument",
+                       {"identifier": prescript_id[0]})
+            except Exception:
+                pass
+            prescript_id[0] = None
+        if source:
+            prescript_id[0] = p.send(
+                "Page.addScriptToEvaluateOnNewDocument", {"source": source}
+            ).get("identifier")
+
     try:
         with cdp.Browser() as b:
             for spec in pages:
@@ -753,7 +910,9 @@ def sweep(widths=WIDTHS, shots=True, only=None, themes=None, page_list=None):
                 url = "http://127.0.0.1:%d/%s" % (port, spec["path"])
                 for width, theme in [(w, t) for t in themes for w in widths]:
                     label = "%s {%s}" % (spec["label"], theme)
-                    p = b.page(url)
+                    p = b.attach()
+                    arm_prescript(p, spec.get("prescript"))
+                    p.goto(url)
                     p.set_viewport(width, 1600 if width > 500 else 2200)
                     got = _apply_theme(p, theme, url)
                     if got != theme:

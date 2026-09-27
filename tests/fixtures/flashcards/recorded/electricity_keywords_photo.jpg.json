@@ -1,0 +1,54 @@
+{
+  "cards": [
+    {
+      "question": "Conductor",
+      "answer": "A material that allows electric current to flow through it easily",
+      "source_ref": "row 1",
+      "confidence": 1
+    },
+    {
+      "question": "Insulator",
+      "answer": "A material that does not allow electric current to flow through it easily",
+      "source_ref": "row 2",
+      "confidence": 1
+    },
+    {
+      "question": "Current",
+      "answer": "The rate of flow of electric charge",
+      "source_ref": "row 3",
+      "confidence": 1
+    },
+    {
+      "question": "Potential difference",
+      "answer": "The energy transferred per unit charge between two points",
+      "source_ref": "row 4",
+      "confidence": 1
+    },
+    {
+      "question": "Resistance",
+      "answer": "How much a component opposes the flow of current",
+      "source_ref": "row 5",
+      "confidence": 1
+    },
+    {
+      "question": "Series circuit",
+      "answer": "A circuit with only one loop",
+      "source_ref": "row 6",
+      "confidence": 1
+    },
+    {
+      "question": "Parallel circuit",
+      "answer": "A circuit with more than one loop",
+      "source_ref": "row 7",
+      "confidence": 1
+    },
+    {
+      "question": "Ammeter",
+      "answer": "A meter that measures current, connected in series",
+      "source_ref": "row 8",
+      "confidence": 1
+    }
+  ],
+  "unpaired_questions": [],
+  "unpaired_answers": []
+}

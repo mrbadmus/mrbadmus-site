@@ -1,0 +1,46 @@
+name: Flashcard extraction tests (MRB-351)
+
+# The extraction pipeline that turns a teacher's file into a flashcard deck.
+# Runs the file-reader and no-model-rule tests on every push, and scores the
+# 13-file fixture corpus (tests/fixtures/flashcards/) against expected.json —
+# the feature does not ship under 90% of pairs recovered.
+#
+# The corpus job REPLAYS recorded model replies by default. When the
+# ANTHROPIC_API_KEY secret is set on the repository, a second step makes the
+# real Sonnet-class calls and scores those instead.
+
+on:
+  push:
+    paths:
+      - "supabase/functions/_shared/flashcards/**"
+      - "supabase/functions/flashcard-*/**"
+      - "tests/fixtures/flashcards/**"
+      - ".github/workflows/flashcards-extraction.yml"
+  pull_request:
+    paths:
+      - "supabase/functions/_shared/flashcards/**"
+      - "supabase/functions/flashcard-*/**"
+      - "tests/fixtures/flashcards/**"
+  workflow_dispatch:
+
+jobs:
+  extraction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Type-check the edge functions
+        run: deno check supabase/functions/flashcard-extract/index.ts supabase/functions/flashcard-answer-check/index.ts
+      - name: Reader, rules and recorded-corpus score
+        run: deno test --allow-read --allow-env --allow-net supabase/functions/_shared/flashcards/
+      - name: Live corpus score (only when the API key secret exists)
+        if: ${{ env.HAS_KEY == 'true' }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FLASHCARD_LIVE: "1"
+        run: deno test --allow-read --allow-env --allow-net supabase/functions/_shared/flashcards/

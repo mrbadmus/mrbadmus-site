@@ -1,0 +1,66 @@
+{
+  "cards": [
+    {
+      "question": "What is the relative charge of a proton?",
+      "answer": "+1",
+      "source_ref": "page 1, page 2",
+      "confidence": 1
+    },
+    {
+      "question": "What is the relative charge of an electron?",
+      "answer": "-1",
+      "source_ref": "page 1, page 2",
+      "confidence": 1
+    },
+    {
+      "question": "What is the relative charge of a neutron?",
+      "answer": "0",
+      "source_ref": "page 1, page 2",
+      "confidence": 1
+    },
+    {
+      "question": "Where are protons and neutrons found in an atom?",
+      "answer": "In the nucleus",
+      "source_ref": "page 1, page 2",
+      "confidence": 1
+    },
+    {
+      "question": "What is the atomic number of an element?",
+      "answer": "The number of protons in an atom",
+      "source_ref": "page 1, page 2",
+      "confidence": 1
+    },
+    {
+      "question": "What is the mass number?",
+      "answer": "The total number of protons and neutrons",
+      "source_ref": "page 1, page 2",
+      "confidence": 1
+    },
+    {
+      "question": "What are isotopes?",
+      "answer": "Atoms of the same element with different numbers of neutrons",
+      "source_ref": "page 1, page 2",
+      "confidence": 1
+    },
+    {
+      "question": "Who discovered the electron?",
+      "answer": "J.J. Thomson",
+      "source_ref": "page 1, page 2",
+      "confidence": 1
+    },
+    {
+      "question": "What did the alpha particle scattering experiment show?",
+      "answer": "That the mass of an atom is concentrated in a small positive nucleus",
+      "source_ref": "page 1, page 2",
+      "confidence": 1
+    },
+    {
+      "question": "How many electrons fit in the first shell?",
+      "answer": "2",
+      "source_ref": "page 1, page 2",
+      "confidence": 1
+    }
+  ],
+  "unpaired_questions": [],
+  "unpaired_answers": []
+}

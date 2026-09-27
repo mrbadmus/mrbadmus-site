@@ -1,0 +1,26 @@
+{
+  "cards": [
+    {"question": "What is the unit of force?", "answer": "The newton (N)", "source_ref": "slides 2–3", "confidence": 1},
+    {"question": "What is weight?", "answer": "The force acting on an object due to gravity", "source_ref": "slides 4–5", "confidence": 1},
+    {"question": "Write the equation that links weight, mass and gravitational field strength.", "answer": "Weight = mass × gravitational field strength (W = mg)", "source_ref": "slides 6–7", "confidence": 1},
+    {"question": "What is the gravitational field strength on Earth?", "answer": "9.8 N/kg", "source_ref": "slides 8–9", "confidence": 1},
+    {"question": "What is a resultant force?", "answer": "The single force that has the same effect as all the forces acting on an object", "source_ref": "slides 10–11", "confidence": 1},
+    {"question": "What happens to a stationary object when the resultant force on it is zero?", "answer": "It stays stationary", "source_ref": "slides 12–13", "confidence": 1},
+    {"question": "What is friction?", "answer": "A force that opposes motion between two surfaces in contact", "source_ref": "slides 14–15", "confidence": 1},
+    {"question": "What is a contact force?", "answer": "A force that acts only when objects are touching", "source_ref": "slides 16–17", "confidence": 1},
+    {"question": "Give an example of a non-contact force.", "answer": "Gravitational, magnetic or electrostatic force", "source_ref": "slides 18–19", "confidence": 1},
+    {"question": "What is the difference between mass and weight?", "answer": "Mass is the amount of matter and is measured in kg; weight is a force measured in N", "source_ref": "slides 20–21", "confidence": 1},
+    {"question": "What is air resistance?", "answer": "A frictional force that acts on an object moving through air", "source_ref": "slides 22–23", "confidence": 1},
+    {"question": "Write the equation linking work done, force and distance.", "answer": "Work done = force × distance (W = Fs)", "source_ref": "slides 24–25", "confidence": 1},
+    {"question": "What is the unit of work done?", "answer": "The joule (J)", "source_ref": "slides 26–27", "confidence": 1},
+    {"question": "What does Hooke's law state?", "answer": "The extension of a spring is directly proportional to the force applied, up to the limit of proportionality", "source_ref": "slides 28–29", "confidence": 1},
+    {"question": "Write the equation for the force on a spring.", "answer": "Force = spring constant × extension (F = ke)", "source_ref": "slides 30–31", "confidence": 1},
+    {"question": "What is a vector quantity?", "answer": "A quantity that has both magnitude and direction", "source_ref": "slides 32–33", "confidence": 1},
+    {"question": "What is a scalar quantity?", "answer": "A quantity that has magnitude only", "source_ref": "slides 34–35", "confidence": 1},
+    {"question": "Is velocity a scalar or a vector?", "answer": "A vector", "source_ref": "slides 36–37", "confidence": 1},
+    {"question": "What is terminal velocity?", "answer": "The constant velocity reached when the resultant force on a falling object is zero", "source_ref": "slides 38–39", "confidence": 1},
+    {"question": "What does Newton's first law state?", "answer": "An object stays at rest or moves at constant velocity unless a resultant force acts on it", "source_ref": "slides 40–41", "confidence": 1}
+  ],
+  "unpaired_questions": [],
+  "unpaired_answers": []
+}

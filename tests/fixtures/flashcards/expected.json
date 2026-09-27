@@ -1,0 +1,632 @@
+{
+  "rainford_forces_next_slide.pptx": {
+    "shape": "question on one slide, answer on the next",
+    "pairs": [
+      {
+        "q": "What is the unit of force?",
+        "a": "The newton (N)"
+      },
+      {
+        "q": "What is weight?",
+        "a": "The force acting on an object due to gravity"
+      },
+      {
+        "q": "Write the equation that links weight, mass and gravitational field strength.",
+        "a": "Weight = mass × gravitational field strength (W = mg)"
+      },
+      {
+        "q": "What is the gravitational field strength on Earth?",
+        "a": "9.8 N/kg"
+      },
+      {
+        "q": "What is a resultant force?",
+        "a": "The single force that has the same effect as all the forces acting on an object"
+      },
+      {
+        "q": "What happens to a stationary object when the resultant force on it is zero?",
+        "a": "It stays stationary"
+      },
+      {
+        "q": "What is friction?",
+        "a": "A force that opposes motion between two surfaces in contact"
+      },
+      {
+        "q": "What is a contact force?",
+        "a": "A force that acts only when objects are touching"
+      },
+      {
+        "q": "Give an example of a non-contact force.",
+        "a": "Gravitational, magnetic or electrostatic force"
+      },
+      {
+        "q": "What is the difference between mass and weight?",
+        "a": "Mass is the amount of matter and is measured in kg; weight is a force measured in N"
+      },
+      {
+        "q": "What is air resistance?",
+        "a": "A frictional force that acts on an object moving through air"
+      },
+      {
+        "q": "Write the equation linking work done, force and distance.",
+        "a": "Work done = force × distance (W = Fs)"
+      },
+      {
+        "q": "What is the unit of work done?",
+        "a": "The joule (J)"
+      },
+      {
+        "q": "What does Hooke's law state?",
+        "a": "The extension of a spring is directly proportional to the force applied, up to the limit of proportionality"
+      },
+      {
+        "q": "Write the equation for the force on a spring.",
+        "a": "Force = spring constant × extension (F = ke)"
+      },
+      {
+        "q": "What is a vector quantity?",
+        "a": "A quantity that has both magnitude and direction"
+      },
+      {
+        "q": "What is a scalar quantity?",
+        "a": "A quantity that has magnitude only"
+      },
+      {
+        "q": "Is velocity a scalar or a vector?",
+        "a": "A vector"
+      },
+      {
+        "q": "What is terminal velocity?",
+        "a": "The constant velocity reached when the resultant force on a falling object is zero"
+      },
+      {
+        "q": "What does Newton's first law state?",
+        "a": "An object stays at rest or moves at constant velocity unless a resultant force acts on it"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": []
+  },
+  "cells_speaker_notes.pptx": {
+    "shape": "answers in speaker notes",
+    "pairs": [
+      {
+        "q": "What is the function of the nucleus?",
+        "a": "It contains genetic material and controls the activities of the cell"
+      },
+      {
+        "q": "What is the function of the cell membrane?",
+        "a": "It controls what enters and leaves the cell"
+      },
+      {
+        "q": "Where does aerobic respiration take place?",
+        "a": "In the mitochondria"
+      },
+      {
+        "q": "What is the function of ribosomes?",
+        "a": "They are where protein synthesis takes place"
+      },
+      {
+        "q": "Name two structures found in plant cells but not animal cells.",
+        "a": "Cell wall and chloroplasts (also a permanent vacuole)"
+      },
+      {
+        "q": "What is the cell wall made of in plants?",
+        "a": "Cellulose"
+      },
+      {
+        "q": "What happens in chloroplasts?",
+        "a": "Photosynthesis"
+      },
+      {
+        "q": "What type of cell has no nucleus: prokaryotic or eukaryotic?",
+        "a": "Prokaryotic"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": []
+  },
+  "acids_red_answers.pptx": {
+    "shape": "answers in red/bold on the same slide",
+    "pairs": [
+      {
+        "q": "What is the pH of a neutral solution?",
+        "a": "7"
+      },
+      {
+        "q": "Which ion makes a solution acidic?",
+        "a": "Hydrogen ions, H+"
+      },
+      {
+        "q": "Which ion makes a solution alkaline?",
+        "a": "Hydroxide ions, OH-"
+      },
+      {
+        "q": "What is produced when an acid reacts with an alkali?",
+        "a": "A salt and water"
+      },
+      {
+        "q": "Name the salt made when hydrochloric acid reacts with sodium hydroxide.",
+        "a": "Sodium chloride"
+      },
+      {
+        "q": "What gas is produced when an acid reacts with a metal carbonate?",
+        "a": "Carbon dioxide"
+      },
+      {
+        "q": "What is the formula of sulfuric acid?",
+        "a": "H2SO4"
+      },
+      {
+        "q": "What colour is universal indicator in a strong acid?",
+        "a": "Red"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": []
+  },
+  "em_spectrum_with_class_list.pptx": {
+    "shape": "pupil names that must be ignored; one-row tables",
+    "pairs": [
+      {
+        "q": "What is the speed of light in a vacuum?",
+        "a": "300 000 000 m/s"
+      },
+      {
+        "q": "Name the part of the electromagnetic spectrum with the longest wavelength.",
+        "a": "Radio waves"
+      },
+      {
+        "q": "Which electromagnetic waves are used to cook food?",
+        "a": "Microwaves"
+      },
+      {
+        "q": "Which electromagnetic waves are used in remote controls?",
+        "a": "Infrared"
+      },
+      {
+        "q": "Which electromagnetic waves can cause skin cancer?",
+        "a": "Ultraviolet"
+      },
+      {
+        "q": "Which electromagnetic waves are used to image broken bones?",
+        "a": "X-rays"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": [
+      "Amelia Hart",
+      "Jacob Singh",
+      "Olivia Brennan",
+      "Noah Kowalski",
+      "Isla McCarthy",
+      "Leo Adeyemi"
+    ]
+  },
+  "energy_two_column_table.docx": {
+    "shape": "two-column table",
+    "pairs": [
+      {
+        "q": "Name the energy store in a stretched spring.",
+        "a": "Elastic potential energy store"
+      },
+      {
+        "q": "Name the energy store of a moving object.",
+        "a": "Kinetic energy store"
+      },
+      {
+        "q": "What is the unit of energy?",
+        "a": "The joule (J)"
+      },
+      {
+        "q": "What does the law of conservation of energy state?",
+        "a": "Energy cannot be created or destroyed, only transferred"
+      },
+      {
+        "q": "What is power?",
+        "a": "The rate at which energy is transferred"
+      },
+      {
+        "q": "What is the unit of power?",
+        "a": "The watt (W)"
+      },
+      {
+        "q": "Write the equation for efficiency.",
+        "a": "Efficiency = useful output energy ÷ total input energy"
+      },
+      {
+        "q": "What happens to wasted energy?",
+        "a": "It is dissipated to the surroundings, usually as heat"
+      },
+      {
+        "q": "How can unwanted energy transfer be reduced in a machine?",
+        "a": "By lubrication"
+      },
+      {
+        "q": "Name a renewable energy resource.",
+        "a": "Wind, solar, tidal, hydroelectric, geothermal or biomass"
+      },
+      {
+        "q": "Name a non-renewable energy resource.",
+        "a": "Coal, oil, gas or nuclear fuel"
+      },
+      {
+        "q": "What is the gravitational potential energy store?",
+        "a": "The energy an object has because of its position in a gravitational field"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": []
+  },
+  "atoms_answers_at_end.docx": {
+    "shape": "numbered questions with an answer section at the end",
+    "pairs": [
+      {
+        "q": "What is the relative charge of a proton?",
+        "a": "+1"
+      },
+      {
+        "q": "What is the relative charge of an electron?",
+        "a": "-1"
+      },
+      {
+        "q": "What is the relative charge of a neutron?",
+        "a": "0"
+      },
+      {
+        "q": "Where are protons and neutrons found in an atom?",
+        "a": "In the nucleus"
+      },
+      {
+        "q": "What is the atomic number of an element?",
+        "a": "The number of protons in an atom"
+      },
+      {
+        "q": "What is the mass number?",
+        "a": "The total number of protons and neutrons"
+      },
+      {
+        "q": "What are isotopes?",
+        "a": "Atoms of the same element with different numbers of neutrons"
+      },
+      {
+        "q": "Who discovered the electron?",
+        "a": "J.J. Thomson"
+      },
+      {
+        "q": "What did the alpha particle scattering experiment show?",
+        "a": "That the mass of an atom is concentrated in a small positive nucleus"
+      },
+      {
+        "q": "How many electrons fit in the first shell?",
+        "a": "2"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": []
+  },
+  "ecology_qa_lines.pdf": {
+    "shape": "Q:/A: lines in a text pdf",
+    "pairs": [
+      {
+        "q": "What is a habitat?",
+        "a": "The place where an organism lives"
+      },
+      {
+        "q": "What is a population?",
+        "a": "All the organisms of one species living in a habitat"
+      },
+      {
+        "q": "What is a community?",
+        "a": "All the populations of different species living in a habitat"
+      },
+      {
+        "q": "What is an ecosystem?",
+        "a": "The interaction of a community of living organisms with the non-living parts of their environment"
+      },
+      {
+        "q": "What is a producer?",
+        "a": "An organism that makes its own food, usually by photosynthesis"
+      },
+      {
+        "q": "What is a biotic factor?",
+        "a": "A living factor that affects a community"
+      },
+      {
+        "q": "Give an example of an abiotic factor.",
+        "a": "Light intensity, temperature, moisture, soil pH or wind"
+      },
+      {
+        "q": "What does a quadrat measure?",
+        "a": "The number of organisms in a small sample area"
+      },
+      {
+        "q": "What is interdependence?",
+        "a": "When species in a community depend on each other for food, shelter, pollination or seed dispersal"
+      },
+      {
+        "q": "What do decomposers do?",
+        "a": "They break down dead organisms and return nutrients to the soil"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": []
+  },
+  "transport_scanned.pdf": {
+    "shape": "scanned pdf (image only, question line then answer line)",
+    "pairs": [
+      {
+        "q": "What is diffusion?",
+        "a": "The spreading out of particles from an area of higher concentration to an area of lower concentration"
+      },
+      {
+        "q": "What is osmosis?",
+        "a": "The diffusion of water through a partially permeable membrane"
+      },
+      {
+        "q": "What is active transport?",
+        "a": "The movement of substances against a concentration gradient using energy from respiration"
+      },
+      {
+        "q": "Where is the energy for active transport released?",
+        "a": "In respiration"
+      },
+      {
+        "q": "What is a partially permeable membrane?",
+        "a": "A membrane that lets some molecules through but not others"
+      },
+      {
+        "q": "Which process moves mineral ions into root hair cells?",
+        "a": "Active transport"
+      },
+      {
+        "q": "Give one factor that increases the rate of diffusion.",
+        "a": "A bigger concentration gradient, higher temperature or larger surface area"
+      },
+      {
+        "q": "What happens to an animal cell placed in pure water?",
+        "a": "It swells and may burst"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": []
+  },
+  "electricity_keywords_photo.jpg": {
+    "shape": "photographed keyword → definition sheet",
+    "pairs": [
+      {
+        "q": "Conductor",
+        "a": "A material that allows electric current to flow through it easily"
+      },
+      {
+        "q": "Insulator",
+        "a": "A material that does not allow electric current to flow through it easily"
+      },
+      {
+        "q": "Current",
+        "a": "The rate of flow of electric charge"
+      },
+      {
+        "q": "Potential difference",
+        "a": "The energy transferred per unit charge between two points"
+      },
+      {
+        "q": "Resistance",
+        "a": "How much a component opposes the flow of current"
+      },
+      {
+        "q": "Series circuit",
+        "a": "A circuit with only one loop"
+      },
+      {
+        "q": "Parallel circuit",
+        "a": "A circuit with more than one loop"
+      },
+      {
+        "q": "Ammeter",
+        "a": "A meter that measures current, connected in series"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": []
+  },
+  "chemistry_basics.csv": {
+    "shape": "csv, header row",
+    "pairs": [
+      {
+        "q": "What is the chemical symbol for sodium?",
+        "a": "Na"
+      },
+      {
+        "q": "What is the chemical symbol for iron?",
+        "a": "Fe"
+      },
+      {
+        "q": "What is the chemical symbol for potassium?",
+        "a": "K"
+      },
+      {
+        "q": "What is the formula of water?",
+        "a": "H2O"
+      },
+      {
+        "q": "What is the formula of carbon dioxide?",
+        "a": "CO2"
+      },
+      {
+        "q": "What is an element?",
+        "a": "A substance made of only one type of atom"
+      },
+      {
+        "q": "What is a compound?",
+        "a": "A substance made of two or more elements chemically joined"
+      },
+      {
+        "q": "What is a mixture?",
+        "a": "Two or more substances that are not chemically joined"
+      },
+      {
+        "q": "How can you separate an insoluble solid from a liquid?",
+        "a": "Filtration"
+      },
+      {
+        "q": "How can you separate a soluble solid from a solution?",
+        "a": "Crystallisation or evaporation"
+      },
+      {
+        "q": "What does chromatography separate?",
+        "a": "Mixtures of soluble substances, such as dyes in an ink"
+      },
+      {
+        "q": "How can you separate two liquids with different boiling points?",
+        "a": "Fractional distillation"
+      },
+      {
+        "q": "What is the formula of methane?",
+        "a": "CH4"
+      },
+      {
+        "q": "What is the formula of sodium chloride?",
+        "a": "NaCl"
+      },
+      {
+        "q": "What gas relights a glowing splint?",
+        "a": "Oxygen"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": []
+  },
+  "waves_keywords.xlsx": {
+    "shape": "keyword → definition list in xlsx",
+    "pairs": [
+      {
+        "q": "Wavelength",
+        "a": "The distance from a point on one wave to the same point on the next wave"
+      },
+      {
+        "q": "Amplitude",
+        "a": "The maximum displacement of a point on a wave from its rest position"
+      },
+      {
+        "q": "Frequency",
+        "a": "The number of waves passing a point each second"
+      },
+      {
+        "q": "Period",
+        "a": "The time taken for one complete wave to pass a point"
+      },
+      {
+        "q": "Transverse wave",
+        "a": "A wave where the oscillations are perpendicular to the direction of energy transfer"
+      },
+      {
+        "q": "Longitudinal wave",
+        "a": "A wave where the oscillations are parallel to the direction of energy transfer"
+      },
+      {
+        "q": "Hertz",
+        "a": "The unit of frequency"
+      },
+      {
+        "q": "Reflection",
+        "a": "When a wave bounces off a surface"
+      },
+      {
+        "q": "Refraction",
+        "a": "When a wave changes direction as it passes from one medium into another"
+      },
+      {
+        "q": "Wave speed",
+        "a": "Frequency × wavelength"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": []
+  },
+  "photosynthesis_cloze.txt": {
+    "shape": "cloze sentences with a word bank",
+    "pairs": [
+      {
+        "q": "Plants make glucose by ___.",
+        "a": "photosynthesis"
+      },
+      {
+        "q": "Photosynthesis takes place in the ___ of plant cells.",
+        "a": "chloroplasts"
+      },
+      {
+        "q": "The green pigment that absorbs light is called ___.",
+        "a": "chlorophyll"
+      },
+      {
+        "q": "The gas taken in by plants for photosynthesis is ___ ___.",
+        "a": "carbon dioxide"
+      },
+      {
+        "q": "The gas given out by photosynthesis is ___.",
+        "a": "oxygen"
+      },
+      {
+        "q": "Photosynthesis is an ___ reaction because it takes in energy.",
+        "a": "endothermic"
+      },
+      {
+        "q": "Water enters a plant through its ___ hair cells.",
+        "a": "root"
+      },
+      {
+        "q": "Glucose can be stored in plants as ___.",
+        "a": "starch"
+      }
+    ],
+    "answers_missing": false,
+    "forbidden": []
+  },
+  "enzymes_questions_only.md": {
+    "shape": "questions with no answers at all",
+    "pairs": [
+      {
+        "q": "What is an enzyme?",
+        "a": null
+      },
+      {
+        "q": "What is the active site of an enzyme?",
+        "a": null
+      },
+      {
+        "q": "What does amylase break down?",
+        "a": null
+      },
+      {
+        "q": "What does protease break down into amino acids?",
+        "a": null
+      },
+      {
+        "q": "Where is bile produced?",
+        "a": null
+      },
+      {
+        "q": "What happens to an enzyme at a very high temperature?",
+        "a": null
+      },
+      {
+        "q": "What is the optimum pH of most enzymes in the body?",
+        "a": null
+      },
+      {
+        "q": "What does lipase break down?",
+        "a": null
+      },
+      {
+        "q": "Where is amylase produced?",
+        "a": null
+      },
+      {
+        "q": "Why is the small intestine good at absorbing food molecules?",
+        "a": null
+      }
+    ],
+    "answers_missing": true,
+    "forbidden": []
+  }
+}

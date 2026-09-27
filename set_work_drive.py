@@ -1578,6 +1578,19 @@ FAFF_EXACT = {
     # than apologising for one, and there is no second way to say it.
     "One file per topic", "Note",
     "No more questions in this topic.",
+    # ⊕ MRB-351 landing (27 Sep 2026) — THE FLASHCARDS BRANCH. `Type` labels
+    # the Questions/`Flashcards` picker (the existing `Questions` chip is
+    # already on this list); `Deck` is the fourth step name, alongside
+    # `Classes`/`Topic`/`Detail`. `Mode` and `Rule` label the two flashcard-
+    # only pickers: `Pupils write the answers` / `Ready-made cards` (the mode
+    # itself) and `Secure` / `Quick` (the completion rule) — four noun
+    # phrases, same idiom as `Multiple choice` and `One file per topic`
+    # above, none of them a sentence. `Stretch` / `Support` are the two
+    # modes' short tag labels (make/review), the same slot `Loading` and
+    # `Unavailable` already occupy.
+    "Type", "Deck", "Flashcards", "Mode", "Rule",
+    "Pupils write the answers", "Ready-made cards",
+    "Stretch", "Support", "Secure", "Quick",
 }
 # ⚠️ A SECOND SET, AND SPLITTING THEM IS THE POINT RATHER THAN A CONCESSION.
 # These four are `aria-label`s on the date and time inputs and are never

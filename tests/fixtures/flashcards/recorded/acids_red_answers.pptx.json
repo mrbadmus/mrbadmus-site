@@ -1,0 +1,54 @@
+{
+  "cards": [
+    {
+      "question": "What is the pH of a neutral solution?",
+      "answer": "7",
+      "source_ref": "slide 1",
+      "confidence": 1
+    },
+    {
+      "question": "Which ion makes a solution acidic?",
+      "answer": "Hydrogen ions, H+",
+      "source_ref": "slide 1",
+      "confidence": 1
+    },
+    {
+      "question": "Which ion makes a solution alkaline?",
+      "answer": "Hydroxide ions, OH-",
+      "source_ref": "slide 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is produced when an acid reacts with an alkali?",
+      "answer": "A salt and water",
+      "source_ref": "slide 1",
+      "confidence": 1
+    },
+    {
+      "question": "Name the salt made when hydrochloric acid reacts with sodium hydroxide.",
+      "answer": "Sodium chloride",
+      "source_ref": "slide 1",
+      "confidence": 1
+    },
+    {
+      "question": "What gas is produced when an acid reacts with a metal carbonate?",
+      "answer": "Carbon dioxide",
+      "source_ref": "slide 1",
+      "confidence": 1
+    },
+    {
+      "question": "What is the formula of sulfuric acid?",
+      "answer": "H2SO4",
+      "source_ref": "slide 1",
+      "confidence": 1
+    },
+    {
+      "question": "What colour is universal indicator in a strong acid?",
+      "answer": "Red",
+      "source_ref": "slide 1",
+      "confidence": 1
+    }
+  ],
+  "unpaired_questions": [],
+  "unpaired_answers": []
+}

@@ -24,6 +24,22 @@ THE METHOD, and it is round two's (docs/mrb348/teacher-aggregate.md §3)
   2. Translate `pickFirstAttempts`, `buildPapers`, `cellOf`, `buildMatrix`,
      `buildRoster` and `buildClassEntry` line for line, including their string
      comparisons on timestamps, which is what the JavaScript actually does.
+     ⚠️ EXCEPTION, ⊕ MRB-351 landing stream J, 27 Sep 2026 — `in_win` (the
+     week-window test inside `js_values`) PARSES `due_at`/`start_at`/
+     `end_at` into real instants before comparing, rather than comparing the
+     raw strings the JS itself compares. `buildMatrix`'s literal operators
+     are `>=`/`<`, but PostgREST's `…+00:00` vs `Date.toISOString()`'s
+     `…000Z` tie the OPPOSITE way at an exact instant match ('+' 0x2B sorts
+     before '.' 0x2E) — so the browser's actual, EFFECTIVE boundary is
+     `(start, end]`: a due date tied to the window's start is excluded, one
+     tied to its end is included. `teacher_class_rollup_v2` compares real
+     `timestamptz` values and reaches `(start, end]` directly, with no
+     string tie to reproduce in the first place — see its own comment on
+     `in_week`/`on_time_week`. Comparing `in_win` on raw strings here would
+     make this mirror correct on THIS MACHINE'S formats by coincidence and
+     wrong in principle; parsing first and asserting `(start, end]`
+     explicitly is what actually proves the SQL matches the browser's real
+     behaviour rather than its literal source text.
   3. Ask the RPC, as the SAME user, in the same instant, with the same clock
      and the same teaching-week windows.
   4. Derive from the RPC's answer exactly what `matrixFromRollup()` in
@@ -207,8 +223,17 @@ def pick_first_attempts(subs):
     return by
 
 
-def cell_of(s, due_at):
-    """`cellOf(s, paper)` — the one cell both the rows and the columns read."""
+def cell_of(s, due_at, kind=None):
+    """`cellOf(s, paper)` — the one cell both the rows and the columns read.
+
+    ⊕ MRB-351 landing, stream B — `kind` is the paper's `assignments.kind`.
+    A flashcard cell (`kind == "flashcards"`) is a cell in every other
+    respect (stamp, late) but is NEVER graded: its score/max_score is a
+    completion stamp (N/N), not a mark. Exactly `cellOf`'s own
+    `graded = !(paper && paper.kind === "flashcards")` in
+    shared/teacher-live.js, and the SQL twin in
+    20260927100000_mrb351_rollup_v2_live_results_kinds.sql's `cells` CTE.
+    """
     if not s:
         return None
     stamp = s.get("completed_at") or s.get("submitted_at") or None
@@ -216,8 +241,8 @@ def cell_of(s, due_at):
     if not done:
         return None
     score = mx = pct = None
-    if s.get("score") is not None and s.get("max_score") is not None \
-            and s["max_score"] > 0:
+    if kind != "flashcards" and s.get("score") is not None \
+            and s.get("max_score") is not None and s["max_score"] > 0:
         score, mx = s["score"], s["max_score"]
         pct = js_round(score / mx * 100)
     late = None
@@ -226,6 +251,23 @@ def cell_of(s, due_at):
     elif stamp and due_at:
         late = stamp > due_at            # raw strings, as the JS compares them
     return {"stamp": stamp, "score": score, "max": mx, "pct": pct, "late": late}
+
+
+def activity_at(s):
+    """`activity[p]` in `buildMatrix` (shared/teacher-live.js, Mide's 25 Sep
+    2026 ruling, experience run item 7) — wider than `cellOf`'s `stamp`. A
+    first-attempt row that IS a cell contributes its own stamp; one that
+    exists but is not (yet) a cell — `started_at` set, no `completed_at`
+    yet — contributes `started_at`, because a pupil mid-way through an open
+    paper was otherwise invisible to "last active". Kind-independent, same
+    as the SQL twin's `activity` CTE in
+    20260927100000_mrb351_rollup_v2_live_results_kinds.sql (added there in
+    the Opus review, 27 Sep 2026, alongside this python translation)."""
+    if not s:
+        return None
+    stamp = s.get("completed_at") or s.get("submitted_at") or None
+    done = bool(stamp) or s.get("status") == "complete"
+    return stamp if done else s.get("started_at")
 
 
 def js_round(x):
@@ -255,7 +297,7 @@ def load_class_matrices(key, token, ids, with_subs=True):
     assigns = rest("assignments?select=" + urllib.parse.quote(
         "id,class_id,title,due_at,release_at,source,set_by,set_tier,scope_kind,"
         "scope_ref,set_subject:subject,paper,created_at,academic_week,subject_id,"
-        "subject:subject_id(id,name)")
+        "subject:subject_id(id,name),kind")
         + "&class_id=" + in_list(ids) + "&deleted_at=is.null", key, token)
 
     by_class = {}
@@ -278,9 +320,23 @@ def load_class_matrices(key, token, ids, with_subs=True):
     if with_subs and aids:
         subs = rest("assignment_submissions?select=" + urllib.parse.quote(
             "id,assignment_id,student_id,score,max_score,submitted_at,"
-            "completed_at,status,is_late,attempts,attempt_no")
+            "completed_at,started_at,status,is_late,attempts,attempt_no")
             + "&assignment_id=" + in_list(aids) + "&deleted_at=is.null",
             key, token)
+
+    # ⊕ Opus review, 27 Sep 2026 — a flashcard sitting is activity even
+    # before the deck is finished (no `assignment_submissions` row exists
+    # until then). Read directly, under the SAME real RLS as everything else
+    # here — `flashcard_sessions_select`'s teacher-of-class branch — never
+    # through the SECURITY DEFINER rollup. `class_id` is denormalised onto
+    # the table (MRB-351 migration 1), so this needs no join through
+    # `assignments` to scope by class. See the last-activity rule in
+    # supabase/MRB351-APPLY.md.
+    fsess = []
+    if with_subs and by_class:
+        fsess = rest("flashcard_sessions?select=" + urllib.parse.quote(
+            "assignment_id,pupil_id,class_id,last_seen_at")
+            + "&class_id=" + in_list(list(by_class.keys())), key, token)
 
     class_of_assignment = {a["id"]: a["class_id"] for a in assigns}
     first = pick_first_attempts(subs)
@@ -297,6 +353,7 @@ def load_class_matrices(key, token, ids, with_subs=True):
             "assignments": [a for a in assigns if a["class_id"] == cid],
             "submissions": [s for s in first.values()
                             if class_of_assignment.get(s["assignment_id"]) == cid],
+            "flashcard_sessions": [s for s in fsess if s["class_id"] == cid],
         }
     return packs, len(members), len(assigns), len(subs)
 
@@ -319,7 +376,8 @@ def paper_state(a, now_iso):
 def js_values(pack, now_iso):
     """`buildPapers` + `buildMatrix` + `buildRoster` + `buildClassEntry`, for
     every value a class NOT in focus contributes to a screen."""
-    papers = [dict({"id": a["id"], "due_at": a.get("due_at")},
+    papers = [dict({"id": a["id"], "due_at": a.get("due_at"),
+                    "kind": a.get("kind") or "mcq_set"},
                    **paper_state(a, now_iso))
               for a in pack["assignments"]]
     due_of = {p["id"]: p["due_at"] for p in papers}
@@ -336,7 +394,7 @@ def js_values(pack, now_iso):
         sub = on = lt = unk = graded = off = 0
         tot = totmax = 0
         for sid, mine in by_student.items():
-            c = cell_of(mine.get(p["id"]), p["due_at"])
+            c = cell_of(mine.get(p["id"]), p["due_at"], p["kind"])
             if not c:
                 continue
             sub += 1
@@ -359,6 +417,25 @@ def js_values(pack, now_iso):
         }
 
     marked_ids = [p["id"] for p in papers if p["marked"]]
+
+    # ⊕ Opus review, 27 Sep 2026 — a flashcard SITTING is activity even
+    # before the deck is finished (no `assignment_submissions` row exists
+    # until then; see `activity_at()` and the last-activity rule in
+    # supabase/MRB351-APPLY.md). Per pupil,
+    # MAX(last_seen_at) over this class's own non-deleted, released
+    # flashcard assignments — `pack["assignments"]` is already deleted_at-
+    # filtered by `load_class_matrices`, exactly like the SQL's `asg`.
+    released_flashcard_ids = {p["id"] for p in papers
+                              if p["kind"] == "flashcards" and p["marked"]}
+    flashcard_last_seen = {}
+    for fs in pack.get("flashcard_sessions", []):
+        if fs["assignment_id"] not in released_flashcard_ids:
+            continue
+        v = fs.get("last_seen_at")
+        pid = fs["pupil_id"]
+        if v and (pid not in flashcard_last_seen or v > flashcard_last_seen[pid]):
+            flashcard_last_seen[pid] = v
+
     students = {}
     for m in members:
         sid = m["student"]["id"]
@@ -369,7 +446,16 @@ def js_values(pack, now_iso):
         last = None
         missing_marked = False
         for p in papers:
-            c = cell_of(mine.get(p["id"]), p["due_at"])
+            s_row = mine.get(p["id"])
+            c = cell_of(s_row, p["due_at"], p["kind"])
+            # ⊕ Mide's 25 Sep 2026 ruling (experience run, item 7) — ACTIVITY,
+            # computed for EVERY first-attempt row, cell or not, BEFORE the
+            # `if not c: continue` guard below — an in-progress row
+            # (`started_at` set, no cell yet) must still count. See
+            # `activity_at()`'s own docstring.
+            av = activity_at(s_row)
+            if av and (last is None or av > last):
+                last = av
             # ⊕ Mide's 23 Sep 2026 ruling, item 2 — `missing_marked` is a
             # CLOSED paper with no cell, not a released one. `p["marked"]`
             # used to BE the closed test; now it means released, so this
@@ -384,8 +470,6 @@ def js_values(pack, now_iso):
             if p["marked"] and c["score"] is not None and c["max"]:
                 tot += c["score"]
                 totmax += c["max"]
-            if c["stamp"] and (last is None or c["stamp"] > last):
-                last = c["stamp"]
             # ⊕ Mide's 23 Sep 2026 ruling, item 5 — "this week's homework" is
             # a paper that is OPEN (released, not yet closed) OR whose
             # due_at falls inside the window; `buildMatrix`'s `inWeekPaper`.
@@ -393,12 +477,35 @@ def js_values(pack, now_iso):
             # (this test sits after the `if not c: continue` guard, same as
             # the JS). `on_time_week` is the same test plus `late is False`.
             p_open = p["marked"] and not p["closed"]
-            in_win = bool(p["due_at"] and p["due_at"] >= w["start_at"]
-                          and p["due_at"] < w["end_at"])
+            # ⊕ MRB-351 landing stream J, corrected — `(start, end]`, PARSED
+            # AS INSTANTS, not raw strings. This is the live JS's OWN
+            # effective rule, not its literal operators: `buildMatrix`
+            # writes `p.due_at >= pack.week.start_at && p.due_at <
+            # pack.week.end_at` as a raw STRING comparison, and PostgREST's
+            # `…+00:00` vs `Date.toISOString()`'s `…000Z` tie the opposite
+            # way at an exact instant match ('+' 0x2B sorts before '.' 0x2E)
+            # — so the browser's `>=`/`<` on those two string shapes actually
+            # EXCLUDES a due date tied to `start` and INCLUDES one tied to
+            # `end`. `parse_iso()` here removes the format artefact so the
+            # comparison is a real instant comparison — using the boundary
+            # the JS's OWN FORMATS actually land on, `start < due <= end`,
+            # not the operators it happens to spell. See the migration's own
+            # comment on `in_week`/`on_time_week` for the SQL twin (which
+            # compares real `timestamptz` values and reaches the same
+            # `(start, end]` boundary directly, with no string tie to
+            # reproduce in the first place).
+            in_win = bool(p["due_at"] and parse_iso(w["start_at"]) < parse_iso(p["due_at"])
+                          and parse_iso(p["due_at"]) <= parse_iso(w["end_at"]))
             if p_open or in_win:
                 in_week = True
                 if c["late"] is False:
                     on_time_week = True
+        # ⊕ Opus review, 27 Sep 2026 — fold in the flashcard-sitting signal
+        # computed above, GREATEST-style (a later flashcard sitting can beat
+        # an earlier MCQ completion, or vice versa).
+        fc_last = flashcard_last_seen.get(sid)
+        if fc_last and (last is None or fc_last > last):
+            last = fc_last
         students[sid] = {
             "avg": js_round(tot / totmax * 100) if totmax > 0 else None,
             "in_week": in_week, "on_time_week": on_time_week, "last_at": last,
@@ -508,16 +615,22 @@ SCALARS = ["student_count", "assignment_count", "submission_count",
            "week0", "week1", "lastIso", "flagged"]
 
 
+def parse_iso(x):
+    """An ISO-8601 timestamp string, whatever format produced it
+    (PostgREST's `…+00:00` or `Date.toISOString()`'s `…000Z`), as a real
+    instant. Used wherever two timestamps must be compared for VALUE, not
+    for the bytes that happen to spell them."""
+    return datetime.fromisoformat(x.replace("Z", "+00:00"))
+
+
 def same_instant(a, b):
     """Timestamps come back from PostgREST as `…+00:00` and out of jsonb the
     same way, but a format difference must not be read as a value difference:
     compare the INSTANT."""
     if a is None or b is None:
         return a is None and b is None
-    def p(x):
-        return datetime.fromisoformat(x.replace("Z", "+00:00"))
     try:
-        return p(a) == p(b)
+        return parse_iso(a) == parse_iso(b)
     except ValueError:
         return a == b
 
@@ -645,7 +758,7 @@ def fixture(key, pw, srk):
     cid = "2a000000-0000-0000-0000-000000000004"   # 8X2 — Monday anchor, 3
                                                   # members, ONE pre-existing
                                                   # marked paper nobody sat
-    klass = sr("classes?select=id,name,assignment_day_of_week&id=eq." + cid)
+    klass = sr("classes?select=id,name,assignment_day_of_week,school_id&id=eq." + cid)
     if not klass:
         raise SystemExit("fixture class %s is gone; pick another clean class"
                          % cid)
@@ -691,11 +804,28 @@ def fixture(key, pw, srk):
         return (now - timedelta(days=days, hours=hours)).isoformat()
 
     made, made_subs = [], []
+    made_deck2 = made_session2 = None
+    TEACHER_ID = "28000000-0000-0000-0000-000000000001"   # mide.badmus, this class's own teacher
     try:
         A = sr("assignments", "POST", [
             {"class_id": cid, "title": "mrb348r3 marked",
              "subject_id": subject_id, "topic": "MRB-348 round three",
-             "quiz_type": "topic_quiz", "due_at": t(3), "academic_week": 1,
+             "quiz_type": "topic_quiz",
+             # ⊕ Opus review, 27 Sep 2026 — WAS `t(3)`, which the by-hand
+             # values below assumed landed OUTSIDE the current teaching
+             # week's window, true on 24 Sep 2026 but not guaranteed on any
+             # other day (a week's window is exactly 7 days; "3 days ago" can
+             # fall either side of its start depending where "now" sits in
+             # the week — this is what actually flaked on 27 Sep 2026, three
+             # days after the value was hand-checked). `t(8)` is a
+             # DETERMINISTIC placement: the window is `[start, start+7d)`,
+             # `now` is always inside it, so `now - 8d < start - 1d < start`
+             # for EVERY possible position of `now` in the window — always
+             # strictly before the window opens, on any day, forever. p0/p1/
+             # p2/o1's submission timestamps below are shifted by the same
+             # +5 days so their relative gaps to this due date — and the
+             # is_late-by-comparison results for p2/o1 — are unchanged.
+             "due_at": t(8), "academic_week": 1,
              # `assignments_source_agrees_with_auto_generated` — a teacher-set
              # row must say so in BOTH columns.
              "source": "teacher", "auto_generated": False},
@@ -720,49 +850,103 @@ def fixture(key, pw, srk):
         nodue = by_title["mrb348r3 no deadline"]
         made = [marked, thisweek, nodue]
 
+        # ⊕ Opus review, 27 Sep 2026 — A FLASHCARD SITTING CAN OUTRANK AN MCQ
+        # COMPLETION. One more (released, open-forever, zero submissions from
+        # anyone) flashcard assignment in this SAME class, with a single
+        # `flashcard_sessions` row for p1, timed AFTER p1's most recent MCQ
+        # activity (their `thisweek` completion, `t(0, 1)` below). Inert on
+        # every existing hand value except `assignment_count` (this is the
+        # class's 5th released paper, not its 4th) — nobody ever submits it,
+        # so its own column reads sub=0/on_time=0/late=0/unknown=0/
+        # marked_n=0/mean=None (the flashcard-kind rule, proven separately in
+        # `fixture_flashcards()`), and `due_at IS NULL` means it can never be
+        # `closed`, so it never touches `missing_marked` either. The deck
+        # needs its own `flashcard_decks` row purely to satisfy
+        # `assignments_flashcard_shape`'s FK — no cards, no set-work RPC.
+        deck2 = sr("flashcard_decks", "POST", [{
+            "school_id": klass[0]["school_id"], "created_by": TEACHER_ID,
+            "title": "mrb348r3 flashcard probe", "source_kind": "typed",
+            "status": "ready",
+        }])
+        made_deck2 = deck2[0]["id"]
+        FA = sr("assignments", "POST", [{
+            "class_id": cid, "school_id": klass[0]["school_id"],
+            "subject_id": subject_id, "teacher_id": TEACHER_ID,
+            "set_by": TEACHER_ID, "title": "mrb348r3 flashcard probe",
+            "topic": "MRB-348 round three", "quiz_type": "flashcards",
+            "source": "teacher", "auto_generated": False,
+            "due_at": None, "kind": "flashcards", "deck_id": made_deck2,
+            "flashcard_mode": "review", "completion_rule": "quick",
+        }])
+        flash_probe = FA[0]["id"]
+        made.append(flash_probe)
+        p1_sitting_at = t(0, 0.1)   # ~6 minutes ago — after p1's t(0, 1)
+        FS2 = sr("flashcard_sessions", "POST", [{
+            "assignment_id": flash_probe, "pupil_id": p1,
+            "school_id": klass[0]["school_id"], "class_id": cid,
+            "started_at": t(0, 0.2), "last_seen_at": p1_sitting_at,
+        }])
+        made_session2 = FS2[0]["id"]
+        p1_sitting_at = FS2[0]["last_seen_at"]
+
         rows = [
             # ── the MARKED paper ────────────────────────────────────────
             # five graded cells: 5+3+2+8+1 = 19 out of 40 = 47.5 EXACTLY,
-            # the rounding boundary, on purpose.
+            # the rounding boundary, on purpose. Every stamp here is shifted
+            # +5 days from the original draft (see the due_at comment above)
+            # to keep the SAME gap to the new `due_at = t(8)`.
             # p0  is_late TRUE                      -> late
             {"assignment_id": marked, "student_id": p0, "score": 5,
-             "max_score": 8, "submitted_at": t(4, 2), "completed_at": t(4, 2),
+             "max_score": 8, "submitted_at": t(9, 2), "completed_at": t(9, 2),
+             "started_at": None,
              "status": "complete", "is_late": True, "attempts": 1},
             # p1  is_late FALSE                     -> on time
             {"assignment_id": marked, "student_id": p1, "score": 3,
-             "max_score": 8, "submitted_at": t(5, 1), "completed_at": t(5, 1),
+             "max_score": 8, "submitted_at": t(10, 1), "completed_at": t(10, 1),
+             "started_at": None,
              "status": "complete", "is_late": False, "attempts": 1},
             # p2  is_late NULL, stamp AFTER the deadline -> late by comparison
             {"assignment_id": marked, "student_id": p2, "score": 2,
-             "max_score": 8, "submitted_at": t(2), "completed_at": t(2),
+             "max_score": 8, "submitted_at": t(7), "completed_at": t(7),
+             "started_at": None,
              "status": "complete", "is_late": None, "attempts": 1},
             # o1  OFF THE ROLL, is_late NULL, stamp BEFORE the deadline
             #     -> on time by comparison; in the column, not in the roster
             {"assignment_id": marked, "student_id": o1, "score": 8,
-             "max_score": 8, "submitted_at": t(6), "completed_at": t(6),
+             "max_score": 8, "submitted_at": t(11), "completed_at": t(11),
+             "started_at": None,
              "status": "complete", "is_late": None, "attempts": 1},
             # o2  OFF THE ROLL, NO STAMP AT ALL, status complete -> a cell
             #     whose lateness is UNKNOWN, graded, and NOT "handed in"
             {"assignment_id": marked, "student_id": o2, "score": 1,
              "max_score": 8, "submitted_at": None, "completed_at": None,
+             "started_at": None,
              "status": "complete", "is_late": None, "attempts": 1},
             # p0's RETAKE, a better mark, attempts = 2 -> must lose
             {"assignment_id": marked, "student_id": p0, "score": 8,
-             "max_score": 8, "submitted_at": t(3), "completed_at": t(3),
+             "max_score": 8, "submitted_at": t(8), "completed_at": t(8),
+             "started_at": None,
              "status": "complete", "is_late": False, "attempts": 2},
             # ── THIS WEEK's paper — OPEN, and RESULTS ARE LIVE ON IT ────
             # ⊕ Mide's 23 Sep 2026 ruling — extended to mirror production's
             # own shape (10h/Ph1, 24 Sep 2026): an OPEN set with TWO complete
             # on-time submissions and one in progress, the rest untouched.
-            # p0 in progress, no stamp, not complete -> NO CELL at all
+            # p0 in progress, no stamp, not complete -> NO CELL at all.
+            # ⊕ Opus review, 27 Sep 2026 — `started_at` set explicitly
+            # (real rows get it from the app at the first answer; the
+            # column has NO database default, so leaving it out here would
+            # silently insert NULL and give `activity_at()` nothing to read
+            # — the opposite of what this row exists to test).
             {"assignment_id": thisweek, "student_id": p0, "score": None,
              "max_score": None, "submitted_at": None, "completed_at": None,
+             "started_at": t(0, 2),
              "status": "in_progress", "is_late": None, "attempts": 1},
             # p1 handed in, inside the window, on time -> a cell, and now
             # counted in `marked`/`classMean` too: it is RELEASED, and
             # released is all "marked" means now.
             {"assignment_id": thisweek, "student_id": p1, "score": 4,
              "max_score": 4, "submitted_at": t(0, 1), "completed_at": t(0, 1),
+             "started_at": None,
              "status": "complete", "is_late": False, "attempts": 1},
             # p2 ALSO handed in, on time — the second "complete, on time"
             # result on a paper that has not closed. Its own cell also
@@ -771,77 +955,87 @@ def fixture(key, pw, srk):
             # no-deadline paper below (which already does, on its own).
             {"assignment_id": thisweek, "student_id": p2, "score": 3,
              "max_score": 4, "submitted_at": t(0, 2), "completed_at": t(0, 2),
+             "started_at": None,
              "status": "complete", "is_late": False, "attempts": 1},
             # ── the NO-DEADLINE paper ───────────────────────────────────
             # completed_at with NO submitted_at: a cell, and NOT a
             # "submission handed in" for the card's count. Never marked.
             {"assignment_id": nodue, "student_id": p2, "score": 1,
              "max_score": 8, "submitted_at": None, "completed_at": t(1),
+             "started_at": None,
              "status": "complete", "is_late": None, "attempts": 1},
         ]
         S = sr("assignment_submissions", "POST", rows)
         made_subs = [s["id"] for s in S]
         print("  built %d assignments and %d submission rows\n"
               % (len(made), len(made_subs)))
+        # ⊕ Opus review, 27 Sep 2026 — "an in-progress row": p0's `thisweek`
+        # row above is `status: in_progress`, no stamps — its `started_at`
+        # (DB-defaulted at insert time) is the row's own activity instant
+        # per `activity_at()`/the SQL `activity` CTE. Captured here, from the
+        # actual inserted row, rather than assumed.
+        p0_inprogress = next(s for s in S
+                             if s["assignment_id"] == thisweek and s["student_id"] == p0)
+        p0_started_at = p0_inprogress["started_at"]
 
         # ── BY HAND ──────────────────────────────────────────────────────
         # ⊕ Mide's 23 Sep 2026 ruling — RECOMPUTED, not just re-labelled.
-        # `marked` now means RELEASED, and every one of this class's four
+        # `marked` now means RELEASED, and every one of this class's five
         # assignments has a NULL `release_at` (the baseline row, confirmed
         # live on TEST — one pre-existing paper, due 21 May 2026, zero
-        # submissions — plus the three built here, none of which sets
-        # `release_at`). So ALL FOUR are now `marked`, where before only the
-        # "marked" paper (closed) was. The baseline paper contributes zero
-        # to every sum regardless (nobody ever sat it), so it changes
-        # nothing below — but `thisweek` and `nodue` are NEWLY counted in
+        # submissions — plus the four built here, none of which sets
+        # `release_at`). So ALL FIVE are now `marked`, where before only the
+        # "marked" paper (closed) was. The baseline paper AND the flashcard
+        # probe both contribute zero to every sum below (nobody ever sat
+        # either) — but `thisweek` and `nodue` are NEWLY counted in
         # `markedSub`/`markedOnTime`/`markedLate`/`markedLateUnknown`/
         # `classMean`, and in each pupil's `avg`, wherever that pupil has a
         # cell on one of them.
-        n_assign = len(base_assign) + 3
+        n_assign = len(base_assign) + 4
         hand = {
             "student_count": 3,
             "assignment_count": n_assign,
             # submitted_at IS NOT NULL over the FIRST attempts: p0, p1, p2
             # and o1 on the marked paper, p1 AND p2 on this week's. o2's row
             # and the no-deadline cell have no submitted_at; the in-progress
-            # row has none either. UNCHANGED BY THE RULING — submission_count
+            # row and the flashcard probe (a SITTING, never a submission)
+            # have none either. UNCHANGED BY THE RULING — submission_count
             # never was scoped to `marked`/`closed` — but +1 for p2's new
             # this-week submission: 5 -> 6.
             "submission_count": 6,
             "completion_pct": js_round(6 / (3 * n_assign) * 100),
-            # markedSub etc. now sum over ALL FOUR released papers:
-            # baseline(0) + marked(5) + thisweek(2, was 1) + nodue(1) = 8.
-            # on_time:  0 + 2 + 2 + 0 = 4.  late: 0 + 2 + 0 + 0 = 2.
-            # unknown:  0 + 1 + 0 + 1 = 2.
+            # markedSub etc. now sum over ALL FIVE released papers:
+            # baseline(0) + marked(5) + thisweek(2, was 1) + nodue(1) +
+            # flashcard probe(0) = 8. on_time: 0+2+2+0+0=4.
+            # late: 0+2+0+0+0=2. unknown: 0+1+0+1+0=2.
             "markedSub": 8, "markedOnTime": 4, "markedLate": 2,
             "markedLateUnknown": 2,
             "markedPct": js_round(4 / 6 * 100),
             # mean of the released columns' means that have one:
             # marked=48 (19/40), thisweek=88 (7/8 — p1's 4/4 + p2's 3/4),
-            # nodue=13 (1/8). baseline has no cell so no mean (excluded).
+            # nodue=13 (1/8). baseline and the flashcard probe have no cell
+            # so no mean (excluded, same reason).
             # (48 + 88 + 13) / 3 = 49.667 -> 50, half away from zero.
             "classMean": 50,
-            # week0: ALL THREE. p1 and p2 via the OPEN "this week" paper —
-            # the whole point of item 5: an open paper counts the moment a
-            # pupil has a cell on it, not only once its due date falls in
-            # the window. p0's own cell is on the "marked" paper, and
-            # `t(3)` — three days before the run — lands INSIDE the current
-            # teaching week's window whenever the fixture is run more than a
-            # couple of days into that week (the window is the whole
-            # calendar week, not "the last three days"); observed true on
-            # TEST on 24 Sep 2026, confirmed by `w["start_at"]`/`w["end_at"]`
-            # printed above. That was already true of the FIRST due-in-
-            # window test, before this ruling — it is not something item 5
-            # introduces — it was simply never exercised by round two's
-            # values, which this by-hand block did not check against the
-            # printed window either. `week0`/`flagged` below follow whatever
-            # the actual window says, not a day-of-week assumption; JS and
-            # SQL computing the SAME answer from the SAME window is the
-            # actual proof, and both did.
-            "week0": 3, "week1": 3,
-            # Nobody: every pupil is now `in_week` (see above), and
-            # `flagged` requires `!in_week`.
-            "flagged": 0,
+            # ⊕ Opus review, 27 Sep 2026 — WAS 3 ("ALL THREE"), the exact
+            # value this fixture's `due_at = t(3)` flaked on: whether p0's
+            # marked-paper due date fell inside the CURRENT teaching week
+            # depended on where "now" sat in the week when the fixture ran,
+            # not on anything the fixture actually controlled. `due_at` is
+            # now `t(8)` — DETERMINISTICALLY before the window opens, every
+            # day (see the comment on it, above) — so p0 has NO in-week
+            # source at all: their only cell is the (now permanently closed
+            # and out-of-window) marked paper. week0 is p1 and p2 only, via
+            # the OPEN "this week" paper — the whole point of item 5: an
+            # open paper counts the moment a pupil has a cell on it, not
+            # only once its due date falls in the window.
+            "week0": 2, "week1": 3,
+            # p0 alone: `!in_week` (now always true for them) AND
+            # `missing_marked` (true for everyone, via the pre-existing
+            # baseline closed paper nobody ever sat — unaffected by any of
+            # this). p1 and p2 are `in_week`, so `flagged` never asks about
+            # their `missing_marked` at all.
+            "flagged": 1,
         }
         hand_cols = {"sub": 5, "asked": 5, "on_time": 2, "late": 2,
                      "unknown": 1, "marked_n": 5, "mean": 48}
@@ -851,12 +1045,12 @@ def fixture(key, pw, srk):
         hand_thisweek_cols = {"sub": 2, "asked": 3, "on_time": 2, "late": 0,
                               "unknown": 0, "marked_n": 2, "mean": 88}
         hand_students = {
-            # p0: avg unaffected (no cell on either new paper), but
-            # `in_week` is True via the PRE-EXISTING "marked" paper — its
-            # due date falls inside the current window (see the note on
-            # `week0` above). `on_time_week` stays False: p0's cell on
-            # `marked` is LATE, not on time.
-            p0: {"avg": 63, "in_week": True, "on_time_week": False,
+            # p0: avg unaffected (no cell on either new paper). `in_week` is
+            # now DETERMINISTICALLY False — their only cell (the "marked"
+            # paper) is permanently closed and permanently outside this
+            # week's window (see the `week0` note above); `on_time_week`
+            # stays False regardless (p0's cell on `marked` is LATE anyway).
+            p0: {"avg": 63, "in_week": False, "on_time_week": False,
                  "missing_marked": True},
             # p1: avg now draws on `marked` (3/8) AND `thisweek` (4/4) —
             # (3+4)/(8+4) = 7/12 = 58.33 -> 58 (was 38, marked-only).
@@ -922,6 +1116,118 @@ def fixture(key, pw, srk):
                     fails.append("pupil %s %s: hand=%r js=%r sql=%r"
                                  % (sid[-4:], k, v, a, b))
 
+        # ⊕ Opus review, 27 Sep 2026 — "an in-progress row": p0's `thisweek`
+        # attempt is in_progress (no cell at all — `p["closed"]` is False for
+        # an open paper, so it is not `missing_marked` either), but its
+        # `started_at` is the pupil's MOST RECENT activity in this class (2
+        # hours ago, against ~9 days ago for their one completed cell). Both
+        # sides must read it, even though there is no cell to read it FROM.
+        for side, students in (("js", js["students"]), ("sql", sq["students"])):
+            got = students[p0]["last_at"]
+            ok = same_instant(got, p0_started_at)
+            print("  p0 (in-progress row) %-4s last_at=%s (want started_at %s)  %s"
+                  % (side, got, p0_started_at, "OK" if ok else "MISMATCH"))
+            if not ok:
+                fails.append("p0 %s last_at: got %r, want in-progress started_at %r"
+                             % (side, got, p0_started_at))
+
+        # ⊕ Opus review, 27 Sep 2026 — "a [flashcard] sitting newer than an
+        # MCQ completion": p1's most recent MCQ activity is their `thisweek`
+        # completion (~1 hour ago); the flashcard-probe sitting above is
+        # ~6 minutes ago. `last_at` must read the SITTING, on both sides.
+        for side, students in (("js", js["students"]), ("sql", sq["students"])):
+            got = students[p1]["last_at"]
+            ok = same_instant(got, p1_sitting_at)
+            print("  p1 (flashcard probe) %-4s last_at=%s (want the sitting %s)  %s"
+                  % (side, got, p1_sitting_at, "OK" if ok else "MISMATCH"))
+            if not ok:
+                fails.append("p1 %s last_at: got %r, want the flashcard sitting %r"
+                             % (side, got, p1_sitting_at))
+
+        # ⊕ MRB-351 landing stream J, 27 Sep 2026 — THE WEEK-WINDOW BOUNDARY,
+        # PINNED DIRECTLY. `in_week`/`on_time_week` are the half-open
+        # interval `(week_start, week_end]`: a due date landing EXACTLY on
+        # the window's start is NOT in this week (it belongs to the week
+        # that is ending), one landing EXACTLY on its end IS — this is the
+        # migration's own `>` / `<=` pair, and it is also the live browser's
+        # ACTUAL behaviour: `buildMatrix` writes `>=`/`<` as a raw STRING
+        # comparison, and PostgREST's `…+00:00` vs `Date.toISOString()`'s
+        # `…000Z` tie the opposite way at an exact instant match, landing the
+        # page on `(start, end]` in practice regardless of which operators
+        # its source reads. See the migration's own comment on
+        # `in_week`/`on_time_week` for the full account. Four stages (MCQ
+        # end, MCQ start, flashcard end, flashcard start), each built,
+        # asserted and TORN DOWN before the next, so every result is
+        # attributable to exactly ONE new paper against p0's established
+        # baseline (`in_week: False` in `hand_students` above — p0's only
+        # other cell is the permanently-closed, permanently-outside-this-week
+        # `marked` paper).
+        # ⚠️ ALL FOUR set `release_at` far in the future (`marked = False`),
+        # not only the end-boundary pair. `closed` is `due_at <= now`, and
+        # on a SUNDAY (MRB-330: "Sunday belongs to the week that is coming")
+        # `now` sits BEFORE the computed `week_start` (a Monday-local
+        # midnight in the future), so a "start"-boundary paper due exactly
+        # at `week_start` is NOT closed on a Sunday — `marked AND NOT
+        # closed` is then TRUE regardless of the due-date test, and the
+        # open-bypass (item 5's ruling) swallows the very boundary this test
+        # exists to isolate. Caught live: this fixture flaked exactly this
+        # way on 27 Sep 2026, a Sunday — the same day-of-week trap the Opus
+        # review's fix #4 (above) hit on a different paper. Forcing
+        # `marked = False` on every stage removes the open-bypass from the
+        # equation entirely, so `in_week` can only come from the due-date
+        # window test, on any day of the week, forever.
+        boundary_cases = [
+            ("boundary end mcq",   True,  w["end_at"],   "mcq_set",  t(-3650)),
+            ("boundary start mcq", False, w["start_at"], "mcq_set",  t(-3650)),
+            ("boundary end fc",    True,  w["end_at"],   "flashcards", t(-3650)),
+            ("boundary start fc",  False, w["start_at"], "flashcards", t(-3650)),
+        ]
+        for label, want, due_at, kind, release_at in boundary_cases:
+            body = {"class_id": cid, "subject_id": subject_id,
+                    "topic": "MRB-348 round three", "title": "mrb348r3 " + label,
+                    "due_at": due_at, "source": "teacher", "auto_generated": False}
+            if kind == "flashcards":
+                body.update({"school_id": klass[0]["school_id"],
+                            "teacher_id": TEACHER_ID, "set_by": TEACHER_ID,
+                            "quiz_type": "flashcards", "kind": "flashcards",
+                            "deck_id": made_deck2, "flashcard_mode": "review",
+                            "completion_rule": "quick"})
+            else:
+                body.update({"quiz_type": "topic_quiz", "academic_week": 9})
+            if release_at:
+                body["release_at"] = release_at
+            bp_id = sr("assignments", "POST", [body])[0]["id"]
+            made.append(bp_id)
+            bp_sub = sr("assignment_submissions", "POST", [{
+                "assignment_id": bp_id, "student_id": p0, "score": None,
+                "max_score": None, "submitted_at": None,
+                "completed_at": t(0, 4), "started_at": None,
+                "status": "complete", "is_late": False, "attempts": 1,
+            }])[0]
+            made_subs.append(bp_sub["id"])
+            try:
+                packs_b, *_ = load_class_matrices(key, token, [cid])
+                now_b = iso_now()
+                js_b = js_values(packs_b[cid], now_b)
+                windows_b = {cid: {"start": packs_b[cid]["week"]["start_at"],
+                                   "end": packs_b[cid]["week"]["end_at"]}}
+                rows_b = rest("rpc/teacher_class_rollup_v2", key, token,
+                              method="POST",
+                              body={"p_class_ids": [cid], "p_now": now_b,
+                                    "p_windows": windows_b})
+                sq_b = rollup_values(packs_b[cid], rows_b[0], now_b)
+                for side, val in (("js", js_b["students"][p0]["in_week"]),
+                                  ("sql", sq_b["students"][p0]["in_week"])):
+                    ok = (val == want)
+                    print("  p0 (%s) %-4s in_week=%s (want %s)  %s"
+                          % (label, side, val, want, "OK" if ok else "MISMATCH"))
+                    if not ok:
+                        fails.append("p0 %s %s in_week: got %r, want %r"
+                                     % (label, side, val, want))
+            finally:
+                sr("assignment_submissions?id=eq." + bp_sub["id"], "DELETE")
+                sr("assignments?id=eq." + bp_id, "DELETE")
+
         # and then every remaining cell of the class, both paths
         compare(cid, js, sq, fails)
         # Each pupil dict in `hand_students` carries 4 keys (avg, in_week,
@@ -940,21 +1246,333 @@ def fixture(key, pw, srk):
         # ⚠️ BY A SNAPSHOTTED ID LIST, NEVER A PREDICATE. CLAUDE.md records a
         # predicate wipe killing four real rows, and
         # `delete where title like 'mrb348%'` is exactly that shape.
+        if made_session2:
+            sr("flashcard_sessions?id=eq." + made_session2, "DELETE")
         for sid in made_subs:
             sr("assignment_submissions?id=eq." + sid, "DELETE")
         for aid in made:
             sr("assignments?id=eq." + aid, "DELETE")
+        if made_deck2:
+            sr("flashcard_decks?id=eq." + made_deck2, "DELETE")
         back_a = sr("assignments?select=id&class_id=eq." + cid
                     + "&deleted_at=is.null")
         back_m = sr("class_members?select=student_id&class_id=eq." + cid
                     + "&deleted_at=is.null&left_at=is.null")
         left = sr("assignment_submissions?select=id&id=in.(%s)"
                   % ",".join(made_subs)) if made_subs else []
-        print("\n  TORN DOWN by id: %d submissions, %d assignments removed. "
+        print("\n  TORN DOWN by id: %d submissions, %d assignments removed "
+              "(incl. the flashcard probe + its session + its deck). "
               "Class back at %d assignments / %d members (baseline %d / %d); "
               "%d fixture rows left behind."
               % (len(made_subs), len(made), len(back_a), len(back_m),
                  len(base_assign), len(roster), len(left)))
+
+
+FLASHCARD_FIXTURE_NOTE = """
+MRB-351 landing, stream B — the flashcard kind split against the SAME rollup
+proof method as round two/three: a fresh, ISOLATED throwaway class (never
+2a...004, so its numbers cannot collide with the round-two/three fixture run
+either side of it), torn down by a SNAPSHOTTED ID LIST, never a predicate.
+
+Every assignment in this class is `kind = 'flashcards'`. That is deliberate:
+it is the direct, minimal proof of "a class whose only released work is
+flashcards -> class mean null" (E6 asked for this case explicitly), and it
+also isolates the kind-split predicate from any MCQ column that could hide a
+mismatch by coincidence.
+
+Three flashcard papers:
+  · OPEN, finished ON TIME    — a cell (on_time), never graded
+  · CLOSED, finished LATE     — a cell (late), never graded
+  · CLOSED, never completed   — no cell -> missing_marked for every pupil
+
+The deck and the OPEN assignment are created through the REAL functions
+(`flashcard_deck_save`, `flashcard_set_work`), signed in as the class's real
+teacher (mide.badmus@test-rainford.local, who genuinely teaches this new
+class via a fresh class_teachers row) — proving the kind-determining columns
+(`kind`, `deck_id`, `flashcard_mode`, `completion_rule`, `quiz_type`) are
+exactly what the RPC itself writes, not a hand-typed guess. The completion
+write (what `flashcard_record` does when a pupil finishes) is reproduced by
+a direct service-role INSERT matching `flashcard_record`'s own INSERT
+byte-for-byte (score = max_score = card count, `is_late` stamped at
+completion) — the same shortcut the pre-existing round-two/three fixture
+already takes for every one of its MCQ submissions, since exercising
+`flashcard_record` itself would need a throwaway PUPIL sign-in, which is a
+separate, larger piece of scaffolding than this rollup proof needs. The
+CLOSED/late and CLOSED/missing papers are built the same direct-insert way,
+because Set work v2 refuses a release or due date in the past
+(`release_past`/`due_before_release`) — a genuinely closed paper cannot be
+created through the live RPC at all, on TEST or on production.
+"""
+
+
+def fixture_flashcards(key, pw, srk):
+    print(FLASHCARD_FIXTURE_NOTE)
+    hdr_sr = {"apikey": srk, "Authorization": "Bearer " + srk,
+              "Content-Type": "application/json",
+              "Prefer": "return=representation"}
+
+    def sr(path, method="GET", body=None):
+        data = json.dumps(body).encode() if body is not None else None
+        req = urllib.request.Request(URL + "/rest/v1/" + path, data=data,
+                                     headers=hdr_sr, method=method)
+        try:
+            r = urllib.request.urlopen(req, timeout=60, context=CTX)
+            raw = r.read().decode()
+            return json.loads(raw) if raw.strip() else []
+        except urllib.error.HTTPError as e:
+            raise SystemExit("SR %s %s -> %s %s"
+                             % (method, path[:90], e.code,
+                                e.read().decode()[:300]))
+
+    TEACHER = "mide.badmus@test-rainford.local"
+    TEACHER_ID = "28000000-0000-0000-0000-000000000001"
+    SCHOOL_ID = "d0233615-3ee7-4b1b-a8ff-c912c5196d62"
+    ACADEMIC_YEAR_ID = "2f560a43-73b9-422a-8fc7-ec46524a288a"
+    # Maya / Felix / Amara — the real 8X2 roster, reused as members of this
+    # NEW class too (a profile can belong to more than one class; nothing
+    # about them is mutated, and removing them from THIS class's roster at
+    # teardown does not touch their 8X2 membership).
+    PUPILS = ["29000000-0000-0000-0000-00000000000e",
+              "29000000-0000-0000-0000-00000000000f",
+              "29000000-0000-0000-0000-000000000010"]
+    p_open, p_late, p_missing = PUPILS
+
+    made_class = made_ct = made_members = made_asg = made_subs = None
+    made_deck = None
+    made_session = None
+    class_id = None
+    try:
+        now = datetime.now(timezone.utc)
+
+        def t(days, hours=0):
+            return (now - timedelta(days=days, hours=hours)).isoformat()
+
+        # ── the class, isolated ──────────────────────────────────────────
+        C = sr("classes", "POST", [{
+            "school_id": SCHOOL_ID, "academic_year_id": ACADEMIC_YEAR_ID,
+            "name": "mrb351proof-flashcards-only", "key_stage": "KS3",
+            "year_group": 8, "assignment_day_of_week": 1,
+        }])
+        class_id = C[0]["id"]
+        made_class = class_id
+
+        CT = sr("class_teachers", "POST", [{
+            "class_id": class_id, "teacher_id": TEACHER_ID,
+            "role": "subject_teacher", "subject_id": "26000000-0000-0000-0000-000000000001",
+        }])
+        made_ct = CT[0]["id"]
+
+        MEM = sr("class_members", "POST",
+                 [{"class_id": class_id, "student_id": pid, "joined_via": "admin_added"}
+                  for pid in PUPILS])
+        made_members = [m["id"] for m in MEM]
+
+        print("  class %s created, teacher attached, %d members"
+              % (class_id[-4:], len(made_members)))
+
+        # ── the deck + the OPEN assignment, through the REAL functions ────
+        token = sign_in(TEACHER, key, pw)["access_token"]
+        deck_body = {"p_deck": None, "p_title": "mrb351 proof deck",
+                     "p_cards": [{"question": "Q1", "answer": "A1"},
+                                 {"question": "Q2", "answer": "A2"}],
+                     "p_meta": {"source_kind": "typed"}, "p_finalise": True}
+        deck_out = rest("rpc/flashcard_deck_save", key, token, "POST", deck_body)
+        deck_id = deck_out["deck_id"]
+        made_deck = deck_id
+        print("  deck %s saved via flashcard_deck_save: %r" % (deck_id[-4:], deck_out))
+
+        # p_release_at: None -> the RPC defaults it to its own now(), which
+        # is always within the "not more than 5 minutes in the past" rule;
+        # t(0, 1) (an hour ago) would trip `release_past` and refuse.
+        set_body = {"p_class_ids": [class_id], "p_deck": deck_id,
+                    "p_mode": "review", "p_rule": "quick",
+                    "p_title": "mrb351 proof — open, on time",
+                    "p_release_at": None,
+                    "p_due_at": (now + timedelta(days=10)).isoformat()}
+        set_out = rest("rpc/flashcard_set_work", key, token, "POST", set_body)
+        aid_open = set_out["assignment_ids"][0]
+        print("  assignment %s set via flashcard_set_work: %r"
+              % (aid_open[-4:], set_out))
+
+        # ── the two CLOSED papers: Set work v2 refuses a past release/due,
+        # so these are the same direct-insert shape as the MCQ fixture. ────
+        SUBJECT_ID = "26000000-0000-0000-0000-000000000001"
+        A = sr("assignments", "POST", [
+            {"class_id": class_id, "school_id": SCHOOL_ID, "subject_id": SUBJECT_ID,
+             "teacher_id": TEACHER_ID, "set_by": TEACHER_ID,
+             "title": "mrb351 proof — closed, late", "topic": "mrb351 proof",
+             "quiz_type": "flashcards", "source": "teacher",
+             "auto_generated": False, "key_stage": "KS3", "year_group": 8,
+             "release_at": t(5), "due_at": t(3),
+             "kind": "flashcards", "deck_id": deck_id,
+             "flashcard_mode": "review", "completion_rule": "quick"},
+            {"class_id": class_id, "school_id": SCHOOL_ID, "subject_id": SUBJECT_ID,
+             "teacher_id": TEACHER_ID, "set_by": TEACHER_ID,
+             "title": "mrb351 proof — closed, missing", "topic": "mrb351 proof",
+             "quiz_type": "flashcards", "source": "teacher",
+             "auto_generated": False, "key_stage": "KS3", "year_group": 8,
+             "release_at": t(5), "due_at": t(3),
+             "kind": "flashcards", "deck_id": deck_id,
+             "flashcard_mode": "review", "completion_rule": "quick"},
+        ])
+        by_title = {a["title"]: a["id"] for a in A}
+        aid_late = by_title["mrb351 proof — closed, late"]
+        aid_missing = by_title["mrb351 proof — closed, missing"]
+        made_asg = [aid_open, aid_late, aid_missing]
+
+        # ── completions, written exactly as flashcard_record's own INSERT
+        # does it: score = max_score = card count (2), is_late stamped at
+        # completion against the assignment's own due_at. ─────────────────
+        S = sr("assignment_submissions", "POST", [
+            # p_open finishes comfortably inside the open window -> on time.
+            {"assignment_id": aid_open, "student_id": p_open, "score": 2,
+             "max_score": 2, "submitted_at": t(0, 0.5), "completed_at": t(0, 0.5),
+             "started_at": t(0, 1), "status": "complete", "is_late": False,
+             "attempts": 1, "attempt_no": 1},
+            # p_late finishes two days after the paper closed -> late.
+            {"assignment_id": aid_late, "student_id": p_late, "score": 2,
+             "max_score": 2, "submitted_at": t(1), "completed_at": t(1),
+             "started_at": t(1, 1), "status": "complete", "is_late": True,
+             "attempts": 1, "attempt_no": 1},
+            # aid_missing: nobody submits. p_missing is on the roster and
+            # never opens it -> missing_marked for every pupil on this column.
+        ])
+        made_subs = [s["id"] for s in S]
+        print("  built 3 flashcard assignments (1 via the real RPC, 2 direct) "
+              "and %d submission rows" % len(made_subs))
+
+        # ── p_missing: A DECK SITTING, AND NOTHING ELSE (Opus review,
+        # 27 Sep 2026) — p_missing never submits anything in this class (see
+        # aid_missing above), so before this row they have NO activity signal
+        # at all. One `flashcard_sessions` row, no submission, proves the
+        # sitting alone is enough: "a pupil with only a deck sitting" from
+        # the review's own wording.
+        FS = sr("flashcard_sessions", "POST", [{
+            "assignment_id": aid_open, "pupil_id": p_missing,
+            "school_id": SCHOOL_ID, "class_id": class_id,
+            "started_at": t(0, 1), "last_seen_at": t(0, 0.5),
+        }])
+        made_session = FS[0]["id"]
+        session_last_seen = FS[0]["last_seen_at"]
+        print("  flashcard session %s for p_missing (deck sitting only, no "
+              "submission): last_seen_at=%s" % (made_session[-4:], session_last_seen))
+
+        # ── read, exactly as the round-two/three method does ──────────────
+        now_iso = iso_now()
+        packs, *_ = load_class_matrices(key, token, [class_id])
+        pack = packs[class_id]
+        windows = {class_id: {"start": pack["week"]["start_at"],
+                              "end": pack["week"]["end_at"]}}
+        rows_out = rest("rpc/teacher_class_rollup_v2", key, token, method="POST",
+                        body={"p_class_ids": [class_id], "p_now": now_iso,
+                              "p_windows": windows})
+        js = js_values(pack, now_iso)
+        sq = rollup_values(pack, rows_out[0], now_iso)
+
+        fails = []
+
+        # E6's own case, stated directly: every released paper is
+        # `kind = 'flashcards'`, so no column is ever graded, so the class
+        # mean must be null on BOTH sides.
+        for label, val in (("js classMean", js["classMean"]),
+                           ("sql class_mean", sq.get("sql_class_mean"))):
+            ok = val is None
+            print("  %-16s %8s  %s" % (label, val, "OK" if ok else "MISMATCH — expected null"))
+            if not ok:
+                fails.append("%s: expected null, got %r" % (label, val))
+
+        # Every column: marked_n == 0 and mean is None, js AND sql, even
+        # though on_time/late are non-zero (a flashcard cell counts as a
+        # cell everywhere except being graded).
+        for aid, label, want_on_time, want_late in (
+                (aid_open, "open/on-time", 1, 0),
+                (aid_late, "closed/late", 0, 1),
+                (aid_missing, "closed/missing", 0, 0)):
+            for side, cols in (("js", js["cols"]), ("sql", sq["cols"])):
+                c = cols[aid]
+                ok = (c["marked_n"] == 0 and c["mean"] is None
+                      and c["on_time"] == want_on_time and c["late"] == want_late)
+                print("  %-14s %-4s sub=%s on_time=%s late=%s marked_n=%s mean=%s  %s"
+                      % (label, side, c["sub"], c["on_time"], c["late"],
+                         c["marked_n"], c["mean"], "OK" if ok else "MISMATCH"))
+                if not ok:
+                    fails.append("%s %s: %r" % (label, side, c))
+
+        # missing_marked: true for every pupil on the closed/missing paper's
+        # class (all three never submitted it), false-contribution check for
+        # p_open/p_late who are NOT missing anything closed (aid_late they
+        # DID submit, even though late; aid_missing they did not).
+        for pid, label in ((p_open, "p_open"), (p_late, "p_late"),
+                           (p_missing, "p_missing")):
+            for side, students in (("js", js["students"]), ("sql", sq["students"])):
+                mm = students[pid]["missing_marked"]
+                ok = mm is True   # nobody submitted aid_missing; all 3 owe it
+                print("  %-10s %-4s missing_marked=%s  %s"
+                      % (label, side, mm, "OK" if ok else "MISMATCH"))
+                if not ok:
+                    fails.append("%s %s missing_marked: got %r, want True"
+                                 % (label, side, mm))
+
+        # avg: p_open's and p_late's cells are both ungraded, so avg is null
+        # for everyone — a flashcard-only class has no average, by design.
+        for pid in PUPILS:
+            for side, students in (("js", js["students"]), ("sql", sq["students"])):
+                av = students[pid]["avg"]
+                if av is not None:
+                    fails.append("%s %s avg: expected null (ungraded class), got %r"
+                                 % (pid[-4:], side, av))
+
+        # ⊕ Opus review, 27 Sep 2026 — "a pupil with only a deck sitting":
+        # p_missing has NO cell anywhere in this class (never opens
+        # aid_missing, and aid_open/aid_late are p_open's/p_late's), so their
+        # ONLY activity signal is the flashcard_sessions row above. Both
+        # sides must read it as p_missing's last_at, not null.
+        for side, students in (("js", js["students"]), ("sql", sq["students"])):
+            got = students[p_missing]["last_at"]
+            ok = same_instant(got, session_last_seen)
+            print("  p_missing  %-4s last_at=%s (want the sitting %s)  %s"
+                  % (side, got, session_last_seen, "OK" if ok else "MISMATCH"))
+            if not ok:
+                fails.append("p_missing %s last_at: got %r, want sitting %r"
+                             % (side, got, session_last_seen))
+
+        # and then every remaining cell of the class, both paths — the
+        # generic JS==SQL diff, exactly as round two/three's compare() does.
+        compare(class_id, js, sq, fails)
+        cells = cells_compared(js)
+        print("\n  %s  %d generic cells + 13 flashcard-specific assertions"
+              % ("PASS" if not fails else "FAIL %d" % len(fails), cells))
+        for f in fails:
+            print("     - %s" % f)
+        return len(fails)
+    finally:
+        # ⚠️ BY SNAPSHOTTED IDS ONLY, NEVER A PREDICATE.
+        if made_session:
+            sr("flashcard_sessions?id=eq." + made_session, "DELETE")
+        if made_subs:
+            for sid in made_subs:
+                sr("assignment_submissions?id=eq." + sid, "DELETE")
+        if made_asg:
+            for aid in made_asg:
+                sr("assignment_flashcards?assignment_id=eq." + aid, "DELETE")
+                sr("assignments?id=eq." + aid, "DELETE")
+        if made_deck:
+            sr("flashcard_cards?deck_id=eq." + made_deck, "DELETE")
+            sr("flashcard_decks?id=eq." + made_deck, "DELETE")
+        if made_members:
+            for mid in made_members:
+                sr("class_members?id=eq." + mid, "DELETE")
+        if made_ct:
+            sr("class_teachers?id=eq." + made_ct, "DELETE")
+        if made_class:
+            sr("classes?id=eq." + made_class, "DELETE")
+        left_class = sr("classes?select=id&id=eq." + (made_class or "00000000-0000-0000-0000-000000000000"))
+        print("\n  TORN DOWN by id: class %s, %s teacher row, %s members, "
+              "%s assignments, %s submissions, deck. Class row remaining "
+              "after teardown: %d (want 0)."
+              % ((made_class or "?")[-4:], 1 if made_ct else 0,
+                 len(made_members or []), len(made_asg or []),
+                 len(made_subs or []), len(left_class)))
 
 
 ROWS_NOTE = """
@@ -1038,7 +1656,10 @@ def main():
         return rows_per_screen(key, pw)
 
     if a.fixture:
-        return 1 if fixture(key, pw, srk) else 0
+        f1 = fixture(key, pw, srk)
+        print("\n" + "=" * 78 + "\n")
+        f2 = fixture_flashcards(key, pw, srk)
+        return 1 if (f1 or f2) else 0
 
     ids = [r["id"] for r in
            json.loads(urllib.request.urlopen(urllib.request.Request(
