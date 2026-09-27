@@ -445,6 +445,15 @@ _page("org", "org/index.html")
 _page("parents/index.html", "parents/index.html")
 _page("go/index.html", "go/index.html")
 
+# ── CORE lane (theme run, 26 Sep 2026) — the rest of the CORE family:
+#    root hand-written pages the sweep above didn't already list, plus a
+#    genuine (non-pilot) subtopic lesson page and a subject hub. ──
+_page("revision.html", "revision.html")
+_page("teacher-profile.html", "teacher-profile.html")
+_page("reset-password.html", "reset-password.html")
+_page("ks4 chrome/subject", "combined/higher/physics/index.html")
+_page("ks4 lesson/biology", "combined/higher/biology/homeostasis/nervous-system.html")
+
 _page("teacher/class-detail [Set work sheet]", "teacher_fixtures/class-detail-fixture.html",
       setup=_click_containing("Set work"), wait=0.9)
 _page("teacher/class-detail [shoutout composer]", "teacher_fixtures/class-detail-fixture.html",
