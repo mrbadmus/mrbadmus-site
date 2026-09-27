@@ -304,13 +304,23 @@ window.MrBadmusAdminScope = (function () {
          or its rejection is cached. */
       if (!sb) { decksCapable = false; decksProbe = null; return false; }
       return Promise.resolve(
-        sb.from('flashcard_decks').select('id', { head: true, count: 'exact' }).limit(0)
+        /* ⚠️ NOT `head: true`. A HEAD request has no body by definition (the
+           HTTP method), and postgrest-js's own issue-295 workaround
+           (PostgrestBuilder: `if (res.status === 404 && body === '') { status
+           = 204 }`) rewrites EVERY 404-with-empty-body into a fake success —
+           `{error: null, status: 204}` — with no way left to tell "missing
+           table" from "table exists, no rows". So a `head: true` probe cannot
+           ever answer this question correctly, on any body of code: the
+           real 404 is thrown away by the client library before this function
+           sees it (confirmed live against a schema-less TEST — the previous
+           fix here still read `decksCapable = true` on every page because
+           `r.status` was already 204 coming in, not 404). A real GET keeps
+           its JSON error body (`{code:'PGRST205', ...}`), which is never
+           empty, so the workaround's `body === ''` branch never fires and
+           `r.status`/`r.error` reach here genuine. `limit(1)` keeps the
+           payload to at most one row's `id`. */
+        sb.from('flashcard_decks').select('id').limit(1)
       ).then(function (r) {
-        /* The STATUS decides, not `r.error`. A HEAD read of a missing table
-           comes back 404 with no body, and supabase-js then reports
-           `error: null` — so `!r.error` read "present" on production and
-           put a dead link on every teacher page (found by
-           tools/mrb351_noschema_live.py against a schema-less TEST). */
         decksCapable = !!(r && !r.error &&
                           typeof r.status === 'number' &&
                           r.status >= 200 && r.status < 300);

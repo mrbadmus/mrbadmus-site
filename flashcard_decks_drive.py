@@ -196,14 +196,21 @@ STUB_JS = r"""
       then: function (res, rej) {
         if (F.noSchema) {
           if (NO_SCHEMA_TABLES[table]) {
-            /* Real PostgREST + supabase-js: a HEAD read of a missing table is a
-               404 with NO body, so `error` is null and only `status` says so.
-               The first version of this stub answered with an error object,
-               which hid a probe that trusted `!r.error` (see
-               tools/mrb351_noschema_live.py). Answer as production does. */
+            /* ⊕ Corrected against the LIVE library, 27 Sep 2026
+               (tools/mrb351_noschema_live.py, real TEST, no stub). A HEAD
+               request has no body by definition, and postgrest-js's own
+               issue-295 workaround (`PostgrestBuilder.ts`: `if (res.status
+               === 404 && body === '') { status = 204 }`) rewrites EVERY
+               404-with-empty-body into a fake `{error: null, status: 204}` —
+               there is no `status: 404` left for a HEAD probe to read; that
+               was this stub's own earlier, unverified guess, and it hid the
+               live defect (`shared/teacher-admin-nav.js`'s probe still read
+               "present" against a schema-less TEST — the probe was moved off
+               `head: true` entirely; this branch is kept accurate in case
+               anything else ever HEAD-probes a possibly-missing table). */
             if (head) {
               return Promise.resolve({data: null, count: null, error: null,
-                                      status: 404, statusText: 'Not Found'}).then(res, rej);
+                                      status: 204, statusText: 'No Content'}).then(res, rej);
             }
             return Promise.resolve({data: null, count: null, status: 404, error: {
               code: 'PGRST205', message: "Could not find the table 'public." + table + "' in the schema cache"
