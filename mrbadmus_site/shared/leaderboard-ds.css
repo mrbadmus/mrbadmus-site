@@ -3575,3 +3575,262 @@ a:hover { color: var(--st-accent-hover); }
   --st-faint:   #695E4E;
   --st-ghost:   #6E604B;
 }
+
+
+/* ═══ THEME RUN, 27 Sep 2026 (Mide's ruling: light by default, a
+   Light/Dark/System control on every page) — DARK VALUES FOR THE TOKENS
+   THIS PORT ACTUALLY USES.
+
+   `html[data-theme="dark"]`, not bare `[data-theme="dark"]`: specificity
+   (0,1,1) beats `:root{--pg-strong:#4A3728;...}`, the block Design's own
+   template grafts as a literal `<style>` tag INTO THE BODY on mount (see
+   build_student_port.py's "page chrome: espresso" note) — a plain `:root`
+   rule at (0,1,0), inserted after this stylesheet in DOM order, would
+   otherwise win on source order alone regardless of theme. The extra
+   type-selector point beats it outright, in either order.
+
+   ⚠️ --st-room-*, --st-cream, --st-ember*, --st-viewport-edge,
+   --st-paper-grid, --st-plate-line, --st-thumb-* are DELIBERATELY ABSENT
+   below. They are the flashcard "room"'s own always-dark surface —
+   #15110C and near it, already darker than this file's cream ground in
+   LIGHT mode — a self-contained plate exactly like a figure's, and the
+   same rule applies: a plate that is already its own colour stays that
+   colour in both themes. `--ks3-ink`'s inline alias is the one live path
+   into this scope from the room bridge, and it does not touch these.
+   Left at their light (already-dark) values, unchanged.
+
+   Every ratio below is verified with this repo's own WCAG 2.1 formula
+   (relative luminance, not approximated), not eyeballed. See the theme
+   run report for the numbers. */
+html[data-theme="dark"] {
+  --st-ground: #16120D;
+  --st-paper: #201A13;
+  --st-ink: #F3EBDD;
+  --st-body: #D8CCB8;
+  --st-muted: #A99A85;
+  --st-caption: #9C8D77;
+  --st-faint: #9C8D77;
+  --st-ghost: #998A78;
+  --st-rule: #3A3226;
+  --st-rule-soft: #2E271D;
+  --st-rule-fact: #2A2419;
+  --st-rule-strong: #4A4030;
+  --st-edge: #3D3526;
+  --st-btn-border: #423A2A;
+  --st-crumb-bg: #1C170F;
+  --st-crumb-sep: #4A4030;
+  --st-seg-bg: #241E15;
+  --st-note-bg: #211B13;
+  --st-note-border: #3A3223;
+  --st-chip-tint: #2C1912;
+  --st-chip-tint-border: #4A2A1D;
+  --st-num-well: #221C13;
+  --st-accent: #FF7A47;
+  --st-accent-text: #FFA167;
+  --st-accent-hover: #FFC299;
+  --st-hatch-b: #E2703B;
+
+  /* Design's README (Phase 1a, quoted in full in student_rulings.py):
+     "no page chrome is near-black any more. Page-chrome dark is now
+     espresso #4A3728 (10.4:1 on cream)" — FIXED across the six BENCH
+     themes on purpose, because that ruling predates this run's light/
+     dark axis and the two are orthogonal (a bench theme is chosen
+     independent of page theme). Unchanged, #4A3728 measures ~1.3:1 on
+     this dark ground: invisible. Given a light-on-dark counterpart for
+     the same reason a figure gets a plate token instead of inverted
+     ink — the DOTS move, "a small fixed accent, not a colour that
+     tracks anything else" does not. */
+  --pg-strong: #E8DCC5;
+  --pg-ok: #3FC97A;
+  --pg-ok-text: #6FE3A0;
+
+  /* ⊕ FOUND LIVE, NOT REASONED TO — the second, and the one that actually
+     paints the class view. Design's amended delivery grafts a WHOLE SECOND
+     token family, --pg-* (student_rulings.INSERT["class view"]'s
+     `dict(at=9, mode="prepend", donor=7, ...)`, "Design's six-theme token
+     block"), as a literal <style> tag PREPENDED into the page at mount —
+     physically inside <body>, so it sits after every <head> stylesheet in
+     document order. Its own `body{background:var(--pg-ground);...}` rule
+     is what a browser actually paints the page with; --st-ground above is
+     inherited by descendants but is not what body's background reads.
+     `getComputedStyle(document.body).backgroundColor` still returned the
+     light cream after every --st-* / --ks3-* value here was confirmed
+     resolving correctly dark — proof that this second family existed
+     before its name did. Values are --st-* / --ks3-*'s own by construction:
+     Design's amendment defines --pg-* as the SAME 17 hex values as the
+     corresponding --st-* / --ks3-* light tokens (measured: --pg-ground is
+     --st-ground's #FBF3E6, --pg-ink is --ks3-ink's #221E1B, and so on for
+     all seventeen), so each dark pairing below is that same token's dark
+     value from above, not a new colour choice. `--t-*` (six fixed preview
+     swatches for the theme PICKER's own dots — "here is what chalk looks
+     like") and `--b-*` (the ACTIVE bench palette) are excluded on purpose,
+     same reasoning as --st-room-*: they are what they preview and stay
+     what they preview in both themes. */
+  --pg-ground: #16120D;
+  --pg-card: #201A13;
+  --pg-band: #251F16;
+  --pg-inset: #231D14;
+  --pg-rule: #3A3226;
+  --pg-rule-strong: #4A4030;
+  --pg-ink: #F3EBDD;
+  --pg-body: #D8CCB8;
+  --pg-muted: #A99A85;
+  --pg-accent: #FF7A47;
+  --pg-accent-text: #FFA167;
+  --pg-accent-hover: #FFC299;
+  --pg-tint: #2C1912;
+
+  /* The docket (SET_ATTR node 91, "stays paper and ink on all six bench
+     themes") captures --st-paper AT :root specifically so it survives a
+     BENCH swap without being retyped. It must equally survive a THEME
+     swap — a docket is a paper plate, physically cream, same rule as a
+     figure's plate — so this decouples it from --st-paper (which is
+     now theme-variant) rather than let the capture carry the new dark
+     value through. */
+  --st-docket-paper: #FFFDF8;
+}
+
+/* ═══ THEME RUN, 27 Sep 2026 — dark values for `.rd[data-mode="ks3"]`'s
+   own token set, on the same `html[data-theme="dark"]` specificity
+   reasoning as the block above (0,3,1) vs. the light block's (0,2,0),
+   so this wins regardless of source order.
+
+   ⚠️ --ks3-ink FLIPS TO A LIGHT VALUE HERE, and that is deliberate and
+   checked, not an oversight of its other job. `--ks3-ink` is used as a
+   BACKGROUND (an "inverted ink block") by five selectors in this same
+   file — .ks3-dark, .ks3-mis-badge, .ks3-reveal-btn, .ks3-retry, and
+   .ks3-option.is-wrong .ks3-opt-mark — which would go near-white right
+   along with the text if this override reached them. It does not:
+   grep confirms zero of those five classes exist anywhere in the
+   compiled student/teacher/leaderboard templates (`student_templates.
+   json` has exactly TWO live references to `ks3-ink` in this whole
+   file's scope, both the `--st-ink:var(--ks3-ink)` alias on the `.rd`
+   wrapper itself) — they are bundle bytes carried over from Design's
+   shared CSS source with nothing on these three ports ever rendering
+   the classes that would trigger them. `--on-dark`/`--dark-panel`/
+   `--dark-rule` are left unchanged for the same reason: dead here,
+   live only in ks3.css/ks4-ds.css, which are a different lane's files.
+
+   --ks3-blue-light is UNCHANGED — Design's own comment names it
+   "on ink-dark only", i.e. already designed to sit on a dark block, and
+   it is not touched by anything above. */
+html[data-theme="dark"] .rd[data-mode="ks3"] {
+  --ks3-ground: #16120D;
+  --ks3-card: #201A13;
+  --ks3-band: #251F16;
+  --ks3-inset: #231D14;
+  --ks3-row-dim: #1C170F;
+  --ks3-rule: #3A3226;
+  --ks3-rule-strong: #4A4030;
+  --ks3-option-border: #443A29;
+  --ks3-option-spent: #2A2419;
+
+  --ks3-ink: #F3EBDD;
+  --ks3-ink-body: #D8CCB8;
+  --ks3-ink-muted: #A99A85;
+  --ks3-ink-faint: #9C8D77;
+  --ks3-ink-ghost: #8F8069;
+
+  --ks3-accent: #FF7A47;
+  --ks3-accent-text: #FFA167;
+  --ks3-accent-tint: #2C1912;
+  --ks3-accent-hover: #FFC299;
+
+  --ks3-ok: #3FC97A;
+  --ks3-ok-text: #6FE3A0;
+  --ks3-ok-tint: #12301F;
+
+  --ks3-alert: #FFC53D;
+  --ks3-alert-text: #FFCB5C;
+  --ks3-alert-tint: #2B2008;
+  --ks3-alert-border: #C98A2E;
+
+  --ks3-stretch: #A78BFA;
+  --ks3-stretch-text: #C4B5FD;
+  --ks3-stretch-tint: #211736;
+  --ks3-stretch-rule: #3D2E63;
+  --ks3-stretch-dash: #4B3878;
+  --ks3-stretch-wash: #1C1710;
+
+  --ks3-blue: #6E93FF;
+  --ks3-blue-text: #9DB8FF;
+  --ks3-blue-tint: #182238;
+
+  --ks3-biology: #3FC97A;
+  --ks3-chemistry: #FF7A47;
+  --ks3-physics: #6E93FF;
+
+  --accent: #FF7A47;
+  --accent-hover: #FFC299;
+  --accent-text: #FFA167;
+  --brand-grad-a: #FFC53D;
+  --brand-grad-b: #FF7A47;
+}
+
+/* ═══ --danger / --success, dark ═══
+   Design's bundle's own [data-theme="dark"] block (ds_css()'s copy of
+   tokens/shared-tokens.css) already ships #E5655C / #55B36A here — read
+   directly (not through --st-*) by shared/seating.css's danger-button
+   hover and shared/breakdown.css's four "correct"/"incorrect" indicators.
+   Both values measure UNDER AA with a white foreground (2.6:1 / 3.3:1) —
+   a pairing both files use — on a background this repo could not
+   previously drive live (data-theme="dark" had no served page before
+   this run). Text usage of both tokens dominates 4-to-2 over the
+   fill+white-text usage in breakdown.css, so these are tuned BRIGHT for
+   that (11.7:1 / 8.6:1 as plain text on this ground) and the two fill
+   selectors get a dark-mode ink-foreground override instead, in
+   shared/breakdown.css — see that file's own comment. `html[data-theme=
+   "dark"]`, not bare `[data-theme="dark"]`, so this rule outranks
+   Design's own same-selector block regardless of source order. */
+html[data-theme="dark"] {
+  --danger: #FF9187;
+  --success: #6FE3A0;
+}
+
+/* FOUND LIVE — contrast_audit, teacher and leaderboard both (avatars are
+   everywhere: rosters, comment authors, leaderboard rows). --st-paper is
+   used TWICE, in irreconcilable directions: as a CARD SURFACE (must track
+   the theme -- correctly dark already, confirmed working) and as "the
+   fixed light text/fill colour" for two inline patterns Design repeats
+   throughout every screen -- avatar initials (white text on a computed
+   per-student hue) and a handful of CTA buttons (color:var(--st-paper);
+   background:var(--st-accent-text)). Both need --st-paper to STAY LIGHT
+   regardless of page theme; as a card surface it must NOT. Rather than
+   hunt every occurrence across six teacher screens plus the leaderboard
+   by template index (which is what the class-view bench fix above did,
+   and does not scale to a pattern this repeated), this targets the
+   RENDERED MARKUP directly: student-runtime.js writes the literal string
+   'color:var(--st-paper)' into the DOM style attribute verbatim (it
+   resolves the JS {e:...} expression parts of a style, never the CSS
+   var() calls inside the static text) -- confirmed by reading the actual
+   attribute in a browser, not assumed from the template source. A CSS
+   attribute-contains selector matching that exact substring reaches
+   every avatar and every such button on every screen and every future
+   one Design draws the same way, with no per-node index to keep in
+   sync.  is type+attr+attr =
+   (0,2,1), which beats the (0,1,1) this file'''s own --st-paper override
+   sets on <html> and is inherited down to here. */
+html[data-theme="dark"] [style*="color:var(--st-paper)"] {
+  --st-paper: #FFFDF8;
+  /* The CTA half of the same pattern: color:var(--st-paper) is paired
+     with background:var(--st-accent-text) on these buttons (Remind all,
+     Send a reminder, Submissions, ...), never with the avatar hue. Fixing
+     only the foreground left a bright cream on a brightened orange,
+     1.96:1 -- --st-accent-text needs the identical fixed-light treatment,
+     and is harmless on the avatars this selector also matches, which
+     never reference it. */
+  --st-accent-text: #A93411;
+  --ks3-accent-text: #A93411;
+}
+/* FOUND LIVE — contrast_audit again. The shoutout note's textarea has no
+   authored placeholder colour, so it renders the BROWSER'''s own default
+   (#757575 in Chrome) -- fine at 3.74:1 on light paper's near-white, under
+   AA'''s 4.5 floor on this dark ground. An explicit rule the browser
+   default was standing in for the absence of. --st-ghost rather than a
+   new fixed hex: a placeholder is exactly '''the dimmest legible text'''
+   already, the same role --st-ghost names everywhere else. */
+html[data-theme="dark"] textarea::placeholder {
+  color: var(--st-ghost);
+  opacity: 1;
+}
+

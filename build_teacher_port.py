@@ -93,6 +93,9 @@ import sys
 # generate_site_v5.py carries a second inline copy; a third here would be the
 # copy that drifts.
 from build_ks3 import stamp_versions
+# ⊕ Theme run, 27 Sep 2026 — the one pre-paint snippet and slot every
+# generator emits; see theme_head.py's own docstring.
+import theme_head
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 REF = os.path.join("docs", "ks3", "design-reference", "teacher")
@@ -287,12 +290,16 @@ _REFUSED = {"import.html"}
 # key-stage figure manifest ON DEMAND, stamping it from
 # `window.__MRB_ASSET_V__` — and refuses to load it at all without a stamp,
 # because unstamped under `immutable` is a year-long pin.
+# ⊕ Theme run, 27 Sep 2026 — `theme.js` joins this list for the same
+# reason every other bare `/shared/` reference this build writes does:
+# unstamped under `/shared/*`'s `immutable, max-age=31536000` is a
+# year-long pin on the control's own bytes.
 STAMPED_DEPS = ("config.js", "class-entry.js", "teacher-guard.js",
                 "teacher-data.js", "shoutouts.js", "teacher-admin-nav.js",
                 "teacher-picker.js", "rum.js",
                 SETWORK_CSS_NAME, SETWORK_JS_NAME, CSV_JS_NAME,
                 "figures-ks3.js", "figures-ks4.js",
-                BREAKDOWN_CSS_NAME, BREAKDOWN_JS_NAME)
+                BREAKDOWN_CSS_NAME, BREAKDOWN_JS_NAME, "theme.js")
 
 
 def asset_hash(text):
@@ -5348,6 +5355,14 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         # and `teacher-live.js` is free to write a better one at mount.
         "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
         "<meta charset=\"utf-8\">\n"
+        # ⊕ Theme run, 27 Sep 2026 (Mide's ruling: light by default, a
+        # Light/Dark/System control on every page). Same wiring as the
+        # student port: THEME_HEAD before any stylesheet, from
+        # theme_head.py rather than retyped. `theme.js` is unstamped here
+        # like every other `/shared/` reference this function writes —
+        # `stamp_versions()` at the end appends its `?v=` from the
+        # `theme.js` entry this build adds to STAMPED_DEPS.
+        "%s%s"
         "<meta name=\"viewport\" content=\"width=device-width, "
         "initial-scale=1\">\n"
         # ⊕ Perf, 21 Sep 2026 — OPEN THE THREE CONNECTIONS EARLY.
@@ -5739,7 +5754,8 @@ def page_html(spec, roots, table, logic, imports, fixture, versions, regions):
         "%s"
         "%s"
         "</body>\n</html>\n"
-        % (html.escape(spec["title"]),
+        % (theme_head.THEME_HEAD, theme_head.theme_script(),
+           html.escape(spec["title"]),
            (_BANNER_FIXTURE % (spec["out"][:-5].replace("-", " ").title(),
                                spec["out"])) if fixture else
            (_BANNER % (spec["out"][:-5].replace("-", " ").title(),
@@ -5960,6 +5976,10 @@ def build():
     # follows, and it is what makes "changes go in teacher_rulings.py" true
     # of the stylesheet as well as of the markup.
     css += R.PORT_CSS
+    # ⊕ Theme run, 27 Sep 2026 — the light/dark axis's own tail, same
+    # reasoning and same append point as PORT_CSS immediately above. See
+    # R.THEME_DARK_CSS's own comment.
+    css += R.THEME_DARK_CSS
     print("     %d token(s) referenced by the six pages; %d not in "
           "Design's bundle and topped up from shared/tokens.css%s"
           % (len(wanted), len(topped),

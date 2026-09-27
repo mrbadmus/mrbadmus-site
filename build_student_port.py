@@ -83,6 +83,9 @@ import sys
 # Importing build_ks3 is cheap and side-effect-free — it loads the KS3 art
 # registry and writes nothing — measured at ~0.26s.
 from build_ks3 import stamp_versions
+# ⊕ Theme run, 27 Sep 2026 — the one pre-paint snippet and slot every
+# generator emits; see theme_head.py's own docstring.
+import theme_head
 
 REPO = os.path.dirname(os.path.abspath(__file__))
 REF = os.path.join("docs", "ks3", "design-reference", "student")
@@ -210,9 +213,17 @@ LIVE_JS_URL = "/shared/" + LIVE_JS_NAME
 # `immutable, max-age=31536000` the first manifest a child's browser fetched
 # would have been the only one it ever saw: every later figure fix or new
 # drawing unreachable for a year. Caught at landing, before the first push.
+# ⊕ Theme run, 27 Sep 2026 — `theme.js` joins for exactly the reason
+# `rum.js`, `student-bell.js`, `shoutouts.js` and the two figure manifests
+# did: this build writes a bare `/shared/theme.js` reference (see
+# `page_html`), a name missing from `window.__MRB_ASSET_V__`/this stamp map
+# comes back unstamped, and `/shared/*` is served
+# `immutable, max-age=31536000` — a year-long pin on the control's own
+# bytes for any child whose first load happens before a later fix ships.
 STAMPED_DEPS = ("config.js", "class-entry.js", "student-guard.js",
                 "student-data.js", "rum.js", "student-bell.js",
-                "shoutouts.js", "figures-ks3.js", "figures-ks4.js")
+                "shoutouts.js", "figures-ks3.js", "figures-ks4.js",
+                "theme.js")
 
 
 def asset_hash(text):
@@ -3416,7 +3427,18 @@ def ks4_lesson_index():
 # CLASS VIEW ONLY. The assignment page has no bench, and emitting these rules
 # into it would move that page's bytes to define selectors it can never match.
 _THEME_BRIDGE = (
-    ":root{--st-docket-paper:var(--st-paper)}"
+    ":root{--st-docket-paper:var(--st-paper);"
+    # ⊕ Theme run, 27 Sep 2026 — the docket's OTHER half. "Stays paper and
+    # ink on all six bench themes" was always true of --st-ink for free: the
+    # bench bridge below never remaps it, so it never varied across a bench
+    # swap. The light/dark axis is the first thing that ever varies
+    # --st-ink itself, and contrast_audit caught the gap this bridge always
+    # had — a paper docket with dark-mode's bright ink on it, 1.16:1.
+    # Captured here for the identical reason --st-docket-paper is: so a
+    # THEME swap can override just this one card without retyping the rest
+    # of --st-ink's job. See student_rulings.THEME_DARK_CSS for the dark
+    # value.
+    "--st-docket-ink:var(--st-ink)}"
     "[data-bench-surface]{"
     "--st-room-panel:var(--b-ground);"
     "--st-room-body:var(--b-ink);"
@@ -3450,7 +3472,8 @@ _THEME_BRIDGE = (
     "--st-cream:var(--b-ink);"
     "--st-ember:var(--b-ember);"
     "--st-paper:var(--b-cta-ink)}"
-    "[data-bench-docket]{--st-paper:var(--st-docket-paper)}"
+    "[data-bench-docket]{--st-paper:var(--st-docket-paper);"
+    "--st-ink:var(--st-docket-ink)}"
     "[data-bench-avatar]{background:var(--b-ink)!important;"
     "color:var(--b-ground)!important}"
 )
@@ -4060,6 +4083,18 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         # carries.
         "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
         "<meta charset=\"utf-8\">\n"
+        # ⊕ Theme run, 27 Sep 2026 (Mide's ruling: light by default, a
+        # Light/Dark/System control on every page). THEME_HEAD is the one
+        # pre-paint snippet every generator emits, byte-identical, imported
+        # from theme_head.py rather than retyped — theme_wiring_check.py
+        # fails a page whose copy has drifted by even one byte. It goes
+        # here, before ANY stylesheet or blocking script, so <html> carries
+        # data-theme before the first paint and no page ever flashes the
+        # wrong theme. The control script is unstamped here, on purpose,
+        # like every other `/shared/` reference this function writes —
+        # `stamp_versions()` at the very end appends its `?v=` from the
+        # `theme.js` entry this build adds to STAMPED_DEPS.
+        "%s%s"
         "<meta name=\"viewport\" content=\"width=device-width, "
         "initial-scale=1\">\n"
         # ⊕ Perf, 21 Sep 2026 — OPEN THE THREE CONNECTIONS EARLY.
@@ -4086,7 +4121,11 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "PSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==\">\n"
         "%s"
         "<link rel=\"stylesheet\" href=\"%s\">\n"
-        "<style>body{margin:0;background:#FBF3E6}"
+        # ⊕ Theme run, 27 Sep 2026 — was a hard-coded #FBF3E6. Same light
+        # byte value, but now a token so `html[data-theme="dark"]` can
+        # redefine --st-ground and this ground follows it, instead of
+        # staying pinned to cream underneath a dark page.
+        "<style>body{margin:0;background:var(--st-ground)}"
         "a{color:var(--ks3-accent-text);text-decoration:none}"
         "a:hover{color:var(--ks3-accent-hover)}"
         "button{font-family:inherit}"
@@ -4105,7 +4144,8 @@ def page_html(spec, tpl, roots, bind_table, logic, fixture=False,
         "%s"
         "%s"
         "</body>\n</html>\n"
-        % (html.escape(spec["title"]),
+        % (theme_head.THEME_HEAD, theme_head.theme_script(),
+           html.escape(spec["title"]),
            (_BANNER_FIXTURE % (spec["page"].capitalize(), spec["out"]))
            if fixture else
            (_BANNER % (spec["page"].capitalize(), LIVE_JS_NAME,
@@ -4307,6 +4347,11 @@ def build():
     # for what it fixes and why it lives there and not in this generated file.
     import student_rulings
     css += student_rulings.PORT_CSS
+    # ⊕ Theme run, 27 Sep 2026 — the light/dark axis's own tail, same
+    # reasoning and same append point as PORT_CSS immediately above (last
+    # in the cascade, lives in student_rulings.py because shared/
+    # student-ds.css is generated). See THEME_DARK_CSS's own comment.
+    css += student_rulings.THEME_DARK_CSS
 
     for out_dir in (SHARED_OUT, "shared"):
         os.makedirs(out_dir, exist_ok=True)

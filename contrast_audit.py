@@ -497,6 +497,14 @@ _page("ks3 lesson [chemistry, instrument]",
 _page("ks3 lesson [physics, instrument]",
       "ks3/physics/electric-circuits/current-and-circuits.html")
 
+# ── runtimes lane (theme run, 27 Sep 2026) ──
+# The three hand-written student/ pages this lane wired that were not
+# already in the list above — student/class.html, student/assignment.html
+# and the six teacher fixtures were already here.
+_page("student/classes.html", "student/classes.html")
+_page("student/settings.html", "student/settings.html")
+_page("student/claim-confirm.html", "student/claim-confirm.html")
+
 
 # ══════════════════════════════════════════════════════════════════════════
 # the sweep
